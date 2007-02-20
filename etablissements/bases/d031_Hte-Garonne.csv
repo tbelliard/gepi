@@ -1,0 +1,636 @@
+0310001H;Armand Latour;college;public;31160;Aspet
+0310003K;Emile-Paul Vayssie;college;public;31420;Aurignac
+0310005M;Jean Monnet;college;public;31110;Bagnères-de-Luchon
+0310007P;du Pays de la Gesse;college;public;31350;Boulogne-sur-Gesse
+0310008R;-;college;public;31480;Cadours
+0310012V;du Plantaurel;college;public;31220;Cazères
+0310015Y;Pierre et Marie Curie;college;public;31430;Le-Fousseret
+0310019C;Léon Cazeneuve;college;public;31230;L'Isle-en-Dodon
+0310021E;Georges Brassens;college;public;31380;Montastruc-la-Conseillère
+0310022F;Stella Blandy;college;public;31310;Montesquieu-Volvestre
+0310023G;Bertrand Laralde;college;public;31210;Montréjeau
+0310025J;de la Côte de Bétance;college;public;31600;Muret
+0310029N;Robert Roger;college;public;31370;Rieumes
+0310031R;François Cazes;college;public;31440;Saint-Béat
+0310035V;des Trois Vallées;college;public;31260;Salies-du-Salat
+0310037X;Clémence Isaure;college;public;31024;Toulouse
+0310083X;Didier Daurat;college;public;31800;Saint-Gaudens
+0310084Y;Antonin Perbosc;college;public;31190;Auterive
+0310085Z;Château-De-L'Hers;college;public;31500;Toulouse
+0310086A;George Sand;college;public;31100;Toulouse
+0310092G;Bellevue;college;public;31030;Toulouse
+0310093H;Marcelin Berthelot;college;public;31078;Toulouse
+0310160F;1;ecole;public;31000;Toulouse
+0310161G;Pierre Dupont;ecole;public;31000;Toulouse
+0310162H;2;ecole;public;31000;Toulouse
+0310252F;-;ecole;public;31450;Ayguesvives
+0310253G;-;ecole;public;31420;Alan
+0310256K;-;ecole;public;31230;Anan
+0310258M;-;ecole;public;31160;Arbas
+0310268Y;-;ecole;public;31160;Aspet
+0310271B;Victor Hugo;ecole;public;31140;Aucamville
+0310275F;-;ecole;public;31320;Aureville
+0310281M;Jacques Prévert;ecole;public;31420;Aurignac
+0310287U;Michelet;ecole;public;31190;Auterive
+0310290X;-;ecole;public;31320;Auzeville-Tolosane
+0310291Y;-;ecole;public;31650;Auzielle
+0310293A;Auguste Fourès;ecole;public;31290;Avignonet-Lauragais
+0310296D;-;ecole;public;31380;Azas
+0310302K;Gaston Bonheur;ecole;public;31130;Balma
+0310303L;Marie Laurencin;ecole;public;31130;Balma
+0310304M;Antoine De Saint-Exupéry;ecole;public;31130;Balma
+0310305N;-;ecole;public;31510;Barbazan
+0310309T;-;ecole;public;31380;Bazus
+0310310U;-;ecole;public;31360;Beauchalot
+0310313X;-;ecole;public;31870;Beaumont-sur-Lèze
+0310314Y;-;ecole;public;31850;Beaupuy
+0310317B;Les Chênes;ecole;public;31700;Beauzelle
+0310318C;Le Petit Prince;ecole;public;31450;Belberaud
+0310325K;-;ecole;public;31370;Bérat
+0310334V;-;ecole;public;31350;Blajan
+0310339A;-;ecole;public;31470;Bonrepos-sur-Aussonnelle
+0310340B;-;ecole;public;31210;Bordes-de-Rivière
+0310345G;-;ecole;public;31620;Bouloc
+0310347J;-;ecole;public;31350;Boulogne-sur-Gesse
+0310349L;-;ecole;public;31570;Bourg-Saint-Bernard
+0310354S;-;ecole;public;31470;Bragayrac
+0310355T;-;ecole;public;31490;Brax
+0310356U;-;ecole;public;31530;Bretx
+0310361Z;-;ecole;public;31330;Le-Burgaud
+0310366E;-;ecole;public;31460;Le-Cabanial
+0310368G;-;ecole;public;31480;Cadours
+0310369H;-;ecole;public;31560;Caignac
+0310375P;-;ecole;public;31410;Capens
+0310378T;Pierre-Paul Riquet;ecole;public;31460;Caraman
+0310379U;Le Lancon;ecole;public;31390;Carbonne
+0310382X;-;ecole;public;31350;Cardeilhac
+0310383Y;-;ecole;public;31420;Cassagnabère-Tournas
+0310384Z;-;ecole;public;31260;Cassagne
+0310386B;-;ecole;public;31260;Castagnède
+0310387C;Danton Cazelles;ecole;public;31320;Castanet-Tolosan
+0310388D;Damase Auba;ecole;public;31320;Castanet-Tolosan
+0310389E;-;ecole;public;31160;Castelbiague
+0310397N;-;ecole;public;31430;Castelnau-Picampeau
+0310402U;-;ecole;public;31360;Castillon-de-Saint-Martory
+0310404W;-;ecole;public;31190;Caujac
+0310408A;-;ecole;public;31110;Cazeaux-de-Larboust
+0310409B;2;ecole;public;31220;Cazères
+0310410C;1;ecole;public;31220;Cazères
+0310411D;de Paule;ecole;public;31620;Cépet
+0310412E;-;ecole;public;31290;Cessales
+0310418L;-;ecole;public;31350;Ciadoux
+0310425U;Les Baccarets;ecole;public;31550;Cintegabelle
+0310426V;de Picarrou;ecole;public;31550;Cintegabelle
+0310427W;-;ecole;public;31210;Clarac
+0310429Y;Jules Ferry 2;ecole;public;31770;Colomiers
+0310430Z;Jules Ferry 1;ecole;public;31770;Colomiers
+0310431A;Jean Macé;ecole;public;31770;Colomiers
+0310432B;Hélène Boucher;ecole;public;31770;Colomiers
+0310433C;du Pont Vieux;ecole;public;31700;Cornebarrieu
+0310434D;Les Ambrits;ecole;public;31700;Cornebarrieu
+0310435E;-;ecole;public;31450;Corronsac
+0310440K;-;ecole;public;31480;Cox
+0310441L;Léon Blum;ecole;public;31270;Cugnaux
+0310442M;Jean Jaurès;ecole;public;31270;Cugnaux
+0310444P;-;ecole;public;31210;Le-Cuing
+0310445R;-;ecole;public;31700;Daux
+0310446S;-;ecole;public;31450;Deyme
+0310447T;-;ecole;public;31450;Donneville
+0310448U;Maurice Petitcolin;ecole;public;31280;Drémil-Lafage
+0310450W;Jean Dargassies;ecole;public;31600;Eaunes
+0310452Y;-;ecole;public;31160;Encausse-les-Thermes
+0310454A;Marcel Pagnol;ecole;public;31750;Escalquens
+0310458E;-;ecole;public;31190;Esperce
+0310460G;Le Plan;ecole;public;31160;Estadens
+0310461H;-;ecole;public;31800;Estancarbon
+0310467P;Clément Ader;ecole;public;31410;Le-Fauga
+0310469S;Jean Monnet;ecole;public;31150;Fenouillet
+0310470T;-;ecole;public;31260;Figarol
+0310471U;-;ecole;public;31130;Flourens
+0310472V;-;ecole;public;31290;Folcarde
+0310473W;Le Trépade;ecole;public;31470;Fonsorbes
+0310475Y;-;ecole;public;31470;Fontenilles
+0310477A;-;ecole;public;31440;Fos
+0310478B;Jean-Paul Laurens;ecole;public;31450;Fourquevaux
+0310480D;-;ecole;public;31430;Le-Fousseret
+0310482F;-;ecole;public;31420;Francon
+0310493T;-;ecole;public;31150;Gagnac-sur-Garonne
+0310496W;-;ecole;public;31550;Gaillac-Toulza
+0310499Z;-;ecole;public;31480;Garac
+0310500A;-;ecole;public;31290;Gardouch
+0310501B;-;ecole;public;31620;Gargas
+0310502C;-;ecole;public;31380;Garidech
+0310505F;-;ecole;public;31590;Gauré
+0310509K;-;ecole;public;31560;Gibel
+0310514R;-;ecole;public;31210;Gourdan-Polignan
+0310517U;-;ecole;public;31120;Goyrans
+0310518V;-;ecole;public;31380;Gragnague
+0310519W;-;ecole;public;31430;Gratens
+0310523A;Jean-Claude Gouze;ecole;public;31330;Grenade
+0310524B;La Bastide;ecole;public;31330;Grenade
+0310526D;-;ecole;public;31190;Grépiac
+0310530H;-;ecole;public;31210;Huos
+0310534M;-;ecole;public;31160;Izaut-de-l'Hôtel
+0310539T;-;ecole;public;31800;Labarthe-Inard
+0310543X;-;ecole;public;31860;Labarthe-sur-Lèze
+0310545Z;-;ecole;public;31450;Labastide-Beauvoir
+0310546A;-;ecole;public;31370;Labastide-Clermont
+0310547B;-;ecole;public;31230;Labastide-Paumès
+0310548C;-;ecole;public;31620;Labastide-Saint-Sernin
+0310549D;Jacques Prévert;ecole;public;31600;Labastidette
+0310550E;-;ecole;public;31670;Labège
+0310553H;-;ecole;public;31390;Lacaugne
+0310554J;-;ecole;public;31120;Lacroix-Falgarde
+0310556L;-;ecole;public;31390;Lafitte-Vigordane
+0310560R;-;ecole;public;31190;Lagrâce-Dieu
+0310565W;-;ecole;public;31600;Lamasquère
+0310566X;-;ecole;public;31800;Landorthe
+0310569A;-;ecole;public;31570;Lanta
+0310570B;Georges Brassens;ecole;public;31180;Lapeyrouse-Fossat
+0310574F;-;ecole;public;31580;Larroque
+0310576H;-;ecole;public;31530;Lasserre
+0310577J;-;ecole;public;31800;Latoue
+0310579L;-;ecole;public;31310;Latrape
+0310581N;-;ecole;public;31330;Launac
+0310584S;Jean Rostand;ecole;public;31140;Launaguet
+0310585T;-;ecole;public;31370;Lautignac
+0310586U;-;ecole;public;31650;Lauzerville
+0310587V;-;ecole;public;31590;Lavalette
+0310588W;-;ecole;public;31220;Lavelanet-de-Comminges
+0310590Y;-;ecole;public;31410;Lavernose-Lacasse
+0310596E;Marcel Pagnol;ecole;public;31150;Lespinasse
+0310599H;-;ecole;public;31360;Lestelle-de-Saint-Martory
+0310600J;-;ecole;public;31530;Lévignac
+0310602L;René Cassin;ecole;public;31600;Lherm
+0310604N;de Liéoux;ecole;public;31800;Saint-Gaudens
+0310609U;-;ecole;public;31460;Loubens-Lauragais
+0310614Z;-;ecole;public;31430;Lussan-Adeilhac
+0310616B;-;ecole;public;31340;La-Magdelaine-sur-Tarn
+0310619E;-;ecole;public;31360;Mancioux
+0310622H;-;ecole;public;31440;Marignac
+0310628P;-;ecole;public;31260;Marsoulas
+0310636Y;-;ecole;public;31290;Mauremont
+0310643F;-;ecole;public;31410;Mauzac
+0310645H;-;ecole;public;31260;Mazères-sur-Salat
+0310648L;-;ecole;public;31530;Menville
+0310651P;-;ecole;public;31330;Merville
+0310655U;-;ecole;public;31800;Miramont-de-Comminges
+0310656V;-;ecole;public;31190;Miremont
+0310657W;-;ecole;public;31340;Mirepoix-sur-Tarn
+0310658X;-;ecole;public;31230;Molas
+0310660Z;-;ecole;public;31220;Mondavezan
+0310662B;-;ecole;public;31700;Mondonville
+0310664D;-;ecole;public;31280;Mons
+0310665E;-;ecole;public;31530;Montaigut-sur-Save
+0310669J;Vinsonneau;ecole;public;31380;Montastruc-la-Conseillère
+0310670K;-;ecole;public;31110;Montauban-de-Luchon
+0310673N;-;ecole;public;31230;Montbernard
+0310674P;-;ecole;public;31140;Montberon
+0310675R;-;ecole;public;31310;Montbrun-Bocage
+0310676S;-;ecole;public;31450;Montbrun-Lauragais
+0310682Y;-;ecole;public;31260;Montespan
+0310683Z;-;ecole;public;31230;Montesquieu-Guittaut
+0310684A;-;ecole;public;31450;Montesquieu-Lauragais
+0310687D;-;ecole;public;31310;Montesquieu-Volvestre
+0310689F;-;ecole;public;31290;Montgaillard-Lauragais
+0310695M;-;ecole;public;31380;Montjoire
+0310697P;Saint-Lautier;ecole;public;31450;Montlaur
+0310701U;-;ecole;public;31380;Montpitol
+0310702V;Jean Moulin;ecole;public;31850;Montrabé
+0310703W;Les Pyrénées;ecole;public;31210;Montréjeau
+0310704X;Le Courraou;ecole;public;31210;Montréjeau
+0310705Y;-;ecole;public;31260;Montsaunès
+0310709C;d'Ox;ecole;public;31600;Muret
+0310710D;Estantens;ecole;public;31600;Muret
+0310711E;Pierre Fons;ecole;public;31600;Muret
+0310714H;Vasconia;ecole;public;31600;Muret
+0310715J;Jean Rostand;ecole;public;31560;Nailloux
+0310718M;-;ecole;public;31410;Noé
+0310721R;-;ecole;public;31450;Noueilles
+0310722S;-;ecole;public;31450;Odars
+0310723T;-;ecole;public;31330;Ondes
+0310724U;-;ecole;public;31110;Oô
+0310727X;-;ecole;public;31220;Palaminy
+0310728Y;-;ecole;public;31380;Paulhac
+0310730A;-;ecole;public;31320;Péchabou
+0310733D;-;ecole;public;31320;Pechbusque
+0310735F;-;ecole;public;31480;Pelleport
+0310738J;-;ecole;public;31390;Peyssies
+0310740L;du Bois de La Barthe;ecole;public;31820;Pibrac
+0310743P;du Ruisseau;ecole;public;31120;Pinsaguel
+0310745S;Jean Jaurès;ecole;public;31860;Pins-Justaret
+0310747U;Marcel Pagnol;ecole;public;31830;Plaisance-du-Touch
+0310748V;Jacques Prévert;ecole;public;31830;Plaisance-du-Touch
+0310750X;de Brocas;ecole;public;31210;Pointis-de-Rivière
+0310751Y;-;ecole;public;31210;Pointis-de-Rivière
+0310753A;-;ecole;public;31800;Pointis-Inard
+0310755C;-;ecole;public;31450;Pompertuzat
+0310757E;-;ecole;public;31210;Ponlat-Taillebourg
+0310760H;Pierre et Marie Curie;ecole;public;31120;Portet-sur-Garonne
+0310761J;Marguerite Picart;ecole;public;31120;Portet-sur-Garonne
+0310762K;de Clairfont;ecole;public;31120;Portet-sur-Garonne
+0310763L;-;ecole;public;31370;Poucharramet
+0310766P;-;ecole;public;31570;Préserville
+0310770U;-;ecole;public;31130;Quint-Fonsegrives
+0310775Z;-;ecole;public;31520;Ramonville-Saint-Agne
+0310779D;-;ecole;public;31290;Renneville
+0310783H;de Couffinal;ecole;public;31250;Revel
+0310788N;-;ecole;public;31370;Rieumes
+0310793U;-;ecole;public;31360;Roquefort-sur-Garonne
+0310798Z;-;ecole;public;31120;Roquettes
+0310800B;Lamartine;ecole;public;31180;Rouffiac-Tolosan
+0310802D;-;ecole;public;31370;Sabonnères
+0310803E;-;ecole;public;31470;Saiguède
+0310804F;La Peyronnette;ecole;public;31140;Saint-Alban
+0310805G;Jean Jaurès;ecole;public;31140;Saint-Alban
+0310806H;-;ecole;public;31420;Saint-André
+0310809L;-;ecole;public;31440;Saint-Béat
+0310810M;-;ecole;public;31510;Saint-Bertrand-de-Comminges
+0310811N;-;ecole;public;31330;Saint-Cézert
+0310813R;-;ecole;public;31600;Saint-Clar-de-Rivière
+0310814S;-;ecole;public;31430;Saint-Elix-le-Château
+0310819X;-;ecole;public;31540;Saint-Félix-Lauragais
+0310821Z;Anne Frank;ecole;public;31570;Sainte-Foy-d'Aigrefeuille
+0310824C;Jules Ferry;ecole;public;31470;Sainte-Foy-de-Peyrolières
+0310831K;Les Gavastous;ecole;public;31800;Saint-Gaudens
+0310832L;La Résidence;ecole;public;31800;Saint-Gaudens
+0310835P;-;ecole;public;31180;Saint-Geniès-Bellevue
+0310837S;-;ecole;public;31410;Saint-Hilaire
+0310838T;-;ecole;public;31800;Saint-Ignan
+0310844Z;-;ecole;public;31540;Saint-Julia
+0310845A;-;ecole;public;31220;Saint-Julien
+0310849E;-;ecole;public;31560;Saint-Léon
+0310850F;-;ecole;public;31530;Sainte-Livrade
+0310851G;-;ecole;public;31140;Saint-Loup-Cammas
+0310855L;-;ecole;public;31110;Saint-Mamet
+0310857N;-;ecole;public;31800;Saint-Marcet
+0310863V;Henri Puis;ecole;public;31650;Saint-Orens-de-Gameville
+0310864W;-;ecole;public;31530;Saint-Paul-sur-Save
+0310866Y;-;ecole;public;31570;Saint-Pierre-de-Lages
+0310867Z;-;ecole;public;31580;Saint-Plancard
+0310870C;-;ecole;public;31620;Saint-Rustice
+0310871D;-;ecole;public;31790;Saint-Sauveur
+0310874G;-;ecole;public;31470;Saint-Thomas
+0310877K;-;ecole;public;31260;Saleich
+0310880N;-;ecole;public;31260;Salies-du-Salat
+0310882R;-;ecole;public;31390;Salles-sur-Garonne
+0310883S;Condorcet;ecole;public;31880;La-Salvetat-Saint-Gilles
+0310886V;-;ecole;public;31350;Saman
+0310891A;-;ecole;public;31600;Saubens
+0310893C;de Bruncan;ecole;public;31510;Sauveterre-de-Comminges
+0310899J;-;ecole;public;31840;Seilh
+0310901L;-;ecole;public;31430;Sénarens
+0310902M;-;ecole;public;31160;Sengouagnet
+0310905R;Les Aujoulets;ecole;public;31600;Seysses
+0310907T;-;ecole;public;31600;Seysses
+0310909V;-;ecole;public;31160;Soueich
+0310910W;-;ecole;public;31570;Tarabel
+0310912Y;-;ecole;public;31530;Thil
+0310916C;Falguière;ecole;public;31000;Toulouse
+0310917D;Alain Fournier;ecole;public;31000;Toulouse
+0310921H;Lalande;ecole;public;31000;Toulouse
+0310928R;Jean Chaubet;ecole;public;31000;Toulouse
+0310929S;Bonhoure;ecole;public;31000;Toulouse
+0310934X;Marengo;ecole;public;31000;Toulouse
+0310950P;Sermet;ecole;public;31000;Toulouse
+0310951R;Jules Ferry;ecole;public;31140;Aucamville
+0310952S;Nord;ecole;public;31000;Toulouse
+0310959Z;Jean-Baptiste Lamarck;ecole;public;31000;Toulouse
+0310960A;Léo Lagrange;ecole;public;31000;Toulouse
+0310964E;Ricardie;ecole;public;31000;Toulouse
+0310970L;Georges Cuvier;ecole;public;31000;Toulouse
+0310975S;Grand Selve;ecole;public;31000;Toulouse
+0310976T;Matabiau;ecole;public;31000;Toulouse
+0310987E;Georges Hyon;ecole;public;31000;Toulouse
+0310988F;Pierre Ronsard;ecole;public;31000;Toulouse
+0310992K;Bonnefoy;ecole;public;31000;Toulouse
+0310993L;Bayard;ecole;public;31000;Toulouse
+0311006A;de Sauzelong;ecole;public;31000;Toulouse
+0311008C;Alexandre Fourtanier;ecole;public;31000;Toulouse
+0311010E;Armand Leygue;ecole;public;31000;Toulouse
+0311015K;Fontaine Bayonne;ecole;public;31000;Toulouse
+0311016L;Marcel Pagnol;ecole;public;31000;Toulouse
+0311021S;Lespinasse;ecole;public;31000;Toulouse
+0311024V;Les Oustalous;ecole;public;31000;Toulouse
+0311025W;Maurice Becanne;ecole;public;31000;Toulouse
+0311029A;Le Château;ecole;public;31170;Tournefeuille
+0311038K;Le Magnolia;ecole;public;31340;Vacquiers
+0311042P;-;ecole;public;31800;Valentine
+0311043R;-;ecole;public;31290;Vallègue
+0311044S;-;ecole;public;31570;Vallesvilles
+0311046U;-;ecole;public;31250;Vaudreuille
+0311053B;Comtesse De Ségur;ecole;public;31590;Verfeil
+0311057F;-;ecole;public;31320;Vieille-Toulouse
+0311058G;-;ecole;public;31290;Vieillevigne
+0311060J;-;ecole;public;31320;Vigoulet-Auzil
+0311062L;Germaine Maître;ecole;public;31620;Villaudric
+0311066R;-;ecole;public;31340;Villematier
+0311067S;Anatole France;ecole;public;31340;Villemur-sur-Tarn
+0311071W;Jules Michelet;ecole;public;31340;Villemur-sur-Tarn
+0311073Y;-;ecole;public;31800;Villeneuve-de-Rivière
+0311077C;-;ecole;public;31580;Villeneuve-Lécussan
+0311078D;-;ecole;public;31620;Villeneuve-lès-Bouloc
+0311079E;Fernand Bécane;ecole;public;31270;Villeneuve-Tolosane
+0311080F;Maurice Ravel;ecole;public;31270;Villeneuve-Tolosane
+0311081G;-;ecole;public;31290;Villenouvelle
+0311083J;-;ecole;public;31330;Larra
+0311089R;Lapujade;ecole;public;31000;Toulouse
+0311091T;Les Caussades;ecole;public;31800;Saint-Gaudens
+0311093V;Montesquieu;college;public;31270;Cugnaux
+0311094W;Georges Chaumeton;college;public;31240;L'Union
+0311111P;Croix-Daurade;college;public;31921;Toulouse
+0311112R;Henri De Toulouse-Lautrec;college;public;31022;Toulouse
+0311128H;Sainte-Germaine;college;prive;31210;Montréjeau
+0311130K;Joseph Niel;college;prive;31600;Muret
+0311144A;Sainte-Famille Des Minimes;college;prive;31200;Toulouse
+0311148E;Sainte-Marie des Ursulines;college;prive;31500;Toulouse
+0311150G;Saint-Thomas D'Aquin;college;prive;31000;Toulouse
+0311160T;Sainte-Thérèse;college;prive;31770;Colomiers
+0311162V;Sainte-Geneviève;college;prive;31790;Saint-Jory
+0311168B;Sainte-Marie de Nevers;college;prive;31000;Toulouse
+0311169C;Saint-Louis;college;prive;31500;Toulouse
+0311171E;Saint-Nicolas;college;prive;31300;Toulouse
+0311176K;de la Salle;college;prive;31820;Pibrac
+0311231V;Maurice Becanne;college;public;31300;Toulouse
+0311232W;Frédéric Estèbe;college;public;31200;Toulouse
+0311235Z;Bellefontaine;college;public;31037;Toulouse
+0311236A;Pierre De Fermat;college;public;31068;Toulouse
+0311237B;Henri Guillaumet;college;public;31700;Blagnac
+0311238C;Jean Jaurès;college;public;31770;Colomiers
+0311240E;-;EREA;public;31600;Muret
+0311252T;Ginestous;ecole;public;31000;Toulouse
+0311263E;du Bois de La Barthe;college;public;31820;Pibrac
+0311264F;Jolimont;college;public;31500;Toulouse
+0311265G;Lalande;college;public;31924;Toulouse
+0311266H;Jean Jaurès;college;public;31320;Castanet-Tolosan
+0311305A;Paul Dottin;ecole;public;31000;Toulouse
+0311317N;Eugène Montel;ecole;public;31270;Cugnaux
+0311319R;Louisa Paulin;college;public;31600;Muret
+0311321T;La Reynerie;college;public;31036;Toulouse
+0311325X;Voltaire;college;public;31770;Colomiers
+0311327Z;Alphonse De Lamartine;college;public;31025;Toulouse
+0311328A;Les Chalets;college;public;31901;Toulouse
+0311330C;Jean Rostand;college;public;31130;Balma
+0311332E;Anatole France;college;public;31400;Toulouse
+0311333F;Jean Moulin;college;public;31400;Toulouse
+0311335H;Jean Gay;college;public;31590;Verfeil
+0311338L;Emile Zola;college;public;31400;Toulouse
+0311386N;Les Prés;ecole;public;31700;Blagnac
+0311422C;Notre-Dame des Anges;ecole;prive;31000;Toulouse
+0311426G;Gabriel Sajus;ecole;public;31520;Ramonville-Saint-Agne
+0311435S;Saint-Paul;ecole;prive;31190;Auterive
+0311436T;Sainte-Marie;ecole;prive;31110;Bagnères-de-Luchon
+0311437U;Saint-Joseph;ecole;prive;31660;Bessières
+0311438V;Le Ferradou;ecole;prive;31700;Blagnac
+0311441Y;Notre-Dame de la Paix;ecole;prive;31560;Calmont
+0311444B;Saint-Martin;ecole;prive;31620;Castelnau-d'Estrétefonds
+0311446D;Sainte-Thérèse;ecole;prive;31770;Colomiers
+0311448F;Sainte-Bernadette;ecole;prive;31480;Cox
+0311449G;Sainte-Thérèse;ecole;prive;31430;Le-Fousseret
+0311450H;Sainte-Marthe;ecole;prive;31330;Grenade
+0311451J;Saint-Louis;ecole;prive;31860;Labarthe-sur-Lèze
+0311452K;Saint-Dominique - Savio;ecole;prive;31670;Labège
+0311453L;Saint-Joseph;ecole;prive;31190;Miremont
+0311455N;Sainte-Thérèse;ecole;prive;31380;Montastruc-la-Conseillère
+0311457R;Sainte-Germaine;ecole;prive;31210;Montréjeau
+0311458S;Joseph Niel;ecole;prive;31600;Muret
+0311462W;La Providence;ecole;prive;31250;Revel
+0311464Y;Sainte-Thérèse;ecole;prive;31800;Saint-Gaudens
+0311466A;Sainte-Geneviève;ecole;prive;31790;Saint-Jory
+0311467B;Saint-Guillaume;ecole;prive;31790;Saint-Sauveur
+0311468C;de l'Annonciation;ecole;prive;31840;Seilh
+0311469D;Saint-Roch;ecole;prive;31600;Seysses
+0311470E;Sainte-Thérèse;ecole;prive;31590;Verfeil
+0311471F;Saint-Joseph;ecole;prive;31290;Villefranche-de-Lauragais
+0311472G;Sainte-Famille;ecole;prive;31340;Villemur-sur-Tarn
+0311474J;Le Caousou;ecole;prive;31000;Toulouse
+0311476L;Emilie De Rodat;ecole;prive;31000;Toulouse
+0311477M;de l'Immaculée Conception;ecole;prive;31000;Toulouse
+0311478N;Sainte-Famille Des Minimes;ecole;prive;31000;Toulouse
+0311479P;Montalembert - Notre-Dame;ecole;prive;31000;Toulouse
+0311480R;Saint-Aubin;ecole;prive;31000;Toulouse
+0311485W;Saint-Exupère;ecole;prive;31000;Toulouse
+0311487Y;Sainte-Foy;ecole;prive;31000;Toulouse
+0311488Z;La Prairie;ecole;prive;31000;Toulouse
+0311489A;Sainte-Germaine;ecole;prive;31000;Toulouse
+0311491C;Saint-Joseph;ecole;prive;31000;Toulouse
+0311495G;Sainte-Marie de Nevers;ecole;prive;31000;Toulouse
+0311497J;Sainte-Marie des Ursulines;ecole;prive;31000;Toulouse
+0311499L;Saint-Nicolas;ecole;prive;31000;Toulouse
+0311500M;Saint-Stanislas;ecole;prive;31000;Toulouse
+0311502P;Sainte-Thérèse;ecole;prive;31000;Toulouse
+0311503R;Saint-Thomas D'Aquin;ecole;prive;31000;Toulouse
+0311561D;de Buffebiau;ecole;public;31780;Castelginest
+0311562E;-;ecole;public;31550;Cintegabelle
+0311563F;-;ecole;public;31870;Lagardelle-sur-Lèze
+0311564G;Jules Ferry;ecole;public;31490;Léguevin
+0311565H;-;ecole;public;31310;Rieux
+0311569M;Gaspard Monge;ecole;public;31000;Toulouse
+0311570N;La Prairie;college;prive;31400;Toulouse
+0311573S;Jean-Paul Laurens;college;public;31450;Ayguesvives
+0311580Z;André Abbal;college;public;31390;Carbonne
+0311581A;Jean Mermoz;college;public;31700;Blagnac
+0311582B;des Ponts-Jumeaux;college;public;31200;Toulouse
+0311584D;de Marengo;college;public;31500;Toulouse
+0311598U;Le Barry;ecole;public;31600;Muret
+0311601X;Les Gais Pinsons;ecole;public;31000;Toulouse
+0311604A;Daniel Faucher 1;ecole;public;31000;Toulouse
+0311623W;-;ecole;public;31450;Baziège
+0311625Y;de Preissac;ecole;public;31240;Saint-Jean
+0311626Z;de Catala;ecole;public;31650;Saint-Orens-de-Gameville
+0311627A;Antoine De Saint-Exupéry;ecole;public;31520;Ramonville-Saint-Agne
+0311628B;-;ecole;public;31810;Venerque
+0311630D;Stendhal;college;public;31911;Toulouse
+0311631E;Michelet;college;public;31000;Toulouse
+0311632F;Les Violettes;college;public;31140;Aucamville
+0311633G;André Malraux;college;public;31520;Ramonville-Saint-Agne
+0311634H;Jules Ferry;college;public;31290;Villefranche-de-Lauragais
+0311641R;de Pouvourville;ecole;public;31000;Toulouse
+0311645V;Daniel Faucher 2;ecole;public;31000;Toulouse
+0311646W;Jules Ferry;ecole;public;31840;Aussonne
+0311647X;-;ecole;public;31660;Buzet-sur-Tarn
+0311648Y;-;ecole;public;31410;Longages
+0311649Z;Yvette Raynaud;ecole;public;31120;Roques
+0311664R;Anatole France;ecole;public;31270;Frouzins
+0311666T;Gabriel Arboucalot;ecole;public;31450;Montgiscard
+0311667U;L'Estanque;ecole;public;31660;Bessières
+0311668V;-;ecole;public;31560;Calmont
+0311673A;de la Salle;ecole;prive;31820;Pibrac
+0311678F;-;ecole;public;31540;Mourvilles-Hautes
+0311680H;-;ecole;public;31360;Boussens
+0311681J;-;ecole;public;31440;Cierp-Gaud
+0311686P;Jules Valles;college;public;31120;Portet-sur-Garonne
+0311687R;Léon Blum;college;public;31770;Colomiers
+0311688S;Pierre Labitrie;college;public;31170;Tournefeuille
+0311689T;Albert Camus;college;public;31340;Villemur-sur-Tarn
+0311690U;François Mitterrand;college;public;31460;Caraman
+0311693X;Didier Daurat;ecole;public;31000;Toulouse
+0311703H;-;ecole;public;31230;L'Isle-en-Dodon
+0311704J;-;ecole;public;31140;Pechbonnieu
+0311708N;-;ecole;public;31800;Labarthe-Rivière
+0311710R;-;ecole;public;31620;Castelnau-d'Estrétefonds
+0311711S;Buissonnière;ecole;public;31140;Fonbeauzard
+0311718Z;Nicolas Vauquelin;college;public;31035;Toulouse
+0311720B;Jacques Maure;college;public;31780;Castelginest
+0311721C;Alain Savary;college;public;31620;Fronton
+0311722D;Romain Rolland;college;public;31240;Saint-Jean
+0311724F;Grand Rond Saint-Etienne;ecole;prive;31000;Toulouse
+0311733R;-;ecole;public;31260;Mane
+0311745D;La Terrasse;ecole;public;31000;Toulouse
+0311759U;-;ecole;public;31460;Auriac-sur-Vendinelle
+0311760V;Marcel Pagnol;ecole;public;31180;Castelmaurou
+0311769E;Grand Selve;college;public;31330;Grenade
+0311772H;Léo Ferré;college;public;31470;Saint-Lys
+0311782U;Peire Godolin;ecole;public;31000;Toulouse
+0311784W;-;ecole;public;31810;Vernet
+0311785X;-;ecole;public;31220;Martres-Tolosane
+0311786Y;Jean De La Fontaine;ecole;public;31620;Fronton
+0311811A;-;ecole;public;31790;Saint-Jory
+0311846N;Vincent Auriol;college;public;31250;Revel
+0311850T;Jacques Prévert;college;public;31650;Saint-Orens-de-Gameville
+0311851U;Général Leclerc;college;public;31800;Saint-Gaudens
+0311880A;Fabre;ecole;public;31000;Toulouse
+0311885F;-;ecole;public;31360;Saint-Martory
+0311893P;-;ecole;public;31150;Gratentour
+0311915N;Pablo Picasso;college;public;31270;Frouzins
+0311923X;de Montaudran;ecole;public;31000;Toulouse
+0311961N;Léonce Bourliaguet;ecole;public;31000;Toulouse
+0311962P;Le Caousou;college;prive;31079;Toulouse
+0311963R;Montalembert - Notre-Dame;college;prive;31400;Toulouse
+0311964S;Emilie De Rodat;college;prive;31027;Toulouse
+0311965T;Le Ferradou;college;prive;31700;Blagnac
+0311967V;de l'Annonciation;college;prive;31840;Seilh
+0311968W;Sainte-Thérèse;college;prive;31800;Saint-Gaudens
+0311972A;Saint-Joseph;college;prive;31079;Toulouse
+0311980J;-;ecole;public;31230;Agassac
+0312001G;Le Corail;ecole;public;31650;Saint-Orens-de-Gameville
+0312023F;-;ecole;public;31810;Clermont-le-Fort
+0312024G;Anatole France;ecole;public;31410;Saint-Sulpice-sur-Lèze
+0312028L;Les Vergers;ecole;public;31000;Toulouse
+0312030N;Les Fontanelles;ecole;public;31320;Castanet-Tolosan
+0312031P;Maurice Fonvieille;ecole;public;31820;Pibrac
+0312035U;Pierre Mendès-France;ecole;public;31520;Ramonville-Saint-Agne
+0312071H;Jules Verne;college;public;31830;Plaisance-du-Touch
+0312072J;-;ecole;public;31310;Gensac-sur-Garonne
+0312077P;Michelet;ecole;public;31000;Toulouse
+0312078R;Molière;ecole;public;31000;Toulouse
+0312079S;André Daste;ecole;public;31000;Toulouse
+0312080T;des Sept-Deniers;ecole;public;31000;Toulouse
+0312088B;des Amidonniers;ecole;public;31000;Toulouse
+0312092F;International Victor Hugo;college;public;31770;Colomiers
+0312095J;Antoine De Saint-Exupéry;ecole;public;31600;Muret
+0312096K;Emile Zola;ecole;public;31190;Auterive
+0312097L;Montizalguier;ecole;public;31240;L'Union
+0312098M;Borde d'Olivier;ecole;public;31240;L'Union
+0312107X;Elsa Triolet;ecole;public;31000;Toulouse
+0312108Y;Eugène Viollet-Leduc;ecole;public;31000;Toulouse
+0312110A;Jules Ferry;ecole;public;31000;Toulouse
+0312111B;Château d'Ancely;ecole;public;31000;Toulouse
+0312113D;Gan-Rachi;ecole;prive;31000;Toulouse
+0312119K;Françoise Dolto;ecole;public;31320;Castanet-Tolosan
+0312120L;Alphonse Daudet;ecole;public;31830;Plaisance-du-Touch
+0312121M;Georges Lapierre;ecole;public;31170;Tournefeuille
+0312122N;Saint-Martin;ecole;public;31160;Montastruc-de-Salies
+0312133A;-;ecole;public;31510;Saint-Pé-d'Ardet
+0312139G;Camille Claudel;college;public;31140;Launaguet
+0312140H;René Cassin;college;public;31650;Saint-Orens-de-Gameville
+0312143L;Ferdinand De Lesseps;ecole;public;31000;Toulouse
+0312151V;Alfred De Musset;ecole;public;31000;Toulouse
+0312152W;Anatole France;ecole;public;31000;Toulouse
+0312153X;Henri Guillaumet;ecole;public;31000;Toulouse
+0312154Y;Jean Macé;ecole;public;31000;Toulouse
+0312155Z;Emile Littré;ecole;public;31000;Toulouse
+0312156A;La Juncasse;ecole;public;31000;Toulouse
+0312157B;du Centre;ecole;public;31780;Castelginest
+0312163H;Jules Ferry;ecole;public;31290;Villefranche-de-Lauragais
+0312172T;Henri Chanfreau;ecole;public;31390;Carbonne
+0312173U;Jolimont;ecole;public;31000;Toulouse
+0312174V;de Soupetard;ecole;public;31000;Toulouse
+0312176X;Courrège;ecole;public;31000;Toulouse
+0312177Y;de Rangueil;ecole;public;31000;Toulouse
+0312178Z;Ernest Renan;ecole;public;31000;Toulouse
+0312179A;Mirabeau;ecole;public;31170;Tournefeuille
+0312195T;-;ecole;public;31150;Bruguières
+0312196U;Victor Hugo;ecole;public;31000;Toulouse
+0312197V;de la Patte d'Oie;ecole;public;31000;Toulouse
+0312198W;Le Pilat;ecole;public;31800;Saint-Gaudens
+0312199X;Belbèze les Toulouse;ecole;public;31240;L'Union
+0312202A;Les Gachots;ecole;public;31490;Léguevin
+0312220V;Daniel Sorano;college;public;31860;Pins-Justaret
+0312226B;Calvinhac;ecole;public;31000;Toulouse
+0312227C;Buffon;ecole;public;31000;Toulouse
+0312230F;Elida Hugon;ecole;public;31600;Muret
+0312231G;Les Trois Chênes;ecole;public;31880;La-Salvetat-Saint-Gilles
+0312252E;-;ecole;public;31160;Rouède
+0312270Z;-;ecole;public;31280;Aigrefeuille
+0312271A;René Cassin;ecole;public;31700;Blagnac
+0312272B;Etienne Billières;ecole;public;31000;Toulouse
+0312273C;Jules Julien;ecole;public;31000;Toulouse
+0312276F;Michoun;ecole;public;31000;Toulouse
+0312284P;Ozar Hatorah;college;prive;31500;Toulouse
+0312292Y;Joseph Lakanal;ecole;public;31000;Toulouse
+0312293Z;de Lardenne;ecole;public;31000;Toulouse
+0312294A;Jean Jaurès;ecole;public;31000;Toulouse
+0312296C;Pablo Picasso;ecole;public;31170;Tournefeuille
+0312300G;Unité Mobile;ecole;public;31000;Toulouse
+0312307P;Léonard De Vinci;college;public;31170;Tournefeuille
+0312320D;Gaston Dupouy;ecole;public;31000;Toulouse
+0312321E;La Beouzo;ecole;public;31470;Fonsorbes
+0312323G;Jean Gallia;ecole;public;31000;Toulouse
+0312324H;Maurice Jacquier;ecole;public;31000;Toulouse
+0312325J;de l'Aérogare;ecole;public;31700;Blagnac
+0312329N;-;ecole;public;31110;Bagnères-de-Luchon
+0312334U;Georges Bastide;ecole;public;31000;Toulouse
+0312337X;François Verdier;college;public;31490;Léguevin
+0312338Y;Cantelauze;college;public;31470;Fonsorbes
+0312347H;Clément Falcucci;ecole;public;31000;Toulouse
+0312401S;Roger Sudre 1;ecole;public;31250;Revel
+0312402T;Paul Bert;ecole;public;31000;Toulouse
+0312406X;du Moulin à Vent;ecole;public;31170;Tournefeuille
+0312409A;Jean De La Fontaine;ecole;public;31270;Frouzins
+0312411C;Sylvain Dauriac;ecole;public;31000;Toulouse
+0312419L;du Centre;ecole;public;31240;Saint-Jean
+0312423R;François Mitterrand;college;public;31150;Fenouillet
+0312427V;Marie et Pierre Curie;ecole;public;31000;Toulouse
+0312454Z;Cantelauze;ecole;public;31470;Fonsorbes
+0312455A;La Rivière;ecole;public;31830;Plaisance-du-Touch
+0312458D;Louis Weidknett;ecole;public;31700;Blagnac
+0312478A;Claude Cornac;college;public;31150;Gratentour
+0312485H;Calandreta de Saint-Cyprien;ecole;prive;31000;Toulouse
+0312486J;Calandreta de la Cote Pavée;ecole;prive;31000;Toulouse
+0312489M;-;ecole;public;31390;Marquefave
+0312492R;L'Ayguebelle;ecole;public;31470;Saint-Lys
+0312493S;Jean Mermoz;ecole;public;31600;Muret
+0312494T;Jean Moulin;ecole;public;31700;Blagnac
+0312516S;-;ecole;public;31460;Vendine
+0312518U;-;ecole;public;31450;Varennes
+0312520W;-;ecole;public;31560;Montgeard
+0312521X;Antoine De Saint-Exupéry;ecole;public;31700;Cornebarrieu
+0312539S;Alain Savary;ecole;public;31770;Colomiers
+0312541U;Lamartine;ecole;public;31770;Colomiers
+0312542V;Papus;ecole;public;31000;Toulouse
+0312553G;Paul Bert;ecole;public;31770;Colomiers
+0312554H;-;ecole;public;31480;Brignemont
+0312558M;Calandreta del Pais Murethin;ecole;prive;31600;Muret
+0312575F;du Gazailla;ecole;public;31470;Saint-Lys
+0312576G;-;ecole;public;31160;Ganties
+0312596D;-;ecole;public;31190;Puydaniel
+0312597E;Les Sables;ecole;public;31140;Launaguet
+0312598F;Château-De-L'Hers;ecole;public;31000;Toulouse
+0312599G;Arthur Rimbaud;ecole;public;31140;Launaguet
+0312609T;-;college;public;31570;Saint-Pierre-de-Lages
+0312610U;-;college;public;31810;Vernet
+0312611V;-;college;public;31270;Villeneuve-Tolosane
+0312612W;-;college;public;31880;La-Salvetat-Saint-Gilles
+0312621F;-;ecole;public;31460;Mascarville
+0312622G;-;ecole;public;31190;Auragne
+0312673M;La Maourine;ecole;public;31000;Toulouse
+0312679U;Les Tibaous;ecole;public;31000;Toulouse
+0312680V;Fleurance;ecole;public;31000;Toulouse
+0312684Z;6;ecole;public;31170;Tournefeuille
+0312697N;-;college;public;31600;Lherm
+0312698P;-;college;public;31850;Montrabé
+0312699R;-;college;public;31560;Nailloux
+0312700S;-;college;public;31140;Pechbonnieu
+0312707Z;Borderouge;ecole;public;31000;Toulouse
+0312709B;4;ecole;public;31270;Cugnaux

@@ -1,0 +1,651 @@
+|==================|
+|= CHANGELOG GEPI =|
+|==================|
+
+- Ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
+
+Gepi-1.4.4-rc3 (26/01/2007)
+===========================
+
+(incomplet, sera complété par la suite)
+
+Corrections de bugs
+-------------------
+- bugs multiples sur le module absence
+
+Nouvelles fonctionalités
+------------------------
+- quelques options en plus
+- Modification de la présentation des bulletins
+- Ajout de divers paramètres pour l'affichage des bulletins
+- Passage en millimètres du positionnement du bloc adresse responsables sur le bulletin
+- Ajout d'une page de visualisation des moyennes des carnets de notes (indépendamment de la saisie des notes/moyennes des bulletins) pour consultation avant la fin de période.
+  Avec possible affichage d'un graphe.
+- Possibilité d'enregistrer les paramètres d'affichage du graphe en courbe.
+- Ajout de la possibilité de restreindre différents comptes scolarité à différentes classes.
+
+Gepi-1.4.4-rc2 (09/01/2007)
+===========================
+
+Corrections de bugs
+-------------------
+- Paramétrage des bulletins en mode scolarité : le paramétrage de l'espace en pixels entre le bord d'une cellule du tableau et le contenu de la cellule n'était pas toujours respecté.
+- Correction d'un bug faisant apparaître dans certaines pages, une période fictive supplémentaire.
+- Dans le cahier de texte, impossibilité de supprimer un fichier attaché à une notice "travaux à effectuer"
+- Mise à jour du module de gestion des absences, compatible 1.4.4
+- Correction d'un bug dans le script de mise à jour lorsque l'on mettait à jour depuis des versions antérieures à 1.4.3
+
+Nouvelles fonctionalités
+-------------------------
+- Outil de référencement des utilisateurs de Gepi
+- Module de mise à jour directement depuis l'interface de Gepi
+
+
+Gepi-1.4.4-rc1 (27/11/2006)
+===========================
+
+Corrections de bugs
+-------------------
+- lorsqu'un groupe était constitué de plusieurs classes, le verrouillage d'une période sur une classe donnée entraînait soit le verrouillage complet sur le groupe, soit aucun verrouillage.
+- corrections multiples d'autres bugs mineurs
+
+Nouvelles fonctionalités
+-------------------------
+- Cahier de texte : possibilité de joindre des documents aux notices de type "travail à faire".
+- Cahier de texte : possibilité d'avoir plusieurs compte-rendu pour une journée donnée.
+- Cahier de texte : intégration de la nouvelle version fckeditor avec le clavier universel.
+- Cahier de texte : possibilité d'ajouter simultanément la même notice à plusieurs groupes
+
+
+Gepi-1.4.4-beta1 (25/10/2006)
+=============================
+
+Corrections de bugs
+-------------------
+- problème de charge excessive lors de l'import CSV des élèves
+- bug lors d'un filtrage htmlentities sur les disciplines lors de l'import CSV
+- nettoyage du fichier de mise à jour : lors d'une mise à jour forcée, il ne devrait plus apparaître de message d'erreur sur certaines opérations qui ne peuvent être effectuée à nouveau.
+- correction d'un important problème de sécurité lors de l'utilisation de Gepi avec authentification sur un serveur Scribe (les professeurs obtenaient les droits administrateurs)
+
+Nouvelles fonctionalités
+-------------------------
+- regroupement de matières dans des catégories :
+    * définition de catégorie par défaut pour chaque matière
+    * définition fine des catégories pour chaque enseignement classe par classe
+    * définition fine des priorités d'affichage classe par classe
+    * possibilité d'afficher les catégories sur le bulletin, les relevés de notes, les divers outils de visualisation, les bulletins simplifiés
+    * possibilité d'afficher la moyenne pour la catégorie sur le bulletin (paramétrage classe par classe, catégorie par catégorie)
+- mise à disposition du module trombinoscope par défaut (doit être activé par l'administrateur dans l'interface de gestion des modules pour être utilisé)
+
+Gepi-1.4.3.1-stable (16/10/2006)
+================================
+Corrections de bugs
+-------------------
+- Dans le cas d'un serveur configuré avec register_global=on, déconnexion intempestive après avoir exécuté certaines pages (confusion entre les variables $statut ou $login et les variable $_SESSION['statut'] et $_SESSION['login']
+- Correction du bug de déconnexions après un login correct, lors de la redirection vers accueil.php (ajout de la fonction session_write_close())
+- Stabilisation de la procédure de synchronisation de Gepi avec un serveur Scribe (EOLE)
+
+Gepi-1.4.3-stable (10/10/2006)
+==============================
+
+Corrections de bugs
+-------------------
+- on pouvait saisir des classes avec des périodes différentes lors de la création ou modification d'un groupe
+- problème d'apostrophe sur le message de confirmation de changements des paramètres d'un enseignement
+- suppression du lien vers l'import des élèves depuis un fichier CSV (remplacé par la procédure d'initialisation complète par CSV)
+- meilleure gestion des doublons de login pour l'importation des élèves depuis un fichier CSV
+- la suppression d'un élève d'une classe pour une période entraîne la suppression de l'élève de tous les groupes auxquels il était associé pour la période en question
+- résolution du bug lors du traitement d'opérations multiples par le fichier confirm_query.php
+- on pouvait enregistrer un regroupement interclasse sans sélectionner la moindre classe, rendant invisible l'enseignement
+- la page edit_group.php en mode regroupement affichait des classes n'ayant pas le même nombre de période que la classe de référence
+- dans la partie publique du cahier de texte, le nom du professeur n'était pas affiché partout, et le nom de la matière était le nom court du groupe (c'est désormais le nom complet du groupe, toujours associé au(x) professeur(s) de l'enseignement
+- ajout d'un script de nettoyage de la base pour les incohérences qui ont pu être générées sur des bases générés à partir de la version 1.4.3-RC2.
+- nettoyage du code HTML pour être conforme W3C (Stéphane Boireau)
+
+Nouvelles fonctionalités
+-------------------------
+- lors de la création d'un groupe, la priorité est automatiquement celle par défaut pour la matière
+- lors de l'affichage d'une liste de groupes pour une classe, celle-ci est ordonnée selon la priorité d'affichage des groupes puis par ordre alphabétique
+- lors de l'édition par lot de groupes simple, affichage SOIT de la liste des groupes existants SOIT de la liste des matières pas encore enseignées dans la classe
+- sélection des professeurs dès la première page de création d'un groupe, si une matière avait déjà été précisée
+- message d'avertissement lorsque l'on clique sur "retour" sans enregistrer les modifications sur la page de gestion des enseignements
+- lors de l'ajout d'un nouveau regroupement, la classe de laquelle on vient est automatiquement cochée
+- ajout d'un lien direct vers l'édition des enseignements, depuis la liste des enseignements des utilisateurs
+- amélioration de l'ergonomie de la page de gestion des élèves d'un enseignement
+
+Gepi-1.4.3-rc2 (18/09/2006)
+===========================
+
+Corrections de bugs
+-------------------
+- ajout d'un message d'erreur propre lorsqu'aucun professeur n'a été défini comme compétent pour la matière lors de la création ou la modification d'un groupe.
+- correction d'un bug lors de la suppression d'une classe (script /lib/confirm_query.php)
+- correction d'un bug sur la page de gestion d'un groupe, pour la modification du professeur si celui-ci contenait un point.
+
+Nouvelles fonctionalités
+-------------------------
+- outils d'importation depuis des fichiers CSV pour l'initialisation de l'année, permettant notamment l'importation depuis Sconet.
+- outils d'importation depuis des fichiers DBF de l'automate de Sconet et des extractions de STS. (Stéphane Boireau)
+
+
+Module trombinoscope (modifications de Christian Chapel)
+Note : le trombinoscope ne sera pas considéré comme stable avant la 1.4.4
+ --------------------------------------------------------------------------------
+/lib/traitement_data.inc.php
+ Modification ligne 113 : if (isset($_FILES)) par if (isset($_FILES) and
+ isset($_FILES[0]))
+ Pourquoi : problématique des FILES avec tableau
+ --------------------------------------------------------------------------------
+/eleves/index.php
+ Rajout : des lignes 105 à 254 - gestion des dépots des fichiers
+ Rajout : à la ligne 360 entête tableau
+ Rajout : à la ligne 423 input de recherche
+ Rajout : aux lignes 432 à 436 input caché
+ + affichage des modifs seulement si le module est activé
+ --------------------------------------------------------------------------------
+/mod_trombinoscopes/trombi_impr.php et trombinoscopes.php
+ Suppression : maintenant toute les photos ce trouve dans le dossier
+ /photos/eleves/
+ --------------------------------------------------------------------------------
+ dans la base MYSQL, la table : setting
+ INSERT INTO `setting` ( `NAME` , `VALUE` ) VALUES ('active_module_trombinoscopes_rd', 'n');
+ INSERT INTO `setting` ( `NAME` , `VALUE` ) VALUES ('active_module_trombinoscopes_rt', '');
+ --------------------------------------------------------------------------------
+ /mod_trombinoscopes/trombinoscopes_admin.php
+ Rajout : choix du redimenssionement des photos et de la rotation bien
+ évidemment il faut que GD soit en place
+
+
+Gepi-1.4.3-rc1 (29/08/2006)
+===========================
+
+Corrections de bugs
+-------------------
+L'ensemble de cette série de corrections est de Stéphane Boireau
+
+- l'importation depuis des fichiers GEP *devrait* générer les groupes correctement, même les groupes interclasses (nécessite encore des tests pour validation définitive)
+- nettoyage du code html pour compatibilité standards w3c. Beaucoup de fichiers impliqués, non listés ici.
+- ajout d'une } manquante dans la page de gestion des utilisateurs
+
+- gepi/gepi/utilisateurs/index.php
+- gepi/gepi/initialisation/prof_disc_classe.php
+- gepi/gepi/visualisation/draw_artichow*
+... et utilisation de rawurlencode() sur les noms de matieres
+transmis en methode GET.
+Ajout d'un bouton d'affichage ou non du nom de devoir sur:
+- gepi/gepi/cahier_notes/visu_releve_notes.php
+
+Sur /bulletin/verif_bulletin.php
+- mis des htmlentities() sur les noms de matières (PB de & sur Hist&Geo).
+
+Sur /bulletin/edit.php
+- ajouté la ligne DOCTYPE
+- mis des htmlentities() sur les noms de matières (PB de & sur Hist&Geo).
+- corrigé des &nbsp; (; manquant)
+- modifié la génération du tableau de l'avis du Conseil de classe:
+  Si la variable 'bull_affiche_avis' est à 'n',  mais que
+'bull_affiche_signature' est à 'y', il faut quand même le tableau.
+- Les quartiles ne s'affichaient pas.
+  Il trainait un c.periode='$periode_num' alors qu'aucune table c n'avait été
+précisée.
+
+Sur /classes/prof_suivi.php
+- corrigé un: input type=hidden name=nb_prof_suivi=$nb_prof_suivi
+
+Sur /groupes/edit_class.php
+Sur /matieres/index.php
+Sur /lib/bulletin_simple.inc.php
+- mis un htmlentities() sur des matières pour HISTOIRE & GEOGRAPH.
+
+Sur /matieres/matieres_param.php
+- ajouté htmlentities() sur les noms de matières pour le & de ED.PHYSIQUE &
+SPORT.,...
+
+Sur /utilisateurs/modify_user.php, j'ai:
+- ajouté un htmlentities() sur les noms de matières dans <option>
+
+Sur /bulletin/edit.php
+- ajouté un paramètre 'p_bulletin_margin' pour les marges haute et basse des
+<p class='bulletin'>
+
+Sur /bulletin/param_bull.php
+- ajouté un paramètre 'p_bulletin_margin' pour les marges haute et basse des
+<p class='bulletin'>
+
+Sur /bulletin/edit.php, j'ai:
+- changé l'ordre d'impression du deuxième bulletin pour alterner bulletins et
+pages de garde dans le cas de parents séparés.
+Modification de /utilitaires/maj.php:
+Ajout de l'insertion du paramètre 'p_bulletin_margin' dans la table 'setting'
+lors de la mise à jour en 1.4.3
+Dans ./aide_gepipath.php
+Dans ./bulletin/edit.php
+
+Dans /login.php
+Dans /logout.php
+Dans /utilitaires/install.php
+Dans /utilitaires/maj.php
+Dans /utilitaires/maj_login.php
+- effectué la modif sur les 'icon' en entête
+
+- suppression de la fonction de duplication de classes, qui n'a plus d'utilité avec la nouvelle gestion des groupes
+
+Gepi-1.4.3-beta2 (02/08/2006)
+=============================
+
+Corrections de bugs
+-------------------
+- ajout du champ 'recalcul_rang' dans le fichier /sql/structure_gepi.sql pour la table 'groupes'
+- debuggage de la page d'administration des cahiers de texte depuis la page de gestion des modules
+- beaucoup de debuggage lié à quelques restes faisant suite à la transition vers le nouveau modèle de gestion des groupes.
+- mise à jour du fichier /sql/structure_gepi.sql avec le nouveau schéma complet, incluant la suppression des tables et champs devenus obsolètes.
+
+Gepi-1.4.3-beta1 (13/07/2006)
+=============================
+
+Note : le module de gestion des absences au quotidien, toujours considéré comme non-stable,
+a été désactivé, pour ne pas retarder plus longtemps la sortie d'une nouvelle version stable
+de Gepi. Pour ceux qui veulent forcer l'activation du module à des fins de test, changez la
+valeur de la variable $force_abs dans le fichier /lib/global.inc
+
+Note : les utilisateurs ayant le statut 'admin' devront être attentifs aux changements
+dans la gestion des matières, désormais appelé gestion des groupes/regroupements.
+Les groupes rassemblent des élèves au sein d'une classe, qui suivent un enseignement assuré
+par un ou plusieurs professeurs.
+Les regroupements sont identiques aux groupes, à la différence que les élèves qui les
+composent sont issus de plusieurs classes.
+Pour les professeurs, les changements sont quasiment invisibles, mais le gain pour le
+traitement de groupes inter-classes sera immédiatement apprécié.
+
+Corrections de bugs
+-------------------
+- Correction d'un bug dans la gestion du chemin de retour après une opération de suppression via le script confirm_query.php
+- En mode scolarité, le téléchargement des fichiers élèves (nom+prénom+identifiant GEPI ou identifiants GEPI seuls) ne fonctionnait pas (fichier import_class_csv.php en cause)
+- En conformité avec le reste de l'application, le séparateur décimal dans le cahier de notes est désormais la virgule.
+- Lors de la création d'un nouvel établissement, le champ "niveau" était mal enregistré.
+- Dans le script d'édition des bulletins edit.php de la version 1.4.2, une ligne "en trop" forçait systématiquement l'affichage du bloc adresse sur les bulletins.
+
+Nouvelles fonctionalités
+-------------------------
+- Nouveau paramètre dans la configuration des bulletins permettant de ne pas afficher au choix les informations suivantes : appréciations, absences, avis du conseil de classe, AID, formule de bas de page.
+- Possibilité dans "Visualiser toutes les moyennes d'une classe", de visualiser le tableau récapitulatif des moyennes ANNUELLES des élèves d'une classe (merci à Sandrine Dangreville).
+- Dans "Visualiser toutes les moyennes d'une classe" les coefficients des matières s'affichent en haut, juste sous le nom des matières, et non plus en bas.
+- Possibilité d'afficher sur chaque bulletin des graphiques indiquant dans chaque matière les niveaux (A, B, C+, C-, D ou E) (merci à Sandrine Dangreville).
+- Nouveau paramètre $active_hostbyaddr dans global.inc.php : la fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hôte correspondant à une IP ("résolution inverse").
+$active_hostbyaddr = "all" : la résolution inverse de toutes les adresses IP est activée, $active_hostbyaddr = "no" : la résolution inverse des adresses IP locales est désactivée, $active_hostbyaddr = "no_local" : la résolution inverse des adresses IP locales est désactivée
+- Gestion des enseignements par groupes et regroupements, plutôt que par classe. Les groupes et regroupements sont liés à des classes, mais affranchissent la gestion des matières enseignées des contraintes qui les bridaient jusqu'alors.
+- Authentification sur le LDAP du module Scribe d'Eole
+- Synchronisation des informations contenues sur le LDAP du module Scribe d'Eole (professeurs, élèves, classes, matières, associations élèves-classes, professeurs-matières).
+
+Gepi-1.4.2-stable (13/05/2006)
+==============================
+Corrections de bugs
+-------------------
+- Correction d'un bug dans /initialisation/professeur.php suite à l'ajout dans la version 1.4.1 du champ date_verrouillage dans la table utilisateurs)
+- Correction d'un bug dans "/lib/classes_const.php" lors de la suppression d'un élève : le test de vérification de la présencea d'une appréciation du conseil de classe n'était pas bon.
+- correction d'un bug dans le cahier de texte : dans certaines conditions, des documents joints à des notices pouvaient s'afficher dans d'autres devoirs.
+- Correction d'un bug qui affectait les utilisateurs de MsOffice faisant du copier/coller entre MsOffice et Gepi.
+- Correction d'un bug apparu dans la version 1.4.1 afin de pouvoir à nouveau passer des balise html dans certains champs du formulaire de paramétrage du bulletin (param_bull.php)
+- Correction d'un bug apparu dans la version 1.4.1 afin de pouvoir à nouveau passer des balise html dans les appréciations des professeurs (aid, appréciations par matière, appréciations des conseils de classe)
+- Correction d'un bug lors de la restauration des fichiers de sauvegarde (script accueil_sauve.php).
+- Correction d'un bug d'affichage des fichiers pdf avec certaines version de IE, dans /fpdf/imprime_pdf.php
+- Le verrouillage d'une periode entraîne maintenant le verrouillage des carnets de notes.
+- Correction de bugs dans l'affichage du rang des élèves sur les bulletins simples demandés pour plusieurs périodes.
+- Correction d'un bug d'affichage des tentatives de connexion fruduleuses.
+
+Nouvelles fonctionalités
+-------------------------
+- Nouveau paramètre dans la configuration des bulletins permettant de ne pas afficher les informations suivantes : appréciations, absences, avis du conseil de classe, AID ("Utile par exemple dans le cas d'une période "examen blanc")
+- Le compte scolarité peut désormais modifier les fiches élèves et les fiches responsables élèves.
+- Cas de l'impression des bulletins avec page de garde ou bien avec en-tête "adresse" : si l'élève a deux responsables ayant des adresses postales différentes, Gepi imprime deux bulletins et le cas échéant, deux pages de garde.
+
+
+Gepi-1.4.1-stable (13/03/2006)
+==============================
+
+Corrections de bugs
+-------------------
+- Correction d'un bug d'affichage du graphique dans le script de visualisation des graphiques "classe par rapport à une autre classe".
+- Correction d'un bug dans la recopie de la stucture d'un carnet de notes d'une période à une autre.
+- Correction de failles de type cross site scripting (exécution de code javascript arbitraire).
+- Correction de failles de type SQL Injection.
+- Correction d'un bug pouvant entrainer un denis de service : envoyer autre chose qu'un nombre dans un des champs year, month, day, sur les pages publiques du cahier de texte provoquait une
+boucle infinie dans le code PHP.
+- Révision du système de sauvegarde des fichiers de backup (renforcement sécurité)
+
+Nouvelles fonctionalités
+-------------------------
+- Amélioration de la protection par bloquage temporaire des comptes sur lesquels sont effectuées un nombre répété de connexions infructueuses (paramétrage possible)
+- Amélioration des logs : enregistrement des tentatives de connexion infructueuses (IP, date, login)
+- En cas de tentatives de connexions infructueuses sur un compte, avertissement de l'utilisateur lorsqu'il se connecte.
+- Changement du mot de passe : désormais, le mot de passe doit contenir à la fois des lettres et des chiffres. De plus, s'il ne s'agit pas d'un professeur ou d'un CPE (administrateur, secours, scolarité) il doit également contenir au moins un caractère spécial
+- GEPI étant configuré de manière à bloquer temporairement le compte d'un utilisateur après un certain nombre de tentatives de connexion infructueuses, un pirate peut se servir de ce mécanisme pour bloquer en permanence des comptes utilisateur ou administrateur. En cas d'urgence, possibilité, dans le fichier "config.inc.php", de forcer le débloquage des comptes administrateur et/ou de mettre en liste noire, une ou plusieurs adresses IP.
+- Ajouts de plusieurs fichiers d'établissements prêts à être importés dans GEPI. Ajout des types "Ecole" et "EREA".
+- Paramétrage de l'authentification du SSO dans Gepi (avec CAS ou LemonLDAP), page de Gestion des Connexions
+- Les paramètres de connexion à un serveur CAS sont localisés dans /lib/CAS/cas.sso.php
+- Possibilité de bloquer le SSO en dur par une variable dans /lib/global.inc
+- Ajout des nom(s) et prénom(s) de(s) l'élève(s) sur la fiche du responsable légal .
+( Ajout dans la liste des responsables légaux, "/responsables/index.php" d'une colonne affichant le(s) nom(s) prénom(s) de(s) l'élève(s)
+- Affichage d'un message d'alerte sur la page d'accueil en tant qu'administrateur lorsque la connexion n'est pas en HTTPS et lorsque PHP est configuré avec register_globals=on
+
+Gepi-1.4.0-stable (18/12/2005)
+==============================
+
+Nouvelles fonctionalités
+-------------------------
+- Amélioration de l'ergonomie du cahier de texte dans la gestion "des devoirs à faire".
+- Sur les bulletins officiels et sur les bulletins simplifiées, lorsque le rang est affiché, ajout de l'effectif concerné, ce qui donne un affichage de la forme "r/n" (r=rang, n=effectif)
+- ajout d'un paramètre d'affichage sur les bulletins scolaires : possibilité de faire apparaître ou non le numéro du bulletin.
+- ajout d'un paramètre d'affichage sur les bulletins scolaires : possibilité de faire apparaître le cas échéant la mention redoublant(e).
+- ajout d'un formulaire d'envoi d'email à l'administrateur dans la partie publique de Gepi (cahier de texte)
+- ajout d'un lien vers le formulaire d'envoi d'email à l'administrateur depuis la page d'informations sur les limites et restriction d'upload de fichiers dans le cahier de texte
+- ajout d'un lien de téléchargement immédiat du fichier généré par une sauvegarde
+- possibilité d'autoriser l'accès aux relevés de notes de toutes les classes au(x) CPE
+- Un utilisateur ayant le statut "secours" peut désormais saisir les avis du conseil de classe.
+- ajout d'un paramètre de mise en page des bulletins scolaires :  largeur des cellules contenant les notes des carnets de notes à afficher sur les bulletins.
+
+Corrections de bugs
+-------------------
+- Correction d'un bug dans les carnets de notes lié à la présence de certains caractères spéciaux dans le nom de la matière.
+- correction d'un bug dans classes/modify_class.php : en supprimant tous les professeurs associé à une matière, il était possible de supprimer une matière d'une classe bien que des notes ou appréciations soient attachées à cette matière.
+- correction d'un bug dans classes/eleve_options.php : on pouvait supprimer une option suivi par un élève alors que des notes ou appréciations existaient pour cet élève et pour cette option.
+- correction d'un problème d'affichage sur le bulletin, des "sous-moyennes" issues du carnet de notes dans le cas où une seule boîte devait être affichées.
+- correction du problème d'affichage des moyennes générales par évaluation lors de l'édition d'un PDF depuis le carnet de notes pour des groupes d'élèves dont l'effectif est inférieur à l'effectif total de la classe.
+- le lien "télécharger" des sauvegardes (page de gestion des sauvegardes) montrait le contenu du fichier sql au lieu de proposer le fichier au téléchargement
+- l'importation des notes depuis un tableau par copier/coller dans le carnet de notes ne prend désormais en compte que les élèves effectivement affichés / suivant l'enseignement, et non la classe toute entière.
+- correction d'une erreur lors de la mise à jour de la table absences_eleves depuis un 1.4.0 beta ou rc1
+- la détection de l'activation du verrouillage majuscule lors de la saisie du mot de passe se fait désormais correctement
+- la page d'administration des trombinoscopes ne génère plus d'erreur
+- les graphiques fonctionnent à nouveau avec php5, après un problème dans la RC2...
+- correction du bug de génération en double de la liste des élèves lors de l'export CVS des élèves depuis la page d'importation des avis du conseil
+- alignement des colonnes dans les bulletins simplifiés (à confirmer)
+- correction d'un bug dans le cahier de texte : certains documents joints à des notices pouvaient s'afficher dans d'autres devoirs.
+- Ajout d'une ligne de commentaire dans le fichier généré par la sauvegarde signalant la fin du fichier.
+
+
+Gepi-1.4.0-rc2 (08/10/2005)
+===========================
+
+Nouvelles fonctionalités
+-------------------------
+- si le professeur est prof principal, la/les classes où il exerce cette responsabilité sont affichées dans la page "Gérer mon compte"
+- changement du message en page d'accueil lors de la désactivation des connexions
+- ajout d'options d'affichage du bulletin : bloc adresse du responsable 1 de l'élève, et coefficients (page de paramétrage des classes)
+- affichage du nombre actuel d'inscrits à une matière, sur la page de sélection des élèves participants à cette matière
+- ajout d'un lien par élève de sélection de toutes les périodes lors de l'attribution matière<->élèves (options)
+- ajout d'un lien par période de sélection de tous les élèves lors de l'attribution matière<->élèves (options)
+
+Corrections de bugs
+-------------------
+- correction de fautes d'orthographes dans les motifs d'absences
+- oubli d'un champ 'matiere' dans une requête mysql (fichier /cahier_notes/toutes_notes.php)
+- correction faille critique de sécurité lorsque magic_quote_gpc=Off
+- déconnexion lors de la visualisation des absences des élèves pop-up en tant que professeur
+- fautes d'orthographe
+- déconnexion lors de l'appel de l'aide sur la page Module Absences->Graphiques
+- affichage du graphique de visualisation des absences (erreurs subsistent dans certains cas)
+- les noms des photos doivent être de la forme NO_GEP_ETAB.jpg et non NO_GEP_NATIONAL.jpg
+- l'importation par copier/coller dans le carnet de notes permet l'utilisation des codes 'abs' et 'disp'
+- ajout d'une * à côté de Identifiant GEPI (qui est obligatoire) dans la page /eleves/modify_eleves.php
+
+
+Gepi-1.4.0-rc1 (21/09/2005)
+===========================
+
+Nouvelles fonctionalités
+------------------------
+- activation du module trombinoscope (Christian Chapel)
+- dans le carnet de notes et le cahier de texte, affichage des noms courts de matière, pour permettre la différenciation de groupes au sein d'une même matière
+
+Corrections de bugs
+-------------------
+- mise à jour de la lib Artichow (corrige un problème d'alignement de la légende de l'axe X dans les outils de visualisation avec php5)
+- redirection vers la page d'accueil de gestion des utilisateurs après la suppression d'un utilisateur (donnait une page blanche)
+- divers corrections de bugs dans le module Absences
+- mise à jour du module Trombinoscope, qui utilise les photos des élèves identifiées par le numéro GEP des élèves (afin de respecter les recommandations de la CNIL : les noms des photos ne doivent pas permettre d'identifier directement l'élève)
+- possibilité d'utiliser les codes 'abs' et 'disp' lors de l'importation de notes dans le cahier de notes
+
+
+Gepi-1.4.0-beta3 (07/09/2005)
+=============================
+
+Nouvelles fonctionalités
+------------------------
+
+- module Trombinoscope (Christian Chapel) [DESACTIVE et non fonctionnel pour l'instant]
+- module de gestion des absences en temps réel par le professeur pour ses classes (Christian Chapel)
+- amélioration de la page de saisie rapide du CPE (filtre d'affichage des classes)
+- prise en charge des versions "beta" en plus des versions "rc" en interne.
+- ajout d'une fonction de réinitialisation globale des mots de passe des utilisateurs actifs de la base (dans Gestion des bases -> Gestion des utilisateurs)
+- possibilité lors de l'import GEP de sélectionner la formule utilisée pour générer le login des professeurs (nom, pnom, prenom.nom, etc.)
+- légère amélioration des bulletins simplifiées (ligne en gras pour bien séparés les différentes matières)
+- visualisation du login de l'élève dans la page Gestion des bases/Gestion des élèves.
+
+Corrections de bugs
+-------------------
+- 'imprimer les paramètres' devient 'imprimer la fiche de bienvenue' dans la gestion des utilisateurs
+
+
+Gepi-1.4.0-beta2 (27/08/2005)
+=============================
+
+Corrections de bugs
+-------------------
+- ajout d'une variable de préfixage pour le module d'absences dans global.inc
+- correction d'un mauvais nom de table dans le fichier de structure de la base
+
+
+Gepi-1.4.0-beta1 (26/08/2005)
+=============================
+
+Nouvelles fonctionalités
+------------------------
+- Module de gestion des absences et retards au quotidien (Christian Chapel)
+- Nouvelle bibliothèque de gestion des graphiques pour les outils de visualisation (Artichow remplace désormais jpgraph)
+
+Corrections de bugs
+-------------------
+- Changement de la valeur par défaut de $dbUser ("gepi" à la place de "root") dans connect.cfg ("root" n'est pas recommandé, pour des questions de sécurité)
+
+
+Gepi-1.3.4-stable (16/06/2005)
+==============================
+
+Nouvelles fonctionalités
+------------------------
+- Nouvelle mise en page pour la saisie manuelle des appréciations, et des avis du conseil de classe (Laurent Viénot-Hauger)
+- Les élèves se voient assignés un CPE responsable du suivi (permet une séparation des responsabilités dans le cas d'établissements ayant plusieurs CPE). Paramétrage en admin dans /Gestion des bases/Gestion des classes. Incidence : les CPE ne saisissent les absences que pour les élèves dont ils sont chargés du suivi. Le nom du CPE responsable du suivi apparaît sur le bulletin de l'élève.
+- Possibilité de configurer les droits d'accès à l'édition des relevés de notes : Gestion Générale/Configuration générale/ cases à cocher : Scolarité, Professeur Principal, Professeur.
+- Possibilité de configurer les droits d'accès à l'édition des bulletins : Gestion Générale/Configuration générale/ cases à cocher : Scolarité, Professeur Principal.
+- Possibilité de configurer les droits d'accès aux paramètres de configuration de l'impression des bulletins : Gestion Générale/Configuration générale/ cases à cocher : Administrateur, Scolarité, Prof Principal.
+
+Corrections de bugs
+-------------------
+- Problème lié à la comptabilisation de deux demi-journées dans le cas de deux absences dans la même demi-journée.
+- Problème lié à la prise en compte des demi-journées de week-ends lors de l'importation des absences depuis Gep
+- Le message d'alerte de déconnexion s'affiche désormais trois minutes avant la déconnexion, et annonce le temps restant en minutes, et non en secondes.
+- Correction de quelques fautes d'orthographes et de syntaxe.
+- Problème lors de l'importation des absences depuis GEP pour une période d'absence intégrant une date de changement d'heure
+- Lorque les connexions étaient désactivées et que quelqu'un tentait de se connecter avec le bon identifiant et le bon mot de passe, GEPI signalait à tort une connexion en cours.
+- Correction d'un bug dans le carnet de notes : l'option bonus d'un devoir (La note de l'évaluation n'entre dans le calcul de la moyenne que si elle améliore la moyenne) pouvait dans certain cas, générer une erreur dans le calcul de la moyenne.
+
+Gepi-1.3.4-RC1+RC2 (25/05/2005)
+===============================
+
+- Gestion améliorée de l'expiration d'une session : message d'avertissement, fermeture automatique des fenêtres, ... (Contribution de Patrick Duthilleul)
+- Possibilité de permettre aux professeurs principaux d'éditer/imprimer les bulletins périodiques.
+- Correction d'un bug dans le carnet de notes dans la fonction de recopie de l'arborescence des boîtes de la période précédente.
+- Ajout de fonctionnalités dans la page de visualisation des moyennes et appréciations permettant l'affichage de statistiques (moyenne de l'année, pourcentage des notes inférieures à 8, etc.)
+- Ajout d'un lien "imprimer" sur les pages de saisie des notes et des appréciations.
+- Nouvelle fonctionnalité dans le cahier de texte (Contribution de Gabriel Fischer) pour un module de remplissage des devoirs, indépendamment du remplissage du contenu des séances.
+- Nouvelle fonctionnalité dans le cahier de texte : ajout d'un module de saisie "wysiwyg".
+- Paramétrage possible dans global.inc du jour de début de la semaine des mini-calendrier. Par défaut, les semaines commencent le lundi.
+- Refonte complète des modules de sauvegarde et de restauration de la base.
+- Optimisation des tables mysql.
+- Nouveau module d'importation des absences GEP.
+- Ajout d'une champ permettant d'insérer une formule en bas de chaque bulletin.
+- Remplacement du fichier connect.inc par connect.inc.php pour raison de sécurité
+- Correction d'un bug : lorsqu'on supprimait un élève de la base, la table j_eleves_regime n'était pas mise à jour.
+- Ajout d'une fonction permettant d'envoyer un mail via un formulaire pour contacter l'administrateur en remplacement du mailto (les machines clientes n'étant pas toujours configurées avec l'adresse e-mail personnelle des utilisateurs) : (Contribution de Patrick Duthilleul)
+- Amélioration du script de mise à jour de la base de données
+- Ajout d'une nouveau script de nettoyage des tables
+- Mise en page du bulletin scolaire : ajout d'un paramètre "Hauteur minimale des lignes en pixels"
+- Correction d'un bug : lors de l'initialisation de l'année la table j_aid_utilisateurs n'étaient pas effacée. Cela a pu entraîner la présence de lignes inutiles dans cette table.
+- correction de code dans le traitement des dates de naissance pour tenir compte des version mysql supérieures ou égales à 4.1.
+- Correction d'un bug dans le calcul de moyenne avec l'option "cette note n'entre dans lecalcul que si elle améliore la moyenne" : une note égale à 0 était comptabilisée dans le calcul de la moyenne.
+- Dans la page de saisie des établissements : ajout du cas "tous_niveaux" dans la rubrique "niveau" (cas de la plupart des établissements français à l'étranger)
+- Correction d'un bug : le simple fait d'ouvrir la page "gestion générale"/"initialisation des données à partir des fichiers GEP"/"procéder à la 3ème phase d'importation des matières", vidait de son contenu plusieurs tables de la base.
+- Saisie des avis du conseil de classe : le module d'importation par csv devient accessible à la scolarité.
+- Saisie des avis du conseil de classe : correction d'un bug de navigation dans saisie_avis2.php et remaniement du code.
+- Remaniement du code de saisie_avis1.php.
+- Saisie : amélioration de l'ergonomie : ajout d'un bouton fixe sur les pages suivantes :absence - carnet de notes - saisie des bulletins (notes et appréciations) - saisie des avis du conseil - saisie des aid (marche uniquement sur les navigateurs conformes aux standards du W3C comme firefox, Mozilla, ...).
+- Correction d'un bug lors de l'insertion d'une image dans un message ou une notice du cahier de texte.
+- Correction d'un bug d'affichage dans la page d'accueil du carnet de notes.
+- Correction d'un bug d'affichage dans la page d'accueil des bulletins : le lien <Retour> était cassé.
+- Ajout de la possibilité pour l'admin d'utiliser la messagerie.
+- Ajout d'une boîte d'avertissement dans la page "Gestion des classes | Gestion des matières" dans le cas où on clique sur "élèves inscrits" sans avoir enregistré au préalable.
+- Amélioration dans la page de visualisation de toutes les notes d'une classe : remaniement profond de l'outil :* affichage de plusieurs réglages avant l'affichage du tableau,* affichage direct sans l'entête, dans une nouvelle fenêtre.
+- Amélioration : affichage du rang dans le bulletin simplifié.
+- Amélioration : lors d'un changement de passe forcé, une fois le nouveau mot de passe enregistré, on revient à la page d'accueil avec message indiquant que le changement s'est bien passé.
+- Correction d'un bug : lorsqu'un élève était ajouté à la main et qu'un n° GEP était saisi, ce champ n'était pas pris en compte après validation.
+- Correction d'un bug dans l'importation des avis du conseil de classe par la scolarité
+
+Gepi-1.3.3 stable (27/11/2004)
+==============================
+
+- saisie : ajout sur les pages de saisie des absences, appréciations et notes, d'une fonction permettant l'utilisation des touches "flèche vers le haut" ou "flèche vers le bas", qui renvoient au champ précédent ou suivant.
+- ajout d'une fonction d'importation par fichier csv des appréciations du conseil.
+- carnet de notes : correction d'un bug dans le calcul de certaines moyennes dans le carnet de notes.
+- carnet de notes : ajout d'une fonction permettant de recopier l'architecture des boites de la période précédente.
+- carnet de notes : amélioration de l'ergonomie dans le cas de la saisie d'un devoir.
+- ajout d'une fonction de messagerie permettant l'affichage sur la page d'accueil d'un message personnalisé.
+- notes du bulletin : ajout d'un lien permettant d'importer les notes à partir du carnet de notes.
+- gestion des élèves : correction de bugs d'affichage et amélioration de l'ergonomie.
+- gestion des responsables : correction d'un bug dans la page de saisie des responsables des élèves.
+- gestion des connexions : ajout d'une fonction permettant l'activation / désactivation des connexions.
+- ajout sur certaines pages d'une fonction permettant la saisie des dates à l'aide d'un calendrier
+- changements "cosmétiques".
+- correction d'un bug d'affichage des bulletins dans le cas particulier où on affichait le rang ou la moyenne générale d'un élève et que par ailleurs, un prof affichait plusieurs notes du carnet de notes.
+
+
+Gepi-1.3.2 stable (12/11/2004)
+==============================
+
+- Correction d'un bug dans page_garde.php : lorsque l'on imprimait les bulletins avec les pages de garde, l'indétention était aussi appliquée aux bulletins.
+- Correction d'un bug dans param_bul.php : apparition intempestive du caractère "\" avant les apostrophes
+- Correction d'un bug dans imprime_pdf.php : Avec Internet Explorer, en https, le clic sur une impression pdf n'avait pas l'effet attendu.
+- Correction d'une faille de sécurité dans la gestion de la variable $gepiPath.
+- Ajout d'un script "aide_gepipath.php" pour l'aide à la configuration de la variable $GepiPath.
+- Ajout d'une script de paramétrage des matières par lots pour modifier les coefficients et les priorités d'affichage d'une ou plusieurs matières.
+- Correction d'un bug dans "/initialisation/professeurs.php" : les nom ou prénom de professeurs comportant une apostrophe dans les fichiers gep provoquaient une erreur.
+- Désormais l'ordre d'apparition des matières sur le bulletin se fait selon la priorité d'affichage et non selon le "poids". Lors de la mise à jour de la base, une "moulinette" de mise à jour des tables concernées permet de rendre cette modification transparente pour les administrateurs.
+
+
+Gepi-1.3.1 stable (02/11/2004)
+==============================
+
+- Possibilité de modifier sur plusieurs classes en même temps :
+-> l'intitulé des périodes,
+-> les prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin,
+-> la formule à insérer sur les bulletins.
+- Pour chaque classe, possibilité de choisir la forme sous laquelle apparaît le nom des professeurs sur les bulletins (nom+prénom, civilité+nom, etc...).
+- Possibilité d'imprimer au format pdf dans le module "carnet de notes".
+- Amélioration de la page de gestion des options par matière (possibilité de décocher toutes les cases simultanément).
+- Dans la gestion des matières, le nombre d'inscrits dans une matière apparaît à côté du lien "Élèves inscrits". Un bouton "enregistrer" apparaît en haut de la page.
+- Possibilité de définir un ordre d'affichage des matières par défaut.
+- Correction d'un bug mineur dans l'étape 6 de l'initialisation par GEP : la table "responsables" n'était pas "nettoyée"
+- Correction d'un bug dans accueil_admin.php : les liens "Informations générales" et "Vie privée" étaient cassés.
+- Amélioration de la page d'accueil de saisie des moyennes et appréciations
+- Amélioration de l'ergonomie dans la navigation à l'intérieur du carnet de notes
+- Correction d'un bug dans le calcul des moyennes d'une classe dans le carnet de notes
+- Ajout d'une fonctionnalité permettant d'importer un fichiers d'établissements au format csv
+- Correction d'un bug d'affichage dans la page "gérer mon compte".
+- Possibilité pour les professeurs principaux d'éditer des relevés de notes
+- Correction d'un bug de navigation : en consultant les personnes connectées (accessible à l'admin depuis la page "Accueil Gepi"), le lien "retour" sur la page "Gestion des connections" ne ramènenait pas à l'accueil, mais sur la page "Outil de gestion".
+- une période a maintenant trois statuts (au lieu de deux auparavant verrouillée ou déverrouillée) : "déverrouillée", "verrouillée partiellement" ou "verrouillée totalement".
+- Sur le bulletin officiel, possibilité de configurer un nombre de lignes vides pour une saisie à la main de l'avis du Conseil de classe, si celui-ci n'a pas été saisi dans Gepi.
+- Modification du script de sauvegarde de la base de données : meilleure prise en charge des retours à la ligne dans les champs
+- Modification du script de restauration : Gepi permet de choisir un fichier de restauration directement dans un sous-répertoire de gepi téléchargé au préalable (problème de la taille maximale d'un fichier uploadé réglé). De plus le nouveau script restaure "par portions" de durées égales à un temps fixé par l'utilisateur (problème du max_execution_time réglé).
+- Correction d'erreurs d'orthographe, ...
+
+
+Gepi-1.3 stable (26/09/2004)
+============================
+
+- Correction d'un bug mineur d'affichage dans l'interface public du cahier de texte
+- Correction d'un bug dans /initialisation/step2.php (constitution des classes)
+- Correction d'un bug dans /initialisation/responsables.php (Importation des responsables)
+- Ajout d'un script eleve_options.php dans /classes (Gestion des matières par élève)
+- Correction d'un bug dans classes/init_option.php (certaines matières s'affichaient deux fois dans les menus déroulants)
+- Ajout d'une boite confirmant l'enregistrement des données dans classe/modify_class.php
+- Ajout d'une boite confirmant l'enregistrement des données dans classe/modify_options.php
+- Correction d'un bug dans /eleves/modify_eleve.php : l'identifiant d'un élève ne doit pas commencer par un chiffre
+- Correction d'un bug dans /initialisation/step3.php : l'identifiant d'un élève ne doit pas comporter de "-"
+- Correction d'un bug dans /utilisateurs/modify_user.php : l'identifiant d'un utilisateur ne doit pas commencer par un chiffre.
+
+- Ajout d'un script visu_releve_notes.php dans cahier_notes (Edition d'un relevé de notes)
+
+
+Gepi-1.3 RC1 (13/07/2004)
+=========================
+
+* Pour rendre Gepi compatible CNIL
+
+- Ajout d'une page "vie privée" informant les utilisateurs sur les cookies, les informations transmises lors d'une session, la sécurité.
+- Ajout d'une page "Informations générales", informant les utilisateurs sur les objectifs de l'application Gepi, les destinataires des données transmises, etc.
+- Possibilité d'obliger le changement du mot de passe pour tous les utilisateurs.
+- Paramétrage de la durée de conservation des informations sur les connexions.
+- Paramétrage de la longueur minimale du mot de passe.
+- Suppression du module "observatoire".
+- Ajout sur diverses pages d'avertissements "informatique et liberté".
+
+* Autres changements
+
+- Nouvelle base des responsables : possibilité de définir des responsables pour chaque élève (nom et adresse)
+- Dans le cas d'envoi postal, possibilité d'imprimer une page de garde paramétrable pour les enveloppes à fenêtre.
+- Paramétrage de la dénomination du professeur chargé du suivi des élèves.
+- Paramétrage de la saisie des avis des conseils de classe : le professeur chargé du suivi (lorsqu'il est défini) et/ou le service scolarité.
+- Nouvelle interface administrateur et scolarité.
+- Module cahier de notes entièrement revu (amélioration de l'ergonomie, possibilité de visualiser toutes les notes de l'année).
+- Possibilité de "coefficienter" les matières pour chaque classe pour le calcul de moyennes par élève.
+- Possibilité de faire apparaître plusieurs moyennes sur le bulletin scolaire pour une matière donnée.
+
+[ceci marque le début des vrais 'changelog', qui jusqu'ici n'étaient pas détaillés]
+
+Gepi-1.2.1 stable (20/06/2004)
+==============================
+- correction d'un bug empêchant la création des AID (par un erreur de manipulation il est revenu depuis la RC1...)
+
+
+Gepi-1.2 stable (10/05/2004)
+============================
+- aucune modification depuis la RC2
+
+Gepi-1.2 RC2 (15/04/2004)
+=========================
+- correction d'un bug empêchant la création des AID
+
+
+Gepi-1.2 RC1 (09/04/2004)
+=========================
+- module cahier de texte
+- toilettage de l'interface
+- nettoyage du code source, désormais conforme aux recommandations php officielles
+- corrections de bugs
+
+
+Gepi-1.1 stable (13/01/2004)
+============================
+Des corrections de bugs...
+
+
+Gepi-1.1 RC1 (28/11/2003)
+=========================
+- carnet de note
+- correction du bug de paramétrage de l'impression
+- corrections de quelques bugs mineurs
+
+
+Gepi-1.0 stable (25/08/2003)
+============================
+Version de point de départ de ce changelog.

@@ -1,0 +1,409 @@
+0370006F;Joachim Du Bellay;college;public;37330;Château-la-Vallière
+0370007G;André Bauchant;college;public;37110;Château-Renault
+0370010K;Alcuin;college;public;37320;Cormery
+0370011L;Louis Léger;college;public;37350;Le-Grand-Pressigny
+0370013N;André Duchesne;college;public;37220;L'Ile-Bouchard
+0370015R;Maurice Genevoix;college;public;37240;Ligueil
+0370022Y;du parc;college;public;37360;Neuillé-Pont-Pierre
+0370023Z;Honoré Racan;college;public;37370;Neuvy-le-Roi
+0370024A;Patrick Baudry;college;public;37800;Nouâtre
+0370026C;Gaston Defferre;college;public;37290;Preuilly-sur-Claise
+0370033K;Pierre De Ronsard;college;public;37100;Tours
+0370034L;Bernard de Fontenelle;college;public;37340;Savigné-sur-Lathan
+0370041U;Michelet;college;public;37000;Tours
+0370044X;Anatole France;college;public;37000;Tours
+0370045Y;François Rabelais;college;public;37000;Tours
+0370051E;-;college;public;37460;Montrésor
+0370071B;La Rabière;college;public;37300;Joué-lès-Tours
+0370085S;Jean Mermoz;ecole;public;37120;Richelieu
+0370086T;Marie Curie;ecole;public;37120;Richelieu
+0370088V;-;ecole;public;37120;Braslou
+0370089W;-;ecole;public;37120;Braye-sous-Faye
+0370090X;-;ecole;public;37120;Champigny-sur-Veude
+0370091Y;Jean Moulin;ecole;public;37270;Larçay
+0370093A;Emile Gerbault;ecole;public;37270;Montlouis-sur-Loire
+0370094B;Paul Racault;ecole;public;37270;Montlouis-sur-Loire
+0370095C;René Lejeau;ecole;public;37270;Montlouis-sur-Loire
+0370097E;Henri Adam;ecole;public;37550;Saint-Avertin
+0370103L;de la République;ecole;public;37700;Saint-Pierre-des-Corps
+0370115Z;-;ecole;public;37510;Berthenay
+0370117B;Marie Curie;ecole;public;37300;Joué-lès-Tours
+0370119D;Alouette;ecole;public;37300;Joué-lès-Tours
+0370126L;Ferdinand Buisson;ecole;public;37520;La-Riche
+0370127M;Paul Bert;ecole;public;37520;La-Riche
+0370130R;-;ecole;public;37510;Savonnières
+0370132T;-;ecole;public;37510;Villandry
+0370135W;Romain Rolland;ecole;public;37000;Tours
+0370138Z;La Guignière;ecole;public;37230;Fondettes
+0370146H;Anatole France;ecole;public;37540;Saint-Cyr-sur-Loire
+0370148K;de la République;ecole;public;37540;Saint-Cyr-sur-Loire
+0370155T;Jean Monnet;ecole;public;37230;Saint-Etienne-de-Chigny
+0370162A;-;ecole;public;37210;Vouvray
+0370166E;-;ecole;public;37390;Chanceaux-sur-Choisille
+0370171K;-;ecole;public;37380;Neuillé-le-Lierre
+0370176R;-;ecole;public;37210;Parçay-Meslay
+0370184Z;de Cousse;ecole;public;37210;Vernou-sur-Brenne
+0370193J;-;ecole;public;37800;Sainte-Catherine-de-Fierbois
+0370195L;-;ecole;public;37800;Saint-Epain
+0370202U;Paul Bert;ecole;public;37000;Tours
+0370208A;Clocheville;ecole;public;37000;Tours
+0370211D;Stéphane Pitard;ecole;public;37000;Tours
+0370212E;Anatole France;ecole;public;37000;Tours
+0370213F;Jean Macé;ecole;public;37000;Tours
+0370214G;Jules Renard;ecole;public;37000;Tours
+0370215H;Michelet;ecole;public;37000;Tours
+0370223S;François Rabelais;ecole;public;37000;Tours
+0370225U;Paul Racault;ecole;public;37000;Tours
+0370230Z;Maryse Bastié;ecole;public;37000;Tours
+0370235E;-;ecole;public;37500;Ligré
+0370249V;-;ecole;public;37800;Maillé
+0370253Z;-;ecole;public;37190;Neuil
+0370256C;-;ecole;public;37800;Noyant-de-Touraine
+0370260G;-;ecole;public;37800;Pouzay
+0370314R;Jacques Prévert;ecole;public;37360;Neuillé-Pont-Pierre
+0370318V;-;ecole;public;37390;Cerelles
+0370319W;-;ecole;public;37390;Charentilly
+0370321Y;-;ecole;public;37230;Pernay
+0370322Z;-;ecole;public;37360;Rouziers-de-Touraine
+0370323A;-;ecole;public;37360;Saint-Antoine-du-Rocher
+0370325C;-;ecole;public;37390;Saint-Roch
+0370331J;-;ecole;public;37370;Neuvy-le-Roi
+0370333L;-;ecole;public;37370;Bueil-en-Touraine
+0370334M;-;ecole;public;37370;Chemillé-sur-Dême
+0370339T;-;ecole;public;37370;Marray
+0370340U;-;ecole;public;37370;Saint-Aubin-le-Dépeint
+0370346A;-;ecole;public;37290;Preuilly-sur-Claise
+0370353H;-;ecole;public;37290;Charnizay
+0370355K;-;ecole;public;37350;Chaumussay
+0370357M;-;ecole;public;37290;Tournon-Saint-Pierre
+0370363U;Jean Moulin;ecole;public;37510;Ballan-Miré
+0370364V;Hélène Boucher;ecole;public;37510;Ballan-Miré
+0370365W;Jean Moulin;ecole;public;37170;Chambray-lès-Tours
+0370367Y;Claude Chappe;ecole;public;37170;Chambray-lès-Tours
+0370371C;-;ecole;public;37190;Druye
+0370378K;-;ecole;public;37260;Pont-de-Ruan
+0370390Y;-;ecole;public;37260;Villeperdue
+0370392A;-;ecole;public;37460;Montrésor
+0370407S;-;ecole;public;37220;L'Ile-Bouchard
+0370409U;-;ecole;public;37500;Anché
+0370411W;-;ecole;public;37220;Avon-les-Roches
+0370418D;-;ecole;public;37220;Crouzilles
+0370422H;-;ecole;public;37220;Parçay-sur-Vienne
+0370426M;-;ecole;public;37500;Rivière
+0370429R;-;ecole;public;37220;Theneuil
+0370430S;-;ecole;public;37220;Trogues
+0370432U;-;ecole;public;37130;Langeais
+0370443F;-;ecole;public;37340;Continvoir
+0370445H;-;ecole;public;37130;Les-Essards
+0370448L;Marcel Proust;ecole;public;37140;Ingrandes-de-Touraine
+0370452R;Marguerite et Louis Pinson;ecole;public;37130;Saint-Michel-sur-Loire
+0370454T;-;ecole;public;37130;Saint-Patrice
+0370456V;-;ecole;public;37380;Crotelles
+0370457W;-;ecole;public;37240;Ligueil
+0370461A;-;ecole;public;37240;Bournan
+0370462B;-;ecole;public;37240;La-Chapelle-Blanche-Saint-Martin
+0370464D;-;ecole;public;37240;Ciran
+0370466F;-;ecole;public;37320;Louans
+0370468H;Louis Blanchard;ecole;public;37240;Le-Louroux
+0370470K;-;ecole;public;37330;Souvigné
+0370472M;-;ecole;public;37110;Les-Hermites
+0370474P;-;ecole;public;37110;La-Ferrière
+0370475R;-;ecole;public;37110;Monthodon
+0370479V;-;ecole;public;37110;Neuville-sur-Brenne
+0370482Y;-;ecole;public;37380;Saint-Laurent-en-Gâtines
+0370485B;-;ecole;public;37110;Saunay
+0370488E;Jacques Prévert;ecole;public;37500;Chinon
+0370489F;-;ecole;public;37110;Le-Boulay
+0370491H;-;ecole;public;37110;Auzouer-en-Touraine
+0370492J;-;ecole;public;37110;Autrèche
+0370493K;Gilbert Combettes;ecole;public;37110;Château-Renault
+0370494L;La Vallée;ecole;public;37110;Château-Renault
+0370495M;Ivry Gitlis;ecole;public;37330;Villiers-au-Bouin
+0370499S;-;ecole;public;37340;Savigné-sur-Lathan
+0370501U;-;ecole;public;37340;Rillé
+0370505Y;-;ecole;public;37340;Hommes
+0370506Z;-;ecole;public;37330;Courcelles-de-Touraine
+0370507A;-;ecole;public;37110;Dame-Marie-les-Bois
+0370509C;-;ecole;public;37330;Château-la-Vallière
+0370516K;-;ecole;public;37330;Channay-sur-Lathan
+0370524U;-;ecole;public;37600;Varennes
+0370525V;-;ecole;public;37240;Vou
+0370526W;Lamblardie;ecole;public;37600;Loches
+0370527X;Alfred De Vigny;ecole;public;37600;Loches
+0370530A;-;ecole;public;37310;Azay-sur-Indre
+0370533D;-;ecole;public;37600;Bridoré
+0370534E;Jean Moulin;ecole;public;37310;Chambourg-sur-Indre
+0370540L;-;ecole;public;37600;Ferrière-sur-Beaulieu
+0370541M;-;ecole;public;37600;Perrusson
+0370546T;-;ecole;public;37600;Saint-Hippolyte
+0370558F;Mirabeau;ecole;public;37500;Chinon
+0370565N;-;ecole;public;37420;Beaumont-en-Véron
+0370567R;-;ecole;public;37500;Candes-Saint-Martin
+0370570U;-;ecole;public;37420;Huismes
+0370574Y;-;ecole;public;37500;Marçay
+0370575Z;-;ecole;public;37500;La-Roche-Clermault
+0370577B;-;ecole;public;37500;Saint-Germain-sur-Vienne
+0370580E;-;ecole;public;37500;Seuilly
+0370581F;-;ecole;public;37500;Thizay
+0370582G;-;ecole;public;37350;Le-Grand-Pressigny
+0370584J;-;ecole;public;37350;Barrou
+0370590R;-;ecole;public;37350;Ferrière-Larçon
+0370594V;-;ecole;public;37350;Paulmy
+0370595W;-;ecole;public;37350;Le-Petit-Pressigny
+0370601C;-;ecole;public;37160;Abilly
+0370609L;-;ecole;public;37240;Cussay
+0370611N;-;ecole;public;37800;Draché
+0370613R;-;ecole;public;37160;Marcé-sur-Esves
+0370626E;-;ecole;public;37530;Cangey
+0370628G;-;ecole;public;37530;Chargé
+0370629H;Artigny;ecole;public;37530;Chargé
+0370632L;-;ecole;public;37400;Lussault-sur-Loire
+0370633M;-;ecole;public;37530;Montreuil-en-Touraine
+0370634N;-;ecole;public;37530;Mosnes
+0370641W;-;ecole;public;37530;Pocé-sur-Cisse
+0370643Y;-;ecole;public;37530;Saint-Ouen-les-Vignes
+0370645A;-;ecole;public;37530;Saint-Règle
+0370646B;-;ecole;public;37530;Souvigny-de-Touraine
+0370650F;-;ecole;public;37130;Bréhémont
+0370652H;-;ecole;public;37130;La-Chapelle-aux-Naux
+0370659R;-;ecole;public;37150;Dierre
+0370664W;-;ecole;public;37150;Luzillé
+0370683S;-;ecole;public;37140;Saint-Nicolas-de-Bourgueil
+0370687W;Jean De La Fontaine;ecole;public;37000;Tours
+0370693C;-;ecole;public;37190;Saché
+0370694D;-;ecole;public;37500;Saint-Benoît-la-Forêt
+0370701L;Honoré De Balzac;ecole;public;37150;Bléré
+0370707T;Maurice Genevoix;ecole;public;37270;Azay-sur-Cher
+0370708U;-;ecole;public;37460;Céré-la-Ronde
+0370710W;-;ecole;public;37150;Chenonceaux
+0370711X;-;ecole;public;37150;Chisseaux
+0370713Z;-;ecole;public;37310;Cigogné
+0370714A;-;ecole;public;37150;Civray-de-Touraine
+0370716C;-;ecole;public;37310;Courçay
+0370729S;Saint-Martin;college;prive;37000;Tours
+0370730T;Mme De Maintenon;college;prive;37000;Tours
+0370732V;Marmoutier;college;prive;37100;Tours
+0370733W;Le Jouteux;college;prive;37140;Bourgueil
+0370738B;Notre-Dame;college;prive;37290;Preuilly-sur-Claise
+0370739C;du Sacré-Coeur;college;prive;37120;Richelieu
+0370740D;Saint-Gatien;college;prive;37300;Joué-lès-Tours
+0370741E;Saint-Etienne;college;prive;37170;Chambray-lès-Tours
+0370743G;Sainte-Jeanne D'Arc;college;prive;37000;Tours
+0370744H;Sacré-Coeur - La Providence;college;prive;37000;Tours
+0370745J;Christ Roi - Notre-Dame des Ailes;college;prive;37100;Tours
+0370746K;Sainte-Thérèse;college;prive;37210;Vouvray
+0370763D;Louis Pasteur;college;public;37000;Tours
+0370764E;Jules Ferry;college;public;37000;Tours
+0370765F;Léonard De Vinci;college;public;37100;Tours
+0370766G;Jacques Decour;college;public;37700;Saint-Pierre-des-Corps
+0370767H;Pablo Neruda;college;public;37700;Saint-Pierre-des-Corps
+0370768J;Georges Besse;college;public;37600;Loches
+0370769K;Lamartine;college;public;37000;Tours
+0370776T;François-René De Châteaubriand;ecole;public;37000;Tours
+0370791J;L'Arche du Lude;college;public;37300;Joué-lès-Tours
+0370792K;Henri Bergson;college;public;37540;Saint-Cyr-sur-Loire
+0370793L;Albert Camus;college;public;37250;Montbazon
+0370799T;Raoul Rebout;college;public;37270;Montlouis-sur-Loire
+0370805Z;Alain;ecole;public;37000;Tours
+0370807B;Jean-Jacques Rousseau;ecole;public;37000;Tours
+0370826X;-;ecole;public;37360;Beaumont-la-Ronce
+0370827Y;Mignonne;ecole;public;37300;Joué-lès-Tours
+0370836H;Ambroise Paré;ecole;public;37400;Amboise
+0370837J;-;ecole;public;37600;Beaulieu-lès-Loches
+0370838K;Guillaume Louis;ecole;public;37250;Montbazon
+0370839L;-;ecole;public;37140;Restigné
+0370840M;-;ecole;public;37220;Rilly-sur-Vienne
+0370843R;-;ecole;public;37390;Mettray
+0370844S;-;ecole;public;37310;Reignac-sur-Indre
+0370845T;-;ecole;public;37600;Betz-le-Château
+0370846U;-;ecole;public;37600;Verneuil-sur-Indre
+0370847V;-;ecole;public;37270;Véretz
+0370848W;-;ecole;public;37120;Luzé
+0370849X;La Bergeronnerie;ecole;public;37270;Saint-Martin-le-Beau
+0370884K;Michel De Montaigne;college;public;37100;Tours
+0370885L;Champ de La Motte;college;public;37130;Langeais
+0370886M;Jean-Philippe Rameau;college;public;37200;Tours
+0370887N;Jules Romains;college;public;37550;Saint-Avertin
+0370898A;Paul-Louis Courier;ecole;public;37130;Cinq-Mars-la-Pile
+0370901D;Françoise Dolto;ecole;public;37390;Notre-Dame-d'Oé
+0370903F;-;ecole;public;37370;Saint-Paterne-Racan
+0370904G;-;ecole;public;37360;Sonzay
+0370905H;-;ecole;public;37320;Truyes
+0370906J;-;ecole;public;37370;Saint-Christophe-sur-le-Nais
+0370908L;-;ecole;public;37360;Semblançay
+0370914T;-;ecole;public;37160;La-Celle-Saint-Avant
+0370921A;Gérard Philipe;ecole;public;37230;Fondettes
+0370922B;Joseph Daumain;ecole;public;37260;Monts
+0370924D;-;ecole;public;37460;Genillé
+0370926F;de la Côte des Granges;ecole;public;37160;Descartes
+0370931L;-;ecole;public;37800;Marcilly-sur-Vienne
+0370935R;-;ecole;public;37460;Orbigny
+0370941X;-;ecole;public;37420;Rigny-Ussé
+0370943Z;-;ecole;public;37210;Rochecorbon
+0370944A;-;ecole;public;37320;Saint-Branchs
+0370945B;de Périgourd;ecole;public;37540;Saint-Cyr-sur-Loire
+0370949F;-;ecole;public;37250;Sorigny
+0370951H;Honoré De Balzac;ecole;public;37260;Thilouze
+0370952J;Victor Hugo;ecole;public;37000;Tours
+0370953K;-;ecole;public;37250;Veigné
+0370956N;Henri Wallon;ecole;public;37700;Saint-Pierre-des-Corps
+0370959S;Charles Péguy;ecole;public;37000;Tours
+0370991B;Pierre Corneille;college;public;37000;Tours
+0370993D;du Val de l'Indre;college;public;37260;Monts
+0370994E;Henri Becquerel;college;public;37420;Avoine
+0370995F;Pierre De Ronsard;college;public;37140;Bourgueil
+0371001M;Sainte-Jeanne D'Arc;ecole;prive;37150;Bléré
+0371002N;Mme De Maintenon;ecole;prive;37000;Tours
+0371004R;Saint-Martin;ecole;prive;37000;Tours
+0371005S;du Petit Saint-Grégoire;ecole;prive;37000;Tours
+0371007U;Marmoutier;ecole;prive;37000;Tours
+0371010X;Sainte-Marie;ecole;prive;37000;Tours
+0371011Y;Le Couvent;ecole;prive;37800;Sainte-Maure-de-Touraine
+0371015C;Sainte-Ursule;ecole;prive;37000;Tours
+0371017E;Saint-Germain;ecole;prive;37140;Bourgueil
+0371019G;Saint-Joseph;ecole;prive;37330;Château-la-Vallière
+0371024M;Saint-Joseph;ecole;prive;37500;Chinon
+0371025N;Notre-Dame de Lourdes;ecole;prive;37140;Chouzé-sur-Loire
+0371026P;Sainte-Thérèse;ecole;prive;37320;Esvres
+0371027R;Notre-Dame;ecole;prive;37230;Fondettes
+0371028S;Louis Lefe;ecole;prive;37160;Descartes
+0371029T;Sainte-Marie;ecole;prive;37240;Ligueil
+0371031V;Saint-Martin;ecole;prive;37600;Loches
+0371033X;Sainte-Geneviève;ecole;prive;37230;Luynes
+0371036A;Sainte-Jeanne D'Arc;ecole;prive;37360;Neuillé-Pont-Pierre
+0371037B;Saint-Eugene;ecole;prive;37370;Neuvy-le-Roi
+0371042G;Notre-Dame;ecole;prive;37290;Preuilly-sur-Claise
+0371044J;Sacré-Coeur;ecole;prive;37120;Richelieu
+0371046L;Sainte-Jeanne D'Arc;ecole;prive;37800;Saint-Epain
+0371047M;Saint-Joseph;ecole;prive;37540;Saint-Cyr-sur-Loire
+0371048N;Sainte-Jeanne D'Arc;ecole;prive;37000;Tours
+0371050R;Sainte-Marguerite;ecole;prive;37000;Tours
+0371051S;Saint-Gatien;ecole;prive;37300;Joué-lès-Tours
+0371056X;Marie De L'Incarnation;ecole;prive;37170;Chambray-lès-Tours
+0371060B;Sainte-Thérèse;ecole;prive;37210;Vouvray
+0371063E;Christ Roi - Notre-Dame des Ailes;ecole;prive;37000;Tours
+0371065G;Notre-Dame;ecole;prive;37140;Saint-Nicolas-de-Bourgueil
+0371091K;Joseph Bourreau;ecole;public;37320;Esvres
+0371092L;-;ecole;public;37500;Cravant-les-Côteaux
+0371093M;-;ecole;public;37110;Villedômer
+0371098T;Beaulieu;college;public;37300;Joué-lès-Tours
+0371101W;Célestin Freinet;college;public;37800;Sainte-Maure-de-Touraine
+0371105A;Marceau - P.-L. Courier;ecole;public;37700;Saint-Pierre-des-Corps
+0371107C;-;ecole;public;37120;Marigny-Marmande
+0371109E;Jean Guéhenno;ecole;public;37260;Artannes-sur-Indre
+0371110F;-;ecole;public;37380;Monnaie
+0371111G;-;ecole;public;37150;La-Croix-en-Touraine
+0371112H;-;ecole;public;37140;La-Chapelle-sur-Loire
+0371118P;-;ecole;public;37600;Saint-Flovier
+0371122U;Choiseul;college;public;37400;Amboise
+0371124W;Le Réflessoir;college;public;37150;Bléré
+0371126Y;La Béchellerie;college;public;37540;Saint-Cyr-sur-Loire
+0371133F;Maurice Genevoix;ecole;public;37310;Tauxigny
+0371135H;Henri Garand;ecole;public;37240;Manthelan
+0371136J;-;ecole;public;37460;Loché-sur-Indrois
+0371137K;-;ecole;public;37290;Bossay-sur-Claise
+0371138L;Paul-Louis Courier;ecole;public;37400;Amboise
+0371139M;Jules Ferry;ecole;public;37400;Amboise
+0371140N;-;ecole;public;37340;Ambillou
+0371143S;Joachim Du Bellay;ecole;public;37000;Tours
+0371144T;Jean Giraudoux;ecole;public;37000;Tours
+0371158H;La Bruyère;college;public;37100;Tours
+0371159J;Jean Zay;college;public;37500;Chinon
+0371173Z;Paul-Louis Courier;ecole;public;37170;Chambray-lès-Tours
+0371175B;George Sand;ecole;public;37400;Amboise
+0371177D;Jean Jaurès;ecole;public;37500;Chinon
+0371178E;-;ecole;public;37220;Panzoult
+0371179F;-;ecole;public;37800;Sepmes
+0371181H;Balesmes;ecole;public;37160;Descartes
+0371182J;Jacques-Yves Cousteau;ecole;public;37530;Limeray
+0371189S;-;college;public;37210;Vouvray
+0371191U;Le Puits de la Roche;college;public;37120;Richelieu
+0371192V;Roger Jahan;college;public;37160;Descartes
+0371193W;-;ecole;public;37210;Chançay
+0371198B;-;ecole;public;37390;La-Membrolle-sur-Choisille
+0371199C;-;ecole;public;37600;Saint-Jean-Saint-Germain
+0371204H;Georges Brassens;college;public;37320;Esvres
+0371206K;Octave Pardou;ecole;public;37210;Noizay
+0371208M;Saint-Joseph;college;prive;37500;Chinon
+0371209N;Philippe De Commynes;college;public;37200;Tours
+0371210P;Honoré De Balzac;college;public;37190;Azay-le-Rideau
+0371213T;Francis Poulenc;ecole;public;37000;Tours
+0371215V;Arthur Rimbaud;ecole;public;37000;Tours
+0371216W;Paul Fort;ecole;public;37000;Tours
+0371218Y;Les Grands Champs;ecole;public;37550;Saint-Avertin
+0371219Z;-;ecole;public;37510;Saint-Genouph
+0371220A;-;ecole;public;37150;Francueil
+0371221B;-;ecole;public;37140;Benais
+0371233P;-;ecole;public;37270;Athée-sur-Cher
+0371238V;-;ecole;public;37420;Savigny-en-Véron
+0371248F;André Malraux;college;public;37400;Amboise
+0371251J;Les Gués;ecole;public;37250;Veigné
+0371261V;-;ecole;public;37130;Mazières-de-Touraine
+0371262W;-;ecole;public;37500;Lerné
+0371263X;Joliot-Curie;ecole;public;37420;Avoine
+0371295G;-;ecole;public;37460;Nouans-les-Fontaines
+0371297J;-;ecole;public;37700;La-Ville-aux-Dames
+0371302P;Jules Ferry;ecole;public;37270;Montlouis-sur-Loire
+0371304S;Paul Valéry;college;public;37100;Tours
+0371316E;La Vallée Violette;college;public;37300;Joué-lès-Tours
+0371320J;François Vincent Raspail;ecole;public;37000;Tours
+0371321K;Mirabeau;ecole;public;37000;Tours
+0371322L;-;ecole;public;37310;Saint-Quentin-sur-Indrois
+0371323M;Maison Neuve;ecole;public;37300;Joué-lès-Tours
+0371324N;-;ecole;public;37310;Dolus-le-Sec
+0371325P;Sainte-Clotilde - Saint-Joseph;college;prive;37400;Amboise
+0371327S;Les Récollets - Notre-Dame La Riche;college;prive;37000;Tours
+0371329U;Saint-Denis;college;prive;37600;Loches
+0371330V;Saint-Grégoire;college;prive;37000;Tours
+0371342H;Alfred De Musset;ecole;public;37000;Tours
+0371343J;Frédéric Mistral;ecole;public;37000;Tours
+0371378X;-;college;public;37230;Luynes
+0371380Z;-;ecole;public;37340;Gizeux
+0371381A;-;ecole;public;37340;Cléré-les-Pins
+0371390K;Alfred Velpeau;ecole;public;37000;Tours
+0371391L;de Stalingrad;college;public;37700;Saint-Pierre-des-Corps
+0371397T;Jean Roux;college;public;37230;Fondettes
+0371403Z;René Cassin;college;public;37510;Ballan-Miré
+0371406C;Molière;ecole;public;37000;Tours
+0371407D;Voltaire;ecole;public;37800;Sainte-Maure-de-Touraine
+0371408E;-;ecole;public;37190;Vallères
+0371412J;Françoise Dolto;ecole;public;37230;Fondettes
+0371445V;-;ecole;public;37190;Villaines-les-Rochers
+0371451B;Viala - Stalingrad;ecole;public;37700;Saint-Pierre-des-Corps
+0371453D;Léon Brûlon - Christophe Plantin;ecole;public;37550;Saint-Avertin
+0371462N;François Rabelais - Richelieu;ecole;public;37400;Amboise
+0371463P;Albert Ruelle;ecole;public;37140;Bourgueil
+0371464R;Pierre et Marie Curie;ecole;public;37260;Monts
+0371465S;Pierre Sémard;ecole;public;37700;Saint-Pierre-des-Corps
+0371466T;D. Diderot - B. Pascal;ecole;public;37000;Tours
+0371475C;André Gide;ecole;public;37000;Tours
+0371490U;A. Camus - L. Pasteur;ecole;public;37230;Luynes
+0371491V;Port Boulet;ecole;public;37140;Chouzé-sur-Loire
+0371492W;Antoine De Saint-Exupéry;ecole;public;37000;Tours
+0371500E;Jacques Prévert;ecole;public;37320;Cormery
+0371501F;-;ecole;public;37380;Reugny
+0371502G;Roger Lecotté;ecole;public;37210;Vernou-sur-Brenne
+0371503H;de la Vallée Violette;ecole;public;37300;Joué-lès-Tours
+0371504J;du Morier;ecole;public;37300;Joué-lès-Tours
+0371505K;La Blotterie;ecole;public;37300;Joué-lès-Tours
+0371506L;Liberté - République;ecole;public;37300;Joué-lès-Tours
+0371507M;de la Rotière;ecole;public;37300;Joué-lès-Tours
+0371508N;Jean Moulin - Jacques Prévert;ecole;public;37130;Lignières-de-Touraine
+0371509P;Joliot-Curie;ecole;public;37700;Saint-Pierre-des-Corps
+0371540Y;Engerand;ecole;public;37540;Saint-Cyr-sur-Loire
+0371547F;-;ecole;public;37120;Faye-la-Vineuse
+0371552L;du Val de Cisse;ecole;public;37530;Nazelles-Négron
+0371553M;-;ecole;public;37140;Chouzé-sur-Loire
+0371554N;La Chapelle;ecole;public;37190;Cheillé
+0371555P;A. Camus - A. Maurois;ecole;public;37000;Tours
+0371556R;-;ecole;public;37500;Cinais
+0371565A;C. Bernard - L. Pasteur;ecole;public;37000;Tours
+0371569E;Sainte-Clotilde - Saint-Joseph;ecole;prive;37400;Amboise
+0371570F;Sainte-Agnès;ecole;prive;37000;Tours
+0371572H;Gustave Flaubert;ecole;public;37000;Tours
+0371573J;Jeanne Salmon;ecole;public;37380;Nouzilly
+0371584W;Ernest Pérochon;ecole;public;37000;Tours
+0371612B;René Descartes;ecole;public;37190;Azay-le-Rideau
+0371613C;Guy De Maupassant;ecole;public;37000;Tours
+0371614D;-;ecole;public;37460;Villeloin-Coulangé
+0371615E;-;ecole;public;37290;Yzeures-sur-Creuse

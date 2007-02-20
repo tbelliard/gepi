@@ -1,0 +1,591 @@
+0090001C;Mario Beulaygue;college;public;09110;Ax-les-Thermes
+0090002D;Gabriel Fauré;lycee;public;09008;Foix
+0090003E;Jean Durroux;lprof;public;09008;Foix
+0090006H;Joseph-Marie Jacquard;lprof;public;09300;Lavelanet
+0090007J;Victor Hugo;college;public;09300;Lavelanet
+0090009L;François Verdier;college;public;09210;Lézat-sur-Lèze
+0090010M;du Plantaurel;college;public;09290;Le-Mas-d'Azil
+0090012P;Victor Hugo;college;public;09270;Mazères
+0090013R;-;lycee;public;09500;Mirepoix
+0090015T;du Castella;lycee;public;09104;Pamiers
+0090018W;du Couserans;lycee;public;09200;Saint-Girons
+0090019X;Aristide Bergès;lprof;public;09200;Saint-Girons
+0090020Y;François Camel;lprof;public;09200;Saint-Girons
+0090022A;agricole;lprof;public;09100;Pamiers
+0090023B;du Girbet;college;public;09700;Saverdun
+0090024C;Docteur Philippe Tissié;lprof;public;09700;Saverdun
+0090025D;Jules Palmade;college;public;09140;Seix
+0090028G;du Montcalm;college;public;09220;Vicdessos
+0090036R;Notre-Dame;lycee;prive;09100;Pamiers
+0090037S;Jean XXIII;college;prive;09100;Pamiers
+0090038T;du Sacré-Coeur;college;prive;09200;Saint-Girons
+0090041W;Saint-Joseph;college;prive;09400;Tarascon-sur-Ariège
+0090045A;Les Jacobins;lprof;prive;09100;Pamiers
+0090055L;Pierre Bayle;college;public;09100;Pamiers
+0090056M;Jean-Pierre Rambaud;college;public;09100;Pamiers
+0090478W;Joseph Lakanal;college;public;09000;Foix
+0090481Z;-;EREA;public;09100;Pamiers
+0090490J;Louis Pasteur;college;public;09300;Lavelanet
+0090543S;Irénée Cros;lprof;public;09103;Pamiers
+0090546V;du Sabarthes;college;public;09400;Tarascon-sur-Ariège
+0090573Z;-;college;public;09500;Mirepoix
+0090574A;-;college;public;09200;Saint-Girons
+0090591U;Notre-Dame;college;prive;09100;Pamiers
+0120002M;Voltaire;college;public;12700;Capdenac-Gare
+0120004P;Jean Jaurès;college;public;12110;Cransac
+0120006S;-;lycee;public;12300;Decazeville
+0120011X;-;college;public;12330;Marcillac-Vallon
+0120012Y;Jean Vigo;lycee;public;12104;Millau
+0120014A;Jean Vigo;lprof;public;12104;Millau
+0120016C;-;college;public;12600;Mur-de-Barrez
+0120017D;Jean Boudou;college;public;12800;Naucelle
+0120018E;Jean Amans;college;public;12290;Pont-de-Salars
+0120019F;Célestin Sourèzes;college;public;12170;Réquista
+0120020G;-;college;public;12240;Rieupeyroux
+0120021H;-;college;public;12390;Rignac
+0120022J;Ferdinand Foch;lycee;public;12000;Rodez
+0120024L;Alexis Monteil;lycee;public;12034;Rodez
+0120025M;Jean Jaurès;lprof;public;12401;Saint-Affrique
+0120028R;Denys Puech;college;public;12130;Saint-Geniez-d'Olt
+0120029S;Jean D'Alembert;college;public;12150;Sévérac-le-Château
+0120031U;-;lycee;public;12203;Villefranche-de-Rouergue
+0120032V;Albert Camus;college;public;12160;Baraqueville
+0120036Z;-;lprof;public;12300;Decazeville
+0120037A;Alexis Monteil;lprof;public;12034;Rodez
+0120038B;Ferdinand Foch;lprof;public;12000;Rodez
+0120051R;Jeanne D'Arc;lycee;prive;12104;Millau
+0120052S;de l'Immaculée Conception;lycee;prive;12500;Espalion
+0120054U;Sainte-Foy;lycee;prive;12300;Decazeville
+0120055V;Dominique Savio;college;prive;12240;Rieupeyroux
+0120056W;Sainte-Marie;lycee;prive;12000;Rodez
+0120058Y;Sainte-Procule;lycee;prive;12000;Rodez
+0120059Z;Saint-Gabriel;lycee;prive;12402;Saint-Affrique
+0120061B;Saint-Joseph;lycee;prive;12200;Villefranche-de-Rouergue
+0120062C;Saint-Géraud;college;prive;12220;Montbazens
+0120064E;Saint-Pierre;college;prive;12600;Mur-de-Barrez
+0120067H;Sainte-Marie;college;prive;12290;Pont-de-Salars
+0120068J;Saint-Louis;college;prive;12170;Réquista
+0120070L;Jeanne D'Arc;college;prive;12390;Rignac
+0120075S;Sainte-Marie;college;prive;12130;Saint-Geniez-d'Olt
+0120077U;des Monts et Lacs;college;prive;12410;Salles-Curan
+0120078V;Sacré-Coeur;college;prive;12150;Sévérac-le-Château
+0120080X;Notre-Dame;college;prive;12160;Baraqueville
+0120081Y;Saint-Michel;college;prive;12370;Belmont-sur-Rance
+0120082Z;Saint-Louis;college;prive;12700;Capdenac-Gare
+0120084B;Sainte-Marie;college;prive;12120;Cassagnes-Bégonhès
+0120088F;Saint-Georges;college;prive;12140;Entraygues-sur-Truyère
+0120090H;Saint-Dominique;college;prive;12270;La-Fouillade
+0120091J;Saint-Matthieu;college;prive;12210;Laguiole
+0120092K;Saint-Joseph;college;prive;12330;Marcillac-Vallon
+0120096P;du bâtiment;lprof;public;12110;Aubin
+0120101V;Joseph Fabre;college;public;12000;Rodez
+0120104Y;Saint-Joseph;lycee;prive;12000;Rodez
+0120105Z;Marguerite Marie;lprof;prive;12104;Millau
+0120111F;-;lprof;prive;12500;Espalion
+0120621K;-;lprof;public;12204;Villefranche-de-Rouergue
+0120622L;Paul Ramadier;college;public;12300;Decazeville
+0120627S;Saint-Joseph;college;prive;12000;Rodez
+0120867C;François Marty;lycee;prive;12200;Monteils
+0120878P;Marcel Aymard;college;public;12100;Millau
+0120914D;Sainte-Geneviève;college;prive;12000;Rodez
+0120916F;Sacré-Coeur;college;prive;12000;Rodez
+0120918H;Notre-Dame du Sacré-Coeur;college;prive;12000;Rodez
+0120937D;-;lycee;public;12850;Rodez
+0120938E;-;lprof;public;12400;Saint-Affrique
+0121133S;Jean Moulin;college;public;12000;Rodez
+0121157T;-;lprof;public;12203;Villefranche-de-Rouergue
+0121174L;Saint-Martin;college;prive;12800;Naucelle
+0121176N;Louis Denayrouze;college;public;12500;Espalion
+0121178R;-;EREA;public;12200;Villefranche-de-Rouergue
+0121213D;Francis Carco;college;public;12200;Villefranche-de-Rouergue
+0121255Z;Saint-Joseph;college;prive;12200;Villefranche-de-Rouergue
+0121256A;Jeanne D'Arc;college;prive;12400;Saint-Affrique
+0121257B;Sainte-Foy;college;prive;12300;Decazeville
+0121258C;de l'Immaculée Conception;college;prive;12500;Espalion
+0121259D;Jeanne D'Arc;college;prive;12100;Millau
+0121260E;Saint-Joseph;lprof;prive;12200;Villefranche-de-Rouergue
+0121273U;Les Quatre Saisons;college;public;12850;Onet-le-Château
+0121288K;-;lprof;prive;12160;Baraqueville
+0121291N;horticole;lprof;prive;12390;Rignac
+0121292P;horticole;lprof;prive;12400;Saint-Affrique
+0121293R;-;lprof;prive;12130;Saint-Geniez-d'Olt
+0121295T;de la Viadène;college;public;12460;Saint-Amans-des-Cots
+0121297V;Jean Jaurès;college;public;12400;Saint-Affrique
+0121309H;Saint-Joseph;lprof;prive;12000;Rodez
+0121310J;Jeanne D'Arc;lprof;prive;12402;Saint-Affrique
+0121318T;Saint-Joseph;lycee;prive;12200;Villefranche-de-Rouergue
+0121319U;Sainte-Foy;lycee;prive;12300;Decazeville
+0121378H;Grèzes;lprof;prive;12310;Laissac
+0121422F;Saint-Gabriel;lycee;prive;12402;Saint-Affrique
+0121423G;Charles Carnus;lycee;prive;12000;Rodez
+0121425J;Jeanne D'Arc;lycee;prive;12104;Millau
+0121428M;Louis Querbes;lycee;prive;12000;Rodez
+0121429N;Louis Querbes;lprof;prive;12000;Rodez
+0121430P;Sainte-Geneviève - Saint-Joseph;college;prive;12000;Rodez
+0121438Y;Sainte-Marie - Sainte-Procule;lycee;prive;12056;Rodez
+0310001H;Armand Latour;college;public;31160;Aspet
+0310003K;Emile-Paul Vayssie;college;public;31420;Aurignac
+0310005M;Jean Monnet;college;public;31110;Bagnères-de-Luchon
+0310006N;du Bois;lprof;public;31110;Montauban-de-Luchon
+0310007P;du Pays de la Gesse;college;public;31350;Boulogne-sur-Gesse
+0310008R;-;college;public;31480;Cadours
+0310012V;du Plantaurel;college;public;31220;Cazères
+0310015Y;Pierre et Marie Curie;college;public;31430;Le-Fousseret
+0310017A;-;lycee;public;31210;Gourdan-Polignan
+0310019C;Léon Cazeneuve;college;public;31230;L'Isle-en-Dodon
+0310021E;Georges Brassens;college;public;31380;Montastruc-la-Conseillère
+0310022F;Stella Blandy;college;public;31310;Montesquieu-Volvestre
+0310023G;Bertrand Laralde;college;public;31210;Montréjeau
+0310024H;Pierre D'Aragon;lycee;public;31605;Muret
+0310025J;de la Côte de Bétance;college;public;31600;Muret
+0310028M;Vincent Auriol;lycee;public;31250;Revel
+0310029N;Robert Roger;college;public;31370;Rieumes
+0310031R;François Cazes;college;public;31440;Saint-Béat
+0310032S;de Bagatelle;lycee;public;31806;Saint-Gaudens
+0310033T;Elisabeth et Norbert Casteret;lprof;public;31806;Saint-Gaudens
+0310035V;des Trois Vallées;college;public;31260;Salies-du-Salat
+0310036W;Pierre De Fermat;lycee;public;31068;Toulouse
+0310037X;Clémence Isaure;college;public;31024;Toulouse
+0310038Y;Bellevue;lycee;public;31031;Toulouse
+0310039Z;Marcelin Berthelot;lycee;public;31078;Toulouse
+0310040A;Raymond Naves;lprof;public;31018;Toulouse
+0310041B;Saint-Sernin;lycee;public;31070;Toulouse
+0310044E;Déodat De Séverac;lycee;public;31076;Toulouse
+0310046G;hôtelier;lprof;public;31026;Toulouse
+0310047H;Théodore Ozenne;lycee;public;31070;Toulouse
+0310049K;Saint-Exupery;lprof;public;31700;Toulouse
+0310050L;Maréchal Gallieni;lprof;public;31086;Toulouse
+0310051M;Georges Guynemer;lprof;public;31400;Toulouse
+0310052N;Roland Garros;lprof;public;31200;Toulouse
+0310053P;Bayard;lprof;public;31021;Toulouse
+0310054R;Renée Bonnet;lprof;public;31432;Toulouse
+0310055S;Marie-Louise Dissard Françoise;lprof;public;31100;Toulouse
+0310056T;Gabriel Péri;lprof;public;31908;Toulouse
+0310057U;Hélène Boucher;lprof;public;31901;Toulouse
+0310083X;Didier Daurat;college;public;31800;Saint-Gaudens
+0310084Y;Antonin Perbosc;college;public;31190;Auterive
+0310085Z;Château-De-L'Hers;college;public;31500;Toulouse
+0310086A;George Sand;college;public;31100;Toulouse
+0310087B;du Parc Saint-Agne;lycee;prive;31400;Ramonville-Saint-Agne
+0310088C;de l'ameublement;lprof;public;31250;Revel
+0310089D;-;lprof;public;31210;Gourdan-Polignan
+0310090E;Déodat De Séverac;lprof;public;31076;Toulouse
+0310091F;Jolimont;lprof;public;31079;Toulouse
+0310092G;Bellevue;college;public;31030;Toulouse
+0310093H;Marcelin Berthelot;college;public;31078;Toulouse
+0311092U;Eugène Montel;lprof;public;31770;Colomiers
+0311093V;Montesquieu;college;public;31270;Cugnaux
+0311094W;Georges Chaumeton;college;public;31240;L'Union
+0311111P;Croix-Daurade;college;public;31921;Toulouse
+0311112R;Henri De Toulouse-Lautrec;college;public;31022;Toulouse
+0311126F;Le Ferradou;lycee;prive;31700;Blagnac
+0311128H;Sainte-Germaine;college;prive;31210;Montréjeau
+0311130K;Joseph Niel;college;prive;31600;Muret
+0311131L;Sainte-Thérèse;lprof;prive;31804;Saint-Gaudens
+0311132M;de l'Annonciation;lycee;prive;31840;Seilh
+0311133N;Le Caousou;lycee;prive;31079;Toulouse
+0311134P;Emilie De Rodat;lprof;prive;31027;Toulouse
+0311138U;Montalembert - Notre-Dame;lprof;prive;31400;Toulouse
+0311144A;Sainte-Famille Des Minimes;college;prive;31200;Toulouse
+0311145B;Saint-Joseph;lycee;prive;31079;Toulouse
+0311146C;Sainte-Marie des Champs;lycee;prive;31506;Toulouse
+0311147D;Sainte-Marie de Nevers;lycee;prive;31070;Toulouse
+0311148E;Sainte-Marie des Ursulines;college;prive;31500;Toulouse
+0311150G;Saint-Thomas D'Aquin;college;prive;31000;Toulouse
+0311160T;Sainte-Thérèse;college;prive;31770;Colomiers
+0311162V;Sainte-Geneviève;college;prive;31790;Saint-Jory
+0311168B;Sainte-Marie de Nevers;college;prive;31000;Toulouse
+0311169C;Saint-Louis;college;prive;31500;Toulouse
+0311171E;Saint-Nicolas;college;prive;31300;Toulouse
+0311176K;de la Salle;college;prive;31820;Pibrac
+0311177L;Limayrac;lprof;prive;31079;Toulouse
+0311181R;Les Potiers;lycee;prive;31400;Toulouse
+0311183T;Saint-Joseph;lycee;prive;31079;Toulouse
+0311186W;Etienne Billières;lprof;prive;31071;Toulouse
+0311190A;de coiffure;lprof;prive;31400;Toulouse
+0311200L;aéronautique;lprof;prive;31060;Toulouse
+0311201M;Myriam;lycee;prive;31000;Toulouse
+0311209W;-;lprof;prive;31250;Revel
+0311213A;Pigier;lycee;prive;31000;Toulouse
+0311219G;Sainte-Marie - Saint-Sernin;lprof;prive;31000;Toulouse
+0311231V;Maurice Becanne;college;public;31300;Toulouse
+0311232W;Frédéric Estèbe;college;public;31200;Toulouse
+0311235Z;Bellefontaine;college;public;31037;Toulouse
+0311236A;Pierre De Fermat;college;public;31068;Toulouse
+0311237B;Henri Guillaumet;college;public;31700;Blagnac
+0311238C;Jean Jaurès;college;public;31770;Colomiers
+0311240E;-;EREA;public;31600;Muret
+0311262D;-;lycee;public;31326;Castanet-Tolosan
+0311263E;du Bois de La Barthe;college;public;31820;Pibrac
+0311264F;Jolimont;college;public;31500;Toulouse
+0311265G;Lalande;college;public;31924;Toulouse
+0311266H;Jean Jaurès;college;public;31320;Castanet-Tolosan
+0311268K;-;lprof;public;31806;Saint-Gaudens
+0311270M;La Cadène;lycee;prive;31670;Labège
+0311319R;Louisa Paulin;college;public;31600;Muret
+0311321T;La Reynerie;college;public;31036;Toulouse
+0311323V;Rive gauche;lycee;public;31081;Toulouse
+0311324W;du Mirail;lprof;public;31081;Toulouse
+0311325X;Voltaire;college;public;31770;Colomiers
+0311327Z;Alphonse De Lamartine;college;public;31025;Toulouse
+0311328A;Les Chalets;college;public;31901;Toulouse
+0311330C;Jean Rostand;college;public;31130;Balma
+0311332E;Anatole France;college;public;31400;Toulouse
+0311333F;Jean Moulin;college;public;31400;Toulouse
+0311334G;Jean Rostand;lprof;public;31110;Bagnères-de-Luchon
+0311335H;Jean Gay;college;public;31590;Verfeil
+0311338L;Emile Zola;college;public;31400;Toulouse
+0311570N;La Prairie;college;prive;31400;Toulouse
+0311573S;Jean-Paul Laurens;college;public;31450;Ayguesvives
+0311580Z;André Abbal;college;public;31390;Carbonne
+0311581A;Jean Mermoz;college;public;31700;Blagnac
+0311582B;des Ponts-Jumeaux;college;public;31200;Toulouse
+0311584D;de Marengo;college;public;31500;Toulouse
+0311586F;Henri De Toulouse-Lautrec;lycee;public;31020;Toulouse
+0311630D;Stendhal;college;public;31911;Toulouse
+0311631E;Michelet;college;public;31000;Toulouse
+0311632F;Les Violettes;college;public;31140;Aucamville
+0311633G;André Malraux;college;public;31520;Ramonville-Saint-Agne
+0311634H;Jules Ferry;college;public;31290;Villefranche-de-Lauragais
+0311635J;Bellevue;lprof;public;31031;Toulouse
+0311686P;Jules Valles;college;public;31120;Portet-sur-Garonne
+0311687R;Léon Blum;college;public;31770;Colomiers
+0311688S;Pierre Labitrie;college;public;31170;Tournefeuille
+0311689T;Albert Camus;college;public;31340;Villemur-sur-Tarn
+0311690U;François Mitterrand;college;public;31460;Caraman
+0311718Z;Nicolas Vauquelin;college;public;31035;Toulouse
+0311720B;Jacques Maure;college;public;31780;Castelginest
+0311721C;Alain Savary;college;public;31620;Fronton
+0311722D;Romain Rolland;college;public;31240;Saint-Jean
+0311728K;Etienne Billières;lprof;prive;31100;Toulouse
+0311769E;Grand Selve;college;public;31330;Grenade
+0311772H;Léo Ferré;college;public;31470;Saint-Lys
+0311842J;L'Oustal;lprof;prive;31380;Montastruc-la-Conseillère
+0311843K;rural;lprof;prive;31370;Rieumes
+0311846N;Vincent Auriol;college;public;31250;Revel
+0311850T;Jacques Prévert;college;public;31650;Saint-Orens-de-Gameville
+0311851U;Général Leclerc;college;public;31800;Saint-Gaudens
+0311883D;Jasmin;lprof;prive;31300;Toulouse
+0311902Z;Jolimont;lycee;public;31079;Toulouse
+0311915N;Pablo Picasso;college;public;31270;Frouzins
+0311962P;Le Caousou;college;prive;31079;Toulouse
+0311963R;Montalembert - Notre-Dame;college;prive;31400;Toulouse
+0311964S;Emilie De Rodat;college;prive;31027;Toulouse
+0311965T;Le Ferradou;college;prive;31700;Blagnac
+0311967V;de l'Annonciation;college;prive;31840;Seilh
+0311968W;Sainte-Thérèse;college;prive;31800;Saint-Gaudens
+0311970Y;Sainte-Marie de Nevers;lprof;prive;31070;Toulouse
+0311971Z;Les Potiers;lprof;prive;31400;Toulouse
+0311972A;Saint-Joseph;college;prive;31079;Toulouse
+0312059V;Etienne Billières;lprof;prive;31100;Toulouse
+0312061X;E. T. P. A.;lprof;prive;31200;Toulouse
+0312062Y;Pigier;lprof;prive;31000;Toulouse
+0312063Z;Castelnouvel;lprof;prive;31490;Léguevin
+0312064A;Myriam;lprof;prive;31000;Toulouse
+0312065B;Saint-Joseph;lprof;prive;31079;Toulouse
+0312071H;Jules Verne;college;public;31830;Plaisance-du-Touch
+0312092F;International Victor Hugo;college;public;31770;Colomiers
+0312093G;International Victor Hugo;lycee;public;31773;Colomiers
+0312139G;Camille Claudel;college;public;31140;Launaguet
+0312140H;René Cassin;college;public;31650;Saint-Orens-de-Gameville
+0312191N;Maurice Grynfogel;lprof;prive;31770;Colomiers
+0312217S;Charles De Gaulle;lprof;public;31604;Muret
+0312220V;Daniel Sorano;college;public;31860;Pins-Justaret
+0312267W;les Arènes;lycee;public;31024;Toulouse
+0312284P;Ozar Hatorah;college;prive;31500;Toulouse
+0312289V;Pierre-Paul Riquet;lycee;public;31650;Saint-Orens-de-Gameville
+0312290W;Henri Matisse;lycee;public;31270;Cugnaux
+0312307P;Léonard De Vinci;college;public;31170;Tournefeuille
+0312337X;François Verdier;college;public;31490;Léguevin
+0312338Y;Cantelauze;college;public;31470;Fonsorbes
+0312354R;-;lycee;public;31330;Ondes
+0312355S;Maurice Grynfogel;lycee;prive;31770;Colomiers
+0312356T;Ozar Hatorah;lycee;prive;31500;Toulouse
+0312408Z;Saliège;lycee;prive;31131;Balma
+0312423R;François Mitterrand;college;public;31150;Fenouillet
+0312478A;Claude Cornac;college;public;31150;Gratentour
+0312609T;-;college;public;31570;Saint-Pierre-de-Lages
+0312610U;-;college;public;31810;Vernet
+0312611V;-;college;public;31270;Villeneuve-Tolosane
+0312612W;-;college;public;31880;La-Salvetat-Saint-Gilles
+0312686B;Antoine De Saint-Exupéry;lycee;public;31700;Blagnac
+0312696M;-;lycee;public;31620;Fronton
+0312697N;-;college;public;31600;Lherm
+0312698P;-;college;public;31850;Montrabé
+0312699R;-;college;public;31560;Nailloux
+0312700S;-;college;public;31140;Pechbonnieu
+0320001C;Vert;college;public;32290;Aignan
+0320002D;Pardailhan;lycee;public;32008;Auch
+0320004F;Saint-Christophe;college;prive;32140;Masseube
+0320006H;Mathalin;college;public;32022;Auch
+0320008K;du Lac de l'Uby;college;public;32150;Cazaubon
+0320009L;Bossuet;lycee;public;32100;Condom
+0320010M;Antoine De Saint-Exupéry;college;public;32100;Condom
+0320011N;Jean Rostand;college;public;32800;Eauze
+0320012P;Hubert Reeves;college;public;32500;Fleurance
+0320013R;-;college;public;32200;Gimont
+0320014S;Louise Michel;college;public;32600;L'Isle-Jourdain
+0320015T;Maréchal Lannes;lprof;public;32700;Lectoure
+0320017V;Maréchal Lannes;college;public;32700;Lectoure
+0320019X;-;college;public;32230;Marciac
+0320021Z;du Fezensaguet;college;public;32120;Mauvezin
+0320023B;Alain Fournier;lprof;public;32300;Mirande
+0320025D;D'Artagnan;lycee;public;32110;Nogaro
+0320026E;D'Artagnan;lprof;public;32110;Nogaro
+0320027F;D'Artagnan;college;public;32110;Nogaro
+0320028G;Louis Pasteur;college;public;32160;Plaisance
+0320029H;du Val d'Adour;college;public;32400;Riscle
+0320030J;Clément Ader;lprof;public;32130;Samatan
+0320031K;François De Belleforest;college;public;32130;Samatan
+0320033M;-;college;public;32190;Vic-Fezensac
+0320035P;de l'Astarac;college;public;32300;Mirande
+0320036R;Joseph Saverne;lycee;public;32600;L'Isle-Jourdain
+0320039U;-;lycee;public;32020;Auch
+0320040V;Pardailhan;lprof;public;32008;Auch
+0320051G;Oratoire Sainte-Marie;lycee;prive;32002;Auch
+0320052H;Saint-Taurin;college;prive;32800;Eauze
+0320054K;Saint-Joseph;lycee;prive;32700;Lectoure
+0320056M;Notre-Dame du Clos Fleuri;college;prive;32600;L'Isle-Jourdain
+0320059R;Notre-Dame de Piétat;college;prive;32100;Condom
+0320067Z;Le Garros;lycee;public;32021;Auch
+0320068A;Le Garros;lprof;public;32021;Auch
+0320074G;Vasconie;college;public;32170;Miélan
+0320557G;Valentées;lprof;public;32300;Mirande
+0320562M;Salinis;college;public;32008;Auch
+0320563N;Sadi Carnot;college;public;32008;Auch
+0320608M;Beauregard;college;public;32140;Masseube
+0320633P;Saint-Christophe;lycee;prive;32140;Masseube
+0320646D;-;lprof;public;32400;Riscle
+0320650H;Oratoire Sainte-Marie;college;prive;32002;Auch
+0320651J;Saint-Joseph;college;prive;32700;Lectoure
+0320652K;Oratoire Sainte-Marie;lprof;prive;32002;Auch
+0320686X;Saint-Joseph;college;prive;32500;Fleurance
+0460001B;-;college;public;46160;Cajarc
+0460002C;Les Castors;college;public;46270;Bagnac-sur-Célé
+0460006G;Léon Gambetta;college;public;46005;Cahors
+0460007H;Clément Marot;lycee;public;46005;Cahors
+0460008J;Emile Vaysse;college;public;46170;Castelnau-Montratier
+0460010L;Jean-François Champollion;lycee;public;46106;Figeac
+0460012N;-;lprof;public;46300;Gourdon
+0460013P;-;lycee;public;46300;Gourdon
+0460015S;Jean Monnet;college;public;46120;Lacapelle-Marival
+0460016T;Le Segala;lprof;public;46120;Lacapelle-Marival
+0460018V;La Chataigneraie;college;public;46210;Latronquière
+0460020X;L'Impernal;college;public;46140;Luzech
+0460021Y;des Sept Tours;college;public;46600;Martel
+0460022Z;-;college;public;46800;Montcuq
+0460024B;D'Istrie;college;public;46220;Prayssac
+0460026D;Jean Lurçat;lycee;public;46400;Saint-Céré
+0460027E;-;college;public;46340;Salviac
+0460028F;Louis Vicat;lprof;public;46200;Souillac
+0460030H;du Puy d'Issolud;college;public;46110;Vayrac
+0460032K;-;lprof;public;46106;Figeac
+0460038S;Notre-Dame;lycee;prive;46000;Cahors
+0460039T;Jeanne D'Arc;lycee;prive;46100;Figeac
+0460045Z;Saint-Louis;college;prive;46170;Castelnau-Montratier
+0460046A;Sainte-Hélène;college;prive;46500;Gramat
+0460047B;Saint-Paul;college;prive;46170;Pern
+0460048C;Sainte-Anne;college;prive;46400;Saint-Céré
+0460050E;Jeanne D'Arc;lprof;prive;46000;Cahors
+0460051F;Clément Marot;lprof;public;46005;Cahors
+0460054J;Marcel Masbou;college;public;46100;Figeac
+0460490H;-;lycee;public;46100;Figeac
+0460493L;Gaston Monnerville;lprof;public;46005;Cahors
+0460504Y;Alain De Solminihac;lprof;prive;46220;Prayssac
+0460528Z;Olivier De Magny;college;public;46005;Cahors
+0460529A;hôtelier Quercy - Périgord;lprof;public;46200;Souillac
+0460530B;d'Olt;college;public;46700;Puy-l'Evêque
+0460565P;La Garenne;college;public;46500;Gramat
+0460573Y;d'Orlinde;college;public;46130;Bretenoux
+0460592U;-;college;public;46300;Gourdon
+0460593V;Jean Lurçat;college;public;46400;Saint-Céré
+0460594W;Le Puy d'Alon;college;public;46200;Souillac
+0460620Z;Notre-Dame;college;prive;46000;Cahors
+0460621A;Jeanne D'Arc;college;prive;46100;Figeac
+0460661U;-;lprof;public;46090;Cahors
+0650001Y;climatique;lycee;public;65402;Argelès-Gazost
+0650003A;Maréchal Foch;college;public;65240;Arreau
+0650005C;Victor Duruy;lprof;public;65201;Bagnères-de-Bigorre
+0650012K;Michelet;lycee;public;65303;Lannemezan
+0650014M;de l'Arrouza;lprof;public;65107;Lourdes
+0650015N;La Serre de Sarsan;college;public;65100;Lourdes
+0650017R;de la Barousse;college;public;65370;Loures-Barousse
+0650018S;des Trois Vallées;college;public;65120;Luz-Saint-Sauveur
+0650019T;Jean Jaurès;college;public;65700;Maubourguet
+0650020U;du Haut Lavedan;college;public;65260;Pierrefitte-Nestalas
+0650022W;Beaulieu;college;public;65150;Saint-Laurent-de-Neste
+0650023X;Fernand Durand;lprof;public;65270;Saint-Pé-de-Bigorre
+0650025Z;Théophile Gautier;lycee;public;65016;Tarbes
+0650026A;Marie Curie;lycee;public;65930;Tarbes
+0650027B;Jean Dupuy;lycee;public;65016;Tarbes
+0650028C;Sixte Vignon;lprof;public;65800;Aureilhan
+0650029D;Reffye;lprof;public;65016;Tarbes
+0650031F;Louis Desaix;college;public;65000;Tarbes
+0650033H;Placide Massey;college;public;65000;Tarbes
+0650034J;Paul Eluard;college;public;65000;Tarbes
+0650035K;Pierre Mendès-France;lprof;public;65500;Vic-en-Bigorre
+0650036L;du Val d'Arros;college;public;65190;Tournay
+0650037M;D'Astarac - Bigorre;college;public;65220;Trie-sur-Baïse
+0650038N;Pierre Mendès-France;lycee;public;65500;Vic-en-Bigorre
+0650040R;La Serre de Sarsan;lycee;public;65107;Lourdes
+0650041S;Jean Dupuy;lprof;public;65016;Tarbes
+0650050B;Voltaire;college;public;65000;Tarbes
+0650058K;Peyramale - Saint-Joseph;lycee;prive;65100;Lourdes
+0650059L;Notre-Dame de Garaison;lycee;prive;65670;Monléon-Magnoac
+0650060M;Saint-Pierre;lycee;prive;65270;Saint-Pé-de-Bigorre
+0650062P;Jeanne D'Arc;lycee;prive;65000;Tarbes
+0650063R;Saint-Dominique;lycee;prive;65000;Tarbes
+0650065T;Pradeau - La Sède;lycee;prive;65912;Tarbes
+0650067V;Vincent De Paul;lprof;prive;65000;Tarbes
+0650074C;du Pradeau;college;prive;65000;Tarbes
+0650075D;Saint-Martin;college;prive;65500;Vic-en-Bigorre
+0650084N;Gaston Fébus;college;public;65300;Lannemezan
+0650088T;Paul Valéry;college;public;65600;Séméac
+0650089U;Blanche Odin;college;public;65200;Bagnères-de-Bigorre
+0650138X;-;lprof;public;65000;Tarbes
+0650139Y;Jean Monnet;lycee;public;65500;Vic-en-Bigorre
+0650738Z;Saint-Vincent;college;prive;65200;Bagnères-de-Bigorre
+0650740B;des Pyrénées;college;public;65000;Tarbes
+0650835E;Victor Hugo;college;public;65000;Tarbes
+0650836F;climatique;college;public;65400;Argelès-Gazost
+0650838H;Pierre Mendès-France;college;public;65500;Vic-en-Bigorre
+0650874X;Lautréamont;lprof;public;65016;Tarbes
+0650877A;Peyramale - Saint-Joseph;college;prive;65100;Lourdes
+0650878B;Notre-Dame de Garaison;college;prive;65670;Monléon-Magnoac
+0650879C;Saint-Pierre;college;prive;65270;Saint-Pé-de-Bigorre
+0650880D;Jeanne D'Arc;college;prive;65000;Tarbes
+0650881E;Saint-Dominique;college;prive;65000;Tarbes
+0650882F;Notre-Dame De La Sède;college;prive;65000;Tarbes
+0650885J;Notre-Dame de Garaison;lprof;prive;65670;Monléon-Magnoac
+0650886K;Saint-Pierre;lprof;prive;65000;Saint-Pé-de-Bigorre
+0650921Y;Saint-Pierre;lycee;prive;65000;Saint-Pé-de-Bigorre
+0651004N;Pradeau - La Sède;college;prive;65000;Tarbes
+0651024K;Saint-Joseph;college;prive;65150;Cantaous
+0810002M;Alain Fournier;college;public;81250;Alban
+0810003N;Henri De Toulouse-Lautrec;lprof;public;81000;Albi
+0810004P;Louis Rascol;lycee;public;81012;Albi
+0810005R;Bellevue;lycee;public;81030;Albi
+0810006S;J.-F. Galaup De Lapérouse;lycee;public;81030;Albi
+0810008U;-;college;public;81260;Brassac
+0810012Y;Jean Jaurès;lycee;public;81400;Carmaux
+0810016C;Le Sidobre;lprof;public;81103;Castres
+0810018E;Anne Veaute;lprof;public;81104;Castres
+0810019F;du Val Cérou;college;public;81170;Cordes-sur-Ciel
+0810020G;Madeleine Cros;college;public;81110;Dourgne
+0810023K;-;lprof;public;81604;Gaillac
+0810025M;La Vallée du Thore;college;public;81270;Labastide-Rouairoux
+0810026N;Marcel Pagnol;college;public;81290;Labruguière
+0810027P;La Balme;college;public;81230;Lacaune
+0810028R;-;college;public;81440;Lautrec
+0810030T;Las Cases;lycee;public;81500;Lavaur
+0810032V;Marie-Antoinette Riess;lprof;public;81207;Mazamet
+0810033W;Maréchal Soult;lycee;public;81207;Mazamet
+0810036Z;Jacques Durand;college;public;81700;Puylaurens
+0810037A;Léon Gambetta;college;public;81800;Rabastens
+0810038B;Louisa Paulin;college;public;81120;Réalmont
+0810041E;Pierre Suc;college;public;81370;Saint-Sulpice
+0810043G;Eustache De Beaumarchais;college;public;81340;Valence-d'Albigeois
+0810044H;René Cassin;college;public;81570;Vielmur-sur-Agout
+0810046K;Louis Rascol;lprof;public;81012;Albi
+0810047L;Aucouturier;lprof;public;81400;Carmaux
+0810048M;Edouard Barbey;lprof;public;81207;Mazamet
+0810051R;Aristide Bruant;college;public;81000;Albi
+0810052S;Honoré De Balzac;college;public;81000;Albi
+0810061B;Jean Monnet;college;public;81100;Castres
+0810067H;Icecla - Bon Sauveur;lycee;prive;81000;Albi
+0810068J;Sainte-Marie;lycee;prive;81000;Albi
+0810070L;Emilie De Villeneuve;college;prive;81105;Castres
+0810071M;Barral;lycee;prive;81100;Castres
+0810072N;Présentation de Notre-Dame;lycee;prive;81103;Castres
+0810075S;Saint-Joseph De L'Apparition;lycee;prive;81600;Gaillac
+0810078V;Sainte-Germaine;lycee;prive;81500;Massac-Séran
+0810079W;Jeanne D'Arc;lycee;prive;81207;Mazamet
+0810086D;de la Croix Haute;college;prive;81400;Carmaux
+0810088F;Saint-Joseph;college;prive;81100;Castres
+0810089G;Saint-Dominique;college;prive;81290;Labruguière
+0810092K;Puységur;college;prive;81800;Rabastens
+0810095N;Sainte-Cécile;lycee;prive;81000;Albi
+0810097R;Emilie De Villeneuve;lprof;prive;81105;Castres
+0810100U;Saint-Dominique;lprof;prive;81000;Albi
+0810103X;Emilie De Villeneuve;lycee;prive;81101;Castres
+0810105Z;Saint-Joseph;lprof;prive;81100;Castres
+0810108C;Notre-Dame;lprof;prive;81200;Mazamet
+0810113H;Présentation de Notre-Dame;lprof;prive;81101;Castres
+0810121S;-;lycee;public;81000;Albi
+0810122T;Saint-Jean;college;prive;81370;Saint-Sulpice
+0810124V;du Saut de Sabo;college;public;81160;Saint-Juéry
+0810125W;Louis Pasteur;college;public;81300;Graulhet
+0810126X;Bonnecombe;college;public;81200;Mazamet
+0810127Y;Marcel Pagnol;college;public;81200;Mazamet
+0810578N;-;lprof;public;81500;Lavaur
+0810787R;Victor Hugo;college;public;81400;Carmaux
+0810788S;Augustin Malroux;college;public;81400;Blaye-les-Mines
+0810833R;de Touscayrats;lycee;prive;81110;Verdalle
+0810841Z;Les Pradelles;college;prive;81340;Valence-d'Albigeois
+0810959C;de la Borde Basse;lycee;public;81108;Castres
+0810960D;Jean Jaurès;college;public;81100;Castres
+0810961E;Les Cèdres;college;public;81103;Castres
+0810962F;de la Borde Basse;lprof;public;81108;Castres
+0810993P;Albert Camus;college;public;81600;Gaillac
+0810995S;Docteur Clément De Pemille;lprof;public;81302;Graulhet
+0811015N;du Viaur;lycee;prive;81340;Valence-d'Albigeois
+0811028C;Louis Rascol;college;public;81006;Albi
+0811029D;J.-F. Galaup De Lapérouse;college;public;81000;Albi
+0811030E;Bellevue;college;public;81030;Albi
+0811032G;Les Clauzades;college;public;81500;Lavaur
+0811048Z;Icecla - Jeanne D'Arc;college;prive;81000;Albi
+0811061N;Bon Sauveur;college;prive;81000;Albi
+0811062P;Sainte-Marie;college;prive;81000;Albi
+0811063R;Barral;college;prive;81100;Castres
+0811064S;Notre-Dame;college;prive;81100;Castres
+0811065T;Saint-Joseph De L'Apparition;college;prive;81600;Gaillac
+0811066U;Sainte-Germaine;college;prive;81500;Lavaur
+0811067V;Jeanne D'Arc;college;prive;81200;Mazamet
+0811070Y;Sainte-Cécile;lprof;prive;81000;Albi
+0811144D;hôtelier;lprof;public;81207;Mazamet
+0811175M;Saint-Joseph;lycee;prive;81100;Castres
+0811197L;Jean Jaurès;college;public;81000;Albi
+0820001F;-;lprof;public;82500;Beaumont-de-Lomagne
+0820004J;Jean De Prades;lycee;public;82102;Castelsarrasin
+0820006L;-;lprof;public;82303;Caussade
+0820007M;Pierre Darasse;college;public;82300;Caussade
+0820011S;Antonin Perbosc;college;public;82130;Lafrançaise
+0820014V;du Pays de Serres;college;public;82110;Lauzerte
+0820016X;François Mitterrand;lycee;public;82201;Moissac
+0820017Y;François Mitterrand;college;public;82200;Moissac
+0820020B;Michelet;lycee;public;82004;Montauban
+0820021C;Bourdelle;lycee;public;82003;Montauban
+0820022D;Jean-Auguste-Dominique Ingres;college;public;82000;Montauban
+0820029L;Jean Rostand;college;public;82400;Valence-d'Agen
+0820032P;Bourdelle;lprof;public;82003;Montauban
+0820039X;Jean Baylet;lprof;public;82403;Valence-d'Agen
+0820043B;Jeanne D'Arc;lycee;prive;82200;Moissac
+0820044C;Institut Familial;lycee;prive;82005;Montauban
+0820046E;Saint-Théodard;lycee;prive;82017;Montauban
+0820047F;Saint-Joseph;college;prive;82500;Beaumont-de-Lomagne
+0820048G;Saint-Antoine;college;prive;82300;Caussade
+0820050J;Sainte-Agnès;college;prive;82150;Montaigu-de-Quercy
+0820052L;Notre-Dame;college;prive;82000;Montauban
+0820053M;Jean De La Valette;college;prive;82160;Parisot
+0820061W;Montauriol;lprof;prive;82000;Montauban
+0820066B;Jean De Prades;college;public;82100;Castelsarrasin
+0820067C;Théodore Despeyrous;college;public;82500;Beaumont-de-Lomagne
+0820531G;-;lprof;public;82201;Moissac
+0820551D;Saint-Roch;lprof;prive;82390;Durfort-Lacapelette
+0820559M;-;lycee;public;82000;Montauban
+0820588U;Olympe De Gouges;college;public;82000;Montauban
+0820678S;Saint-Roch;college;prive;82390;Durfort-Lacapelette
+0820683X;Jean Lacaze;college;public;82170;Grisolles
+0820684Y;Jean Jaurès;college;public;82000;Montauban
+0820700R;Jean De Prades;lprof;public;82102;Castelsarrasin
+0820704V;Pierre Bayrou;college;public;82140;Saint-Antonin-Noble-Val
+0820713E;Pierre Flamens;college;public;82100;Castelsarrasin
+0820724S;-;lprof;prive;82500;Beaumont-de-Lomagne
+0820725T;Clair Foyer Caussadais;lprof;prive;82300;Caussade
+0820753Y;Jeanne D'Arc;college;prive;82200;Moissac
+0820754Z;-;college;prive;82000;Montauban
+0820755A;Saint-Théodard;college;prive;82000;Montauban
+0820823Z;Jean-Jacques Rousseau;college;public;82370;Labastide-Saint-Pierre
+0820824A;Jean-Honoré Fragonard;college;public;82800;Nègrepelisse
+0820828E;Saint-Roch;lprof;prive;82390;Durfort-Lacapelette
+0820883P;-;lycee;public;82300;Monteils

@@ -1,0 +1,461 @@
+0170002K;Arlette Guirado;college;public;17520;Archiac
+0170004M;-;college;public;17770;Burie
+0170005N;Aliénor D'Aquitaine;college;public;17480;Le-Château-d'Oléron
+0170007R;Jean Monnet;college;public;17170;Courçon
+0170008S;Les Vieilles Vignes;college;public;17120;Cozes
+0170009T;Jules Ferry;college;public;17260;Gémozac
+0170010U;Françoise Dolto;college;public;17220;La-Jarrie
+0170011V;Léopold Dussaigne;college;public;17500;Jonzac
+0170012W;La Trézence;college;public;17330;Loulay
+0170016A;Didier Daurat;college;public;17150;Mirambeau
+0170035W;Beauregard;college;public;17000;La-Rochelle
+0170037Y;-;ecole;public;17470;Loiré-sur-Nie
+0170039A;-;ecole;public;17510;Néré
+0170041C;-;ecole;public;17470;Nuaillé-sur-Boutonne
+0170047J;Jean Monnet;college;public;17620;Saint-Agnant
+0170048K;Bernard Roussillon;college;public;17360;Saint-Aigulin
+0170049L;Maurice Chastang;college;public;17240;Saint-Genis-de-Saintonge
+0170050M;Raymond Bouyer;college;public;17770;Saint-Hilaire-de-Villefranche
+0170055T;-;college;public;17250;Saint-Porchaire
+0170056U;Robert Cellerier;college;public;17350;Saint-Savinien
+0170059X;Agrippa d'Aubigné;college;public;17100;Saintes
+0170063B;Edgar Quinet;college;public;17100;Saintes
+0170066E;-;ecole;public;17470;Saint-Mandé-sur-Brédoire
+0170068G;-;ecole;public;17400;Saint-Pierre-de-Juillers
+0170071K;Hélène De Fonsèque;college;public;17700;Surgères
+0170072L;Joliot-Curie;college;public;17430;Tonnay-Charente
+0170076R;La Fontaine;college;public;17210;Montlieu-la-Garde
+0170077S;Pierre Mendès-France;college;public;17000;La-Rochelle
+0170081W;La Fayette;college;public;17300;Rochefort
+0170082X;Marcel Pagnol;college;public;17380;Tonnay-Boutonne
+0170088D;Samuel De Missy;college;public;17000;La-Rochelle
+0170099R;Fénelon;college;prive;17000;La-Rochelle
+0170102U;Jeanne D'Arc;college;prive;17100;Saintes
+0170110C;Saint-Sacrement;college;prive;17290;Aigrefeuille-d'Aunis
+0170111D;Notre-Dame de Nazareth;college;prive;17120;Cozes
+0170112E;Marie Eustelle;college;prive;17230;Marans
+0170113F;Sainte-Marie de la Providence;college;prive;17300;Rochefort
+0170118L;Sainte-Sophie;college;prive;17400;Saint-Jean-d'Angély
+0170120N;Jeanne D'Arc;college;prive;17700;Surgères
+0170142M;Albert Camus;college;public;17000;La-Rochelle
+0170144P;René Caillié;college;public;17100;Saintes
+0170150W;Léon Gambetta;ecole;public;17400;Saint-Jean-d'Angély
+0170151X;Joseph Lair;ecole;public;17400;Saint-Jean-d'Angély
+0170153Z;-;ecole;public;17400;Antezant-la-Chapelle
+0170155B;-;ecole;public;17400;Asnières-la-Giraud
+0170156C;-;ecole;public;17400;La-Benâte
+0170157D;-;ecole;public;17400;Bignay
+0170159F;-;ecole;public;17400;Les-Eglises-d'Argenteuil
+0170161H;-;ecole;public;17400;Fontenet
+0170165M;-;ecole;public;17400;Saint-Denis-du-Pin
+0170166N;-;ecole;public;17400;Poursay-Garnaud
+0170167P;-;ecole;public;17400;Saint-Julien-de-l'Escap
+0170170T;-;ecole;public;17400;Varaize
+0170172V;-;ecole;public;17400;La-Vergne
+0170175Y;-;ecole;public;17490;Beauvais-sur-Matha
+0170176Z;-;ecole;public;17610;Chérac
+0170180D;-;ecole;public;17260;Villars-en-Pons
+0170184H;-;ecole;public;17160;Prignac
+0170187L;-;ecole;public;17160;Sonnac
+0170191R;-;ecole;public;17160;Les-Touches-de-Périgny
+0170192S;-;ecole;public;17380;Tonnay-Boutonne
+0170196W;-;ecole;public;17380;Puyrolland
+0170197X;-;ecole;public;17380;Saint-Loup
+0170200A;-;ecole;public;17330;Loulay
+0170201B;-;ecole;public;17330;Bernay-Saint-Martin
+0170206G;-;ecole;public;17330;Courant
+0170212N;-;ecole;public;17330;Lozay
+0170215S;-;ecole;public;17330;Saint-Félix
+0170220X;-;ecole;public;17330;Villeneuve-la-Comtesse
+0170224B;-;ecole;public;17470;Aulnay
+0170229G;Marcel Proust;ecole;public;17470;Dampierre-sur-Boutonne
+0170230H;-;ecole;public;17510;Fontaine-Chalendray
+0170233L;François Rabelais;ecole;public;17350;Taillebourg
+0170235N;Jean Lartigue;ecole;public;17770;Saint-Hilaire-de-Villefranche
+0170237R;-;ecole;public;17770;Aujac
+0170239T;des Hilairets;ecole;public;17770;Aumagne
+0170244Y;Yves Bray;ecole;public;17770;Brizambourg
+0170254J;-;ecole;public;17380;Archingeay
+0170255K;Jules Ferry;ecole;public;17430;Bords
+0170257M;-;ecole;public;17430;Champdolent
+0170261S;-;ecole;public;17380;Les-Nouillers
+0170263U;-;ecole;public;17160;Matha
+0170265W;-;ecole;public;17160;Ballans
+0170271C;-;ecole;public;17160;La-Brousse
+0170279L;-;ecole;public;17490;Macqueville
+0170282P;-;ecole;public;17160;Mons
+0170283R;Emile Combes;ecole;public;17260;Gémozac
+0170286U;-;ecole;public;17460;Berneuil
+0170290Y;-;ecole;public;17120;Meursac
+0170293B;-;ecole;public;17460;Rétaud
+0170296E;-;ecole;public;17260;Saint-Simon-de-Pellouaille
+0170306R;-;ecole;public;17770;Migron
+0170308T;-;ecole;public;17770;Saint-Bris-des-Bois
+0170310V;-;ecole;public;17770;Saint-Césaire
+0170314Z;Agrippa d'Aubigné;ecole;public;17800;Pons
+0170316B;-;ecole;public;17800;Avy
+0170318D;-;ecole;public;17800;Biron
+0170319E;-;ecole;public;17800;Bougneau
+0170321G;-;ecole;public;17800;Coulonges
+0170322H;-;ecole;public;17800;Echebrune
+0170324K;-;ecole;public;17800;Marignac
+0170326M;-;ecole;public;17800;Montils
+0170328P;-;ecole;public;17800;Pérignac
+0170337Z;Gustave Courbet;ecole;public;17100;Bussac-sur-Charente
+0170340C;Pierre De Ronsard;ecole;public;17610;Chaniers
+0170343F;-;ecole;public;17100;La-Chapelle-des-Pots
+0170344G;-;ecole;public;17100;Le-Douhet
+0170345H;-;ecole;public;17100;Fontcouverte
+0170347K;-;ecole;public;17100;Saint-Vaize
+0170348L;-;ecole;public;17100;Vénérand
+0170349M;Docteur Ménudier;ecole;public;17460;Chermignac
+0170350N;-;ecole;public;17460;Colombiers
+0170351P;-;ecole;public;17100;Courcoury
+0170352R;-;ecole;public;17810;Ecurat
+0170353S;-;ecole;public;17100;Les-Gonds
+0170355U;-;ecole;public;17460;La-Jard
+0170356V;-;ecole;public;17810;Nieul-lès-Saintes
+0170357W;-;ecole;public;17810;Pessines
+0170358X;-;ecole;public;17460;Préguillac
+0170359Y;-;ecole;public;17810;Saint-Georges-des-Coteaux
+0170361A;-;ecole;public;17460;Thénac
+0170364D;Eugène Pelletan;ecole;public;17100;Saintes
+0170367G;Louis Pasteur;ecole;public;17100;Saintes
+0170369J;Paul Bert;ecole;public;17100;Saintes
+0170371L;Léo Lagrange;ecole;public;17100;Saintes
+0170372M;Nicolas Lemercier;ecole;public;17100;Saintes
+0170374P;Jules Ferry;ecole;public;17100;Saintes
+0170376S;-;ecole;public;17800;Chadenac
+0170378U;-;ecole;public;17460;Rioux
+0170380W;-;ecole;public;17260;Saint-André-de-Lidon
+0170382Y;-;ecole;public;17260;Jazennes
+0170384A;Sainte-Marie - Saint-Jean-Baptiste;college;prive;17200;Royan
+0170386C;Jean Hay;college;public;17320;Marennes
+0170387D;André Albert;college;public;17600;Saujon
+0170388E;Fernand Garandeau;college;public;17390;La-Tremblade
+0170389F;Emile Combes;college;public;17800;Pons
+0170390G;Samuel Dumenieu;college;public;17130;Montendre
+0170392J;-;EREA;public;17100;Saintes
+0170459G;-;ecole;public;17520;Saint-Martial-sur-Né
+0170460H;-;ecole;public;17270;Saint-Martin-d'Ary
+0170461J;-;ecole;public;17360;Saint-Martin-de-Coux
+0170462K;Jules Ferry;ecole;public;17410;Saint-Martin-de-Ré
+0170463L;-;ecole;public;17220;Saint-Médard-d'Aunis
+0170464M;-;ecole;public;17780;Saint-Nazaire-sur-Charente
+0170466P;-;ecole;public;17230;Saint-Ouen-d'Aunis
+0170467R;-;ecole;public;17210;Saint-Palais-de-Négrignac
+0170473X;-;ecole;public;17700;Saint-Pierre-d'Amilly
+0170475Z;Pierre Loti;ecole;public;17310;Saint-Pierre-d'Oléron
+0170477B;Jean Jaurès;ecole;public;17310;Saint-Pierre-d'Oléron
+0170480E;-;ecole;public;17250;Saint-Porchaire
+0170484J;-;ecole;public;17220;Saint-Rogatien
+0170486L;-;ecole;public;17600;Saint-Romain-de-Benet
+0170491S;-;ecole;public;17540;Saint-Sauveur-d'Aunis
+0170505G;-;ecole;public;17590;Saint-Clément-des-Baleines
+0170510M;-;ecole;public;17650;Saint-Denis-d'Oléron
+0170511N;-;ecole;public;17240;Saint-Dizant-du-Gua
+0170514S;-;ecole;public;17240;Saint-Fort-sur-Gironde
+0170516U;-;ecole;public;17780;Saint-Froult
+0170517V;-;ecole;public;17250;Sainte-Gemme
+0170518W;-;ecole;public;17240;Saint-Genis-de-Saintonge
+0170520Y;-;ecole;public;17240;Saint-Georges-Antignac
+0170521Z;Jean Zay;ecole;public;17110;Saint-Georges-de-Didonne
+0170529H;-;ecole;public;17700;Saint-Georges-du-Bois
+0170533M;Jules Ferry;ecole;public;17500;Saint-Germain-de-Lusignan
+0170535P;-;ecole;public;17700;Saint-Germain-de-Marencennes
+0170538T;-;ecole;public;17240;Saint-Germain-du-Seudre
+0170542X;-;ecole;public;17620;Saint-Jean-d'Angle
+0170543Y;-;ecole;public;17170;Saint-Jean-de-Liversay
+0170549E;-;ecole;public;17450;Saint-Laurent-de-la-Prée
+0170550F;-;ecole;public;17520;Sainte-Lheurine
+0170553J;-;ecole;public;17700;Saint-Mard
+0170554K;2;ecole;public;17000;La-Rochelle
+0170555L;La Genette;ecole;public;17000;La-Rochelle
+0170557N;Laleu;ecole;public;17000;La-Rochelle
+0170558P;Daniel Massiou;ecole;public;17000;La-Rochelle
+0170559R;Louis Guillet;ecole;public;17000;La-Rochelle
+0170562U;Les Grandes Varennes;ecole;public;17000;La-Rochelle
+0170564W;Jean Bart;ecole;public;17000;La-Rochelle
+0170568A;Claude Nicolas;ecole;public;17000;La-Rochelle
+0170569B;Barthélémy Profit;ecole;public;17000;La-Rochelle
+0170572E;René Descartes;ecole;public;17000;La-Rochelle
+0170574G;Le Prieuré;ecole;public;17000;La-Rochelle
+0170575H;Réaumur;ecole;public;17000;La-Rochelle
+0170576J;Pierre Loti;ecole;public;17000;La-Rochelle
+0170579M;Raymond Bouchet;ecole;public;17000;La-Rochelle
+0170580N;René-Josué Valin;ecole;public;17000;La-Rochelle
+0170581P;-;ecole;public;17250;Romegoux
+0170584T;-;ecole;public;17130;Rouffignac
+0170585U;Louis Bouchet;ecole;public;17200;Royan
+0170587W;La Clairière;ecole;public;17200;Royan
+0170589Y;Jules Ferry;ecole;public;17200;Royan
+0170590Z;de Maine-Geoffroy;ecole;public;17200;Royan
+0170593C;-;ecole;public;17600;Sablonceaux
+0170595E;-;ecole;public;17620;Saint-Agnant
+0170597G;-;ecole;public;17360;Saint-Aigulin
+0170598H;des Chênes;ecole;public;17570;Saint-Augustin
+0170599J;Jean Jaurès;ecole;public;17150;Saint-Bonnet-sur-Gironde
+0170601L;-;ecole;public;17220;Saint-Christophe
+0170602M;-;ecole;public;17520;Saint-Ciers-Champagne
+0170603N;-;ecole;public;17240;Saint-Ciers-du-Taillon
+0170604P;Jules Ferry;ecole;public;17700;Surgères
+0170605R;Jean Jaurès;ecole;public;17700;Surgères
+0170607T;-;ecole;public;17170;Taugon
+0170612Y;-;ecole;public;17290;Le-Thou
+0170615B;de Plaisance;ecole;public;17430;Tonnay-Charente
+0170618E;La Sablière;ecole;public;17390;La-Tremblade
+0170620G;-;ecole;public;17250;Trizay
+0170622J;-;ecole;public;17250;La-Vallée
+0170624L;-;ecole;public;17700;Vandré
+0170625M;-;ecole;public;17500;Vanzac
+0170628R;André Fort;ecole;public;17300;Vergeroux
+0170629S;Lucile Desmoulins;ecole;public;17540;Vérines
+0170633W;-;ecole;public;17230;Villedoux
+0170634X;-;ecole;public;17500;Villexavier
+0170636Z;-;ecole;public;17700;Vouhé
+0170637A;Le Marouillet;ecole;public;17340;Yves
+0170638B;René Descartes;ecole;public;17730;Port-des-Barques
+0170640D;-;ecole;public;17370;Le-Grand-Village-Plage
+0170641E;-;ecole;public;17840;La-Brée-les-Bains
+0170642F;1;ecole;public;17000;La-Rochelle
+0170644H;Beauregard;ecole;public;17000;La-Rochelle
+0170646K;Marcelin Berthelot;ecole;public;17000;La-Rochelle
+0170647L;de Bongraine;ecole;public;17000;La-Rochelle
+0170651R;Paul Doumer;ecole;public;17000;La-Rochelle
+0170653T;Bernard Palissy;ecole;public;17000;La-Rochelle
+0170654U;-;ecole;public;17138;Puilboreau
+0170656W;-;ecole;public;17700;Puyravault
+0170657X;-;ecole;public;17500;Réaux
+0170658Y;-;ecole;public;17940;Rivedoux-Plage
+0170660A;Antoine De Saint-Exupéry;ecole;public;17300;Rochefort
+0170662C;Jean-Baptiste Colbert;ecole;public;17300;Rochefort
+0170663D;Emile Zola;ecole;public;17300;Rochefort
+0170664E;Georges Guérineau;ecole;public;17300;Rochefort
+0170666G;Libération;ecole;public;17300;Rochefort
+0170668J;Samuel De Champlain;ecole;public;17300;Rochefort
+0170670L;Anatole France;ecole;public;17300;Rochefort
+0170672N;Edouard Herriot;ecole;public;17300;Rochefort
+0170675S;-;ecole;public;17500;Saint-Simon-de-Bordes
+0170677U;-;ecole;public;17680;Saint-Sornin
+0170678V;Pierre Giraudet;ecole;public;17220;Sainte-Soulle
+0170680X;d'Usseau;ecole;public;17220;Sainte-Soulle
+0170681Y;-;ecole;public;17250;Saint-Sulpice-d'Arnoult
+0170682Z;Denis Ricard;ecole;public;17200;Saint-Sulpice-de-Royan
+0170683A;-;ecole;public;17150;Saint-Thomas-de-Conac
+0170687E;-;ecole;public;17220;Saint-Vivien
+0170688F;-;ecole;public;17138;Saint-Xandre
+0170690H;-;ecole;public;17130;Salignac-de-Mirambeau
+0170691J;-;ecole;public;17220;Salles-sur-Mer
+0170692K;La Seudre;ecole;public;17600;Saujon
+0170698S;-;ecole;public;17780;Soubise
+0170700U;-;ecole;public;17150;Soubran
+0170701V;-;ecole;public;17250;Soulignonne
+0170703X;-;ecole;public;17130;Sousmoulins
+0170704Y;-;ecole;public;17500;Meux
+0170705Z;-;ecole;public;17150;Mirambeau
+0170710E;Jacques Baumont;ecole;public;17130;Montendre
+0170711F;-;ecole;public;17270;Montguyon
+0170714J;Le Petit Prince;ecole;public;17210;Montlieu-la-Garde
+0170715K;Grains de Sable;ecole;public;17210;Montlieu-la-Garde
+0170717M;-;ecole;public;17430;Moragne
+0170718N;-;ecole;public;17113;Mornac-sur-Seudre
+0170719P;-;ecole;public;17120;Mortagne-sur-Gironde
+0170722T;-;ecole;public;17240;Mosnac
+0170723U;-;ecole;public;17430;Muron
+0170726X;-;ecole;public;17600;Nancras
+0170727Y;-;ecole;public;17520;Neuillac
+0170729A;-;ecole;public;17270;Neuvicq
+0170732D;Gabriel Chobelet;ecole;public;17137;Nieul-sur-Mer
+0170733E;du Fief Arnaud;ecole;public;17137;Nieul-sur-Mer
+0170735G;-;ecole;public;17680;Nieulle-sur-Seudre
+0170736H;-;ecole;public;17540;Nuaillé-d'Aunis
+0170737J;-;ecole;public;17210;Orignolles
+0170738K;-;ecole;public;17500;Ozillac
+0170739L;-;ecole;public;17700;Péré
+0170741N;des Coureilles;ecole;public;17180;Périgny
+0170742P;de Rompsay;ecole;public;17180;Périgny
+0170743R;Georges Couturier;ecole;public;17600;Pisany
+0170744S;-;ecole;public;17240;Plassac
+0170748W;René Caillié;ecole;public;17250;Pont-l'Abbé-d'Arnoult
+0170752A;-;ecole;public;17880;Les-Portes-en-Ré
+0170753B;-;ecole;public;17210;Pouillac
+0170755D;-;ecole;public;17520;Germignac
+0170757F;Octave Chesse;ecole;public;17170;La-Grève-sur-Mignon
+0170758G;-;ecole;public;17120;Grézac
+0170764N;-;ecole;public;17500;Guitinières
+0170765P;Samuel De Champlain;ecole;public;17320;Hiers-Brouage
+0170766R;Le Petit Prince;ecole;public;17137;L'Houmeau
+0170768T;-;ecole;public;17520;Jarnac-Champagne
+0170772X;Jacques Tati;ecole;public;17220;La-Jarrie
+0170773Y;Jules Verne;ecole;public;17220;La-Jarrie
+0170775A;André Malraux;ecole;public;17500;Jonzac
+0170776B;Le Treuil des Filles;ecole;public;17140;Lagord
+0170778D;-;ecole;public;17170;La-Laigne
+0170780F;-;ecole;public;17500;Léoville
+0170783J;-;ecole;public;17230;Longèves
+0170784K;-;ecole;public;17520;Lonzac
+0170788P;-;ecole;public;17430;Lussant
+0170791T;Jules Ferry;ecole;public;17230;Marans
+0170792U;Henri Aubin;ecole;public;17320;Marennes
+0170795X;Boisse;ecole;public;17700;Marsais
+0170796Y;-;ecole;public;17137;Marsilly
+0170798A;-;ecole;public;17570;Les-Mathes
+0170804G;-;ecole;public;17360;La-Clotte
+0170805H;-;ecole;public;17150;Consac
+0170807K;-;ecole;public;17600;Corme-Ecluse
+0170812R;-;ecole;public;17170;Courçon
+0170814T;-;ecole;public;17130;Courpignac
+0170815U;-;ecole;public;17130;Coux
+0170817W;-;ecole;public;17120;Cozes
+0170822B;-;ecole;public;17220;Croix-Chapeau
+0170825E;Pablo Picasso;ecole;public;17139;Dompierre-sur-Mer
+0170826F;Paul Eluard;ecole;public;17139;Dompierre-sur-Mer
+0170827G;François Villon;ecole;public;17139;Dompierre-sur-Mer
+0170828H;-;ecole;public;17620;Echillais
+0170830K;-;ecole;public;17680;L'Eguille
+0170833N;Jean-Georges Belloteau;ecole;public;17120;Epargnes
+0170835R;Chemin Blanc;ecole;public;17137;Esnandes
+0170836S;-;ecole;public;17250;Les-Essards
+0170837T;-;ecole;public;17750;Etaules
+0170840W;-;ecole;public;17170;Ferrières
+0170844A;-;ecole;public;17500;Fontaines-d'Ozillac
+0170845B;-;ecole;public;17290;Forges
+0170846C;-;ecole;public;17270;Le-Fouilloux
+0170849F;Jean Michenot;ecole;public;17450;Fouras
+0170853K;-;ecole;public;17430;Genouillé
+0170854L;-;ecole;public;17700;Breuil-la-Réorte
+0170855M;-;ecole;public;17920;Breuillet
+0170861U;-;ecole;public;17120;Brie-sous-Mortagne
+0170862V;-;ecole;public;17210;Bussac-Forêt
+0170867A;-;ecole;public;17270;Cercoux
+0170870D;-;ecole;public;17890;Chaillevette
+0170873G;-;ecole;public;17290;Aigrefeuille-d'Aunis
+0170874H;-;ecole;public;17123;Ile-d'Aix
+0170877L;-;ecole;public;17540;Anais
+0170879N;-;ecole;public;17230;Andilly
+0170881R;-;ecole;public;17290;Chambon
+0170883T;-;ecole;public;17500;Champagnac
+0170886W;-;ecole;public;17240;Champagnolles
+0170887X;de Chardes;ecole;public;17130;Montendre
+0170888Y;-;ecole;public;17230;Charron
+0170891B;Pierre D'Argencourt;ecole;public;17480;Le-Château-d'Oléron
+0170894E;Pierre Jonchery;ecole;public;17340;Châtelaillon-Plage
+0170895F;Les Boucholeurs;ecole;public;17340;Châtelaillon-Plage
+0170898J;-;ecole;public;17600;Le-Chay
+0170901M;-;ecole;public;17210;Chepniers
+0170903P;-;ecole;public;17210;Chevanceaux
+0170905S;-;ecole;public;17520;Cierzac
+0170906T;du Marais;ecole;public;17290;Ciré-d'Aunis
+0170908V;Pierre Perret;ecole;public;17220;Clavette
+0170909W;-;ecole;public;17270;Clérac
+0170912Z;-;ecole;public;17600;La-Clisse
+0170913A;de Sérigny;ecole;public;17230;Andilly
+0170914B;-;ecole;public;17540;Angliers
+0170915C;Jean Moulin;ecole;public;17690;Angoulins
+0170918F;-;ecole;public;17120;Arces
+0170919G;-;ecole;public;17520;Archiac
+0170921J;-;ecole;public;17290;Ardillières
+0170924M;-;ecole;public;17520;Arthenac
+0170925N;-;ecole;public;17530;Arvert
+0170927R;Jacques Prévert - Jules Ferry;ecole;public;17440;Aytré
+0170929T;La Courbe;ecole;public;17440;Aytré
+0170932W;La Petite Couture;ecole;public;17440;Aytré
+0170937B;Jean Bouchet;ecole;public;17620;Beaugeay
+0170938C;-;ecole;public;17210;Bedenac
+0170940E;-;ecole;public;17170;Benon
+0170941F;-;ecole;public;17250;Beurlay
+0170945K;-;ecole;public;17150;Boisredon
+0170946L;-;ecole;public;17270;Boresse-et-Martron
+0170948N;-;ecole;public;17540;Bouhet
+0170950R;Edouard Herriot;ecole;public;17560;Bourcefranc-le-Chapus
+0170951S;-;ecole;public;17220;Bourgneuf
+0170970M;Jean Guiton;college;public;17140;Lagord
+0171013J;-;ecole;public;17770;Burie
+0171014K;Evariste Poitevin;ecole;public;17770;Ecoyeux
+0171015L;-;ecole;public;17132;Meschers-sur-Gironde
+0171016M;-;ecole;public;17350;Saint-Savinien
+0171022U;Maurice Calmel;college;public;17230;Marans
+0171026Y;Clément Juchereau;ecole;public;17000;La-Rochelle
+0171034G;Les Salières;college;public;17410;Saint-Martin-de-Ré
+0171056F;Edouard Grimaux;college;public;17300;Rochefort
+0171057G;Pierre Loti;college;public;17300;Rochefort
+0171068U;Notre-Dame - Saint-Joseph;ecole;prive;17390;La-Tremblade
+0171070W;Sainte-Anne;ecole;prive;17430;Tonnay-Charente
+0171071X;Jeanne D'Arc;ecole;prive;17700;Surgères
+0171072Y;Jeanne D'Arc;ecole;prive;17600;Saujon
+0171073Z;Notre-Dame de Recouvrance;ecole;prive;17100;Saintes
+0171074A;Marie-Eustelle;ecole;prive;17100;Saintes
+0171075B;Jeanne D'Arc;ecole;prive;17100;Saintes
+0171076C;Jeanne D'Arc;ecole;prive;17310;Saint-Pierre-d'Oléron
+0171077D;Sainte-Sophie;ecole;prive;17400;Saint-Jean-d'Angély
+0171079F;Sainte-Marie - Saint-Jean-Baptiste;ecole;prive;17200;Royan
+0171082J;La Providence;ecole;prive;17000;La-Rochelle
+0171083K;Saint-Joseph;ecole;prive;17000;La-Rochelle
+0171084L;Notre-Dame;ecole;prive;17000;La-Rochelle
+0171085M;Saint-Joseph;ecole;prive;17300;Rochefort
+0171086N;Sainte-Marie de la Providence;ecole;prive;17300;Rochefort
+0171087P;Saint-Louis - Saint-Pierre;ecole;prive;17250;Pont-l'Abbé-d'Arnoult
+0171089S;Sainte-Marie;ecole;prive;17800;Pons
+0171090T;Sainte-Eustelle;ecole;prive;17500;Ozillac
+0171092V;Notre-Dame - La Providence;ecole;prive;17160;Matha
+0171093W;Sacré-Coeur;ecole;prive;17700;Marsais
+0171094X;Marie-Eustelle;ecole;prive;17230;Marans
+0171095Y;Sainte-Catherine;ecole;prive;17630;La-Flotte
+0171096Z;Notre-Dame de Nazareth;ecole;prive;17120;Cozes
+0171099C;Saint-Sacrement;ecole;prive;17290;Aigrefeuille-d'Aunis
+0171106K;Roger Pérat;ecole;public;17100;Saintes
+0171108M;-;ecole;public;17120;Semussac
+0171109N;-;ecole;public;17160;Haimps
+0171110P;-;ecole;public;17520;Brie-sous-Archiac
+0171111R;-;ecole;public;17670;La-Couarde-sur-Mer
+0171117X;Fabre D'Eglantine;college;public;17000;La-Rochelle
+0171118Y;Georges Texier;college;public;17400;Saint-Jean-d'Angély
+0171120A;Henri Dunant;college;public;17200;Royan
+0171122C;Emile Zola;college;public;17200;Royan
+0171129K;André Dulin;college;public;17290;Aigrefeuille-d'Aunis
+0171136T;-;ecole;public;17590;Ars-en-Ré
+0171137U;-;ecole;public;17430;Cabariot
+0171138V;Louis Pasteur;ecole;public;17610;Le-Maine-Allain
+0171139W;-;ecole;public;17220;La-Jarne
+0171140X;-;ecole;public;17400;Mazeray
+0171141Y;-;ecole;public;17350;Port-d'Envaux
+0171142Z;Condorcet;ecole;public;17000;La-Rochelle
+0171143A;Lavoisier;ecole;public;17000;La-Rochelle
+0171145C;L'Yeuse;ecole;public;17200;Royan
+0171147E;-;ecole;public;17520;Saint-Maigrin
+0171148F;Henri Seguin;ecole;public;17370;Saint-Trojan-les-Bains
+0171149G;-;ecole;public;17290;Thairé
+0171154M;Paul Michaud;ecole;public;17340;Châtelaillon-Plage
+0171159T;Marc Jeanjean;college;public;17160;Matha
+0171160U;-;college;public;17270;Montguyon
+0171163X;-;ecole;public;17170;La-Ronde
+0171164Y;Saint-Sever - Rouffiac;ecole;public;17800;Saint-Sever-de-Saintonge
+0171165Z;-;ecole;public;17600;Corme-Royal
+0171166A;-;ecole;public;17550;Dolus-d'Oléron
+0171167B;Eric Tabarly;ecole;public;17320;Saint-Just-Luzac
+0171168C;-;ecole;public;17460;Tesson
+0171169D;-;ecole;public;17430;Saint-Hippolyte
+0171170E;-;ecole;public;17700;Saint-Saturnin-du-Bois
+0171182T;La Gallissonnière;ecole;public;17300;Rochefort
+0171184V;Eugène Fromentin;college;public;17000;La-Rochelle
+0171192D;-;ecole;public;17600;Médis
+0171193E;-;ecole;public;17150;Nieul-le-Virouil
+0171194F;du Trait d'Union;ecole;public;17190;Saint-Georges-d'Oléron
+0171195G;Lucien Robin;ecole;public;17420;Saint-Palais-sur-Mer
+0171197J;-;ecole;public;17610;Saint-Sauvant
+0171200M;-;ecole;public;17680;Le-Gua
+0171202P;Les Grandes Rivières;ecole;public;17220;Sainte-Soulle
+0171204S;-;ecole;public;17870;Breuil-Magné
+0171205T;-;ecole;public;17630;La-Flotte
+0171206U;-;ecole;public;17740;Sainte-Marie-de-Ré
+0171210Y;Marc Chagall;college;public;17139;Dompierre-sur-Mer
+0171211Z;André Malraux;college;public;17340;Châtelaillon-Plage
+0171213B;L'Ouche des Carmes;college;public;17470;Aulnay
+0171215D;du Pertuis d'Antioche;college;public;17310;Saint-Pierre-d'Oléron
+0171229U;Paul Laidet;ecole;public;17580;Le-Bois - Plage-en-Ré
+0171231W;Antoine De Saint-Exupéry;ecole;public;17100;Saintes
+0171232X;Jean Jaurès;ecole;public;17100;Saintes
+0171233Y;-;ecole;public;17640;Vaux-sur-Mer
+0171339N;L'Atlantique;college;public;17440;Aytré
+0171340P;Saint-Louis;college;prive;17250;Pont-l'Abbé-d'Arnoult
+0171341R;Notre-Dame de Recouvrance;college;prive;17100;Saintes

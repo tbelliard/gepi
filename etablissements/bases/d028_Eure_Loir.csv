@@ -1,0 +1,361 @@
+0280001Z;Jules Ferry;college;public;28700;Auneau
+0280002A;Joachim Du Bellay;college;public;28330;Authon-du-Perche
+0280005D;Maurice De Vlaminck;college;public;28270;Brézolles
+0280006E;Florimond Robertet;college;public;28160;Brou
+0280016R;La Pajotterie;college;public;28170;Châteauneuf-en-Thymerais
+0280018T;Louis Pergaud;college;public;28190;Courville-sur-Eure
+0280024Z;Marcel Pagnol;college;public;28500;Vernouillet
+0280033J;Jean Racine;college;public;28130;Maintenon
+0280034K;Jean Macé;college;public;28300;Mainvilliers
+0280035L;Jean Moulin;college;public;28210;Nogent-le-Roi
+0280040S;Gaston Couté;college;public;28150;Voves
+0280060N;de la République;ecole;public;28200;Châteaudun
+0280061P;Edouard Caniaux;ecole;public;28200;Châteaudun
+0280063S;Empereurs;ecole;public;28200;Châteaudun
+0280064T;Louis Pergaud;ecole;public;28200;Châteaudun
+0280065U;Beauvoir;ecole;public;28200;Châteaudun
+0280067W;Louis Pasteur;ecole;public;28200;Châteaudun
+0280070Z;Jean Macé 2;ecole;public;28200;Châteaudun
+0280071A;La Varenne Ferron;ecole;public;28200;La-Chapelle-du-Noyer
+0280073C;La Fringale;ecole;public;28200;La-Chapelle-du-Noyer
+0280074D;-;ecole;public;28200;Civry
+0280075E;-;ecole;public;28200;Conie-Molitard
+0280076F;-;ecole;public;28200;Donnemain-Saint-Mamès
+0280078H;-;ecole;public;28200;Jallans
+0280081L;-;ecole;public;28200;Logron
+0280083N;-;ecole;public;28200;Marboué
+0280085R;-;ecole;public;28200;Moléans
+0280086S;-;ecole;public;28200;Ozoir-le-Breuil
+0280090W;Robert Desnos;ecole;public;28200;Saint-Denis-les-Ponts
+0280091X;-;ecole;public;28200;Thiville
+0280092Y;-;ecole;public;28200;Villampuy
+0280103K;Antoine Godeau;ecole;public;28100;Dreux
+0280104L;Saint-Martin;ecole;public;28100;Dreux
+0280105M;Ferdinand Buisson;ecole;public;28100;Dreux
+0280106N;Condorcet;ecole;public;28100;Dreux
+0280107P;Paul Bert;ecole;public;28100;Dreux
+0280109S;Jules Michelet 1;ecole;public;28100;Dreux
+0280110T;Jules Michelet 2;ecole;public;28100;Dreux
+0280112V;Antoine De Saint-Exupéry;ecole;public;28100;Dreux
+0280113W;Marcelin Berthelot;ecole;public;28100;Dreux
+0280116Z;Léon Gambetta;ecole;public;28100;Dreux
+0280119C;Jean Zay;ecole;public;28100;Dreux
+0280120D;Maurice Hurel;ecole;public;28500;Aunay-sous-Crécy
+0280124H;-;ecole;public;28500;Cherisy
+0280127L;-;ecole;public;28500;Garnay
+0280132S;-;ecole;public;28500;Marville-Moutiers-Brûlé
+0280134U;de Marsauceux;ecole;public;28500;Mézières-en-Drouais
+0280136W;-;ecole;public;28500;Ouerre
+0280137X;Michel Sicot;ecole;public;28500;Sainte-Gemme-Moronval
+0280138Y;Paul-Emile Victor;ecole;public;28500;Saulnières
+0280140A;-;ecole;public;28500;Tréon
+0280145F;Victor Hugo;ecole;public;28500;Vernouillet
+0280146G;Louis Pergaud;ecole;public;28500;Vernouillet
+0280148J;-;ecole;public;28500;Vert-en-Drouais
+0280150L;Jean Moulin 1;ecole;public;28150;Voves
+0280151M;George Sand 2;ecole;public;28150;Voves
+0280152N;-;ecole;public;28150;Allonnes
+0280155S;-;ecole;public;28150;Boisville-la-Saint-Père
+0280156T;-;ecole;public;28150;Boncé
+0280162Z;-;ecole;public;28150;Ouarville
+0280166D;-;ecole;public;28360;Theuville
+0280171J;-;ecole;public;28150;Ymonville
+0280174M;-;ecole;public;28480;Chassant
+0280178S;-;ecole;public;28400;Coudreceau
+0280181V;-;ecole;public;28160;Frazé
+0280183X;-;ecole;public;28480;Frétigny
+0280184Y;-;ecole;public;28480;Happonvilliers
+0280186A;-;ecole;public;28120;Montigny-le-Chartif
+0280189D;-;ecole;public;28120;Nonvilliers-Grandhoux
+0280191F;Maurice Carême;ecole;public;28480;Saint-Denis-d'Authou
+0280196L;-;ecole;public;28140;Bazoches-en-Dunois
+0280203U;-;ecole;public;28140;Guillonville
+0280206X;-;ecole;public;28140;Nottonville
+0280210B;-;ecole;public;28140;Terminiers
+0280215G;Jacques-Yves Cousteau;ecole;public;28250;Senonches
+0280220M;-;ecole;public;28250;Digny
+0280224S;-;ecole;public;28250;Le-Mesnil-Thomas
+0280226U;La Puisaye;ecole;public;28250;La-Puisaye
+0280230Y;Jacques-Yves Cousteau;ecole;public;28300;Saint-Prest
+0280231Z;-;ecole;public;28300;Saint-Aubin-des-Bois
+0280234C;Emile Zola;ecole;public;28300;Mainvilliers
+0280235D;Jean Zay;ecole;public;28300;Mainvilliers
+0280237F;Jean Zay;ecole;public;28110;Lucé
+0280238G;Jules Ferry;ecole;public;28110;Lucé
+0280239H;Jean Jaurès;ecole;public;28110;Lucé
+0280240J;Jules Vallain;ecole;public;28300;Lèves
+0280244N;-;ecole;public;28300;Gasville-Oisème
+0280246R;Daniel Alix;ecole;public;28300;Coltainville
+0280247S;Clevilliers - Challet;ecole;public;28300;Clévilliers
+0280249U;La Vallée;ecole;public;28300;Cintray
+0280250V;La Mihoue;ecole;public;28300;Champhol
+0280253Y;-;ecole;public;28300;Berchères-Saint-Germain
+0280255A;-;ecole;public;28300;Bailleau-l'Evêque
+0280260F;de Rechèvres;ecole;public;28000;Chartres
+0280268P;Gérard Philipe;ecole;public;28000;Chartres
+0280274W;-;ecole;public;28630;Ver-lès-Chartres
+0280275X;Germaine Ferrand;ecole;public;28630;Thivars
+0280277Z;La Vallée;ecole;public;28630;Sours
+0280280C;-;ecole;public;28630;Nogent-le-Phaye
+0280282E;-;ecole;public;28630;Morancez
+0280283F;-;ecole;public;28630;Mignières
+0280284G;André Juster;ecole;public;28600;Luisant
+0280285H;Charlemagne;ecole;public;28600;Luisant
+0280288L;-;ecole;public;28630;Fontenay-sur-Eure
+0280290N;-;ecole;public;28360;Dammarie
+0280291P;Jules Verne;ecole;public;28630;Le-Coudray
+0280295U;-;ecole;public;28630;Berchères-les-Pierres
+0280296V;-;ecole;public;28630;Barjouville
+0280298X;Jean Guéhenno;ecole;public;28000;Chartres
+0280300Z;André-Marie Ampère;ecole;public;28000;Chartres
+0280303C;Jules Ferry 2;ecole;public;28000;Chartres
+0280304D;Jules Ferry 1;ecole;public;28000;Chartres
+0280305E;Le Grand Jardin;ecole;public;28000;Chartres
+0280306F;George Sand;ecole;public;28000;Chartres
+0280308H;François Villon;ecole;public;28000;Chartres
+0280309J;Maurice De Vlaminck;ecole;public;28000;Chartres
+0280320W;-;ecole;public;28270;Bérou-la-Mulotière
+0280323Z;-;ecole;public;28270;Crucey-Villages
+0280327D;-;ecole;public;28270;Laons
+0280332J;-;ecole;public;28270;Rueil-la-Gadelière
+0280333K;Le Parc 1;ecole;public;28350;Saint-Lubin-des-Joncherets
+0280334L;2;ecole;public;28350;Saint-Lubin-des-Joncherets
+0280337P;Jean Goujon;ecole;public;28260;Anet
+0280338R;Philibert Delorme;ecole;public;28260;Anet
+0280340T;-;ecole;public;28570;Abondant
+0280341U;-;ecole;public;28560;Berchères-sur-Vesgre
+0280343W;-;ecole;public;28410;Broué
+0280348B;-;ecole;public;28260;La-Chaussée-d'Ivry
+0280350D;-;ecole;public;28410;Goussainville
+0280351E;-;ecole;public;28260;Guainville
+0280352F;-;ecole;public;28260;Le-Mesnil-Simon
+0280354H;-;ecole;public;28260;Rouvres
+0280357L;-;ecole;public;28260;Saussay
+0280358M;-;ecole;public;28410;Serville
+0280361R;Les Christophes;ecole;public;28520;Sorel-Moussel
+0280362S;-;ecole;public;28330;Authon-du-Perche
+0280365V;-;ecole;public;28330;La-Bazoche-Gouet
+0280367X;-;ecole;public;28420;Beaumont-les-Autels
+0280371B;-;ecole;public;28290;Chapelle-Royale
+0280376G;-;ecole;public;28420;Luigny
+0280379K;-;ecole;public;28330;Saint-Bomer
+0280381M;-;ecole;public;28330;Soizé
+0280382N;Maurice Fanon;ecole;public;28700;Auneau
+0280383P;Emile Zola;ecole;public;28700;Auneau
+0280386T;-;ecole;public;28700;Aunay-sous-Auneau
+0280393A;-;ecole;public;28700;Denonville
+0280394B;-;ecole;public;28700;Francourville
+0280397E;Le Gué de Longroi;ecole;public;28700;Le-Gué-de-Longroi
+0280398F;-;ecole;public;28700;Houville-la-Branche
+0280404M;-;ecole;public;28700;Oysonville
+0280406P;-;ecole;public;28700;Saint-Léger-des-Aubées
+0280407R;Garancières;ecole;public;28700;Sainville
+0280412W;-;ecole;public;28800;Bonneval
+0280415Z;-;ecole;public;28800;Alluyes
+0280416A;-;ecole;public;28800;Bouville
+0280422G;-;ecole;public;28360;Meslay-le-Vidame
+0280423H;-;ecole;public;28800;Montboissier
+0280426L;-;ecole;public;28800;Pré-Saint-Evroult
+0280429P;-;ecole;public;28800;Sancheville
+0280436X;-;ecole;public;28220;Montigny-le-Gannelon
+0280437Y;-;ecole;public;28220;Romilly-sur-Aigre
+0280447J;-;ecole;public;28160;Unverre
+0280449L;-;ecole;public;28120;Vieuvicq
+0280455T;Georges Houdard;ecole;public;28170;Châteauneuf-en-Thymerais
+0280457V;-;ecole;public;28170;Maillebois
+0280471K;Thimert Gatelles;ecole;public;28170;Thimert-Gâtelles
+0280472L;-;ecole;public;28170;Tremblay-les-Villages
+0280476R;Liliane Vaisbuch;ecole;public;28290;Arrou
+0280479U;-;ecole;public;28220;Autheuil
+0280482X;-;ecole;public;28290;Châtillon-en-Dunois
+0280485A;-;ecole;public;28220;Douy
+0280486B;-;ecole;public;28220;La-Ferté-Villeneuil
+0280487C;-;ecole;public;28220;Langey
+0280488D;Le Mée;ecole;public;28220;Le-Mée
+0280490F;-;ecole;public;28290;Saint-Pellerin
+0280493J;-;ecole;public;28190;Billancelles
+0280494K;-;ecole;public;28190;Chuisnes
+0280495L;-;ecole;public;28190;Dangers
+0280499R;-;ecole;public;28190;Landelles
+0280500S;-;ecole;public;28190;Mittainvilliers
+0280502U;-;ecole;public;28190;Pontgouin
+0280503V;-;ecole;public;28190;Saint-Arnoult-des-Bois
+0280504W;Jean Moulin;ecole;public;28190;Saint-Georges-sur-Eure
+0280507Z;-;ecole;public;28190;Saint-Luperce
+0280509B;-;ecole;public;28190;Vérigny
+0280513F;-;ecole;public;28340;Boissy-lès-Perche
+0280520N;La Vivonne;ecole;public;28120;Illiers-Combray
+0280523S;Jacques Prévert;ecole;public;28120;Bailleau-le-Pin
+0280526V;-;ecole;public;28120;Charonville
+0280531A;-;ecole;public;28360;Luplanté
+0280532B;-;ecole;public;28120;Magny
+0280533C;-;ecole;public;28120;Marchéville
+0280535E;-;ecole;public;28120;Nogent-sur-Eure
+0280544P;du Centre;ecole;public;28400;Nogent-le-Rotrou
+0280545R;Marcel Pagnol;ecole;public;28400;Nogent-le-Rotrou
+0280546S;Jean Macé 1;ecole;public;28400;Nogent-le-Rotrou
+0280547T;Jean Macé 2;ecole;public;28400;Nogent-le-Rotrou
+0280548U;-;ecole;public;28420;Argenvilliers
+0280549V;-;ecole;public;28400;Brunelles
+0280550W;-;ecole;public;28400;Champrond-en-Perchet
+0280552Y;Robert Doisneau;ecole;public;28400;Margon
+0280555B;-;ecole;public;28400;Trizay-Coutretot-Saint-Serge
+0280556C;-;ecole;public;28420;Vichères
+0280558E;Jean Rostand 1;ecole;public;28210;Nogent-le-Roi
+0280559F;Gaston Couté;ecole;public;28210;Nogent-le-Roi
+0280560G;Thierry Boullay;ecole;public;28210;Le-Boullay-Mivoye
+0280563K;-;ecole;public;28410;Boutigny-Prouais
+0280565M;Maurice Decourtye;ecole;public;28210;Chaudon
+0280568R;Maurice Gledel;ecole;public;28210;Coulombs
+0280569S;-;ecole;public;28210;Faverolles
+0280571U;Commandant J.-Y. Cousteau;ecole;public;28210;Néron
+0280574X;Boissy;ecole;public;28210;Saint-Laurent-la-Gâtine
+0280576Z;-;ecole;public;28130;Saint-Martin-de-Nigelles
+0280579C;-;ecole;public;28210;Villemeux-sur-Eure
+0280580D;-;ecole;public;28130;Villiers-le-Morhier
+0280582F;Charles Péguy;ecole;public;28130;Maintenon
+0280585J;Collin d'Harleville;ecole;public;28130;Maintenon
+0280586K;-;ecole;public;28320;Bailleau-Armenonville
+0280589N;-;ecole;public;28130;Bouglainval
+0280592S;-;ecole;public;28320;Ecrosnes
+0280593T;La Billardière;ecole;public;28230;Epernon
+0280594U;Louis Drouet;ecole;public;28230;Epernon
+0280597X;-;ecole;public;28320;Gas
+0280598Y;Emmanuel Cheneau;ecole;public;28130;Hanches
+0280599Z;-;ecole;public;28130;Houx
+0280602C;La Clé des Champs;ecole;public;28130;Pierres
+0280604E;Saint-Piat;ecole;public;28130;Saint-Piat
+0280605F;-;ecole;public;28700;Saint-Symphorien-le-Château
+0280607H;Hélène Boucher;ecole;public;28130;Yermenonville
+0280608J;-;ecole;public;28320;Ymeray
+0280610L;1;ecole;public;28240;La-Loupe
+0280611M;2;ecole;public;28240;La-Loupe
+0280612N;-;ecole;public;28240;Belhomert-Guéhouville
+0280615S;-;ecole;public;28240;Les-Corvées-les-Yys
+0280617U;-;ecole;public;28240;Fontaine-Simon
+0280619W;-;ecole;public;28240;Manou
+0280623A;-;ecole;public;28240;Saint-Denis-des-Puits
+0280624B;Saint-Eliph;ecole;public;28240;Saint-Eliph
+0280625C;-;ecole;public;28240;Saint-Maurice-Saint-Germain
+0280627E;-;ecole;public;28240;Saint-Victor-de-Buthon
+0280628F;-;ecole;public;28240;Le-Thieulin
+0280629G;-;ecole;public;28240;Vaupillon
+0280649D;-;ecole;public;28310;Rouvray-Saint-Denis
+0280651F;Julien Mercier;ecole;public;28390;Toury
+0280656L;Tomas Divi;college;public;28200;Châteaudun
+0280657M;Les Petits Sentiers;college;public;28110;Lucé
+0280658N;Albert Camus;college;public;28100;Dreux
+0280659P;-;EREA;public;28300;Mainvilliers
+0280663U;Sainte-Marie;college;prive;28000;Chartres
+0280664V;Jeanne D'Arc;college;prive;28000;Chartres
+0280669A;Delfeuille;college;prive;28400;Nogent-le-Rotrou
+0280671C;Saint-Joseph;college;prive;28700;Auneau
+0280674F;Saint-Paul;college;prive;28160;Brou
+0280679L;Sainte-Cécile;college;prive;28200;Châteaudun
+0280680M;Notre-Dame;college;prive;28310;Janville
+0280701K;du Val de Voise;college;public;28320;Gallardon
+0280702L;Marcel Proust;college;public;28120;Illiers-Combray
+0280710V;Louis Aragon;ecole;public;28500;Vernouillet
+0280711W;Henri Farman;ecole;public;28000;Chartres
+0280716B;Pierre et Marie Curie;college;public;28100;Dreux
+0280741D;Saint-François;college;prive;28240;Saint-Maurice-Saint-Germain
+0280751P;Mathurin Régnier;college;public;28000;Chartres
+0280753S;Nicolas Robert;college;public;28500;Vernouillet
+0280754T;Charles Péguy;college;public;28000;Chartres
+0280755U;Hélène Boucher;college;public;28000;Chartres
+0280756V;Jean Moulin;college;public;28000;Chartres
+0280765E;-;ecole;public;28240;Champrond-en-Gâtine
+0280766F;-;ecole;public;28200;Lanneray
+0280767G;-;ecole;public;28520;Sorel-Moussel
+0280768H;Jules Ferry;ecole;public;28500;Luray
+0280769J;-;ecole;public;28410;Bû
+0280770K;-;ecole;public;28160;Yèvres
+0280771L;Aimé Allouis;ecole;public;28300;Jouy
+0280781X;Le Mail;ecole;public;28000;Chartres
+0280803W;Edouard Herriot;college;public;28110;Lucé
+0280805Y;Sainte-Jeanne D'Arc;ecole;prive;28150;Voves
+0280807A;Notre-Dame;ecole;prive;28630;Sours
+0280808B;Notre-Dame;ecole;prive;28310;Janville
+0280812F;Saint-Joseph;ecole;prive;28700;Auneau
+0280813G;Saint-Pierre;ecole;prive;28000;Chartres
+0280814H;Saint-Ferdinand;ecole;prive;28000;Chartres
+0280815J;Saint-Joseph;ecole;prive;28210;Nogent-le-Roi
+0280818M;Saint-Jean;ecole;prive;28000;Chartres
+0280819N;Jean XXIII;ecole;prive;28000;Chartres
+0280822S;Guéry;ecole;prive;28000;Chartres
+0280823T;Notre-Dame d'Yron;ecole;prive;28220;Cloyes-sur-le-Loir
+0280824U;Saint-Paul;ecole;prive;28160;Brou
+0280825V;Saint-Sauveur;ecole;prive;28800;Bonneval
+0280826W;Saint-Joseph;ecole;prive;28290;Arrou
+0280828Y;Sainte-Cécile - Saint-Joseph;ecole;prive;28200;Châteaudun
+0280831B;Notre-Dame;ecole;prive;28170;Châteauneuf-en-Thymerais
+0280832C;Sainte-Marie;ecole;prive;28270;Brézolles
+0280833D;Notre-Dame;ecole;prive;28260;Anet
+0280836G;Sainte-Marie;ecole;prive;28250;Senonches
+0280840L;Notre-Dame des Fleurs;ecole;prive;28240;La-Loupe
+0280841M;Saint-Joseph;ecole;prive;28120;Illiers-Combray
+0280842N;Sainte-Marie;ecole;prive;28190;Courville-sur-Eure
+0280847U;Delfeuille;ecole;prive;28400;Nogent-le-Rotrou
+0280853A;-;ecole;public;28300;Amilly
+0280855C;Paul Langevin;ecole;public;28400;Nogent-le-Rotrou
+0280858F;Sainte-Agnès - Saint-Martin;ecole;prive;28500;Mézières-en-Drouais
+0280859G;Saint-Pierre - Saint-Paul;ecole;prive;28100;Dreux
+0280865N;Louis Armand;college;public;28100;Dreux
+0280866P;Albert Sidoisne;college;public;28800;Bonneval
+0280867R;François Rabelais;college;public;28220;Cloyes-sur-le-Loir
+0280869T;Jean Monnet;college;public;28240;La-Loupe
+0280871V;Gérard Philipe;ecole;public;28500;Vernouillet
+0280872W;Célestin Freinet;ecole;public;28100;Dreux
+0280873X;-;ecole;public;28360;Prunay-le-Gillon
+0280874Y;-;ecole;public;28400;Souancé-au-Perche
+0280875Z;La Brèche;ecole;public;28000;Chartres
+0280876A;-;ecole;public;28140;Orgères-en-Beauce
+0280877B;Maurice Carême;ecole;public;28000;Chartres
+0280878C;Pierre De Coubertin;ecole;public;28300;Mainvilliers
+0280879D;-;ecole;public;28310;Janville
+0280883H;Victor Hugo;college;public;28000;Chartres
+0280884J;Louis Blériot;college;public;28390;Toury
+0280886L;Paul Fort;college;public;28100;Dreux
+0280887M;La Loge des Bois;college;public;28250;Senonches
+0280889P;Michel Chasles;college;public;28230;Epernon
+0280891S;Thiron Gardais;ecole;public;28480;Thiron-Gardais
+0280892T;-;ecole;public;28340;La-Ferté-Vidame
+0280893U;Stéphane Pitard;ecole;public;28220;Cloyes-sur-le-Loir
+0280903E;Louis-Arsène Meunier;college;public;28400;Nogent-le-Rotrou
+0280908K;du Chemin Vert;ecole;public;28190;Courville-sur-Eure
+0280909L;-;ecole;public;28270;Brézolles
+0280910M;Emile Pottier;ecole;public;28320;Gallardon
+0280911N;La Chevallerie;ecole;public;28230;Droue-sur-Drouette
+0280912P;Henri Matisse;ecole;public;28000;Chartres
+0280918W;Anatole France;college;public;28200;Châteaudun
+0280924C;Pierre Brossolette;college;public;28400;Nogent-le-Rotrou
+0280926E;Jacques Prévert;ecole;public;28000;Chartres
+0280928G;Antoine De Saint-Exupéry;ecole;public;28600;Luisant
+0280935P;Jacques Prévert;ecole;public;28100;Dreux
+0280957N;Emile Zola;college;public;28200;Châteaudun
+0280973F;Jean Macé;ecole;public;28110;Lucé
+0280975H;-;ecole;public;28560;Saint-Ouen-Marchefroy
+0280981P;3;ecole;public;28380;Saint-Rémy-sur-Avre
+0280988X;Jules Valles;ecole;public;28500;Vernouillet
+0280993C;Notre-Dame;college;prive;28000;Chartres
+0280994D;Saint-Pierre - Saint-Paul;college;prive;28100;Dreux
+0281012Y;Georges Brassens;ecole;public;28400;Nogent-le-Rotrou
+0281015B;Saint-Lubin De La Haye;ecole;public;28410;Saint-Lubin-de-la-Haye
+0281016C;Pierre Mendès-France;ecole;public;28100;Dreux
+0281025M;Pierre Mendès-France;ecole;public;28110;Lucé
+0281030T;-;ecole;public;28150;Rouvray-Saint-Florentin
+0281031U;-;ecole;public;28340;Rohaire
+0281038B;Mozart;college;public;28260;Anet
+0281039C;-;ecole;public;28260;Oulins
+0281040D;Christian Beullac;ecole;public;28100;Dreux
+0281043G;Jean Monnet;college;public;28600;Luisant
+0281048M;Cirque Micheletty;ecole;public;28310;Santilly
+0281055V;Chaïm Soutine;college;public;28300;Saint-Prest
+0281060A;Martial Taugourdeau;college;public;28100;Dreux
+0281063D;-;ecole;public;28160;Brou
+0281064E;-;ecole;public;28160;Dangeau
+0281065F;-;ecole;public;28800;Le-Gault-Saint-Denis
+0281066G;La Vallée;ecole;public;28380;Saint-Rémy-sur-Avre
+0281067H;L'Arc-en-Ciel;ecole;public;28310;Baudreville
+0281088F;-;ecole;public;28700;Béville-le-Comte
+0281095N;Charles De Gaulle;college;public;28410;Bû

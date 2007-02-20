@@ -1,0 +1,126 @@
+<?php
+/*
+ * Last modification  : 13/07/2006
+ *
+ * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// Initialisation des variables
+$user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+die();
+};
+
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+die();
+}
+
+if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
+    $user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");
+    if (($user_statut == 'professeur') or ($user_statut == 'cpe'))
+        // Mot de passe comportant des lettres et des chiffres
+        $flag = 0;
+    else
+        // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
+        $flag = 1;
+
+    if ($_POST['no_anti_inject_password'] != $_POST['reg_password2'])  {
+        $msg = "Erreur lors de la saisie : les deux mots de passe ne sont pas identiques, veuillez recommencer !";
+    } else if (!(verif_mot_de_passe($NON_PROTECT['password'],$flag))) {
+        $msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
+    } else {
+        $reg_password_c = md5($NON_PROTECT['password']);
+        $reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
+        if (!$reg_data) {
+            $msg = "Erreur lors de l'enregistrement du mot de passe !";
+        } else {
+            $msg="Le mot de passe a été changé !";
+        }
+    }
+}
+
+// On appelle les informations de l'utilisateur
+if (isset($user_login) and ($user_login!='')) {
+    $call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='".$user_login."'");
+    $user_statut = mysql_result($call_user_info, "0", "statut");
+    $user_nom = mysql_result($call_user_info, "0", "nom");
+    $user_prenom = mysql_result($call_user_info, "0", "prenom");
+}
+
+//**************** EN-TETE *****************
+$titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+?>
+<p class=bold>|<a href="index.php">Retour</a>|<a href="help.php">Aide</a>|</p>
+<?php
+// dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
+$testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
+if ($testpassword == -1) $testpassword = '';
+if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"  or ((getSettingValue("use_sso") == "lcs") and ($testpassword =='')) or getSettingValue("use_sso") == "ldap_scribe") {
+    echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure.";
+    echo "</body></html>";
+    die();
+}
+
+echo "<p class = 'grand'>Changement du mot de passe</p>";
+if ($user_login != $_SESSION['login']) {
+    if ($user_statut == 'professeur')
+        // Mot de passe comportant des lettres et des chiffres
+        $flag = 0;
+    else
+        // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
+        $flag = 1;
+    echo "<form enctype=\"multipart/form-data\" action=\"change_pwd.php\" method=post>";
+    echo "<span class = \"norme\">";
+    echo "Identifiant : ".$user_login;
+    echo "<br />Nom : $user_nom&nbsp;&nbsp;&nbsp;Prénom : $user_prenom";
+    echo "<p>Il est fortement conseillé de ne pas choisir un mot de passe trop simple.
+    <br><br><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum. ";
+    if ($flag == 1)
+        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".$char_spec;
+    else
+        echo "Il doit comporter au moins une lettre et au moins un chiffre.";
+    echo "</b></p>\n";
+    echo "<br /><table>\n<tr><td>Nouveau mot de passe (".getSettingValue("longmin_pwd")." caractères minimum) : </td>\n<td><input type=password name=no_anti_inject_password size=20></td></tr>\n";
+    echo "<tr><td>Nouveau mot de passe (à confirmer) :</td><td><input type=password name=reg_password2 size=20></td></tr>\n";
+    echo "</table><input type=hidden name=valid value=\"yes\">\n";
+    echo "<input type=hidden name=user_login value=".$user_login.">\n";
+    echo "<br /><center><input type=submit value=Enregistrer></center></span></form>\n";
+} else {
+    echo "<p>Pour des raisons de sécurité, veuillez utiliser le module \"mon compte\" accessible à partir de la page d'accueil pour changer votre mot de passe !</p>";
+}
+?>
+</body>
+</html>

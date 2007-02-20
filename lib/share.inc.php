@@ -1,0 +1,1220 @@
+<?php
+/*
+ * Last modification  : 09/08/2006
+ *
+ * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*/
+
+
+// Verification de la validité d'un mot de passe
+// longueur : getSettingValue("longmin_pwd") minimum
+// composé de lettre et d'au moins un chiffre
+// Si $flag = 1, il faut également au moins un caractères  spécial (voir $char_spec dans global.inc)
+function verif_mot_de_passe($password,$flag) {
+    global $char_spec;
+    if ($flag == 1)
+        if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )
+            return false;
+        elseif ( ereg("^[[:alnum:]$char_spec]{".getSettingValue("longmin_pwd").",}$", $password) )
+            return true; else return false;
+    else
+        if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )
+            return false;
+        elseif (strlen($password) < getSettingValue("longmin_pwd"))
+            return false;
+        else
+            return true;
+
+}
+
+function test_unique_login($s) {
+    // On vérifie que le login ne figure pas déjà dans la base utilisateurs
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s')"));
+    if ($test1 != "0") {
+        return 'no';
+    } else {
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s')"));
+        if ($test2 != "0") {
+            return 'no';
+        } else {
+            return 'yes';
+        }
+    }
+}
+
+function test_unique_e_login($s, $indice) {
+    // fonction vérifiant l'unicité du login $s
+    // On vérifie que le login ne figure pas déjà dans une des bases élève des années passées
+/*    $test1 = mysql_num_rows(mysql_query("SELECT login FROM a1_eleves WHERE (login='$s')"));
+    $test2 = mysql_num_rows(mysql_query("SELECT login FROM a2_eleves WHERE (login='$s')"));
+    $test3 = mysql_num_rows(mysql_query("SELECT login FROM a3_eleves WHERE (login='$s')"));
+    $test4 = mysql_num_rows(mysql_query("SELECT login FROM a4_eleves WHERE (login='$s')"));
+    $test5 = mysql_num_rows(mysql_query("SELECT login FROM a5_eleves WHERE (login='$s')"));
+    $test6 = mysql_num_rows(mysql_query("SELECT login FROM a6_eleves WHERE (login='$s')"));
+*/
+    // On vérifie que le login ne figure pas déjà dans la base utilisateurs
+    $test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s')"));
+//    if (($test1 != "0") or ($test2 != "0") or ($test3 != "0") or ($test4 != "0") or ($test5 != "0") or ($test6 != "0") or ($test7 != "0")) {
+
+    if ($test7 != "0") {
+
+        // Si le login figure déjà dans une des bases élève des années passées ou bien
+        // dans la base utilisateurs, on retourne 'no' !
+        return 'no';
+    } else {
+        // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
+        // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s')"));
+        if ($test_tempo2 != "0") {
+            return 'no';
+        } else {
+            $reg = mysql_query("INSERT INTO tempo2 VALUES ('$indice', '$s')");
+            return 'yes';
+        }
+    }
+}
+
+function affiche_utilisateur($login,$id_classe) {
+    $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
+    $nom = @mysql_result($req, 0, 'nom');
+    $prenom = @mysql_result($req, 0, 'prenom');
+    $civilite = @mysql_result($req, 0, 'civilite');
+    $req_format = mysql_query("select format_nom from classes where id = '".$id_classe."'");
+    $format = mysql_result($req_format, 0, 'format_nom');
+    $result = "";
+    $i='';
+    if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) and ($prenom != '')) {
+        $temp = explode("-", $prenom);
+        $i = substr($temp[0], 0, 1);
+        if (isset($temp[1]) and ($temp[1] != '')) $i .= ".-".substr($temp[1], 0, 1);
+        $i .= ". ";
+    }
+    switch( $format ) {
+    case 'np':
+    $result = $nom." ".$prenom;
+    break;
+    case 'pn':
+    $result = $prenom." ".$nom;
+    break;
+    case 'in':
+    $result = $i.$nom;
+    break;
+    case 'ni':
+    $result = $nom." ".$i;
+    break;
+    case 'cnp':
+    if ($civilite != '') $result = $civilite." ";
+    $result .= $nom." ".$prenom;
+    break;
+    case 'cpn':
+    if ($civilite != '') $result = $civilite." ";
+    $result .= $prenom." ".$nom;
+    break;
+    case 'cin':
+    if ($civilite != '') $result = $civilite." ";
+    $result .= $i.$nom;
+    break;
+    case 'cni':
+    if ($civilite != '') $result = $civilite." ";
+    $result .= $nom." ".$i;
+    break;
+    $result = $nom." ".$prenom;
+
+    }
+    return $result;
+}
+
+// Verifie si l'extension d_base est active
+function verif_active_dbase() {
+    if (!function_exists("dbase_open"))  {
+        echo "<center><p class=grand>ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf).
+        <br />L'extension d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.</p></center></body></html>";
+        die();
+    }
+}
+
+// Verifie si un groupe appartient bien à la personne connectée
+//
+function verif_groupe_appartient_prof($id_groupe) {
+    $test = mysql_query("select id from groupes where (id='$id_groupe' and login_user = '".$_SESSION['login']."')");
+    if (mysql_num_rows($test) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+//
+// Verifie si un élève appartient à un groupe
+//
+function verif_eleve_dans_groupe($id_eleve, $id_groupe) {
+    if ($id_groupe != "-1") {
+        // On verifie l'appartenance de id_eleve au groupe id_groupe
+        if (!(verif_groupe_appartient_prof($id_groupe))) {
+            return 0;
+            exit();
+        }
+        $test = mysql_query("select id_eleve from groupe_eleve where (id_eleve='$id_eleve' and id_groupe = '$id_groupe')");
+        if (mysql_num_rows($test) == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        // On verifie l'appartenance de id_eleve à un groupe quelconque du professeur connecté
+        $test = mysql_query("select id_eleve from groupe_eleve ge, groupes g where (ge.id_eleve='$id_eleve' and ge.id_groupe = g.id and g.login_user='".$_SESSION['login']."')");
+        if (mysql_num_rows($test) == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    }
+}
+//
+// Construit un tableau des groupes de l'utilisateur connecté
+//
+function make_tables_of_groupes() {
+    $tab_groupes = array();
+    $test = mysql_query("select id, nom_court, nom_complet from groupes where login_user = '".$_SESSION['login']."'");
+    $nb_test = mysql_num_rows($test);
+    $i = 0;
+    while ($i < $nb_test) {
+      $tab_groupes['id'][$i] = mysql_result($test, $i, "id");
+      $tab_groupes['nom'][$i] = mysql_result($test, $i, "nom_court");
+      $tab_groupes['nom_complet'][$i] = mysql_result($test, $i, "nom_complet");
+      $i++;
+    }
+      return $tab_groupes;
+}
+
+//
+// Construit un tableau des classes et matières de l'utilisateur connecté
+//
+function make_tables_of_classes_matieres () {
+  $tab_class_mat = array();
+  $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+  $nb_classes = mysql_num_rows($appel_classes);
+  $i = 0;
+  while($i < $nb_classes){
+    $id_classe = mysql_result($appel_classes, $i, "id");
+    $appel_mat = mysql_query("SELECT DISTINCT m.matiere, m.nom_complet " .
+            "FROM matieres m, j_groupes_matieres jgm, j_groupes_classes jgc, j_groupes_professeurs jgp" .
+            " WHERE ( " .
+            "m.matiere = jgm.id_matiere and " .
+            "jgm.id_groupe = jgp.id_groupe and " .
+            "jgp.login = '" . $_SESSION['login'] . "' and " .
+            "jgp.id_groupe = jgc.id_groupe and " .
+            "jgc.id_classe='$id_classe')" .
+            " ORDER BY m.nom_complet");
+    $nb_mat = mysql_num_rows($appel_mat);
+    $j = 0;
+    while($j < $nb_mat){
+      $tab_class_mat['id_c'][] = $id_classe;
+      $tab_class_mat['id_m'][] = mysql_result($appel_mat, $j, "matiere");
+      $tab_class_mat['nom_c'][] = mysql_result($appel_classes, $i, "classe");
+      $tab_class_mat['nom_m'][] = mysql_result($appel_mat, $j, "nom_complet");
+      $j++;
+    }
+    $i++;
+  }
+  return $tab_class_mat;
+}
+
+//
+// Construit un tableau des classes de l'utilisateur connecté
+//
+function make_tables_of_classes () {
+  $tab_class = array();
+  $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+  $nb_classes = mysql_num_rows($appel_classes);
+  $i = 0;
+  $nb=0;
+  while($i < $nb_classes){
+    $id_classe = mysql_result($appel_classes, $i, "id");
+    $test_prof_classe = mysql_query("SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (" .
+            "jgc.id_classe='$id_classe' and " .
+            "jgc.id_groupe = jgp.id_groupe and " .
+            "jgp.login='".$_SESSION['login']."')");
+    $test = mysql_num_rows($test_prof_classe);
+    if ($test != 0) {
+        $tab_class[$nb] = $id_classe;
+        $nb++;
+    }
+    $i++;
+  }
+  return $tab_class;
+}
+
+
+function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
+  echo "<b><i>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</i></b><br />";
+  $appel_donnees = mysql_query("SELECT * FROM classes ORDER BY classe");
+  $lignes = mysql_num_rows($appel_donnees);
+  $i = 0;
+  while($i < $lignes){
+    $id_classe = mysql_result($appel_donnees, $i, "id");
+    $appel_mat = mysql_query("SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j WHERE (j.id_classe='$id_classe' AND j.id_matiere=m.matiere) ORDER BY m.nom_complet");
+    $nb_mat = mysql_num_rows($appel_mat);
+    $j = 0;
+    while($j < $nb_mat){
+      $flag2 = "no";
+      $matiere_nom = mysql_result($appel_mat, $j, "nom_complet");
+      $matiere_nom_court = mysql_result($appel_mat, $j, "matiere");
+      $id_matiere = mysql_result($appel_mat, $j, "matiere");
+      $call_profs = mysql_query("SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$id_matiere') ORDER BY ordre_prof");
+      $nombre_profs = mysql_num_rows($call_profs);
+      $k = 0;
+      while ($k < $nombre_profs) {
+        $temp = strtoupper(@mysql_result($call_profs, $k, "id_professeur"));
+        if ($temp == $_SESSION['login']) {$flag2 = "yes";}
+        $k++;
+      }
+      if ($flag2 == "yes") {
+        echo "<b>";
+        $display_class = mysql_result($appel_donnees, $i, "classe");
+        if (($id_classe == $current_classe) and ($id_matiere == $current_matiere)) {
+           echo ">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)&nbsp;";
+        } else {
+           //echo "<a href=\"".$link."?id_classe=$id_classe&id_matiere=$id_matiere&year=$year&month=$month&day=$day\">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)</a>";
+       echo "<a href=\"".$link."?id_classe=$id_classe&amp;id_matiere=$id_matiere&amp;year=$year&amp;month=$month&amp;day=$day\">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)</a>";
+
+        }
+        echo "</b><br />";
+      }
+      $j++;
+    }
+    $i++;
+  }
+}
+
+
+function genDateSelector($prefix, $day, $month, $year, $option)
+{
+    if($day   == 0) $day = date("d");
+    if($month == 0) $month = date("m");
+    if($year  == 0) $year = date("Y");
+
+    echo "<SELECT NAME=\"${prefix}day\">\n";
+
+    for($i = 1; $i <= 31; $i++)
+        echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i</option>\n";
+        //echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i\n";
+
+    echo "</SELECT>\n";
+    echo "<SELECT NAME=\"${prefix}month\">\n";
+
+    for($i = 1; $i <= 12; $i++)
+    {
+        $m = strftime("%b", mktime(0, 0, 0, $i, 1, $year));
+
+        //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m\n";
+        print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m</option>\n";
+    }
+
+    echo "</SELECT>\n";
+    echo "<SELECT NAME=\"${prefix}year\">\n";
+
+    $min = strftime("%Y", getSettingValue("begin_bookings"));
+    if ($option == "more_years") $min = date("Y") - 5;
+
+    $max = strftime("%Y", getSettingValue("end_bookings"));
+    if ($option == "more_years") $max = date("Y") + 5;
+
+    for($i = $min; $i <= $max; $i++)
+        print "<OPTION" . ($i == $year ? " SELECTED" : "") . ">$i</option>\n";
+        //print "<OPTION" . ($i == $year ? " SELECTED" : "") . ">$i\n";
+
+    echo "</SELECT>\n";
+}
+
+
+
+function test_conteneurs_vides($id_conteneur,$id_racine) {
+        // On teste si le conteneur est vide
+        if ($id_conteneur !=0) {
+            $sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$id_conteneur'");
+            $nb_dev = mysql_num_rows($sql);
+            $sql= mysql_query("SELECT id FROM cn_conteneurs WHERE parent='$id_conteneur'");
+            $nb_cont = mysql_num_rows($sql);
+            if (($nb_dev == 0) or ($nb_cont == 0)) {
+                $query_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
+                $id_par = mysql_result($query_parent, 0, 'parent');
+                $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_conteneur'");
+//                if ($id_conteneur != $id_racine) $sql = mysql_query("DELETE FROM cn_conteneurs WHERE id='$id_conteneur'");
+                test_conteneurs_vides($id_par,$id_racine);
+            }
+        }
+}
+
+function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_conteneur,&$arret) {
+    //remarque : les variables $periode_num et id_racine auraient pus être récupérées
+    //à partir de $id_conteneur, mais on évite ainsi trop de calculs !
+
+    foreach ($_current_group["eleves"][$periode_num]["list"] as $_eleve_login) {
+    if($_eleve_login!=""){
+            calcule_moyenne($_eleve_login, $id_racine, $id_conteneur);
+    }
+    }
+
+    if ($arret != 'yes') {
+        //
+        // Détermination du conteneur parent
+        $query_id_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
+        $id_parent = mysql_result($query_id_parent, 0, 'parent');
+        if ($id_parent != 0) {
+            $arret = 'no';
+            mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_parent,$arret);
+        } else {
+            $arret = 'yes';
+            mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_racine,$arret);
+        }
+
+    }
+}
+
+
+
+//
+// Liste des sous-conteneur d'un conteneur
+//
+function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sous_cont,&$id_sous_cont,&$display_bulletin_sous_cont,$type) {
+    $query_sous_cont = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent ='$id_conteneur' and id!='$id_conteneur') order by nom_court");
+    $nb = mysql_num_rows($query_sous_cont);
+    $i=0;
+    while ($i < $nb) {
+        $nom_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'nom_court');
+        $coef_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'coef');
+        $id_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'id');
+        $display_bulletin_sous_cont[$nb_sous_cont] = mysql_result($query_sous_cont, $i, 'display_bulletin');
+        $temp = $id_sous_cont[$nb_sous_cont];
+        $nb_sous_cont++;
+        if ($type=='all') {
+            sous_conteneurs($temp,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+        }
+        $i++;
+    }
+
+}
+
+//
+// Calul de la moyenne d'un élève
+//
+function calcule_moyenne($login, $id_racine, $id_conteneur) {
+    $total_point = 0;
+    $somme_coef = 0;
+    $exist_dev_fac = '';
+    // On efface les moyennes de la table
+    $delete = mysql_query("DELETE FROM cn_notes_conteneurs WHERE (login='$login' and id_conteneur='$id_conteneur')");
+
+    // Appel des paramètres du conteneur
+    $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
+    $arrondir =  mysql_result($appel_conteneur, 0, 'arrondir');
+    $mode =  mysql_result($appel_conteneur, 0, 'mode');
+    $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
+
+    // Détermination des sous-conteneurs à prendre en compte
+    $nom_sous_cont = array();
+    $id_sous_cont  = array();
+    $coef_sous_cont = array();
+    $nb_sous_cont = 0;
+    if ($mode==1) {
+        //la moyenne s'effectue sur toutes les notes contenues à la racine ou dans les sous-conteneurs
+        // sans tenir compte des options définies dans cette(ces) boîte(s).
+
+        //
+        // on s'intéresse à tous les conteneurs fils, petit-fils, ...
+        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+        //
+        // On fait la moyenne des devoirs du conteneur et des sous-conteneurs
+        $nb_boucle = $nb_sous_cont+1;
+        $id_cont[0] = $id_conteneur;
+        $i=1;
+        while ($i < $nb_boucle) {
+            $id_cont[$i] = $id_sous_cont[$i-1];
+            $i++;
+        }
+
+    } else {
+        //la moyenne s'effectue sur toutes les notes contenues à la racine du conteneur
+        //et sur les moyennes du ou des sous-conteneurs, en tenant compte des options dans ce(s) boîte(s).
+
+        // On s'intéresse uniquement aux conteneurs fils
+        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
+        //
+        // on ne fait la moyenne que des devoirs du conteneur
+        $nb_boucle = 1;
+        $id_cont[0] = $id_conteneur;
+
+    }
+    //
+    // Prise en compte de la pondération
+    // Calcul de l'indice du coefficient à pondérer
+    //
+    if ($ponderation != 0) {
+        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur'");
+        $nb_dev  = mysql_num_rows($appel_dev);
+        $max = 0;
+        $indice_pond = 0;
+        $k = 0;
+        while ($k < $nb_dev) {
+            $id_dev = mysql_result($appel_dev, $k, 'id');
+            $coef[$k] = mysql_result($appel_dev, $k, 'coef');
+            $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
+            $statut = @mysql_result($note_query, 0, "statut");
+            $note = @mysql_result($note_query, 0, "note");
+            if (($statut == '') and ($note!='')) {
+                if (($note > $max) or (($note == $max) and ($coef[$k] > $coef[$indice_pond]))) {
+                    $max = $note;
+                    $indice_pond = $k;
+                }
+            }
+            $k++;
+        }
+    }
+
+    //
+    // Calcul du total des points et de la somme des coefficients
+    //
+    $j=0;
+    while ($j < $nb_boucle) {
+        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]'");
+        $nb_dev  = mysql_num_rows($appel_dev);
+        $k = 0;
+        while ($k < $nb_dev) {
+            $id_dev = mysql_result($appel_dev, $k, 'id');
+            $coef[$k] = mysql_result($appel_dev, $k, 'coef');
+            // Prise en compte de la pondération
+            if (($ponderation != 0) and ($j==0) and ($k==$indice_pond)) $coef[$k] = $coef[$k] + $ponderation;
+            $facultatif[$k] = mysql_result($appel_dev, $k, 'facultatif');
+            $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
+            $statut = @mysql_result($note_query, 0, "statut");
+            $note = @mysql_result($note_query, 0, "note");
+            if (($statut == '') and ($note!='')) {
+                if ($facultatif[$k] == 'O') {
+                    // le devoir n'est pas facultatif (Obligatoire) et entre systématiquement dans le calcul de la moyenne si le coef est différent de zéro
+                    $total_point = $total_point + $coef[$k]*$note;
+                    $somme_coef = $somme_coef + $coef[$k];
+                } else if ($facultatif[$k] == 'B') {
+                    //le devoir est facultatif comme un bonus : seuls les points supérieurs à 10 sont pris en compte dans le calcul de la moyenne.
+                    if ($note > 10) {
+                        $total_point = $total_point + $coef[$k]*$note;
+                        $somme_coef = $somme_coef + $coef[$k];
+                    }
+                } else {
+                    //$facultatif == 'N' le devoir est facultatif comme une note : Le devoir est pris en compte dans la moyenne uniquement s'il améliore la moyenne de l'élève.
+                    $exist_dev_fac = 'yes';
+                    $total_point = $total_point + $coef[$k]*$note;
+                    $somme_coef = $somme_coef + $coef[$k];
+                    $points[$k] = $coef[$k]*$note;
+                }
+            }
+            $k++;
+        }
+        $j++;
+    }
+
+    //
+    // Prise en comptes des sous-conteneurs si mode=2
+    //
+    if ($mode == 2) {
+        $j=0;
+        while ($j < $nb_sous_cont) {
+            $appel_cont = mysql_query("SELECT coef FROM cn_conteneurs WHERE id='$id_sous_cont[$j]'");
+            $coefficient = mysql_result($appel_cont, 0, 'coef');
+            $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$login' AND id_conteneur='$id_sous_cont[$j]')");
+            $statut_moy = @mysql_result($moyenne_query, 0, "statut");
+            if ($statut_moy == 'y') {
+                $moy = @mysql_result($moyenne_query, 0, "note");
+                $somme_coef = $somme_coef + $coefficient;
+                $total_point = $total_point + $coefficient*$moy;
+            }
+            $j++;
+        }
+    }
+
+    //
+    // calcul de la moyenne des évaluations
+    //
+    if ($somme_coef != 0) {
+        $moyenne = $total_point/$somme_coef;
+        //
+        // si un des devoirs a l'option "N", on prend la meilleure moyenne :
+        //
+        if ($exist_dev_fac == 'yes') {
+            $k=0;
+            while ($k < $nb_dev) {
+                if ((($somme_coef - $coef[$k]) != 0) and ($facultatif[$k]=='N')) {
+                    if (isset($points[$k])) {
+                       $points[$k] = ($total_point-$points[$k])/($somme_coef - $coef[$k]);
+                       $moyenne = max($moyenne,$points[$k]);
+                    }
+                }
+                $k++;
+            }
+        }
+        //
+        // Calcul des arrondis
+        //
+        if ($arrondir == 's1') {
+            // s1 : arrondir au dixième de point supérieur
+            $moyenne = number_format(ceil(10*$moyenne)/10,1,'.','');
+        } else if ($arrondir == 's5') {
+            // s5 : arrondir au demi-point supérieur
+            $moyenne = number_format(ceil(2*$moyenne)/2,1,'.','');
+        } else if ($arrondir == 'se') {
+            // se : arrondir au point entier supérieur
+            $moyenne = number_format(ceil($moyenne),1,'.','');
+        } else if ($arrondir == 'p1') {
+            // s1 : arrondir au dixième le plus proche
+            $moyenne = number_format(round(10*$moyenne)/10,1,'.','');
+        } else if ($arrondir == 'p5') {
+            // s5 : arrondir au demi-point le plus proche
+            $moyenne = number_format(round(2*$moyenne)/2,1,'.','');
+        } else if ($arrondir == 'pe') {
+            // se : arrondir au point entier le plus proche
+            $moyenne = number_format(round($moyenne),1,'.','');
+        }
+        $register = mysql_query("INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='$moyenne',statut='y',comment=''");
+
+    } else {
+        $register = mysql_query("INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='0',statut='',comment=''");
+
+    }
+
+}
+
+//
+// Affichage de la liste des conteneurs
+//
+function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
+    global $gepiClosedPeriodLabel;
+    //
+    // Cas particulier de la racine
+    //
+    //$message_cont = "Etes-vous sûr de vouloir supprimer le conteneur ci-dessous et les évaluations qu\\'il contient ?";
+    if(getSettingValue("gepi_denom_boite_genre")=='m'){
+	//$lela="le";$il_ou_elle="il";
+	$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+	$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
+    }
+    else{
+	//$lela="la";$il_ou_elle="elle";
+	$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+	$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
+    }
+    //$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous et les évaluations qu\\'il contient ?";
+    //$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+    //$message_cont_non_vide = ucfirst($lela)." ".getSettingValue("gepi_denom_boite")." est non vide. ".ucfirst($il_ou_elle)." ne peut pas être supprimé.";
+    $message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
+    //$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')");
+    $sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
+    //echo "$sql<br />\n";
+    $appel_conteneurs = mysql_query($sql);
+    $nb_cont = mysql_num_rows($appel_conteneurs);
+    if ($nb_cont != 0) {
+        echo "<ul>\n";
+        $id_cont = mysql_result($appel_conteneurs, 0, 'id');
+        $id_parent = mysql_result($appel_conteneurs, 0, 'parent');
+        $id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
+        $nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+        echo "<li>\n";
+        echo "$nom_conteneur ";
+        //echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
+        if ($ver_periode <= 1)
+            echo " (<b>".$gepiClosedPeriodLabel."</b>) ";
+        echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+        $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+        $nb_dev  = mysql_num_rows($appel_dev);
+        if ($nb_dev != 0) $empty = 'no';
+        if ($ver_periode >= 2) {
+            $j = 0;
+            if($nb_dev>0){
+                echo "<ul>\n";
+                while ($j < $nb_dev) {
+                    $nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+                    $id_dev = mysql_result($appel_dev, $j, 'id');
+                    echo "<li>\n";
+                    echo "<font color='green'>$nom_dev</font>";
+                    echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+                    echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+                    echo "</li>\n";
+                    $j++;
+                }
+                echo "</ul>\n";
+            }
+        }
+    }
+    if ($ver_periode >= 2) {
+        $appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
+        $nb_cont = mysql_num_rows($appel_conteneurs);
+        if($nb_cont>0){
+            echo "<ul>\n";
+            $i = 0;
+            while ($i < $nb_cont) {
+                $id_cont = mysql_result($appel_conteneurs, $i, 'id');
+                $id_parent = mysql_result($appel_conteneurs, $i, 'parent');
+                $id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
+                $nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+                if ($id_cont != $id_parent) {
+                    echo "<li>\n";
+                    //echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+                    echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+                    //$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont'");
+                    $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+                    $nb_dev  = mysql_num_rows($appel_dev);
+                    if ($nb_dev != 0) $empty = 'no';
+
+		    // Existe-t-il des sous-conteneurs?
+		    $sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
+		    $test_sous_cont=mysql_query($sql);
+		    $nb_sous_cont=mysql_num_rows($test_sous_cont);
+		    //echo "<br />$sql<br />$nb_sous_cont<br />";
+
+                    if(($nb_dev==0)&&($nb_sous_cont==0)){
+			echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+		    }
+		    else{
+			echo " - <a href = '#' onclick='alert(\"$message_cont_non_vide\")'><font color='gray'>Suppression</font></a>\n";
+		    }
+
+                    $j = 0;
+                    if($nb_dev>0){
+                        echo "<ul>\n";
+                        while ($j < $nb_dev) {
+                            $nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+                            $id_dev = mysql_result($appel_dev, $j, 'id');
+                            echo "<li>\n";
+                            echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a> - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+                            echo "</li>\n";
+                            $j++;
+                        }
+                        echo "</ul>\n";
+                    }
+                    }
+                if ($id_conteneur != $id_cont) affiche_devoirs_conteneurs($id_cont,$periode_num, $empty,$ver_periode);
+                if ($id_cont != $id_parent) {
+                    echo "</li>\n";
+                    }
+                $i++;
+            }
+            echo "</ul>\n";
+        }
+    }
+    if ($empty != 'no') return 'yes';
+}
+
+
+function checkAccess() {
+    global $gepiPath;
+    $url = parse_url($_SERVER['REQUEST_URI']);
+    $sql = "select " . $_SESSION['statut'] . "
+    from droits
+    where id = '" . substr($url['path'], strlen($gepiPath)) . "'
+    ;";
+    $dbCheckAccess = sql_query1($sql);
+    if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
+        return (false);
+    } else {
+        if ($dbCheckAccess == 'V') {
+            return (true);
+        } else {
+            return (false);
+        }
+    }
+}
+
+function Verif_prof_cahier_notes ($_login,$_id_racine) {
+    if(empty($_login) || empty($_id_racine)) {return false;die();}
+    $test_prof = mysql_query("SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes ='" . $_id_racine . "'");
+    $_id_groupe = mysql_result($test_prof, 0, 'id_groupe');
+
+    $call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$_id_groupe."' and login='" . $_login . "')");
+    $nb = mysql_num_rows($call_prof);
+
+    if ($nb != 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
+    if(empty($login) || empty($id_classe) || empty($matiere)) {return false;}
+    $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
+    $nb_profs = mysql_num_rows($call_prof);
+    $k = 0;
+    $flag = 0;
+    while ($k < $nb_profs) {
+        $prof = @mysql_result($call_prof, $k, "id_professeur");
+        if (strtolower($login) == strtolower($prof)) {$flag = 1;}
+        $k++;
+    }
+    if ($flag == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+//***********************************************************************************************
+function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {
+    //============================
+    // AJOUT: boireaus
+    global $min_max_moyclas;
+    //============================
+
+    $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
+    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
+    $note_max = @mysql_result($call_data, 0, "note_max");
+    $type_note = @mysql_result($call_data, 0, "type_note");
+    $message = @mysql_result($call_data, 0, "message");
+    $display_nom = @mysql_result($call_data, 0, "display_nom");
+    $display_end = @mysql_result($call_data, 0, "display_end");
+
+
+    $aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
+    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    //------
+    // On regarde maintenant quelle sont les profs responsables de cette AID
+    $aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
+    $nb_lig = mysql_num_rows($aid_prof_resp_query);
+    $n = '0';
+    while ($n < $nb_lig) {
+        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $n++;
+    }
+    //------
+    // On appelle l'appréciation de l'élève, et sa note
+    //------
+    $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+    $periode_max = mysql_num_rows($periode_query);
+    if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
+    if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+        $place_eleve = "";
+        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
+            $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
+        }
+        if ($current_eleve_aid_note == '') {
+            $current_eleve_aid_note = '-';
+        } else {
+            if ($affiche_graph == 'y')  {
+                if ($current_eleve_aid_note<5) { $place_eleve=6;}
+                if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
+                if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
+                if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
+                if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
+                if ($current_eleve_aid_note>=15) { $place_eleve=1;}
+            }
+            $current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+        }
+        $aid_note_min_query = mysql_query("SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+
+        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        if ($aid_note_min == '') {
+            $aid_note_min = '-';
+        } else {
+            $aid_note_min=number_format($aid_note_min,1, ',', ' ');
+        }
+        $aid_note_max_query = mysql_query("SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+
+        if ($aid_note_max == '') {
+            $aid_note_max = '-';
+        } else {
+            $aid_note_max=number_format($aid_note_max,1, ',', ' ');
+        }
+
+        $aid_note_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        if ($aid_note_moyenne == '') {
+            $aid_note_moyenne = '-';
+        } else {
+            $aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+        }
+
+    }
+    //------
+    // On affiche l'appréciation aid :
+    //------
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
+    $chaine_prof="";
+    $n = '0';
+    while ($n < $nb_lig) {
+        $chaine_prof.=affiche_utilisateur($aid_prof_resp_login[$n],$id_classe)."<br />";
+        $n++;
+    }
+    if($n!=0){
+	echo "<i>".$chaine_prof."</i>";
+    }
+    echo "</span></td>\n";
+    if ($test_coef != 0 AND $affiche_coef == "y") echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";
+
+    if ($affiche_nbdev=="y"){echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";}
+
+    if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+	//==========================
+	// MODIF: boireaus
+	if($min_max_moyclas!=1){
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_min</span></td>\n";
+
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_max</span></td>\n";
+
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_moyenne</span></td>\n";
+	}
+	else{
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_min<br />\n";
+		echo "$aid_note_max<br />\n";
+		echo "$aid_note_moyenne</span></td>\n";
+	}
+	//==========================
+
+	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+	echo "<span class='$style_bulletin'><b>";
+	if ($current_eleve_aid_statut == '') {
+		echo $current_eleve_aid_note;
+	} else if ($current_eleve_aid_statut == 'other') {
+		echo "-";
+	} else {
+		echo $current_eleve_aid_statut;
+	}
+	echo "</b></span></td>\n";
+    } else {
+	//==========================
+	// MODIF: boireaus
+	if($min_max_moyclas!=1){
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+	}
+	else{
+		// On ne met pas trois tirets.
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+	}
+	//==========================
+	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+    }
+    if ($affiche_graph == 'y')  {
+      if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid)))  {
+        $quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
+        $quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
+        $quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
+        $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
+        $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
+        $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
+        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7'></td>\n";
+     } else
+      echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
+    }
+    if ($affiche_rang == 'y') echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";
+    if (getSettingValue("bull_affiche_appreciations") == 'y') {
+        echo "<td style=\"\" colspan=\"2\"><span class='$style_bulletin'>";
+        if (($message != '') or ($display_nom == 'y')) {
+            echo "$message ";
+            if ($display_nom == 'y') {echo "<b>$aid_nom</b><br />";}
+        }
+    }
+    echo "$current_eleve_aid_appreciation</span></td>\n</tr>\n";
+    //------
+}
+
+function retourne_email ($login_u) {
+$call = mysql_query("SELECT email FROM utilisateurs WHERE login = '$login_u'");
+$email = @mysql_result($call, 0, "email");
+return $email;
+
+}
+function parametres_tableau($larg_tab, $bord) {
+    echo "<table border='1' width='680' cellspacing='1' cellpadding='1'>\n";
+    echo "<tr><td><span class=\"norme\">largeur en pixel : <input type=\"text\" name=\"larg_tab\" size=\"3\" value=\"".$larg_tab."\" />\n";
+    echo "bords en pixel : <input type=\"text\" name=\"bord\" size=\"3\" value=\"".$bord."\" />\n";
+    echo "<input type=\"submit\" value=\"Valider\" />\n";
+    echo "</span></td></tr></table>\n";
+}
+function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
+    // $col1_centre = 1 --> la première colonne est centrée
+    // $col1_centre = 0 --> la première colonne est alignée à gauche
+    // $col_centre = 1 --> toutes les autres colonnes sont centrées.
+    // $col_centre = 0 --> toutes les autres colonnes sont alignées.
+    // $couleur_alterne --> les couleurs de fond des lignes sont alternés
+
+    echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+    echo "<tr>\n";
+    $j = 1;
+    while($j < $nb_col+1) {
+        echo "<th class='small'>$ligne1[$j]</th>\n";
+        $j++;
+    }
+    echo "</tr>\n";
+    $i = "0";
+    $bg_color = "";
+    $flag = "1";
+    while($i < $nombre_lignes) {
+        if ($couleur_alterne) {
+            if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
+        }
+
+        echo "<tr>\n";
+        $j = 1;
+        while($j < $nb_col+1) {
+            if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
+                echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+            } else {
+                echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+            }
+            $j++;
+        }
+        echo "</tr>\n";
+        if ($flag == "1") $flag = "0"; else $flag = "1";
+        $i++;
+    }
+    echo "</table>\n";
+}
+
+function dbase_filter($s){
+  for($i = 0; $i < strlen($s); $i++){
+    $code = ord($s[$i]);
+    switch($code){
+    case 129:    $s[$i] = "ü"; break;
+    case 130:   $s[$i] = "é"; break;
+    case 131:    $s[$i] = "â"; break;
+    case 132:    $s[$i] = "ä"; break;
+    case 133:    $s[$i] = "à"; break;
+    case 135:    $s[$i] = "ç"; break;
+    case 136:    $s[$i] = "ê"; break;
+    case 137:    $s[$i] = "ë"; break;
+    case 138:    $s[$i] = "è"; break;
+    case 139:    $s[$i] = "ï"; break;
+    case 140:    $s[$i] = "î"; break;
+    case 147:    $s[$i] = "ô"; break;
+    case 148:    $s[$i] = "ö"; break;
+    case 150:    $s[$i] = "û"; break;
+    case 151:    $s[$i] = "ù"; break;
+    }
+  }
+  return $s;
+}
+
+function detect_browser($HTTP_USER_AGENT) {
+    // D'après le fichier db_details_common.php de phpmyadmin
+    if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        $BROWSER_VER = $log_version[2];
+        $BROWSER_AGENT = 'OPERA';
+    } else if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        $BROWSER_VER = $log_version[1];
+        $BROWSER_AGENT = 'Internet Explorer';
+    } else if (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        $BROWSER_VER = $log_version[1];
+        $BROWSER_AGENT = 'OMNIWEB';
+    } else if (ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
+        $BROWSER_VER = $log_version[2];
+        $BROWSER_AGENT = 'KONQUEROR';
+    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)
+               && ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)) {
+        $BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+        $BROWSER_AGENT = 'SAFARI';
+    } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+        $BROWSER_VER = $log_version[1];
+        $BROWSER_AGENT = 'MOZILLA';
+    } else {
+        $BROWSER_VER = '';
+        $BROWSER_AGENT = $HTTP_USER_AGENT;
+    }
+    return  $BROWSER_AGENT." - ".$BROWSER_VER;
+}
+
+// Retourne la version de Mysql
+
+function affiche_date_naissance($date) {
+    if (strlen($date) == 10) {
+        // YYYY-MM-DD
+        $annee = substr($date, 0, 4);
+        $mois = substr($date, 5, 2);
+        $jour = substr($date, 8, 2);
+    }
+    elseif (strlen($date) == 8 ) {
+        // YYYYMMDD
+        $annee = substr($date, 0, 4);
+        $mois = substr($date, 4, 2);
+        $jour = substr($date, 6, 2);
+    }
+    elseif (strlen($date) == 19 ) {
+        // YYYY-MM-DD xx:xx:xx
+        $annee = substr($date, 0, 4);
+        $mois = substr($date, 5, 2);
+        $jour = substr($date, 8, 2);
+    }
+
+    else {
+        // Format inconnu
+        return($date);
+    }
+    return $jour."/".$mois."/".$annee ;
+}
+
+function test_maj() {
+    global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
+    $version_old = getSettingValue("version");
+    $versionRc_old = getSettingValue("versionRc");
+    $versionBeta_old = getSettingValue("versionBeta");
+
+   if ($version_old =='') {
+       return true;
+       die();
+   }
+   if ($gepiVersion > $version_old) {
+        // On a une nouvelle version stable
+       return true;
+       die();
+   }
+   if (($gepiVersion == $version_old) and ($versionRc_old!='')) {
+        // On avait une RC
+       if (($gepiRcVersion > $versionRc_old) or ($gepiRcVersion=='')) {
+            // Soit on a une nouvelle RC, soit on est passé de RC à stable
+           return true;
+           die();
+       }
+   }
+   if (($gepiVersion == $version_old) and ($versionBeta_old!='')) {
+        // On avait une Beta
+       if (($gepiBetaVersion > $versionBeta_old) or ($gepiBetaVersion=='')) {
+            // Soit on a une nouvelle Beta, soit on est passé à une RC ou une stable
+           return true;
+           die();
+       }
+   }
+   return false;
+}
+
+function quelle_maj($num) {
+    global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
+    $version_old = getSettingValue("version");
+    $versionRc_old = getSettingValue("versionRc");
+    $versionBeta_old = getSettingValue("versionBeta");
+    if ($version_old < $num) {
+        return true;
+        die();
+    }
+    if ($version_old == $num) {
+        if ($gepiRcVersion > $versionRc_old) {
+            return true;
+            die();
+        }
+        if ($gepiRcVersion == $versionRc_old) {
+            if ($gepiBetaVersion > $versionBeta_old) {
+                return true;
+                die();
+            }
+        }
+    }
+    return false;
+}
+
+function check_backup_directory() {
+
+    $current_backup_dir = getSettingValue("backup_directory");
+    if ($current_backup_dir == null) $current_backup_dir = "no_folder";
+    if (!file_exists("./backup/".$current_backup_dir)) {
+        // On regarde d'abord si le répertoire de backup n'existerait pas déjà...
+        $handle=opendir('./backup');
+        $backupDirName = null;
+        while ($file = readdir($handle)) {
+            if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
+        }
+
+        closedir($handle);
+
+        if ($backupDirName != null) {
+            // Il existe : on met simplement à jour le nom du répertoire...
+            $update = saveSetting("backup_directory",$backupDirName);
+        } else {
+            // Il n existe pas
+            // On créé le répertoire de backup
+            $length = rand(35, 45);
+            for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+            $dirname = $r;
+            $create = mkdir("./backup/" . $dirname, 0700);
+            copy("./backup/index.html","./backup/".$dirname."/index.html");
+            if ($create) {
+                saveSetting("backup_directory", $dirname);
+                saveSetting("backupdir_lastchange",time());
+            } else {
+                return false;
+                die();
+            }
+
+            // On déplace les éventuels fichiers .sql dans ce nouveau répertoire
+
+            $handle=opendir('./backup');
+            $tab_file = array();
+            $n=0;
+            while ($file = readdir($handle)) {
+                if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+                and (preg_match('/sql$/',$file)) and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') ) {
+                    $tab_file[] = $file;
+                    $n++;
+                }
+            }
+            closedir($handle);
+            foreach($tab_file as $filename) {
+                rename("backup/".$filename, "backup/".$dirname."/".$filename);
+            }
+        }
+    }
+
+    // On vérifie la date du dernier changement, et on change le nom
+    // du répertoire si le dernier changement a eu lieu il y a plus de 48h
+    $lastchange = getSettingValue("backupdir_lastchange");
+    $current_time = time();
+
+    // Si le dernier changement a eu lieu il y a plus de 48h, on change le nom du répertoire
+    if ($current_time-$lastchange > 172800) {
+        $dirname = getSettingValue("backup_directory");
+        $length = rand(35, 45);
+        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
+        $newdirname = $r;
+        if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
+            saveSetting("backup_directory",$newdirname);
+            saveSetting("backupdir_lastchange",time());
+            return true;
+        } else {
+            echo "Erreur lors du renommage du dossier de sauvegarde.<br />";
+            return false;
+        }
+    }
+    return true;
+
+}
+
+function get_period_number($_id_classe) {
+    $periode_query = mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'");
+    $nb_periode = mysql_result($periode_query, 0);
+    return $nb_periode;
+}
+
+
+// Pour les utilisateurs ayant des versions antérieures à PHP 4.3.0 :
+// la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
+function html_entity_decode_all_version ($string)
+{
+   global $use_function_html_entity_decode;
+   if (isset($use_function_html_entity_decode) and ($use_function_html_entity_decode == 0)) {
+       // Remplace les entités numériques
+       $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
+       $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
+       // Remplace les entités litérales
+       $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+       $trans_tbl = array_flip ($trans_tbl);
+       return strtr ($string, $trans_tbl);
+   } else
+       return html_entity_decode($string);
+}
+
+?>

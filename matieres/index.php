@@ -1,0 +1,194 @@
+<?php
+/*
+ * Last modification  : 09/09/2006
+ *
+ * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+    die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+};
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+$msg = '';
+$error = false;
+if (isset($_POST['is_posted'])) {
+    // Les données ont été postées, on met à jour
+
+    $get_all_matieres = mysql_query("SELECT matiere, priority, categorie_id FROM matieres");
+    while ($row = mysql_fetch_object($get_all_matieres)) {
+        // On passe les matières une par une et on met à jour
+        $varname_p = strtolower($row->matiere)."_priorite";
+        if (isset($_POST[$varname_p])) {
+            if (is_numeric($_POST[$varname_p])) {
+            	// La valeur est correcte
+            	if ($_POST[$varname_p] != $row->priority) {
+                // On a une valeur différente. On met à jour.
+                    $res = mysql_query("UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
+                    if (!$res) {
+                        $msg .= "<br/>Erreur lors de la mise à jour de la priorité de la matière ".$row->matiere.".";
+                        $error = true;
+                    }
+                }
+                // On met à jour toutes les priorités dans les classes si ça a été demandé
+                if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
+			        $req = mysql_query("UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
+			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
+			        if (!$req) {
+			        	$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
+			        	$error = true;
+			        }
+                }
+            }
+        }
+
+        // La même chose pour la catégorie de matière
+        $varname_c = strtolower($row->matiere)."_categorie";
+        if (isset($_POST[$varname_c])) {
+        	if (is_numeric($_POST[$varname_c])) {
+        		// On a une valeur correcte. On y va !
+            	if ($_POST[$varname_c] != $row->categorie_id) {
+                	// On a une valeur différente. On met à jour.
+                    $res = mysql_query("UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
+                    if (!$res) {
+                        $msg .= "<br/>Erreur lors de la mise à jour de la catégorie de la matière ".$row->matiere.".";
+                        $error = true;
+                    }
+                }
+                
+                // On met à jour toutes les catégories dans les classes si ça a été demandé
+                if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
+			        $req = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
+			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
+			        if (!$req) {
+			        	$msg .="<br/>Erreur lors de la mise à jour de la catégorie de matière dans les classes pour la matière ".$row->matiere.".";
+			        	$error = true;
+			        }
+                }
+            }
+        }
+        
+        
+    }
+    if ($error) {
+        $msg .= "<br/>Des erreurs se sont produites lors de la mise à jour des données.";
+    } else {
+        $msg .= "<br/>Mise à jour effectuée.";
+    }
+}
+
+
+//**************** EN-TETE *****************
+$titre_page = "Gestion des matières";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+?>
+
+<p class=bold>
+|<a href="../accueil_admin.php">Retour</a>
+|<a href="modify_matiere.php">Ajouter matière</a>
+|<a href='matieres_param.php'>Paramétrage de plusieurs matières par lots</a>
+|<a href='matieres_categories.php'>Editer les catégories de matières</a>
+|<a href='matieres_csv.php'>Importer un CSV de la liste des matières</a>|
+
+</p>
+<form enctype="multipart/form-data" action="index.php" method=post>
+<input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
+<p>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' value='yes'>
+<br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la priorité et la catégorie de chaque matière dans les différentes classes !</p>
+<input type='hidden' name='is_posted' value='1' />
+<table width = '100%' border= '1' cellpadding = '5'>
+<tr>
+    <td><p class='bold'><a href='./index.php?orderby=m.matiere'>Identifiant matière</a></p></td>
+    <td><p class='bold'><a href='./index.php?orderby=m.nom_complet'>Nom complet</a></p></td>
+    <td><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'>Ordre d'affichage<br />par défaut</a></p></td>
+    <td><p class='bold'>Catégorie par défaut</p></td>
+    <td><p class='bold'>Supprimer</p></td>
+</tr>
+<?php
+$orderby = isset($_GET['orderby']) ? $_GET['orderby'] : (isset($_POST['orderby']) ? $_POST["orderby"] : 'm.priority,m.nom_complet');
+if ($orderby != "m.matiere" AND $orderby != "m.nom_complet" AND $orderby != "m.priority,m.matiere") {
+    $orderby = "m.priority,m.nom_complet";
+}
+$_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
+// On va chercher les classes déjà existantes, et on les affiche.
+
+$call_data = mysql_query("SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
+$get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
+while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+    $categories[] = $row;
+}
+
+$nombre_lignes = mysql_num_rows($call_data);
+$i = 0;
+while ($i < $nombre_lignes){
+    $current_matiere = mysql_result($call_data, $i, "matiere");
+    $current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
+    $current_matiere_priorite = mysql_result($call_data, $i, "priority");
+    $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
+
+    if ($current_matiere_priorite > 1) $current_matiere_priorite -= 10;
+    echo "<tr><td><a href='modify_matiere.php?current_matiere=$current_matiere'>$current_matiere</a></td>";
+    //echo "<td>$current_matiere_nom</td>";
+    echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
+    // La priorité par défaut
+    echo "<td>";
+    echo "<select size=1 name='" . strtolower($current_matiere)."_priorite'>\n";
+    $k = '0';
+    echo "<option value=0>0</option>\n";
+    $k='11';
+    $j = '1';
+    while ($k < '51'){
+        echo "<option value=$k"; if ($current_matiere_priorite == $j) {echo " SELECTED";} echo ">$j</option>\n";
+        $k++;
+        $j = $k - 10;
+    }
+    echo "</select></td>";
+
+    "</td>";
+
+    echo "<td>";
+    echo "<select size=1 name='" . strtolower($current_matiere)."_categorie'>\n";
+
+    foreach ($categories as $row) {
+        echo "<option value='".$row["id"]."'";
+        if ($current_matiere_categorie_id == $row["id"]) echo " SELECTED";
+        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>";
+    }
+    echo "</select>";
+    echo "</td>";
+    echo "<td><a href=../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere  onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>";
+$i++;
+}
+?>
+</table>
+<input type='submit' value='Enregistrer' style='margin-left: 70%; margin-top: 25px; margin-bottom: 100px;' />
+</form>
+</body>
+</html>

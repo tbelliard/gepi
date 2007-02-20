@@ -1,0 +1,491 @@
+<?php
+/*
+* Last modification  : 30/08/2006
+*
+* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// Resume session
+
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+    die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+};
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+$id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
+if (!is_numeric($id_classe)) $id_classe = 0;
+$classe = get_classe($id_classe);
+
+
+// =================================
+// AJOUT: boireaus
+$sql="SELECT id, classe FROM classes ORDER BY classe";
+$res_class_tmp=mysql_query($sql);
+if(mysql_num_rows($res_class_tmp)>0){
+    $id_class_prec=0;
+    $id_class_suiv=0;
+    $temoin_tmp=0;
+    while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+        if($lig_class_tmp->id==$id_classe){
+            $temoin_tmp=1;
+            if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+                $id_class_suiv=$lig_class_tmp->id;
+            }
+            else{
+                $id_class_suiv=0;
+            }
+        }
+        if($temoin_tmp==0){
+            $id_class_prec=$lig_class_tmp->id;
+        }
+    }
+}// =================================
+
+$priority_defaut = 5;
+
+if (isset($_POST['is_posted'])) {
+    $error = false;
+
+    foreach ($_POST as $key => $value) {
+        $pattern = "/^priorite\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["priorite"] = $value;
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
+        $pattern = "/^coef\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["coef"] = $value;
+        }
+    }
+
+    foreach ($_POST as $key => $value) {
+        $pattern = "/^categorie\_/";
+        if (preg_match($pattern, $key)) {
+            $group_id = preg_replace($pattern, "", $key);
+            $options[$group_id]["categorie_id"] = $value;
+        }
+    }
+
+    foreach ($options as $key => $value) {
+        // Toutes les vérifications de sécurité sont faites dans la fonction
+        $update = update_group_class_options($key, $id_classe, $value);
+    }
+
+}
+
+if (isset($_GET['action'])) {
+    $msg = null;
+    if ($_GET['action'] == "delete_group") {
+        if (!is_numeric($_GET['id_groupe'])) $_GET['id_groupe'] = 0;
+        $verify = test_before_group_deletion($_GET['id_groupe']);
+        if ($verify) {
+            //================================
+            // MODIF: boireaus
+            $sql="SELECT * FROM groupes WHERE id='".$_GET['id_groupe']."'";
+            $req_grp=mysql_query($sql);
+            $ligne_grp=mysql_fetch_object($req_grp);
+            //================================
+            $delete = delete_group($_GET['id_groupe']);
+            if ($delete == true) {
+                //================================
+                // MODIF: boireaus
+                //$msg .= "Le groupe " . $_GET['id_groupe'] . " a été supprimé.";
+
+                //$sql="SELECT * FROM groupes WHERE id='".$_GET['id_groupe']."'";
+                //$req_grp=mysql_query($sql);
+                //$ligne_grp=mysql_fetch_object($req_grp);
+                // Le groupe n'existe déjà plus
+                $msg .= "Le groupe $ligne_grp->name (" . $_GET['id_groupe'] . ") a été supprimé.";
+                //================================
+            } else {
+                $msg .= "Une erreur a empêché la suppression du groupe.";
+            }
+        } else {
+            $msg .= "Des données existantes bloquent la suppression du groupe. Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.";
+        }
+    }
+}
+
+//**************** EN-TETE **************************************
+//$titre_page = "Gestion des groupes";
+$titre_page = "Gestion des enseignements";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE **********************************
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+echo "<table border='0'><tr>";
+echo "<td width='40%' align='left'>";
+echo "<p class='bold'>";
+echo "|<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>";
+if($id_class_prec!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+echo "</p>\n";
+
+echo "<h3>Gestion des enseignements pour la classe :" . $classe["classe"]."</h3>\n";
+
+echo "</td>";
+echo "<td width='60%' align='center'>";
+echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
+//==============================
+// MODIF: boireaus
+//echo "<p>Ajouter un enseignement : ";
+//$query = mysql_query("SELECT matiere, nom_complet FROM matieres");
+echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
+echo "<table border='0'><tr valign='top'><td>";
+echo "Ajouter un enseignement : ";
+echo "</td>";
+$query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
+//==============================
+$nb_mat = mysql_num_rows($query);
+
+echo "<td>";
+echo "<select name='matiere' size='1'>";
+echo "<option value='null'>-- Sélectionner matière --</option>";
+for ($i=0;$i<$nb_mat;$i++) {
+    $matiere = mysql_result($query, $i, "matiere");
+    $nom_matiere = mysql_result($query, $i, "nom_complet");
+    //echo "<option value='" . $matiere . "'";
+    echo "<option value='" . $matiere . "'";
+    echo ">" . htmlentities($nom_matiere) . "</option>\n";
+}
+echo "</select>";
+echo "</td>";
+echo "<td>";
+echo "&nbsp;dans&nbsp;";
+echo "</td>";
+//==============================
+// MODIF: boireaus
+/*
+echo "<select name='mode' size='1'>";
+echo "<option value='null'>-- Sélectionner mode --</option>";
+echo "<option value='groupe' selected>cette classe seulement (" . $classe["classe"] .")</option>";
+echo "<option value='regroupement'>plusieurs classes</option>";
+echo "</select>";
+*/
+echo "<td>";
+echo "<input type='radio' name='mode' value='groupe' checked /> cette classe seulement (" . $classe["classe"] .")<br />\n";
+echo "<input type='radio' name='mode' value='regroupement' /> plusieurs classes\n";
+echo "</td>";
+echo "</tr></table>\n";
+//==============================
+
+echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
+echo "<input type='submit' value='Créer' />";
+echo "</fieldset>";
+echo "</form>";
+echo "</td></tr></table>\n";
+
+$groups = get_groups_for_class($id_classe);
+if(count($groups)==0){
+    echo "</body></html>\n";
+    die();
+}
+?>
+<form enctype="multipart/form-data" action="edit_class.php" name="formulaire" method=post>
+<!--form enctype="multipart/form-data" action="edit_class.php" name="formulaire" id="form_mat" method=post-->
+
+<!--p>Définir les priorités d'après <input type='button' value="l'ordre alphabétique" onClick="ordre_alpha();" /> / <input type='button' value="l'ordre par défaut des matières" onClick="ordre_defaut();" /><br /-->
+<!--table border='0' width='100%'><tr align='center'><td width='30%'>&nbsp;</td><td width='30%'>Afficher les matières dans l'ordre <a href='javascript:ordre_alpha();'>alphabétique</a> ou <a href='javascript:ordre_defaut();'>des priorités</a>.</td>
+<td width='30%'>Mettre tous les coefficients à <select name='coefficient_recop' id='coefficient_recopie'-->
+<!--table border='0' width='100%'><tr align='center'><td>Afficher les matières dans l'ordre <a href='javascript:ordre_alpha();'>alphabétique</a> ou <a href='javascript:ordre_defaut();'>des priorités</a>.</td-->
+
+<table border='0' width='100%'>
+<tr align='center'>
+<td width='40%'>
+<fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
+<p>Pour cette classe,
+<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' />:</p>
+<!--ul>
+<li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
+<li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
+</ul-->
+<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /> égales aux valeurs définies par défaut,<br />
+<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /> suivant l'ordre alphabétique des matières.
+</fieldset>
+</td>
+<td><input type='submit' value='Enregistrer' /></td>
+<td width='40%'>
+<fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
+<!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
+<input type='button' value='Mettre tous les coefficients à' onClick='coeff();' />
+<select name='coefficient_recop' id='coefficient_recopie'>
+<?php
+for($i=0;$i<10;$i++){
+    echo "<option value='$i'>$i</option>\n";
+}
+?>
+</select>
+<!--input type='button' value='Modifier' onClick='coeff();' /-->
+<!--Mettre tous les coefficients à <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' /-->
+<!--/p-->
+</fieldset>
+</td></tr></table>
+<!--p><i>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).</i-->
+<?php
+    $cpt_grp=0;
+    $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
+    $mat_categories = array();
+    while ($row = mysql_fetch_object($res)) {
+        $mat_categories[] = $row;
+    }
+    foreach ($groups as $group) {
+
+        $current_group = get_group($group["id"]);
+        $total = count($group["classes"]);
+        echo "<br/>";
+        echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
+        echo "<table border = '0' width='100%'><tr><td width='25%'>";
+        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/delete16.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+        echo " -- <span class=\"norme\">";
+        echo "<b>";
+        if ($total == "1") {
+            echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
+        } else {
+            echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
+        }
+        //echo $group["description"] . "</a></b>";
+        echo htmlentities($group["description"]) . "</a></b>";
+        //===============================
+        // AJOUT: boireaus
+        echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" />\n";
+        //===============================
+        echo "</span>";
+
+        //===============================
+        // AJOUT: boireaus
+        unset($result_matiere);
+        $sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
+        //$sql="SELECT priorite FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$group["id"]."' AND id_classe='$id_classe'";
+        //echo "$sql<br />\n";
+        $result_matiere=mysql_query($sql);
+        $ligmat=mysql_fetch_object($result_matiere);
+        $mat_priorite[$cpt_grp]=$ligmat->priority;
+        $mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
+        //$mat_priorite[$cpt_grp]=$ligmat->priorite;
+        //echo "\$mat_priorite[$cpt_grp]=".$mat_priorite[$cpt_grp]."<br />\n";
+        //===============================
+
+        $j= 1;
+        if ($total > 1) {
+            echo "&nbsp;&nbsp;(avec : ";
+            //==========================================
+            // AJOUT: boireaus
+            unset($tabclasse);
+            //==========================================
+            foreach ($group["classes"] as $classe) {
+                //==========================================
+                // MODIF: boireaus
+                /*
+                if ($classe["id"] != $id_classe) {
+                    echo $classe["classe"];
+                    if ($j < $total) echo ", ";
+                }
+                */
+                if ($classe["id"] != $id_classe) {
+                    $tabclasse[]=$classe["classe"];
+                }
+                //==========================================
+                $j++;
+            }
+            //==============================
+            // AJOUT: boireaus
+            echo $tabclasse[0];
+            for($i=1;$i<count($tabclasse);$i++){
+                echo ", $tabclasse[$i]";
+            }
+            //==============================
+            echo ")";
+        }
+
+        echo "</td>";
+
+        $inscrits = null;
+    //echo "=======================================<br />\n";
+        foreach($current_group["periodes"] as $period) {
+        //echo "\$period[\"num_periode\"]=".$period["num_periode"]."<br />\n";
+        if($period["num_periode"]!=""){
+            $inscrits .= count($current_group["eleves"][$period["num_periode"]]["list"]) . "-";
+        }
+        }
+
+        $inscrits = substr($inscrits, 0, -1);
+
+        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "'>Elèves inscrits (" . $inscrits . ")</a>";
+        echo "</b></td>";
+        echo "<td width='20%'>Priorité d'affichage";
+        //=================================
+        // MODIF: boireaus
+        //echo "<select size=1 name='" . "priorite_" . $current_group["id"] . "'>";
+        // Attention à ne pas confondre l'Id et le Name qui ne coïncident pas.
+        echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>";
+        //=================================
+        echo "<option value=0";
+        if  ($current_group["classes"]["classes"][$id_classe]["priorite"] == '0') echo " SELECTED";
+        echo ">0";
+        if ($priority_defaut == 0) echo " (valeur par défaut)";
+        echo "</option>\n";
+        $k = 0;
+
+        $k=11;
+        $j = 1;
+        while ($k < 51){
+            echo "<option value=$k"; if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " SELECTED";} echo ">".$j;
+            if ($priority_defaut == $k) echo " (valeur par défaut)";
+            echo "</option>\n";
+            $k++;
+            $j = $k - 10;
+        }
+        echo "</select>\n";
+        echo "</td>";
+        // Catégories de matières
+        echo "<td>Catégorie : ";
+        echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>";
+        echo "<option value='0'";
+        if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") echo " SELECTED";
+        echo ">Aucune</option>";
+        foreach ($mat_categories as $cat) {
+            echo "<option value='".$cat->id . "'";
+            if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) echo " SELECTED";
+            echo ">".html_entity_decode_all_version($cat->nom_court)."</option>";
+        }
+
+        echo "</select>";
+        echo "</td>";
+
+        // Coefficient
+        echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
+
+        echo "<tr>";
+        echo "<td colspan=4>";
+        $first = true;
+        foreach($current_group["profs"]["list"] as $prof) {
+            if (!$first) echo ", ";
+            echo $current_group["profs"]["users"][$prof]["prenom"];
+            echo " ";
+            echo $current_group["profs"]["users"][$prof]["nom"];
+            $first = false;
+        }
+        echo "</td>";
+        echo "</tr>";
+        echo "</table>";
+        echo "</fieldset>";
+
+        $cpt_grp++;
+    }
+
+echo "<input type='hidden' name='is_posted' value='1' />";
+echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
+echo "<p align='center'><input type='submit' value='Enregistrer' /></p>";
+echo "</form>";
+
+//================================================
+// AJOUT:boireaus
+echo "<script type='text/javascript' language='javascript'>
+    function choix_ordre(){
+    if(document.getElementById('ordre_alpha').checked){
+        ordre_alpha();
+    }
+    else{
+        ordre_defaut();
+    }
+    }
+    function ordre_alpha(){
+        cpt=0;
+        enseignement=new Array();
+        while(cpt<$cpt_grp){
+            enseignement[cpt]=document.getElementById('enseignement_'+cpt).value;
+            cpt++;
+        }
+        enseignement.sort();
+        cpt=0;
+        while(cpt<$cpt_grp){
+            for(i=0;i<$cpt_grp;i++){
+                docens=document.getElementById('enseignement_'+i).value;
+                if(enseignement[cpt]==document.getElementById('enseignement_'+i).value){
+                    document.getElementById('priorite_'+i).selectedIndex=cpt+1;
+                }
+            }
+            cpt++;
+        }
+        //document.forms['formulaire'].submit();
+        changement();
+    }
+
+    function ordre_defaut(){";
+        for($i=0;$i<count($mat_priorite);$i++){
+            $rang=0;
+            if($mat_priorite[$i]>0){$rang=$mat_priorite[$i]-10;}
+            //echo "document.getElementById('priorite_'+$i).selectedIndex=$mat_priorite[$i];\n";
+            echo "document.getElementById('priorite_'+$i).selectedIndex=$rang;\n";
+        }
+echo "}
+
+    function coeff(){
+        nombre=document.getElementById('coefficient_recopie').value;
+        chaine_reg=new RegExp('[0-9]+');
+        if(nombre.replace(chaine_reg,'').length!=0){
+            nombre=0;
+        }
+        cpt=0;
+        while(cpt<$cpt_grp){
+            document.getElementById('coef_'+cpt).value=nombre;
+            cpt++;
+        }
+        //document.forms['formulaire'].submit();
+        changement();
+    }
+</script>\n";
+?>
+
+
+<!--form enctype="multipart/form-data" action="edit_class.php" name="formulaire2" method=post>
+    <input type='button' value="Définir les priorités d'après l'ordre alphabétique" onClick="ordre_alpha();" /><br />
+    Mettre tous les coefficients à <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' />
+</form-->
+<p><i>Remarques:</i></p>
+<ul>
+<li>Un seul coefficient non nul provoque l'apparition de tous les coefficients sur les bulletins.</li>
+<li>Un/des coefficients non nul(s) est/sont nécessaire(s) pour que la ligne moyenne générale apparaisse sur le bulletin.</li>
+<!--li>Les coefficients réglés ici ne s'appliquent qu'à la classe <?php echo $classe["classe"]?>, même dans le cas des enseignements concernant d'autres classes.</li-->
+<li>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).<br />
+Les coefficients réglés ici ne s'appliquent donc qu'à la classe
+<?php
+    // Bizarre... $classe peut contenir une autre classe que celle en cours???
+    $classe_tmp = get_classe($id_classe);
+    echo $classe_tmp["classe"];
+?>
+, même dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
+</ul>
+</body>
+</html>
