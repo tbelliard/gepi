@@ -82,23 +82,23 @@ if (!checkAccess()) {
 // fonction pour mettre la date en français
 function date_frc($var)
  {
-        $var = explode("/",$var);    
+        $var = explode("/",$var);
 	$date = "$var[0],$var[1],$var[2]";
 	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"Août", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
 	//$tab_jour = array("Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.");
 	$tab_date = explode(',', $date);
-  
+
 	$jour = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[0], $tab_date[2]));
 	if ($tab_date[0]=='01') {$tab_date[0]='1er';}
 	if ($tab_date[0]=='02') {$tab_date[0]='2';}
-	if ($tab_date[0]=='03') {$tab_date[0]='3';}  
-	if ($tab_date[0]=='04') {$tab_date[0]='4';}  
-	if ($tab_date[0]=='05') {$tab_date[0]='5';}  
-	if ($tab_date[0]=='06') {$tab_date[0]='6';}  
+	if ($tab_date[0]=='03') {$tab_date[0]='3';}
+	if ($tab_date[0]=='04') {$tab_date[0]='4';}
+	if ($tab_date[0]=='05') {$tab_date[0]='5';}
+	if ($tab_date[0]=='06') {$tab_date[0]='6';}
 	if ($tab_date[0]=='07') {$tab_date[0]='7';}
 	if ($tab_date[0]=='08') {$tab_date[0]='8';}
-	if ($tab_date[0]=='09') {$tab_date[0]='9';}  
-     
+	if ($tab_date[0]=='09') {$tab_date[0]='9';}
+
 	// $date = ($tab_jour[$jour]." ".$tab_date[0]." ".$tab_mois[$tab_date[1]]." ".$tab_date[2]);
 	$date = ($tab_date[0]." ".$tab_mois[$tab_date[1]]." ".$tab_date[2]);
 	$var = $date;
@@ -109,7 +109,7 @@ function date_frc($var)
          $tmp = get_html_translation_table(HTML_ENTITIES);
          $tmp = array_flip ($tmp);
          $chaineTmp = strtr ($chaineHtml, $tmp);
-  
+
          return $chaineTmp;
  }
 
@@ -156,7 +156,7 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
 {
     $xi=$this->GetX();
     $yi=$this->GetY();
-    
+
     $hrow=$this->FontSize;
     $textrows=$this->drawRows($w,$hrow,$strText,0,$align,0,0,0);
     $maxrows=floor($h/$this->FontSize);
@@ -348,7 +348,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 // fin de la class
 
 // variable de la création du document
-	
+
 	// entête
 	$X_entete_etab='5';
 	$caractere_utilse='arial'; // caractère utilisé dans le document
@@ -392,7 +392,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	if (isset($id_classe[0])) {
  	$o=0; $prepa_requete = "";
         while(!empty($id_classe[$o]))
-	     { 
+	     {
 		if($o == "0") { $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'"'; }
 		if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'" '; }
 		$o = $o + 1;
@@ -402,7 +402,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	if (!empty($id_eleve[0])) {
  	$o=0; $prepa_requete = "";
         while(!empty($id_eleve[$o]))
-	     { 
+	     {
 		if($o == "0") { $prepa_requete = $prefix_base.'eleves.login = "'.$id_eleve[$o].'"'; }
 		if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'eleves.login = "'.$id_eleve[$o].'" '; }
 		$o = $o + 1;
@@ -416,8 +416,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		    $nb_eleves = mysql_num_rows($call_eleve);
 		    while ( $donner = mysql_fetch_array( $call_eleve ))
 			{
-				$login[$cpt_i] = $donner['login']; 
-				$ereno[$cpt_i] = $donner['ereno']; 
+				$login[$cpt_i] = $donner['login'];
+				//$ereno[$cpt_i] = $donner['ereno'];
 				$nom[$cpt_i] = $donner['nom'];
 				$prenom[$cpt_i] = $donner['prenom'];
 				$naissance[$cpt_i] = $donner['naissance'];
@@ -425,38 +425,132 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 				$classe_id_eleve[$cpt_i] = $donner['id'];
 				$ident_eleve_sel1=$login[$cpt_i];
 
+				$ele_id[$cpt_i] = $donner['ele_id'];
+				$sql="SELECT rp.nom, rp.prenom, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+							WHERE r.ele_id='$ele_id[$cpt_i]' AND
+								rp.adr_id=ra.adr_id AND
+								r.pers_id=rp.pers_id AND
+								resp_legal='1'";
+				$res_resp=mysql_query($sql);
+
 				//les responsables
-				if($ereno[$cpt_i]!='' and $active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') 
+				/*
+				if($ereno[$cpt_i]!='' and $active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1')
 				{
-				 $call_resp = @mysql_query('SELECT * FROM responsables WHERE ereno = "'.$ereno[$cpt_i].'"');
-				 $civilite_parents[$ident_eleve_sel1][0] = "M. et Mme";
-			         $nom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "nom1");
-			         $prenom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "prenom1");
-			         $adresse1_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1");
-			         $adresse2_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1_comp");
-			         $ville_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "commune1");
-			         $cp_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "cp1");
-			         $nom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "nom2");
-			         $prenom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "prenom2");
-			         $adresse1_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2");
-			         $adresse2_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2_comp");
-			         $ville_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "commune2");
-			         $cp_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "cp2");
-				} else {
-					 $civilite_parents[$ident_eleve_sel1][0] = '';
-				         $nom_parents[$ident_eleve_sel1][0] = '';
-			        	 $prenom_parents[$ident_eleve_sel1][0] = '';
-				         $adresse1_parents[$ident_eleve_sel1][0] = '';
-				         $adresse2_parents[$ident_eleve_sel1][0] = '';
-				         $ville_parents[$ident_eleve_sel1][0] = '';
-				         $cp_parents[$ident_eleve_sel1][0] = '';
-			        	 $nom_parents[$ident_eleve_sel1][1] = '';
-				         $prenom_parents[$ident_eleve_sel1][1] = '';
-				         $adresse1_parents[$ident_eleve_sel1][1] = '';
-				         $adresse2_parents[$ident_eleve_sel1][1] = '';
-				         $ville_parents[$ident_eleve_sel1][1] = '';
-				         $cp_parents[$ident_eleve_sel1][1] = '';
+					$call_resp = @mysql_query('SELECT * FROM responsables WHERE ereno = "'.$ereno[$cpt_i].'"');
+					$civilite_parents[$ident_eleve_sel1][0] = "M. et Mme";
+					$nom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "nom1");
+					$prenom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "prenom1");
+					$adresse1_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1");
+					$adresse2_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1_comp");
+					$ville_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "commune1");
+					$cp_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "cp1");
+					$nom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "nom2");
+					$prenom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "prenom2");
+					$adresse1_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2");
+					$adresse2_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2_comp");
+					$ville_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "commune2");
+					$cp_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "cp2");
+				}
+				*/
+				if((mysql_num_rows($res_resp)>0)&&($active_bloc_adresse_parent=='1')&&($nb_releve_par_page=='1')){
+					$civilite_parents[$ident_eleve_sel1][0] = "M. et Mme";
+
+					$lig_resp=mysql_fetch_object($res_resp);
+
+					$nom_parents[$ident_eleve_sel1][0] = $lig_resp->nom;
+					$prenom_parents[$ident_eleve_sel1][0] = $lig_resp->prenom;
+					$adresse1_parents[$ident_eleve_sel1][0] = $lig_resp->adr1;
+
+					$compl_adr="";
+					if($lig_resp->adr2!=""){$compl_adr=$lig_resp->adr2;}
+					if($lig_resp->adr3!=""){
+						if($compl_adr!=""){
+							$compl_adr="<br />\n".$lig_resp->adr3;
+						}
+						else{
+							$compl_adr=$lig_resp->adr3;
+						}
 					}
+					if($lig_resp->adr4!=""){
+						if($compl_adr!=""){
+							$compl_adr="<br />\n".$lig_resp->adr4;
+						}
+						else{
+							$compl_adr=$lig_resp->adr4;
+						}
+					}
+
+					$adresse2_parents[$ident_eleve_sel1][0] = $compl_adr;
+					$ville_parents[$ident_eleve_sel1][0] = $lig_resp->commune;
+					$cp_parents[$ident_eleve_sel1][0] = $lig_resp->cp;
+
+
+
+
+
+
+					if(mysql_num_rows($res_resp)>0){
+						$sql="SELECT rp.nom, rp.prenom, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+									WHERE r.ele_id='$ele_id[$cpt_i]' AND
+										rp.adr_id=ra.adr_id AND
+										r.pers_id=rp.pers_id AND
+										resp_legal='2'";
+						$res_resp=mysql_query($sql);
+
+						$lig_resp=mysql_fetch_object($res_resp);
+
+						$nom_parents[$ident_eleve_sel1][1] = $lig_resp->nom;
+						$prenom_parents[$ident_eleve_sel1][1] = $lig_resp->prenom;
+						$adresse1_parents[$ident_eleve_sel1][1] = $lig_resp->adr1;
+
+						$compl_adr="";
+						if($lig_resp->adr2!=""){$compl_adr=$lig_resp->adr2;}
+						if($lig_resp->adr3!=""){
+							if($compl_adr!=""){
+								$compl_adr="<br />\n".$lig_resp->adr3;
+							}
+							else{
+								$compl_adr=$lig_resp->adr3;
+							}
+						}
+						if($lig_resp->adr4!=""){
+							if($compl_adr!=""){
+								$compl_adr="<br />\n".$lig_resp->adr4;
+							}
+							else{
+								$compl_adr=$lig_resp->adr4;
+							}
+						}
+
+						$adresse2_parents[$ident_eleve_sel1][1] = $compl_adr;
+						$ville_parents[$ident_eleve_sel1][1] = $lig_resp->commune;
+						$cp_parents[$ident_eleve_sel1][1] = $lig_resp->cp;
+					}
+					else {
+						$nom_parents[$ident_eleve_sel1][1] = '';
+						$prenom_parents[$ident_eleve_sel1][1] = '';
+						$adresse1_parents[$ident_eleve_sel1][1] = '';
+						$adresse2_parents[$ident_eleve_sel1][1] = '';
+						$ville_parents[$ident_eleve_sel1][1] = '';
+						$cp_parents[$ident_eleve_sel1][1] = '';
+					}
+				}
+				else {
+					$civilite_parents[$ident_eleve_sel1][0] = '';
+					$nom_parents[$ident_eleve_sel1][0] = '';
+					$prenom_parents[$ident_eleve_sel1][0] = '';
+					$adresse1_parents[$ident_eleve_sel1][0] = '';
+					$adresse2_parents[$ident_eleve_sel1][0] = '';
+					$ville_parents[$ident_eleve_sel1][0] = '';
+					$cp_parents[$ident_eleve_sel1][0] = '';
+					$nom_parents[$ident_eleve_sel1][1] = '';
+					$prenom_parents[$ident_eleve_sel1][1] = '';
+					$adresse1_parents[$ident_eleve_sel1][1] = '';
+					$adresse2_parents[$ident_eleve_sel1][1] = '';
+					$ville_parents[$ident_eleve_sel1][1] = '';
+					$cp_parents[$ident_eleve_sel1][1] = '';
+				}
 				$cpt_i = $cpt_i + 1;
 			}
 // fin de recherche d'information de la sélection
@@ -466,7 +560,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 //on recherche les groupes qui ont des notes pour un élève donnée ($login[$nb_eleves_i])
 	$nb_eleves_i='1';
 	while($nb_eleves_i <= $nb_eleves)
-	 { 
+	 {
 		// système de classement par ordre
 		if(!isset($active_entete_regroupement)) { $active_entete_regroupement = '0'; }
 		if(!isset($active_regroupement_cote)) { $active_regroupement_cote = '0'; }
@@ -482,11 +576,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		$login_passe='';
 		$regroupement_passer='';
 		while($donne_requete = mysql_fetch_array($base_complete_information))
-		 { 
+		 {
 		   if($donne_requete['login']!=$login_passe) { $nb_matiere_cpt='1'; }
 		   //on vérifi si c'est le même id de groupe pour mettre toutes les notes d'un groupe en même temps puis compter le nombre de groupe
 		   if($donne_requete['id_groupe']!=$id_groupe_avant)
-		    { 
+		    {
 			$id_groupe_selectionne=$donne_requete['id_groupe'];
 			$id_classe=$donne_requete['id_classe'];
 			$groupe_select[$eleve_select][$nb_matiere_cpt]=$donne_requete['id_groupe'];
@@ -570,19 +664,19 @@ $passage_i = 1;
 	//BLOC IDENTITEE ELEVE
 		 $pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 		 $pdf->SetFont($caractere_utilse,'B',14);
-		 $pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,''); 
+		 $pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
-		 $pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,''); 
-		 $pdf->Cell(90,5,'',0,2,''); 
+		 $pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
+		 $pdf->Cell(90,5,'',0,2,'');
 		 $classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
 		 $pdf->Cell(90,5,$classe_aff,0,2,'');
 		 $pdf->SetX($X_cadre_eleve);
 		 $pdf->SetFont($caractere_utilse,'',10);
-		 $pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');  
+		 $pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
 
 	// BOLC IDENTITE DE L'ETABLISSEMENT
 		$logo = '../images/'.getSettingValue('logo_etab');
-		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
+		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 		if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
 		 $logo = '../images/'.getSettingValue('logo_etab');
@@ -592,33 +686,33 @@ $passage_i = 1;
 		 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 		 //logo
 	         $pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
-		} else { 
+		} else {
 			  $X_etab = $X_entete_etab; $Y_etab = $Y_entete_etab;
 		       }
 	// BLOC ADRESSE ETABLISSEMENT
 	 	 $pdf->SetXY($X_etab,$Y_etab);
 	 	 $pdf->SetFont($caractere_utilse,'',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
-		 $pdf->Cell(90,7, $gepiSchoolName,0,2,''); 
+		 $pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
 	   	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 		 $pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 		  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
 		  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 		  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
-		 $pdf->Cell(90,5, $entete_communic,0,2,''); 
+		 $pdf->Cell(90,5, $entete_communic,0,2,'');
 		}
 		if($entente_mel==='1') {
 		  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 		}
 
 	// BLOC ADRESSE DES PARENTS
@@ -626,11 +720,11 @@ $passage_i = 1;
 		 $ident_eleve_aff=$login[$nb_eleves_i];
 	 	 $pdf->SetXY($X_parent,$Y_parent);
 	 	 $pdf->SetFont($caractere_utilse,'B',14);
-		 $pdf->Cell(90,7, $civilite_parents[$ident_eleve_aff][0]." ".$nom_parents[$ident_eleve_aff][0]." ".$prenom_parents[$ident_eleve_aff][0],0,2,''); 
+		 $pdf->Cell(90,7, $civilite_parents[$ident_eleve_aff][0]." ".$nom_parents[$ident_eleve_aff][0]." ".$prenom_parents[$ident_eleve_aff][0],0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
-		 $pdf->Cell(90,5, $adresse1_parents[$ident_eleve_aff][0],0,2,''); 
-		 $pdf->Cell(90,5, $adresse2_parents[$ident_eleve_aff][0],0,2,''); 
-		 $pdf->Cell(90,5, '',0,2,''); 
+		 $pdf->Cell(90,5, $adresse1_parents[$ident_eleve_aff][0],0,2,'');
+		 $pdf->Cell(90,5, $adresse2_parents[$ident_eleve_aff][0],0,2,'');
+		 $pdf->Cell(90,5, '',0,2,'');
 		 $pdf->Cell(90,5, $cp_parents[$ident_eleve_aff][0]." ".$ville_parents[$ident_eleve_aff][0],0,2,'');
 		}
 
@@ -703,12 +797,12 @@ $passage_i = 1;
 			// détermine la taille de la police de caractère
 			// on peut allez jusqu'a 275mm de caractère dans trois cases de notes
 				$hauteur_caractere_notes=9;
-				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);		
+				$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
 				$val = $pdf->GetStringWidth($notes[$eleve_select][$cpt_i]);
 				$taille_texte = (($hauteur_cadre_matiere/4)*$largeur_cadre_note);
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
-				 if($taille_texte<$val) 
+				 if($taille_texte<$val)
 				  {
 				     $hauteur_caractere_notes = $hauteur_caractere_notes-0.3;
 				     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere_notes);
@@ -732,7 +826,7 @@ $passage_i = 1;
 		$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
 		$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
 		$pdf->SetFont($caractere_utilse,'',11);
-		$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C'); 
+		$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
 
 	// BLOC SIGNATURE
 		if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
@@ -761,7 +855,7 @@ $passage_i = 1;
 		  if($affiche_signature_parent==='1')
 		   {
 		      $pdf->SetXY($X_signature, $Y_signature);
-		      $pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signatures','LTR',2,'C'); 
+		      $pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signatures','LTR',2,'C');
 		      $pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'des parents','LR',2,'C');
 		      $pdf->Cell($largeur_cadre_signature/$nb_col_sign,$hauteur_cachet-8, '','LR',2,'C');
 		   }
@@ -771,7 +865,7 @@ $passage_i = 1;
 	//PUB ;)
 	    $pdf->SetXY($X_cadre_note, $Y_cadre_note+$hauteur_cadre_note_global+$hauteur_du_titre);
 	    $pdf->SetFont('arial','',8);
-	    $pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,''); 
+	    $pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,'');
 
 	$passage_i=$passage_i+1;
 	$nb_eleves_i = $nb_eleves_i + 1;

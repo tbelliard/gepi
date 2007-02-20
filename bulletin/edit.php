@@ -723,6 +723,7 @@ while ($i < $nombre_eleves2) {
     // Impression d'une page de garde
     $affiche_page_garde = $page_garde_imprime;
     if ( $affiche_page_garde == 'yes' OR $affiche_adresse == 'y') {
+/*
         $ereno = '';
         $ereno = @mysql_result($appel_liste_eleves, $i, "ereno");
 	//echo "\$ereno=$ereno<br />";
@@ -787,6 +788,64 @@ while ($i < $nombre_eleves2) {
 		$ligne3 = "";
         }
 	//echo "\$ligne1=$ligne1<br />";
+*/
+
+        $ele_id='';
+        $ele_id = @mysql_result($appel_liste_eleves, $i, "ele_id");
+        if ($ele_id!='') {
+		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+					WHERE r.ele_id='$ele_id' AND
+						rp.adr_id=ra.adr_id AND
+						r.pers_id=rp.pers_id");
+
+		// VIDER LES TABLEAUX AVANT ?
+
+		$nom_resp=array();
+		$prenom_resp=array();
+		$adr1_resp=array();
+		$adr2_resp=array();
+		$adr3_resp=array();
+		$adr4_resp=array();
+		$cp_resp=array();
+		$commune_resp=array();
+		$cpt=1;
+		while($lig_resp=mysql_fetch_object($call_resp)){
+			$nom_resp[$cpt]=$lig_resp->nom;
+			$prenom_resp[$cpt]=$lig_resp->prenom;
+			$adr1_resp[$cpt]=$lig_resp->adr1;
+			$adr2_resp[$cpt]=$lig_resp->adr2;
+			$adr3_resp[$cpt]=$lig_resp->adr3;
+			$adr4_resp[$cpt]=$lig_resp->adr4;
+			$cp_resp[$cpt]=$lig_resp->cp;
+			$commune_resp[$cpt]=$lig_resp->commune;
+			$cpt++;
+		}
+		if ($nom_resp[1]=='') {
+			$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+			$ligne2="";
+			$ligne3="";
+		}
+		else{
+			$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+			$ligne2=$adr1_resp[1];
+			if($adr2_resp[1]!=""){
+				$ligne2.="<br />\n".$adr2_resp[1];
+			}
+			if($adr3_resp[1]!=""){
+				$ligne2.="<br />\n".$adr3_resp[1];
+			}
+			if($adr4_resp[1]!=""){
+				$ligne2.="<br />\n".$adr4_resp[1];
+			}
+			$ligne3=$cp_resp[1]." ".$commune_resp[1];
+		}
+        }
+	else {
+		$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+		$ligne2 = "";
+		$ligne3 = "";
+        }
+
 
         if ($affiche_page_garde == "yes") {
             include "./page_garde.php";
@@ -815,9 +874,24 @@ while ($i < $nombre_eleves2) {
 */
         }
         //determination du nombre de bulletins à imprimer
+/*
         if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2)) and ($adr2 != '') ) {
             $nb_bulletins = 2;
         }
+*/
+	if((
+	(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+	or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+	or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+	or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+	or ($cp_resp[1]!=$cp_resp[2])
+	or ($commune_resp[1]!=$commune_resp[2]))
+	and ($adr1_resp[2]!='')){
+		$nb_bulletins=2;
+	}
+
+
+
 
 	// On passe outre si il a été expressement demandé un seul bulletin.
 	if($un_seul_bull_par_famille=="oui"){
@@ -837,6 +911,7 @@ while ($i < $nombre_eleves2) {
             // Pour le deuxième bulletin, $bulletin vaut 1:
             if($bulletin==1){
                 // Impression d'une deuxième page de garde s'il y a un deuxième responsable
+/*
                 if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
                     and ($adr2 != '') ) {
                     $ligne1 = $nom2." ".$prenom2;
@@ -848,6 +923,32 @@ while ($i < $nombre_eleves2) {
                     echo "<p class='saut'>&nbsp;</p>\n";
 
                 }
+*/
+		if (((substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+		or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+		or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+		or ($cp_resp[1]!=$cp_resp[2])
+		or ($commune_resp[1]!=$commune_resp[2]))
+		and ($adr1_resp[2]!='')) {
+			$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+			$ligne2=$adr1_resp[2];
+			if($adr2_resp[2]!=""){
+				$ligne2.="<br />\n".$adr2_resp[2];
+			}
+			if($adr3_resp[2]!=""){
+				$ligne2.="<br />\n".$adr3_resp[2];
+			}
+			if($adr4_resp[2]!=""){
+				$ligne2.="<br />\n".$adr4_resp[2];
+			}
+			$ligne3=$cp_resp[2]." ".$commune_resp[2];
+
+			include "./page_garde.php";
+			// Saut de page
+			echo "<p class='saut'>&nbsp;</p>";
+		}
+
             }
         }
         //====================================================================
@@ -893,24 +994,69 @@ while ($i < $nombre_eleves2) {
 
 		//adresse du premier bulletin
 		if ($bulletin==0) {
+/*
 			$ligne1 = $nom1." ".$prenom1;
 			$ligne2 = $adr1;
 			if ($adr1_comp != '') $ligne2 .= "<br />".$adr1_comp;
 			$ligne3 = $cp1." ".$commune1;
+*/
+			if(isset($nom_resp[1])){
+				$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				$ligne2=$adr1_resp[1];
+				if($adr2_resp[1]!=""){
+					$ligne2.="<br />\n".$adr2_resp[1];
+				}
+				if($adr3_resp[1]!=""){
+					$ligne2.="<br />\n".$adr3_resp[1];
+				}
+				if($adr4_resp[1]!=""){
+					$ligne2.="<br />\n".$adr4_resp[1];
+				}
+				$ligne3=$cp_resp[1]." ".$commune_resp[1];
+			}
+			else{
+				$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+				$ligne2="";
+				$ligne3="";
+			}
 		}
 
 
 		//adresse du second bulletin
 		if ($bulletin==1) {
+/*
 			$ligne1 = $nom2." ".$prenom2;
 			$ligne2 = $adr2;
 			if ($adr2_comp != '') $ligne2 .= "<br />".$adr2_comp;
 			$ligne3 = $cp2." ".$commune2;
+*/
+
+			if(isset($nom_resp[2])){
+				$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+				$ligne2=$adr1_resp[2];
+				if($adr2_resp[2]!=""){
+					$ligne2.="<br />\n".$adr2_resp[2];
+				}
+				if($adr3_resp[2]!=""){
+					$ligne2.="<br />\n".$adr3_resp[2];
+				}
+				if($adr4_resp[2]!=""){
+					$ligne2.="<br />\n".$adr4_resp[2];
+				}
+				$ligne3=$cp_resp[2]." ".$commune_resp[2];
+				}
+			else{
+				$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+				$ligne2="";
+				$ligne3="";
+			}
 		}
 
+/*
 		if($nom1==""){
 			$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 		}
+*/
 
 		// Cadre adresse du responsable:
 		echo "<div style='float:right;

@@ -87,6 +87,11 @@ if ($use_sso == "ldap_scribe") {
     <td>Permet d'importer les données élèves, classes, professeurs, matières depuis deux fichiers DBF et l'export XML de STS.
     </td>
 </tr>
+<tr>
+    <td width=200><a href="../init_xml/index.php">Initialisation des données à partir de fichiers XML</a></td>
+    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.
+    </td>
+</tr>
 <?php
 }
 ?>
@@ -135,6 +140,7 @@ if ($use_sso == "ldap_scribe") {
     <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
     </td>
 </tr>
+
 <tr>
     <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
     <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
