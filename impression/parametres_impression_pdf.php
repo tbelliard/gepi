@@ -94,7 +94,7 @@ echo "<div>\n
    <fieldset>\n";
        echo "<legend>Modifiez l'apparence du document PDF :</legend>\n";
 	   echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"choix_parametres\">\n";
-	   echo "<input value=\"Valider les paramèttres\" name=\"Valider\" type=\"submit\" /><br />\n";
+	   echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
        echo "<br />\n";
 	   echo "<b>Définition des marges du document :</b><br />\n";
 	   echo "&nbsp;&nbsp;Marge à gauche : <input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /> <br />\n";
@@ -104,13 +104,13 @@ echo "<div>\n
 	   echo "&nbsp;&nbsp;Option marge reliure ? <input type=\"radio\" name=\"marge_reliure\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"marge_reliure\" value=\"0\" /> Non<br />\n";
 	   echo "&nbsp;&nbsp;Option emplacement des perforations classeur  ? <input type=\"radio\" name=\"avec_emplacement_trous\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"avec_emplacement_trous\" value=\"0\" /> Non<br />\n";
 	   echo "<br />\n";
-	   echo "<b>Information à afficher sur le document :</b><br />\n";
+	   echo "<b>Informations à afficher sur le document :</b><br />\n";
 	   echo "&nbsp;&nbsp;Afficher le professeur responsable de la classe ? <input type=\"radio\" name=\"affiche_pp\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"affiche_pp\" value=\"0\" /> Non<br />\n";
 	   echo "&nbsp;&nbsp;Afficher une ligne de texte avant le tableau  ? <input type=\"radio\" name=\"avec_ligne_texte\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"avec_ligne_texte\" value=\"0\" /> Non ";
        echo "&nbsp;Texte : &nbsp;<input type=\"text\" name=\"ligne_texte\" size=\"50\" value=\"&nbsp;\" /> <br />\n";
 	   echo "&nbsp;&nbsp;Afficher l'effectif de la classe ? <input type=\"radio\" name=\"afficher_effectif\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"afficher_effectif\" value=\"0\" /> Non<br />\n";
 	   echo "<br />\n";
-	   echo "<b>Style du tableau : </b><br />\n";
+	   echo "<b>Styles du tableau : </b><br />\n";
 	   echo "&nbsp;&nbsp;Tout sur une seule page ? <input type=\"radio\" name=\"une_seule_page\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"une_seule_page\" value=\"0\" /> Non<br />\n";
 	   echo "&nbsp;&nbsp;Hauteur d'une ligne : <input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"8\" /> <br />\n";
 	   echo "&nbsp;&nbsp;Largeur d'une colonne : <input type=\"text\" name=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"8\" /> <br />\n";
@@ -121,12 +121,12 @@ echo "<div>\n
 	   echo "&nbsp;&nbsp;Quadrillage total des cellules ? <input type=\"radio\" name=\"encadrement_total_cellules\" value=\"1\" checked /> Oui [ <input type=\"radio\" name=\"encadrement_total_cellules\" value=\"0\" /> Non \n";
 	   echo "&nbsp;&nbsp;Nombre de cellules quadrillées après le nom : <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"5\" /> ] <br />\n";
        echo "<br />\n";
-	   echo "<b>Information en bas du document : </b><br />\n";
+	   echo "<b>Informations en bas du document : </b><br />\n";
 	   echo "&nbsp;&nbsp;Réserver une zone vide sous le tableau ? <input type=\"radio\" name=\"zone_vide\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"zone_vide\" value=\"0\" /> Non";
 	   echo "&nbsp;&nbsp;Hauteur de la zone : <input type=\"text\" name=\"hauteur_zone_finale\" size=\"2\" maxlength=\"2\" value=\"20\" /> (0 tout ce qui reste)<br />\n";
 	   echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 	   echo "<br />\n";
-	   echo "<input value=\"Valider les paramèttres\" name=\"Valider\" type=\"submit\" />\n";
+	   echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" />\n";
        echo "<br />\n";
      echo "</form>\n";
    echo "</fieldset>\n
@@ -160,8 +160,6 @@ hauteur_zone_finale
 
 } else { // if OK
 
- // echo $_POST['avec_emplacement_trous'];
-
   // On enregistre dans la session et on redirige vers impression_serie.php
   $_SESSION['marge_gauche']=isset($_POST['marge_gauche']) ? $_POST["marge_gauche"] : 10;
   $_SESSION['marge_droite']=isset($_POST['marge_droite']) ? $_POST["marge_droite"] : 10;
@@ -190,52 +188,5 @@ hauteur_zone_finale
   header("Location: ./impression_serie.php");
 		die();
 }
-
-
-// LES OPTIONS
-$MargeHaut = 10;
-$MargeDroite = 10;
-$MargeGauche = 10;
-$MargeBas =10;
-
-$avec_reliure = 1;
-$avec_emplacement_trous = 1;
-
-//Gestion de la marge à gauche pour une reliure éventuelle ou des feuilles perforées.
-if ($avec_reliure==1) {
-  $MargeGauche = 18;
-}
-
-$ligne_texte = "Ceci est le texte mis au début Avant le thttp://www.fpdf.org/fr/script/script62.php Ceci est le texte mis au début Avant le thttp://www.fpdf.org/fr/script/script62.php";
-
-// Les options
-$h_cell = 8; // en mm
-$h_premiere_cell = 25;
-$l_cell = 5;
-$l_cell_nom = 40; //en mm
-
-$nb_max_col_ligne = 7;
-
-$nb_colonne = 0;
-
-$nb_ligne_avant = 2;
-$nb_ligne_avant_initial = $nb_ligne_avant; //pour l'enchainemenet de PDF !
-$nb_ligne_apres = 1;
-
-$option_bloc_final = 1;
-
-$hauteur_bloc_final = 0; //si 0 == > on prend ce qui reste
-
-$option_quadrillage = 0; // 1 quagrillage de toute la ligne. 0 quadrillage partiel déterminé par $nb_max_col_ligne
-
-$option_effectif = 1; // Indique l'effectif dans le tableau
-
-$option_affiche_pp = 1; // 0 On n'affiche pas le PP 1 on l'affiche
-
-$option_ligne_texte = 1; //Permet d'inscrire une ligne de texte sous les entête, avant la tableau
-
-$option_tout_une_page =1; //0 nom - 1 oui
-
-
 
 ?>

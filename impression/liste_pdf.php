@@ -129,7 +129,7 @@ if (!isset($_SESSION['une_seule_page'])) { $option_tout_une_page = 1 ; } else {$
 if (!isset($_SESSION['encadrement_total_cellules'])) { $option_quadrillage = 1 ; } else {$option_quadrillage =  $_SESSION['encadrement_total_cellules'];}// 1 quagrillage de toute la ligne. 0 quadrillage partiel déterminé par $nb_max_col_ligne
 if (!isset($_SESSION['nb_cellules_quadrillees'])) { $nb_max_col_ligne = 5 ; } else {$nb_max_col_ligne =  $_SESSION['nb_cellules_quadrillees'];}//nombre de ligne au debut du quadrillage avant un bloc vide
 if (!isset($_SESSION['zone_vide'])) { $option_bloc_final = 1 ; } else {$option_bloc_final =  $_SESSION['zone_vide'];}//0 non 1 OUI
-if (!isset($_SESSION['hauteur_zone_finale'])) { $hauteur_bloc_final = 1 ; } else {$hauteur_bloc_final =  $_SESSION['hauteur_zone_finale'];}//si 0 == > on prend ce qui reste
+if (!isset($_SESSION['hauteur_zone_finale'])) { $hauteur_bloc_final = 20 ; } else {$hauteur_bloc_final =  $_SESSION['hauteur_zone_finale'];}//si 0 == > on prend ce qui reste
 
 
 
@@ -141,6 +141,8 @@ if (!isset($_SESSION['hauteur_zone_finale'])) { $hauteur_bloc_final = 1 ; } else
 
 
 $nb_ligne_avant_initial = $nb_ligne_avant; //pour l'enchainemenet de PDF !
+
+$texte = '';
 
 $nb_colonne = 0;
 //Calcul du nombre de colonnes en fonction des marges et de la largeur de la colonne.
@@ -355,6 +357,7 @@ if ($id_liste_groupes!=NULL) {
 
 		//La ligne de texte après les entêtes
 			if ($option_ligne_texte==1) {
+			    if ($ligne_texte == '') {$ligne_texte=' ';}
 				$pdf->CellFitScale(0,10,$ligne_texte,'',2,'C');
 				$Y_courant=$pdf->GetY()+2.5;
 			}
@@ -511,6 +514,6 @@ if ($id_liste_groupes!=NULL) {
 		} // FOR
 	// sortie PDF sur écran
 	$nom_releve=date("Ymd_Hi");
-	$nom_releve = 'Releve_'.$nom_releve.'.pdf';
+	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
 	$pdf->Output($nom_releve,'I');
 ?>
