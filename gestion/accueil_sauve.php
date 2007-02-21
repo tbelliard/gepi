@@ -547,9 +547,45 @@ if (isset($action) and ($action == 'dump'))  {
            }
         } else {
 
-            echo "<div align='center'><p>Sauvegarde Terminée.<br/>
-                <br/><p class=grand><a href='savebackup.php?filename=$fichier'>Télécharger le fichier généré par la sauvegarde</a></p>
-                <br/><br/><a href = \"accueil_sauve.php\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>";
+            echo "<div align='center'><p>Sauvegarde Terminée.<br/>\n";
+
+			//$nomsql.$filetype
+			$handle=opendir($path);
+			$tab_file = array();
+			$n=0;
+			while ($file = readdir($handle)) {
+				if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+				//=================================
+				// AJOUT: boireaus
+				and ($file != 'csv')
+				//=================================
+				and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
+					$tab_file[] = $file;
+					$n++;
+				}
+			}
+			closedir($handle);
+			//arsort($tab_file);
+			rsort($tab_file);
+
+			//$filepath = null;
+			//$filename = null;
+			//echo "\$nomsql.$filetype=$nomsql.$filetype<br />";
+
+			$fileid=null;
+			if ($n > 0) {
+				for($m=0;$m<count($tab_file);$m++){
+					//echo "\$tab_file[$m]=$tab_file[$m]<br />";
+					if($tab_file[$m]=="$nomsql.$filetype"){
+						$fileid=$m;
+					}
+				}
+				clearstatcache();
+			}
+
+            //echo "<br/><p class=grand><a href='savebackup.php?filename=$fichier'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
+            echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
+            echo "<br/><br/><a href = \"accueil_sauve.php\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
 
             echo "</body>";
             echo "</html>";
