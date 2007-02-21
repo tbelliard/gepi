@@ -1,5 +1,5 @@
-GEPI-1.4.4-rc3 (26/01/2007)
-===========================
+GEPI-1.5.0-svn
+==============
 
 Thomas BELLIARD <thomas.belliard@free.fr>
 Laurent DELINEAU <laurent.delineau@ac-poitiers.fr>
@@ -8,8 +8,9 @@ Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
 
 http://gepi.mutualibre.org/
 
-ATTENTION! Ce paquetage contient une version RC de Gepi, c'est-à-dire une version de test
+ATTENTION! Ce paquetage contient une version de test de Gepi, c'est-à-dire une version
 destinée à identifier et corriger les bugs induits par les nouvelles fonctionalités.
+
 NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences
 qui pourraient la rendre incompatible avec la version stable.
 

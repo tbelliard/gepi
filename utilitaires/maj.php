@@ -2112,10 +2112,6 @@ if (isset ($_POST['maj'])) {
     */
 
 
-
-
-
-
     // Ajout de nouveaux paramètres pour le bloc adresse des responsables sur le bulletin
     $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'addressblock_font_size'");
     $res_test=mysql_num_rows($req_test);
@@ -2340,7 +2336,7 @@ if (isset ($_POST['maj'])) {
     if ($res_test == 0)
         $query = mysql_query("INSERT INTO setting VALUES ('dossier_ftp_gepi', 'gepi');");
 
-    }
+    
 
     //==========================================
     // AJOUTé APRES LA RC2
@@ -2408,6 +2404,17 @@ if (isset ($_POST['maj'])) {
     } else {
         $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
     }
+
+    }
+    
+    if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
+        $result .= "<br /><br /><b>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</b><br />";
+
+
+
+    }
+
+
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
