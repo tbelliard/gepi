@@ -1,47 +1,26 @@
 <?php
 
 /*
-
  * Last modification  : 14/03/2005
-
  *
-
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-
  *
-
  * This file is part of GEPI.
-
  *
-
  * GEPI is free software; you can redistribute it and/or modify
-
  * it under the terms of the GNU General Public License as published by
-
  * the Free Software Foundation; either version 2 of the License, or
-
  * (at your option) any later version.
-
  *
-
  * GEPI is distributed in the hope that it will be useful,
-
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-
  * GNU General Public License for more details.
-
  *
-
  * You should have received a copy of the GNU General Public License
-
  * along with GEPI; if not, write to the Free Software
-
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
  */
-
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -60,7 +39,9 @@ require_once("../lib/header.inc");
 
 <?php
 
-
+echo "<h2>Cadre légal</h2>";
+echo "<p>Gepi est un logiciel de traitement de données entrant dans le cadre des Environnements Numériques de Travail (ENT).";
+echo "<br/>A ce titre, il est soumis à un encadrement légal particulier. Nous vous invitons à consulter <a href='http://www.cnil.fr/index.php?id=2158'>l'Arrêté du 30 novembre 2006</a> relatif aux dispositifs de traitement de données au sein du ministère de l'éducation nationale.</p>";
 
 if (getSettingValue("num_enregistrement_cnil") != '')  {
 
