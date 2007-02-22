@@ -233,7 +233,7 @@ if (isset($message)) echo("<p><font color=red>" . $message . "</font></p>");
 <div class="center">
 <p class="small">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
-Copyright &copy; 2001-2005
+Copyright &copy; 2001-2007
 <?php
 reset($gepiAuthors);
 $i = 0;
