@@ -115,8 +115,10 @@ if($temoin==1){
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
 	`pers_id` varchar(10) NOT NULL,
+	`login` varchar(50) NOT NULL,
 	`nom` varchar(30) NOT NULL,
 	`prenom` varchar(30) NOT NULL,
+	`civilite` varchar(5) NOT NULL,
 	`tel_pers` varchar(10) NOT NULL,
 	`tel_port` varchar(10) NOT NULL,
 	`tel_prof` varchar(10) NOT NULL,
