@@ -301,6 +301,12 @@ if (isset($_POST['num_enregistrement_cnil'])) {
     }
 }
 
+if (isset($_POST['mode_generation_login'])) {
+    if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
+        $msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
+    }
+}
+
 // Load settings
 if (!loadSettings()) {
     die("Erreur chargement settings");
@@ -463,6 +469,21 @@ require_once("../lib/header.inc");
         <input type="checkbox" name="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /> Le professeur accède aux relevés des élèves des classes dans lesquelles il enseigne<br />
         <input type="checkbox" name="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /> Le professeur accède aux relevés de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)
         </td>
+    </tr>
+
+    <tr>
+        <td style="font-variant: small-caps;">
+        Mode de génération automatique des logins :</td>
+       <td>
+       <select name='mode_generation_login'>
+    		<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronqué à 8 caractères)</option>
+    		<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronqué à 8 caractères)</option>
+    		<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronqué à 19 caractères)</option>
+    		<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom</option>
+    		<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronqué à 19 caractères)</option>
+    		<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronqué à 8 caractères)</option>
+       </select>
+       </td>
     </tr>
 
     <tr>
