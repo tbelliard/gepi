@@ -45,14 +45,16 @@ if (!checkAccess()) {
 
 // Création d'une fonction pour générer le login à partir du nom et du prénom
 function generate_unique_login($_nom, $_prenom, $_mode) {
-	
+
 	if ($_mode == null) {
 		$_mode = "fname8";
 	}
     // On génère le login
-    $_prenom = strtr($_prenom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+    //$_prenom = strtr($_prenom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
     $_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
-    $_nom = strtr($_nom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+    //$_nom = strtr($_nom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
     $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
     if ($_mode == "name") {
             $temp1 = $_nom;
@@ -125,23 +127,23 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             	$login_user = $login_user.$m;
             }
         }
-        
+
         // Nettoyage final
         $login_user = substr($login_user, 0, 50);
         $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim(strtoupper($login_user)));
-        
+
         $test1 = $login_user{0};
 		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
 			$login_user = substr($login_user, 1);
 			$test1 = $login_user{0};
-		}        
-        
+		}
+
 		$test1 = $login_user{strlen($login_user)-1};
 		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-			$login_user = substr($login_user, 0, strlen($login_user)-1);				
+			$login_user = substr($login_user, 0, strlen($login_user)-1);
 			$test1 = $login_user{strlen($login_user)-1};
 		}
-		
+
 		return $login_user;
 }
 
@@ -149,8 +151,8 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
-	// On a une demeande de création, on continue
-	
+	// On a une demande de création, on continue
+
 	// On veut alimenter la variable $quels_parents avec un résultat mysql qui contient
 	// la liste des parents pour lesquels on veut créer un compte
 	$error = false;
@@ -193,7 +195,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= "Vous devez sélectionner au moins une classe !<br/>";
 		}
 	}
-	
+
 	if (!$error) {
 		$nb_comptes = 0;
 		while ($current_parent = mysql_fetch_object($quels_parents)) {
@@ -202,15 +204,18 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$reg = true;
 			$reg = mysql_query("INSERT INTO utilisateurs SET " .
 					"login = '" . $reg_login . "', " .
-					"nom = '" . $current_parent->nom . "', " .
-					"prenom = '". $current_parent->prenom ."', " .
+					"nom = '" . addslashes($current_parent->nom) . "', " .
+					"prenom = '". addslashes($current_parent->prenom) ."', " .
 					"password = '', " .
 					"civilite = '" . $current_parent->civilite."', " .
 					"email = '" . $current_parent->mel . "', " .
 					"statut = 'responsable', " .
 					"etat = 'actif', " .
 					"change_mdp = 'n'");
-			$reg2 = mysql_query("UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')");
+			//$reg2 = mysql_query("UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')");
+			$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
+			$reg2 = mysql_query($sql);
+			//$msg.="$sql<br />";
 
 			if (!$reg) {
 				$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
@@ -233,8 +238,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				if ($_POST['classe'] == "all") {
 					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable'>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&user_classe=".$_POST['classe']."'>";	
-				}				
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."'>";
+				}
 			}
 			$msg .= "Imprimer la ou les fiche(s) de bienvenue</a><br/>Vous devez effectuer cette opération maintenant !";
 		}
@@ -250,48 +255,51 @@ require_once("../lib/header.inc");
 |<a href="index.php">Retour</a>|
 
 <?php
-$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login = '' ORDER BY nom,prenom");
-
+//$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
+$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 $nb = mysql_num_rows($quels_parents);
-
-echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>";
-if (getSettingValue("mode_generation_login") == null) {
-	echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>";
+if($nb==0){
+	echo "<p>Tous les responsables ont un login.</p>\n";
 }
-if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
-	echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>";    
-}
+else{
+	echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>";
+	if (getSettingValue("mode_generation_login") == null) {
+		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>";
+	}
+	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>";
+	}
 
-echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.";
-echo "<form action='create_responsable.php' method='post'>";
-echo "<input type='hidden' name='mode' value='classe' />";
-echo "<select name='classe' size='1'>";
-echo "<option value='none'>Sélectionnez une classe</option>";
-echo "<option value='all'>Toutes les classes</option>";
+	echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.";
+	echo "<form action='create_responsable.php' method='post'>";
+	echo "<input type='hidden' name='mode' value='classe' />";
+	echo "<select name='classe' size='1'>";
+	echo "<option value='none'>Sélectionnez une classe</option>";
+	echo "<option value='all'>Toutes les classes</option>";
 
-$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
-while ($current_classe = mysql_fetch_object($quelles_classes)) {
-	echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>"; 
+	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+	while ($current_classe = mysql_fetch_object($quelles_classes)) {
+		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>";
+	}
+	echo "</select>";
+	echo "<input type='submit' name='Valider' value='Valider' />";
+	echo "</form>";
+	echo "<br/>";
+	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>";
+	echo "<table>";
+	while ($current_parent = mysql_fetch_object($quels_parents)) {
+		echo "<tr>";
+			echo "<td>";
+			echo "<form action='create_responsable.php' method='post'>";
+			echo "<input type='hidden' name='mode' value='individual'/>";
+			echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."'/>";
+			echo "<input type='submit' value='Créer'/>";
+			echo "</form>";
+			echo "<td>".$current_parent->nom." ".$current_parent->prenom."</td>";
+		echo "</tr>";
+	}
+	echo "</table>";
 }
-echo "</select>";
-echo "<input type='submit' name='Valider' value='Valider' />";
-echo "</form>";
-echo "<br/>";
-echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>";
-echo "<table>";
-while ($current_parent = mysql_fetch_object($quels_parents)) {
-	echo "<tr>";
-		echo "<td>";
-		echo "<form action='create_responsable.php' method='post'>";
-		echo "<input type='hidden' name='mode' value='individual'/>";
-		echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."'/>";
-		echo "<input type='submit' value='Créer'/>";
-		echo "</form>";
-		echo "<td>".$current_parent->nom." ".$current_parent->prenom."</a></td>";	
-	echo "</tr>";
-}
-echo "</table>";
-
 ?>
 </body>
 </html>
