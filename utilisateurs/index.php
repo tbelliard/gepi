@@ -67,6 +67,10 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
 |<a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>
 |<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>|</p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
+<p>Cas particuliers, cliquez sur les liens ci-dessous :
+<br/>- <a href="create_responsable.php">Créer</a> | <a href="edit_responsable.php">Editer</a> les utilisateurs au statut 'responsable' (accès parents)
+<br/>- <a href="create_eleve.php">Créer</a> | <a href="edit_eleve.php">Editer</a> les utilisateurs au statut 'eleve' (accès élèves)
+</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table border=0>
 <tr>
