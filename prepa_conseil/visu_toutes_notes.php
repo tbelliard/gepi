@@ -52,6 +52,11 @@ $aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] :  NULL;
 $aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] :  NULL;
 $aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] :  NULL;
 $aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] :  NULL;
+
+//============================
+$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  NULL;
+//============================
+
 $couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] :  NULL;
 include "../lib/periodes.inc.php";
 
@@ -157,6 +162,17 @@ while($j < $nb_lignes_tableau) {
     $current_eleve_login[$j] = mysql_result($appel_donnees_eleves, $j, "login");
     $col[1][$j+$ligne_supl] = @mysql_result($appel_donnees_eleves, $j, "nom")." ".@mysql_result($appel_donnees_eleves, $j, "prenom");
     $ind = 2;
+	//=======================================
+	// colonne date de naissance
+    if ($aff_date_naiss){
+		$tmpdate=mysql_result($appel_donnees_eleves, $j, "naissance");
+		$tmptab=explode("-",$tmpdate);
+		if(strlen($tmptab[0])==4){$tmptab[0]=substr($tmptab[0],2,2);}
+        $col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
+        $ind++;
+	}
+	//=======================================
+
     // colonne régime
     if (($aff_reg) or ($aff_doub))
         $regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]'");
@@ -208,6 +224,9 @@ $ligne1[1] = "Nom ";
 //if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=1/2 journées d'absence&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"1/2 journées d'absence\">";
 //if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'élève&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'élève\">";
 //if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+//=========================
+if ($aff_date_naiss){$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";}
+//=========================
 if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
 if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"doublant\" />";
 if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />";
@@ -222,6 +241,18 @@ $col[1][$nb_lignes_tableau+2+$ligne_supl] = "Max";
 $ind = 2;
 $nb_col = 1;
 $k= 1;
+
+//=========================
+if ($aff_date_naiss){
+	if ($test_coef != 0) $col[$ind][0] = "-";
+    $col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
+    $col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
+    $col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
+    $nb_col++;
+    $k++;
+    $ind++;
+}
+//=========================
 
 if ($aff_reg) {
     if ($test_coef != 0) $col[$ind][0] = "-";

@@ -64,7 +64,68 @@ if (isset($id_classe)) {
     }
    echo "<br />\n<input type=\"radio\" name=\"num_periode\" value=\"annee\" />&nbsp;Année entière";
    echo "\n</td><td valign=\"top\">";
-    echo "<b>Paramètres d'affichage</b><br />\n<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
+
+    echo "<b>Paramètres d'affichage</b><br />\n";
+	echo "<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
+
+	echo "<table border='0' width='100%'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+
+		echo "<table border='0'>\n";
+		echo "<tr>\n";
+		echo "<td>Largeur en pixel du tableau : </td>\n";
+		echo "<td><input type=text name=larg_tab size=3 value=\"680\" /></td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td>Bords en pixel du tableau : </td>\n";
+		echo "<td><input type=text name=bord size=3 value=\"1\" /></td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td>Couleurs de fond des lignes alternées : </td>\n";
+		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" checked /></td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
+	echo "</td>\n";
+	echo "<td>\n";
+
+		echo "<table border='0'>\n";
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_abs\" checked /></td>\n";
+		echo "<td>Afficher les absences</td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_reg\" checked /></td>\n";
+		echo "<td>Afficher le régime</td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_doub\" checked /></td>\n";
+		echo "<td>Afficher la mention doublant</td>\n";
+		echo "</tr>\n";
+
+		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
+		// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+		if (($affiche_rang == 'y') and ($test_coef != 0)) {
+			echo "<tr>\n";
+			echo "<td><input type=\"checkbox\" name=\"aff_rang\" checked /></td>\n";
+			echo "<td>Afficher le rang des élèves</td>\n";
+			echo "</tr>\n";
+		}
+
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_date_naiss\" /></td>\n";
+		echo "<td>Afficher la date de naissance des élèves</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+/*
     echo "<br />\nLargeur en pixel du tableau : <input type=text name=larg_tab size=3 value=\"680\" />";
     echo "<br />\nBords en pixel du tableau : <input type=text name=bord size=3 value=\"1\" />";
     echo "<br />\nCouleurs de fond des lignes alternées : <input type=\"checkbox\" name=\"couleur_alterne\" checked />";
@@ -80,6 +141,7 @@ if (isset($id_classe)) {
        echo "<td><input type=\"checkbox\" name=\"aff_rang\" checked />Afficher le rang des élèves</td>";
     }
     echo "</tr></table>";
+*/
     echo "<br />\n<center><input type=\"submit\" name=\"ok\" value=\"Valider\" /></center>";
     echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tête et dans une nouvelle page. Pour revenir à cet écran, il vous suffit de fermer la fenêtre du tableau des notes.</span>";
     echo "</td></tr>\n</table>\n</form>\n";
