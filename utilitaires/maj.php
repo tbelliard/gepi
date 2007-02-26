@@ -176,7 +176,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/absences/saisie_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/accueil_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', ' ', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/accueil_modules.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', '', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/accueil.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', ' ', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/accueil.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', ' ', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/add_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/export_csv_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
@@ -314,7 +314,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/reset_passwords.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Réinitialisation des mots de passe', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/modify_user.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/mon_compte.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Gestion du compte (informations personnelles, mot de passe, ...)', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/mon_compte.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'Gestion du compte (informations personnelles, mot de passe, ...)', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/tab_profs_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des matieres aux professeurs', '')";
     $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/classe_classe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/eleve_classe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
@@ -331,7 +331,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_gep.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/absences/seq_gep_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/utilitaires/clean_tables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Maintenance', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/gestion/contacter_admin.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', '', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/gestion/contacter_admin.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', '', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/gestion_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Gestion des absences', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/impression_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Gestion des absences', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/select.php', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Gestion des absences', '');";
@@ -401,7 +401,9 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/conversion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Conversion des données responsables', '');";
 	
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');";
-	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut élève', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut responsable', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut élève', '');";
 
     //$tab_req[] = "";
 
@@ -2437,8 +2439,21 @@ if (isset ($_POST['maj'])) {
 	    }
 
 
-
-
+	    $result .= "&nbsp;->Ajout du champ 'email' à la table 'eleves'<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'email'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL AFTER `ele_id`");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />"; 
+	        } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    
+	    
+	    
     }
 
 

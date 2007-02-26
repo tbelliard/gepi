@@ -33,7 +33,7 @@ CREATE TABLE `ct_types_documents` ( `id_type` bigint(21) NOT NULL auto_increment
 DROP TABLE IF EXISTS `droits`;
 CREATE TABLE `droits` ( `id` varchar(200) NOT NULL default '', `administrateur` char(1) NOT NULL default '', `professeur` char(1) NOT NULL default '', `cpe` char(1) NOT NULL default '', `scolarite` char(1) NOT NULL default '', `eleve` char(1) NOT NULL default '', `responsable` char(1) NOT NULL default '', `secours` char(1) NOT NULL default '', `description` varchar(255) NOT NULL default '', `statut` char(1) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `eleves`;
-CREATE TABLE `eleves` ( `no_gep` text, `login` varchar(50) NOT NULL default '', `nom`  varchar(50) NOT NULL default '', `prenom`  varchar(50) NOT NULL default '', `sexe`  varchar(1) NOT NULL default '', `naissance` date, `elenoet` varchar(50) NOT NULL default '', `ereno` varchar(50) NOT NULL default '', PRIMARY KEY  (`login`));
+CREATE TABLE `eleves` ( `no_gep` text, `login` varchar(50) NOT NULL default '', `nom`  varchar(50) NOT NULL default '', `prenom`  varchar(50) NOT NULL default '', `sexe`  varchar(1) NOT NULL default '', `naissance` date, `elenoet` varchar(50) NOT NULL default '', `ereno` varchar(50) NOT NULL default '', `email` varchar(255) NOT NULL default '', PRIMARY KEY  (`login`));
 DROP TABLE IF EXISTS `etablissements`;
 CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` int(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `j_aid_eleves`;

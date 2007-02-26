@@ -98,7 +98,13 @@ echo "<td><p class=small><b>suivi</b></p></td>";
 echo "<td><p class=small><b>supprimer</b></p></td>";
 echo "<td><p class=small><b>imprimer fiche bienvenue</b></p></td>";
 echo "</tr>";
-$calldata = mysql_query("SELECT * FROM utilisateurs ORDER BY $order_by");
+$calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
+		"statut = 'administrateur' OR " .
+		"statut = 'professeur' OR " .
+		"statut = 'scolarite' OR " .
+		"statut = 'cpe' OR " .
+		"statut = 'secours') " .
+		"ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
 $i = 0;
 

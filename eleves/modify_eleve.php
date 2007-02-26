@@ -30,6 +30,8 @@ unset($reg_nom);
 $reg_nom = isset($_POST["reg_nom"]) ? $_POST["reg_nom"] : NULL;
 unset($reg_prenom);
 $reg_prenom = isset($_POST["reg_prenom"]) ? $_POST["reg_prenom"] : NULL;
+unset($reg_email);
+$reg_email = isset($_POST["reg_email"]) ? $_POST["reg_email"] : NULL;
 unset($reg_sexe);
 $reg_sexe = isset($_POST["reg_sexe"]) ? $_POST["reg_sexe"] : NULL;
 unset($reg_no_nat);
@@ -86,6 +88,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
     // Cas de la création d'un élève
     $reg_nom = trim($reg_nom);
     $reg_prenom = trim($reg_prenom);
+    $reg_email = trim($reg_email);
     if ($reg_resp1 == '(vide)') $reg_resp1 = '';
     if (!ereg ("^[0-9]{4}$", $birth_year)) $birth_year = "1900";
     if (!ereg ("^[0-9]{2}$", $birth_month)) $birth_month = "01";
@@ -198,6 +201,7 @@ $ele_id=$max_ele_id+1;
                     no_gep = '".$reg_no_nat."',
                     nom='".$reg_nom."',
                     prenom='".$reg_prenom."',
+                    email='".$reg_email ."', 
                     login='".$reg_login."',
                     sexe='".$reg_sexe."',
                     naissance='".$reg_naissance."',
@@ -270,9 +274,15 @@ $ele_id=$max_ele_id+1;
         }
      } else if ($continue == 'yes') {
         // On nettoie les windozeries
-        $reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
+        $reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',email='$reg_email',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
         if (!$reg_data) {
             $msg = "Erreur lors de l'enregistrement des données";
+        } else {
+        	// On met à jour la table utilisateurs si un compte existe pour cet élève
+        	$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
+        	if ($test_login > 0) {
+        		$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
+        	}
         }
         $call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
         $count = mysql_num_rows($call_test);
@@ -300,6 +310,7 @@ if (isset($eleve_login)) {
     $call_eleve_info = mysql_query("SELECT * FROM eleves WHERE login='$eleve_login'");
     $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
     $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
+    $eleve_email = mysql_result($call_eleve_info, "0", "email");
     $eleve_sexe = mysql_result($call_eleve_info, "0", "sexe");
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
     if (strlen($eleve_naissance) == 10) {
@@ -358,6 +369,7 @@ if (isset($eleve_login)) {
 } else {
     if (isset($reg_nom)) $eleve_nom = $reg_nom;
     if (isset($reg_prenom)) $eleve_prenom = $reg_prenom;
+    if (isset($reg_email)) $eleve_email = $reg_email;    
     if (isset($reg_sexe)) $eleve_sexe = $reg_sexe;
     if (isset($reg_no_nat)) $reg_no_nat = $reg_no_nat;
     if (isset($reg_no_gep)) $reg_no_gep = $reg_no_gep;
@@ -404,6 +416,9 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 </tr><tr>
     <td>Prénom * : </td>
     <td><input type=text name='reg_prenom' size=20 <?php if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}?> /></td>
+</tr><tr>
+    <td>Email : </td>
+    <td><input type=text name='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>    
 </tr><tr>
     <td>Identifiant National : </td>
     <?php

@@ -74,6 +74,112 @@ function test_unique_e_login($s, $indice) {
     }
 }
 
+// Fonction pour générer le login à partir du nom et du prénom
+// Le mode de génération doit être passé en argument
+function generate_unique_login($_nom, $_prenom, $_mode) {
+
+	if ($_mode == null) {
+		$_mode = "fname8";
+	}
+    // On génère le login
+    //$_prenom = strtr($_prenom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
+    $_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
+    //$_nom = strtr($_nom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
+	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
+    $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
+    if ($_mode == "name") {
+            $temp1 = $_nom;
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            //$temp1 = substr($temp1,0,8);
+        } elseif ($_mode == "name8") {
+            $temp1 = $_nom;
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = substr($temp1,0,8);
+        } elseif ($_mode == "fname8") {
+            $temp1 = $_prenom{0} . $_nom;
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = substr($temp1,0,8);
+        } elseif ($_mode == "fname19") {
+            $temp1 = $_prenom{0} . $_nom;
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = substr($temp1,0,19);
+        } elseif ($_mode == "firstdotname") {
+
+            $temp1 = $_prenom . "." . $_nom;
+            $temp1 = strtoupper($temp1);
+
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            //$temp1 = substr($temp1,0,19);
+        } elseif ($_mode == "firstdotname19") {
+            $temp1 = $_prenom . "." . $_nom;
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            //$temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            $temp1 = substr($temp1,0,19);
+        } elseif ($_mode == "namef8") {
+            $temp1 =  substr($_nom,0,7) . $_prenom{0};
+            $temp1 = strtoupper($temp1);
+            $temp1 = ereg_replace(" ","", $temp1);
+            $temp1 = ereg_replace("-","_", $temp1);
+            $temp1 = ereg_replace("'","", $temp1);
+            //$temp1 = substr($temp1,0,8);
+        } else {
+        	return false;
+        }
+
+        $login_user = $temp1;
+        // On teste l'unicité du login que l'on vient de créer
+        $m = '';
+        $test_unicite = 'no';
+        while ($test_unicite != 'yes') {
+            $test_unicite = test_unique_login($login_user.$m);
+            if ($test_unicite != 'yes') {
+            	if ($m == '') {
+            		$m = 2;
+            	} else {
+                	$m++;
+            	}
+            } else {
+            	$login_user = $login_user.$m;
+            }
+        }
+
+        // Nettoyage final
+        $login_user = substr($login_user, 0, 50);
+        $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim(strtoupper($login_user)));
+
+        $test1 = $login_user{0};
+		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+			$login_user = substr($login_user, 1);
+			$test1 = $login_user{0};
+		}
+
+		$test1 = $login_user{strlen($login_user)-1};
+		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+			$login_user = substr($login_user, 0, strlen($login_user)-1);
+			$test1 = $login_user{strlen($login_user)-1};
+		}
+
+		return $login_user;
+}
+
+
 function affiche_utilisateur($login,$id_classe) {
     $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
     $nom = @mysql_result($req, 0, 'nom');

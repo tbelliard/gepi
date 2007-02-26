@@ -71,6 +71,15 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$res_update=mysql_query($sql);
 				if(!$res_update){
 					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
+				} else {
+					// On met également à jour la table utilisateurs si le responsable a un compte
+					$test1_login = mysql_result(mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
+					if ($test1_login != '') {
+						$test2_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$test1_login."'"), 0);
+						if ($test2_login == 1) {
+							$res = mysql_query("UPDATE utilisateurs SET nom = '".$nom."', prenom = '" . $prenom . "', email = '" . $mel . "' WHERE login ='" . $test1_login ."'");
+						}
+					}
 				}
 			}
 
