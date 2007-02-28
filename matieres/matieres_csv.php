@@ -94,7 +94,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des matières depu
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil matières</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil matières</a></p>
 
 <?php
 
@@ -268,8 +268,5 @@ else{
     }
     */
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

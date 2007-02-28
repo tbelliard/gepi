@@ -86,7 +86,7 @@ require_once("../lib/header.inc");
 //verif_active_dbase();
 
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>";
 
@@ -465,6 +465,5 @@ if (!isset($is_posted)) {
         echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

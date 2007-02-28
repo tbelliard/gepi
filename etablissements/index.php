@@ -50,10 +50,9 @@ require_once("../lib/header.inc");
 ?>
 
 <p class=bold>
-|<a href="../accueil_admin.php">Retour</a>
-|<a href="modify_etab.php">Ajouter un établissement</a>
-|<a href="import_etab_csv.php">Importer un fichier d'établissements</a>
-|
+<a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="modify_etab.php">Ajouter un établissement</a>
+ | <a href="import_etab_csv.php">Importer un fichier d'établissements</a>
 </p>
 <p>Les données de la base établissement servent à l'affichage de l'établissement d'origine des élèves
  sur les documents tels que les bulletins simplifiés.</p>
@@ -120,5 +119,4 @@ $i++;
 }
 ?>
 </table>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

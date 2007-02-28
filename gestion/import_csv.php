@@ -50,7 +50,7 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
-    ?><p class=bold>|<a href="index.php">Retour</a>|<a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>|</p>
+    ?><p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a></p>
     <p><b>Remarque importante</b> : vous allez importer dans la base GEPI des données "élève" à partir d'un fichier au format csv (séparateur point-virgule).<br />
     Il peut s'agir de nouveaux élèves ou bien d'élèves déjà présents dans la base. Dans ce dernier cas,  les données existantes seront écrasées par les données présentes dans le fichier à importer.
     <br /><b>Attention </b> : certaines modifications en cours d'année sur des élèves déjà présents dans la base peuvent entraîner des incohérences dans les bases et par suite un mauvais fonctionnement de l'application.
@@ -79,7 +79,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
     echo "--> <B>".ucfirst(getSettingValue("gepi_prof_suivi"))."</B> : l'identifiant d'un ".getSettingValue("gepi_prof_suivi")." déjà défini dans la base GEPI ou bien le caractère - si l'élève n'a pas de ".getSettingValue("gepi_prof_suivi").".<br />";
     echo "--> <B>Identifiant de l'établissement d'origine </B> : le code RNE identifiant chaque établissement scolaire et déjà défini dans la base GEPI, ou bien le caractère - si l'établissement n'est pas connu.<br /></p>";
 } else {
-    ?><p class=bold>|<a href="import_csv.php?is_posted=R">Retour</a>|<a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>|</p>
+    ?><p class=bold><a href="import_csv.php?is_posted=R"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href='javascript:centrerpopup("help_import.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a></p>
     <?php
 
     $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
@@ -340,6 +340,6 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
         echo "<p>Aucun fichier n'a été sélectionné !</p>";
     }
 }
+
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

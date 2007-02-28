@@ -119,9 +119,7 @@ require_once("../lib/header.inc");
 
 ?>
 <form enctype="multipart/form-data" action="init_options.php" method=post>
-<p class=bold>
-|<a href="modify_class.php?id_classe=<?echo $id_classe?>">Retour</a>|
-</p>
+<p class=bold><a href="modify_class.php?id_classe=<?echo $id_classe?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
 
@@ -262,5 +260,4 @@ $i++;
 <input type=submit value=Enregistrer>
 </form>
 </p>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -27,7 +27,6 @@ require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html lang="fr">
     <head>
         <title>Liste de tous les devoirs</title>

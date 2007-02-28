@@ -62,7 +62,7 @@ $v_eleve2 = isset($_POST['v_eleve2']) ? $_POST['v_eleve2'] : (isset($_GET['v_ele
 include "../lib/periodes.inc.php";
 
 ?>
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
 <?php
 
 if ((!isset($id_classe)) or (!isset($id_classe2))) {
@@ -118,10 +118,9 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
     if ((!isset($v_eleve1)) OR (!isset($v_eleve2))) {
         if (($v_eleve1) AND (!$v_eleve2)) { $msg="Vous devez entrer le nom d'un second élève...";}
         ?>
-        <a href="eleve_eleve.php">Choix des classes</a>|</p>
+        | <a href="eleve_eleve.php">Choix des classes</a></p>
         <form enctype="multipart/form-data" action="eleve_eleve.php#graph" method=post>
         <table><tr><td>
-
         <p>Classe : <?php echo $classe; ?><br />Veuillez sélectionner l'élève n°1:<br />
         <select size='1' name='v_eleve1'>
         <?php
@@ -173,7 +172,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
     <?php } else {
 
-        ?><a href="eleve_eleve.php">Choix des classes</a>|<a href="eleve_eleve.php?id_classe=<?php echo $id_classe;?>&amp;id_classe2=<?php echo $id_classe2;?>">Choix des élèves</a>|</p><?php
+        ?> | <a href="eleve_eleve.php">Choix des classes</a> | <a href="eleve_eleve.php?id_classe=<?php echo $id_classe;?>&amp;id_classe2=<?php echo $id_classe2;?>">Choix des élèves</a></p><?php
         // On appelle les informations de l'utilisateur pour les afficher :
         $call_eleve1_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve1'");
         $eleve1_nom = mysql_result($call_eleve1_info, "0", "nom");
@@ -329,7 +328,5 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
         echo "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />&nbsp;\n";
     }
 }
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

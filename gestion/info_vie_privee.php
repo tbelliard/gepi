@@ -26,19 +26,12 @@ require_once("../lib/initialisations.inc.php");
 
 
 //**************** EN-TETE *****************
-
 require_once("../lib/header.inc");
-
 //**************** FIN EN-TETE *************
 
-
-
 ?>
-
 <H1 class='gepi'>GEPI - Vie Privée</H1>
-
 <?php
-
 echo "<h2>Cadre légal</h2>";
 echo "<p>Gepi est un logiciel de traitement de données entrant dans le cadre des Environnements Numériques de Travail (ENT).";
 echo "<br/>A ce titre, il est soumis à un encadrement légal particulier. Nous vous invitons à consulter <a href='http://www.cnil.fr/index.php?id=2158'>l'Arrêté du 30 novembre 2006</a> relatif aux dispositifs de traitement de données au sein du ministère de l'éducation nationale.</p>";
@@ -127,8 +120,5 @@ echo "<H2>3/ Sécurité</H2>";
 
 echo "<b>Par mesure de sécurité, pensez à vous déconnecter à la fin de votre visite sur le site (lien en haut à droite).</b>";
 
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-
-</html>

@@ -49,7 +49,7 @@ $id_classe2 = isset($_POST['id_classe2']) ? $_POST['id_classe2'] : (isset($_GET[
 include "../lib/periodes.inc.php";
 
 ?>
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
 <?php
 if ((!isset($id_classe)) or ($id_classe=='')) {
     ?>
@@ -116,7 +116,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe2'");
     $classe2 = mysql_result($call_classe, "0", "classe");
 
-    ?><a href="classe_classe.php?id_classe=">Choix des classes</a>|</p><?php
+    ?> | <a href="classe_classe.php?id_classe=">Choix des classes</a></p><?php
     // On appelle les informations de l'utilisateur pour les afficher :
     $graph_title = "Comparaison des classes de ".$classe." et ".$classe2;
     $v_legend1 = $classe ;
@@ -259,7 +259,5 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
     echo "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />\n";
 }
 
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

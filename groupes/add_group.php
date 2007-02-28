@@ -143,19 +143,14 @@ if (isset($_POST['is_posted'])) {
 
 }
 
-
-
-
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-
-
 ?>
 <p class=bold>
-|<a href="edit_class.php?id_classe=<?php echo $id_classe;?>">Retour</a>
-
+<a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
 <?php
 if ($mode == "groupe") {
     echo "<h3>Ajouter un groupe à une classe</h3>\n";
@@ -298,5 +293,4 @@ echo "</div>";
 
 ?>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -282,14 +282,14 @@ if ($_SESSION['statut'] == 'administrateur')
 else
     $retour = "../accueil.php";
 if (isset($quelles_classes)) $retour = "index.php";
-echo "<p class=bold>|<a href=\"".$retour."\">Retour</a>|";
+echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| ";
 ?>
-<a href="modify_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a>|
-<a href="modify_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a>|
+<a href="modify_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a> |
+ <a href="modify_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a>
 <?php
 $droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 if ($droits == "V") {
-   echo "<a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>|";
+   echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>";
 }
 ?>
 </p>
@@ -469,6 +469,5 @@ if (!isset($quelles_classes)) {
     </form>
     <?php
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

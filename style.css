@@ -1,18 +1,18 @@
 body {
-margin: 5px;
-padding: 0;
-width: auto;
-color: #330033;
-background: #E9E9E4;
-font: normal normal 10pt Tahoma;
-left: 0;
-top: 0;
+    padding: 0;
+    margin: 0;
+    color: #330033;
+    background: white;
+    /*background: #E9E9E4;*/
+    font: normal normal 10pt Verdana, sans-serif;
 }
+
 @media screen  {
     body {
-        background: #E9E9E4;
+        background: white;
     }
 }
+
 @media print  {
     body {
         background: white;
@@ -58,44 +58,72 @@ font-size: 8pt;
 }
 */
 table.uneligne {
-border-style:solid;
-border-width:1px;
-border-color:black;
-border-collapse:collapse;
-font-size: 8pt;
+    border-style:solid;
+    border-width:1px;
+    border-color:black;
+    border-collapse:collapse;
+    font-size: 8pt;
 }
 
 .uneligne td {
-border-style:solid;
-border-width:1px;
-border-color:black;
-font-size: 8pt;
+    border-style:solid;
+    border-width:1px;
+    border-color:black;
+    font-size: 8pt;
 }
 
 /*==================================*/
+/* Styles généraux */
+
+
+p {
+    font: normal normal 10pt Verdana, sans-serif;
+    letter-spacing: -0.05em;
+    margin: 5px;
+}
 
 img {
     border: 0;
 }
 
 a {
-    color: #000099;
-    font-family: Tahoma;
+    color: #0000AA;
+    font-family: Verdana, sans-serif;
     text-decoration: none;
     border: 0;
 }
 a:visited {
-    color: #000099;
+    color: #0000AA;
     text-decoration: none;
 }
 a:hover {
-    color: #BB0000;
-    text-decoration: underline;
+    color: grey;
 }
 a:active {
-    color: #000099;
+    color: #0000AA;
     text-decoration: none;
 }
+
+input,submit,p,td,li,ul {
+    color: #330033;
+    font: normal 10pt Verdana;
+}
+
+textarea {
+    color: #330033;
+    font: normal 9pt Verdana;
+    border: 1px solid black;
+}
+
+input {
+    border: 1px solid black;
+    padding-left: 2px;
+}
+
+input:hover, input:active {
+    border-color: red;
+}
+
 div.center {
     width: 100%;
     margin-left: auto;
@@ -103,51 +131,148 @@ div.center {
     text-align: center;
 }
 
-div.header {
-    width: 100%;
-    margin: 0;
-    padding: 0;
+.red {
+    color: red;
 }
 
-div.headerLeft {
+.grey {
+    color: grey;
+}
+div#container {
+    padding-left: 1%;
+    padding-right: 1%;
+}
+/*==================================*/
+/* Page de login */
+
+fieldset#login_box {
+    padding: 0;
+    width: 400px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    background: white;
+    background-image: url("./images/icons/lock.png");
+    background-position: 10% 50%;
+    background-repeat: no-repeat;
+    border: 1px solid black;
+}
+
+fieldset#login_box h2 {
+    margin:0;
+    padding: 0;
+    padding-top: 3px;
+    padding-left: 5%;
+    font-size: 11pt;
+    font-family: Verdana;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    background: white;
+    background-image: url("./images/background/darkfade_small.png");
+    background-repeat: repeat-x;
+    color: white;
+    text-align: left;
+    height: 40px;
+}
+
+div#login_footer {
+    width: 98%;
+    position: absolute;
+    bottom: 0px;
+    padding: 0px;
+    padding-bottom: 20px;
+    text-align: center;
+    font-size: x-small;
+}
+
+/*
+    Début - header
+*/
+
+div#version_gepi {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 2px;
+    padding-left: 10px;
+    color: grey;
+}
+div#header {
+    width: 100%;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    background-image: url("./images/background/darkfade.png");
+}
+
+div#header a {
+    color: lightgrey;
+}
+
+div#header a:hover {
+    color: white;
+    border: none;
+}
+div#headerLeft {
     float: left;
     width: 50%;
-    padding: 0.5%;
     margin: 0;
     font-size: 10pt;
     text-align: center;
 }
 
-div.headerRight {
+div#headerLeft h3 {
+    color: white;
+    font-family: Verdana;
+    font-size: 14pt;
+}
+
+div#headerRight {
     float: right;
-    width: 47%;
-    padding: 0.5%;
     margin: 0;
-    background: #B6B6D1;
-    font-size: 10pt;
-    text-align: right;
-    line-height: 130%;
-}
-div.separation {
-    clear:both;
-}
-div.headerBottomLeft {
-    float: left;
-    width: 50%;
-    padding: 0.5%;
-    margin: 0px;
-    font-size: 10pt;
-    text-align: left;
-}
-div.headerBottomRight {
-    float: right;
-    width: 47%;
-    padding: 0.5%;
-    margin: 0px;
+    padding-top: 2px;
+    padding-right: 0.7%;
     font-size: 10pt;
     text-align: right;
 }
 
+div#headerRight img {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    bottom: -3px;
+}
+
+div#separation {
+    clear:both;
+}
+div#headerBottomLeft {
+    float: left;
+    width: 50%;
+    min-height: 15px;
+    margin: 0px;
+    padding-left: 5px;
+    font-size: 10pt;
+    text-align: left;
+}
+div#headerBottomRight {
+    float: right;
+    margin: 0px;
+    margin-top: 3px;
+    padding: 0;
+    padding-top: 1px;
+    padding-right: 0.7%;
+    color: grey;
+    font-size: 10pt;
+    text-align: right;
+    border-top: 1px dotted orange;
+}
+
+div#headerBottomRight a {
+    color: #999999;
+}
 
 div.headerMessage {
     width: 100%;
@@ -159,27 +284,24 @@ div.headerMessage {
 }
 
 
-hr.header {
-   clear: both;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    color: #B6B6D1;
-}
+/*
+    Fin - header
+*/
+
 h1 {
-    font: normal small-caps 20pt Tahoma;
+    font: normal small-caps 20pt Verdana;
     line-height: 300%;
 }
 
 h1.gepi {
-    font: normal small-caps 16pt Tahoma;
+    font: normal small-caps 16pt Verdana;
     text-align: center;
     letter-spacing: 2px;
     line-height: 300%;
 }
 
 h2 {
-    font: normal small-caps normal 14pt Tahoma;
+    font: normal small-caps normal 14pt Verdana;
     line-height: 200%;
 }
 
@@ -193,29 +315,17 @@ h2.gepi {
 
 
 h3 {
-    font: normal small-caps normal 14pt Tahoma;
+    font: normal small-caps normal 14pt Verdana;
     line-height: 125%;
 }
 h3.gepi {
-    font: normal small-caps normal 14pt Tahoma;
+    font: normal small-caps normal 14pt Verdana;
     line-height: 125%;
 }
 
 .fond_sombre {
    background: #CDCDC2;
 }
-
-input,submit,p,td,li,ul {
-    color: #330033;
-    font: normal 10pt Tahoma;
-}
-
-textarea {
-    color: #330033;
-    font: normal 9pt Tahoma;
-}
-
-
 
 .bull_simpl {
     color: #000000;
@@ -232,6 +342,7 @@ p.bulletin {
     color: #000000;
     font-size: 10pt;
     font-style: normal;
+    font-family: Tahoma;
 }
 
 p.cn {
@@ -252,6 +363,48 @@ p.saut {
     page-break-after: always;
 }
 
+table#messagerie {
+    width: 70%;
+    padding: 5px 5px 5px 10px;
+    background-image: url("./images/background/left-top-corner.jpg");
+    background-repeat: no-repeat;
+    background-position: 0% 0%;
+    margin: 10px;
+}
+
+table.menu {
+    width: 70%;
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+table.menu td {
+    border: 1px solid lightgrey;
+    padding-left: 10px;
+}
+
+table.menu td a {
+    width: 100%;
+    padding: 5px;
+    display: block;
+}
+
+table.menu td a:hover {
+    border: none;
+    color: grey;
+}
+
+table.menu th {
+    text-align: left;
+    padding-left: 15%;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    font-size: 11pt;
+    color: black;
+    background-image: url("./images/background/left-top-corner.jpg");
+    background-repeat: no-repeat;
+    background-position: 16% 1%;
+}
 table.col {
     border-collapse: collapse;
     border-spacing: 0;
@@ -271,7 +424,7 @@ th.col {
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
     background: #B6B6D1;
-    font: normal small-caps normal 12pt Tahoma;
+    font: normal small-caps normal 12pt Verdana;
     text-align: center;
 }
 
@@ -287,7 +440,7 @@ th.col {
 
 .norme {
     color: #330033;
-    font: normal 10pt Tahoma;
+    font: normal 10pt Verdana;
 }
 
 .small {
@@ -347,3 +500,7 @@ a.info:hover span {
     border-style:solid; border-width:1px; border-color: #6F6968;
 }
 
+img.back_link {
+    position: relative;
+    bottom: -3px;
+}

@@ -163,35 +163,21 @@ if (isset($_POST['is_posted'])) {
 }
 
 //**************** EN-TETE *****************
-
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
-
 require_once("../lib/header.inc");
-
 //**************** FIN EN-TETE *****************
 
-
-
 If ($max_periode <= 0) {
-
    echo "Aucune classe comportant des périodes n'a été définie.";
-
    die();
-
 }
-
 echo "<FORM METHOD=post ACTION=\"classes_param.php\">";
-
-
-
-echo "<p class=bold>|<a href=\"index.php\">Retour</a>|<INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>";
-
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
-
 echo "<script language='javascript' type='text/javascript'>
-  function checkAll(){
-    champs_input=document.getElementsByTagName('input');
-    for(i=0;i<champs_input.length;i++){
+ function checkAll(){
+      champs_input=document.getElementsByTagName('input');
+      for(i=0;i<champs_input.length;i++){
       type=champs_input[i].getAttribute('type');
       //if(type==\"checkbox\"){
       name=champs_input[i].getAttribute('name');
@@ -511,7 +497,4 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 <input type=hidden name=is_posted value="yes" />
 
 </FORM>
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");?>

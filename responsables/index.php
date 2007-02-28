@@ -164,16 +164,16 @@ if(!getSettingValue('conv_new_resp_table')){
 
 echo "<p class=bold>";
 if ($_SESSION['statut'] == 'administrateur'){
-	echo "|<a href=\"../accueil_admin.php\">Retour</a>";
-	echo "|<a href=\"modify_resp.php\">Ajouter un responsable</a>\n";
+	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo " | <a href=\"modify_resp.php\">Ajouter un responsable</a>\n";
 	if(getSettingValue("import_maj_xml_sconet")==1){
-		echo "|<a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
 }
 else{
-	echo "|<a href=\"../accueil.php\">Retour</a>";
+	echo "<a href=\"../accueil.php\"> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
-echo "|</p>\n";
+echo "</p>\n";
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
@@ -608,5 +608,5 @@ elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
 echo "</table>\n";
 echo "<center><input type='submit' value='Valider' /></center>\n";
 echo "</form>\n";
-echo "</body></html>\n";
+require("../lib/footer.inc.php");
 ?>

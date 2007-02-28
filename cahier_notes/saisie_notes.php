@@ -292,23 +292,23 @@ while ($j < $nb_dev) {
     $j++;
 }
 
-echo "<p class=bold>|";
-echo "<a href=\"../accueil.php\"  onclick=\"return confirm_abandon (this, change, '$themessage')\">Accueil</a>|";
-echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\">Mes enseignements</a>|";
-echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Mes évaluations</a>|";
+echo "<p class=bold>";
+echo "<a href=\"../accueil.php\"  onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
+echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
+echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations </a>|";
 if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
     //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une boîte</a>|";
-    echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer un";
+    echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer un";
 
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
 
-	echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."</a>|";
+	echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
 
-    echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\">Créer une évaluation</a>|";
+    echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer une évaluation </a>|";
 }
 //echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
 //echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
-echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
+echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\"> Imprimer au format PDF </a>|";
 echo "</p>\n";
 
 // Affichage ou non les colonnes "commentaires"
@@ -1122,5 +1122,4 @@ if(document.getElementById('n10')){
 	document.getElementById('n10').focus();
 }
 </script>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

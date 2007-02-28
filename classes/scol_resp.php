@@ -140,7 +140,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
-<p class="bold">|<a href="./index.php">Retour</a>|</p>
+<p class="bold"><a href="./index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <p>Affectez les classes aux comptes scolarité.</p>
 <!--p><a href="scol_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="scol_resp.php?disp_filter=only_undefined">Afficher les classes non-paramétrées</a></p-->
@@ -309,5 +309,4 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 */
 ?>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -83,7 +83,7 @@ $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour</a>|<a href="help.php">Aide</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="help.php">Aide</a></p>
 <?php
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
@@ -121,6 +121,5 @@ if ($user_login != $_SESSION['login']) {
 } else {
     echo "<p>Pour des raisons de sécurité, veuillez utiliser le module \"mon compte\" accessible à partir de la page d'accueil pour changer votre mot de passe !</p>";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

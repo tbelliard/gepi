@@ -77,7 +77,7 @@ $titre_page = "Accueil - Administration des bases";
 require_once("./lib/header.inc");
 
 ?>
-
+<p class=bold><a href="./accueil.php"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <?php if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
 
 echo "<center>";
@@ -85,132 +85,68 @@ echo "<center>";
 
 
 $chemin = array(
-
 "/etablissements/index.php",
-
 "/matieres/index.php",
-
 "/utilisateurs/index.php",
-
 "/eleves/index.php",
-
 "/responsables/index.php",
-
 "/classes/index.php",
-
 //"/groupes/index.php",
-
 "/aid/index.php"
-
 );
-
-
 
 $titre = array(
-
 "Gestion des établissements",
-
 "Gestion des matières",
-
 "Gestion des utilisateurs",
-
 "Gestion des élèves",
-
 "Gestion des responsables élèves",
-
 "Gestion des classes",
-
 //"Gestion des groupes",
-
 "Gestion des AID"
-
 );
-
-
 
 $expli = array(
-
 "Définir, modifier, supprimer des établissements de la base de données.",
-
 "Définir, modifier, supprimer des matières de la base de données.",
-
 "Définir, modifier, supprimer les comptes utilisateurs.",
-
 "Définir, modifier, supprimer les élèves.",
-
 "Définir, modifier, supprimer les responsables élèves.",
-
 "Définir, modifier, supprimer les classes.
-
 <br />Gérer les paramètres des classes : périodes, coefficients, affichage du rang, ...
-
 <br />Affecter les matières et les professeurs aux classes.
-
 <br />Affecter les élèves aux classes.
-
 <br />Affecter les professeurs principaux, les CPE, modifier le régime et la mention \"redoublant\".
-
 <br />Modifier les matières suivies par les élèves.
-
 <br />Modifier des paramètres du bulletin.",
-
 //"Définir, modifier, supprimer les groupes d'enseignement",
-
-
-
 "Définir, modifier, supprimer des AID (Activités Inter-Disciplinaires).
-
 <br />Affecter les professeurs et les élèves."
-
 );
 
-
-
 $nb_ligne = count($chemin);
-
 //
-
 // Outils d'administration
-
 //
-
 $affiche = 'no';
-
 for ($i=0;$i<$nb_ligne;$i++) {
-
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-
 }
-
 if ($affiche=='yes') {
-
     //echo "<table width=750 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='750' class='bordercolor'>";
-
+   echo "<table class='menu'>";
     echo "<tr>";
-
-    echo "<td width='30%'>&nbsp;</td>";
-
-    echo "<td><b>Administration des bases</b></td>";
-
+    echo "<th colspan='2'>Administration des bases</th>";
     echo "</tr>";
-
     for ($i=0;$i<$nb_ligne;$i++) {
-
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-
     }
-
     echo "</table>";
-
 }
-
-
 
 ?>
 
 </center>
-
+</div>
 </body>
-
 </html>

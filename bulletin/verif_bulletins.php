@@ -58,7 +58,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 // Selection de la classe
 if (!(isset($id_classe))) {
-	echo "<p class=bold>|<a href='../accueil.php'>Retour</a>|</p>\n";
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 	echo "<p><b>Choisissez la classe :</b></p>";
 	//<table><tr><td>\n";
 	if ($_SESSION["statut"] == "scolarite") {
@@ -410,8 +410,5 @@ if (!(isset($id_classe))) {
         echo "<p class='bold'>*** Fin des vérifications. ***</p>";
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>
-
-

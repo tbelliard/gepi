@@ -96,7 +96,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des responsables 
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 
 <?php
 
@@ -123,8 +123,7 @@ if(!isset($step1)) {
 		echo "<input type=hidden name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
-		echo "</body>\n";
-		echo "</html>\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 }
@@ -502,7 +501,5 @@ if (!isset($is_posted)) {
 		echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
 	}
 }
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

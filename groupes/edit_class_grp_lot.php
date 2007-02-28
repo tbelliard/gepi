@@ -241,9 +241,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";
-echo "|<a href='../classes/index.php'>Retour</a>";
-if($id_class_prec!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-if($id_class_suiv!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+echo "<a href='../classes/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 echo "</p>\n";
 
 ?>
@@ -397,6 +397,5 @@ foreach($current_group["profs"]["list"] as $prof) {
 	$first = false;
 }
 */
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

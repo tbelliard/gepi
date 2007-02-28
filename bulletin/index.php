@@ -52,7 +52,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
    die("Droits insuffisants pour effectuer cette opération");
 }
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour à l'accueil</a>|";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 if (!isset($id_classe)) {
 
     if ($_SESSION["statut"] == "scolarite") {
@@ -309,7 +309,5 @@ for(i=0;i<$nb_per_close;i++){
 	</ul>
 	</td></tr></table></center>\n";
 }
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

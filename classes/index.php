@@ -47,12 +47,12 @@ require_once("../lib/header.inc");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
 <p class=bold>
-|<a href="../accueil_admin.php">Retour</a>
-|<a href="modify_nom_class.php">Ajouter une classe</a>
+<a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
+| <a href="modify_nom_class.php">Ajouter une classe</a>
 <!--|<a href='duplicate_class.php'>Scinder une classe</a> ## Cette fonction n'est plus utile ##-->
-|<a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
-|<a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
-|<a href='scol_resp.php'>Paramétrage scolarité</a>|
+ | <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
+ | <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
+ | <a href='scol_resp.php'>Paramétrage scolarité</a>|
 
 
 </p>
@@ -111,7 +111,5 @@ if ($nombre_lignes != 0) {
     echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>";
     echo "<p>Vous pouvez ajouter des classes à la base en cliquant sur le lien ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP.</a></p>";
 }
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

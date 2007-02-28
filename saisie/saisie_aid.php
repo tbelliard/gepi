@@ -158,7 +158,7 @@ require_once("../lib/header.inc");
 <script type="text/javascript" language="javascript">
 change = 'no';
 </script>
-<p class=bold>|<a href="../accueil.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Accueil</a>|
+<p class=bold><a href="../accueil.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>
 <?php
 
 if (!isset($aid_id)) {
@@ -199,7 +199,7 @@ if (!isset($aid_id)) {
     }
 } else {
     ?>
-    <a href="saisie_aid.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choix <?php echo $nom_aid; ?></a>|</p>
+    | <a href="saisie_aid.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choix <?php echo $nom_aid; ?></a></p>
     <form enctype="multipart/form-data" action="saisie_aid.php" method=post>
     <center><input type=submit value=Enregistrer /></center><?php
     $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
@@ -385,6 +385,5 @@ for(i=10;i<".$k.$num3.";i++){
 
 
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

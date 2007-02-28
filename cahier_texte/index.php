@@ -898,6 +898,5 @@ if ($last_date != "-1") {
 
 // Fin de la colonne de droite
 echo "</td></tr></table>";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

@@ -286,9 +286,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
 if ($mode_navig == 'retour_saisie') {
-    echo "<div class='norme'><p class=bold>|<a href='./saisie_notes.php?id_conteneur=$id_retour'>Retour</a>\n";
+    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 } else {
-    echo "<div class='norme'><p class=bold>|<a href='index.php?id_racine=$id_racine'>Retour</a>\n";
+    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
 /*
@@ -320,7 +320,7 @@ $interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_
 
 
 //echo "<a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur";
-echo "|<a href='add_modif_dev.php?id_conteneur=$id_conteneur";
+echo " | <a href='add_modif_dev.php?id_conteneur=$id_conteneur";
 if(isset($mode_navig)){
 	echo "&amp;mode_navig=$mode_navig";
 }
@@ -340,7 +340,7 @@ else{
 	echo "'>Interface simplifiée</a>\n";
 }
 
-echo "|\n";
+echo "\n";
 
 
 
@@ -512,18 +512,12 @@ if($interface_simplifiee=="y"){
 */
 	echo "</table>\n";
 	echo "</div>\n";
-
 	echo "<input type='hidden' name='facultatif' value='$facultatif' />\n";
-
 	echo "<input type='hidden' name='display_parents' value='$display_parents' />\n";
-
 	echo "<input type='hidden' name='interface_simplifiee' value='$interface_simplifiee' />\n";
-
 
 	//echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
 	//echo "<br />\n";
-
-
 }
 else{
 	//====================================
@@ -608,6 +602,5 @@ echo "<center><input type=\"button\" name='ok2' value=\"Enregistrer et saisir da
 
 echo "</form>\n";
 echo "<br />\n";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

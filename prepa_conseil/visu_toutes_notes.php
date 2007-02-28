@@ -553,6 +553,5 @@ if ($referent == "une_periode") {
 //echo "\$affiche_categories=$affiche_categories<br />";
 
 affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

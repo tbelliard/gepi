@@ -172,16 +172,15 @@ while ($i < $nb_periode) {
 }
 echo "<p class=bold>";
 if (isset($retour_cn)) {
-    echo "|<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour vers mes évaluations</a>";
+    echo "<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes évaluations</a>";
 } else {
-    echo "|<a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour accueil saisie</a>";
+    echo "<a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
 }
-echo "|<a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les appréciations</a>";
+echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les appréciations</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
-echo "|<a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>";
-
-echo "|</p>";
+echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>";
+echo "</p>";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</H2>";
 echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 if (($affiche_bascule == 'yes') and ($is_posted == 'bascule')) echo "change = 'yes';"; else echo "change = 'no';";
@@ -560,5 +559,4 @@ if (isset($retour_cn)) echo "<input type=\"hidden\" name=\"retour_cn\" value=\""
 		document.getElementById('n310').focus();
 	}
 </script>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

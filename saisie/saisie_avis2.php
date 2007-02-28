@@ -136,7 +136,7 @@ require_once("../lib/header.inc");
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
-    echo "<p class=bold>|<a href=\"saisie_avis.php\">Mes classes</a>|</p>\n";
+    echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a></p>\n";
     echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
     include "../lib/periodes.inc.php";
     $i="1";
@@ -156,7 +156,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
 if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
     ?>
-    <p class=bold>|<a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>">Choisir une autre période</a>|</p>
+    <p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a></p>
     <p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
 
     <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
@@ -254,8 +254,5 @@ if (isset($fiche)) {
 }
 
 //**********************************************************************************************************
+require("../lib/footer.inc.php");
 ?>
-<!--/table-->
-<br />
-</body>
-</html>

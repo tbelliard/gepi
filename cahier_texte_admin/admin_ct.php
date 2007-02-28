@@ -132,7 +132,7 @@ require_once("../lib/header.inc");
 
 // Modification d'un cahier de texte - Etape 1
 if (isset($_GET['action'])) {
-  echo "<p class='bold'>|<a href=\"admin_ct.php\">Retour</a>|</p>";
+  echo "<p class='bold'><a href=\"admin_ct.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
   $id_groupe = $_GET['id_groupe'];
   $id_prop = $_GET['id_prop'];
   $classes = null;
@@ -229,7 +229,7 @@ if (isset($_GET['action'])) {
 if (!(isset($_GET['action']))) {
   // Affichage du tableau complet
   ?>
-  <p class='bold'>|<a href="index.php">Retour</a>|</p>
+  <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
   <H2>Administration des cahiers de texte</h2>
   <p>Le tableau ci-dessous présentent l'ensemble des cahiers de texte actuellement en ligne. Les problèmes sont signalés en rouge.
   <br />Vous pouvez modifier le groupe ou le propriétaire d'un cahier de texte en cliquant sur le lien correspondant.
@@ -296,6 +296,5 @@ if (!(isset($_GET['action']))) {
   }
   echo "</table></form>";
 }
+require ("../lib/footer.inc.php");
 ?>
-</body>
-</html>

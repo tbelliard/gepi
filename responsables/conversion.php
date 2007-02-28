@@ -51,7 +51,7 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold>";
-echo "|<a href=\"../accueil.php\">Retour</a>|";
+echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
 // Solution de conversion d'une part...
@@ -846,5 +846,5 @@ if($temoin==1){
 		}
 	}
 }
-echo "</body>\n</html>\n";
+require("../lib/footer.inc.php");
 ?>

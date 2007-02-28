@@ -927,6 +927,5 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 
 affiche_tableau2($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
 
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

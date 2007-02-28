@@ -426,7 +426,7 @@ if ($test_write == 'no') {
     echo "<p>Le répertoire \"/backup\" n'est pas accessible en écriture.</p>";
     echo "<P>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
     Contactez l'administrateur technique afin de régler ce proiblème.</p>";
-    echo "</body></html>";
+    require("../lib/footer.inc.php");
     die();
 }
 
@@ -586,16 +586,14 @@ if (isset($action) and ($action == 'dump'))  {
             //echo "<br/><p class=grand><a href='savebackup.php?filename=$fichier'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
             echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
             echo "<br/><br/><a href = \"accueil_sauve.php\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
-
-            echo "</body>";
-            echo "</html>";
+			require("../lib/footer.inc.php");
             die();
         }
 
     }
 }
 
-?><b>|<a href='index.php'>Retour</a>|</b><?php
+?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b><?php
 // Test présence de fichiers htaccess
 if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../backup/".$dirname."/.htpasswd"))) {
     echo "<h3 class='gepi'>Répertoire backup non protégé :</h3>";
@@ -611,7 +609,7 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
     echo "</form>\n";
     echo "<hr />";
 } else {
-    echo "<a href='#' onClick=\"clicMenu('2')\" style=\"cursor: hand\"><b>Protection du répertoire backup</b></a>|";
+    echo " | <a href='#' onClick=\"clicMenu('2')\" style=\"cursor: hand\"><b>Protection du répertoire backup</b></a>";
     echo "<div style=\"display:none\" id=\"menu2\">";
     echo "<table border=\"1\" cellpadding=\"5\" bgcolor=\"#C0C0C0\"><tr><td>
     <h3 class='gepi'>Protection du répertoire backup :</h3>";
@@ -725,7 +723,5 @@ echo "<tr><td style='font-weight: bold; text-align: center;'>post_max_size</td><
 echo "<tr><td style='font-weight: bold; text-align: center;'>upload_max_filesize</td><td style='text-align: center;'>$upload_max_filesize</td></tr>\n";
 echo "</table>\n";
 
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

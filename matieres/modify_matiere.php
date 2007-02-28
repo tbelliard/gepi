@@ -113,9 +113,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
 ?>
 <form enctype="multipart/form-data" action="modify_matiere.php" method=post>
-<p class=bold>
-|<a href="index.php">Retour</a>|<input type=submit value=Enregistrer></input>
-
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=submit value=Enregistrer></input>
 </p>
 <?php
 // On va chercher les infos de la matière que l'on souhaite modifier
@@ -219,6 +217,4 @@ Une fois enregistré, il est toujours possible de le modifier.
 </ul>
 <!--/li>
 </ul-->
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

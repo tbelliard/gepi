@@ -228,7 +228,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 ?>
 <p class=bold>
-|<a href="edit_class.php?id_classe=<?php echo $id_classe;?>">Retour</a>
+<a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h3>Gérer les élèves de l'enseignement : <?php echo htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ")";?></h3>
 <p>
 <b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout décocher</a></b>
@@ -433,5 +433,4 @@ echo "<p align='center'><input type='submit' value='Enregistrer' /></p>";
 
 ?>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

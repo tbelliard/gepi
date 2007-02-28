@@ -57,7 +57,7 @@ $titre_page = "Vérification des affectations dans les groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='../accueil.php'>Accueil</a>|<a href='clean_tables.php'>Retour</a>|</p>";
+echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page précédente</a></p>";
 
 if(!isset($_GET['verif'])){
 	echo "<h2>Vérification des groupes</h2>\n";
@@ -316,6 +316,5 @@ else{
 	}
 
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

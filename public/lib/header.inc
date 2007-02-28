@@ -38,28 +38,28 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 <body>
 <?php if (isset($titre_page)) {?>
   <!-- Header start -->
-  <div class="header">
+  <div id="header">
   <!-- Page title, access rights -->
-    <div class="headerLeft">
+    <div id="headerLeft" style='height: 90px;'>
     <?php
     echo("<h3>" . $titre_page . "</h3>");
     ?>
     </div>
 
     <!-- User name, status, main matter, home, logout, account management -->
-    <div class="headerRight" style="font:normal small-caps normal 12pt Tahoma;line-height: 200%;">
+    <div id="headerRight" style='height: 65px; font-size: 12pt;'>
     <?php echo getSettingValue("gepiSchoolName"); ?> : module public de consultation
-
     </div>
 
     <!-- Contact -->
-    <div class="headerBottom">
+    <div id="headerBottomRight">
     <?php
     echo "<a href=\"index.php\">Accueil</a> - ";
     echo "<a href=\"http://gepi.mutualibre.org\">Visiter le site de GEPI</a> - ";
     echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
     ?>
     </div>
-    <hr class="header"/>
   </div>
- <?php } ?>
+ <?php }
+   ?>
+ <div id="container">

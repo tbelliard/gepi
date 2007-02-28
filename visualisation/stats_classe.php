@@ -47,7 +47,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 
 include "../lib/periodes.inc.php";
 ?>
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>|
 <?php
 if (!isset($id_classe)) {
     ?>
@@ -219,8 +219,5 @@ if (!isset($id_classe)) {
 
 
 }
-
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

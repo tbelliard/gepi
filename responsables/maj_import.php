@@ -47,7 +47,7 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold>";
-echo "|<a href=\"index.php\">Retour</a>|";
+echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
 
@@ -2462,5 +2462,5 @@ echo "Par ailleurs, l'inscription des élèves dans telle ou telle classe, avec te
 echo "(<i>il faut donc par la suite affecter les nouveaux élèves dans les classes et les inscrire dans les groupes/options/matières</i>)<br />\n";
 echo "</p>\n";
 
-echo "</body>\n</html>\n";
+require("../lib/footer.inc.php");
 ?>

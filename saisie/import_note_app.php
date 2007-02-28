@@ -72,7 +72,7 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
-echo "<p class='bold'><a href='index.php'>|Retour accueil saisie</a>|</p>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a></p>";
 
 echo "<p><span class = 'grand'>Première phase d'importation des moyennes et appréciations </span>";
 //echo "<p class = 'bold'>Groupe : " . $current_group["description"] ." (" . $current_group["classlist_string"] . ")| Matière : " . $current_group["matiere"]["nom_complet"] . " | Période : $nom_periode[$periode_num]</p>";
@@ -274,6 +274,5 @@ if (isset($is_posted )) {
     // fin de la condition "if($csv_file != "none")"
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

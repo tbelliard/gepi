@@ -91,7 +91,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold>|<a href='../init_lcs/index.php'>Retour</a>|</p>";
+echo "<p class=bold><a href='../init_lcs/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (isset($_POST['is_posted'])) {
     // L'admin a validé la procédure, on procède donc...
@@ -173,3 +173,5 @@ if (isset($_POST['is_posted'])) {
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";
 }
+require("../lib/footer.inc.php");
+?>

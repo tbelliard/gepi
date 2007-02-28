@@ -44,13 +44,8 @@ if (!checkAccess()) {
     die();
 }
 
-
-
-
 // Initialisation du message signalant les enregistrements ou les problèmes.
 $msg="";
-
-
 
 // Initialisation des variables
 //$user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
@@ -125,7 +120,7 @@ if($msg!=""){
 */
 ?>
 <p class=bold>
-|<a href="index.php">Retour</a>|<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>|
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
 </p>
 <form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
 
@@ -298,5 +293,4 @@ if($msg!=""){
 <center><input type='submit' value='Enregistrer' /></center>
 </div>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -43,7 +43,7 @@ $titre_page = "Outil d'initialisation de l'année pour les serveurs LCS";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="../gestion/index.php">Retour</a>|</p>
+<p class=bold><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
 <ul>
 <li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
@@ -68,6 +68,4 @@ require_once("../lib/header.inc");
 </li>
 <li>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
 </ul>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -90,7 +90,8 @@ require_once("../lib/header.inc");
 // MODIF: boireaus
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>|";
+echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour</a>";
+echo "</p>";
 //=============================
 
 ?>
@@ -257,5 +258,4 @@ if($nb_erreurs>0){
 <input type=hidden name=login_eleve value=<?php echo $login_eleve;?> />
 <input type=hidden name=is_posted value=1 />
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

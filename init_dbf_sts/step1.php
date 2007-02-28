@@ -48,7 +48,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etap
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 // On vérifie si l'extension d_base est active
@@ -153,8 +153,5 @@ if (!isset($is_posted)) {
         echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
     }
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

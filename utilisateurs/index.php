@@ -56,16 +56,16 @@ $_SESSION['chemin_retour'] = "../utilisateurs/index.php";
 
 ?>
 <p class=bold>
-|<a href="../accueil_admin.php">Retour</a>
-|<a href="modify_user.php">Ajouter utilisateur</a>
+<a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="modify_user.php">Ajouter utilisateur</a>
 <?php
 
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-    echo "|<a href=\"reset_passwords.php\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
+    echo " | <a href=\"reset_passwords.php\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
 }
 ?>
-|<a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>
-|<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>|</p>
+ | <a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>
+ | <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a></p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
 <p>Cas particuliers, cliquez sur les liens ci-dessous :
 <br/>- <a href="create_responsable.php">Créer</a> | <a href="edit_responsable.php">Editer</a> les utilisateurs au statut 'responsable' (accès parents)
@@ -226,7 +226,5 @@ while ($i < $nombreligne){
     $i++;
 }
 echo "</table>";
-require_once("../lib/microtime.php");
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

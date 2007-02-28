@@ -50,7 +50,7 @@ $prec = isset($_GET['prec']) ? $_GET['prec'] : 'no';
 $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve']) ? $_GET['v_eleve'] : NULL);
 include "../lib/periodes.inc.php";
 ?>
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
 <?php
 
 if (!isset($id_classe)) {
@@ -307,6 +307,5 @@ if (!isset($id_classe)) {
 
     echo "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />\n";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

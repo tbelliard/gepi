@@ -72,9 +72,6 @@ if ($ok==0) {
 		die();
 	}
 
-
-
-
 //**************** EN-TETE **************************************
 //$titre_page = "Impression de listes au format PDF <br />Choix des paramètres".$periode;
 $titre_page = "Impression de listes au format PDF <br />Choix des paramètres";
@@ -82,10 +79,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";
-echo "|<a href='../accueil.php'>Retour</a>";
-echo "|<a href='./impression.php'>Impression rapide à l'unité</a>";
-echo "|<a href='./impression_serie.php'>Impression en série</a>";
-echo " |\n";
+echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
+echo " | <a href='./impression_serie.php'>Impression en série</a>";
 echo "</p>\n";
 
 echo "<h3>Choix des paramètres : </h3>\n";
@@ -130,9 +126,8 @@ echo "<div>\n
        echo "<br />\n";
      echo "</form>\n";
    echo "</fieldset>\n
- </div>
-</body>
-</html>";
+ </div>";
+	require("../lib/footer.inc.php");
 
 /*
 marge_gauche
@@ -188,5 +183,4 @@ hauteur_zone_finale
   header("Location: ./impression_serie.php");
 		die();
 }
-
 ?>

@@ -181,4 +181,5 @@ while ($p < $nb_users) {
 
 }
 
-echo "</body></html>";
+require("../lib/footer.inc.php");
+?>

@@ -58,7 +58,7 @@ $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve'
 
 include "../lib/periodes.inc.php";
 ?>
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
 <?php
 
 if (!isset($id_classe)) {
@@ -105,7 +105,7 @@ if (!isset($id_classe)) {
     //echo "</p>\n";
         echo "</table>\n";
 } else {
-    echo "<a href=\"eleve_classe.php\">Choisir une autre classe</a>|\n";
+    echo " | <a href=\"eleve_classe.php\">Choisir une autre classe</a>\n";
 
     if (!$periode) {
         $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
@@ -348,6 +348,5 @@ if (!isset($id_classe)) {
 
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

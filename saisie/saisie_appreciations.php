@@ -133,16 +133,16 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" 
 echo "<p class=bold>";
 if ($periode_cn != 0) {
     //echo "|<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>";
-    echo "|<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>\n";
+    echo "<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 } else {
-    echo "|<a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour accueil saisie</a>\n";
+    echo "<a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>\n";
 }
 //echo "|<a href='saisie_notes.php?id_groupe=$id_groupe&periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les moyennes</a>";
-echo "|<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les moyennes</a>";
+echo " | <a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les moyennes</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
-echo "|<a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
-echo "|<input type='submit' value='Enregistrer' /></p>\n";
+echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
+echo " | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";?>
@@ -306,5 +306,4 @@ foreach ($liste_eleves as $eleve_login) {
 <center><div id="fixe"><input type="submit" value="Enregistrer" /></div></center>
 </form>
 <br /><br /><br /><br />
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

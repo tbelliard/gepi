@@ -85,8 +85,7 @@ function CocheCase(rang,per) {
  }
 }
 </script>
-<p class=bold>
-|<a href="../accueil.php">Retour</a> |
+<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
 <?php
@@ -167,7 +166,5 @@ $max_per = sql_query1("SELECT num_periode FROM periodes ORDER BY num_periode DES
       echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
    }
 
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

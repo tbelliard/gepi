@@ -48,7 +48,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";
-echo "|<a href='../accueil.php'>Retour</a>";
+echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 echo "</p>\n";
 
@@ -281,6 +281,5 @@ else{
     echo "</form>\n";
     */
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

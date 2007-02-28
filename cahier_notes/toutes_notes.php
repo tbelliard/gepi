@@ -77,9 +77,9 @@ require_once("../lib/header.inc");
 chargement = false;
 </script>
 <?php
-echo "<p class=bold>|";
-echo "<a href=\"index.php\">Retour</a>|";
-echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a>|";
+echo "<p class=bold>";
+echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
+echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a> |";
 echo "</p>";
 echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
 
@@ -536,6 +536,4 @@ echo "<br /><center><a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_gr
 <script type='text/javascript' language='javascript'>
 chargement = true;
 </script>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

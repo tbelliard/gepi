@@ -49,7 +49,7 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="../gestion/index.php">Retour</a>|</p>
+<p class=bold><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
 <ul>
@@ -102,6 +102,4 @@ require_once("../lib/header.inc");
 	<p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p>
 </li>
 </ul>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -220,17 +220,16 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
-|<a href="index.php">Retour</a>|<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>|
-
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
 <?php
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
 if (isset($user_login) and ($user_login!='')) {
     if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-        echo "<a href=\"change_pwd.php?user_login=".$user_login."\">Changer le mot de passe</a>|";
+        echo " | <a href=\"change_pwd.php?user_login=".$user_login."\">Changer le mot de passe</a>";
     }
-    echo "<a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>|";
+    echo " | <a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>";
 }
 
 ?>
@@ -357,6 +356,4 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 <!--/span-->
 </div>
 </form>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

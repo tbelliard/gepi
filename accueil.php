@@ -61,6 +61,7 @@ $tab[2] = "cpe";
 $tab[3] = "scolarite";
 $tab[4] = "eleve";
 $tab[5] = "secours";
+$tab[6] = "responsable";
 
 function acces($id,$statut) {
     $tab_id = explode("?",$id);
@@ -156,8 +157,8 @@ while ($ind < $nb_messages) {
 }
 if ($affiche_messages == 'yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
-    echo "<tr><td bgcolor=\"#CACACA\" align=\"left\">".$texte_messages;
+    echo "<table id='messagerie'>\n";
+    echo "<tr><td>".$texte_messages;
     echo "</td></tr></table>\n";
 }
 
@@ -191,10 +192,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width=\"30%\">&nbsp;</td>\n";
-    echo "<td><b>Administration</b></td>\n";
+    echo "<th colspan='2'>Administration</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -261,10 +261,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width='30%'>&nbsp;</td>\n";
-    echo "<td><b>Bulletins scolaires</b></td>\n";
+    echo "<th colspan='2'>Bulletins scolaires</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -343,10 +342,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width='30%'>&nbsp;</td>\n";
-    echo "<td><b>Saisie</b></td>\n";
+    echo "<th colspan='2'>Saisie</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -390,10 +388,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width='30%'>&nbsp;</td>\n";
-    echo "<td><b>Relevés de notes</b></td>\n";
+    echo "<th colspan='2'>Relevés de notes</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -430,10 +427,9 @@ if ($force_abs) {
         }
         if ($affiche=='yes') {
               //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-              echo "<table width='700' class='bordercolor'>\n";
+   			  echo "<table class='menu'>\n";
               echo "<tr>\n";
-              echo "<td width='30%'>&nbsp;</td>\n";
-              echo "<td><b>Gestion des retards et absences</b></td>\n";
+              echo "<th colspan='2'>Gestion des retards et absences</th>\n";
               echo "</tr>\n";
               for ($i=0;$i<$nb_ligne;$i++) {
                 affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -467,10 +463,9 @@ if ($force_abs) {
         }
         if ($affiche=='yes') {
               //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-              echo "<table width='700' class='bordercolor'>\n";
+    		  echo "<table class='menu'>\n";
               echo "<tr>\n";
-              echo "<td width='30%'>&nbsp;</td>\n";
-              echo "<td><b>Gestion des retards et absences</b></td>\n";
+              echo "<th colspan='2'>Gestion des retards et absences</th>\n";
               echo "</tr>\n";
               for ($i=0;$i<$nb_ligne;$i++) {
                 affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -505,10 +500,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     }
     if ($affiche=='yes') {
           //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-          echo "<table width='700' class='bordercolor'>\n";
+    	  echo "<table class='menu'>\n";
           echo "<tr>\n";
-          echo "<td width='30%'>&nbsp;</td>\n";
-          echo "<td><b>Trombinoscope</b></td>\n";
+          echo "<th colspan='2'>Trombinoscope</th>\n";
           echo "</tr>\n";
           for ($i=0;$i<$nb_ligne;$i++) {
             affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -601,10 +595,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width=\"30%\">&nbsp;</td>\n";
-    echo "<td><b>Visualisation - Impression</b></td>\n";
+    echo "<th colspan='2'>Visualisation - Impression</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -630,10 +623,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width='30%'>&nbsp;</td>\n";
-    echo "<td><b>Messagerie</b></td>\n";
+    echo "<th colspan='2'>Messagerie</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -644,7 +636,7 @@ if ($affiche=='yes') {
 
 if ($_SESSION['statut'] == 'administrateur') {
     //echo "<br /><br /><table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<br /><br /><table width='700' class='bordercolor'>\n";
+    echo "<br /><br /><table class='menu'>\n";
     echo "<tr><td align='left'><center>\n";
     echo "<div><b>Créer un fichier de sauvegarde/restauration de la base de données ".$dbDb."</b></div>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php?action=dump\" method=\"post\" name=\"formulaire\">\n";
@@ -659,5 +651,6 @@ if ($_SESSION['statut'] == 'administrateur') {
 require_once("./lib/microtime.php");
 ?>
 </center>
+</div>
 </body>
 </html>

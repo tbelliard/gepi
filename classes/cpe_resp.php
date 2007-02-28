@@ -92,7 +92,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
-<p class="bold">|<a href="./index.php">Retour</a>|</p>
+<p class="bold"><a href="./index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <p>Sélectionnez un CPE, et cochez les classes pour lesquelles vous souhaitez définir ce CPE comme responsable du suivi vie scolaire.</p>
 <p>ATTENTION ! Pour les élèves des classes sélectionnées, le paramétrage effectué ici écrase d'éventuels paramétrages précédents. Les élèves appartenant à des classes non cochées conservent leur paramétrage actuel.</p>
@@ -162,5 +162,4 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	}
 ?>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

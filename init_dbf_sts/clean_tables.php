@@ -65,7 +65,7 @@ $titre_page = "Outil d'initialisation de l'année : Nettoyage des tables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Nettoyage des tables</h3></center>";
 if (!isset($is_posted)) {
@@ -162,6 +162,5 @@ if (!isset($is_posted)) {
    echo "<p>Fin de la procédure d'importation!</p>";
    //echo "<p><b>Etape ajoutée:</b> Si vous disposez du F_DIV.CSV, vous pouvez <a href='init_pp.php'>initialiser les professeurs principaux</a>.</p>";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

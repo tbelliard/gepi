@@ -82,5 +82,4 @@ $impression = getSettingValue("Impression");
 <br />Adresse E-mail : <?php echo "<span class = \"bold\">$user_email</span>"; ?>
 </p>
 <?php echo $impression;?>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

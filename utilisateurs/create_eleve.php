@@ -135,8 +135,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
-|<a href="index.php">Retour</a>|
-
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
 <?php
 $quels_eleves = mysql_query("SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (" .
 		"u.login IS NULL) " .
@@ -182,6 +182,5 @@ else{
 	}
 	echo "</table>";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

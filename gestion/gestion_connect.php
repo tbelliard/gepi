@@ -85,24 +85,14 @@ if (!loadSettings()) {
 // Suppression du journal de connexion
 
 if (isset($_POST['valid_sup_logs']) ) {
-
     $sql = "delete from log where END < now()";
-
     $res = sql_query($sql);
-
     if ($res) {
-
        $msg = "La suppression des entrées dans le journal de connexion a été effectuée.";
-
     } else {
-
        $msg = "Il y a eu un problème lors de la suppression des entrées dans le journal de connexion.";
-
     }
-
 }
-
-
 
 // Changement de mot de passe obligatoire
 if (isset($_POST['valid_chgt_mdp'])) {
@@ -153,24 +143,15 @@ if (isset($_POST['disable_login'])) {
 
 // End standart header
 require_once("../lib/header.inc");
-
 isset($mode_navig);
-
 $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : NULL);
-
 if ($mode_navig == 'accueil') {
-
     $retour = "../accueil.php";
-
 } else {
-
     $retour = "index.php";
-
 }
 
-
-
-echo "<p class=bold>|<a href=\"".$retour."\">Retour</a>|</p>";
+echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 
 
@@ -226,13 +207,13 @@ if ($res) {
 echo "<h3 class='gepi'>Activation/désactivation des connexions</h3>";
 echo "<p><b>ATTENTION : </b>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs. De plus, les utilisateurs actuellement connectés sont automatiquement déconnectés.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">";
-echo "<input type='radio' name='disable_login' value='yes' id='label_1'";
+echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
 if (getSettingValue("disable_login")=='yes') echo " checked ";
-echo " /> <label for='label_1'>Désactiver les connexions</label>";
+echo " /> <label for='label_1a'>Désactiver les connexions</label>";
 
-echo "<br /><input type='radio' name='disable_login' value='no' id='label_2'";
+echo "<br /><input type='radio' name='disable_login' value='no' id='label_2a'";
 if (getSettingValue("disable_login")=='no') echo " checked ";
-echo " /> <label for='label_2'>Activer les connexions</label>";
+echo " /> <label for='label_2a'>Activer les connexions</label>";
 
 echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>";
 echo "</form>
@@ -538,5 +519,4 @@ if ($res) {
 ?>
 </table>
 </div>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

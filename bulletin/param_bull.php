@@ -460,12 +460,6 @@ if(isset($_POST['bull_bordure_classique'])) {
     }
 }
 
-
-
-
-
-
-
 if(isset($_POST['activer_photo_bulletin'])) {
     if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
         $msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
@@ -591,7 +585,7 @@ function SetDefaultValues(nb){
 // fin du script -->
 </script>
 
-<p class=bold>|<a href="../accueil.php">Retour</a>|</p>
+<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
@@ -1288,5 +1282,4 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
 
 <hr /><center><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></center>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");

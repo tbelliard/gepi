@@ -218,24 +218,24 @@ if  (isset($id_racine) and ($id_racine!='')) {
 
     //echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"index.php\" method=\"POST\">\n";
     echo "<div class='norme'><p class='bold'>\n";
-    echo "|<a href=\"../accueil.php\">Accueil</a>|\n";
-    echo "<a href='index.php'>Mes enseignements</a>|\n";
+    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
+    echo "<a href='index.php'> Mes enseignements </a>|\n";
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
-    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . htmlentities($current_group["description"]) . " : Choisir une autre période</a>|\n";
+    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a>\n";
     if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
         //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&mode_navig=retour_index'>Créer une boîte</a>|";
 
         //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'>Créer une boîte</a>|\n";
-        echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'>Créer un";
+        echo "<br/><a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
     if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-    echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."</a>|\n";
+    echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a>|\n";
 
         //echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&mode_navig=retour_index'>Créer une évaluation</a>|";
-        echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'>Créer une évaluation</a>|\n";
+        echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a>|\n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
             //echo "<a href='index.php?id_groupe=$id_groupe&periode_num=$periode_num&creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|";
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|\n";
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédent </a>\n";
         }
     }
     //echo "</b>\n";
@@ -263,9 +263,6 @@ if  (isset($id_racine) and ($id_racine!='')) {
     }
     echo "</p>\n";
 
-
-
-
     echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     echo "</ul>\n";
@@ -292,9 +289,9 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
     $nom_classes = $current_group["classlist_string"];
 
-    echo "<p class=bold>|";
-    echo "<a href=\"../accueil.php\">Accueil</a>|";
-    echo "<a href='index.php'>Mes enseignements</a>|</p>\n";
+    echo "<p class=bold>";
+    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
+    echo "<a href='index.php'> Mes enseignements </a>|</p>\n";
     echo "<p class='bold'>Enseignement : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
     echo "<H3>Visualisation/modification - Choisissez la période : </H3>\n";
@@ -319,7 +316,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
 if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
     ?>
-    <p class=bold>|<a href="../accueil.php">Accueil</a>|</p>
+    <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
     <p>Accéder au carnet de notes : </p>
     <?php
     $groups = get_groups_for_prof($_SESSION["login"]);

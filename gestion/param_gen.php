@@ -317,7 +317,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été
 $titre_page = "Paramètres généraux";
 require_once("../lib/header.inc");
 ?>
-<p class=bold>|<a href="index.php">Retour</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="param_gen.php" method="post" name="form1" style="width: 100%;">
 <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5">
     <tr>
@@ -525,7 +525,6 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
    echo "<td><b><i>Pas de logo actuellement</i></b></td>\n";
 }
 echo "</tr></table></form>\n";
-?>
 
-</body>
-</html>
+require("../lib/footer.inc.php");
+?>

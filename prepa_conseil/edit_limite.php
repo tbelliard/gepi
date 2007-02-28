@@ -101,7 +101,5 @@ if ($choix_edit != '2') {
     }
 
 }
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

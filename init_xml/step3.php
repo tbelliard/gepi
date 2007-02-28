@@ -365,6 +365,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<center><input type='submit' value='Enregistrer' /></center>";
-    echo "</form></body></html>";
+    echo "</form>";
+    require("../lib/footer.inc.php");
 }
 ?>

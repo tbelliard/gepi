@@ -136,8 +136,7 @@ require_once("../lib/header.inc");
 
 
 <form enctype="multipart/form-data" method="post" action="periodes.php">
-<p class='bold'>
-|<a href="index.php">Retour</a>|<input type='submit' value='Enregistrer' />
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' value='Enregistrer' />
 </p>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
@@ -189,7 +188,4 @@ if ($test_periode == 0) {
 <input type='hidden' name='is_posted' value="yes" />
 <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
 </form>
-<br />
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

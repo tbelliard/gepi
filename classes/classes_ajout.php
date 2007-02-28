@@ -1,109 +1,56 @@
 <?php
-
 /*
-
  * Last modification  : 22/08/2006
-
  *
-
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-
  *
-
  * This file is part of GEPI.
-
  *
-
  * GEPI is free software; you can redistribute it and/or modify
-
  * it under the terms of the GNU General Public License as published by
-
  * the Free Software Foundation; either version 2 of the License, or
-
  * (at your option) any later version.
-
  *
-
  * GEPI is distributed in the hope that it will be useful,
-
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-
  * GNU General Public License for more details.
-
  *
-
  * You should have received a copy of the GNU General Public License
-
  * along with GEPI; if not, write to the Free Software
-
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
  */
-
-
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
-
-
 // Resume session
-
 $resultat_session = resumeSession();
-
 if ($resultat_session == 'c') {
-
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-
     die();
-
 } else if ($resultat_session == '0') {
-
     header("Location: ../logout.php?auto=1");
-
     die();
-
 };
 
-
-
-
 if (!checkAccess()) {
-
     header("Location: ../logout.php?auto=1");
-
     die();
-
 }
-
 include "../lib/periodes.inc.php";
 
 
-
-
-
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-
 $classe = mysql_result($call_classe, "0", "classe");
 
-
-
 if (isset($is_posted) and ($is_posted == 1)) {
-
     $call_eleves = mysql_query("SELECT login FROM eleves ORDER BY nom, prenom");
-
     $nombreligne = mysql_num_rows($call_eleves);
-
     $k = '0';
-
-    While ($k < $nombreligne) {
-
+    while ($k < $nombreligne) {
         $pb = 'no';
-
         $login_eleve = mysql_result($call_eleves, $k, 'login');
 
         $temp = $login_eleve."_item";
@@ -197,11 +144,8 @@ if (isset($is_posted) and ($is_posted == 1)) {
 }
 
 //**************** EN-TETE **************************************
-
 $titre_page = "Gestion des classes | Ajout d'élèves à une classe";
-
 require_once("../lib/header.inc");
-
 //**************** FIN EN-TETE **********************************
 
 ?>
@@ -209,9 +153,8 @@ require_once("../lib/header.inc");
 <form enctype="multipart/form-data" action="classes_ajout.php" method=post>
 
 <p class=bold>
-
-|<a href="classes_const.php?id_classe=<?php echo $id_classe;?>">Retour à la page de gestion des élèves</a> |
-
+<a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
+</p>
 <p><b>Ajout d'élèves à la classe de <?php echo $classe; ?></b><br />Liste des élèves non affectés à une classe :</p>
 
 <?php
@@ -449,7 +392,4 @@ if ($nombreligne == '0') {
 <input type=hidden name=is_posted value=1 />
 
 </form>
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");?>

@@ -70,9 +70,9 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 ?>
 <p class=bold>
-|<a href="../accueil_admin.php">Retour</a>
-|<a href="add_group.php?mode=regroupement">Ajouter un regroupement (interclasses)</a>
-|<a href="add_group.php?mode=groupe">Ajouter un groupe à une classe</a>
+<a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="add_group.php?mode=regroupement">Ajouter un regroupement (interclasses)</a>
+ | <a href="add_group.php?mode=groupe">Ajouter un groupe à une classe</a>
 
 <?php
 
@@ -138,6 +138,5 @@ if ($nombre_lignes != 0) {
     echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
     echo "<p>Vous devez avoir défini des classes avant de pouvoir éditer les groupes.</p>\n";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

@@ -188,11 +188,10 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 <link rel="icon" type="image/ico" href="./favicon.ico" />
 </head>
 <body onload="document.getElementById('login').focus()">
-<h1 class='gepi'>Gestion et visualisation graphique des résultats scolaires</h1>
-<h2 class='gepi'><?php echo getSettingValue("gepiSchoolName"). " - année scolaire " . getSettingValue("gepiYear"); ?></h2>
-<div class="center">
+<div>
+<!--<h1 class='gepi'>Gestion et visualisation graphique des résultats scolaires</h1>-->
 
-<p>En raison du caractère personnel du contenu, ce site est soumis à des restrictions utilisateurs. Pour accéder aux outils de gestion, identifiez-vous :</p>
+<div class="center">
 <?php
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")=='y') {
@@ -202,22 +201,34 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 
 ?>
 <form action="login.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
-<?php
-if (isset($message)) echo("<p><font color=red>" . $message . "</font></p>");
-?>
-<fieldset style="padding-top: 8px; padding-bottom: 8px; width: 40%; margin-left: auto; margin-right: auto;">
-<legend style="font-variant: small-caps;">Identification</legend>
-<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="0">
+
+<fieldset id="login_box">
+<h2><?php echo getSettingValue("gepiSchoolName"); ?></h2>
+<table style="width: 75%; border: 0; margin-top: 10px; margin-right: 0; margin-left: auto;" cellpadding="3" cellspacing="0">
   <tr>
-    <td style="text-align: right; width: 40%; font-variant: small-caps;"><label for="login">Identifiant</label></td>
-    <td style="text-align: center; width: 60%;"><input type="text" id="login" name="login" size="16" tabindex="1" /></td>
+  	<td colspan="2" style="padding-bottom: 15px;">
+  	<?php
+		if (isset($message)) {
+			echo("<p style='color: red; margin:0;padding:0;'>" . $message . "</p>");
+		} else {
+			echo "<p style='margin:0;padding:0;'>Afin d'utiliser Gepi, vous devez vous identifier.</p>";
+		}
+	?>
+  	</td>
   </tr>
   <tr>
-    <td style="text-align: right; width: 40%; font-variant: small-caps;"><label for="no_anti_inject_password">Mot de passe</label></td>
-    <td style="text-align: center; width: 60%;"><input type="password" id="no_anti_inject_password" name="no_anti_inject_password" size="16" onkeypress="capsDetect(arguments[0]);" tabindex="2" /></td>
+    <td style="text-align: right; width: 30%; font-variant: small-caps;"><label for="login">Identifiant</label></td>
+    <td style="text-align: center; width: 40%;"><input type="text" id="login" name="login" size="16" tabindex="1" /></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; width: 30%; font-variant: small-caps;"><label for="no_anti_inject_password">Mot de passe</label></td>
+    <td style="text-align: center; width: 40%;"><input type="password" id="no_anti_inject_password" name="no_anti_inject_password" size="16" onkeypress="capsDetect(arguments[0]);" tabindex="2" /></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td style="text-align: center; width: 40%; padding-top: 20px;"><input type="submit" name="submit" value="Valider" style="font-variant: small-caps;" tabindex="3" /></td>
   </tr>
 </table>
-<input type="submit" name="submit" value="Valider" style="font-variant: small-caps;" tabindex="3" />
 </fieldset>
 </form>
 </div>
@@ -225,13 +236,7 @@ if (isset($message)) echo("<p><font color=red>" . $message . "</font></p>");
 <p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')">Informations vie privée</a></p>
 <p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
 </div>
-
-<div class="center" style="width: 200px; margin-bottom: 32px;">
-<a href='http://www.php.net'><img src="./php4.gif" alt="Powered by php4" width="88" height="31" style="border: 0; float: left;" /></a><a href='http://www.mysql.org'><img src="./mysqllogo.gif" alt="Powered by MySQL" width="88" height="31" style="border: 0; float: right;" /></a><br />
-</div>
-
-<div class="center">
-<p class="small">
+<div id="login_footer">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
 Copyright &copy; 2001-2007
 <?php
@@ -244,7 +249,7 @@ while (list($name, $adress) = each($gepiAuthors)) {
 }
 
 ?>
-</p>
+</div>
 </div>
 </body>
 </html>

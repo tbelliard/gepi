@@ -370,9 +370,7 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class=bold>
-|<a href="index.php">Retour</a>|<a href="modify_resp.php">Ajouter un responsable</a>|
-</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="modify_resp.php">Ajouter un responsable</a></p>
 
 <form enctype="multipart/form-data" action="modify_resp.php" method="post">
 <?php
@@ -774,5 +772,4 @@ echo "<input type='hidden' name='is_posted' value='1' />\n";
 </form>
 
 <!--font color='red'>A FAIRE: SUPPRESSION d'adresse.</font-->
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

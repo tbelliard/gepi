@@ -69,13 +69,14 @@ function last_connection() {
 <!-- ======================================== -->
 <!-- AJOUT pour les trombinoscopes et absences-->
 <?php
-    // vérifie si on n'est dans le module trombinoscope si oui on ajoute ce css
+    // vérifie si on est dans le module trombinoscope si oui on ajoute ce css
     if(basename($_SERVER['PHP_SELF'],".php")==="trombinoscopes"){
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_trombinoscopes/styles/styles.css" /><?php
     }
 
-   // vérifie si on n'est dans le modules absences
-    if(basename($_SERVER['PHP_SELF'],".php")==="gestion_absences" || "select" || "ajout_abs" || "ajout_ret" || "ajout_dip" || "ajout_inf" || "tableau" || "impression_absences" || "prof_ajout_abs"){
+   // vérifie si on nest dans le modules absences
+   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs");
+    if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css" /><?php
     }
     if(basename($_SERVER['PHP_SELF'],".php")==="prof_ajout_abs"){
@@ -110,23 +111,6 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
   visibility: hidden;
 }
 </style>
-
-
-<?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
-   echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
-} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
-   echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
-} else {
-   echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
-}
-// Couleur de fond des pages
-if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
-?>
-</head>
-<body onLoad="show_message_deconnexion()">
 <!-- Gestion de l'expiration des session - Patrick Duthilleul -->
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -167,23 +151,46 @@ function show_message_deconnexion(){
     }
 </script>
 
+<?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
+   echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
+} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
+   echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
+} else {
+   echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
+}
+// Couleur de fond des pages
+if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
+?>
+</head>
+<body onLoad="show_message_deconnexion()">
 
-<?php if (isset($titre_page)) {?>
+<?php if (isset($titre_page)) {
+  if ($_SESSION['statut'] == "administrateur") {
+  	$rc = null;
+  	$beta = null;
+    if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
+    if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
+	echo "<div id='version_gepi'>v".$gepiVersion.$rc.$beta."</div>";	    
+  }
+?>
+<div id="header">
 <!-- Header start -->
-
    <!-- Page title, access rights -->
-   <div class="headerLeft">
+   <div id="headerLeft">
       <?php
-      echo("<h3 class='gepi'>" . $titre_page . "</h3>\n");
+      echo("<h3>" . $titre_page . "</h3>\n");
       ?>
    </div>
    <!-- User name, status, main matter, home, logout, account management -->
-   <div class="headerRight">
+   <div id="headerRight">
       <?php
       echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
-      if ($_SESSION['statut'] != "professeur") {
-         echo($_SESSION['statut']);
-      } else {
+      if ($_SESSION['statut'] == "administrateur") {
+         echo "<span class='red'>Administrateur</span>";
+      } elseif ($_SESSION['statut'] == "professeur") {
          $nom_complet_matiere = sql_query1("select nom_complet from matieres
          where matiere = '".$_SESSION['matiere']."'");
          if ($nom_complet_matiere != '-1') {
@@ -192,34 +199,33 @@ function show_message_deconnexion(){
          } else {
             echo "Invité";
          }
+      } elseif ($_SESSION['statut'] == "scolarite") {
+      	echo "Scolarité";
+      } elseif ($_SESSION['statut'] == "cpe") {
+      	echo "CPE";
       }
       $temp = '';
-  $rc = null;
-  $beta = null;
     // christian
-    echo("<br />\n");
+    echo "<br />\n";
     //On vérifie si le module de mise à jour est activé
     if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
         ?><a href="javascript:ouvre_popup()"><img style="border: 0px; width: 15px; height: 15px;" src="<?php echo($gepiPath); ?>/images/info.png" alt="info" title="info" align="top" /></a> <?php
     }
     //christian
 
-    if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
-    if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
-      echo("<br />\nGEPI ".$gepiVersion.$rc.$beta." - ");
+
+      echo "<br />\n";
+      echo "<span class='grey'>";
       ?>
-      <a href="<?php echo($gepiPath); ?>/accueil.php">Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php">Gérer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0">Déconnexion</a>
+      <a href="<?php echo($gepiPath); ?>/accueil.php"><img src='<?php echo($gepiPath); ?>/images/icons/home.png' alt='Accueil' style='bottom: -1px;'/>  Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php"><img src='<?php echo($gepiPath); ?>/images/icons/buddy.png' alt='Mon compte' /> Gérer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0"><img src='<?php echo($gepiPath); ?>/images/icons/quit_16.png' alt='Se déconnecter' /> Déconnexion</a>
+      </span>
    </div>
-   <div class="separation">
-
-   </div>
-
-   <div class="headerBottomLeft">
+   <div id="headerBottomLeft">
       <?php if (isset($affiche_connexion)) echo last_connection()."\n"; ?>
    </div>
 
    <!-- Contact -->
-   <div class="headerBottomRight">
+   <div id="headerBottomRight">
       <?php
       $prefix = '';
       if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
@@ -236,17 +242,16 @@ function show_message_deconnexion(){
       ?>
 
    </div>
-   <hr class="header" />
+</div>
    <?php
 }
-
+echo "<div id='container'>";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
    $msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
    if ($msg != '') {
       echo "<div class=\"headerMessage\">";
       echo($msg);
       echo "</div>";
-      echo "<hr class=\"header\" />";
    }
 }
 

@@ -148,9 +148,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
 //-----------------------------------------------------------------------------------
-
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">";
-
 echo "<tr>";
 echo "<td valign='top'>";
 echo "<p>Nous sommes le :&nbsp;<br />";
@@ -296,6 +295,5 @@ echo "</form></td></tr></table>";
 // Fin de la colonne de droite
 
 echo "</td></tr></table>";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

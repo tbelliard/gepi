@@ -140,7 +140,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 ?>
-<p class=bold>|<a href="index.php">Retour à la gestion des classes</a>|
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la gestion des classes</a>
+</p>
 <?php
 
 
@@ -213,8 +214,5 @@ if (isset($new_name_defined) && !isset($eleves_selected)) {
 if (isset($eleves_selected) && isset($new_name_defined)) {
     echo "<p class=alert>La nouvelle classe a bien été crée. Veuillez vérifier que tout s'est bien passé en allant visualiser les paramètres de cette nouvelle classe.</p>";
 }
-
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

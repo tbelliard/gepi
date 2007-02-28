@@ -87,6 +87,5 @@ default://formulaire d'envoi
     <?php
     break;
 }
+require ("../lib/footer.inc.php");
 ?>
-</body>
-</html>

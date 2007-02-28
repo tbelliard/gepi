@@ -133,7 +133,7 @@ if ($max_periode <= 0) {
 }
 
 echo "<FORM METHOD=\"post\" ACTION=\"matieres_param.php\">\n";
-echo "<p class=bold>|<a href=\"index.php\">Retour</a>|<INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>\n";
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>\n";
 echo "<p>Sur cette page, vous pouvez modifier les coefficients et les priorités d'affichage d'une ou plusieurs matières
 par lots de classes cochées ci-dessous.</p>\n";
 
@@ -303,5 +303,4 @@ while ($i < $nb_matieres){
 ?>
 
 </FORM>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

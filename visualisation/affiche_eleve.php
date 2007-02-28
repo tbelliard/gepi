@@ -177,7 +177,7 @@ include "../lib/periodes.inc.php";
 // Choix de la classe:
 if (!isset($id_classe)) {
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|</p>\n";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a></p>\n";
 	echo "</div>\n";
 
 	//echo "<form action='$_PHP_SELF' name='form_choix_classe' method='post'>\n";
@@ -224,11 +224,11 @@ else {
 	*/
 
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'>|<a href='../accueil.php'>Accueil</a>|<a href='index.php'>Autre outil de visualisation</a>|";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 	// La classe est choisie.
 	// On ajoute l'accès/retour à une autre classe:
 	//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
-	echo "<a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a>|";
+	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
 
 	// =================================
 	// AJOUT: boireaus
@@ -1692,7 +1692,5 @@ else {
 	echo "</tr>\n";
 	echo "</table>\n";
 }
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

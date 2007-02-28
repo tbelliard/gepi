@@ -110,13 +110,11 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold>
-|<a href="../accueil_admin.php">Retour</a>
-|<a href="modify_matiere.php">Ajouter matière</a>
-|<a href='matieres_param.php'>Paramétrage de plusieurs matières par lots</a>
-|<a href='matieres_categories.php'>Editer les catégories de matières</a>
-|<a href='matieres_csv.php'>Importer un CSV de la liste des matières</a>|
-
+<p class=bold><a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="modify_matiere.php">Ajouter matière</a>
+ | <a href='matieres_param.php'>Paramétrage de plusieurs matières par lots</a>
+ | <a href='matieres_categories.php'>Editer les catégories de matières</a>
+ | <a href='matieres_csv.php'>Importer un CSV de la liste des matières</a>
 </p>
 <form enctype="multipart/form-data" action="index.php" method=post>
 <input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
@@ -190,5 +188,4 @@ $i++;
 </table>
 <input type='submit' value='Enregistrer' style='margin-left: 70%; margin-top: 25px; margin-bottom: 100px;' />
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

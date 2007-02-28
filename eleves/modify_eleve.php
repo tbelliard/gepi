@@ -390,9 +390,9 @@ require_once("../lib/header.inc");
 
 
 if ((isset($order_type)) and (isset($quelles_classes))) {
-    echo "<p class=bold>|<a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\">Retour</a>|</p>";
+    echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 } else {
-    echo "<p class=bold>|<a href=\"index.php\">Retour</a>|";
+    echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
 
 ?>
@@ -685,4 +685,6 @@ if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value
 if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />";
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />";
 echo "<center><input type=submit value=Enregistrer /></center>";
-echo "</form></body></html>";
+echo "</form>";
+require("../lib/footer.inc.php");
+?>

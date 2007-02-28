@@ -147,9 +147,9 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 echo "<table border='0'><tr>";
 echo "<td width='40%' align='left'>";
 echo "<p class='bold'>";
-echo "|<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>";
-if($id_class_prec!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-if($id_class_suiv!=0){echo "|<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+echo "<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 echo "</p>\n";
 
 echo "<h3>Gestion des enseignements pour la classe :" . $classe["classe"]."</h3>\n";
@@ -487,5 +487,4 @@ Les coefficients réglés ici ne s'appliquent donc qu'à la classe
 ?>
 , même dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
 </ul>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

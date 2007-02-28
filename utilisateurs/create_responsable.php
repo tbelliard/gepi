@@ -143,9 +143,8 @@ $titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>
-|<a href="index.php">Retour</a>|
-
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
 <?php
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 $quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
@@ -192,6 +191,5 @@ else{
 	}
 	echo "</table>";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

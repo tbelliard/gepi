@@ -48,11 +48,11 @@ $total_max_size_ko = getSettingValue("total_max_size")/1024;
 $current_group = get_group($_GET['id_groupe']);
 
 ?>
-<H1 class='gepi'>GEPI - Limites et restrictions concernant le téléchargement de fichiers</H1>
+<h1 class='gepi'>GEPI - Limites et restrictions concernant le téléchargement de fichiers</h1>
 
-<H2>Taille maximale d'un fichier</H2>
+<h2>Taille maximale d'un fichier</h2>
 <p>La taille maximale autorisée pour un fichier est : <b><?php echo $max_size_ko." Ko</b>"; ?></p>
-<H2>Espace disque autorisé</h2>
+<h2>Espace disque autorisé</h2>
 <?php
 $query = "SELECT DISTINCT sum(taille) somme FROM ct_documents d, ct_entry e WHERE (e.id_groupe='".$_GET['id_groupe']."' and e.id_ct = d.id_ct)";
 $result = round(sql_query1($query)/1024,1);
@@ -83,5 +83,4 @@ for ($i=0; ($row=sql_row($result,$i)); $i++) {
 ?>
 </table>
 </center>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

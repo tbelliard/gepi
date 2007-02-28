@@ -87,7 +87,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etap
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des responsables d'élèves</h3></center>";
@@ -406,8 +406,5 @@ if (!isset($_POST["action"])) {
         }
     }
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

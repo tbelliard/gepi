@@ -47,7 +47,7 @@ $titre_page = "Visualisation des moyennes des carnets de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href='../accueil.php'>Accueil</a>|
+<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|
 <?php
 if (isset($id_classe)) {
 	$current_eleve_classe = sql_query1("SELECT classe FROM classes WHERE id='$id_classe'");
@@ -202,6 +202,5 @@ if (isset($id_classe)) {
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
 echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
+require ("../lib/footer.inc.php");
 ?>
-</body>
-</html>

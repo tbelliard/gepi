@@ -46,16 +46,58 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 ?>
-
-
-
+<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <center>
-<!--table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5-->
-<table width='700' class='bordercolor'>
+<table class='menu'>
+<tr>
+	<th colspan='2'>Général</th>
+</tr>
 <tr>
     <td width=200><a href="param_gen.php">Configuration générale</a></td>
     <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
     </td>
+</tr>
+
+<tr>
+    <td width=200><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
+    <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
+    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
+    <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="../utilitaires/maj.php">Mise à jour de la base</a></td>
+    <td>Permet d'effectuer une mise à jour de la base MySql après un changement de version  de GEPI.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="../utilitaires/clean_tables.php">Nettoyage des tables</a></td>
+    <td>Procéder à un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolètes ou orphelines).
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="efface_base.php">Effacer la base</a></td>
+    <td>Permet de réinitialiser les bases en effaçant toutes les données élèves de la base.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="modify_impression.php">Gestion de la fiche "bienvenue"</a></td>
+    <td>Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
+    <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
+</tr>
+</table>
+
+<table class='menu'>
+<tr>
+<th colspan='2'>Outils d'initialisation</th>
 </tr>
 <?php
 $use_sso = getSettingValue('use_sso');
@@ -95,59 +137,12 @@ if ($use_sso == "ldap_scribe") {
 <?php
 }
 ?>
-<?php
-/* Cette partie n'a plus lieu d'être, étant remplacée par la procédure complète d'initialisation par fichiers CSV
-<tr>
-    <td width=200><a href="import_csv.php">Importation d'un fichier d'élèves</a></td>
-    <td>Permet d'importer des données "élève" à partir d'un fichier au format csv (séparateur point-virgule).
-    </td>
-</tr>
-*/
-?>
+
 <tr>
     <td width=200><a href="../initialisation/index.php">Initialisation des données à partir des fichiers GEP</a> (OBSOLETE)</td>
     <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.
     </td>
 </tr>
-<tr>
-    <td width=200><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
-    <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
-    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="../utilitaires/maj.php">Mise à jour de la base</a></td>
-    <td>Permet d'effectuer une mise à jour de la base MySql après un changement de version  de GEPI.
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="../utilitaires/clean_tables.php">Nettoyage des tables</a></td>
-    <td>Procéder à un nettoyage des tables de la base MySql de GEPI (suppression de certains doublons et/ou lignes obsolètes ou orphelines).
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="efface_base.php">Effacer la base</a></td>
-    <td>Permet de réinitialiser les bases en effaçant toutes les données élèves de la base.
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="modify_impression.php">Gestion de la fiche "bienvenue"</a></td>
-    <td>Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
-    <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
-    </td>
-</tr>
-
-<tr>
-    <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
-    <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
-</tr>
-
 </table>
-
 </center>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

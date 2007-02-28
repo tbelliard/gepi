@@ -160,7 +160,7 @@ if (isset($indice_aid)) {
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') && (emptyFormElements('formulaire', 'reg_nom')) && checkFormElementInRange('formulaire', 'order_display2', 0, 100))"-->
 <form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
 
-<div class='norme'><p class=bold>|<a href="index.php">Retour</a>|
+<div class='norme'><p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
 <input type=submit value=Enregistrer /><br />
 
@@ -286,18 +286,9 @@ Affichage :  <br />
 
 <input type=checkbox name=display_bulletin value='y' <?php if ($display_bulletin == "y") { echo "CHECKED" ;} ?> /> L'AID apparaît dans le bulletin officiel (si la case est décochée la rubrique AID n'apparaît que dans le bulletin simplifié)
 
-
-
 </div>
-
 <input type=hidden name=is_posted value=1 />
-
 <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-
 <input type=submit value=Enregistrer />
-
 </form>
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");

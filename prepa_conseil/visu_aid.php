@@ -125,21 +125,14 @@ $display_end = @mysql_result($call_data, 0, "display_end");
 
 
     //**************** EN-TETE *****************
-
 if (!isset($bord))     $titre_page = "Visualisation des appréciations ".$nom_aid;
-
 require_once("../lib/header.inc");
-
     //**************** FIN EN-TETE *****************
 
 if (!isset($aid_id)) {
-
-    ?><p class=bold>|<a href="../accueil.php">Accueil</a>|</p><?php
-
+    ?><p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a></p><?php
     $call_prof_aid = mysql_query("SELECT a.nom, a.id FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.nom");
-
     $nombre_aid = mysql_num_rows($call_prof_aid);
-
     if ($nombre_aid == "0") {
 
         echo "<p>Vous n'êtes pas professeur responsable. Vous n'avez donc pas accès à ce module.</p></html></body>\n";
@@ -170,7 +163,7 @@ if (!isset($aid_id)) {
 
 } else if (!isset($choix_visu)) {
 
-    echo "<p class=bold>|<a href=\"../accueil.php\">Accueil</a>|<a href=visu_aid.php?indice_aid=$indice_aid>Retour</a>|</p>";
+    echo "<p class=bold><a href=\"../accueil.php\">Accueil</a>|<a href=visu_aid.php?indice_aid=$indice_aid><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
     //
 
@@ -427,9 +420,5 @@ if (!isset($aid_id)) {
     affiche_tableau($nombre_eleves, $indice_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
 
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-
-</html>

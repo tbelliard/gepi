@@ -46,11 +46,11 @@ $titre_page = "Visualisation des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href='../accueil.php'>Accueil</a>|
+<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
 <?php
 if (isset($id_classe)) {
     $current_eleve_classe = sql_query1("SELECT classe FROM classes WHERE id='$id_classe'");
-    echo "<a href=\"index2.php\">Choisir une autre classe</a> | Classe : ".$current_eleve_classe." |</p>";
+    echo " | <a href=\"index2.php\">Choisir une autre classe</a> | Classe : ".$current_eleve_classe."</p>";
     echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
     echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\"><tr>";
     echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
@@ -185,6 +185,5 @@ if (isset($id_classe)) {
     }
     echo "</table>\n";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

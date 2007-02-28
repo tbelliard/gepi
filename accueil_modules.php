@@ -75,6 +75,7 @@ $titre_page = "Accueil - Administration des modules";
 $racine_gepi = 'yes';
 require_once("./lib/header.inc");
 ?>
+<p class=bold><a href="./accueil.php"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <?php if (isset($msg)) { echo "<font color='red' size=2>$msg</font>"; }
 echo "<center>";
 
@@ -86,11 +87,11 @@ if ($force_msj) $chemin[] = "/mod_miseajour/admin/index.php";
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 
 $titre = array(
-"Gestion du cahier de texte",
-"Gestion des carnets de notes");
-if ($force_abs) $titre[] = "Gestion des absences";
-if ($force_msj) $titre[] = "Gestion des mise à jour";
-$titre[] = "Gestion du trombinoscope";
+"Cahier de texte",
+"Carnets de notes");
+if ($force_abs) $titre[] = "Absences";
+if ($force_msj) $titre[] = "Mise à jour automatisée";
+$titre[] = "Trombinoscope";
 
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
@@ -109,10 +110,9 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table width='700' class='bordercolor'>\n";
+    echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<td width='30%'>&nbsp;</td>\n";
-    echo "<td><b>Administration des modules</b></td>\n";
+    echo "<th colspan='2'>Administration des modules</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -122,5 +122,4 @@ if ($affiche=='yes') {
 
 ?>
 </center>
-</body>
-</html>
+<?php require("./lib/footer.inc.php");?>

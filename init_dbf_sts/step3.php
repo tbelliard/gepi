@@ -351,6 +351,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<center><input type='submit' value='Enregistrer'></center>";
-    echo "</form></body></html>";
+    echo "</form>";
+	require("../lib/footer.inc.php");
 }
 ?>

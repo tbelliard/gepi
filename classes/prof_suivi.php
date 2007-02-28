@@ -148,10 +148,7 @@ $classe = mysql_result($call_classe, "0", "classe");
 
 ?>
 
-<p class=bold>
-
-|<a href="classes_const.php?id_classe=<?echo $id_classe;?>">Retour</a>|<a href="help.php">Aide</a>|
-
+<p class=bold><a href="classes_const.php?id_classe=<?echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="help.php"> Aide </a></p>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 
 <?php
@@ -425,31 +422,17 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
             }
 
             echo "</table>";
-
             echo "<center><input type='submit' value='Enregistrer' /></center><br />";
-
             echo "<input type='hidden' name='id_classe' value='$id_classe' />";
-
             echo "<input type='hidden' name='nb_prof' value='$nb_prof' />";
-
             echo "<input type='hidden' name='etape2' value='yes' />";
-
             echo "<input type='hidden' name='etape3' value='yes' />";
-
             echo "<input type='hidden' name='nb_prof_suivi' value='$nb_prof_suivi' />";
-
             echo "<input type='hidden' name='is_posted' value='1' />";
-
             echo "</form>";
-
         }
-
     }
-
 }
 
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-
-</html>

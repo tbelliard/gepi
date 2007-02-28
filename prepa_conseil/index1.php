@@ -68,7 +68,7 @@ if (isset($_SESSION['chemin_retour'])) $retour = $_SESSION['chemin_retour'] ; el
 
 if (!$current_group) {
     unset($_SESSION['chemin_retour']);
-    echo "<p class='bold'>|<a href=\"../accueil.php\">Retour</a>|</p>\n";
+    echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
     echo "<p>Votre choix :</p>\n";
     //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
@@ -139,7 +139,7 @@ if (!$current_group) {
 	*/
 
 } else if (!isset($choix_visu)) {
-    echo "<p class=bold>|<a href=\"".$retour."\">Retour</a>|</p>\n";
+    echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
     if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours')) {
         echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
         echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
@@ -445,7 +445,7 @@ if (!$current_group) {
     if (!isset($larg_tab)) {$larg_tab = 680;}
     if (!isset($bord)) {$bord = 1;}
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
-    if ($en_tete == "yes") echo "<p class=bold>|<a href=\"index1.php?id_groupe=$id_groupe\">Retour</a>|<input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+    if ($en_tete == "yes") echo "<p class=bold><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
     if ($stat == "yes") echo "<input type='hidden' name='stat' value='yes' />\n";
@@ -505,7 +505,5 @@ if (!$current_group) {
         echo "<li>supérieure ou égale à 12 : <b>".$pourcent_se12."</b></li></ul></td></tr></table>\n";
     }
 }
+require("../lib/footer.inc.php");
 ?>
-<br />
-</body>
-</html>

@@ -55,7 +55,7 @@ function active(num) {
 }
 </script>
 <?php
-echo "<p class=\"bold\">|<a href=\"../accueil.php\">Accueil</a>|";
+echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 if (!isset($id_classe)) {
     //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
@@ -94,7 +94,7 @@ if (!isset($id_classe)) {
     }
     echo "</table>\n";
 } else if (!isset($choix_edit)) {
-    echo "<a href = \"index3.php\">Choisir une autre classe</a>|</p>";
+    echo " | <a href = \"index3.php\">Choisir une autre classe</a></p>";
     $classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
     $nom_classe = mysql_result($classe_eleve, 0, "classe");
     echo "<p class='grand'>Classe de $nom_classe</p>\n";
@@ -161,7 +161,5 @@ if (!isset($id_classe)) {
     echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
     echo "</form>\n";
 }
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

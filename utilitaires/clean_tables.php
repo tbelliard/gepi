@@ -1088,6 +1088,5 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
     echo "</form>\n";
 }
 
-
+require("../lib/footer.inc.php");
 ?>
-</body></html>

@@ -41,8 +41,6 @@ if (!checkAccess()) {
     die();
 }
 
-
-
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
@@ -148,8 +146,5 @@ if($current_group) {
 		$i++;
 	}
 }
-
-
-
 echo $fd;
 ?>

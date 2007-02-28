@@ -117,10 +117,10 @@ if ($testpassword == -1) $testpassword = '';
 // Test SSO
 $test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|</p>";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 if ($test_sso)
     echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
-echo "<H2>Informations personnelles *</H2>";
+echo "<h2>Informations personnelles *</h2>";
 echo "<table>";
 echo "<tr><td>Identifiant GEPI : </td><td>" . $_SESSION['login']."</td></tr>";
 echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>";
@@ -351,6 +351,5 @@ echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />";
 echo "</form>";
 echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
 Dans le cas contraire, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

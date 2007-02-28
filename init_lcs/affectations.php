@@ -58,7 +58,7 @@ $titre_page = "Outil d'initialisation de l'année : affectation des matières et d
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold>|<a href='../init_lcs/index.php'>Retour</a>|</p>";
+echo "<p class=bold><a href='../init_lcs/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 function is_prof($login,$matiere) {
     $test = sql_query1("select count(id_professeur) from j_professeurs_matieres where id_professeur = '".$login."' and id_matiere = '".$matiere."'");
@@ -185,3 +185,5 @@ if (isset($_POST['is_posted'])) {
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";
 }
+require("../lib/footer.inc.php");
+?>

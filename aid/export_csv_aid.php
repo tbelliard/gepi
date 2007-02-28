@@ -1,48 +1,25 @@
 <?php
-
 /*
-
  * Last modification  : 09/03/2005
-
  *
-
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-
  *
-
  * This file is part of GEPI.
-
  *
-
  * GEPI is free software; you can redistribute it and/or modify
-
  * it under the terms of the GNU General Public License as published by
-
  * the Free Software Foundation; either version 2 of the License, or
-
  * (at your option) any later version.
-
  *
-
  * GEPI is distributed in the hope that it will be useful,
-
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-
  * GNU General Public License for more details.
-
  *
-
  * You should have received a copy of the GNU General Public License
-
  * along with GEPI; if not, write to the Free Software
-
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
  */
-
-
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -51,58 +28,32 @@ extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 
 // Resume session
-
 $resultat_session = resumeSession();
-
 if ($resultat_session == 'c') {
-
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-
 die();
-
 } else if ($resultat_session == '0') {
-
     header("Location: ../logout.php?auto=1");
-
 die();
-
 };
 
-
-
 if (!checkAccess()) {
-
     header("Location: ../logout.php?auto=1");
-
 die();
-
 }
 
-
-
 $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-
 $nom_generique_aid = @mysql_result($call_data, 0, "nom");
 
-
-
-
-
 //**************** EN-TETE *****************
-
 $titre_page = "Gestion des ".$nom_generique_aid." | Outil d'importation";
-
 require_once("../lib/header.inc");
-
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold>|<a href=\"index2.php?indice_aid=$indice_aid\">Retour</a>|";
+echo "<p class=bold><a href=\"index2.php?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 
-if (isset($is_posted) and ($is_posted=='avec_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=avec_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a>|";}
-
-if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=sans_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a>|";}
-
-
+if (isset($is_posted) and ($is_posted=='avec_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=avec_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a> |";}
+if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=sans_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a> |";}
 
 echo "</p>";
 
@@ -169,234 +120,120 @@ if (!isset($is_posted)) {
             echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Non' />";
 
             echo "</FORM>";
-
         }
-
-
-
     }
-
 }
-
-
 
 if (isset($is_posted) and ($is_posted == 'debut')) {
-
     if (isset($confirm) and ($confirm == 'Oui')) {
-
         $del = mysql_query("DELETE FROM aid WHERE indice_aid='$indice_aid'");
-
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
-
         $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
-
         $del = mysql_query("DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
-
         echo "<p>Les données concernant les $nom_generique_aid ont été définitivement supprimées !</p>";
-
     }
-
     echo "<p>Choisissez une des deux options suivantes :</p>";
-
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
-
     echo "<p>--&gt; Vous avez <b>vous-même</b> défini un identifiant unique pour chaque $nom_generique_aid.";
-
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
-
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_1' /> ";
-
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
-
     echo "</FORM>";
-
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
-
     echo "<p>--&gt; Vous voulez laisser <b>GEPI</b> définir un identifiant unique pour chaque $nom_generique_aid .";
-
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
-
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_1' /> ";
-
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
-
     echo "</FORM>";
-
 }
 
-
-
 //*************************************************************************************************
-
 // Début de la procédure dans laquelle on laisse GEPI définir un identifiant unique pour chaque AID
-
 //*************************************************************************************************
-
-
 
 if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
-
     echo "<table border=0>";
-
     //    cas où on importe un fichier ELEVES-AID
-
     echo "<tr><td><p>Importer un fichier <b>\"ELEVES-$nom_generique_aid\"</b></p></td>";
-
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
-
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_2' /> ";
-
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
-
     echo "<INPUT TYPE=HIDDEN name=type_import value = 1 /> ";
-
     echo "<INPUT TYPE=SUBMIT value = Valider />";
-
     echo "</FORM></td></tr>";
-
     //    cas où on importe un fichier prof-AID
-
     echo "<tr><td><p>Importer un fichier <b>\"PROF-$nom_generique_aid\"</b></p></td>";
-
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
-
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_2' /> ";
-
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
-
     echo "<INPUT TYPE=HIDDEN name=type_import value=2 /> ";
-
     echo "<INPUT TYPE=SUBMIT value=Valider />";
-
     echo "</FORM></td></tr>";
-
     echo "</table>";
-
 }
-
-
-
 
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
-
     ?>
-
     <form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
-
     <?php $csvfile=""; ?>
-
     <p>Fichier CSV à Importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
-
     <INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
-
     <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-
     <INPUT TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
-
     <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
-
     <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
-
     <INPUT TYPE=SUBMIT value = Valider /><br />
-
     </FORM>
-
     <?php
-
     echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
-
     if ($type_import == 1) {
-
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
-
         echo "--&gt; <B>IDENTIFIANT</B> : l'identifiant de l'élève<br />";
-
         echo "--&gt; <B>Nom complet de l'activité</B><br /></p>";
-
     } else if ($type_import == 2) {
-
         echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
-
         echo "--&gt; <B>IDENTIFIANT</B> : l'identifiant du professeur<br />";
-
         echo "--&gt; <B>Nom complet de l'activité</B><br /></p>";
-
     }
-
 }
 
-
-
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
-
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
-    //if($csvfile != "none") {
+   //if($csvfile != "none") {
     if(isset($csvfile)) {
-
         //$fp = fopen($csvfile, "r");
         $fp = fopen($csvfile['tmp_name'], "r");
-
         if(!$fp) {
-
             echo "Impossible d'ouvrir le fichier CSV (".$csvfile['name'].")";
-
         } else {
-
             $erreur = 'no';
-
             //    Dans le cas où on importe un fichier PROF-AID ou ELEVE-AID, on vérifie le login
-
             $row = 0;
-
             while(!feof($fp)) {
-
                 if ($en_tete == 'yes') {
-
                     $data = fgetcsv ($fp, $long_max, ";");
-
                     $en_tete = 'no';
-
                     $en_tete2 = 'yes';
-
                 }
-
                 $data = fgetcsv ($fp, $long_max, ";");
-
                 $num = count ($data);
-
                 if ($num == 2) {
-
                     $row++;
-
                     //login
-
                     if ($type_import == 1) {
-
                         $call_login = mysql_query("SELECT login FROM eleves WHERE login='$data[0]'");
-
                     } else {
-
                         $call_login = mysql_query("SELECT login FROM utilisateurs WHERE login='$data[0]'");
-
                     }
-
                     $test = mysql_num_rows($call_login);
-
                     if ($test == 0) {
-
                         $erreur = 'yes';
-
                         echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : $data[0] ne correspond à aucun identifiant GEPI.</font></p>";
-
                     }
-
                 }
-
             }
-
             fclose($fp);
-
             //
 
             // On stocke les info du fichier dans une table
@@ -1456,9 +1293,5 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 //*************************************************************************************************
 
 
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-
-</html>

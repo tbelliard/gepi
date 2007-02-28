@@ -87,81 +87,43 @@ require_once("../lib/header.inc");
 
 ?>
 
-<p class='bold'>|<a href='../accueil.php'>Accueil</a>|</p>
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
 
 <center>
-
 <p>
-
 Vous pouvez choisir ci-dessous différents moyens de visualisation :
-
 </p>
-
-
 
 <!--table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5 -->
 <table width="700" class="bordercolor">
-
 <tr>
-
     <td width=200><a href="eleve_classe.php">Elève par rapport à la classe</a></td>
-
     <td>Permet de comparer les résultats de l'élève vis à vis des résultats moyens de la classe, matière par matière, période par période.</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="eleve_eleve.php">Elève par rapport à un autre élève</a></td>
-
     <td>Permet de comparer les résultats de l'élève vis à vis des résultats d'un autre élève (quelconque), matière par matière, période par période (permet également de comparer les résultats de l'année passée pour un redoublant).</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="evol_eleve.php">Evolution de l'élève sur l'année</a></td>
-
     <td>Permet de visualiser l'évolution des résultats d'un élève sur l'année, matière par matière.</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="evol_eleve_classe.php">Evolution de l'élève et classe sur l'année</a></td>
-
     <td>Permet de visualiser l'évolution des résultats d'un élève vis à vis de l'évolution de la classe, matière par matière.</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="stats_classe.php">Evolution des moyennes de classes</a></td>
-
     <td>Permet d'obtenir les différentes moyennes de la classe (maxi, mini, moyenne, etc.) matière par matière, avec évolution sur l'année.</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="classe_classe.php">Classe par rapport à autre classe</a></td>
-
     <td>Permet de comparer les résultats d'une classe vis à vis d'une autre classe, matière par matière, pérode par période.</td>
-
 </tr>
-
 <tr>
-
     <td width=200><a href="affiche_eleve.php">Elève par rapport à un élève ou une moyenne</a></td>
-
     <td>Graphique en courbe: Permet de comparer les résultats d'un élève, par rapport aux moyennes min/max/classe et par rapport à un autre élève, matière par matière, pérode par période.<br />Alternativement, ce choix permet d'obtenir les courbes des 3 trimestres.</td>
-
 </tr>
-
 </table>
-
 </center>
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");?>

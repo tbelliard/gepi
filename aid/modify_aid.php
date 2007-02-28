@@ -85,7 +85,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold>|<a href="index2.php?indice_aid=<?php echo $indice_aid; ?>">Retour</a>|</p>
+<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
@@ -191,6 +191,5 @@ if ($flag == "eleve") { ?>
         echo "<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
     }
 }
+require ("../lib/footer.inc.php");
 ?>
-</body>
-</html>

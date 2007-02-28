@@ -452,7 +452,7 @@ if (!isset($id_classe) and (!isset($id_groupe))) {
         $nombreligne = mysql_num_rows($calldata);
 //        echo "<b><a href='../accueil.php'>Accueil</a> | Total : ".$nombreligne." classes</b>\n";
 // rajout christian
-	?><b><a href='../accueil.php'>Accueil</a> | <?php if(empty($format)) { ?><a href='visu_releve_notes.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='visu_releve_notes.php?format='>Impression au format HTML</a><?php } ?> | Total : <?php echo $nombreligne; ?> classes</b><?php
+	?><b><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <?php if(empty($format)) { ?><a href='visu_releve_notes.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='visu_releve_notes.php?format='>Impression au format HTML</a><?php } ?> | Total : <?php echo $nombreligne; ?> classes</b><?php
 	if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) AND empty($format)) 
 	{
 // fin rajout christian
@@ -904,7 +904,5 @@ if (!isset($id_classe) and (!isset($id_groupe))) {
     }
 
 }
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

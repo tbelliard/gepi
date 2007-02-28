@@ -57,7 +57,7 @@ require_once("../lib/header.inc");
 
 
 echo "<p class=bold>";
-echo "|<a href=\"index.php\">Retour</a>";
+echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
 echo "<br />|<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
 echo "</p><p class=\"medium\">";
@@ -88,5 +88,5 @@ $i++;
 }
 
 ?>
-</table></body>
-</html>
+</table>
+<?php require("../lib/footer.inc.php");

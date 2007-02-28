@@ -126,8 +126,7 @@ $titre_page = "Gestion des classes | Modifier les paramètres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 ?>
-<p class=bold>
-|<a href="index.php">Retour</a>|
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <p><b>Remarque : </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
 
@@ -276,6 +275,4 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 </table>
 <center><input type=submit value="Enregistrer" style="margin-top: 30px; margin-bottom: 100px;" /></center>
 </form>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

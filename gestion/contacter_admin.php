@@ -92,6 +92,5 @@ Ou numéro de votre casier en salle des professeurs pour la réponse :
 <?php
 break;
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

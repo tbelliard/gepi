@@ -56,14 +56,14 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold>|<a href='../accueil.php'>Accueil</a>|
+<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
 <?php
 if ($current_group) {
 
     $matiere_nom = $current_group["matiere"]["nom_complet"];
     $classes = $current_group["classlist_string"];
 
-    echo "<a href='index.php'>Mes enseignements</a>|</p>\n";
+    echo " | <a href='index.php'>Mes enseignements</a></p>\n";
     //echo "<p class='grand'> Groupe : " . $current_group["description"] . " ($classes) | Matière : $matiere_nom</p>";
     echo "<p class='grand'> Groupe : " . htmlentities($current_group["description"]) . " ($classes) | Matière : ".htmlentities($matiere_nom)."</p>\n";
     echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
@@ -154,6 +154,5 @@ if ($current_group) {
         }
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

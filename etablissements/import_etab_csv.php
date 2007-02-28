@@ -49,7 +49,7 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
-echo "<p class='bold'>|<a href='index.php'>Retour</a>|</p>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (!isset($is_posted)) {
     echo "<p><span class = 'grand'>Première phase d'importation des établissements </span></p>";
@@ -323,6 +323,5 @@ if (!isset($is_posted)) {
     unset($_SESSION['table_etab']);
 
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

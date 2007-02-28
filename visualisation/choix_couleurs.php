@@ -109,7 +109,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 }
 */
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 ?>
 
@@ -314,7 +314,5 @@ else{
 	echo "VALIDé";
 }
 */
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

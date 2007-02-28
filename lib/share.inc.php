@@ -414,7 +414,10 @@ function genDateSelector($prefix, $day, $month, $year, $option)
         $m = strftime("%b", mktime(0, 0, 0, $i, 1, $year));
 
         //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m\n";
-        print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m</option>\n";
+        
+        // Si problème avec l'encodage, essayer la ligne suivante
+        //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">".iconv('UTF-8','ISO-8859-1', $m)."</option>\n";
+        echo "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m</option>\n";
     }
 
     echo "</SELECT>\n";

@@ -115,9 +115,7 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
 }
 ?>
 <form enctype="multipart/form-data" action="saisie_avis1.php" method=post>
-<p class=bold>
-|<a href="saisie_avis.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')">Mes classes</a>|
-</p>
+<p class=bold><a href="saisie_avis.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a></p>
 
 <?php
 if ($id_classe) {
@@ -213,5 +211,4 @@ if ($id_classe) {
 
 ?>
 </form>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

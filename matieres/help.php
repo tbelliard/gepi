@@ -87,8 +87,4 @@ require_once("../lib/header.inc");
 
 <p class=bold>L'aide en ligne n'est pas disponible !</p>
 
-
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");?>

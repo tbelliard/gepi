@@ -64,7 +64,7 @@ if ($_SESSION['statut'] != "secours") {
 $titre_page = "Saisie des moyennes et appréciations | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class='bold'><a href='index.php'>|Retour accueil saisie</a>|</p>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a></p>";
 
 echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
 echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"];
@@ -184,6 +184,5 @@ if ($modif == 'yes') {
 echo "</p>";
 echo "<p><a href='saisie_notes.php?id_groupe=$id_groupe&order_by=nom'>Accéder à la page de saisie des moyennes pour vérification</a>";
 echo "<br /><a href='saisie_appreciations.php?id_groupe=$id_groupe&order_by=nom'>Accéder à la page de saisie des appréciations pour vérification</a></p>";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

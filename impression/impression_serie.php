@@ -54,10 +54,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";
-echo "|<a href='../accueil.php'>Retour</a>";
-echo "|<a href='./impression.php'>Impression rapide à l'unité</a>";
-echo "|<a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
-echo " |\n";
+echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
+echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
 
@@ -158,6 +157,5 @@ echo "   <fieldset>\n
  </div>";
 }
 // Fin de sélection multiple avec choix de la période.
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

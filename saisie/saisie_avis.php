@@ -53,7 +53,7 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
    die("Droits insuffisants pour effectuer cette opération");
 }
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|</p>";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
     //$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 
@@ -109,8 +109,5 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) 
         }
     }
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

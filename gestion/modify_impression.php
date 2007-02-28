@@ -57,50 +57,26 @@ if (isset($_POST['impression'])) {
 
 }
 
-
-
-
-
 //**************** EN-TETE *****************
-
 $titre_page = "Outil de gestion | Impression des paramètres";
-
 require_once("../lib/header.inc");
-
 //**************** FIN EN-TETE *****************
-
 ?>
-
 <form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
-
-<p class=bold>|<a href="index.php">Retour</a>|<input type=submit value=Enregistrer></p>
-
-
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type=submit value=Enregistrer></p>
 
 <?php
 
 if (!loadSettings()) {
-
     die("Erreur chargement settings");
-
 }
 
 $impression = getSettingValue("Impression");
-
 echo "<h3 class='gepi'>Fiche d'information au format html :</H3>";
-
 echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, ainsi que le texte ci-dessous. Attention, ce texte est au format html.</p>";
-
 echo "<div class='small'><textarea name=impression rows=40 cols=100 wrap='virtual'>";
-
 echo "$impression";
-
 echo "</textarea></div>";
-
 ?>
-
 </form>
-
-</body>
-
-</html>
+<?php require("../lib/footer.inc.php");?>

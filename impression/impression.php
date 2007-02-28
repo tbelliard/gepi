@@ -47,10 +47,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";
-echo "|<a href='../accueil.php'>Retour</a>";
-echo "|<a href='./impression_serie.php'>Impressions multiples</a>";
-echo "|<a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
-echo " |\n";
+echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo " | <a href='./impression_serie.php'>Impressions multiples</a>";
+echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
 
@@ -180,11 +179,10 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			echo "</body></html>\n";
+			require("../lib/footer.inc.php");
 			die();
 		}
 	}
 //}
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

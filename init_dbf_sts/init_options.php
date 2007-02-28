@@ -47,7 +47,7 @@ $titre_page = "Outil d'initialisation de l'année | Initialisation  des options p
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
@@ -165,7 +165,5 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 //echo "<center><p><a href='clean_tables.php'>Suppression des données inutiles</a></p></center>\n";
 echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante d'import des professeurs principaux.</p>\n";
 echo "<center><p><a href='init_pp.php'>Import des professeurs principaux</a></p></center>\n";
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

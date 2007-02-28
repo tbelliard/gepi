@@ -120,8 +120,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-echo "<div class='norme'><p class=bold>|<a href='index.php'>Retour</a>\n";
-echo "|\n";
+echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 if(!isset($prof)){
 	echo "</div>\n";
@@ -162,7 +161,7 @@ if(!isset($prof)){
 
 }
 else{
-	echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres professeurs</a> |";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres professeurs</a>";
 	echo "</div>\n";
 
 	if(!isset($page)){
@@ -359,6 +358,5 @@ else{
 
 echo "</form>\n";
 echo "<br />\n";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

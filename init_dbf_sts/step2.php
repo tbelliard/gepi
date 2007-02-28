@@ -371,8 +371,5 @@ onclick="javascript:MetVal('pour')"></td>
     echo "<center><input type='submit' value='Enregistrer les données'></center>";
     echo "</form>";
 }
-
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

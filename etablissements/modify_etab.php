@@ -81,9 +81,7 @@ $titre_page = "Gestion des établissements | Ajouter, modifier un établissement";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 ?>
-<p class=bold>
-|<a href="index.php">Retour</a>
-|<a href="help.php">Aide</a>|
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
 <?php
@@ -143,6 +141,4 @@ foreach ($type_etablissement as $type => $nom_etab) {
 <input type='hidden' name='is_posted' value='1' />
 <input type='submit' value='Enregistrer'></input>
 </form>
-
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>

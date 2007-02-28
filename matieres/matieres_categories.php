@@ -131,24 +131,15 @@ if (isset($_POST['action'])) {
     }
 }
 
-
-
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des catégories de matières";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-?>
-
-
-
-<?php
 
 if (isset($_GET['action'])) {
     // On a une action : soit on ajoute soit on édite soit on delete
     ?>
-    <p class=bold>
-    |<a href="matieres_categories.php">Retour</a>
-    </p>
+    <p class=bold><a href="matieres_categories.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
     <?php
     if ($_GET['action'] == "add") {
         // On ajoute une catégorie
@@ -203,10 +194,7 @@ if (isset($_GET['action'])) {
 } else {
     // Pas d'action. On affiche la liste des rubriques
     ?>
-    <p class=bold>
-    |<a href="index.php">Retour</a>
-    |<a href="matieres_categories.php?action=add">Ajouter une catégorie</a>
-    </p>
+    <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
     <p>Remarque : la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (Autres, Hors catégories, etc.), mais laissez toujours un nom générique.</p>
 
     <table width = '100%' border= '1' cellpadding = '5'>
@@ -238,7 +226,5 @@ if (isset($_GET['action'])) {
     }
     echo "</table>";
 }
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

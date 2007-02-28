@@ -60,7 +60,7 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
-echo "<p class='bold'>|<a href='saisie_avis.php'>Retour</a>|</p>";
+echo "<p class='bold'><a href='saisie_avis.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
@@ -331,6 +331,5 @@ if (isset($is_posted ) and ($is_posted==2)) {
     echo "</p>";
     echo "<br /><a href='saisie_avis1.php?id_classe=$id_classe'>Accéder à la page de saisie des appréciations pour vérification</a></p>";
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

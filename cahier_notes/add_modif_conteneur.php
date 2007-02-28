@@ -179,10 +179,6 @@ if (isset($_POST['ok'])) {
     $reg = mysql_query("UPDATE cn_conteneurs SET display_bulletin = '$display_bulletin' WHERE id = '$id_conteneur'");
     if (!$reg)  $reg_ok = "no";
 
-
-
-
-
     //==========================================================
     // MODIF: boireaus
     //
@@ -222,9 +218,6 @@ if (isset($_POST['ok'])) {
         recherche_enfant($id_racine);
     }
     //==========================================================
-
-
-
 
     if ($reg_ok=='yes') {
         if ($new=='yes') $msg = "Nouvel enregistrement réussi.";
@@ -311,7 +304,6 @@ else{
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-
 echo "<div id='coefinfo' style='display:none; float:right; width:200px; border: 1px solid black; background-color: white;'>\n";
 echo "Si le coefficient est 0, la moyenne de <b>$nom_court</b> n'intervient pas dans le calcul de la moyenne du carnet de note.\n";
 echo "</div>\n";
@@ -324,13 +316,10 @@ echo "\$parent=$parent<br />\n";
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_conteneur.php\" method='post'>\n";
 if ($mode_navig == 'retour_saisie') {
-    echo "<div class='norme'><p class=bold>|<a href='./saisie_notes.php?id_conteneur=$id_retour'>Retour</a>|";
+    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 } else {
-    echo "<div class='norme'><p class=bold>|<a href='index.php?id_racine=$id_racine'>Retour</a>|";
+    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
-
-
-
 
 
 function getPref($login,$item,$default){
@@ -355,7 +344,7 @@ $interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_
 
 
 // https://127.0.0.1/steph/gepi-cvs/cahier_notes/add_modif_conteneur.php?id_racine=64&mode_navig=retour_index
-echo "<a href='add_modif_conteneur.php?id_racine=$id_racine";
+echo " | <a href='add_modif_conteneur.php?id_racine=$id_racine";
 if(isset($id_conteneur)){
 	echo "&amp;id_conteneur=$id_conteneur";
 }
@@ -372,11 +361,6 @@ else{
 	echo "&amp;interface_simplifiee=y";
 	echo "'>Interface simplifiée</a>\n";
 }
-
-echo "|\n";
-
-
-
 
 echo "</p>\n";
 echo "</div>\n";
@@ -903,7 +887,5 @@ echo "<input type=hidden name=id_retour value='$id_retour' />\n";
 
 echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
 echo "</form>\n";
-
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>
