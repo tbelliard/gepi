@@ -2416,6 +2416,44 @@ if (isset ($_POST['maj'])) {
         $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
     }
 
+		$result .= "&nbsp;->Changement du type du champ 'coef' de la table cn_conteneurs<br />";
+		$test1 = mysql_fetch_object(mysql_query("SHOW COLUMNS FROM cn_conteneurs LIKE 'coef'"));
+		if ($test1->Type == "decimal(2,1)") {
+			$query = mysql_query("ALTER TABLE cn_conteneurs CHANGE coef coef DECIMAL(3,1) NOT NULL default '1.0'");
+			if ($query) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		} else {
+	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
+		}
+
+		$result .= "&nbsp;->Changement du type du champ 'ponderation' de la table cn_conteneurs<br />";
+		$test1 = mysql_fetch_object(mysql_query("SHOW COLUMNS FROM cn_conteneurs LIKE 'ponderation'"));
+		if ($test1->Type == "decimal(2,1)") {
+			$query = mysql_query("ALTER TABLE cn_conteneurs CHANGE ponderation ponderation DECIMAL(3,1) NOT NULL default '0.0'");
+			if ($query) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		} else {
+	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
+		}
+
+		$result .= "&nbsp;->Changement du type du champ 'coef' de la table cn_devoirs<br />";
+		$test1 = mysql_fetch_object(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'coef'"));
+		if ($test1->Type == "decimal(2,1)") {
+			$query = mysql_query("ALTER TABLE cn_devoirs CHANGE coef coef decimal(3,1) NOT NULL default '0.0'");
+			if ($query) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		} else {
+	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
+		}
     }
     
     if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
@@ -2450,8 +2488,7 @@ if (isset ($_POST['maj'])) {
 	        }
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
-	    }
-	    
+	    }	    
 	    
 	    
     }
