@@ -104,7 +104,7 @@ if ($_SESSION['statut'] == "administrateur") {
     echo "Nombre de personnes actuellement connectées : $nb_connect ";
     echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n";
 
-// christian demande d'enregistrement
+// christian : demande d'enregistrement
 if ($force_ref) {
     ?><div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #CFD7FF;  padding: 2px; margin-left: 60px; margin-right: 60px; margin-top: 2px; margin-bottom: 2px;  text-align: center; color: #1C1A8F; font-weight: bold;">Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.<br /><a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=explication')" title="Pourquoi est-ce utile ?">Pourquoi est-ce utile ?</a> / <a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=1')" title="Référencer votre établissement">Référencer votre établissement</a>.</div><?php
 }
@@ -351,6 +351,42 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 }
+
+//
+// Outils destinés essentiellement aux parents
+// et aux élèves
+//
+
+// Définition des conditions
+$condition = true;
+if ($condition) {
+    $chemin[] = "/cahier_texte/consultation.php";
+    $titre[] = "Cahier de texte";
+    if ($_SESSION['statut'] == "responsable") {
+    	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour le ou les élève(s) dont vous êtes responsable légal.";
+    } else {
+    	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.";
+    }
+}
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+    echo "<table class='menu'>\n";
+    echo "<tr>\n";
+    echo "<th colspan='2'>Consultation</th>\n";
+    echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+
 //
 // Outils de relevé de note
 //

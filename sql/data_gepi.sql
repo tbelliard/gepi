@@ -407,3 +407,5 @@ INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F'
 INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');
 INSERT INTO droits VALUES ('/utilisateurs/edit_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut responsable', '');
 INSERT INTO droits VALUES ('/utilisateurs/edit_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut élève', '');
+INSERT INTO droits VALUES ('/cahier_texte/consultation.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');
+INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');

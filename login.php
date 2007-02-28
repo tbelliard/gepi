@@ -189,14 +189,13 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 </head>
 <body onload="document.getElementById('login').focus()">
 <div>
-<!--<h1 class='gepi'>Gestion et visualisation graphique des résultats scolaires</h1>-->
-
-<div class="center">
 <?php
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")=='y') {
-   echo "<a href=\"./public/index.php\">Consulter les cahiers de texte</a> (tout public)";
+   echo "<div id='lien_cahier_texte'><a href=\"./public/index.php\"><img src='./images/icons/cahier_texte.png' alt='Cahier de texte' class='link'> Consulter les cahiers de texte</a> (tout public)</div>";
 }
+echo "<div class='center'>";
+
 if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br>";
 
 ?>
@@ -233,7 +232,7 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 </form>
 </div>
 <div class="center" style="margin-bottom: 32px;">
-<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')">Informations vie privée</a></p>
+<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link'> Informations vie privée</a></p>
 <p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
 </div>
 <div id="login_footer">

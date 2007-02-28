@@ -186,6 +186,12 @@ div#login_footer {
     font-size: x-small;
 }
 
+div#lien_cahier_texte {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 40px;
+}
 /*
     Début - header
 */
@@ -501,6 +507,11 @@ a.info:hover span {
 }
 
 img.back_link {
+    position: relative;
+    bottom: -3px;
+}
+
+img.link {
     position: relative;
     bottom: -3px;
 }
