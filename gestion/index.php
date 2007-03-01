@@ -50,14 +50,18 @@ require_once("../lib/header.inc");
 <center>
 <table class='menu'>
 <tr>
-	<th colspan='2'>Général</th>
+	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link'/> - Général</th>
 </tr>
 <tr>
     <td width=200><a href="param_gen.php">Configuration générale</a></td>
     <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
     </td>
 </tr>
-
+<tr>
+    <td width=200><a href="droits_acces.php">Droits d'accès</a></td>
+    <td>Modifier les droits d'accès à certaines fonctionnalités selon le statut de l'utilisateur.
+    </td>
+</tr>
 <tr>
     <td width=200><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
     <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
@@ -97,7 +101,7 @@ require_once("../lib/header.inc");
 
 <table class='menu'>
 <tr>
-<th colspan='2'>Outils d'initialisation</th>
+<th colspan='2'><img src='../images/icons/package.png' alt='Initialisation' class='link'/> - Outils d'initialisation</th>
 </tr>
 <?php
 $use_sso = getSettingValue('use_sso');
