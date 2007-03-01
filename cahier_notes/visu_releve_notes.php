@@ -437,7 +437,7 @@ function active(num) {
 <?php
 
 // Première étape : on choisit la classe ou le groupe
-if (!isset($id_classe) and (!isset($id_groupe))) {
+if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 
     if ((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) {
 
@@ -689,10 +689,16 @@ if (!isset($id_classe) and (!isset($id_groupe))) {
     // On teste si le professeur a le droit d'être ici
 
     if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
-        echo "Vous ne pouvez pas accéder à cette page.</body></html>";
+        echo "Vous ne pouvez pas accéder à cette page.";
+        require("../lib/footer.inc.php");
         die();
-    } else if ((($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") != "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes"))) {
-        echo "Vous ne pouvez pas accéder à cette page.</body></html>";
+    } else if (
+    	(($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") != "yes"))
+    	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes")) 
+    	 OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes") 
+    	 OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
+        echo "Vous ne pouvez pas accéder à cette page.";
+        require("../lib/footer.inc.php");
         die();
     } else if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") == "yes")) {
         $test_classe = sql_query1("SELECT distinct c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc
@@ -733,87 +739,126 @@ if (!isset($id_classe) and (!isset($id_groupe))) {
         }
     }
 
-    if (!$current_group) {
-        $classe_eleve = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
-        $nom_classe = mysql_result($classe_eleve, 0, "classe");
+	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
+	    if (!$current_group) {
+	        $classe_eleve = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
+	        $nom_classe = mysql_result($classe_eleve, 0, "classe");
+	
+	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir une autre classe</a></p>";
+	        echo "<p class='grand'>Classe de $nom_classe</p>\n";
+	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+	        echo "<table><tr>\n";
+	        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
+	        echo "<td>Les relevés de notes de tous les élèves de la classe</td></tr>\n";
+	    } else {
+	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir un autre groupe</a></p>\n";
+	        echo "<p class='grand'>Groupe : " . $current_group["description"] . " (" . $current_group["classlist_string"] .")</p>\n";
+	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+	        echo "<table><tr>\n";
+	        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
+	        echo "<td>Les relevés de notes de tous les élèves du groupe</td></tr>\n";
+	        //=========================
+	        // AJOUT: boireaus
+	        echo "<tr>\n";
+	        //=========================
+	    }
 
-        echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='visu_releve_notes.php'>Choisir une autre classe</a> |</p>";
-        echo "<p class='grand'>Classe de $nom_classe</p>\n";
-        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-        echo "<table><tr>\n";
-        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
-        echo "<td>Les relevés de notes de tous les élèves de la classe</td></tr>\n";
-    } else {
-        echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='visu_releve_notes.php'>Choisir un autre groupe</a> |</p>\n";
-        echo "<p class='grand'>Groupe : " . $current_group["description"] . " (" . $current_group["classlist_string"] .")</p>\n";
-        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-        echo "<table><tr>\n";
-        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
-        echo "<td>Les relevés de notes de tous les élèves du groupe</td></tr>\n";
-        //=========================
-        // AJOUT: boireaus
-        echo "<tr>\n";
-        //=========================
-    }
-
-    $indice = 1;
-    if (!$current_group) {
-        $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
-        $nb_lignes = mysql_num_rows($call_suivi);
-        if ($nb_lignes > 1) {
-            echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"3\" /></td>\n";
-            echo "<td>Uniquement les relevés de notes des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :";
-            echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
-            $i=0;
-            while ($i < $nb_lignes) {
-                $login_pr = mysql_result($call_suivi,$i,"professeur");
-                $call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login='$login_pr'");
-                $nom_prof = mysql_result($call_prof,0,"nom");
-                $prenom_prof = mysql_result($call_prof,0,"prenom");
-                echo "<option value=".$login_pr.">".$nom_prof." ".$prenom_prof."</option>\n";
-                $i++;
-            }
-            echo "</select></td></tr>\n";
-            $indice = 2;
-        }
-        //=========================
-        // AJOUT: boireaus
-        echo "<tr>\n";
-        //=========================
-    }
+	    $indice = 1;
+	    if (!$current_group) {
+	        $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
+	        $nb_lignes = mysql_num_rows($call_suivi);
+	        if ($nb_lignes > 1) {
+	            echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"3\" /></td>\n";
+	            echo "<td>Uniquement les relevés de notes des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :";
+	            echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
+	            $i=0;
+	            while ($i < $nb_lignes) {
+	                $login_pr = mysql_result($call_suivi,$i,"professeur");
+	                $call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login='$login_pr'");
+	                $nom_prof = mysql_result($call_prof,0,"nom");
+	                $prenom_prof = mysql_result($call_prof,0,"prenom");
+	                echo "<option value=".$login_pr.">".$nom_prof." ".$prenom_prof."</option>\n";
+	                $i++;
+	            }
+	            echo "</select></td></tr>\n";
+	            $indice = 2;
+	        }
+	        //=========================
+	        // AJOUT: boireaus
+	        echo "<tr>\n";
+	        //=========================
+	    }
 
 
-    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>";
-    echo "<td>Uniquement le relevé de notes de l'élève sélectionné ci-contre : ";
-    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">";
+	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>";
+	    echo "<td>Uniquement le relevé de notes de l'élève sélectionné ci-contre : ";
+	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">";
+	
+	    if (!$current_group) {
+	        $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
+	        $nombreligne = mysql_num_rows($call_eleve);
+	        $i = "0" ;
+	        while ($i < $nombreligne) {
+	            $eleve = mysql_result($call_eleve, $i, 'login');
+	            $nom_el = mysql_result($call_eleve, $i, 'nom');
+	            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
+	            echo "<option value=$eleve>$nom_el  $prenom_el </option>";
+	            $i++;
+	        }
+	    } else {
+	        foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
+	            $flag = true;
+	            $p=1;
+	            while ($flag) {
+	                if (in_array($eleve_login, $current_group["eleves"][$p]["list"])) {
+	                    echo "<option value=" . $eleve_login . ">" . $current_group["eleves"][$p]["users"][$eleve_login]["nom"] . " " . $current_group["eleves"][$p]["users"][$eleve_login]["prenom"] . "</option>";
+	                    $flag = false;
+	                } else {
+	                    $p++;
+	                }
+	            }
+	        }
+	
+	    }
+	    echo "</select></td></tr></table>\n";
+	} else {
+		// Sélection de l'élève dans le cas d'un responsable d'élève ou d'un élève
+		if ($_SESSION['statut'] == "responsable") {
+			$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+					"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "')");
+		} elseif ($_SESSION['statut'] == "eleve") {
+			$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
+					"FROM eleves e WHERE (" .
+					"e.login = '" . $_SESSION['login'] . "')");
+		}
+		if (mysql_num_rows($quels_eleves) == 0) {
+	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
+			echo "<p>Erreur : vous ne semblez être associé à aucun élève. Veuillez contacter l'administrateur.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		} elseif (mysql_num_rows($quels_eleves) == 1) {
+	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
+			$current_eleve = mysql_fetch_object($quels_eleves);
+			echo "<br/><br/>";
+			echo "<p class='bold'>Elève : ".$current_eleve->prenom . " " . $current_eleve->nom."</p>\n";
+	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+			echo "<input type='hidden' name='login_eleve' value='".$current_eleve->login . "'/>";
+			echo "<input type='hidden' name='choix_edit' value='2'/>";
+		} else {
+	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+			echo "<p clas='bold'>Elève : ";
+			echo "<input type='hidden' name='choix_edit' value='2'/>";
+	    	echo "<select size=\"1\" name=\"login_eleve\">";
+	    	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+	                    echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
+	    	}	    	
+	    	echo "</select>";
+		}
+	}
 
-    if (!$current_group) {
-        $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
-        $nombreligne = mysql_num_rows($call_eleve);
-        $i = "0" ;
-        while ($i < $nombreligne) {
-            $eleve = mysql_result($call_eleve, $i, 'login');
-            $nom_el = mysql_result($call_eleve, $i, 'nom');
-            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
-            echo "<option value=$eleve>$nom_el  $prenom_el </option>";
-            $i++;
-        }
-    } else {
-        foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
-            $flag = true;
-            $p=1;
-            while ($flag) {
-                if (in_array($eleve_login, $current_group["eleves"][$p]["list"])) {
-                    echo "<option value=" . $eleve_login . ">" . $current_group["eleves"][$p]["users"][$eleve_login]["nom"] . " " . $current_group["eleves"][$p]["users"][$eleve_login]["prenom"] . "</option>";
-                    $flag = false;
-                } else {
-                    $p++;
-                }
-            }
-        }
-
-    }
-    echo "</select></td></tr></table>\n";
 
     echo "<p>Choisissez la période : </p><br />\n";
 
@@ -852,9 +897,92 @@ if (!isset($id_classe) and (!isset($id_groupe))) {
     echo "<br /><br /><center><input type='submit' value='Valider' /></center>\n";
     echo "</form>\n";
 
-
 } else {
 
+	// Si on arrive là, on va afficher des relevés. On fait tout un tas de vérifications de sécurité
+	// pour s'assurer que personne n'est là illégalement.
+    if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
+        echo "Vous ne pouvez pas accéder à cette page.";
+        require("../lib/footer.inc.php");
+        die();
+    } else if (
+    	(($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") != "yes"))
+    	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes")) 
+    	 OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes") 
+    	 OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
+        echo "Vous ne pouvez pas accéder à cette page.";
+        require("../lib/footer.inc.php");
+        die();
+    } else if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") == "yes")) {
+        $test_classe = sql_query1("SELECT distinct c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc
+        WHERE (
+        s.professeur='" . $_SESSION['login'] . "' AND
+        s.login = cc.login AND
+        cc.id_classe = c.id AND
+        c.id= '".$id_classe."'
+        )");
+        if ($test_classe == '-1') {
+            echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
+            die();
+        }
+
+    } else if (($_SESSION['statut'] == "professeur") AND (getSettingValue("GepiAccesReleveProf") == "yes")) {
+
+        // On commence par regarder si on est dans le cas de la sélection d'un groupe un d'une classe
+        if (!$current_group) {
+            // Dans le cas d'une classe, on vérifie que l'accès est autorisé
+            if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes") {
+                echo "Vous n'êtes pas autorisé à visualiser l'ensemble des élèves de cette classe ! Sélectionnez uniquement un groupe parmi ceux auxquels vous enseignez.</body></html>\n";
+                die();
+            } else {
+                // il a le droit de visualiser des classes. On vérifie s'il est bien professeur dans la classe demandée
+
+                $test_classe = sql_query1("SELECT DISTINCT jgc.id_classe FROM " .
+                        "j_groupes_professeurs jgp, j_groupes_classes jgc ".
+                        "WHERE (" .
+                        "jgc.id_classe = '". $id_classe . "' AND ".
+                        "jgp.login = '". $_SESSION['login'] . "' AND " .
+                        "jgc.id_groupe = jgp.id_groupe" .
+                        ")");
+                if ($test_classe == '-1') {
+                    echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.\n";
+                    require("../lib/footer.inc.php");
+                	die();
+                }
+            }
+        }
+    }
+
+	if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
+		if ($choix_edit != "2") {
+            echo "Vous n'êtes pas autorisé à utiliser ce mode de visualisation.\n";
+            require("../lib/footer.inc.php");
+        	die();
+		}
+		
+		if ($_SESSION['statut'] == "eleve") {
+			if ($login_eleve != $_SESSION['login']) {
+	            echo "Vous ne pouvez visualiser que vos relevés de notes.\n";
+	            require("../lib/footer.inc.php");
+	        	die();
+			}
+		}
+		
+		if ($_SESSION['statut'] == "responsable") {
+			$test = mysql_query("SELECT count(e.login) " .
+					"FROM eleves e, responsables2 re, resp_pers r " .
+					"WHERE (" .
+					"e.login = '" . $login_eleve . "' AND " .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "')");
+			if (mysql_result($test, 0) == 0) {
+	            echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
+	            require("../lib/footer.inc.php");
+	        	die();
+			}
+		}
+	}
 
     // Affichage du relevé de notes
 
