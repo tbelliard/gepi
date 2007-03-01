@@ -380,17 +380,30 @@ table#messagerie {
 
 table.menu {
     width: 70%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: none;
+    border-bottom: 1px solid lightgrey;
     margin: 10px;
+    padding-left: 0px;
+    background-image: url("./images/background/left-top-corner.jpg");
+    background-repeat: no-repeat;
+    /*background-position: 16% 1%;    */
+    background-position: -1px 0%;
+}
+
+table.menu tr {
 }
 
 table.menu td {
     border: 1px solid lightgrey;
+    border-bottom: none;
+    border-left: 1px solid lightgrey;
     padding-left: 10px;
 }
 
 table.menu td a {
-    width: 100%;
+    width: 90%;
     padding: 5px;
     display: block;
 }
@@ -401,15 +414,14 @@ table.menu td a:hover {
 }
 
 table.menu th {
+    border: none;
     text-align: left;
-    padding-left: 15%;
+    padding-left: 20px;
     padding-bottom: 3px;
     padding-top: 3px;
     font-size: 11pt;
     color: black;
-    background-image: url("./images/background/left-top-corner.jpg");
-    background-repeat: no-repeat;
-    background-position: 16% 1%;
+
 }
 table.col {
     border-collapse: collapse;
