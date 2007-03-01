@@ -1,0 +1,267 @@
+<?php
+/*
+ * Last modification  : 07/08/2006
+ *
+ * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+die();
+};
+// Check access
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+die();
+}
+
+$msg = '';
+
+
+if (isset($_POST['OK'])) {
+    if (isset($_POST['GepiRubConseilProf'])) {
+        $temp = 'yes';
+    } else {
+        $temp = 'no';
+    }
+    if (!saveSetting("GepiRubConseilProf", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiRubConseilProf !";
+    }
+    if (isset($_POST['GepiRubConseilScol'])) {
+        $temp = 'yes';
+    } else {
+        $temp = 'no';
+    }
+    if (!saveSetting("GepiRubConseilScol", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiRubConseilScol !";
+    }
+
+    if (isset($_POST['GepiProfImprBul'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiProfImprBul", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiProfImprBul !";
+    }
+
+    if (isset($_POST['GepiProfImprBulSettings'])) {
+        $temp = "yes";
+    } else {
+        $temp ="no";
+    }
+    if (!saveSetting("GepiProfImprBulSettings", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiProfImprBulSettings !";
+    }
+
+    if (isset($_POST['GepiAdminImprBulSettings'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAdminImprBulSettings", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAdminImprBulSettings !";
+    }
+
+    if (isset($_POST['GepiScolImprBulSettings'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiScolImprBulSettings", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiScolImprBulSettings !";
+    }
+
+    if (isset($_POST['GepiAccesReleveScol'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveScol", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveScol !";
+    }
+
+    if (isset($_POST['GepiAccesReleveCpe'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveCpe", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveCpe !";
+    }
+
+    if (isset($_POST['GepiAccesReleveProfP'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveProfP", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveProfP !";
+    }
+    if (isset($_POST['GepiAccesReleveProf'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveProf", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveProf !";
+    }
+    if (isset($_POST['GepiAccesReleveProfTousEleves'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveProfTousEleves", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveProf !";
+    }
+    if (isset($_POST['GepiAccesReleveEleve'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveEleve", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveEleve !";
+    }
+    
+    if (isset($_POST['GepiAccesCahierTexteEleve'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesCahierTexteEleve", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesCahierTexteEleve !";
+    }
+    
+    if (isset($_POST['GepiAccesReleveParent'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveParent", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveParent !";
+    }
+
+    if (isset($_POST['GepiAccesCahierTexteParent'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesCahierTexteParent", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesCahierTexteParent !";
+    }    
+}
+
+// Load settings
+if (!loadSettings()) {
+    die("Erreur chargement settings");
+}
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+
+// End standart header
+$titre_page = "Droits d'accès";
+require_once("../lib/header.inc");
+?>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<form action="droits_acces.php" method="post" name="form1" style="width: 100%;">
+<table class='menu' style='width: 90%; margin-left: auto; margin-right: auto;' cellpadding="10">
+	<tr>
+		<th colspan="2">
+		Paramétrage des droits d'accès
+		</th>
+	</tr>
+    <tr>
+        <td style="font-variant: small-caps;">
+        Le professeur
+        </td>
+       	<td>
+        <input type="checkbox" name="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves des classes dans lesquelles il enseigne<br />
+        <input type="checkbox" name="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)
+       	</td>
+    </tr>    
+    <tr>
+        <td style="font-variant: small-caps;">
+        Le <?php echo getSettingValue("gepi_prof_suivi"); ?>
+        </td>
+       	<td>
+       	<input type="checkbox" name="GepiRubConseilProf" value="yes" <?php if (getSettingValue("GepiRubConseilProf")=='yes') echo "checked"; ?> /> peut saisir les avis du conseil de classe pour sa classe<br/>
+       	<input type="checkbox" name="GepiProfImprBul" value="yes" <?php if (getSettingValue("GepiProfImprBul")=='yes') echo "checked"; ?> /> édite/imprime les bulletins périodiques des classes dont il a la charge.<br />
+        <span class='small'>(Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins)</span><br/>
+        <input type="checkbox" name="GepiProfImprBulSettings" value="yes" <?php if (getSettingValue("GepiProfImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins (lorsqu'il est autorisé à éditer/imprimer les bulletins)<br />
+        <input type="checkbox" name="GepiAccesReleveProfP" value="yes" <?php if (getSettingValue("GepiAccesReleveProfP")=='yes') echo "checked"; ?> /> a accès aux relevés des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?><br />
+       	</td>
+    </tr> 
+    <tr>
+        <td style="font-variant: small-caps;">
+        La scolarité
+        </td>
+       	<td>
+            <input type="checkbox" name="GepiRubConseilScol" value="yes" <?php if (getSettingValue("GepiRubConseilScol")=='yes') echo "checked"; ?> /> peut saisir les avis du conseil de classe<br/>
+            <input type="checkbox" name="GepiScolImprBulSettings" value="yes" <?php if (getSettingValue("GepiScolImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins<br />
+        	<input type="checkbox" name="GepiAccesReleveScol" value="yes" <?php if (getSettingValue("GepiAccesReleveScol")=='yes') echo "checked"; ?> /> a accès à tous les relevés de notes de toutes les classes
+       	</td>
+    </tr> 
+    <tr>
+        <td style="font-variant: small-caps;">
+        Le CPE
+        </td>
+       	<td>
+        <input type="checkbox" name="GepiAccesReleveCpe" value="yes" <?php if (getSettingValue("GepiAccesReleveCpe")=='yes') echo "checked"; ?> /> a accès à tous les relevés de notes de toutes les classes<br />
+       	</td>
+    </tr> 
+    <tr>
+        <td style="font-variant: small-caps;">
+        L'administrateur
+        </td>
+       	<td>
+			<input type="checkbox" name="GepiAdminImprBulSettings" value="yes" <?php if (getSettingValue("GepiAdminImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins
+       	</td>
+    </tr> 
+    <tr>
+        <td style="font-variant: small-caps;">
+        L'élève
+        </td>
+       	<td>
+        	<input type="checkbox" name="GepiAccesReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesReleveEleve")=='yes') echo "checked"; ?> /> a accès à ses relevés de notes<br/>
+        	<input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /> a accès à son cahier de texte
+       	</td>
+    </tr>
+    <tr>
+        <td style="font-variant: small-caps;">
+        Le responsable d'élève
+        </td>
+       	<td>
+        	<input type="checkbox" name="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves dont il est responsable<br/>
+        	<input type="checkbox" name="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /> a accès au cahier de texte des élèves dont il est responsable
+       	</td>
+    </tr> 
+</table>
+<input type="hidden" name="is_posted" value="1" />
+<center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
+</form>
+<?php require("../lib/footer.inc.php");?>
