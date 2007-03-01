@@ -136,7 +136,7 @@ if ($affiche=='yes') {
     //echo "<table width=750 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
    echo "<table class='menu'>";
     echo "<tr>";
-    echo "<th colspan='2'>Administration des bases</th>";
+    echo "<th colspan='2'><img src='./images/icons/database.png' alt='Bases' class='link'/> - Administration des bases</th>";
     echo "</tr>";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);

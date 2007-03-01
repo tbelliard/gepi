@@ -194,7 +194,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Administration</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/configure.png' alt='Admin' class='link'/> - Administration</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -263,7 +263,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Bulletins scolaires</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/document.png' alt='Bulletins' class='link'/> - Bulletins scolaires</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -344,7 +344,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Saisie</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/saisie.png' alt='Saisie' class='link'/> - Saisie</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -358,7 +358,10 @@ if ($affiche=='yes') {
 //
 
 // Définition des conditions
-$condition = true;
+$chemin = array();
+$titre = array();
+$expli = array();
+$condition = (($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes') OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesCahierTexteEleve") == 'yes'));
 if ($condition) {
     $chemin[] = "/cahier_texte/consultation.php";
     $titre[] = "Cahier de texte";
@@ -368,17 +371,25 @@ if ($condition) {
     	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.";
     }
 }
-
+$condition = (($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes') OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes'));
+if ($condition) {
+    $chemin[] = "/cahier_notes/visu_releve_notes.php";
+    $titre[] = "Relevés de notes";
+    if ($_SESSION['statut'] == "responsable") {
+    	$expli[] = "Permet de consulter les relevés de notes du ou des élève(s) dont vous êtes responsable légal.";
+    } else {
+    	$expli[] = "Permet de consulter vos relevés de notes détaillés.";
+    }
+}
 $nb_ligne = count($chemin);
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Consultation</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/vie_privee.png' alt='Consultation' class='link'/> - Consultation</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -426,7 +437,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Relevés de notes</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/releve.png' alt='Relevés' class='link'/> - Relevés de notes</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -465,7 +476,7 @@ if ($force_abs) {
               //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
    			  echo "<table class='menu'>\n";
               echo "<tr>\n";
-              echo "<th colspan='2'>Gestion des retards et absences</th>\n";
+              echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
               echo "</tr>\n";
               for ($i=0;$i<$nb_ligne;$i++) {
                 affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -501,7 +512,7 @@ if ($force_abs) {
               //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     		  echo "<table class='menu'>\n";
               echo "<tr>\n";
-              echo "<th colspan='2'>Gestion des retards et absences</th>\n";
+              echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
               echo "</tr>\n";
               for ($i=0;$i<$nb_ligne;$i++) {
                 affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -538,7 +549,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
           //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     	  echo "<table class='menu'>\n";
           echo "<tr>\n";
-          echo "<th colspan='2'>Trombinoscope</th>\n";
+          echo "<th colspan='2'><img src='./images/icons/contact.png' alt='Trombi' class='link'/> - Trombinoscope</th>\n";
           echo "</tr>\n";
           for ($i=0;$i<$nb_ligne;$i++) {
             affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -633,7 +644,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Visualisation - Impression</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/print.png' alt='Imprimer' class='link'/> - Visualisation - Impression</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -661,7 +672,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Messagerie</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Messagerie</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -672,7 +683,7 @@ if ($affiche=='yes') {
 
 if ($_SESSION['statut'] == 'administrateur') {
     //echo "<br /><br /><table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<br /><br /><table class='menu'>\n";
+    echo "<br /><br /><table>\n";
     echo "<tr><td align='left'><center>\n";
     echo "<div><b>Créer un fichier de sauvegarde/restauration de la base de données ".$dbDb."</b></div>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php?action=dump\" method=\"post\" name=\"formulaire\">\n";

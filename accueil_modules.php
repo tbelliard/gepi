@@ -112,7 +112,7 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'>Administration des modules</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/control-center.png' alt='Admin modules' class='link'/> - Administration des modules</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
