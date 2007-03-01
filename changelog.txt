@@ -2,7 +2,20 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.5.0-rc1 (XX/XX/2007)
+===========================
+
+Nouvelles fonctionalités
+------------------------
+- possibilité de créer des comptes utilisateurs pour les élèves
+- possibilité de créer des comptes utilisateurs pour les responsables d'élèves
+- accès au cahier de texte pour les utilisateurs élèves et responsables
+- accès au relevé de notes pour les utilisateurs élèves et responsables
+- nouvelle charte graphique
 - Ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
+
+Corrections de bugs
+-------------------
 
 Gepi-1.4.4-rc3 (26/01/2007)
 ===========================
@@ -12,6 +25,7 @@ Gepi-1.4.4-rc3 (26/01/2007)
 Corrections de bugs
 -------------------
 - bugs multiples sur le module absence
+- bug sur la valeur des coefficients, qui ne pouvait être supérieure à 9,9
 
 Nouvelles fonctionalités
 ------------------------
