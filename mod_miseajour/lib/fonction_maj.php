@@ -52,7 +52,7 @@ function listage_dossier($dossier, $dossier_racine)
 function envoi_ftp($tableau, $source, $destination)
  {
 	// on compte le nombre d'enregistrement du tableau
-	$nb_valeur=count($tableau)
+	$nb_valeur=count($tableau);
 
 	// on essaye de ce connecter en ftp sécurisé
 	$conn_id = ftp_ssl_connect($ftp_server);
@@ -68,7 +68,7 @@ function envoi_ftp($tableau, $source, $destination)
 	if($login_result===FALSE)
 	 {
 		// si le nom d'utilisateur ou le mot de passe n'est pas correct
-		$message_ftp['authentification']='Le nom d\'utilisateur ou le mot de passe sont erroné pour l\'utilisateur: '.$ftp_user_name; }
+		$message_ftp['authentification']='Le nom d\'utilisateur ou le mot de passe sont erroné pour l\'utilisateur: '.$ftp_user_name;
 		exit();
 	 }
 
