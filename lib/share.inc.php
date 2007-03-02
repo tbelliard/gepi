@@ -24,7 +24,7 @@ function verif_mot_de_passe($password,$flag) {
             return false;
         else
             return true;
-
+            
 }
 
 function test_unique_login($s) {

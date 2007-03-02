@@ -159,23 +159,33 @@ fieldset#login_box {
     border: 1px solid black;
 }
 
-fieldset#login_box h2 {
-    margin:0;
-    padding: 0;
-    padding-top: 3px;
-    padding-left: 5%;
-    font-size: 11pt;
-    font-family: Verdana;
-    font-weight: bold;
-    letter-spacing: 0.1em;
+fieldset#login_box div#header {
     background: white;
     background-image: url("./images/background/darkfade_small.png");
     background-repeat: repeat-x;
     color: white;
-    text-align: left;
+    text-align: center;
     height: 40px;
 }
+fieldset#login_box h2 {
+    margin:0;
+    padding: 0;
+    font-size: 11pt;
+    font-family: Verdana;
+    font-weight: bold;
+    letter-spacing: 0.1em;
 
+}
+
+fieldset#login_box p.annee {
+    position: relative;
+    top: -5px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    text-align: center;
+    font-size: x-small;
+}
 div#login_footer {
     width: 98%;
     position: absolute;
@@ -376,6 +386,10 @@ table#messagerie {
     background-repeat: no-repeat;
     background-position: 0% 0%;
     margin: 10px;
+}
+
+table#messagerie td {
+    color: red;
 }
 
 table.menu {

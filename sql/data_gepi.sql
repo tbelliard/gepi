@@ -414,3 +414,4 @@ INSERT INTO setting VALUES ('GepiAccesReleveEleve', 'yes');
 INSERT INTO setting VALUES ('GepiAccesCahierTexteEleve', 'yes');
 INSERT INTO setting VALUES ('GepiAccesReleveParent', 'yes');
 INSERT INTO setting VALUES ('GepiAccesCahierTexteParent', 'yes');
+INSERT INTO setting VALUES ('enable_password_recovery', 'no');

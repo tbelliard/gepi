@@ -202,8 +202,11 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 <form action="login.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 
 <fieldset id="login_box">
+<div id="header">
 <h2><?php echo getSettingValue("gepiSchoolName"); ?></h2>
-<table style="width: 75%; border: 0; margin-top: 10px; margin-right: 0; margin-left: auto;" cellpadding="3" cellspacing="0">
+<p class='annee'><?php echo getSettingValue("gepiYear"); ?></p>
+</div>
+<table style="width: 85%; border: 0; margin-top: 10px; margin-right: 15px; margin-left: auto;" cellpadding="3" cellspacing="0">
   <tr>
   	<td colspan="2" style="padding-bottom: 15px;">
   	<?php
@@ -216,15 +219,21 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
   	</td>
   </tr>
   <tr>
-    <td style="text-align: right; width: 30%; font-variant: small-caps;"><label for="login">Identifiant</label></td>
+    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="login">Identifiant</label></td>
     <td style="text-align: center; width: 40%;"><input type="text" id="login" name="login" size="16" tabindex="1" /></td>
   </tr>
   <tr>
-    <td style="text-align: right; width: 30%; font-variant: small-caps;"><label for="no_anti_inject_password">Mot de passe</label></td>
+    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="no_anti_inject_password">Mot de passe</label></td>
     <td style="text-align: center; width: 40%;"><input type="password" id="no_anti_inject_password" name="no_anti_inject_password" size="16" onkeypress="capsDetect(arguments[0]);" tabindex="2" /></td>
   </tr>
   <tr>
-    <td></td>
+    <td style="text-align: center; padding-top: 10px;">
+    <?php
+    if (getSettingValue("enable_password_recovery") == "yes") {
+    	echo "<a class='small' href='recover_password.php'>Mot de passe oublié ?</a>";
+    }
+    ?>
+    </td>
     <td style="text-align: center; width: 40%; padding-top: 20px;"><input type="submit" name="submit" value="Valider" style="font-variant: small-caps;" tabindex="3" /></td>
   </tr>
 </table>

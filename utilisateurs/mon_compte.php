@@ -42,7 +42,7 @@ if (!checkAccess()) {
     die();
 }
 
-if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe'))
+if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or ($_SESSION['statut'] == 'responsable') or ($_SESSION['statut'] == 'eleve'))
     // Mot de passe comportant des lettres et des chiffres
     $flag = 0;
 else

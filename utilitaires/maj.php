@@ -2521,6 +2521,47 @@ if (isset ($_POST['maj'])) {
         }
         $result_inter = '';
 	    
+	    
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'utilisation de l'outil de récupération de mot de passe<br/>";
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'enable_password_recovery'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('enable_password_recovery', 'no');");
+
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
+        
+        
+	    $result .= "&nbsp;->Ajout du champ password_ticket à la table utilisateurs<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'password_ticket'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `password_ticket` varchar(255) NOT NULL AFTER `date_verrouillage`");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    
+	    $result .= "&nbsp;->Ajout du champ ticket_expiration à la table utilisateurs<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'ticket_expiration'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `ticket_expiration` datetime NOT NULL AFTER `password_ticket`");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    
     }
 
 

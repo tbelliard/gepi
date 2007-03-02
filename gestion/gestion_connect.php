@@ -51,17 +51,11 @@ if (!checkAccess()) {
 // Enregistrement de la durée de conservation des données
 
 if (isset($_POST['duree'])) {
-
     if (!saveSetting(("duree_conservation_logs"), $_POST['duree'])) {
-
         $msg = "Erreur lors de l'enregistrement de la durée de conservation des connexions !";
-
     } else {
-
         $msg = "La durée de conservation des connexions a été enregistrée.<br />Le changement sera pris en compte après la prochaine connexion à GEPI.";
-
     }
-
 }
 
 
@@ -141,6 +135,15 @@ if (isset($_POST['disable_login'])) {
     }
 }
 
+//Activation / désactivation de la procédure de réinitialisation du mot de passe par email
+if (isset($_POST['enable_password_recovery'])) {
+    if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
+        $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation des connexions.";
+    } else {
+        $msg = "l'enregistrement du paramètre d'activation/désactivation des connexions a été effectué avec succès.";
+    }
+}
+
 // End standart header
 require_once("../lib/header.inc");
 isset($mode_navig);
@@ -156,51 +159,31 @@ echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' 
 
 
 //
-
 // Affichage des personnes connectées
-
 //
-
 echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
-
 echo "<div title=\"Utilisateurs connectés\">";
-
 echo "<ul>";
-
 // compte le nombre d'enregistrement dans la table
-
 $sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
 
-
-
 $res = sql_query($sql);
-
 if ($res) {
-
     for ($i = 0; ($row = sql_row($res, $i)); $i++)
-
     {
-
     echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a> |");
     if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe"))
         echo "<a href=\"../utilisateurs/change_pwd.php?user_login=" . $row[0] . "\">Déconnecter en changeant le mot de passe</a>";
     echo "</li>";
     }
-
 }
 
 ?>
-
 </ul>
-
 </div>
 
-
-
 <hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
-
 <?php
-
 //
 // Activation/désactivation des connexions
 //
@@ -216,9 +199,27 @@ if (getSettingValue("disable_login")=='no') echo " checked ";
 echo " /> <label for='label_2a'>Activer les connexions</label>";
 
 echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>";
-echo "</form>
-<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
+echo "</form>";
 
+echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
+
+//
+// Activation/désactivation de la procédure de récupération du mot de passe
+//
+echo "<h3 class='gepi'>Mots de passe perdus</h3>";
+echo "<form action=\"gestion_connect.php\" method=\"post\">";
+echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
+if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
+echo " /> <label for='label_1b'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
+
+echo "<br /><input type='radio' name='enable_password_recovery' value='yes' id='label_2b'";
+if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
+echo " /> <label for='label_2b'>Activer la procédure automatisée de récupération de mot de passe</label>";
+
+echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
+echo "</form>";
+
+echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 
 //
 // Protection contre les attaques.
