@@ -43,25 +43,26 @@ if (!checkAccess()) {
 
 $id_choix_periode=isset($_POST['id_choix_periode']) ? $_POST["id_choix_periode"] : 0;
 
-//**************** EN-TETE **************************************
-if ($id_choix_periode != 0) {
-  $periode = "Période N°".$id_choix_periode;
-} else {
- $periode="";
-}
-$titre_page = "Impression de listes au format PDF <br />".$periode;
-require_once("../lib/header.inc");
-//**************** FIN EN-TETE **********************************
-
+ //**************** EN-TETE **************************************
+ $titre_page = "Impression de listes au format PDF";
+ require_once("../lib/header.inc");
+ //**************** FIN EN-TETE **********************************
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
 echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
-
-echo "<h3>Liste des classes : ";
+if ($id_choix_periode != 0) {
+  $periode = "Période N°".$id_choix_periode;
+  echo "<h3><center>".$periode."</center></h3>";
+  echo "<h3>Liste des classes : ";
+   echo "</h3>\n";
+} else {
+  $periode="";
+  echo "<h3>Liste des classes : ";
   echo "</h3>\n";
+}
 
 // sélection multiple avec choix de la période
 echo "<div style=\"text-align: center;\">\n
@@ -114,11 +115,9 @@ echo "<div style=\"text-align: center;\">\n
 if ($id_choix_periode != 0) {
  // Dans le cadre d'un professeur il peut choisir ses enseignements.
 if($_SESSION['statut']=='professeur'){
-
-echo "<h3>Liste des enseignements : </h3><br />\n";
+echo "<h3>Liste des enseignements : </h3>\n";
 
 // sélection multiple avec choix de la période
-
 echo "<div style=\"text-align: center;\">\n";
 echo "   <fieldset>\n
      <legend>Séléctionnez la (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
