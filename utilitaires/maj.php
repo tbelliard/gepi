@@ -2483,11 +2483,11 @@ if (isset ($_POST['maj'])) {
 	    $result .= "&nbsp;->Ajout du champ 'email' à la table 'eleves'<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'email'"));
 	    if ($test1 == 0) {
-	        $query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL AFTER `ele_id`");
+	        $query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL");
 	        if ($query5) {
 	            $result .= "<font color=\"green\">Ok !</font><br />"; 
 	        } else {
-	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
 	        }
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
