@@ -12,10 +12,12 @@ Nouvelles fonctionalités
 - accès au cahier de texte pour les utilisateurs élèves et responsables
 - accès au relevé de notes pour les utilisateurs élèves et responsables
 - nouvelle charte graphique
-- Ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
+- ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
+- outil de réinitialisation du mot de passe par l'utilisateur lui-même (depuis la page login, avec envoi d'un mail)
 
 Corrections de bugs
 -------------------
+- affichage de l'observation vie scolaire sur le bulletin simplifiée si elle existe (Eric)
 
 Gepi-1.4.4-rc3 (26/01/2007)
 ===========================
