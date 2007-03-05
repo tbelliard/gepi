@@ -521,6 +521,7 @@ while ($nb < $periode2+1) {
     $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
     $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
     $eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+	$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
     if (($eleve_abs[$nb] != '') and ($eleve_abs_nj[$nb] != '')) {
         $eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
     } else {
@@ -547,10 +548,16 @@ while ($nb < $periode2+1) {
     } else {
         echo "Aucune absence non justifiée";
     }
-
-
     echo "</td>\n";
     echo "<td valign=top class='bull_simpl'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
+	//Ajout Eric
+	if ($current_eleve_appreciation_absences != "") {
+	  echo "<tr>\n"; 
+      echo "<td valign=top class='bull_simpl'>&nbsp;</td>\n";
+      echo "<td valign=top class='bull_simpl' colspan=\"3\">";
+	  echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
+	}
+	
     $nb++;
 }
 echo "</table>\n";
