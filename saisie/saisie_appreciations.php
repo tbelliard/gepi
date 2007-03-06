@@ -237,11 +237,31 @@ foreach ($liste_eleves as $eleve_login) {
                     }
                     $mess[$k] =$mess[$k]."</td>\n";
                 } else {
-                    //$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
-                    $mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
+				
+                    // Ajout Eric affichage des notes au dessus de la saisie des appréciations
+					$liste_notes ='';
+					// Nombre de contrôles
+					$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$eleve_login."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
+					//echo "\n<!--sql=$sql-->\n";
+					$result_nbct=mysql_query($sql);
+					$current_eleve_nbct=mysql_num_rows($result_nbct);
+				
+					// on prend les notes dans $string_notes
+					$liste_notes='';
+					if ($result_nbct ) {
+						while ($snnote =  mysql_fetch_assoc($result_nbct)) {
+							if ($liste_notes != '') $liste_notes .= ", ";
+							$liste_notes .= $snnote['note'];
+						}
+					} 
+					
+					if ($current_eleve_nbct ==0) {
+					  $liste_notes='Pas de notes dans le carnet pour cette période.';
+					}
+ 				   
+                   //$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
+                   $mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
                 }
-
-
         } else {
             //
             // si l'élève n'appartient pas au groupe pour cette période.
