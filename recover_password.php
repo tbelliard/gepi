@@ -88,14 +88,12 @@ if (isset($_POST['login'])) {
 	        	}
 	        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket; 
 	        	$mail_content = "Bonjour,\n" .
-	        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-dessous.\n" .
+	        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : .\n" .
+	        			$ticket_url . "\n" .
 	        			"Vous pouvez également copier/coller l'adresse complète dans votre navigateur.\n" .
 	        			"Ce lien doit être utilisé avant l'heure suivante : " .
 	        			date("G:i:s",$expiration_timestamp) ."\n" .
-	        			"Si vous n'utilisez pas ce lien avant cette limite, le ticket ne sera plus valide.\n" .
-	        			"\n" .
-	        			"Lien pour réinitialiser votre mot de passe :\n" .
-	        			$ticket_url . "\n";
+	        			", sous peine de n'être plus valide.\n";
 	        	
 	        	//- Debug - echo $mail_content;
 	        	//- Debug - if ($mail_content) {		
