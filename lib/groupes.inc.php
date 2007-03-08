@@ -5,8 +5,16 @@
  */
 
 function get_groups_for_prof($_login) {
-
-    $query = mysql_query("select id_groupe from j_groupes_professeurs WHERE login = '" . $_login . "'");
+	//Modif Eric
+    //$query = mysql_query("select id_groupe from j_groupes_professeurs WHERE login = '" . $_login . "'");
+	// Par discipline puis par classe
+	$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe 
+	                FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc  
+					WHERE login = '" . $_login . "' 
+					AND jgp.id_groupe=jgm.id_groupe 
+					AND jgp.id_groupe=jgc.id_groupe 
+					ORDER BY jgm.id_matiere, jgc.id_classe" ;
+	$query = mysql_query($requete_sql);
 
     $nb = mysql_num_rows($query);
 
@@ -15,6 +23,7 @@ function get_groups_for_prof($_login) {
         $_id_groupe = mysql_result($query, $i, "id_groupe");
         $groups[] = get_group($_id_groupe);
     }
+	//echo $requete_sql;
     return $groups;
 }
 

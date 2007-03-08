@@ -639,12 +639,18 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         }
 
         $login = $_SESSION['login'];
-        $calldata = mysql_query("SELECT j.id_groupe, g.description " .
-                                "FROM j_groupes_professeurs j, groupes g " .
-                                "WHERE (" .
-                                "g.id = j.id_groupe and " .
-                                "j.login = '" . $login . "'" .
-                                ")");
+		
+		$requete_sql = "SELECT j.id_groupe, jgm.id_matiere, g.description, jgc.id_classe 
+					   FROM j_groupes_professeurs j, groupes g, j_groupes_matieres jgm, j_groupes_classes jgc
+                       WHERE g.id = j.id_groupe
+					   AND j.id_groupe=jgm.id_groupe
+					   AND j.id_groupe=jgc.id_groupe 
+                       AND j.login = '" . $login . "'
+					   ORDER BY jgm.id_matiere, jgc.id_classe";
+					   
+        //echo $requete_sql; 					   
+        $calldata = mysql_query($requete_sql);
+		
         $nb_groupes = mysql_num_rows($calldata);
         if ($nb_groupes == "0") {
             echo "Vous n'êtes professeur dans aucun groupe ! Vous ne pouvez pas accéder aux relevés de notes...";

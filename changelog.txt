@@ -14,6 +14,7 @@ Nouvelles fonctionalités
 - nouvelle charte graphique
 - ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
 - outil de réinitialisation du mot de passe par l'utilisateur lui-même (depuis la page login, avec envoi d'un mail)
+- modification pour une professeur de l'ordre d'affichage (par matière puis par classe) de ses matières et ses classes sur différentes pages.
 
 Corrections de bugs
 -------------------
