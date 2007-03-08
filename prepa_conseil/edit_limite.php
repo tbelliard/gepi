@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 08/12/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -47,6 +47,49 @@ if (!checkAccess()) {
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
 require_once("../lib/header.inc");
+
+// Vérifications de sécurité
+if (
+	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") != "yes") OR
+	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") != "yes")
+	) {
+	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+	require "../lib/footer.inc.php";
+	die();
+}
+
+// Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
+if ($_SESSION['statut'] == "responsable") {
+	$test = mysql_query("SELECT count(e.login) " .
+			"FROM eleves e, responsables2 re, resp_pers r " .
+			"WHERE (" .
+			"e.login = '" . $login_eleve . "' AND " .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '" . $_SESSION['login'] . "')");
+	if (mysql_result($test, 0) == 0) {
+	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
+	    require("../lib/footer.inc.php");
+		die();
+	}
+}
+
+// Et une autre...
+if ($_SESSION['statut'] == "eleve" AND $_SESSION['login'] != $login_eleve) {
+    echo "Vous ne pouvez visualiser que vos bulletins simplifiés.\n";
+    require("../lib/footer.inc.php");
+	die();
+}
+
+// Et encore une : si on a un reponsable ou un élève, alors seul l'édition pour un élève seul est autorisée
+if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_edit != "2") {
+    echo "N'essayez pas de tricher...\n";
+    require("../lib/footer.inc.php");
+	die();
+}
+
+// On a passé les barrières, on passe au traitement
+
 $gepiYear = getSettingValue("gepiYear");
 
 if ($periode1 > $periode2) {

@@ -264,7 +264,26 @@ if (isset($_POST['OK'])) {
     }
     if (!saveSetting("GepiAccesEquipePedaEmailParent", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesEquipePedaEmailParent !";
-    }	
+    }
+    
+    if (isset($_POST['GepiAccesBulletinSimpleParent'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesBulletinSimpleParent", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimpleParent !";
+    }
+
+    if (isset($_POST['GepiAccesBulletinSimpleEleve'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesBulletinSimpleEleve", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimpleEleve !";
+    }
+    	
 }
 
 // Load settings
@@ -345,7 +364,8 @@ require_once("../lib/header.inc");
         	<input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /> a accès à son cahier de texte<br/>
         	<input type="checkbox" name="GepiPasswordReinitEleve" value="yes" <?php if (getSettingValue("GepiPasswordReinitEleve")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)<br/>
         	<input type="checkbox" name="GepiAccesEquipePedaEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEleve")=='yes') echo "checked"; ?> /> a accès à l'équipe pédagogique le concernant<br/>
-        	<input type="checkbox" name="GepiAccesEquipePedaEmailEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailEleve")=='yes') echo "checked"; ?> /> a accès à aux adresses email de l'équipe pédagogique le concernant
+        	<input type="checkbox" name="GepiAccesEquipePedaEmailEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailEleve")=='yes') echo "checked"; ?> /> a accès à aux adresses email de l'équipe pédagogique le concernant<br/>
+        	<input type="checkbox" name="GepiAccesBulletinSimpleEleve" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleEleve")=='yes') echo "checked"; ?> /> a accès à ses bulletins simplifiés
        	</td>
     </tr>
     <tr>
@@ -355,9 +375,10 @@ require_once("../lib/header.inc");
        	<td>
         	<input type="checkbox" name="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves dont il est responsable<br/>
         	<input type="checkbox" name="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /> a accès au cahier de texte des élèves dont il est responsable<br/>
-        	<input type="checkbox" name="GepiPasswordReinitParent" value="yes" <?php if (getSettingValue("GepiPasswordReinitParent")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
+        	<input type="checkbox" name="GepiPasswordReinitParent" value="yes" <?php if (getSettingValue("GepiPasswordReinitParent")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)<br/>
         	<input type="checkbox" name="GepiAccesEquipePedaParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaParent")=='yes') echo "checked"; ?> /> a accès à l'équipe pédagogique concernant les élèves dont il est responsable<br/>
-        	<input type="checkbox" name="GepiAccesEquipePedaEmailParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailParent")=='yes') echo "checked"; ?> /> a accès à aux adresses email de l'équipe pédagogique concernant les élèves dont il est responsable
+        	<input type="checkbox" name="GepiAccesEquipePedaEmailParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailParent")=='yes') echo "checked"; ?> /> a accès aux adresses email de l'équipe pédagogique concernant les élèves dont il est responsable<br/>
+        	<input type="checkbox" name="GepiAccesBulletinSimpleParent" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleParent")=='yes') echo "checked"; ?> /> a accès aux bulletins simplifiés des élèves dont il est responsable
        	</td>
     </tr> 
 </table>

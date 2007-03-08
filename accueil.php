@@ -406,6 +406,22 @@ if ($condition) {
     	$expli[] = "Permet de consulter l'équipe pédagogique qui vous concerne.";
     }
 }
+
+// Bulletins simplifiés
+$condition = (
+			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") == 'yes')
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") == 'yes')			
+			);
+if ($condition) {
+    $chemin[] = "/prepa_conseil/index3.php";
+    $titre[] = "Bulletins simplifiés";
+    if ($_SESSION['statut'] == "responsable") {
+    	$expli[] = "Permet de consulter les bulletins simplifiés du ou des élève(s) dont vous êtes responsable légal.";
+    } else {
+    	$expli[] = "Permet de consulter vos bulletins sous forme simplifiée.";
+    }
+}
+
 $nb_ligne = count($chemin);
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
@@ -601,7 +617,8 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_S
 $chemin[] = "/visualisation/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/prepa_conseil/index1.php";
 $chemin[] = "/prepa_conseil/index2.php";
-$chemin[] = "/prepa_conseil/index3.php";
+if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+	$chemin[] = "/prepa_conseil/index3.php";
 
 $titre = array();
 //===========================
@@ -620,7 +637,8 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     else
         $titre[] =  "Visualiser les moyennes et appréciations des bulletins ";
 $titre[] = "Visualiser toutes les moyennes d'une classe";
-$titre[] = "Visualiser les bulletins simplifiés";
+if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+	$titre[] = "Visualiser les bulletins simplifiés";
 
 $expli = array();
 //===========================
@@ -639,7 +657,8 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     else
         $expli[] = "Tableau récapitulatif des moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.";
 $expli[] = "Tableau récapitulatif des moyennes d'une classe.";
-$expli[] = "Bulletins simplifiés d'une classe.";
+if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+	$expli[] = "Bulletins simplifiés d'une classe.";
 
 
 $call_data = mysql_query("SELECT * FROM aid_config ORDER BY nom");
