@@ -80,8 +80,8 @@ if ($_SESSION['statut'] == "responsable" and $login_eleve == false) {
 }
 
 if (
-	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaParent") == "no") OR
-	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") == "no") OR
+	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaParent") != "yes") OR
+	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") != "yes") OR
 	($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 	) {
 	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
