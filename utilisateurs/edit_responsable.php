@@ -1,5 +1,7 @@
 <?php
 /*
+ * $Id$
+ * 
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -169,6 +171,18 @@ if ($action == "rendre_inactif") {
 		}
 		$msg .= "$nb_comptes comptes ont été supprimés.";		
 	}
+} elseif ($action == "reinit_password") {
+	if ($mode != "classe") {
+		$msg .= "Erreur : Vous devez sélectionner une classe.";
+	} elseif ($mode == "classe") {
+		if ($_POST['classe'] == "all") {
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
+			$msg .= "<a href=\"reset_passwords.php?user_status=responsable\" target='_blank'>Réinitialiser les mots de passe</a>";			
+		} else if (is_numeric($_POST['classe'])) {
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
+			$msg .= "<a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."\" target='_blank'>Réinitialiser les mots de passe</a>";			
+		}
+	}
 }
 
 //**************** EN-TETE *****************
@@ -188,6 +202,7 @@ echo "</p>";
 	echo "<input type='hidden' name='mode' value='classe' />";
 	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif";
 	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif ";
+	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe";
 	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br/>";
 	echo "<br/>";
 	echo "<select name='classe' size='1'>";
