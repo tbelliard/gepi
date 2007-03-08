@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 23/03/2005
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -70,13 +70,14 @@ if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['en
 }
 
 if (isset($_POST['cahier_texte_acces_public'])) {
-    if ($_POST['cahier_texte_acces_public'] == "yes")
-    $temp = "yes";
-} else {
-    $temp = "no";
-}
-if (!saveSetting("cahier_texte_acces_public", $temp)) {
-    $msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+	if ($_POST['cahier_texte_acces_public'] == "yes") {
+	    $temp = "yes";
+	} else {
+	    $temp = "no";
+	    }
+	if (!saveSetting("cahier_texte_acces_public", $temp)) {
+	    $msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+	}
 }
 
 if (isset($_POST['is_posted'])) $msg = "Les modifications ont été enregistrées !";
@@ -129,8 +130,8 @@ l'interface de consultation publique.
 </table>
 <input type="hidden" name="is_posted" value="1" />
 <h2>Accès public</h2>
-<input type='radio' name='cahier_texte_acces_public' value='no'> Désactiver la consultation publique des cahiers de texte (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)<br/>
-<input type='radio' name='cahier_texte_acces_public' value='yes'> Activer la consultation publique des cahiers de texte (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)<br/>
+<input type='radio' name='cahier_texte_acces_public' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " CHECKED";?> /> Désactiver la consultation publique des cahiers de texte (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)<br/>
+<input type='radio' name='cahier_texte_acces_public' value='yes'<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " CHECKED";?> /> Activer la consultation publique des cahiers de texte (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)<br/>
 <p>-> Accès à l'<a href='../public/index.php' target='_blank'>interface publique de consultation des cahiers de texte</a></p>
 <i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de texte est totalement libre.</i>
 <br />
@@ -156,5 +157,4 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 <li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
 <li><a href='admin_ct.php'>Administration des cahiers de texte</a> (recherche des incohérences, modifications, suppressions)</li>
 </ul>
-</div>
 <?php require("../lib/footer.inc.php");?>
