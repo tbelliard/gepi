@@ -1,6 +1,6 @@
 <?php
 
-// $Id: mincals_absences.inc,v 1.2 2007/01/27 15:32:57 crob Exp $
+// $Id$
 
 function minicals($year, $month, $day, $id_classe, $type, $dmy) {
 
