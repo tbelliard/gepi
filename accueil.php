@@ -360,7 +360,11 @@ if ($affiche=='yes') {
 $chemin = array();
 $titre = array();
 $expli = array();
-$condition = (($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes') OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesCahierTexteEleve") == 'yes'));
+$condition = (
+	getSettingValue("active_cahiers_texte")=='y' AND (
+		($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
+		OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesCahierTexteEleve") == 'yes')
+	));
 if ($condition) {
     $chemin[] = "/cahier_texte/consultation.php";
     $titre[] = "Cahier de texte";
@@ -370,7 +374,11 @@ if ($condition) {
     	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.";
     }
 }
-$condition = (($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes') OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes'));
+$condition = (
+		getSettingValue("active_carnets_notes")=='y' AND (
+			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')			
+			));
 if ($condition) {
     $chemin[] = "/cahier_notes/visu_releve_notes.php";
     $titre[] = "Relevés de notes";

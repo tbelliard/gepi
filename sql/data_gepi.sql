@@ -421,3 +421,4 @@ INSERT INTO setting VALUES ('GepiPasswordReinitCpe', 'no');
 INSERT INTO setting VALUES ('GepiPasswordReinitAdmin', 'no');
 INSERT INTO setting VALUES ('GepiPasswordReinitEleve', 'yes');
 INSERT INTO setting VALUES ('GepiPasswordReinitParent', 'yes');
+INSERT INTO setting VALUES ('cahier_texte_acces_public', 'no');

@@ -70,7 +70,14 @@ require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    echo("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    require ("../lib/footer.inc.php");
+    die();
+}
+if (getSettingValue("cahier_texte_acces_public")!='yes') {
+    echo("<center><p class='grand'>Le cahier de texte n'est pas en accès public.</p></center>");
+    require ("../lib/footer.inc.php");
+    die();
 }
 echo "<table border='0' width=\"98%\" cellspacing=0 align=\"center\"><tr>";
 echo "<td valign='top' width=".$largeur.">";

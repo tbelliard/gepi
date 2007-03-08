@@ -68,6 +68,17 @@ if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['en
     $end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
     if (!saveSetting("end_bookings", $end_bookings)) $msg .= "Erreur lors de l'enregistrement de end_bookings !";
 }
+
+if (isset($_POST['cahier_texte_acces_public'])) {
+    if ($_POST['cahier_texte_acces_public'] == "yes")
+    $temp = "yes";
+} else {
+    $temp = "no";
+}
+if (!saveSetting("cahier_texte_acces_public", $temp)) {
+    $msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+}
+
 if (isset($_POST['is_posted'])) $msg = "Les modifications ont été enregistrées !";
 // header
 $titre_page = "Gestion des cahiers de texte";
@@ -84,9 +95,9 @@ if (isset($_POST['delai_devoirs'])) {
 <i>La désactivation des cahiers de texte n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation publique des cahiers de texte est impossible.</i>
 <br />
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked"; ?> />
-&nbsp;Activer les cahiers de texte (consultation publique et édition)<br />
+&nbsp;Activer les cahiers de texte (consultation et édition)<br />
 <input type="radio" name="activer" value="n" <?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked"; ?> />
-&nbsp;Désactiver les cahiers de texte (consultation publique et édition)
+&nbsp;Désactiver les cahiers de texte (consultation et édition)
 <H2>Début et fin des cahiers de texte</H2>
 <i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de texte sont visibles dans
 l'interface de consultation publique.
@@ -117,7 +128,10 @@ l'interface de consultation publique.
     </tr>
 </table>
 <input type="hidden" name="is_posted" value="1" />
-<H2>Accès à l'<a href='../public/index.php' target='_blank'>interface publique de consultation des cahiers de texte</a></H2>
+<h2>Accès public</h2>
+<input type='radio' name='cahier_texte_acces_public' value='no'> Désactiver la consultation publique des cahiers de texte (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)<br/>
+<input type='radio' name='cahier_texte_acces_public' value='yes'> Activer la consultation publique des cahiers de texte (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)<br/>
+<p>-> Accès à l'<a href='../public/index.php' target='_blank'>interface publique de consultation des cahiers de texte</a></p>
 <i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de texte est totalement libre.</i>
 <br />
 Identifiant :

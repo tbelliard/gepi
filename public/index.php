@@ -77,7 +77,14 @@ require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-   die("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    echo("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    require ("../lib/footer.inc.php");
+    die();
+}
+if (getSettingValue("cahier_texte_acces_public")!='yes') {
+    echo("<center><p class='grand'>Le cahier de texte n'est pas en accès public.</p></center>");
+    require ("../lib/footer.inc.php");
+    die();
 }
 // On vérifie que la date demandée est bien comprise entre la date de début des cahiers de texte et la date de fin des cahiers de texte :
 if ($today < getSettingValue("begin_bookings")) {

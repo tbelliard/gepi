@@ -190,7 +190,7 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 <div>
 <?php
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")=='y') {
+if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes") {
    echo "<div id='lien_cahier_texte'><a href=\"./public/index.php\"><img src='./images/icons/cahier_texte.png' alt='Cahier de texte' class='link' /> Consulter les cahiers de texte</a> (tout public)</div>";
 }
 echo "<div class='center'>";
