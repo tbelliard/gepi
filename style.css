@@ -1,3 +1,5 @@
+/* $Id$ */
+
 body {
     padding: 0;
     margin: 0;
@@ -382,14 +384,11 @@ p.saut {
 table#messagerie {
     width: 70%;
     padding: 5px 5px 5px 10px;
-    background-image: url("./images/background/left-top-corner.jpg");
+    border: 1px dashed #0000AA;
+    /*background-image: url("./images/background/left-top-corner.jpg");*/
     background-repeat: no-repeat;
     background-position: 0% 0%;
     margin: 10px;
-}
-
-table#messagerie td {
-    color: red;
 }
 
 table.menu {

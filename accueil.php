@@ -1,7 +1,7 @@
 <?php
 $starttime = microtime();
-/*
- * Last modification  : 29/09/2006
+/* 
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -156,7 +156,6 @@ while ($ind < $nb_messages) {
     $ind++;
 }
 if ($affiche_messages == 'yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table id='messagerie'>\n";
     echo "<tr><td>".$texte_messages;
     echo "</td></tr></table>\n";
