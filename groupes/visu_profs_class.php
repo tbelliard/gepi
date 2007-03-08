@@ -1,25 +1,25 @@
 <?php
 /*
-* Last modification  : 08/11/2006
-*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
-*
-* GEPI is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* GEPI is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with GEPI; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * $Id$
+ *
+ *  Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -35,14 +35,12 @@ if ($resultat_session == 'c') {
     die();
 };
 
-//INSERT INTO droits VALUES ('/groupes/visu_profs_class.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation des équipes pédagogiques', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
 //**************** EN-TETE **************************************
-//$titre_page = "Gestion des groupes";
 $titre_page = "Equipe pédagogique";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
@@ -52,8 +50,6 @@ echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' 
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 echo "</p>\n";
 
-
-//$id_classe=isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 //if(isset($_POST['id_classe'])){
 if(isset($id_classe)){
@@ -61,7 +57,7 @@ if(isset($id_classe)){
         echo "<p><b>ERREUR</b>: Le numéro de classe choisi n'est pas valide.</p>\n";
         echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
     }
-    else{
+     else{
         //$id_classe=$_POST["id_classe"];
         $classe=get_classe($id_classe);
 
@@ -133,8 +129,6 @@ if(isset($id_classe)){
                 }
                 echo "</td></tr>\n";
             }
-
-
         }
         //echo "</table>\n";
 

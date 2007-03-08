@@ -859,8 +859,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 	    	echo "<select size=\"1\" name=\"login_eleve\">";
 	    	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-	                    echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
-	    	}	    	
+	        	echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
+	    	}
 	    	echo "</select>";
 		}
 	}

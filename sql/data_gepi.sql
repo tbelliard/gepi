@@ -422,3 +422,8 @@ INSERT INTO setting VALUES ('GepiPasswordReinitAdmin', 'no');
 INSERT INTO setting VALUES ('GepiPasswordReinitEleve', 'yes');
 INSERT INTO setting VALUES ('GepiPasswordReinitParent', 'yes');
 INSERT INTO setting VALUES ('cahier_texte_acces_public', 'no');
+INSERT INTO setting VALUES ('GepiAccesEquipePedaEleve', 'yes');
+INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailEleve', 'no');
+INSERT INTO setting VALUES ('GepiAccesEquipePedaParent', 'yes');
+INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailParent', 'no');
+INSERT INTO droits VALUES ('/groupes/visu_profs_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation équipe pédagogique', '');

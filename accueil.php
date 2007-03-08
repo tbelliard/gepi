@@ -356,10 +356,11 @@ if ($affiche=='yes') {
 // et aux élèves
 //
 
-// Définition des conditions
 $chemin = array();
 $titre = array();
 $expli = array();
+
+// Cahier de texte 
 $condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
 		($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
@@ -374,6 +375,8 @@ if ($condition) {
     	$expli[] = "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements que vous suivez.";
     }
 }
+
+// Relevés de notes
 $condition = (
 		getSettingValue("active_carnets_notes")=='y' AND (
 			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
@@ -386,6 +389,21 @@ if ($condition) {
     	$expli[] = "Permet de consulter les relevés de notes du ou des élève(s) dont vous êtes responsable légal.";
     } else {
     	$expli[] = "Permet de consulter vos relevés de notes détaillés.";
+    }
+}
+
+// Equipes pédagogiques
+$condition = (
+			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaParent") == 'yes')
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") == 'yes')			
+			);
+if ($condition) {
+    $chemin[] = "/groupes/visu_profs_eleve.php";
+    $titre[] = "Equipe pédagogique";
+    if ($_SESSION['statut'] == "responsable") {
+    	$expli[] = "Permet de consulter l'équipe pédagogique du ou des élève(s) dont vous êtes responsable légal.";
+    } else {
+    	$expli[] = "Permet de consulter l'équipe pédagogique qui vous concerne.";
     }
 }
 $nb_ligne = count($chemin);
