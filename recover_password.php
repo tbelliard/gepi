@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 13/07/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -39,51 +39,75 @@ if (isset($_POST['login'])) {
 	$email = (isset($_POST['email'])) ? $_POST['email'] : "noemail";
 	$user_login = (!empty($_POST['login'])) ? $_POST['login'] : "nologin";
 	// Le formulaire de demande a été posté, on vérifie et on envoit un mail
-	$test = mysql_query("SELECT count(login) FROM utilisateurs WHERE (" .
+	$test = mysql_query("SELECT statut FROM utilisateurs WHERE (" .
 			"login = '" . $user_login . "' and " .
 			"email = '" . $email . "')");
-	if (mysql_result($test, 0) == 1) {
-		// On a un utilisateur qui a bien ces coordonnées. On envoie un mail!
-		// On génère le ticket
-        $length = rand(85, 100);
-        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-        $ticket = $r;
-        // On enregistre le ticket dans la base
-        $expiration_timestamp = time()+15*60;
-        $expiration_date = date("Y-m-d G:i:s", $expiration_timestamp);
-        $res = mysql_query("UPDATE utilisateurs SET " .
-        		"password_ticket = '" . $ticket . "', " .
-        		"ticket_expiration = '" . $expiration_date . "' WHERE (" .
-        		"login = '" . $user_login . "')");
-        if ($res) {
-        	// Si l'enregistrement s'est bien passé, on envoi le mail
-        	$ticket_url = "";
-        	if (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != "Off") {
-        		$ticket_url .= "https://";
-        	} else {
-        		$ticket_url .= "http://";
-        	}
-        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket; 
-        	$mail_content = "Bonjour,\n" .
-        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-dessous.\n" .
-        			"Vous pouvez également copier/coller l'adresse complète dans votre navigateur.\n" .
-        			"Ce lien doit être utilisé avant l'heure suivante : " .
-        			date("G:i:s",$expiration_timestamp) ."\n" .
-        			"Si vous n'utilisez pas ce lien avant cette limite, le ticket ne sera plus valide.\n" .
-        			"\n" .
-        			"Lien pour réinitialiser votre mot de passe :\n" .
-        			$ticket_url . "\n";
-        	
-        	//- Debug - echo $mail_content;
-        	//- Debug - if ($mail_content) {		
-        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
-        		$message = "Un mail vient de vous être envoyé.";
-        	} else {
-        		$message = "Erreur lors de l'envoi du mail.";
-        	}
-        } else {
-        	echo mysql_error();
-        }
+	if (mysql_num_rows($test) == 1) {
+		// On a un utilisateur qui a bien ces coordonnées.
+		
+		// On va maintenant vérifier son statut, et s'assurer que le statut en question
+		// est bien autorisé à utiliser l'outil de réinitialisation
+		$user_statut = mysql_result($test, 0);
+		$ok = false;
+		
+		if (
+			($user_statut == "administrateur" AND getSettingValue("GepiPasswordReinitAdmin") == "yes") OR
+			($user_statut == "professeur" AND getSettingValue("GepiPasswordReinitProf") == "yes") OR
+			($user_statut == "scolarite" AND getSettingValue("GepiPasswordReinitScolarite") == "yes") OR
+			($user_statut == "cpe" AND getSettingValue("GepiPasswordReinitCpe") == "yes") OR
+			($user_statut == "eleve" AND getSettingValue("GepiPasswordReinitEleve") == "yes") OR
+			($user_statut == "responsable" AND getSettingValue("GepiPasswordReinitParent") == "yes")
+		) {
+			$ok = true;
+		} else {
+			$ok = false;
+		}
+		
+		if (!$ok) {
+			$message = "Pour des raisons de sécurité, votre statut utilisateur ne vous permet pas de réinitialiser votre mot de passe par cette procédure. Vous devrez donc contacter l'administrateur pour obtenir un nouveau mot de passe.";
+		} else {
+			//On envoie un mail!
+			// On génère le ticket
+	        $length = rand(85, 100);
+	        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+	        $ticket = $r;
+	        // On enregistre le ticket dans la base
+	        $expiration_timestamp = time()+15*60;
+	        $expiration_date = date("Y-m-d G:i:s", $expiration_timestamp);
+	        $res = mysql_query("UPDATE utilisateurs SET " .
+	        		"password_ticket = '" . $ticket . "', " .
+	        		"ticket_expiration = '" . $expiration_date . "' WHERE (" .
+	        		"login = '" . $user_login . "')");
+	        if ($res) {
+	        	// Si l'enregistrement s'est bien passé, on envoi le mail
+	        	$ticket_url = "";
+	        	if (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] != "Off") {
+	        		$ticket_url .= "https://";
+	        	} else {
+	        		$ticket_url .= "http://";
+	        	}
+	        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket; 
+	        	$mail_content = "Bonjour,\n" .
+	        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-dessous.\n" .
+	        			"Vous pouvez également copier/coller l'adresse complète dans votre navigateur.\n" .
+	        			"Ce lien doit être utilisé avant l'heure suivante : " .
+	        			date("G:i:s",$expiration_timestamp) ."\n" .
+	        			"Si vous n'utilisez pas ce lien avant cette limite, le ticket ne sera plus valide.\n" .
+	        			"\n" .
+	        			"Lien pour réinitialiser votre mot de passe :\n" .
+	        			$ticket_url . "\n";
+	        	
+	        	//- Debug - echo $mail_content;
+	        	//- Debug - if ($mail_content) {		
+	        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
+	        		$message = "Un mail vient de vous être envoyé.";
+	        	} else {
+	        		$message = "Erreur lors de l'envoi du mail.";
+	        	}
+	        } else {
+	        	echo mysql_error();
+	        }
+		} // Fin: statut autorisé
 	} else {
 		$message = "Votre login ou votre email n'est pas valide.";
 	}
@@ -254,7 +278,7 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
   	<td colspan="2" style="padding-bottom: 15px; text-align: right;">
   	<?php
 		if ($message) {
-			echo("<p style='color: red; margin:0;padding:0;'>" . $message . "</p></td></tr>");
+			echo("<p style='color: red; margin:0;padding:0 0 0 30px;'>" . $message . "</p></td></tr>");
 		} else {
 			echo "<p style='margin:0;padding:0;'>Veuillez indiquer votre login et votre email</p>";
 	?>

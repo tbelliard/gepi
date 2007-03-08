@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 07/08/2006
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -174,7 +174,62 @@ if (isset($_POST['OK'])) {
     }
     if (!saveSetting("GepiAccesCahierTexteParent", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesCahierTexteParent !";
-    }    
+    }
+    
+    if (isset($_POST['GepiPasswordReinitProf'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitProf", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitProf !";
+    }
+    
+    if (isset($_POST['GepiPasswordReinitScolarite'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitScolarite", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitScolarite !";
+    }
+    
+    if (isset($_POST['GepiPasswordReinitCpe'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitCpe", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitCpe !";
+    }
+    
+    if (isset($_POST['GepiPasswordReinitAdmin'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitAdmin", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitAdmin !";
+    }
+
+    if (isset($_POST['GepiPasswordReinitEleve'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitEleve", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitEleve !";
+    }
+
+    if (isset($_POST['GepiPasswordReinitParent'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiPasswordReinitParent", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiPasswordReinitParent !";
+    }	
+
 }
 
 // Load settings
@@ -201,7 +256,8 @@ require_once("../lib/header.inc");
         </td>
        	<td>
         <input type="checkbox" name="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves des classes dans lesquelles il enseigne<br />
-        <input type="checkbox" name="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)
+        <input type="checkbox" name="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)<br/>
+        <input type="checkbox" name="GepiPasswordReinitProf" value="yes" <?php if (getSettingValue("GepiPasswordReinitProf")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr>    
     <tr>
@@ -223,7 +279,8 @@ require_once("../lib/header.inc");
        	<td>
             <input type="checkbox" name="GepiRubConseilScol" value="yes" <?php if (getSettingValue("GepiRubConseilScol")=='yes') echo "checked"; ?> /> peut saisir les avis du conseil de classe<br/>
             <input type="checkbox" name="GepiScolImprBulSettings" value="yes" <?php if (getSettingValue("GepiScolImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins<br />
-        	<input type="checkbox" name="GepiAccesReleveScol" value="yes" <?php if (getSettingValue("GepiAccesReleveScol")=='yes') echo "checked"; ?> /> a accès à tous les relevés de notes de toutes les classes
+        	<input type="checkbox" name="GepiAccesReleveScol" value="yes" <?php if (getSettingValue("GepiAccesReleveScol")=='yes') echo "checked"; ?> /> a accès à tous les relevés de notes de toutes les classes<br/>
+        	<input type="checkbox" name="GepiPasswordReinitScolarite" value="yes" <?php if (getSettingValue("GepiPasswordReinitScolarite")=='yes') echo "checked"; ?> /> peut réinitialiser elle-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr> 
     <tr>
@@ -232,6 +289,7 @@ require_once("../lib/header.inc");
         </td>
        	<td>
         <input type="checkbox" name="GepiAccesReleveCpe" value="yes" <?php if (getSettingValue("GepiAccesReleveCpe")=='yes') echo "checked"; ?> /> a accès à tous les relevés de notes de toutes les classes<br />
+        <input type="checkbox" name="GepiPasswordReinitCpe" value="yes" <?php if (getSettingValue("GepiPasswordReinitCpe")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr> 
     <tr>
@@ -239,7 +297,8 @@ require_once("../lib/header.inc");
         L'administrateur
         </td>
        	<td>
-			<input type="checkbox" name="GepiAdminImprBulSettings" value="yes" <?php if (getSettingValue("GepiAdminImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins
+			<input type="checkbox" name="GepiAdminImprBulSettings" value="yes" <?php if (getSettingValue("GepiAdminImprBulSettings")=='yes') echo "checked"; ?> /> a accès au paramétrage de l'impression des bulletins<br/>
+			<input type="checkbox" name="GepiPasswordReinitAdmin" value="yes" <?php if (getSettingValue("GepiPasswordReinitAdmin")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr> 
     <tr>
@@ -248,7 +307,8 @@ require_once("../lib/header.inc");
         </td>
        	<td>
         	<input type="checkbox" name="GepiAccesReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesReleveEleve")=='yes') echo "checked"; ?> /> a accès à ses relevés de notes<br/>
-        	<input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /> a accès à son cahier de texte
+        	<input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /> a accès à son cahier de texte<br/>
+        	<input type="checkbox" name="GepiPasswordReinitEleve" value="yes" <?php if (getSettingValue("GepiPasswordReinitEleve")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr>
     <tr>
@@ -257,7 +317,8 @@ require_once("../lib/header.inc");
         </td>
        	<td>
         	<input type="checkbox" name="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves dont il est responsable<br/>
-        	<input type="checkbox" name="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /> a accès au cahier de texte des élèves dont il est responsable
+        	<input type="checkbox" name="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /> a accès au cahier de texte des élèves dont il est responsable<br/>
+        	<input type="checkbox" name="GepiPasswordReinitParent" value="yes" <?php if (getSettingValue("GepiPasswordReinitParent")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr> 
 </table>
