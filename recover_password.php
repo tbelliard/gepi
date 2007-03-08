@@ -238,7 +238,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
     <td style="text-align: center; width: 40%;"><input type="password" id="password" name="no_anti_inject_password" size="16" tabindex="1" /></td>
   </tr>
   <tr>
-    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="confirmation">Adresse e-mail</label></td>
+    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="confirmation">Confirmation</label></td>
     <td style="text-align: center; width: 40%;"><input type="password" id="confirmation" name="no_anti_inject_confirmation" size="16" tabindex="2" /></td>
   </tr>
   <tr>
