@@ -122,6 +122,9 @@ $login_eleve   = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :NULL;
 $display_date_debut = isset($_POST["display_date_debut"]) ? $_POST["display_date_debut"] :NULL;
 $display_date_fin = isset($_POST["display_date_fin"]) ? $_POST["display_date_fin"] :NULL;
 
+//Ajout Eric
+$choix_periode = isset($_POST["choix_periode"]) ? $_POST["choix_periode"] :NULL;
+
 // Modif Christian pour le PDF
 $selection = isset($_POST["selection"]) ? $_POST["selection"] :NULL;
 if (empty($_GET['format']) AND empty($_POST['format'])) {$format="";}
@@ -154,6 +157,12 @@ foreach ($categories as $cat_id) {
 
 function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf) {
 $gepiYear = getSettingValue("gepiYear");
+
+// Ajout Eric
+global $choix_periode;
+
+//echo $choix_periode;
+
 
 //====================================================================
 // AJOUT: boireaus
@@ -196,9 +205,12 @@ $date_debut = $anneed."-".$moisd."-".$jourd." 00:00:00";
 $display_date_debut = $jourd."/".$moisd."/".$anneed;
 $display_date_fin = $jourf."/".$moisf."/".$anneef;
 
+// Modif Eric CODE MORT
+/*
 // On calcule le nombre de périodes
 $nb_periode_dans_classe = mysql_query("SELECT * FROM j_eleves_classes WHERE (login='$current_eleve_login' AND id_classe='$id_classe')");
 $count_per = mysql_num_rows($nb_periode_dans_classe);
+*/
 
 // Est-ce qu'on affiche les catégories de matières ?
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
@@ -233,7 +245,18 @@ echo "</p>\n";
 
 echo "</td><td width=40% align=\"center\">";
 echo "<span class=\"bull_simpl_g\">Classe de $current_eleve_classe_complet<br />Année scolaire ".getSettingValue("gepiYear")."<br />";
-echo "Relevé de notes du <b>".$display_date_debut."</b> au <b>".$display_date_fin."</b></span>";
+
+//modif ERIC
+if ($choix_periode==0) {
+   echo "Relevé de notes du <b>".$display_date_debut."</b> au <b>".$display_date_fin."</b></span>";
+} else {
+  // On récupère le nom de la période.
+  $requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`=".$id_classe." AND `num_periode`=".$choix_periode."";
+  //echo $requete_periode;
+  $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+  $data_periode = mysql_fetch_array ($resultat_periode);		
+  echo "<b>".$data_periode['nom_periode']."</b> : Relevé de notes</span>";
+}
 
 $nom_fic_logo = getSettingValue("logo_etab");
 $nom_fic_logo_c = "../images/".$nom_fic_logo;
@@ -344,15 +367,30 @@ while ($j < $nombre_groupes) {
 	// MODIF: boireaus
 
 	if($avec_coef_devoir=="oui"){
-		$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-		nd.login = '".$current_eleve_login."' and
-		nd.id_devoir = d.id and
-		d.display_parents='1' and
-		d.id_racine = cn.id_cahier_notes and
-		cn.id_groupe = '".$current_groupe."' and
-		d.date >= '".$date_debut."' and
-		d.date <= '".$date_fin."'
-		)";
+
+	    if ($choix_periode ==0) {
+			$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			nd.login = '".$current_eleve_login."' and
+			nd.id_devoir = d.id and
+			d.display_parents='1' and
+			d.id_racine = cn.id_cahier_notes and
+			cn.id_groupe = '".$current_groupe."' and
+			d.date >= '".$date_debut."' and
+			d.date <= '".$date_fin."'
+			)";
+		} else {
+			$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			nd.login = '".$current_eleve_login."' and
+			nd.id_devoir = d.id and
+			d.display_parents='1' and
+			d.id_racine = cn.id_cahier_notes and
+			cn.id_groupe = '".$current_groupe."' and
+			cn.periode = '".$choix_periode."' 
+			)";
+			//echo "<td>".$sql."</td>";
+		}
+		
+		
 		$res_differents_coef=mysql_query($sql);
 		if(mysql_num_rows($res_differents_coef)>1){
 			$affiche_coef="oui";
@@ -361,19 +399,34 @@ while ($j < $nombre_groupes) {
 			$affiche_coef="non";
 		}
 	}
-
         //$query_notes = mysql_query("SELECT nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-        $query_notes = mysql_query("SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-        nd.login = '".$current_eleve_login."' and
-        nd.id_devoir = d.id and
-        d.display_parents='1' and
-        d.id_racine = cn.id_cahier_notes and
-        cn.id_groupe = '".$current_groupe."' and
-        d.date >= '".$date_debut."' and
-        d.date <= '".$date_fin."'
-        )
-        ORDER BY d.date
-        ");
+        if ($choix_periode ==0) {
+		    $sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			nd.login = '".$current_eleve_login."' and
+			nd.id_devoir = d.id and
+			d.display_parents='1' and
+			d.id_racine = cn.id_cahier_notes and
+			cn.id_groupe = '".$current_groupe."' and
+			d.date >= '".$date_debut."' and
+			d.date <= '".$date_fin."'
+			)
+			ORDER BY d.date
+			";
+			$query_notes = mysql_query($sql1);
+        } else {
+		    $sql1 = "SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			nd.login = '".$current_eleve_login."' and
+			nd.id_devoir = d.id and
+			d.display_parents='1' and
+			d.id_racine = cn.id_cahier_notes and
+			cn.id_groupe = '".$current_groupe."' and
+			cn.periode = '".$choix_periode."' 
+			)
+			ORDER BY d.date
+			";
+			$query_notes = mysql_query($sql1);
+		}
+		//echo $sql1;
 	//====================================================
 
         $count_notes = mysql_num_rows($query_notes);
@@ -755,6 +808,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	        echo "<table><tr>\n";
 	        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
+//echo "<input type='hidden' name='choix_periode' value='".$choix_periode. "'/>";
+
 	        echo "<td>Les relevés de notes de tous les élèves de la classe</td></tr>\n";
 	    } else {
 	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir un autre groupe</a></p>\n";
@@ -830,15 +885,22 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	} else {
 		// Sélection de l'élève dans le cas d'un responsable d'élève ou d'un élève
 		if ($_SESSION['statut'] == "responsable") {
-			$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
-					"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
-					"e.ele_id = re.ele_id AND " .
-					"re.pers_id = r.pers_id AND " .
-					"r.login = '" . $_SESSION['login'] . "')");
+		    $sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom " .
+								"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+								"e.ele_id = re.ele_id AND " .
+								"re.pers_id = r.pers_id AND " .
+								"r.login = '" . $_SESSION['login'] . 
+								"' AND jec.login = e.login )";
+								
+			$quels_eleves = mysql_query($sql_quels_eleves);
+			
 		} elseif ($_SESSION['statut'] == "eleve") {
-			$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
-					"FROM eleves e WHERE (" .
-					"e.login = '" . $_SESSION['login'] . "')");
+		    $sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom 
+								FROM eleves e, j_eleves_classes jec WHERE (
+								e.login = '" . $_SESSION['login'] .
+								"' AND jec.login = e.login)";
+			//echo $sql_quels_eleves;
+			$quels_eleves = mysql_query($sql_quels_eleves);
 		}
 		if (mysql_num_rows($quels_eleves) == 0) {
 	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
@@ -846,14 +908,17 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			require("../lib/footer.inc.php");
 			die();
 		} elseif (mysql_num_rows($quels_eleves) == 1) {
-	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
+		    echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
 			$current_eleve = mysql_fetch_object($quels_eleves);
+			$id_classe =  $current_eleve->id_classe;
 			echo "<br/><br/>";
 			echo "<p class='bold'>Elève : ".$current_eleve->prenom . " " . $current_eleve->nom."</p>\n";
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 			echo "<input type='hidden' name='login_eleve' value='".$current_eleve->login . "'/>";
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 		} else {
+		    // ERIC cas non testé 
+			//il faut récuperer l'id classe de chaque élève.
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 			echo "<p clas='bold'>Elève : ";
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
@@ -865,15 +930,32 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		}
 	}
 
+    //Modif Eric
+    echo "<br /><br /><p><b>Choisissez la période d'affichage : </b></p><br />\n";
 
-    echo "<p>Choisissez la période : </p><br />\n";
-
+	if ($id_groupe != NULL) { // on recherche la classe à partir de id_groupe
+	  $requete_classe = "SELECT * FROM `j_groupes_classes` WHERE `id_groupe`=".$id_groupe."";
+	  //echo $requete_classe;
+	  $resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
+	  $data_classe = mysql_fetch_array ($resultat_classe);
+	  $id_classe = $data_classe['id_classe'];
+	  //echo $id_classe;
+	}
+	if ($id_classe != NULL)  { // on recherche les périodes pour la classe
+		$requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`=".$id_classe."";
+		//echo $requete_periode;
+		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
+		   echo "<input type=\"radio\" name=\"choix_periode\" value='".$data_periode['num_periode']."'  /> ".$data_periode['nom_periode']." <br />\n";
+		}
+    }		
     $annee = strftime("%Y");
     $mois = strftime("%m");
     $jour = strftime("%d");
     if (!isset($_POST['display_date_debut'])) $display_date_debut = $jour."/".$mois."/".$annee;
     if (!isset($_POST['display_date_fin'])) $display_date_fin = $jour."/".$mois."/".$annee;
-    echo "<a name=\"calend\"></a>De la date : ";
+    echo "<a name=\"calend\"></a>";
+	echo "<input type=\"radio\" name=\"choix_periode\" value=\"0\" checked /> \nDe la date : ";
     echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
     echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
@@ -883,10 +965,13 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
     echo " (Veillez à respectez le format jj/mm/aaaa)";
 
+	
+	echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
+	
     //====================================================================
     // MODIF: boireaus
     // Pour permettre de ne pas afficher les noms des devoirs
-    echo "\n<br />\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' checked /> Afficher le nom des devoirs.\n";
+    echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' checked /> Afficher le nom des devoirs.\n";
     echo "<br />\n";
     echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' /> Afficher tous les coefficients des devoirs.\n";
     echo "<br />\n";
@@ -1030,6 +1115,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         $i=0;
         while ($i < $nombre_eleves) {
             $current_eleve_login = mysql_result($appel_liste_eleves, $i, "login");
+
             releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf);
             if ($i != $nombre_eleves-1) {echo "<p class=saut>&nbsp;</p>\n";}
             $i++;

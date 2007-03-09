@@ -16,6 +16,8 @@ Nouvelles fonctionalités
 - outil de réinitialisation du mot de passe par l'utilisateur lui-même (depuis la page login, avec envoi d'un mail)
 - modification pour une professeur de l'ordre d'affichage (par matière puis par classe) de ses matières et ses classes sur différentes pages.
 - accès à l'équipe pédagogique pour les élèves et leur(s) responsable(s), avec affichage optionnel de l'email des profs
+- Pour la saisie des appréciations trimestrielles, rappel des notes du carnet de notes au dessus
+- ajout d'une option d'affichage des notes, par période sur le relevé de notes HTML
 
 Corrections de bugs
 -------------------
