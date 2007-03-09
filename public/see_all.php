@@ -219,6 +219,5 @@ while (true) {
 
 //if ($current_imprime=='n') echo "</td></tr></table>";
 //echo "</td></tr></table>";
-if (file_exists("./pmv.php")) require("./pmv.php");
 require("../lib/footer.inc.php");
 ?>

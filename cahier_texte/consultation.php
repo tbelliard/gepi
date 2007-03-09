@@ -479,6 +479,5 @@ while (true) {
 echo "</td></tr>";
 echo "</table>";
 echo "</td></tr></table>";
-if (file_exists("./pmv.php")) require("./pmv.php");
 require("../lib/footer.inc.php");
 ?>

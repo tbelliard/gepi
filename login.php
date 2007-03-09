@@ -257,6 +257,7 @@ while (list($name, $adress) = each($gepiAuthors)) {
 
 ?>
 </div>
+<?php if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");?>
 </div>
 </body>
 </html>
