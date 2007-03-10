@@ -429,3 +429,6 @@ INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailParent', 'no');
 INSERT INTO droits VALUES ('/groupes/visu_profs_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation Èquipe pÈdagogique', '');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleParent', 'yes');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleEleve', 'yes');
+INSERT INTO droits VALUES ('/saisie/impression_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe.', '');
+INSERT INTO droits VALUES ('/impression/avis_pdf.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe. Module PDF', '');
+INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; r√©glage des param√®tres', '');
