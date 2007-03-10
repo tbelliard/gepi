@@ -18,6 +18,7 @@ Nouvelles fonctionalités
 - accès à l'équipe pédagogique pour les élèves et leur(s) responsable(s), avec affichage optionnel de l'email des profs
 - Pour la saisie des appréciations trimestrielles, rappel des notes du carnet de notes au dessus
 - ajout d'une option d'affichage des notes, par période sur le relevé de notes HTML
+- ajout de l'impression en PDF d'une synthèse des avis du conseil de classe par classe et par période.
 
 Corrections de bugs
 -------------------
