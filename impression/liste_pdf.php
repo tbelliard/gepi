@@ -170,15 +170,14 @@ $pdf->SetAutoPageBreak(true, $MargeBas);
 // DE   IMPRIME.PHP
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
-$id_periode_num=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
+$id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 
-$id_periode=$id_periode_num;
 //On recupère les variables pour l'affichage
 // DE  IMPRIME_SERIE.PHP
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
 $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"] : NULL;
-$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;
+if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;} 
 if (!(is_numeric($id_periode))) {
 	$id_periode=1;
 }
