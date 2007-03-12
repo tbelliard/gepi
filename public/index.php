@@ -104,6 +104,10 @@ echo "//-->";
 echo "</SCRIPT></p>\n";
 echo make_classes_select_html('index.php', $id_classe, $year, $month, $day);
 if ($id_classe!=-1) echo make_matiere_select_html('index.php', $id_classe, $id_groupe, $year, $month, $day);
+$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE ((statut = 'responsable' OR statut = 'eleve') AND etat = 'actif')"), 0);
+if ($test_login > 0) {
+	echo "<p>Si vous disposez d'un identifiant et d'un mot de passe, <a href='../login.php'>connectez-vous !</a></p>";
+}
 echo "</td>\n";
 echo "<td style=\"text-align:center;\">\n";
 echo "<p><span class='grand'>Cahier de texte";
