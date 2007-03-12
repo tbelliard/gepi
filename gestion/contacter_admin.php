@@ -55,8 +55,14 @@ switch($action)
 //envoi du message
 case "envoi":
 //N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
-$message = "Demandeur : ".$nama."\nEtablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
-$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
+$message = "Demandeur : ".$nama."\n";
+$message = "Statut : ".$_SESSION['statut']."\n";
+$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
+if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
+	$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
+} else {
+	$message .= "\n\nMode de réponse : par email (si spécifié)";
+}
 $envoi = mail(getSettingValue("gepiAdminAdress"),
     "Demande d'aide dans GEPI",
     $message,
@@ -79,14 +85,16 @@ echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingVal
 echo "</table>";
 ?>
 <form action="contacter_admin.php" method="post" name="doc">
-<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>">
-<input type="hidden" name="action" value="envoi">
-<textarea name="message" cols="100" rows="5">Contenu du message : </textarea><br>
-E-mail pour la réponse : (facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail)<br>
-<input type="text" name="email_reponse" size="40" maxlength="256"><br>
+<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
+<input type="hidden" name="action" value="envoi" />
+<textarea name="message" cols="50" rows="5">Contenu du message : </textarea><br />
+E-mail pour la réponse : <?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") echo "(facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail)";?><br/>
+<input type="text" name="email_reponse" size="40" maxlength="256" /><br/>
+<?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") { ?>
 Ou numéro de votre casier en salle des professeurs pour la réponse :
-<input type="text" name="casier" size="40" maxlength="256" value="Casier N°"><br><br>
-<input type="submit" value="Envoyer le message">
+<input type="text" name="casier" size="40" maxlength="256" value="Casier N°"><br/><br/>
+<?php } ?>
+<input type="submit" value="Envoyer le message" />
 
 </form>
 <?php
