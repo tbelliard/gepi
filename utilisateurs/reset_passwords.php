@@ -63,21 +63,19 @@ $user_classe = isset($_POST["user_classe"]) ? $_POST["user_classe"] : (isset($_G
 if ($user_login AND $user_login == $_SESSION['login']) {
 	$user_login = false;
 	echo "<p>ERREUR ! Utilisez l'interface 'Gérer mon compte' pour changer votre mot de passe !</p>";
-	echo "</body></html>";
+	echo "</div></body></html>";
 	die();
 }
 
 if ($user_status and $user_status != "scolarite" and $user_status != "professeur" and $user_status != "cpe" and $user_status != "secours" and $user_status != "responsable" and $user_status != "eleve") {
-	$user_status = false;
 	echo "<p>ERREUR ! L'identifiant de statut est erroné. L'opération ne peut pas continuer.</p>";
-	echo "</body></html>";
+	echo "</div></body></html>";
 	die();
 }
 
 if ($user_classe AND !is_numeric($user_classe)) {
-	$user_classe = false;
 	echo "<p>ERREUR ! L'identifiant de la classe est erroné. L'opération ne peut pas continuer.</p>";
-	echo "</body></html>";
+	echo "</div></body></html>";
 	die();
 }
 //----
