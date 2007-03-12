@@ -1,8 +1,6 @@
 <?php
 /*
-* Last modification  : 30/10/2006
-*
-* Modification... Stephane Boireau
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -140,6 +138,16 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+// Vérifications droits d'accès
+if (
+	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") != "yes") OR
+	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") != "yes")
+	) {
+	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+	require "../lib/footer.inc.php";
+	die();
+}
+
 //echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css" />';
 //echo "\n";
 
@@ -160,11 +168,63 @@ $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve'
 */
 
 // Récupération des variables:
+unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 // Vérifier s'il peut y avoir des accents dans un id_classe.
-if((strlen(ereg_replace("[0-9a-zA-Z_ ]","",$id_classe))!=0)||($id_classe=="")){$id_classe=NULL;}
+if(!is_numeric($id_classe)){$id_classe=NULL;}
 
+unset($login_eleve);
+$login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_GET["login_eleve"]) ? $_GET["login_eleve"] : NULL);
 
+// Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
+if ($_SESSION['statut'] == "responsable") {
+	$get_eleves = mysql_query("SELECT e.login, e.prenom, e.nom " .
+			"FROM eleves e, resp_pers r, responsables2 re " .
+			"WHERE (" .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '".$_SESSION['login']."')");
+			
+	if (mysql_num_rows($get_eleves) == 1) {
+		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
+		$login_eleve = mysql_result($get_eleves, 0);
+	} elseif (mysql_num_rows($get_eleves) == 0) {
+		echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
+		require "../lib/footer.inc.php";
+		die();
+	} else {
+		if ($login_eleve != null) {
+			// $login_eleve a été défini mais l'utilisateur a plusieurs élèves associés. On vérifie
+			// qu'il a le droit de visualiser les données pour l'élève sélectionné.
+			$test = mysql_query("SELECT count(e.login) " .
+					"FROM eleves e, responsables2 re, resp_pers r " .
+					"WHERE (" .
+					"e.login = '" . $login_eleve . "' AND " .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '" . $_SESSION['login'] . "')");
+			if (mysql_result($test, 0) == 0) {
+			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
+			    require("../lib/footer.inc.php");
+				die();
+			}
+		}
+	}
+	
+} else if ($_SESSION['statut'] == "eleve") {
+	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	$login_eleve = $_SESSION['login'];
+}
+
+if ($login_eleve and $login_eleve != null) {
+	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
+	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
+	// dans une classe qui a le même nombre de périodes...
+	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
+	$req = mysql_query("SELECT nom, prenom FROM eleves WHERE login='".$login_eleve."'");
+	$nom_eleve = mysql_result($req, 0, "nom");
+	$prenom_eleve = mysql_result($req, 0, "prenom");
+}
 
 
 include "../lib/periodes.inc.php";
@@ -175,7 +235,7 @@ include "../lib/periodes.inc.php";
 
 
 // Choix de la classe:
-if (!isset($id_classe)) {
+if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
 	echo "<div class='noprint'>\n";
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a></p>\n";
 	echo "</div>\n";
@@ -215,70 +275,81 @@ if (!isset($id_classe)) {
 	echo "</blockquote>\n";
 	//echo "</p>\n";
 	echo "</form>\n";
-}
-else {
-	/*
-	foreach($_POST as $post => $val){
-		echo $post.' : '.$val."<br />\n";
+} elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
+	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
+	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser les moyennes :</p>";
+	while ($current_eleve = mysql_fetch_object($get_eleves)) {
+		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
-	*/
-
-	echo "<div class='noprint'>\n";
-	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
-	// La classe est choisie.
-	// On ajoute l'accès/retour à une autre classe:
-	//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
-	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
-
-	// =================================
-	// AJOUT: boireaus
-	//$sql="SELECT id, classe FROM classes ORDER BY classe";
-	if($_SESSION['statut']=='scolarite'){
-		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
-	}
-	elseif($_SESSION['statut']=='professeur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
-	}
-	elseif($_SESSION['statut']=='cpe'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe";
-	}
-
-	$res_class_tmp=mysql_query($sql);
-	if(mysql_num_rows($res_class_tmp)>0){
-		$id_class_prec=0;
-		$id_class_suiv=0;
-		$temoin_tmp=0;
-		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-			if($lig_class_tmp->id==$id_classe){
-				$temoin_tmp=1;
-				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-					$id_class_suiv=$lig_class_tmp->id;
+	
+} else {
+	
+	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
+		/*
+		foreach($_POST as $post => $val){
+			echo $post.' : '.$val."<br />\n";
+		}
+		*/
+	
+		echo "<div class='noprint'>\n";
+		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
+		// La classe est choisie.
+		// On ajoute l'accès/retour à une autre classe:
+		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
+		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
+	
+		// =================================
+		// AJOUT: boireaus
+		//$sql="SELECT id, classe FROM classes ORDER BY classe";
+		if($_SESSION['statut']=='scolarite'){
+			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='professeur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		}
+		elseif($_SESSION['statut']=='cpe'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+				p.id_classe = c.id AND
+				jec.id_classe=c.id AND
+				jec.periode=p.num_periode AND
+				jecpe.e_login=jec.login AND
+				jecpe.cpe_login='".$_SESSION['login']."'
+				ORDER BY classe";
+		}
+	
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$id_class_prec=0;
+			$id_class_suiv=0;
+			$temoin_tmp=0;
+			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				if($lig_class_tmp->id==$id_classe){
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+						$id_class_suiv=$lig_class_tmp->id;
+					}
+					else{
+						$id_class_suiv=0;
+					}
 				}
-				else{
-					$id_class_suiv=0;
+				if($temoin_tmp==0){
+					$id_class_prec=$lig_class_tmp->id;
 				}
-			}
-			if($temoin_tmp==0){
-				$id_class_prec=$lig_class_tmp->id;
 			}
 		}
+		// =================================
+	
+		if(isset($id_class_prec)){
+			if($id_class_prec!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>|";}
+		}
+		if(isset($id_class_suiv)){
+			if($id_class_suiv!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>|";}
+		}
+		echo "</div>\n";
+	} else {
+		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";		
 	}
-	// =================================
-
-	if(isset($id_class_prec)){
-		if($id_class_prec!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>|";}
-	}
-	if(isset($id_class_suiv)){
-		if($id_class_suiv!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>|";}
-	}
-	echo "</div>\n";
-
 
 	//===============================================
 	// Récupération des variables:
@@ -290,6 +361,35 @@ else {
 		$eleve1=$eleve1b;
 	}
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
+
+
+	// Vérification de sécurité
+	if ($_SESSION['statut'] == "eleve") {
+		$eleve1 = $login_eleve;
+	}
+	if ($_SESSION['statut'] == "responsable") {
+		if ($login_eleve != null) {
+			$eleve1 = $login_eleve;
+		}
+		$test = mysql_query("SELECT count(e.login) " .
+				"FROM eleves e, responsables2 re, resp_pers r " .
+				"WHERE (" .
+				"e.login = '" . $eleve1 . "' AND " .
+				"e.ele_id = re.ele_id AND " .
+				"re.pers_id = r.pers_id AND " .
+				"r.login = '" . $_SESSION['login'] . "')");
+		if (mysql_result($test, 0) == 0) {
+		    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.\n";
+		    require("../lib/footer.inc.php");
+			die();
+		}
+	}
+	if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
+		// On filtre eleve2 :
+		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
+			$eleve2 = "moyclasse";
+		}
+	}
 
 	// On évite d'initialiser à NULL pour permettre de pré-cocher le choix_periode.
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
@@ -526,8 +626,6 @@ else {
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
 
-
-
 	// Affichage de la photo si elle existe:
 	if((isset($eleve1))&&($affiche_photo!="non")){
 		//$chemin_photos='/var/wwws/gepi/photos';
@@ -554,109 +652,122 @@ else {
 		}
 	}
 
-
-
-
-
-	// Choix des élèves:
-	$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
-	$nombreligne = mysql_num_rows($call_eleve);
-
 	echo "<p>\n";
 	echo "Classe de $classe\n";
 	echo "<br />\n";
-	echo "<select name='eleve1'>\n";
-	$cpt=1;
-	$numeleve1=0;
-	while($ligne=mysql_fetch_object($call_eleve)){
-		// Le login est la clé liant les tables eleves et j_eleves_classes
-		$tab_login_eleve[$cpt]="$ligne->login";
-		$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
-		if($tab_login_eleve[$cpt]==$eleve1){
-			$selected=" selected='yes'";
-			$numeleve1=$cpt;
+
+	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
+		// Choix des élèves:
+		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
+		$nombreligne = mysql_num_rows($call_eleve);	
+		
+		echo "<select name='eleve1'>\n";
+		$cpt=1;
+		$numeleve1=0;
+		while($ligne=mysql_fetch_object($call_eleve)){
+			// Le login est la clé liant les tables eleves et j_eleves_classes
+			$tab_login_eleve[$cpt]="$ligne->login";
+			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
+			if($tab_login_eleve[$cpt]==$eleve1){
+				$selected=" selected='yes'";
+				$numeleve1=$cpt;
+			}
+			else{
+				$selected="";
+			}
+			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
+			$cpt++;
 		}
-		else{
-			$selected="";
+		echo "</select>\n";
+		echo "<br />\n";
+	
+	
+	
+		echo "<select name='eleve2'>\n";
+		for($cpt=1;$cpt<=$nombreligne;$cpt++){
+			if($tab_login_eleve[$cpt]==$eleve2){
+				$selected=" selected='yes'";
+				$numeleve2=$cpt;
+			}
+			else{
+				$selected="";
+			}
+			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
 		}
-		echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
-		$cpt++;
+		if($eleve2=='moyclasse'){$selected=" selected='yes'";}else{$selected="";}
+		if(!isset($eleve2)){$selected=" selected='yes'";}
+		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+		if($eleve2=='moymax'){$selected=" selected='yes'";}else{$selected="";}
+		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+		if($eleve2=='moymin'){$selected=" selected='yes'";}else{$selected="";}
+		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		echo "</select>\n";
+		echo "<br />\n";
+		
+		// Pour passer à l'élève précédent ou au suivant:
+		echo "<script type='text/javascript' language='JavaScript'>\n";
+		$precedent=$numeleve1-1;
+		$suivant=$numeleve1+1;
+		echo "precedent=$precedent\n";
+		echo "suivant=$suivant\n";
+		echo "function eleve_precedent(){
+			if(document.getElementById('numeleve1').value>1){";
+	    // On effectue un test pour éviter de tenter de chercher $tab_login_eleve[$precedent] si $precedent=0
+	    if($precedent>0){
+	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$precedent]';
+	        document.forms['form_choix_eleves'].submit();";
+	    }
+		echo "		return true;
+			}
+			else{
+				document.getElementById('eleve1b').value='';
+			}
+		}
+		function eleve_suivant(){
+			if(document.getElementById('numeleve1').value<$nombreligne){";
+	    if($suivant<$nombreligne+1){
+	        echo "document.getElementById('eleve1b').value='$tab_login_eleve[$suivant]';
+	        document.forms['form_choix_eleves'].submit();";
+	    }
+			echo "          return true;
+			}
+			else{
+				document.getElementById('eleve1b').value='';
+			}
+		}
+		</script>\n";
+	
+		//echo "<p>\n";
+		echo "<input type='hidden' name='numeleve1' id='numeleve1' value='$numeleve1' size='3' />\n";
+		// 'eleve1b' est destiné au passage du nom de l'élève par les boutons Précédent/Suivant
+	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
+		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
+		echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
+		echo "<input type='submit' name='choix_eleves' value='Envoyer' />\n";
+		echo "<input type='button' name='precedent' value='>>' onClick='eleve_suivant();' />\n";
+		echo "</p>\n";
+
+		//echo "<hr width='150'>\n";		
+		
+	} else {
+		// Cas d'un responsable ou d'un élève :
+		// Pas de sélection de l'élève, il est déjà fixé.
+		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe.
+		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
+		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
+		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
+		echo "et <select name='eleve2'>\n";
+		if($eleve2=='moyclasse'){$selected=" selected='yes'";}else{$selected="";}
+		if(!isset($eleve2)){$selected=" selected='yes'";}
+		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
+		if($eleve2=='moymax'){$selected=" selected='yes'";}else{$selected="";}
+		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
+		if($eleve2=='moymin'){$selected=" selected='yes'";}else{$selected="";}
+		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
+		echo "</select>\n";
+		echo "<br />\n";
+		echo "<input type='submit' name='choix_eleves' value='Envoyer' style='margin-bottom: 3px;'/><br/>\n";
 	}
-	echo "</select>\n";
-	echo "<br />\n";
-
-
-
-	echo "<select name='eleve2'>\n";
-	for($cpt=1;$cpt<=$nombreligne;$cpt++){
-		if($tab_login_eleve[$cpt]==$eleve2){
-			$selected=" selected='yes'";
-			$numeleve2=$cpt;
-		}
-		else{
-			$selected="";
-		}
-		echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
-	}
-	if($eleve2=='moyclasse'){$selected=" selected='yes'";}else{$selected="";}
-	if(!isset($eleve2)){$selected=" selected='yes'";}
-	echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-	if($eleve2=='moymax'){$selected=" selected='yes'";}else{$selected="";}
-	echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-	if($eleve2=='moymin'){$selected=" selected='yes'";}else{$selected="";}
-	echo "<option value='moymin'$selected>Moyenne min.</option>\n";
-	echo "</select>\n";
-	echo "<br />\n";
-
-
-
-	// Pour passer à l'élève précédent ou au suivant:
-	echo "<script type='text/javascript' language='JavaScript'>\n";
-	$precedent=$numeleve1-1;
-	$suivant=$numeleve1+1;
-	echo "precedent=$precedent\n";
-	echo "suivant=$suivant\n";
-	echo "function eleve_precedent(){
-		if(document.getElementById('numeleve1').value>1){";
-    // On effectue un test pour éviter de tenter de chercher $tab_login_eleve[$precedent] si $precedent=0
-    if($precedent>0){
-        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$precedent]';
-        document.forms['form_choix_eleves'].submit();";
-    }
-	echo "		return true;
-		}
-		else{
-			document.getElementById('eleve1b').value='';
-		}
-	}
-	function eleve_suivant(){
-		if(document.getElementById('numeleve1').value<$nombreligne){";
-    if($suivant<$nombreligne+1){
-        echo "document.getElementById('eleve1b').value='$tab_login_eleve[$suivant]';
-        document.forms['form_choix_eleves'].submit();";
-    }
-		echo "          return true;
-		}
-		else{
-			document.getElementById('eleve1b').value='';
-		}
-	}
-</script>\n";
-
-	//echo "<p>\n";
-	echo "<input type='hidden' name='numeleve1' id='numeleve1' value='$numeleve1' size='3' />\n";
-	// 'eleve1b' est destiné au passage du nom de l'élève par les boutons Précédent/Suivant
- 	// Cette valeur l'emporte sur le contenu de 'eleve1'
-	echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
-	echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-	echo "<input type='submit' name='choix_eleves' value='Envoyer' />\n";
-	echo "<input type='button' name='precedent' value='>>' onClick='eleve_suivant();' />\n";
-	echo "</p>\n";
-
-
-	//echo "<hr width='150'>\n";
-
-
 
 	// Choix de la période
 	if($choix_periode=='periode'){$checked=" checked='yes'";}else{$checked="";}
@@ -671,8 +782,6 @@ else {
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes'){$checked=" checked='yes'";}else{$checked="";}
 	echo "<input type='radio' name='choix_periode' value='toutes_periodes'$checked /> Toutes les périodes\n";
-
-
 
 	echo "<hr width='150' />\n";
 
@@ -729,10 +838,6 @@ else {
 	echo "</div>\n";
 	//echo "<hr width='150' />\n";
 
-
-
-
-
 	// Paramètres d'affichage:
 	// - dimensions de l'image
 	echo "<div id='div_params_2' style='display:block; border: 1px solid black;'>";
@@ -780,8 +885,6 @@ else {
 	//echo "<hr width='150' />\n";
 
 
-
-
 	// - Affichage de la photo
 	echo "<div id='div_params_3' style='display:block; border: 1px solid black;'>";
 	echo "<b>Paramètres des photos</b><br />\n";
@@ -815,8 +918,6 @@ else {
 	echo "</div>\n";
 
 
-
-
 	echo "<script type='text/javascript'>
 	// On cache les div de paramètres au chargement de la page
 	document.getElementById('div_params').style.display='none';
@@ -824,7 +925,7 @@ else {
 	document.getElementById('div_params_2').style.display='none';
 	document.getElementById('div_params_3').style.display='none';
 	document.getElementById('div_params_4').style.display='none';
-</script>\n";
+	</script>\n";
 
 
 	echo "</form>\n";
@@ -836,7 +937,8 @@ else {
 
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
 	// Et calcul de l'age (si le serveur est à l'heure;o).
-	if(isset($eleve1)){
+	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
+		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")){
 		// Informations sur l'élève $eleve1:
 		$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 		$result_infos_eleve=mysql_query($sql);
@@ -908,7 +1010,7 @@ else {
 			//echo "Elève: $eleve1<br />periode=$periode<br />";
 
 			//$num_periode
-			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND nom_periode='$periode'";
+			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND nom_periode='".$periode."'";
 			$resultat=mysql_query($sql);
 			if(mysql_num_rows($resultat)==0){
 				//??? Toutes les périodes ?
@@ -981,7 +1083,7 @@ else {
 				// Le fait de suivre une matière n'est plus renseigné par j_eleves_matieres qui contenait en fait les exclusions:
 				// Les matières qu'un élève n'avait pas y était inscrites.
 				// Avec la gestion par groupes, cela ne fonctionne plus ainsi.
-				$sql="SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe AND jeg.periode='$num_periode')";
+				$sql="SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe AND jeg.periode='".$num_periode."')";
 				affiche_debug("$sql<br />");
 				$eleve_option_query=mysql_query($sql);
 				//echo "SELECT * FROM j_eleves_groupes jeg,j_groupes_matieres jgm WHERE (jeg.login='$eleve1' AND jgm.id_matiere='$current_matiere' AND jeg.id_groupe=jgm.id_groupe)<br />\n";
@@ -1526,7 +1628,7 @@ else {
 
 				$num_periode[$cpt]=$lign_periode->num_periode;
 
-				// Compteur du nombre de matières avec une note auter que ABS,...
+				// Compteur du nombre de matières avec une note autre que ABS,...
 				$cpt2=0;
 				for($i=1;$i<=count($matiere);$i++){
 					//$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve1' AND periode='$num_periode[$cpt]' AND matiere='$matiere[$i]')");
@@ -1676,7 +1778,11 @@ else {
 		}
 	}
 	else{
-		echo "<p align='center'>Choisissez un élève et validez.</p>\n";
+		if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
+			echo "<p align='center'>Choisissez une période et validez.</p>\n";
+		} else {
+			echo "<p align='center'>Choisissez un élève et validez.</p>\n";
+		}
 	}
 	echo "</td>\n";
 	//====================================================================

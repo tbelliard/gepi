@@ -365,7 +365,7 @@ INSERT INTO `droits` VALUES ('/init_dbf_sts/save_csv.php', 'V', 'F', 'F', 'F', '
 INSERT INTO `droits` VALUES ('/groupes/visu_profs_class.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation des équipes pédagogiques', '');
 INSERT INTO `droits` VALUES ('/groupes/popup.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation des équipes pédagogiques', '');
 INSERT INTO `matieres_categories` VALUES (1, 'Autres', 'Autres', '5');
-INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
+INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'Visualisation graphique des résultats scolaires', '');
 INSERT INTO droits VALUES ('/visualisation/draw_graphe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
 INSERT INTO setting VALUES ('gepi_denom_boite','boite');
 INSERT INTO setting VALUES ('gepi_denom_boite_genre','f');
@@ -431,4 +431,6 @@ INSERT INTO setting VALUES ('GepiAccesBulletinSimpleParent', 'yes');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleEleve', 'yes');
 INSERT INTO droits VALUES ('/saisie/impression_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe.', '');
 INSERT INTO droits VALUES ('/impression/avis_pdf.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe. Module PDF', '');
-INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; rÃ©glage des paramÃ¨tres', '');
+INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; reglage des parametres', '');
+INSERT INTO setting VALUES ('GepiAccesGraphEleve', 'yes');
+INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');

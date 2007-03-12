@@ -422,6 +422,22 @@ if ($condition) {
     }
 }
 
+// Graphiques
+$condition = (
+			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") == 'yes')
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") == 'yes')			
+			);
+if ($condition) {
+    $chemin[] = "/visualisation/affiche_eleve.php";
+    $titre[] = "Visualisation graphique";
+    if ($_SESSION['statut'] == "responsable") {
+    	$expli[] = "Permet de visualiser sous forme graphique les résultats du ou des élève(s) dont vous êtes responsable légal, par rapport à la classe.";
+    } else {
+    	$expli[] = "Permet de consulter vos résultats sous forme graphique, comparés à la classe.";
+    }
+}
+
+
 $nb_ligne = count($chemin);
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {

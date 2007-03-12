@@ -357,7 +357,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/index2.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation des moyennes des carnets de notes', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_toutes_notes2.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation des moyennes des carnets de notes', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/utilitaires/verif_groupes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Vérification des incohérences d appartenances à des groupes', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'Visualisation graphique des résultats scolaires', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/draw_graphe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Accès aux CSV des listes d élèves', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'Génération de CSV élèves', '');";
@@ -2663,7 +2663,25 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';	    
-	    
+
+	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux graphiques de visualisation (eleves et responsables)<br/>";
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphEleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphEleve', 'yes');");
+            
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphParent'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');");
+            
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';	    
+
     }
 
 
