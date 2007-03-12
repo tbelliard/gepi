@@ -119,12 +119,12 @@ if (isset($_POST['no_anti_inject_password'])) {
 	// On récupère le statut de l'utilisateur associé au ticket, et l'heure d'expiration :
 	$req = mysql_query("SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
 	if (mysql_num_rows($req) != 1) {
-		$message = "Erreur : votre ticket n'est pas valide.";
+		$message = "Erreur : le lien n'est pas valide ! <a href='recover_password.php'>Cliquez ici</a> pour formuler une nouvelle demande de changement de mot de passe.";
 	} else {
 		$user_status = mysql_result($req, 0, "statut");
 		$expiration = mysql_result($req, 0, "expiration");
 		if ($expiration < time()) {
-			$message = "Erreur : votre ticket n'est pas valide";
+			$message = "Erreur : le délai de sécurité pour l'utilisation du lien est dépassé. Vous pouvez reformuler une demande en <a href='recover_password.php'>cliquant ici</a>.";
 		} else {
 			if (($user_status == 'professeur') or ($user_status == 'cpe') or ($user_status == 'responsable') or ($user_status == 'eleve')) {
 			    // Mot de passe comportant des lettres et des chiffres
