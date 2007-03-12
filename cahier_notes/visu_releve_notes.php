@@ -886,7 +886,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		// Sélection de l'élève dans le cas d'un responsable d'élève ou d'un élève
 		if ($_SESSION['statut'] == "responsable") {
 		    $sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom " .
-								"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
+								"FROM j_eleves_classes jec, eleves e, responsables2 re, resp_pers r WHERE (" .
 								"e.ele_id = re.ele_id AND " .
 								"re.pers_id = r.pers_id AND " .
 								"r.login = '" . $_SESSION['login'] . 
@@ -917,14 +917,15 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			echo "<input type='hidden' name='login_eleve' value='".$current_eleve->login . "'/>";
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 		} else {
-		    // ERIC cas non testé 
-			//il faut récuperer l'id classe de chaque élève.
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 			echo "<p clas='bold'>Elève : ";
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 	    	echo "<select size=\"1\" name=\"login_eleve\">";
+	    	// On initialise un tableau pour stocker les différentes classes impliquées (ceci pour récupérer ensuite les périodes)
+	    	$eleves_classes = array();
 	    	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 	        	echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
+	        	$eleves_classes[] = $current_eleve->id_classe;
 	    	}
 	    	echo "</select>";
 		}
@@ -934,7 +935,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     echo "<br /><br /><p><b>Choisissez la période d'affichage : </b></p><br />\n";
 
 	if ($id_groupe != NULL) { // on recherche la classe à partir de id_groupe
-	  $requete_classe = "SELECT * FROM `j_groupes_classes` WHERE `id_groupe`=".$id_groupe."";
+	  $requete_classe = "SELECT * FROM `j_groupes_classes` WHERE `id_groupe`='".$id_groupe."'";
 	  //echo $requete_classe;
 	  $resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
 	  $data_classe = mysql_fetch_array ($resultat_classe);
@@ -942,13 +943,42 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	  //echo $id_classe;
 	}
 	if ($id_classe != NULL)  { // on recherche les périodes pour la classe
-		$requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`=".$id_classe."";
+		$requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`='".$id_classe."'";
 		//echo $requete_periode;
 		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
-		While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
+		while ($data_periode = mysql_fetch_array ($resultat_periode)) {
 		   echo "<input type=\"radio\" name=\"choix_periode\" value='".$data_periode['num_periode']."'  /> ".$data_periode['nom_periode']." <br />\n";
 		}
-    }		
+    }
+    if ($_SESSION['statut'] == "responsable" AND mysql_num_rows($quels_eleves) > 1) {
+    	// Cas où on a plusieurs élèves pour un même parent. Problème : on ne sait pas si
+    	// le schéma de périodes pour les différents élèves est identique... On va donc
+    	// vérifier ça. Si le schéma est identique, on propose le choix de périodes, sinon
+    	// on va simplement afficher le choix de dates...
+    	// TODO: ajouter un peu de javascript pour que dans le cas de schémas de périodes différents
+    	// on change simplement le formulaire dynamiquement lorsque l'on change d'élève dans le
+    	// select ci-dessus...
+    	$ok = true;
+    	$classe_periodes = array();
+    	$periode_prec = false;
+    	foreach($eleves_classes as $current_classe) {
+			$requete_periode = mysql_query("SELECT * FROM `periodes` WHERE `id_classe`='".$current_classe."'");
+			if ($periode_prec and mysql_num_rows($requete_periode) != $periode_prec) {
+				$ok = false;
+			}
+			$classe_periodes[$current_classe] = $requete_periode;
+			$periode_prec = mysql_num_rows($requete_periode);
+    	}
+    	if ($ok) {
+    		// On a un schéma de périodes similaire pour les classes des élèves considérés.
+    		// On affiche le choix des périodes.
+    		// On prend les informations de la première classe...
+    		$resultat_periode = current($classe_periodes);
+    		while ($data_periode = mysql_fetch_array($resultat_periode)) {
+		   		echo "<input type=\"radio\" name=\"choix_periode\" value='".$data_periode['num_periode']."'  /> ".$data_periode['nom_periode']." <br />\n";
+			}
+    	}
+    }
     $annee = strftime("%Y");
     $mois = strftime("%m");
     $jour = strftime("%d");
