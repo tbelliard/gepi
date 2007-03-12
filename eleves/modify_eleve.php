@@ -201,7 +201,7 @@ $ele_id=$max_ele_id+1;
                     no_gep = '".$reg_no_nat."',
                     nom='".$reg_nom."',
                     prenom='".$reg_prenom."',
-                    email='".$reg_email ."', 
+                    email='".$reg_email ."',
                     login='".$reg_login."',
                     sexe='".$reg_sexe."',
                     naissance='".$reg_naissance."',
@@ -369,7 +369,7 @@ if (isset($eleve_login)) {
 } else {
     if (isset($reg_nom)) $eleve_nom = $reg_nom;
     if (isset($reg_prenom)) $eleve_prenom = $reg_prenom;
-    if (isset($reg_email)) $eleve_email = $reg_email;    
+    if (isset($reg_email)) $eleve_email = $reg_email;
     if (isset($reg_sexe)) $eleve_sexe = $reg_sexe;
     if (isset($reg_no_nat)) $reg_no_nat = $reg_no_nat;
     if (isset($reg_no_gep)) $reg_no_gep = $reg_no_gep;
@@ -418,7 +418,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
     <td><input type=text name='reg_prenom' size=20 <?php if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}?> /></td>
 </tr><tr>
     <td>Email : </td>
-    <td><input type=text name='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>    
+    <td><input type=text name='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>
 </tr><tr>
     <td>Identifiant National : </td>
     <?php
@@ -630,6 +630,11 @@ if ($nombreligne != 0) {
 	elseif($eleve_no_resp1!=0){
 		$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
 	}
+	/*
+	else{
+		$message="";
+	}
+	*/
 /*
     if ($chaine_adr2 != '') {
         echo "<tr><td><b>Deuxième responsable légal : </b></td>";
@@ -643,6 +648,7 @@ if ($nombreligne != 0) {
     <br />en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]";
 
     if ($chaine_adr1 != '') {
+		if(!isset($message)){$message="";}
         echo "<br />";
         echo $message;
         echo "<br />";
