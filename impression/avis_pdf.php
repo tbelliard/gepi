@@ -133,6 +133,8 @@ if (!(is_numeric($id_periode))) {
 	$id_periode=1;
 }
 
+$nb_pages = 0;
+$nb_eleves = 0;
 
 // DEFINIR LE NOMBRE DE BOUCLES A FAIRE
 // Impressions RAPIDES
@@ -147,41 +149,36 @@ if ($id_classe!=NULL) { // C'est une classe
 //IMPRESSION A LA CHAINE
 if ($id_liste_classes!=NULL) {
     $nb_pages = sizeof($id_liste_classes);
-	//echo $nb_pages;
+//echo $nb_pages;
 }
 
 //IMPRESSION A LA CHAINE
 if ($id_liste_groupes!=NULL) {
     $nb_pages = sizeof($id_liste_groupes);
-	//echo $nb_pages;
+//echo $nb_pages;
 }
-
 
 	// Cette boucle crée les différentes pages du PDF
 	for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
-
 		// Impressions RAPIDES
 		if ($id_groupe!=NULL) { // C'est un groupe
-			$nb_eleves = traite_donnees_groupe($id_groupe,$id_periode);
-			$id_classe=$id_classe_groupe[0];
+			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves);
+			$id_classe=$donnees_eleves['id_classe'][0];
+		} elseif ($id_classe!=NULL) { // C'est une classe
+			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
+		} //fin c'est une classe
+			
+		//IMPRESSION A LA CHAINE
+		if ($id_liste_groupes!=NULL) {
+			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves);
+			$id_groupe=$id_liste_groupes[$i_pdf];
+			$id_classe=$donnees_eleves['id_classe'][0];
 		}
 
-		if ($id_classe!=NULL) { // C'est une classe
-			$nb_eleves = traite_donnees_classe($id_classe,$id_periode);
-		} //fin c'est une classe
-
-		//IMPRESSION A LA CHAINE
 		if ($id_liste_classes!=NULL) {
-			$nb_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode);
+			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
 		}
-
-		if ($id_liste_groupes!=NULL) {
-			$nb_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode);
-			$id_groupe=$id_liste_groupes[$i_pdf];
-			$id_classe=$id_classe_groupe[0];
-		}
-
 
 		// CALCUL de VARIABLES
 		//Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne
@@ -226,33 +223,34 @@ if ($id_liste_groupes!=NULL) {
 
 			   //PP de la classe
 			  if ($id_groupe != NULL) {
-				 $id_classe=$id_classe_groupe[0];
+				 $id_classe=$donnees_eleves['id_classe'][0];
 			   }
-			   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$login[0]."' and id_classe='$id_classe')";
+			   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
 			   $call_profsuivi_eleve = mysql_query($sql);
 			   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
-			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');
+			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			} else {
+
 			  if ($id_groupe != NULL) {
-				$current_classe = $classe_id_eleve[0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
+				$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
 			  }
 			  $pdf->CellFitScale($L_entete_classe,$H_entete_classe,'Classe de '.$current_classe,'LTRB',2,'C');
 			}
-			
+
 			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
 			$pdf->SetFont($caractere_utilise,'B',14);
 
+			
 			//Si on peut connaître le nom de la matière (id_groupe existe !)
 			if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
 				$matiere = $current_group["description"];
-
+                 //echo $matiere."<br/>";
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
 				$pdf->SetFont($caractere_utilise,'I',11);
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
-			
 			// On demande une classe ==> on ajoute la période.
 				$pdf->SetFont($caractere_utilise,'I',11);
 
@@ -285,14 +283,15 @@ if ($id_liste_groupes!=NULL) {
 
 			// Le tableau
 			while($nb_eleves_i < $nb_eleves) {	
-                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login[$nb_eleves_i]' AND periode='$id_periode')";			
+			    $login_elv = $donnees_eleves['login'][$nb_eleves_i];
+                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='$id_periode')";			
          	    $current_eleve_avis_query = mysql_query($sql_current_eleve_avis);
                 $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
 				$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
-				$texte = strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]);
+				$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 			
 				$y_tmp = $pdf->GetY();
@@ -305,6 +304,7 @@ if ($id_liste_groupes!=NULL) {
 				  $avis =' ';
 				}
 				//$avis = $sql_current_eleve_avis;
+				$pdf->SetFont($caractere_utilise,'',9);
 				$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 				
 				$pdf->ln();
