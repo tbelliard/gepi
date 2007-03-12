@@ -1,9 +1,9 @@
 <?PHP
 // Traitement des données pour une classe référencée par id_classe et id_periode
-// retourne le nombre d'élèves
-function traite_donnees_classe($id_classe,$id_periode)
+// retourne un tableau avec les données de la base
+// modifie la variable nombre_eleve
+function traite_donnees_classe($id_classe,$id_periode,&$nombre_eleves)
 {
-global $login, $ereno, $nom, $prenom, $naissance, $classe, $doublant, $regime, $classe_id_eleve;
 global $prefix_base ;
 
 $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
@@ -12,19 +12,23 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 	//echo "<br>";
 	$call_eleve = mysql_query($requete);	
 	$nb_eleves = @mysql_num_rows($call_eleve);
+	
+	$nombre_eleves = $nb_eleves; // parametre de la fonction
+	
 	$cpt_i = 0;
 	while ( $donner = @mysql_fetch_array( $call_eleve ))
 	{
-		$login[$cpt_i] = $donner['login']; 
-		$ereno[$cpt_i] = $donner['ereno']; 
-		$nom[$cpt_i] = $donner['nom'];
-		$prenom[$cpt_i] = $donner['prenom'];
-		$naissance[$cpt_i] = $donner['naissance'];
-		$classe[$cpt_i] = $donner['nom_complet'];
-		$doublant[$cpt_i] = $donner['doublant'];
-		$regime[$cpt_i] = $donner['regime'];
-		$classe_id_eleve[$cpt_i] = $donner['id'];
-		$ident_eleve_sel1=$login[$cpt_i];
+	    $donnees_eleves['login'][$cpt_i] = $donner['login']; 
+		$donnees_eleves['ereno'][$cpt_i] = $donner['ereno']; 
+		$donnees_eleves['nom'][$cpt_i] = $donner['nom'];
+		$donnees_eleves['prenom'][$cpt_i] = $donner['prenom'];
+		$donnees_eleves['naissance'][$cpt_i] = $donner['naissance'];
+		$donnees_eleves['nom_complet'][$cpt_i] =  $donner['nom_complet'];
+		$donnees_eleves['doublant'][$cpt_i] = $donner['doublant'];
+		$donnees_eleves['regime'][$cpt_i] = $donner['regime'];
+		$donnees_eleves['id_classe'][$cpt_i] = $donner['id']; // ID de la classe
+		 
+		$ident_eleve_sel1=$donner['login'];
 	    
 		$cpt_i++;
 	
@@ -61,15 +65,15 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 			}
 			*/
 	}
-    return $nb_eleves;
+    return $donnees_eleves;
 }
 
 
 // Traitement des données pour un groupe référencé par id_groupe et id_periode
-// retourne le nombre d'élèves
-function traite_donnees_groupe($id_groupe,$id_periode)
+// retourne un tableau avec les données de la base
+// modifie la variable nombre_eleve
+function traite_donnees_groupe($id_groupe,$id_periode,&$nombre_eleves)
 {
-global $id_classe_groupe, $login, $ereno, $nom, $prenom, $naissance, $classe, $doublant, $regime, $classe_id_eleve;
 global $prefix_base ;
 
     $current_group = get_group($id_groupe);
@@ -107,21 +111,23 @@ global $prefix_base ;
 			$eleve_id_classe=$lig_tmp->id_classe;	
 		}
         //pour rendre compatible groupe et classe  par la suite
-		$id_classe_groupe[$cpt_i] = $eleve_id_classe;
-		$login[$cpt_i] = $eleve_login; 
-		$ereno[$cpt_i] = $eleve_ereno; 
-		$nom[$cpt_i] = $eleve_nom;
-		$prenom[$cpt_i] = $eleve_prenom;
-		$naissance[$cpt_i] = $eleve_naissance;
-		$classe[$cpt_i] = $eleve_classe_nom_complet;
-		$doublant[$cpt_i] = $eleve_doublant;
-		$regime[$cpt_i] = $eleve_regime;
-		$classe_id_eleve[$cpt_i] = $eleve_classe;
-		$ident_eleve_sel1=$login[$cpt_i];
+		$donnees_eleves['login'][$cpt_i] = $eleve_login; 
+		$donnees_eleves['ereno'][$cpt_i] = $eleve_ereno;
+		$donnees_eleves['nom'][$cpt_i] = $eleve_nom;
+		$donnees_eleves['prenom'][$cpt_i] = $eleve_prenom;
+		$donnees_eleves['naissance'][$cpt_i] = $eleve_naissance;
+		$donnees_eleves['nom_complet'][$cpt_i] =  $eleve_classe_nom_complet;
+		$donnees_eleves['doublant'][$cpt_i] = $eleve_doublant;
+		$donnees_eleves['regime'][$cpt_i] = $eleve_regime;
+		$donnees_eleves['id_classe'][$cpt_i] = $eleve_id_classe; 
+		
+				
+		$ident_eleve_sel1=$donnees_eleves['login'][$cpt_i];
 		
         $cpt_i++;
 	}
-    
-    return $cpt_i;
+    $nombre_eleves = $cpt_i; // parametre de la fonction
+	
+    return $donnees_eleves;
 }
 ?>
