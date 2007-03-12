@@ -357,7 +357,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 
 //**************** EN-TETE *******************************
-$titre_page = "Gestion des responsables | Ajouter, modifier un responsable";
+$titre_page = "Ajouter ou modifier un responsable";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
