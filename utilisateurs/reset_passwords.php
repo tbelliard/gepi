@@ -43,10 +43,17 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+// Ajout ERIC
+$mode_impression = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : false);
+
+//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
+if (!(($mode_impression=='csv') or ($mode_impression=='csv'))) {
 //**************** EN-TETE *****************************
 //$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+}
 
 // On appelle la lib utilisée pour la génération des mots de passe
 include("randpass.php");
@@ -165,19 +172,76 @@ while ($p < $nb_users) {
         $classe[$i] = mysql_result($call_data, $i, "classe");
         $i++;
     }
+	
+// Ajout Eric
 
-    $impression = getSettingValue("Impression");
-
-    echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
-    echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
-    echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
-    echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
-    echo "</p>";
-    echo $impression;
-    echo "<p class=saut>&nbsp</p>";
+	switch ($mode_impression) {
+	
+	case 'html':
+		$impression = getSettingValue("Impression");
+		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
+		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
+		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
+		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
+		echo "</p>";
+		echo $impression;
+		echo "<p class=saut>&nbsp</p>";
+		
+		break;
+		
+	case 'csv' :
+		// création d'un tableau contenant toutes les informations à exporter
+		$donnees_personne_csv['login'][$p] = $user_login;
+		$donnees_personne_csv['nom'][$p] = $user_nom;
+		$donnees_personne_csv['prenom'][$p] = $user_prenom;
+		$donnees_personne_csv['new_password'][$p] = $new_password ;
+		$donnees_personne_csv['user_email'][$p] = $user_email;
+		
+		//recherche de la classe de l'élève si mode 
+		if ($user_status) {
+			if ($user_status == 'eleve') {
+				$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
+				$data_user_classe = mysql_query($sql_classe);
+				$classe_eleve = mysql_result($data_user_classe, 0, "classe");
+			}
+		}
+		
+		$donnees_personne_csv['classe'][$p] = $classe_eleve;
+		break;
+		
+/*	case 'pdf':
+		
+		
+		break;
+*/		
+	default:
+		$impression = getSettingValue("Impression");
+		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
+		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
+		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
+		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
+		echo "</p>";
+		echo $impression;
+		echo "<p class=saut>&nbsp</p>";
+		
+	} //fin switch
+    	
     $p++;
 
 }
 
+// redirection à la fin de la génération des mots de passe
+	switch ($mode_impression) {
+	case 'csv' :
+	    //sauvegarde des données dans la session Admin	
+	   $_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
+	   
+	    //redirection vers password_csv.php
+		header("Location: ./password_csv.php"); die();
+		break;
+/*	case 'pdf' : 
+
+*/	
+	}
 require("../lib/footer.inc.php");
 ?>

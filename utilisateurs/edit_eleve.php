@@ -169,10 +169,14 @@ if ($action == "rendre_inactif") {
 	} elseif ($mode == "classe") {
 		if ($_POST['classe'] == "all") {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve\" target='_blank'>Réinitialiser les mots de passe</a>";			
+			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a><br />";
+            $msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a><br />";
+            $msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a><br />";			
 		} else if (is_numeric($_POST['classe'])) {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."\" target='_blank'>Réinitialiser les mots de passe</a>";			
+			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a><br />";			
+			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a><br />";
+			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a><br />";
 		}
 	}
 }
@@ -185,7 +189,9 @@ require_once("../lib/header.inc");
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 <?php
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-    echo " | <a href=\"reset_passwords.php?user_status=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'eleve\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
+
+    // Eric Faut-il garder la ligne ?
+    //echo " | <a href=\"reset_passwords.php?user_status=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'eleve\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe (impression HTML)</a>";
 }
 	echo "</p>";
 	echo "<p><b>Actions par lot</b> :";
