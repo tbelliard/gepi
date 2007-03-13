@@ -16,7 +16,7 @@ global $avec_emplacement_trous;
       }
 	}
 	
-	
+	$this->SetDash();
 	$this->SetLineWidth(0.2);
     // on trace un trait horizontal
 	$this->SetRightMargin(5);    $this->SetXY(5,287);
@@ -35,6 +35,15 @@ global $avec_emplacement_trous;
     $this->Cell(0,5,'Page '.$this->PageNo(),"0",1,'C');
 }
 
+// Pour faire des pointiullés
+function SetDash($black=false,$white=false)
+{
+	if($black and $white)
+		$s=sprintf('[%.3f %.3f] 0 d',$black*$this->k,$white*$this->k);
+	else
+		$s='[] 0 d';
+	$this->_out($s);
+}
 
 
 /*

@@ -19,7 +19,7 @@ Nouvelles fonctionalités
 - Pour la saisie des appréciations trimestrielles, rappel des notes du carnet de notes au dessus
 - ajout d'une option d'affichage des notes, par période sur le relevé de notes HTML
 - ajout de l'impression en PDF d'une synthèse des avis du conseil de classe par classe et par période.
-- ajout de l'exportation des mots de passe élèves en fichier CSV, lors de la modification de ceux-ci.
+- ajout de l'exportation des mots de passe élèves en fichier CSV et PDF, lors de la modification de ceux-ci.
 
 Corrections de bugs
 -------------------
