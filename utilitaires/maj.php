@@ -2739,13 +2739,13 @@ if ($pb_maj_bd != 'yes') {
             echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name=formulaire>";
             echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>";
         }
-        echo "<p>Remarque : la procédure de mise à jour vers la version <b>GEPI" . $gepiVersion . $rc . $beta . "</b> est utilisable à partir d'une version GEPI1.2 ou plus récente.</p>";
+        echo "<p>Remarque : la procédure de mise à jour vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";
         echo "<form action=\"maj.php\" method=\"post\">";
         echo "<p><font color=red><b>ATTENTION : Votre base de données ne semble pas être à jour.";
         if ($version_old != '')
-            echo " Numéro de version de la base de données : GEPI" . $version_old . $rc_old . $beta_old;
+            echo " Numéro de version de la base de données : GEPI " . $version_old . $rc_old . $beta_old;
         echo "</b></font><br />";
-        echo "Cliquez sur le bouton suivant pour effectuer la mise à jour vers la version <b>GEPI" . $gepiVersion . $rc . $beta . "</b></p>";
+        echo "Cliquez sur le bouton suivant pour effectuer la mise à jour vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b></p>";
         echo "<center><input type=submit value='Mettre à jour' /></center>";
         echo "<input type=hidden name='maj' value='yes' />";
         echo "<input type=hidden name='valid' value='$valid' />";
