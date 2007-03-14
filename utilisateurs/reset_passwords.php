@@ -138,7 +138,7 @@ if ($user_login) {
 								  AND jec.login = u.login
 								  AND u.etat = 'actif'
 								  AND u.statut = 'eleve' )
-								  ORDER BY jec.id_classe";
+								  ORDER BY jec.id_classe ASC, u.nom ASC";
 				//echo $sql_user_info;
 			    $call_user_info = mysql_query($sql_user_info);
 			}

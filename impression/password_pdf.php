@@ -71,10 +71,10 @@ if (!checkAccess()) {
 }
 
 // LES OPTIONS DEBUT
-if (!isset($_SESSION['marge_haut'])) { $MargeHaut = 10 ; } else {$MargeHaut =  $_SESSION['marge_haut'];}
+if (!isset($_SESSION['marge_haut'])) { $MargeHaut = 8; } else {$MargeHaut =  $_SESSION['marge_haut'];}
 if (!isset($_SESSION['marge_droite'])) { $MargeDroite = 10 ; } else {$MargeDroite =  $_SESSION['marge_droite'];}
 if (!isset($_SESSION['marge_gauche'])) { $MargeGauche = 10 ; } else {$MargeGauche =  $_SESSION['marge_gauche'];}
-if (!isset($_SESSION['marge_bas'])) { $MargeBas = 10 ; } else {$MargeBas =  $_SESSION['marge_bas'];}
+if (!isset($_SESSION['marge_bas'])) { $MargeBas = 8 ; } else {$MargeBas =  $_SESSION['marge_bas'];}
 if (!isset($_SESSION['marge_reliure'])) { $avec_reliure = 0 ; } else {$avec_reliure =  $_SESSION['marge_reliure'];}
 if (!isset($_SESSION['avec_emplacement_trous'])) { $avec_emplacement_trous = 0 ; } else {$avec_emplacement_trous =  $_SESSION['avec_emplacement_trous'];}
 
@@ -102,7 +102,7 @@ $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
 
 $texte_presentation = 'Attention : Votre identifiant et mot de passe sont confidentiels. A votre première connexion, vous devrez changer votre mot de passe.';
 
-//recherche du dossier racine de GEPI pour obtenir l'adresse de GEPI
+//recherche du dossier racine de GEPI pour obtenir l'adresse de l'application à saisir dans le navigateur
 $url = parse_url($_SERVER['REQUEST_URI']);
 $temp = $url['path'];
 $d = strlen($temp) - strlen("impression/password_pdf.php") ;
@@ -125,7 +125,6 @@ if (($donnees_personne_csv)) {
 	// Cette boucle crée les différentes pages du PDF
 	for ($i=0; $i<$nb_enr_tableau ; $i++) {
 		
-		
         $classe = $donnees_personne_csv['classe'][$i];
 		$login = $donnees_personne_csv['login'][$i];
 		$nom = $donnees_personne_csv['nom'][$i];
@@ -141,20 +140,34 @@ if (($donnees_personne_csv)) {
 		$pdf->Setxy($X_tableau,$y_tmp);
 		$pdf->SetFont($caractere_utilise,'B',8);
 		$texte = "\nA l'attention de ".$prenom." ".$nom." , classe de ".$classe.
-				 " :  Voici vos identifiants et mot de passe pour accéder à vos notes\nIdentifiant : ".$login.
+				 " :                         Voici vos identifiants et mot de passe pour accéder à vos notes.\nIdentifiant : ".$login.
 				 "\nMot de passe : ".$password.
-				 "\nEmail : ".$email.
+				// "\nEmail : ".$email.
 				 "\nAdresse du site Gepi à saisir dans votre navigateur Internet : ".$adresse_site_gepi."\n".$texte_presentation."\n\n";
-		$pdf->MultiCell($EspaceX,4,$texte,'B',2,'L',0); 
+		$pdf->MultiCell($EspaceX,3.5,$texte,'B',2,'L',0); 
 				
 		$y_tmp = $pdf->GetY();
 		
-		if ($j==7) { // saut de page 
+		if ($j==10) { // saut de page  après 8 fiches sur la page.
 		  $pdf->AddPage("P");
 		  $y_tmp = $MargeHaut;
 		  $j=0;
 		}
-		$j++;
+        $j++;
+		
+		//génération d'un saut de page PDF pour un changement de classe
+		$classe_elv = $classe;
+		if ($i+1<$nb_enr_tableau) { //pour éviter le débordement sur le dernier elv
+		   $classe_elv_suivant = $donnees_personne_csv['classe'][$i+1];
+		} else {
+		  $classe_elv_suivant = $classe;
+		}
+		
+		if ( $classe_elv != $classe_elv_suivant) {
+		  $pdf->AddPage("P");
+		  $y_tmp = $MargeHaut;
+		  $j=0;
+		}
 		
 		} // FOR
 } else {  //variable de session OK 		
