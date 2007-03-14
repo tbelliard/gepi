@@ -121,10 +121,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				if ($_POST['classe'] == "all") {
 					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve'>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."'>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSC)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf'>Imprimer la ou les fiche(s) de bienvenue (Impression PDF)</a>";
 				}
 			}
-			$msg .= "Imprimer la ou les fiche(s) de bienvenue</a><br/>Vous devez effectuer cette opération maintenant !";
+			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
 		}
 	}
 }

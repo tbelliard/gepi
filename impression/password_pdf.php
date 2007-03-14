@@ -107,8 +107,12 @@ $url = parse_url($_SERVER['REQUEST_URI']);
 $temp = $url['path'];
 $d = strlen($temp) - strlen("impression/password_pdf.php") ;
 $gepi_path = substr($temp, 0, $d);
-$adresse_site_gepi = $_SERVER["SERVER_NAME"] . $gepi_path;
 
+if (!isset($_SERVER['HTTPS']) OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")) {
+   $adresse_site_gepi = "HTTP://".$_SERVER["SERVER_NAME"] . $gepi_path;         
+} else {
+   $adresse_site_gepi = "HTTPS://".$_SERVER["SERVER_NAME"] . $gepi_path;         
+}
 
 $pdf->AddPage("P");
 // Couleur des traits

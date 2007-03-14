@@ -120,10 +120,28 @@ if ($user_login) {
 		} else {
 			// Ici, on ne s'occupe pas de la classe, donc on sélectionne tous les utilisateurs pour le statut considéré,
 			// quel qu'il soit
-			$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE (" .
+			
+			//pour les différentes impressions, on va trier les informations par classe (pour faciliter la distribution) problème avec les ajouts en cours d'année
+			
+			if ($user_status == "responsable") {
+			    $call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 					"login != '" . $_SESSION['login'] . "' AND " .
 					"etat = 'actif' AND " .
 					"statut = '" . $user_status . "')");
+					// que faut-il faire pour trier par classe ?
+					
+			} elseif ($user_status == "eleve"){
+			    $login_en_cours = $_SESSION['login'];
+			    $sql_user_info = "SELECT DISTINCT (u.login), u.nom, u.prenom, u.statut, u.password, u.email, jec.id_classe
+								  FROM utilisateurs u, j_eleves_classes jec
+								  WHERE ( u.login != 'ADMIN'
+								  AND jec.login = u.login
+								  AND u.etat = 'actif'
+								  AND u.statut = 'eleve' )
+								  ORDER BY jec.id_classe";
+				//echo $sql_user_info;
+			    $call_user_info = mysql_query($sql_user_info);
+			}
 		}
 	} else {
 		// Ni statut ni classe ni login n'ont été transmis. On sélectionne alors tous les personnels de l'établissement,
