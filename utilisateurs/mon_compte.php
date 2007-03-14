@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 27/11/2006
+ * $Id:
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -136,19 +136,38 @@ if ($test_sso) {
 
 echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>";
 echo "</table>";
-$tab_class_mat =  make_tables_of_classes_matieres();
 
+/*
+//Supp ERIC
+$tab_class_mat =  make_tables_of_classes_matieres();
 if (count($tab_class_mat)!=0) {
-    echo "<br /><br />Vous êtes professeur dans les matières et classes suivantes :";
+    echo "<br /><br />Vous êtes professeur dans les classes et matières suivantes :";
     $i = 0;
     echo "<ul>";
     while ($i < count($tab_class_mat['id_c'])){
-        echo "<li>".$tab_class_mat['nom_m'][$i]." dans la classe : ".$tab_class_mat['nom_c'][$i]."</li>";
+        //echo "<li>".$tab_class_mat['nom_m'][$i]." dans la classe : ".$tab_class_mat['nom_c'][$i]."</li>";
+		echo "<li>".$tab_class_mat['nom_c'][$i]." : ".$tab_class_mat['nom_m'][$i]."</li>";
         $i++;
     }
     echo "</ul>";
 }
+*/
 
+// AJOUT Eric
+$groups = get_groups_for_prof($_SESSION["login"]);
+if (empty($groups)) {
+	echo "<br /><br />";
+} else {
+	echo "<br /><br />Vous êtes professeur dans les classes et matières suivantes :";
+	echo "<ul>";
+	foreach($groups as $group) {
+	   echo "<p><li><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+	   echo "" . htmlentities($group["description"]) . "</li>";
+	   echo "</span></p>\n";
+	}
+	echo "</ul>";
+}
+	
 $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
 $nombre_classe = mysql_num_rows($call_prof_classe);
 if ($nombre_classe != "0") {
@@ -158,7 +177,7 @@ if ($nombre_classe != "0") {
     while ($j < $nombre_classe) {
         $id_classe = mysql_result($call_prof_classe, $j, "id");
         $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
-        echo "<li>$classe_suivi</li>";
+        echo "<li><b>$classe_suivi</b></li>";
         $j++;
     }
     echo "</ul>";
