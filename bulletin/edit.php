@@ -34,7 +34,12 @@ include ("aid_lib.inc");
 // 1 : initial avec au  dessus de min / max / moy "Pour la calsse"
 // 2 : le précédent, mais le bloc Min Max Moy "Pour la classe" passe après la colonne  "appréciations"
 
-$option_affichage_bulletin = getSettingValue("choix_bulletin");
+if(getSettingValue("choix_bulletin")){
+		$option_affichage_bulletin = getSettingValue("choix_bulletin");
+	}
+	else{
+		$option_affichage_bulletin = -1;
+}
 
 switch ($option_affichage_bulletin) {
 case 0:
@@ -47,7 +52,7 @@ case 2:
     $fichier_bulletin = "edit_2.inc";
     break;
 default:
-    $fichier_bulletin = "edit_0.inc";
+    $fichier_bulletin = "edit_2.inc";
 }
 //
 
