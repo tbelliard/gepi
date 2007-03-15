@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -159,7 +159,7 @@ if ($user_login) {
 
 $nb_users = mysql_num_rows($call_user_info);
 $p = 0;
-
+$saut = 1;
 while ($p < $nb_users) {
 
     $user_login = mysql_result($call_user_info, $p, "login");
@@ -196,14 +196,28 @@ while ($p < $nb_users) {
 	switch ($mode_impression) {
 	
 	case 'html':
-		$impression = getSettingValue("Impression");
+		if ($user_statut == "responsable") {
+			$impression = getSettingValue("ImpressionFicheParent");
+			$nb_fiches = getSettingValue("ImpressionNombreParent");
+		} elseif ($user_statut == "eleve") {
+			$impression = getSettingValue("ImpressionFicheEleve");
+			$nb_fiches = getSettingValue("ImpressionNombreEleve");
+		} else {
+			$impression = getSettingValue("Impression");
+			$nb_fiches = getSettingValue("ImpressionNombre");
+		}
 		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
 		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
 		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
 		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
 		echo "</p>";
 		echo $impression;
-		echo "<p class=saut>&nbsp</p>";
+		if ($saut == $nb_fiches) {
+			echo "<p class=saut>&nbsp</p>";
+			$saut = 1;
+		} else {
+			$saut++;
+		}
 		
 		break;
 		
@@ -245,18 +259,31 @@ while ($p < $nb_users) {
 		}
 		
 		$donnees_personne_csv['classe'][$p] = $classe_eleve;
-		
 		break;
 		
 	default:
-		$impression = getSettingValue("Impression");
+		if ($user_statut == "responsable") {
+			$impression = getSettingValue("ImpressionFicheParent");
+			$nb_fiches = getSettingValue("ImpressionNombreParent");
+		} elseif ($user_statut == "eleve") {
+			$impression = getSettingValue("ImpressionFicheEleve");
+			$nb_fiches = getSettingValue("ImpressionNombreEleve");
+		} else {
+			$impression = getSettingValue("Impression");
+			$nb_fiches = getSettingValue("ImpressionNombre");
+		}
 		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
 		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
 		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
 		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
 		echo "</p>";
 		echo $impression;
-		echo "<p class=saut>&nbsp</p>";
+		if ($saut == $nb_fiches) {
+			echo "<p class=saut>&nbsp</p>";
+			$saut = 1;
+		} else {
+			$saut++;
+		}
 		
 	} //fin switch
     	

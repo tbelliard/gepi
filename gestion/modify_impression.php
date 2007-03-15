@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 30/09/2006
+ * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -41,20 +41,38 @@ die();
 
 
 if (isset($_POST['impression'])) {
-
-    //$imp = $_POST['impression'];
+	$error = false;
     $imp = html_entity_decode_all_version($_POST['impression']);
-
     if (!saveSetting("Impression", $imp)) {
-
-        $msg = "Erreur lors de l'enregistrement !";
-
-    } else {
-
-        $msg = "Enregistrement réussi !";
-
+        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les personnels !<br/>";
+        $error = true;
     }
-
+    $imp = html_entity_decode_all_version($_POST['impression_parent']);
+    if (!saveSetting("ImpressionFicheParent", $imp)) {
+        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les parents !<br/>";
+        $error = true;
+    }
+    $imp = html_entity_decode_all_version($_POST['impression_eleve']);
+    if (!saveSetting("ImpressionFicheEleve", $imp)) {
+        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les élèves !<br/>";
+        $error = true;
+    }
+    $nb = is_numeric($_POST['nb_impression']) ? $_POST['nb_impression'] : "1";
+    if (!saveSetting("ImpressionNombre", $nb)) {
+    	$error = true;
+    }
+    $nb = is_numeric($_POST['nb_impression_parent']) ? $_POST['nb_impression_parent'] : "1";
+    if (!saveSetting("ImpressionNombreParent", $nb)) {
+    	$error = true;
+    }
+    $nb = is_numeric($_POST['nb_impression_eleve']) ? $_POST['nb_impression_eleve'] : "1";
+    if (!saveSetting("ImpressionNombreEleve", $nb)) {
+    	$error = true;
+    }
+    
+    if (!$error) {
+    	$msg = "Les paramètres ont bien été enregistrés.";
+    }
 }
 
 //**************** EN-TETE *****************
@@ -71,12 +89,60 @@ if (!loadSettings()) {
     die("Erreur chargement settings");
 }
 
+echo "<br/>";
+echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, ainsi que l'un des trois textes ci-dessous, selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>";
+
 $impression = getSettingValue("Impression");
-echo "<h3 class='gepi'>Fiche d'information au format html :</H3>";
-echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, ainsi que le texte ci-dessous. Attention, ce texte est au format html.</p>";
-echo "<div class='small'><textarea name=impression rows=40 cols=100 wrap='virtual'>";
+$nb_impression = getSettingValue("ImpressionNombre");
+echo "<h3 class='gepi'>Fiche d'information : personnels de l'établissement (professeurs, scolarité, CPE)</h3>";
+echo "<p>Nombre de fiches à imprimer par page : ";
+echo "<select name='nb_impression' size='1'>";
+for ($i=1;$i<25;$i++) {
+	echo "<option value='$i'";
+	if ($nb_impression == $i) echo " SELECTED";
+	echo ">$i</option>";
+}
+echo "</select>";
+echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
+echo "<div class='small'><textarea name='impression' rows=25 cols=100 wrap='virtual'>";
 echo "$impression";
 echo "</textarea></div>";
+
+$impression_parent = getSettingValue("ImpressionFicheParent");
+$nb_impression_parent = getSettingValue("ImpressionNombreParent");
+echo "<h3 class='gepi'>Fiche d'information : parents</h3>";
+echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>";
+echo "<p>Nombre de fiches à imprimer par page : ";
+echo "<select name='nb_impression_parent' size='1'>";
+for ($i=1;$i<25;$i++) {
+	echo "<option value='$i'";
+	if ($nb_impression_parent == $i) echo " SELECTED";
+	echo ">$i</option>";
+}
+echo "</select>";
+echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
+echo "<div class='small'><textarea name='impression_parent' rows=25 cols=100 wrap='virtual'>";
+echo $impression_parent;
+echo "</textarea></div>";
+
+$impression_eleve = getSettingValue("ImpressionFicheEleve");
+$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
+echo "<h3 class='gepi'>Fiche d'information : élèves</h3>";
+echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>";
+echo "<p>Nombre de fiches à imprimer par page : ";
+echo "<select name='nb_impression_eleve' size='1'>";
+for ($i=1;$i<25;$i++) {
+	echo "<option value='$i'";
+	if ($nb_impression_eleve == $i) echo " SELECTED";
+	echo ">$i</option>";
+}
+echo "</select>";
+echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
+echo "<div class='small'><textarea name='impression_eleve' rows=25 cols=100 wrap='virtual'>";
+echo $impression_eleve;
+echo "</textarea></div>";
+
 ?>
 </form>
+<br/><br/>
 <?php require("../lib/footer.inc.php");?>

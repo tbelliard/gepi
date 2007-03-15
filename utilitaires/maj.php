@@ -2697,6 +2697,40 @@ if (isset ($_POST['maj'])) {
         }
         $result_inter = '';	    
 
+	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les fiches d'information destinée aux nouveaux utilisateurs<br/>";
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionParent'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionParent', '');");   
+            
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionEleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionEleve', '');");
+            
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombre'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombre', '1');");
+            
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreParent'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreParent', '1');");
+            
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreEleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreEleve', '1');");
+            
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';	   
+
+
     }
 
 
