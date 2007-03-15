@@ -2,7 +2,7 @@
 @set_time_limit(0);
 $starttime = microtime();
 /*
-* Last modification  : 04/11/2006
+*  $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Sandrine Dangreville
 *
@@ -33,11 +33,8 @@ include ("aid_lib.inc");
 // 0 : initial
 // 1 : initial avec au  dessus de min / max / moy "Pour la calsse"
 // 2 : le précédent, mais le bloc Min Max Moy "Pour la classe" passe après la colonne  "appréciations"
-if (isset($_POST['choix_bulletin'])) {
-    $option_affichage_bulletin = $_POST['choix_bulletin'];
 
-}
-
+$option_affichage_bulletin = getSettingValue("choix_bulletin");
 
 switch ($option_affichage_bulletin) {
 case 0:

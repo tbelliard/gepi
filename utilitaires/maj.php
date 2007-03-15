@@ -2470,6 +2470,21 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('mode_sauvegarde', 'gepi');");
 
+		
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'choix_bulletin'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('choix_bulletin', '1');");
+			$result .= "Initialisation du paramètre choix_bulletin à '1': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}		
+			
+			
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {

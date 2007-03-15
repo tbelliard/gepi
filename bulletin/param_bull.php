@@ -460,6 +460,14 @@ if(isset($_POST['bull_bordure_classique'])) {
     }
 }
 
+if (isset($_POST['choix_bulletin'])) {
+
+    if (!saveSetting("choix_bulletin", $_POST['choix_bulletin'])) {
+        $msg .= "Erreur lors de l'enregistrement de choix_bulletin";
+        $reg_ok = 'no';
+    }
+}
+
 if(isset($_POST['activer_photo_bulletin'])) {
     if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
         $msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
@@ -1070,6 +1078,31 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
     </tr>
 
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
+		<ul>
+		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+		<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />
+		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+        </ul>
+		</td>
+        <td> <br />
+        <?php
+		echo "<input type='radio' name='choix_bulletin' value='0'";
+		if (getSettingValue("choix_bulletin") == '0') echo " checked";
+		echo"/> Choix 1<br />";
+		echo "<input type='radio' name='choix_bulletin' value='1'";
+		if (getSettingValue("choix_bulletin") == '1') echo " checked";
+		echo"/> Choix 2<br />";
+		echo "<input type='radio' name='choix_bulletin' value='2'";
+		echo "toto".getSettingValue("choix_bulletin");
+		if (getSettingValue("choix_bulletin") == '2') echo " checked";
+		echo"/> Choix 3<br />";
+        ?>
+        </td>
+    </tr>
+	
 </table>
 <hr />
 

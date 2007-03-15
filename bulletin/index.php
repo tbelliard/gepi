@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 14/03/2005
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -245,38 +245,13 @@ for(i=0;i<$nb_per_close;i++){
 	echo "<table border='0'>\n";
 	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' value='oui' /></td><td>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</td></tr>\n";
 
-// ERIC Ajout Choix du bulletin
+
     if(!getSettingValue("bull_intitule_app")){
 		$bull_intitule_app="Appréciations/Conseils";
 	}
 	else{
 		$bull_intitule_app=getSettingValue("bull_intitule_app");
 	}
-    //echo "<table border='0'>\n";
-	    echo "<tr>\n";
-			echo "<td colspan=\"2\"><br /><br /> <b>Et l'apparence du bulletin (Emplacement des différentes colonnes).<br /></b>";
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-			echo "<td align='center'><input type='radio' name='choix_bulletin' value='0' />";
-			echo "</td>\n";
-			echo "<td><b>Choix 1</b> : <i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne \"".$bull_intitule_app.".\"</i>";
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-			echo "<td align='center'><input type='radio' name='choix_bulletin' value='1' checked />";
-			echo "</td>\n";
-			echo "<td><b>Choix 2</b> : <i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie \"Pour la classe\".</i>";
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-			echo "<td align='center'><input type='radio' name='choix_bulletin' value='2' />";
-			echo "</td>\n";
-			echo "<td><b>Choix 3</b> : <i>Idem choix 2. Les informations pour la classe sont situées après la colonne \"".$bull_intitule_app.".\" </i>";
-			echo "</td>\n";
-		echo "</tr>\n";
-	//echo "</table>\n";
-// Fin Ajout
 
 
 /*
