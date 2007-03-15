@@ -2,7 +2,8 @@
 
 body {
     padding: 0;
-    margin: 0;
+    /*margin: 0;*/
+    margin: 5px;
     color: #330033;
     background: white;
     /*background: #E9E9E4;*/

@@ -15,14 +15,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 // Global configuration file
 
-echo "<style type=\"text/css\">";
+echo "<style type=\"text/css\">\n";
 echo "div.adresse{
     padding-top:".getSettingValue("page_garde_padding_top")."cm;
     padding-bottom:0cm;
@@ -41,22 +41,29 @@ div.texte{
 p {
 text-indent : 1.5cm;
 }
-</style>";
+
+div.info_eleve{
+	float:left;
+}
+</style>\n";
+
+// Affichage de l'info sur le nom, prénom et classe de l'élève
+echo "<div class='info_eleve'>$info_eleve_page_garde</div>\n";
 
 //Affichage du bloc adresse
-echo "<div class=adresse>";
+echo "<div class=adresse>\n";
 echo $ligne1."<br />".$ligne2."<br />".$ligne3;
-echo "</div>";
+echo "</div>\n";
 
 // Affichage du bloc texte
-echo "<div class=texte>";
+echo "<div class=texte>\n";
 $content = getSettingValue("page_garde_texte");
 echo $content;
-echo "</div>";
+echo "</div>\n";
 echo "<style type=\"text/css\">
     p {
     text-indent : 0cm;
     }
-    </style>";
+    </style>\n";
 
 ?>

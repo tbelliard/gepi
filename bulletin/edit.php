@@ -847,6 +847,38 @@ while ($i < $nombre_eleves2) {
         }
 
 
+
+
+
+
+
+        // On est dans la première boucle. On appelle les données complètes de l'élève :
+        //-------------------------------
+        $current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
+        $current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
+        $current_eleve_sexe = mysql_result($appel_liste_eleves, $i, "sexe");
+        $call_profsuivi_eleve = mysql_query("SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$current_eleve_login[$i]."' and id_classe='$id_classe')");
+        $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+        $current_eleve_naissance = mysql_result($appel_liste_eleves, $i, "naissance");
+        $current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
+        $regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '".$current_eleve_login[$i]."'");
+        $current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+        $current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+        $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
+        $current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+        $current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+        $current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+        $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+        if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
+        if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
+        if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
+        $query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
+        $current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+
+
+		$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
+
+
         if ($affiche_page_garde == "yes") {
             include "./page_garde.php";
             // Saut de page
@@ -879,17 +911,18 @@ while ($i < $nombre_eleves2) {
             $nb_bulletins = 2;
         }
 */
-	if((
-	(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-	or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-	or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-	or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
-	or ($cp_resp[1]!=$cp_resp[2])
-	or ($commune_resp[1]!=$commune_resp[2]))
-	and ($adr1_resp[2]!='')){
-		$nb_bulletins=2;
+	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))){
+		if((
+		(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+		or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+		or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+		or ($cp_resp[1]!=$cp_resp[2])
+		or ($commune_resp[1]!=$commune_resp[2]))
+		and ($adr1_resp[2]!='')){
+			$nb_bulletins=2;
+		}
 	}
-
 
 
 
@@ -953,7 +986,7 @@ while ($i < $nombre_eleves2) {
         }
         //====================================================================
 
-
+/*
         // On est dans la première boucle. On appelle les données complètes de l'élève :
         //-------------------------------
         $current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
@@ -976,7 +1009,7 @@ while ($i < $nombre_eleves2) {
         if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
         $query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
         $current_eleve_cperesp_login = @mysql_result($query, "0", "login");
-
+*/
 
 
         // début de l'affichage du bulletin
