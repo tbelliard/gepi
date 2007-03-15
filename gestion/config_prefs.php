@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 03/12/2006
+ * $Id : $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -130,21 +130,43 @@ if(!isset($prof)){
 	echo "<p>Choisissez les professeurs dont vous souhaitez paramétrer les interfaces simplifiées.</p>\n";
 	echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>décocher</a>.</p>";
 
-	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='professeur' ORDER BY nom,prenom";
+	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE (statut='professeur'AND etat='actif') ORDER BY nom,prenom";
 	$res_profs=mysql_query($sql);
-	if(mysql_num_rows($res_profs)==0){
+	$nb_prof=mysql_num_rows($res_profs);
+	if($nb_prof==0){
 		echo "<p>ERREUR: Il semble qu'aucun professeur ne soit encore défini.</p>\n";
 		echo "</form>\n";
 		echo "</body>\n";
 		echo "</html>\n";
 		die();
 	}
-	$i=0;
-	while($lig_prof=mysql_fetch_object($res_profs)){
-		// FAIRE UN TABLEAU DE TROIS/QUATRE COLONNES
+	// Affichage sur 3 colonnes
+	$nb_prof_par_colonne=round($nb_prof/3);
+	
+	echo "<table width='100%'>\n";
+	echo "<tr valign='top' align='center'>\n";
+
+	$i = 0;
+
+	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+	echo "<td align='left'>\n";
+
+	while ($i < $nb_prof) {
+
+		if(($i>0)&&(round($i/$nb_prof_par_colonne)==$i/$nb_prof_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+		
+		$lig_prof=mysql_fetch_object($res_profs);
+		
 		echo "<input type='checkbox' id='prof".$i."' name='prof[]' value='$lig_prof->login' /> ".ucfirst(strtolower($lig_prof->prenom))." ".strtoupper($lig_prof->nom)."<br />\n";
+		
 		$i++;
 	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
 	echo "<script type='text/javascript'>
 		function modif_coche(statut){
@@ -264,7 +286,8 @@ else{
 			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_date' value='n' /></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
-			echo "<td>Afficher le champ Emplacement du/de la ".ucfirst(strtolower(getSettingValue("gepi_denom_boite"))).":</td>\n";
+			//echo "<td>Afficher le champ Emplacement du/de la ".ucfirst(strtolower(getSettingValue("gepi_denom_boite"))).":</td>\n";
+			echo "<td>Afficher le champ Emplacement de l'évaluation :</td>\n";
 			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_boite' value='y' checked /></td>\n";
 			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_boite' value='n' /></td>\n";
 			echo "</tr>\n";
