@@ -468,9 +468,8 @@
 				if($min_max_moyclas!=1){
 					// Colonne Min:
 					echo "<td style=\"text-align: center;\">";
-					echo "<span class='bulletin'>".min($moy_gen_eleve)."</span>";
+					echo "<span class='bulletin'>".$moy_min_classe."</span>";
 				    echo "</td>\n";
-
 
 				    // Colonne Moyenne générale de la classe:
 				   echo "<td style=\"text-align: center;\">";
@@ -479,14 +478,14 @@
 
 					// Colonne Max:
 					echo "<td style=\"text-align: center;\">";
-					echo "<span class='bulletin'>".max($moy_gen_eleve)."</span>";
+					echo "<span class='bulletin'>".$moy_max_classe."</span>";
 				    echo "</td>\n";
 				} else {
 				   //Eric Ajout colonne min classe max une seule cellule
 				    echo "<td style=\"text-align: center;\">";
-				    echo "<span class='bullminclasmax'>".min($moy_gen_eleve)."<br />\n";
+				    echo "<span class='bullminclasmax'>$moy_min_classe<br />\n";
 					echo "<span class='bullminclasmax'>$moy_gen_classe[$i]<br />\n";
-					echo "<span class='bullminclasmax'>".max($moy_gen_eleve)."<br />\n";
+					echo "<span class='bullminclasmax'>$moy_max_classe<br />\n";
 					echo "</td>\n";
 				}
 
