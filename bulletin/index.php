@@ -63,8 +63,13 @@ if (!isset($id_classe)) {
     }
 
     $nombreligne = mysql_num_rows($calldata);
-    echo "Total : $nombreligne ";
-    if ($nombreligne > "1") echo "classes"; else echo "classe";
+    if ($nombreligne > "1") {
+	  echo " | Total : $nombreligne ";
+	  echo "classes";
+	} else {
+	  echo " | Total : $nombreligne ";
+	  echo "classe";
+    }
     echo "</p>\n";
     echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins.<br />\n";
 
@@ -95,7 +100,7 @@ if (!isset($id_classe)) {
         echo "</table>\n";
 }
 if (isset($id_classe)) {
-	echo "<a href=\"index.php\">Choisir une autre classe</a>|";
+	echo " | <a href=\"index.php\">Choisir une autre classe</a>";
 /*
 	// On choisit le periode :
 	echo "<p><b>Choisissez la période : </b></p>\n";
