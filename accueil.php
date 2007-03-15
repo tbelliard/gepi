@@ -754,7 +754,12 @@ if ($_SESSION['statut'] == 'administrateur') {
     echo "<br /><br /><table>\n";
     echo "<tr><td align='left'><center>\n";
     echo "<div><b>Créer un fichier de sauvegarde/restauration de la base de données ".$dbDb."</b></div>\n";
-    echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php?action=dump\" method=\"post\" name=\"formulaire\">\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" name=\"formulaire\">\n";
+    if (getSettingValue("mode_sauvegarde") == "mysqldump") {
+    	echo "<input type='hidden' name='action' value='system_dump' />";
+    } else {
+    	echo "<input type='hidden' name='action' value='dump' />";
+    }
     echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
     echo "<span class='small'><b>Remarque</b> :</span>
     <ul>

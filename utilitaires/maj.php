@@ -2463,6 +2463,19 @@ if (isset ($_POST['maj'])) {
 		} else {
 	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
 		}
+		
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre de mémorisation du mode de sauvegarde<br/>";
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'mode_sauvegarde'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('mode_sauvegarde', 'gepi');");
+
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
     }
 
     if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
@@ -2736,7 +2749,12 @@ if ($pb_maj_bd != 'yes') {
         echo "<h3>Mise à jour de la base de données vers la version GEPI " . $gepiVersion . $rc . $beta . "</h3>";
         if (isset ($_SESSION['statut'])) {
             echo "<p>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
-            echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name=formulaire>";
+            echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method=post name=formulaire>";
+            if (getSettingValue("mode_sauvegarde") == "mysqldump") {
+            	echo "<input type='hidden' name='action' value='system_dump' />";
+            } else {
+            	echo "<input type='hidden' name='action' value='dump' />";
+            }
             echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>";
         }
         echo "<p>Remarque : la procédure de mise à jour vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";

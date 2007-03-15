@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 18/09/2006
+ * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -66,8 +66,8 @@ if (isset($action) and ($action == 'upload'))  {
         $msg = "Erreur de téléchargement.";
     } else if (!file_exists($sav_file['tmp_name'])) {
         $msg = "Erreur de téléchargement.";
-    } else if (!preg_match('/sql$/',$sav_file['name'])){
-        $msg = "Erreur : seuls les fichiers ayant l'extension .sql sont autorisés.";
+    } else if (!preg_match('/sql$/',$sav_file['name']) AND !preg_match('/gz$/',$sav_file['name'])){
+        $msg = "Erreur : seuls les fichiers ayant l'extension .sql ou .gz sont autorisés.";
     } else {
         $dest = "../backup/".$dirname."/";
         $n = 0;
@@ -79,8 +79,6 @@ if (isset($action) and ($action == 'upload'))  {
         }
     }
 }
-
-
 
 // Suppression d'un fichier
 if (isset($action) and ($action == 'sup'))  {
@@ -201,7 +199,7 @@ function current_time() {
     }
 }
 
-function backupMySql($db,$dumpFile, $duree,$rowlimit) {
+function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     global $TPSCOUR,$offsettable,$offsetrow,$cpt,$debug;
     $fileHandle = fopen($dumpFile, "a");
     if(!$fileHandle) {
@@ -236,7 +234,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit) {
         if ($offsetrow==-1){
             $todump=get_def($db,$tables[$offsettable]);
             if (isset($debug)) echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />";
-            fwrite ($fileHandle,$todump);
+            fwrite($fileHandle,$todump);
             $offsetrow++;
             $cpt++;
         }
@@ -267,7 +265,6 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit) {
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
             return TRUE;
-
     }
     $offsettable=-1;
     $todump.="#\n";
@@ -276,7 +273,8 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit) {
     fclose($fileHandle);
     return TRUE;
 }
-function restoreMySqlDump($dumpFile , $duree) {
+
+function restoreMySqlDump($dumpFile,$duree) {
     // $dumpFile, fichier source
     // $duree=timeout pour changement de page (-1 = aucun)
 
@@ -286,7 +284,7 @@ function restoreMySqlDump($dumpFile , $duree) {
          echo "$dumpFile non trouvé<br />";
          return FALSE;
     }
-    $fileHandle = fopen($dumpFile, "rb");
+    $fileHandle = gzopen($dumpFile, "rb");
 
     if(!$fileHandle) {
         echo "Ouverture de $dumpFile impossible.<br />";
@@ -294,7 +292,7 @@ function restoreMySqlDump($dumpFile , $duree) {
     }
 
     if ($offset!=0) {
-        if (fseek($fileHandle,$offset,SEEK_SET)!=0) { //erreur
+        if (gzseek($fileHandle,$offset,SEEK_SET)!=0) { //erreur
             echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br />";
             return FALSE;
         }
@@ -304,7 +302,7 @@ function restoreMySqlDump($dumpFile , $duree) {
     }
     $formattedQuery = "";
     $old_offset = $offset;
-    while(!feof($fileHandle)) {
+    while(!gzeof($fileHandle)) {
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
             if ($old_offset == $offset) {
@@ -317,19 +315,19 @@ function restoreMySqlDump($dumpFile , $duree) {
             return TRUE;
         }
         //echo $TPSCOUR."<br />";
-        $buffer=fgets($fileHandle);
+        $buffer=gzgets($fileHandle);
         if (substr($buffer,strlen($buffer),1)==0)
             $buffer=substr($buffer,0,strlen($buffer)-1);
 
         //echo $buffer."<br />";
 
-        if(substr($buffer, 0, 1) != "#") {
+        if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
             if (!isset($debut_req))  $debut_req = $buffer;
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
             if ($formattedQuery)
                 if (mysql_query($formattedQuery)) {//réussie sinon continue à conca&téner
-                    $offset=ftell($fileHandle);
+                    $offset=gztell($fileHandle);
                     //echo $offset;
                     $formattedQuery = "";
                     unset($debut_req);
@@ -342,7 +340,7 @@ function restoreMySqlDump($dumpFile , $duree) {
     if (mysql_error())
         echo "<hr />ERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />";
 
-    fclose($fileHandle);
+    gzclose($fileHandle);
     $offset=-1;
     return TRUE;
 }
@@ -425,8 +423,17 @@ if ($test_write == 'no') {
     echo "<h3 class='gepi'>Problème de droits d'accès :</h3>";
     echo "<p>Le répertoire \"/backup\" n'est pas accessible en écriture.</p>";
     echo "<P>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
-    Contactez l'administrateur technique afin de régler ce proiblème.</p>";
+    Contactez l'administrateur technique afin de régler ce problème.</p>";
     require("../lib/footer.inc.php");
+    die();
+}
+
+if (!function_exists("gzwrite")) {
+    echo "<h3 class='gepi'>Problème de configuration :</h3>";
+    echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>";
+    echo "<P>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
+    Contactez l'administrateur technique afin de régler ce problème.</p>";
+    echo "</body></html>";
     die();
 }
 
@@ -493,10 +500,13 @@ if (isset($action) and ($action == 'restaure'))  {
 
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
-    // SAuvegarde de la base
+	// On enregistre le paramètre pour s'en souvenir la prochaine fois
+	saveSetting("mode_sauvegarde", "gepi");
+	
+	// SAuvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
-    $filename=$path."$nomsql.$filetype";
+    $filename=$path.$nomsql.".".$filetype;
 
     if (!isset($_GET["duree"])&&is_file($filename)){
         echo "<font color=\"#FF0000\"><center><b>Le fichier existe déjà. Patientez une minute avant de retenter la sauvegarde.</b></center></font><hr />";
@@ -546,7 +556,13 @@ if (isset($action) and ($action == 'dump'))  {
                 exit;
            }
         } else {
-
+			// La sauvegarde est terminée. On compresse le fichier
+			$data = implode("", file($fichier));
+			$gzfile = gzopen($fichier.".gz", "w9");
+			$write = gzwrite($gzfile,$data);
+			gzclose($gzfile);
+			@unlink($fichier);
+			
             echo "<div align='center'><p>Sauvegarde Terminée.<br/>\n";
 
 			//$nomsql.$filetype
@@ -593,6 +609,30 @@ if (isset($action) and ($action == 'dump'))  {
     }
 }
 
+if (isset($action) and ($action == 'system_dump'))  {
+	// On enregistre le paramètre pour s'en souvenir la prochaine fois
+	saveSetting("mode_sauvegarde", "mysqldump");
+
+	// Sauvegarde de la base en utilisant l'utilitaire système mysqldump
+    $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
+    $cur_time=date("Y-m-d H:i");
+    $filetype = "sql.gz";
+    $filename=$path.$nomsql.".".$filetype;
+    // Juste pour être sûr :
+    $dbHost = escapeshellarg($dbHost);
+    $dbUser = escapeshellarg($dbUser);
+    $dbPass = escapeshellarg($dbPass);
+    $dbDb = escapeshellarg($dbDb);
+	$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	$exec = system($command);
+	if (filesize($filename) > 10000) {
+		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>";
+	} else {
+		echo "<center><p style='color: red; font-weight: bold;'>Erreur lors de la sauvegarde.</p></center>";
+	}
+}
+
+
 ?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b><?php
 // Test présence de fichiers htaccess
 if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../backup/".$dirname."/.htpasswd"))) {
@@ -625,15 +665,26 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 }
 
 ?>
-<form enctype="multipart/form-data" action="accueil_sauve.php" method=post name=formulaire>
+
 <H3>Créer un fichier de sauvegarde/restauration de la base <?php echo $dbDb; ?></H3>
+<p>Deux méthodes de sauvegarde sont disponibles : l'utilisation de la commande système mysqldump ou bien le système intégré à Gepi.<br/>
+La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.</br>
+La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
+<form enctype="multipart/form-data" action="accueil_sauve.php" method=post name=formulaire>
+<center><input type="submit" value="Sauvegarder" />
+<select name='action' size='1'>
+<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
+<option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " SELECTED";?>>sans mysqldump</option>
+</select>
+</center>
+
 <span class='small'><b>Remarques</b> :</span>
 <ul>
 <li><span class='small'>le répertoire "documents" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé.</span></li>
 <li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
 - <a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
 </ul>
-
+</form>
 <div style="display:none" id="menu1">
 <table border="1" cellpadding="5" bgcolor="#C0C0C0"><tr><td>La <b>valeur de la durée d'une portion</b> doit être inférieure à la
 <b>valeur maximum d'exécution d'un script</b> sur le serveur (max_execution_time).
@@ -648,10 +699,8 @@ Pour palier cela, <b>ce script sauvegarde et restaure "par portions" d'une durée
 jusqu'à ce que l'opération de sauvegarde ou de restauration soit terminée.
 </td></tr></table>
 </div>
+<hr />
 
-<input type="hidden" name="action" value="dump" />
-<center><input type="submit" value="Lancer la sauvegarde" /></center><hr />
-</form>
 
 <?php
 
