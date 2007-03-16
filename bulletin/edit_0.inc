@@ -1,6 +1,6 @@
 <?PHP
         // On initialise le tableau des notes et appréciations :
-        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+        echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 
     echo "<thead>\n";
 

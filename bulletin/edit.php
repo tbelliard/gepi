@@ -1386,7 +1386,7 @@ echo "'>\n";
             //
             // Tableau des absences
             //
-            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
             echo "<tr>\n<td style=\"vertical-align: top;\"><p class='bulletin'>";
             if ($current_eleve_absences == '0') {
                 echo "<i>Aucune demi-journée d'absence</i>.";
@@ -1425,7 +1425,7 @@ echo "'>\n";
         // Si la variable 'bull_affiche_avis' est à 'n',  mais que 'bull_affiche_signature' est à 'y', il faut quand même le tableau
         if (($bull_affiche_avis == 'y')||($bull_affiche_signature == 'y')) {
             // Tableau de l'avis des conseil de classe
-            echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
             echo "<tr>\n";
         }
         //=============================================
@@ -1502,7 +1502,7 @@ echo "'>\n";
 
         if (($bull_formule_bas != '') and ($bull_affiche_formule == 'y')) {
             // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
             echo "<tr>";
             echo "<td><p align='center' class='bulletin'>".$bull_formule_bas."</p></td>\n";
             echo "</tr></table>";
