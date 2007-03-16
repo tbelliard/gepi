@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id
+ *  $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -105,7 +105,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 				echo "<tr>\n";
 				echo "<td>$lig_class->classe</td>\n";
 				while($lig_per=mysql_fetch_object($res_per)){
-					echo "<td> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>P".$lig_per->num_periode."</a></td>\n";
+					echo "<td> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 				}
 				echo "</tr>\n";
 			}
@@ -147,7 +147,7 @@ echo "<div style=\"text-align: center;\">\n
     echo "</form>\n";
    } else {
        echo "<legend>Séléctionnez la (ou les) classe(s) pour lesquels vous souhaitez imprimer les avis.</legend>\n";
-	     echo "<form method=\"post\" action=\"../impression/avis_pdf.php\" name=\"avis_pdf\">\n";
+	     echo "<form method=\"post\" action=\"../impression/avis_pdf.php\" target='_blank' name=\"avis_pdf\">\n";
          if ($id_choix_periode != 0) {
 				echo "<br />\n";
 
@@ -160,7 +160,7 @@ echo "<div style=\"text-align: center;\">\n
 								   echo "		<option value=\"";
 								   echo $data_classe['id_classe'];
 								   echo "\">";
-								   echo $data_classe['nom_complet'];
+								   echo $data_classe['nom_complet']." (".$data_classe['classe'].")";
 								   echo "</option>\n";
 					}
 					echo "		</optgroup>\n";

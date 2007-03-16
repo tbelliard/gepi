@@ -221,7 +221,7 @@ else{
 				echo "<tr>\n";
 				echo "<td>$lig_class->classe</td>\n";
 				while($lig_per=mysql_fetch_object($res_per)){
-					echo "<td> - <a href='get_csv.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>P".$lig_per->num_periode."</a></td>\n";
+					echo "<td> - <a href='get_csv.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>".$lig_per->nom_periode."</a></td>\n";
 				}
 				echo "</tr>\n";
 			}
