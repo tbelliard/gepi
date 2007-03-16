@@ -1,7 +1,6 @@
 <?php
-$starttime = microtime();
 /*
- * Last modification  : 17/10/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -43,7 +42,8 @@ die();
 //**************** EN-TETE *****************************
 $titre_page = "Gestion des utilisateurs";
 require_once("../lib/header.inc");
-//**************** FIN EN-TETE *****************
+//**************** FIN EN-TETE *************************
+
 unset($display);
 $display = isset($_POST["display"]) ? $_POST["display"] : (isset($_GET["display"]) ? $_GET["display"] : (getSettingValue("display_users")!='' ? getSettingValue("display_users"): 'tous'));
 // on sauve le choix par défaut
@@ -54,9 +54,24 @@ $order_by = isset($_POST["order_by"]) ? $_POST["order_by"] : (isset($_GET["order
 $chemin_retour = urlencode($_SERVER['REQUEST_URI']);
 $_SESSION['chemin_retour'] = "../utilisateurs/index.php";
 
+unset($mode);
+$mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
+
+if ($mode != "personnels") {
 ?>
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<br/><br/>
+<p>Sur cette page, vous pouvez gérer les utilisateurs ayant accès à Gepi grâce à un identifiant et un mot de passe.</p>
+<p>Cliquez sur le type d'utilisateurs que vous souhaitez gérer :</p>
+<p style='padding-left: 10%; margin-top: 15px;'><a href="index.php?mode=personnels"><img src='../images/icons/forward.png' alt='Personnels' class='back_link' /> Personnels de l'établissement (professeurs, scolarité, CPE, administrateurs)</a></p>
+<p style='padding-left: 10%; margin-top: 15px;'><a href="edit_responsable.php"><img src='../images/icons/forward.png' alt='Responsables' class='back_link' /> Responsables d'élèves (parents)</a></p>
+<p style='padding-left: 10%; margin-top: 15px;'><a href="edit_eleve.php"><img src='../images/icons/forward.png' alt='Eleves' class='back_link' /> Élèves</a></p>
+<?php
+} else {
+?>
+<p class=bold>
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
  | <a href="modify_user.php">Ajouter utilisateur</a>
 <?php
 
@@ -67,10 +82,6 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
  | <a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>
  | <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a></p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
-<p>Cas particuliers, cliquez sur les liens ci-dessous :
-<br/>- <a href="create_responsable.php">Créer</a> | <a href="edit_responsable.php">Editer</a> les utilisateurs au statut 'responsable' (accès parents)
-<br/>- <a href="create_eleve.php">Créer</a> | <a href="edit_eleve.php">Editer</a> les utilisateurs au statut 'eleve' (accès élèves)
-</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table border=0>
 <tr>
@@ -83,15 +94,15 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
  <td><p><input type=submit value=Valider /></p></td>
  </tr>
  </table>
-
+<input type=hidden name='mode' value='<?php echo $mode; ?>' />
 <input type=hidden name=order_by value=<?php echo $order_by; ?> />
 </form>
 <?php
 // Affichage du tableau
 echo "<table border=1 cellpadding=3>";
-echo "<tr><td><p class=small><b><a href='index.php?order_by=login&amp;display=$display'>Nom de login</a></b></p></td>";
-echo "<td><p class=small><b><a href='index.php?order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></td>";
-echo "<td><p class=small><b><a href='index.php?order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></td>";
+echo "<tr><td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></td>";
+echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></td>";
+echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></td>";
 echo "<td><p class=small><b>matière(s) si professeur</b></p></td>";
 echo "<td><p class=small><b>classe(s)</b></p></td>";
 echo "<td><p class=small><b>suivi</b></p></td>";
@@ -226,5 +237,7 @@ while ($i < $nombreligne){
     $i++;
 }
 echo "</table>";
+
+} // Fin : si $mode == personnels
 require("../lib/footer.inc.php");
 ?>

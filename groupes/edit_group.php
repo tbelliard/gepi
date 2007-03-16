@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 26/09/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -273,14 +273,14 @@ require_once("../lib/header.inc");
 // MODIF: boireaus
 //if(isset($_GET['chemin_retour'])){
 if(isset($chemin_retour)){
-	echo "|<a href=\"".$_GET['chemin_retour']."\">Retour</a> |";
+	echo "<a href=\"".$_GET['chemin_retour']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
 }
 else{
-	echo "|<a href=\"edit_class.php?id_classe=$id_classe\">Retour</a> |";
+	echo "<a href=\"edit_class.php?id_classe=$id_classe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
 }
 //============================
 ?>
-<a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')">Supprimer le groupe</a> |
+<a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
 <?php
 if ($mode == "groupe") {
     echo "<h3>Modifier le groupe</h3>\n";
