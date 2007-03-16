@@ -80,7 +80,8 @@ function extr_valeur($lig){
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a>|</p>\n";
 
 				echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
-				$tabfich=array("f_ele.csv","f_ere.csv");
+				//$tabfich=array("f_ele.csv","f_ere.csv");
+				$tabfich=array("eleves.csv","etablissements.csv","eleve_etablissement.csv","adresses.csv","personnes.csv","responsables.csv");
 				for($i=0;$i<count($tabfich);$i++){
 					if(file_exists("../backup/$dirname/csv/$tabfich[$i]")){
 						echo "<p>Suppression de $tabfich[$i]... ";
@@ -638,7 +639,8 @@ function extr_valeur($lig){
 							}
 
 							// Génération d'un eleves.csv
-							echo "<h3><a name='csv'></a>Génération d'un fichier F_ELE.CSV</h3>\n";
+							//echo "<h3><a name='csv'></a>Génération d'un fichier F_ELE.CSV</h3>\n";
+							echo "<h3><a name='csv'></a>Génération d'un fichier ELEVES.CSV</h3>\n";
 							echo "<blockquote>\n";
 							echo "<p>A la place de l'ERENO, je mets l'ELEVE_ID (<i>ce n'est pas l'équivalent, mais c'est lui qui est utilisé pour le lien entre le ElevesAvecAdresses.xml et le Responsables.xml</i>).</p>\n";
 
