@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -2671,6 +2671,11 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailEleve', 'no');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCpePPEmailEleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailEleve', 'no');");
             
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaParent'");
         $res_test = mysql_num_rows($req_test);
@@ -2682,6 +2687,11 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailParent', 'no');");
 
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCpePPEmailParent'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailParent', 'no');");
+            
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- *  Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *  Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -39,9 +39,9 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
+$error_login = false;
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
-$login_eleve = isset($_GET['login_eleve']) ? $_GET['login_eleve'] : (isset($_POST['login_eleve']) ? $_POST["login_eleve"] : NULL);
+$login_eleve = isset($_GET['login_eleve']) ? $_GET['login_eleve'] : (isset($_POST['login_eleve']) ? $_POST["login_eleve"] : null);
 if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login " .
 			"FROM eleves e, resp_pers r, responsables2 re " .
@@ -54,7 +54,7 @@ if ($_SESSION['statut'] == "responsable") {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
-		$login_eleve = false;
+		$error_login = true;
 	}
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter le formulaire.
 	
@@ -73,7 +73,7 @@ echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' 
 echo "</p>\n";
 
 // Quelques vérifications de droits d'accès.
-if ($_SESSION['statut'] == "responsable" and $login_eleve == false) {
+if ($_SESSION['statut'] == "responsable" and $error_login == true) {
 	echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -90,7 +90,7 @@ if (
 }
 
 // Et une autre vérification de sécurité : est-ce que si on a un statut 'responsable' le $login_eleve est bien un élève dont le responsable a la responsabilité
-if ($login_eleve != "null" and $_SESSION['statut'] == "responsable") {
+if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 	$test = mysql_query("SELECT count(e.login) " .
 			"FROM eleves e, responsables2 re, resp_pers r " .
 			"WHERE (" .
@@ -115,7 +115,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "')");
-	
+	echo "<br/><br/>";
     echo "<form enctype=\"multipart/form-data\" action=\"visu_profs_eleve.php\" method=\"post\">\n";
 	echo "<p clas='bold'>Elève : ";
 	echo "<select size=\"1\" name=\"login_eleve\">";
@@ -139,7 +139,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     echo "<table border='0'>\n";
     
     // On commence par le CPE
-    $req = mysql_query("SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login " .
+    $req = mysql_query("SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
     		"FROM utilisateurs u,j_eleves_cpe jec " .
     		"WHERE jec.e_login='".$login_eleve."' AND " .
     		"u.login=jec.cpe_login " .
@@ -148,10 +148,16 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     $cpe = mysql_fetch_object($req);
     echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
     echo "<td>";
-    // On affiche l'email s'il est non nul et si l'utilisateur est autorisé
-    if($cpe->email!="" AND (
-    	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaEmailParent") == "yes") OR
-    	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
+    // On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
+    if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
+    	($_SESSION['statut'] == "responsable" AND 
+    			(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR 
+    			getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
+    	OR
+    	($_SESSION['statut'] == "eleve" AND 
+    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR 
+    		getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
+    		)
     	)){
         echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".$cpe->nom . " ".ucfirst(strtolower($cpe->prenom))."</a>";
     } else {
@@ -177,22 +183,35 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
         
         // Professeurs
         echo "<td>";
-        $sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
+        $sql="SELECT jgp.login,u.nom,u.prenom,u.email,u.show_email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
         $result_prof=mysql_query($sql);
         while($lig_prof=mysql_fetch_object($result_prof)){
-		    if($lig_prof->email!="" AND (
-		    	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaEmailParent") == "yes") OR
-		    	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
+		    
+            // Le prof est-il PP de l'élève ?
+            $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
+            $res_pp=mysql_query($sql);
+
+			if($lig_prof->email!="" AND $lig_prof->show_email == "yes" AND
+		    	(($_SESSION['statut'] == "responsable" AND 
+		    		(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
+		    			OR
+		    		 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysql_num_rows($res_pp)>0)
+		    		 )
+        		) OR (
+				  $_SESSION['statut'] == "eleve" AND 
+		    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes"
+		    			OR
+		    		 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysql_num_rows($res_pp)>0)
+		    		 )
+		    	)
 		    	)){
                 echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
             }
             else{
                 echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
             }
-
-            // Le prof est-il PP de l'élève ?
-            $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
-            $res_pp=mysql_query($sql);
+            
+            
             if(mysql_num_rows($res_pp)>0){
                  echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
             }

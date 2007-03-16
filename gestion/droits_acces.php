@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -256,6 +256,15 @@ if (isset($_POST['OK'])) {
     if (!saveSetting("GepiAccesEquipePedaEmailEleve", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesEquipePedaEmailEleve !";
     }	
+
+    if (isset($_POST['GepiAccesCpePPEmailEleve'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesCpePPEmailEleve", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesCpePPEmailEleve !";
+    }	
     
     if (isset($_POST['GepiAccesEquipePedaEmailParent'])) {
         $temp = "yes";
@@ -265,6 +274,15 @@ if (isset($_POST['OK'])) {
     if (!saveSetting("GepiAccesEquipePedaEmailParent", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesEquipePedaEmailParent !";
     }
+    
+    if (isset($_POST['GepiAccesCpePPEmailParent'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesCpePPEmailParent", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesCpePPEmailParent !";
+    }	
     
     if (isset($_POST['GepiAccesBulletinSimpleParent'])) {
         $temp = "yes";
@@ -381,7 +399,8 @@ require_once("../lib/header.inc");
         	<input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /> a accès à son cahier de texte<br/>
         	<input type="checkbox" name="GepiPasswordReinitEleve" value="yes" <?php if (getSettingValue("GepiPasswordReinitEleve")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)<br/>
         	<input type="checkbox" name="GepiAccesEquipePedaEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEleve")=='yes') echo "checked"; ?> /> a accès à l'équipe pédagogique le concernant<br/>
-        	<input type="checkbox" name="GepiAccesEquipePedaEmailEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailEleve")=='yes') echo "checked"; ?> /> a accès à aux adresses email de l'équipe pédagogique le concernant<br/>
+        	<input type="checkbox" name="GepiAccesCpePPEmailParent" value="yes" <?php if (getSettingValue("GepiAccesCpePPEmailParent")=='yes') echo "checked"; ?> /> a accès aux adresses email de son CPE et de son professeur principal (paramètre utile seulement si le paramètre suivant est décoché)<br/>
+        	<input type="checkbox" name="GepiAccesEquipePedaEmailEleve" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailEleve")=='yes') echo "checked"; ?> /> a accès aux adresses email de l'équipe pédagogique le concernant<br/>
         	<input type="checkbox" name="GepiAccesBulletinSimpleEleve" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleEleve")=='yes') echo "checked"; ?> /> a accès à ses bulletins simplifiés<br/>
         	<input type="checkbox" name="GepiAccesGraphEleve" value="yes" <?php if (getSettingValue("GepiAccesGraphEleve")=='yes') echo "checked"; ?> /> a accès à la visualisation graphique de ses résultats
        	</td>
@@ -395,6 +414,7 @@ require_once("../lib/header.inc");
         	<input type="checkbox" name="GepiAccesCahierTexteParent" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteParent")=='yes') echo "checked"; ?> /> a accès au cahier de texte des élèves dont il est responsable<br/>
         	<input type="checkbox" name="GepiPasswordReinitParent" value="yes" <?php if (getSettingValue("GepiPasswordReinitParent")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)<br/>
         	<input type="checkbox" name="GepiAccesEquipePedaParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaParent")=='yes') echo "checked"; ?> /> a accès à l'équipe pédagogique concernant les élèves dont il est responsable<br/>
+        	<input type="checkbox" name="GepiAccesCpePPEmailParent" value="yes" <?php if (getSettingValue("GepiAccesCpePPEmailParent")=='yes') echo "checked"; ?> /> a accès aux adresses email du CPE et du professeur principal responsables des élèves dont il est responsable (paramètre utile seulement si le paramètre suivant est décoché)<br/>
         	<input type="checkbox" name="GepiAccesEquipePedaEmailParent" value="yes" <?php if (getSettingValue("GepiAccesEquipePedaEmailParent")=='yes') echo "checked"; ?> /> a accès aux adresses email de l'équipe pédagogique concernant les élèves dont il est responsable<br/>
         	<input type="checkbox" name="GepiAccesBulletinSimpleParent" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleParent")=='yes') echo "checked"; ?> /> a accès aux bulletins simplifiés des élèves dont il est responsable<br/>
         	<input type="checkbox" name="GepiAccesGraphParent" value="yes" <?php if (getSettingValue("GepiAccesGraphParent")=='yes') echo "checked"; ?> /> a accès à la visualisation graphique des résultats des élèves dont il est responsable
