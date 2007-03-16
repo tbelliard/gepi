@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 26/12/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -24,7 +24,7 @@
  // Paramétrage du serveur CAS
  
  $serveurSSO = "localhost"; // l'hôte du serveur CAS
- $serveurSSOPort = 8443;
+ $serveurSSOPort = 8443; // Le port
  $serveurSSORacine = 'cas'; 
  
 ?>
