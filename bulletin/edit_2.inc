@@ -47,7 +47,7 @@
 	}
 	else{
 		// Min/Classe/Max en une seule colonne
-		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>m/C/M</span></td>\n";
+		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Classe m/C/M</span></td>\n";
 	}	
         echo "</tr>\n";
 			
@@ -178,7 +178,7 @@
 			}
 			else{
 				//$nb_total_cols = 3;
-				$nb_total_cols = 2;
+				$nb_total_cols = 3;
 				$nb_first_cols = 1;
 			}
                         //$nb_last_cols = 0;

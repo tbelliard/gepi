@@ -468,6 +468,14 @@ if (isset($_POST['choix_bulletin'])) {
     }
 }
 
+if (isset($_POST['min_max_moyclas'])) {
+
+    if (!saveSetting("min_max_moyclas", $_POST['min_max_moyclas'])) {
+        $msg .= "Erreur lors de l'enregistrement de min_max_moyclas !";
+        $reg_ok = 'no';
+    }
+}
+
 if(isset($_POST['activer_photo_bulletin'])) {
     if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
         $msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
@@ -1083,22 +1091,36 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
 		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
-		<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />
-		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+		<!--<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />-->
+		<li><i>Idem choix 1. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
         </ul>
 		</td>
         <td> <br />
         <?php
-		echo "<input type='radio' name='choix_bulletin' value='0'";
-		if (getSettingValue("choix_bulletin") == '0') echo " checked";
-		echo"/> Choix 1<br />";
+		//echo "<input type='radio' name='choix_bulletin' value='0'";
+		//if (getSettingValue("choix_bulletin") == '0') echo " checked";
+		//echo"/> Choix 1<br />";
 		echo "<input type='radio' name='choix_bulletin' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
-		echo"/> Choix 2<br />";
+		echo"/> Choix 1<br />";
 		echo "<input type='radio' name='choix_bulletin' value='2'";
 		echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
-		echo"/> Choix 3<br />";
+		echo"/> Choix 2<br />";
+        ?>
+        </td>
+    </tr>
+	
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation. : </td>
+        <td>
+	    <?php
+        echo "<input type=\"radio\" name=\"min_max_moyclas\" value='1' ";
+        if (getSettingValue("min_max_moyclas") == '1') echo " checked";
+        echo " />&nbsp;Oui";
+        echo "<input type=\"radio\" name=\"min_max_moyclas\" value='0' ";
+        if (getSettingValue("min_max_moyclas") != '1') echo " checked";
+        echo " />&nbsp;Non";
         ?>
         </td>
     </tr>

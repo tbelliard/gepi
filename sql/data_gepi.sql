@@ -437,3 +437,4 @@ INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');
 INSERT INTO droits VALUES ('/utilisateurs/password_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Export des identifiants et mots de passe en csv', '');
 INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des identifiants et des mots de passe en PDF', '');
 INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('choix_bulletin', '1');
+INSERT INTO setting VALUES ('min_max_moyclas', '0');

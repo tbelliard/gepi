@@ -30,7 +30,7 @@
 	}
 	else{
 		// Min/Classe/Max en une seule colonne
-		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>m/C/M</span></td>\n";
+		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Classe m/C/M</span></td>\n";
 	}
         echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>&Eacute;lève</span></td>\n";
         if ($affiche_graph == 'y')  {

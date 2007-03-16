@@ -38,7 +38,7 @@ if(getSettingValue("choix_bulletin")){
 		$option_affichage_bulletin = getSettingValue("choix_bulletin");
 	}
 	else{
-		$option_affichage_bulletin = -1;
+		$option_affichage_bulletin = 1;
 }
 
 switch ($option_affichage_bulletin) {
@@ -52,10 +52,17 @@ case 2:
     $fichier_bulletin = "edit_2.inc";
     break;
 default:
-    $fichier_bulletin = "edit_2.inc";
+    $fichier_bulletin = "edit_1.inc";
 }
 //
+// Pour afficher les trois colonnes en une seule, on transmet '1':
 
+if(getSettingValue("min_max_moyclas")){
+		$min_max_moyclas = getSettingValue("min_max_moyclas");
+	}
+	else{
+		$min_max_moyclas = 0;
+}
 
 /*
 if (isset($_GET['id_classe'])) {
@@ -112,9 +119,6 @@ if ($ver_periode[$periode_num] == "N") {
 $selection=isset($_POST['selection']) ? $_POST['selection'] : "_CLASSE_ENTIERE_";
 $liste_login_ele=isset($_POST['liste_login_ele']) ? $_POST['liste_login_ele'] : NULL;
 $un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
-
-// Pour afficher les trois colonnes en une seule, on transmet '1':
-$min_max_moyclas=isset($_POST['min_max_moyclas']) ? $_POST['min_max_moyclas'] : 3;
 
 
 $coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";

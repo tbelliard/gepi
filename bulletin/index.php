@@ -257,8 +257,9 @@ for(i=0;i<$nb_per_close;i++){
 /*
 	echo "<tr><td valign='top'><input type='checkbox' name='ne_pas_afficher_moy_gen' value='oui' /><td><td>Ne pas afficher la moyenne générale (<i>même si l'affichage des coefficients de matières est activé</i>).<br /><i>Rappel:</i> La moyenne générale ne peut apparaitre que si un des coefficients de matière au moins est non nul.</td></tr>\n";
 */
+/*
 	echo "<tr><td valign='top'><input type='checkbox' name='min_max_moyclas' value='1' /></td><td>Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation.</td></tr>\n";
-
+*/
 	// A FAIRE:
 	// Tester et ne pas afficher:
 	// - si tous les coeff sont à 1
