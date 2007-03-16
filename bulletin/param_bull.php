@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 16/06/2006
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -1091,22 +1091,22 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
 		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
-		<!--<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />-->
-		<li><i>Idem choix 1. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+		<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />
+		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
         </ul>
 		</td>
         <td> <br />
         <?php
-		//echo "<input type='radio' name='choix_bulletin' value='0'";
-		//if (getSettingValue("choix_bulletin") == '0') echo " checked";
-		//echo"/> Choix 1<br />";
 		echo "<input type='radio' name='choix_bulletin' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
 		echo"/> Choix 1<br />";
 		echo "<input type='radio' name='choix_bulletin' value='2'";
-		echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
 		echo"/> Choix 2<br />";
+		echo "<input type='radio' name='choix_bulletin' value='3'";
+		echo "toto".getSettingValue("choix_bulletin");
+		if (getSettingValue("choix_bulletin") == '3') echo " checked";
+		echo"/> Choix 3<br />";
         ?>
         </td>
     </tr>

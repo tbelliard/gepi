@@ -30,25 +30,24 @@ require_once("../lib/initialisations.inc.php");
 // Eric : Inclusion fichier contenant la bibliothèque pour les AID
 include ("aid_lib.inc");
 // Eric : Ajout : La variable pour sélectionner le bulletin
-// 0 : initial
-// 1 : initial avec au  dessus de min / max / moy "Pour la calsse"
-// 2 : le précédent, mais le bloc Min Max Moy "Pour la classe" passe après la colonne  "appréciations"
-
+// 1 : initial
+// 2 : initial avec au  dessus de min / max / moy "Pour la calsse"
+// 3 : le précédent, mais le bloc Min Max Moy "Pour la classe" passe après la colonne  "appréciations"
 if(getSettingValue("choix_bulletin")){
 		$option_affichage_bulletin = getSettingValue("choix_bulletin");
 	}
 	else{
-		$option_affichage_bulletin = 1;
+		$option_affichage_bulletin = 2;
 }
 
 switch ($option_affichage_bulletin) {
-case 0:
+case 1:
     $fichier_bulletin = "edit_0.inc";
     break;
-case 1:
+case 2:
     $fichier_bulletin = "edit_1.inc";
     break;
-case 2:
+case 3:
     $fichier_bulletin = "edit_2.inc";
     break;
 default:

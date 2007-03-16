@@ -2474,8 +2474,8 @@ if (isset ($_POST['maj'])) {
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'choix_bulletin'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('choix_bulletin', '1');");
-			$result .= "Initialisation du paramètre choix_bulletin à '1': ";
+			$query = mysql_query("INSERT INTO setting VALUES ('choix_bulletin', '2');");
+			$result .= "Initialisation du paramètre choix_bulletin à '2': ";
 			if($query){
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			}
