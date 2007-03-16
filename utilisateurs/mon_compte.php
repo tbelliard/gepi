@@ -1,8 +1,8 @@
 <?php
 /*
- * $Id:
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -57,6 +57,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
     $no_anti_inject_password1 = isset($_POST["no_anti_inject_password1"]) ? $_POST["no_anti_inject_password1"] : NULL;
     $reg_password2 = isset($_POST["reg_password2"]) ? $_POST["reg_password2"] : NULL;
     $reg_email = isset($_POST["reg_email"]) ? $_POST["reg_email"] : NULL;
+    $reg_show_email = isset($_POST["reg_show_email"]) ? $_POST["reg_show_email"] : "no";
     if ($no_anti_inject_password_a != '') {
         $reg_password_a_c = md5($NON_PROTECT['password_a']);
         if ($_SESSION['password'] == $reg_password_a_c) {
@@ -83,8 +84,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
             $msg = "L'ancien mot de passe n'est pas correct !";
         }
     }
-    $call_email = mysql_query("SELECT email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
+    $call_email = mysql_query("SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
     $user_email = mysql_result($call_email, 0, "email");
+    $user_show_email = mysql_result($call_email, 0, "show_email");
     if ($user_email != $reg_email) {
         $reg = mysql_query("UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
         if ($reg) {
@@ -92,6 +94,15 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
             $no_modif = "no";
         }
     }
+    if ($user_show_email != $reg_show_email) {
+    	if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
+        $reg = mysql_query("UPDATE utilisateurs SET show_email = '$reg_show_email' WHERE login = '" . $_SESSION['login'] . "'");
+        if ($reg) {
+            $msg = $msg."<br />Le paramétrage d'affichage de votre email a été modifié !";
+            $no_modif = "no";
+        }
+    }
+    
     if ($no_modif == "yes") {
         $msg = $msg."<br />Aucune modification n'a été apportée !";
     }
@@ -99,12 +110,13 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 
 // On appelle les informations de l'utilisateur pour les afficher :
-$call_user_info = mysql_query("SELECT nom,prenom,statut,email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
+$call_user_info = mysql_query("SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
 $user_civilite = mysql_result($call_user_info, "0", "civilite");
 $user_nom = mysql_result($call_user_info, "0", "nom");
 $user_prenom = mysql_result($call_user_info, "0", "prenom");
 $user_statut = mysql_result($call_user_info, "0", "statut");
 $user_email = mysql_result($call_user_info, "0", "email");
+$user_show_email = mysql_result($call_user_info, "0", "show_email");
 
 //**************** EN-TETE *****************
 $titre_page = "Gérer son compte";
@@ -133,7 +145,11 @@ if ($test_sso) {
 } else {
     echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
 }
-
+if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
+echo "<tr><td></td><td><input type='checkbox' name='reg_show_email' value='yes'";
+if ($user_show_email == "yes") echo " CHECKED";
+echo "/> Autoriser l'affichage de mon adresse email pour les utilisateurs non personnels de l'établissement **</td></tr>";
+}
 echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>";
 echo "</table>";
 
@@ -188,11 +204,14 @@ if ($nombre_classe != "0") {
 
 
 echo "<p class='small'>* Toutes les données nominatives présentes dans la base GEPI et vous concernant vous sont communiquées sur cette page.
-Conformément à la loi française n° 78-17 du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés,
+Conformément à la loi française n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés,
 vous pouvez demander auprès du Chef d'établissement ou auprès de l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a> du site,
 la rectification de ces données.
 Les rectifications sont effectuées dans les 48 heures hors week-end et jours fériés qui suivent la demande.";
-
+if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
+	echo "<p class='small'>** Votre email sera affichée sur certaines pages seulement si leur affichage a été activé de manière globale par l'administrateur et si vous avez autorisé l'affichage de votre email en cochant la case appropriée. ";
+	echo "Dans l'hypothèse où vous autorisez l'affichage de votre email, celle-ci ne sera accessible que par les élèves que vous avez en classe et/ou leurs responsables légaux disposant d'un identifiant pour se connecter à Gepi.</p>";
+}
 // Changement du mot de passe
 if ($test_sso) {
     echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>";
