@@ -99,7 +99,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 				echo "<tr>\n";
 				echo "<td>$lig_class->classe</td>\n";
 				while($lig_per=mysql_fetch_object($res_per)){
-					echo "<td> - <a href='liste_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>P".$lig_per->num_periode."</a></td>\n";
+					echo "<td> - <a href='liste_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 				}
 				echo "</tr>\n";
 			}
@@ -173,7 +173,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 				for($i=0;$i<count($tabnumper);$i++){
 					if($i>0){echo "<td> - </td>\n";}
 					echo "<td>\n";
-					echo "<a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlentities($tabnomper[$i])."</a>\n";
+					echo "<a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>".htmlentities($tabnomper[$i])."</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";

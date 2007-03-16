@@ -1,6 +1,6 @@
 <?php
 /*
-* Last modification  : 29/11/2006
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -83,7 +83,7 @@ echo "<div style=\"text-align: center;\">\n
     echo "</form>\n";
    } else {
        echo "<legend>Séléctionnez la (ou les) classe(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
-	     echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
+	     echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
          if ($id_choix_periode != 0) {
 				echo "<br />\n";
 
@@ -96,7 +96,7 @@ echo "<div style=\"text-align: center;\">\n
 								   echo "		<option value=\"";
 								   echo $data_classe['id_classe'];
 								   echo "\">";
-								   echo $data_classe['nom_complet'];
+								   echo $data_classe['nom_complet']." (".$data_classe['classe'].")";
 								   echo "</option>\n";
 					}
 					echo "		</optgroup>\n";
@@ -122,7 +122,7 @@ echo "<div style=\"text-align: center;\">\n";
 echo "   <fieldset>\n
      <legend>Séléctionnez la (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
 	//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
-	echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf2\">\n";
+	echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
 				echo "<br />\n";
 				//echo "<select id='liste_classes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
 				echo "<select id='liste_groupes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
