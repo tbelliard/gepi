@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -45,6 +45,7 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id
 unset($login_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_GET["login_eleve"]) ? $_GET["login_eleve"] : NULL);
 
+$error_login = false;
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login " .
@@ -58,7 +59,7 @@ if ($_SESSION['statut'] == "responsable") {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
-		$login_eleve = false;
+		$error_login = true;
 	}
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter un choix.
 	
@@ -88,7 +89,7 @@ function active(num) {
 echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
 // Si on a eu une erreur sur l'association responsable->élève
-if ($_SESSION['statut'] == "responsable" and $login_eleve == false) {
+if ($_SESSION['statut'] == "responsable" and $error_login == true) {
 	echo "<p>Il semble que vous ne soyez associé à aucun élève. Contactez l'administrateur pour résoudre cette erreur.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -143,7 +144,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
     }
     echo "</table>\n";
     
-} else if ($_SESSION['statut'] == "responsable" AND !isset($login_eleve)) {
+} else if ($_SESSION['statut'] == "responsable" AND $login_eleve == null) {
 	// Si on est là, c'est que le responsable est responsable de plusieurs élèves. Il doit donc
 	// choisir celui pour lequel il souhaite visualiser le bulletin simplifié
 	
