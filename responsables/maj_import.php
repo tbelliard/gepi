@@ -587,6 +587,14 @@ else{
 				}
 
 			}
+			else{
+				echo "<p style='color:red;'>Le nom du fichier proposé ne coïncide pas avec ce qui est attendu: ELEVES.CSV</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du fichier ELEVES.CSV</a></p>\n";
+				echo "</form>\n";
+				echo "</div>\n";
+				echo "</body></html>\n";
+				die();
+			}
 
 			echo "<script type='text/javascript'>
 	function modifcase(mode){
@@ -635,13 +643,17 @@ else{
 
 					if($i>0){echo ", ";}
 					echo stripslashes($nom)." ".stripslashes($prenom);
+
+					// FAUT-IL UN stripslashes sur les noms pour les apostrophes?
 					$sql="UPDATE eleves SET nom='".$nom."',
 								prenom='".$prenom."',
 								sexe='$sexe',
 								naissance='$naissance',
 								no_gep='$nonat'
-								WHERE elenoet='$elenoet'";
+								WHERE ele_id='$ele_id'";
+					//			WHERE elenoet='$elenoet'";
 					$res1=mysql_query($sql);
+					//echo "<p>$sql</p>\n";
 					if(!$res1){
 						//echo " (<font color='red'>erreur</font>)";
 						echo "<br />\n<font color='red'>Erreur:</font> $sql<br />\n";
@@ -707,6 +719,8 @@ else{
 
 					if($i>0){echo ", ";}
 					echo stripslashes($nom)." ".stripslashes($prenom);
+
+					// FAUT-IL UN stripslashes sur les noms pour les apostrophes?
 
 					$sql="INSERT INTO eleves SET nom='".$nom."',
 								prenom='".$prenom."',
@@ -939,7 +953,8 @@ else{
 				die();
 
 			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+				echo "<p>Le(s) fichier(s) sélectionné(s) n'est(ne sont) pas valide(s) !<br />\n";
+				echo "Contrôlez que le(s) nom(s) de fichier(s) coïncide(nt) avec ce qui est réclamé.<br />\n";
 				//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 				echo "</body>\n</html>\n";
@@ -1371,7 +1386,7 @@ else{
 				$lig2=mysql_fetch_object($res2);
 				if((in_array($personne[$pers_id]["adr_id"],$adr_modif))||(in_array($personne[$pers_id]["adr_id"],$adr_new))){
 					echo " background-color:lightgreen;'>";
-					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2->pays!="")){
 						if($lig2->adr1!=""){
 							echo "$lig2->adr1, ";
 						}
@@ -2149,7 +2164,7 @@ else{
 											echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
 											echo "</td>\n";
 
-											echo "<td style='text-align:center; background-color:lightgreen;>Modif</td>\n";
+											echo "<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
 											echo "$pers_id";
@@ -2457,10 +2472,19 @@ else{
 
 }
 
-echo "<p><i>NOTE:</i> Il reste aussi à assurer l'import de l'établissement d'origine avec les fichiers etablissements.csv et eleves_etablissements.csv<br />\n";
+echo "<p><i>NOTES:</i></p>\n";
+echo "<ul>\n";
+echo "<li>\n";
+echo "<p>Les noms de fichiers fournis dans les champs de formulaires doivent coïncider avec le nom indiqué ELEVES.CSV, ADRESSES.CSV,...\n";
+echo "</p>\n";
+echo "</li>\n";
+echo "<li>";
+echo "<p>Il reste aussi à assurer l'import de l'établissement d'origine avec les fichiers etablissements.csv et eleves_etablissements.csv<br />\n";
 echo "Par ailleurs, l'inscription des élèves dans telle ou telle classe, avec telle et telle option n'est pas encore assurée par cette page d'importation/mise à jour.<br />\n";
 echo "(<i>il faut donc par la suite affecter les nouveaux élèves dans les classes et les inscrire dans les groupes/options/matières</i>)<br />\n";
 echo "</p>\n";
+echo "</li>\n";
+echo "</ul>\n";
 
 require("../lib/footer.inc.php");
 ?>
