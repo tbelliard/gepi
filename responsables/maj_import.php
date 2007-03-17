@@ -177,7 +177,7 @@ else{
 								}
 
 								//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
-								$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."'";
+								$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)>0){
 									//$sql="UPDATE eleves SET ele_id='$affiche[5]' WHERE elenoet='$affiche[4]'";
@@ -241,7 +241,7 @@ else{
 
 									*/
 
-									$sql="SELECT * FROM j_eleves_regime WHERE login='$lig_ele->login'";
+									$sql="SELECT * FROM j_eleves_regime WHERE (login='$lig_ele->login')";
 									$res2=mysql_query($sql);
 									if(mysql_num_rows($res2)>0){
 										$tmp_regime="";
@@ -642,15 +642,22 @@ else{
 					//echo "nom=$nom<br />\n";
 
 					if($i>0){echo ", ";}
-					echo stripslashes($nom)." ".stripslashes($prenom);
+					echo stripslashes(stripslashes($nom))." ".stripslashes(stripslashes($prenom));
 
 					// FAUT-IL UN stripslashes sur les noms pour les apostrophes?
-					$sql="UPDATE eleves SET nom='".$nom."',
-								prenom='".$prenom."',
+					// Dans le champ de formulaire soumis, on a des échappements:
+					// Ex.: L\'HERNAULT
+					// Après soumission du formulaire, ce qui est reçu, c'est L\\\'HERNAULT
+					// Est-ce un effet de magic_quotes_gpc?
+					// Puis-je appliquer deux stripslashes() sans risque?
+					//$sql="UPDATE eleves SET nom='".$nom."',
+					//			prenom='".$prenom."',
+					$sql="UPDATE eleves SET nom='".stripslashes($nom)."',
+								prenom='".stripslashes($prenom)."',
 								sexe='$sexe',
 								naissance='$naissance',
 								no_gep='$nonat'
-								WHERE ele_id='$ele_id'";
+								WHERE (ele_id='$ele_id')";
 					//			WHERE elenoet='$elenoet'";
 					$res1=mysql_query($sql);
 					//echo "<p>$sql</p>\n";
@@ -662,7 +669,7 @@ else{
 
 					$sql="UPDATE j_eleves_regime SET doublant='$doublant',
 								regime='$regime'
-								WHERE login='$login_eleve'";
+								WHERE (login='$login_eleve')";
 					$res2=mysql_query($sql);
 					if(!$res2){
 						//echo " (<font color='red'>erreur</font>)";
@@ -718,12 +725,14 @@ else{
 					}
 
 					if($i>0){echo ", ";}
-					echo stripslashes($nom)." ".stripslashes($prenom);
+					echo stripslashes(stripslashes($nom))." ".stripslashes(stripslashes($prenom));
 
 					// FAUT-IL UN stripslashes sur les noms pour les apostrophes?
 
-					$sql="INSERT INTO eleves SET nom='".$nom."',
-								prenom='".$prenom."',
+					//$sql="INSERT INTO eleves SET nom='".$nom."',
+					//			prenom='".$prenom."',
+					$sql="INSERT INTO eleves SET nom='".stripslashes($nom)."',
+								prenom='".stripslashes($prenom)."',
 								sexe='$sexe',
 								naissance='$naissance',
 								no_gep='$nonat',
@@ -739,7 +748,7 @@ else{
 						$erreur++;
 					}
 					else{
-						$sql="SELECT 1=1 FROM j_eleves_regime WHERE login='$login_eleve'";
+						$sql="SELECT 1=1 FROM j_eleves_regime WHERE (login='$login_eleve')";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0){
 							$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
@@ -756,7 +765,7 @@ else{
 						else{
 							$sql="UPDATE j_eleves_regime SET doublant='$doublant',
 										regime='$regime',
-										WHERE login='$login_eleve'";
+										WHERE (login='$login_eleve')";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(!$res3){
@@ -911,7 +920,7 @@ else{
 									$adresse[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
 								}
 
-								$sql="SELECT * FROM resp_adr WHERE adr_id='$affiche[0]'";
+								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
 									$adr_new[]=$affiche[0];
@@ -1054,7 +1063,7 @@ else{
 									$personne[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
 								}
 
-								$sql="SELECT * FROM resp_pers WHERE pers_id='$affiche[0]'";
+								$sql="SELECT * FROM resp_pers WHERE (pers_id='$affiche[0]')";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
 									$pers_new[]=$affiche[0];
@@ -1152,7 +1161,7 @@ else{
 					}
 				}
 				if($temoin==""){
-					$sql="SELECT * FROM resp_pers WHERE adr_id='".$adr_modif[$i]."'";
+					$sql="SELECT * FROM resp_pers WHERE (adr_id='".$adr_modif[$i]."')";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
 						// L'adresse n'est plus utilisée? Mais encore présente dans sconet? et aurait changé?
@@ -1254,7 +1263,7 @@ else{
 				echo "<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 				echo "</td>\n";
 
-				$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id'";
+				$sql="SELECT * FROM resp_pers WHERE (pers_id='$pers_id')";
 				$res1=mysql_query($sql);
 				$lig1=mysql_fetch_object($res1);
 
@@ -1269,7 +1278,7 @@ else{
 					echo "'>";
 				}
 				echo stripslashes($personne[$pers_id]["nom"]);
-				echo "<input type='hidden' name='modif_".$cpt."_nom' value='".$personne[$pers_id]["nom"]."' />\n";
+				echo "<input type='hidden' name='modif_".$cpt."_nom' value=\"".stripslashes($personne[$pers_id]["nom"])."\" />\n";
 				echo "</td>\n";
 
 				echo "<td style='text-align:center;";
@@ -1283,7 +1292,7 @@ else{
 					echo "'>";
 				}
 				echo stripslashes($personne[$pers_id]["prenom"]);
-				echo "<input type='hidden' name='modif_".$cpt."_prenom' value='".$personne[$pers_id]["prenom"]."' />\n";
+				echo "<input type='hidden' name='modif_".$cpt."_prenom' value=\"".stripslashes($personne[$pers_id]["prenom"])."\" />\n";
 				echo "</td>\n";
 
 				echo "<td style='text-align:center;'>";
@@ -1380,34 +1389,43 @@ else{
 
 				// Adresse
 				echo "<td style='text-align:center;";
-				$sql="SELECT * FROM resp_adr WHERE adr_id='".$personne[$pers_id]["adr_id"]."'";
+				$sql="SELECT * FROM resp_adr WHERE (adr_id='".$personne[$pers_id]["adr_id"]."')";
 				$adr_id=$personne[$pers_id]["adr_id"];
 				$res2=mysql_query($sql);
 				$lig2=mysql_fetch_object($res2);
 				if((in_array($personne[$pers_id]["adr_id"],$adr_modif))||(in_array($personne[$pers_id]["adr_id"],$adr_new))){
 					echo " background-color:lightgreen;'>";
 					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2->pays!="")){
+						$chaine_adr="";
 						if($lig2->adr1!=""){
-							echo "$lig2->adr1, ";
+							//echo "$lig2->adr1, ";
+							$chaine_adr.=stripslashes("$lig2->adr1, ");
 						}
 						if($lig2->adr2!=""){
-							echo "$lig2->adr2, ";
+							//echo "$lig2->adr2, ";
+							$chaine_adr.=stripslashes("$lig2->adr2, ");
 						}
 						if($lig2->adr3!=""){
-							echo "$lig2->adr3, ";
+							//echo "$lig2->adr3, ";
+							$chaine_adr.=stripslashes("$lig2->adr3, ");
 						}
 						if($lig2->adr4!=""){
-							echo "$lig2->adr4, ";
+							//echo "$lig2->adr4, ";
+							$chaine_adr.=stripslashes("$lig2->adr4, ");
 						}
 						if($lig2->cp!=""){
-							echo "$lig2->cp, ";
+							//echo "$lig2->cp, ";
+							$chaine_adr.=stripslashes("$lig2->cp, ");
 						}
 						if($lig2->commune!=""){
-							echo "$lig2->commune, ";
+							//echo "$lig2->commune, ";
+							$chaine_adr.=stripslashes("$lig2->commune, ");
 						}
 						if($lig2->pays!=""){
-							echo "$lig2->pays";
+							//echo "$lig2->pays";
+							$chaine_adr.=stripslashes("$lig2->pays");
 						}
+						echo $chaine_adr;
 						echo " <font color='red'>-&gt;</font><br />\n";
 					}
 					$tabadr=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
@@ -1416,41 +1434,49 @@ else{
 						if($adresse[$adr_id]["$tabadr[$k]"]!=''){
 							$temoin_non_vide="oui";
 						}
-						echo "<input type='hidden' name='modif_".$cpt."_".$tabadr[$k]."' value='".$adresse[$adr_id]["$tabadr[$k]"]."' />\n";
+						echo "<input type='hidden' name='modif_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
 					}
 					if($temoin_non_vide=="oui"){
-						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo $adresse[$adr_id]["$tabadr[1]"];}
+						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo stripslashes($adresse[$adr_id]["$tabadr[1]"]);}
 						for($k=2;$k<count($tabadr);$k++){
 							if($adresse[$adr_id]["$tabadr[$k]"]!=''){
-								echo ", ".$adresse[$adr_id]["$tabadr[$k]"];
+								echo ", ".stripslashes($adresse[$adr_id]["$tabadr[$k]"]);
 							}
 						}
 					}
 				}
 				else{
 					echo "'>";
-					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){						$chaine_adr="";
 						if($lig2->adr1!=""){
-							echo "$lig2->adr1, ";
+							//echo "$lig2->adr1, ";
+							$chaine_adr.=stripslashes("$lig2->adr1, ");
 						}
 						if($lig2->adr2!=""){
-							echo "$lig2->adr2, ";
+							//echo "$lig2->adr2, ";
+							$chaine_adr.=stripslashes("$lig2->adr2, ");
 						}
 						if($lig2->adr3!=""){
-							echo "$lig2->adr3, ";
+							//echo "$lig2->adr3, ";
+							$chaine_adr.=stripslashes("$lig2->adr3, ");
 						}
 						if($lig2->adr4!=""){
-							echo "$lig2->adr4, ";
+							//echo "$lig2->adr4, ";
+							$chaine_adr.=stripslashes("$lig2->adr4, ");
 						}
 						if($lig2->cp!=""){
-							echo "$lig2->cp, ";
+							//echo "$lig2->cp, ";
+							$chaine_adr.=stripslashes("$lig2->cp, ");
 						}
 						if($lig2->commune!=""){
-							echo "$lig2->commune, ";
+							//echo "$lig2->commune, ";
+							$chaine_adr.=stripslashes("$lig2->commune, ");
 						}
 						if($lig2->pays!=""){
-							echo "$lig2->pays";
+							//echo "$lig2->pays";
+							$chaine_adr.=stripslashes("$lig2->pays");
 						}
+						echo $chaine_adr;
 					}
 				}
 				echo "<input type='hidden' name='modif_".$cpt."_adr_id' value='".$personne[$pers_id]["adr_id"]."' />\n";
@@ -1501,12 +1527,12 @@ else{
 
 				echo "<td style='text-align:center;'>";
 				echo stripslashes($personne[$pers_id]["nom"]);
-				echo "<input type='hidden' name='new_".$cpt."_nom' value='".$personne[$pers_id]["nom"]."' />\n";
+				echo "<input type='hidden' name='new_".$cpt."_nom' value=\"".stripslashes($personne[$pers_id]["nom"])."\" />\n";
 				echo "</td>\n";
 
 				echo "<td style='text-align:center;'>";
 				echo stripslashes($personne[$pers_id]["prenom"]);
-				echo "<input type='hidden' name='new_".$cpt."_prenom' value='".$personne[$pers_id]["prenom"]."' />\n";
+				echo "<input type='hidden' name='new_".$cpt."_prenom' value=\"".stripslashes($personne[$pers_id]["prenom"])."\" />\n";
 				echo "</td>\n";
 
 				echo "<td style='text-align:center;'>";
@@ -1547,7 +1573,7 @@ else{
 
 				// Adresse
 				echo "<td style='text-align:center;";
-				$sql="SELECT * FROM resp_adr WHERE adr_id='".$personne[$pers_id]["adr_id"]."'";
+				$sql="SELECT * FROM resp_adr WHERE (adr_id='".$personne[$pers_id]["adr_id"]."')";
 				$adr_id=$personne[$pers_id]["adr_id"];
 				$res2=mysql_query($sql);
 
@@ -1560,27 +1586,37 @@ else{
 					if(isset($lig2)){
 						echo " background-color:lightgreen;'>";
 						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+							// Normalement, il ne devrait pas y avoir d'antislashes dans la BDD.
+							$chaine_adr="";
 							if($lig2->adr1!=""){
-								echo "$lig2->adr1, ";
+								//echo "$lig2->adr1, ";
+								$chaine_adr.=stripslashes("$lig2->adr1, ");
 							}
 							if($lig2->adr2!=""){
-								echo "$lig2->adr2, ";
+								//echo "$lig2->adr2, ";
+								$chaine_adr.=stripslashes("$lig2->adr2, ");
 							}
 							if($lig2->adr3!=""){
-								echo "$lig2->adr3, ";
+								//echo "$lig2->adr3, ";
+								$chaine_adr.=stripslashes("$lig2->adr3, ");
 							}
 							if($lig2->adr4!=""){
-								echo "$lig2->adr4, ";
+								//echo "$lig2->adr4, ";
+								$chaine_adr.=stripslashes("$lig2->adr4, ");
 							}
 							if($lig2->cp!=""){
-								echo "$lig2->cp, ";
+								//echo "$lig2->cp, ";
+								$chaine_adr.=stripslashes("$lig2->cp, ");
 							}
 							if($lig2->commune!=""){
-								echo "$lig2->commune, ";
+								//echo "$lig2->commune, ";
+								$chaine_adr.=stripslashes("$lig2->commune, ");
 							}
 							if($lig2->pays!=""){
-								echo "$lig2->pays";
+								//echo "$lig2->pays";
+								$chaine_adr.=stripslashes("$lig2->pays");
 							}
+							echo $chaine_adr;
 							echo " <font color='red'>-&gt;</font><br />\n";
 						}
 					}
@@ -1593,13 +1629,13 @@ else{
 						if($adresse[$adr_id]["$tabadr[$k]"]!=''){
 							$temoin_non_vide="oui";
 						}
-						echo "<input type='hidden' name='new_".$cpt."_".$tabadr[$k]."' value='".$adresse[$adr_id]["$tabadr[$k]"]."' />\n";
+						echo "<input type='hidden' name='new_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
 					}
 					if($temoin_non_vide=="oui"){
-						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo $adresse[$adr_id]["$tabadr[1]"];}
+						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo stripslashes($adresse[$adr_id]["$tabadr[1]"]);}
 						for($k=2;$k<count($tabadr);$k++){
 							if($adresse[$adr_id]["$tabadr[$k]"]!=''){
-								echo ", ".$adresse[$adr_id]["$tabadr[$k]"];
+								echo ", ".stripslashes($adresse[$adr_id]["$tabadr[$k]"]);
 							}
 						}
 					}
@@ -1608,27 +1644,37 @@ else{
 					echo "'>";
 					if(isset($lig2)){
 						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+							// Normalement, il ne devrait pas y avoir d'antislashes dans la BDD.
+							$chaine_adr="";
 							if($lig2->adr1!=""){
-								echo "$lig2->adr1, ";
+								//echo "$lig2->adr1, ";
+								$chaine_adr.=stripslashes("$lig2->adr1, ");
 							}
 							if($lig2->adr2!=""){
-								echo "$lig2->adr2, ";
+								//echo "$lig2->adr2, ";
+								$chaine_adr.=stripslashes("$lig2->adr2, ");
 							}
 							if($lig2->adr3!=""){
-								echo "$lig2->adr3, ";
+								//echo "$lig2->adr3, ";
+								$chaine_adr.=stripslashes("$lig2->adr3, ");
 							}
 							if($lig2->adr4!=""){
-								echo "$lig2->adr4, ";
+								//echo "$lig2->adr4, ";
+								$chaine_adr.=stripslashes("$lig2->adr4, ");
 							}
 							if($lig2->cp!=""){
-								echo "$lig2->cp, ";
+								//echo "$lig2->cp, ";
+								$chaine_adr.=stripslashes("$lig2->cp, ");
 							}
 							if($lig2->commune!=""){
-								echo "$lig2->commune, ";
+								//echo "$lig2->commune, ";
+								$chaine_adr.=stripslashes("$lig2->commune, ");
 							}
 							if($lig2->pays!=""){
-								echo "$lig2->pays, ";
+								//echo "$lig2->pays";
+								$chaine_adr.=stripslashes("$lig2->pays");
 							}
+							echo $chaine_adr;
 						}
 					}
 				}
@@ -1706,7 +1752,7 @@ else{
 									tel_prof='$tel_prof',
 									mel='$mel',
 									adr_id='$adr_id'
-								WHERE pers_id='$pers_id' ";
+								WHERE (pers_id='$pers_id')";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
 					if(!$res1){
@@ -1727,7 +1773,7 @@ else{
 						$commune=$_POST['modif_'.$cpt.'_commune'];
 						$pays=$_POST['modif_'.$cpt.'_pays'];
 
-						$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$adr_id'";
+						$sql="SELECT 1=1 FROM resp_adr WHERE (adr_id='$adr_id')";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0){
@@ -1755,7 +1801,7 @@ else{
 											cp='$cp',
 											commune='$commune',
 											pays='$pays'
-										WHERE adr_id='$adr_id'";
+										WHERE (adr_id='$adr_id')";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(!$res3){
@@ -1816,7 +1862,7 @@ else{
 						$commune=$_POST['new_'.$cpt.'_commune'];
 						$pays=$_POST['new_'.$cpt.'_pays'];
 
-						$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$adr_id'";
+						$sql="SELECT 1=1 FROM resp_adr WHERE (adr_id='$adr_id')";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0){
@@ -1844,7 +1890,7 @@ else{
 											cp='$cp',
 											commune='$commune',
 											pays='$pays'
-										WHERE adr_id='$adr_id'";
+										WHERE (adr_id='$adr_id')";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(!$res3){
@@ -2032,11 +2078,12 @@ else{
 								//echo "<tr>\n";
 
 								//$sql="SELECT * FROM responsables2 WHERE ele_id='$affiche[0]' AND pers_id='$affiche[1]'";
-								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id'";
+								$sql="SELECT * FROM responsables2 WHERE (ele_id='$ele_id' AND pers_id='$pers_id')";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
-									// L'association n'existe pas encore
+									// L'association responsable/eleve n'existe pas encore
 									$resp_new[]="$affiche[0]:$affiche[1]";
+
 
 									$alt=$alt*(-1);
 									echo "<tr style='background-color:";
@@ -2048,7 +2095,7 @@ else{
 									}
 									echo ";'>\n";
 
-									$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$pers_id'";
+									$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 									$res2=mysql_query($sql);
 									if(mysql_num_rows($res2)==0){
 										// Problème: On ne peut pas importer l'association sans que la personne existe.
@@ -2074,18 +2121,18 @@ else{
 
 										echo "<td style='text-align:center;'>\n";
 										echo "$lig2->nom";
-										echo "<input type='hidden' name='new_".$cpt."_resp_nom' value='$lig2->nom' />\n";
+										echo "<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
 										echo "</td>\n";
 
 										echo "<td style='text-align:center;'>\n";
 										echo "$lig2->prenom";
-										echo "<input type='hidden' name='new_".$cpt."_resp_prenom' value='$lig2->prenom' />\n";
+										echo "<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
 										echo "</td>\n";
 
 										// Existe-t-il déjà un numéro de responsable légal correspondant au nouvel arrivant?
 
 										echo "<td style='text-align:center;";
-										$sql="SELECT 1=1 FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal'";
+										$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 										$res3=mysql_query($sql);
 										if(mysql_num_rows($res3)==0){
 											echo "'>\n";
@@ -2103,7 +2150,7 @@ else{
 										echo "</td>\n";
 
 										// Elève(s) associé(s)
-										$sql="SELECT nom,prenom FROM eleves WHERE ele_id='$ele_id'";
+										$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 										$res4=mysql_query($sql);
 										if(mysql_num_rows($res4)==0){
 											echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
@@ -2114,12 +2161,12 @@ else{
 											$lig4=mysql_fetch_object($res4);
 											echo "<td style='text-align:center;'>\n";
 											echo "$lig4->nom";
-											echo "<input type='hidden' name='new_".$cpt."_ele_nom' value='$lig4->nom' />\n";
+											echo "<input type='hidden' name='new_".$cpt."_ele_nom' value=\"$lig4->nom\" />\n";
 											echo "</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
 											echo "$lig4->prenom";
-											echo "<input type='hidden' name='new_".$cpt."_ele_prenom' value='$lig4->prenom' />\n";
+											echo "<input type='hidden' name='new_".$cpt."_ele_prenom' value=\"$lig4->prenom\" />\n";
 											echo "</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
@@ -2132,10 +2179,22 @@ else{
 									echo "</tr>\n";
 								}
 								else{
+
+
 									$lig1=mysql_fetch_object($res1);
 									if((stripslashes($lig1->resp_legal)!=stripslashes($affiche[2]))||
 									(stripslashes($lig1->pers_contact)!=stripslashes($affiche[3]))){
+										// L'un des champs resp_legal ou pers_contact au moins a changé
 										$resp_modif[]="$affiche[0]:$affiche[1]";
+
+										/*
+										echo "<tr>";
+										echo "<td>\$ele_id=$ele_id</td>";
+										echo "<td>\$pers_id=$pers_id</td>";
+										echo "<td>\$resp_legal=$resp_legal</td>";
+										echo "<td>\$pers_contact=$pers_contact</td>";
+										echo "</tr>";
+										*/
 
 										$alt=$alt*(-1);
 										echo "<tr style='background-color:";
@@ -2147,7 +2206,7 @@ else{
 										}
 										echo ";'>\n";
 
-										$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$pers_id'";
+										$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 										$res2=mysql_query($sql);
 										if(mysql_num_rows($res2)==0){
 											// Problème: On ne peut pas importer l'association sans que la personne existe.
@@ -2173,18 +2232,20 @@ else{
 
 											echo "<td style='text-align:center;'>\n";
 											echo "$lig2->nom";
-											echo "<input type='hidden' name='modif_".$cpt."_resp_nom' value='$lig2->nom' />\n";
+											//echo "<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".addslashes($lig2->nom)."\" />\n";
+											echo "<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
 											echo "</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
 											echo "$lig2->prenom";
-											echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value='$lig2->prenom' />\n";
+											//echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".addslashes($lig2->nom)."\" />\n";
+											echo "<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 											echo "</td>\n";
 
 											// Existe-t-il déjà un numéro de responsable légal correspondant au nouvel arrivant?
 
 											echo "<td style='text-align:center;";
-											$sql="SELECT 1=1 FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal'";
+											$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 											$res3=mysql_query($sql);
 											if(mysql_num_rows($res3)==0){
 												echo "'>\n";
@@ -2192,6 +2253,7 @@ else{
 											else{
 												echo " background-color: lightgreen;'>\n";
 											}
+											echo "$resp_legal";
 											echo "<input type='hidden' name='modif_".$cpt."_resp_legal' value='$resp_legal' />\n";
 											echo "</td>\n";
 
@@ -2201,7 +2263,7 @@ else{
 											echo "</td>\n";
 
 											// Elève(s) associé(s)
-											$sql="SELECT nom,prenom FROM eleves WHERE ele_id='$ele_id'";
+											$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 											$res4=mysql_query($sql);
 											if(mysql_num_rows($res4)==0){
 												echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
@@ -2212,12 +2274,14 @@ else{
 												$lig4=mysql_fetch_object($res4);
 												echo "<td style='text-align:center;'>\n";
 												echo "$lig4->nom";
-												echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value='$lig4->nom' />\n";
+												//echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".addslashes($lig4->nom)."\" />\n";
+												echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".$lig4->nom."\" />\n";
 												echo "</td>\n";
 
 												echo "<td style='text-align:center;'>\n";
 												echo "$lig4->prenom";
-												echo "<input type='hidden' name='modif_".$cpt."_ele_nom' value='$lig4->nom' />\n";
+												//echo "<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".addslashes($lig4->prenom)."\" />\n";
+												echo "<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".$lig4->prenom."\" />\n";
 												echo "</td>\n";
 
 												echo "<td style='text-align:center;'>\n";
@@ -2321,12 +2385,13 @@ else{
 					if((isset($pers_id))&&(isset($resp_nom))&&(isset($resp_prenom))&&(isset($ele_id))&&(isset($ele_nom))&&(isset($ele_prenom))&&(isset($resp_legal))&&(isset($pers_contact))){
 						if($i>0){echo ", ";}
 						//echo "$pers_id - $nom - $prenom<br />\n";
-						echo "$resp_prenom $resp_nom ($pers_id) / $ele_prenom $ele_nom ($ele_id)\n";
+						//echo "$resp_prenom $resp_nom ($pers_id) / $ele_prenom $ele_nom ($ele_id)\n";
+						echo stripslashes("$resp_prenom $resp_nom")." ($pers_id) / ".stripslashes("$ele_prenom $ele_nom")." ($ele_id)\n";
 
 						$sql="UPDATE responsables2 SET resp_legal='$resp_legal',
 										pers_contact='$pers_contact'
-									WHERE pers_id='$pers_id' AND ele_id='$ele_id'";
-						//echo "$sql<br />\n";
+									WHERE (pers_id='$pers_id' AND ele_id='$ele_id')";
+						//echo "<p>$sql</p>\n";
 						$res1=mysql_query($sql);
 						if(!$res1){
 							//echo " (<font color='red'>erreur</font>)";
@@ -2371,23 +2436,24 @@ else{
 					if((isset($pers_id))&&(isset($resp_nom))&&(isset($resp_prenom))&&(isset($ele_id))&&(isset($ele_nom))&&(isset($ele_prenom))&&(isset($resp_legal))&&(isset($pers_contact))){
 						if($i>0){echo ", ";}
 						//echo "$pers_id - $nom - $prenom<br />\n";
-						echo "$resp_prenom $resp_nom ($pers_id) / $ele_prenom $ele_nom ($ele_id)\n";
+						//echo "$resp_prenom $resp_nom ($pers_id) / $ele_prenom $ele_nom ($ele_id)\n";
+						echo stripslashes("$resp_prenom $resp_nom")." ($pers_id) / ".stripslashes("$ele_prenom $ele_nom")." ($ele_id)\n";
 
 						// On supprime l'inscription précédente si elle existe:
-						$sql="SELECT pers_id FROM responsables2 WHERE pers_id='$pers_id' AND ele_id='$ele_id'";
+						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id='$pers_id' AND ele_id='$ele_id')";
 						//echo "$sql<br />\n";
 						$res1=mysql_query($sql);
 						if(mysql_num_rows($res1)>0){
 							//$lig1=mysql_fetch_object($sql);
 							//$sql="DELETE FROM responsables2 WHERE pers_id='$lig1->pers_id',
-							$sql="DELETE FROM responsables2 WHERE pers_id='$pers_id' AND
-											ele_id='$ele_id'";
+							$sql="DELETE FROM responsables2 WHERE (pers_id='$pers_id' AND
+											ele_id='$ele_id')";
 							//echo "$sql<br />\n";
 							$res2=mysql_query($sql);
 						}
 
 						// On teste s'il faut supprimer un autre responsable de même rang resp_legal:
-						$sql="SELECT pers_id FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal'";
+						$sql="SELECT pers_id FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 						$res1=mysql_query($sql);
 						if(mysql_num_rows($res1)==0){
 							$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
@@ -2404,9 +2470,9 @@ else{
 						}
 						else{
 							$lig1=mysql_fetch_object($res1);
-							$sql="DELETE FROM responsables2 WHERE pers_id='$lig1->pers_id' AND
+							$sql="DELETE FROM responsables2 WHERE (pers_id='$lig1->pers_id' AND
 											ele_id='$ele_id' AND
-											resp_legal='$resp_legal'";
+											resp_legal='$resp_legal')";
 							$res2=mysql_query($sql);
 							if(!$res2){
 								//echo " (<font color='red'>erreur</font>)";
