@@ -397,9 +397,39 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 
 ?>
 <form enctype="multipart/form-data" action="modify_eleve.php" method=post>
-<table CELLPADDING = '5'>
-<tr>
 <?php
+echo "<table>\n";
+echo "<tr>\n";
+echo "<td>\n";
+
+echo "<table cellpadding='5'>\n";
+echo "<tr>\n";
+
+	$photo_largeur_max=150;
+	$photo_hauteur_max=150;
+
+	function redimensionne_image($photo){
+		global $photo_largeur_max, $photo_hauteur_max;
+
+		// prendre les informations sur l'image
+		$info_image=getimagesize($photo);
+		// largeur et hauteur de l'image d'origine
+		$largeur=$info_image[0];
+		$hauteur=$info_image[1];
+
+		// calcule le ratio de redimensionnement
+		$ratio_l=$largeur/$photo_largeur_max;
+		$ratio_h=$hauteur/$photo_hauteur_max;
+		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+
+		// définit largeur et hauteur pour la nouvelle image
+		$nouvelle_largeur=round($largeur/$ratio);
+		$nouvelle_hauteur=round($hauteur/$ratio);
+
+		return array($nouvelle_largeur, $nouvelle_hauteur);
+	}
+
+
     if (isset($eleve_login)) {
         echo "<td>Identifiant GEPI * : </td>
         <td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
@@ -410,16 +440,20 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
         <td><input type=text name=reg_login size=20 value=\"\" /></td>";
     }
     ?>
-</tr><tr>
+</tr>
+<tr>
     <td>Nom * : </td>
     <td><input type=text name='reg_nom' size=20 <?php if (isset($eleve_nom)) { echo "value=\"".$eleve_nom."\"";}?> /></td>
-</tr><tr>
+</tr>
+<tr>
     <td>Prénom * : </td>
     <td><input type=text name='reg_prenom' size=20 <?php if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}?> /></td>
-</tr><tr>
+</tr>
+<tr>
     <td>Email : </td>
     <td><input type=text name='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>
-</tr><tr>
+</tr>
+<tr>
     <td>Identifiant National : </td>
     <?php
     echo "<td><input type=text name='reg_no_nat' size=20 ";
@@ -437,9 +471,23 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 
 </table>
 <?php
+
+if(isset($reg_no_gep)){
+	$photo="../photos/eleves/".$reg_no_gep.".jpg";
+	if(file_exists($photo)){
+		echo "<td>\n";
+		$dimphoto=redimensionne_image($photo);
+		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+		echo "</td>\n";
+	}
+}
+echo "</tr>\n";
+echo "</table>\n";
+
 if (($reg_no_gep == '') and (isset($eleve_login))) {
    echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élève.</font>";
 }
+
 ?>
 <center><table border = '1' CELLPADDING = '5'>
 <tr><td><div class='norme'>Sexe : <br />
