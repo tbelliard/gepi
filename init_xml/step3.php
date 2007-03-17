@@ -1,9 +1,9 @@
 <?php
 @set_time_limit(0);
 /*
- * Last modification  : 09/03/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -211,10 +211,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         // on crée un login !
 
         if (($no_gep == '') or ($nouv_login=='yes')) {
+            $reg_nom = strtr($reg_nom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+            $reg_prenom = strtr($reg_prenom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
             $temp1 = strtoupper($reg_nom);
+            $temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
             $temp1 = strtr($temp1, " '-", "___");
             $temp1 = substr($temp1,0,7);
             $temp2 = strtoupper($reg_prenom);
+            $temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
             $temp2 = strtr($temp2, " '-", "___");
             $temp2 = substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
