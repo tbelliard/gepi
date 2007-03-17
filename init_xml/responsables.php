@@ -153,11 +153,13 @@ if (!isset($is_posted)) {
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
 	`pers_id` int(11) NOT NULL,
+	`login` varchar(50) NOT NULL,
 	`nom` varchar(30) NOT NULL,
 	`prenom` varchar(30) NOT NULL,
-	`tel_pers` varchar(10) NOT NULL,
-	`tel_port` varchar(10) NOT NULL,
-	`tel_prof` varchar(10) NOT NULL,
+	`civilite` varchar(5) NOT NULL,
+	`tel_pers` varchar(255) NOT NULL,
+	`tel_port` varchar(255) NOT NULL,
+	`tel_prof` varchar(255) NOT NULL,
 	`mel` varchar(100) NOT NULL,
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)

@@ -399,22 +399,22 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/init_xml/step3.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/conversion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Conversion des données responsables', '');";
-	
+
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut élève', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut responsable', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut élève', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/consultation.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";
-	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";	
-	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/droits_acces.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Paramétrage des droits d accès', '');";    
-	$tab_req[] = "INSERT INTO droits VALUES ('/groupes/visu_profs_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation équipe pédagogique', '');";	
+	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/droits_acces.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Paramétrage des droits d accès', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/groupes/visu_profs_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation équipe pédagogique', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/saisie/impression_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe.', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/avis_pdf.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe. Module PDF', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; reglage des parametres', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/password_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Export des identifiants et mots de passe en csv', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des identifiants et des mots de passe en PDF', '');";
 	//$tab_req[] = "";
-	
+
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 	if ($test1 == 1) {
@@ -2356,7 +2356,7 @@ if (isset ($_POST['maj'])) {
     if ($res_test == 0)
         $query = mysql_query("INSERT INTO setting VALUES ('dossier_ftp_gepi', 'gepi');");
 
-    
+
 
     //==========================================
     // AJOUTé APRES LA RC2
@@ -2463,14 +2463,14 @@ if (isset ($_POST['maj'])) {
 		} else {
 	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
 		}
-		
+
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre de mémorisation du mode de sauvegarde<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'mode_sauvegarde'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('mode_sauvegarde', 'gepi');");
 
-		
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'choix_bulletin'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2482,8 +2482,8 @@ if (isset ($_POST['maj'])) {
 			else{
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
-		}		
-		
+		}
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'min_max_moyclas'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2496,7 +2496,7 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
 		}
-		
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2509,7 +2509,7 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
 		}
-		
+
         $req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_police_avis'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2521,9 +2521,9 @@ if (isset ($_POST['maj'])) {
 			else{
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
-		}				
-		
-			
+		}
+
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
@@ -2541,10 +2541,10 @@ if (isset ($_POST['maj'])) {
 	        $query5 = mysql_query("ALTER TABLE `droits` ADD `responsable` varchar(1) NOT NULL DEFAULT 'F' AFTER `eleve`");
 	        if ($query5) {
 	            $result .= "<font color=\"green\">Ok !</font><br />";
-	            
+
 	        	foreach ($droits_requests as $key => $value) {
 	     			$exec = traite_requete($value);
-	    		}    
+	    		}
 	        } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	        }
@@ -2558,30 +2558,30 @@ if (isset ($_POST['maj'])) {
 	    if ($test1 == 0) {
 	        $query5 = mysql_query("ALTER TABLE `eleves` ADD `email` varchar(255) NOT NULL");
 	        if ($query5) {
-	            $result .= "<font color=\"green\">Ok !</font><br />"; 
+	            $result .= "<font color=\"green\">Ok !</font><br />";
 	        } else {
 	            $result .= "<font color=\"red\">Erreur !</font><br />";
 	        }
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
-	    }	    
-	    
+	    }
+
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les accès élèves et parents<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveEleve', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCahierTexteEleve', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveParent', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -2593,8 +2593,8 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';
-	    
-	    
+
+
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'utilisation de l'outil de récupération de mot de passe<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'enable_password_recovery'");
         $res_test = mysql_num_rows($req_test);
@@ -2607,8 +2607,8 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';
-        
-        
+
+
 	    $result .= "&nbsp;->Ajout du champ password_ticket à la table utilisateurs<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'password_ticket'"));
 	    if ($test1 == 0) {
@@ -2621,7 +2621,7 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-	    
+
 	    $result .= "&nbsp;->Ajout du champ ticket_expiration à la table utilisateurs<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'ticket_expiration'"));
 	    if ($test1 == 0) {
@@ -2634,23 +2634,23 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-	    
+
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à la fonction de réinitialisation du mot de passe perdu<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitProf'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitProf', 'no');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitScolarite'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitScolarite', 'no');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitCpe'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitCpe', 'no');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitAdmin'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -2672,8 +2672,8 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= $result_inter;
         }
-        $result_inter = '';	    
-	    
+        $result_inter = '';
+
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'accès public aux cahiers de texte<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'cahier_texte_acces_public'");
         $res_test = mysql_num_rows($req_test);
@@ -2686,13 +2686,13 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';
-	    
+
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à l'équipe pédagogique d'un élève<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEleve', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEmailEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -2702,12 +2702,12 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailEleve', 'no');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaParent', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEmailParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -2717,82 +2717,82 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailParent', 'no');");
-            
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
             $result .= $result_inter;
         }
-        $result_inter = '';	    
-	    
+        $result_inter = '';
+
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux bulletins simplifiés<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleEleve', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleParent', 'yes');");
-            
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
             $result .= $result_inter;
         }
-        $result_inter = '';	    
+        $result_inter = '';
 
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux graphiques de visualisation (eleves et responsables)<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphEleve', 'yes');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');");
-            
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
             $result .= $result_inter;
         }
-        $result_inter = '';	    
+        $result_inter = '';
 
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les fiches d'information destinée aux nouveaux utilisateurs<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
-            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionParent', '');");   
-            
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionParent', '');");
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionEleve', '');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombre'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombre', '1');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreParent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreParent', '1');");
-            
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreEleve', '1');");
-            
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
             $result .= $result_inter;
         }
-        $result_inter = '';	   
+        $result_inter = '';
 
 	    $result .= "&nbsp;->Ajout du champ show_email à la table utilisateurs<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'show_email'"));
@@ -2806,6 +2806,111 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
+
+	    $result .= "&nbsp;->Ajout du champ ele_id à la table eleves<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'ele_id'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `eleves` ADD `ele_id` varchar(10) NOT NULL DEFAULT '' AFTER `ereno`");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+
+
+
+        $result .= "&nbsp;->Création de la table responsables2<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'responsables2'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE IF NOT EXISTS `responsables2` (
+	`ele_id` varchar(10) NOT NULL,
+	`pers_id` varchar(10) NOT NULL,
+	`resp_legal` varchar(1) NOT NULL,
+	`pers_contact` varchar(1) NOT NULL
+	);");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Création de la table resp_pers<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'resp_pers'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE IF NOT EXISTS `resp_pers` (
+	`pers_id` varchar(10) NOT NULL,
+	`login` varchar(50) NOT NULL,
+	`nom` varchar(30) NOT NULL,
+	`prenom` varchar(30) NOT NULL,
+	`civilite` varchar(5) NOT NULL,
+	`tel_pers` varchar(255) NOT NULL,
+	`tel_port` varchar(255) NOT NULL,
+	`tel_prof` varchar(255) NOT NULL,
+	`mel` varchar(100) NOT NULL,
+	`adr_id` varchar(10) NOT NULL,
+	PRIMARY KEY  (`pers_id`)
+	);");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Création de la table resp_adr<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'resp_adr'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE IF NOT EXISTS `resp_adr` (
+	`adr_id` varchar(10) NOT NULL,
+	`adr1` varchar(100) NOT NULL,
+	`adr2` varchar(100) NOT NULL,
+	`adr3` varchar(100) NOT NULL,
+	`adr4` varchar(100) NOT NULL,
+	`cp` varchar(6) NOT NULL,
+	`pays` varchar(50) NOT NULL,
+	`commune` varchar(50) NOT NULL,
+	PRIMARY KEY  (`adr_id`)
+	);");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+	    $result .= "&nbsp;->Passage de 10 caractères à 255 caractères des champs tel_pers, tel_port et tel_prof de la table resp_pers.<br />";
+	    $alter1 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_pers` `tel_pers` VARCHAR( 255 )");
+	    $result .= "tel_pers: ";
+		if ($alter1) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	    $alter2 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_port` `tel_port` VARCHAR( 255 )");
+	    $result .= "tel_port: ";
+		if ($alter2) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	    $alter3 = mysql_query("ALTER TABLE `resp_pers` CHANGE `tel_prof` `tel_prof` VARCHAR( 255 )");
+	    $result .= "tel_prof: ";
+		if ($alter3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
     }
 
 

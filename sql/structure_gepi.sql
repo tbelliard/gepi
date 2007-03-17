@@ -33,7 +33,7 @@ CREATE TABLE `ct_types_documents` ( `id_type` bigint(21) NOT NULL auto_increment
 DROP TABLE IF EXISTS `droits`;
 CREATE TABLE `droits` ( `id` varchar(200) NOT NULL default '', `administrateur` char(1) NOT NULL default '', `professeur` char(1) NOT NULL default '', `cpe` char(1) NOT NULL default '', `scolarite` char(1) NOT NULL default '', `eleve` char(1) NOT NULL default '', `responsable` char(1) NOT NULL default '', `secours` char(1) NOT NULL default '', `description` varchar(255) NOT NULL default '', `statut` char(1) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `eleves`;
-CREATE TABLE `eleves` ( `no_gep` text, `login` varchar(50) NOT NULL default '', `nom`  varchar(50) NOT NULL default '', `prenom`  varchar(50) NOT NULL default '', `sexe`  varchar(1) NOT NULL default '', `naissance` date, `elenoet` varchar(50) NOT NULL default '', `ereno` varchar(50) NOT NULL default '', `email` varchar(255) NOT NULL default '', PRIMARY KEY  (`login`));
+CREATE TABLE `eleves` ( `no_gep` text, `login` varchar(50) NOT NULL default '', `nom`  varchar(50) NOT NULL default '', `prenom`  varchar(50) NOT NULL default '', `sexe`  varchar(1) NOT NULL default '', `naissance` date, `elenoet` varchar(50) NOT NULL default '', `ereno` varchar(50) NOT NULL default '', `ele_id` varchar(10) NOT NULL default '', `email` varchar(255) NOT NULL default '', PRIMARY KEY  (`login`));
 DROP TABLE IF EXISTS `etablissements`;
 CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` int(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `j_aid_eleves`;
@@ -109,3 +109,36 @@ DROP TABLE IF EXISTS absences_actions;
 CREATE TABLE `absences_actions` (`id_absence_action` int(11) NOT NULL auto_increment, `init_absence_action` char(2) NOT NULL default '', `def_absence_action` varchar(255) NOT NULL default '', PRIMARY KEY  (`id_absence_action`));
 DROP TABLE IF EXISTS edt_classes;
 CREATE TABLE `edt_classes` (`id_edt_classe` int(11) NOT NULL auto_increment, `groupe_edt_classe` int(11) NOT NULL, `prof_edt_classe` varchar(25) NOT NULL, `matiere_edt_classe` varchar(10) NOT NULL, `semaine_edt_classe` varchar(5) NOT NULL, `jour_edt_classe` tinyint(4) NOT NULL, `datedebut_edt_classe` date NOT NULL, `datefin_edt_classe` date NOT NULL, `heuredebut_edt_classe` time NOT NULL, `heurefin_edt_classe` time NOT NULL, `salle_edt_classe` varchar(50) NOT NULL, PRIMARY KEY  (`id_edt_classe`));
+DROP TABLE IF EXISTS `responsables2`;
+CREATE TABLE IF NOT EXISTS `responsables2` (
+	`ele_id` varchar(10) NOT NULL,
+	`pers_id` varchar(10) NOT NULL,
+	`resp_legal` varchar(1) NOT NULL,
+	`pers_contact` varchar(1) NOT NULL
+	);
+DROP TABLE IF EXISTS `resp_adr`;
+CREATE TABLE IF NOT EXISTS `resp_adr` (
+	`adr_id` varchar(10) NOT NULL,
+	`adr1` varchar(100) NOT NULL,
+	`adr2` varchar(100) NOT NULL,
+	`adr3` varchar(100) NOT NULL,
+	`adr4` varchar(100) NOT NULL,
+	`cp` varchar(6) NOT NULL,
+	`pays` varchar(50) NOT NULL,
+	`commune` varchar(50) NOT NULL,
+	PRIMARY KEY  (`adr_id`)
+	);
+DROP TABLE IF EXISTS `resp_pers`;
+CREATE TABLE IF NOT EXISTS `resp_pers` (
+	`pers_id` varchar(10) NOT NULL,
+	`login` varchar(50) NOT NULL,
+	`nom` varchar(30) NOT NULL,
+	`prenom` varchar(30) NOT NULL,
+	`civilite` varchar(5) NOT NULL,
+	`tel_pers` varchar(255) NOT NULL,
+	`tel_port` varchar(255) NOT NULL,
+	`tel_prof` varchar(255) NOT NULL,
+	`mel` varchar(100) NOT NULL,
+	`adr_id` varchar(10) NOT NULL,
+	PRIMARY KEY  (`pers_id`)
+	);
