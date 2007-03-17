@@ -34,7 +34,7 @@ if (isset($use_cas) and ($use_cas)) {
 }
 
     $message = "<h1 class='gepi'>Déconnexion</h1>";
-	$message .= "<img src='./images/icons/lock-open.png' /><br/><br/>";
+	$message .= "<img src='./images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
     if (!$_GET['auto']) {
         closeSession($_GET['auto']);
         $message .= "Vous avez fermé votre session GEPI.<br />";
