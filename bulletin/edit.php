@@ -164,16 +164,34 @@ font-style: normal;\n";
             }
 	echo "}\n";
 	
+//$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");	
+
 $bull_categ_font_size_avis=	getSettingValue("bull_categ_font_size_avis");
 $bull_police_avis=getSettingValue("bull_police_avis");
+$bull_font_style_avis=getSettingValue("bull_font_style_avis");
 echo ".avis_bulletin {
 color: #000000;
-font-size: ".$bull_categ_font_size_avis."pt;
-font-family:'".$bull_police_avis."';
-font-style: normal;";
-            
-	echo "}\n";	
-	
+font-size: ".$bull_categ_font_size_avis."pt\n;
+font-family:'".$bull_police_avis."';\n";
+//font-style: ".$bull_font_style_avis.";";
+switch ($bull_font_style_avis) {
+case "Normal":
+    echo "font-style: normal;\n";
+    break;
+case "Gras":
+    echo "font-weight:bold;\n";
+    break;
+case "Italique":
+    echo "font-style: italic;\n";
+    break;
+case "Gras et Italique":
+    echo "font-style: italic;\n";
+	echo "font-weight: bold;\n";
+    break;
+default :
+    echo "font-style: normal;";
+}         
+echo "}\n";	
 	?>
 
         @media print  {

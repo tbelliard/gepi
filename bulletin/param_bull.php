@@ -561,6 +561,22 @@ if (isset($_POST['bull_police_avis'])) {
 	}
 }
 
+//Style des caractères avis
+// tableau des styles de polices pour avis du CC de classe
+$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
+if (isset($_POST['bull_font_style_avis'])) {
+	if((!in_array($_POST['bull_font_style_avis'],$tab_styles_avis))&&($_POST['bull_font_style_avis']!='')){
+		$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
+		$reg_ok = 'no';
+	}
+	else{
+		if (!saveSetting("bull_font_style_avis", $_POST['bull_font_style_avis'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_police_avis !";
+			$reg_ok = 'no';
+		}
+	}
+}
+
 //taille de la police avis
 if(isset($_POST['bull_categ_font_size_avis'])) {
 	if (!(ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
@@ -638,10 +654,9 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 <form name="formulaire" action="param_bull.php" method="post" style="width: 100%;">
 <H3>Mise en page du bulletin scolaire</H3>
-<? $nb_ligne = 1; ?>
 <table cellpadding="8" cellspacing="0" width="100%" border="0">
 
-    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+    <tr <?php $nb_ligne = 1; if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Rétablir les paramètres par défaut :<br />
         &nbsp;&nbsp;&nbsp;<A HREF="javascript:SetDefaultValues('A4V')">Impression sur A4 "portrait"</A><br />
@@ -857,6 +872,35 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 				$selected="";
 			}
 			echo "<option value=\"$tab_polices_avis[$i]\" $selected>$tab_polices_avis[$i]</option>\n";
+		}
+		echo "</select>\n";
+        ?>
+	</td>
+    </tr>
+	
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Style de caractères pour l'avis du conseil de classe :
+        </td>
+	<?php
+		if(getSettingValue("bull_font_style_avis")){
+			$bull_font_style_avis=getSettingValue("bull_font_style_avis");
+		}
+		else{
+			$bull_font_style_avis="normal";
+		}
+	?>
+        <td>
+	<?php
+		echo "<select name='bull_font_style_avis'>\n";
+		for($i=0;$i<count($tab_styles_avis);$i++){
+			if($tab_styles_avis[$i]=="$bull_font_style_avis"){
+				$selected=" selected='true'";
+			}
+			else{
+				$selected="";
+			}
+			echo "<option value=\"$tab_styles_avis[$i]\" $selected>$tab_styles_avis[$i]</option>\n";
 		}
 		echo "</select>\n";
         ?>

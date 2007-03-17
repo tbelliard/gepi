@@ -440,3 +440,5 @@ INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('choix_bulletin', '2');
 INSERT INTO setting VALUES ('min_max_moyclas', '0');
 INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');
 INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');
+INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');
+

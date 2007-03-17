@@ -2523,7 +2523,19 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_font_style_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');");
+			$result .= "Initialisation du paramètre bull_font_style_avis à Normal: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
