@@ -163,6 +163,17 @@ font-style: normal;\n";
 			echo "margin-bottom: ".$p_bulletin_margin."pt;\n";
             }
 	echo "}\n";
+	
+$bull_categ_font_size_avis=	getSettingValue("bull_categ_font_size_avis");
+$bull_police_avis=getSettingValue("bull_police_avis");
+echo ".avis_bulletin {
+color: #000000;
+font-size: ".$bull_categ_font_size_avis."pt;
+font-family:'".$bull_police_avis."';
+font-style: normal;";
+            
+	echo "}\n";	
+	
 	?>
 
         @media print  {
@@ -1447,7 +1458,8 @@ echo "'>\n";
             //
             echo "<td style=\"vertical-align: top;\">";
             // 1) l'avis
-            echo "<span class='bulletin'><i>Avis du Conseil de classe : </i><br />$current_eleve_avis</span>";
+            echo "<span class='bulletin'><i>Avis du Conseil de classe : </i><br /></span>";
+			echo "<span class='avis_bulletin'>$current_eleve_avis</span>";
             if ($current_eleve_avis == '') {
                 // Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
                 $n = 0;

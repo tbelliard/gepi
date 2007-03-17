@@ -22,6 +22,7 @@ Nouvelles fonctionalités
 - ajout de l'exportation des mots de passe élèves en fichier CSV et PDF, lors de la création des comptes ou de la réinitialisation de ceux-ci.
 - possibilité de définir trois fiches de bienvenue différentes : une pour les personnels de l'établissement, une pour les parents, et une pour les élèves
 - possibilité de définir le nombre de fiches de bienvenue à afficher avant de générer un saut de page
+- possibilité de définir la taille et la police de l'avis du conseil de classe sur le bulletin.
 
 Corrections de bugs
 -------------------

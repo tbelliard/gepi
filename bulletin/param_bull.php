@@ -533,7 +533,6 @@ if(isset($_POST['bull_affiche_fax'])) {
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
-
 if (isset($_POST['bull_categ_bgcolor'])) {
 	if((!in_array($_POST['bull_categ_bgcolor'],$tabcouleur))&&($_POST['bull_categ_bgcolor']!='')){
 		$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor ! (couleur invalide)";
@@ -544,6 +543,32 @@ if (isset($_POST['bull_categ_bgcolor'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor !";
 			$reg_ok = 'no';
 		}
+	}
+}
+
+// tableau des polices pour avis du CC de classe
+$tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
+if (isset($_POST['bull_police_avis'])) {
+	if((!in_array($_POST['bull_police_avis'],$tab_polices_avis))&&($_POST['bull_police_avis']!='')){
+		$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
+		$reg_ok = 'no';
+	}
+	else{
+		if (!saveSetting("bull_police_avis", $_POST['bull_police_avis'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_police_avis !";
+			$reg_ok = 'no';
+		}
+	}
+}
+
+//taille de la police avis
+if(isset($_POST['bull_categ_font_size_avis'])) {
+	if (!(ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
+		$_POST['bull_categ_font_size_avis'] = 10;
+	}
+	if (!saveSetting("bull_categ_font_size_avis", $_POST['bull_categ_font_size_avis'])) {
+		$msg .= "Erreur lors de l'enregistrement de bull_categ_font_size_avis !";
+		$reg_ok = 'no';
 	}
 }
 
@@ -791,6 +816,53 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         ?>
 	</td>
     </tr>
+	
+<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Taille en points du texte de l'avis du conseil de classe :
+        </td>
+	<?php
+		if(getSettingValue("bull_categ_font_size_avis")){
+			$bull_categ_font_size_avis=getSettingValue("bull_categ_font_size_avis");
+		}
+		else{
+			$bull_categ_font_size_avis=10;
+		}
+	?>
+        <td><input type="text" name="bull_categ_font_size_avis" size="20" value="<?php echo $bull_categ_font_size_avis; ?>" />
+        </td>
+    </tr>
+	
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Police de caractères pour l'avis du conseil de classe :
+        </td>
+	<?php
+		if(getSettingValue("bull_police_avis")){
+			$bull_police_avis=getSettingValue("bull_police_avis");
+		}
+		else{
+			$bull_police_avis="";
+		}
+	?>
+        <td>
+	<?php
+		echo "<select name='bull_police_avis'>\n";
+		echo "<option value=''>Aucune</option>\n";
+		for($i=0;$i<count($tab_polices_avis);$i++){
+			if($tab_polices_avis[$i]=="$bull_police_avis"){
+				$selected=" selected='true'";
+			}
+			else{
+				$selected="";
+			}
+			echo "<option value=\"$tab_polices_avis[$i]\" $selected>$tab_polices_avis[$i]</option>\n";
+		}
+		echo "</select>\n";
+        ?>
+	</td>
+    </tr>
+	
 </table>
 <hr />
 

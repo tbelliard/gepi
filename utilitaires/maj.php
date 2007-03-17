@@ -2497,6 +2497,32 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 		
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');");
+			$result .= "Initialisation du paramètre bull_categ_font_size_avis à '10': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		
+        $req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_police_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');");
+			$result .= "Initialisation du paramètre bull_police_avis à 'Times New Roman': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}				
+		
 			
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";

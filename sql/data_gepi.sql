@@ -438,3 +438,5 @@ INSERT INTO droits VALUES ('/utilisateurs/password_csv.php', 'V', 'F', 'F', 'F',
 INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des identifiants et des mots de passe en PDF', '');
 INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('choix_bulletin', '2');
 INSERT INTO setting VALUES ('min_max_moyclas', '0');
+INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');
+INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');
