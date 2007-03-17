@@ -238,7 +238,13 @@ for(i=0;i<$nb_per_close;i++){
 		else{
 			num=".mysql_num_rows($res_ele).";
 		}
-		document.getElementById('nb_ele_select').innerHTML=num+' élèves sélectionnés.';
+
+		if(num>=2){
+			document.getElementById('nb_ele_select').innerHTML=num+' élèves sélectionnés.';
+		}
+		else{
+			document.getElementById('nb_ele_select').innerHTML=num+' élève sélectionné.';
+		}
 	}
 </script>\n";
 
