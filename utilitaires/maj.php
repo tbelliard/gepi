@@ -2497,11 +2497,25 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
+		
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_mention_nom_court'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');");
-			$result .= "Initialisation du paramètre bull_categ_font_size_avis à '10': ";
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes');
+			$result .= "Initialisation du paramètre bull_mention_nom_court à yes: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_affiche_eleve_une_ligne'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_affiche_eleve_une_ligne', 'yes');");
+			$result .= "Initialisation du paramètre bull_affiche_eleve_une_ligne à yes: ";
 			if($query){
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			}
@@ -2510,31 +2524,6 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-        $req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_police_avis'");
-		$res_test = mysql_num_rows($req_test);
-		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');");
-			$result .= "Initialisation du paramètre bull_police_avis à 'Times New Roman': ";
-			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
-			}
-			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
-			}
-		}
-
-		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_font_style_avis'");
-		$res_test = mysql_num_rows($req_test);
-		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');");
-			$result .= "Initialisation du paramètre bull_font_style_avis à Normal: ";
-			if($query){
-				$result .= "<font color=\"green\">Ok !</font><br />";
-			}
-			else{
-				$result .= "<font color=\"red\">Erreur !</font><br />";
-			}
-		}
 		
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
@@ -2832,6 +2821,44 @@ if (isset ($_POST['maj'])) {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
 
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_categ_font_size_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');");
+			$result .= "Initialisation du paramètre bull_categ_font_size_avis à '10': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+        $req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_police_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');");
+			$result .= "Initialisation du paramètre bull_police_avis à 'Times New Roman': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_font_style_avis'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');");
+			$result .= "Initialisation du paramètre bull_font_style_avis à Normal: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
 
 
         $result .= "&nbsp;->Création de la table responsables2<br />";
@@ -2923,6 +2950,9 @@ if (isset ($_POST['maj'])) {
 		} else {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 		}
+		
+		
+		
     }
 
 

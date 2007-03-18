@@ -441,4 +441,7 @@ INSERT INTO setting VALUES ('min_max_moyclas', '0');
 INSERT INTO setting VALUES ('bull_categ_font_size_avis', '10');
 INSERT INTO setting VALUES ('bull_police_avis', 'Times New Roman');
 INSERT INTO setting VALUES ('bull_font_style_avis', 'Normal');
+INSERT INTO setting VALUES ('bull_affiche_eleve_une_ligne', 'yes');
+INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes');
+
 

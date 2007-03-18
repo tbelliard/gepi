@@ -378,10 +378,27 @@ if (isset($NON_PROTECT['bull_formule_bas'])) {
         $reg_ok = 'no';
     }
 }
+
+if (isset($_POST['bull_mention_nom_court'])) {
+
+    if (!saveSetting("bull_mention_nom_court", $_POST['bull_mention_nom_court'])) {
+        $msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
+        $reg_ok = 'no';
+    }
+}
+
 if (isset($_POST['bull_mention_doublant'])) {
 
     if (!saveSetting("bull_mention_doublant", $_POST['bull_mention_doublant'])) {
         $msg .= "Erreur lors de l'enregistrement de bull_mention_doublant !";
+        $reg_ok = 'no';
+    }
+}
+
+if (isset($_POST['bull_affiche_eleve_une_ligne'])) {
+
+    if (!saveSetting("bull_affiche_eleve_une_ligne", $_POST['bull_affiche_eleve_une_ligne'])) {
+        $msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
         $reg_ok = 'no';
     }
 }
@@ -920,6 +937,21 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 ?>
 <H3>Informations devant figurer sur le bulletin scolaire</H3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0">
+<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le nom court de la classe :
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" value=\"yes\" ";
+        if (getSettingValue("bull_mention_nom_court") == 'yes') echo " checked";
+        echo " />&nbsp;Oui";
+        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" value=\"no\" ";
+        if (getSettingValue("bull_mention_nom_court") == 'no') echo " checked";
+        echo " />&nbsp;Non";
+        ?>
+        </td>
+    </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher la mention "doublant" ou "doublante", le cas échéant :
@@ -932,7 +964,21 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         echo "<input type=\"radio\" name=\"bull_mention_doublant\" value=\"no\" ";
         if (getSettingValue("bull_mention_doublant") == 'no') echo " checked";
         echo " />&nbsp;Non";
-
+        ?>
+        </td>
+    </tr>
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Afficher les informations sur l'élève sur une seule ligne <i>(si non une information par ligne)</i> :
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" value=\"yes\" ";
+        if (getSettingValue("bull_affiche_eleve_une_ligne") == 'yes') echo " checked";
+        echo " />&nbsp;Oui";
+        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" value=\"no\" ";
+        if (getSettingValue("bull_affiche_eleve_une_ligne") == 'no') echo " checked";
+        echo " />&nbsp;Non";
         ?>
         </td>
     </tr>

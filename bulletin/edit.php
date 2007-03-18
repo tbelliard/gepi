@@ -1203,32 +1203,66 @@ echo "'>\n";
 		}
 
 
-		echo "<p class='bulletin'>\n";
-		echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
-		if ($current_eleve_sexe == "M") {
-			echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
-		} else {
-			echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
-		}
-		//Eric Ajout
-		echo "<BR />";
-		if ($current_eleve_regime == "d/p") {echo "Demi-pensionnaire";}
-		if ($current_eleve_regime == "ext.") {echo "Externe";}
-		if ($current_eleve_regime == "int.") {echo "Interne";}
-		if ($current_eleve_regime == "i-e"){
-			if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
-		}
-		//Eric Ajout
-		echo "<BR />";
-		if ($bull_mention_doublant == 'yes'){
-			if ($current_eleve_doublant == 'R'){
-			if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
+        //affichage des données sur une seule ligne ou plusieurs
+        if (getSettingValue("bull_affiche_eleve_une_ligne") == 'no') { // sur plusieurs lignes		
+
+			echo "<p class='bulletin'>\n";
+			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
+			if ($current_eleve_sexe == "M") {
+				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+			} else {
+				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+			}
+			//Eric Ajout
+			echo "<BR />";
+			if ($current_eleve_regime == "d/p") {echo "Demi-pensionnaire";}
+			if ($current_eleve_regime == "ext.") {echo "Externe";}
+			if ($current_eleve_regime == "int.") {echo "Interne";}
+			if ($current_eleve_regime == "i-e"){
+			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
+			}
+			//Eric Ajout
+			
+			if ($bull_mention_doublant == 'yes'){
+				if ($current_eleve_doublant == 'R'){
+				echo "<BR />";
+				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
+				}
+			}
+			
+			if (getSettingValue("bull_mention_nom_court") == 'no') { 
+				//Eric Ajout et supp
+				//echo "<BR />";
+				//echo ", $current_classe";
+			} else {
+			    echo "<BR />";
+				echo "$current_classe";
+			}
+			
+        } else { //sur une ligne
+			echo "<p class='bulletin'>\n";
+			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
+			if ($current_eleve_sexe == "M") {
+				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+			} else {
+				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+			}
+			
+			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
+			if ($current_eleve_regime == "ext.") {echo ", Externe";}
+			if ($current_eleve_regime == "int.") {echo ", Interne";}
+			if ($current_eleve_regime == "i-e"){
+				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externé";}else{echo ", Interne&nbsp;externée";}
+			}
+			if ($bull_mention_doublant == 'yes'){
+				if ($current_eleve_doublant == 'R'){
+				if ($current_eleve_sexe == "M"){echo ", Redoublant";}else{echo ", Redoublante";}
+				}
+			}
+			if (getSettingValue("bull_mention_nom_court") == 'yes') { 
+				echo ", $current_classe";
 			}
 		}
-		//Eric Ajout et supp
-		echo "<BR />";
-		//echo ", $current_classe";
-
 
 		if($bull_affiche_etab=="y"){
 			$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
