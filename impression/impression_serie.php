@@ -88,8 +88,18 @@ echo "<div style=\"text-align: center;\">\n
 				echo "<br />\n";
 
 				echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
-					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
-
+				    if($_SESSION['statut']=='scolarite'){ //n'affiche que les classes du profil scolarité
+                      $login_scolarite = $_SESSION['login'];
+					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
+					                     FROM `periodes`, `classes` , `j_scol_classes` jsc
+										 WHERE (jsc.login='$login_scolarite'
+										 AND jsc.id_classe=classes.id
+										 AND `periodes`.`num_periode` = ".$id_choix_periode." 
+										 AND `classes`.`id` = `periodes`.`id_classe`)
+										 ORDER BY `nom_complet` ASC";
+                    } else {
+					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC"; 
+					}
 					$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
 					echo "		<optgroup label=\"-- Les classes --\">\n";
 					While ( $data_classe = mysql_fetch_array ($resultat_classe)) {
@@ -110,7 +120,6 @@ echo "<div style=\"text-align: center;\">\n
    echo "</fieldset>\n
  </div>
  <br />";
-
 
 if ($id_choix_periode != 0) {
  // Dans le cadre d'un professeur il peut choisir ses enseignements.

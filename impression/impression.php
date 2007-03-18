@@ -57,12 +57,23 @@ $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
 $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
+
 echo "<h3>Liste des classes : </h3>\n";
 
 // Pour tout le monde la possibilité d'imprimer la liste de toutes les classes par période.
 echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer une liste d'élèves au format PDF :</p>\n";
-		$sql="SELECT id,classe FROM classes ORDER BY classe";
-	
+
+    //si statut scolarite ==> on affiche que les classes de compte scolarité
+	if($_SESSION['statut']=='scolarite'){
+       $login_scolarite = $_SESSION['login'];
+	   $sql="SELECT c.id, c.classe, jsc.login, jsc.id_classe 
+	         FROM classes c, j_scol_classes jsc
+			 WHERE (jsc.login='$login_scolarite'
+			 AND jsc.id_classe=c.id)
+			 ORDER BY c.classe";
+	} else { //pour tous les statuts sauf scolarité
+	   $sql="SELECT id,classe FROM classes ORDER BY classe";
+	}
 	$result_classes=mysql_query($sql);
 	$nb_classes = mysql_num_rows($result_classes);
 
