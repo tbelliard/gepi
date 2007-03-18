@@ -339,6 +339,9 @@ echo "}\n";
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis");
+	
+	$bull_affiche_eleve_une_ligne=getSettingValue("bull_affiche_eleve_une_ligne");
+	$bull_mention_nom_court=getSettingValue("bull_mention_nom_court");
 
 
 	if(!getSettingValue("bull_photo_largeur_max")){
@@ -751,6 +754,31 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 $i=0;
 //while ($i < $nombre_eleves) {
 while ($i < $nombre_eleves2) {
+
+	// On est dans la première boucle. On appelle les données complètes de l'élève :
+	//-------------------------------
+	$current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
+	$current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
+	$current_eleve_sexe = mysql_result($appel_liste_eleves, $i, "sexe");
+	$call_profsuivi_eleve = mysql_query("SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$current_eleve_login[$i]."' and id_classe='$id_classe')");
+	$current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+	$current_eleve_naissance = mysql_result($appel_liste_eleves, $i, "naissance");
+	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
+	$regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '".$current_eleve_login[$i]."'");
+	$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+	$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
+	$current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+	$current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+	$current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+	$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+	if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
+	if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
+	if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
+	$query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
+	$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+
+
     //determination du nombre de bulletins à imprimer
     $nb_bulletins = 1;
 
@@ -879,36 +907,6 @@ while ($i < $nombre_eleves2) {
 		$ligne2 = "";
 		$ligne3 = "";
         }
-
-
-
-
-
-
-
-        // On est dans la première boucle. On appelle les données complètes de l'élève :
-        //-------------------------------
-        $current_eleve_nom = mysql_result($appel_liste_eleves, $i, "nom");
-        $current_eleve_prenom = mysql_result($appel_liste_eleves, $i, "prenom");
-        $current_eleve_sexe = mysql_result($appel_liste_eleves, $i, "sexe");
-        $call_profsuivi_eleve = mysql_query("SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$current_eleve_login[$i]."' and id_classe='$id_classe')");
-        $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
-        $current_eleve_naissance = mysql_result($appel_liste_eleves, $i, "naissance");
-        $current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
-        $regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '".$current_eleve_login[$i]."'");
-        $current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-        $current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
-        $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num')");
-        $current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-        $current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-        $current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-        $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-        if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
-        if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
-        if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
-        $query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
-        $current_eleve_cperesp_login = @mysql_result($query, "0", "login");
-
 
 		$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
 
@@ -1203,9 +1201,8 @@ echo "'>\n";
 		}
 
 
-        //affichage des données sur une seule ligne ou plusieurs
-        if (getSettingValue("bull_affiche_eleve_une_ligne") == 'no') { // sur plusieurs lignes		
-
+        	        //affichage des données sur une seule ligne ou plusieurs
+        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes		
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
@@ -1221,8 +1218,7 @@ echo "'>\n";
 			if ($current_eleve_regime == "i-e"){
 			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
 			}
-			//Eric Ajout
-			
+			//Eric Ajout			
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
 				echo "<BR />";
@@ -1230,7 +1226,7 @@ echo "'>\n";
 				}
 			}
 			
-			if (getSettingValue("bull_mention_nom_court") == 'no') { 
+			if ($bull_mention_nom_court == 'no') { 
 				//Eric Ajout et supp
 				//echo "<BR />";
 				//echo ", $current_classe";
@@ -1259,10 +1255,11 @@ echo "'>\n";
 				if ($current_eleve_sexe == "M"){echo ", Redoublant";}else{echo ", Redoublante";}
 				}
 			}
-			if (getSettingValue("bull_mention_nom_court") == 'yes') { 
+			if ($bull_mention_nom_court == 'yes') { 
 				echo ", $current_classe";
 			}
 		}
+
 
 		if($bull_affiche_etab=="y"){
 			$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
@@ -1345,25 +1342,64 @@ echo "'>\n";
 			}
 		}
 
-		echo "<p class='bulletin'>\n";
-		echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
-		if ($current_eleve_sexe == "M") {
-		echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
-		} else {
-		echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+	        //affichage des données sur une seule ligne ou plusieurs
+        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes		
+			echo "<p class='bulletin'>\n";
+			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
+			if ($current_eleve_sexe == "M") {
+				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+			} else {
+				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+			}
+			//Eric Ajout
+			echo "<BR />";
+			if ($current_eleve_regime == "d/p") {echo "Demi-pensionnaire";}
+			if ($current_eleve_regime == "ext.") {echo "Externe";}
+			if ($current_eleve_regime == "int.") {echo "Interne";}
+			if ($current_eleve_regime == "i-e"){
+			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
+			}
+			//Eric Ajout			
+			if ($bull_mention_doublant == 'yes'){
+				if ($current_eleve_doublant == 'R'){
+				echo "<BR />";
+				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
+				}
+			}
+			
+			if ($bull_mention_nom_court == 'no') { 
+				//Eric Ajout et supp
+				//echo "<BR />";
+				//echo ", $current_classe";
+			} else {
+			    echo "<BR />";
+				echo "$current_classe";
+			}
+			
+        } else { //sur une ligne
+			echo "<p class='bulletin'>\n";
+			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
+			if ($current_eleve_sexe == "M") {
+				echo "Né&nbsp;le&nbsp;$current_eleve_naissance";
+			} else {
+				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
+			}
+			
+			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
+			if ($current_eleve_regime == "ext.") {echo ", Externe";}
+			if ($current_eleve_regime == "int.") {echo ", Interne";}
+			if ($current_eleve_regime == "i-e"){
+				if ($current_eleve_sexe == "M"){echo ", Interne&nbsp;externé";}else{echo ", Interne&nbsp;externée";}
+			}
+			if ($bull_mention_doublant == 'yes'){
+				if ($current_eleve_doublant == 'R'){
+				if ($current_eleve_sexe == "M"){echo ", Redoublant";}else{echo ", Redoublante";}
+				}
+			}
+			if ($bull_mention_nom_court == 'yes') { 
+				echo ", $current_classe";
+			}
 		}
-		if ($current_eleve_regime == "d/p") {echo ",&nbsp;demi-pensionnaire";}
-		if ($current_eleve_regime == "ext.") {echo ",&nbsp;externe";}
-		if ($current_eleve_regime == "int.") {echo ",&nbsp;interne";}
-		if ($current_eleve_regime == "i-e"){
-		if ($current_eleve_sexe == "M"){echo ",&nbsp;interne&nbsp;externé";}else{echo ",&nbsp;interne&nbsp;externée";}
-		}
-		if ($bull_mention_doublant == 'yes'){
-		if ($current_eleve_doublant == 'R'){
-			if ($current_eleve_sexe == "M"){echo ", redoublant";}else{echo ", redoublante";}
-		}
-		}
-		echo ", $current_classe";
 
 
 		if($bull_affiche_etab=="y"){
