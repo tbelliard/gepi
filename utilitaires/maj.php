@@ -2464,6 +2464,322 @@ if (isset ($_POST['maj'])) {
 	        $result .= "<font color=\"blue\">Le champ a déjà été modifié.</font><br />";
 		}
 
+//ERIC Bulletion PDF
+	    $result .= "&nbsp;->Création de la table model_bulletin<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'model_bulletin'"));
+	    if ($test1 == 0) {
+			$sql="CREATE TABLE `model_bulletin` (
+				  `id_model_bulletin` int(11) NOT NULL auto_increment,
+				  `nom_model_bulletin` varchar(100) NOT NULL,
+				  `active_bloc_datation` decimal(4,0) NOT NULL,
+				  `active_bloc_eleve` tinyint(4) NOT NULL,
+				  `active_bloc_adresse_parent` tinyint(4) NOT NULL,
+				  `active_bloc_absence` tinyint(4) NOT NULL,
+				  `active_bloc_note_appreciation` tinyint(4) NOT NULL,
+				  `active_bloc_avis_conseil` tinyint(4) NOT NULL,
+				  `active_bloc_chef` tinyint(4) NOT NULL,
+				  `active_photo` tinyint(4) NOT NULL,
+				  `active_coef_moyenne` tinyint(4) NOT NULL,
+				  `active_nombre_note` tinyint(4) NOT NULL,
+				  `active_nombre_note_case` tinyint(4) NOT NULL,
+				  `active_moyenne` tinyint(4) NOT NULL,
+				  `active_moyenne_eleve` tinyint(4) NOT NULL,
+				  `active_moyenne_classe` tinyint(4) NOT NULL,
+				  `active_moyenne_min` tinyint(4) NOT NULL,
+				  `active_moyenne_max` tinyint(4) NOT NULL,
+				  `active_regroupement_cote` tinyint(4) NOT NULL,
+				  `active_entete_regroupement` tinyint(4) NOT NULL,
+				  `active_moyenne_regroupement` tinyint(4) NOT NULL,
+				  `active_rang` tinyint(4) NOT NULL,
+				  `active_graphique_niveau` tinyint(4) NOT NULL,
+				  `active_appreciation` tinyint(4) NOT NULL,
+				  `affiche_doublement` tinyint(4) NOT NULL,
+				  `affiche_date_naissance` tinyint(4) NOT NULL,
+				  `affiche_dp` tinyint(4) NOT NULL,
+				  `affiche_nom_court` tinyint(4) NOT NULL,
+				  `affiche_effectif_classe` tinyint(4) NOT NULL,
+				  `affiche_numero_impression` tinyint(4) NOT NULL,
+				  `caractere_utilse` varchar(20) NOT NULL,
+				  `X_parent` float NOT NULL,
+				  `Y_parent` float NOT NULL,
+				  `X_eleve` float NOT NULL,
+				  `Y_eleve` float NOT NULL,
+				  `cadre_eleve` tinyint(4) NOT NULL,
+				  `X_datation_bul` float NOT NULL,
+				  `Y_datation_bul` float NOT NULL,
+				  `cadre_datation_bul` tinyint(4) NOT NULL,
+				  `hauteur_info_categorie` float NOT NULL,
+				  `X_note_app` float NOT NULL,
+				  `Y_note_app` float NOT NULL,
+				  `longeur_note_app` float NOT NULL,
+				  `hauteur_note_app` float NOT NULL,
+				  `largeur_coef_moyenne` float NOT NULL,
+				  `largeur_nombre_note` float NOT NULL,
+				  `largeur_d_une_moyenne` float NOT NULL,
+				  `largeur_niveau` float NOT NULL,
+				  `largeur_rang` float NOT NULL,
+				  `X_absence` float NOT NULL,
+				  `Y_absence` float NOT NULL,
+				  `hauteur_entete_moyenne_general` float NOT NULL,
+				  `X_avis_cons` float NOT NULL,
+				  `Y_avis_cons` float NOT NULL,
+				  `longeur_avis_cons` float NOT NULL,
+				  `hauteur_avis_cons` float NOT NULL,
+				  `cadre_avis_cons` tinyint(4) NOT NULL,
+				  `X_sign_chef` float NOT NULL,
+				  `Y_sign_chef` float NOT NULL,
+				  `longeur_sign_chef` float NOT NULL,
+				  `hauteur_sign_chef` float NOT NULL,
+				  `cadre_sign_chef` tinyint(4) NOT NULL,
+				  `affiche_filigrame` tinyint(4) NOT NULL,
+				  `texte_filigrame` varchar(100) NOT NULL,
+				  `affiche_logo_etab` tinyint(4) NOT NULL,
+				  `entente_mel` tinyint(4) NOT NULL,
+				  `entente_tel` tinyint(4) NOT NULL,
+				  `entente_fax` tinyint(4) NOT NULL,
+				  `L_max_logo` tinyint(4) NOT NULL,
+				  `H_max_logo` tinyint(4) NOT NULL,
+				  `toute_moyenne_meme_col` tinyint(4) NOT NULL,
+				  `active_reperage_eleve` tinyint(4) NOT NULL,
+				  `couleur_reperage_eleve1` smallint(6) NOT NULL,
+				  `couleur_reperage_eleve2` smallint(6) NOT NULL,
+				  `couleur_reperage_eleve3` smallint(6) NOT NULL,
+				  `couleur_categorie_entete` tinyint(4) NOT NULL,
+				  `couleur_categorie_entete1` smallint(6) NOT NULL,
+				  `couleur_categorie_entete2` smallint(6) NOT NULL,
+				  `couleur_categorie_entete3` smallint(6) NOT NULL,
+				  `couleur_categorie_cote` tinyint(4) NOT NULL,
+				  `couleur_categorie_cote1` smallint(6) NOT NULL,
+				  `couleur_categorie_cote2` smallint(6) NOT NULL,
+				  `couleur_categorie_cote3` smallint(6) NOT NULL,
+				  `couleur_moy_general` tinyint(4) NOT NULL,
+				  `couleur_moy_general1` smallint(6) NOT NULL,
+				  `couleur_moy_general2` smallint(6) NOT NULL,
+				  `couleur_moy_general3` smallint(6) NOT NULL,
+				  `titre_entete_matiere` varchar(50) NOT NULL,
+				  `titre_entete_coef` varchar(20) NOT NULL,
+				  `titre_entete_nbnote` varchar(20) NOT NULL,
+				  `titre_entete_rang` varchar(20) NOT NULL,
+				  `titre_entete_appreciation` varchar(50) NOT NULL,
+				  `active_coef_sousmoyene` tinyint(4) NOT NULL,
+				  `arrondie_choix` float NOT NULL,
+				  `nb_chiffre_virgule` tinyint(4) NOT NULL,
+				  `chiffre_avec_zero` tinyint(4) NOT NULL,
+				  `autorise_sous_matiere` tinyint(4) NOT NULL,
+				  `affichage_haut_responsable` tinyint(4) NOT NULL,
+				  `entete_model_bulletin` tinyint(4) NOT NULL,
+				  `ordre_entete_model_bulletin` tinyint(4) NOT NULL,
+				  `affiche_etab_origine` tinyint(4) NOT NULL,
+				  `imprime_pour` tinyint(4) NOT NULL,
+				  PRIMARY KEY  (`id_model_bulletin`)
+				);";
+	        $query = mysql_query($sql);
+	        if ($query) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+			
+			
+			//ERIC Mise à jour des champs s'ils n'existent pas (rajout par rapport à la version précédente.
+			$result .= "&nbsp;->Ajout du champ entete_model_bulletin à la table model_bulletin <br />";
+	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'entete_model_bulletin'"));
+	        if ($test1 == 0) {
+	           $query1 = mysql_query("ALTER TABLE `model_bulletin` ADD `entete_model_bulletin` tinyint(4) NOT NULL AFTER `affichage_haut_responsable`");
+	           if ($query1) {
+	              $result .= "<font color=\"green\">Ok !</font><br />";
+				  
+				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='2' WHERE nom_model_bulletin='Affiche tout'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 2 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 2 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+	           } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	          }
+	        } else {
+	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	        }
+			
+			$result .= "&nbsp;->Ajout du champ ordre_entete_model_bulletin à la table model_bulletin<br />";
+	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'ordre_entete_model_bulletin'"));
+	        if ($test1 == 0) {
+	           $query2 = mysql_query("ALTER TABLE `model_bulletin` ADD `ordre_entete_model_bulletin` tinyint(4) NOT NULL AFTER `entete_model_bulletin`");
+	           if ($query2) {
+	              $result .= "<font color=\"green\">Ok !</font><br />";
+				  
+				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='1' WHERE nom_model_bulletin='Affiche tout'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
+				  }
+  
+	           } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	          }
+	        } else {
+	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	        }
+			
+			$result .= "&nbsp;->Ajout du champ affiche_etab_origine à la table model_bulletin<br />";
+	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_etab_origine'"));
+	        if ($test1 == 0) {
+	           $query3 = mysql_query("ALTER TABLE `model_bulletin` ADD `affiche_etab_origine` tinyint(4) NOT NULL AFTER `ordre_entete_model_bulletin`");
+	           if ($query3) {
+	              $result .= "<font color=\"green\">Ok !</font><br />";
+				  
+				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard avec photo'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='1' WHERE nom_model_bulletin='Affiche tout'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+	           } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	          }
+	        } else {
+	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	        }
+			
+			$result .= "&nbsp;->Ajout du champ imprime_pour à la table model_bulletin<br />";
+	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'imprime_pour'"));
+	        if ($test1 == 0) {
+	           $query4 = mysql_query("ALTER TABLE `model_bulletin` ADD `imprime_pour` tinyint(4) NOT NULL AFTER `affiche_etab_origine`");
+	           if ($query4) {
+	              $result .= "<font color=\"green\">Ok !</font><br />";
+				  
+				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard avec photo'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='1' WHERE nom_model_bulletin='Affiche tout'");
+                  if(!$update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre imprime_pour à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre imprime_pour à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+	           } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	          }
+	        } else {
+	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	        }
+			
+		}
+
+		$result .= "&nbsp;->Ajout du modèle 'Standard' de bulletin PDF<br />";
+		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Standard')";
+		$test1=mysql_query($sql);
+		if(mysql_num_rows($test1)==0){
+			$sql="INSERT INTO model_bulletin VALUES('', 'Standard', 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0.01, 2, 0, 1, 1, 0, 0, 0, 0);";
+			$insert=mysql_query($sql);
+	        if ($insert) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+		}
+		else{
+			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du modèle 'Standard avec photo' de bulletin PDF<br />";
+		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Standard avec photo')";
+		$test1=mysql_query($sql);
+		if(mysql_num_rows($test1)==0){
+			$sql="INSERT INTO model_bulletin VALUES('', 'Standard avec photo', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0, 2, 0, 1, 1, 0, 0, 0, 0);";
+			$insert=mysql_query($sql);
+	        if ($insert) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+		}
+		else{
+			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du modèle 'Affiche tout' de bulletin PDF<br />";
+		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Affiche tout')";
+		$test1=mysql_query($sql);
+		if(mysql_num_rows($test1)==0){
+			$sql="INSERT INTO model_bulletin VALUES('', 'Affiche tout', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 16.5, 6.5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 1, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 1, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 1, 0.01, 2, 0, 1, 1, 2, 1, 1, 1);";
+			$insert=mysql_query($sql);
+	        if ($insert) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur</font><br />";
+	        }
+		}
+		else{
+			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
+		}
+// Fin modif ERIC Bulletin PDF
+		
+		
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre de mémorisation du mode de sauvegarde<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'mode_sauvegarde'");
         $res_test = mysql_num_rows($req_test);
@@ -2501,7 +2817,7 @@ if (isset ($_POST['maj'])) {
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_mention_nom_court'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes');
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes'");
 			$result .= "Initialisation du paramètre bull_mention_nom_court à yes: ";
 			if($query){
 				$result .= "<font color=\"green\">Ok !</font><br />";
