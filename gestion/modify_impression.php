@@ -37,26 +37,36 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
+include("../fckeditor/fckeditor.php") ;
 
-
-
-if (isset($_POST['impression'])) {
+if (isset($_POST['ok'])) {
 	$error = false;
-    $imp = html_entity_decode_all_version($_POST['impression']);
-    if (!saveSetting("Impression", $imp)) {
-        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les personnels !<br/>";
-        $error = true;
+
+	if	(isset($_POST['impression_personnelFCK'])) {
+		$imp = html_entity_decode_all_version($_POST['impression_personnelFCK']);
+		if (!saveSetting("Impression", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour le personnel !";
+			$erreur = true;
+		}
     }
-    $imp = html_entity_decode_all_version($_POST['impression_parent']);
-    if (!saveSetting("ImpressionFicheParent", $imp)) {
-        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les parents !<br/>";
-        $error = true;
+	
+    if	(isset($_POST['impression_parentFCK'])) {
+		$imp = html_entity_decode_all_version($_POST['impression_parentFCK']);
+		if (!saveSetting("ImpressionFicheParent", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les parents !";
+			$erreur = true;
+		}
     }
-    $imp = html_entity_decode_all_version($_POST['impression_eleve']);
-    if (!saveSetting("ImpressionFicheEleve", $imp)) {
-        $msg = "Erreur lors de l'enregistrement de la fiche bienvenue pour les élèves !<br/>";
-        $error = true;
+
+    if (isset($_POST['impression_eleveFCK'])) {
+		$imp = html_entity_decode_all_version($_POST['impression_eleveFCK']);
+		if (!saveSetting("ImpressionFicheEleve", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les élèves !";
+			$erreur = true;
+		}
     }
+
+	
     $nb = is_numeric($_POST['nb_impression']) ? $_POST['nb_impression'] : "1";
     if (!saveSetting("ImpressionNombre", $nb)) {
     	$error = true;
@@ -69,19 +79,18 @@ if (isset($_POST['impression'])) {
     if (!saveSetting("ImpressionNombreEleve", $nb)) {
     	$error = true;
     }
-    
+   
     if (!$error) {
     	$msg = "Les paramètres ont bien été enregistrés.";
     }
 }
-
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Impression des paramètres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type=submit value=Enregistrer></p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=parents"> Fiche Parents </a>|<a href="modify_impression.php?fiche=eleves"> Fiche Elèves </a></p>
 
 <?php
 
@@ -90,57 +99,109 @@ if (!loadSettings()) {
 }
 
 echo "<br/>";
-echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, ainsi que l'un des trois textes ci-dessous, selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>";
+echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, le texte diffère selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>";
 
-$impression = getSettingValue("Impression");
-$nb_impression = getSettingValue("ImpressionNombre");
-echo "<h3 class='gepi'>Fiche d'information : personnels de l'établissement (professeurs, scolarité, CPE)</h3>";
-echo "<p>Nombre de fiches à imprimer par page : ";
-echo "<select name='nb_impression' size='1'>";
-for ($i=1;$i<25;$i++) {
-	echo "<option value='$i'";
-	if ($nb_impression == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
-echo "<div class='small'><textarea name='impression' rows=25 cols=100 wrap='virtual'>";
-echo "$impression";
-echo "</textarea></div>";
+$fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
 
-$impression_parent = getSettingValue("ImpressionFicheParent");
-$nb_impression_parent = getSettingValue("ImpressionNombreParent");
-echo "<h3 class='gepi'>Fiche d'information : parents</h3>";
-echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>";
-echo "<p>Nombre de fiches à imprimer par page : ";
-echo "<select name='nb_impression_parent' size='1'>";
-for ($i=1;$i<25;$i++) {
-	echo "<option value='$i'";
-	if ($nb_impression_parent == $i) echo " SELECTED";
-	echo ">$i</option>";
-}
-echo "</select>";
-echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
-echo "<div class='small'><textarea name='impression_parent' rows=25 cols=100 wrap='virtual'>";
-echo $impression_parent;
-echo "</textarea></div>";
+echo "<table width=600>\n";
+echo "<tr>\n<td>\n";
 
-$impression_eleve = getSettingValue("ImpressionFicheEleve");
-$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
-echo "<h3 class='gepi'>Fiche d'information : élèves</h3>";
-echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>";
-echo "<p>Nombre de fiches à imprimer par page : ";
-echo "<select name='nb_impression_eleve' size='1'>";
-for ($i=1;$i<25;$i++) {
-	echo "<option value='$i'";
-	if ($nb_impression_eleve == $i) echo " SELECTED";
-	echo ">$i</option>";
+Switch ($fiche) {
+case 'personnels' :
+		$impression = getSettingValue("Impression");
+		$nb_impression = getSettingValue("ImpressionNombre");
+		
+		echo "<h3 class='gepi'><center>Fiche d'information : Personnels de l'établissement</center></h3>\n";
+		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'professeur', 'cpe', 'scolarite' .</p>\n";
+		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<select name='nb_impression' size='1'>\n";
+		for ($i=1;$i<25;$i++) {
+			echo "<option value='$i'";
+			if ($nb_impression == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n"; 
+		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
+		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br/><i>Mise en forme du message :</i>\n";
+
+		$oFCKeditor = new FCKeditor('impression_personnelFCK') ;
+		$oFCKeditor->BasePath = '../fckeditor/' ;
+		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
+		$oFCKeditor->ToolbarSet = 'Basic' ;
+		$oFCKeditor->Value      = $impression ;
+		$oFCKeditor->Create() ;
+		
+		echo "</div>\n";
+    break;
+   
+case 'parents' :
+		$impression_parent = getSettingValue("ImpressionFicheParent");
+		$nb_impression_parent = getSettingValue("ImpressionNombreParent");
+
+		echo "<h3 class='gepi'><center>Fiche d'information : Parents</center></h3>\n";
+		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'parent'.</p>\n";
+		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<select name='nb_impression_parent' size='1'>\n";
+		for ($i=1;$i<25;$i++) {
+			echo "<option value='$i'";
+			if ($nb_impression_parent == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n"; 
+		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
+		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br/><i>Mise en forme du message :</i>\n";
+
+		$oFCKeditor = new FCKeditor('impression_parentFCK') ;
+		$oFCKeditor->BasePath = '../fckeditor/' ;
+		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
+		$oFCKeditor->ToolbarSet = 'Basic' ;
+		$oFCKeditor->Value      = $impression_parent ;
+		$oFCKeditor->Create() ;
+		
+		echo "</div>\n";		
+    break;
+
+case 'eleves' :
+
+		$impression_eleve = getSettingValue("ImpressionFicheEleve");
+		$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
+				
+		echo "<h3 class='gepi'><center>Fiche d'information : Elèves</center></h3>\n";
+		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>\n";
+		echo "<p>Nombre de fiches à imprimer par page : \n";
+		echo "<select name='nb_impression_eleve' size='1'>\n";
+		for ($i=1;$i<25;$i++) {
+			echo "<option value='$i'";
+			if ($nb_impression_eleve == $i) echo " SELECTED";
+			echo ">$i</option>\n";
+		}
+		echo "</select>\n"; 
+		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
+		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br/><i>Mise en forme du message :</i>\n";
+
+		$oFCKeditor = new FCKeditor('impression_eleveFCK') ;
+		$oFCKeditor->BasePath = '../fckeditor/' ;
+		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
+		$oFCKeditor->ToolbarSet = 'Basic' ;
+		$oFCKeditor->Value      = $impression_eleve ;
+		$oFCKeditor->Create() ;
+		
+		echo "</div>\n";
+	break;
 }
-echo "</select>";
-echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>";
-echo "<div class='small'><textarea name='impression_eleve' rows=25 cols=100 wrap='virtual'>";
-echo $impression_eleve;
-echo "</textarea></div>";
+echo "<input type=submit name=\"ok\" value='Enregistrer'>\n";
+
+echo "<br/><br/>\n";
+echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >Aperçu de la fiche d'information</a></b>\n";
+echo "Attention : la mise en page des fiches est très différente à l'écran et à l'impression.";
+echo "Veillez à utiliser la fonction \"aperçu avant impression\" afin de vous rendre compte du résultat.\n";
+
+
+echo "</td>\n</tr>\n";
+echo "<table>\n";
 
 ?>
 </form>
