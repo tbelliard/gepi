@@ -62,24 +62,30 @@ function verif_date($date_fr)
 // fin rajout christian
 
 // Christian renvoye vers le fichier PDF
-if (empty($_GET['classe']) AND empty($_POST['classe'])) {$classe="";}
-    else { if (isset($_GET['classe'])) {$classe=$_GET['classe'];} if (isset($_POST['classe'])) {$classe=$_POST['classe'];} }
-if (empty($_GET['eleve']) AND empty($_POST['eleve'])) {$eleve="";}
-    else { if (isset($_GET['eleve'])) {$eleve=$_GET['eleve'];} if (isset($_POST['eleve'])) {$eleve=$_POST['eleve'];} }
-if (empty($_GET['creer_pdf']) AND empty($_POST['creer_pdf'])) {$creer_pdf="";}
-    else { if (isset($_GET['creer_pdf'])) {$creer_pdf=$_GET['creer_pdf'];} if (isset($_POST['creer_pdf'])) {$creer_pdf=$_POST['creer_pdf'];} }
-if (empty($_GET['avec_nom_devoir']) AND empty($_POST['avec_nom_devoir'])) {$avec_nom_devoir="";}
-    else { if (isset($_GET['avec_nom_devoir'])) {$avec_nom_devoir=$_GET['avec_nom_devoir'];} if (isset($_POST['avec_nom_devoir'])) {$avec_nom_devoir=$_POST['avec_nom_devoir'];} }
-if (empty($_GET['type']) AND empty($_POST['type'])) {$type="";}
-    else { if (isset($_GET['type'])) {$type=$_GET['type'];} if (isset($_POST['type'])) {$type=$_POST['type'];} }
-if (empty($_GET['avec_adresse_responsable']) AND empty($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable="";}
-    else { if (isset($_GET['avec_adresse_responsable'])) {$avec_adresse_responsable=$_GET['avec_adresse_responsable'];} if (isset($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable=$_POST['avec_adresse_responsable'];} }
-if (empty($_GET['active_entete_regroupement']) and empty($_POST['active_entete_regroupement'])) {$active_entete_regroupement="";}
-    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
+	if (empty($_GET['classe']) AND empty($_POST['classe'])) {$classe="";}
+	    else { if (isset($_GET['classe'])) {$classe=$_GET['classe'];} if (isset($_POST['classe'])) {$classe=$_POST['classe'];} }
+	if (empty($_GET['eleve']) AND empty($_POST['eleve'])) {$eleve="";}
+	    else { if (isset($_GET['eleve'])) {$eleve=$_GET['eleve'];} if (isset($_POST['eleve'])) {$eleve=$_POST['eleve'];} }
+	if (empty($_GET['creer_pdf']) AND empty($_POST['creer_pdf'])) {$creer_pdf="";}
+	    else { if (isset($_GET['creer_pdf'])) {$creer_pdf=$_GET['creer_pdf'];} if (isset($_POST['creer_pdf'])) {$creer_pdf=$_POST['creer_pdf'];} }
+	if (empty($_GET['avec_nom_devoir']) AND empty($_POST['avec_nom_devoir'])) {$avec_nom_devoir="";}
+	    else { if (isset($_GET['avec_nom_devoir'])) {$avec_nom_devoir=$_GET['avec_nom_devoir'];} if (isset($_POST['avec_nom_devoir'])) {$avec_nom_devoir=$_POST['avec_nom_devoir'];} }
+	if (empty($_GET['type']) AND empty($_POST['type'])) {$type="";}
+	    else { if (isset($_GET['type'])) {$type=$_GET['type'];} if (isset($_POST['type'])) {$type=$_POST['type'];} }
+	if (empty($_GET['avec_adresse_responsable']) AND empty($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable="";}
+	    else { if (isset($_GET['avec_adresse_responsable'])) {$avec_adresse_responsable=$_GET['avec_adresse_responsable'];} if (isset($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable=$_POST['avec_adresse_responsable'];} }
+	if (empty($_GET['active_entete_regroupement']) and empty($_POST['active_entete_regroupement'])) {$active_entete_regroupement="";}
+	    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
+	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
+	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
+	if (empty($_POST['display_date_debut'])) {$date_debut="";} else {$date_debut=$_POST['display_date_debut'];}
+	if (empty($_POST['display_date_fin'])) {$date_fin="";} else {$date_fin=$_POST['display_date_fin'];}
+	if (!isset($date_debut_exp[0])) { $date_debut_exp = ''; }
 
-if (empty($_POST['display_date_debut'])) {$date_debut="";} else {$date_debut=$_POST['display_date_debut'];}
-if (empty($_POST['display_date_fin'])) {$date_fin="";} else {$date_fin=$_POST['display_date_fin'];}
-if (!isset($date_debut_exp[0])) { $date_debut_exp = ''; }
+	$message_erreur = '';
+		if ( !empty($classe[0]) and ( empty($date_debut) or empty($date_fin) ) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner une date de début et une date de fin !'; }
+		if ( empty($classe[0]) and ( !empty($date_debut) and !empty($date_fin) ) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) !'; }
+		if ( empty($classe[0]) and ( empty($date_debut) or empty($date_fin) ) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) et une date de début et une date de fin !'; }
 
 	$_SESSION['classe'] = $classe;
 	$_SESSION['eleve'] = $eleve;
@@ -594,6 +600,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		     <?php if(empty($classe[0]) and empty($eleve)) { ?><option value="" disabled="disabled">Vide</option><?php } ?>
 		  </optgroup>
 		  </select>
+			<?php if ( $message_erreur != '' ) { ?><br /><span style="color: #FF0000; font-weight: bold;"><?php echo $message_erreur; ?></span><?php } ?>
 		  <?php
 		    //====================================================================
 		    // MODIF: boireaus

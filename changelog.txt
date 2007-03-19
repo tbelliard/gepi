@@ -48,6 +48,8 @@ Nouvelles fonctionalités
   Avec possible affichage d'un graphe.
 - Possibilité d'enregistrer les paramètres d'affichage du graphe en courbe.
 - Ajout de la possibilité de restreindre différents comptes scolarité à différentes classes.
+- Ajout de l'impression des bulletins et relevées de notes en PDF. (Christian)
+
 
 Gepi-1.4.4-rc2 (09/01/2007)
 ===========================
