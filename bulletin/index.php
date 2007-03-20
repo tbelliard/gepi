@@ -63,8 +63,8 @@ if (!checkAccess()) {
 		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) !'; }
 		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) et la ou les période(s) !'; }
 
-	if(empty($_SESSION['classe']) or !empty($_POST['classe'])) { $_SESSION['classe'] = $classe; }
-	if(empty($_SESSION['eleve']) or !empty($_POST['eleve'])) { $_SESSION['eleve'] = $eleve; }
+	$_SESSION['classe'] = $classe;
+	$_SESSION['eleve'] = $eleve;
 	$_SESSION['periode'] = $periode;
 	$_SESSION['periode_ferme'] = $periode_ferme;
 	$_SESSION['type_bulletin'] = $type_bulletin;
@@ -278,6 +278,8 @@ if (!checkAccess()) {
 	    else { if (isset($_GET['affiche_etab_origine'])) {$affiche_etab_origine=$_GET['affiche_etab_origine'];} if (isset($_POST['affiche_etab_origine'])) {$affiche_etab_origine=$_POST['affiche_etab_origine'];} }
 	if (empty($_GET['imprime_pour']) and empty($_POST['imprime_pour'])) {$imprime_pour="";}
 	    else { if (isset($_GET['imprime_pour'])) {$imprime_pour=$_GET['imprime_pour'];} if (isset($_POST['imprime_pour'])) {$imprime_pour=$_POST['imprime_pour'];} }
+	if (empty($_GET['copie_model']) and empty($_POST['copie_model'])) { $copie_model = ''; }
+	   else { if (isset($_GET['copie_model'])) { $copie_model = $_GET['copie_model']; } if (isset($_POST['copie_model'])) { $copie_model = $_POST['copie_model']; } }
 
 // fin Christian
 
@@ -325,9 +327,9 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 				    <?php
 					if( $_SESSION['statut'] === 'scolarite' ){ //n'affiche que les classes du profil scolarité
 						$login_scolarite = $_SESSION['login'];
-						$requete_classe = mysql_query("SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id) GROUP BY p.id_classe ORDER BY nom_complet ASC");
+						$requete_classe = mysql_query("SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY nom_complet ASC");
 					} else {
-				                        $requete_classe = mysql_query('SELECT * FROM '.$prefix_base.'classes, '.$prefix_base.'j_eleves_professeurs, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'periodes WHERE ('.$prefix_base.'j_eleves_professeurs.professeur="'.$_SESSION['login'].'" AND '.$prefix_base.'j_eleves_professeurs.professeur.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id) AND '.$prefix_base.'periodes.id_classe = '.$prefix_base.'classes.id  GROUP BY id_classe ORDER BY '.$prefix_base.'classes.classe');
+				                        $requete_classe = mysql_query('SELECT * FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
 						} 
 			  		while ($donner_classe = mysql_fetch_array($requete_classe))
 				  	 {
@@ -388,7 +390,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 				   ?><option value="<?php echo $donner_model['id_model_bulletin']; ?>" <?php if(!empty($type_bulletin) and $type_bulletin===$donner_model['id_model_bulletin']) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_model['nom_model_bulletin']); ?></option><?php
 				 }
 		  ?>
-		  </select>&nbsp;<a href="index.php?modele=aff">Utiliser le gestionnaire de modèle</a>
+		  </select>&nbsp;<?php if( $_SESSION['statut'] === 'scolarite' ){ ?><a href="index.php?modele=aff">Utiliser le gestionnaire de modèle</a><?php } ?>
 		  <br /><br />
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
@@ -441,12 +443,17 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		 { 
 			if(empty($modele_action)) { $model_bulletin=''; } else { $model_bulletin=$modele_action; }
 			if($action_model==='ajouter' or $action_model==='modifier') {
-			if($action_model==='ajouter') { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="1"'); }
-			if($action_model==='modifier') { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"'); }
+			if($action_model==='ajouter' and $copie_model === '' ) { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="1"'); }
+			if($action_model==='ajouter' and $copie_model != '' ) { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"'); }
+			if($action_model==='modifier' and $copie_model === '' ) { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"'); }
+			if($action_model==='modifier' and $copie_model != '' ) { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"'); }
+
 			while($donner_model = mysql_fetch_array($requete_model))
 			 {
-				if($action_model==='modifier') { $id_model_bulletin = $donner_model['id_model_bulletin']; } // id du modèle
-				if($action_model==='modifier') { $nom_model_bulletin = $donner_model['nom_model_bulletin']; } // nom du modèle
+				if ( $action_model==='modifier' and $copie_model === '' ) { $id_model_bulletin = $donner_model['id_model_bulletin']; } // id du modèle
+				if ( $action_model==='modifier' and $copie_model === '' ) { $nom_model_bulletin = $donner_model['nom_model_bulletin']; } // nom du modèle
+				if ( $action_model==='modifier' and $copie_model != '' ) { $id_model_bulletin = $modele_action; } // id du modèle
+				if ( $action_model==='modifier' and $copie_model != '' ) { $nom_model_bulletin = $nom_model_bulletin; } // nom du modèle
 				$active_bloc_datation = $donner_model['active_bloc_datation']; // afficher le cadre les informations datation du bulletin
 				$active_bloc_eleve = $donner_model['active_bloc_eleve']; // afficher le cadre sur les informations élève
 				$active_bloc_adresse_parent = $donner_model['active_bloc_adresse_parent']; // afficher le cadre adresse des parents
@@ -551,6 +558,26 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 				$affichage_haut_responsable=$donner_model['affichage_haut_responsable'];
 			}
 		?>
+		<form method="post" action="index.php?modele=aff" name="action_modele_copie_form">
+		  <br />Modèle
+		  <select tabindex="5" name="type_bulletin">
+		  <?php
+			// sélection des modèle des bulletins.
+	                        $requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		  		while($donner_model = mysql_fetch_array($requete_model))
+			  	 {
+				   ?><option value="<?php echo $donner_model['id_model_bulletin']; ?>" <?php if(!empty($type_bulletin) and $type_bulletin===$donner_model['id_model_bulletin']) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_model['nom_model_bulletin']); ?></option><?php
+				 }
+		  ?>
+		  </select>&nbsp;
+ 		  <?php if ( $action_model === 'modifier' ) { ?><input type="hidden" name="modele_action" value="<?php echo $modele_action; ?>" /><?php } ?>
+ 		  <?php if ( $action_model === 'modifier' ) { ?><input type="hidden" name="nom_model_bulletin" value="<?php echo $nom_model_bulletin; ?>" /><?php } ?>
+	 	  <input type="hidden" name="action_model" value="<?php echo $action_model; ?>" />
+	 	  <input type="hidden" name="modele" value="<?php echo $modele; ?>" />
+	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
+		  <input type="submit" id="copie_model" name="copie_model" value="Copier les paramètre de ce modèle" onClick="return confirm('Attention cette action vas écraser votre sélection actuelle')" />
+		</form>
+
 		<form method="post" action="index.php?modele=aff" name="action_modele_form">
 		<?php if(!isset($nom_model_bulletin)) { $nom_model_bulletin = 'Nouveau'; } ?>
 		<h2>Mise en page du modèle de bulletin (<?php echo $nom_model_bulletin; ?>)</h2>

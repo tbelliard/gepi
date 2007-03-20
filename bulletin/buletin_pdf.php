@@ -732,13 +732,25 @@ if(!empty($model_bulletin))
 		// $periode[$cpt_p] détien le nom de la période par exemple 1er trimestre
 
 		// nous allons rechercher toute les classes qui ont le même nom de période
-		if (isset($id_classe[0]))
+		if ( isset($id_classe[0]) and !empty($id_classe[0]) )
 		{
 		 	$o=0; $prepa_requete = "";
 		        while(!empty($id_classe[$o]))
 			{
 				if($o == "0") { $prepa_requete = 'id_classe = "'.$id_classe[$o].'"'; }
 				if($o != "0") { $prepa_requete = $prepa_requete.' OR id_classe = "'.$id_classe[$o].'" '; }
+				$o = $o + 1;
+       	     		}
+		}
+
+		// nous allons rechercher toute les classes qui ont le même nom de période par les élèves
+		if ( isset($id_eleve[0]) and !empty($id_eleve[0]) )
+		{
+		 	$o=0; $prepa_requete = "";
+		        while(!empty($id_eleve[$o]))
+			{
+				if($o == "0") { $prepa_requete = 'jec.login = "'.$id_eleve[$o].'"'; }
+				if($o != "0") { $prepa_requete = $prepa_requete.' OR jec.login = "'.$id_eleve[$o].'" '; }
 				$o = $o + 1;
        	     		}
 		}
@@ -760,7 +772,15 @@ if(!empty($model_bulletin))
 	}
 
 	$cpt_p_interne = 0;
-	$requete_periode_select ="SELECT * FROM ".$prefix_base."periodes WHERE (".$prepa_requete.") ORDER BY nom_periode";
+		if ( isset($id_classe[0]) and !empty($id_classe[0]) )
+		{
+			$requete_periode_select ="SELECT * FROM ".$prefix_base."periodes WHERE (".$prepa_requete.") ORDER BY nom_periode";
+		}
+		if ( isset($id_eleve[0]) and !empty($id_eleve[0]) )
+		{
+			$requete_periode_select ="SELECT * FROM ".$prefix_base."periodes p, ".$prefix_base."j_eleves_classes jec WHERE ( (".$prepa_requete.") AND jec.id_classe = p.id_classe ) GROUP BY p.num_periode, p.id_classe ORDER BY p.nom_periode";
+		}
+
       	$execution_periode_select = mysql_query($requete_periode_select) or die('Erreur SQL !'.$requete_periode_select.'<br />'.mysql_error());
       	while ( $donnee_periode_select = mysql_fetch_array($execution_periode_select) )
 	{
@@ -1173,6 +1193,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	if($active_bloc_adresse_parent==='1') {
  	 $pdf->SetXY($X_parent,$Y_parent);
 	 $texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+	 $texte_1_responsable = trim($texte_1_responsable);
 		$hauteur_caractere=12;
 		$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);		
 		$val = $pdf->GetStringWidth($texte_1_responsable);
@@ -1477,6 +1498,8 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		    //classe
 		    if($active_moyenne_classe==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 		     $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app+4);
+			     $hauteur_caractere = '8.5';
+			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 			$text_moy_classe = 'Classe';
 			if ( $entete_model_bulletin === '2' ) { $text_moy_classe = 'Moy.'; }
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, $text_moy_classe,1,0,'C');
@@ -1485,12 +1508,16 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		    //min
 		    if($active_moyenne_min==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 		     $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app+4);
+			     $hauteur_caractere = '8.5';
+			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, "Min.",1,0,'C');
 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 		    }
 		    //max
 		    if($active_moyenne_max==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 		     $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app+4);
+			     $hauteur_caractere = '8.5';
+			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, "Max.",1,0,'C');
 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 		    }
@@ -2260,6 +2287,7 @@ $cpt_ordre = $cpt_ordre + 1;
 }
 
 //vidé les variable de session utilisé
+//unset($_SESSION["periode"]);
 unset($_SESSION["classe"]);
 unset($_SESSION["eleve"]);
 
