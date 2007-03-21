@@ -36,6 +36,13 @@
 		}
 	}
 
+	function remplace_accents($chaine){
+		//$retour=strtr(ereg_replace("¼","OE",ereg_replace("½","oe",$chaine)),"ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü","AAAEEEEIIOOUUUCcaaaeeeeiioouuu");
+		//$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		return $retour;
+	}
+
 
 	//============================================
 	writinfo('/tmp/infos_graphe.txt','w+',"Avant la récupération des moyennes.\n");
@@ -119,6 +126,10 @@
 
 		$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
 		$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+		$matiere_nom_long[$i]=remplace_accents($matiere_nom_long[$i]);
+
+		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
+		$matiere[$i]=remplace_accents($matiere[$i]);
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
 	}
 
@@ -150,6 +161,7 @@
 	if($periode!=''){
 		$nom_eleve[1]=$nom_eleve[1]." ($periode)";
 	}
+	$nom_eleve[1]=remplace_accents($nom_eleve[1]);
 
 	// Variable destinée à tenir compte de la moyenne annuelle...
 	$nb_series_bis=$nb_series;
@@ -163,6 +175,7 @@
 		$cpt=1;
 		while($lign_periode=mysql_fetch_object($result_periode)){
 			$nom_periode[$cpt]=$lign_periode->nom_periode;
+			$nom_periode[$cpt]=remplace_accents($nom_periode[$cpt]);
 			$cpt++;
 		}
 
@@ -227,6 +240,7 @@
 				$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
 				break;
 		}
+		$nom_eleve[2]=remplace_accents($nom_eleve[2]);
 	}
 
 
