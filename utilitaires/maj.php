@@ -415,15 +415,15 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des identifiants et des mots de passe en PDF', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/buletin_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Bulletin scolaire au format PDF', '');";
 
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/etiquette_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Etiquette au format PDF', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/export_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Fichier d''exportation en csv des absences', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/statistiques.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Statistique du module vie scolaire', '1');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_camembert.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique camembert', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique camembert', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_horaire_ouverture.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des horaires d''ouverture de l''établissement', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_config_semaines.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Configuration des types de semaines', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/fiche_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Fiche récapitulatif des absences', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique absence et retard sur le même graphique', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/etiquette_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Etiquette au format PDF', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/export_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Fichier d''exportation en csv des absences', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/statistiques.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Statistique du module vie scolaire', '1');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_camembert.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique camembert', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique camembert', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_horaire_ouverture.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des horaires d''ouverture de l''établissement', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_config_semaines.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des types de semaines', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/fiche_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Fiche récapitulatif des absences', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique absence et retard sur le même graphique', '');";
 
 
 	//$tab_req[] = "";
@@ -2829,7 +2829,7 @@ if (isset ($_POST['maj'])) {
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_mention_nom_court'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes'");
+			$query = mysql_query("INSERT INTO setting VALUES ('bull_mention_nom_court', 'yes');");
 			$result .= "Initialisation du paramètre bull_mention_nom_court à yes: ";
 			if($query){
 				$result .= "<font color=\"green\">Ok !</font><br />";
