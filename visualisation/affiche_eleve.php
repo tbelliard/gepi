@@ -184,7 +184,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
@@ -210,7 +210,7 @@ if ($_SESSION['statut'] == "responsable") {
 			}
 		}
 	}
-	
+
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	$login_eleve = $_SESSION['login'];
@@ -282,23 +282,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
-	
+
 } else {
-	
+
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		/*
 		foreach($_POST as $post => $val){
 			echo $post.' : '.$val."<br />\n";
 		}
 		*/
-	
+
 		echo "<div class='noprint'>\n";
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 		// La classe est choisie.
 		// On ajoute l'accès/retour à une autre classe:
 		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
-	
+
 		// =================================
 		// AJOUT: boireaus
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
@@ -317,7 +317,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				jecpe.cpe_login='".$_SESSION['login']."'
 				ORDER BY classe";
 		}
-	
+
 		$res_class_tmp=mysql_query($sql);
 		if(mysql_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
@@ -339,7 +339,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 		// =================================
-	
+
 		if(isset($id_class_prec)){
 			if($id_class_prec!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>|";}
 		}
@@ -348,7 +348,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "</div>\n";
 	} else {
-		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";		
+		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 	}
 
 	//===============================================
@@ -659,8 +659,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		// Choix des élèves:
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
-		$nombreligne = mysql_num_rows($call_eleve);	
-		
+		$nombreligne = mysql_num_rows($call_eleve);
+
 		echo "<select name='eleve1'>\n";
 		$cpt=1;
 		$numeleve1=0;
@@ -680,9 +680,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "</select>\n";
 		echo "<br />\n";
-	
-	
-	
+
+
+
 		echo "<select name='eleve2'>\n";
 		for($cpt=1;$cpt<=$nombreligne;$cpt++){
 			if($tab_login_eleve[$cpt]==$eleve2){
@@ -703,7 +703,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
 		echo "</select>\n";
 		echo "<br />\n";
-		
+
 		// Pour passer à l'élève précédent ou au suivant:
 		echo "<script type='text/javascript' language='JavaScript'>\n";
 		$precedent=$numeleve1-1;
@@ -736,7 +736,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 		</script>\n";
-	
+
 		//echo "<p>\n";
 		echo "<input type='hidden' name='numeleve1' id='numeleve1' value='$numeleve1' size='3' />\n";
 		// 'eleve1b' est destiné au passage du nom de l'élève par les boutons Précédent/Suivant
@@ -747,8 +747,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<input type='button' name='precedent' value='>>' onClick='eleve_suivant();' />\n";
 		echo "</p>\n";
 
-		//echo "<hr width='150'>\n";		
-		
+		//echo "<hr width='150'>\n";
+
 	} else {
 		// Cas d'un responsable ou d'un élève :
 		// Pas de sélection de l'élève, il est déjà fixé.
@@ -814,7 +814,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params1' value='1' onchange='display_div()' /> </td><td>Moyennes et périodes</td></tr>\n";
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params2' value='2' onchange='display_div()' /> </td><td>Dimensions</td></tr>\n";
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params3' value='3' onchange='display_div()' /> </td><td>Photo</td></tr>\n";
-	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params4' value='4' onchange='display_div()' /> </td><td>Couleurs</td></tr>\n";
+
+	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+		echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params4' value='4' onchange='display_div()' /> </td><td>Couleurs</td></tr>\n";
+	}
+
 	echo "</table>\n";
 
 
