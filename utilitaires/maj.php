@@ -3190,6 +3190,39 @@ if (isset ($_POST['maj'])) {
 		}
 
 
+        $result .= "&nbsp;->Création de la table lettres_suivis<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'lettres_suivis'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `lettres_suivis` (
+  `id_lettre_suivi` int(11) NOT NULL auto_increment,
+  `lettresuitealettren_lettre_suivi` int(11) NOT NULL,
+  `quirecois_lettre_suivi` varchar(50) NOT NULL,
+  `partde_lettre_suivi` varchar(200) NOT NULL,
+  `partdenum_lettre_suivi` text NOT NULL,
+  `quiemet_lettre_suivi` varchar(150) NOT NULL,
+  `emis_date_lettre_suivi` date NOT NULL,
+  `emis_heure_lettre_suivi` time NOT NULL,
+  `quienvoi_lettre_suivi` varchar(150) NOT NULL,
+  `envoye_date_lettre_suivi` date NOT NULL,
+  `envoye_heure_lettre_suivi` time NOT NULL,
+  `type_lettre_suivi` int(11) NOT NULL,
+  `quireception_lettre_suivi` varchar(150) NOT NULL,
+  `reponse_date_lettre_suivi` date NOT NULL,
+  `reponse_remarque_lettre_suivi` varchar(250) NOT NULL,
+  `statu_lettre_suivi` varchar(20) NOT NULL,
+  PRIMARY KEY  (`id_lettre_suivi`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
         $result .= "&nbsp;->Création de la table lettres_tcs<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'lettres_tcs'"));
         if ($test1 == 0) {

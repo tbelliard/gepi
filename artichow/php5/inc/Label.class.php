@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
  
 /* <php4> */
 
@@ -204,10 +206,10 @@ class awLabel implements awPositionable {
 	 */
 	public function set($labels) {
 	
-		if(is_string($labels)) {
-			$this->texts = array($labels);
-		} else if(is_array($labels)) {
+		if(is_array($labels)) {
 			$this->texts = $labels;
+		} else {
+			$this->texts = array((string)$labels);
 		}
 		
 	}
@@ -279,7 +281,7 @@ class awLabel implements awPositionable {
 	 *
 	 * @param awColor $color
 	 */
-	public function setColor($color) {
+	public function setColor(awColor $color) {
 		$this->color = $color;
 	}
 	
@@ -458,35 +460,35 @@ class awLabel implements awPositionable {
 	/**
 	 * Get max width of all texts
 	 *
-	 * @param awDrawer $drawer A drawer
+	 * @param awDriver $driver A driver
 	 * @return int
 	 */
-	public function getMaxWidth(awDrawer $drawer) {
+	public function getMaxWidth(awDriver $driver) {
 	
-		return $this->getMax($drawer, 'getTextWidth');
+		return $this->getMax($driver, 'getTextWidth');
 	
 	}
 	
 	/**
 	 * Get max height of all texts
 	 *
-	 * @param awDrawer $drawer A drawer
+	 * @param awDriver $driver A driver
 	 * @return int
 	 */
-	public function getMaxHeight(awDrawer $drawer) {
+	public function getMaxHeight(awDriver $driver) {
 	
-		return $this->getMax($drawer, 'getTextHeight');
+		return $this->getMax($driver, 'getTextHeight');
 		
 	}
 	
 	/**
 	 * Draw the label
 	 *
-	 * @param awDrawer $drawer
+	 * @param awDriver $driver
 	 * @param awPoint $p Label center
 	 * @param int $key Text position in the array of texts (default to zero)
 	 */
-	public function draw(awDrawer $drawer, awPoint $p, $key = 0) {
+	public function draw(awDriver $driver, awPoint $p, $key = 0) {
 	
 		if(($key % $this->interval) !== 0) {
 			return;
@@ -527,9 +529,9 @@ class awLabel implements awPositionable {
 			// Get padding
 			list($left, $right, $top, $bottom) = $text->getPadding();
 			
-			$font = $text->getFont();
-			$width = $font->getTextWidth($text);
-			$height = $font->getTextHeight($text);
+//			$font = $text->getFont();
+			$width = $driver->getTextWidth($text);
+			$height = $driver->getTextHeight($text);
 			
 			switch($this->hAlign) {
 			
@@ -563,13 +565,13 @@ class awLabel implements awPositionable {
 			
 			}
 		
-			$drawer->string($text, $this->move->move($x, $y));
+			$driver->string($text, $this->move->move($x, $y));
 			
 		}
 		
 	}
 	
-	protected function getMax(awDrawer $drawer, $function) {
+	protected function getMax(awDriver $driver, $function) {
 	
 		$max = NULL;
 	

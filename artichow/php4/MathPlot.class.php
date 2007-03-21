@@ -265,7 +265,7 @@ class awMathPlot extends awComponent {
 	
 	}
 	
-	 function init($drawer) {
+	 function init($driver) {
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -313,25 +313,25 @@ class awMathPlot extends awComponent {
 		}
 		$this->yAxis->label->set($labels);
 	
-		parent::init($drawer);
+		parent::init($driver);
 		
 		// Create the grid
 		$this->createGrid();
 	
 		// Draw the grid
-		$this->grid->draw($drawer, $x1, $y1, $x2, $y2);
+		$this->grid->draw($driver, $x1, $y1, $x2, $y2);
 		
 	}
 	
-	 function drawEnvelope($drawer) {
+	 function drawEnvelope($driver) {
 		
 		// Draw axis
-		$this->xAxis->draw($drawer);
-		$this->yAxis->draw($drawer);
+		$this->xAxis->draw($driver);
+		$this->yAxis->draw($driver);
 	
 	}
 	
-	 function drawComponent($drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	 function drawComponent($driver, $x1, $y1, $x2, $y2, $aliasing) {
 	
 		foreach($this->functions as $function) {
 		
@@ -346,7 +346,7 @@ class awMathPlot extends awComponent {
 				$p = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($i, $f($i)));
 				
 				if($p->y >= $y1 and $p->y <= $y2) {
-					$function->mark->draw($drawer, $p);
+					$function->mark->draw($driver, $p);
 				}
 			
 				if($old !== NULL) {
@@ -358,7 +358,7 @@ class awMathPlot extends awComponent {
 						($line->p1->y >= $y1 and $line->p1->y <= $y2) or
 						($line->p2->y >= $y1 and $line->p2->y <= $y2)
 					) {
-						$drawer->line(
+						$driver->line(
 							$function->getColor(),
 							$line
 						);
@@ -376,7 +376,7 @@ class awMathPlot extends awComponent {
 				$p = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($toX, $f($toX)));
 				
 				if($p->y >= $y1 and $p->y <= $y2) {
-					$function->mark->draw($drawer, $p);
+					$function->mark->draw($driver, $p);
 				}
 				
 				
@@ -387,7 +387,7 @@ class awMathPlot extends awComponent {
 					($line->p1->y >= $y1 and $line->p1->y <= $y2) or
 					($line->p2->y >= $y1 and $line->p2->y <= $y2)
 				) {
-					$drawer->line(
+					$driver->line(
 						$function->getColor(),
 						$line
 					);

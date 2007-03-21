@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
 /* <php4> */
 
 define("SHADOW_LEFT_TOP", 1);
@@ -148,7 +150,7 @@ class awShadow {
 	 *
 	 * @param awColor $color
 	 */
-	public function setColor($color) {
+	public function setColor(awColor $color) {
 		$this->color = $color;
 	}
 	
@@ -189,12 +191,12 @@ class awShadow {
 	/**
 	 * Draw shadow
 	 *
-	 * @param awDrawer $drawer
+	 * @param awDriver $driver
 	 * @param awPoint $p1 Top-left point
 	 * @param awPoint $p2 Right-bottom point
 	 * @param int Drawing mode
 	 */
-	public function draw(awDrawer $drawer, awPoint $p1, awPoint $p2, $mode) {
+	public function draw(awDriver $driver, awPoint $p1, awPoint $p2, $mode) {
 	
 		if($this->hide) {
 			return;
@@ -204,7 +206,7 @@ class awShadow {
 			return;
 		}
 		
-		$drawer = clone $drawer;
+		$driver = clone $driver;
 		
 		$color = ($this->color instanceof awColor) ? $this->color : new awColor(125, 125, 125);
 	
@@ -223,9 +225,9 @@ class awShadow {
 				$width = $t2->x - $t1->x;
 				$height = $t2->y - $t1->y;
 		
-				$drawer->setAbsPosition($t1->x + $drawer->x, $t1->y + $drawer->y);
+				$driver->setAbsPosition($t1->x + $driver->x, $t1->y + $driver->y);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($width - $this->size, $this->size),
@@ -233,7 +235,7 @@ class awShadow {
 					)
 				);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($this->size, $height - $this->size),
@@ -241,7 +243,7 @@ class awShadow {
 					)
 				);
 				
-				$this->smoothPast($drawer, $color, $width, $height);
+				$this->smoothPast($driver, $color, $width, $height);
 				
 				break;
 		
@@ -258,11 +260,11 @@ class awShadow {
 				$width = $t2->x - $t1->x;
 				$height = $t2->y - $t1->y;
 		
-				$drawer->setAbsPosition($t1->x + $drawer->x, $t1->y + $drawer->y);
+				$driver->setAbsPosition($t1->x + $driver->x, $t1->y + $driver->y);
 				
 				$height = max($height + 1, $this->size);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint(0, 0),
@@ -270,7 +272,7 @@ class awShadow {
 					)
 				);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($this->size, 0),
@@ -278,7 +280,7 @@ class awShadow {
 					)
 				);
 				
-				$this->smoothPast($drawer, $color, $width, $height);
+				$this->smoothPast($driver, $color, $width, $height);
 				
 				break;
 		
@@ -295,11 +297,11 @@ class awShadow {
 				$width = $t2->x - $t1->x;
 				$height = $t2->y - $t1->y;
 		
-				$drawer->setAbsPosition($t1->x + $drawer->x, $t1->y + $drawer->y);
+				$driver->setAbsPosition($t1->x + $driver->x, $t1->y + $driver->y);
 				
 				$height = max($height + 1, $this->size);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($width - $this->size, 0),
@@ -307,7 +309,7 @@ class awShadow {
 					)
 				);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($this->size, 0),
@@ -315,7 +317,7 @@ class awShadow {
 					)
 				);
 				
-				$this->smoothFuture($drawer, $color, $width, $height);
+				$this->smoothFuture($driver, $color, $width, $height);
 				
 				break;
 		
@@ -332,9 +334,9 @@ class awShadow {
 				$width = $t2->x - $t1->x;
 				$height = $t2->y - $t1->y;
 		
-				$drawer->setAbsPosition($t1->x + $drawer->x, $t1->y + $drawer->y);
+				$driver->setAbsPosition($t1->x + $driver->x, $t1->y + $driver->y);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint(0, $this->size),
@@ -342,7 +344,7 @@ class awShadow {
 					)
 				);
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$color,
 					new awLine(
 						new awPoint($this->size, $height - $this->size),
@@ -350,7 +352,7 @@ class awShadow {
 					)
 				);
 				
-				$this->smoothFuture($drawer, $color, $width, $height);
+				$this->smoothFuture($driver, $color, $width, $height);
 				
 				break;
 		
@@ -358,13 +360,13 @@ class awShadow {
 	
 	}
 	
-	private function smoothPast(awDrawer $drawer, awColor $color, $width, $height) {
+	private function smoothPast(awDriver $driver, awColor $color, $width, $height) {
 		
 		if($this->smooth) {
 		
 			for($i = 0; $i < $this->size; $i++) {
 				for($j = 0; $j <= $i; $j++) {
-					$drawer->point(
+					$driver->point(
 						$color,
 						new awPoint($i, $j + $height - $this->size)
 					);
@@ -373,7 +375,7 @@ class awShadow {
 			
 			for($i = 0; $i < $this->size; $i++) {
 				for($j = 0; $j <= $i; $j++) {
-					$drawer->point(
+					$driver->point(
 						$color,
 						new awPoint($width - $this->size + $j, $i)
 					);
@@ -384,13 +386,13 @@ class awShadow {
 		
 	}
 	
-	private function smoothFuture(awDrawer $drawer, awColor $color, $width, $height) {
+	private function smoothFuture(awDriver $driver, awColor $color, $width, $height) {
 		
 		if($this->smooth) {
 		
 			for($i = 0; $i < $this->size; $i++) {
 				for($j = 0; $j <= $i; $j++) {
-					$drawer->point(
+					$driver->point(
 						$color,
 						new awPoint($i, $this->size - $j - 1)
 					);
@@ -399,7 +401,7 @@ class awShadow {
 			
 			for($i = 0; $i < $this->size; $i++) {
 				for($j = 0; $j <= $i; $j++) {
-					$drawer->point(
+					$driver->point(
 						$color,
 						new awPoint($width - $this->size + $j, $height - $i - 1)
 					);

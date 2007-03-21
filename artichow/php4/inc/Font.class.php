@@ -7,231 +7,192 @@
  *
  */
 
- 
+require_once dirname(__FILE__)."/../Graph.class.php";
+
 /**
- * Built-in PHP fonts
+ * Common font characteristics and methods.
+ * Declared abstract only so that it can't be instanciated.
+ * Users have to call 'new awPHPFont' or 'new awFileFont',
+ * or any of their inherited classes (awFont1, awTuffy, awTTFFont, etc.)
  *
  * @package Artichow
  */
-class awFont {
-	
-	/**
-	 * Used font
-	 * 
-	 * @param int $font
-	 */
-	var $font;
-	
+ class awFont {
+
 	/**
 	 * Build the font
 	 *
-	 * @param int $font Font identifier
 	 */
-	 function awFont($font) {
-	
-		$this->font = $font;
-	
+	 function awFont() {
+		
 	}
-	
+
 	/**
 	 * Draw a text
 	 *
-	 * @param $drawer
+	 * @param $driver
 	 * @param $p Draw text at this point
 	 * @param &$text The text
+	 * @param int $width Text box width
 	 */
-	 function draw($drawer, $p, &$text) {
-	
-		$angle = $text->getAngle();
-	
-		if($angle !== 90 and $angle !== 0) {
-			trigger_error("You can only use 0° and 90°", E_USER_ERROR);
-		}
+	 function draw($driver, $point, &$text, $width = NULL) {
 		
-		if($angle === 90) {
-			$function = 'imagestringup';
-		} else {
-			$function = 'imagestring';
-		}
+		$driver->string($this, $text, $point, $width);
 		
-		if($angle === 90) {
-			$add = $this->getTextHeight($text);
-		} else {
-			$add = 0;
-		}
-	
-		$color = $text->getColor();
-		$rgb = $color->getColor($drawer->resource);
-		
-		$function(
-			$drawer->resource,
-			$this->font,
-			$drawer->x + $p->x,
-			$drawer->y + $p->y + $add,
-			$text->getText(),
-			$rgb
-		);
-	
-	}
-	
-	/**
-	 * Get the width of a string
-	 *
-	 * @param &$text A string
-	 */
-	 function getTextWidth(&$text) {
-	
-		if($text->getAngle() === 90) {
-			$text->setAngle(45);
-			return $this->getTextHeight($text);
-		} else if($text->getAngle() === 45) {
-			$text->setAngle(90);
-		}
-		
-		$font = $text->getFont();
-		$fontWidth = imagefontwidth($font->font);
-		
-		if($fontWidth === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-		}
-		
-		return (int)$fontWidth * strlen($text->getText());
-	
-	}
-	
-	/**
-	 * Get the height of a string
-	 *
-	 * @param &$text A string
-	 */
-	 function getTextHeight(&$text) {
-	
-		if($text->getAngle() === 90) {
-			$text->setAngle(45);
-			return $this->getTextWidth($text);
-		} else if($text->getAngle() === 45) {
-			$text->setAngle(90);
-		}
-		
-		$font = $text->getFont();
-		$fontHeight = imagefontheight($font->font);
-		
-		if($fontHeight === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-		}
-		
-		return (int)$fontHeight;
-
 	}
 
 }
 
-registerClass('Font');
+registerClass('Font', TRUE);
 
 /**
- * TTF fonts
+ * Class for fonts that cannot be transformed,
+ * like the built-in PHP fonts for example.
+ * 
+ * @package Artichow
+ */
+class awPHPFont extends awFont {
+	
+	/**
+	 * The used font identifier
+	 * 
+	 * @var int
+	 */
+	var $font;
+	
+	 function awPHPFont($font = NULL) {
+		parent::awFont();
+		
+		if($font !== NULL) {
+			$this->font = (int)$font;
+		}
+	}
+	
+}
+
+registerClass('PHPFont');
+
+/**
+ * Class for fonts that can be transformed (rotated, skewed, etc.),
+ * like TTF or FDB fonts for example.
  *
  * @package Artichow
  */
-class awTTFFont extends awFont {
-
+class awFileFont extends awFont {
+	
 	/**
-	 * Font size
+	 * The name of the font, without the extension
+	 *
+	 * @var string
+	 */
+	var $name;
+	
+	/**
+	 * The size of the font
 	 *
 	 * @var int
 	 */
 	var $size;
-
-	/**
-	 * Font file
-	 *
-	 * @param string $font Font file
-	 * @param int $size Font size
-	 */
-	 function awTTFFont($font, $size) {
 	
-		parent::awFont($font);
+	/**
+	 * The font filename extension
+	 * 
+	 * @var string
+	 */
+	var $extension;
+	
+	 function awFileFont($name, $size) {
+		parent::awFont();
 		
+		$this->setName($name);
+		$this->setSize($size);
+	}
+	
+	/**
+	 * Set the name of the font. The $name variable can contain the full path,
+	 * or just the filename. Artichow will try to do The Right Thing,
+	 * as well as set the extension property correctly if possible.
+	 *
+	 * @param string $name
+	 */
+	 function setName($name) {
+		$fontInfo = pathinfo((string)$name);
+		
+		if(strpos($fontInfo['dirname'], '/') !== 0) {
+			// Path is not absolute, use ARTICHOW_FONT
+			$name = ARTICHOW_FONT.DIRECTORY_SEPARATOR.$fontInfo['basename'];
+			$fontInfo = pathinfo($name);
+		}
+		
+		$this->name = $fontInfo['dirname'].DIRECTORY_SEPARATOR.$fontInfo['basename'];
+		
+		if(array_key_exists('extension', $fontInfo) and $fontInfo['extension'] !== '') {
+			$this->setExtension($fontInfo['extension']);
+		}
+	}
+	
+	/**
+	 * Return the name of the font, i.e. the absolute path and the filename, without the extension.
+	 *
+	 * @return string
+	 */
+	 function getName() {
+		return $this->name;
+	}
+	
+	/**
+	 * Set the size of the font, in pixels
+	 *
+	 * @param int $size
+	 */
+	 function setSize($size) {
 		$this->size = (int)$size;
-	
 	}
 	
 	/**
-	 * Draw a text
+	 * Return the size of the font, in pixels
 	 *
-	 * @param $drawer
-	 * @param $p Draw text at this point
-	 * @param &$text The text
+	 * @return int
 	 */
-	 function draw($drawer, $p, &$text) {
-	
-		// Make easier font positionment
-		$text->setText($text->getText()." ");
-	
-		$color = $text->getColor();
-		$rgb = $color->getColor($drawer->resource);
-		
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $text->getText());
-		
-		$height =  - $box[5];
-		
-		$box = imagettfbbox($this->size, 90, $this->font, $text->getText());
-		$width = abs($box[6] - $box[2]);
-	
-		// Restore old text
-		$text->setText(substr($text->getText(), 0, strlen($text->getText()) - 1));
-		
-		imagettftext(
-			$drawer->resource,
-			$this->size,
-			$text->getAngle(),
-			$drawer->x + $p->x + $width  * sin($text->getAngle() / 180 * M_PI),
-			$drawer->y + $p->y + $height,
-			$rgb,
-			$this->font,
-			$text->getText()
-		);
-		
+	 function getSize() {
+		return $this->size;
 	}
 	
 	/**
-	 * Get the width of a string
+	 * Set the extension, without the dot
 	 *
-	 * @param &$text A string
+	 * @param string $extension
 	 */
-	 function getTextWidth(&$text) {
-		
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $text->getText());
-		
-		if($box === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-			return;
-		}
-		
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
-		
-		return abs($x2 - $x1);
-	
+	 function setExtension($extension) {
+		$this->extension = (string)$extension;
 	}
 	
 	/**
-	 * Get the height of a string
-	 *
-	 * @param &$text A string
+	 * Get the filename extension for that font
+	 * 
+	 * @return string
 	 */
-	 function getTextHeight(&$text) {
-		
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $text->getText());
-		
-		if($box === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-			return;
-		}
-		
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
-		
-		return abs($y2 - $y1);
+	 function getExtension() {
+		return $this->extension;
+	}
 
+}
+
+registerClass('FileFont');
+
+/**
+ * Class representing TTF fonts
+ * 
+ * @package Artichow
+ */
+class awTTFFont extends awFileFont {
+	
+	 function awTTFFont($name, $size) {
+		parent::awFileFont($name, $size);
+		
+		if($this->getExtension() === NULL) {
+			$this->setExtension('ttf');
+		}
 	}
 
 }
@@ -245,15 +206,15 @@ $php = '';
 for($i = 1; $i <= 5; $i++) {
 
 	$php .= '
-	class awFont'.$i.' extends awFont {
-	
+	class awFont'.$i.' extends awPHPFont {
+
 		function awFont'.$i.'() {
-			parent::awFont('.$i.');
+			parent::awPHPFont('.$i.');
 		}
-	
+
 	}
 	';
-	
+
 	if(ARTICHOW_PREFIX !== 'aw') {
 		$php .= '
 		class '.ARTICHOW_PREFIX.'Font'.$i.' extends awFont'.$i.' {
@@ -270,15 +231,15 @@ $php = '';
 foreach($fonts as $font) {
 
 	$php .= '
-	class aw'.$font.' extends awTTFFont {
-	
+	class aw'.$font.' extends awFileFont {
+
 		function aw'.$font.'($size) {
-			parent::awTTFFont(\''.(ARTICHOW_FONT.DIRECTORY_SEPARATOR.$font.'.ttf').'\', $size);
+			parent::awFileFont(\''.$font.'\', $size);
 		}
-	
+
 	}
 	';
-	
+
 	if(ARTICHOW_PREFIX !== 'aw') {
 		$php .= '
 		class '.ARTICHOW_PREFIX.$font.' extends aw'.$font.' {
@@ -291,5 +252,12 @@ foreach($fonts as $font) {
 eval($php);
 
 
+
+/*
+ * Environment modification for GD2 and TTF fonts
+ */
+if(function_exists('putenv')) {
+	putenv('GDFONTPATH='.ARTICHOW_FONT);
+}
 
 ?>

@@ -199,7 +199,7 @@ class awScatterPlot extends awPlot implements awLegendable {
 		return $this->mark;
 	}
 	
-	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	public function drawComponent(awDriver $driver, $x1, $y1, $x2, $y2, $aliasing) {
 	
 		$count = count($this->datay);
 		
@@ -231,7 +231,7 @@ class awScatterPlot extends awPlot implements awLegendable {
 			foreach($polygon->all() as $point) {
 			
 				if($prev !== NULL and $point !== NULL) {
-					$drawer->line(
+					$driver->line(
 						$this->lineColor,
 						new awLine(
 							$prev,
@@ -244,9 +244,6 @@ class awScatterPlot extends awPlot implements awLegendable {
 				$prev = $point;
 				
 			}
-			
-			$this->lineColor->free();
-			
 		}
 		
 		// Draw impulses
@@ -262,7 +259,7 @@ class awScatterPlot extends awPlot implements awLegendable {
 						new awPoint($key, 0)
 					);
 					
-					$drawer->line(
+					$driver->line(
 						$this->impulse,
 						new awLine(
 							$zero,
@@ -281,8 +278,8 @@ class awScatterPlot extends awPlot implements awLegendable {
 		// Draw marks and labels
 		foreach($polygon->all() as $key => $point) {
 
-			$this->mark->draw($drawer, $point);
-			$this->label->draw($drawer, $point, $key);
+			$this->mark->draw($driver, $point);
+			$this->label->draw($driver, $point, $key);
 			
 		}
 		

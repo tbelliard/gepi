@@ -7,6 +7,8 @@
  *
  */
 
+require_once dirname(__FILE__)."/../Graph.class.php";
+
 /**
  * Handle axis
  *
@@ -27,14 +29,14 @@ class awAxis {
 	 * @var Label
 	 */
 	public $label;
-	
+
 	/**
 	 * Axis title
 	 *
 	 * @var Label
 	 */
 	public $title;
-	
+
 	/**
 	 * Title position
 	 *
@@ -48,7 +50,7 @@ class awAxis {
 	 * @var int
 	 */
 	protected $labelNumber;
-	
+
 	/**
 	 * Axis ticks
 	 *
@@ -100,7 +102,7 @@ class awAxis {
 		'toValue' => 'toProportionalValue',
 		'toPosition' => 'toProportionalPosition'
 	);
-	
+
 	/**
 	 * Build the axis
 	 *
@@ -108,30 +110,30 @@ class awAxis {
 	 * @param float $max End of the range of the axis
 	 */
 	public function __construct($min = NULL, $max = NULL) {
-	
+
 		$this->line = new awVector(
 			new awPoint(0, 0),
 			new awPoint(0, 0)
 		);
-		
+
 		$this->label = new awLabel;
 		$this->padding = new awSide;
-		
+
 		$this->title = new awLabel(
 			NULL,
 			NULL,
 			NULL,
 			0
 		);
-		
+
 		$this->setColor(new awBlack);
-		
+
 		if($min !== NULL and $max !== NULL) {
 			$this->setRange($min, $max);
 		}
-	
+
 	}
-	
+
 	/**
 	 * Enable/disable auto-scaling mode
 	 *
@@ -140,7 +142,7 @@ class awAxis {
 	public function auto($auto) {
 		$this->auto = (bool)$auto;
 	}
-	
+
 	/**
 	 * Get auto-scaling mode status
 	 *
@@ -149,7 +151,7 @@ class awAxis {
 	public function isAuto() {
 		return $this->auto;
 	}
-	
+
 	/**
 	 * Hide axis
 	 *
@@ -158,7 +160,7 @@ class awAxis {
 	public function hide($hide = TRUE) {
 		$this->hide = (bool)$hide;
 	}
-	
+
 	/**
 	 * Show axis
 	 *
@@ -167,7 +169,7 @@ class awAxis {
 	public function show($show = TRUE) {
 		$this->hide = !(bool)$show;
 	}
-	
+
 	/**
 	 * Return a tick object from its name
 	 *
@@ -186,7 +188,7 @@ class awAxis {
 		}
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Add a tick object
 	 *
@@ -201,7 +203,7 @@ class awAxis {
 		$this->ticks[$name] = &$tick;
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Delete a tick object
 	 *
@@ -212,7 +214,7 @@ class awAxis {
 			unset($this->ticks[$name]);
 		}
 	}
-	
+
 	/**
 	 * Hide all ticks
 	 *
@@ -230,7 +232,7 @@ class awAxis {
 		}
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Change ticks style
 	 *
@@ -248,7 +250,7 @@ class awAxis {
 		}
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Change ticks interval
 	 *
@@ -266,7 +268,7 @@ class awAxis {
 		}
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Change number of ticks relative to others ticks
 	 *
@@ -277,7 +279,7 @@ class awAxis {
 	public function setNumberByTick($to, $from, $number) {
 		$this->ticks[$to]->setNumberByTick($this->ticks[$from], $number);
 	}
-	
+
 	/**
 	 * Reverse ticks style
 	 */
@@ -301,7 +303,7 @@ class awAxis {
 		}
 		-- </php4> */
 	}
-	
+
 	/**
 	 * Change interval of labels
 	 *
@@ -312,7 +314,7 @@ class awAxis {
 		$this->setTickInterval($interval);
 		$this->label->setInterval($interval);
 	}
-	
+
 	/**
 	 * Change number of labels
 	 *
@@ -322,7 +324,7 @@ class awAxis {
 		$this->auto(FALSE);
 		$this->labelNumber = is_null($number) ? NULL : (int)$number;
 	}
-	
+
 	/**
 	 * Get number of labels
 	 *
@@ -331,7 +333,7 @@ class awAxis {
 	public function getLabelNumber() {
 		return $this->labelNumber;
 	}
-	
+
 	/**
 	 * Change precision of labels
 	 *
@@ -345,7 +347,7 @@ class awAxis {
 		}');
 		$this->label->setCallbackFunction($function);
 	}
-	
+
 	/**
 	 * Change text of labels
 	 *
@@ -357,7 +359,7 @@ class awAxis {
 			$function = 'axis'.time().'_'.(microtime() * 1000000);
 			eval('function '.$function.'($value) {
 				$texts = '.var_export($texts, TRUE).';
-				return $texts[$value];
+				return isset($texts[$value]) ? $texts[$value] : \'?\';
 			}');
 			$this->label->setCallbackFunction($function);
 		}
@@ -375,47 +377,47 @@ class awAxis {
 
 		$p1 = $xAxis->getPointFromValue($p->x);
 		$p2 = $yAxis->getPointFromValue($p->y);
-		
+
 		return new awPoint(
 			round($p1->x),
 			round($p2->y)
 		);
-		
+
 	}
-	
+
 	/**
 	 * Change title alignment
 	 *
 	 * @param int $alignment New Alignment
 	 */
 	public function setTitleAlignment($alignment) {
-	
+
 		switch($alignment) {
-		
+
 			case awLabel::TOP :
 				$this->setTitlePosition(1);
 				$this->title->setAlign(NULL, awLabel::BOTTOM);
 				break;
-		
+
 			case awLabel::BOTTOM :
 				$this->setTitlePosition(0);
 				$this->title->setAlign(NULL, awLabel::TOP);
 				break;
-		
+
 			case awLabel::LEFT :
 				$this->setTitlePosition(0);
 				$this->title->setAlign(awLabel::LEFT);
 				break;
-		
+
 			case awLabel::RIGHT :
 				$this->setTitlePosition(1);
 				$this->title->setAlign(awLabel::RIGHT);
 				break;
-		
+
 		}
-	
+
 	}
-	
+
 	/**
 	 * Change title position on the axis
 	 *
@@ -424,7 +426,7 @@ class awAxis {
 	public function setTitlePosition($position) {
 		$this->titlePosition = (float)$position;
 	}
-	
+
 	/**
 	 * Change axis and axis title color
 	 *
@@ -434,7 +436,7 @@ class awAxis {
 		$this->color = $color;
 		$this->title->setColor($color);
 	}
-	
+
 	/**
 	 * Change axis padding
 	 *
@@ -444,7 +446,7 @@ class awAxis {
 	public function setPadding($left, $right) {
 		$this->padding->set($left, $right);
 	}
-	
+
 	/**
 	 * Get axis padding
 	 *
@@ -453,7 +455,7 @@ class awAxis {
 	public function getPadding() {
 		return $this->padding;
 	}
-	
+
 	/**
 	 * Change axis range
 	 *
@@ -468,7 +470,7 @@ class awAxis {
 			$this->range[1] = (float)$max;
 		}
 	}
-	
+
 	/**
 	 * Get axis range
 	 *
@@ -477,7 +479,7 @@ class awAxis {
 	public function getRange() {
 		return $this->range;
 	}
-	
+
 	/**
 	 * Change axis range callback function
 	 *
@@ -490,51 +492,51 @@ class awAxis {
 			'toPosition' => (string)$toPosition
 		);
 	}
-	
+
 	/**
-	 * Center X values of the axis 
+	 * Center X values of the axis
 	 *
 	 * @param awAxis $axis An axis
 	 * @param float $value The reference value on the axis
 	 */
 	public function setXCenter(awAxis $axis, $value) {
-		
+
 		// Check vector angle
 		if($this->line->isVertical() === FALSE) {
-			trigger_error("setXCenter() can only be used on vertical axes", E_USER_ERROR);
+			awImage::drawError("Class Axis: setXCenter() can only be used on vertical axes.");
 		}
-		
+
 		$p = $axis->getPointFromValue($value);
-		
+
 		$this->line->setX(
 			$p->x,
 			$p->x
 		);
-		
+
 	}
-	
+
 	/**
-	 * Center Y values of the axis 
+	 * Center Y values of the axis
 	 *
 	 * @param awAxis $axis An axis
 	 * @param float $value The reference value on the axis
 	 */
 	public function setYCenter(awAxis $axis, $value) {
-		
+
 		// Check vector angle
 		if($this->line->isHorizontal() === FALSE) {
-			trigger_error("setYCenter() can only be used on horizontal axes", E_USER_ERROR);
+			awImage::drawError("Class Axis: setYCenter() can only be used on horizontal axes.");
 		}
-		
+
 		$p = $axis->getPointFromValue($value);
-		
+
 		$this->line->setY(
 			$p->y,
 			$p->y
 		);
-		
+
 	}
-	
+
 	/**
 	 * Get the distance between to values on the axis
 	 *
@@ -543,14 +545,14 @@ class awAxis {
 	 * @return Point
 	 */
 	public function getDistance($from, $to) {
-	
+
 		$p1 = $this->getPointFromValue($from);
 		$p2 = $this->getPointFromValue($to);
-		
+
 		return $p1->getDistance($p2);
-	
+
 	}
-	
+
 	/**
 	 * Get a point on the axis from a value
 	 *
@@ -558,16 +560,16 @@ class awAxis {
 	 * @return Point
 	 */
 	protected function getPointFromValue($value) {
-	
+
 		$callback = $this->rangeCallback['toPosition'];
-		
+
 		list($min, $max) = $this->range;
 		$position = $callback($value, $min, $max);
-		
+
 		return $this->getPointFromPosition($position);
-		
+
 	}
-	
+
 	/**
 	 * Get a point on the axis from a position
 	 *
@@ -575,84 +577,95 @@ class awAxis {
 	 * @return Point
 	 */
 	protected function getPointFromPosition($position) {
-		
+
 		$vector = $this->getVector();
-		
+
 		$angle = $vector->getAngle();
 		$size = $vector->getSize();
-		
+
 		return $vector->p1->move(
 			cos($angle) * $size * $position,
 			-1 * sin($angle) * $size * $position
 		);
-		
+
 	}
-	
+
 	/**
 	 * Draw axis
 	 *
-	 * @param awDrawer $drawer A drawer
+	 * @param awDriver $driver A driver
 	 */
-	public function draw(awDrawer $drawer) {
-	
+	public function draw(awDriver $driver) {
+
 		if($this->hide) {
 			return;
 		}
-	
+
 		$vector = $this->getVector();
-		
+
 		// Draw axis ticks
-		$this->drawTicks($drawer, $vector);
-	
+		$this->drawTicks($driver, $vector);
+
 		// Draw axis line
-		$this->line($drawer);
-		
+		$this->line($driver);
+
 		// Draw labels
-		$this->drawLabels($drawer);
-		
+		$this->drawLabels($driver);
+
 		// Draw axis title
 		$p = $this->getPointFromPosition($this->titlePosition);
-		$this->title->draw($drawer, $p);
-	
+		$this->title->draw($driver, $p);
+
 	}
-	
+
 	public function autoScale() {
-	
+
 		if($this->isAuto() === FALSE) {
 			return;
 		}
-	
+
 		list($min, $max) = $this->getRange();
 		$interval = $max - $min;
-		
-		$partMax = $max / $interval;
-		$partMin = $min / $interval;
-		
+
+		if($interval > 0) {
+			$partMax = $max / $interval;
+			$partMin = $min / $interval;
+		} else {
+			$partMax = 0;
+			$partMin = 0;
+		}
+
 		$difference = log($interval) / log(10);
 		$difference = floor($difference);
-		
+
 		$pow = pow(10, $difference);
-		
-		$intervalNormalize = $interval / $pow;
-		
+
+		if($pow > 0) {
+			$intervalNormalize = $interval / $pow;
+		} else {
+			$intervalNormalize = 0;
+		}
+
 		if($difference <= 0) {
-		
+
 			$precision = $difference * -1 + 1;
-		
+
 			if($intervalNormalize > 2) {
 				$precision--;
 			}
-			
+
 		} else {
 			$precision = 0;
 		}
-		
+
 		if($min != 0 and $max != 0) {
 			$precision++;
 		}
-		
-		$this->setLabelPrecision($precision);
-		
+
+		if($this->label->getCallbackFunction() === NULL) {
+			$this->setLabelPrecision($precision);
+		}
+
 		if($intervalNormalize <= 1.5) {
 			$intervalReal = 1.5;
 			$labelNumber = 4;
@@ -675,47 +688,47 @@ class awAxis {
 			$intervalReal = 10;
 			$labelNumber = 6;
 		}
-		
+
 		if($min == 0) {
-		
+
 			$this->setRange(
 				$min,
 				$intervalReal * $pow
 			);
-			
+
 		} else if($max == 0) {
-		
+
 			$this->setRange(
 				$intervalReal * $pow * -1,
 				0
 			);
-			
+
 		}
-		
+
 		$this->setLabelNumber($labelNumber);
-	
+
 	}
-	
-	protected function line(awDrawer $drawer) {
-		
-		$drawer->line(
+
+	protected function line(awDriver $driver) {
+
+		$driver->line(
 			$this->color,
 			$this->line
 		);
-		
+
 	}
-	
-	protected function drawTicks(awDrawer $drawer, awVector $vector) {
-		
+
+	protected function drawTicks(awDriver $driver, awVector $vector) {
+
 		foreach($this->ticks as $tick) {
 			$tick->setColor($this->color);
-			$tick->draw($drawer, $vector);
+			$tick->draw($driver, $vector);
 		}
-		
+
 	}
-	
-	protected function drawLabels($drawer) {
-		
+
+	protected function drawLabels($driver) {
+
 		if($this->labelNumber !== NULL) {
 			list($min, $max) = $this->range;
 			$number = $this->labelNumber - 1;
@@ -729,22 +742,22 @@ class awAxis {
 			}
 			$this->label->set($labels);
 		}
-		
+
 		$labels = $this->label->count();
-		
+
 		for($i = 0; $i < $labels; $i++) {
-		
+
 			$p = $this->getPointFromValue($this->label->get($i));
-			$this->label->draw($drawer, $p, $i);
-		
+			$this->label->draw($driver, $p, $i);
+
 		}
-		
+
 	}
-	
+
 	protected function getVector() {
-	
+
 		$angle = $this->line->getAngle();
-		
+
 		// Compute paddings
 		$vector = new awVector(
 			$this->line->p1->move(
@@ -756,21 +769,21 @@ class awAxis {
 				-1 * -1 * sin($angle) * $this->padding->right
 			)
 		);
-		
+
 		return $vector;
-		
+
 	}
-	
+
 	public function __clone() {
-	
+
 		$this->label = clone $this->label;
 		$this->line = clone $this->line;
 		$this->title = clone $this->title;
-		
+
 		foreach($this->ticks as $name => $tick) {
 			$this->ticks[$name] = clone $tick;
 		}
-	
+
 	}
 
 }

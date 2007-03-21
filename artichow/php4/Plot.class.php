@@ -125,7 +125,7 @@ define("PLOT_BOTH", 'both');
 	
 	
 	/**
-	 * RIGHT axis
+	 * Right axis
 	 *
 	 * @var int
 	 */
@@ -424,7 +424,7 @@ define("PLOT_BOTH", 'both');
 		}
 	}
 	
-	 function init($drawer) {
+	 function init($driver) {
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -475,12 +475,14 @@ define("PLOT_BOTH", 'both');
 		
 		// Set axis labels
 		$labels = array();
-		for($i = 0, $count = $this->getXAxisNumber(); $i < $count; $i++) {
+		
+		list($xMin, $xMax) = $this->xAxis->getRange();
+		for($i = $xMin; $i <= $xMax; $i++) {
 			$labels[] = $i;
 		}
 		$this->xAxis->label->set($labels);
 	
-		parent::init($drawer);
+		parent::init($driver);
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -491,11 +493,11 @@ define("PLOT_BOTH", 'both');
 	
 		// Draw the grid
 		$this->grid->setSpace($leftSpace, $rightSpace, 0, 0);
-		$this->grid->draw($drawer, $x1, $y1, $x2, $y2);
+		$this->grid->draw($driver, $x1, $y1, $x2, $y2);
 		
 	}
 	
-	 function drawEnvelope($drawer) {
+	 function drawEnvelope($driver) {
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -514,7 +516,7 @@ define("PLOT_BOTH", 'both');
 			$top->label->setAlign(NULL, LABEL_TOP);
 			$top->label->move(0, -3);
 			$top->title->move(0, -25);
-			$top->draw($drawer);
+			$top->draw($driver);
 		}
 		
 		// Draw bottom axis
@@ -527,7 +529,7 @@ define("PLOT_BOTH", 'both');
 			$bottom->label->move(0, 3);
 			$bottom->reverseTickStyle();
 			$bottom->title->move(0, 25);
-			$bottom->draw($drawer);
+			$bottom->draw($driver);
 		}
 		
 		// Draw left axis
@@ -539,7 +541,7 @@ define("PLOT_BOTH", 'both');
 			$left->label->setAlign(LABEL_RIGHT);
 			$left->label->move(-6, 0);
 			$left->title->move(-25, 0);
-			$left->draw($drawer);
+			$left->draw($driver);
 		}
 		
 		// Draw right axis
@@ -552,7 +554,7 @@ define("PLOT_BOTH", 'both');
 			$right->label->move(6, 0);
 			$right->reverseTickStyle();
 			$right->title->move(25, 0);
-			$right->draw($drawer);
+			$right->draw($driver);
 		}
 	
 	}
@@ -635,7 +637,7 @@ define("PLOT_BOTH", 'both');
 			// Update axis with the new awvalues
 			$this->updateAxis();
 		} else {
-			trigger_error("Plots must have the same number of X and Y points", E_USER_ERROR);
+			awImage::drawError("Class Plot: Plots must have the same number of X and Y points.");
 		}
 		
 	}
@@ -685,17 +687,17 @@ define("PLOT_BOTH", 'both');
 	 function checkArray(&$array) {
 	
 		if(is_array($array) === FALSE) {
-			trigger_error("You tried to set a value that is not an array", E_USER_ERROR);
+			awImage::drawError("Class Plot: You tried to set a value that is not an array.");
 		}
 		
 		foreach($array as $key => $value) {
 			if(is_numeric($value) === FALSE and is_null($value) === FALSE) {
-				trigger_error("Expected numeric values for the plot", E_USER_ERROR);
+				awImage::drawError("Class Plot: Expected numeric values for the plot.");
 			}
 		}
 		
 		if(count($array) < 1) {
-			trigger_error("Your plot must have at least 1 value", E_USER_ERROR);
+			awImage::drawError("Class Plot: Your plot must have at least 1 value.");
 		}
 	
 	}
@@ -1085,11 +1087,16 @@ class awPlotGroup extends awComponentGroup {
 			}
 			
 			if($test) {
+				
+				$auto = $component->yAxis->isAuto();
+				$this->axis->{$axis}->auto($auto);
+				
 				if($value === NULL) {
 					$value = $component->$get();
 				} else {
 					$value = $type($value, $component->$get());
 				}
+				
 			}
 			
 		}
@@ -1098,7 +1105,7 @@ class awPlotGroup extends awComponentGroup {
 	
 	}
 	
-	 function init($drawer) {
+	 function init($driver) {
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -1157,7 +1164,9 @@ class awPlotGroup extends awComponentGroup {
 				);
 		
 				// Auto-scaling mode
-				$this->axis->{$axis}->autoScale();
+				if($this->axis->{$axis}->isAuto()) {
+					$this->axis->{$axis}->autoScale();
+				}
 				
 			}
 			
@@ -1237,7 +1246,7 @@ class awPlotGroup extends awComponentGroup {
 			$this->axis->right->setXCenter($axis, 1);
 		}
 		
-		parent::init($drawer);
+		parent::init($driver);
 		
 		list($leftSpace, $rightSpace, $topSpace, $bottomSpace) = $this->getSpace($x2 - $x1, $y2 - $y1);
 		
@@ -1246,11 +1255,11 @@ class awPlotGroup extends awComponentGroup {
 	
 		// Draw the grid
 		$this->grid->setSpace($leftSpace, $rightSpace, 0, 0);
-		$this->grid->draw($drawer, $x1, $y1, $x2, $y2);
+		$this->grid->draw($driver, $x1, $y1, $x2, $y2);
 		
 	}
 	
-	 function drawComponent($drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	 function drawComponent($driver, $x1, $y1, $x2, $y2, $aliasing) {
 		
 		$xMin = $this->getXMin();
 		$xMax = $this->getXMax();
@@ -1289,7 +1298,7 @@ class awPlotGroup extends awComponentGroup {
 			$component->xAxis->setRange($xMin, $xMax);
 		
 			$component->drawComponent(
-				$drawer,
+				$driver,
 				$x1, $y1,
 				$x2, $y2,
 				$aliasing
@@ -1302,7 +1311,7 @@ class awPlotGroup extends awComponentGroup {
 		
 	}
 	
-	 function drawEnvelope($drawer) {
+	 function drawEnvelope($driver) {
 		
 		list($x1, $y1, $x2, $y2) = $this->getPosition();
 		
@@ -1318,28 +1327,28 @@ class awPlotGroup extends awComponentGroup {
 		if($this->xAxisZero === FALSE) {
 			$top->line->setY($y1, $y1);
 		}
-		$top->draw($drawer);
+		$top->draw($driver);
 		
 		// Draw bottom axis
 		$bottom = $this->axis->bottom;
 		if($this->xAxisZero === FALSE) {
 			$bottom->line->setY($y2, $y2);
 		}
-		$bottom->draw($drawer);
+		$bottom->draw($driver);
 		
 		// Draw left axis
 		$left = $this->axis->left;
 		if($this->yAxisZero === FALSE) {
 			$left->line->setX($x1, $x1);
 		}
-		$left->draw($drawer);
+		$left->draw($driver);
 		
 		// Draw right axis
 		$right = $this->axis->right;
 		if($this->yAxisZero === FALSE) {
 			$right->line->setX($x2, $x2);
 		}
-		$right->draw($drawer);
+		$right->draw($driver);
 	
 	}
 	

@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
 /* <php4> */
 
 define("TICK_IN", 0);
@@ -235,10 +237,10 @@ class awTick {
 	/**
 	 * Draw ticks on a vector
 	 *
-	 * @param $drawer A drawer
+	 * @param $driver A driver
 	 * @param &$vector A vector
 	 */
-	 function draw($drawer, &$vector) {
+	 function draw($driver, &$vector) {
 		
 		if($this->numberByTick !== NULL) {
 			list($tick, $number) = $this->numberByTick;
@@ -255,29 +257,29 @@ class awTick {
 		switch($this->style) {
 		
 			case TICK_IN :
-				$this->drawTicks($drawer, $vector, NULL, $angle + M_PI / 2);
+				$this->drawTicks($driver, $vector, NULL, $angle + M_PI / 2);
 				break;
 		
 			case TICK_OUT :
-				$this->drawTicks($drawer, $vector, $angle + 3 * M_PI / 2, NULL);
+				$this->drawTicks($driver, $vector, $angle + 3 * M_PI / 2, NULL);
 				break;
 		
 			default :
-				$this->drawTicks($drawer, $vector, $angle + M_PI / 2, $angle + 3 * M_PI / 2);
+				$this->drawTicks($driver, $vector, $angle + M_PI / 2, $angle + 3 * M_PI / 2);
 				break;
 		
 		}
 	
 	}
 	
-	 function drawTicks($drawer, &$vector, $from, $to) {
+	 function drawTicks($driver, &$vector, $from, $to) {
 	
 		// Draw last tick
 		if($this->hideLast === FALSE) {
 		
 			//echo '<b>';
 			if(($this->number - 1) % $this->interval === 0) {
-				$this->drawTick($drawer, $vector->p2, $from, $to);
+				$this->drawTick($driver, $vector->p2, $from, $to);
 			}
 			//echo '</b>';
 			
@@ -302,7 +304,7 @@ class awTick {
 					round($i * cos($vector->getAngle()), 6),
 					round($i * sin($vector->getAngle() * -1), 6)
 				);
-				$this->drawTick($drawer, $p, $from, $to);
+				$this->drawTick($driver, $p, $from, $to);
 			}
 			
 			$position++;
@@ -311,7 +313,7 @@ class awTick {
 		//echo '<br><br>';
 	}
 	
-	 function drawTick($drawer, $p, $from, $to) {
+	 function drawTick($driver, $p, $from, $to) {
 //	echo $this->size.':'.$angle.'|<b>'.cos($angle).'</b>/';
 		// The round avoid some errors in the calcul
 		// For example, 12.00000008575245 becomes 12
@@ -336,7 +338,7 @@ class awTick {
 			$p1, $p2
 		);
 		
-		$drawer->line(
+		$driver->line(
 			$this->color,
 			$vector
 		);

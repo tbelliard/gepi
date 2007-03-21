@@ -7,6 +7,7 @@
  *
  */
 
+require_once dirname(__FILE__)."/../Graph.class.php";
  
 /* <php4> */
 
@@ -420,7 +421,7 @@ class awLegend implements awPositionable {
 		return count($this->legends);
 	}
 	
-	public function draw(awDrawer $drawer) {
+	public function draw(awDriver $driver) {
 		
 		if($this->hide) {
 			return;
@@ -445,9 +446,9 @@ class awLegend implements awPositionable {
 				$this->textColor,
 				0
 			);
-			$font = $text->getFont();
-			$widths[$i] = $font->getTextWidth($text) + $this->textMargin->left + $this->textMargin->right;
-			$heights[$i] = $font->getTextHeight($text);
+//			$font = $text->getFont();
+			$widths[$i] = $driver->getTextWidth($text) + $this->textMargin->left + $this->textMargin->right;
+			$heights[$i] = $driver->getTextHeight($text);
 			$texts[$i] = $text;
 		}
 		
@@ -486,7 +487,7 @@ class awLegend implements awPositionable {
 		$height = ($heightMax + $this->space) * $rows - $this->space + $this->padding[2] + $this->padding[3];
 		
 		// Look for legends position
-		list($x, $y) = $drawer->getSize();
+		list($x, $y) = $driver->getSize();
 		
 		$p = new awPoint(
 			$this->position->x * $x,
@@ -519,14 +520,14 @@ class awLegend implements awPositionable {
 		
 		// Draw legend shadow
 		$this->shadow->draw(
-			$drawer,
+			$driver,
 			$p,
 			$p->move($width, $height),
 			awShadow::OUT
 		);
 		
 		// Draw legends base
-		$this->drawBase($drawer, $p, $width, $height);
+		$this->drawBase($driver, $p, $width, $height);
 		
 		// Draw each legend
 		for($i = 0; $i < $count; $i++) {
@@ -543,7 +544,7 @@ class awLegend implements awPositionable {
 			}
 			
 			// Draw legend text
-			$drawer->string(
+			$driver->string(
 				$texts[$i],
 				$p->move(
 					$this->padding[0] + $previousColumns + 10 + 5 + $this->textMargin->left,
@@ -569,7 +570,7 @@ class awLegend implements awPositionable {
 				
 						if($color instanceof awColor and $type !== awLegend::MARKONLY) {
 						
-							$drawer->line(
+							$driver->line(
 								$color,
 								new awLine(
 									$p->move(
@@ -585,7 +586,6 @@ class awLegend implements awPositionable {
 								)
 							);
 						
-							$color->free();
 							unset($color);
 							
 						}
@@ -598,7 +598,7 @@ class awLegend implements awPositionable {
 					
 						if($mark !== NULL) {
 							$mark->draw(
-								$drawer,
+								$driver,
 								$p->move(
 									$x + 5.5,
 									$y + $component->getLegendLineThickness() / 2
@@ -632,14 +632,14 @@ class awLegend implements awPositionable {
 					
 					if($background !== NULL) {
 				
-						$drawer->filledRectangle(
+						$driver->filledRectangle(
 							$component->getLegendBackground(),
 							new awLine($from, $to)
 						);
 			
 						// Draw rectangle border
 						$this->border->rectangle(
-							$drawer,
+							$driver,
 							$from->move(0, 0),
 							$to->move(0, 0)
 						);
@@ -656,17 +656,17 @@ class awLegend implements awPositionable {
 	
 	}
 	
-	private function drawBase(awDrawer $drawer, awPoint $p, $width, $height) {
+	private function drawBase(awDriver $driver, awPoint $p, $width, $height) {
 
 		$this->border->rectangle(
-			$drawer,
+			$driver,
 			$p,
 			$p->move($width, $height)
 		);
 		
 		$size = $this->border->visible() ? 1 : 0;
 		
-		$drawer->filledRectangle(
+		$driver->filledRectangle(
 			$this->background,
 			new awLine(
 				$p->move($size, $size),

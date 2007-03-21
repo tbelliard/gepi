@@ -42,7 +42,7 @@ class BarDepthPattern extends Pattern {
 		$colorBackground = $this->getArg('colorBackground', new Orange(25));
 		
 		if($yForeground === NULL) {
-			trigger_error("Argument 'yForeground' must not be NULL", E_USER_ERROR);
+			awImage::drawError("Class BarDepthPattern: Argument 'yForeground' must not be NULL.");
 		}
 		
 		// Background

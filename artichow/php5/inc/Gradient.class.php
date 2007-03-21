@@ -7,6 +7,8 @@
  *
  */
 
+ 
+require_once dirname(__FILE__)."/../Graph.class.php";
 
 
 /**
@@ -36,27 +38,11 @@ abstract class awGradient {
 	 * @param awColor $from From color
 	 * @param awColor $to To color
 	 */
-	public function __construct($from, $to) {
+	public function __construct(awColor $from, awColor $to) {
 	
 		$this->from = $from;
 		$this->to = $to;
 	
-	}
-	
-	/**
-	 * Free memory used by the colors of the gradient
-	 */
-	public function free() {
-	
-		$this->from->free();
-		$this->to->free();
-		
-	}
-	
-	public function __destruct( ){
-	
-		$this->free();
-		
 	}
 
 }
@@ -91,7 +77,7 @@ class awLinearGradient extends awGradient {
 			$from, $to
 		);
 		
-		$this->angle = $angle;
+		$this->angle = (int)$angle;
 	
 	}
 
@@ -110,7 +96,7 @@ class awBilinearGradient extends awLinearGradient {
 	/**
 	 * Gradient center
 	 *
-	 * @var int Center between 0 and 1
+	 * @var float Center between 0 and 1
 	 */
 	public $center;
 	
@@ -128,7 +114,7 @@ class awBilinearGradient extends awLinearGradient {
 			$from, $to, $angle
 		);
 		
-		$this->center = $center;
+		$this->center = (float)$center;
 	
 	}
 

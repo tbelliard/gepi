@@ -230,8 +230,21 @@ class awPie extends awComponent {
 	 *
 	 * @param $color A color for the border
 	 */
-	 function setBorder($color) {
+	 function setBorderColor($color) {
 		$this->border = $color;
+	}
+	
+	/**
+	 * Set a border all around the pie
+	 *
+	 * @param $color A color for the border
+	 */
+	 function setBorder($color) {
+		if(ARTICHOW_DEPRECATED === TRUE) {
+			awImage::drawError('Class Pie: Method setBorder() has been deprecated since Artichow 1.0.9. Please use setBorderColor() instead.');
+		} else {
+			$this->setBorderColor($color);
+		}
 	}
 	
 	/**
@@ -297,11 +310,11 @@ class awPie extends awComponent {
 		$this->explode = (array)$explode;
 	}
 	
-	 function drawEnvelope($drawer) {
+	 function drawEnvelope($driver) {
 	
 	}
 	
-	 function drawComponent($drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	 function drawComponent($driver, $x1, $y1, $x2, $y2, $aliasing) {
 		
 		$count = count($this->values);
 		$sum = array_sum($this->values);
@@ -380,7 +393,7 @@ class awPie extends awComponent {
 		
 		if($aliasing) {
 		
-			$mainDrawer = $drawer;
+			$mainDriver = $driver;
 			
 			$x *= 2;
 			$y *= 2;
@@ -390,12 +403,23 @@ class awPie extends awComponent {
 			
 			$image = new awImage;
 			$image->border->hide();
+			
+			// Adds support for antialiased pies on non-white background
+			$background = $this->getBackground();
+			
+			if(is_a($background, 'awColor')) {
+				$image->setBackgroundColor($background);
+			}
+//			elseif(is_a($background, 'awGradient')) {
+//				$image->setBackgroundColor(new White(100));
+//			}
+			
 			$image->setSize(
 				$width + $side->left + $side->right,
 				$height + $side->top + $side->bottom + $this->size + 1 /* bugs.php.net ! */
 			);
 			
-			$drawer = $image->getDrawer(
+			$driver = $image->getDriver(
 				$width / $image->width,
 				$height / $image->height,
 				($width / 2 + $side->left) / $image->width,
@@ -414,9 +438,8 @@ class awPie extends awComponent {
 				
 				list($from, $to, $explode) = $value;
 				
-				$drawer->filledArc($color, $explode->move($x, $y + $i), $width, $height, $from, $to);
+				$driver->filledArc($color, $explode->move($x, $y + $i), $width, $height, $from, $to);
 				
-				$color->free();
 				unset($color);
 				
 				if(is_a($this->border, 'awColor')) {
@@ -425,7 +448,7 @@ class awPie extends awComponent {
 					
 					if($i === $this->size) {
 				
-						$drawer->arc($this->border, $point->move(0, $this->size), $width, $height, $from, $to);
+						$driver->arc($this->border, $point->move(0, $this->size), $width, $height, $from, $to);
 						
 					}
 				
@@ -441,12 +464,12 @@ class awPie extends awComponent {
 			
 			list($from, $to, $explode) = $value;
 			
-			$drawer->filledArc($color, $explode->move($x, $y), $width, $height, $from, $to);
+			$driver->filledArc($color, $explode->move($x, $y), $width, $height, $from, $to);
 			
 			if(is_a($this->border, 'awColor')) {
 			
 				$point = $explode->move($x, $y);
-				$drawer->arc($this->border, $point, $width, $height, $from, $to);
+				$driver->arc($this->border, $point, $width, $height, $from, $to);
 			}
 		
 		}
@@ -466,7 +489,7 @@ class awPie extends awComponent {
 				);
 			}
 			
-			$mainDrawer->copyResizeImage(
+			$mainDriver->copyResizeImage(
 				$image,
 				new awPoint($x1 - $side->left / 2, $y1 - $side->top / 2),
 				new awPoint($x1 - $side->left / 2 + $image->width / 2, $y1 - $side->top / 2 + $image->height/ 2),
@@ -475,7 +498,7 @@ class awPie extends awComponent {
 				TRUE
 			);
 			
-			$drawer = $mainDrawer;
+			$driver = $mainDriver;
 		
 		}
 		
@@ -531,7 +554,7 @@ class awPie extends awComponent {
 			}
 			
 			$this->label->draw(
-				$drawer,
+				$driver,
 				$point,
 				$key
 			);
@@ -585,7 +608,7 @@ class awPie extends awComponent {
 	 function checkArray(&$array) {
 	
 		if(is_array($array) === FALSE) {
-			trigger_error("You tried to set values that are not an array");
+			awImage::drawError("Class Pie: You tried to set values that are not an array.");
 		}
 		
 		foreach($array as $key => $value) {
@@ -595,7 +618,7 @@ class awPie extends awComponent {
 		}
 		
 		if(count($array) < 1) {
-			trigger_error("Your graph must have at least 1 value");
+			awImage::drawError("Class Pie: Your graph must have at least 1 value.");
 		}
 	
 	}

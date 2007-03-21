@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
 /**
  * Grid
  *
@@ -186,38 +188,40 @@ class awGrid {
 	 */
 	public function setGrid($xgrid, $ygrid) {
 	
-		$this->xgrid = $xgrid;
-		$this->ygrid = $ygrid;
+		if(empty($this->xgrid)) {
+			$this->xgrid = $xgrid;
+		}
+		if(empty($this->ygrid)) {
+			$this->ygrid = $ygrid;
+		}
 	
 	}
 	
 	/**
 	 * Draw grids
 	 *
-	 * @param awDrawer $drawer A drawer object
+	 * @param awDriver $driver A driver object
 	 * @param int $x1
 	 * @param int $y1
 	 * @param int $x2
 	 * @param int $y2
 	 */
-	public function draw(awDrawer $drawer, $x1, $y1, $x2, $y2) {
+	public function draw(awDriver $driver, $x1, $y1, $x2, $y2) {
 	
 		if($this->background instanceof awColor) {
 		
 			// Draw background color
-			$drawer->filledRectangle(
+			$driver->filledRectangle(
 				$this->background, 
 				awLine::build($x1, $y1, $x2, $y2)
 			);
-		
-			$this->background->free();
 			
 		}
-	
+
 		if($this->hide === FALSE) {
 			
 			$this->drawGrid(
-				$drawer,
+				$driver,
 				$this->color,
 				$this->hideVertical ? array() : $this->xgrid,
 				$this->hideHorizontal ? array() : $this->ygrid,
@@ -229,13 +233,11 @@ class awGrid {
 			);
 			
 		}
-		
-		$this->color->free();
 	
 	}
 	
 	private function drawGrid(
-		awDrawer $drawer, awColor $color,
+		awDriver $driver, awColor $color,
 		$nx, $ny, $x1, $y1, $x2, $y2,
 		$type, $space, $hInterval, $vInterval
 	) {
@@ -250,7 +252,7 @@ class awGrid {
 			if(($key % $vInterval) === 0) {
 		
 				$pos = (int)round($x1 + $left + $n * $width);
-				$drawer->line(
+				$driver->line(
 					$color,
 					new awLine(
 						new awPoint($pos, $y1),
@@ -268,7 +270,7 @@ class awGrid {
 			if(($key % $hInterval) === 0) {
 		
 				$pos = (int)round($y1 + $top + $n * $height);
-				$drawer->line(
+				$driver->line(
 					$color,
 					new awLine(
 						new awPoint($x1, $pos),

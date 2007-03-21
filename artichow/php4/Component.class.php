@@ -48,11 +48,11 @@ registerClass('ComponentGroup', TRUE);
  class awComponent {
 
 	/**
-	 * Component drawer
+	 * Component driver
 	 *
-	 * @var Drawer
+	 * @var Driver
 	 */
-	var $drawer;
+	var $driver;
 
 	/**
 	 * Component width
@@ -293,8 +293,8 @@ registerClass('ComponentGroup', TRUE);
 	/**
 	 * Set the center of the component
 	 *
-	 * @param int $x Position on X axis of the center of the component
-	 * @param int $y Position on Y axis of the center of the component
+	 * @param int $x Position X of the center of the component
+	 * @param int $y Position Y of the center of the component
 	 */
 	 function setCenter($x, $y) {
 	
@@ -323,7 +323,7 @@ registerClass('ComponentGroup', TRUE);
 	/**
 	 * Init the drawing of the component
 	 */
-	 function init($drawer) {
+	 function init($driver) {
 
 		// Set component background
 		$background = $this->getBackground();
@@ -335,7 +335,7 @@ registerClass('ComponentGroup', TRUE);
 			
 			if(is_a($background, 'awImage')) {
 	
-				$drawer->copyImage(
+				$driver->copyImage(
 					$background,
 					$p1,
 					$p2
@@ -343,7 +343,7 @@ registerClass('ComponentGroup', TRUE);
 				
 			} else {
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$background,
 					new awLine($p1, $p2)
 				);
@@ -356,24 +356,24 @@ registerClass('ComponentGroup', TRUE);
 	/**
 	 * Finalize the drawing of the component
 	 */
-	 function finalize($drawer) {
+	 function finalize($driver) {
 		
 		// Draw component title
 		$point = new awPoint(
 			$this->w / 2,
 			$this->padding->top - 8
 		);
-		$this->title->draw($drawer, $point);
+		$this->title->draw($driver, $point);
 		
 		// Draw legend
-		$this->legend->draw($drawer);
+		$this->legend->draw($driver);
 		
 	}
 	
 	/**
 	 * Draw the grid around your component
 	 *
-	 * @param Drawer A drawer
+	 * @param Driver A driver
 	 * @return array Coords for the component
 	 */
 	  
@@ -382,7 +382,7 @@ registerClass('ComponentGroup', TRUE);
 	 * Draw the component on the graph
 	 * Component should be drawed into specified coords
 	 *
-	 * @param Drawer A drawer
+	 * @param Driver A driver
 	 * @param int $x1
 	 * @param int $y1
 	 * @param int $x2

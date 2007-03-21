@@ -7,6 +7,13 @@
  *
  */
  
+/* <php5> */
+if(is_file(dirname(__FILE__)."/Artichow.cfg.php")) { // For PHP 4+5 version
+	require_once dirname(__FILE__)."/Artichow.cfg.php";
+}
+/* </php5> */
+
+
 /* <php4> */
 
 define("IMAGE_JPEG", 1);
@@ -16,14 +23,64 @@ define("IMAGE_GIF", 3);
 /* </php4> */
 
 /*
- * Check for GD2
+ * Register a class with the prefix in configuration file
  */
-if(function_exists('imagecreatetruecolor') === FALSE) {
-	trigger_error("You must compile PHP with GD2 support to use Artichow", E_USER_ERROR);
+function registerClass($class, $abstract = FALSE) {
+
+	if(ARTICHOW_PREFIX === 'aw') {
+		return;
+	}
+	
+	/* <php5> */
+	if($abstract) {
+		$abstract = 'abstract';
+	} else {
+		$abstract = '';
+	}
+	/* </php5> */
+	/* <php4> --
+	$abstract = '';
+	-- </php4> */
+
+	eval($abstract." class ".ARTICHOW_PREFIX.$class." extends aw".$class." { }");
+
 }
 
+/*
+ * Register an interface with the prefix in configuration file
+ */
+function registerInterface($interface) {
+
+	if(ARTICHOW_PREFIX === 'aw') {
+		return;
+	}
+
+	/* <php5> */
+	eval("interface ".ARTICHOW_PREFIX.$interface." extends aw".$interface." { }");
+	/* </php5> */
+
+}
+
+// Some useful files
+require_once ARTICHOW."/Component.class.php";
+
+require_once ARTICHOW."/inc/Grid.class.php";
+require_once ARTICHOW."/inc/Tools.class.php";
+require_once ARTICHOW."/inc/Driver.class.php";
+require_once ARTICHOW."/inc/Math.class.php";
+require_once ARTICHOW."/inc/Tick.class.php";
+require_once ARTICHOW."/inc/Axis.class.php";
+require_once ARTICHOW."/inc/Legend.class.php";
+require_once ARTICHOW."/inc/Mark.class.php";
+require_once ARTICHOW."/inc/Label.class.php";
+require_once ARTICHOW."/inc/Text.class.php";
+require_once ARTICHOW."/inc/Color.class.php";
+require_once ARTICHOW."/inc/Font.class.php";
+require_once ARTICHOW."/inc/Gradient.class.php";
 require_once ARTICHOW."/inc/Shadow.class.php";
 require_once ARTICHOW."/inc/Border.class.php";
+
+require_once ARTICHOW."/common.php";
  
 /**
  * An image for a graph
@@ -75,12 +132,19 @@ class awImage {
 	protected $resource;
 	
 	/**
-	 * Image drawer
+	 * A Driver object
 	 *
-	 * @var Drawer
+	 * @var Driver
 	 */
-	protected $drawer;
+	protected $driver;
 	
+	/**
+	 * Driver string
+	 * 
+	 * @var string
+	 */
+	protected $driverString;
+		
 	/**
 	 * Shadow
 	 *
@@ -128,19 +192,30 @@ class awImage {
 	}
 	
 	/**
-	 * Get drawer of the image
+	 * Get driver of the image
 	 *
-	 * @param int $w Drawer width (from 0 to 1) (default to 1)
-	 * @param int $h Drawer height (from 0 to 1) (default to 1)
-	 * @param float $x Position on X axis of the center of the drawer (default to 0.5)
-	 * @param float $y Position on Y axis of the center of the drawer (default to 0.5)
-	 * @return Drawer
+	 * @param int $w Driver width (from 0 to 1) (default to 1)
+	 * @param int $h Driver height (from 0 to 1) (default to 1)
+	 * @param float $x Position on X axis of the center of the driver (default to 0.5)
+	 * @param float $y Position on Y axis of the center of the driver (default to 0.5)
+	 * @return Driver
 	 */
-	public function getDrawer($w = 1, $h = 1, $x = 0.5, $y = 0.5) {
+	public function getDriver($w = 1, $h = 1, $x = 0.5, $y = 0.5) {
 		$this->create();
-		$this->drawer->setSize($w, $h);
-		$this->drawer->setPosition($x, $y);
-		return $this->drawer;
+		$this->driver->setSize($w, $h);
+		$this->driver->setPosition($x, $y);
+		return $this->driver;
+	}
+	
+	/**
+	 * Sets the driver that will be used to draw the graph
+	 * 
+	 * @param string $driverString
+	 */
+	public function setDriver($driverString) {
+		$this->driver = $this->selectDriver($driverString);
+		
+		$this->driver->init($this);
 	}
 	
 	/**
@@ -158,6 +233,19 @@ class awImage {
 			$this->height = (int)$height;
 		}
 	
+	}
+	
+	/**
+	 * Change image background
+	 * 
+	 * @param mixed $background
+	 */
+	public function setBackground($background) {
+		if($background instanceof awColor) {
+			$this->setBackgroundColor($background);
+		} elseif($background instanceof awGradient) {
+			$this->setBackgroundGradient($background);
+		}
 	}
 	
 	/**
@@ -179,12 +267,30 @@ class awImage {
 	}
 	
 	/**
-	 * Can we use anti-aliasing ?
+	 * Return image background, whether a Color or a Gradient
+	 * 
+	 * @return mixed
+	 */
+	public function getBackground() {
+		return $this->background;
+	}
+	
+	/**
+	 * Turn antialiasing on or off
 	 *
 	 * @var bool $bool
 	 */
 	public function setAntiAliasing($bool) {
 		$this->antiAliasing = (bool)$bool;
+	}
+	
+	/**
+	 * Return the antialiasing setting
+	 *
+	 * @return bool
+	 */
+	public function getAntiAliasing() {
+		return $this->antiAliasing;
 	}
 	
 	/**
@@ -199,51 +305,75 @@ class awImage {
 	}
 	
 	/**
+	 * Returns the image format as an integer
+	 *
+	 * @return unknown
+	 */
+	public function getFormat() {
+		return $this->format;
+	}
+	
+	/**
+	 * Returns the image format as a string
+	 *
+	 * @return string
+	 */
+	public function getFormatString() {
+		
+		switch($this->format) {
+			case awImage::JPEG :
+				return 'jpeg';
+			case awImage::PNG :
+				return 'png';
+			case awImage::GIF :
+				return 'gif';
+		}
+		
+	}
+
+	/**
 	 * Create a new awimage
 	 */
 	public function create() {
-	
-		if($this->resource === NULL) {
-	
-			// Create image
+
+		if($this->driver === NULL) {
+			$driver = $this->selectDriver($this->driverString);
+
+			$driver->init($this);
 			
-			$this->resource = imagecreatetruecolor($this->width, $this->height);
-			if(!$this->resource) {
-				trigger_error("Unable to create a graph", E_USER_ERROR);
-			}
-			
-			imagealphablending($this->resource, TRUE);
-			
-			if($this->antiAliasing and function_exists('imageantialias')) {
-				imageantialias($this->resource, TRUE);
-			}
-			
-			$this->drawer = new awDrawer($this->resource);
-			$this->drawer->setImageSize($this->width, $this->height);
-			
-			// Original color
-			$this->drawer->filledRectangle(
-				new awWhite,
-				new awLine(
-					new awPoint(0, 0),
-					new awPoint($this->width, $this->height)
-				)
-			);
-		
-			$shadow = $this->shadow->getSpace();
-			
-			$p1 = new awPoint($shadow->left, $shadow->top);
-			$p2 = new awPoint($this->width - $shadow->right - 1, $this->height - $shadow->bottom - 1);
-		
-			// Draw image background
-			$this->drawer->filledRectangle($this->background, new awLine($p1, $p2));
-			$this->background->free();
-			
-			// Draw image border
-			$this->border->rectangle($this->drawer, $p1, $p2);
-			
+			$this->driver = $driver;
 		}
-		
+
+	}
+	
+	/**
+	 * Select the correct driver
+	 *
+	 * @param string $driver The desired driver
+	 * @return mixed
+	 */
+	protected function selectDriver($driver) {
+		$drivers = array('gd');
+		$driver = strtolower((string)$driver);
+
+		if(in_array($driver, $drivers, TRUE)) {
+			$string = $driver;
+		} else {
+			$string = ARTICHOW_DRIVER;
+		}
+
+		switch ($string) {
+				case 'gd':
+					require_once ARTICHOW.'/inc/drivers/gd.class.php';
+					$this->driverString = $string;
+					return new awGDDriver();
+					
+				default:
+					// We should never get here, unless the wrong string is used AND the ARTICHOW_DRIVER
+					// global has been messed with.
+					awImage::drawError('Class Image: Unknown driver type (\''.$string.'\')');
+					break;
+			}
 	}
 	
 	/**
@@ -256,8 +386,8 @@ class awImage {
 		$shadow = $this->shadow->getSpace(); // Image shadow
 		$border = $this->border->visible() ? 1 : 0; // Image border size
 	
-		$drawer = clone $this->drawer;
-		$drawer->setImageSize(
+		$driver = clone $this->driver;
+		$driver->setImageSize(
 			$this->width - $shadow->left - $shadow->right - $border * 2,
 			$this->height - $shadow->top - $shadow->bottom - $border * 2
 		);
@@ -265,45 +395,45 @@ class awImage {
 		// No absolute size specified
 		if($component->w === NULL and $component->h === NULL) {
 		
-			list($width, $height) = $drawer->setSize($component->width, $component->height);
+			list($width, $height) = $driver->setSize($component->width, $component->height);
 	
 			// Set component size in pixels
 			$component->setAbsSize($width, $height);
 			
 		} else {
 		
-			$drawer->setAbsSize($component->w, $component->h);
+			$driver->setAbsSize($component->w, $component->h);
 		
 		}
 		
 		if($component->top !== NULL and $component->left !== NULL) {
-			$drawer->setAbsPosition(
+			$driver->setAbsPosition(
 				$border + $shadow->left + $component->left,
 				$border + $shadow->top + $component->top
 			);
 		} else {
-			$drawer->setPosition($component->x, $component->y);
+			$driver->setPosition($component->x, $component->y);
 		}
 		
-		$drawer->movePosition($border + $shadow->left, $border + $shadow->top);
+		$driver->movePosition($border + $shadow->left, $border + $shadow->top);
 		
 		list($x1, $y1, $x2, $y2) = $component->getPosition();
 		
-		$component->init($drawer);
+		$component->init($driver);
 		
-		$component->drawComponent($drawer, $x1, $y1, $x2, $y2, $this->antiAliasing);
-		$component->drawEnvelope($drawer, $x1, $y1, $x2, $y2);
+		$component->drawComponent($driver, $x1, $y1, $x2, $y2, $this->antiAliasing);
+		$component->drawEnvelope($driver, $x1, $y1, $x2, $y2);
 		
-		$component->finalize($drawer);
+		$component->finalize($driver);
 	
 	}
 	
 	protected function drawShadow() {
 	
-		$drawer = $this->getDrawer();
+		$driver = $this->getDriver();
 		
 		$this->shadow->draw(
-			$drawer,
+			$driver,
 			new awPoint(0, 0),
 			new awPoint($this->width, $this->height),
 			awShadow::IN
@@ -314,63 +444,145 @@ class awImage {
 	/**
 	 * Send the image into a file or to the user browser
 	 *
-	 * @var string $file Save image into a file if you provide a file name
 	 */
-	public function send($file = NULL) {
+	public function send() {
+		$this->driver->send($this);
+	}
 	
-		// Test if format is available
-		if((imagetypes() & $this->format) === FALSE) {
-			trigger_error("Format '".$this->format."' is not available on your system. Check that your PHP has been compiled with the good libraries.");
-		}
+	/**
+	 * Return the image content as binary data
+	 *
+	 */	
+	public function get() {
+		return $this->driver->get($this);
+	}
 	
-		// Get some infos about this image
-		
-		switch($this->format) {
-			case awImage::JPEG :
-				$function = 'imagejpeg';
-				break;
-			case awImage::PNG :
-				$function = 'imagepng';
-				break;
-			case awImage::GIF :
-				$function = 'imagegif';
-				break;
-		}
-		
-		// Create image
-		
-		if($file !== NULL) {
-		
-			$function($this->resource, $file);
+	/**
+	 * Send the correct HTTP header according to the image type
+	 *
+	 */
+	public function sendHeaders() {
+
+		if(headers_sent() === FALSE) {
 			
-		} else {
-	
-			// Test some text has been printed
-			$data = ob_get_contents();
-			if($data !== '') {
-				exit;
+			switch ($this->driverString) {
+				case 'gd' :
+					header('Content-type: image/'.$this->getFormatString());
+					break;
+				
 			}
-	
-			// Send headers to the browser
-			header("Content-type: image/".$this->getFormat());
-			
-			$function($this->resource);
-			
+
 		}
 	
 	}
 	
-	protected function getFormat() {
-		
-		switch($this->format) {
-			case awImage::JPEG :
-				return 'jpeg';
-			case awImage::PNG :
-				return 'png';
-			case awImage::GIF :
-				return 'gif';
+	/* <php5> */
+	private static $errorWriting = FALSE;
+	/* </php5> */
+
+	/*
+	 * Display an error image and exit
+	 *
+	 * @param string $message Error message
+	 */
+	public static function drawError($message) {
+	
+		/* <php4> -- 
+		static $errorWriting;
+		-- </php4> */
+	
+		if(self::$errorWriting) {
+			return;
 		}
+	
+		self::$errorWriting = TRUE;
+	
+		$message = wordwrap($message, 40, "\n", TRUE);
 		
+		$width = 400;
+		$height = max(100, 40 + 22.5 * (substr_count($message, "\n") + 1));
+		
+		$image = new awImage();
+		$image->setSize($width, $height);
+		$image->setDriver('gd');
+		
+		$driver = $image->getDriver();
+		$driver->init($image);
+		
+		// Display title
+		$driver->filledRectangle(
+			new awWhite,
+			new awLine(
+				new awPoint(0, 0),
+				new awPoint($width, $height)
+			)
+		);
+		
+		$driver->filledRectangle(
+			new awRed,
+			new awLine(
+				new awPoint(0, 0),
+				new awPoint(110, 25)
+			)
+		);
+		
+		$text = new awText(
+			"Artichow error",
+			new awFont3,
+			new awWhite,
+			0
+		);
+		
+		$driver->string($text, new awPoint(5, 6));
+		
+		// Display red box
+		$driver->rectangle(
+			new awRed,
+			new awLine(
+				new awPoint(0, 25),
+				new awPoint($width - 90, $height - 1)
+			)
+		);
+		
+		// Display error image
+		$file = ARTICHOW_IMAGE.DIRECTORY_SEPARATOR.'error.png';
+		
+		$imageError = new awFileImage($file);
+		$driver->copyImage(
+			$imageError,
+			new awPoint($width - 81, $height - 81),
+			new awPoint($width - 1, $height - 1)
+		);
+		
+		// Draw message
+		$text = new awText(
+			strip_tags($message),
+			new awFont2,
+			new awBlack,
+			0
+		);
+		
+		$driver->string($text, new awPoint(10, 40));
+		
+		$image->send();
+		
+		exit;
+	
+	}
+	
+	/*
+	 * Display an error image located in a file and exit
+	 *
+	 * @param string $error Error name
+	 */
+	public static function drawErrorFile($error) {
+	
+		$file = ARTICHOW_IMAGE.DIRECTORY_SEPARATOR.'errors'.DIRECTORY_SEPARATOR.$error.'.png';
+		
+		header("Content-Type: image/png");
+		readfile($file);
+		exit;
+	
 	}
 
 }
@@ -392,34 +604,16 @@ class awFileImage extends awImage {
 	 */
 	public function __construct($file) {
 	
-		$image = @getimagesize($file);
+		$driver = $this->selectDriver($this->driverString);
 		
-		if($image and in_array($image[2], array(2, 3))) {
+		$driver->initFromFile($this, $file);
 		
-			$this->setSize($image[0], $image[1]);
-			
-			switch($image[2]) {
-			
-				case 2 :
-					$this->resource = imagecreatefromjpeg($file);
-					break;
-			
-				case 3 :
-					$this->resource = imagecreatefrompng($file);
-					break;
-			
-			}
-		
-			$this->drawer = new awDrawer($this->resource);
-			$this->drawer->setImageSize($this->width, $this->height);
-			
-		} else {
-			trigger_error("Artichow does not support this image (must be in PNG or JPEG)", E_USER_ERROR);
-		}
+		$this->driver = $driver;
 	
 	}
 
 }
 
 registerClass('FileImage');
+
 ?>

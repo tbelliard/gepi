@@ -6,6 +6,8 @@
  * Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
  *
  */
+ 
+require_once dirname(__FILE__)."/../Graph.class.php";
 
 abstract class awShape {
 	
@@ -249,6 +251,20 @@ class awLine extends awShape {
 	public $p2;
 	
 	/**
+	 * The line slope (the m in y = mx + p)
+	 * 
+	 * @param float
+	 */
+	private $slope;
+	
+	/**
+	 * The y-intercept value of the line (the p in y = mx + p)
+	 * 
+	 * @param float
+	 */
+	private $origin;
+	
+	/**
 	 * Build a new awline
 	 *
 	 * @param awPoint $p1 First point
@@ -290,6 +306,11 @@ class awLine extends awShape {
 	public function setX($x1, $x2) {
 		$this->p1->setX($x1);
 		$this->p2->setX($x2);
+		
+		// Resets slope and origin values so they are
+		// recalculated when and if needed.
+		$this->slope = NULL;
+		$this->origin = NULL;
 	}
 	
 	/**
@@ -301,6 +322,11 @@ class awLine extends awShape {
 	public function setY($y1, $y2) {
 		$this->p1->setY($y1);
 		$this->p2->setY($y2);
+		
+		// Resets slope and origin values so they are
+		// recalculated when and if needed.
+		$this->slope = NULL;
+		$this->origin = NULL;
 	}
 	
 	/**
@@ -316,6 +342,11 @@ class awLine extends awShape {
 		if(is_null($p2) or $p2 instanceof awPoint) {
 			$this->p2 = $p2;
 		}
+		
+		// Resets slope and origin values so they are
+		// recalculated when and if needed.
+		$this->slope = NULL;
+		$this->origin = NULL;
 	}
 	
 	/**
@@ -337,6 +368,142 @@ class awLine extends awShape {
 		$square = pow($this->p2->x - $this->p1->x, 2) + pow($this->p2->y - $this->p1->y, 2);
 		return sqrt($square);
 	
+	}
+	
+	/**
+	 * Calculate the line slope
+	 * 
+	 */
+	private function calculateSlope() {
+		if($this->isHorizontal()) {
+			$this->slope = 0;
+		} else {
+			$slope = ($this->p1->y - $this->p2->y) / ($this->p1->x - $this->p2->x);
+			
+			$this->slope = $slope;
+		}
+	}
+	
+	/**
+	 * Calculate the y-intercept value of the line
+	 * 
+	 */
+	private function calculateOrigin() {
+		if($this->isHorizontal()) {
+			$this->origin = $this->p1->y; // Or p2->y
+		} else {
+			$y1 = $this->p1->y;
+			$y2 = $this->p2->y;
+			$x1 = $this->p1->x;
+			$x2 = $this->p2->x;
+			
+			$origin = ($y2 * $x1 - $y1 * $x2) / ($x1 - $x2);
+			
+			$this->origin = $origin;
+		}
+	}
+	
+	/**
+	 * Calculate the slope and y-intercept value of the line
+	 * 
+	 */
+	private function calculateEquation() {
+		$this->calculateSlope();
+		$this->calculateOrigin();
+	}
+	
+	/**
+	 * Get the line slope value
+	 *
+	 * @return float
+	 */
+	public function getSlope() {
+		if($this->isVertical()) {
+			return NULL;
+		} elseif($this->slope !== NULL) {
+			return $this->slope;
+		} else {
+			$this->calculateSlope();
+			return $this->slope;
+		}
+	}
+	
+	/**
+	 * Get the line y-intercept value
+	 * 
+	 * @return float
+	 */
+	public function getOrigin() {
+		if($this->isVertical()) {
+			return NULL;
+		} elseif($this->origin !== NULL) {
+			return $this->origin;
+		} else {
+			$this->calculateOrigin();
+			return $this->origin;
+		}
+	}
+	
+	/**
+	 * Get the line equation
+	 * 
+	 * @return array An array containing the slope and y-intercept value of the line
+	 */
+	public function getEquation() {
+		$slope	= $this->getSlope();
+		$origin = $this->getOrigin();
+		
+		return array($slope, $origin);
+	}
+	
+	/**
+	 * Return the x coordinate of a point on the line
+	 * given its y coordinate.
+	 *
+	 * @param float $y The y coordinate of the Point
+	 * @return float $x The corresponding x coordinate
+	 */
+	public function getXFrom($y) {
+		$x = NULL;
+		
+		if($this->isVertical()) {
+			list($p, ) = $this->getLocation();
+			$x = $p->x;
+		} else {
+			list($slope, $origin) = $this->getEquation();
+			
+			if($slope !== 0) {
+				$y = (float)$y;
+				$x = ($y - $origin) / $slope;
+			}
+		}
+		
+		return $x;
+	}
+	
+	/**
+	 * Return the y coordinate of a point on the line
+	 * given its x coordinate.
+	 *
+	 * @param float $x The x coordinate of the Point
+	 * @return float $y The corresponding y coordinate
+	 */
+	public function getYFrom($x) {
+		$y = NULL;
+		
+		if($this->isHorizontal()) {
+			list($p, ) = $this->getLocation();
+			$y = $p->y;
+		} else {
+			list($slope, $origin) = $this->getEquation();
+			
+			if($slope !== NULL) {
+				$x = (float)$x;
+				$y = $slope * $x + $origin;
+			}
+		}
+		
+		return $y;
 	}
 	
 	/**
@@ -365,7 +532,123 @@ class awLine extends awShape {
 	public function isHorizontal() {
 		return ($this->p1->y === $this->p2->y);
 	}
+	
+	/**
+	 * Returns TRUE if the line is going all the way from the top
+	 * to the bottom of the polygon surrounding box.
+	 * 
+	 * @param $polygon Polygon A Polygon object
+	 * @return bool
+	 */
+	public function isTopToBottom(awPolygon $polygon) {
+		list($xMin, $xMax) = $polygon->getBoxXRange();
+		list($yMin, $yMax) = $polygon->getBoxYRange();
+		
+		if($this->isHorizontal()) {
+			return FALSE;
+		} else {			
+			if($this->p1->y < $this->p2->y) {
+				$top = $this->p1;
+				$bottom = $this->p2;
+			} else {
+				$top = $this->p2;
+				$bottom = $this->p1;
+			}
+			
+			return (
+				$this->isOnBoxTopSide($top, $xMin, $xMax, $yMin)
+				and
+				$this->isOnBoxBottomSide($bottom, $xMin, $xMax, $yMax)
+			);
+		}
+	}
+	
+	/**
+	 * Returns TRUE if the line is going all the way from the left side
+	 * to the right side of the polygon surrounding box.
+	 * 
+	 * @param $polygon Polygon A Polygon object
+	 * @return bool
+	 */
+	public function isLeftToRight(awPolygon $polygon) {
+		list($xMin, $xMax) = $polygon->getBoxXRange();
+		list($yMin, $yMax) = $polygon->getBoxYRange();
+		
+		if($this->isVertical()) {
+			return FALSE;
+		} else {
+			if($this->p1->x < $this->p2->x) {
+				$left = $this->p1;
+				$right = $this->p2;
+			} else {
+				$left = $this->p2;
+				$right = $this->p1;
+			}
+		}
+		
+		return (
+			$this->isOnBoxLeftSide($left, $yMin, $yMax, $xMin)
+			and
+			$this->isOnBoxRightSide($right, $yMin, $yMax, $xMax)
+		);
+	}
+	
+	private function isOnBoxTopSide(awPoint $point, $xMin, $xMax, $yMin) {
+		if(
+			$point->y === $yMin
+			and 
+			$point->x >= $xMin
+			and
+			$point->x <= $xMax
+		) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
 
+	private function isOnBoxBottomSide(awPoint $point, $xMin, $xMax, $yMax) {
+		if(
+			$point->y === $yMax
+			and
+			$point->x >= $xMin
+			and
+			$point->x <= $xMax
+		) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	private function isOnBoxLeftSide(awPoint $point, $yMin, $yMax, $xMin) {
+		if(
+			$point->x === $xMin
+			and 
+			$point->y >= $yMin
+			and 
+			$point->y <= $yMax
+		) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	private function isOnBoxRightSide(awPoint $point, $yMin, $yMax, $xMax) {
+		if(
+			$point->x === $xMax
+			and 
+			$point->y >= $yMin
+			and 
+			$point->y <= $yMax
+		) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
 }
 
 registerClass('Line');
@@ -484,6 +767,77 @@ class awPolygon extends awShape {
 	 */
 	public function all() {
 		return $this->points;
+	}
+	
+	/**
+	 * Returns the different lines formed by the polygon vertices
+	 * 
+	 * @return array
+	 */
+	public function getLines() {
+		$lines = array();
+		$count = $this->count();
+	
+		for($i = 0; $i < $count - 1; $i++) {
+			$lines[] = new Line($this->get($i), $this->get($i + 1));
+		}
+		
+		// "Close" the polygon
+		$lines[] = new Line($this->get($count - 1), $this->get(0));
+
+		return $lines;
+	}
+	
+	/**
+	 * Get the upper-left and lower-right points
+	 * of the bounding box around the polygon
+	 * 
+	 * @return array An array of two Point objects
+	 */
+	public function getBoxPoints() {
+		$count = $this->count();
+		$x = $y = array();
+		
+		for($i = 0; $i < $count; $i++) {
+			$point = $this->get($i);
+	
+			list($x[], $y[]) = $point->getLocation();
+		}
+		
+		$upperLeft  = new Point(min($x), min($y));
+		$lowerRight = new Point(max($x), max($y));
+		
+		return array($upperLeft, $lowerRight);
+	}
+	
+	/**
+	 * Return the range of the polygon on the y axis,
+	 * i.e. the minimum and maximum y value of any point in the polygon
+	 * 
+	 * @return array
+	 */
+	public function getBoxYRange() {
+		list($p1, $p2) = $this->getBoxPoints();
+	
+		list(, $yMin) = $p1->getLocation();
+		list(, $yMax) = $p2->getLocation();
+		
+		return array($yMin, $yMax);
+	}
+	
+	/**
+	 * Return the range of the polygon on the x axis,
+	 * i.e. the minimum and maximum x value of any point in the polygon
+	 *
+	 * @return array
+	 */
+	public function getBoxXRange() {
+		list($p1, $p2) = $this->getBoxPoints();
+	
+		list($xMin, ) = $p1->getLocation();
+		list($xMax, ) = $p2->getLocation();
+		
+		return array($xMin, $xMax);
 	}
 
 }

@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
  
 /* <php4> */
 
@@ -204,10 +206,10 @@ class awLabel {
 	 */
 	 function set($labels) {
 	
-		if(is_string($labels)) {
-			$this->texts = array($labels);
-		} else if(is_array($labels)) {
+		if(is_array($labels)) {
 			$this->texts = $labels;
+		} else {
+			$this->texts = array((string)$labels);
 		}
 		
 	}
@@ -458,35 +460,35 @@ class awLabel {
 	/**
 	 * Get max width of all texts
 	 *
-	 * @param $drawer A drawer
+	 * @param $driver A driver
 	 * @return int
 	 */
-	 function getMaxWidth($drawer) {
+	 function getMaxWidth($driver) {
 	
-		return $this->getMax($drawer, 'getTextWidth');
+		return $this->getMax($driver, 'getTextWidth');
 	
 	}
 	
 	/**
 	 * Get max height of all texts
 	 *
-	 * @param $drawer A drawer
+	 * @param $driver A driver
 	 * @return int
 	 */
-	 function getMaxHeight($drawer) {
+	 function getMaxHeight($driver) {
 	
-		return $this->getMax($drawer, 'getTextHeight');
+		return $this->getMax($driver, 'getTextHeight');
 		
 	}
 	
 	/**
 	 * Draw the label
 	 *
-	 * @param $drawer
+	 * @param $driver
 	 * @param $p Label center
 	 * @param int $key Text position in the array of texts (default to zero)
 	 */
-	 function draw($drawer, $p, $key = 0) {
+	 function draw($driver, $p, $key = 0) {
 	
 		if(($key % $this->interval) !== 0) {
 			return;
@@ -527,9 +529,9 @@ class awLabel {
 			// Get padding
 			list($left, $right, $top, $bottom) = $text->getPadding();
 			
-			$font = $text->getFont();
-			$width = $font->getTextWidth($text);
-			$height = $font->getTextHeight($text);
+//			$font = $text->getFont();
+			$width = $driver->getTextWidth($text);
+			$height = $driver->getTextHeight($text);
 			
 			switch($this->hAlign) {
 			
@@ -563,13 +565,13 @@ class awLabel {
 			
 			}
 		
-			$drawer->string($text, $this->move->move($x, $y));
+			$driver->string($text, $this->move->move($x, $y));
 			
 		}
 		
 	}
 	
-	 function getMax($drawer, $function) {
+	 function getMax($driver, $function) {
 	
 		$max = NULL;
 	

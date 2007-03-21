@@ -199,7 +199,7 @@ class awScatterPlot extends awPlot {
 		return $this->mark;
 	}
 	
-	 function drawComponent($drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	 function drawComponent($driver, $x1, $y1, $x2, $y2, $aliasing) {
 	
 		$count = count($this->datay);
 		
@@ -231,7 +231,7 @@ class awScatterPlot extends awPlot {
 			foreach($polygon->all() as $point) {
 			
 				if($prev !== NULL and $point !== NULL) {
-					$drawer->line(
+					$driver->line(
 						$this->lineColor,
 						new awLine(
 							$prev,
@@ -244,9 +244,6 @@ class awScatterPlot extends awPlot {
 				$prev = $point;
 				
 			}
-			
-			$this->lineColor->free();
-			
 		}
 		
 		// Draw impulses
@@ -262,7 +259,7 @@ class awScatterPlot extends awPlot {
 						new awPoint($key, 0)
 					);
 					
-					$drawer->line(
+					$driver->line(
 						$this->impulse,
 						new awLine(
 							$zero,
@@ -281,8 +278,8 @@ class awScatterPlot extends awPlot {
 		// Draw marks and labels
 		foreach($polygon->all() as $key => $point) {
 
-			$this->mark->draw($drawer, $point);
-			$this->label->draw($drawer, $point, $key);
+			$this->mark->draw($driver, $point);
+			$this->label->draw($driver, $point, $key);
 			
 		}
 		

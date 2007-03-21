@@ -7,14 +7,21 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+
 /* <php4> */
 
 define("MARK_CIRCLE", 1);
 define("MARK_SQUARE", 2);
-define("MARK_IMAGE", 3);
-define("MARK_STAR", 4);
-define("MARK_PAPERCLIP", 5);
-define("MARK_BOOK", 6);
+define("MARK_TRIANGLE", 3);
+define("MARK_INVERTED_TRIANGLE", 4);
+define("MARK_RHOMBUS", 5);
+define("MARK_CROSS", 6);
+define("MARK_PLUS", 7);
+define("MARK_IMAGE", 8);
+define("MARK_STAR", 9);
+define("MARK_PAPERCLIP", 10);
+define("MARK_BOOK", 11);
 
 /* </php4> */
  
@@ -33,39 +40,74 @@ class awMark {
 	const CIRCLE = 1;
 
 	/**
-	 * Quare mark
+	 * Square mark
 	 *
 	 * @var int
 	 */
 	const SQUARE = 2;
 
 	/**
+	 * Triangle mark
+	 * 
+	 * @var int
+	 */
+	const TRIANGLE = 3;
+	
+	/**
+	 * Inverted triangle mark
+	 * 
+	 * @var int
+	 */
+	const INVERTED_TRIANGLE = 4;
+
+	/**
+	 * Rhombus mark
+	 * 
+	 * @var int
+	 */
+	const RHOMBUS = 5;
+
+	/**
+	 * Cross (X) mark
+	 * 
+	 * @var int
+	 */
+	const CROSS = 6;
+
+	/**
+	 * Plus mark
+	 * 
+	 * @var int
+	 */
+	const PLUS = 7;
+
+	/**
 	 * Image mark
 	 *
 	 * @var int
 	 */
-	const IMAGE = 3;
+	const IMAGE = 8;
 
 	/**
 	 * Star mark
 	 *
 	 * @var int
 	 */
-	const STAR = 4;
+	const STAR = 9;
 
 	/**
 	 * Paperclip mark
 	 *
 	 * @var int
 	 */
-	const PAPERCLIP = 5;
+	const PAPERCLIP = 10;
 
 	/**
 	 * Book mark
 	 *
 	 * @var int
 	 */
-	const BOOK = 6;
+	const BOOK = 11;
 
 	/**
 	 * Must marks be hidden ?
@@ -105,9 +147,9 @@ class awMark {
 	/**
 	 * To draw marks
 	 *
-	 * @var Drawer
+	 * @var Driver
 	 */
-	protected $drawer;
+	protected $driver;
 
 	/**
 	 * Move position from this vector
@@ -212,10 +254,10 @@ class awMark {
 	/**
 	 * Draw the mark
 	 *
-	 * @param awDrawer $drawer
+	 * @param awDriver $driver
 	 * @param awPoint $point Mark center
 	 */
-	public function draw(awDrawer $drawer, awPoint $point) {
+	public function draw(awDriver $driver, awPoint $point) {
 	
 		// Hide marks ?
 		if($this->hide) {
@@ -225,7 +267,7 @@ class awMark {
 		// Check if we can print marks
 		if($this->type !== NULL) {
 		
-			$this->drawer = $drawer;
+			$this->driver = $driver;
 			$realPoint = $this->move->move($point->x, $point->y);
 		
 			switch($this->type) {
@@ -237,6 +279,26 @@ class awMark {
 				case awMark::SQUARE :
 					$this->drawSquare($realPoint);
 					break;
+				
+				case awMark::TRIANGLE :
+					$this->drawTriangle($realPoint);
+					break;
+
+				case awMark::INVERTED_TRIANGLE :
+					$this->drawTriangle($realPoint, TRUE);
+					break;
+				
+				case awMark::RHOMBUS :
+					$this->drawRhombus($realPoint);
+					break;
+
+				case awMark::CROSS :
+					$this->drawCross($realPoint);
+					break;
+					
+				case awMark::PLUS :
+					$this->drawCross($realPoint, TRUE);
+					break;
 			
 				case awMark::IMAGE :
 					$this->drawImage($realPoint);
@@ -244,17 +306,17 @@ class awMark {
 					
 				case awMark::STAR :
 					$this->changeType('star');
-					$this->draw($drawer, $point);
+					$this->draw($driver, $point);
 					break;
 					
 				case awMark::PAPERCLIP :
 					$this->changeType('paperclip');
-					$this->draw($drawer, $point);
+					$this->draw($driver, $point);
 					break;
 					
 				case awMark::BOOK :
 					$this->changeType('book');
-					$this->draw($drawer, $point);
+					$this->draw($driver, $point);
 					break;
 					
 			}
@@ -270,14 +332,14 @@ class awMark {
 	
 	protected function drawCircle(awPoint $point) {
 		
-		$this->drawer->filledEllipse(
+		$this->driver->filledEllipse(
 			$this->fill,
 			$point,
 			$this->size, $this->size
 		);
 	
 		$this->border->ellipse(
-			$this->drawer,
+			$this->driver,
 			$point,
 			$this->size, $this->size
 		);
@@ -293,11 +355,11 @@ class awMark {
 		$y1 = (int)($y - $this->size / 2);
 		$y2 = $y1 + $this->size;
 		
-		$this->border->rectangle($this->drawer, new awPoint($x1, $y1), new awPoint($x2, $y2));
+		$this->border->rectangle($this->driver, new awPoint($x1, $y1), new awPoint($x2, $y2));
 		
 		$size = $this->border->visible() ? 1 : 0;
 		
-		$this->drawer->filledRectangle(
+		$this->driver->filledRectangle(
 			$this->fill,
 			new awLine(
 				new awPoint($x1 + $size, $y1 + $size),
@@ -307,6 +369,114 @@ class awMark {
 	
 	}
 	
+	protected function drawTriangle(awPoint $point, $inverted = FALSE) {
+		
+		list($x, $y) = $point->getLocation();
+		
+		$size = $this->size;
+		
+		$triangle = new awPolygon;
+		// Set default style and thickness
+		$triangle->setStyle(awPolygon::SOLID);
+		$triangle->setThickness(1);
+		
+		if($inverted === TRUE) {
+			// Bottom of the triangle
+			$triangle->append(new awPoint($x, $y + $size / sqrt(3)));
+		
+			// Upper left corner
+			$triangle->append(new awPoint($x - $size / 2, $y - $size / (2 * sqrt(3))));
+
+			// Upper right corner
+			$triangle->append(new awPoint($x + $size / 2, $y - $size / (2 * sqrt(3))));
+		} else {
+			// Top of the triangle
+			$triangle->append(new awPoint($x, $y - $size / sqrt(3)));
+			
+			// Lower left corner
+			$triangle->append(new awPoint($x - $size / 2, $y + $size / (2 * sqrt(3))));
+	
+			// Lower right corner
+			$triangle->append(new awPoint($x + $size / 2, $y + $size / (2 * sqrt(3))));
+		}
+
+		$this->driver->filledPolygon($this->fill, $triangle);
+		
+		if($this->border->visible()) {			
+			$this->border->polygon($this->driver, $triangle);
+		}
+	}
+	
+	protected function drawRhombus(awPoint $point) {
+	
+		list($x, $y) = $point->getLocation();
+
+		$rhombus = new awPolygon;
+		// Set default style and thickness
+		$rhombus->setStyle(awPolygon::SOLID);
+		$rhombus->setThickness(1);
+		
+		// Top of the rhombus
+		$rhombus->append(new awPoint($x, $y - $this->size / 2));
+		
+		// Right of the rhombus
+		$rhombus->append(new awPoint($x + $this->size / 2, $y));
+		
+		// Bottom of the rhombus
+		$rhombus->append(new awPoint($x, $y + $this->size / 2));
+		
+		// Left of the rhombus
+		$rhombus->append(new awPoint($x - $this->size / 2, $y));
+		
+		$this->driver->filledPolygon($this->fill, $rhombus);
+		
+		if($this->border->visible()) {			
+			$this->border->polygon($this->driver, $rhombus);
+		}
+	}
+	
+	protected function drawCross(awPoint $point, $upright = FALSE) {
+	
+		list($x, $y) = $point->getLocation();
+
+		if($upright === TRUE) {
+			$x11 = (int)($x);
+			$y11 = (int)($y - $this->size / 2);
+			$x12 = (int)($x);
+			$y12 = (int)($y + $this->size / 2);
+	
+			$y21 = (int)($y);
+			$y22 = (int)($y);
+		} else {
+			$x11 = (int)($x - $this->size / 2);
+			$y11 = (int)($y + $this->size / 2);
+			$x12 = (int)($x + $this->size / 2);
+			$y12 = (int)($y - $this->size / 2);
+
+			$y21 = (int)($y - $this->size / 2);
+			$y22 = (int)($y + $this->size / 2);
+		}
+			
+		$x21 = (int)($x - $this->size / 2);
+		$x22 = (int)($x + $this->size / 2);
+		
+		$this->driver->line(
+			$this->fill,
+			new awLine(
+				new awPoint($x11, $y11),
+				new awPoint($x12, $y12)
+			)
+		);
+		
+		$this->driver->line(
+			$this->fill,
+			new awLine(
+				new awPoint($x21, $y21),
+				new awPoint($x22, $y22)
+			)
+		);
+	}
+
 	protected function drawImage(awPoint $point) {
 		
 		if($this->image instanceof awImage) {
@@ -321,9 +491,9 @@ class awMark {
 			$y1 = (int)($y - $width / 2);
 			$y2 = $y1 + $height;
 		
-			$this->border->rectangle($this->drawer, new awPoint($x1 - 1, $y1 - 1), new awPoint($x2 + 1, $y2 + 1));
+			$this->border->rectangle($this->driver, new awPoint($x1 - 1, $y1 - 1), new awPoint($x2 + 1, $y2 + 1));
 			
-			$this->drawer->copyImage($this->image, new awPoint($x1, $y1), new awPoint($x2, $y2));
+			$this->driver->copyImage($this->image, new awPoint($x1, $y1), new awPoint($x2, $y2));
 			
 		}
 	

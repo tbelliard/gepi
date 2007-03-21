@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once dirname(__FILE__)."/Image.class.php";
 
 /**
  * AntiSpam
@@ -121,12 +121,12 @@ class awAntiSpam extends awImage {
 	 * Draw image
 	 */
 	 function draw() {
-	
+
 		$fonts = array(
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'Tuffy.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBold.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyItalic.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBoldItalic.ttf'
+			'Tuffy',
+			'TuffyBold',
+			'TuffyItalic',
+			'TuffyBoldItalic'
 		);
 		
 		$sizes = array(12, 12.5, 13, 13.5, 14, 15, 16, 17, 18, 19);
@@ -134,6 +134,10 @@ class awAntiSpam extends awImage {
 		$widths = array();
 		$heights = array();
 		$texts = array();
+		
+		// Set up a temporary driver to allow font size calculations...
+		$this->setSize(10, 10);
+		$driver = $this->getDriver();
 		
 		for($i = 0; $i < strlen($this->string); $i++) {
 		
@@ -151,11 +155,14 @@ class awAntiSpam extends awImage {
 				mt_rand(-15, 15)
 			);
 			
-			$widths[] = $font->getTextWidth($text);
-			$heights[] = $font->getTextHeight($text);
+			$widths[] = $driver->getTextWidth($text);
+			$heights[] = $driver->getTextHeight($text);
 			$texts[] = $text;
 		
 		}
+		
+		// ... and get rid of it.
+		$this->driver = NULL;
 		
 		$width = array_sum($widths);
 		$height = array_max($heights);
@@ -169,7 +176,7 @@ class awAntiSpam extends awImage {
 		
 		for($i = 0; $i < strlen($this->string); $i++) {
 		
-			$this->drawer->string(
+			$this->driver->string(
 				$texts[$i],
 				new awPoint(
 					5 + array_sum(array_slice($widths, 0, $i)) + $widths[$i] / 2 + $i * 10,
@@ -191,7 +198,7 @@ class awAntiSpam extends awImage {
 		$color = new awColor(0, 0, 0);
 		
 		for($i = 0; $i < $points; $i++) {
-			$this->drawer->point(
+			$this->driver->point(
 				$color,
 				new awPoint(
 					mt_rand(0, $width),

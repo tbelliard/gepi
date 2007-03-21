@@ -48,11 +48,11 @@ registerClass('ComponentGroup', TRUE);
 abstract class awComponent {
 
 	/**
-	 * Component drawer
+	 * Component driver
 	 *
-	 * @var Drawer
+	 * @var Driver
 	 */
-	protected $drawer;
+	protected $driver;
 
 	/**
 	 * Component width
@@ -293,8 +293,8 @@ abstract class awComponent {
 	/**
 	 * Set the center of the component
 	 *
-	 * @param int $x Position on X axis of the center of the component
-	 * @param int $y Position on Y axis of the center of the component
+	 * @param int $x Position X of the center of the component
+	 * @param int $y Position Y of the center of the component
 	 */
 	public function setCenter($x, $y) {
 	
@@ -323,7 +323,7 @@ abstract class awComponent {
 	/**
 	 * Init the drawing of the component
 	 */
-	public function init(awDrawer $drawer) {
+	public function init(awDriver $driver) {
 
 		// Set component background
 		$background = $this->getBackground();
@@ -335,7 +335,7 @@ abstract class awComponent {
 			
 			if($background instanceof awImage) {
 	
-				$drawer->copyImage(
+				$driver->copyImage(
 					$background,
 					$p1,
 					$p2
@@ -343,7 +343,7 @@ abstract class awComponent {
 				
 			} else {
 			
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$background,
 					new awLine($p1, $p2)
 				);
@@ -356,40 +356,40 @@ abstract class awComponent {
 	/**
 	 * Finalize the drawing of the component
 	 */
-	public function finalize(awDrawer $drawer) {
+	public function finalize(awDriver $driver) {
 		
 		// Draw component title
 		$point = new awPoint(
 			$this->w / 2,
 			$this->padding->top - 8
 		);
-		$this->title->draw($drawer, $point);
+		$this->title->draw($driver, $point);
 		
 		// Draw legend
-		$this->legend->draw($drawer);
+		$this->legend->draw($driver);
 		
 	}
 	
 	/**
 	 * Draw the grid around your component
 	 *
-	 * @param Drawer A drawer
+	 * @param Driver A driver
 	 * @return array Coords for the component
 	 */
-	abstract public function drawEnvelope(awDrawer $drawer);
+	abstract public function drawEnvelope(awDriver $driver);
 	
 	/**
 	 * Draw the component on the graph
 	 * Component should be drawed into specified coords
 	 *
-	 * @param Drawer A drawer
+	 * @param Driver A driver
 	 * @param int $x1
 	 * @param int $y1
 	 * @param int $x2
 	 * @param int $y2
 	 * @param bool $aliasing Use anti-aliasing to draw the component ?
 	 */
-	abstract public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing);
+	abstract public function drawComponent(awDriver $driver, $x1, $y1, $x2, $y2, $aliasing);
 	
 	/**
 	 * Get space width in pixels

@@ -217,7 +217,7 @@ class awBarPlot extends awPlot implements awLegendable {
 	public function getLegendMark() {
 	}
 	
-	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	public function drawComponent(awDriver $driver, $x1, $y1, $x2, $y2, $aliasing) {
 		
 		$count = count($this->datay);
 		$max = $this->getRealYMax(NULL);
@@ -280,7 +280,7 @@ class awBarPlot extends awPlot implements awLegendable {
 					round($t2) - $this->depth + $this->move->top
 				);
 				
-				$this->drawBar($drawer, $p1, $p2);
+				$this->drawBar($driver, $p1, $p2);
 				
 			}
 		
@@ -302,7 +302,7 @@ class awBarPlot extends awPlot implements awLegendable {
 					$position->y - $this->depth
 				);
 	
-				$this->label->draw($drawer, $point, $key);
+				$this->label->draw($driver, $point, $key);
 				
 			}
 			
@@ -322,11 +322,11 @@ class awBarPlot extends awPlot implements awLegendable {
 		return TRUE;
 	}
 	
-	protected function drawBar(awDrawer $drawer, awPoint $p1, awPoint $p2) {
+	protected function drawBar(awDriver $driver, awPoint $p1, awPoint $p2) {
 	
 		// Draw shadow
 		$this->barShadow->draw(
-			$drawer,
+			$driver,
 			$p1,
 			$p2,
 			awShadow::OUT
@@ -335,7 +335,7 @@ class awBarPlot extends awPlot implements awLegendable {
 		if(abs($p2->y - $p1->y) > 1) {
 			
 			$this->barBorder->rectangle(
-				$drawer,
+				$driver,
 				$p1,
 				$p2
 			);
@@ -348,7 +348,7 @@ class awBarPlot extends awPlot implements awLegendable {
 				$b2 = $p2->move(-1 * $size, -1 * $size);
 				
 				// Draw background
-				$drawer->filledRectangle(
+				$driver->filledRectangle(
 					$this->barBackground,
 					new awLine($b1, $b2)
 				);

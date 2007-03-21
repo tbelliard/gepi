@@ -6,6 +6,8 @@
  * Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
  *
  */
+ 
+require_once dirname(__FILE__)."/../Graph.class.php";
 
 /**
  * Objects capable of being positioned

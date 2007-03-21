@@ -138,7 +138,7 @@ class awLinePlot extends awPlot implements awLegendable {
 	public function setFilledArea($start, $stop, $background) {
 	
 		if($stop <= $start) {
-			trigger_error("End position can not be greater than begin position in awLinePlot::setFilledArea()", E_USER_ERROR);
+			awImage::drawError("Class LinePlot: End position can not be greater than begin position in setFilledArea().");
 		}
 	
 		$this->areas[] = array((int)$start, (int)$stop, $background);
@@ -235,7 +235,7 @@ class awLinePlot extends awPlot implements awLegendable {
 		return $this->mark;
 	}
 	
-	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	public function drawComponent(awDriver $driver, $x1, $y1, $x2, $y2, $aliasing) {
 		
 		$max = $this->getRealYMax();
 		$min = $this->getRealYMin();
@@ -285,11 +285,11 @@ class awLinePlot extends awPlot implements awLegendable {
 			$backgroundPolygon->append($p);
 		
 			// Draw polygon background
-			$drawer->filledPolygon($this->lineBackground, $backgroundPolygon);
+			$driver->filledPolygon($this->lineBackground, $backgroundPolygon);
 		
 		}
 		
-		$this->drawArea($drawer, $polygon);
+		$this->drawArea($driver, $polygon);
 		
 		// Draw line
 		$prev = NULL;
@@ -304,7 +304,7 @@ class awLinePlot extends awPlot implements awLegendable {
 			foreach($polygon->all() as $point) {
 			
 				if($prev !== NULL) {
-					$drawer->line(
+					$driver->line(
 						$this->lineColor,
 						new awLine(
 							$prev,
@@ -317,22 +317,20 @@ class awLinePlot extends awPlot implements awLegendable {
 				$prev = $point;
 				
 			}
-			
-			$this->lineColor->free();
-			
+
 		}
 		
 		// Draw marks and labels
 		foreach($polygon->all() as $key => $point) {
 
-			$this->mark->draw($drawer, $point);
-			$this->label->draw($drawer, $point, $key);
+			$this->mark->draw($driver, $point);
+			$this->label->draw($driver, $point, $key);
 			
 		}
 		
 	}
 	
-	protected function drawArea(awDrawer $drawer, awPolygon $polygon) {
+	protected function drawArea(awDriver $driver, awPolygon $polygon) {
 	
 		$starts = array();
 		foreach($this->areas as $area) {
@@ -365,7 +363,7 @@ class awLinePlot extends awPlot implements awLegendable {
 			$polygonArea->append($p);
 		
 			// Draw area
-			$drawer->filledPolygon($background, $polygonArea);
+			$driver->filledPolygon($background, $polygonArea);
 		
 		}
 		
@@ -548,7 +546,7 @@ class awSimpleLinePlot extends awPlot implements awLegendable {
 		return NULL;
 	}
 	
-	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
+	public function drawComponent(awDriver $driver, $x1, $y1, $x2, $y2, $aliasing) {
 		
 		if($this->lineMode === awLinePlot::MIDDLE) {
 			$inc = $this->xAxis->getDistance(0, 1) / 2;
@@ -559,7 +557,7 @@ class awSimpleLinePlot extends awPlot implements awLegendable {
 		$p1 = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($this->lineStart, $this->lineValue));
 		$p2 = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($this->lineStop, $this->lineValue));
 		
-		$drawer->line(
+		$driver->line(
 			$this->lineColor,
 			new awLine(
 				$p1->move($inc, 0),
@@ -568,10 +566,7 @@ class awSimpleLinePlot extends awPlot implements awLegendable {
 				$this->lineThickness
 			)
 		);
-		
-		$this->lineColor->free();
-		
-	}
+}
 	
 	public function getXAxisNumber() {
 		if($this->lineMode === awLinePlot::MIDDLE) {

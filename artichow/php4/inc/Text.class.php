@@ -6,6 +6,8 @@
  * Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
  *
  */
+ 
+require_once dirname(__FILE__)."/../Graph.class.php";
 
 /**
  * To handle text
@@ -107,6 +109,7 @@ class awText {
 	 */
 	 function setText($text) {
 		$this->text = (string)$text;
+		$this->text = str_replace("\r", "", $text);
 	}
 
 	/**
@@ -161,6 +164,19 @@ class awText {
 	 */
 	 function getColor() {
 		return $this->color;
+	}
+	
+	/**
+	 * Change text background
+	 * 
+	 * @param mixed $background
+	 */
+	 function setBackground($background) {
+		if(is_a($background, 'awColor')) {
+			$this->setBackgroundColor($background);
+		} elseif(is_a($background, 'awGradient')) {
+			$this->setBackgroundGradient($background);
+		}
 	}
 	
 	/**

@@ -18,7 +18,7 @@ class LightLinePattern extends Pattern {
 		$y = $this->getArg('y');
 		
 		if($y === NULL) {
-			trigger_error("Argument 'y' must not be NULL", E_USER_ERROR);
+			awImage::drawError("Class LightLinePattern: Argument 'y' must not be NULL.");
 		}
 		
 		$plot = new LinePlot($y);

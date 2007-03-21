@@ -7,6 +7,8 @@
  *
  */
  
+require_once dirname(__FILE__)."/../Graph.class.php";
+ 
 /**
  * Draw border
  *
@@ -103,11 +105,11 @@ class awBorder {
 	/**
 	 * Draw border as a rectangle
 	 *
-	 * @param $drawer
+	 * @param $driver
 	 * @param $p1 Top-left corner
 	 * @param $p2 Bottom-right corner
 	 */
-	 function rectangle($drawer, $p1, $p2) {
+	 function rectangle($driver, $p1, $p2) {
 	
 		// Border is hidden
 		if($this->hide) {
@@ -118,19 +120,19 @@ class awBorder {
 		$line->setStyle($this->style);
 		$line->setLocation($p1, $p2);
 		
-		$drawer->rectangle($this->color, $line);
+		$driver->rectangle($this->color, $line);
 		
 	}
 	
 	/**
 	 * Draw border as an ellipse
 	 *
-	 * @param $drawer
+	 * @param $driver
 	 * @param $center Ellipse center
 	 * @param int $width Ellipse width
 	 * @param int $height Ellipse height
 	 */
-	 function ellipse($drawer, $center, $width, $height) {
+	 function ellipse($driver, $center, $width, $height) {
 	
 		// Border is hidden
 		if($this->hide) {
@@ -140,18 +142,56 @@ class awBorder {
 		switch($this->style) {
 		
 			case LINE_SOLID :
-				$drawer->ellipse($this->color, $center, $width, $height);
+				$driver->ellipse($this->color, $center, $width, $height);
 				break;
 			
 			default :
-				trigger_error("Dashed and dotted borders and not yet implemented on ellipses", E_USER_ERROR);
+				awImage::drawError("Class Border: Dashed and dotted borders and not yet implemented on ellipses.");
 				break;
 		
 		}
 		
 		
 	}
-
+	
+	/**
+	 * Draw border as a polygon
+	 * 
+	 * @param $driver A Driver object
+	 * @param &$polygon A Polygon object
+	 */
+	 function polygon($driver, &$polygon) {
+		
+		// Border is hidden
+		if($this->hide) {
+			return;
+		}
+		
+		$polygon->setStyle($this->style);
+		$driver->polygon($this->color, $polygon);
+		
+		// In case of LINE_SOLID, Driver::polygon() uses imagepolygon()
+		// which automatically closes the shape. In any other case,
+		// we have to do it manually here.
+		if($this->style !== LINE_SOLID) {
+			$this->closePolygon($driver, $polygon);
+		}
+	}
+	
+	/**
+	 * Draws the last line of a Polygon, between the first and last point
+	 * 
+	 * @param $driver A Driver object
+	 * @param &$polygon The polygon object to close
+	 */
+	 function closePolygon($driver, &$polygon) {
+		$first = $polygon->get(0);
+		$last  = $polygon->get($polygon->count() - 1);
+		
+		$line = new awLine($first, $last, $this->style, $polygon->getThickness());
+		$driver->line($this->color, $line);
+	}
+	
 }
 
 registerClass('Border');

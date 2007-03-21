@@ -16,7 +16,7 @@ function array_min($array) {
 	
 		do {
 			$min = array_pop($array);
-			if(is_numeric($min === FALSE)) {
+			if(is_numeric($min) === FALSE) {
 				$min = NULL;
 			}
 		} while(count($array) > 0 and $min === NULL);
@@ -48,11 +48,11 @@ function array_max($array) {
 	
 		do {
 			$max = array_pop($array);
-			if(is_numeric($max === FALSE)) {
+			if(is_numeric($max) === FALSE) {
 				$max = NULL;
 			}
 		} while(count($array) > 0 and $max === NULL);
-		
+
 		if($max !== NULL) {
 			$max = (float)$max;
 		}
@@ -70,33 +70,27 @@ function array_max($array) {
 	return NULL;
 
 }
-
 /*
- * Register a class with the prefix in configuration file
+ * Define file_put_contents() if needed
  */
-function registerClass($class, $abstract = FALSE) {
+if(function_exists('file_put_contents') === FALSE) {
 
-	if(ARTICHOW_PREFIX === 'aw') {
-		return;
+	function file_put_contents($file, $content) {
+		$fp = fopen($file, 'w');
+		if($fp) {
+			fwrite($fp, $content);
+			fclose($fp);
+		}
 	}
 	
-	
-	$abstract = '';
-	
-
-	eval($abstract." class ".ARTICHOW_PREFIX.$class." extends aw".$class." { }");
-
 }
 
 /*
- * Register an interface with the prefix in configuration file
+ * Change error handler
  */
-function registerInterface($interface) {
+set_error_handler('errorHandlerArtichow');
 
-	if(ARTICHOW_PREFIX === 'aw') {
-		return;
-	}
-
-
+function errorHandlerArtichow($level, $message, $file, $line) {
+	awImage::drawError($message.' in '.$file.' on line '.$line.'.');
 }
 ?>

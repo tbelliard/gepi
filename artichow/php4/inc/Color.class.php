@@ -6,6 +6,8 @@
  * Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
  *
  */
+ 
+require_once dirname(__FILE__)."/../Graph.class.php";
 
 /**
  * Create your colors
@@ -18,9 +20,6 @@ class awColor {
 	var $green;
 	var $blue;
 	var $alpha;
-	
-	var $resource;
-	var $color;
 
 	/**
 	 * Build your color
@@ -40,27 +39,12 @@ class awColor {
 	}
 	
 	/**
-	 * Return a GDised color
+	 * Get RGB and alpha values of your color
 	 *
-	 * @param resource $resource A GD resource
-	 * @return int
+	 * @return array
 	 */
-	 function getColor($resource) {
-	
-		$this->resource = $resource;
-		
-		if($this->color === NULL) {
-	
-			if($this->alpha === 0 or function_exists('imagecolorallocatealpha') === FALSE) {
-				$this->color = imagecolorallocate($this->resource, $this->red, $this->green, $this->blue);
-			} else {
-				$this->color = imagecolorallocatealpha($this->resource, $this->red, $this->green, $this->blue, $this->alpha);
-			}
-			
-		}
-		
-		return $this->color;
-	
+	 function getColor() {		
+		return $this->rgba();
 	}
 	
 	/**
@@ -77,7 +61,7 @@ class awColor {
 		$this->blue = min(255, max(0, $this->blue + $brightness));
 	
 	}
-	
+
 	/**
 	 * Get RGB and alpha values of your color
 	 *
@@ -86,26 +70,6 @@ class awColor {
 	 function rgba() {
 	
 		return array($this->red, $this->green, $this->blue, $this->alpha);
-	
-	}
-	
-	/**
-	 * Free resources used for this color
-	 */
-	 function free() {
-	
-		if($this->resource !== NULL) {
-	
-			@imagecolordeallocate($this->resource, $this->color);
-			$this->resource = NULL;
-			
-		}
-	
-	}
-	
-	 function php5Destructor() {
-	
-		$this->free();
 	
 	}
 

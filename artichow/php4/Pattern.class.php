@@ -42,11 +42,11 @@ require_once dirname(__FILE__)."/Graph.class.php";
 			if(class_exists($class)) {
 				return new $class;
 			} else {
-				trigger_error("Class '".$class."' does not exist", E_USER_ERROR);
+				awImage::drawError("Class Pattern: Class '".$class."' does not exist.");
 			}
 		
 		} else {
-			trigger_error("Pattern '".$pattern."' does not exist", E_USER_ERROR);
+			awImage::drawError("Class Pattern: Pattern '".$pattern."' does not exist.");
 		}
 	
 	}
