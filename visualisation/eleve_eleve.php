@@ -316,7 +316,9 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
         echo "</table>\n";
         echo "<a name=\"graph\"></a>";
         $temp1=implode("|", $datay1);
+		if ( empty($temp1) ) { $temp1 = 0; }
         $temp2=implode("|", $datay2);
+		if ( empty($temp2) ) { $temp2 = 0; }
         $etiq = implode("|", $etiquette);
         $graph_title = urlencode($graph_title);
         $v_legend1 = urlencode($v_legend1);
