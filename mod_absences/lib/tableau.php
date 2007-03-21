@@ -48,17 +48,6 @@ if (!checkAccess()) {
     die();
 }
 ?>
-
-
-<?php
-//**************** EN-TETE *****************
-$titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
-//**************** FIN EN-TETE *****************
-?>
-
-
-
 <script type="text/javascript" language="javascript">
 <!--
 function MM_openBrWindow(theURL,winName,features) { //v2.0
@@ -136,7 +125,6 @@ function show ( evt, name ) {
   }
 // (for debugging purpose) alert("docWidth " + docWidth + ", docHeight " + docHeight + "\nlayerWidth " + layerWidth + ", layerHeight " + layerHeight + "\ncurrentX " + currentX + ", currentY " + currentY + "\nx " + x + ", y " + y);
 
-//window.defaultStatus="name="+name+" ; NS4="+NS4+" ; W3C="+W3C+" ; currentX="+currentX+" ; currentY="+currentY+" ; layerWidth="+layerWidth+" ; layerHeight="+layerHeight+" ; x="+x+" ; y="+y;
 
   if ( NS4 ) {
     //ele.xpos = parseInt ( x );
@@ -145,10 +133,8 @@ function show ( evt, name ) {
     ele.top = parseInt ( y );
     ele.visibility = "show";
   } else {  // IE4 & W3C
-    //ele.style.left = parseInt ( x );
-    //ele.style.top = parseInt ( y );
-    ele.style.left = parseInt ( x )+"px";
-    ele.style.top = parseInt ( y )+"px";
+    ele.style.left = parseInt ( x );
+    ele.style.top = parseInt ( y );
     ele.style.visibility = "visible";
   }
 }
@@ -168,6 +154,11 @@ function hide ( name ) {
 </script>
 
 <?php
+//**************** EN-TETE *****************
+$titre_page = "Gestion des absences";
+require_once("../../lib/header.inc");
+//**************** FIN EN-TETE *****************
+
 //Configuration du calendrier
 include("../../lib/calendrier/calendrier.class.php");
 $cal_1 = new Calendrier("form1", "du");
@@ -179,25 +170,25 @@ include("./functions.php");
     $date_ce_jour = date('d/m/Y');
 
 //VARIABLE
-    if (empty($_GET['submit2']) AND empty($_POST['submit2'])) {$submit2="";}
+    if (empty($_GET['submit2']) and empty($_POST['submit2'])) {$submit2="";}
       else { if (isset($_GET['submit2'])) {$submit2=$_GET['submit2'];} if (isset($_POST['submit2'])) {$submit2=$_POST['submit2'];} }
-    if (empty($_GET['type']) AND empty($_POST['type'])) {$type="A";}
+    if (empty($_GET['type']) and empty($_POST['type'])) {$type="A";}
       else { if (isset($_GET['type'])) {$type=$_GET['type'];} if (isset($_POST['type'])) {$type=$_POST['type'];} }
-    if (empty($_GET['justifie']) AND empty($_POST['justifie'])) {$justifie="";}
+    if (empty($_GET['justifie']) and empty($_POST['justifie'])) {$justifie="";}
       else { if (isset($_GET['justifie'])) {$justifie=$_GET['justifie'];} if (isset($_POST['justifie'])) {$justifie=$_POST['justifie'];} }
-    if (empty($_GET['nonjustifie']) AND empty($_POST['nonjustifie'])) {$nonjustifie="";}
+    if (empty($_GET['nonjustifie']) and empty($_POST['nonjustifie'])) {$nonjustifie="";}
       else { if (isset($_GET['nonjustifie'])) {$nonjustifie=$_GET['nonjustifie'];} if (isset($_POST['nonjustifie'])) {$nonjustifie=$_POST['nonjustifie'];} }
-    if (empty($_GET['motif']) AND empty($_POST['motif'])) {$motif="";}
+    if (empty($_GET['motif']) and empty($_POST['motif'])) {$motif="";}
       else { if (isset($_GET['motif'])) {$motif=$_GET['motif'];} if (isset($_POST['motif'])) {$motif=$_POST['motif'];} }
-    if (empty($_GET['classe_choix']) AND empty($_POST['classe_choix'])) {$classe_choix="";}
+    if (empty($_GET['classe_choix']) and empty($_POST['classe_choix'])) {$classe_choix="";}
       else { if (isset($_GET['classe_choix'])) {$classe_choix=$_GET['classe_choix'];} if (isset($_POST['classe_choix'])) {$classe_choix=$_POST['classe_choix'];} }
-    if (empty($_GET['eleve_choix']) AND empty($_POST['eleve_choix'])) {$eleve_choix="";}
+    if (empty($_GET['eleve_choix']) and empty($_POST['eleve_choix'])) {$eleve_choix="";}
       else { if (isset($_GET['eleve_choix'])) {$eleve_choix=$_GET['eleve_choix'];} if (isset($_POST['eleve_choix'])) {$eleve_choix=$_POST['eleve_choix'];} }
-    if (empty($_GET['du']) AND empty($_POST['du'])) {$du="";}
+    if (empty($_GET['du']) and empty($_POST['du'])) {$du="";}
       else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
-    if (empty($_GET['au']) AND empty($_POST['au'])) {$au="";}
+    if (empty($_GET['au']) and empty($_POST['au'])) {$au="";}
       else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
-    if (empty($_GET['recherche']) AND empty($_POST['recherche'])) {$recherche="";}
+    if (empty($_GET['recherche']) and empty($_POST['recherche'])) {$recherche="";}
       else { if (isset($_GET['recherche'])) {$recherche=$_GET['recherche'];} if (isset($_POST['recherche'])) {$recherche=$_POST['recherche'];} }
 
       if ($type == "A" and $submit2 == "") {$type="A"; $justifie="1"; $nonjustifie="1"; $motif="tous"; $classe_choix="tous"; $eleve_choix="tous"; $du="$date_ce_jour"; $au="jj/mm/aaaa";}
@@ -205,8 +196,12 @@ include("./functions.php");
       if ($type == "R" and $submit2 == "") {$type="R"; $justifie="1"; $nonjustifie="1"; $motif="tous"; $classe_choix="tous"; $eleve_choix="tous"; $du="$date_ce_jour"; $au="jj/mm/aaaa";}
       if ($type == "I" and $submit2 == "") {$type="I"; $justifie="1"; $nonjustifie="1"; $motif="tous"; $classe_choix="tous"; $eleve_choix="tous"; $du="$date_ce_jour"; $au="jj/mm/aaaa";}
 
-      if ($du == "jj/mm/aaaa" OR $du == "") {$du = $date_ce_jour; }
-      if ($au == "jj/mm/aaaa" OR $au == "") {$au = $du; }
+      if ($du == "jj/mm/aaaa" or $du == "") {$du = $date_ce_jour; }
+      if ($au == "jj/mm/aaaa" or $au == "") {$au = $du; }
+
+    if (empty($_GET['pagedarriver']) and empty($_POST['pagedarriver'])) { $pagedarriver = ""; }
+      else { if (isset($_GET['pagedarriver'])) { $pagedarriver = $_GET['pagedarriver']; } if (isset($_POST['pagedarriver'])) { $pagedarriver = $_POST['pagedarriver']; } }
+
 
 //Quelle que variabale
   $datej = date('Y-m-d');
@@ -217,7 +212,7 @@ include("./functions.php");
 $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$prefix_base."absences_motifs ORDER BY init_motif_absence ASC";
 
 //requete sur les champs des tableaus
-if ($motif == "tous" AND $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
+if ($motif == "tous" and $classe_choix == "tous" AND $eleve_choix == "tous" AND $justifie == "1" AND $nonjustifie == "1")
    {
       $requete_recherche = "SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE type_absence_eleve = '".$type."' AND eleve_absence_eleve = login AND ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) ORDER BY nom, prenom ASC";
    }
@@ -317,15 +312,16 @@ if ($recherche == "afficher")
 }
 ?>
 
-<p class=bold>| <a href='Javascript:history.go(-1)'>Retour</a><noscript><a href='gestion/gestion_absences.php'>Retour</a></noscript> |
-</p>
+
+<?php if( $pagedarriver === 'gestion_absences') { ?><p class=bold>| <a href="../gestion/gestion_absences.php">Retour</a> |</p><?php } ?>
+<?php if( $pagedarriver === 'prof_ajout_abs') { ?><p class=bold>| <a href="../professeurs/prof_ajout_abs.php">Retour</a> |</p><?php } ?>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <form method="post" action="" name="form1">
       <fieldset style="width: 400px; margin: auto;">
         <legend class="legend_texte">&nbsp;Recherche&nbsp;</legend>
-          <div style="text-align:left">[ <?php if($recherche=="cacher" or $recherche=="") { ?><a href="tableau.php?recherche=afficher">afficher</a><?php } if($recherche=="afficher") { ?><a href="tableau.php?recherche=cacher">cacher</a><?php } ?> ]<br />
+          <div style="text-align:left">[ <?php if($recherche=="cacher" or $recherche=="") { ?><a href="tableau.php?recherche=afficher&amp;pagedarriver=<?php echo $pagedarriver; ?>">afficher</a><?php } if($recherche=="afficher") { ?><a href="tableau.php?recherche=cacher&amp;pagedarriver=<?php echo $pagedarriver; ?>">cacher</a><?php } ?> ]<br />
           <?php if ($recherche == "afficher") { ?>
              Type
                <select name="type" id="type">
@@ -342,7 +338,7 @@ if ($recherche == "afficher")
                  <option value="tous" <?php if (empty($motif)) {?>selected<?php } ?>>tous</option>
                   <?php
                     $resultat_liste_motif = mysql_query($requete_liste_motif) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-                    While ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) {
+                    while ( $data_liste_motif = mysql_fetch_array ($resultat_liste_motif)) {
                            if ($motif==$data_liste_motif['init_motif_absence']) { $selected = "selected"; } else { $selected = ""; } ?>
                           <option value="<?php echo $data_liste_motif['init_motif_absence']; ?>" <?php echo $selected; ?>><?php echo $data_liste_motif['init_motif_absence']." - ".$data_liste_motif['def_motif_absence']; ?></option>
                   <?php } ?>
@@ -373,8 +369,10 @@ if ($recherche == "afficher")
           <?php } else { ?><input type="hidden" name="eleve_choix" value="tous" /><?php } ?><br />
           Du <input name="du" type="text" id="du" value="<?php if (empty($du)) {?>jj/mm/aaaa<?php } else {echo $du; }?>" size="12" maxlength="12" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
           Au <input name="au" type="text" id="au" value="<?php if (empty($au)) {?>jj/mm/aaaa<?php } else {echo $au; }?>" size="12" maxlength="12" /><a href="#calend" onClick="<?php echo $cal_2->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+		<input type="hidden" name="pagedarriver" value="<?php echo $pagedarriver; ?>" />
           <input type="submit" name="submit2" value="Valider" /><br />
     <?php } ?>
+[ <a href="export_csv.php?type=<?php echo $type; ?>&amp;justifie=<?php echo $justifie; ?>&amp;nonjustifie=<?php echo $nonjustifie; ?>&amp;motif=<?php echo $motif; ?>&amp;classe_choix=<?php echo $classe_choix; ?>&amp;eleve_choix=<?php echo $eleve_choix; ?>&amp;du=<?php echo $du; ?>&amp;au=<?php echo $au; ?>">Exportation des données en csv</a> ]
     </div>
   </fieldset>
 </form>
@@ -391,7 +389,7 @@ if ($recherche == "afficher")
        <div id="d<?php echo $data_div['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
              <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
                  <tr>
-                   <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> a &eacute;t&eacute; absent<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br />le <?php echo date_frl($data_div['d_date_absence_eleve']); ?><?php if (($data_div['a_date_absence_eleve'] != $data_div['d_date_absence_eleve'] and $data_div['a_date_absence_eleve'] != "") or $data_div['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_div['d_heure_absence_eleve']); ?> <?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { } else { ?> à <?php ?> <?php echo heure($data_div['a_heure_absence_eleve']); } ?></td>
+                   <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> &agrave; &eacute;t&eacute; absent<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br />le <?php echo date_frl($data_div['d_date_absence_eleve']); ?><?php if (($data_div['a_date_absence_eleve'] != $data_div['d_date_absence_eleve'] and $data_div['a_date_absence_eleve'] != "") or $data_div['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_div['d_heure_absence_eleve']); ?> <?php if ($data_div['a_heure_absence_eleve'] == "00:00:00" or $data_div['a_heure_absence_eleve'] == "") { } else { ?> à <?php ?> <?php echo heure($data_div['a_heure_absence_eleve']); } ?></td>
                   <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                   $photo = "../../photos/eleves/".$data_div['elenoet'].".jpg";
                  if (!(file_exists($photo))) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
@@ -400,10 +398,10 @@ if ($recherche == "afficher")
                   } ?>
                  </tr>
                  <tr>
-                   <td class="norme_absence">Pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
+                   <td class="norme_absence">pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
                  </tr>
                  <tr>
-                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b><?php } ?></span></td>
                  </tr>
                  <tr>
                    <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -474,10 +472,10 @@ if ($recherche == "afficher")
                   } ?>
              </tr>
              <tr>
-               <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+               <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
-               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e por justification : </b><?php } ?></span></td>
              </tr>
              <tr>
                <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -533,10 +531,10 @@ if ($recherche == "afficher")
               <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> est dispensé<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br /> du <?php echo date_frl($data_div['d_date_absence_eleve']); ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><br />plus d'info : <?php echo $data_div['info_absence_eleve']; ?></td>
            </tr>
             <tr>
-              <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+              <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
             </tr>
             <tr>
-              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute; de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b><?php } ?></span></td>
             </tr>
             <tr>
               <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -602,7 +600,7 @@ if ($recherche == "afficher")
                   } ?>
              </tr>
              <tr>
-               <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+               <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
                <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>

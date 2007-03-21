@@ -77,7 +77,9 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 </form>
 <H2>Configuration avancée</H2>
 <blockquote>
+  <a href="admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
   <a href="admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
+  <a href="admin_config_semaines.php?action=visualiser">Définir les type de semaines</a><br />
   <a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
   <a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
 </blockquote>

@@ -52,7 +52,9 @@ require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 if (empty($_GET['type'])) {$type = ""; } else {$type = $_GET['type']; }
-if (empty($_POST['classe_choix'])) {$classe_choix = "tous"; } else {$classe_choix = $_POST['classe_choix']; }
+if (empty($_GET['classe_choix']) and empty($_POST['classe_choix'])) { $classe_choix="tous"; }
+    else { if (isset($_GET['classe_choix'])) { $classe_choix=$_GET['classe_choix']; } if (isset($_POST['classe_choix'])) { $classe_choix=$_POST['classe_choix']; } }
+
 if ($type == "A") {$page = "ajout_abs"; }
 if ($type == "D") {$page = "ajout_dip"; }
 if ($type == "I") {$page = "ajout_inf"; }
@@ -73,7 +75,7 @@ $date_ce_jour = date('d/m/Y');
 </p>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-  <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="4">
+  <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="2">
     <tr>
       <td class="titre_tableau_selection" colspan="2"><b>
       <?php if($type == "A") { ?>Absence d'un ou plusieurs &eacute;l&egrave;ve(s)<?php }

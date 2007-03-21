@@ -62,7 +62,6 @@ function dategl($jour, $mois, $annee)
 
 function heure($heure)
   {
-  $heure = "$heure";
   $tab_heure = explode(':', $heure);
   if ($tab_heure[0]==0)
   {
@@ -74,19 +73,36 @@ function heure($heure)
   }
   else
   {
-      $heure = ($tab_heure[0]."h ".$tab_heure[1]."min");
+      $heure = ($tab_heure[0]."h".$tab_heure[1]."min");
+  }
+  return($heure);
+  }
+
+function heure_texte_court($heure)
+  {
+  $tab_heure = explode(':', $heure);
+  if ($tab_heure[0]==0)
+  {
+      $heure = '';
+  }
+  elseif ($tab_heure[1]==0)
+  {
+      $heure = ($tab_heure[0].'h');
+  }
+  else
+  {
+      $heure = ($tab_heure[0].'h'.$tab_heure[1]);
   }
   return($heure);
   }
 
 function heure_court($heure)
   {
-  $heure = "$heure";
   $tab_heure = explode(':', $heure);
 
   if ($tab_heure[0]==0)
   {
-      $heure = "";
+      $heure = '';
   }
   elseif ($tab_heure[1]==0)
   {
@@ -404,6 +420,159 @@ function nb_jour_mois($mois_select,$annee_select)
     return($date_plus1);
  }
 
+
+// fonction qui indique le mois suiviant
+function mois_suivant($date_select)
+ {
+
+	$prochain_mois = ''; $mois = '';
+
+    $date_select_exp = explode('/', $date_select);
+    $mois = $date_select_exp[1]; 
+    $annee = $date_select_exp[2];
+
+  //Mois
+    //calcul des positions des mois
+        if($mois == 12)
+            {
+            $prochain_mois  = 1 ;
+            $prochaine_annee = $annee + 1 ;
+            $precedent_mois = $mois - 1 ;
+            $precedente_annee = $annee ;
+            }
+            else if($mois == 1)
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = 12 ;
+                    $precedente_annee = $annee - 1 ;
+                    }
+                    else
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = $mois - 1 ;
+                    $precedente_annee = $annee ;
+                    }
+
+	if($prochain_mois < 10) { $prochain_mois = '0'.$prochain_mois; }
+    // $date_plus1 = $prochain_annee."-".$prochain_mois."-".$date_select_exp[2];
+    $date_plus1 = '01/'.$prochain_mois.'/'.$prochaine_annee;
+    return($date_plus1);
+ }
+
+// fonction qui renvoi un tableau de mois d'un moi à un autre mois
+function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
+{
+	$jour = '1';
+	$i = '0';
+	$mois_passe = '';
+	$annee_passe = '';
+	$sortire_de_la_boucle = 'non';
+	while ( $sortire_de_la_boucle != 'oui' )
+	{
+	  if ( $mois_passe.'-'.$annee_passe === $mois_au.'-'.$annee_au ) { $sortire_de_la_boucle = 'oui'; }
+		// si le moi passe n'est pas défini alors on le définie avec
+		if ( $mois_passe === '' and $annee_passe === '' )
+		{
+			$mois_passe = $mois_de;
+			$annee_passe = $annee_de;
+		}
+
+		// $mois[$i]['mois'] = 'aou. 2006';
+		   $tab_mois = array('01'=>"jan.", '02'=>"fev.", '03'=>"mar.", '04'=>"avr.", '05'=>"mai", '06'=>"jui.", '07'=>"juil.", '08'=>"aoû.", '09'=>"sep.", '10'=>"oct.", '11'=>"nov.", '12'=>"déc.");
+		$mois[$i]['mois'] = $tab_mois[$mois_passe].' '.$annee_passe;
+		$mois[$i]['mois_court'] = $tab_mois[$mois_passe];
+		// $mois[$i]['num_mois'] = '08';
+		$mois[$i]['num_mois'] = $mois_passe;
+		// $mois[$i]['num_mois_simple'] = '8';
+		// $mois[$i]['num_annee'] = '2006';
+		$mois[$i]['num_annee'] = $annee_passe;
+		$mois_suivant = explode('/',mois_suivant('01/'.$mois_passe.'/'.$annee_passe));
+
+		$mois_passe = $mois_suivant[1];
+		$annee_passe = $mois_suivant[2]; 
+	$i = $i + 1;
+	}
+	return($mois);
+}
+
+function nb_jour_mois_autre($mois_select,$annee_select)
+ {
+  //Dernier jour du mois
+    $mois_d = mktime( 0, 0, 0, $mois_select, 1, $annee_select);
+    $nombreDeJours = intval(date("t",$mois_select));
+    return($nombreDeJours);
+ }
+
+function mois_precedent($date_select)
+ {
+    if(empty($date_select)) { $date_select = date('Y-m-d'); } { $date_select = $date_select; }
+
+    $date_select_exp = explode('-', $date_select);
+
+    $mois = $date_select_exp[1];
+    $annee = $date_select_exp[0];
+        if($mois == 12)
+            {
+            $prochain_mois  = 1 ;
+            $prochaine_annee = $annee + 1 ;
+            $precedent_mois = $mois - 1 ;
+            $precedente_annee = $annee ;
+            }
+            else if($mois == 1)
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = 12 ;
+                    $precedente_annee = $annee - 1 ;
+                    }
+                    else
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = $mois - 1 ;
+                    $precedente_annee = $annee ;
+                    }
+
+          if ($precedent_mois<10) { $precedent_mois = "0".$precedent_mois; }
+    $date_moins1 = $precedent_mois;
+    return($date_moins1);
+ }
+
+function annee_precedent($date_select)
+ {
+    if(empty($date_select)) { $date_select = date('Y-m-d'); } { $date_select = $date_select; }
+
+    $date_select_exp = explode('-', $date_select);
+
+    $mois = $date_select_exp[1];
+    $annee = $date_select_exp[0];
+        if($mois == 12)
+            {
+            $prochain_mois  = 1 ;
+            $prochaine_annee = $annee + 1 ;
+            $precedent_mois = $mois - 1 ;
+            $precedente_annee = $annee ;
+            }
+            else if($mois == 1)
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = 12 ;
+                    $precedente_annee = $annee - 1 ;
+                    }
+                    else
+                    {
+                    $prochain_mois  = $mois + 1  ;
+                    $prochaine_annee = $annee ;
+                    $precedent_mois = $mois - 1 ;
+                    $precedente_annee = $annee ;
+                    }
+    $date_moins1 = $precedente_annee;
+    return($date_moins1);
+ }
+
 function verif_date($date_a_verif)
  {
     if(eregi("[0-9]{4}-[0-9]{2}-[0-9]{2}",$date_a_verif))
@@ -477,6 +646,27 @@ function qui($login_perso)
       return $qui_est_ce;
 }
 
+function qui_fonction($login_perso)
+{
+      global $prefix_base;
+      $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
+      $execution_login_perso = mysql_query($requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.mysql_error());
+      $data_login_perso = mysql_fetch_array($execution_login_perso);
+      if($login_perso != "") { $qui_est_ce_status = $data_login_perso['statut']; } else { $qui_est_ce_status=""; }
+      return $qui_est_ce_status;
+}
+
+
+function qui_court($login_perso)
+{
+      global $prefix_base;
+      $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
+      $execution_login_perso = mysql_query($requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.mysql_error());
+      $data_login_perso = mysql_fetch_array($execution_login_perso);
+      if($login_perso != "") { $qui_est_ce = $data_login_perso['civilite']." ".strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
+      return $qui_est_ce;
+}
+
 function qui_eleve($login_perso)
 {
       global $prefix_base;
@@ -485,6 +675,16 @@ function qui_eleve($login_perso)
       $data_login_perso = mysql_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
+}
+
+function lettre_type($id)
+{
+      global $prefix_base;
+      $requete ="SELECT * FROM ".$prefix_base."lettres_types WHERE id_lettre_type = '".$id."'";
+      $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+      $donner = mysql_fetch_array($execution);
+      if(!empty($donner['id_lettre_type'])) { $type_de_courrier = $donner['titre_lettre_type']; } else { $type_de_courrier = 'inconnu'; }
+      return ($type_de_courrier);
 }
 
 function aff_mois($mois) {
@@ -679,6 +879,7 @@ function periode_actuel($heure_choix)
 // ex: perdiode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure($periode)
 {
+	$debut = ''; $fin = '';
       // on recherche les informations sur la périodes sélectionné
       $requete_periode = ('SELECT * FROM absences_creneaux WHERE id_definie_periode = "'.$periode.'"');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
@@ -686,6 +887,7 @@ function periode_heure($periode)
           $debut = $data_periode['heuredebut_definie_periode'];
           $fin   = $data_periode['heurefin_definie_periode'];
       }
+
       return array('debut'=> $debut, 'fin'=>$fin);
 }
 
@@ -729,4 +931,517 @@ function matiere_du_groupe($groupe_parametre)
       }
       return array('nomcomplet'=> $nomcomplet, 'nomcourt'=>$nomcourt);
 }
+
+// fonction permetant de connaitre le jour de la semain SQL en numérique
+function jour_sem_sql($date)
+ {
+	date_default_timezone_get();
+	$tab_date = explode('-', $date);
+	$jour_de_la_semaine = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
+	return($jour_de_la_semaine);
+ }
+
+// fonction permetant de connaitre le jour de la semain SQL en format text
+function jour_sem_compfr($date)
+ {
+	date_default_timezone_get();
+	$tab_date = explode('-', $date);
+	$tab_jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+	$jour = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
+	$jour_de_la_semaine = $tab_jour[$jour];
+	return($jour_de_la_semaine);
+ }
+
+
+//fonction qui permet de recevoir dans un tableau login|jour|date|heure_debut|heure_fin
+// à partir d'un tableau qui contient les données suivant login|date_debut|date_fin|heure_debut|heure_fin
+function crer_tableau_jaj($tableau)
+ {
+	date_default_timezone_get();
+	$tableau_de_donnees = '';
+	$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
+	while(!empty($tableau[$i]['login']))
+	 { 
+		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
+		if($tableau[$i]['date_debut'] === $tableau[$i]['date_fin'])
+		 {
+			$tableau_de_donnees[$i2]['id'] = $i2;
+			$tableau_de_donnees[$i2]['login'] = $tableau[$i]['login'];
+			$tableau_de_donnees[$i2]['classe'] = $tableau[$i]['classe'];
+			$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($tableau[$i]['date_debut']);
+			$tableau_de_donnees[$i2]['date'] = $tableau[$i]['date_debut'];
+			$tableau_de_donnees[$i2]['heure_debut'] = $tableau[$i]['heure_debut'];
+			$tableau_de_donnees[$i2]['heure_fin'] = $tableau[$i]['heure_fin'];
+			$i2 = $i2 + 1;
+		 }
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		if($tableau[$i]['date_debut'] != $tableau[$i]['date_fin'])
+		 { 
+			$jour_select = $tableau[$i]['date_debut'];
+			// calcule le nombre de jour entre deux date
+			$date1 = str_replace("-", "", $tableau[$i]['date_debut']);
+			$date2 = str_replace("-", "", $tableau[$i]['date_fin']);
+			$nbjours = floor((strtotime($date2) - strtotime($date1))/(60*60*24));
+			$nb_jour_passe = '0'; $jour_passe = $tableau[$i]['date_debut'];
+			while($nb_jour_passe<=$nbjours)
+			 {
+				$tableau_de_donnees[$i2]['id'] = $i2;
+				$tableau_de_donnees[$i2]['login'] = $tableau[$i]['login'];
+				$tableau_de_donnees[$i2]['classe'] = $tableau[$i]['classe'];
+				$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($jour_passe);
+				$tableau_de_donnees[$i2]['date'] = $jour_passe;
+				if($jour_passe != $tableau[$i]['date_debut'] and $jour_passe != $tableau[$i]['date_fin'])
+				{
+					$tableau_de_donnees[$i2]['heure_debut'] = $heure_de_debut;
+					$tableau_de_donnees[$i2]['heure_fin'] = $heure_de_fin;
+				} else {
+						if($jour_passe === $tableau[$i]['date_debut']) { $tableau_de_donnees[$i2]['heure_debut'] = $tableau[$i]['heure_debut']; } else { $tableau_de_donnees[$i2]['heure_debut'] = $heure_de_debut; }
+						if($jour_passe === $tableau[$i]['date_fin']) { $tableau_de_donnees[$i2]['heure_fin'] = $tableau[$i]['heure_fin']; } else { $tableau_de_donnees[$i2]['heure_fin'] = $heure_de_fin; }
+					}
+				$tab_date = explode('-', $jour_passe);
+				$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+				$nb_jour_passe = $nb_jour_passe + 1;
+				$i2 = $i2 + 1;
+			 }
+		 }
+		$i = $i + 1;
+	 }
+
+return $tableau_de_donnees;
+ }
+
+function Absence($jourC, $heureD, $heureF, $tab) {
+
+  $abs = 0;
+  foreach($tab as $cle => $valeur) {
+
+	list($an, $mois, $jour) = explode("-", $tab[$cle]['date']);
+	$newDate = mktime(0,0,0,$mois,$jour,$an);
+	$test = date("D", $newDate);
+
+	if ($test === $jourC) {
+	  if (($tab[$cle]['heure_debut'] < $heureD and $tab[$cle]['heure_fin'] <= $heureD) or ($tab[$cle]['heure_debut'] >= $heureF and $tab[$cle]['heure_fin'] > $heureF))
+	   { /* vide */ } else { $abs = $abs +1; }
+	}
+
+  }
+
+return $abs;
+}
+
+
+function absence_fiche($jourC, $heureD, $heureF, $tab) {
+
+  $abs = 0;
+  foreach($tab as $cle => $valeur) {
+      if ( isset($tab[$cle]['date']) ) {
+	$date_select = explode('-',$tab[$cle]['date']);
+	if ( checkdate($date_select[1], $date_select[2], $date_select[0]) )
+	{
+		list($an, $mois, $jour) = explode("-", $tab[$cle]['date']);
+		$newDate = mktime(0,0,0,$mois,$jour,$an);
+		$test = date("w", $newDate);
+
+		if ($test === $jourC) {
+		  if (($tab[$cle]['heure_debut'] < $heureD and $tab[$cle]['heure_fin'] <= $heureD) or ($tab[$cle]['heure_debut'] >= $heureF and $tab[$cle]['heure_fin'] > $heureF))
+		   { /* vide */ } else { $abs = $abs + 1; }
+		}
+	}
+      }
+
+  }
+
+return $abs;
+}
+
+function retard_fiche($jourC, $heureD, $heureF, $tab) {
+
+  $abs = 0;
+  foreach($tab as $cle => $valeur) {
+
+      if ( isset($tab[$cle]['date']) ) {
+	$date_select = explode('-',$tab[$cle]['date']);
+	if ( checkdate($date_select[1], $date_select[2], $date_select[0]) )
+	{
+		list($an, $mois, $jour) = explode("-", $tab[$cle]['date']);
+		$newDate = mktime(0,0,0,$mois,$jour,$an);
+		$test = date("w", $newDate);
+		if ($test === $jourC) {
+		  if ( $tab[$cle]['heure_debut'] > $heureD and $tab[$cle]['heure_debut'] < $heureF )
+		   { $abs = $abs + 1; }
+		}
+	}
+      }
+  }
+
+return $abs;
+}
+
+// fonction  qui permet de convertir des minutes en heure
+function convert_minutes_heures($minutes)
+{
+	//combien d'heures ?
+	$heure = floor($minutes / 60);
+
+	//combien de minutes ?
+	$minute = floor(($minutes - ($heure * 60)));
+	  if ($minute < 10) { $minute = "0".$minute; }
+
+	$temps = $heure."h".$minute;
+
+  return($temps);
+}
+
+// fonction  qui permet de convertir des heure en minutes
+function convert_heures_minutes($heures)
+{
+	// explose les heures pour avoir un tableau heure, minute
+	$tab_heure = explode(':', $heures);
+
+	//combien de minute dans une heures ?
+	$total_minute = floor($tab_heure[0] * 60);
+
+	//combien de minutes total
+	if ( isset($tab_heure[1]) ) {
+		$total_minute = $total_minute + $tab_heure[1];
+	} else { $total_minute = $total_minute; }
+       
+  return($total_minute);
+}
+
+// fonction de conversion de numéro de mois en mois court
+function convert_num_mois_court($numero)
+{
+  	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"Aout", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
+	$mois_court = $tab_mois[$numero];
+  return($mois_court);
+}
+
+// fonction permettant d'obtenir le tableau des horaires d'ouverture.
+function ouverture() {
+
+    global $prefix_base;
+
+	$requete ="SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
+	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	while ( $donnee = mysql_fetch_array($execution) )
+	{
+		$jour = $donnee['jour_horaire_etablissement'];
+		$ouverture[$jour]['ouverture'] = $donnee['ouverture_horaire_etablissement'];
+		$ouverture[$jour]['fermeture'] = $donnee['fermeture_horaire_etablissement'];
+		$ouverture[$jour]['pause'] = $donnee['pause_horaire_etablissement'];
+	}
+
+    return($ouverture);
+}
+
+// fonction permettant de connaitre les jour d'absence ou autre
+// en fonction du login, type(A|R), date du, date au)
+function repartire($login, $type, $du, $au)
+{
+	global $prefix_base;
+
+	     $i = '0';
+	     date_default_timezone_get();
+ 	     $tableau_de_donnees = '';
+             $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
+             $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+              while ( $donnee = mysql_fetch_array($execution))
+                { 
+		$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
+		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
+		if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
+		 {
+			$tableau_de_donnees[$i2]['id'] = $i2;
+			$tableau_de_donnees[$i2]['login'] = $donnee['eleve_absence_eleve'];
+			$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($donnee['d_date_absence_eleve']);
+			$tableau_de_donnees[$i2]['date'] = $donnee['d_date_absence_eleve'];
+			$tableau_de_donnees[$i2]['heure_debut'] = $donnee['d_heure_absence_eleve'];
+			$tableau_de_donnees[$i2]['heure_fin'] = $donnee['a_heure_absence_eleve'];
+			$i2 = $i2 + 1;
+		 }
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
+		 { 
+			$jour_select = $donnee['d_date_absence_eleve'];
+			// calcule le nombre de jour entre deux date
+			$date1 = str_replace("-", "", $donnee['d_date_absence_eleve']);
+			$date2 = str_replace("-", "", $donnee['a_date_absence_eleve']);
+			$nbjours = floor((strtotime($date2) - strtotime($date1))/(60*60*24));
+			$nb_jour_passe = '0'; $jour_passe = $donnee['d_date_absence_eleve'];
+			while($nb_jour_passe<=$nbjours)
+			 {
+				$tableau_de_donnees[$i2]['id'] = $i2;
+				$tableau_de_donnees[$i2]['login'] = $donnee['eleve_absence_eleve'];
+				$tableau_de_donnees[$i2]['jour'] = jour_sem_sql($jour_passe);
+				$tableau_de_donnees[$i2]['date'] = $jour_passe;
+				if($jour_passe != $donnee['d_date_absence_eleve'] and $jour_passe != $donnee['a_date_absence_eleve'])
+				{
+					$tableau_de_donnees[$i2]['heure_debut'] = $heure_de_debut;
+					$tableau_de_donnees[$i2]['heure_fin'] = $heure_de_fin;
+				} else {
+						if($jour_passe === $donnee['d_date_absence_eleve']) { $tableau_de_donnees[$i2]['heure_debut'] = $donnee['d_heure_absence_eleve']; } else { $tableau_de_donnees[$i2]['heure_debut'] = $heure_de_debut; }
+						if($jour_passe === $donnee['a_date_absence_eleve']) { $tableau_de_donnees[$i2]['heure_fin'] = $donnee['a_heure_absence_eleve']; } else { $tableau_de_donnees[$i2]['heure_fin'] = $heure_de_fin; }
+					}
+				$tab_date = explode('-', $jour_passe);
+				$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+				$nb_jour_passe = $nb_jour_passe + 1;
+				$i2 = $i2 + 1;
+			 }
+		 }
+		$i = $i + 1;
+
+		} 
+return $tableau_de_donnees;
+}
+
+// fonction permettant de connaitre les jour d'absence ou autre
+// en fonction du login, type(A|R), date du, date au)
+function repartire_jour($login, $type, $du, $au)
+{
+	global $prefix_base;
+
+	     $i = '0';
+ 	     date_default_timezone_get();
+  	     $tableau_de_donnees = '';
+             $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
+             $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+              while ( $donnee = mysql_fetch_array($execution))
+                { 
+		$i = '0'; $i2 = '0';
+		$horraire = ouverture();
+		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
+		if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
+		 {
+			$date = $donnee['d_date_absence_eleve'];
+			$tableau_de_donnees[$date]['login'] = $donnee['eleve_absence_eleve'];
+			$tableau_de_donnees[$date]['jour'] = jour_sem_sql($donnee['d_date_absence_eleve']);
+			$tab_jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+					$jour_num = $tableau_de_donnees[$date]['jour'];
+					$jour = $tab_jour[$jour_num];
+					if ( isset($horraire[$jour]) ) {
+						$heure_de_debut = $horraire[$jour]['ouverture'];
+						$heure_de_fin = $horraire[$jour]['fermeture'];
+						$pause = $horraire[$jour]['pause'];
+					} else {
+							$heure_de_debut = '00:00:00';
+							$heure_de_fin = '00:00:00';
+							$pause = '00:00:00';
+						}
+			$tableau_de_donnees[$date]['date'] = $donnee['d_date_absence_eleve'];
+			$tableau_de_donnees[$date]['heure_debut'] = $donnee['d_heure_absence_eleve'];
+			$tableau_de_donnees[$date]['heure_fin'] = $donnee['a_heure_absence_eleve'];
+			if ( $donnee['justify_absence_eleve'] === 'N' ) { $tableau_de_donnees[$date]['justifie'] = 'non'; }
+			 else { $tableau_de_donnees[$date]['justifie'] = 'oui'; }
+
+			// statistique par mois
+			$tab_date = explode('-',$date);
+			$mois = $tab_date[1];
+			$annee = $tab_date[0];
+			if ( !isset($tableau_de_donnees[$annee.'-'.$mois]) )
+			{
+				$tableau_de_donnees[$annee.'-'.$mois]['nb'] = 1;
+				if ( $donnee['justify_absence_eleve'] === 'N' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = 1; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = 0; }
+				if ( $donnee['justify_absence_eleve'] != 'N' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = 1; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = 0; }
+			      if ( $donnee['type_absence_eleve'] === 'A' ) {
+				// en heure
+				$minute_debut = convert_heures_minutes($tableau_de_donnees[$date]['heure_debut']);
+				$minute_fin = convert_heures_minutes($tableau_de_donnees[$date]['heure_fin']);
+				$temp_total_min = ($minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+				if ( $tableau_de_donnees[$date]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = '0'; }
+				if ( $tableau_de_donnees[$date]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = '0'; }
+			      }
+			} else {
+					$tableau_de_donnees[$annee.'-'.$mois]['nb'] = $tableau_de_donnees[$annee.'-'.$mois]['nb'] + 1;
+					if ( $tableau_de_donnees[$date]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] + 1; }
+					if ( $tableau_de_donnees[$date]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] + 1; }
+ 				      if ( $donnee['type_absence_eleve'] === 'A' ) {
+					// en heure
+					$minute_debut = convert_heures_minutes($tableau_de_donnees[$date]['heure_debut']);
+					$minute_fin = convert_heures_minutes($tableau_de_donnees[$date]['heure_fin']);
+					$temp_total_min = ($minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+					if ( $tableau_de_donnees[$date]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] + $temp_total_min; }
+					if ( $tableau_de_donnees[$date]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] + $temp_total_min; }
+				      }
+				}
+
+				// statistique global
+				if ( !isset($tableau_de_donnees['global']) )
+				{
+					$tableau_de_donnees['global']['nb'] = 1;
+	 				      if ( $donnee['type_absence_eleve'] === 'A' ) {
+						// en heure				
+						$tableau_de_donnees['global']['nb_min'] = $temp_total_min;
+					      }
+				} else { 
+						$tableau_de_donnees['global']['nb'] = $tableau_de_donnees['global']['nb'] + 1;
+	 				      if ( $donnee['type_absence_eleve'] === 'A' ) {
+						// en heure				
+						$tableau_de_donnees['global']['nb_min'] = $tableau_de_donnees['global']['nb_min'] + $temp_total_min;
+					      }
+					}
+
+			$i2 = $i2 + 1;
+		 }
+		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
+		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
+		 { 
+			$jour_select = $donnee['d_date_absence_eleve'];
+			// calcule le nombre de jour entre deux date
+			$date1 = str_replace("-", "", $donnee['d_date_absence_eleve']);
+			$date2 = str_replace("-", "", $donnee['a_date_absence_eleve']);
+			$nbjours = floor((strtotime($date2) - strtotime($date1))/(60*60*24));
+			$nb_jour_passe = '0'; $jour_passe = $donnee['d_date_absence_eleve'];
+			while($nb_jour_passe<=$nbjours)
+			 {
+				$tableau_de_donnees[$jour_passe]['login'] = $donnee['eleve_absence_eleve'];
+				$tableau_de_donnees[$jour_passe]['jour'] = jour_sem_sql($jour_passe);
+					$tab_jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+					$jour_num = $tableau_de_donnees[$jour_passe]['jour'];
+					$jour = $tab_jour[$jour_num];
+					if ( isset($horraire[$jour]) ) {
+						$heure_de_debut = $horraire[$jour]['ouverture'];
+						$heure_de_fin = $horraire[$jour]['fermeture'];
+						$pause = $horraire[$jour]['pause'];
+					} else {
+							$heure_de_debut = '00:00:00';
+							$heure_de_fin = '00:00:00';
+							$pause = '00:00:00';
+						}
+
+				$tableau_de_donnees[$jour_passe]['date'] = $jour_passe;
+				if($jour_passe != $donnee['d_date_absence_eleve'] and $jour_passe != $donnee['a_date_absence_eleve'])
+				{
+					$tableau_de_donnees[$jour_passe]['heure_debut'] = $heure_de_debut;
+					$tableau_de_donnees[$jour_passe]['heure_fin'] = $heure_de_fin;
+				} else {
+						if($jour_passe === $donnee['d_date_absence_eleve']) { $tableau_de_donnees[$jour_passe]['heure_debut'] = $donnee['d_heure_absence_eleve']; } else { $tableau_de_donnees[$jour_passe]['heure_debut'] = $heure_de_debut; }
+						if($jour_passe === $donnee['a_date_absence_eleve']) { $tableau_de_donnees[$jour_passe]['heure_fin'] = $donnee['a_heure_absence_eleve']; } else { $tableau_de_donnees[$jour_passe]['heure_fin'] = $heure_de_fin; }
+					}
+				if ( $donnee['justify_absence_eleve'] === 'N' ) { $tableau_de_donnees[$jour_passe]['justifie'] = 'non'; }
+				 else { $tableau_de_donnees[$jour_passe]['justifie'] = 'oui'; }
+
+				// statistique par mois
+				$tab_date = explode('-',$jour_passe);
+				$mois = $tab_date[1];
+				$annee = $tab_date[0];
+				if ( !isset($tableau_de_donnees[$annee.'-'.$mois]) and isset($tableau_de_donnees[$jour_passe]) )
+				{
+					$tableau_de_donnees[$annee.'-'.$mois]['nb'] = 1;
+					if ( $tableau_de_donnees[$jour_passe]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = 1; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = 0; }
+					if ( $tableau_de_donnees[$jour_passe]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = 1; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = 0; }
+				      if ( $donnee['type_absence_eleve'] === 'A' ) {
+					// en heure
+					$minute_debut = convert_heures_minutes($tableau_de_donnees[$jour_passe]['heure_debut']);
+					$minute_fin = convert_heures_minutes($tableau_de_donnees[$jour_passe]['heure_fin']);
+					$temp_total_min = ( $minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+					if ( $tableau_de_donnees[$jour_passe]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = '0'; }
+					if ( $tableau_de_donnees[$jour_passe]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = '0'; }
+				      }
+				} else {
+						$tableau_de_donnees[$annee.'-'.$mois]['nb'] = $tableau_de_donnees[$annee.'-'.$mois]['nb'] + 1;
+						if ( $tableau_de_donnees[$jour_passe]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_nj'] + 1; }
+						if ( $tableau_de_donnees[$jour_passe]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_j'] + 1; }
+					      if ( $donnee['type_absence_eleve'] === 'A' ) {
+						// en heure
+						$minute_debut = convert_heures_minutes($tableau_de_donnees[$jour_passe]['heure_debut']);
+						$minute_fin = convert_heures_minutes($tableau_de_donnees[$jour_passe]['heure_fin']);
+						$temp_total_min = ( $minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+						if ( $tableau_de_donnees[$jour_passe]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] + $temp_total_min; }
+						if ( $tableau_de_donnees[$jour_passe]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] + $temp_total_min; }
+					      }
+					}
+
+					// statistique global
+					if ( !isset($tableau_de_donnees['global']) )
+					{
+						$tableau_de_donnees['global']['nb'] = 1;
+ 						      if ( $donnee['type_absence_eleve'] === 'A' ) {
+							// en heure				
+							$tableau_de_donnees['global']['nb_min'] = $temp_total_min;
+						      }
+					} else { 
+						$tableau_de_donnees['global']['nb'] = $tableau_de_donnees['global']['nb'] + 1;
+		  				      if ( $donnee['type_absence_eleve'] === 'A' ) {
+							// en heure				
+							$tableau_de_donnees['global']['nb_min'] = $tableau_de_donnees['global']['nb_min'] + $temp_total_min;
+						      }
+						}
+
+				$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+				$nb_jour_passe = $nb_jour_passe + 1;
+				$i2 = $i2 + 1;
+			 }
+		 }
+		$i = $i + 1;
+
+		} 
+return $tableau_de_donnees;
+}
+
+// permet de connaitre le type de semaine
+function semaine_type($date)
+{
+    global $prefix_base;
+
+	list($jour, $mois, $annee) = explode('/',$date);
+	if ( empty($mois) ) {
+		list($annee, $mois, $jour) = explode('-',$date);
+	}
+	$temps = mktime(00, 00, 00, $mois, $jour, $annee);
+	$numero_de_la_semaine = date('W', $temps);
+
+	$requete ="SELECT * FROM ".$prefix_base."edt_semaines WHERE num_edt_semaine = '".$numero_de_la_semaine."'";
+	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$donnee = mysql_fetch_array($execution);
+	$type_semaine = $donnee['type_edt_semaine'];
+
+    return($type_semaine);
+}
+
+// permet de connaitre le type de motif d'une absences
+function motif_type_abs($motif_absence)
+{
+    global $prefix_base;
+
+	$requete ="SELECT * FROM ".$prefix_base."absences_motifs WHERE init_motif_absence = '".$motif_absence."'";
+	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$donnee = mysql_fetch_array($execution);
+	$motif_absence_design = $donnee['def_motif_absence'];
+
+    return($motif_absence_design);
+}
+
+// fonction pour tronquer un texte
+function tronquer_texte($texte, $longeur_max)
+{
+    if (strlen($texte) > $longeur_max)
+    {
+    $texte = substr($texte, 0, $longeur_max);
+	// on ne coupe pas au dernier espace mais au carcatére pret
+	// $dernier_espace = strrpos($texte, "");
+	$dernier_espace = $longeur_max;
+    $texte = substr($texte, 0, $dernier_espace)."...";
+    }
+
+    return $texte;
+}
+
+// fonction pour information du cpe d'un élève
+function cpe_eleve($login_eleve)
+{
+    global $prefix_base;
+
+	$requete ="SELECT * FROM ".$prefix_base."j_eleves_cpe jec, ".$prefix_base."utilisateurs u WHERE jec.e_login = '".$login_eleve."' AND jec.cpe_login = u.login";
+	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$donnee = mysql_fetch_array($execution);
+	$login_cpe = $donnee['login'];
+	$civilite = $donnee['civilite'];
+	$nom = $donnee['nom'];
+	$prenom = $donnee['prenom'];
+
+    return array('login' => $login_cpe, 'civilite' => $civilite, 'nom' => $nom, 'prenom' => $prenom);
+}
+
+
 ?>

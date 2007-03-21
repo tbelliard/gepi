@@ -283,6 +283,15 @@ input:focus {
     background: #C6DCE3;
 }
 
+.td_tableau_sel {
+    width: 20%;
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #00FF9A;
+}
+
+
 .td_tableau_identité {
     width: 10px;
 }
@@ -482,6 +491,18 @@ legend {
     padding: 1em;
 }
 
+.info_eleve_courrier {
+    border: 1px solid #B1798C;
+    background: White;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -13px;
+    margin-bottom: 12px;
+//    margin: -12px 12px 12px 12px;
+    padding: 0.1em;
+    width: 90%;
+}
+
 .dimi_texte {
     font: normal 9pt verdana, sans-serif;
 }
@@ -493,10 +514,11 @@ legend {
 
 .table_calendrier {
 	border-style: solid; 
-	border-width: 1px; 
+	border-width: 2px; 
 	border-color: black;
 	width: 100%;
 	border-collapse: collapse;
+	margin: auto; // pour centrer le tableau
 }
 
 .td_calendrier_mois {
@@ -520,3 +542,32 @@ legend {
 	text-align: center; 
 }
 
+.table_semaine {
+	border-style: solid; 
+	border-width: 2px; 
+	border-color: black;
+	width: 400px;
+	border-collapse: collapse;
+	margin: auto; // pour centrer le tableau
+}
+
+.td_semaine_jour {
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #5F5F5F;
+	width: 20px;
+	font-size : 0.8em;
+	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
+	color : black;
+	text-align: center; 
+}
+
+
+.titre_tableau_alert {
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/tab_rouge.png);
+    border: 0px solid #F8F8F8;
+}

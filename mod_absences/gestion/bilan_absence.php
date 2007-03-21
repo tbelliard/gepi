@@ -54,6 +54,10 @@ if (!checkAccess()) {
 die();
 }
 
+
+define('FPDF_FONTPATH','../../fpdf/font/');
+require('../../fpdf/fpdf.php');
+
 // fonction de redimensionnement d'image
 function redimensionne_logo($photo, $L_max, $H_max)
  {
@@ -83,20 +87,125 @@ function redimensionne_logo($photo, $L_max, $H_max)
  }
 
    $date_ce_jour = date('d/m/Y');
-    if (empty($_GET['classe']) AND empty($_POST['classe'])) {$classe="";}
+    if (empty($_GET['classe']) and empty($_POST['classe'])) {$classe="";}
     else { if (isset($_GET['classe'])) {$classe=$_GET['classe'];} if (isset($_POST['classe'])) {$classe=$_POST['classe'];} }
-    if (empty($_GET['eleve']) AND empty($_POST['eleve'])) {$eleve="tous";}
+    if (empty($_GET['eleve']) and empty($_POST['eleve'])) {$eleve="tous";}
     else { if (isset($_GET['eleve'])) {$eleve=$_GET['eleve'];} if (isset($_POST['eleve'])) {$eleve=$_POST['eleve'];} }
-    if (empty($_GET['du']) AND empty($_POST['du'])) {$du="$date_ce_jour";}
+    if (empty($_GET['du']) and empty($_POST['du'])) {$du="$date_ce_jour";}
     else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
-    if (empty($_GET['au']) AND empty($_POST['au'])) {$au="$du";}
+    if (empty($_GET['au']) and empty($_POST['au'])) {$au="$du";}
     else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
 
-    if ($au == "" OR $au == "JJ/MM/AAAA") { $au = $du; }
+    if ($au == "" or $au == "JJ/MM/AAAA") { $au = $du; }
 
+class bilan_PDF extends FPDF
+{
 
-define('FPDF_FONTPATH','../../fpdf/font/');
-require('../../fpdf/fpdf.php');
+    //En-tête du document
+    function Header()
+    {
+	    global $prefix_base;
+			$X_etab = '10'; $Y_etab = '10';
+		        $caractere_utilse = 'Arial';
+			$affiche_logo_etab='1';
+			$entente_mel='0'; // afficher l'adresse mel dans l'entête
+			$entente_tel='0'; // afficher le numéro de téléphone dans l'entête
+			$entente_fax='0'; // afficher le numéro de fax dans l'entête
+			$L_max_logo=75; $H_max_logo=75; //dimension du logo
+
+    //Affiche le filigrame
+
+	//bloc identification etablissement
+	$logo = '../../images/'.getSettingValue('logo_etab');
+	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
+	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
+	{
+	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
+	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
+	 $X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
+	 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
+	 //logo
+         $this->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+	}
+
+	//adresse
+ 	 $this->SetXY($X_etab,$Y_etab);
+ 	 $this->SetFont($caractere_utilse,'',14);
+	  $gepiSchoolName = getSettingValue('gepiSchoolName');
+	 $this->Cell(90,7, $gepiSchoolName,0,2,''); 
+	 $this->SetFont($caractere_utilse,'',10);
+	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
+	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+	  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
+	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+	  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
+	  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
+	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
+	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
+	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
+	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
+	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
+	if( isset($entete_communic) and $entete_communic != '' ) {
+	 $this->Cell(90,5, $entete_communic,0,2,''); 
+	}
+	if($entente_mel==='1') {
+	  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
+	 $this->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+	}
+    }
+
+    //Pied de page du document
+    function Footer()
+    {
+
+                 $niveau_etab = "";
+                 $nom_etab = getSettingValue("gepiSchoolName");
+                 $adresse1_etab = getSettingValue("gepiSchoolAdress1");
+                 $adresse2_etab = getSettingValue("gepiSchoolAdress2");
+                 $cp_etab = getSettingValue("gepiSchoolZipCode");
+                 $ville_etab = getSettingValue("gepiSchoolCity");
+                 $cedex_etab = "";
+                 $telephone_etab = getSettingValue("gepiSchoolTel");
+                 $fax_etab = getSettingValue("gepiSchoolFax");
+                 $mel_etab = getSettingValue("gepiSchoolEmail");
+
+        //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+   	$this->SetXY(5,-10);
+        //Police Arial Gras 6
+        $this->SetFont('Arial','B',8);
+	$this->SetLineWidth(0,2);
+	$this->SetDrawColor(0, 0, 0);
+	$this->Line(10, 280, 200, 280);
+	$this->SetFont('Arial','',10);
+	$this->SetY(280);
+	$adresse = $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	if($adresse2_etab!="")
+	{
+	  $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	}
+	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
+	{
+	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	}
+	if($telephone_etab=="" and $fax_etab!="" and $mel_etab!="")
+	{
+	  $adresse2 = "Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	}
+	if($telephone_etab!="" and $fax_etab=="" and $mel_etab!="")
+	{
+	  $adresse2 = "Tel : ".$telephone_etab." - Mèl : ".$mel_etab;
+	}
+	if($telephone_etab!="" and $fax_etab!="" and $mel_etab=="")
+	{
+	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab;
+	}
+
+	$this->Cell(0, 4.5, $adresse, 0, 1, 'C', '');
+	$this->Cell(0, 4.5, $adresse2, 0, 1, 'C', '');
+    } 
+}
+
 
 //requete dans la base de donnée
   //etablissement
@@ -111,15 +220,15 @@ require('../../fpdf/fpdf.php');
           $fax_etab = getSettingValue("gepiSchoolFax");
           $mel_etab = getSettingValue("gepiSchoolEmail");
   //contage des pages
-      if ($classe != "tous" AND $eleve == "tous")
+      if ($classe != "tous" and $eleve == "tous")
         {
           $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
-      if ($classe == "tous" AND $eleve == "tous")
+      if ($classe == "tous" and $eleve == "tous")
         {
           $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
-      if (($classe != "tous" OR $classe == "tous") AND $eleve != "tous")
+      if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
         {
           $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
@@ -130,9 +239,9 @@ require('../../fpdf/fpdf.php');
         if(number_format($cpt_requete_1, 0, ',' ,'') == number_format($nb_page, 0, ',' ,'')) { $nb_page = number_format($nb_page, 0, ',' ,''); } else { $nb_page = number_format($nb_page, 0, ',' ,'') + 1; }
 
 // mode paysage, a4, etc.
-$pdf=new FPDF('P','mm','A4');
+$pdf=new bilan_PDF('P','mm','A4');
 $pdf->Open();
-$pdf->SetAutoPageBreak(false);
+$pdf->SetAutoPageBreak(true);
 
 // champs facultatifs
 $pdf->SetAuthor('');
@@ -140,40 +249,13 @@ $pdf->SetCreator('créer avec Fpdf');
 $pdf->SetTitle('Titre');
 $pdf->SetSubject('Sujet');
 
-// on charge les 83 gfx...
 $pdf->SetMargins(10,10);
 $page = 0;
 $nb_debut = 0;
 $nb_fin = 0;
 while ($page<$nb_page) {
 $pdf->AddPage();
-	// information logo
-	$L_max_logo='75'; // Longeur maxi du logo
-	$H_max_logo='75'; // hauteur maxi du logo
-	$logo = '../../images/'.getSettingValue('logo_etab');
-	$valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
-	$X_logo='23';
-	$Y_logo='10';
-	$L_logo=$valeur[0];
-	$H_logo=$valeur[1];
-        //logo
-	$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
-$pdf->SetY(38);
-$pdf->SetFont('Arial','B',10);
-$int_etab = $niveau_etab." de ".$nom_etab;
-$pdf->Cell(50, 4, $int_etab, 0, 1, 'C', '');
-$pdf->SetFont('Arial','',10);
-$pdf->Cell(50, 4, $adresse1_etab, 0, 1, 'C', '');
-if($adresse2_etab!="")
-{
-  $pdf->Cell(50, 4, $adresse2_etab, 0, 1, 'C', '');
-}
-$ville = $cp_etab." ".$ville_etab." ".$cedex_etab;
-$pdf->Cell(50, 4, $ville, 0, 1, 'C', '');
-if($mel_etab!="")
-{
-  $pdf->Cell(50, 4, $mel_etab, 0, 1, 'C', '');
-}
+
 $pdf->SetFont('Arial','',12);
 $pdf->SetY(20);
 $pdf->SetX(65);
@@ -245,35 +327,6 @@ if($nb_page>1)
     $pdf->Cell(0, 5, $info_page, 0, 1, 'C', '');
 }
 
-$pdf->SetLineWidth(0,2);
-$pdf->SetDrawColor(0, 0, 0);
-$pdf->Line(10, 280, 200, 280);
-$pdf->SetFont('Arial','',10);
-$pdf->SetY(280);
-$adresse = $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
-if($adresse2_etab!="")
-{
-  $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
-}
-if($telephone_etab!="" AND $fax_etab!="" AND $mel_etab!="")
-{
-  $adresse2 = "Tel: ".$telephone_etab." - Fax: ".$fax_etab." - Mele: ".$mel_etab;
-}
-if($telephone_etab=="" AND $fax_etab!="" AND $mel_etab!="")
-{
-  $adresse2 = "Fax: ".$fax_etab." - Mele: ".$mel_etab;
-}
-if($telephone_etab!="" AND $fax_etab=="" AND $mel_etab!="")
-{
-  $adresse2 = "Tel: ".$telephone_etab." - Mele: ".$mel_etab;
-}
-if($telephone_etab!="" AND $fax_etab!="" AND $mel_etab=="")
-{
-  $adresse2 = "Tel: ".$telephone_etab." - Fax: ".$fax_etab;
-}
-
-$pdf->Cell(0, 5, $adresse, 0, 1, 'C', '');
-$pdf->Cell(0, 5, $adresse2, 0, 1, 'C', '');
 //}
 $nb_debut = $nb_debut + $nb_par_page;
 $page = $page + 1;

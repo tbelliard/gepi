@@ -251,17 +251,26 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
   // si l'utilisateur demande l'enregistrement dans l'emploi du temps
 	if($edt_enregistrement==='1') 
 	{
-		//connaitre le jour de la date sélectionné
-		$jour_semaine = jour_semaine($d_date_absence_eleve);
-		$matiere_du_groupe = matiere_du_groupe($classe);
+			//connaitre le jour de la date sélectionné
+			$jour_semaine = jour_semaine($d_date_absence_eleve);
+			$matiere_du_groupe = matiere_du_groupe($classe);
+			$type_de_semaine = semaine_type($d_date_absence_eleve);
 
-		$requete="INSERT INTO ".$prefix_base."edt_classes (groupe_edt_classe,prof_edt_classe,matiere_edt_classe,semaine_edt_classe,jour_edt_classe,datedebut_edt_classe,datefin_edt_classe,heuredebut_edt_classe,heurefin_edt_classe,salle_edt_classe) values ('".$classe."','".$_SESSION["login"]."','".$matiere_du_groupe['nomcourt']."','','".$jour_semaine['chiffre']."','','','".$d_heure_absence_eleve."','".$a_heure_absence_eleve."','')";
-                $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	        $test_existance = mysql_result(mysql_query('SELECT count(*) FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_semaine['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <= "'.$d_heure_absence_eleve.'" AND heurefin_edt_classe >= "'.$a_heure_absence_eleve.'"'),0);
+		$test_existance_groupe = mysql_result(mysql_query('SELECT count(*) FROM edt_classes WHERE groupe_edt_classe = "'.$classe.'" AND prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_semaine['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <= "'.$d_heure_absence_eleve.'" AND heurefin_edt_classe >= "'.$a_heure_absence_eleve.'"'),0);
+	        if ($test_existance === '0') {
+			$requete="INSERT INTO ".$prefix_base."edt_classes (groupe_edt_classe,prof_edt_classe,matiere_edt_classe,semaine_edt_classe,jour_edt_classe,datedebut_edt_classe,datefin_edt_classe,heuredebut_edt_classe,heurefin_edt_classe,salle_edt_classe) values ('".$classe."','".$_SESSION["login"]."','".$matiere_du_groupe['nomcourt']."','".semaine_type($d_date_absence_eleve)."','".$jour_semaine['chiffre']."','','','".$d_heure_absence_eleve."','".$a_heure_absence_eleve."','')";
+	                $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		}
+		if ( $test_existance === '1' and $test_existance_groupe === '0' ) {
+			$requete = 'UPDATE '.$prefix_base.'edt_classes SET groupe_edt_classe = "'.$classe.'" WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_semaine['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <= "'.$d_heure_absence_eleve.'" AND heurefin_edt_classe >= "'.$a_heure_absence_eleve.'"';
+	                $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		}
 	}
 
  $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
  $datejour = date('d/m/Y');
-
+ $type_de_semaine = semaine_type($datejour);
 
 $i = 0;
 
@@ -282,8 +291,7 @@ $i = 0;
           $i = $i + 1;
         }
 
- $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
- $datejour = date('d/m/Y');
+
  //Configuration du calendrier
    include("../../lib/calendrier/calendrier.class.php");
    $cal_1 = new Calendrier("absence", "d_date_absence_eleve");
@@ -313,7 +321,7 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
 
 <p class=bold>|<a href='../../accueil.php'>Accueil</a> |
 <?php if($etape=="2" OR $etape=="3") { ?><a href='prof_ajout_abs.php?passage_form=manuel'>Retour étape 1/2</a> | <?php } ?>
-<a href="../lib/tableau.php?type=A">Visualiser les absences</a> |
+<a href="../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs">Visualiser les absences</a> |
 </p>
 
 
@@ -329,7 +337,7 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
 
 	// on vérifie si un emploi du temps pour ce prof n'est pas disponible
 //	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND datedebut_edt_classe <= "'.$datej.'" AND datefin_edt_classe >= "'.$datej.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
+	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
 	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
 	// on fait une boucle qui va faire un tour pour chaque enregistrement
 	while($data = mysql_fetch_array($req)) 

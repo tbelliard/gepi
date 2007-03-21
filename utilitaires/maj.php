@@ -415,6 +415,17 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des identifiants et des mots de passe en PDF', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/buletin_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Bulletin scolaire au format PDF', '');";
 
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/etiquette_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Etiquette au format PDF', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/export_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Fichier d''exportation en csv des absences', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/statistiques.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Statistique du module vie scolaire', '1');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_camembert.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique camembert', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique camembert', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_horaire_ouverture.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des horaires d''ouverture de l''établissement', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_config_semaines.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Configuration des types de semaines', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/fiche_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Fiche récapitulatif des absences', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'graphique absence et retard sur le même graphique', '');";
+
+
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -2582,8 +2593,8 @@ if (isset ($_POST['maj'])) {
 	        }
 	    } else {
 	        $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
-			
-			
+
+
 			//ERIC Mise à jour des champs s'ils n'existent pas (rajout par rapport à la version précédente.
 			$result .= "&nbsp;->Ajout du champ entete_model_bulletin à la table model_bulletin <br />";
 	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'entete_model_bulletin'"));
@@ -2591,7 +2602,7 @@ if (isset ($_POST['maj'])) {
 	           $query1 = mysql_query("ALTER TABLE `model_bulletin` ADD `entete_model_bulletin` tinyint(4) NOT NULL AFTER `affichage_haut_responsable`");
 	           if ($query1) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
-				  
+
 				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
@@ -2599,35 +2610,35 @@ if (isset ($_POST['maj'])) {
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='2' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 2 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 2 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 	           } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	          }
 	        } else {
 	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	        }
-			
+
 			$result .= "&nbsp;->Ajout du champ ordre_entete_model_bulletin à la table model_bulletin<br />";
 	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'ordre_entete_model_bulletin'"));
 	        if ($test1 == 0) {
 	           $query2 = mysql_query("ALTER TABLE `model_bulletin` ADD `ordre_entete_model_bulletin` tinyint(4) NOT NULL AFTER `entete_model_bulletin`");
 	           if ($query2) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
-				  
+
 				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
@@ -2635,35 +2646,35 @@ if (isset ($_POST['maj'])) {
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
 				  }
-  
+
 	           } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	          }
 	        } else {
 	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	        }
-			
+
 			$result .= "&nbsp;->Ajout du champ affiche_etab_origine à la table model_bulletin<br />";
 	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_etab_origine'"));
 	        if ($test1 == 0) {
 	           $query3 = mysql_query("ALTER TABLE `model_bulletin` ADD `affiche_etab_origine` tinyint(4) NOT NULL AFTER `ordre_entete_model_bulletin`");
 	           if ($query3) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
-				  
+
 				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
@@ -2671,35 +2682,35 @@ if (isset ($_POST['maj'])) {
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 	           } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	          }
 	        } else {
 	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	        }
-			
+
 			$result .= "&nbsp;->Ajout du champ imprime_pour à la table model_bulletin<br />";
 	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'imprime_pour'"));
 	        if ($test1 == 0) {
 	           $query4 = mysql_query("ALTER TABLE `model_bulletin` ADD `imprime_pour` tinyint(4) NOT NULL AFTER `affiche_etab_origine`");
 	           if ($query4) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
-				  
+
 				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
@@ -2707,28 +2718,28 @@ if (isset ($_POST['maj'])) {
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre imprime_pour à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre imprime_pour à 1 pour le modele Affiche tout<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 	           } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	          }
 	        } else {
 	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	        }
-			
+
 		}
 
 		$result .= "&nbsp;->Ajout du modèle 'Standard' de bulletin PDF<br />";
@@ -2779,8 +2790,8 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
 		}
 // Fin modif ERIC Bulletin PDF
-		
-		
+
+
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre de mémorisation du mode de sauvegarde<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'mode_sauvegarde'");
         $res_test = mysql_num_rows($req_test);
@@ -2814,7 +2825,7 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-		
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_mention_nom_court'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2827,7 +2838,7 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
 		}
-		
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_affiche_eleve_une_ligne'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2841,7 +2852,645 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-		
+
+
+
+		$result .= "&nbsp;->Ajout du champ suivi_definie_periode à la table absences_creneaux<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'suivi_definie_periode'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `absences_creneaux` ADD `suivi_definie_periode` tinyint(4) NOT NULL AFTER `heurefin_definie_periode`");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du champ support_suivi_eleve_cpe à la table suivi_eleve_cpe<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM suivi_eleve_cpe LIKE 'support_suivi_eleve_cpe'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `suivi_eleve_cpe` ADD `support_suivi_eleve_cpe` tinyint(4) NOT NULL AFTER `action_suivi_eleve_cpe`");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du champ support_suivi_eleve_cpe à la table suivi_eleve_cpe<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM suivi_eleve_cpe LIKE 'courrier_suivi_eleve_cpe'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `suivi_eleve_cpe` ADD `courrier_suivi_eleve_cpe` int(11) NOT NULL AFTER `support_suivi_eleve_cpe`");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Création de la table edt_dates_special<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_dates_special'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `edt_dates_special` (
+  `id_edt_date_special` int(11) NOT NULL auto_increment,
+  `nom_edt_date_special` varchar(200) NOT NULL,
+  `debut_edt_date_special` date NOT NULL,
+  `fin_edt_date_special` date NOT NULL,
+  PRIMARY KEY  (`id_edt_date_special`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+        $result .= "&nbsp;->Création de la table edt_semaines<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_semaines'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `edt_semaines` (
+  `id_edt_semaine` int(11) NOT NULL auto_increment,
+  `num_edt_semaine` int(11) NOT NULL default '0',
+  `type_edt_semaine` varchar(10) NOT NULL default '',
+  PRIMARY KEY  (`id_edt_semaine`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+        $result .= "&nbsp;->Insertion des semaines edt_semaines ";
+		$cpt=1;
+		while($cpt<=52){
+			$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='$cpt'";
+			//echo "<p>$sql</p>";
+			$test1 = mysql_num_rows(mysql_query($sql));
+			if ($test1 == 0) {
+				$sql="INSERT INTO `edt_semaines` VALUES ('', $cpt, 'A');";
+				$query1 = mysql_query($sql);
+				if ($query1) {
+					$result .= "<font color=\"green\"> $cpt </font>";
+				} else {
+					$result .= "<font color=\"red\"> $cpt </font>";
+				}
+			}
+			$cpt++;
+		}
+		$result.="<br />\n";
+
+
+        $result .= "&nbsp;->Création de la table etiquettes_formats<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'etiquettes_formats'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `etiquettes_formats` (
+  `id_etiquette_format` int(11) NOT NULL auto_increment,
+  `nom_etiquette_format` varchar(150) NOT NULL,
+  `xcote_etiquette_format` float NOT NULL,
+  `ycote_etiquette_format` float NOT NULL,
+  `espacementx_etiquette_format` float NOT NULL,
+  `espacementy_etiquette_format` float NOT NULL,
+  `largeur_etiquette_format` float NOT NULL,
+  `hauteur_etiquette_format` float NOT NULL,
+  `nbl_etiquette_format` tinyint(4) NOT NULL,
+  `nbh_etiquette_format` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`id_etiquette_format`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+		$req_test= mysql_query("SELECT * FROM etiquettes_formats WHERE nom_etiquette_format = 'Avery - A4 - 63,5 x 33,9 mm'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO `etiquettes_formats` VALUES (1, 'Avery - A4 - 63,5 x 33,9 mm', 2, 2, 5, 5, 63.5, 33, 3, 8);");
+			$result .= "Insertion du format 'Avery - A4 - 63,5 x 33,9 mm': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+
+        $result .= "&nbsp;->Création de la table horaires_etablissement<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'horaires_etablissement'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `horaires_etablissement` (
+  `id_horaire_etablissement` int(11) NOT NULL auto_increment,
+  `date_horaire_etablissement` date NOT NULL,
+  `jour_horaire_etablissement` varchar(15) NOT NULL,
+  `ouverture_horaire_etablissement` time NOT NULL,
+  `fermeture_horaire_etablissement` time NOT NULL,
+  `pause_horaire_etablissement` time NOT NULL,
+  `ouvert_horaire_etablissement` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`id_horaire_etablissement`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+		$req_test= mysql_query("SELECT * FROM horaires_etablissement");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$result .= "Insertion des horaires établissement<br />\n";
+			$query = mysql_query("INSERT INTO `horaires_etablissement` VALUES ('', '0000-00-00', 'lundi', '08:00:00', '17:30:00', '00:45:00', 1);");
+			$result .= "Lundi: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `horaires_etablissement` VALUES ('', '0000-00-00', 'mardi', '08:00:00', '17:30:00', '00:45:00', 1);");
+			$result .= "Mardi: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `horaires_etablissement` VALUES ('', '0000-00-00', 'mercredi', '08:00:00', '12:00:00', '00:00:00', 1);");
+			$result .= "Mercredi: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `horaires_etablissement` VALUES ('', '0000-00-00', 'jeudi', '08:00:00', '17:30:00', '00:45:00', 1);");
+			$result .= "Jeudi: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `horaires_etablissement` VALUES ('', '0000-00-00', 'vendredi', '08:00:00', '17:30:00', '00:45:00', 1);");
+			$result .= "Vendredi: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+
+        $result .= "&nbsp;->Création de la table lettres_cadres<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'lettres_cadres'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `lettres_cadres` (
+  `id_lettre_cadre` int(11) NOT NULL auto_increment,
+  `nom_lettre_cadre` varchar(150) NOT NULL,
+  `x_lettre_cadre` float NOT NULL,
+  `y_lettre_cadre` float NOT NULL,
+  `l_lettre_cadre` float NOT NULL,
+  `h_lettre_cadre` float NOT NULL,
+  `texte_lettre_cadre` text NOT NULL,
+  `encadre_lettre_cadre` tinyint(4) NOT NULL,
+  `couleurdefond_lettre_cadre` varchar(11) NOT NULL,
+  PRIMARY KEY  (`id_lettre_cadre`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+		$req_test= mysql_query("SELECT * FROM lettres_cadres");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$result .= "Insertion des lettres_cadres<br />\n";
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (1, 'adresse responsable', 100, 40, 100, 5, 'A l\'attention de\r\n<civilitee_court_responsable> <nom_responsable> <prenom_responsable>\r\n<adresse_responsable>\r\n<cp_responsable> <commune_responsable>\r\n', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (2, 'adresse etablissement', 0, 0, 0, 0, '', 0, '');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (3, 'datation', 0, 0, 0, 0, '', 0, '');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (4, 'corp avertissement', 10, 70, 0, 5, '<u>Objet: </u> <g>Avertissement</g>\r\n\r\n\r\n<nom_civilitee_long>,\r\n\r\nJe me vois dans l\'obligation de donner un <b>AVERTISSEMENT</b>\r\n\r\nà <g><nom_eleve> <prenom_eleve></g> élève de la classe <g><classe_eleve></g>.\r\n\r\n\r\npour la raison suivante : <g><sujet_eleve></g>\r\n\r\n<remarque_eleve>\r\n\r\n\r\n\r\nComme le prévoit le règlement intérieur de l\'établissement, il pourra être sanctionné à partir de ce jour.\r\nSanction(s) possible(s) :\r\n\r\n\r\n\r\n\r\nJe vous remercie de me renvoyer cet exemplaire après l\'avoir daté et signé.\r\nVeuillez agréer <nom_civilitee_long> <nom_responsable> l\'assurance de ma considération distinguée.\r\n\r\n\r\n\r\nDate et signatures des parents :	', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (5, 'corp blame', 10, 70, 0, 5, '<u>Objet</u>: <g>Blâme</g>\r\n\r\n\r\n<nom_civilitee_long>\r\n\r\nJe me vois dans l\'obligation de donner un BLAME \r\n\r\nà <g><nom_eleve> <prenom_eleve></g> élève de la classe <g><classe_eleve></g>.\r\n\r\nDemandé par: <g><courrier_demande_par></g>\r\n\r\npour la raison suivante: <g><raison></g>\r\n\r\n<remarque>\r\n\r\nJe vous remercie de me renvoyer cet exemplaire après l\'avoir daté et signé.\r\nVeuillez agréer <g><nom_civilitee_long> <nom_responsable></g> l\'assurance de ma considération distinguée.\r\n\r\n<u>Date et signatures des parents:</u>\r\n\r\n\r\n\r\n\r\n\r\nNous demandons un entretien avec la personne ayant demandé la sanction OUI / NON.\r\n(La prise de rendez-vous est à votre initiative)\r\n', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (6, 'corp convocation parents', 10, 70, 0, 5, '<u>Objet</u>: <g>Convocation des parents</g>\r\n\r\n\r\n<nom_civilitee_long>,\r\n\r\nVous êtes prié de prendre contact avec le Conseiller Principal d\'Education dans les plus brefs délais, au sujet de <g><nom_eleve> <prenom_eleve></g> inscrit en classe de <g><classe_eleve></g>.\r\n\r\npour le motif suivant:\r\n\r\n<remarque>\r\n\r\n\r\n\r\nSans nouvelle de votre part avant le ........................................., je serai dans l\'obligation de procéder à la descolarisation de l\'élève, avec les conséquences qui en résulteront, jusqu\'à votre rencontre.\r\n\r\n\r\nVeuillez agréer <g><nom_civilitee_long> <nom_responsable></g> l\'assurance de ma considération distinguée.', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (7, 'corp exclusion', 10, 70, 0, 5, '<u>Objet: </u> <g>Sanction - Exclusion de l\'établissement</g>\r\n\r\n\r\n<nom_civilitee_long>,\r\n\r\nPar la présente, je tiens à vous signaler que <nom_eleve>\r\n\r\ninscrit en classe de  <classe_eleve>\r\n\r\n\r\ns\'étant rendu coupable des faits suivants : \r\n\r\n<remarque>\r\n\r\n\r\n\r\nEst exclu de l\'établissement,\r\nà compter du: <b><date_debut></b> à <b><heure_debut></b>,\r\njusqu\'au: <b><date_fin></b> à <b><heure_fin></b>.\r\n\r\n\r\nIl devra se présenter, au bureau de la Vie Scolaire \r\n\r\nle ....................................... à ....................................... ACCOMPAGNE DE SES PARENTS.\r\n\r\n\r\n\r\n\r\nVeuillez agréer &lt;TYPEPARENT&gt; &lt;NOMPARENT&gt; l\'assurance de ma considération distinguée.', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (8, 'corp demande justificatif absence', 10, 70, 0, 5, '<u>Objet: </u> <g>Demande de justificatif d\'absence</g>\r\n\r\n\r\n<civilitee_long_responsable>,\r\n\r\nJ\'ai le regret de vous informer que <b><nom_eleve> <prenom_eleve></b>, élève en classe de <b><classe_eleve></b> n\'a pas assisté au(x) cours:\r\n\r\n<liste>\r\n\r\nJe vous prie de bien vouloir me faire connaître le motif de son absence.\r\n\r\nPour permettre un contrôle efficace des présences, toute absence d\'un élève doit être justifiée par sa famille, le jour même soit par téléphone, soit par écrit, soit par fax.\r\n\r\nAvant de regagner les cours, l\'élève absent devra se présenter au bureau du Conseiller Principal d\'Education muni de son carnet de correspondance avec un justificatif signé des parents.\r\n\r\nVeuillez agréer <civilitee_long_responsable> <nom_responsable>, l\'assurance de ma considération distinguée.\r\n                                               \r\nCPE\r\n<civilitee_long_cpe> <nom_cpe> <prenom_cpe>\r\n\r\nPrière de renvoyer, par retour du courrier, le présent avis signé des parents :\r\n\r\nMotif de l\'absence : \r\n________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________\r\n\r\n\r\n\r\nDate et signatures des parents :  \r\n', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$query = mysql_query("INSERT INTO `lettres_cadres` VALUES (10, 'signature', 100, 180, 0, 5, '<b><courrier_signe_par_fonction></b>,\r\n<courrier_signe_par>\r\n', 0, '||');");
+			$result .= "- ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+
+        $result .= "&nbsp;->Création de la table lettres_tcs<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'lettres_tcs'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `lettres_tcs` (
+  `id_lettre_tc` int(11) NOT NULL auto_increment,
+  `type_lettre_tc` int(11) NOT NULL,
+  `cadre_lettre_tc` int(11) NOT NULL,
+  `x_lettre_tc` float NOT NULL,
+  `y_lettre_tc` float NOT NULL,
+  `l_lettre_tc` float NOT NULL,
+  `h_lettre_tc` float NOT NULL,
+  `encadre_lettre_tc` int(1) NOT NULL,
+  PRIMARY KEY  (`id_lettre_tc`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
+
+		$req_test= mysql_query("SELECT * FROM lettres_tcs");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$result .= "Insertion dans lettres_tcs: \n";
+			$sql="INSERT INTO `lettres_tcs` (`id_lettre_tc`, `type_lettre_tc`, `cadre_lettre_tc`, `x_lettre_tc`, `y_lettre_tc`, `l_lettre_tc`, `h_lettre_tc`, `encadre_lettre_tc`) VALUES (1, 3, 0, 0, 0, 0, 0, 0),
+(2, 3, 0, 0, 0, 0, 0, 0),
+(3, 3, 0, 0, 0, 0, 0, 0),
+(4, 3, 0, 0, 0, 0, 0, 0),
+(5, 3, 0, 0, 0, 0, 0, 0),
+(6, 3, 0, 0, 0, 0, 0, 0),
+(7, 3, 0, 0, 0, 0, 0, 0),
+(8, 3, 0, 0, 0, 0, 0, 0),
+(9, 3, 0, 0, 0, 0, 0, 0),
+(10, 3, 0, 0, 0, 0, 0, 0),
+(11, 3, 0, 0, 0, 0, 0, 0),
+(12, 3, 0, 0, 0, 0, 0, 0),
+(13, 3, 0, 0, 0, 0, 0, 0),
+(14, 3, 0, 0, 0, 0, 0, 0),
+(15, 3, 0, 0, 0, 0, 0, 0),
+(16, 3, 0, 0, 0, 0, 0, 0),
+(17, 3, 0, 0, 0, 0, 0, 0),
+(18, 3, 0, 0, 0, 0, 0, 0),
+(19, 3, 0, 0, 0, 0, 0, 0),
+(20, 3, 0, 0, 0, 0, 0, 0),
+(21, 3, 0, 0, 0, 0, 0, 0),
+(22, 3, 0, 0, 0, 0, 0, 0),
+(23, 3, 0, 0, 0, 0, 0, 0),
+(24, 3, 0, 0, 0, 0, 0, 0),
+(25, 3, 0, 0, 0, 0, 0, 0),
+(26, 3, 0, 0, 0, 0, 0, 0),
+(27, 3, 0, 0, 0, 0, 0, 0),
+(28, 3, 0, 0, 0, 0, 0, 0),
+(29, 3, 0, 0, 0, 0, 0, 0),
+(30, 3, 0, 0, 0, 0, 0, 0),
+(31, 3, 0, 0, 0, 0, 0, 0),
+(32, 3, 0, 0, 0, 0, 0, 0),
+(33, 3, 0, 0, 0, 0, 0, 0),
+(34, 3, 0, 0, 0, 0, 0, 0),
+(35, 3, 0, 0, 0, 0, 0, 0),
+(36, 3, 0, 0, 0, 0, 0, 0),
+(37, 3, 0, 0, 0, 0, 0, 0),
+(38, 3, 0, 0, 0, 0, 0, 0),
+(39, 3, 0, 0, 0, 0, 0, 0),
+(40, 3, 0, 0, 0, 0, 0, 0),
+(41, 3, 0, 0, 0, 0, 0, 0),
+(42, 3, 0, 0, 0, 0, 0, 0),
+(43, 3, 0, 0, 0, 0, 0, 0),
+(44, 3, 0, 0, 0, 0, 0, 0),
+(45, 3, 0, 0, 0, 0, 0, 0),
+(46, 3, 0, 0, 0, 0, 0, 0),
+(47, 3, 0, 0, 0, 0, 0, 0),
+(48, 3, 0, 0, 0, 0, 0, 0),
+(49, 3, 0, 0, 0, 0, 0, 0),
+(50, 3, 0, 0, 0, 0, 0, 0),
+(51, 3, 0, 0, 0, 0, 0, 0),
+(52, 3, 0, 0, 0, 0, 0, 0),
+(53, 3, 0, 0, 0, 0, 0, 0),
+(56, 3, 1, 100, 40, 100, 5, 0),
+(57, 3, 4, 10, 70, 0, 5, 0),
+(58, 1, 0, 0, 0, 0, 0, 0),
+(59, 1, 0, 0, 0, 0, 0, 0),
+(60, 1, 0, 0, 0, 0, 0, 0),
+(61, 1, 0, 0, 0, 0, 0, 0),
+(62, 1, 0, 0, 0, 0, 0, 0),
+(63, 1, 0, 0, 0, 0, 0, 0),
+(64, 1, 0, 0, 0, 0, 0, 0),
+(65, 1, 1, 100, 40, 100, 5, 0),
+(66, 1, 5, 10, 70, 0, 5, 0),
+(68, 2, 1, 100, 40, 100, 5, 0),
+(69, 2, 6, 10, 70, 0, 5, 0),
+(70, 4, 1, 100, 40, 100, 5, 0),
+(71, 4, 7, 10, 70, 0, 5, 0),
+(72, 6, 0, 0, 0, 0, 0, 0),
+(73, 6, 0, 0, 0, 0, 0, 0),
+(74, 6, 0, 0, 0, 0, 0, 0),
+(75, 6, 0, 0, 0, 0, 0, 0),
+(76, 6, 0, 0, 0, 0, 0, 0),
+(77, 6, 0, 0, 0, 0, 0, 0),
+(78, 6, 0, 0, 0, 0, 0, 0),
+(79, 6, 0, 0, 0, 0, 0, 0),
+(80, 6, 0, 0, 0, 0, 0, 0),
+(81, 6, 0, 0, 0, 0, 0, 0),
+(82, 6, 0, 0, 0, 0, 0, 0),
+(83, 6, 0, 0, 0, 0, 0, 0),
+(84, 6, 0, 0, 0, 0, 0, 0),
+(85, 6, 0, 0, 0, 0, 0, 0),
+(86, 6, 0, 0, 0, 0, 0, 0),
+(87, 6, 0, 0, 0, 0, 0, 0),
+(88, 6, 0, 0, 0, 0, 0, 0),
+(89, 6, 1, 100, 40, 100, 5, 0),
+(90, 6, 8, 10, 70, 0, 5, 0),
+(91, 7, 0, 0, 0, 0, 0, 0),
+(92, 7, 0, 0, 0, 0, 0, 0),
+(93, 7, 0, 0, 0, 0, 0, 0),
+(94, 7, 0, 0, 0, 0, 0, 0),
+(95, 7, 0, 0, 0, 0, 0, 0),
+(96, 7, 0, 0, 0, 0, 0, 0),
+(97, 7, 0, 0, 0, 0, 0, 0),
+(98, 7, 0, 0, 0, 0, 0, 0),
+(99, 7, 0, 0, 0, 0, 0, 0),
+(100, 7, 0, 0, 0, 0, 0, 0),
+(101, 7, 0, 0, 0, 0, 0, 0),
+(102, 7, 0, 0, 0, 0, 0, 0),
+(103, 7, 0, 0, 0, 0, 0, 0),
+(104, 7, 0, 0, 0, 0, 0, 0),
+(105, 7, 0, 0, 0, 0, 0, 0),
+(106, 7, 0, 0, 0, 0, 0, 0),
+(107, 7, 0, 0, 0, 0, 0, 0),
+(108, 7, 0, 0, 0, 0, 0, 0),
+(109, 7, 0, 0, 0, 0, 0, 0),
+(110, 7, 0, 0, 0, 0, 0, 0),
+(111, 1, 0, 0, 0, 0, 0, 0),
+(112, 1, 0, 0, 0, 0, 0, 0),
+(113, 1, 0, 0, 0, 0, 0, 0),
+(114, 1, 0, 0, 0, 0, 0, 0),
+(115, 1, 0, 0, 0, 0, 0, 0),
+(116, 1, 0, 0, 0, 0, 0, 0),
+(117, 1, 0, 0, 0, 0, 0, 0),
+(118, 1, 0, 0, 0, 0, 0, 0),
+(119, 1, 0, 0, 0, 0, 0, 0),
+(120, 1, 0, 0, 0, 0, 0, 0),
+(121, 1, 0, 0, 0, 0, 0, 0),
+(122, 1, 0, 0, 0, 0, 0, 0),
+(123, 1, 0, 0, 0, 0, 0, 0),
+(124, 1, 0, 0, 0, 0, 0, 0),
+(125, 1, 0, 0, 0, 0, 0, 0),
+(126, 1, 0, 0, 0, 0, 0, 0),
+(127, 1, 0, 0, 0, 0, 0, 0),
+(128, 1, 0, 0, 0, 0, 0, 0),
+(129, 1, 0, 0, 0, 0, 0, 0),
+(130, 1, 0, 0, 0, 0, 0, 0),
+(131, 2, 10, 100, 180, 0, 5, 0),
+(132, 6, 0, 0, 0, 0, 0, 0),
+(133, 6, 0, 0, 0, 0, 0, 0),
+(134, 6, 0, 0, 0, 0, 0, 0),
+(135, 6, 0, 0, 0, 0, 0, 0),
+(136, 6, 0, 0, 0, 0, 0, 0),
+(137, 6, 0, 0, 0, 0, 0, 0),
+(138, 6, 0, 0, 0, 0, 0, 0),
+(139, 6, 0, 0, 0, 0, 0, 0),
+(140, 6, 0, 0, 0, 0, 0, 0),
+(141, 6, 0, 0, 0, 0, 0, 0),
+(142, 6, 0, 0, 0, 0, 0, 0),
+(143, 6, 0, 0, 0, 0, 0, 0),
+(144, 6, 0, 0, 0, 0, 0, 0),
+(145, 6, 0, 0, 0, 0, 0, 0),
+(146, 6, 0, 0, 0, 0, 0, 0),
+(147, 6, 0, 0, 0, 0, 0, 0),
+(148, 6, 0, 0, 0, 0, 0, 0),
+(149, 6, 0, 0, 0, 0, 0, 0),
+(150, 6, 0, 0, 0, 0, 0, 0),
+(151, 6, 0, 0, 0, 0, 0, 0),
+(152, 6, 0, 0, 0, 0, 0, 0),
+(153, 6, 0, 0, 0, 0, 0, 0),
+(154, 6, 0, 0, 0, 0, 0, 0),
+(155, 6, 0, 0, 0, 0, 0, 0),
+(156, 6, 0, 0, 0, 0, 0, 0),
+(157, 6, 0, 0, 0, 0, 0, 0),
+(158, 6, 0, 0, 0, 0, 0, 0),
+(159, 6, 0, 0, 0, 0, 0, 0),
+(160, 6, 0, 0, 0, 0, 0, 0),
+(161, 6, 0, 0, 0, 0, 0, 0),
+(162, 6, 0, 0, 0, 0, 0, 0),
+(163, 6, 0, 0, 0, 0, 0, 0),
+(164, 6, 0, 0, 0, 0, 0, 0),
+(165, 6, 0, 0, 0, 0, 0, 0),
+(166, 6, 0, 0, 0, 0, 0, 0),
+(167, 6, 0, 0, 0, 0, 0, 0),
+(168, 6, 0, 0, 0, 0, 0, 0),
+(169, 6, 0, 0, 0, 0, 0, 0),
+(170, 6, 0, 0, 0, 0, 0, 0),
+(171, 6, 0, 0, 0, 0, 0, 0),
+(172, 6, 0, 0, 0, 0, 0, 0),
+(173, 6, 0, 0, 0, 0, 0, 0),
+(174, 6, 0, 0, 0, 0, 0, 0),
+(175, 6, 0, 0, 0, 0, 0, 0),
+(176, 6, 0, 0, 0, 0, 0, 0),
+(177, 6, 0, 0, 0, 0, 0, 0),
+(178, 6, 0, 0, 0, 0, 0, 0),
+(179, 6, 0, 0, 0, 0, 0, 0),
+(180, 6, 0, 0, 0, 0, 0, 0),
+(181, 6, 0, 0, 0, 0, 0, 0),
+(182, 6, 0, 0, 0, 0, 0, 0),
+(183, 6, 0, 0, 0, 0, 0, 0),
+(184, 6, 0, 0, 0, 0, 0, 0),
+(185, 6, 0, 0, 0, 0, 0, 0),
+(186, 6, 0, 0, 0, 0, 0, 0),
+(187, 6, 0, 0, 0, 0, 0, 0),
+(188, 6, 0, 0, 0, 0, 0, 0),
+(189, 6, 0, 0, 0, 0, 0, 0),
+(190, 6, 0, 0, 0, 0, 0, 0),
+(191, 6, 0, 0, 0, 0, 0, 0),
+(192, 6, 0, 0, 0, 0, 0, 0),
+(193, 6, 0, 0, 0, 0, 0, 0),
+(194, 6, 0, 0, 0, 0, 0, 0),
+(195, 6, 0, 0, 0, 0, 0, 0),
+(196, 6, 0, 0, 0, 0, 0, 0),
+(197, 6, 0, 0, 0, 0, 0, 0),
+(198, 6, 0, 0, 0, 0, 0, 0),
+(199, 6, 0, 0, 0, 0, 0, 0),
+(200, 6, 0, 0, 0, 0, 0, 0);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+		}
+
+
+        $result .= "&nbsp;->Création de la table lettres_types<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'lettres_types'"));
+        if ($test1 == 0) {
+			$sql="CREATE TABLE `lettres_types` (
+  `id_lettre_type` int(11) NOT NULL auto_increment,
+  `titre_lettre_type` varchar(250) NOT NULL,
+  `categorie_lettre_type` varchar(250) NOT NULL,
+  `reponse_lettre_type` varchar(3) NOT NULL,
+  PRIMARY KEY  (`id_lettre_type`)
+);";
+            $query1 = mysql_query($sql);
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+		$req_test= mysql_query("SELECT * FROM lettres_types");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$sql="INSERT INTO `lettres_types` VALUES (1, 'blame', 'sanction', ''),
+(2, 'convocation des parents', 'suivi', ''),
+(3, 'avertissement', 'sanction', ''),
+(4, 'exclusion', 'sanction', ''),
+(5, 'certificat de scolarité', 'suivi', ''),
+(6, 'demande de justificatif d''absence', 'suivi', 'oui'),
+(7, 'demande de justificatif de retard', 'suivi', ''),
+(8, 'rapport d''incidence', 'sanction', ''),
+(0, 'regime de sortie', 'suivi', ''),
+(10, 'retenue', 'sanction', '');";
+            $query = mysql_query($sql);
+			$result .= "Insertion des lettres types: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+
+		$req_test= mysql_query("SELECT * FROM absences_actions");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$sql="INSERT INTO `absences_actions` VALUES (1, 'RC', 'Renvoi du cours'),
+(2, 'RD', 'Renvoi d&eacute;finitif'),
+(3, 'LP', 'Lettre aux parents'),
+(4, 'CE', 'Demande de convocation de l&#039;&eacute;l&egrave;ve en vie scolaire'),
+(5, 'A', 'Aucune');";
+            $query = mysql_query($sql);
+			$result .= "Insertions initiales dans absences_actions: ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+
+
+
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
@@ -3267,9 +3916,9 @@ if (isset ($_POST['maj'])) {
 		} else {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 		}
-		
-		
-		
+
+
+
     }
 
 

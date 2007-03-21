@@ -252,3 +252,7 @@ if ($recherche == "afficher")
 </div>
 <?php /* <div class="centre"><img src="view_artichow_absences.php?type_1=<?php echo $type; ?>&amp;classe_1=<?php echo $classe_choix; ?>&amp;eleve_1=<?php echo $eleve_choix; ?>" title="graphique" alt="graphique" /></div> */?>
 <div class="centre"><img src="view_artichow_absences.php?type_1=<?php echo $type; ?>&amp;classe_1=<?php echo $classe_choix; ?>&amp;eleve_1=<?php echo $eleve_choix; ?>" /></div>
+<div class="centre"><img src="graph_camembert.php" /></div>
+<div class="centre"><img src="graph_ligne.php" /></div>
+
+<a href="graph_ligne.php">aaaa</a>

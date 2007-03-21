@@ -56,7 +56,8 @@ if (empty($_GET['id']) and empty($_POST['id'])) {$id="";}
 if (empty($_GET['fiche']) and empty($_POST['fiche'])) {$fiche="";}
     else { if (isset($_GET['fiche'])) {$fiche=$_GET['fiche'];} if (isset($_POST['fiche'])) {$fiche=$_POST['fiche'];} }
 
-//if($id == "" and $eleve_absent == "" and $id_absence_eleve == "") { header("Location:select.php?type=$type"); }
+// si pas de sélection on retourne à la sélection
+if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') { header("Location:select.php?type=$type"); }
 
 // si aucune sélection on redirige
 if(!isset($eleve_absent[0]) and empty($eleve_absent[0]) and $action_sql === '' and $id === '') { header("Location:select.php?type=$type"); }
@@ -145,6 +146,10 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 
 if ($action === 'supprimer')
 {
+
+	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
+	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
+
         $id_absence_eleve = $_GET['id'];
         // Vérification des champs
         if($id_absence_eleve != "")
@@ -153,7 +158,7 @@ if ($action === 'supprimer')
           $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='$id_absence_eleve'";
           // Execution de cette requete
           mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-          header('Location:gestion_absences.php?type=I');
+          header('Location:gestion_absences.php?type=I&date_ce_jour='.$date_ce_jour);
         }
 }
 
@@ -222,7 +227,7 @@ $i = 0;
 
      //affichage des messages d'erreur
     if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[0])) { ?>
-            <table class="table_erreur" border="0" cellpadding="4" cellspacing="2">
+            <table class="table_erreur" border="0" cellpadding="1" cellspacing="2">
               <tr>
                 <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
                 <td class="erreur"><strong>Erreur: <?php echo $texte_erreur; ?></strong></td>
@@ -247,7 +252,7 @@ $i = 0;
       <?php } ?>
     <form method="post" action="ajout_inf.php?type=<?php echo $type; ?>&amp;id=<?php echo $id; ?>" name="form1">
      <fieldset class="fieldset_efface">
-      <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="4">
+      <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="1">
         <tr style="background-image: url('../images/haut_tab.png');">
           <td class="titre_tableau_absence" nowrap><strong>Infirmerie</strong></td>
           <td class="titre_tableau_absence_valider"><input type="submit" name="submit" value="Valider" /></td>

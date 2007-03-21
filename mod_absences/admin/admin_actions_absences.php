@@ -47,17 +47,17 @@ function securite_texte($str)
      return $str;
  }
 
-if (empty($_GET['action_sql']) AND empty($_POST['action_sql'])) {$action_sql="";}
+if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
     else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
-if (empty($_GET['action']) AND empty($_POST['action'])) {exit();}
+if (empty($_GET['action']) and empty($_POST['action'])) {exit();}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
-if (empty($_GET['id_motif']) AND empty($_POST['id_motif'])) { $id_motif="";}
+if (empty($_GET['id_motif']) and empty($_POST['id_motif'])) { $id_motif="";}
     else { if (isset($_GET['id_motif'])) {$id_motif=$_GET['id_motif'];} if (isset($_POST['id_motif'])) {$id_motif=$_POST['id_motif'];} }
-if (empty($_GET['nb_ajout']) AND empty($_POST['nb_ajout'])) { $nb_ajout="1";}
+if (empty($_GET['nb_ajout']) and empty($_POST['nb_ajout'])) { $nb_ajout="1";}
     else { if (isset($_GET['nb_ajout'])) {$nb_ajout=$_GET['nb_ajout'];} if (isset($_POST['nb_ajout'])) {$nb_ajout=$_POST['nb_ajout'];} }
-if (empty($_GET['init_absence_action']) AND empty($_POST['init_absence_action'])) { $init_absence_action=""; }
+if (empty($_GET['init_absence_action']) and empty($_POST['init_absence_action'])) { $init_absence_action=""; }
     else { if (isset($_GET['init_absence_action'])) {$init_absence_action=$_GET['init_absence_action'];} if (isset($_POST['init_absence_action'])) {$init_absence_action=$_POST['init_absence_action'];} }
-if (empty($_GET['def_absence_action']) AND empty($_POST['def_absence_action'])) { $def_absence_action="";}
+if (empty($_GET['def_absence_action']) and empty($_POST['def_absence_action'])) { $def_absence_action="";}
     else { if (isset($_GET['def_absence_action'])) {$def_absence_action=$_GET['def_absence_action'];} if (isset($_POST['def_absence_action'])) {$def_absence_action=$_POST['def_absence_action'];} }
 
 $total = 0;
@@ -65,7 +65,7 @@ $verification[0] = 1;
 $erreur = 0;
 $remarque = 0;
 
-if ($action_sql == "ajouter" OR $action_sql == "modifier")
+if ($action_sql == "ajouter" or $action_sql == "modifier")
 {
    while ($total < $nb_ajout)
       {
@@ -174,7 +174,7 @@ require_once("../../lib/header.inc");
 
 
 </p>
-<?php if ($action == "visualiser") { ?>
+<?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <table border="0" cellpadding="0" cellspacing="1" class="tableau_moyen_centre">
@@ -211,8 +211,8 @@ require_once("../../lib/header.inc");
 </div>
 <?php } ?>
 
-<?php if ($action == "ajouter" OR $action == "modifier") { ?>
-  <?php if ($action == "ajouter") { ?>
+<?php if ($action === "ajouter" or $action === "modifier") { ?>
+  <?php if ($action === "ajouter") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
     <form method="post" action="admin_actions_absences.php?action=ajouter" name="form1" id="form1">
@@ -239,16 +239,10 @@ require_once("../../lib/header.inc");
           <td colspan="2" class="norme_absence_gris_bleu">Définition</td>
         </tr>
         <?php
-        $i = 2;
+        $i = '2';
         $nb = 0;
         while($nb < $nb_ajout) {
-        if ($i==1) {
-                    $i=2;
-                    $couleur_cellule="fond_bleu_3";
-                  } else {
-                           $couleur_cellule="fond_bleu_4";
-                           $i=1;
-                         } ?>
+	        if ($i === '1') { $i = '2'; $couleur_cellule = 'fond_bleu_3'; } else { $couleur_cellule = 'fond_bleu_4'; $i = '1'; } ?>
         <?php if (isset($verification_erreur[$nb]) and $verification_erreur[$nb] != 1) { ?>
          <tr>
         <td class="centre"><img src="../images/attention.png" width="28" height="28" alt="" /></td>

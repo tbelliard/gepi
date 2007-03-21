@@ -120,7 +120,7 @@ class Calendar
         $prevMonth = $this->getCalendarLink($this->month - 1 >   0 ? $this->month - 1 : 12, $this->month - 1 >   0 ? $this->year : $this->year - 1, $this->id_classe, $this->type);
         $nextMonth = $this->getCalendarLink($this->month + 1 <= 12 ? $this->month + 1 :  1, $this->month + 1 <= 12 ? $this->year : $this->year + 1, $this->id_classe, $this->type);
 
-        $s .= "<table class=\"calendar\" style=\"margin:auto\"border=1>\n";
+        $s .= "<table class=\"calendar\" style=\"margin:auto; background-color: #FFFFFF;\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n";
         $s .= "<tr><td class=\"calendarcol1\" align=right valign=top></td>\n";
         $s .= "<td align=center valign=top class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\">&lt;&lt;</a>")  . "</td>\n";
         $s .= "<td align=center valign=top class=\"calendarHeader\" colspan=5>";
@@ -135,7 +135,7 @@ class Calendar
         $s .= "<td align=center valign=top class=\"calendarHeader\">" . (($nextMonth == "") ? "&nbsp;" : "<a href=\"$nextMonth\">&gt;&gt;</a>")  . "</td>\n";
         $s .= "</tr>\n";
 
-        $s .= "<tr><td  class=\"calendarcol1\" align=right valign=top></td>\n";
+        $s .= "<tr><td class=\"calendarcol1\" align=right valign=top></td>\n";
         $s .= $this->getFirstDays();
         $s .= "</tr>\n";
 
@@ -153,9 +153,14 @@ class Calendar
             $s .= "</td>\n";
             for ($i = 0; $i < 7; $i++)
             {
-                $s .= "<td class=\"calendar\" align=right valign=top>";
+		// gestion des couleurs des jours
+		$couleur = '#DFFFEC';
+		$couleur_vide = '#FFFFFF';
+		if ( $i == '6' ) { $couleur = '#6FFFA8'; }
+
                 if ($d > 0 && $d <= $daysInMonth)
                 {
+                   $s .= "<td style=\"background-color: ".$couleur.";\"class=\"calendar\" align=right valign=top>";
                     $link = $this->getDateLink($d, $this->month, $this->year);
                     if ($link == "")
                         $s .= $d;
@@ -166,6 +171,7 @@ class Calendar
                 }
                 else
                 {
+                    $s .= "<td style=\"background-color: ".$couleur_vide.";\"class=\"calendar\" align=right valign=top>";
                     $s .= "&nbsp;";
                 }
                 $s .= "</td>\n";

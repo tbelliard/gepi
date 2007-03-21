@@ -57,6 +57,9 @@ if (empty($_GET['id']) and empty($_POST['id'])) {$id="";}
 if (empty($_GET['fiche']) and empty($_POST['fiche'])) {$fiche="";}
     else { if (isset($_GET['fiche'])) {$fiche=$_GET['fiche'];} if (isset($_POST['fiche'])) {$fiche=$_POST['fiche'];} }
 
+// si pas de sélection on retourne à la sélection
+if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') { header("Location:select.php?type=$type"); }
+
 // si sélection d'une classe complète
 if(empty($eleve_absent[0])==true and $action_sql == '' and $mode !='eleve') { $mode='classe'; }
 if(empty($eleve_absent[0])==true and $mode != 'eleve')
@@ -160,6 +163,10 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
 
 if ($action === "supprimer")
 {
+
+	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
+	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
+
         $id_absence_eleve = $_GET['id'];
         // Vérification des champs
           if($id_absence_eleve != "")
@@ -168,7 +175,7 @@ if ($action === "supprimer")
               $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
               // Execution de cette requete
               mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-              header("Location:gestion_absences.php?type=".$type."");
+              header('Location:gestion_absences.php?type=R&date_ce_jour='.$date_ce_jour);
           }
 }
 
@@ -233,7 +240,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
 <div style="text-align:center">
 <form method="post" action="ajout_ret.php?type=<?php echo $type; ?>" name="form1">
  <fieldset class="fieldset_efface">
-   <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="4">
+   <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="1">
     <tr>
       <td colspan="3" class="titre_tableau_absence"><b><?php echo "Retards des élèves"; ?></b></td>
       <td class="titre_tableau_absence_valider"><input type="submit" name="submit" value="Valider" /></td>

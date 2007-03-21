@@ -49,23 +49,26 @@ die();
 include("../../lib/calendrier/calendrier.class.php");
 $cal_1 = new Calendrier("form1", "du_dispense_eleve");
 $cal_2 = new Calendrier("form1", "au_dispense_eleve");
-if (empty($_GET['page']) AND empty($_POST['page'])) {$page="";}
-    else { if (isset($_GET['page'])) {$page=$_GET['page'];} if (isset($_POST['page'])) {$page=$_POST['page'];} }
-  if (empty($_POST['action_sql'])) {$action_sql = ''; } else {$action_sql=$_POST['action_sql']; }
-  if (empty($_POST['eleve_absent'])) {$eleve_absent = ''; } else {$eleve_absent=$_POST['eleve_absent']; }
-  if (empty($_POST['eleve_dispense'])) {$eleve_dispense = ''; } else {$eleve_dispense=$_POST['eleve_dispense']; }
-  if (empty($_GET['action'])) {$action = ''; } else {$action=$_GET['action']; }
-  if (empty($_GET['type'])) {$type = ''; } else {$type=$_GET['type']; }
-  if (empty($_POST['id'])) {$id_dispense_eleve = ''; } else {$id_dispense_eleve=$_POST['id']; }
-  if (empty($_GET['id'])) {$id = ''; } else {$id=$_GET['id']; }
+  if (empty($_GET['page']) and empty($_POST['page'])) { $page=""; }
+    else { if (isset($_GET['page'])) { $page=$_GET['page']; } if (isset($_POST['page'])) { $page=$_POST['page']; } }
+  if (empty($_POST['action_sql'])) { $action_sql = ''; } else { $action_sql=$_POST['action_sql']; }
+  if (empty($_POST['eleve_absent'])) { $eleve_absent = ''; } else { $eleve_absent=$_POST['eleve_absent']; }
+  if (empty($_POST['eleve_dispense'])) { $eleve_dispense = ''; } else { $eleve_dispense=$_POST['eleve_dispense']; }
+  if (empty($_GET['action'])) { $action = ''; } else { $action=$_GET['action']; }
+  if (empty($_GET['type'])) { $type = ''; } else { $type=$_GET['type']; }
+  if (empty($_POST['id'])) { $id_dispense_eleve = ''; } else { $id_dispense_eleve=$_POST['id']; }
+  if (empty($_GET['id'])) { $id = ''; } else { $id=$_GET['id']; }
 
 if (empty($_GET['fiche']) and empty($_POST['fiche'])) {$fiche="";}
     else { if (isset($_GET['fiche'])) {$fiche=$_GET['fiche'];} if (isset($_POST['fiche'])) {$fiche=$_POST['fiche'];} }
 
+// si pas de sélection on retourne à la sélection
+if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') { header("Location:select.php?type=$type"); }
+
 if($id == "" and $eleve_absent == "" and $eleve_dispense == "") { header("Location:select.php?type=$type"); }
 
 // id de la dispense
-  if (empty($_GET['id_dispense']) AND empty($_POST['id_dispense'])) {$id_dispense="";}
+  if (empty($_GET['id_dispense']) and empty($_POST['id_dispense'])) {$id_dispense="";}
       else { if (isset($_GET['id_dispense'])) {$id_dispense=$_GET['id_dispense'];} if (isset($_POST['id_dispense'])) {$id_dispense=$_POST['id_dispense'];} }
 
 $total = '0';
@@ -74,7 +77,8 @@ $erreur = '0';
 $j = '0';
 $verification = '0';
 
-if(!isset($eleve_absent[0]) and empty($eleve_absent[0]) and $action_sql === '' and $id === '') { header("Location:select.php?type=$type"); }
+// christian 19
+//if(!isset($eleve_absent[0]) and empty($eleve_absent[0]) and $action_sql === '' and $id === '' and $erreur === '') { header("Location:select.php?type=$type"); }
 
 if($action_sql == "ajouter" OR $action_sql == "modifier")
 {
@@ -176,14 +180,19 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                                                                                 saisie_absence_eleve = '".$_SESSION['login']."'
                                                                                                 WHERE id_absence_eleve = '".$id_absence_eleve."'"; }
                               $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-                              if($fiche === 'oui') { header("Location:gestion_absences.php?type=$type&select_fiche_eleve=$eleve_absence_eleve"); } else { header("Location:gestion_absences.php?type=$type"); }
                          } else { $verification = '3'; $erreur='1'; $texte_erreur = "Il y a une erreur dans la  spécificationr des jours."; }
                  }
+
+          if( $erreur!='1' ) { if( $fiche === 'oui' ) { header("Location:gestion_absences.php?type=$type&select_fiche_eleve=$eleve_absence_eleve"); } else { header("Location:gestion_absences.php?type=$type"); } }
 
 }
 
 if ($action === 'supprimer')
 {
+
+	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
+	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
+
         $id_dispense_eleve = $_GET['id'];
         // Vérification des champs
         if($id_dispense_eleve != '')
@@ -192,7 +201,7 @@ if ($action === 'supprimer')
             $requete_del = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='$id_dispense_eleve'";
           // Execution de cette requete
             mysql_query($requete_del) or die('Erreur SQL !'.$requete_del.'<br />'.mysql_error());
-            header('Location:gestion_absences.php?type=D');
+            header('Location:gestion_absences.php?type=D&date_ce_jour='.$date_ce_jour);
         }
 }
 
@@ -254,7 +263,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
         if ($erreur == 1) { ?>
             <? /* div de centrage du tableau pour ie5 */ ?>
             <div style="text-align:center">
-            <table class="table_erreur" border="0" cellpadding="4" cellspacing="2">
+            <table class="table_erreur" border="0" cellpadding="2" cellspacing="2">
               <tr>
                 <td><img src="../images/attention.png" alt="" /></td>
                 <td class="erreur"><strong>Erreur : <?php echo $texte_erreur; ?></strong></td>
@@ -268,7 +277,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
 <div style="text-align:center">
   <form method="post" action="ajout_dip.php?type=<?php echo $type; ?>" name="form1">
     <fieldset class="fieldset_efface">
-      <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="4">
+      <table class="entete_tableau_absence" border="0" cellspacing="0" cellpadding="1">
         <tr>
           <td class="titre_tableau_absence" nowrap><strong>Dispense</strong></td>
           <td class="titre_tableau_absence_valider"><input type="hidden" name="action_sql" <?php  if ($action == "modifier") {?>value="modifier"<?php } else {?>value="ajouter"<?php } ?> /><input type="submit" name="submit" value="Valider" /></td>
