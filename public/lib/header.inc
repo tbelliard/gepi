@@ -55,7 +55,7 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
     <div id="headerBottomRight">
     <?php
     echo "<a href=\"index.php\">Accueil</a> - ";
-    echo "<a href=\"http://gepi.mutualibre.org\">Visiter le site de GEPI</a> - ";
+    echo "<a href=\"http://gepi.sylogix.net/\">Visiter le site de GEPI</a> - ";
     echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
     ?>
     </div>

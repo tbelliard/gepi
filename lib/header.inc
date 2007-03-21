@@ -231,7 +231,7 @@ if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = 
       if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
 
       if ($_SESSION['statut'] == 'administrateur') {
-         echo "<a href=\"http://gepi.mutualibre.org\">Visiter le site de GEPI</a>";
+         echo "<a href=\"http://gepi.sylogix.net/\">Visiter le site de GEPI</a>";
       } else {
          echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
 //         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
