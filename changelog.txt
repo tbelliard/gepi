@@ -20,6 +20,7 @@ Nouvelles fonctionalités
 - ajout d'une option d'affichage des notes, par période sur le relevé de notes HTML
 - ajout de l'impression en PDF d'une synthèse des avis du conseil de classe par classe et par période.
 - ajout de l'exportation des mots de passe élèves en fichier CSV et PDF, lors de la création des comptes ou de la réinitialisation de ceux-ci.
+- ajout de l'exportation des mots de passe responsables en fichier CSV, lors de la création des comptes ou de la réinitialisation de ceux-ci.
 - possibilité de définir trois fiches de bienvenue différentes : une pour les personnels de l'établissement, une pour les parents, et une pour les élèves
 - possibilité de définir le nombre de fiches de bienvenue à afficher avant de générer un saut de page
 - possibilité de définir la taille, le style et la police de caractères pour l'avis du conseil de classe sur le bulletin.

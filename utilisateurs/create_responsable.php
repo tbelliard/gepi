@@ -130,12 +130,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				if ($_POST['classe'] == "all") {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable'>";
+				    $msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."'>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."'>&mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				}
 			}
-			$msg .= "Imprimer la ou les fiche(s) de bienvenue</a><br/>Vous devez effectuer cette opération maintenant !";
+			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
 		}
 	}
 }

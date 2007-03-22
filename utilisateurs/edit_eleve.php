@@ -168,15 +168,15 @@ if ($action == "rendre_inactif") {
 		$msg .= "Erreur : Vous devez sélectionner une classe.";
 	} elseif ($mode == "classe") {
 		if ($_POST['classe'] == "all") {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a><br />";
-            $msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a><br />";
-            $msg .= "<a href=\"reset_passwords.php?user_status=eleve&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a><br />";			
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";			
 		} else if (is_numeric($_POST['classe'])) {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a><br />";			
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a><br />";
-			$msg .= "<a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a><br />";
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";			
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		}
 	}
 }

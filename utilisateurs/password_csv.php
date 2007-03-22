@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 29/11/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -47,7 +47,7 @@ $date_heure = gmdate('d-m-y-H:i:s');
 
 $nom_fic = "export_csv_password_".$date_heure . ".csv";
 
-
+/*
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
@@ -60,25 +60,62 @@ if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
     header('Pragma: no-cache');
 }
-
+*/
 $fd = '';
-
-$fd.="CLASSE;LOGIN;NOM;PRENOM;PASSWORD;EMAIL\n";
 
 $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
 //echo $nb_enr_tableau;
 
 if (($donnees_personne_csv)) {
-    for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
-	    $classe = $donnees_personne_csv['classe'][$i];
-		$login = $donnees_personne_csv['login'][$i];
-		$nom = $donnees_personne_csv['nom'][$i];
-		$prenom = $donnees_personne_csv['prenom'][$i];
-		$password = $donnees_personne_csv['new_password'][$i];
-		$email = $donnees_personne_csv['user_email'][$i];
+    // On rechercher par rapport au premier login si c'est un eleve ou un parent. ==> format de sortie CSV différent.
+	$login=$donnees_personne_csv['login'][1];
+	$sql_statut="SELECT statut FROM utilisateurs WHERE login='$login'";
+	$resultat_statut = mysql_query($sql_statut);
+	$statut = mysql_result($resultat_statut, 0, "statut");
+	
+	switch ($statut) {
+	case 'eleve':
+			//pour un élève
+			$fd.="CLASSE;LOGIN;NOM;PRENOM;PASSWORD;EMAIL\n";
+			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
+				$classe = $donnees_personne_csv['classe'][$i];
+				$login = $donnees_personne_csv['login'][$i];
+				$nom = $donnees_personne_csv['nom'][$i];
+				$prenom = $donnees_personne_csv['prenom'][$i];
+				$password = $donnees_personne_csv['new_password'][$i];
+				$email = $donnees_personne_csv['user_email'][$i];
+				$fd.="$classe;$login;$nom;$prenom;$password;$email\n";
+				}
+	break;
+	case 'responsable':
+			//pour un responsable
+			$fd.="CLASSE;LOGIN;NOM;PRENOM;PASSWORD;EMAIL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
+			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
+				$classe = $donnees_personne_csv['classe'][$i];
+				$login = $donnees_personne_csv['login'][$i];
+				$nom = $donnees_personne_csv['nom'][$i];
+				$prenom = $donnees_personne_csv['prenom'][$i];
+				$password = $donnees_personne_csv['new_password'][$i];
+				$email = $donnees_personne_csv['user_email'][$i];
+				$adr1 = $donnees_personne_csv['adr1'][$i];
+				$adr2 = $donnees_personne_csv['adr2'][$i];
+				$adr3 = $donnees_personne_csv['adr3'][$i];
+				$adr4 = $donnees_personne_csv['adr4'][$i];
+				$cp = $donnees_personne_csv['cp'][$i];
+				$commune = $donnees_personne_csv['commune'][$i];
+				$pays = $donnees_personne_csv['pays'][$i];
+				$elv1 = $donnees_personne_csv['elv1'][$i];
+				$elv2 = $donnees_personne_csv['elv2'][$i];
+				$elv3 = $donnees_personne_csv['elv3'][$i];
+				$elv4 = $donnees_personne_csv['elv4'][$i];
+				$elv5 = $donnees_personne_csv['elv5'][$i];
+				$elv6 = $donnees_personne_csv['elv6'][$i];
+				$elv7 = $donnees_personne_csv['elv7'][$i];
+				$fd.="$classe;$login;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
+				}
+	break;
+    }
 		
-		$fd.="$classe;$login;$nom;$prenom;$password;$email\n";
-		}
 } else {
   echo "Erreur de session";
 }

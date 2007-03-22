@@ -176,11 +176,13 @@ if ($action == "rendre_inactif") {
 		$msg .= "Erreur : Vous devez sélectionner une classe.";
 	} elseif ($mode == "classe") {
 		if ($_POST['classe'] == "all") {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=responsable\" target='_blank'>Réinitialiser les mots de passe</a>";			
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";			
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
 		} else if (is_numeric($_POST['classe'])) {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :<br/>";
-			$msg .= "<a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."\" target='_blank'>Réinitialiser les mots de passe</a>";			
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";			
 		}
 	}
 }
@@ -195,7 +197,8 @@ require_once("../lib/header.inc");
 <a href="create_responsable.php"> Ajouter des utilisateurs</a>
 <?php
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-    echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
+  // Eric Faut-il garder la ligne ?
+  //  echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
 }
 echo "</p>";
 	echo "<p><b>Actions par lot</b> :";
