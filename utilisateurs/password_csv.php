@@ -47,7 +47,7 @@ $date_heure = gmdate('d-m-y-H:i:s');
 
 $nom_fic = "export_csv_password_".$date_heure . ".csv";
 
-/*
+
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
@@ -60,7 +60,7 @@ if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
     header('Pragma: no-cache');
 }
-*/
+
 $fd = '';
 
 $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
