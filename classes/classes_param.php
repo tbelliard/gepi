@@ -81,7 +81,8 @@ if (isset($_POST['is_posted'])) {
                     }
                     $temp2 = "nb_".$per."_reg_formule";
                     if ($_POST[$temp2] != '') {
-                        $register = mysql_query("UPDATE classes SET formule='".$_POST[$temp2]."' where id='".$id_classe."'");
+                        //$register = mysql_query("UPDATE classes SET formule='".$_POST[$temp2]."' where id='".$id_classe."'");
+                        $register = mysql_query("UPDATE classes SET formule='".html_entity_decode($_POST[$temp2])."' where id='".$id_classe."'");
                         if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - reg_formule".$per." : ".$_POST[$temp2]."</br>";
                     }
