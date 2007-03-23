@@ -41,13 +41,14 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion";
+$titre_page = "Outils de gestion";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 ?>
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <center>
+
 <table class='menu'>
 <tr>
 	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link'/> - Général</th>
@@ -63,14 +64,29 @@ require_once("../lib/header.inc");
     </td>
 </tr>
 <tr>
-    <td width=200><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
-    <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
-    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.
+    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
+    <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
     </td>
 </tr>
 <tr>
-    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
-    <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
+    <td width=200><a href="modify_impression.php">Gestion de la fiche "bienvenue"</a></td>
+    <td>Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
+    <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
+</tr>
+</table>
+
+<table class='menu'>
+<tr>
+	<th colspan='2'><img src='../images/icons/database.png' alt='Gestion bases de données' class='link'/> - Gestion des bases de données </th>
+</tr>
+<tr>
+    <td width=200><a href="accueil_sauve.php">Sauvegardes et restauration</a></td>
+    <td>Sauvegarder la base GEPI sous la forme d'un fichier au format "mysql".<br />
+    Restaurer des données dans la base Mysql de GEPI à partir d'un fichier.
     </td>
 </tr>
 <tr>
@@ -88,15 +104,7 @@ require_once("../lib/header.inc");
     <td>Permet de réinitialiser les bases en effaçant toutes les données élèves de la base.
     </td>
 </tr>
-<tr>
-    <td width=200><a href="modify_impression.php">Gestion de la fiche "bienvenue"</a></td>
-    <td>Permet de modifier la feuille d'information à imprimer pour chaque nouvel utilisateur créé.
-    </td>
-</tr>
-<tr>
-    <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
-    <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
-</tr>
+
 </table>
 
 <table class='menu'>
