@@ -122,6 +122,11 @@ if (isset($_POST['is_posted'])) {
                         $register = mysql_query("UPDATE classes SET display_mat_cat='".$_POST['display_mat_cat_'.$per]."' where id='".$id_classe."'");
                         if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                     }
+					
+					if ((isset($_POST['modele_bulletin_'.$per])) AND ($_POST['modele_bulletin_'.$per]!=0)) {
+                        $register = mysql_query("UPDATE classes SET modele_bulletin_pdf='".$_POST['modele_bulletin_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
 
 
 			// On enregistre les infos relatives aux catégories de matières
@@ -200,176 +205,162 @@ echo "<script language='javascript' type='text/javascript'>
     }
   }
 </script>\n";
-
 echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout décocher</a></p>\n";
 
-
 // Première boucle sur le nombre de periodes
-
 $per = 0;
-
 while ($per < $max_periode) {
-
     $per++;
-
     // On dresse la liste de toutes les classes non virtuelles
-
     $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-
     $nb_classe = mysql_num_rows($classes_list);
-
     // $nb : nombre de classes ayant un nombre de periodes égal à $per
-
     $nb=0;
-
     $nbc = 0;
-
     while ($nbc < $nb_classe) {
-
         $id_classe = mysql_result($classes_list,$nbc,'id');
-
         $query_per = mysql_query("SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
-
         $nb_periode = mysql_num_rows($query_per);
-
         if ($nb_periode == $per) {
-
             $tab_id_classe[$nb] = $id_classe;
-
             $tab_nom_classe[$nb] = mysql_result($classes_list,$nbc,'classe');
-
             $nb++;
-
         }
-
         $nbc++;
-
     }
-
     If ($nb != 0) {
-
         echo "<center><p class='grand'>Classes ayant ".$per." période";
-
         if ($per > 1) echo "s";
-
         echo "</p></center>";
-
         // S'il existe des classe ayant un nombre de periodes égal = $per :
-
         $nb_ligne = intval($nb/3)+1;
-
         echo "<table width = 100% border=1>";
-
         $i ='0';
-
         while ($i < $nb_ligne) {
-
             echo "<tr>";
-
             $j = 0;
-
             while ($j < 3) {
-
                 unset($nom_case);
-
                 $nom_classe = '';
-
                 if (isset($tab_id_classe[$i+$j*$nb_ligne])) $nom_case = "case_".$tab_id_classe[$i+$j*$nb_ligne];
-
                 if (isset($tab_nom_classe[$i+$j*$nb_ligne])) $nom_classe = $tab_nom_classe[$i+$j*$nb_ligne];
-
                 echo "<td>";
-
                 if ($nom_classe != '') echo "<input type=\"checkbox\" name=\"".$nom_case."\" checked />&nbsp;".$nom_classe;
-
                 echo "</td>";
-
                 $j++;
-
             }
-
             echo "</tr>";
-
             $i++;
-
         }
-
         echo "</table>";
-
         ?>
-
         <p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus : </p>
-
         <p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
-
-
         <table width=100% border=2 cellspacing=1  cellpadding=3>
-
         <tr>
-
         <td>&nbsp;</td>
-
         <td>Nom de la période</td>
-
         </tr>
 
         <?php
-
         $k = '1';
-
         While ($k < $per+1) {
-
             echo "<tr>";
-
             echo "<td>Période ".$k."</td>";
-
             echo "<td><INPUT TYPE=TEXT NAME='nb_".$per."_".$k."' VALUE=\"\" SIZE=30 /></td>";
-
             echo"</tr>";
-
             $k++;
-
         }
 
         ?>
 
         </table>
-
         <p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin :
-
         <br /><input type="text" size="30" name=<?php echo "nb_".$per."_reg_suivi_par"; ?> value = "" ></input></p>
-
         <p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :
-
         <br /><input type="text" size="80" name=<?php echo "nb_".$per."_reg_formule"; ?> value = "" ></input></p>
-
         <p>Formatage de l'identité des professeurs :
 
-
-
-
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_np"; ?>" />Nom Prénom (Durand Albert)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_pn"; ?>" />Prénom Nom (Albert Durand)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_in"; ?>" />Initiale-Prénom Nom (A. Durand)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_ni"; ?>" />Initiale-Prénom Nom (Durand A.)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cnp"; ?>" />Civilité Nom Prénom (M. Durand Albert)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cpn"; ?>" />Civilité Prénom Nom (M. Albert Durand)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cin"; ?>" />Civ. initiale-Prénom Nom (M. A. Durand)
-
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cni"; ?>" />Civ. Nom initiale-Prénom (M. Durand A.)
-
         <br />
-
-        <table border='0'>
+<br />
+<br />
+<table border='0'>
+<tr>
+	<td>
+	  <b><H2>Paramètres généraux : </H2></b>
+	</td>
+	<td>
+	</td>
+	</tr>
 	<tr>
+	<tr>
+	<tr>
+    <td style="font-weight: bold;">
+    Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation :
+    </td>
+    <td>
+	<?php
+		echo "<input type='checkbox' value='y' name='display_mat_cat_".$per."' />\n";
+	?>
+    </td>
+    </tr>
+<tr>
+	<td style="font-weight: bold;" valign="top">
+	Paramétrage des catégories de matière pour cette classe<br />
+	(<i>la prise en compte de ce paramètrage est conditionnée<br />
+	par le fait de cocher la case<br />
+	'Afficher les rubriques de matières...' ci-dessus</i>)
+	</td>
+	<td>
+
+<table style='border: 1px solid black;'>
+<tr>
+	<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+</tr>
+<?php
+$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
+while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+	$current_priority = $row["priority"];
+	$current_affiche_moyenne = "0";
+
+	echo "<tr>\n";
+	echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
+	echo "<td style='padding: 5px; text-align: center;'>\n";
+	echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
+	for ($i=0;$i<11;$i++) {
+		echo "<option value='$i'";
+		//if ($current_priority == $i) echo " SELECTED";
+		echo ">$i</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "<td style='padding: 5px; text-align: center;'>\n";
+	echo "<input type='checkbox' name='moyenne_".$row["id"]."_".$per."'";
+	//if ($current_affiche_moyenne == '1') echo " CHECKED";
+	echo " />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+}
+?>
+</table>
+</td>
+</tr>
+    <tr>
+	<td>
+	  <b><H2>Paramètres bulletin HTML : </H2></b>
+	</td>
+	<td>
+	</td>
+	</tr>
 	<td valign="top">
         <b>Afficher sur le bulletin le rang de chaque élève : </b>
 	</td>
@@ -418,84 +409,42 @@ while ($per < $max_periode) {
         <input type="radio" name="<?php echo "display_nbdev_".$per; ?>" value="n" />Non
 	</td>
 	</tr>
-
-<tr>
-    <td style="font-weight: bold;">
-    Afficher les rubriques de matières sur le bulletin,<br />les relevés de notes, et les outils de visualisation :
-    </td>
-    <td>
-	<?php
-		echo "<input type='checkbox' value='y' name='display_mat_cat_".$per."' />\n";
-	?>
-    </td>
-</tr>
-<tr>
-	<td style="font-weight: bold;" valign="top">
-	Paramétrage des catégories de matière pour cette classe<br />
-	(<i>la prise en compte de ce paramètrage est conditionnée<br />
-	par le fait de cocher la case<br />
-	'Afficher les rubriques de matières...' ci-dessus</i>)
+    <tr>
+	<td>
+	  <b><H2>Paramètres bulletin PDF : </H2></b>
 	</td>
 	<td>
-
-<table style='border: 1px solid black;'>
-<tr>
-	<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+	</td>
+	</tr>
+	<tr>
+	<td style="font-variant: small-caps;">
+	   Sélectionner le modèle de bulletin pour l'impression en PDF :
+	</td>
+	<td><?PHP
+		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
+		// sélection des modèle des bulletins.
+	    $requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		echo "<option value=\"0\">Aucun changement</option>";
+		while($donner_modele = mysql_fetch_array($requete_modele)) {
+		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
+			echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+		}
+		 echo "</select>\n";
+		?>
+	</td>
 </tr>
-<?php
-$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-	$current_priority = $row["priority"];
-	$current_affiche_moyenne = "0";
 
-	echo "<tr>\n";
-	echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-	echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
-	for ($i=0;$i<11;$i++) {
-		echo "<option value='$i'";
-		//if ($current_priority == $i) echo " SELECTED";
-		echo ">$i</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-	echo "<input type='checkbox' name='moyenne_".$row["id"]."_".$per."'";
-	//if ($current_affiche_moyenne == '1') echo " CHECKED";
-	echo " />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-}
-?>
 </table>
-</td>
-</tr>
-	</table>
-
-
-
-
-        <hr />
-
-        <?php
-
-
+<hr />
+<?php
 
     }
-
 }
-
-
-
 
 
 ?>
 
-
-
 <center><INPUT TYPE=SUBMIT VALUE='Enregistrer' /></center>
-
 <input type=hidden name=is_posted value="yes" />
-
 </FORM>
 <?php require("../lib/footer.inc.php");?>

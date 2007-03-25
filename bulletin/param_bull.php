@@ -25,7 +25,7 @@
 $variables_non_protegees = 'yes';
 
 // Begin standart header
-$titre_page = "Paramètres de configuration des bulletins scolaires";
+$titre_page = "Paramètres de configuration des bulletins scolaires HTML";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -659,7 +659,10 @@ function SetDefaultValues(nb){
 // fin du script -->
 </script>
 
-<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> 
+| <a href="./index.php"> Imprimer les bulletins au format HTML</a>
+| <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
+</p>
 
 <?php
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))

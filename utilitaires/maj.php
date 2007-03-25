@@ -424,8 +424,10 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_config_semaines.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des types de semaines', '');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/gestion/fiche_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Fiche récapitulatif des absences', '');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique absence et retard sur le même graphique', '');";
-
-
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/bulletin/param_bull_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page de gestion des parametres du bulletin pdf', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/bulletin/bulletin_pdf_avec_modele_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page generant le bulletin pdf en fonction du modele affecte a la classe ', '');";
+	
+    
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -3950,8 +3952,34 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 		}
 
+		
+// affectation des modèles de bulletin  PDF aux classes	
+		$result .= "&nbsp;->Ajout du champs `modele_bulletin_pdf` à la table `classes`.<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'modele_bulletin_pdf'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `classes` ADD `modele_bulletin_pdf` VARCHAR( 255 ) NULL AFTER `display_moy_gen`");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+		
 
-
+		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'option_modele_bulletin'");
+		$res_test = mysql_num_rows($req_test);
+		if ($res_test == 0){
+			$query = mysql_query("INSERT INTO `setting` VALUES ('option_modele_bulletin', '2');;");
+			$result .= "Initialisation du paramètre option_modele_bulletin à '2': ";
+			if($query){
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
     }
 
 

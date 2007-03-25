@@ -51,8 +51,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($display_coef)) $display_coef = 'y'; else $display_coef = 'n';
 	if (isset($display_mat_cat)) $display_mat_cat = 'y'; else $display_mat_cat = 'n';
 	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
+	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
 
-	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_moy_gen = 'n';
+	if (!isset($modele_bulletin)) $$modele_bulletin = 1;
 
 	if (isset($id_classe)) {
 		if ($reg_class_name) {
@@ -61,7 +62,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			//$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '$reg_formule', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen' WHERE id = '$id_classe'");
 
-			$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '".html_entity_decode($reg_formule)."', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen' WHERE id = '$id_classe'");
+			$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '".html_entity_decode($reg_formule)."', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen', modele_bulletin_pdf='$modele_bulletin' WHERE id = '$id_classe'");
 
 			if (!$register_class) {
 					$msg .= "Une erreur s'est produite lors de la modification de la classe.";
@@ -95,7 +96,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if ($reg_class_name) {
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat'");
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev'");
-		$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev', display_moy_gen='$display_moy_gen'");
+		$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev', display_moy_gen='$display_moy_gen', modele_bulletin_pdf='$modele_bulletin'");
 		if (!$register_class) {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
 		} else {
@@ -149,6 +150,7 @@ if (isset($id_classe)) {
 	$display_mat_cat = mysql_result($call_nom_class, 0, 'display_mat_cat');
 	$display_nbdev = mysql_result($call_nom_class, 0, 'display_nbdev');
 	$display_moy_gen = mysql_result($call_nom_class, 0, 'display_moy_gen');
+	$modele_bulletin_pdf = mysql_result($call_nom_class, 0, 'modele_bulletin_pdf');
 } else {
 	$classe = '';
 	$nom_complet = '';
@@ -161,6 +163,7 @@ if (isset($id_classe)) {
 	$display_mat_cat = 'n';
 	$display_nbdev = 'n';
 	$display_moy_gen = 'n';
+	$modele_bulletin_pdf = NULL;
 }
 
 ?>
@@ -186,51 +189,24 @@ if (isset($id_classe)) {
 <br />
 <table style="border: 0;" cellpadding="5" cellspacing="5">
 <tr>
-    <td style="font-variant: small-caps; width: 35%;">
-    Afficher sur le bulletin le rang de chaque élève&nbsp;:
-    </td>
-    <td><input type="checkbox" value="y" name="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?> />
-    </td>
+	<td>
+	  <b><H2>Paramètres généraux : </H2></b>
+	</td>
+	<td>
+	</td>
 </tr>
 <tr>
     <td style="font-variant: small-caps;">
-    Afficher le bloc adresse du responsable de l'élève :
-    </td>
-    <td><input type="checkbox" value="y" name="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
-    </td>
-</tr>
-    <tr>
-    <td style="font-variant: small-caps;">
-    Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :
-    </td>
-    <td><input type="checkbox" value="y" name="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
-    </td>
-</tr>
-</tr>
-    <tr>
-    <td style="font-variant: small-caps;">
-    Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :
-    </td>
-    <td><input type="checkbox" value="y" name="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> />
-    </td>
-</tr>
-<tr>
-    <td style="font-variant: small-caps;">
-    Afficher le nombre de devoirs sur le bulletin :
-    </td>
-    <td><input type="checkbox" value="y" name="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
-    </td>
-</tr>
-<tr>
-    <td style="font-variant: small-caps;">
-    Afficher les rubriques de matières sur le bulletin, les relevés de notes, et les outils de visualisation :
+    Afficher les rubriques de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :
     </td>
     <td><input type="checkbox" value="y" name="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> />
     </td>
 </tr>
 <tr>
+<tr>
+<tr>
 	<td style="font-variant: small-caps;">
-	Paramétrage des catégories de matière pour cette classe
+	Paramétrage des catégories de matière pour cette classe (uniquement si case ci-dessus cochée)
 	</td>
 	<td>
 <table style='border: 1px solid black;'>
@@ -276,6 +252,82 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 </table>
 </td>
 </tr>
+<tr>
+	<td>
+	  <b><H2>Paramètres bulletin HTML : </H2></b>
+	</td>
+	<td>
+	</td>
+</tr>
+<tr>
+    <td style="font-variant: small-caps; width: 35%;">
+    Afficher sur le bulletin le rang de chaque élève&nbsp;:
+    </td>
+    <td><input type="checkbox" value="y" name="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?> />
+    </td>
+</tr>
+<tr>
+    <td style="font-variant: small-caps;">
+    Afficher le bloc adresse du responsable de l'élève :
+    </td>
+    <td><input type="checkbox" value="y" name="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
+    </td>
+</tr>
+    <tr>
+    <td style="font-variant: small-caps;">
+    Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :
+    </td>
+    <td><input type="checkbox" value="y" name="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
+    </td>
+</tr>
+</tr>
+    <tr>
+    <td style="font-variant: small-caps;">
+    Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :
+    </td>
+    <td><input type="checkbox" value="y" name="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> />
+    </td>
+</tr>
+<tr>
+    <td style="font-variant: small-caps;">
+    Afficher le nombre de devoirs sur le bulletin :
+    </td>
+    <td><input type="checkbox" value="y" name="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
+    </td>
+</tr>
+	<td>
+	  <b><H2>Paramètres bulletin PDF : </H2></b>
+	</td>
+	<td>
+	</td>
+</tr>
+<tr>
+	<td style="font-variant: small-caps;">
+	   Sélectionner le modèle de bulletin pour l'impression en PDF :
+	</td>
+	<td><?PHP
+	    // Pour la classe, quel est le modèle de bulletin déja selectionné
+	    $quel_modele=$modele_bulletin_pdf;
+		
+		//echo $quel_modele;
+		echo "<select tabindex=\"5\" name=\"modele_bulletin\">";
+		if ($quel_modele == NULL) {
+		   echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
+		}
+		// sélection des modèle des bulletins.
+	    $requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+		while($donner_modele = mysql_fetch_array($requete_modele)) {
+		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";  
+			if($quel_modele==$donner_modele['id_model_bulletin']) { 
+			    echo "selected=\"selected\""; 
+			} 
+			echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+		}
+		 echo "</select>\n";
+		?>
+	</td>
+</tr>
+
 </table>
 <center><input type=submit value="Enregistrer" style="margin-top: 30px; margin-bottom: 100px;" /></center>
 </form>

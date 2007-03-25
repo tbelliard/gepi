@@ -23,7 +23,8 @@ Nouvelles fonctionalités
 - ajout de l'exportation des mots de passe responsables en fichier CSV, lors de la création des comptes ou de la réinitialisation de ceux-ci.
 - possibilité de définir trois fiches de bienvenue différentes : une pour les personnels de l'établissement, une pour les parents, et une pour les élèves
 - possibilité de définir le nombre de fiches de bienvenue à afficher avant de générer un saut de page
-- possibilité de définir la taille, le style et la police de caractères pour l'avis du conseil de classe sur le bulletin.
+- possibilité de définir la taille, le style et la police de caractères pour l'avis du conseil de classe sur le bulletin HTML.
+- possiblilité d'affecter un modèle différent de bulletin PDF à une classe ou un groupe de classes pour l'impression trimestrielle. L'utilisation de cette option est facultative.
 
 Corrections de bugs
 -------------------

@@ -747,3 +747,6 @@ NSERT INTO `edt_semaines` VALUES (1, 1, 'A'),
 (50, 50, 'A'),
 (51, 51, 'A'),
 (52, 52, 'A');
+INSERT INTO `droits` VALUES ('/bulletin/param_bull_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page de gestion des parametres du bulletin pdf', '');
+INSERT INTO `droits` VALUES ('/bulletin/bulletin_pdf_avec_modele_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page generant le bulletin pdf en fonction du modele affecte a la classe ', '');
+INSERT INTO `setting` VALUES ('option_modele_bulletin', '2');
