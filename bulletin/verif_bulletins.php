@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 19/08/2006
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -58,8 +58,8 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 // Selection de la classe
 if (!(isset($id_classe))) {
-	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
-	echo "<p><b>Choisissez la classe :</b></p>";
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<b>Choisissez la classe :</b></p><br/>";
 	//<table><tr><td>\n";
 	if ($_SESSION["statut"] == "scolarite") {
 		//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -95,7 +95,7 @@ if (!(isset($id_classe))) {
 
 	//echo "</td><td></td></table>";
 } else if (!(isset($per))){
-    echo "<p class=bold>|<a href='verif_bulletins.php'>Retour</a>|</p>\n";
+    echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
     // On teste si les élèves ont bien un CPE responsable
 
@@ -116,8 +116,12 @@ if (!(isset($id_classe))) {
     if (!$flag) {
         echo "<p>ATTENTION : certains élèves de cette classe n'ont pas de CPE responsable attribué. Cela génèrera un msesage d'erreur sur la page d'édition des bulletins. Il faut corriger ce problème avant impression (contactez l'administrateur).";
     }
-
-    echo "<p><b>Choisissez la période : </b></p>\n";
+    
+	$sql_classe="SELECT * FROM `classes`WHERE id=$id_classe";
+	$call_classe=mysql_query($sql_classe);
+	$nom_classe=mysql_result($call_classe,0,"classe");
+	
+    echo "<b> Classe : $nom_classe - Choisissez la période : </b></p><br />\n";
     include "../lib/periodes.inc.php";
     $i="1";
     while ($i < $nb_periode) {
@@ -135,11 +139,11 @@ if (!(isset($id_classe))) {
         $i++;
     }
 } else {
-    echo "<p class=bold>|<a href='verif_bulletins.php'>Retour</a>|</p>\n";
+    echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
     $bulletin_rempli = 'yes';
     $call_classe = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
     $classe = mysql_result($call_classe, "0", "classe");
-    echo "<p class=bold>Classe : $classe - $nom_periode[$per] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+    echo "Classe : $classe - $nom_periode[$per] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
 
     //
     // Vérification de paramètres généraux
@@ -165,8 +169,28 @@ if (!(isset($id_classe))) {
     //
     //Début de la boucle élève
     //
+	
+   // Affichage sur 3 colonnes
+	$nb_eleve_par_colonne=round($nb_eleves/2);
+	
+	echo "<table width='100%'>\n";
+	echo "<tr valign='top' align='center'>\n";
 
+	$cpt_i = 0;
+
+	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+	echo "<td align='left'>\n";
+
+	
     while($j < $nb_eleves) {
+	
+	    //affichage 2 colonnes
+		if(($cpt_i>0)&&(round($cpt_i/$nb_eleve_par_colonne)==$cpt_i/$nb_eleve_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+		
+	
         $id_eleve[$j] = mysql_result($appel_donnees_eleves, $j, "login");
         $eleve_nom[$j] = mysql_result($appel_donnees_eleves, $j, "nom");
         $eleve_prenom[$j] = mysql_result($appel_donnees_eleves, $j, "prenom");
@@ -181,6 +205,7 @@ if (!(isset($id_classe))) {
         //
         //Début de la boucle matière
         //
+		
         $affiche_nom = 1;
         $affiche_mess_app = 1;
         $affiche_mess_note = 1;
@@ -196,10 +221,10 @@ if (!(isset($id_classe))) {
                 $app = @mysql_result($test_app, 0, 'appreciation');
                 if ($app == '') {
                     $bulletin_rempli = 'no';
-                    if ($affiche_nom != 0) {echo "<p><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-                    if ($affiche_mess_app != 0) {echo "<br /><br />Appréciations non remplies pour les matières suivantes : ";}
+                    if ($affiche_nom != 0) {echo "<br /><br /><br /><p><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
+                    if ($affiche_mess_app != 0) {echo "<br /><br /><b>Appréciations non remplies</b> pour les matières suivantes : \n";}
                     $affiche_nom = 0;
-                    $affiche_mess_app = 0;
+					$affiche_mess_app = 0;
                     //============================================
 		    // MODIF: boireaus
 		    // Pour les matières comme Histoire & Géo,...
@@ -243,7 +268,7 @@ if (!(isset($id_classe))) {
                 if ($note == '') {
                     $bulletin_rempli = 'no';
                     if ($affiche_nom != 0) {echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-                    if ($affiche_mess_note != 0) {echo "<br /><br />Moyennes non remplies pour les matières suivantes : ";}
+                    if ($affiche_mess_note != 0) {echo "<br /><br /><b>Moyennes non remplies</b> pour les matières suivantes : ";}
                     $affiche_nom = 0;
                     $affiche_mess_note = 0;
                     //============================================
@@ -278,7 +303,7 @@ if (!(isset($id_classe))) {
         if ($avis == '') {
             $bulletin_rempli = 'no';
             if ($affiche_nom != 0) {echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-            echo "<br /><br />Avis du conseil de classe non rempli !";
+            echo "<br /><br /><b>Avis du conseil de classe</b> non rempli !";
             $call_prof = mysql_query("SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
             $nb_result = mysql_num_rows($call_prof);
             if ($nb_result != 0) {
@@ -320,7 +345,7 @@ if (!(isset($id_classe))) {
                     if ($aid_app == '') {
                         $bulletin_rempli = 'no';
                         if ($affiche_nom != 0) {echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-                        echo "<br /><br />Appréciation $nom_aid non remplie (";
+                        echo "<br /><br /><b>Appréciation $nom_aid </b> non remplie (";
                         $m=0;
                         $virgule = 1;
                         while ($m < $nb_prof) {
@@ -350,7 +375,7 @@ if (!(isset($id_classe))) {
                         if (($aid_note == '') or ($aid_statut == 'other')) {
                         $bulletin_rempli = 'no';
                         if ($affiche_nom != 0) {echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-                            echo "<br /><br />Note $nom_aid non remplie (";
+                            echo "<br /><br /><b>Note $nom_aid </b>non remplie (";
                             $m=0;
                             $virgule = 1;
                             while ($m < $nb_prof) {
@@ -381,7 +406,7 @@ if (!(isset($id_classe))) {
         if (($abs1 == '') or ($abs2 == '') or ($abs3 == '')) {
             $bulletin_rempli = 'no';
             if ($affiche_nom != 0) {echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] (<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span> :";}
-            echo "<br /><br />Rubrique \"Absences\" non remplie. (";
+            echo "<br /><br /><b>Rubrique \"Absences\" </b> non remplie. (";
             $query_resp = mysql_query("SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_cpe j WHERE (j.e_login = '$id_eleve[$j]' AND u.login = j.cpe_login)");
             $nb_prof = mysql_num_rows($query_resp);
             $m=0;
@@ -402,7 +427,14 @@ if (!(isset($id_classe))) {
 
         $j++;
     //Fin de la boucle élève
-    }
+	
+		$cpt_i++;
+		
+	}
+	
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
     if ($bulletin_rempli == 'yes') {
         echo "<p class='bold'>Toutes les rubriques des bulletins de cette classe ont été renseignées, vous pouvez procéder à l'impression finale.</p>";
