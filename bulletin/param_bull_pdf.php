@@ -397,7 +397,7 @@ echo "</p><br/><br/>";
 	
 	echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
-    echo "Le modèle devra être choisi au moment de l'impression indépendament du modèle paramètré dans les paramètres de la classe. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
+    echo "Le modèle devra être choisi au moment de l'impression indépendamment du modèle paramétré dans les paramètres de la classe. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
     echo "</td>\n";
     echo "<td align=\"center\" >\n";
 		echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"3\" ";
