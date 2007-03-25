@@ -53,6 +53,10 @@ function extr_valeur($lig){
 			}
 
 
+			unset($remarques);
+			$remarques=array();
+
+
 			// Initialisation du répertoire actuel de sauvegarde
 			$dirname = getSettingValue("backup_directory");
 			//$dirname="tmp";
@@ -65,6 +69,14 @@ function extr_valeur($lig){
 					echo "</div></body></html>\n";
 					die();
 				}
+			}
+
+			if(!file_exists("../backup/$dirname/csv/index.html")){
+				$fich=fopen("../backup/$dirname/csv/index.html","w+");
+				fwrite($fich,'<script type="text/javascript" language="JavaScript">
+    document.location.replace("../../../login.php")
+</script>');
+				fclose($fich);
 			}
 
 			if(isset($_GET['nettoyage'])){
@@ -513,7 +525,13 @@ function extr_valeur($lig){
 									echo "<td>".$eleves[$i]["elenoet"]."</td>\n";
 									echo "<td>".$eleves[$i]["nom"]."</td>\n";
 									echo "<td>".$eleves[$i]["prenom"]."</td>\n";
-									echo "<td>".$eleves[$i]["code_sexe"]."</td>\n";
+									if(isset($eleves[$i]["code_sexe"])){
+										echo "<td>".$eleves[$i]["code_sexe"]."</td>\n";
+									}
+									else{
+										echo "<td style='background-color:red'>1</td>\n";
+										$remarques[]="Le sexe de l'élève ".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]." n'est pas renseigné.";
+									}
 									echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
 									echo "<td>";
 									if(isset($eleves[$i]["structures"][0]["code_structure"])){echo $eleves[$i]["structures"][0]["code_structure"];}else{echo "&nbsp;";}
@@ -684,7 +702,12 @@ function extr_valeur($lig){
 										//echo "<td></td>\n";
 										echo "<td>".$eleves[$i]["nom"]."</td>\n";
 										echo "<td>".$eleves[$i]["prenom"]."</td>\n";
-										echo "<td>".sexeMF($eleves[$i]["code_sexe"])."</td>\n";
+										if(isset($eleves[$i]["code_sexe"])){
+											echo "<td>".sexeMF($eleves[$i]["code_sexe"])."</td>\n";
+										}
+										else{
+											echo "<td style='background-color:red;'>M</td>\n";
+										}
 										echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
 										echo "<td>".$eleves[$i]["elenoet"]."</td>\n";
 										echo "<td>".$eleves[$i]["eleve_id"]."</td>\n";
@@ -730,9 +753,14 @@ function extr_valeur($lig){
 										*/
 
 										$chaine=$eleves[$i]["nom"].";".
-										$eleves[$i]["prenom"].";".
-										sexeMF($eleves[$i]["code_sexe"]).";".
-										$eleves[$i]["date_naiss"].";".
+										$eleves[$i]["prenom"].";";
+										if(isset($eleves[$i]["code_sexe"])){
+											$chaine.=sexeMF($eleves[$i]["code_sexe"]).";";
+										}
+										else{
+											$chaine.="M;";
+										}
+										$chaine.=$eleves[$i]["date_naiss"].";".
 										$eleves[$i]["elenoet"].";".
 										$eleves[$i]["eleve_id"].";".
 										ouinon($eleves[$i]["doublement"]).";";
@@ -896,6 +924,11 @@ function extr_valeur($lig){
 							echo "<tr><td>Fichier Elève/Etablissement:</td><td><a href='save_csv.php?fileid=10'>eleve_etablissement.csv</a></td></tr>\n";
 							echo "</table>\n";
 							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+
+							if(count($remarques)>0){
+								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
+							}
+
 							echo "</div>\n";
 
 
@@ -1395,16 +1428,29 @@ function extr_valeur($lig){
 							echo "<tr><td>Fichier Elève/Etablissement:</td><td><a href='save_csv.php?fileid=8'>adresses.csv</a></td></tr>\n";
 							echo "</table>\n";
 							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+							if(count($remarques)>0){
+								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
+							}
 							echo "</div>\n";
 
-
-
-
-
-
-
-
 						}
+
+
+						if(count($remarques)>0){
+							echo "<a name='remarques'></a><h3>Remarques</h3>\n";
+							if(count($remarques)==1){
+								echo "<p>Une anomalie a été notée lors du parcours de vos fichiers:</p>\n";
+							}
+							else{
+								echo "<p>Des anomalies ont été notées lors du parcours de vos fichiers:</p>\n";
+							}
+							echo "<ul>\n";
+							for($i=0;$i<count($remarques);$i++){
+								echo "<li>".$remarques[$i]."</li>\n";
+							}
+							echo "</ul>\n";
+						}
+
 					}
 				}
 			}

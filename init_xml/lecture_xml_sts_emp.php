@@ -79,6 +79,14 @@ function createRandomPassword() {
                 }
             }
 
+			if(!file_exists("../backup/$dirname/csv/index.html")){
+				$fich=fopen("../backup/$dirname/csv/index.html","w+");
+				fwrite($fich,'<script type="text/javascript" language="JavaScript">
+    document.location.replace("../../../login.php")
+</script>');
+				fclose($fich);
+			}
+
             //$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
 
 
