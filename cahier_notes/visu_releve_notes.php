@@ -566,7 +566,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		    if (!isset($_POST['display_date_debut'])) { $display_date_debut = $jour."/".$mois."/".$annee; } else { $display_date_debut = $_POST['display_date_debut']; }
 		    if (!isset($_POST['display_date_fin'])) { $display_date_fin = $jour."/".$mois."/".$annee; } else { $display_date_fin = $_POST['display_date_fin']; }
 		?>
-		  <a name="calend"></a>Du : <input type="text" name="display_date_debut" size="10" value="<?php echo $display_date_debut; ?>" /><a href="#calend" onClick="<?php echo $cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a>&nbsp;au : <input type="text" name = "display_date_fin" size="10" value="<?php echo $display_date_fin; ?>" /><a href="#calend" onClick="<?php echo $cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a><br /><span style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 0.8em;">(Veillez à respectez le format jj/mm/aaaa)</span>
+		  <a name="calend"></a>Du : <input type="text" name="display_date_debut" size="10" value="<?php echo $display_date_debut; ?>" /><a href="#calend" onClick="<?php echo $cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a>&nbsp;au : <input type="text" name = "display_date_fin" size="10" value="<?php echo $display_date_fin; ?>" /><a href="#calend" onClick="<?php echo $cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a><br /><span style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 0.8em;">(Veillez à respecter le format jj/mm/aaaa)</span>
 		  <br /><br />
 		  <select name="classe[]" size="6" multiple="multiple" tabindex="3">
 		  <optgroup label="----- Listes des classes -----">
@@ -576,7 +576,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		  	 {
 				$requete_cpt_nb_eleve_1 =  mysql_query('SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
 				$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
-			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
+			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option><?php
 			 }
 			?>
 		  </optgroup>

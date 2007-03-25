@@ -244,7 +244,7 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 <p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
 </div>
 <div id="login_footer">
-<a href="http://gepi.sylogix.net/">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
+<a href="http://gepi.mutualibre.org/">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
 Copyright &copy; 2001-2007
 <?php
 reset($gepiAuthors);

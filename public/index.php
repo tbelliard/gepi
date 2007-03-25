@@ -201,7 +201,7 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
         echo "<IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"\" /><br />\n";
     }
-    echo "<br /><br /><p>Ce cahier de texte est géré sous <a href='http://gepi.sylogix.net/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées).\n<br />GEPI est un logiciel libre et gratuit diffusé sous la licence GPL.</p><br />\n";
+    echo "<br /><br /><p>Ce cahier de texte est géré sous <a href='http://gepi.mutualibre.org/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées).\n<br />GEPI est un logiciel libre et gratuit diffusé sous la licence GPL.</p><br />\n";
     echo "<br /><a href='http://www.php.net'><img src=\"../php4.gif\" alt=\"Powered by php4\" width=\"88\" height=\"31\" style=\"border: 0;\" />\n</a><a href='http://www.mysql.org'> <img src=\"../mysqllogo.gif\" alt=\"Powered by MySQL\" width=\"88\" height=\"31\" style=\"border: 0;\" /></a>\n";
     echo "</center></body></html>";
     die();
