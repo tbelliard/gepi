@@ -53,6 +53,15 @@ if (!isset($action) or ($action != "restaure")) {
         header("Location: ../logout.php?auto=1");
         die();
     }
+} else {
+	// On s'assure que l'utilisateur qui a initié la restauration était bien
+	// un admin !
+	if (!isset($_SESSION["tempstatut"])) {
+		$_SESSION["tempstatut"] = $_SESSION['statut'];
+	}
+	if ($_SESSION["tempstatut"] != "administrateur") {
+		die();
+	}
 }
 
 
