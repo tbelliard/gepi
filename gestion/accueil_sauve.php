@@ -408,7 +408,9 @@ else
 
 
 // Durée d'une portion
-if ((isset($_POST['duree'])) and ($_POST['duree'] > 0)) $_SESSION['defaulttimeout'] = $_POST['duree']  ;
+if ((isset($_POST['duree'])) and ($_POST['duree'] > 0)) $_SESSION['defaulttimeout'] = $_POST['duree'];
+if (getSettingValue("backup_duree_portion") > "4" and !isset($_POST['sauve_duree'])) $_SESSION['defaulttimeout'] = getSettingValue("backup_duree_portion");
+
 if (!isset($_SESSION['defaulttimeout'])) {
     $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
     if ($max_time>5) {
@@ -511,7 +513,11 @@ if (isset($action) and ($action == 'restaure'))  {
 if (isset($action) and ($action == 'dump'))  {
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
-	
+	if (isset($_POST['sauve_duree'])) {
+		if ($_POST['sauve_duree'] == "yes") {
+			saveSetting("backup_duree_portion", $_SESSION['defaulttimeout']);
+		}
+	}
 	// SAuvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
@@ -691,7 +697,8 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configur
 <ul>
 <li><span class='small'>le répertoire "documents" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé.</span></li>
 <li><span class='small'>Valeur de la <b>durée d'une portion</b> en secondes : <input type="text" name="duree" value="<?php echo $_SESSION['defaulttimeout']; ?>" size="5" />
-- <a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
+<input type='checkbox' name='sauve_duree' value='yes' /> Mémoriser la durée de la portion pour la prochaine fois
+<br/><a href='#' onClick="clicMenu('1')" style="cursor: hand">Afficher/cacher l'aide</a>.</span></li>
 </ul>
 </form>
 <div style="display:none" id="menu1">
