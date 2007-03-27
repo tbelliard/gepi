@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 28/02/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -57,6 +57,11 @@ $cal2 = new Calendrier("formulaire", "display_date_fin");
 
 // initialisation de $id_mess
 $id_mess = isset($_POST["id_mess"]) ? $_POST["id_mess"] :(isset($_GET["id_mess"]) ? $_GET["id_mess"] :NULL);
+
+$order_by = isset($_POST["order_by"]) ? $_POST["order_by"] :(isset($_GET["order_by"]) ? $_GET["order_by"] :"date_debut");
+if ($order_by != "date_debut" and $order_by != "date_fin" and $order_by != "id") {
+	$order_by = "date_debut";
+}
 
 //
 // Suppression d'un message
@@ -168,9 +173,13 @@ echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">";
 //
 
 echo "<tr><td width = \"40%\" valign=\"top\">";
-echo "<span class='grand'>Tous les messages</span><br /><br />";
+echo "<span class='grand'>Tous les messages</span><br />";
+echo "<span class='small'>Classer par : ";
+echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>";
+echo "</span><br /><br />";
+
 $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
-WHERE (texte != '') order by id DESC");
+WHERE (texte != '') order by ".$order_by." DESC");
 
 $nb_messages = mysql_num_rows($appel_messages);
 $ind = 0;
