@@ -135,6 +135,29 @@ if($temoin==1){
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>avec SCONET</a>: Dans ce cas, il faut fournir des fichiers CSV générés <a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>ici</a> depuis des fichiers XML extraits de SCONET.<br />\nSi vous effectuez ce choix, vous pourrez par la suite effectuer de nouveaux imports pour insérer les élèves/responsables arrivés en cours d'année.<br />\nCe choix implique que le champ ELENOET de la table 'eleves' soit correctement rempli avec des valeurs correspondant à celles de l'ancien F_ELE.DBF<br />\nLe contenu de la table 'responsables' est ignoré et les nouvelles tables responsables sont remplies d'après les CSV fournis.</li>\n";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>sans SCONET</a>: Dans ce cas, on ne fait que la conversion des tables.<br />\nVous devrez dans ce cas gérer les futures nouvelles inscriptions à la main (<i>ou par des imports CSV</i>).<br />\nIci, c'est la liaison ERENO de vos tables 'eleves' et 'responsables' qui est utilisée pour assurer la migration vers les nouvelles tables.</li>\n";
 		echo "</ul>";
+
+		$sql="SELECT * FROM eleves WHERE elenoet=''";
+		$res1=mysql_query($sql);
+		if(mysql_num_rows($res1)>0){
+			echo "<p>Les élèves suivants n'ont pas leur ELENOET renseigné.<br />Ils ne seront donc pas identifiés/associés par la suite avec les élèves inscrits dans Sconet.<br />Si vous envisagez le mode avec Sconet (<i>recommandé quand c'est possible</i>), vous devriez commencer par rechercher les ELENOET manquants et les renseigner dans la Gestion des élèves.</p>\n";
+			echo "<table border='1'>\n";
+			echo "<tr>\n";
+			echo "<td style='font-weight:bold; text-align:center;'>Login</td>\n";
+			echo "<td style='font-weight:bold; text-align:center;'>Nom</td>\n";
+			echo "<td style='font-weight:bold; text-align:center;'>Prenom</td>\n";
+			echo "<td style='font-weight:bold; text-align:center;'>Naissance</td>\n";
+			echo "</tr>\n";
+			while($lig1=mysql_fetch_object($res1)){
+				echo "<tr>\n";
+				echo "<td>$lig1->login</td>\n";
+				echo "<td>$lig1->nom</td>\n";
+				echo "<td>$lig1->prenom</td>\n";
+				echo "<td>$lig1->naissance</td>\n";
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		}
+
 	}
 	elseif($mode==2){
 		$erreur=0;
@@ -193,15 +216,18 @@ if($temoin==1){
 					$tmp=max($max_ele_id,$max_ele_id2);
 					$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
 
-					$sql="UPDATE eleves SET ele_id='$ele_id' WHERE elenoet='$lig1->elenoet'";
+					//$sql="UPDATE eleves SET ele_id='$ele_id' WHERE elenoet='$lig1->elenoet'";
+					$sql="UPDATE eleves SET ele_id='$ele_id' WHERE login='$lig1->login'";
 					//echo "$sql<br />\n";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-						echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+						//echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+						echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
 						$erreur++;
 					}
 					else{
-						echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+						//echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+						echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
 					}
 				}
 				else{
@@ -410,6 +436,9 @@ if($temoin==1){
 			echo "</form>\n";
 		}
 		else{
+			unset($tab_elenoet_non_trouves);
+			$tab_elenoet_non_trouves=array();
+
 			$csv_file = isset($_FILES["ele_file"]) ? $_FILES["ele_file"] : NULL;
 			if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
 				//$fp = dbase_open($csv_file['tmp_name'], 0);
@@ -490,6 +519,10 @@ if($temoin==1){
 									else{
 										echo "Renseignement de l'ele_id avec la valeur $affiche[1] pour l'élève d'ELENOET $affiche[0]<br />\n";
 									}
+								}
+								else{
+									echo "<font color='red'>Aucun élève avec l'ELENOET $affiche[0] n'a été trouvé dans votre table 'eleves'; il pourra être créé lors d'un import ultérieur.</font>\n";
+									$tab_elenoet_non_trouves[]=$affiche[0];
 								}
 							}
 						}
@@ -817,6 +850,16 @@ if($temoin==1){
 						echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
 						echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$nb_record2." enregistrements au total).</p>\n";
+					}
+
+					if(count($tab_elenoet_non_trouves)>0){
+						echo "<h2>ATTENTION</h2>\n";
+						echo "<p>Récapitulatif des ELENOET non trouvés dans votre table 'eleves':<br />\n";
+						echo "$tab_elenoet_non_trouves[0]";
+						for($i=0;$i<count($tab_elenoet_non_trouves);$i++){
+							echo ", $tab_elenoet_non_trouves[$i]";
+						}
+						echo "</p>\n";
 					}
 
 				}
