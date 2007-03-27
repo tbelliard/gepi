@@ -1,6 +1,6 @@
 <?php
 /*
- * Created on 19 juin 2006
+ * $Id$
  *
  */
 
@@ -321,8 +321,9 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
         }
     }
     if (!$per_error) {
+        $mat_priority = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '".$_matiere ."'"), 0);
         foreach ($new_classes as $id_classe) {
-            $res = mysql_query("insert into j_groupes_classes set id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "'");
+            $res = mysql_query("insert into j_groupes_classes set id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "', priorite = '".$mat_priority."'");
             if (!$res) $errors = true;
         }
 
