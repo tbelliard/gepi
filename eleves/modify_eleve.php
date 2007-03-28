@@ -78,137 +78,375 @@ if (!checkAccess()) {
     die();
 }
 
+//================================================
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
-    // Détermination du format de la date de naissance
-    $call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE");
-    $test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
-    $format = strlen($test_eleve_naissance);
+	// Détermination du format de la date de naissance
+	$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE");
+	$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
+	$format = strlen($test_eleve_naissance);
 
 
-    // Cas de la création d'un élève
-    $reg_nom = trim($reg_nom);
-    $reg_prenom = trim($reg_prenom);
-    $reg_email = trim($reg_email);
-    if ($reg_resp1 == '(vide)') $reg_resp1 = '';
-    if (!ereg ("^[0-9]{4}$", $birth_year)) $birth_year = "1900";
-    if (!ereg ("^[0-9]{2}$", $birth_month)) $birth_month = "01";
-    if (!ereg ("^[0-9]{2}$", $birth_day)) $birth_day = "01";
-    if ($format == '10')
-        // YYYY-MM-DD
-        $reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
-    else if ($format == '8') {
-        // YYYYMMDD
-        $reg_naissance = $birth_year.$birth_month.$birth_day;
-        settype($reg_naissance,"integer");
-    } else {
-        // Format inconnu
-        $reg_naissance = $birth_year.$birth_month.$birth_day;
-    }
-    $continue = 'yes';
-    if (($reg_nom == '') or ($reg_prenom == '')) {
-       $msg = "Les champs nom et prénom sont obligatoires.";
-       $continue = 'no';
-    }
+	// Cas de la création d'un élève
+	$reg_nom = trim($reg_nom);
+	$reg_prenom = trim($reg_prenom);
+	$reg_email = trim($reg_email);
+	if ($reg_resp1 == '(vide)') $reg_resp1 = '';
+	if (!ereg ("^[0-9]{4}$", $birth_year)) $birth_year = "1900";
+	if (!ereg ("^[0-9]{2}$", $birth_month)) $birth_month = "01";
+	if (!ereg ("^[0-9]{2}$", $birth_day)) $birth_day = "01";
+	if ($format == '10'){
+		// YYYY-MM-DD
+		$reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
+	}
+	else{
+		if ($format == '8') {
+			// YYYYMMDD
+			$reg_naissance = $birth_year.$birth_month.$birth_day;
+			settype($reg_naissance,"integer");
+		} else {
+			// Format inconnu
+			$reg_naissance = $birth_year.$birth_month.$birth_day;
+		}
+	}
 
-    if (($continue == 'yes') and (isset($reg_login))) {
-        $msg = '';
-        $ok = 'yes';
-        if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
-            if ($reg_no_gep != '') {
-                $test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
-                $count1 = mysql_num_rows($test1);
-                if ($count1 != "0") {
-                    $msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
-                    $ok = 'no';
-                }
-            }
-            if ($reg_no_nat != '') {
-                $test2 = mysql_query("SELECT login FROM eleves WHERE no_gep='$reg_no_nat'");
-                $count2 = mysql_num_rows($test2);
-                if ($count2 != "0") {
-                    $msg .= "Erreur : un élève ayant le même numéro national existe déjà.";
-                    $ok = 'no';
-                }
-            }
-            if ($ok == 'yes') {
-              $test = mysql_query("SELECT login FROM eleves WHERE login='$reg_login'");
-              $count = mysql_num_rows($test);
-              if ($count == "0") {
+	//===========================
+	//AJOUT:
+	if(!isset($msg)){$msg="";}
+	//===========================
 
-if(!isset($ele_id)){
-// GENERER UN ele_id...
+	$continue = 'yes';
+	if (($reg_nom == '') or ($reg_prenom == '')) {
+		$msg = "Les champs nom et prénom sont obligatoires.";
+		$continue = 'no';
+	}
+
+	//$msg.="\$reg_login=$reg_login<br />";
+	//if(isset($eleve_login)){$msg.="\$eleve_login=$eleve_login<br />";}
+
+	// $reg_login non vide correspond à un nouvel élève.
+	// On a saisi un login avant de valider
+	if (($continue == 'yes') and (isset($reg_login))) {
+		$msg = '';
+		$ok = 'yes';
+		if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
+			if ($reg_no_gep != '') {
+				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
+				$count1 = mysql_num_rows($test1);
+				if ($count1 != "0") {
+					$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
+					$ok = 'no';
+				}
+			}
+
+			if ($reg_no_nat != '') {
+				$test2 = mysql_query("SELECT login FROM eleves WHERE no_gep='$reg_no_nat'");
+				$count2 = mysql_num_rows($test2);
+				if ($count2 != "0") {
+					$msg .= "Erreur : un élève ayant le même numéro national existe déjà.";
+					$ok = 'no';
+				}
+			}
+
+			if ($ok == 'yes') {
+				$test = mysql_query("SELECT login FROM eleves WHERE login='$reg_login'");
+				$count = mysql_num_rows($test);
+				if ($count == "0") {
+
+					if(!isset($ele_id)){
+						// GENERER UN ele_id...
+						/*
+						$sql="SELECT MAX(ele_id) max_ele_id FROM eleves";
+						$res_ele_id_eleve=mysql_query($sql);
+						$max_ele_id = mysql_result($call_resp , 0, "max_ele_id");
+
+						$sql="SELECT MAX(ele_id) max_ele_id FROM responsables2";
+						$res_ele_id_responsables2=mysql_query($sql);
+						$max_ele_id2 = mysql_result($call_resp , 0, "max_ele_id");
+
+						if($max_ele_id2>$max_ele_id){$max_ele_id=$max_ele_id2;}
+						$ele_id=$max_ele_id+1;
+						*/
+						// PB si on fait ensuite un import sconet le pers_id risque de ne pas correspondre... de provoquer des collisions.
+						// QUAND ON LES METS A LA MAIN, METTRE UN ele_id, pers_id,... négatifs?
+
+						// PREFIXER D'UN a...
+
+						$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
+						$res_ele_id_eleve=mysql_query($sql);
+						if(mysql_num_rows($res_ele_id_eleve)>0){
+							$tmp=0;
+							$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
+							$tmp=substr($lig_ele_id_eleve->ele_id,1);
+							$tmp++;
+							$max_ele_id=$tmp;
+						}
+						else{
+							$max_ele_id=1;
+						}
+
+						$sql="SELECT ele_id FROM responsables2 WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
+						$res_ele_id_responsables2=mysql_query($sql);
+						if(mysql_num_rows($res_ele_id_responsables2)>0){
+							$tmp=0;
+							$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
+							$tmp=substr($lig_ele_id_responsables2->ele_id,1);
+							$tmp++;
+							$max_ele_id2=$tmp;
+						}
+						else{
+							$max_ele_id2=1;
+						}
+
+						$tmp=max($max_ele_id,$max_ele_id2);
+						$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
+					}
+
+					/*
+					$reg_data1 = mysql_query("INSERT INTO eleves SET
+						no_gep = '".$reg_no_nat."',
+						nom='".$reg_nom."',
+						prenom='".$reg_prenom."',
+						login='".$reg_login."',
+						sexe='".$reg_sexe."',
+						naissance='".$reg_naissance."',
+						elenoet = '".$reg_no_gep."',
+						ereno = '".$reg_resp1."',
+						ele_id = '".$ele_id."'
+						");
+					*/
+					$reg_data1 = mysql_query("INSERT INTO eleves SET
+						no_gep = '".$reg_no_nat."',
+						nom='".$reg_nom."',
+						prenom='".$reg_prenom."',
+						email='".$reg_email ."',
+						login='".$reg_login."',
+						sexe='".$reg_sexe."',
+						naissance='".$reg_naissance."',
+						elenoet = '".$reg_no_gep."',
+						ele_id = '".$ele_id."'
+						");
+
+					$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+					$test_resp1=mysql_query($sql);
+					if(mysql_num_rows($test_resp1)>0){
+						// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
+						$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
+						$test_resp1b=mysql_query($sql);
+						if(mysql_num_rows($test_resp1b)==1){
+							// Le responsable 2 devient responsable 1.
+							$temoin_maj_resp="";
+							$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
+							$test_resp1c=mysql_query($sql);
+							if(mysql_num_rows($test_resp1c)==1){
+								$lig_autre_resp=mysql_fetch_object($test_resp1c);
+								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+								$res_update=mysql_query($sql);
+								if(!$res_update){
+									$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+									$temoin_maj_resp="PB";
+								}
+							}
+
+							if($temoin_maj_resp==""){
+								$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+								$res_update=mysql_query($sql);
+								if(!$res_update){
+									$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+								}
+							}
+						}
+						// Sinon, l'association est déjà la bonne... pas de changement.
+					}
+					else{
+						// Il n'y a pas encore d'association entre cet élève et ce responsable
+						$temoin_maj_resp="";
+						$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
+						$test_resp1c=mysql_query($sql);
+						//if(mysql_num_rows($test_resp1c)==1){
+						if(mysql_num_rows($test_resp1c)>0){
+							$lig_autre_resp=mysql_fetch_object($test_resp1c);
+
+							// Y avait-il un autre responsable légal n°2?
+							$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
+							$res_menage=mysql_query($sql);
+							if(!$res_menage){
+								$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
+								$temoin_maj_resp="PB";
+							}
+							else{
+								// L'ancien resp_legal 1 devient resp_legal 2
+								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+								$res_update=mysql_query($sql);
+								if(!$res_update){
+									$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+									$temoin_maj_resp="PB";
+								}
+							}
+						}
+
+						if($temoin_maj_resp==""){
+							$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
+							$reg_data2b=mysql_query($sql);
+							if(!$reg_data2b){
+								$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+							}
+						}
+					}
+
+					// Régime et établissement d'origine:
+					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
+					$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
+					$count2 = mysql_num_rows($call_test);
+					if ($count2 == "0") {
+						if ($reg_etab != "(vide)") {
+							$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
+						}
+					} else {
+						if ($reg_etab != "(vide)") {
+							$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
+						} else {
+							$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
+						}
+					}
+					if ((!$reg_data1) or (!$reg_data3)) {
+						$msg = "Erreur lors de l'enregistrement des données";
+					} elseif ($mode == "unique") {
+						$mess=rawurlencode("Elève enregistré !");
+						header("Location: index.php?msg=$mess");
+						die();
+					} elseif ($mode == "multiple") {
+						$mess=rawurlencode("Elève enregistré.Vous pouvez saisir l'élève suivant.");
+						header("Location: modify_eleve.php?mode=multiple&msg=$mess");
+						die();
+					}
+				} else {
+					$msg="Un élève portant le même identifiant existe déja !";
+				}
+			}
+		} else {
+			$msg="L'identifiant choisi est constitué au maximum de 12 caractères : lettres, chiffres ou \"_\" et ne doit pas commencer par un chiffre !";
+		}
+	} else if ($continue == 'yes') {
+		// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
+
+		// On nettoie les windozeries
+		$reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',email='$reg_email',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
+		if (!$reg_data) {
+			$msg = "Erreur lors de l'enregistrement des données";
+		} else {
+			// On met à jour la table utilisateurs si un compte existe pour cet élève
+			$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
+			if ($test_login > 0) {
+				$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
+				//$msg.="TEMOIN test_login puis update<br />";
+			}
+		}
+
+		$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
+		$count = mysql_num_rows($call_test);
+		if ($count == "0") {
+			if ($reg_etab != "(vide)") {
+				$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$eleve_login','$reg_etab')");
+			}
+		} else {
+			if ($reg_etab != "(vide)") {
+				$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$eleve_login'");
+			} else {
+				$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
+			}
+		}
+
+		if (!$reg_data) {
+			$msg = "Erreur lors de l'enregistrement des données !";
+		} else {
+			//$msg = "Les modifications ont bien été enregistrées !";
+			// MODIF POUR AFFICHER MES TEMOINS...
+			$msg .= "Les modifications ont bien été enregistrées !";
+		}
+
+		$temoin_ele_id="";
+		$sql="SELECT ele_id FROM eleves WHERE login='$eleve_login'";
+		$res_ele_id_eleve=mysql_query($sql);
+		if(mysql_num_rows($res_ele_id_eleve)==0){
+			$msg.="Erreur: Le champ ele_id n'est pas présent. Votre table 'eleves' n'a pas l'air à jour.<br />";
+			$temoin_ele_id="PB";
+		}
+		else{
+			$lig_tmp=mysql_fetch_object($res_ele_id_eleve);
+			$ele_id=$lig_tmp->ele_id;
+		}
+
+
+		if($temoin_ele_id==""){
+			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+			$test_resp1=mysql_query($sql);
+			if(mysql_num_rows($test_resp1)>0){
+				// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
+				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
+				$test_resp1b=mysql_query($sql);
+				if(mysql_num_rows($test_resp1b)==1){
+					// Le responsable 2 devient responsable 1.
+					$temoin_maj_resp="";
+					$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
+					$test_resp1c=mysql_query($sql);
+					if(mysql_num_rows($test_resp1c)==1){
+						$lig_autre_resp=mysql_fetch_object($test_resp1c);
+						$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+						$res_update=mysql_query($sql);
+						if(!$res_update){
+							$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+							$temoin_maj_resp="PB";
+						}
+					}
+
+					if($temoin_maj_resp==""){
+						$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+						$res_update=mysql_query($sql);
+						if(!$res_update){
+							$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+						}
+					}
+				}
+				// Sinon, l'association est déjà la bonne... pas de changement.
+			}
+			else{
+				// Il n'y a pas encore d'association entre cet élève et ce responsable
+				$temoin_maj_resp="";
+				$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
+				$test_resp1c=mysql_query($sql);
+				//if(mysql_num_rows($test_resp1c)==1){
+				if(mysql_num_rows($test_resp1c)>0){
+					$lig_autre_resp=mysql_fetch_object($test_resp1c);
+
+					// Y avait-il un autre responsable légal n°2?
+					$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
+					$res_menage=mysql_query($sql);
+					if(!$res_menage){
+						$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
+						$temoin_maj_resp="PB";
+					}
+					else{
+						// L'ancien resp_legal 1 devient resp_legal 2
+						$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+						$res_update=mysql_query($sql);
+						if(!$res_update){
+							$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+							$temoin_maj_resp="PB";
+						}
+					}
+				}
+
+				if($temoin_maj_resp==""){
+					$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
+					$reg_data2b=mysql_query($sql);
+					if(!$reg_data2b){
+						$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+					}
+				}
+			}
+		}
+
 /*
-$sql="SELECT MAX(ele_id) max_ele_id FROM eleves";
-$res_ele_id_eleve=mysql_query($sql);
-$max_ele_id = mysql_result($call_resp , 0, "max_ele_id");
-
-$sql="SELECT MAX(ele_id) max_ele_id FROM responsables2";
-$res_ele_id_responsables2=mysql_query($sql);
-$max_ele_id2 = mysql_result($call_resp , 0, "max_ele_id");
-
-if($max_ele_id2>$max_ele_id){$max_ele_id=$max_ele_id2;}
-$ele_id=$max_ele_id+1;
-*/
-// PB si on fait ensuite un import sconet le pers_id risque de ne pas correspondre... de provoquer des collisions.
-// QUAND ON LES METS A LA MAIN, METTRE UN ele_id, pers_id,... négatifs?
-
-// PREFIXER D'UN a...
-
-	$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
-	$res_ele_id_eleve=mysql_query($sql);
-	if(mysql_num_rows($res_ele_id_eleve)>0){
-		$tmp=0;
-		$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
-		$tmp=substr($lig_ele_id_eleve->ele_id,1);
-		$tmp++;
-		$max_ele_id=$tmp;
-	}
-	else{
-		$max_ele_id=1;
-	}
-
-	$sql="SELECT ele_id FROM responsables2 WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
-	$res_ele_id_responsables2=mysql_query($sql);
-	if(mysql_num_rows($res_ele_id_responsables2)>0){
-		$tmp=0;
-		$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
-		$tmp=substr($lig_ele_id_responsables2->ele_id,1);
-		$tmp++;
-		$max_ele_id2=$tmp;
-	}
-	else{
-		$max_ele_id2=1;
-	}
-
-	$tmp=max($max_ele_id,$max_ele_id2);
-	$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
-}
-
-		/*
-                $reg_data1 = mysql_query("INSERT INTO eleves SET
-                    no_gep = '".$reg_no_nat."',
-                    nom='".$reg_nom."',
-                    prenom='".$reg_prenom."',
-                    login='".$reg_login."',
-                    sexe='".$reg_sexe."',
-                    naissance='".$reg_naissance."',
-                    elenoet = '".$reg_no_gep."',
-                    ereno = '".$reg_resp1."',
-                    ele_id = '".$ele_id."'
-                    ");
-		*/
-                $reg_data1 = mysql_query("INSERT INTO eleves SET
-                    no_gep = '".$reg_no_nat."',
-                    nom='".$reg_nom."',
-                    prenom='".$reg_prenom."',
-                    email='".$reg_email ."',
-                    login='".$reg_login."',
-                    sexe='".$reg_sexe."',
-                    naissance='".$reg_naissance."',
-                    elenoet = '".$reg_no_gep."',
-                    ele_id = '".$ele_id."'
-                    ");
-
 		$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 		$test_resp1=mysql_query($sql);
 		if(mysql_num_rows($test_resp1)){
@@ -237,73 +475,16 @@ $ele_id=$max_ele_id+1;
 			}
 
 			$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-	                $reg_data2b=mysql_query($sql);
+			$reg_data2b=mysql_query($sql);
 		}
 
-                $reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
-                $call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
-                $count2 = mysql_num_rows($call_test);
-                if ($count2 == "0") {
-                    if ($reg_etab != "(vide)") {
-                        $reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
-                    }
-                } else {
-                    if ($reg_etab != "(vide)") {
-                        $reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
-                    } else {
-                        $reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
-                    }
-                }
-                if ((!$reg_data1) or (!$reg_data3)) {
-                    $msg = "Erreur lors de l'enregistrement des données";
-                } elseif ($mode == "unique") {
-                   $mess=rawurlencode("Elève enregistré !");
-                    header("Location: index.php?msg=$mess");
-                    die();
-                } elseif ($mode == "multiple") {
-                    $mess=rawurlencode("Elève enregistré.Vous pouvez saisir l'élève suivant.");
-                    header("Location: modify_eleve.php?mode=multiple&msg=$mess");
-                    die();
-                }
-              } else {
-                $msg="Un élève portant le même identifiant existe déja !";
-              }
-            }
-        } else {
-            $msg="L'identifiant choisi est constitué au maximum de 12 caractères : lettres, chiffres ou \"_\" et ne doit pas commencer par un chiffre !";
-        }
-     } else if ($continue == 'yes') {
-        // On nettoie les windozeries
-        $reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',email='$reg_email',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
-        if (!$reg_data) {
-            $msg = "Erreur lors de l'enregistrement des données";
-        } else {
-        	// On met à jour la table utilisateurs si un compte existe pour cet élève
-        	$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
-        	if ($test_login > 0) {
-        		$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
-        	}
-        }
-        $call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
-        $count = mysql_num_rows($call_test);
-        if ($count == "0") {
-            if ($reg_etab != "(vide)") {
-                $reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$eleve_login','$reg_etab')");
-            }
-        } else {
-            if ($reg_etab != "(vide)") {
-                $reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$eleve_login'");
-            } else {
-                $reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
-            }
-        }
-        if (!$reg_data) {
-            $msg = "Erreur lors de l'enregistrement des données !";
-        } else {
-            $msg = "Les modifications ont bien été enregistrées !";
-        }
-    }
+		// AJOUTER DES TESTS DE SUCCES DE LA MàJ.
+*/
+
+	}
 }
+
+//================================================
 
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($eleve_login)) {
@@ -485,7 +666,17 @@ echo "</tr>\n";
 echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élève.</font>";
+   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
+
+	$sql="select value from setting where name='import_maj_xml_sconet'";
+	$test_sconet=mysql_query($sql);
+	if(mysql_num_rows($test_sconet)>0){
+		$lig_tmp=mysql_fetch_object($test_sconet);
+		if($lig_tmp->value=='1'){
+			echo "<br />";
+			echo "<font color=red>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
+		}
+	}
 }
 
 ?>
