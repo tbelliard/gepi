@@ -42,7 +42,7 @@ die();
 
 /*
 if (!function_exists("dbase_open"))  {
-    $msg = "ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf). L'extention  d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.";
+    $msg = "ATTENTION : PHP n'est pas configuré pour gérer les fichiers GEP (dbf). L'extension  d_base n'est pas active. Adressez-vous à l'administrateur du serveur pour corriger le problème.";
 }
 */
 

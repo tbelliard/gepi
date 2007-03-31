@@ -66,7 +66,7 @@ if (isset($_POST['valid_logo'])) {
    if (ereg("\.([^.]+)$", $doc_file['name'], $match)) {
        $ext = strtolower($match[1]);
        if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
-          $msg = "les seules extentions autorisées sont gif, png et jpg";
+          $msg = "les seules extensions autorisées sont gif, png et jpg";
        } else {
           $dest = '../images/';
           $ok = false;
