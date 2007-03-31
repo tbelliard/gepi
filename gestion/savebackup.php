@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 18/09/2006
+ * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -86,5 +86,5 @@ header('Content-Type: text/x-sql');
 header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
 header('Pragma: no-cache');
-include($filepath);
+readfile($filepath);
 ?>
