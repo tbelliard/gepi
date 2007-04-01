@@ -241,7 +241,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     for (;$offsettable<$numtab;$offsettable++){
         // Dump de la strucutre table
         if ($offsetrow==-1){
-            $todump=get_def($db,$tables[$offsettable]);
+            $todump = get_def($db,$tables[$offsettable]);
             if (isset($debug)) echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />";
             fwrite($fileHandle,$todump);
             $offsetrow++;
@@ -253,7 +253,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         if (isset($debug)) echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>";
         $fin=0;
         while (!$fin){
-            $todump =get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
+            $todump = get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
             $rowtodump=substr_count($todump, "INSERT INTO");
             if ($rowtodump>0){
                 fwrite ($fileHandle,$todump);
@@ -276,7 +276,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
             return TRUE;
     }
     $offsettable=-1;
-    $todump.="#\n";
+    $todump ="#\n";
     $todump.="# ******* Fin du fichier - La sauvegarde s'est terminée normalement ********\n";
     fwrite ($fileHandle,$todump);
     fclose($fileHandle);
