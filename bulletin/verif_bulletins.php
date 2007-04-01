@@ -438,8 +438,11 @@ if (!(isset($id_classe))) {
 
     if ($bulletin_rempli == 'yes') {
         echo "<p class='bold'>Toutes les rubriques des bulletins de cette classe ont été renseignées, vous pouvez procéder à l'impression finale.</p>";
+		echo "<p class='bold'>Vous pouvez accéder directement au verrouillage de la période en <a href='verrouillage.php'>cliquant ici.</a></p>";
+		
     } else {
         echo "<p class='bold'>*** Fin des vérifications. ***</p>";
+		//echo "<p class='bold'>Vous pouvez accéder directement au verrouillage de la période en <a href='verrouillage.php'>cliquant ici.</a></p>";
     }
 }
 require("../lib/footer.inc.php");

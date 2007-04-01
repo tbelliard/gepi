@@ -99,6 +99,7 @@ if (isset($is_posted) and ($is_posted == '1') and empty($_FILES["photo"])) {
     }
     //header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&amp;action=del_eleve");
     header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&action=del_eleve");
+
 }
 // pour l'envoi des photos du trombinoscope
 
@@ -379,7 +380,8 @@ if (!isset($quelles_classes)) {
     }
 //    echo "<td><p>Classe</p></td>";
     echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
-    echo "<td><p><input type=submit value=Supprimer onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>";
+    //echo "<td><p><input type=submit value=Supprimer onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>";
+	echo "<td><p><input type=submit value=\"Supprimer\" /></p></td>";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
     	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>";
     }
