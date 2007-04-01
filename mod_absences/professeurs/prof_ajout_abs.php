@@ -365,7 +365,7 @@ if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") {
           <?php
           $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
           $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-          ?><option value="" <?php if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } ?>>pas de s&eacute;lection</option><?php
+          ?><option value="" <?php if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
           while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
               <option value="<?php echo $data_pe['heuredebut_definie_periode']; ?>" <?php if($data_pe['id_definie_periode']==periode_actuel($heure_choix)) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode']); ?></option><?php
           } ?>
@@ -375,7 +375,7 @@ if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") {
           <?php
           $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
           $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-          ?><option value="" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php }  ?>>pas de s&eacute;lection</option><?php
+          ?><option value="" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
           while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
               <option value="<?php echo $data_pe['heurefin_definie_periode']; ?>" <?php if($data_pe['id_definie_periode']==periode_actuel($heure_choix)) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
           } ?>
@@ -494,7 +494,7 @@ if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
            if($cpt_retards != '0') { $pass = '1'; }
            if ($pass === '0') {
            ?><input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onClick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" /> <input type="text" id="heure_retard_eleve<?php echo $cpt_eleve; ?>" name="heure_retard_eleve[<?php echo $cpt_eleve; ?>]" size="3" maxlength="8" value="<?php echo heure_court($heuredebut_definie_periode); ?>" />
-           <?php } else { ?>En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><PHP? } ?>
+           <?php } else { ?>En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><? } ?>
            <?php
            // Avec ou sans photo
            if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
