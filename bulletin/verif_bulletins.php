@@ -438,8 +438,18 @@ if (!(isset($id_classe))) {
 
     if ($bulletin_rempli == 'yes') {
         echo "<p class='bold'>Toutes les rubriques des bulletins de cette classe ont été renseignées, vous pouvez procéder à l'impression finale.</p>";
+		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";	
     } else {
-        echo "<p class='bold'>*** Fin des vérifications. ***</p>";
+        echo "<br /><p class='bold'>*** Fin des vérifications. ***</p>";
+		/*
+		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>";
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";
+	          */
     }
 }
 require("../lib/footer.inc.php");
