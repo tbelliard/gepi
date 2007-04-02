@@ -120,7 +120,11 @@ if ($force_ref) {
     $uri = $_SERVER['PHP_SELF'];
     $parsed_uri = parse_url($uri);
 
-    if (!isset($_SERVER['HTTPS']) OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")) {
+    if (
+    	!isset($_SERVER['HTTPS']) 
+    	OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+    	OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
+    	) {
             echo "<br/><font color='red'>Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)</font>\n";
     }
 
