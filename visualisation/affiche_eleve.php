@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -143,6 +143,7 @@ if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") != "yes") OR
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") != "yes")
 	) {
+	tentative_intrusion(1, "Tentative d'accès à l'outil de visualisation graphique sans y être autorisé.");
 	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -204,6 +205,7 @@ if ($_SESSION['statut'] == "responsable") {
 					"re.pers_id = r.pers_id AND " .
 					"r.login = '" . $_SESSION['login'] . "')");
 			if (mysql_result($test, 0) == 0) {
+			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
 			    require("../lib/footer.inc.php");
 				die();
@@ -213,6 +215,9 @@ if ($_SESSION['statut'] == "responsable") {
 
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
+		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève.");
+	}
 	$login_eleve = $_SESSION['login'];
 }
 
@@ -379,6 +384,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "')");
 		if (mysql_result($test, 0) == 0) {
+		    tentative_intrusion(3, "Tentative (forte) d'un parent de visualisation graphique des résultats d'un élève dont il n'est pas responsable légal.");
 		    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.\n";
 		    require("../lib/footer.inc.php");
 			die();
@@ -387,6 +393,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 		// On filtre eleve2 :
 		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
+			tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
 			$eleve2 = "moyclasse";
 		}
 	}
@@ -752,7 +759,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	} else {
 		// Cas d'un responsable ou d'un élève :
 		// Pas de sélection de l'élève, il est déjà fixé.
-		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe.
+		// Pas de sélection non plus de la comparaison : c'est la moyenne de la classe (ou moy min ou max).
 		echo "<p>Eleve : ".$prenom_eleve . " " .$nom_eleve."</p>\n";
 		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";

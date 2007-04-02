@@ -1,5 +1,6 @@
 <?php
 /*
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
@@ -41,6 +42,7 @@ if (!checkAccess()) {
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
+    tentative_intrusion(1, "Tentative d'accès au cahier de texte en consultation alors que le module n'est pas activé.");
     die("Le module n'est pas activé.");
 }
 
@@ -74,6 +76,10 @@ if ($login_eleve) {
 }
 
 if ($_SESSION['statut'] == 'eleve') {
+	// On enregistre si un élève essaie de voir le cahier de texte d'un autre élève
+	if ($selected_eleve) {
+		if ($selected_eleve != $_SESSION['login']) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de texte d'un autre élève.");
+	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
 	$get_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
@@ -99,7 +105,12 @@ if ($_SESSION['statut'] == 'eleve') {
 		while($test = mysql_fetch_object($get_eleves)) {
 			if ($test->login == $selected_eleve->login) $ok = true;
 		}
-		if (!$ok) $selected_eleve = false;
+		if (!$ok) {
+			// Si on est là, ce qu'un utilisateur au statut 'responsable' a essayé
+			// de sélectionner un élève pour lequel il n'est pas responsable.
+			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de texte d'un autre élève que le ou les sien(s).");
+			$selected_eleve = false;
+		}
 	}
 }
 $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
@@ -130,10 +141,6 @@ $titre_page = "Cahier de texte";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
-//On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
-   die("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
-}
 // On vérifie que la date demandée est bien comprise entre la date de début des cahiers de texte et la date de fin des cahiers de texte :
 if ($today < getSettingValue("begin_bookings")) {
    $today = getSettingValue("begin_bookings");

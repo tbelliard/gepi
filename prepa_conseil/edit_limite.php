@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,7 @@ if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") != "yes") OR
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") != "yes")
 	) {
+	tentative_intrusion(2, "Tentative de visualisation d'un bulletin simplifié sans y être autorisé.");
 	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -68,6 +69,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '" . $_SESSION['login'] . "')");
 	if (mysql_result($test, 0) == 0) {
+	    tentative_intrusion(3, "Tentative d'un parent de visualiser un bulletin simplifié d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
 		die();
@@ -76,6 +78,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 // Et une autre...
 if ($_SESSION['statut'] == "eleve" AND $_SESSION['login'] != $login_eleve) {
+    tentative_intrusion(3, "Tentative d'un élève de visualiser un bulletin simplifié d'un autre élève.");
     echo "Vous ne pouvez visualiser que vos bulletins simplifiés.\n";
     require("../lib/footer.inc.php");
 	die();
@@ -83,6 +86,7 @@ if ($_SESSION['statut'] == "eleve" AND $_SESSION['login'] != $login_eleve) {
 
 // Et encore une : si on a un reponsable ou un élève, alors seul l'édition pour un élève seul est autorisée
 if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_edit != "2") {
+    tentative_intrusion(3, "Tentative (élève ou parent) de changement du mode de visualisation d'un bulletin simplifié (le mode imposé est la visualisation pour un seul élève)");
     echo "N'essayez pas de tricher...\n";
     require("../lib/footer.inc.php");
 	die();

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -498,7 +498,10 @@ function active(num) {
 // Première étape : on choisit la classe ou le groupe
 if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 
-    if ((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) {
+    if (
+    	(($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
+    	OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))
+    	) {
 
         //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	if (($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) {
@@ -553,7 +556,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 // fin rajout christian
 
 // rajout christian
-	if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) AND $format == "pdf")
+	if(
+		((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
+			OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes")))
+		AND $format == "pdf")
 	{
 		?>
 		<form method="post" action="visu_releve_notes.php" name="imprime_pdf">
@@ -743,6 +749,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
 
         } else {
+            tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé.");
             echo "<p>Vous n'êtes pas autorisés à être ici.</p>\n";
             die();
         }
@@ -755,6 +762,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     // On teste si le professeur a le droit d'être ici
 
     if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
+        tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
@@ -763,6 +771,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes")) 
     	 OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes") 
     	 OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
+        tentative_intrusion(2, "Tentative d'un utilisateur d'accéder aux relevés de notes sans y être autorisé.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
@@ -785,6 +794,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         if (!$current_group) {
             // Dans le cas d'une classe, on vérifie que l'accès est autorisé
             if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes") {
+                tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes de toute une classe alors qu'il n'est autorisé qu'à accéder aux relevés des élèves de ses groupes uniquement.");
                 echo "Vous n'êtes pas autorisé à visualiser l'ensemble des élèves de cette classe ! Sélectionnez uniquement un groupe parmi ceux auxquels vous enseignez.</body></html>\n";
                 die();
             } else {
@@ -798,6 +808,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
                         "jgc.id_groupe = jgp.id_groupe" .
                         ")");
                 if ($test_classe == '-1') {
+                    tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe dans laquelle il n'est pas professeur.");
                     echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
                 die();
                 }
@@ -1030,6 +1041,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	// Si on arrive là, on va afficher des relevés. On fait tout un tas de vérifications de sécurité
 	// pour s'assurer que personne n'est là illégalement.
     if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
+        tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé, avec passage volontaire de paramètres à la page.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
@@ -1038,6 +1050,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes")) 
     	 OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes") 
     	 OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
+        tentative_intrusion(3, "Tentative d'un utilisateur d'accéder aux relevés de notes sans y être autorisé, avec passage volontaire de paramètres à la page.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
@@ -1050,6 +1063,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         c.id= '".$id_classe."'
         )");
         if ($test_classe == '-1') {
+        	tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé, avec passage volontaire de paramètres à la page.");
             echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
             die();
         }
@@ -1060,6 +1074,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         if (!$current_group) {
             // Dans le cas d'une classe, on vérifie que l'accès est autorisé
             if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes") {
+                tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'élèves pour toutes la classe (alors qu'il n'est autorisé à voir que ses groupes), avec passage volontaire de paramètres à la page.");
                 echo "Vous n'êtes pas autorisé à visualiser l'ensemble des élèves de cette classe ! Sélectionnez uniquement un groupe parmi ceux auxquels vous enseignez.</body></html>\n";
                 die();
             } else {
@@ -1073,6 +1088,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
                         "jgc.id_groupe = jgp.id_groupe" .
                         ")");
                 if ($test_classe == '-1') {
+                	tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe où il n'enseigne pas, avec passage volontaire de paramètres à la page.");
                     echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.\n";
                     require("../lib/footer.inc.php");
                 	die();
@@ -1083,6 +1099,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
 	if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
 		if ($choix_edit != "2") {
+            tentative_intrusion(3, "Tentative d'un parent ou élève de visualiser des relevés de notes autrement que pour un élève unique.");
             echo "Vous n'êtes pas autorisé à utiliser ce mode de visualisation.\n";
             require("../lib/footer.inc.php");
         	die();
@@ -1090,6 +1107,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		
 		if ($_SESSION['statut'] == "eleve") {
 			if ($login_eleve != $_SESSION['login']) {
+	            tentative_intrusion(3, "Tentative d'un élève de visualiser les relevés de notes d'un autre élève.");
 	            echo "Vous ne pouvez visualiser que vos relevés de notes.\n";
 	            require("../lib/footer.inc.php");
 	        	die();
@@ -1105,6 +1123,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 					"re.pers_id = r.pers_id AND " .
 					"r.login = '" . $_SESSION['login'] . "')");
 			if (mysql_result($test, 0) == 0) {
+	            tentative_intrusion(3, "Tentative d'un parent d'accès aux relevés de notes d'un élève dont il n'est pas responsable légal.");
 	            echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
 	            require("../lib/footer.inc.php");
 	        	die();

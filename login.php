@@ -1,7 +1,7 @@
 <?php
 /* $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -162,10 +162,13 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
     } else if ($temp=="dl") {
         $message = "Site momentanément inaccessible.";
     } else if ($temp=="verrouillage") {
+        tentative_intrusion(2, "Verrouillage du compte ".$_POST['login']." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.");
         $message = "Trop de tentatives de connexion infructueuses : votre compte est momentanément verrouillé.";
     } else if ($temp=="liste_noire") {
+        tentative_intrusion(1, "Tentative de connexion depuis une IP sur liste noire (login : ".$_POST['login'].")");
         $message = "Connexion impossible : vous tentez de vous connecter à partir d'une adresse IP interdite.";
     } else {
+        tentative_intrusion(1, "Tentative de connexion avec un login ou mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login : ".$_POST['login'].")");
         $message = "Identifiant ou mot de passe incorrect";
     }
 } else {

@@ -60,6 +60,9 @@ if ($_SESSION['statut'] == "responsable") {
 	
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
+	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
+		tentative_intrusion(2, "Tentative d'un élève d'accéder à l'équipe pédagogique d'un autre élève.");
+	}
 	$login_eleve = $_SESSION['login'];
 }
 
@@ -84,6 +87,7 @@ if (
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") != "yes") OR
 	($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 	) {
+	tentative_intrusion(1, "Tentative d'accès à l'équipe pédagogique sans y être autorisé.");
 	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -99,6 +103,7 @@ if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '" . $_SESSION['login'] . "')");
 	if (mysql_result($test, 0) == 0) {
+	    tentative_intrusion(2, "Tentative par un parent d'accéder à l'équipe pédagogique d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
 		die();

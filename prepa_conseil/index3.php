@@ -64,6 +64,9 @@ if ($_SESSION['statut'] == "responsable") {
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter un choix.
 	
 } else if ($_SESSION['statut'] == "eleve") {
+	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
+		tentative_intrusion(2, "Tentative d'un élève de visualiser le bulletin simplifié d'un autre élève.");
+	}
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	$login_eleve = $_SESSION['login'];
 }
@@ -105,6 +108,7 @@ if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") != "yes") OR
 	($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") != "yes")
 	) {
+	tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
 	echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
 	require "../lib/footer.inc.php";
 	die();
@@ -161,7 +165,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";	
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->prenom."</a></p>";
+		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}	
 } else if (!isset($choix_edit)) {
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
