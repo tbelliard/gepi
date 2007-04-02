@@ -1610,6 +1610,12 @@ function tentative_intrusion($_niveau, $_description) {
 			if ($seuil2) $message .= "L'utilisateur a dépassé le seuil d'alerte 2.\n\n";
 			if ($block_user) $message .= "Le compte de l'utilisateur a été désactivé.\n";
 		}
+		
+		// On envoie le mail
+		$envoi = mail(getSettingValue("gepiAdminAdress"),
+		    "GEPI : Alerte sécurité -- Tentative d'intrusion",
+		    $message,
+		   "From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
 	}
 }
 ?>
