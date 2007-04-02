@@ -84,6 +84,11 @@ require_once("../lib/header.inc");
 function active(num) {
  document.form_choix_edit.choix_edit[num].checked=true;
 }
+
+function change_periode(){
+var indi=document.form_choix_edit.periode1.selectedIndex;
+document.form_choix_edit.periode2.value=indi+1;
+}
 </script>
 <?php
 echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
@@ -218,14 +223,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
     }
     echo "<p>Choisissez la(les) période(s) : </p><br />\n";
     include "../lib/periodes.inc.php";
-    echo "De la période : <select size=1 name=periode1>\n";
+    echo "De la période : <select onchange=\"change_periode()\" size=1 name=\"periode1\">\n";
     $i = "1" ;
     while ($i < $nb_periode) {
        echo "<option value=$i>$nom_periode[$i] </option>\n";
        $i++;
     }
     echo "</select>\n";
-    echo "&nbsp;à la période : <select size=1 name=periode2>\n";
+    echo "&nbsp;à la période : <select size=1 name=\"periode2\">\n";
     $i = "1" ;
     while ($i < $nb_periode) {
        echo "<option value=$i>$nom_periode[$i] </option>\n";
