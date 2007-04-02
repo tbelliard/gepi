@@ -1603,7 +1603,7 @@ function tentative_intrusion($_niveau, $_description) {
 		} else {
 			$message .= "Informations sur l'utilisateur :\n";
 			$message .= "Login : ".$user_login."\n";
-			$message .= "Nom : ".$user->prenom . " ".$user->prenom."\n";
+			$message .= "Nom : ".$user->prenom . " ".$user->nom."\n";
 			$message .= "Statut : ".$user->statut."\n";
 			$message .= "Score cumulé : ".$nouveau_cumul."\n\n";
 			if ($seuil1) $message .= "L'utilisateur a dépassé le seuil d'alerte 1.\n\n";
