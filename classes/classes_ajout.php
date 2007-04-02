@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 22/08/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -149,8 +149,27 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 ?>
+<script type='text/javascript' language='javascript'>
+function CochePeriode() {
+    nbParams = CochePeriode.arguments.length;
+    for (var i=0;i<nbParams;i++) {
+        theElement = CochePeriode.arguments[i];
+        if (document.formulaire.elements[theElement])
+            document.formulaire.elements[theElement].checked = true;
+    }
+}
 
-<form enctype="multipart/form-data" action="classes_ajout.php" method=post>
+function DecochePeriode() {
+    nbParams = DecochePeriode.arguments.length;
+    for (var i=0;i<nbParams;i++) {
+        theElement = DecochePeriode.arguments[i];
+        if (document.formulaire.elements[theElement])
+            document.formulaire.elements[theElement].checked = false;
+    }
+}
+</script>
+
+<form enctype="multipart/form-data" action="classes_ajout.php" name="formulaire" method=post>
 
 <p class=bold>
 <a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
@@ -182,6 +201,8 @@ if ($nombreligne == '0') {
         $i++;
 
     }
+	
+	echo "<td><b><center>cocher / décocher <br/>toutes périodes</center></b></p></td>";
 
     echo "</tr>";
 
@@ -290,6 +311,7 @@ if ($nombreligne == '0') {
                 }
 
             }
+			
 
         }
 
@@ -358,12 +380,21 @@ if ($nombreligne == '0') {
                 }
 
                 echo "</p></td>\n";
-
+				
                 $i++;
 
             }
-
-            echo "</tr>\n";
+			
+			$elementlist = null;
+	        for ($i=1;$i<=sizeof($ajout_login);$i++) {
+			  //echo $ajout_login[$i]."<br>";
+			  $elementlist .= "'".$ajout_login[$i]."',";
+			}
+	        $elementlist = substr($elementlist, 0, -1);
+			
+			echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>";
+			
+			echo "</tr>\n";
 
         }
 
