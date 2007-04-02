@@ -197,7 +197,7 @@ if (isset($id_classe)) {
 </tr>
 <tr>
     <td style="font-variant: small-caps;">
-    Afficher les rubriques de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :
+    Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :
     </td>
     <td><input type="checkbox" value="y" name="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> />
     </td>
