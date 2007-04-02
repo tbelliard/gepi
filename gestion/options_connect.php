@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: gestion_connect.php 232 2007-04-02 11:11:08Z tbelliard $
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -23,7 +23,7 @@
 
 // Begin standart header
 
-$titre_page = "Gestion des connexions";
+$titre_page = "Options de connexion";
 
 
 
@@ -47,7 +47,7 @@ if (!checkAccess()) {
     die();
 }
 
-/*
+
 // Enregistrement de la durée de conservation des données
 
 if (isset($_POST['duree'])) {
@@ -66,7 +66,7 @@ if (isset($_POST['use_sso'])) {
         $msg = "Le mode d'authentification a été enregistré.";
     }
 }
-*/
+
 
 // Load settings
 
@@ -75,7 +75,8 @@ if (!loadSettings()) {
 }
 
 
-/*// Suppression du journal de connexion
+
+// Suppression du journal de connexion
 
 if (isset($_POST['valid_sup_logs']) ) {
     $sql = "delete from log where END < now()";
@@ -97,8 +98,8 @@ if (isset($_POST['valid_chgt_mdp'])) {
        $msg = "Il y a eu un problème lors de l'enregistrement de la demande de changement obligatoire de mot de passe.";
     }
 }
-*/
 
+/*
 //
 // Protection contre les attaques.
 //
@@ -133,7 +134,7 @@ if (isset($_POST['disable_login'])) {
         $msg = "l'enregistrement du paramètre d'activation/désactivation des connexions a été effectué avec succès.";
     }
 }
-
+*/
 //Activation / désactivation de la procédure de réinitialisation du mot de passe par email
 if (isset($_POST['enable_password_recovery'])) {
     if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
@@ -156,7 +157,7 @@ if ($mode_navig == 'accueil') {
 echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 
-
+/*
 //
 // Affichage des personnes connectées
 //
@@ -176,13 +177,14 @@ if ($res) {
     echo "</li>";
     }
 }
-
+*/
 ?>
-</ul>
+<!--</ul>
 </div>
 
-<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
+<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/> -->
 <?php
+/*
 //
 // Activation/désactivation des connexions
 //
@@ -202,7 +204,7 @@ echo "</form>";
 
 echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 
-/*
+*/
 //
 // Activation/désactivation de la procédure de récupération du mot de passe
 //
@@ -220,7 +222,8 @@ echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
 echo "</form>";
 
 echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
-*/
+
+/*
 //
 // Protection contre les attaques.
 //
@@ -242,7 +245,7 @@ echo "</tr></table>";
 echo "<center><input type=\"submit\" name=\"valid_param_mdp\" value=\"Valider\" /></center>";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
 
-/*
+*/
 //
 // Changement du mot de passe obligatoire
 //
@@ -342,14 +345,15 @@ echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entr
 echo "<form action=\"gestion_connect.php\" name=\"form_sup_logs\" method=\"post\">";
 echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form>";
-*/
+echo "</form><br/>";
+
 //
 // Journal des connections
 //
 ?>
 <!--<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>-->
 <?php
+/*
 if (isset($_POST['duree2'])) {
    $duree2 = $_POST['duree2'];
 } else {
@@ -516,7 +520,7 @@ if ($res) {
         echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>";
     }
 }
-
+*/
 ?>
 </table>
 </div>

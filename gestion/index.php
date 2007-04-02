@@ -48,14 +48,13 @@ require_once("../lib/header.inc");
 ?>
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <center>
-
 <table class='menu'>
 <tr>
-	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link'/> - Général</th>
+	<th colspan='2'><img src='../images/icons/securite.png' alt='Sécurité' class='link'/> - Sécurité</th>
 </tr>
 <tr>
-    <td width=200><a href="param_gen.php">Configuration générale</a></td>
-    <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
+    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
+    <td>Affichage des connexions en cours, activation/désactivation des connexions pour le site, protection contre les attaques forces brutes, journal des connexions, changement de mot de passe obligatoire.
     </td>
 </tr>
 <tr>
@@ -68,14 +67,25 @@ require_once("../lib/header.inc");
     <td>Définir les seuils d'alerte et les actions à entreprendre dans le cas de tentatives d'intrusion ou d'accès illégal à des ressources.
     </td>
 </tr>
+</table>
+
+<table class='menu'>
+<tr>
+	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link'/> - Général</th>
+</tr>
+<tr>
+    <td width=200><a href="param_gen.php">Configuration générale</a></td>
+    <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
+    </td>
+</tr>
 <tr>
     <td width=200><a href="droits_acces.php">Droits d'accès</a></td>
     <td>Modifier les droits d'accès à certaines fonctionnalités selon le statut de l'utilisateur.
     </td>
 </tr>
 <tr>
-    <td width=200><a href="gestion_connect.php">Gestion des connexions</a></td>
-    <td>Paramétrage du mode de connexion (autonome ou Single Sign-On), affichage des connexions en cours, journal des connexions, changement de mot de passe obligatoire.
+    <td width=200><a href="options_connect.php">Options de connexions</a></td>
+    <td>Gestion de la procédure automatisée de récupération de mot de passe, paramétrage du mode de connexion (autonome ou Single Sign-On), changement de mot de passe obligatoire, réglage de la durée de conservation des connexions, suppression de toutes les entrées du journal de connexion.
     </td>
 </tr>
 <tr>
