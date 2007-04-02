@@ -379,9 +379,9 @@ function resumeSession()
         die();
     }
 
-    // To be removed
+
     // Validating session data
-    $sql = "select password = '" . $_SESSION['password'] . "' PASSWORD, login = '" . $_SESSION['login'] . "' LOGIN, statut = '" . $_SESSION['statut'] . "' STATUT, change_mdp = 'n' CHANGE_MDP from utilisateurs where login = '" . $_SESSION['login'] . "'";
+    $sql = "select password = '" . $_SESSION['password'] . "' PASSWORD, login = '" . $_SESSION['login'] . "' LOGIN, statut = '" . $_SESSION['statut'] . "' STATUT, change_mdp = 'n' CHANGE_MDP, etat = 'actif' ETAT from utilisateurs where login = '" . $_SESSION['login'] . "'";
 
     $res = sql_query($sql);
     $row = sql_row($res, 0);
@@ -389,7 +389,7 @@ function resumeSession()
     // Checking for a timeout
     $sql2 = "select now() > END TIMEOUT from log where SESSION_ID = '" . session_id() . "' and START = '" . $_SESSION['start'] . "'";
 
-    if ($row[0] != "1" || $row[1] != "1" || $row[2] != "1") {
+    if ($row[0] != "1" || $row[1] != "1" || $row[2] != "1" || $row[4] != "1") {
         return "0";
     } else if (sql_query1($sql2)) {
         return "0";
