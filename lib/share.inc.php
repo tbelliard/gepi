@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 09/08/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 
 
@@ -822,11 +822,13 @@ function checkAccess() {
     ;";
     $dbCheckAccess = sql_query1($sql);
     if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
+        tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
         return (false);
     } else {
         if ($dbCheckAccess == 'V') {
             return (true);
         } else {
+            tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
             return (false);
         }
     }
@@ -1499,4 +1501,115 @@ $res = sql_query($sql);
    }
   return $html;
  }
+
+// Cette fonction est à appeler dans tous les cas où une tentative
+// d'utilisation illégale de Gepi est manifestement avérée.
+// Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test
+// est négatif.
+function tentative_intrusion($_niveau, $_description) {
+	// On permet l'accès à $_SERVER et $_SESSION
+	global $_SERVER;
+	global $_SESSION;
+	global $gepiPath;
+	
+	// On commence par enregistrer la tentative en question
+
+	if (!isset($_SESSION['login'])) {
+		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utiliser logué.		
+		$user_login = "-";
+	} else {
+		$user_login = $_SESSION['login'];
+	}
+	$adresse_ip = $_SERVER['REMOTE_ADDR'];
+	$date = strftime("%Y-%m-%d %H:%M:%S");
+	$url = parse_url($_SERVER['REQUEST_URI']);
+    $fichier = substr($url['path'], strlen($gepiPath));
+	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
+			"login = '".$user_login."', " .
+			"adresse_ip = '".$adresse_ip."', " .
+			"date = '".$date."', " .
+			"niveau = '".(int)$_niveau."', " .
+			"fichier = '".$fichier."', " .
+			"description = '".addslashes($_description)."', " .
+			"statut = 'new'");
+	
+	// On a enregistré.
+	
+	// On initialise des marqueurs pour les deux actions possibles : envoie d'un email à l'admin
+	// et blocage du compte de l'utilisateur
+	
+	$send_email = false;
+	$block_user = false;
+	
+	// Est-ce qu'on envoie un mail quoi qu'il arrive ?
+	if (getSettingValue("security_alert_email_admin") == "yes" AND $_niveau >= getSettingValue("security_alert_email_min_level")) {
+		$send_email = true;
+	}
+	
+	// Si la tentative d'intrusion a été effectuée par un utilisateur connecté à Gepi,
+	// on regarde si des seuils ont été dépassés et si certaines actions doivent être
+	// effectuées.
+	
+	if ($user_login != "-") {
+		// On récupère quelques infos
+		$req = mysql_query("SELECT nom, prenom, statut, niveau_alerte, observation_securite FROM utilisateurs WHERE (login = '".$user_login."')");
+		$user = mysql_fetch_object($req);
+		// On va utiliser ça pour générer automatiquement les noms de settings, ça fait du code en moins...
+		if ($user->observation_securite == "1") {
+			$obs = "probation";
+		} else {
+			$obs = "normal";
+		}
+		
+		// D'abord, on met à jour le niveau cumulé
+		$nouveau_cumul = (int)$user->niveau_alerte+(int)$_niveau;
+		
+		$res = mysql_query("UPDATE utilisateurs SET niveau_alerte = '".$nouveau_cumul ."' WHERE (login = '".$user_login."')");
+		
+		$seuil1 = false;
+		$seuil2 = false;
+		// Maintenant on regarde les seuils.
+		if ($nouveau_cumul >= getSettingValue("security_alert1_".$obs."_cumulated_level")
+				AND $nouveau_cumul < getSettingValue("security_alert2_".$obs."_cumulated_level")) {
+			// Seuil 1	
+			if (getSettingValue("security_alert1_".$obs."_email_admin") == "yes") $send_email = true;
+			if (getSettingValue("security_alert1_".$obs."_block_user") == "yes") $block_user = true;
+			$seuil1 = true;
+		
+		} elseif ($nouveau_cumul >= getSettingValue("security_alert2_".$obs."_cumulated_level")) {
+			// Seuil 2
+			if (getSettingValue("security_alert2_".$obs."_email_admin") == "yes") $send_email = true;
+			if (getSettingValue("security_alert2_".$obs."_block_user") == "yes") $block_user = true;
+			$seuil2 = true;
+		}
+		
+		// On désactive le compte de l'utilisateur si nécessaire :
+		if ($block_user) {
+			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$user_login."')");
+		}
+	} // Fin : if ($user_login != "-")
+	
+	// On envoie un email à l'administrateur si nécessaire
+	if ($send_email) {
+		$message = "** Alerte automatique sécurité Gepi **\n\n";
+		$message .= "Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :\n\n";
+		$message .= "Date : ".$date."\n";
+		$message .= "Fichier visé : ".$fichier."\n";
+		$message .= "Niveau de gravité : ".$_niveau."\n";
+		$message .= "Description : ".$_description."\n\n";
+		if ($user_login == "-") {
+			$message .= "La tentative d'intrusion a été effectuée par un utilisateur non connecté à Gepi.\n";
+			$message .= "Adresse IP : ".$adresse_ip."\n";
+		} else {
+			$message .= "Informations sur l'utilisateur :\n";
+			$message .= "Login : ".$user_login."\n";
+			$message .= "Nom : ".$user->prenom . " ".$user->prenom."\n";
+			$message .= "Statut : ".$user->statut."\n";
+			$message .= "Score cumulé : ".$nouveau_cumul."\n\n";
+			if ($seuil1) $message .= "L'utilisateur a dépassé le seuil d'alerte 1.\n\n";
+			if ($seuil2) $message .= "L'utilisateur a dépassé le seuil d'alerte 2.\n\n";
+			if ($block_user) $message .= "Le compte de l'utilisateur a été désactivé.\n";
+		}
+	}
+}
 ?>

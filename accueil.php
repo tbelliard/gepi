@@ -3,7 +3,7 @@ $starttime = microtime();
 /* 
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -79,7 +79,7 @@ function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
     if (acces($chemin_,$statut_)==1)  {
         $temp = substr($chemin_,1);
         echo "<tr>\n";
-        echo "<td width=\"30%\" align=\"left\"><a href=$temp>$titre_</a>";
+        echo "<td width=\"30%\" align=\"left\" style='border-right: none;'><a href=$temp>$titre_</a>";
         echo "</td>\n";
         echo "<td align=\"left\">$expli_</td>\n";
         echo "</tr>\n";
@@ -103,6 +103,11 @@ if ($_SESSION['statut'] == "administrateur") {
     $nb_connect = sql_count($res);
     echo "Nombre de personnes actuellement connectées : $nb_connect ";
     echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n";
+
+	// Lien vers le panneau de contrôle de sécurité
+	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
+	if (empty($alert_sums)) $alert_sums = "0";
+	echo "<br/>Alertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)";
 
 // christian : demande d'enregistrement
 if ($force_ref) {

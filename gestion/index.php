@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 20/08/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -56,6 +56,16 @@ require_once("../lib/header.inc");
 <tr>
     <td width=200><a href="param_gen.php">Configuration générale</a></td>
     <td>Permet de modifier des paramètres généraux (nom de l'établissement, adresse, ...).
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="security_panel.php">Panneau de contrôle sécurité</a></td>
+    <td>Visualiser les tentatives d'utilisation illégale de Gepi.
+    </td>
+</tr>
+<tr>
+    <td width=200><a href="security_policy.php">Politique de sécurité</a></td>
+    <td>Définir les seuils d'alerte et les actions à entreprendre dans le cas de tentatives d'intrusion ou d'accès illégal à des ressources.
     </td>
 </tr>
 <tr>

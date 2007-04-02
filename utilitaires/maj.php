@@ -426,8 +426,9 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique absence et retard sur le même graphique', '');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/bulletin/param_bull_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page de gestion des parametres du bulletin pdf', '');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/bulletin/bulletin_pdf_avec_modele_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'page generant le bulletin pdf en fonction du modele affecte a la classe ', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/gestion/security_panel.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'panneau de controle des atteintes a la securite', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/gestion/security_policy.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'definition des politiques de securite', '');";
 	
-    
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -1736,7 +1737,7 @@ if (isset ($_POST['maj'])) {
     }
 
     if (($force_maj == 'yes') or (quelle_maj("1.4.4"))) {
-        $result .= "<br /><br /><b>Mise à jour vers la version 1.4.4" . $rc . $beta . " :</b><br />";
+        $result .= "<br /><br /><b>Mise à jour vers la version 1.4.4 :</b><br />";
 
         $result .= "&nbsp;->Création de la table matieres_categories<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_categories'"));
@@ -3980,6 +3981,140 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
 		}
+		
+        $result .= "&nbsp;->Création de la table tentatives_intrusion<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'tentatives_intrusion'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `login` VARCHAR( 255 ) NULL , `adresse_ip` VARCHAR( 255 ) NOT NULL , `date` DATETIME NOT NULL , `niveau` SMALLINT NOT NULL , `fichier` VARCHAR( 255 ) NOT NULL , `description` TEXT NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( `id`, `login` ))");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+		
+		$result .= "&nbsp;->Ajout du champs `niveau_alerte` à la table `utilisateurs`.<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'niveau_alerte'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `niveau_alerte` SMALLINT NOT NULL DEFAULT '0'");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    
+		$result .= "&nbsp;->Ajout du champs `observation_securite` à la table `utilisateurs`.<br />";
+	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'observation_securite'"));
+	    if ($test1 == 0) {
+	        $query5 = mysql_query("ALTER TABLE `utilisateurs` ADD `observation_securite` TINYINT NOT NULL DEFAULT '0'");
+	        if ($query5) {
+	            $result .= "<font color=\"green\">Ok !</font><br />";
+	        } else {
+	            $result .= "<font color=\"red\">Erreur !</font><br />";
+	        }
+	    } else {
+	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	    }
+	    
+	    $result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
+        $query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
+        if ($query28) {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= "<font color=\"red\">Erreur</font><br />";
+        }
+	    
+	    
+	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
+        
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert_email_admin', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_min_level'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert_email_min_level', '1');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_cumulated_level'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_cumulated_level', '3');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_email_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_email_admin', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_block_user'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_block_user', 'no');");
+
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_cumulated_level'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_cumulated_level', '2');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_email_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_email_admin', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_block_user'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_block_user', 'no');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_cumulated_level'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_cumulated_level', '7');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_email_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_email_admin', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_block_user'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_block_user', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_cumulated_level'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_cumulated_level', '5');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_email_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_email_admin', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_block_user'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_block_user', 'yes');");
+
+
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
+	    
+	    
+	    
+	    
+		
     }
 
 

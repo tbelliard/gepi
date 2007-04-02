@@ -75,6 +75,22 @@ table.uneligne {
     font-size: 8pt;
 }
 
+table.normal {
+    border-style:solid;
+    border-width:1px;
+    border-color: lightgrey;
+    border-collapse:collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.normal td {
+    border-style:solid;
+    border-width:1px;
+    border-color: lightgrey;
+    padding: 15px;
+}
+
 /*==================================*/
 /* Styles généraux */
 
@@ -414,6 +430,7 @@ table.menu td {
     border-bottom: none;
     border-left: 1px solid lightgrey;
     padding-left: 10px;
+    padding-right: 10px;
 }
 
 table.menu td a {

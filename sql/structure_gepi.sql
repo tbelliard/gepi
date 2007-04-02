@@ -77,7 +77,7 @@ CREATE TABLE `tempo` ( `id_classe` int(11) NOT NULL default '0', `max_periode` i
 DROP TABLE IF EXISTS `tempo2`;
 CREATE TABLE `tempo2` ( `col1` varchar(100) NOT NULL default '', `col2` varchar(100) NOT NULL default '');
 DROP TABLE IF EXISTS `utilisateurs`;
-CREATE TABLE `utilisateurs` ( `login` varchar(50) NOT NULL default '', `nom` varchar(50) NOT NULL default '', `prenom` varchar(50) NOT NULL default '', `civilite` varchar(5) NOT NULL default '', `password` varchar(32) NOT NULL default '', `email` varchar(50) NOT NULL default '', `show_email` varchar(3) NOT NULL default 'no', `statut` varchar(20) NOT NULL default '', `etat` varchar(20) NOT NULL default '', `change_mdp` char(1) NOT NULL default 'n', `date_verrouillage` datetime NOT NULL default '2006-01-01 00:00:00', `password_ticket` varchar(255) NOT NULL, `ticket_expiration` datetime NOT NULL, PRIMARY KEY  (`login`));
+CREATE TABLE `utilisateurs` ( `login` varchar(50) NOT NULL default '', `nom` varchar(50) NOT NULL default '', `prenom` varchar(50) NOT NULL default '', `civilite` varchar(5) NOT NULL default '', `password` varchar(32) NOT NULL default '', `email` varchar(50) NOT NULL default '', `show_email` varchar(3) NOT NULL default 'no', `statut` varchar(20) NOT NULL default '', `etat` varchar(20) NOT NULL default '', `change_mdp` char(1) NOT NULL default 'n', `date_verrouillage` datetime NOT NULL default '2006-01-01 00:00:00', `password_ticket` varchar(255) NOT NULL, `ticket_expiration` datetime NOT NULL, `niveau_alerte` SMALLINT NOT NULL DEFAULT '0', `observation_securite` TINYINT NOT NULL DEFAULT '0', PRIMARY KEY  (`login`));
 DROP TABLE IF EXISTS j_eleves_cpe;
 CREATE TABLE j_eleves_cpe (e_login varchar(50) NOT NULL default '', cpe_login varchar(50) NOT NULL default '', PRIMARY KEY  (e_login,cpe_login));
 DROP TABLE IF EXISTS suivi_eleve_cpe;
@@ -248,3 +248,15 @@ CREATE TABLE IF NOT EXISTS `resp_pers` (
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)
 	);
+DROP TABLE IF EXISTS `tentatives_intrusion`;
+CREATE TABLE `tentatives_intrusion` (
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`login` VARCHAR( 255 ) NULL ,
+`adresse_ip` VARCHAR( 255 ) NOT NULL ,
+`date` DATETIME NOT NULL ,
+`niveau` SMALLINT NOT NULL ,
+`fichier` VARCHAR( 255 ) NOT NULL ,
+`description` TEXT NOT NULL ,
+`statut` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( `id`, `login` )
+); 
