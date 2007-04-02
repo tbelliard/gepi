@@ -14,9 +14,9 @@ Nouvelles fonctionalités
 - nouvelle charte graphique
 - ajout d'un "module" permettant d'imprimer des listes d'élèves en PDF.
 - outil de réinitialisation du mot de passe par l'utilisateur lui-même (depuis la page login, avec envoi d'un mail)
-- modification pour une professeur de l'ordre d'affichage (par matière puis par classe) de ses matières et ses classes sur différentes pages.
+- modification pour un professeur de l'ordre d'affichage (par matière puis par classe) de ses matières et ses classes sur différentes pages.
 - accès à l'équipe pédagogique pour les élèves et leur(s) responsable(s), avec affichage optionnel de l'email des profs
-- Pour la saisie des appréciations trimestrielles, rappel des notes du carnet de notes au dessus
+- pour la saisie des appréciations trimestrielles, rappel des notes du carnet de notes au dessus
 - ajout d'une option d'affichage des notes, par période sur le relevé de notes HTML
 - ajout de l'impression en PDF d'une synthèse des avis du conseil de classe par classe et par période.
 - ajout de l'exportation des mots de passe élèves en fichier CSV et PDF, lors de la création des comptes ou de la réinitialisation de ceux-ci.
@@ -26,6 +26,8 @@ Nouvelles fonctionalités
 - possibilité de définir la taille, le style et la police de caractères pour l'avis du conseil de classe sur le bulletin HTML.
 - possiblilité d'affecter un modèle différent de bulletin PDF à une classe ou un groupe de classes pour l'impression trimestrielle. L'utilisation de cette option est facultative.
 - mise en place de plusieurs options (pour limiter le nombre de clics) à la fin de la procédure de vérification de la saisie des bulletins (scolarité ; outil de vérification) si ceux-ci sont correctement remplis. 
+- accès à un outil de visualisation graphique des résultats pour les élèves et/ou leur(s) responsable(s) légal (légaux)
+- nouvel outil de gestion de la sécurité de Gepi : détection de certaines tentatives d'intrusion, actions automatisées (envoi d'email à l'administrateur, blocage du compte de l'utilisateur, etc.)...
 
 Corrections de bugs
 -------------------
