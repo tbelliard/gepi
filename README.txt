@@ -1,4 +1,4 @@
-GEPI-1.5.0-svn
+GEPI-1.5.0-rc1
 ==============
 
 Thomas BELLIARD <thomas.belliard@free.fr>

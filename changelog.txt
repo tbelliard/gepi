@@ -2,7 +2,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.0-rc1 (XX/XX/2007)
+Gepi-1.5.0-rc1 (03/04/2007)
 ===========================
 
 Nouvelles fonctionalités
