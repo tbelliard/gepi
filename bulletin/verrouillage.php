@@ -44,8 +44,15 @@ die();
 $classe=isset($_GET['classe']) ? $_GET['classe'] : 0;
 $periode=isset($_GET['periode']) ? $_GET['periode'] : 0;
 // quelle action après le verrouillage ?
-$action_apres=isset($_GET['action']) ? $_GET['action'] : "rien";
+$action_apres=isset($_GET['action']) ? $_GET['action'] : NULL;
 
+
+if (isset($_POST['deverouillage_auto_periode_suivante'])) {
+    if (!saveSetting("deverouillage_auto_periode_suivante", $_POST['deverouillage_auto_periode_suivante'])) {
+        $msg .= "Erreur lors de l'enregistrement de deverouillage_auto_periode_suivante !";
+        $reg_ok = 'no';
+    }
+}
 
 if (isset($_POST['ok'])) {
 
@@ -65,6 +72,35 @@ if (isset($_POST['ok'])) {
          }
       }
    }
+   
+   // Déverrouillage de la période suivante si le bouton radio est à Oui.
+   if ((($action_apres == 'retour') OR ($action_apres == 'imprime_html') OR ($action_apres == 'imprime_pdf') OR ($action_apres == 'rien')) AND isset($_POST['deverouillage_auto_periode_suivante'])) {
+		if (($_POST['deverouillage_auto_periode_suivante'])=='y') {
+		  //recherche du nombre de période pour la classe
+		  $sql_periode = "SELECT * FROM periodes WHERE id_classe=$classe";
+		  $result_periode = mysql_query($sql_periode);
+		  $nb_periodes_classe = mysql_num_rows($result_periode);
+          //echo $nb_periodes_classe;		
+          $periode_en_cours = $periode;
+		  $periode_suivante = $periode+1;
+		  //Pour la période modifiée on récupère son état
+		  $etat_periode=mysql_result($result_periode, $periode-1, "verouiller");
+		  //echo "<br/>".$etat_periode;
+		  //echo "<br/>".$periode_en_cours;
+		  //echo "<br/>".$nb_periodes_classe;
+		  //si l'état est P ou O on dévérouille totalement la période +1 (di elle existe !)
+		  if (($etat_periode=='P') OR $etat_periode=='O') {
+		    if ($periode_en_cours  < $nb_periodes_classe) {
+			  //echo "<br/>On déverrouille $periode_suivante";
+			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')"; 
+			  //echo "<br/>".$sql_maj_periode_suivante;
+			  $result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
+			  if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}
+		    }
+		  }
+      	} 
+   }
+    
    if ($pb_reg_ver == 'no') {
       $msg = "Les modifications ont été enregistrées.";
    } else {
@@ -184,6 +220,21 @@ if (($classe != 0) AND ($periode !=0)) {
 	  
 	  echo "</table><br />\n";
 	  
+	  // Option de déverrouillage automatique
+	  echo "<br />\n<table align='center'>\n";
+	  echo "<tr>\n";
+	  echo "<td>\nProcéder également au déverrouillage automatique de la période suivante <br />lors du verrouillage partiel ou total de la période ci-dessus : ";
+      echo "\n</td>\n<td>\n";
+        
+        echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"y\" ";
+        if (getSettingValue("deverouillage_auto_periode_suivante") == 'y') echo " checked";
+        echo " />&nbsp;Oui";
+        echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"n\" ";
+        if (getSettingValue("deverouillage_auto_periode_suivante") != 'y') echo " checked";
+        echo " />&nbsp;Non";
+	  
+	  echo "\n</td>\n</tr>\n</table>\n<br />\n";
+	  
 	 if ($action_apres == 'rien') {
      
 	   echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
@@ -260,4 +311,4 @@ if (($classe != 0) AND ($periode !=0)) {
    }
 } //else
 require("../lib/footer.inc.php");
-?>q
+?>

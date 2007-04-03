@@ -4115,6 +4115,11 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_block_user', 'yes');");
 
+		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'deverouillage_auto_periode_suivante'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');");
+
 
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
