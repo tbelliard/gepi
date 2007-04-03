@@ -235,7 +235,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
             //echo "<a href='index.php?id_groupe=$id_groupe&periode_num=$periode_num&creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|";
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédent </a>\n";
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente </a>\n";
         }
     }
     //echo "</b>\n";
