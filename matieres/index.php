@@ -81,7 +81,7 @@ if (isset($_POST['is_posted'])) {
                         $error = true;
                     }
                 }
-                
+
                 // On met à jour toutes les catégories dans les classes si ça a été demandé
                 if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
 			        $req = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
@@ -93,8 +93,8 @@ if (isset($_POST['is_posted'])) {
                 }
             }
         }
-        
-        
+
+
     }
     if ($error) {
         $msg .= "<br/>Des erreurs se sont produites lors de la mise à jour des données.";
@@ -118,7 +118,7 @@ require_once("../lib/header.inc");
 </p>
 <form enctype="multipart/form-data" action="index.php" method=post>
 <input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
-<p>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' value='yes'>
+<p>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' value='yes' />
 <br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la priorité et la catégorie de chaque matière dans les différentes classes !</p>
 <input type='hidden' name='is_posted' value='1' />
 <table width = '100%' border= '1' cellpadding = '5'>
@@ -154,7 +154,8 @@ while ($i < $nombre_lignes){
     if ($current_matiere_priorite > 1) $current_matiere_priorite -= 10;
     echo "<tr><td><a href='modify_matiere.php?current_matiere=$current_matiere'>$current_matiere</a></td>";
     //echo "<td>$current_matiere_nom</td>";
-    echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
+    //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
+    echo "<td>".htmlentities($current_matiere_nom)."</td>";
     // La priorité par défaut
     echo "<td>";
     echo "<select size=1 name='" . strtolower($current_matiere)."_priorite'>\n";

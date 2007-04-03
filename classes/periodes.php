@@ -108,7 +108,8 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if (!isset($nom_period[$k])) $nom_period[$k] = '';
         $nom_period[$k] = trim($nom_period[$k]);
         if ($nom_period[$k] == '') $nom_period[$k] = "période ".$k;
-        $register = mysql_query("UPDATE periodes SET nom_periode='$nom_period[$k]' WHERE (num_periode='$k' and id_classe='$id_classe')");
+        //$register = mysql_query("UPDATE periodes SET nom_periode='$nom_period[$k]' WHERE (num_periode='$k' and id_classe='$id_classe')");
+        $register = mysql_query("UPDATE periodes SET nom_periode='".html_entity_decode($nom_period[$k])."' WHERE (num_periode='$k' and id_classe='$id_classe')");
         if (!$register) {$pb_reg_per = 'yes';}
         $k++;
     }
