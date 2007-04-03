@@ -258,7 +258,7 @@ if ($action == "modifier")
          <tr>
           <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="3" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déjas<?php } ?>
+          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déjà<?php } ?>
           <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas définie<?php } ?>
           <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de début n'est pas définie<?php } ?>
           <?php if ($verification_erreur[$nb] == 3) { ?>Tous les champs ne sont pas remplie<?php } ?>

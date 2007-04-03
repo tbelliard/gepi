@@ -2609,21 +2609,21 @@ if (isset ($_POST['maj'])) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
 
 				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='2' WHERE nom_model_bulletin='Affiche tout'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET entete_model_bulletin='2' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre entete_model_bulletin à 2 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
@@ -2645,21 +2645,21 @@ if (isset ($_POST['maj'])) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
 
 				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='1' WHERE nom_model_bulletin='Affiche tout'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET ordre_entete_model_bulletin='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre ordre_entete_model_bulletin à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
@@ -2681,21 +2681,21 @@ if (isset ($_POST['maj'])) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
 
 				   //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard avec photo'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='1' WHERE nom_model_bulletin='Affiche tout'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET affiche_etab_origine='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre affiche_etab_origine à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
@@ -2717,21 +2717,21 @@ if (isset ($_POST['maj'])) {
 	              $result .= "<font color=\"green\">Ok !</font><br />";
 
 				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele standard<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele standard<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard avec photo'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET imprime_pour='0' WHERE nom_model_bulletin='Standard avec photo'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"green\">Ok !</font><br />";
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre imprime_pour à 0 pour le modele Standard avec photo<font color=\"red\">Erreur !</font><br />";
 				  }
 
-				  $update_entete_model_bulletint=mysql_query("UPDATE model_bulletin SET imprime_pour='1' WHERE nom_model_bulletin='Affiche tout'");
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET imprime_pour='1' WHERE nom_model_bulletin='Affiche tout'");
                   if(!$update_entete_model_bulletin){
                     $result.="-&gt; Mise à jour du paramètre imprime_pour à 1 pour le modele Affiche tout<font color=\"green\">Ok !</font><br />";
 				  } else{
@@ -2803,7 +2803,26 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('mode_sauvegarde', 'gepi');");
 
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
 
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre de mémorisation de droit d'accès des profs à tous les relevés de notes de toutes les classes<br/>";
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveProfToutesClasses'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveProfToutesClasses', 'no');");
+
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
+        
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'choix_bulletin'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -3526,15 +3545,6 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
-
-
-
-        if ($result_inter == '') {
-            $result .= "<font color=\"green\">Ok !</font><br />";
-        } else {
-            $result .= $result_inter;
-        }
-        $result_inter = '';
     }
 
     if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
