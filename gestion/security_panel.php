@@ -85,42 +85,49 @@ echo "<td>Description</td>";
 echo "<td style='width: 20%;'>Actions</td>\n";
 echo "</tr>";
 
-$req = mysql_query("SELECT t.*, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM tentatives_intrusion t, utilisateurs u WHERE (t.statut = 'new' AND u.login = t.login) ORDER BY t.date DESC");
+$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY t.date DESC");
 if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
 	echo "<tr>\n";
 	echo "<td>";
 	if ($row->login != "-") {
-		echo $row->login ." - ".$row->adresse_ip."<br/>";
-		echo "<b>".$row->prenom . " " . $row->nom."</b>";
-		echo "<br/>".$row->statut;
-		if ($row->etat == "actif") {
+		// On récupère des informations sur l'utilisateur :
+		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
+		$user = mysql_fetch_object($user_req);
+	}
+	
+	if (!empty($user)) {
+		echo $user->login ." - ".$row->adresse_ip."<br/>";
+		echo "<b>".$user->prenom . " " . $user->nom."</b>";
+		echo "<br/>".$user->statut;
+		if ($user->etat == "actif") {
 			echo " (compte actif)";
 		} else {
 			echo " (compte désactivé)";
 		}
-		echo "<br/>Score cumulé : ".$row->niveau_alerte;
+		echo "<br/>Score cumulé : ".$user->niveau_alerte;
 	} else {
-		echo "<b>Tentative extérieure<br/>(utilisateur non identifié)</b>";
+		echo "<b>Attaque extérieure</b><br/>";
+		echo "Adresse IP : ".$row->adresse_ip."<br/>";
 	}
 	echo "</td>";
 	echo "<td>".$row->date."</td>";
 	echo "<td>".$row->niveau."</td>";
 	echo "<td><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</td>";
 	echo "<td>";
-	if ($row->login != "-") {
+	if (!empty($user)) {
 		echo "<p>";
-		if ($row->etat == "actif") {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login."'>Désactiver le compte</a>";
+		if ($user->etat == "actif") {
+			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login."'>Désactiver le compte</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login."'>Réactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login."'>Réactiver le compte</a>";
 		}
-		if ($row->observation_securite == 0) {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$row->login."'>Placer en observation</a>";
+		if ($user->observation_securite == 0) {
+			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login."'>Placer en observation</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login."'>Retirer l'observation</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login."'>Retirer l'observation</a>";
 		}
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login."'>Réinitialiser cumul</a>";
+		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login."'>Réinitialiser cumul</a>";
 		echo "</p>";
 	}
 	echo "</td>\n";
@@ -186,42 +193,49 @@ echo "<td>Description</td>";
 echo "<td style='width: 20%;'>Actions</td>\n";
 echo "</tr>";
 
-$req = mysql_query("SELECT t.*, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM tentatives_intrusion t, utilisateurs u WHERE (t.statut != 'new' AND u.login = t.login) ORDER BY t.date DESC");
+$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut != 'new') ORDER BY t.date DESC");
 if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
 	echo "<tr>\n";
 	echo "<td>";
 	if ($row->login != "-") {
-		echo $row->login ." - ".$row->adresse_ip."<br/>";
-		echo "<b>".$row->prenom . " " . $row->nom."</b>";
-		echo "<br/>".$row->statut;
-		if ($row->etat == "actif") {
+		// On récupère des informations sur l'utilisateur :
+		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
+		$user = mysql_fetch_object($user_req);
+	}
+
+	if (!empty($user)) {
+		echo $user->login ." - ".$row->adresse_ip."<br/>";
+		echo "<b>".$user->prenom . " " . $user->nom."</b>";
+		echo "<br/>".$user->statut;
+		if ($user->etat == "actif") {
 			echo " (compte actif)";
 		} else {
 			echo " (compte désactivé)";
 		}
-		echo "<br/>Score cumulé : ".$row->niveau_alerte;
+		echo "<br/>Score cumulé : ".$user->niveau_alerte;
 	} else {
-		echo "<b>Tentative extérieure<br/>(utilisateur non identifié)</b>";
+		echo "<b>Attaque extérieure</b><br/>";
+		echo "Adresse IP : ".$row->adresse_ip."<br/>";
 	}
 	echo "</td>";
 	echo "<td>".$row->date."</td>";
 	echo "<td>".$row->niveau."</td>";
 	echo "<td><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</td>";
 	echo "<td>";
-	if ($row->login != "-") {
+	if (!empty($user)) {
 		echo "<p>";
-		if ($row->etat == "actif") {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login."'>Désactiver le compte</a>";
+		if ($user->etat == "actif") {
+			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login."'>Désactiver le compte</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login."'>Réactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login."'>Réactiver le compte</a>";
 		}
-		if ($row->observation_securite == 0) {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$row->login."'>Placer en observation</a>";
+		if ($user->observation_securite == 0) {
+			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login."'>Placer en observation</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login."'>Retirer l'observation</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login."'>Retirer l'observation</a>";
 		}
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login."'>Réinitialiser cumul</a>";
+		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login."'>Réinitialiser cumul</a>";
 		echo "</p>";
 	}
 	echo "</td>\n";
