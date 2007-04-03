@@ -430,7 +430,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/gestion/security_policy.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'definition des politiques de securite', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/options_connect.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Options de connexions', '');";
 
-	
+
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -2822,7 +2822,7 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';
-        
+
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'choix_bulletin'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -2888,6 +2888,19 @@ if (isset ($_POST['maj'])) {
 			}
 			else{
 				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+
+			$test2=mysql_query("SELECT 1=1 FROM absences_creneaux");
+			if(mysql_num_rows($test2)>0){
+				$result .= "Initialisation à 1 de la valeur du champ pour les enregistrements existants: ";
+				$sql="UPDATE absences_creneaux SET suivi_definie_periode='1'";
+				$update_absences_creneaux=mysql_query($sql);
+				if($update_absences_creneaux){
+					$result .= "<font color=\"green\">Ok !</font><br />";
+				}
+				else{
+					$result .= "<font color=\"red\">Erreur !</font><br />";
+				}
 			}
 		}
 		else{
@@ -3965,8 +3978,8 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 		}
 
-		
-// affectation des modèles de bulletin  PDF aux classes	
+
+// affectation des modèles de bulletin  PDF aux classes
 		$result .= "&nbsp;->Ajout du champs `modele_bulletin_pdf` à la table `classes`.<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'modele_bulletin_pdf'"));
 	    if ($test1 == 0) {
@@ -3979,7 +3992,7 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-		
+
 
 		$req_test= mysql_query("SELECT VALUE FROM setting WHERE NAME = 'option_modele_bulletin'");
 		$res_test = mysql_num_rows($req_test);
@@ -3993,7 +4006,7 @@ if (isset ($_POST['maj'])) {
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
 		}
-		
+
         $result .= "&nbsp;->Création de la table tentatives_intrusion<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'tentatives_intrusion'"));
         if ($test1 == 0) {
@@ -4006,7 +4019,7 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
         }
-		
+
 		$result .= "&nbsp;->Ajout du champs `niveau_alerte` à la table `utilisateurs`.<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'niveau_alerte'"));
 	    if ($test1 == 0) {
@@ -4019,7 +4032,7 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-	    
+
 		$result .= "&nbsp;->Ajout du champs `observation_securite` à la table `utilisateurs`.<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'observation_securite'"));
 	    if ($test1 == 0) {
@@ -4032,7 +4045,7 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-	    
+
 	    $result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
         $query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
         if ($query28) {
@@ -4040,10 +4053,10 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"red\">Erreur</font><br />";
         }
-	    
-	    
+
+
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
-        
+
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_admin'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -4127,11 +4140,11 @@ if (isset ($_POST['maj'])) {
             $result .= $result_inter;
         }
         $result_inter = '';
-	    
-	    
-	    
-	    
-		
+
+
+
+
+
     }
 
 
