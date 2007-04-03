@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: gestion_connect.php 232 2007-04-02 11:11:08Z tbelliard $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
