@@ -198,7 +198,7 @@ $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='security_panel.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class=bold><a href='../gestion/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 echo "<form action='security_policy.php' method='post'>";
 echo "<center><input type='submit' value='Enregistrer' /></center>";

@@ -70,7 +70,7 @@ if (isset($_GET['action'])) {
 $titre_page = "Sécurité Gepi";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a></p>";
+echo "<p class=bold><a href='../gestion/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a></p>";
 
 echo "<table class='menu' style='width: 90%;'>\n";
 echo "<tr>\n";

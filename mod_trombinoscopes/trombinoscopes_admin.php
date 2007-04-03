@@ -68,10 +68,9 @@ $titre_page = "Gestion du module trombinoscope";
 require_once("../lib/header.inc");
 ?>
 <!--link rel="stylesheet" href="../mod_absences/styles/mod_absences.css"-->
-<p class=bold>
-|<a href="../accueil.php">Accueil</a>|
-<a href="../accueil_modules.php">Retour administration des modules</a>|
-</p>
+
+<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+
 <H2>Configuration générale</H2>
 <i>La désactivation du module trombinoscope n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'y a pas d'accès au module.</i>
 <br />

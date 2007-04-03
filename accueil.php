@@ -185,9 +185,9 @@ $titre = array(
 );
 
 $expli = array(
-"Pour définir, modifier, supprimer des paramètres généraux.",
-"Pour gérer les bases (utilisateurs, matières, classes, élèves, AIDs).",
-"Pour gérer les modules (cahiers de texte, carnet de notes, ...)."
+"Pour accéder aux outils de gestion (sécurité, configuration générale, bases de données, initialisation de GEPI).",
+"Pour gérer les bases (établissements, utilisateurs, matières, classes, élèves, responsables, AIDs).",
+"Pour gérer les modules (cahiers de texte, carnet de notes, absences, trombinoscope)."
 );
 
 $nb_ligne = count($chemin);
