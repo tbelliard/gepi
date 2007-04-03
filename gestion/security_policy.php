@@ -43,13 +43,16 @@ if (!checkAccess()) {
 
 // Enregistrement des données postées
 
+if (isset($_POST) and !empty($_POST)) {
+
 // Envoyer un email à l'administrateur systématiquement
 if (isset($_POST['security_alert_email_admin'])) {
-    $reg = $_POST['security_alert_email_admin'];
-    if ($reg != "yes") $reg = "no";
-    if (!saveSetting(("security_alert_email_admin"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert_email_admin !";
-    }
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
+if (!saveSetting(("security_alert_email_admin"), $reg)) {
+    $msg = "Erreur lors de l'enregistrement de security_alert_email_admin !";
 }
 
 // Niveau minimal pour l'envoi du mail
@@ -76,21 +79,23 @@ if (isset($_POST['security_alert1_normal_cumulated_level'])) {
 
 // Envoyer un email à l'administrateur
 if (isset($_POST['security_alert1_normal_email_admin'])) {
-    $reg = $_POST['security_alert1_normal_email_admin'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert1_normal_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_email_admin !";
     }
-}
 
 // Désactiver le compte de l'utilisateur
 if (isset($_POST['security_alert1_normal_block_user'])) {
-    $reg = $_POST['security_alert1_normal_block_user'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert1_normal_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_block_user !";
     }
-}
 
 // Utilisateur surveillé
 
@@ -105,21 +110,23 @@ if (isset($_POST['security_alert1_probation_cumulated_level'])) {
 
 // Envoyer un email à l'administrateur
 if (isset($_POST['security_alert1_probation_email_admin'])) {
-    $reg = $_POST['security_alert1_probation_email_admin'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert1_probation_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_probation_email_admin !";
     }
-}
 
 // Désactiver le compte de l'utilisateur
 if (isset($_POST['security_alert1_probation_block_user'])) {
-    $reg = $_POST['security_alert1_probation_block_user'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert1_probation_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_probation_block_user !";
     }
-}
 
 // Niveau d'alerte 2
 
@@ -136,21 +143,23 @@ if (isset($_POST['security_alert2_normal_cumulated_level'])) {
 
 // Envoyer un email à l'administrateur
 if (isset($_POST['security_alert2_normal_email_admin'])) {
-    $reg = $_POST['security_alert2_normal_email_admin'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert2_normal_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_email_admin !";
     }
-}
 
 // Désactiver le compte de l'utilisateur
 if (isset($_POST['security_alert2_normal_block_user'])) {
-    $reg = $_POST['security_alert2_normal_block_user'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert2_normal_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_block_user !";
     }
-}
 
 // Utilisateur surveillé
 
@@ -165,22 +174,25 @@ if (isset($_POST['security_alert2_probation_cumulated_level'])) {
 
 // Envoyer un email à l'administrateur
 if (isset($_POST['security_alert2_probation_email_admin'])) {
-    $reg = $_POST['security_alert2_probation_email_admin'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert2_probation_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_email_admin !";
     }
-}
 
 // Désactiver le compte de l'utilisateur
 if (isset($_POST['security_alert2_probation_block_user'])) {
-    $reg = $_POST['security_alert2_probation_block_user'];
-    if ($reg != "yes") $reg = "no";
+	$reg = "yes";
+} else {
+	$reg = "no";
+}
     if (!saveSetting(("security_alert2_probation_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_block_user !";
     }
-}
 
+} // Fin : if isset($_POST)
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc");
