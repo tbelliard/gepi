@@ -70,7 +70,7 @@ if (isset($_GET['action'])) {
 $titre_page = "Sécurité Gepi";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold><a href='../gestion/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a></p>";
+echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a></p>";
 
 echo "<table class='menu' style='width: 90%;'>\n";
 echo "<tr>\n";
@@ -90,6 +90,7 @@ if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
 	echo "<tr>\n";
 	echo "<td>";
+	$user = null;
 	if ($row->login != "-") {
 		// On récupère des informations sur l'utilisateur :
 		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
@@ -196,6 +197,7 @@ echo "</tr>";
 $req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut != 'new') ORDER BY t.date DESC");
 if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
+	$user = null;
 	echo "<tr>\n";
 	echo "<td>";
 	if ($row->login != "-") {
