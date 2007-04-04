@@ -117,6 +117,8 @@ function extr_valeur($lig){
 					echo "<input type='radio' name='etape' value='1' checked /> Etape 1: Elèves<br />\n";
 					echo "<input type='radio' name='etape' value='2' /> Etape 2: Responsables<br />\n";
 					echo "<p><input type='submit' value='Valider' /></p>\n";
+
+					echo "<p>Les fichiers réclamés ici doivent être récupérés depuis Sconet.<br />Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers ElevesAvecAdresses.xml, Nomenclature.xml et ResponsablesAvecAdresses.xml.</p>\n";
 					echo "</form>\n";
 				}
 				else{
@@ -147,7 +149,7 @@ function extr_valeur($lig){
 								echo "</ul>\n";
 							echo "</li>\n";
 						echo "</ul>\n";
-						echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentillement à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
+						echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
 						*/
 						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 

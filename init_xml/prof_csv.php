@@ -101,8 +101,11 @@ if (!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			$flag=1;
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		if($test==1){
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$flag=1;
+			}
 		}
 		$j++;
 	}
@@ -115,7 +118,7 @@ if (!isset($step1)) {
 		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>";
 		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
 		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>";
-		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base GEP de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
+		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
 		echo "</ul>";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
 		echo "<input type=hidden name='step1' value='y' />";
@@ -128,8 +131,11 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
 	$j=0;
 	while ($j < count($liste_tables_del)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-		$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		if($test==1){
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
 		}
 		$j++;
 	}
@@ -233,7 +239,7 @@ if (!isset($is_posted)) {
 			}
 		}
 
-		echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier GEP, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
+		echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
 		echo "<table border=1 cellpadding=2 cellspacing=2>";
 		echo "<tr><td><p class=\"small\">Identifiant du professeur</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td>Mot de passe *</td></tr>";
 		srand();

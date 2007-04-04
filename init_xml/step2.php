@@ -143,9 +143,12 @@ if (!isset($step2)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $flag=1;
-        }
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		if($test==1){
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$flag=1;
+			}
+		}
         $j++;
     }
     if ($flag != 0){
@@ -165,9 +168,12 @@ if (!isset($step2)) {
 if (isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-        }
+		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+		if($test==1){
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
+		}
         $j++;
     }
 
