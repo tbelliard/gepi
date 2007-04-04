@@ -124,6 +124,9 @@ if (!isset($step1)) {
 		echo "<input type=hidden name='step1' value='y' />";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
 		echo "</form>";
+		echo "</div>";
+		echo "</body>";
+		echo "</html>";
 		die();
 	}
 }

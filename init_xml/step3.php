@@ -129,10 +129,13 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     // on vide la table tempo2 qui nous a servi à stocker les login temporaires des élèves
     $del = @mysql_query("DELETE FROM tempo2");
 
-    echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
+    //echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
+    echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>";
     echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>";
-
-} else {
+    require("../lib/footer.inc.php");
+	die();
+}
+else {
     // on vide la table tempo2 qui va nous servir à stocker les login temporaires des élèves
     $del = @mysql_query("DELETE FROM tempo2");
 
@@ -145,7 +148,8 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>eleves.csv</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>";
     echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>";
     echo "<table border=1 cellpadding=2 cellspacing=2>";
-    echo "<tr><td><p class=\"small\">N° GEP</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
+    //echo "<tr><td><p class=\"small\">N° GEP</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
+    echo "<tr><td><p class=\"small\">N° INE</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
     $max_lignes_pb = 0;
     while ($i < $nb) {
         $ligne_pb = 'no';
@@ -371,6 +375,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<center><input type='submit' value='Enregistrer' /></center>";
     echo "</form>";
+    //echo "</div>";
     require("../lib/footer.inc.php");
 }
 ?>

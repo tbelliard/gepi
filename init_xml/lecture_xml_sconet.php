@@ -536,7 +536,30 @@ function extr_valeur($lig){
 									}
 									echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
 									echo "<td>";
-									if(isset($eleves[$i]["structures"][0]["code_structure"])){echo $eleves[$i]["structures"][0]["code_structure"];}else{echo "&nbsp;";}
+									//if(isset($eleves[$i]["structures"][0]["code_structure"])){echo $eleves[$i]["structures"][0]["code_structure"];}else{echo "&nbsp;";}
+									$temoin_div_trouvee="";
+									if(isset($eleves[$i]["structures"])){
+										if(count($eleves[$i]["structures"])>0){
+											for($j=0;$j<count($eleves[$i]["structures"]);$j++){
+												if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
+													$temoin_div_trouvee="oui";
+													break;
+												}
+											}
+											if($temoin_div_trouvee==""){
+												echo "&nbsp;";
+											}
+											else{
+												echo $eleves[$i]["structures"][$j]["code_structure"];
+												$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+											}
+										}
+										else{
+										}
+									}
+									else{
+										echo "&nbsp;";
+									}
 									echo "</td>\n";
 									echo "</tr>\n";
 									$i++;
@@ -727,8 +750,13 @@ function extr_valeur($lig){
 										else{echo "&nbsp;";}
 										echo "</td>\n";
 										echo "<td>";
+										/*
 										if(isset($eleves[$i]["structures"][0]["code_structure"])){
 											echo $eleves[$i]["structures"][0]["code_structure"];
+										}
+										*/
+										if(isset($eleves[$i]["classe"])){
+											echo $eleves[$i]["classe"];
 										}
 										else{echo "&nbsp;";}
 										echo "</td>\n";
@@ -770,7 +798,12 @@ function extr_valeur($lig){
 										$chaine.=";";
 										if(isset($eleves[$i]["code_regime"])){$chaine.=$eleves[$i]["code_regime"];}
 										$chaine.=";";
-										if(isset($eleves[$i]["structures"][0]["code_structure"])){$chaine.=$eleves[$i]["structures"][0]["code_structure"];}
+										//if(isset($eleves[$i]["structures"][0]["code_structure"])){$chaine.=$eleves[$i]["structures"][0]["code_structure"];}
+
+										if(isset($eleves[$i]["classe"])){
+											$chaine.=$eleves[$i]["classe"];
+										}
+
 										$chaine.=";";
 										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$chaine.=$eleves[$i]["scolarite_an_dernier"]["code_rne"];}
 										$chaine.=";";
