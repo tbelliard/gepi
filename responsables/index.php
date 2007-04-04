@@ -155,11 +155,15 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 if(!getSettingValue('conv_new_resp_table')){
-	echo "<p>Une conversion des données responsables est requise.</p>\n";
-	echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-	echo "</body>\n";
-	echo "</html>\n";
-	die();
+	$sql="SELECT 1=1 FROM responsables";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0){
+		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		echo "</body>\n";
+		echo "</html>\n";
+		die();
+	}
 }
 
 echo "<p class=bold>";
