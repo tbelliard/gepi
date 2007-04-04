@@ -483,3 +483,4 @@ INSERT INTO `setting` VALUES ('security_alert2_probation_cumulated_level', '3');
 INSERT INTO `setting` VALUES ('security_alert2_probation_email_admin', 'yes');
 INSERT INTO `setting` VALUES ('security_alert2_probation_block_user', 'yes');
 INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');
+INSERT INTO setting VALUES ('bull_intitule_app', 'Appréciations / Conseils');
