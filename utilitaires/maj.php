@@ -4246,6 +4246,20 @@ if ($pb_maj_bd != 'yes') {
 echo "<hr />";
 if (isset ($result)) {
     echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
+
+	if(!getSettingValue('conv_new_resp_table')){
+		$sql="SELECT 1=1 FROM responsables";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p style='font-weight:bold; color:red;'>ATTENTION:</p>\n";
+			echo "<blockquote>\n";
+			echo "<p>Une conversion des données responsables est requise.</p>\n";
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+			echo "<p>Vous pouvez quand même prendre le temps de lire attentivement les informations de mise à jour ci-dessous.</p>\n";
+			echo "</blockquote>\n";
+		}
+	}
+
     echo $result;
     echo "</td></tr></table></center>";
 }
