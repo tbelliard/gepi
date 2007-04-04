@@ -331,7 +331,8 @@ if (!isset($is_posted)) {
 								// On arrive jusque là.
 								$req = mysql_query("insert into j_professeurs_matieres set id_matiere='$affiche[0]', id_professeur='$login_prof', ordre_matieres=''");
 								affiche_debug("insert into j_professeurs_matieres set id_matiere='$affiche[0]', id_professeur='$login_prof', ordre_matieres=''<br />\n");
-								echo "Ajout de la correspondance prof/matière suivante: $login_prof/$affiche[0]<br />\n";
+								//echo "Ajout de la correspondance prof/matière suivante: $login_prof/$affiche[0]<br />\n";
+								echo "<p>Ajout de la correspondance prof/matière suivante: $login_prof/$affiche[0]<br />\n";
 								if(!$req) $nb_reg_no++;
 							}
 
