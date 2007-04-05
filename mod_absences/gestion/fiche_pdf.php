@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -211,8 +214,8 @@ if ( $etiquette_action === 'originaux' ) {
 	}
 
 	//tableau des données élève
-		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er, '.$prefix_base.'responsables r WHERE ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login=e.login AND e.ereno = r.ereno GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
-		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er, '.$prefix_base.'responsables r WHERE ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login AND e.ereno = r.ereno GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
+		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
+		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC'); }
 
 		//on compte les élèves sélectionné
 		    $nb_eleves = mysql_num_rows($call_eleve);
@@ -221,6 +224,7 @@ if ( $etiquette_action === 'originaux' ) {
 			{  
 				// information sur l'élève
 				$id_eleve[$i] = $donne_persone['login']; // id de l'élève
+				$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'élève
 				$classe_eleve[$i] = classe_de($id_eleve[$i]);
 				$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
 				$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
@@ -241,23 +245,35 @@ if ( $etiquette_action === 'originaux' ) {
 					if($donne_persone['regime']==='int.') { $dp_eleve[$i]='interne'; }
 					if($donne_persone['regime']==='i-e') { if($sexe_eleve[$i]==='M') { $dp_eleve[$i]='interne externé'; } else { $dp_eleve[$i]='interne externée'; } }
 					if($donne_persone['regime']!='ext.' and $donne_persone['regime']!='d/p' and $donne_persone['regime']==='int.' and $donne_persone['regime']==='i-e') { $dp_eleve[$i]='inconnu'; }
-				$ereno_eleve[$i] = $donne_persone['ereno'];
 
 		// information sur les parents
-		$civilitee_responsable['1'][$i] = 'M.'; // nom du premier responsable		
-		$nom_responsable['1'][$i] = strtoupper($donne_persone['nom1']); // nom du premier responsable
-		$prenom_responsable['1'][$i] = ucfirst($donne_persone['prenom1']); // prénom du premier responsable
-		$adresse_responsable['1'][$i] = $donne_persone['adr1']; // adresse du premier responsable
-		$adressecomp_responsable['1'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du premier responsable
-		$cp_responsable['1'][$i] = $donne_persone['cp1']; // code postal du premier responsable
-		$commune_responsable['1'][$i] = $donne_persone['commune1']; // commune du premier responsable
-		$civilitee_responsable['2'][$i] = 'Mme'; // nom du premier responsable		
-		$nom_responsable['2'][$i] = strtoupper($donne_persone['nom1']); // nom du deuxième responsable
-		$prenom_responsable['2'][$i] = ucfirst($donne_persone['prenom1']); // prénom du deuxième responsable
-		$adresse_responsable['2'][$i] = $donne_persone['adr1']; // adresse du deuxième responsable
-		$adressecomp_responsable['$nom_responsable2'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du deuxième responsable
-		$cp_responsable['2'][$i] = $donne_persone[$i]['cp1']; // code postal du deuxième responsable
-		$commune_responsable['2'][$i] = $donne_persone['commune1']; // commune du deuxième responsable
+		/*$nombre_de_responsable = 0;
+		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+		if($nombre_de_responsable != 0)
+		{
+			$cpt_parents = 0;
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+			while ($donner_parents = mysql_fetch_array($requete_parents))
+			{
+				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
+			        $nom_responsable[$cpt_parents][$i] = strtoupper($donner_parents['nom']); // nom du responsable
+				$prenom_responsable[$cpt_parents][$i] = ucfirst($donner_parents['prenom']); // prénom du responsable
+				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
+				$adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2']; // adresse du responsable suite
+				$commune_responsable[$cpt_parents][$i] = $donner_parents['commune']; // ville du responsable
+				$cp_responsable[$cpt_parents][$i] = $donner_parents['cp']; // code postal du responsable
+				$cpt_parents = $cpt_parents + 1;
+			}
+		} else {
+				$civilitee_responsable[0][$i] = ''; // civilité du responsable
+			        $nom_responsable[0][$i] = ''; // nom du responsable
+				$prenom_responsable[0][$i] = ''; // prénom du responsable
+				$adresse_responsable[0][$i] = ''; // adresse du responsable
+				$adressecomp_responsable[0][$i] = ''; // adresse du responsable suite
+				$commune_responsable[0][$i] = ''; // ville du responsable
+				$cp_responsable[0][$i] = ''; // code postal du responsable
+			}*/
+
 
  	 $i = $i + 1;
 	 }
@@ -691,6 +707,9 @@ $pdf->SetFillColor(255,255,255);
 $info_absence = repartire_jour($id_eleve[$cpt_eleve], 'A', $du_sql, $au_sql);
 $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 
+//echo '<pre>';
+//print_r($info_absence);
+//echo '</pre>';
 
 /* pour test
 $mois[$i]['mois'] = 'aou. 2006'; $mois[$i]['num_mois'] = '08'; $mois[$i]['num_mois_simple'] = '8'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
@@ -1018,6 +1037,10 @@ $i = $i + 1;
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
 	$pdf->SetFont('arial','',10);
+
+// a changer par la suite corrige une erreur
+//$total_absence_heure = eregi_replace("[-]{1}",'',$total_absence_heure);
+
 	$pdf->Cell(0, $h_annuel, 'Total des absences : '.$total_absence_nb.', Total des absences en heure : '.convert_minutes_heures($total_absence_heure).', Total des retards : '.$total_retard, 0, 0, 'C', 0);
 // fin du tableau annuel des absences et retards
 

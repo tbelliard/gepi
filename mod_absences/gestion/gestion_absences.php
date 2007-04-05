@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -101,23 +104,42 @@ if (empty($_GET['id_lettre_suivi']) and empty($_POST['id_lettre_suivi'])) { $id_
    if (empty($_GET['du']) and empty($_POST['du'])) {$du='';}
     else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
 	if(isset($du) and !empty($du)) { $date_ce_jour = date_sql($du); }
-
-/*unset($id_classe);
-$id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);
-if(isset($_GET['id_classe'])) { $classe_choix = $id_classe; }
-unset($day);
-$day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
-unset($month);
-$month = isset($_POST["month"]) ? $_POST["month"] : (isset($_GET["month"]) ? $_GET["month"] : date("m"));
-unset($year);
-$year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["year"] : date("Y"));
-unset($id_classe);
-$id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : -1);
-unset($id_matiere);
-$id_matiere = isset($_POST["id_matiere"]) ? $_POST["id_matiere"] : (isset($_GET["id_matiere"]) ? $_GET["id_matiere"] :-1);
-if(isset($_GET["day"]) OR isset($_POST["day"])) { $date_ce_jour = $year."-".$month."-".$day; } else { if(isset($_GET["date_ce_jour"]) OR isset($_POST["date_ce_jour"])) { $date_explose = explode('-', $date_ce_jour); $day = $date_explose[2]; $month = $date_explose[1]; $year = $date_explose[0];} else { $date_ce_jour = date('Y-m-d'); } }
-*/
 // fin de gestion des dates
+
+
+function age($date_de_naissance_fr)
+          {
+            //à partir de la date de naissance, retourne l'âge dans la variable $age
+
+            // date de naissance (partie à modifier)
+              $ddn = $date_de_naissance_fr;
+
+            // enregistrement de la date du jour
+              $DATEDUJOUR = date("Y-m-d");
+              $DATEFRAN = date("d/m/Y");
+
+            // calcul de mon age d'après la date de naissance $ddn
+              $annais = substr("$ddn", 0, 4);
+              $anjour = substr("$DATEFRAN", 6, 4);
+              $moisnais = substr("$ddn", 4, 2);
+              $moisjour = substr("$DATEFRAN", 3, 2);
+              $journais = substr("$ddn", 6, 2);
+              $jourjour = substr("$DATEFRAN", 0, 2);
+
+              $age = $anjour-$annais;
+              if ($moisjour<$moisnais){$age=$age-1;}
+              if ($jourjour<$journais && $moisjour==$moisnais){$age=$age-1;}
+              return($age);
+           }
+
+         function pp($classe_choix)
+          {
+            global $prefix_base;
+               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
+               $data_prof_classe = mysql_fetch_array($call_prof_classe);
+               $suivi_par = $data_prof_classe['suivi_par'];
+               return($suivi_par);
+          }
 
 //ajout des fiche_suivi des eleve
 if ($action_sql == "ajouter" or $action_sql == "modifier")
@@ -132,12 +154,9 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 
         if ($action_sql == "modifier") { $id_suivi_eleve_cpe = $_POST['id_suivi_eleve_cpe']; }
 
-            // Vérification des champs nom et prenom (si il ne sont pas vides ?)
+            // Vérification de la présence des donnée
             if($data_info_suivi != "")
             {
-                 $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE eleve_suivi_eleve_cpe = '".$eleve_suivi_eleve_cpe."' AND date_suivi_eleve_cpe = '".$date_fiche."' AND komenti_suivi_eleve_cpe = '".$data_info_suivi."'"),0);
-                 if ($test == "0")
-                  {
 		     $courrier_suivi_eleve_cpe='';
                      if($action_sql == "ajouter")
                       {
@@ -147,7 +166,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                      if($action_sql == "modifier")
                       {
                             // Requete de mise à jour MYSQL
-                              $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
+                              $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi', support_suivi_eleve_cpe = '".$support_suivi_eleve_cpe."' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
                       }
                             // Execution de cette requete dans la base cartouche
                              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -161,14 +180,6 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 	                             mysql_query($requete_courrier) or die('Erreur SQL !'.$requete_courrier.'<br />'.mysql_error());
 				     $courrier_suivi_eleve_cpe = mysql_insert_id();
 			      }
-
-
-
-                    } else {
-                               // vérification = 2 - C'est initiale pour les motif existe déjas
-                                 $verification = 2;
-                                 $erreur = 1;
-                            }
             } else {
                      // vérification = 3 - Tous les champs ne sont pas remplie
                      $verification = 3;
@@ -380,14 +391,14 @@ require_once("../../lib/header.inc");
   $annee_scolaire=annee_en_cours_t($datej);
 ?>
 <?php /* La page gestion global des absences */ ?>
-<p class="bold">|<a href='<?php if($select_fiche_eleve=='' and $fiche_eleve=='' and $choix!='lemessager') { ?>../../accueil.php<?php } else { ?>gestion_absences.php<?php } ?>'>Retour</a>|
-<a href="./impression_absences.php?type=<?php echo $type; ?>">Impression</a>|
-<a href="../lib/statistiques.php">Statistiques</a>|
+<p class="bold"><a href='<?php if($select_fiche_eleve=='' and $fiche_eleve=='' and $choix!='lemessager') { ?>../../accueil.php<?php } else { ?>gestion_absences.php<?php } ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
+<a href="./impression_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
-<?php /* <a href="gestion_absences.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>| */ ?>
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
 </p>
 
-  <form method="post" action="gestion_absences.php?type=<?php echo $type; ?>&amp;choix=<?php echo $choix; ?>" name="choix_type_vs">
+  <form method="post" action="gestion_absences.php?type=<?php echo $type; ?>&amp;choix=<?php echo $choix; ?>" name="choix_type_vs" style="margin: auto; text-align: center;">
    <fieldset class="fieldset_efface">
      <input name="date_ce_jour" type="hidden" value="<?php echo $date_ce_jour; ?>" />
      <select name="type">
@@ -395,9 +406,11 @@ require_once("../../lib/header.inc");
         <option value="R" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="R") {echo "selected"; } ?>>Retard</option>
         <option value="I" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="I") {echo "selected"; } ?>>Infirmerie</option>
         <option value="D" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="D") {echo "selected"; } ?>>Dispense</option>
-     </select><input type="submit" name="submit8" value="&lt;&lt;" />
+     </select><input name="submit8" type="image" src="../../images/enabled.png" style="border: 0px;" />
+		<?php /* <input type="submit" name="submit8" value="&lt;&lt;" />*/ ?>
      &nbsp; <a href="select.php?type=<?php echo $type; ?>&amp;classe_choix=<?php echo $classe_choix; ?>">Ajouter</a> - <a href="../lib/tableau.php?type=<?php echo $type; ?>&amp;pagedarriver=gestion_absences">Tableau</a>
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Voir la fiche élève <input type="text" name="fiche_eleve" value="" /><input type="submit" name="submit8" value="&lt;&lt;" />
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Voir la fiche élève <input type="text" name="fiche_eleve" value="" /><input name="submit" type="image" src="../../images/enabled.png" style="border: 0px;" />
+		<?php /* <input type="submit" name="submit8" value="&lt;&lt;" /> */ ?>
    </fieldset>
   </form>
 <div class="centre"><hr width="550" size="1"/></div>
@@ -418,16 +431,16 @@ require_once("../../lib/header.inc");
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
-            if ($classe_choix != "") { $requete_top10 ="SELECT COUNT(*) FROM ".$prefix."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."classes WHERE type_absence_eleve='".$type."' AND eleve_absence_eleve=id_eleve AND classe_eleve=id_classe AND id_classe='".$classe_choix."' LIMIT 0, 10";  }
-            if ($classe_choix == "") { $requete_top10 ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve FROM ".$prefix_base."eleves, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."absences_eleves.type_absence_eleve='".$type."' GROUP BY ".$prefix_base."eleves.login LIMIT 0, 10";  }
+            if ($classe_choix != "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(DISTINCT(ae.id_absence_eleve)) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec WHERE e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = 'A' AND ec.login = e.login AND ec.id_classe = '".$classe_choix."' GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
+            if ($classe_choix == "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(ae.id_absence_eleve) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e WHERE ( e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = 'A' ) GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
          }
 
          $execution_top10 =mysql_query($requete_top10) or die('Erreur SQL !'.$requete_top10.'<br />'.mysql_error());
          while ( $data_top10 = mysql_fetch_array($execution_top10))
          {
-             $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$data_top10['login']."' AND type_absence_eleve = '".$type."'"),0);
+             $compte = $data_top10[5];
 ?>
-      <div id="d<?php echo $data_top10['id_absence_eleve']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
+      <div id="d<?php echo $data_top10['login']; ?>" style="position: absolute; z-index: 20; visibility: hidden; top: 0px; left: 0px;">
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
                 <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom']); ?> élève de <?php echo "<b>".classe_de($data_top10['login'])."</b>"; $id_classe_eleve = classe_de($data_top10['login']); ?><br /><?php if ($type == "A") {?>a été absent<?php } ?><?php if ($type == "R") {?>est arrivé en retard<?php } ?><?php if ($type == "I") {?>est allé à l'infirmerie<?php } ?><?php if ($type == "D") {?>a été dispensé<?php } ?><?php if ($data_top10['sexe'] == "F") { ?>e<?php } ?> <b><?php echo $compte ?></b> fois<br /></td>
@@ -458,8 +471,8 @@ require_once("../../lib/header.inc");
          $ic = 1;
          if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
           {
-            if ($classe_choix != "") { $requete_top10 ="SELECT ".$prefix_base."eleves.elenoet, id_absence_eleve, id_eleve, civilite_eleve, nl_classe, num_classe, type_absence_eleve, justify_absence_eleve, info_justify_absence_eleve, motif_absence_eleve, d_date_absence_eleve, a_date_absence_eleve, d_heure_absence_eleve, a_heure_absence_eleve, eleve_absence_eleve, nom_eleve, prenom_eleve, COUNT(*) FROM ".$prefix."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."classes WHERE type_absence_eleve='".$type."' AND eleve_absence_eleve=id_eleve AND classe_eleve=id_classe AND id_classe='".$classe_choix."' GROUP BY login LIMIT 0, 10";  }
-            if ($classe_choix == "") { $requete_top10 ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve FROM ".$prefix_base."eleves, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."absences_eleves.type_absence_eleve='".$type."' GROUP BY login LIMIT 0, 10";  }
+            if ($classe_choix != "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(DISTINCT(ae.id_absence_eleve)) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec WHERE e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = 'A' AND ec.login = e.login AND ec.id_classe = '".$classe_choix."' GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
+            if ($classe_choix == "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(ae.id_absence_eleve) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e WHERE ( e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = 'A' ) GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
           }
          $execution_top10 = mysql_query($requete_top10) or die('Erreur SQL !'.$requete_top10.'<br />'.mysql_error());
          while ( $data_top10 = mysql_fetch_array($execution_top10))
@@ -468,7 +481,7 @@ require_once("../../lib/header.inc");
          ?>
         <tr>
           <td>&nbsp;</td>
-          <td class="<?php echo $couleur_cellule; ?>" onmouseover="show(event, 'd<?php echo $data_top10['id_absence_eleve']; ?>'); return true;" onmouseout="hide('d<?php echo $data_top10['id_absence_eleve']; ?>'); return true;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_top10['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom']); ?><a/></td>
+          <td class="<?php echo $couleur_cellule; ?>" onmouseover="show(event, 'd<?php echo $data_top10['login']; ?>'); return true;" onmouseout="hide('d<?php echo $data_top10['login']; ?>'); return true;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_top10['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom']); ?><a/></td>
           <td class="<?php echo $couleur_cellule; ?>">
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
              $photos = "../../photos/eleves/".$data_top10['elenoet'].".jpg";
@@ -519,10 +532,10 @@ require_once("../../lib/header.inc");
 <?php if ($choix=="sm" and $fiche_eleve == "" and $select_fiche_eleve == "") { ?>
   <?php
        $i = 0;
-       if ($type == "A" or $type == "I" or $type == "R" OR $type == "D")
+       if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
-           if ($classe_choix != "") { $requete_sans_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.saisie_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.d_date_absence_eleve, ".$prefix_base."absences_eleves.a_date_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' AND ".$prefix_base."absences_eleves.justify_absence_eleve!='O' AND (".$prefix_base."absences_eleves.d_date_absence_eleve <= '".$date_ce_jour."' AND ".$prefix_base."absences_eleves.a_date_absence_eleve >= '".$date_ce_jour."') AND ".$prefix_base."absences_eleves.type_absence_eleve= '".$type."' GROUP BY id_absence_eleve"; }
-           if ($classe_choix == "") { $requete_sans_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.saisie_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.d_date_absence_eleve, ".$prefix_base."absences_eleves.a_date_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve FROM ".$prefix_base."eleves, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."absences_eleves.justify_absence_eleve!='O' AND (".$prefix_base."absences_eleves.d_date_absence_eleve <= '".$date_ce_jour."' AND ".$prefix_base."absences_eleves.a_date_absence_eleve >= '".$date_ce_jour."') AND ".$prefix_base."absences_eleves.type_absence_eleve= '".$type."' GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
+           if ($classe_choix != "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
+           if ($classe_choix == "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.saisie_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve != 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
          }
          $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
          while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif))
@@ -553,14 +566,11 @@ require_once("../../lib/header.inc");
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="2">Téléphone responsable :
-                  <?php /*
-                     $requete_responsable1 = ("SELECT * FROM ".$prefix_base."responsables, ".$prefix_base."eleves WHERE ".$prefix_base."responsables.ereno='".$data_sans_motif['ereno']."'");
-                     $execution_responsable1 = mysql_query($requete_responsable1) or die('Erreur SQL !'.$requete_responsable1.''.mysql_error());
-                     while ($data_responsable1 = mysql_fetch_array($execution_responsable1))
-                      {
-                        if ($data_responsable1['tel1_responsable'] != "") { echo "<b>".$data_responsable1['tel1_responsable']."</b> - ".$data_responsable1['civilite_responsable']." ".strtoupper($data_responsable1['nom_responsable'])." ".ucfirst($data_responsable1['prenom_responsable']); }
-                        else {?>Conctacter l'administration<?php }
-                      } */ ?>
+                  <?php 
+			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
+				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
+				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
+		  ?>
                 </td>
               </tr>
            </table>
@@ -673,8 +683,8 @@ require_once("../../lib/header.inc");
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
-           if ($classe_choix != "") { $requete_sans_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."' AND ".$prefix_base."absences_eleves.justify_absence_eleve!='O' AND ".$prefix_base."absences_eleves.type_absence_eleve= '".$type."'GROUP BY id_absence_eleve"; }
-           if ($classe_choix == "") { $requete_sans_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve, ".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.d_date_absence_eleve, ".$prefix_base."absences_eleves.a_date_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve FROM ".$prefix_base."eleves, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."absences_eleves.justify_absence_eleve!='O' AND ".$prefix_base."absences_eleves.type_absence_eleve= '".$type."' GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
+           if ($classe_choix != "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.info_justify_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve != 'O' AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
+           if ($classe_choix == "") { $requete_sans_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.sexe, ae.id_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve, ae.type_absence_eleve, ae.motif_absence_eleve, ae.info_justify_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve!='O' AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve"; }
          }
 
          $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
@@ -704,15 +714,11 @@ require_once("../../lib/header.inc");
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php /*
-                     $requete_responsable1 = ("SELECT * FROM ".$prefix_base."responsables, ".$prefix_base."eleves WHERE ".$prefix_base."responsables.ereno='".$data_sans_motif['ereno']."'");
-                     echo $requete_responsable1;
-                     $execution_responsable1 = mysql_query($requete_responsable1) or die('Erreur SQL !'.$requete_responsable1.''.mysql_error());
-                     while ($data_responsable1 = mysql_fetch_array($execution_responsable1))
-                      {
-                         if ($data_responsable1['tel1'] != "") { echo "<b>".$data_responsable1['tel1']."</b> - ".$data_responsable1['civilite_responsable']." ".strtoupper($data_responsable1['nom1'])." ".ucfirst($data_responsable1['prenom1']); }
-                         else {?>Conctacter l'administration<?php }
-                      } */ ?>
+                  <?php 
+			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
+				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
+				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
+		  ?>
                 </td>
               </tr>
           </table>
@@ -821,8 +827,8 @@ require_once("../../lib/header.inc");
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
-           if ($classe_choix != "") { $requete_avec_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve,".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.d_date_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve, ".$prefix_base."absences_eleves.a_date_absence_eleve, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.id, ".$prefix_base."classes.classe, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id AND ".$prefix_base."classes.id='".$classe_choix."'  AND  ".$prefix_base."absences_eleves.justify_absence_eleve='O' AND (".$prefix_base."absences_eleves.d_date_absence_eleve <= '".$date_ce_jour."' AND ".$prefix_base."absences_eleves.a_date_absence_eleve >= '".$date_ce_jour."') AND ".$prefix_base."absences_eleves.type_absence_eleve='".$type."' GROUP BY id_absence_eleve"; }
-           if ($classe_choix == "") { $requete_avec_motif ="SELECT ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."eleves.elenoet, ".$prefix_base."eleves.sexe, ".$prefix_base."absences_eleves.id_absence_eleve, ".$prefix_base."absences_eleves.eleve_absence_eleve, ".$prefix_base."absences_eleves.justify_absence_eleve,".$prefix_base."absences_eleves.type_absence_eleve, ".$prefix_base."absences_eleves.motif_absence_eleve, ".$prefix_base."absences_eleves.info_justify_absence_eleve, ".$prefix_base."absences_eleves.d_date_absence_eleve, ".$prefix_base."absences_eleves.d_heure_absence_eleve, ".$prefix_base."absences_eleves.a_heure_absence_eleve, ".$prefix_base."absences_eleves.a_date_absence_eleve FROM ".$prefix_base."eleves, ".$prefix_base."absences_eleves WHERE ".$prefix_base."eleves.login=".$prefix_base."absences_eleves.eleve_absence_eleve AND ".$prefix_base."absences_eleves.justify_absence_eleve='O' AND (".$prefix_base."absences_eleves.d_date_absence_eleve <= '".$date_ce_jour."' AND ".$prefix_base."absences_eleves.a_date_absence_eleve >= '".$date_ce_jour."') AND ".$prefix_base."absences_eleves.type_absence_eleve= '".$type."' GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve";  }
+           if ($classe_choix != "") { $requete_avec_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.elenoet, e.sexe, ae.id_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve,ae.type_absence_eleve, ae.motif_absence_eleve, ae.info_justify_absence_eleve, ae.d_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, ae.a_date_absence_eleve, jec.login, jec.id_classe, jec.periode, c.id, c.classe, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND e.login = jec.login AND jec.id_classe = c.id AND c.id = '".$classe_choix."' AND ae.justify_absence_eleve = 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."' ) AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve"; }
+           if ($classe_choix == "") { $requete_avec_motif ="SELECT e.ele_id, e.elenoet, e.login, e.nom, e.prenom, e.elenoet, e.sexe, ae.id_absence_eleve, ae.eleve_absence_eleve, ae.justify_absence_eleve,ae.type_absence_eleve, ae.motif_absence_eleve, ae.info_justify_absence_eleve, ae.d_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, ae.a_date_absence_eleve FROM ".$prefix_base."eleves e, ".$prefix_base."absences_eleves ae WHERE ( e.login = ae.eleve_absence_eleve AND ae.justify_absence_eleve = 'O' AND ( ae.d_date_absence_eleve <= '".$date_ce_jour."' AND ae.a_date_absence_eleve >= '".$date_ce_jour."') AND ae.type_absence_eleve = '".$type."' ) GROUP BY id_absence_eleve ORDER BY nom,prenom,d_heure_absence_eleve";  }
          }
          $execution_avec_motif = mysql_query($requete_avec_motif) or die('Erreur SQL !'.$requete_avec_motif.'<br />'.mysql_error());
          while ( $data_avec_motif = mysql_fetch_array($execution_avec_motif))
@@ -859,14 +865,11 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
               </tr>
               <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php     /*
-                     $requete_responsable1 = ("SELECT * FROM ".$prefix_base."responsables, ".$prefix_base."eleves WHERE ".$prefix_base."responsables.ereno='".$data_sans_motif['ereno']."'");
-                     $execution_responsable1 = mysql_query($requete_responsable1) or die('Erreur SQL !'.$requete_responsable1.''.mysql_error());
-                     while ($data_responsable1 = mysql_fetch_array($execution_responsable1))
-                       {
-                          if ($data_responsable1['tel1_responsable'] != "") { echo "<b>".$data_responsable1['tel1_responsable']."</b> - ".$data_responsable1['civilite_responsable']." ".strtoupper($data_responsable1['nom_responsable'])." ".ucfirst($data_responsable1['prenom_responsable']); }
-                          else {?>Conctacter l'administration<?php }
-                       } */ ?>
+                  <?php     
+			$info_responsable = tel_responsable($data_avec_motif['ele_id']);
+				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
+				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
+		  ?>
                 </td>
               </tr>
          </table>
@@ -970,8 +973,9 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 <?php } ?>
 
 
-<?php if ($fiche_eleve!="") { ?>
-<?php
+<?php /* fiche élève sélection */ ?>
+<?php if ( $fiche_eleve != '' ) {
+
          $cpt_liste = 0;
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.nom  LIKE '".$fiche_eleve."%' GROUP BY login ORDER BY nom, prenom";
          $execution_liste_fiche = mysql_query($requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysql_error());
@@ -985,7 +989,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 ?>
 <br />
 <? /* div de centrage du tableau pour ie5 */ ?>
-<div style="text-align:center">
+<div style="text-align:center; margin: auto;">
     <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">
        <tr class="fond_rouge">
            <td class="titre_tableau_gestion"><b>Liste des élèves</b></td>
@@ -1004,93 +1008,187 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 <?php } ?>
 
 
-<?php if ($select_fiche_eleve!="") { ?>
-    <?php
+<?php /* fiche élève */ ?>
+<?php if ( $select_fiche_eleve != '' ) { 
+
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
          $execution_liste_fiche = mysql_query($requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysql_error());
          while ( $data_liste_fiche = mysql_fetch_array($execution_liste_fiche))
           {
               $login_eleve = $data_liste_fiche['login'];
               $id_eleve_photo = $data_liste_fiche['elenoet'];
+              $ele_id_eleve = $data_liste_fiche['ele_id'];
               $nom_eleve = strtoupper($data_liste_fiche['nom']);
               $prenom_eleve = ucfirst($data_liste_fiche['prenom']);
               $naissance_eleve = date_frl(date_sql(affiche_date_naissance($data_liste_fiche['naissance'])));
               $date_de_naissance = $data_liste_fiche['naissance'];
               $sexe_eleve = $data_liste_fiche['sexe'];
-          }
-
-        function age($date_de_naissance_fr)
-          {
-            //à partir de la date de naissance, retourne l'âge dans la variable $age
-
-            // date de naissance (partie à modifier)
-              $ddn = $date_de_naissance_fr;
-
-            // enregistrement de la date du jour
-              $DATEDUJOUR = date("Y-m-d");
-              $DATEFRAN = date("d/m/Y");
-
-            // calcul de mon age d'après la date de naissance $ddn
-              $annais = substr("$ddn", 0, 4);
-              $anjour = substr("$DATEFRAN", 6, 4);
-              $moisnais = substr("$ddn", 4, 2);
-              $moisjour = substr("$DATEFRAN", 3, 2);
-              $journais = substr("$ddn", 6, 2);
-              $jourjour = substr("$DATEFRAN", 0, 2);
-
-              $age = $anjour-$annais;
-              if ($moisjour<$moisnais){$age=$age-1;}
-              if ($jourjour<$journais && $moisjour==$moisnais){$age=$age-1;}
-              return($age);
-           }
-
-         function pp($classe_choix)
-          {
-            global $prefix_base;
-               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
-               $data_prof_classe = mysql_fetch_array($call_prof_classe);
-               $suivi_par = $data_prof_classe['suivi_par'];
-               return($suivi_par);
+		$responsable_eleve = tel_responsable($ele_id_eleve);
           }
     ?>
+
     <br />
-    <? /* div de centrage du tableau pour ie5 */ ?>
-    <div style="text-align:center">
-    <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="2">
-       <tr>
-           <td class="titre_tableau_gestion" colspan="2"><b>Identitée élève</b></td>
-       </tr>
-       <tr>
-           <td class="td_tableau_fiche" style="width: 440px; vertical-align: top">Nom : <?php echo $nom_eleve; ?><br />Prénom : <?php echo $prenom_eleve; ?><br />Date de naissance : <?php echo $naissance_eleve; ?><br />Age : <?php echo age($date_de_naissance); ?> ans <br /><br />Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)</td>
+
+<?php /* fiche identitée de l'élève */ ?>
+<a name="ident"></a>
+<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identitée élève</div>
+<div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
+	<div style="height: 135px; background: transparent url(../images/grid_10.png)">
+		<div style="float: left; margin: 12.5px;">
                 <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
-                echo "<td class=\"td_tableau_fiche\" style=\"width: 60px; vertical-align: top\">";
                 $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";
                  if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
-                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
+                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
                  } ?>
-       </tr>
-    </table>
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+		</div>
+		<div style="float: left; margin: 12.5px 0px 0px 0px; width: 36%">
+			Nom : <strong><?php echo $nom_eleve; ?></strong><br />
+			Prénom : <strong><?php echo $prenom_eleve; ?></strong><br />
+			Date de naissance : <?php echo $naissance_eleve; ?><br />
+			Age : <strong><?php echo age($date_de_naissance); ?> ans</strong><br />
+			<br />
+			Classe : <a href="#" class="info"><?php echo classe_de($login_eleve); ?><span style="width: 300px;">(Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)</span></a>
+		</div>
+		<div style="float: left; background-image: url(../images/responsable.png); background-repeat:no-repeat; height: 135px; width: 20px; margin-left: 10px;">&nbsp;</div>
+		<div style="float: left; margin: 12.5px; overflow: auto;  width: 40%;">
+			<?php
+				$cpt_responsable = 0;
+				while ( !empty($responsable_eleve[$cpt_responsable]) )
+				{
+					echo $responsable_eleve[$cpt_responsable]['civilite'].' '.strtoupper($responsable_eleve[$cpt_responsable]['nom']).' '.ucfirst($responsable_eleve[$cpt_responsable]['prenom']).'<br />';
+					$telephone = '';
+						if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'Tél. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_pers']).'</strong> '; }
+						if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) { $telephone = $telephone.'Prof. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_prof']).'</strong> '; }
+						if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) { $telephone = $telephone.'<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($responsable_eleve[$cpt_responsable]['tel_port']); }
+					echo '<div style="margin-left: 15px;">'.$telephone.'</div>';
+					$cpt_responsable = $cpt_responsable + 1;
+				}
+			?>
+		</div>
+	</div>
 </div>
-  <br />
+<?php /* fin fiche identitée de l'élève */ ?>
 
-    <? /* div de centrage du tableau pour ie5 */ ?>
-    <div style="text-align:center">
-	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=infoeleve" title="consulter la fiche de l'élève">Information élève</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuel</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=repartabs" title="Répartissement des absences">Répartissement des absences</a> ]
-    </div>
+    <div style="text-align: center;">
+	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'élève">Suivi de l'élève</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentéisme non justifié">Absentéisme non justifié</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuel</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="Répartissement des absences">Répartissement des absences</a> ]
+    </div><br />
 
-    <? /* div de centrage du tableau pour ie5 */ ?>
-    <div style="text-align:center">
-<?php if($aff_fiche==='infoeleve' or $aff_fiche==='') { ?>
-    <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="2">
-       <tr>
-           <td class="titre_tableau_gestion" colspan="2"><b>Information élève</b></td>
-       </tr>
-       <tr>
-           <td class="td_tableau_fiche" style="width: 400px; vertical-align: top">
+<?php /* DIV global */ ?>
+<div style="margin: auto; position: relative;">
+
+<?php /* DIV coté fauche */ ?>
+	<div style="float: left; width: 388px">
+
+<?php /* DIV du suivi de l'élève */ ?>
+	   <?php if ( $aff_fiche==='suivieleve' or $aff_fiche==='' ) { ?>
+		<a name="suivieleve"></a>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Actualitée élève</div>
+		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
+			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
+
+			<?php /* formulaire pour l'ajout de l'actualitée de l'élève */ ?>
+			<a name="formulaire"></a>
+		            <form method="post" action="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>">
+		               <fieldset>
+		                 <legend>Ajouter un suivi</legend>
+			                 <select id="info_suivi" onchange="data_info_suivi.value += info_suivi.options[info_suivi.selectedIndex].text + '\n'" style="width: 210px;">
+			                   <option>Sélectionné un texte rapide</option>
+					   <option>[Exclusion du cours] A été exclus du cours de:   à:</option>
+			                   <option>Rencontre avec les parents</option>
+			                 </select>
+				         <input type="hidden" name="eleve_suivi_eleve_cpe" value="<?php echo $login_eleve; ?>" />
+			                 <input type="hidden" name="debut_selection_suivi" value="<?php echo $debut_selection_suivi; ?>" />
+			                 <input type="hidden" name="action_sql" value="<?php if($action == "modifier") { ?>modifier<?php } else { ?>ajouter<?php } ?>" />
+			                 <?php if($action === 'modifier') { ?>
+			                      <input type="hidden" name="id_suivi_eleve_cpe" value="<?php echo $id_suivi_eleve_cpe; ?>" />
+			                 <?php } ?>
+<?php /* 		   <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /> */ ?>
+			                 <input type="submit" name="submit8" value="Valider la saisie" />
+			                 <br />
+					 <table style="border: 0px" cellspacing="1" cellpadding="1">
+					    <tr>
+						<td>
+						<textarea id="data_info_suivi" name="data_info_suivi" rows="3" cols="30" style="height: 70px;"><?php if($action == "modifier") { echo $data_modif_fiche['komenti_suivi_eleve_cpe']; } ?></textarea>
+						</td>
+						<td>
+						<div style="font-family: Arial; font-size: 0.8em; background-color: #FFFFFF; border : 1px solid #0061BD; height: 70px; padding-left: 2px; width: 100px;">
+							Niveau de priorité<br />
+							<input name="niveau_urgent" id="nur1" value="1" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='1') { ?>checked="checked"<?php } else { ?>checked="checked"<?php } ?> /><label for="nur1" style="cursor: pointer;">Information</label><br />
+							<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Important</label><br />
+							<input name="niveau_urgent" id="nur3" value="3" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='3') { ?>checked="checked"<?php } ?> /><label for="nur3" style="cursor: pointer;">Prioritaire</label><br />
+						</div>
+						</td>
+					    </tr>
+				        </table>
+				  	Entraine une action
+					<select name="action_suivi" style="width: 218px;">
+ 	        		        <?php
+					      $requete_liste_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
+		        	              $resultat_liste_action = mysql_query($requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.mysql_error());
+			                      while ( $data_liste_action = mysql_fetch_array ($resultat_liste_action)) { ?>
+		                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
+		                              <?php } ?>
+					</select><br />
+					Informé par: 
+						<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '1') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
+						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
+						<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '3') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label>
+						<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '5') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
+						<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>						 
+						<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '6') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
+
+     <?php /* désactivé dans l'imédia peut servir par la suite
+	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
+	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
+	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
+	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label> 
+	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
+		*/ ?>
+					<div id='ligne_type_courrier'>
+					   <select name="lettre_type" size="6" style="width: 350px; border: 1px solid #000000;">
+						<optgroup label="Type de lettre">
+					        <?php
+						$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
+					        $execution_lettre = mysql_query($requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysql_error());
+				  		while ($donner_lettre = mysql_fetch_array($execution_lettre))
+		  				{
+						   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($lettre_type) and $lettre_type === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
+						} ?>
+						</optgroup>
+					  </select>
+					</div>
+
+				<script type='text/javascript' language='javascript'>
+					test='cacher';
+					function aff_lig_type_courrier(mode){
+						if(mode=='afficher'){
+							document.getElementById('ligne_type_courrier').style.display='';
+						} else {
+								document.getElementById('ligne_type_courrier').style.display='none';
+							}
+					  	test=document.getElementById('type').value;
+					}
+
+					if(test=='cacher') {
+						aff_lig_type_courrier('cacher');
+					}
+				</script>
+
+              </fieldset>
+            </form>
+
+
+
+	<?php $cpt_komenti = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0); ?>
+	<div style="text-align: center;">
+	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page précédente</a><?php } ?>
+	  <?php $debut_selection_suivi_suivant = $debut_selection_suivi+'2'; if($debut_selection_suivi!='0' and $debut_selection_suivi_suivant<=$cpt_komenti) { ?> | <?php } ?>
+	  <?php if($debut_selection_suivi_suivant<=$cpt_komenti) { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi+'2'; ?>">Page suivant</a><?php } ?>
+	</div>
            <?php
-	     $cpt_komenti = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0);        
 	     $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC LIMIT ".$debut_selection_suivi.", 2";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
@@ -1099,7 +1197,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 			if(!empty($data_komenti['action_suivi_eleve_cpe']) and $data_komenti['action_suivi_eleve_cpe'] != 'A') { $action_pour_eleve = ', '.action_de($data_komenti['action_suivi_eleve_cpe']); }
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $couleur3='#FDFFEF'; $drapeau='[information]'; }
-				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $couleur3='#FDFFEF'; $drapeau='[urgent]'; }
+				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $couleur3='#FDFFEF'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $couleur3='#FDFFEF'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $couleur3='#FDFFEF'; $drapeau=''; } ?>
                     <div class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />
@@ -1133,208 +1231,192 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 		 <?php } ?>
 		<?php } ?>
            <?php } ?>
-
-	<div style="text-align: center;">
-	  <?php if($debut_selection_suivi!='0') { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi-'2'; ?>">Page précédente</a><?php } ?>
-	  <?php $debut_selection_suivi_suivant = $debut_selection_suivi+'2'; if($debut_selection_suivi!='0' and $debut_selection_suivi_suivant<=$cpt_komenti) { ?> | <?php } ?>
-	  <?php if($debut_selection_suivi_suivant<=$cpt_komenti) { ?><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi+'2'; ?>">Page suivant</a><?php } ?>
+		<br />
+			</div>
+		</div>
 	</div>
+	<?php } ?>
+<?php /* fin du DIV du suivi de l'élève */ ?>
+	   
 
-            <a name="formulaire"></a>
-            <form method="post" action="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>">
-               <fieldset>
-                 <legend>Ajouter un suivi</legend>
-                 <select id="info_suivi" onchange="data_info_suivi.value += info_suivi.options[info_suivi.selectedIndex].text + '\n'" style="width: 210px;">
-                   <option>Sélectionné un texte rapide</option>
-		   <option>[Exclusion du cours] A été exclus du cours de:   à:</option>
-                   <option>Rencontre avec les parents</option>
-                   <option>Avertissement</option>
-                 </select>
-                   <input type="hidden" name="eleve_suivi_eleve_cpe" value="<?php echo $login_eleve; ?>" />
-                   <input type="hidden" name="debut_selection_suivi" value="<?php echo $debut_selection_suivi; ?>" />
-                   <input type="hidden" name="action_sql" value="<?php if($action == "modifier") { ?>modifier<?php } else { ?>ajouter<?php } ?>" />
-                   <?php if($action === 'modifier') { ?>
-                      <input type="hidden" name="id_suivi_eleve_cpe" value="<?php echo $id_suivi_eleve_cpe; ?>" />
-                   <?php } ?>
-<?php /* 		   <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /> */ ?>
-                   <input type="submit" name="submit8" value="Valider la saisie" />
-                   <br />
-		   <table style="border: 0px" cellspacing="1" cellpadding="1">
-		   	<tr>
-				<td>
-				<textarea id="data_info_suivi" name="data_info_suivi" rows="3" cols="30" style="height: 70px;"><?php if($action == "modifier") { echo $data_modif_fiche['komenti_suivi_eleve_cpe']; } ?></textarea>
-				</td>
-				<td>
-				<div style="font-family: Arial; font-size: 0.8em; background-color: #FFFFFF; border : 1px solid #0061BD; height: 70px; padding: 0px;">
-				Niveau de priorité<br />
-				<input name="niveau_urgent" id="nur1" value="1" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='1') { ?>checked="checked"<?php } else { ?>checked="checked"<?php } ?> /><label for="nur1" style="cursor: pointer;">Information</label><br />
-				<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Urgent</label><br />
-				<input name="niveau_urgent" id="nur3" value="3" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='3') { ?>checked="checked"<?php } ?> /><label for="nur3" style="cursor: pointer;">Prioritaire</label><br />
-				</div>
-				</td>
-			</tr>
-		   </table>
-		   Entraine une action
-			<select name="action_suivi" style="width: 250px;">
- 	                <?php
-			      $requete_liste_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
-        	              $resultat_liste_action = mysql_query($requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.mysql_error());
-	                      while ( $data_liste_action = mysql_fetch_array ($resultat_liste_action)) { ?>
-                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
-                              <?php } ?>
-			</select>
-		   <br />
-<?php /*<select name="encadre_lettre_tc" style="border: 1px solid #B3BFB8;"><option value="1" <?php if($data_1['encadre_lettre_tc'] === '1') { ?>selected="selected"<?php } ?>>à été</option><option value="1" <?php if($data_1['encadre_lettre_tc'] === '2') { ?>selected="selected"<?php } ?>>vas en être</option></select>
-L'élève à été avisé par:
-L'élève vas en être avisé par: */ ?>
-Informé par: 
+<?php /* DIV de l'absentéisme de l'élève */ ?>
+	<?php if ( $aff_fiche === 'abseleve' ) { ?>
+		<a name="abseleve"></a>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Absentéisme de l'élève</div>
+		<div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
+			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 
-	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '1') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
-	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '3') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
-	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '5') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label> 
-	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '6') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
-
-     <?php /* désactivé dans l'imédia peut servir par la suite
-	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
-	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
-	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label> 
-	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
-		*/ ?>
-
-
-<div id='ligne_type_courrier'>
- <select name="lettre_type" size="6" style="width: 350px; border: 1px solid #000000;">
-		<optgroup label="Type de lettre">
-		    <?php
-			$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
-		        $execution_lettre = mysql_query($requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysql_error());
-	  		while ($donner_lettre = mysql_fetch_array($execution_lettre))
-		  	 {
-			   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($lettre_type) and $lettre_type === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
-			 }
-			?>
-		</optgroup>
-		  </select>
-</div>
-
-<script type='text/javascript' language='javascript'>
-			test='cacher';
-			function aff_lig_type_courrier(mode){
-				if(mode=='afficher'){
-					document.getElementById('ligne_type_courrier').style.display='';
-				}
-				else{
-					document.getElementById('ligne_type_courrier').style.display='none';
-				}
-			   test=document.getElementById('type').value;
-			}
-
-			if(test=='cacher') {
-				aff_lig_type_courrier('cacher');
-			}
-		</script>
-
-              </fieldset>
-            </form>
-           </td>
-           <td class="td_tableau_fiche bordure_sous_menu" style="width: 100px; vertical-align: top;">
-           <?php $cpt_absences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A'"),0);
-           if($cpt_absences != 0) { ?>
+	   <?php /* tableau des absences non justifiée */ ?>
+           <?php $cpt_absences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A'"),0);
+		 $cpt_absences_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'A' AND justify_absence_eleve = 'N '"),0);
+           if ( $cpt_absences != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=A',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Absences"><?php echo $cpt_absences; ?></a></b> Absence(s)</p>
-           non justifiée(s)<br />
-           <?php $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
-                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
-                   {
-                      ?><a href="ajout_abs.php?action=modifier&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php
-                      echo date_fr($data_absences_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_absences_nr['d_heure_absence_eleve']."</a><br /><br />";
-                      ?><?php
-                   }
-           ?>
-           <?php } $cpt_retards = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R'"),0);
-           if($cpt_retards != 0) { ?>
+               <?php if ( $cpt_absences_nj != 0 ) { ?>
+           	   Liste des absences non justifiée(s)<br />
+		   <ul>
+        	   <?php $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
+                	 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
+	                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
+        	         {
+                	      ?><li><a href="ajout_abs.php?action=modifier&amp;type=A&amp;id=<?php echo $data_absences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui">
+			      <?php
+					if ( $data_absences_nr['d_date_absence_eleve'] != $data_absences_nr['a_date_absence_eleve'] ) { echo 'du '.date_fr($data_absences_nr['d_date_absence_eleve']).' au '.date_fr($data_absences_nr['a_date_absence_eleve']); }
+					elseif ( $data_absences_nr['d_date_absence_eleve'] === $data_absences_nr['a_date_absence_eleve'] ) { echo date_fr($data_absences_nr['d_date_absence_eleve'])." de ".$data_absences_nr['d_heure_absence_eleve']." à ".$data_absences_nr['a_heure_absence_eleve']; }
+			      ?></a></li><?php
+        	         }
+	           ?>
+		   </ul>
+		<?php } ?>
+	   <?php } ?>
+
+	   <?php /* tableau des retards non justifiée */ ?>
+	   <?php $cpt_retards = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R'"),0);
+		 $cpt_retards_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'R' AND justify_absence_eleve = 'N '"),0);
+
+           if ( $cpt_retards != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=R',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Retards"><?php echo $cpt_retards; ?></a></b> Retards</p>
-           non justifié(s)<br />
-           <?php $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
-                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
-                   {
-                      ?><a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php
-                      echo date_fr($data_retards_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_retards_nr['d_heure_absence_eleve']."<br /><br />";
-                      ?></a><?php
-                   }
-           ?>
-           <?php } $cpt_dispences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D'"),0);
-           if($cpt_dispences != 0) { ?>
+               <?php if($cpt_retards_nj != 0) { ?>
+	           Liste des retards non justifié(s)<br />
+		   <ul>
+	           <?php $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
+        	         $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
+	                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
+	                 {
+         	             ?><li><a href="ajout_ret.php?action=modifier&amp;type=R&amp;id=<?php echo $data_retards_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><li><?php echo date_fr($data_retards_nr['d_date_absence_eleve'])." ".$data_retards_nr['d_heure_absence_eleve']; ?></a></li><?php
+                	 }
+	           ?>
+		   </ul>
+	      <?php } ?>
+	   <?php } ?>
+
+           <?php $cpt_dispences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'D'"),0);
+		 $cpt_dispences_nj = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."' AND type_absence_eleve = 'D' AND justify_absence_eleve = 'N '"),0);
+
+           if( $cpt_dispences != 0 ) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Dispences"><?php echo $cpt_dispences; ?></a></b> Dispences</p>
-           non justifiée(s)<br />
-           <?php $requete_dispences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
-                 while ($data_dispences_nr = mysql_fetch_array($execution_dispences_nr))
-                   {
-                      ?><a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><?php
-                      echo date_fr($data_dispences_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_dispences_nr['d_heure_absence_eleve']."<br /><br />";
-                      ?></a><?php
-                   }
-           ?>
-           <?php } $cpt_infirmeries = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='I'"),0);
+               <?php if($cpt_dispences_nj != 0) { ?>
+	           Liste des dispenses non justifiée(s)<br />
+		   <ul>
+	           <?php $requete_dispences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
+        	         $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
+	                 while ($data_dispences_nr = mysql_fetch_array($execution_dispences_nr))
+        	         {
+                	      ?><li><a href="ajout_dip.php?action=modifier&amp;type=D&amp;id=<?php echo $data_dispences_nr['id_absence_eleve']; ?>&amp;mode=eleve&amp;select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;fiche=oui"><li><?php echo date_fr($data_dispences_nr['d_date_absence_eleve'])." ".$data_dispences_nr['d_heure_absence_eleve']; ?></a></li><?php
+	                 }
+        	   ?>
+		   </ul>
+		<?php } ?>
+	   <?php } ?>
+
+           <?php $cpt_infirmeries = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='I'"),0);
            if($cpt_infirmeries != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('../lib/liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=I',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Infirmerie"><?php echo $cpt_infirmeries; ?></a></b> Infirmeries</p>
            <br />
            <?php } ?>
-           </td>
-       </tr>
-    </table>
-<?php }
-
-	if($aff_fiche==="tableauannuel") {
-
-		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' ORDER BY d_date_absence_eleve DESC";
-                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
-                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
-                   {
-			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
-			$date_fin = date_fr($data_absences_nr['a_date_absence_eleve']);
-			  $passage='oui';
-			while($passage==='oui') {
-		          $dateexplode = explode('/', $date_debut);
-			    $date_debut_tableau_jour = eregi_replace('^0','',$dateexplode[0]);
-			    $date_debut_tableau_mois = eregi_replace('^0','',$dateexplode[1]);
-			    $date_debut_tableau= $date_debut_tableau_jour.'/'.$date_debut_tableau_mois.'/'.$dateexplode[2];
-			    if(empty($tableau_info_donnee[$date_debut_tableau])) { $tableau_info_donnee[$date_debut_tableau]=''; }
-			    $tableau_info_donnee[$date_debut_tableau]['absence'] = 'oui';
-			    if($date_debut===$date_fin) { $passage='non'; } else { $passage='oui'; }
-			    $date_debut = date("d/m/Y", mktime(0, 0, 0, $dateexplode[1], $dateexplode[0]+1,  $dateexplode[2]));
-			}
-                   }
-		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' ORDER BY d_date_absence_eleve DESC";
-                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
-                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
-                   {
-			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
-			    $date_debut = eregi_replace('^0','',$date_debut);
-			$date_fin = date_fr($data_absences_nr['a_date_absence_eleve']);
-			    $date_fin = eregi_replace('^0','',$date_fin);
-			if(empty($tableau_info_donnee[$date_debut])) { $tableau_info_donnee[$date_debut]=''; }
-			$tableau_info_donnee[$date_debut]['retard'] = 'oui';
-			if(empty($tableau_info_donnee[$date_fin])) { $tableau_info_donnee[$date_fin]=''; }
-			$tableau_info_donnee[$date_fin]['retard'] = 'oui';
-                   }
-
-echo '<h2>Statistique sur une année</h2>'; echo @tableau_annuel($select_fiche_eleve, '8', '12', '2006', $tableau_info_donnee); 
-}
-
-	if($aff_fiche==="repartabs") { 
 
 
-	     $i = '0';
+		</div>
+<?php /* fin du DIV de l'absentéisme de l'élève */ ?>
+	</div>
+	<?php } ?>
+
+<?php /* fin DIV coté gauche */ ?>
+</div>
+
+<?php /* DIV coté droit */ ?>
+<div style="float: left; width: 388px; margin-left: 5px;">
+
+<?php /* DIV des statistique de l'élève */ ?>
+	<?php if ( $aff_fiche === 'suivieleve' or  $aff_fiche === '' or $aff_fiche==='abseleve' ) { ?>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Statistique élève</div>
+		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
+			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
+			<?php
+				// graphique
+					// hauteur du graphique au maximum
+					$h_graphique = '252';
+					// largeur du graphique au maximum
+					$l_graphique = '536';
+// temporaire
+$du = '01/09/2006';
+$au = '30/06/2007';
+$du_explose = explode('/',$du);
+	$au_explose = explode('/',$au);
+		$jour_du = '1';
+		$mois_du = $du_explose[1];
+		$annee_du = $du_explose[2];
+		$jour_au = '31';
+		$mois_au = $au_explose[1];
+		$annee_au = $au_explose[2];
+		$mois= '';
+		$du_sql = $annee_du.'-'.$mois_du.'-'.$du_explose[0];
+		$au_sql = $annee_au.'-'.$mois_au.'-'.$au_explose[0];
+
+	if ( $mois === '' ) { $mois = tableau_mois($mois_du, $annee_du, $mois_au, $annee_au); }
+			
+
+$info_absence = repartire_jour($login_eleve, 'A', $du_sql, $au_sql);
+$info_retard = repartire_jour($login_eleve, 'R', $du_sql, $au_sql);
+
+// pour test
+/*$i = 0;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'aou. 2006'; $mois[$i]['num_mois'] = '08'; $mois[$i]['num_mois_simple'] = '8'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'sep. 2006'; $mois[$i]['num_mois'] = '09'; $mois[$i]['num_mois_simple'] = '9'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'oct. 2006'; $mois[$i]['num_mois'] = '10'; $mois[$i]['num_mois_simple'] = '10'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'nov. 2006'; $mois[$i]['num_mois'] = '11'; $mois[$i]['num_mois_simple'] = '11'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'dec. 2006'; $mois[$i]['num_mois'] = '12'; $mois[$i]['num_mois_simple'] = '12'; $mois[$i]['num_annee'] = '2006'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'jan 2007'; $mois[$i]['num_mois'] = '01'; $mois[$i]['num_mois_simple'] = '1'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'fev. 2007'; $mois[$i]['num_mois'] = '02'; $mois[$i]['num_mois_simple'] = '2'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'mar. 2007'; $mois[$i]['num_mois'] = '03'; $mois[$i]['num_mois_simple'] = '3'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'avr. 2007';  $mois[$i]['num_mois'] = '04'; $mois[$i]['num_mois_simple'] = '4'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'mai. 2007'; $mois[$i]['num_mois'] = '05'; $mois[$i]['num_mois_simple'] = '5'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'jui. 2007';  $mois[$i]['num_mois'] = '06'; $mois[$i]['num_mois_simple'] = '6'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+$mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_mois_simple'] = '7'; $mois[$i]['num_annee'] = '2007'; $i = $i + 1;
+*/
+
+
+	//préparation des valeurs
+	// axe x
+	if ( !isset($valeur_x) ) {
+		$i = '0';
+		while ( !empty($mois[$i]) )
+		{
+			$valeur_x[$i] = $mois[$i]['mois_court']; 
+		$i = $i + 1;
+		}
+		$_SESSION['axe_x'] = $valeur_x;
+	}
+	// axe y des absences et des retards
+		$i = '0';
+		while ( !empty($mois[$i]) )
+		{
+			$mois_p = $mois[$i]['num_mois'];
+			$annee_p = $mois[$i]['num_annee'];
+				$total_abs = '0';
+				if ( isset($info_absence[$annee_p.'-'.$mois_p]) and ($info_absence[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_absence[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
+					// $total_abs = $info_absence[$annee_p.'-'.$mois_p]['nb_j'] + $info_absence[$annee_p.'-'.$mois_p]['nb_nj'];
+					$total_abs = $info_absence[$annee_p.'-'.$mois_p]['nb'];
+				}
+				$total_ret = '0';
+				if ( isset($info_retard[$annee_p.'-'.$mois_p]) and ($info_absence[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_absence[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
+					// $total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb_j'] + $info_absence[$annee_p.'-'.$mois_p]['nb_nj'];
+					$total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb'];
+				}
+			$valeur_y_abs[$i] = $total_abs;
+			$valeur_y_ret[$i] = $total_ret; 
+		$i = $i + 1;
+		}
+		$_SESSION['axe_y_abs'] = $valeur_y_abs;
+		$_SESSION['axe_y_ret'] = $valeur_y_ret;
+
+
+	// génération du graphique
+	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Graphique des absences et retard sur l'année</strong></div>
+	<img src="../lib/graph_double_ligne_fiche.php" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/><?php
+
+
+	// tableau des nombre d'absences par jour et par heure (période)
+   $i = '0';
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $donnee_base = mysql_fetch_array($execution_komenti))
@@ -1370,16 +1452,18 @@ echo '<h2>Statistique sur une année</h2>'; echo @tableau_annuel($select_fiche_el
 
 	$semaine = ouverture();
 
-	echo '<h2>Nombre d\'absences pour un créneau horaire</h2>'; 
-	?><table class="table_semaine">
+
+	?><br /><br /><a name="tab_sem_abs"></a>
+	<table style="border-style: solid; border-width: 2px; border-color: black; width: 320px; border-collapse: collapse; margin: auto;">
+		<caption style="font-size: 14px; text-align: center; margin: auto;"><strong>Nombre d'absences par créneau horaire</strong></caption>
 		<tr style="background-color: #F0FFCF;">
 			<td class="td_semaine_jour"></td>
-			<?php if ( isset($semaine['lundi']['ouverture']) ) { ?><td class="td_semaine_jour">Lundi</td><?php } ?>
-			<?php if ( isset($semaine['mardi']['ouverture']) ) { ?><td class="td_semaine_jour">Mardi</td><?php } ?>
-			<?php if ( isset($semaine['mercredi']['ouverture']) ) { ?><td class="td_semaine_jour">Mercredi</td><?php } ?>
-			<?php if ( isset($semaine['jeudi']['ouverture']) ) { ?><td class="td_semaine_jour">Jeudi</td><?php } ?>
-			<?php if ( isset($semaine['vendredi']['ouverture']) ) { ?><td class="td_semaine_jour">Vendredi</td><?php } ?>
-			<?php if ( isset($semaine['samedi']['ouverture']) ) { ?><td class="td_semaine_jour">Samedi</td><?php } ?>
+			<?php if ( isset($semaine['lundi']['ouverture']) ) { ?><td class="td_semaine_jour">Lun.</td><?php } ?>
+			<?php if ( isset($semaine['mardi']['ouverture']) ) { ?><td class="td_semaine_jour">Mar.</td><?php } ?>
+			<?php if ( isset($semaine['mercredi']['ouverture']) ) { ?><td class="td_semaine_jour">Mer.</td><?php } ?>
+			<?php if ( isset($semaine['jeudi']['ouverture']) ) { ?><td class="td_semaine_jour">Jeu.</td><?php } ?>
+			<?php if ( isset($semaine['vendredi']['ouverture']) ) { ?><td class="td_semaine_jour">Ven.</td><?php } ?>
+			<?php if ( isset($semaine['samedi']['ouverture']) ) { ?><td class="td_semaine_jour">Sam.</td><?php } ?>
 		</tr>
 	<?php
 	$i = '0';
@@ -1401,12 +1485,72 @@ echo '<h2>Statistique sur une année</h2>'; echo @tableau_annuel($select_fiche_el
 	$i = $i +1;
 	} ?>
 	</table>
-
-<?php } ?>
-
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
+		<div style="text-align: center; margin: auto;"><strong><a href="#ident">remonter</a></strong></div>
+		<br /><br />
+	</div>
 </div>
+<?php /* fin du DIV des statistique de l'élève */ ?>
 <?php } ?>
+
+<?php /* fin du coté droit */ ?>
+</div>
+
+<?php /* fin du DIV global */ ?>
+</div>
+
+<?php if ( $aff_fiche === 'tableauannuel' ) { ?>
+<div style="margin: auto; position: relative;">
+	<div style="float: left; width: 781px">
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">L'élève sur l'année</div>
+		<div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
+			<div style="background: transparent url(../images/grid_10.png)"><br />
+		<?php
+		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' ORDER BY d_date_absence_eleve DESC";
+                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
+                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
+                   {
+			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
+			$date_fin = date_fr($data_absences_nr['a_date_absence_eleve']);
+			  $passage='oui';
+			while($passage==='oui') {
+		          $dateexplode = explode('/', $date_debut);
+			    $date_debut_tableau_jour = eregi_replace('^0','',$dateexplode[0]);
+			    $date_debut_tableau_mois = eregi_replace('^0','',$dateexplode[1]);
+			    $date_debut_tableau= $date_debut_tableau_jour.'/'.$date_debut_tableau_mois.'/'.$dateexplode[2];
+			    if(empty($tableau_info_donnee[$date_debut_tableau])) { $tableau_info_donnee[$date_debut_tableau]=''; }
+			    $tableau_info_donnee[$date_debut_tableau]['absence'] = 'oui';
+			    if($date_debut===$date_fin) { $passage='non'; } else { $passage='oui'; }
+			    $date_debut = date("d/m/Y", mktime(0, 0, 0, $dateexplode[1], $dateexplode[0]+1,  $dateexplode[2]));
+			}
+                   }
+		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' ORDER BY d_date_absence_eleve DESC";
+                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
+                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
+                   {
+			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
+			    $date_debut = eregi_replace('^0','',$date_debut);
+			$date_fin = date_fr($data_absences_nr['a_date_absence_eleve']);
+			    $date_fin = eregi_replace('^0','',$date_fin);
+			if(empty($tableau_info_donnee[$date_debut])) { $tableau_info_donnee[$date_debut]=''; }
+			$tableau_info_donnee[$date_debut]['retard'] = 'oui';
+			if(empty($tableau_info_donnee[$date_fin])) { $tableau_info_donnee[$date_fin]=''; }
+			$tableau_info_donnee[$date_fin]['retard'] = 'oui';
+                   }
+	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Statistique sur une année</strong></div>
+	<?php
+		echo @tableau_annuel($select_fiche_eleve, '8', '12', '2006', $tableau_info_donnee);
+	?>
+			</div>
+		</div>
+	</div>
+</div>
+  <br />
+<?php } ?>
+
+<?php } ?>
+
+
+
 
 <?php if ($choix === 'lemessager' and $fiche_eleve === '' and $select_fiche_eleve === '') { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -1430,7 +1574,7 @@ echo '<h2>Statistique sur une année</h2>'; echo @tableau_annuel($select_fiche_el
                 { 
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
-				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[urgent]'; }
+				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
                     <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe']; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
@@ -1444,7 +1588,7 @@ echo '<h2>Statistique sur une année</h2>'; echo @tableau_annuel($select_fiche_el
                 { 
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
-				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[urgent]'; }
+				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
                     <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe']; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />pour: <strong><?php echo qui_eleve($data_komenti['eleve_suivi_eleve_cpe']); ?></strong> de <?php echo classe_de($data_komenti['eleve_suivi_eleve_cpe']) ?><br />[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_komenti['eleve_suivi_eleve_cpe']; ?>">lire</a> ]</span></p>
@@ -1558,5 +1702,8 @@ echo '<pre>';
 print_r($tab1);
 print_r($tab2);
 echo '</pre>';*/
+
+require("../../lib/footer.inc.php");
 ?>
 <?php mysql_close(); ?>
+

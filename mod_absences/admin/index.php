@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -55,9 +58,10 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été
 $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc");
 ?>
-
-<p class=bold><a href="../../accueil_modules.php"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-
+<p class=bold>
+|<a href="../../accueil.php">Accueil</a>|
+<a href="../../accueil_modules.php">Retour administration des modules</a>|
+</p>
 <H2>Gestion des absences par les CPE</H2>
 <i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</i>
 <br />

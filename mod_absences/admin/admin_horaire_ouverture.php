@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -131,7 +134,7 @@ if ( $action === 'visualiser' )
 }
 
 
-?>
+?><br />
 <p class=bold>|
 <a href="../../accueil.php">Accueil</a>|<a href="../../accueil_modules.php">Retour administration des modules</a>|<a href='index.php'>Retour module absence</a>|</p>
 
@@ -142,51 +145,51 @@ if ( $action === 'visualiser' )
 
 
 <?php /* gestion des horaire d'ouverture */ ?>
+  <br />
   <form method="post" action="admin_horaire_ouverture.php?action=<?php echo $action; ?>" name="form1">
-	<table style="padding: auto; margin: auto; text-align: center; border-style:solid; border-width:0px; border-color: #6F6968;" cellpadding="0" cellspacing="1">
+	<table cellpadding="0" cellspacing="1" class="tab_table">
 	  <tbody>
 	      <tr>
-	        <td></td>
-	        <td colspan="7" class="fond_bleu_2"><div class="norme_absence_gris_bleu"><strong>D&eacute;finition des horaire d'ouverture de l'établissement</strong></div></td>
+	        <td colspan="8" class="tab_titre">D&eacute;finition des horaire d'ouverture de l'établissement</td>
 	      </tr>
 	    <tr>
-	      <th nowrap="nowrap" style="width: 60px;"></th>
+	      <th style="width: 60px;"></th>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
-		      <th class="tableau_moyen_centre_th" style="width: 60px;"><?php echo $tab_sem[$i]; $i = $i + 1; ?></th>
+		      <th class="tab_th" style="width: 70px;"><?php echo $tab_sem[$i]; $i = $i + 1; ?></th>
 		<?php } ?>
 
 	    </tr>
-	    <tr class="fond_bleu_3">
-	      <td nowrap="nowrap">Ouvert</td>
+	    <tr class="couleur_ligne_1">
+	      <td class="tab_td_donnee_cote">Ouvert</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><input name="ouvert[<?php echo $i; ?>]" value="1" type="checkbox" <?php if ( isset($ouvert[$i]) and $ouvert[$i] === '1' ) { ?>checked="checked"<?php } ?> /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
-	    <tr class="fond_bleu_4">
-	      <td nowrap="nowrap">Ouverture &agrave;</td>
+	    <tr class="couleur_ligne_2">
+	      <td class="tab_td_donnee_cote">Ouverture &agrave;</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
-		      <td><input name="ouverture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($ouverture[$i]) and !empty($ouverture[$i]) ) { echo $ouverture[$i]; } ?>" /><?php $i = $i + 1; ?></td>
+		      <td><input name="ouverture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($ouverture[$i]) and !empty($ouverture[$i]) ) { echo $ouverture[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
-	    <tr class="fond_bleu_3">
-	      <td nowrap="nowrap">Fermeture à</td>
+	    <tr class="couleur_ligne_1">
+	      <td class="tab_td_donnee_cote">Fermeture à</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
-		      <td><input name="fermeture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($fermeture[$i]) and !empty($fermeture[$i]) ) { echo $fermeture[$i]; } ?>" /><?php $i = $i + 1; ?></td>
+		      <td><input name="fermeture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($fermeture[$i]) and !empty($fermeture[$i]) ) { echo $fermeture[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
-	    <tr class="fond_bleu_4">
-	      <td nowrap="nowrap">Temps de pause</td>
+	    <tr class="couleur_ligne_2">
+	      <td class="tab_td_donnee_cote">Temps de pause</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
-		      <td><input name="pause[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($pause[$i]) and !empty($pause[$i]) ) { echo $pause[$i]; } ?>" /><?php $i = $i + 1; ?></td>
+		      <td><input name="pause[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($pause[$i]) and !empty($pause[$i]) ) { echo $pause[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
-	    <tr class="fond_bleu_3">
-	      <td nowrap="nowrap">Temps Jour</td>
+	    <tr class="couleur_ligne_1">
+	      <td class="tab_td_donnee_cote">Temps Jour</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><?php if ( isset($temps_total_ouverture[$i]) and !empty($temps_total_ouverture[$i]) ) { echo $temps_total_ouverture[$i]; } $i = $i + 1; ?></td>

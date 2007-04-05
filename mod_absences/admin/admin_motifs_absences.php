@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -47,17 +50,17 @@ function securite_texte($str)
      return $str;
  }
 
-if (empty($_GET['action_sql']) AND empty($_POST['action_sql'])) {$action_sql="";}
+if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
     else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
-if (empty($_GET['action']) AND empty($_POST['action'])) {exit();}
+if (empty($_GET['action']) and empty($_POST['action'])) {exit();}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
-if (empty($_GET['id_motif']) AND empty($_POST['id_motif'])) { $id_motif="";}
+if (empty($_GET['id_motif']) and empty($_POST['id_motif'])) { $id_motif="";}
     else { if (isset($_GET['id_motif'])) {$id_motif=$_GET['id_motif'];} if (isset($_POST['id_motif'])) {$id_motif=$_POST['id_motif'];} }
-if (empty($_GET['nb_ajout']) AND empty($_POST['nb_ajout'])) { $nb_ajout="1";}
+if (empty($_GET['nb_ajout']) and empty($_POST['nb_ajout'])) { $nb_ajout="1";}
     else { if (isset($_GET['nb_ajout'])) {$nb_ajout=$_GET['nb_ajout'];} if (isset($_POST['nb_ajout'])) {$nb_ajout=$_POST['nb_ajout'];} }
-if (empty($_GET['init_motif_absence']) AND empty($_POST['init_motif_absence'])) { $init_motif_absence=""; }
+if (empty($_GET['init_motif_absence']) and empty($_POST['init_motif_absence'])) { $init_motif_absence=""; }
     else { if (isset($_GET['init_motif_absence'])) {$init_motif_absence=$_GET['init_motif_absence'];} if (isset($_POST['init_motif_absence'])) {$init_motif_absence=$_POST['init_motif_absence'];} }
-if (empty($_GET['def_motif_absence']) AND empty($_POST['def_motif_absence'])) { $def_motif_absence="";}
+if (empty($_GET['def_motif_absence']) and empty($_POST['def_motif_absence'])) { $def_motif_absence="";}
     else { if (isset($_GET['def_motif_absence'])) {$def_motif_absence=$_GET['def_motif_absence'];} if (isset($_POST['def_motif_absence'])) {$def_motif_absence=$_POST['def_motif_absence'];} }
 
 $total = 0;
@@ -65,7 +68,7 @@ $verification[0] = 1;
 $erreur = 0;
 $remarque = 0;
 
-if ($action_sql == "ajouter" OR $action_sql == "modifier")
+if ($action_sql == "ajouter" or $action_sql == "modifier")
 {
    while ($total < $nb_ajout)
       {
@@ -177,35 +180,33 @@ require_once("../../lib/header.inc");
 <?php if ($action == "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-    <table border="0" cellpadding="0" cellspacing="1" class="tableau_moyen_centre">
+    <br />
+    <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr class="fond_bleu_2">
-        <td colspan="5"><div class="norme_absence_gris_bleu"><strong>D&eacute;finition des motifs d'absence</strong></div></td>
+        <td colspan="5" class="tab_titre">D&eacute;finition des motifs d'absence</td>
       </tr>
       <tr>
-        <td class="tableau_moyen_centre_th">Initial</td>
-        <td class="tableau_moyen_centre_th">Définition</td>
-        <td class="tableau_moyen_centre_th_25"></td>
-        <td class="tableau_moyen_centre_th_25"></td>
+        <td class="tab_th">Initial</td>
+        <td class="tab_th">Définition</td>
+        <td class="tab_th" style="width: 25px;"></td>
+        <td class="tab_th" style="width: 25px;"></td>
       </tr>
     <?php
     $requete_motif = 'SELECT * FROM absences_motifs WHERE init_motif_absence !="DI" AND init_motif_absence !="IN" ORDER BY init_motif_absence ASC';
     $execution_motif = mysql_query($requete_motif) or die('Erreur SQL !'.$requete_motif.'<br>'.mysql_error());
-    $i=2;
+    $i = '1';
     while ( $data_motif = mysql_fetch_array( $execution_motif ) ) {
-       if ($i==1) {
-                    $i=2;
-                    $couleur_cellule="fond_bleu_3";
-                  } else {
-                           $couleur_cellule="fond_bleu_4";
-                           $i=1;
-                         } ?>
+       if ($i === '1') { $couleur_cellule = 'couleur_ligne_1'; $i = '2'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
         <tr class="<?php echo $couleur_cellule; ?>">
-          <td class="centre"><?php echo $data_motif['init_motif_absence']; ?></td>
-          <td class="centre"><?php echo $data_motif['def_motif_absence']; ?></td>
-          <td class="centre"><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
-          <td class="centre"><a href="admin_motifs_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><?php echo $data_motif['init_motif_absence']; ?></td>
+          <td><?php echo $data_motif['def_motif_absence']; ?></td>
+          <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
+          <td><?php if ( $data_motif['init_motif_absence'] != 'A' ) { ?><a href="admin_motifs_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_motif_absence']; ?>" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a><?php } ?></td>
         </tr>
      <?php } ?>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
     </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
@@ -217,12 +218,12 @@ require_once("../../lib/header.inc");
 <div style="text-align:center">
     <form method="post" action="admin_motifs_absences.php?action=ajouter" name="form1" id="form1">
      <fieldset class="fieldset_efface">
-      <table border="0" cellpadding="2" cellspacing="2" class="tableau_moyen_centre">
-        <tr class="fond_bleu_2">
-          <td class="norme_absence_gris_bleu"><b>Nombre de motifs à ajouter</b></td>
+      <table cellpadding="2" cellspacing="2" class="tab_table">
+        <tr>
+          <th class="tab_th">Nombre de motifs à ajouter</th>
         </tr>
-        <tr class="adroite">
-          <td><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Cr&eacute;er" /></td>
+        <tr style="text-align: right;">
+          <td class="couleur_ligne_1"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Cr&eacute;er" /></td>
         </tr>
       </table>
      </fieldset>
@@ -230,46 +231,46 @@ require_once("../../lib/header.inc");
   <?php } ?>
     <form action="admin_motifs_absences.php?action=visualiser&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
      <fieldset class="fieldset_efface">
-      <table border="0" cellpadding="2" cellspacing="2" class="tableau_moyen_centre">
-        <tr class="fond_bleu_2">
-          <td colspan="3" class="norme_absence_gris_bleu"><b><?php if($action=="ajouter") { ?>Ajout d'un ou plusieurs motif(s)<?php } if($action=="modifier") { ?>Modifier un motif<?php } ?></b></td>
+      <table cellpadding="2" cellspacing="2" class="tab_table">
+        <tr>
+          <td colspan="3" class="tab_titre"><b><?php if($action=="ajouter") { ?>Ajout d'un ou plusieurs motif(s)<?php } if($action=="modifier") { ?>Modifier un motif<?php } ?></b></td>
         </tr>
-        <tr class="fond_bleu_2">
-          <td class="norme_absence_gris_bleu_centre">Initital</td>
-          <td colspan="2" class="norme_absence_gris_bleu">Définition</td>
+        <tr>
+          <td class="tab_th">Initital</td>
+          <td colspan="2" class="tab_th">Définition</td>
         </tr>
         <?php
-        $i = '2';
+        $i = '1';
         $nb = '0';
         while($nb < $nb_ajout) {
-        if ($i === '1') { $i='2'; $couleur_cellule="fond_bleu_3"; } else { $couleur_cellule="fond_bleu_4"; $i='1'; } ?>
+	       if ($i === '1') { $couleur_cellule = 'couleur_ligne_1'; $i = '2'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
         <?php if (isset($verification_erreur[$nb]) and $verification_erreur[$nb] != 1) { ?>
          <tr>
         <td class="centre"><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="2" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] === '2') { ?>Cette initiale pour le motif existe déjà<?php } ?>
-          <?php if ($verification_erreur[$nb] === '3') { ?>Tous les champs ne sont pas remplis<?php } ?>
+          <?php if ($verification_erreur[$nb] === 2) { ?>Cette initiale pour le motif existe déjà<?php } ?>
+          <?php if ($verification_erreur[$nb] === 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
           </b><br /></td>
          </tr>
         <?php } ?>
         <tr class="<?php echo $couleur_cellule; ?>">
-          <td class="centre">
+          <td>
            <?php
            if($action==='modifier') {
                $test = mysql_result(mysql_query("SELECT count(*) FROM absences_eleves WHERE absences_eleves.motif_absence_eleve = '".$data_modif_motif['init_motif_absence']."'"),0);
                if ($test != '0') {
                    ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="hidden" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" /><?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?><?php
                } else {
-                   ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="text" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" /><?php
+                   ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="text" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" class="input_sans_bord" /><?php
                }
            } else {
-               ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="text" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" /><?php
+               ?><input name="init_motif_absence[<?php echo $nb; ?>]" type="text" id="init_motif_absence" size="2" maxlength="2" value="<?php if($action=="modifier") { echo $data_modif_motif['init_motif_absence']; } elseif (isset($init_motif_absence_erreur[$nb])) { echo $init_motif_absence_erreur[$nb]; } ?>" class="input_sans_bord" /><?php
            }
 
             ?>
            </td>
-           <td colspan="2" class="centre">
-              <input name="def_motif_absence[<?php echo $nb; ?>]" type="text" id="def_motif_absence" size="40" maxlength="200" value="<?php if($action=="modifier") { echo $data_modif_motif['def_motif_absence']; } elseif (isset($def_motif_absence_erreur[$nb])) { echo $def_motif_absence_erreur[$nb]; } else { ?><?php } ?>" />
+           <td colspan="2">
+              <input name="def_motif_absence[<?php echo $nb; ?>]" type="text" id="def_motif_absence" size="40" maxlength="200" value="<?php if($action=="modifier") { echo $data_modif_motif['def_motif_absence']; } elseif (isset($def_motif_absence_erreur[$nb])) { echo $def_motif_absence_erreur[$nb]; } else { ?><?php } ?>" class="input_sans_bord" />
            </td>
         </tr>
             <?php if($action==='modifier') { ?>
@@ -277,7 +278,7 @@ require_once("../../lib/header.inc");
             <?php } ?>
         <?php $nb = $nb + 1; } ?>
         <tr>
-          <td colspan="3" class="adroite">
+          <td colspan="3">
               <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
               <input type="submit" name="Submit" value="<?php if($action=="ajouter") { ?>Créer motif(s)<?php } if($action=="modifier") { ?>Modifier le motif<?php } ?>" />
           </td>

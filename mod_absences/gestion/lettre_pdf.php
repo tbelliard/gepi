@@ -1,5 +1,10 @@
 <?php
 /*
+ *
+ * $Id$
+ *
+ * Last modification  : 19/03/2007
+ *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -81,6 +86,14 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
+//permet de transformer les caractère html
+ function unhtmlentities($chaineHtml) {
+         $tmp = get_html_translation_table(HTML_ENTITIES);
+         $tmp = array_flip ($tmp);
+         $chaineTmp = strtr ($chaineHtml, $tmp);
+
+         return $chaineTmp;
+ }
 
   $date_ce_jour = date('d/m/Y');
     if (empty($_GET['lettre_type']) and empty($_POST['lettre_type'])) { $lettre_type = ''; }
@@ -123,39 +136,54 @@ if ( $lettre_action === 'originaux' ) {
 
 	while(!empty($id_lettre_suivi[$i]))
 	 {
-		if ( $i === '0' ) { $requete_command = '(id_lettre_suivi = '.$id_lettre_suivi[$i]; }
+		if ( $i === '0' ) { $requete_command = 'id_lettre_suivi = '.$id_lettre_suivi[$i]; }
 		if ( $i != '0' ) { $requete_command = $requete_command.' OR id_lettre_suivi = '.$id_lettre_suivi[$i]; }
 		$i = $i + 1;
 	 }
 
 	$i = '0';
-        $requete_persone ="SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."eleves e, ".$prefix_base."responsables r WHERE ".$requete_command.") AND login = quirecois_lettre_suivi AND e.ereno = r.ereno";
+        $requete_persone ="SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."eleves e WHERE ( (".$requete_command.") AND login = quirecois_lettre_suivi )";
         $execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
         while ( $donne_persone = mysql_fetch_array($execution_persone))
 	 {
 		$id_lettre_suivi = $donne_persone['id_lettre_suivi'];
 		// information sur l'élève
 		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
+		$ele_id_eleve[$i] = $donne_persone['ele_id'];
 		$classe_eleve[$i] = classe_de($id_eleve[$i]);
 		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
 		$nom_eleve[$i] = $donne_persone['nom']; // nom de l'élève
 		$prenom_eleve[$i] = $donne_persone['prenom']; // prénom de l'élève
 		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
 		// information sur les parents
-		$civilitee_responsable['1'][$i] = 'M.'; // nom du premier responsable		
-		$nom_responsable['1'][$i] = $donne_persone['nom1']; // nom du premier responsable
-		$prenom_responsable['1'][$i] = $donne_persone['prenom1']; // prénom du premier responsable
-		$adresse_responsable['1'][$i] = $donne_persone['adr1']; // adresse du premier responsable
-		$adressecomp_responsable['1'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du premier responsable
-		$cp_responsable['1'][$i] = $donne_persone['cp1']; // code postal du premier responsable
-		$commune_responsable['1'][$i] = $donne_persone['commune1']; // commune du premier responsable
-		$civilitee_responsable['2'][$i] = 'Mme'; // nom du premier responsable		
-		$nom_responsable['2'][$i] = $donne_persone['nom1']; // nom du deuxième responsable
-		$prenom_responsable['2'][$i] = $donne_persone['prenom1']; // prénom du deuxième responsable
-		$adresse_responsable['2'][$i] = $donne_persone['adr1']; // adresse du deuxième responsable
-		$adressecomp_responsable['$nom_responsable2'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du deuxième responsable
-		$cp_responsable['2'][$i] = $donne_persone[$i]['cp1']; // code postal du deuxième responsable
-		$commune_responsable['2'][$i] = $donne_persone['commune1']; // commune du deuxième responsable
+		$nombre_de_responsable = 0;
+		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+
+		if($nombre_de_responsable != 0)
+		{
+			$cpt_parents = 0;
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+			while ($donner_parents = mysql_fetch_array($requete_parents))
+			{
+				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
+			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom']; // nom du responsable
+				$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom']; // prénom du responsable
+				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
+				$adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2']; // adresse du responsable suite
+				$commune_responsable[$cpt_parents][$i] = $donner_parents['commune']; // ville du responsable
+				$cp_responsable[$cpt_parents][$i] = $donner_parents['cp']; // code postal du responsable
+				$cpt_parents = $cpt_parents + 1;
+			}
+		} else {
+				$civilitee_responsable[0][$i] = ''; // civilité du responsable
+			        $nom_responsable[0][$i] = ''; // nom du responsable
+				$prenom_responsable[0][$i] = ''; // prénom du responsable
+				$adresse_responsable[0][$i] = ''; // adresse du responsable
+				$adressecomp_responsable[0][$i] = ''; // adresse du responsable suite
+				$commune_responsable[0][$i] = ''; // ville du responsable
+				$cp_responsable[0][$i] = ''; // code postal du responsable
+			}
+
 
 		// information sur la personne qui expédie la lettre
 		$signature_status[$i] = $donne_persone['quienvoi_lettre_suivi'];
@@ -367,18 +395,18 @@ while($cpt_i_cadre<$i_cadre)
 
 
 
-	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>");
+	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>");
 		$civilitee_long_responsable = 'Madame, Monsieur';
-	if($adresse_responsable['1'][$i] != $adresse_responsable['2'][$i]) {
-		if($civilitee_responsable['1'][$i] === 'M.') { $civilitee_long_responsable = 'Monsieur'; }
-		if($civilitee_responsable['1'][$i] === 'Mme') { $civilitee_long_responsable = 'Madame'; }
+	if( !isset($adresse_responsable[1][$i]) or $adresse_responsable[0][$i] != $adresse_responsable[1][$i]) {
+		if($civilitee_responsable[0][$i] === 'M.') { $civilitee_long_responsable = 'Monsieur'; }
+		if($civilitee_responsable[0][$i] === 'Mme') { $civilitee_long_responsable = 'Madame'; }
 	}
 
 		if($cpe_de_l_eleve[$i]['civilite'] === 'M.') { $civilite_long_cpe = 'Monsieur'; }
 		if($cpe_de_l_eleve[$i]['civilite'] === 'Mme') { $civilite_long_cpe = 'Madame'; }
 
 
-	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilitee_responsable['1'][$i], $civilitee_long_responsable, $nom_responsable['1'][$i], $prenom_responsable['1'][$i], $adresse_responsable['1'][$i], $cp_responsable['1'][$i], $commune_responsable['1'][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom']);
+	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilitee_responsable[0][$i], $civilitee_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i], $cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom']);
 	$text = str_replace($variable, $remplacer_par, $text);
 
 	$pdf->MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], $text, $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');

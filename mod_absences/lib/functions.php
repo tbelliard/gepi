@@ -1,4 +1,5 @@
 <?php
+// $Id$
 //fonction permettant de connaître la classe d'un élève par son login
 function classe_de($id_classe_eleve) {
     global $prefix_base;
@@ -17,6 +18,23 @@ function motif_de($nc_motif) {
     $data_motif = mysql_fetch_array($execution_motif);
     $nc_motif = $data_motif['def_motif_absence'];
     return($nc_motif);
+}
+
+// fonction pour présenter les numéro de téléphone
+function present_tel($tel)
+{
+	$compt_nb_chiffre = strlen ($tel);
+	if ( $compt_nb_chiffre > 10 ) { $tel = $tel; }
+	elseif ( $compt_nb_chiffre === 10 ) { 
+			//$tel1 = substr($tel, 0, 1);
+			//$tel2 = substr($tel, 2, 3);
+			//$tel3 = substr($tel, 4, 5);
+			//$tel4 = substr($tel, 6, 7);
+			//$tel5 = substr($tel, 8, 9);
+			$tel =  $tel[0].$tel[1].' '.$tel[2].$tel[3].' '.$tel[4].$tel[5].' '.$tel[6].$tel[7].' '.$tel[8].$tel[9];
+			$tel = $tel;
+		}
+	return($tel);
 }
 
 //fonction permettant de connaître l'action par rapport à un id d'action
@@ -935,7 +953,13 @@ function matiere_du_groupe($groupe_parametre)
 // fonction permetant de connaitre le jour de la semain SQL en numérique
 function jour_sem_sql($date)
  {
-	date_default_timezone_get();
+	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
 	$tab_date = explode('-', $date);
 	$jour_de_la_semaine = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
 	return($jour_de_la_semaine);
@@ -944,7 +968,14 @@ function jour_sem_sql($date)
 // fonction permetant de connaitre le jour de la semain SQL en format text
 function jour_sem_compfr($date)
  {
-	date_default_timezone_get();
+	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
+
 	$tab_date = explode('-', $date);
 	$tab_jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	$jour = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
@@ -957,7 +988,14 @@ function jour_sem_compfr($date)
 // à partir d'un tableau qui contient les données suivant login|date_debut|date_fin|heure_debut|heure_fin
 function crer_tableau_jaj($tableau)
  {
-	date_default_timezone_get();
+	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
+
 	$tableau_de_donnees = '';
 	$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
 	while(!empty($tableau[$i]['login']))
@@ -1142,7 +1180,14 @@ function repartire($login, $type, $du, $au)
 	global $prefix_base;
 
 	     $i = '0';
-	     date_default_timezone_get();
+	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
+
  	     $tableau_de_donnees = '';
              $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -1202,7 +1247,14 @@ function repartire_jour($login, $type, $du, $au)
 	global $prefix_base;
 
 	     $i = '0';
- 	     date_default_timezone_get();
+	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
+
   	     $tableau_de_donnees = '';
              $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -1221,12 +1273,18 @@ function repartire_jour($login, $type, $du, $au)
 					$jour = $tab_jour[$jour_num];
 					if ( isset($horraire[$jour]) ) {
 						$heure_de_debut = $horraire[$jour]['ouverture'];
+							$heure_de_debut_min = convert_heures_minutes($horraire[$jour]['ouverture']);
 						$heure_de_fin = $horraire[$jour]['fermeture'];
+							$heure_de_fin_min = convert_heures_minutes($horraire[$jour]['fermeture']);
 						$pause = $horraire[$jour]['pause'];
+							$pause_min = convert_heures_minutes($horraire[$jour]['pause']);
 					} else {
 							$heure_de_debut = '00:00:00';
+								$heure_de_debut_min = convert_heures_minutes($pause);
 							$heure_de_fin = '00:00:00';
+								$heure_de_fin_min = convert_heures_minutes($pause);
 							$pause = '00:00:00';
+								$pause_min = convert_heures_minutes($pause);
 						}
 			$tableau_de_donnees[$date]['date'] = $donnee['d_date_absence_eleve'];
 			$tableau_de_donnees[$date]['heure_debut'] = $donnee['d_heure_absence_eleve'];
@@ -1247,7 +1305,8 @@ function repartire_jour($login, $type, $du, $au)
 				// en heure
 				$minute_debut = convert_heures_minutes($tableau_de_donnees[$date]['heure_debut']);
 				$minute_fin = convert_heures_minutes($tableau_de_donnees[$date]['heure_fin']);
-				$temp_total_min = ($minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+					if ( $minute_debut <= $heure_de_debut_min and $minute_fin >= $heure_de_fin_min ) { $temp_total_min = ($minute_fin - $minute_debut ) - $pause_min; }
+					else { $temp_total_min = ($minute_fin - $minute_debut ); }
 				if ( $tableau_de_donnees[$date]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = '0'; }
 				if ( $tableau_de_donnees[$date]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $temp_total_min; } else { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = '0'; }
 			      }
@@ -1259,7 +1318,8 @@ function repartire_jour($login, $type, $du, $au)
 					// en heure
 					$minute_debut = convert_heures_minutes($tableau_de_donnees[$date]['heure_debut']);
 					$minute_fin = convert_heures_minutes($tableau_de_donnees[$date]['heure_fin']);
-					$temp_total_min = ($minute_fin - $minute_debut ) - convert_heures_minutes($pause);
+						if ( $minute_debut <= $heure_de_debut_min and $minute_fin >= $heure_de_fin_min ) { $temp_total_min = ( $minute_fin - $minute_debut ) - $pause_min; }
+						else { $temp_total_min = ( $minute_fin - $minute_debut ); }
 					if ( $tableau_de_donnees[$date]['justifie'] != 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_j'] + $temp_total_min; }
 					if ( $tableau_de_donnees[$date]['justifie'] === 'non' ) { $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] = $tableau_de_donnees[$annee.'-'.$mois]['nb_heure_nj'] + $temp_total_min; }
 				      }
@@ -1443,5 +1503,44 @@ function cpe_eleve($login_eleve)
     return array('login' => $login_cpe, 'civilite' => $civilite, 'nom' => $nom, 'prenom' => $prenom);
 }
 
+// fonction pour information du cpe d'un élève
+function tel_responsable($ele_id)
+{
+    global $prefix_base;
+
+	$nombre_de_responsable = 0; $tel_pers_responsable = '';
+	$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
+	if($nombre_de_responsable != 0)
+	{
+			$cpt_parents = 0;
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id ) ORDER BY resp_legal ASC");
+			while ($donner_parents = mysql_fetch_array($requete_parents))
+			{
+				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
+				$tel_responsable[$cpt_parents]['nom'] = $donner_parents['nom']; // nom du responsable suite
+				$tel_responsable[$cpt_parents]['prenom'] = $donner_parents['prenom']; // prénom du responsable suite				
+				$tel_responsable[$cpt_parents]['tel_pers'] = $donner_parents['tel_pers']; // adresse du responsable suite
+				$tel_responsable[$cpt_parents]['tel_port'] = $donner_parents['tel_port']; // ville du responsable
+				$tel_responsable[$cpt_parents]['tel_prof'] = $donner_parents['tel_prof']; // code postal du responsable
+				$tel_responsable[$cpt_parents]['resp_legal'] = $donner_parents['resp_legal']; // code représente légam
+				$cpt_parents = $cpt_parents + 1;
+			}
+	}
+
+    return ($tel_responsable);
+}
+
+// fonction permettant de combler les trous d'un auto_increment en prévision
+function get_id($champ, $table)
+{
+    $results = @mysql_query('SELECT ' . $champ . 'FROM ' . $table );
+    while($id = @mysql_fetch_row($results))
+        $ids[] = $id[0];
+    for($i = 1, reset($ids); $id = pos($ids) ; next($ids), $i++)
+    {
+        if($i != $id) { return $i; }
+    }
+    return count($ids) + 1;
+} 
 
 ?>

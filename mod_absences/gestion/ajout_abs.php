@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -411,6 +414,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 				if( $cpt_lettre_suivi == 0 ) {
 					//si aucune lettre n'a encore été demandé alors on en créer une
 					$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '6', 'en attente')";
+				        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				} else {
 						//si une lettre a déjas été demandé alors on la modifi
 						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
@@ -422,8 +426,8 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 							if ( in_array($num_id, $tableau_deja_existe) ) { $id_ajout = $id_deja_present; }
 							 else { $id_ajout = $id_deja_present.$num_id.','; }					  
 						  $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+					          mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				       }
-			        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			}
 			// si on modifie un absence et que la lettre n'a pas encore était envoyé alors on l'enlève des lettres de suivi
 			if ( ($justify_absence_eleve === 'O' or $justify_absence_eleve === 'T') and $motif_absence_eleve_ins != 'RE') {
@@ -454,11 +458,12 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 							 if ( !empty($tableau_deja_existe[2]) ) {
 								// s'il reste d'autre id alors on modifie sinon on supprime
 							 	 $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+							         mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 							 } else {
 							              $requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+								      mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 								}
 				       }
-			        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			}
 			if ( $motif_absence_eleve_ins === 'RE') {
 				//envoie d'une lettre de renvoi
@@ -468,6 +473,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 				if( $cpt_lettre_suivi == 0 ) {
 					//si aucune lettre n'a encore été demandé alors on en créer une
 					$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absence_eleve."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '4', 'en attente')";
+				        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				} else {
 						//si une lettre a déjas été demandé alors on la modifi
 						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
@@ -477,8 +483,8 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 						{ $id_lettre_suivi = $donne_info['id_lettre_suivi']; $id_deja_present = $donne_info['partdenum_lettre_suivi']; }
 						  $id_ajout = $id_deja_present.$num_id.',';
 						  $requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '4' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
+					          mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 				       }
-			        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			}
 
 

@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -179,10 +182,10 @@ class bilan_PDF extends FPDF
 	$this->Line(10, 280, 200, 280);
 	$this->SetFont('Arial','',10);
 	$this->SetY(280);
-	$adresse = $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	$adresse = $nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
 	if($adresse2_etab!="")
 	{
-	  $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	  $nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
 	{
@@ -226,7 +229,7 @@ class bilan_PDF extends FPDF
         }
       if ($classe == "tous" and $eleve == "tous")
         {
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
       if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
         {
@@ -236,6 +239,7 @@ class bilan_PDF extends FPDF
         //je compte le nombre de page
         $nb_par_page = 35;
         $nb_page = $cpt_requete_1 / $nb_par_page;
+ 
         if(number_format($cpt_requete_1, 0, ',' ,'') == number_format($nb_page, 0, ',' ,'')) { $nb_page = number_format($nb_page, 0, ',' ,''); } else { $nb_page = number_format($nb_page, 0, ',' ,'') + 1; }
 
 // mode paysage, a4, etc.
@@ -317,7 +321,7 @@ while ( $data_1 = mysql_fetch_array($execution_1))
 
             $pdf->Cell(40, 5, $fin, 1, 1, '', '');
       }
-    $pdf->Cell(0, 5, '(A): absence     (R): retard     (I): infirmerie     (D): dispence', 0, 1, '', '');
+    $pdf->Cell(0, 5, '(A): absence     (R): retard     (I): infirmerie     (D): dispense', 0, 1, '', '');
 
 if($nb_page>1)
 {

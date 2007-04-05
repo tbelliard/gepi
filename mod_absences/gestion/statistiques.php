@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -89,10 +92,24 @@ require_once("../../lib/header.inc");
 	   else { if (isset($_GET['type'])) { $type = $_GET['type']; } if (isset($_POST['type'])) { $type = $_POST['type']; } }
 	if (empty($_GET['justification']) and empty($_POST['justification'])) { $justification = 'T'; }
 	   else { if (isset($_GET['justification'])) { $justification = $_GET['justification']; } if (isset($_POST['justification'])) { $justification = $_POST['justification']; } }
-	if (empty($_GET['du']) and empty($_POST['du'])) { $du = $date_ce_jour; }
-	   else { if (isset($_GET['du'])) { $du = $_GET['du']; } if (isset($_POST['du'])) { $du = $_POST['du']; } }
-	if (empty($_GET['au']) and empty($_POST['au'])) { $au = ''; }
-	   else { if (isset($_GET['au'])) { $au = $_GET['au']; } if (isset($_POST['au'])) { $au = $_POST['au']; } }
+
+	// gestion des dates
+	if (empty($_GET['du']) and empty($_POST['du'])) {$du = '';}
+	 else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
+	if (empty($_GET['au']) and empty($_POST['au'])) {$au="JJ/MM/AAAA";}
+	 else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
+
+		if (empty($_GET['day']) and empty($_POST['day'])) {$day=date("d");}
+	    	 else { if (isset($_GET['day'])) {$day=$_GET['day'];} if (isset($_POST['day'])) {$day=$_POST['day'];} }
+		if (empty($_GET['month']) and empty($_POST['month'])) {$month=date("m");}
+		 else { if (isset($_GET['month'])) {$month=$_GET['month'];} if (isset($_POST['month'])) {$month=$_POST['month'];} }
+		if (empty($_GET['year']) and empty($_POST['year'])) {$year=date("Y");}
+		 else { if (isset($_GET['year'])) {$year=$_GET['year'];} if (isset($_POST['year'])) {$year=$_POST['year'];} }
+	      	if ( !empty($du) ) {
+		  $ou_est_on = explode('/',$du);
+		  $year = $ou_est_on[2]; $month = $ou_est_on[1]; $day =  $ou_est_on[0];
+	        } else { $du = $day."/".$month.'/'.$year; }
+
 	if (empty($_GET['echelle_x']) and empty($_POST['echelle_x'])) { $echelle_x = 'M'; }
 	   else { if (isset($_GET['echelle_x'])) { $echelle_x = $_GET['echelle_x']; } if (isset($_POST['echelle_x'])) { $echelle_x = $_POST['echelle_x']; } }
 	if (empty($_GET['echelle_y']) and empty($_POST['echelle_y'])) { $echelle_y = 'E'; }
@@ -417,16 +434,21 @@ if($echelle_y === 'E') {
 
 
 ?>
-<p class=bold>| <a href='../gestion/gestion_absences.php'>Retour</a> |</p>
+<p class=bold><a href='gestion_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
+</p>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
-<div style="text-align:center">
+<div style="text-align: center; margin: auto; width: 95%;">
 
-	<?php /* DIV contenant le formulaire de recherche */ ?>
-	<div style="float: left; margin: 0; width: 225px; /* border : 1px solid #0061BD; */">		<form name="form1" method="post" action="statistiques.php">
-	         <fieldset style="background-color: #D1EFE8; background-image: url(../images/2.png); ">
-	          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-
+<?php /* DIV contenant le formulaire de recherche */ ?>
+  <div style="border: 2px solid #D9EF1D; width: 210px; height: 360px; float: left; margin-top: 17px; text-align: center;">
+	<div class="entete_stats"><b>Système d'alert</b></div>
+	<div>
+		<form name="form1" method="post" action="statistiques.php">
 	               <select name="type[]" id="type" multiple="multiple" size="3" tabindex="1" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
       			    <optgroup label="Les types">
 		               <option value="A" <?php if(!empty($type) and in_array('A', $type)) { ?>selected="selected"<?php } ?>>Les absence</option>
@@ -496,15 +518,18 @@ if($echelle_y === 'E') {
 
 			<input name="type_graphique" id="gra1" value="ligne" tabindex="8" type="radio" <?php if(!empty($type_graphique) and $type_graphique === 'ligne') { ?>checked="checked"<?php } ?> /><label for="gra1" style="cursor: pointer;">Ligne</label>
 			<input name="type_graphique" id="gra2" value="camembert" tabindex="9" type="radio" <?php if(!empty($type_graphique) and $type_graphique === 'camembert') { ?>checked="checked"<?php } ?> /><label for="gra2" style="cursor: pointer;">Camembert</label><br />
-
+			<br />
 			<input type="submit" name="submit1" value="Valider" tabindex="10" /><br />
-
-		 </fieldset>
 		</form>
 	</div>
+  </div>
+
+  <div style="margin-left: 210px; width: 73%;">
+	<div class="entete_stats_message">Grpahique de statistiques</div>
+	<div style="background-color: #EFEFEF; border-left: 4px solid #D9EF1D;">
 
 	<?php /* DIV contenant le graphique et le tableau des données */ ?>
-	<div style="margin-left: 235px; width: 550px; border : 0px solid #0061BD; /* background-color: #0061BD; */">
+	<div style="width: 550px; border : 0px solid #0061BD; text-align: center; /* background-color: #0061BD; */">
 		<?php /* DIV contenant le graphique */ ?>
 		<div>
 
@@ -514,9 +539,10 @@ if($echelle_y === 'E') {
 			<?php /* <a href="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>fdfdfdf</a> */ ?>
 	<?php } else { ?>Aucune données correspondant à votre rechercher n'a été trouvée<?php } ?>
 		</div>
+
+	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
 		<?php /* DIV contenant le tableau des données */ ?>
 		<div>
-	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
 			<?php 
 				// donner d'entête du tableau
 				$entete_tableau = array_keys($_SESSION['donnee_e']);
@@ -554,7 +580,7 @@ if($echelle_y === 'E') {
 				// compte le total d'entrée du tableau
 				$cpt_total_entree = count($entete_tableau);
 				// nombre d'entrée à affiché par ligne
-				$cpt_total_par_ligne = '4'; 
+				$cpt_total_par_ligne = '3'; 
 				// compte le nombre de ligne qu'il faut affciher
 				$cpt_ligne = $cpt_total_entree / $cpt_total_par_ligne;
 				// on explose la valeur pour savoir s'il y a des chiffre après la virgule
@@ -565,27 +591,30 @@ if($echelle_y === 'E') {
 				$ia_passe = '0'; $ib_passe = '0';
 			while ($i_tableau < $cpt_tableau) { ?>
 			<table style="width: 550px;  border: 1px solid #000000;" border="0" cellpadding="0" cellspacing="1">
-			   <tr class="fond_vert">
+			   <tr class="entete_tableau_absence">
 				<?php	$ia = '0';
 					while ($ia < $cpt_total_par_ligne) { ?>
-						<?php if(!empty($entete_tableau[$ia_passe])) { ?><td class="norme_absence_blanc"><?php echo $entete_tableau[$ia_passe]; ?></td><?php } ?>
-						<?php if(empty($entete_tableau[$ia_passe])) { ?><td class="norme_absence_blanc">&nbsp;</td><?php } ?>
+						<?php if(!empty($entete_tableau[$ia_passe])) { ?><td style="width: 25%; color: #FFFFFF;"><?php echo $entete_tableau[$ia_passe]; ?></td><?php } ?>
+						<?php if(empty($entete_tableau[$ia_passe])) { ?><td style="width: 25%; color: #FFFFFF;">&nbsp;</td><?php } ?>
 				<?php $ia = $ia + 1; $ia_passe = $ia_passe + 1; } ?>
 			   </tr>
 			   <tr>
 				<?php   $ib = '0';
 					$ic = '1';
 					while ($ib < $cpt_total_par_ligne) {
-				              if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; } ?>
+				              if ($ic === '1') { $ic = '2'; $couleur_cellule = 'couleur_ligne_3'; } else { $couleur_cellule = 'couleur_ligne_4'; $ic = '1'; } ?>
 						<?php if(!empty($donnee_tableau[$ib_passe])) { ?><td class="<?php echo $couleur_cellule; ?>"><?php echo $donnee_tableau[$ib_passe]; ?></td><?php } ?>
 						<?php if(empty($donnee_tableau[$ib_passe])) { ?><td class="<?php echo $couleur_cellule; ?>">&nbsp;</td><?php } ?>
 				<?php $ib = $ib + 1; $ib_passe = $ib_passe + 1; } ?>
 			    </tr>
 			</table>
 			<?php $i_tableau = $i_tableau + 1; } ?>
-		<?php } ?>
 		</div>
+		<?php } ?>
+<br />
 	</div>
-
+</div></div>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
+
+<?php require("../../lib/footer.inc.php"); ?>

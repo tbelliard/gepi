@@ -1,5 +1,8 @@
 <?php
 /*
+ *
+ * $Id$
+ *
  * Last modification  : 19/06/2006
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
@@ -351,7 +354,7 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
   }
 
 if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") { ?>
- <div style="text-align: center;">
+ <div style="text-align: center; margin: auto; width: 550px;">
    <fieldset>
      <legend>Etape 1/2</legend>
        <form method="post" action="prof_ajout_abs.php" name="absence">
@@ -427,7 +430,7 @@ foreach($groups as $group) {
 <?php
 // Deuxième étape
 if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { ?>
-<div style="text-align: center;">
+<div style="text-align: center; margin: auto; width: 550px;">
   <fieldset>
     <legend>Etape 2/2</legend>
       <form method="post" action="prof_ajout_abs.php" name="liste_absence_eleve">
@@ -494,7 +497,7 @@ if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
            if($cpt_retards != '0') { $pass = '1'; }
            if ($pass === '0') {
            ?><input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onClick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" /> <input type="text" id="heure_retard_eleve<?php echo $cpt_eleve; ?>" name="heure_retard_eleve[<?php echo $cpt_eleve; ?>]" size="3" maxlength="8" value="<?php echo heure_court($heuredebut_definie_periode); ?>" />
-           <?php } else { ?>En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><? } ?>
+           <?php } else { ?>En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><?php } ?>
            <?php
            // Avec ou sans photo
            if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {

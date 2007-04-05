@@ -1,4 +1,4 @@
-body {
+/*body {
     margin: 5px;
     padding: 0;
     width: auto;
@@ -7,7 +7,7 @@ body {
     font: normal normal 10pt Tahoma;
     left: 0;
     top: 0;
-}
+}*/
 
 
 textarea {
@@ -571,3 +571,193 @@ legend {
     background-image: url(../images/tab_rouge.png);
     border: 0px solid #F8F8F8;
 }
+
+
+	/* couleur dans administration du module absences */
+	.couleur_ligne_1 {
+		background: #B7DDFF; //#EFEFEF
+	}
+
+	.couleur_ligne_2 {
+		background: #88C7FF; //DFDFDF
+	}
+	/* fin couleur dans administration du module absences */
+
+.input_sans_bord {
+	border: 0px;
+}
+
+.input_sans_bord:hover {
+	background: #FFFFDF; // #000000
+	color: #000000; //#FFFFFF
+}
+
+.input_sans_bord:focus {
+	background: #FEFF9F; // #000000
+	color: #000000; //#FFFFFF
+}
+
+.tab_table {
+    margin: auto;
+    border: 0px;
+    padding: auto;
+    background: #088CB9;
+    color: #E0EDF1;
+    text-align: center;
+}
+
+.tab_titre {
+	margin: auto;
+	border: 0px;
+	border-left: 10px solid #088CB9;
+	padding-left: 10px;
+	background: #FFFFFF;
+	color: #000000;
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.tab_th {
+	text-align: center;
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-weight: bold;
+	color: #FFFFFF;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+
+.tab_td_donnee_cote {
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.fieldset_efface {
+    border: none;
+    margin: 0px;
+}
+
+.erreur_rouge_jaune {
+    background: #FF3333;
+    color: #FFFF33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+	/* couleur dans le module absences */
+	.couleur_ligne_3 {
+		background: #E8F1F4; //#EFEFEF
+	}
+
+	.couleur_ligne_4 {
+		background: #C6DCE3; //DFDFDF
+	}
+	/* fin couleur dans le module absences */
+
+.entete_tableau_absence_degrade {
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(mod_absences/images/haut_tab.png);
+    border: 0px solid #F8F8F8;
+}
+
+.entete_tableau_absence { 
+    background: #71A49E;
+    text-align: center;
+}
+
+.entete_alert {
+    color: #E8F1F4;
+    text-align: center;
+    font-weight: bold;
+    background-image: url(../images/tab_rouge.png);
+    border: 0px solid #F8F8F8;
+    -moz-border-radius : 10px;
+}
+
+.entete_alert_message {
+	color: #E8F1F4;
+	background-color: #BF0000; /* #555555 */
+	text-align: left;
+	font-weight: bold;
+	border: 0px solid #F8F8F8;
+	-moz-border-radius : 10px 10px 0px 0px;
+	padding-left: 10px;
+}
+
+	/* couleur dans le module absences alert*/
+	.couleur_ligne_5 {
+		background: #FFDFDF; //#EFEFEF
+	}
+
+	.couleur_ligne_6 {
+		background: #FFBFBF; //DFDFDF
+	}
+	/* fin couleur dans le module absences alert */
+
+ .scroll {
+	position: relative ;
+	width: 98.5%;
+	height: 170px;
+	overflow: scroll;
+	padding: 0px ;
+}
+
+a.info img {
+	border: 0;
+	vertical-align: middle;
+}
+
+a.info {
+	text-decoration: none;
+	color: black;
+	border-bottom: 1px gray dotted;
+}
+
+a.info span {
+	display: none;
+}
+
+a.info:hover,a.info:focus,a.info:active {
+	background: none; /* correction d'un bug IE */
+}
+
+a.info:hover span,a.info:focus span,a.info:active span {
+	display: inline;
+	position: absolute;
+	z-index: 500;
+	margin: 1em 0 0 1em;
+	background: orange;
+	text-align: left;
+	color: white;
+	padding: 2px;
+	border: 1px solid #000000;
+}
+
+.entete_stats {
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    background-image: url(../images/tab_jaune.png);
+    border: 0px solid #D9EF1D;
+    -moz-border-radius : 10px;
+}
+
+.entete_stats_message {
+	color: #000000;
+	background-color: #D9EF1D; /* #555555 */
+	text-align: left;
+	font-weight: bold;
+	border: 0px solid #D9EF1D;
+	-moz-border-radius : 10px 10px 0px 0px;
+	padding-left: 10px;
+}
+

@@ -1,4 +1,6 @@
 <?php
+// $Id$
+//
 $eleve_1 = $_GET['eleve_1'];
 $classe_1 = $_GET['classe_1'];
 $type_1 = $_GET['type_1'];
@@ -10,6 +12,7 @@ $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
 require_once "../../artichow/LinePlot.class.php";
+
 function nb_jour_mois($mois_select,$annee_select)
  {
   //Dernier jour du mois
@@ -87,6 +90,12 @@ function annee_precedent($date_select)
  }
 
 $i = 0;
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
 $date_act = date('Y-m-d');
 $date_act_exp = explode('-', $date_act);
 $mois = $date_act_exp[1];

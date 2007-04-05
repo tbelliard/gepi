@@ -1,5 +1,7 @@
 <?php
 /*
+* $Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -401,7 +403,7 @@ if ($recherche == "afficher")
                    <td class="norme_absence">pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
                  </tr>
                  <tr>
-                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b><?php } ?></span></td>
+                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
                  </tr>
                  <tr>
                    <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -534,7 +536,7 @@ if ($recherche == "afficher")
               <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
             </tr>
             <tr>
-              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e pour justification : </b><?php } ?></span></td>
+              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
             </tr>
             <tr>
               <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>

@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -50,9 +53,8 @@ die();
 	   else { if (isset($_GET['classe_multiple'])) { $classe_multiple = $_GET['classe_multiple']; } if (isset($_POST['classe_multiple'])) { $classe_multiple = $_POST['classe_multiple']; } }
 	if (empty($_GET['eleve_multiple']) and empty($_POST['eleve_multiple'])) { $eleve_multiple = ''; }
 	   else { if (isset($_GET['eleve_multiple'])) { $eleve_multiple = $_GET['eleve_multiple']; } if (isset($_POST['eleve_multiple'])) { $eleve_multiple = $_POST['eleve_multiple']; } }
-		if(empty($_SESSION['classe_multiple']) or !empty($_POST['classe_multiple'])) { $_SESSION['classe_multiple'] = $classe_multiple; }
-		if(empty($_SESSION['eleve_multiple']) or !empty($_POST['eleve_multiple'])) { $_SESSION['eleve_multiple'] = $eleve_multiple; }
-
+		$_SESSION['classe_multiple'] = $classe_multiple;
+		$_SESSION['eleve_multiple'] = $eleve_multiple;
 
 // redirection vers la création des courrier en pdf
 if($id_lettre_suivi[0] != '' and $lettre_action === 'originaux')
@@ -116,8 +118,24 @@ $cal_6 = new Calendrier("form5", "au");
     else { if (isset($_GET['id_classe'])) {$id_classe=$_GET['id_classe'];} if (isset($_POST['id_classe'])) {$id_classe=$_POST['id_classe'];} }
    if (empty($_GET['du']) and empty($_POST['du'])) {$du="$date_ce_jour";}
     else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
-   if (empty($_GET['au']) and empty($_POST['au'])) {$au="JJ/MM/AAAA";}
-    else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
+
+	// gestion des dates
+	if (empty($_GET['du']) and empty($_POST['du'])) {$du = '';}
+	 else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
+	if (empty($_GET['au']) and empty($_POST['au'])) {$au="JJ/MM/AAAA";}
+	 else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
+
+		if (empty($_GET['day']) and empty($_POST['day'])) {$day=date("d");}
+	    	 else { if (isset($_GET['day'])) {$day=$_GET['day'];} if (isset($_POST['day'])) {$day=$_POST['day'];} }
+		if (empty($_GET['month']) and empty($_POST['month'])) {$month=date("m");}
+		 else { if (isset($_GET['month'])) {$month=$_GET['month'];} if (isset($_POST['month'])) {$month=$_POST['month'];} }
+		if (empty($_GET['year']) and empty($_POST['year'])) {$year=date("Y");}
+		 else { if (isset($_GET['year'])) {$year=$_GET['year'];} if (isset($_POST['year'])) {$year=$_POST['year'];} }
+	      	if ( !empty($du) ) {
+		  $ou_est_on = explode('/',$du);
+		  $year = $ou_est_on[2]; $month = $ou_est_on[1]; $day =  $ou_est_on[0];
+	        } else { $du = $day."/".$month.'/'.$year; }
+
    if (empty($_GET['composer']) and empty($_POST['composer'])) {$composer="";}
     else { if (isset($_GET['composer'])) {$composer=$_GET['composer'];} if (isset($_POST['composer'])) {$composer=$_POST['composer'];} }
    if (empty($_GET['id_absence']) and empty($_POST['id_absence'])) {$id_absence="";}
@@ -490,7 +508,11 @@ function DecocheCheckbox() {
 
 </script>
 
-<p class=bold>|<a href='../gestion/gestion_absences.php?type=<?php echo $type; ?>'>Retour</a>|
+<p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
 </p>
 <div class="norme_absence centre">[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> | <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> | <a href="impression_absences.php?type_impr=bpc">Bilan pour les conseils</a> | <a href="impression_absences.php?type_impr=fic">Fiche récapitulative</a> | <a href="impression_absences.php?type_impr=eti">Etiquette</a> ]</div><br />
 
@@ -498,10 +520,10 @@ function DecocheCheckbox() {
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
     <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form1">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 460px; margin: auto; padding: 4px" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Lettres aux familles</div>
-            <div class="norme_absence" style="text-align: center; background-color: #E8F1F4">
+            <div class="norme_absence" style="text-align: center;">
 
 <?php
 		$crearequete = '';
@@ -566,6 +588,8 @@ function DecocheCheckbox() {
 
       </fieldset>
     </form>
+    <br />
+
 <?php /*   <form method="post" action="lettre_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;lettre_action=originaux" name="form2"> */ ?>
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;lettre_action=originaux" name="form2">
       <?php if($type_impr == "laf" and $choix != '') { ?>
@@ -670,10 +694,10 @@ function DecocheCheckbox() {
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Bilan des absences général</div>
-            <div class="norme_absence" style="text-align: left; background-color: #E8F1F4">
+            <div class="norme_absence" style="text-align: left;">
             Classe
                 <select name="classe">
                     <option value="tous">toutes</option>
@@ -713,7 +737,7 @@ function DecocheCheckbox() {
     </form>
 
      <form method="post" action="bilan_absence.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>" name="form4">
-        <fieldset style="width: 400px; margin: auto;">
+        <fieldset style="width: 400px; margin: auto;" class="couleur_ligne_3">
             <legend class="legend_texte">&nbsp;Action&nbsp;</legend>
                 <input type="hidden" name="classe" value="<?php echo $classe; ?>" />
                 <input type="hidden" name="eleve" value="<?php echo $eleve; ?>" />
@@ -730,12 +754,13 @@ function DecocheCheckbox() {
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form5">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
         <legend style="clear: both" class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Bilan des absences pour les conseils de classe</div>
-            <div class="norme_absence" style="text-align: left; background-color: #E8F1F4">du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_5->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form5')" /><a href="#calend" onClick="<?php  echo $cal_6->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><input type="submit" name="Submit2" value="&gt;&gt;" /></div>
+            <div class="norme_absence" style="text-align: center;">du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_5->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form5')" /><a href="#calend" onClick="<?php  echo $cal_6->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><input type="submit" name="Submit2" value="&gt;&gt;" /></div>
       </fieldset>
    </form>
+   <br />
 
        <form method="post" action="bilan.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>" name="form6">
         <table style="width: 600px; margin: auto;" border="0" cellpadding="0" cellspacing="1">
@@ -802,12 +827,12 @@ function DecocheCheckbox() {
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Fiche récapitulative</div>
-            <div class="norme_absence" style="text-align: center; background-color: #E8F1F4">
+            <div class="norme_absence" style="text-align: center;">
 		<table style="border: 0px; text-align: center; width: 100%;"><tr><td>
-                <select name="classe_multiple[]" size="5" multiple="multiple" tabindex="3">
+                <select name="classe_multiple[]" size="5" multiple="multiple" tabindex="3" style="width: 220px;">
 		  <optgroup label="----- Listes des classes -----">
 		    <?php
 			if ($_SESSION["statut"] === 'cpe') {
@@ -824,7 +849,7 @@ function DecocheCheckbox() {
 			?>
 		  </optgroup>
 		  </select></td><td>
-		  <select name="eleve_multiple[]" size="5" multiple="multiple" tabindex="4">
+		  <select name="eleve_multiple[]" size="5" multiple="multiple" tabindex="4" style="width: 220px;">
 		  <optgroup label="----- Listes des &eacute;l&egrave;ves -----">
 		    <?php
 			// sélection des id eleves sélectionné.
@@ -850,7 +875,7 @@ function DecocheCheckbox() {
      <?php if ( !empty($classe_multiple[0]) ) { ?>
     <?php /* <form method="post" action="fiche_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>" name="form4"> */ ?>
     <form method="post" action="fiche_pdf.php" name="form4">
-        <fieldset style="width: 400px; margin: auto;">
+        <fieldset style="width: 400px; margin: auto;" class="couleur_ligne_3">
             <legend class="legend_texte">&nbsp;Action&nbsp;</legend>
                 <input type="hidden" name="classe" value="<?php echo $classe; ?>" />
                 <input type="hidden" name="eleve" value="<?php echo $eleve; ?>" />
@@ -868,10 +893,10 @@ function DecocheCheckbox() {
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="etiquette_pdf.php?type_impr=<?php echo $type_impr; ?>&amp;choix=<?php echo $choix; ?>&amp;etiquette_action=originaux" name="form3">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Impression d'étiquettes</div>
-            <div class="norme_absence" style="text-align: left; background-color: #E8F1F4;">
+            <div class="norme_absence" style="text-align: left;">
             Classe
                 <select name="classe">
                     <option value="tous">toutes</option>
@@ -974,10 +999,10 @@ function DecocheCheckbox() {
 <div style="text-align: center;">
 
       <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form6">
-      <fieldset style="width: 450px; margin: auto;">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
         <legend style="clear: both" class="legend_texte">&nbsp;Sélection&nbsp;</legend>
             <div class="titre_tableau_gestion">Gestion des type de lettre</div>
-            <div class="norme_absence" style="text-align: center; background-color: #E8F1F4">
+            <div class="norme_absence" style="text-align: center;">
 	    <select name="lettre_type" size="6" style="width: 448px; border: 1px solid #000000;">
 		    <?php
 			  $categorie_pass = '';
@@ -1214,5 +1239,6 @@ if($sous_rubrique === 'gb') { ?>
 	print_r($test);
 	echo '</pre>'; 
 */
+require("../../lib/footer.inc.php");
 ?>
 <?php mysql_close(); ?>

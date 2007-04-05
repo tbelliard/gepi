@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 09/08/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  *
@@ -75,7 +75,7 @@ function last_connection() {
     }
 
    // vérifie si on nest dans le modules absences
-   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs");
+   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi");
     if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css" /><?php
     }

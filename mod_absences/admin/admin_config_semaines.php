@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -105,21 +108,21 @@ if ( $action === 'visualiser' )
 
 <?php /* gestion des horaire d'ouverture */ ?>
   <form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
-	<table style="padding: auto; margin: auto; text-align: center; border-style:solid; border-width:0px; border-color: #6F6968;" cellpadding="0" cellspacing="1">
+	<table cellpadding="0" cellspacing="1" class="tab_table">
 	  <tbody>
 	      <tr>
-	        <td colspan="2" class="fond_bleu_2"><div class="norme_absence_gris_bleu"><strong>D&eacute;finition des type de semaines</strong></div></td>
+	        <td colspan="2" class="tab_titre"><div class="norme_absence_gris_bleu"><strong>D&eacute;finition des type de semaines</strong></div></td>
 	      </tr>
 	    <tr>
-	      <th class="tableau_moyen_centre_th" style="width: 100px;">Semaine n°</th>
-	      <th class="tableau_moyen_centre_th" style="width: 100px;">Type</th>
+	      <th class="tab_th" style="width: 100px;">Semaine n°</th>
+	      <th class="tab_th" style="width: 100px;">Type</th>
 	    </tr>
             <?php $i = '0'; $ic = '1';
 	    while ( $i < '52' ) {
-		       if ($ic === '1') { $ic = '2'; $couleur_cellule="fond_bleu_3"; } else { $couleur_cellule="fond_bleu_4"; $ic = '1'; } ?>
+		       if ($ic === '1') { $ic = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $ic = '1'; } ?>
 	    <tr class="<?php echo $couleur_cellule; ?>">
 	      <td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
-	      <td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" /></td>
+	      <td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 	    </tr>
 	    <?php $i = $i + 1; } ?>
 	      <tr>

@@ -453,7 +453,7 @@ INSERT INTO `horaires_etablissement` VALUES (1, '0000-00-00', 'lundi', '08:00:00
 INSERT INTO `lettres_types` VALUES (1, 'blame', 'sanction', ''), (2, 'convocation des parents', 'suivi', ''), (3, 'avertissement', 'sanction', ''), (4, 'exclusion', 'sanction', ''), (5, 'certificat de scolarité', 'suivi', ''), (6, 'demande de justificatif d''absence', 'suivi', 'oui'), (7, 'demande de justificatif de retard', 'suivi', ''), (8, 'rapport d''incidence', 'sanction', ''), (9, 'regime de sortie', 'suivi', ''), (10, 'retenue', 'sanction', '');
 INSERT INTO `droits` VALUES ('/mod_absences/gestion/etiquette_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Etiquette au format PDF', '');
 INSERT INTO `droits` VALUES ('/mod_absences/lib/export_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Fichier d''exportation en csv des absences', '');
-INSERT INTO `droits` VALUES ('/mod_absences/lib/statistiques.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Statistique du module vie scolaire', '1');
+INSERT INTO `droits` VALUES ('/mod_absences/gestion/statistiques.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Statistique du module vie scolaire', '1');
 INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_camembert.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique camembert', '');
 INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_ligne.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'graphique camembert', '');
 INSERT INTO `droits` VALUES ('/mod_absences/admin/admin_horaire_ouverture.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des horaires d''ouverture de l''établissement', '');
@@ -484,3 +484,4 @@ INSERT INTO `setting` VALUES ('security_alert2_probation_email_admin', 'yes');
 INSERT INTO `setting` VALUES ('security_alert2_probation_block_user', 'yes');
 INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');
 INSERT INTO setting VALUES ('bull_intitule_app', 'Appréciations / Conseils');
+INSERT INTO `droits` VALUES('/mod_absences/gestion/alert_suivi.php', 'V', 'V', 'V', 'V', 'V', 'F', 'F','système d''alerte de suivi d''élève', '');

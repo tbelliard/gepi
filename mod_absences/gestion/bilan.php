@@ -1,5 +1,8 @@
 <?php
 /*
+*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -117,34 +120,50 @@ $p = 1;
                         $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
                         if ($test != "0")
                          {
-                               $id[$nb] = $eleve_data['login'];
-                               $id_eleve_pdf = $eleve_data['login'];
-                               $civilite[$nb] = "";
-                               if ($eleve_data['sexe']=="M") { $civilite[$nb]="M."; } elseif ($eleve_data['sexe']=="F") { $civilite[$nb]="Mlle"; }
-                               $nom_eleve[$nb] = $eleve_data['nom'];
-                               $prenom_eleve[$nb] = $eleve_data['prenom'];
-                               $division[$nb] = classe_de($eleve_data['login']);
-                               $test_responsable = mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'responsables WHERE login = "'.$id_eleve_pdf.'" AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno'),0);
-                               if ($test_responsable != 0)
-                                {
-                                     $responsable_sql=mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'responsables WHERE '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe_pdf.'" AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'eleves.login AND '.$prefix_base.'eleves.ereno = '.$prefix_base.'responsables.ereno GROUP BY '.$prefix_base.'eleves.nom, '.$prefix_base.'eleves.prenom ORDER BY nom, prenom ASC');
-                                     $responsable_data = mysql_fetch_array($responsable_sql);
-                                     $civilite_responsable[$nb] = "M. et Mme";
-                                     $nom_responsable[$nb] = $responsable_data['nom1'];
-                                     $prenom_responsable[$nb] = $responsable_data['prenom1'];
-                                     $adresse1_responsable[$nb] = $responsable_data['adr1'];
-                                     $adresse2_responsable[$nb] = $responsable_data['adr1_comp'];
-                                     $cp_responsable[$nb] = $responsable_data['cp1'];
-                                     $ville_responsable[$nb] = $responsable_data['commune1'];
-                                } else {
-                                             $civilite_responsable[$nb] = "Pas de responsable sélectionné";
-                                             $nom_responsable[$nb] = "";
-                                             $prenom_responsable[$nb] = "";
-                                             $adresse1_responsable[$nb] = "";
-                                             $adresse2_responsable[$nb] = "";
-                                             $cp_responsable[$nb] = "";
-                                             $ville_responsable[$nb] = "";
-                                       }
+                               	$id[$nb] = $eleve_data['login'];
+                               	$id_eleve_pdf = $eleve_data['login'];
+			 	$ele_id_eleve[$nb] = $eleve_data['ele_id'];
+                               	$civilite[$nb] = "";
+                               	if ($eleve_data['sexe']=="M") { $civilite[$nb]="M."; } elseif ($eleve_data['sexe']=="F") { $civilite[$nb]="Mlle"; }
+                               	$nom_eleve[$nb] = $eleve_data['nom'];
+                               	$prenom_eleve[$nb] = $eleve_data['prenom'];
+                               	$division[$nb] = classe_de($eleve_data['login']);
+				//les responsables
+				$nombre_de_responsable = 0;
+				$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+				if($nombre_de_responsable != 0)
+				{
+					$cpt_parents = 0;
+					$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$nb]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+					while ($donner_parents = mysql_fetch_array($requete_parents))
+				  	 {
+						$civilite_responsable[$nb][$cpt_parents] = $donner_parents['civilite'];
+					        $nom_responsable[$nb][$cpt_parents] = $donner_parents['nom'];
+			        		$prenom_responsable[$nb][$cpt_parents] = $donner_parents['prenom'];
+					        $adresse1_responsable[$nb][$cpt_parents] = $donner_parents['adr1'];
+					        $adresse2_responsable[$nb][$cpt_parents] = $donner_parents['adr2'];
+					        $ville_responsable[$nb][$cpt_parents] = $donner_parents['commune'];
+					        $cp_responsable[$nb][$cpt_parents] = $donner_parents['cp'];
+						$cpt_parents = $cpt_parents + 1;
+					 }
+
+				} else {
+					 $civilite_responsable[$nb][0] = 'Pas de responsable sélectionné';
+				         $nom_responsable[$nb][0] = '';
+			        	 $prenom_responsable[$nb][0] = '';
+				         $adresse1_responsable[$nb][0] = '';
+				         $adresse2_responsable[$nb][0] = '';
+				         $ville_responsable[$nb][0] = '';
+				         $cp_responsable[$nb][0] = '';
+					 $civilite_responsable[$nb][1] = '';
+			        	 $nom_responsable[$nb][1] = '';
+				         $prenom_responsable[$nb][1] = '';
+				         $adresse1_responsable[$nb][1] = '';
+				         $adresse2_responsable[$nb][1] = '';
+				         $ville_responsable[$nb][1] = '';
+				         $cp_responsable[$nb][1] = '';
+					}
+
                     if($cpe[$t]!="idem")
                     {
                              $cpe_pdf = $cpe[$t];
@@ -296,53 +315,55 @@ $pdf->SetSubject('Sujet');
 
 $pdf->SetMargins(10,10);
 for ($i=0; $i<$nb; $i++) {
+
 $pdf->AddPage();
 
+	$pdf->SetFont('Arial','',10);
+	// date
+	$Jour_semaine=date("w");
+	if ($Jour_semaine==0) {$jour='dimanche';}
+	elseif ($Jour_semaine==1) {$jour='lundi';}
+	elseif ($Jour_semaine==2) {$jour='mardi';}
+	elseif ($Jour_semaine==3) {$jour='mercredi';}
+	elseif ($Jour_semaine==4) {$jour='jeudi';}
+	elseif ($Jour_semaine==5) {$jour='vendredi';}
+	elseif ($Jour_semaine==6) {$jour='samedi';}
+	$aujourdhui = date("d/m/Y");
+	$aujourdhui = explode('/', $aujourdhui);
+	if ($aujourdhui[1]==1) { $aujourdhui[1]="janvier"; }
+	if ($aujourdhui[1]==2) { $aujourdhui[1]="février"; }
+	if ($aujourdhui[1]==3) { $aujourdhui[1]="mars"; }
+	if ($aujourdhui[1]==4) { $aujourdhui[1]="avril"; }
+	if ($aujourdhui[1]==5) { $aujourdhui[1]="mai"; }
+	if ($aujourdhui[1]==6) { $aujourdhui[1]="juin"; }
+	if ($aujourdhui[1]==7) { $aujourdhui[1]="juillet"; }
+	if ($aujourdhui[1]==8) { $aujourdhui[1]="août"; }
+	if ($aujourdhui[1]==9) { $aujourdhui[1]="septembre"; }
+	if ($aujourdhui[1]==10) { $aujourdhui[1]="octobre"; }
+	if ($aujourdhui[1]==11) { $aujourdhui[1]="novembre"; }
+	if ($aujourdhui[1]==12) { $aujourdhui[1]="décembre"; }
 
+	$aujourdhui = $ville_etab.', le '.$jour.' '.$aujourdhui[0].' '.$aujourdhui[1].' '.$aujourdhui[2];
+	$pdf->Text(109, 15,$aujourdhui);
 
-$pdf->SetFont('Arial','',10);
-// date
-$Jour_semaine=date("w");
-if ($Jour_semaine==0) {$jour='dimanche';}
-elseif ($Jour_semaine==1) {$jour='lundi';}
-elseif ($Jour_semaine==2) {$jour='mardi';}
-elseif ($Jour_semaine==3) {$jour='mercredi';}
-elseif ($Jour_semaine==4) {$jour='jeudi';}
-elseif ($Jour_semaine==5) {$jour='vendredi';}
-elseif ($Jour_semaine==6) {$jour='samedi';}
-$aujourdhui = date("d/m/Y");
-$aujourdhui = explode('/', $aujourdhui);
-if ($aujourdhui[1]==1) { $aujourdhui[1]="janvier"; }
-if ($aujourdhui[1]==2) { $aujourdhui[1]="février"; }
-if ($aujourdhui[1]==3) { $aujourdhui[1]="mars"; }
-if ($aujourdhui[1]==4) { $aujourdhui[1]="avril"; }
-if ($aujourdhui[1]==5) { $aujourdhui[1]="mai"; }
-if ($aujourdhui[1]==6) { $aujourdhui[1]="juin"; }
-if ($aujourdhui[1]==7) { $aujourdhui[1]="juillet"; }
-if ($aujourdhui[1]==8) { $aujourdhui[1]="août"; }
-if ($aujourdhui[1]==9) { $aujourdhui[1]="septembre"; }
-if ($aujourdhui[1]==10) { $aujourdhui[1]="octobre"; }
-if ($aujourdhui[1]==11) { $aujourdhui[1]="novembre"; }
-if ($aujourdhui[1]==12) { $aujourdhui[1]="décembre"; }
-$aujourdhui = $ville_etab.', le '.$jour.' '.$aujourdhui[0].' '.$aujourdhui[1].' '.$aujourdhui[2];
-$pdf->Text(109, 15,$aujourdhui);
-$pdf->SetFont('Arial','',12);
-$ident_responsable = $civilite_responsable[$i]." ".ucfirst($prenom_responsable[$i])." ".strtoupper($nom_responsable[$i]);
-$pdf->Text(109, 40,$ident_responsable);
-$pdf->Text(109, 45,$adresse1_responsable[$i]);
-if($adresse2_responsable[$i] != "")
-  {
-    $pdf->Text(109, 50,'adresse2');
-  }
-$ident_ville = $cp_responsable[$i]." ".strtoupper($ville_responsable[$i]);
-if($adresse2_responsable[$i] != "")
-  {
-    $pdf->Text(109, 55,$ident_ville);
-  } else {
-            $pdf->Text(109, 50,$ident_ville);
-         }
-$pdf->SetFont('Arial','',12);
-$pdf->Text(20, 70,'Madame, Monsieur,');
+	$pdf->SetFont('Arial','',12);
+	$ident_responsable = $civilite_responsable[$i][0]." ".ucfirst($prenom_responsable[$i][0])." ".strtoupper($nom_responsable[$i][0]);
+	$pdf->Text(109, 40,trim($ident_responsable));
+	$pdf->Text(109, 45,$adresse1_responsable[$i][0]);
+	if($adresse2_responsable[$i][0] != "")
+	  {
+	    $pdf->Text(109, 50,'adresse2');
+	  }
+	$ident_ville = $cp_responsable[$i][0]." ".strtoupper($ville_responsable[$i][0]);
+	if($adresse2_responsable[$i][0] != "")
+	  {
+	    $pdf->Text(109, 55,$ident_ville);
+	  } else {
+	            $pdf->Text(109, 50,$ident_ville);
+	         }
+
+	$pdf->SetFont('Arial','',12);
+	$pdf->Text(20, 70,'Madame, Monsieur,');
 $ident = "Voici le suivi de l'élève ".$nom_eleve[$i]." ".$prenom_eleve[$i]." de la classe de ".$division[$i].",";
 $pdf->Text(20, 80, $ident);
 $pdf->Text(20, 85,'sur la période du '.date_frl(date_sql($du))." au ".date_frl(date_sql($au)).".");
@@ -367,7 +388,7 @@ while ( $data_1 = mysql_fetch_array($execution_1))
             $pdf->Cell(55, 5, $fin, 0, 0, '', '');
             if ($data_1['type_absence_eleve'] == 'A') {$pour = "Absence"; }
             if ($data_1['type_absence_eleve'] == 'R') {$pour = "Retard"; }
-            if ($data_1['type_absence_eleve'] == 'D') {$pour = "Dispence"; }
+            if ($data_1['type_absence_eleve'] == 'D') {$pour = "Dispense"; }
             if ($data_1['type_absence_eleve'] == 'I') {$pour = "Infirmerie"; }
             $pdf->Cell(22, 5, $pour, 0, 0, 'C', '');
 		$motif_abrege = $data_1['motif_absence_eleve'];

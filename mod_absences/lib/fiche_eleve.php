@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 18/12/2006
+ * $Id$
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -53,14 +53,51 @@ if (!checkAccess()) {
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 
- if(empty($_GET['select_fiche_eleve']) and empty($_POST['select_fiche_eleve'])) {$select_fiche_eleve="";}
-    else { if (isset($_GET['select_fiche_eleve'])) {$select_fiche_eleve=$_GET['select_fiche_eleve'];} if (isset($_POST['select_fiche_eleve'])) {$select_fiche_eleve=$_POST['select_fiche_eleve'];} }
- if(empty($_GET['action']) and empty($_POST['action'])) {$action="";}
-    else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
- if(empty($_GET['action_sql']) AND empty($_POST['action_sql'])) {$action_sql="";}
-    else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
-if (empty($_GET['debut_selection_suivi']) AND empty($_POST['debut_selection_suivi'])) {$debut_selection_suivi='0';}
-    else { if (isset($_GET['debut_selection_suivi'])) {$debut_selection_suivi=$_GET['debut_selection_suivi'];} if (isset($_POST['debut_selection_suivi'])) {$debut_selection_suivi=$_POST['debut_selection_suivi'];} }
+// fonction pour connaitre l'age de la personne par rapport à une date au format SQL AAAA-MM-JJ
+function age($date_de_naissance_fr)
+{
+            //à partir de la date de naissance, retourne l'âge dans la variable $age
+
+            // date de naissance (partie à modifier)
+              $ddn = $date_de_naissance_fr;
+
+            // enregistrement de la date du jour
+              $DATEDUJOUR = date("Y-m-d");
+              $DATEFRAN = date("d/m/Y");
+
+            // calcul de mon age d'après la date de naissance $ddn
+              $annais = substr("$ddn", 0, 4);
+              $anjour = substr("$DATEFRAN", 6, 4);
+              $moisnais = substr("$ddn", 4, 2);
+              $moisjour = substr("$DATEFRAN", 3, 2);
+              $journais = substr("$ddn", 6, 2);
+              $jourjour = substr("$DATEFRAN", 0, 2);
+
+              $age = $anjour-$annais;
+              if ($moisjour<$moisnais){$age=$age-1;}
+              if ($jourjour<$journais && $moisjour==$moisnais){$age=$age-1;}
+              return($age);
+}
+
+// fonction pour connaitre le professeur principal de l'id d'une classe
+function pp($classe_choix)
+{
+            global $prefix_base;
+               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
+               $data_prof_classe = mysql_fetch_array($call_prof_classe);
+               $suivi_par = $data_prof_classe['suivi_par'];
+               return($suivi_par);
+}
+
+// variable non définie
+	if(empty($_GET['select_fiche_eleve']) and empty($_POST['select_fiche_eleve'])) {$select_fiche_eleve="";}
+	 else { if (isset($_GET['select_fiche_eleve'])) {$select_fiche_eleve=$_GET['select_fiche_eleve'];} if (isset($_POST['select_fiche_eleve'])) {$select_fiche_eleve=$_POST['select_fiche_eleve'];} }
+	if(empty($_GET['action']) and empty($_POST['action'])) {$action="";}
+	 else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
+	if(empty($_GET['action_sql']) AND empty($_POST['action_sql'])) {$action_sql="";}
+	 else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
+	if (empty($_GET['debut_selection_suivi']) AND empty($_POST['debut_selection_suivi'])) {$debut_selection_suivi='0';}
+	 else { if (isset($_GET['debut_selection_suivi'])) {$debut_selection_suivi=$_GET['debut_selection_suivi'];} if (isset($_POST['debut_selection_suivi'])) {$debut_selection_suivi=$_POST['debut_selection_suivi'];} }
 
 
 //ajout des fiche_suivi des eleve
@@ -134,7 +171,9 @@ if ($action === 'modifier')
   <meta http-equiv="Pragma" CONTENT="no-cache" />
   <meta http-equiv="Cache-Control" CONTENT="no-cache" />
   <meta http-equiv="Expires" CONTENT="0" />
-  <link rel="stylesheet" type="text/css" href="../styles/mod_absences.css" />
+<?php /*  <link rel="stylesheet" type="text/css" href="../styles/mod_absences.css" /> */ ?>
+<link rel="stylesheet" type="text/css" href="../styles/mod_absences.css" />
+  <link rel="stylesheet" type="text/css" href="../../style.css" /> 
   <script type="text/javascript">
 	function fermeFenetre() {
 	  window.open('','_parent','');
@@ -171,64 +210,59 @@ if ($action === 'modifier')
           {
               $login_eleve = $data_liste_fiche['login'];
               $select_fiche_eleve_photo = $data_liste_fiche['elenoet'];
+              $ele_id_eleve = $data_liste_fiche['ele_id'];
               $nom_eleve = strtoupper($data_liste_fiche['nom']);
               $prenom_eleve = ucfirst($data_liste_fiche['prenom']);
               $naissance_eleve = date_frl(date_sql(affiche_date_naissance($data_liste_fiche['naissance'])));
               $date_de_naissance = $data_liste_fiche['naissance'];
               $sexe_eleve = $data_liste_fiche['sexe'];
+		$responsable_eleve = tel_responsable($ele_id_eleve);
           }
 
-        function age($date_de_naissance_fr)
-          {
-            //à partir de la date de naissance, retourne l'âge dans la variable $age
-
-            // date de naissance (partie à modifier)
-              $ddn = $date_de_naissance_fr;
-
-            // enregistrement de la date du jour
-              $DATEDUJOUR = date("Y-m-d");
-              $DATEFRAN = date("d/m/Y");
-
-            // calcul de mon age d'après la date de naissance $ddn
-              $annais = substr("$ddn", 0, 4);
-              $anjour = substr("$DATEFRAN", 6, 4);
-              $moisnais = substr("$ddn", 4, 2);
-              $moisjour = substr("$DATEFRAN", 3, 2);
-              $journais = substr("$ddn", 6, 2);
-              $jourjour = substr("$DATEFRAN", 0, 2);
-
-              $age = $anjour-$annais;
-              if ($moisjour<$moisnais){$age=$age-1;}
-              if ($jourjour<$journais && $moisjour==$moisnais){$age=$age-1;}
-              return($age);
-           }
-
-         function pp($classe_choix)
-          {
-            global $prefix_base;
-               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
-               $data_prof_classe = mysql_fetch_array($call_prof_classe);
-               $suivi_par = $data_prof_classe['suivi_par'];
-               return($suivi_par);
-          }
     ?>
-    <table class="entete_tableau_selection" cellspacing="0" cellpadding="2">
-       <tr>
-           <td class="titre_tableau_gestion" colspan="2"><b>Identitée élève</b></td>
-       </tr>
-       <tr>
-           <td class="td_tableau_fiche" style="width: 440px; vertical-align: top">Nom : <?php echo $nom_eleve; ?><br />Prénom : <?php echo $prenom_eleve; ?><br />Date de naissance : <?php echo $naissance_eleve; ?><br />Age : <?php echo age($date_de_naissance); ?> ans <br /><br />Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)</td>
-                <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
-                ?><td class="td_tableau_fiche" style="width: 60px; vertical-align: top"><?php
-                $photos = "../../photos/eleves/".$select_fiche_eleve_photo.".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		 $valeur=redimensionne_image($photos);
-                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
-                 } ?>
-       </tr>
-    </table>
-  <br />
-    <table class="entete_tableau_selection" cellspacing="0" cellpadding="2">
+
+<div class="couleur_ligne_3" style="width: 500px; height: 135px; margin: auto; border: solid 2px #2F4F4F;">
+	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identitée élève</div>
+	<div style="width: 90px; float: right; padding: 2px; text-align: center;">
+		<?php 
+		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
+	             $photos = "../../photos/eleves/".$select_fiche_eleve_photo.".jpg";
+	                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+			       $valeur=redimensionne_image($photos);
+	                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
+	             }
+		?>
+	</div>
+	<div style="text-align: left; margin: 2px;">
+		Nom : <?php echo $nom_eleve; ?><br />
+		Prénom : <?php echo $prenom_eleve; ?><br />
+		Date de naissance : <?php echo $naissance_eleve; ?><br />
+		Age : <?php echo age($date_de_naissance); ?> ans <br /><br />
+		Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)
+	</div>
+</div>
+<div class="couleur_ligne_3" style="width: 450px; margin: auto; border-bottom: 2px solid #2F4F4F; border-left: 2px solid #2F4F4F; border-right: 2px solid #2F4F4F; text-align: left;">
+ 	<div style="font-size: 130%; background: #555555; color: #FFFFFF;"><?php if ( !empty($responsable_eleve[1]) ) { ?>Les responsables<?php } else { ?>Le reponsable<?php } ?></div>
+	<div style="margin: 5px;">
+		<?php
+			$cpt_responsable = 0;
+			while ( !empty($responsable_eleve[$cpt_responsable]) )
+			{
+				echo $responsable_eleve[$cpt_responsable]['civilite'].' '.strtoupper($responsable_eleve[$cpt_responsable]['nom']).' '.ucfirst($responsable_eleve[$cpt_responsable]['prenom']).'<br />';
+				$telephone = '';
+					if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'Tél. <strong>'.$responsable_eleve[$cpt_responsable]['tel_pers'].'</strong> '; }
+					if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) { $telephone = $telephone.'Prof. <strong>'.$responsable_eleve[$cpt_responsable]['tel_prof'].'</strong> '; }
+					if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) { $telephone = $telephone.'Port. '.$responsable_eleve[$cpt_responsable]['tel_port'].'<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="13" width="13" />'; }
+				echo $telephone;
+				$cpt_responsable = $cpt_responsable + 1;
+			}
+			?>
+	</div>
+</div>
+
+<br />
+
+<table class="entete_tableau_selection" cellspacing="0" cellpadding="2">
        <tr>
            <td class="titre_tableau_gestion" colspan="2"><b>Information élève</b></td>
        </tr>
@@ -244,7 +278,7 @@ if ($action === 'modifier')
 			if(!empty($data_komenti['action_suivi_eleve_cpe']) and $data_komenti['action_suivi_eleve_cpe'] != 'A') { $action_pour_eleve = ', '.action_de($data_komenti['action_suivi_eleve_cpe']); }
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
-				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[urgent]'; }
+				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='3') { $couleur='#FFDFDF'; $couleur2='#FF0000'; $drapeau='[prioritaire]'; }
 			  } else { $couleur='#FFFFFF'; $couleur2='#4DFF2F'; $drapeau=''; } ?>
                     <p class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />[ <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> | <a href="fiche_eleve.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>">supprimer</a> ]</span></p>
@@ -284,7 +318,7 @@ if ($action === 'modifier')
 				<div style="font-family: Arial; font-size: 0.8em; background-color: #FFFFFF; border : 1px solid #0061BD; height: 70px; padding: 0px;">
 				Niveau de priorité<br />
 				<input name="niveau_urgent" id="nur1" value="1" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='1') { ?>checked="checked"<?php } else { ?>checked="checked"<?php } ?> /><label for="nur1" style="cursor: pointer;">Information</label><br />
-				<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Urgent</label><br />
+				<input name="niveau_urgent" id="nur2" value="2" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='2') { ?>checked="checked"<?php } ?> /><label for="nur2" style="cursor: pointer;">Important</label><br />
 				<input name="niveau_urgent" id="nur3" value="3" type="radio" <?php if(!empty($data_modif_fiche['niveau_message_suivi_eleve_cpe']) and $data_modif_fiche['niveau_message_suivi_eleve_cpe']==='3') { ?>checked="checked"<?php } ?> /><label for="nur3" style="cursor: pointer;">Prioritaire</label><br />
 				</div>
 				</td>
@@ -307,39 +341,12 @@ if ($action === 'modifier')
            <?php $cpt_absences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A'"),0);
            if($cpt_absences != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=A',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Absences"><?php echo $cpt_absences; ?></a></b> Absence(s)</p>
-           non justifiée(s)<br />
-           <?php $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_absences_nr = mysql_query($requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysql_error());
-                 while ($data_absences_nr = mysql_fetch_array($execution_absences_nr))
-                   {
-                      echo date_fr($data_absences_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_absences_nr['d_heure_absence_eleve']."<br /><br />";
-                   }
-           ?>
            <?php } $cpt_retards = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R'"),0);
            if($cpt_retards != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=R',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Retards"><?php echo $cpt_retards; ?></a></b> Retards</p>
-           non justifié(s)<br />
-           <?php $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_retards_nr = mysql_query($requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysql_error());
-                 while ($data_retards_nr = mysql_fetch_array($execution_retards_nr))
-                   {
-                      echo date_fr($data_retards_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_retards_nr['d_heure_absence_eleve']."<br /><br />";
-                   }
-           ?>
            <?php } $cpt_dispences = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D'"),0);
            if($cpt_dispences != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=D',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Dispences"><?php echo $cpt_dispences; ?></a></b> Dispences</p>
-           non justifiée(s)<br />
-           <?php $requete_dispences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                 $execution_dispences_nr = mysql_query($requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysql_error());
-                 while ($data_dispences_nr = mysql_fetch_array($execution_dispences_nr))
-                   {
-                      echo date_fr($data_dispences_nr['d_date_absence_eleve'])."<br />";
-                      echo $data_dispences_nr['d_heure_absence_eleve']."<br /><br />";
-                   }
-           ?>
            <?php } $cpt_infirmeries = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='I'"),0);
            if($cpt_infirmeries != 0) { ?>
            <p class="titre_sous_menu"><b><a href="javascript:centrerpopup('liste_absences.php?id_eleve=<?php echo $select_fiche_eleve; ?>&amp;type=I',260,320,'scrollbars=yes,statusbar=no,resizable=yes');" title="Infirmerie"><?php echo $cpt_infirmeries; ?></a></b> Infirmeries</p>
