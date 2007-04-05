@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 07/08/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -118,6 +118,7 @@ if (!$current_group) {
             } else {
                 $flag2 = 'yes';
             }
+			
             if ($flag2 == "yes") {
                 $display_class = mysql_result($appel_donnees, $i, "classe");
         	echo "<span class='norme'>";
@@ -125,7 +126,30 @@ if (!$current_group) {
                 if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
                 //echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
                 //echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
-                echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span><br />\n";
+				
+				echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . " </a>\n";
+								
+				// pas de nom si c'est un prof qui demande la page.
+				if ($_SESSION['statut']!='professeur') { 
+					$id_groupe_en_cours = $group["id"];
+					//recherche profs du groupe
+					$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
+					$result_prof_groupe=mysql_query($sql_prof_groupe);
+					echo "(";
+					$cpt=0;
+					$nb_profs = mysql_num_rows($result_prof_groupe);
+					while($lig_prof=mysql_fetch_object($result_prof_groupe)){
+						if (($nb_profs !=1) AND ($cpt<$nb_profs-1)){
+						   echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))." - ";
+						} else {
+						   echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
+						}
+						$cpt++;
+					}
+					echo ")";
+				}
+				
+				echo "<br />\n";
             }
         }
         //if ($flag2 == 'yes') {echo "</span><br /><br />\n";}
