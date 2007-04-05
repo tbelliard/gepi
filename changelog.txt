@@ -33,6 +33,17 @@ Corrections de bugs
 -------------------
 - affichage de l'observation vie scolaire sur le bulletin simplifiée si elle existe (Eric)
 
+Gepi-1.4.4-stable
+=================
+
+Corrections de bugs
+-------------------
+- dans l'interface de rédaction des messages (messagerie interne), possibilité de classer pa date de début, date de fin ou date de création
+- compression des sauvegardes, pour éviter au maximum les problèmes liés à des limitations du serveur
+- lors de l'ajout d'une classe à un enseignement multi-classes, la valeur de priorité d'affichage est la valeur par défaut définie pour la matière (et non 0)
+- Lors de l'impression des bulletins HTML, la moyenne de la classe n'était pas la moyenne des moyennes des élèves (qui elles sont calculées avec leurs options).
+
+
 Gepi-1.4.4-rc3 (26/01/2007)
 ===========================
 
@@ -42,6 +53,8 @@ Corrections de bugs
 -------------------
 - bugs multiples sur le module absence
 - bug sur la valeur des coefficients, qui ne pouvait être supérieure à 9,9
+- Lors de l'impression des bulletins HTML, la moyenne de la classe n'était pas la moyenne des moyennes des élèves (qui elles sont calculées avec leurs options).
+
 
 Nouvelles fonctionalités
 ------------------------

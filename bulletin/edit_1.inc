@@ -1,6 +1,6 @@
 <?PHP
         // On initialise le tableau des notes et appréciations :
-        echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
     echo "<thead>\n";
         echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\" rowspan=\"2\">
         <span class='bulletin'><font size=\"1\">";
@@ -473,7 +473,7 @@
 
 				    // Colonne Moyenne générale de la classe:
 				   echo "<td style=\"text-align: center;\">";
-				   echo "<span class='bulletin'>$moy_gen_classe[$i]</span>";
+				   echo "<span class='bulletin'>$moy_generale_classe</span>";
 				   echo "</td>\n";
 
 					// Colonne Max:
@@ -484,7 +484,7 @@
 				   //Eric Ajout colonne min classe max une seule cellule
 				    echo "<td style=\"text-align: center;\">";
 				    echo "<span class='bullminclasmax'>$moy_min_classe<br />\n";
-					echo "<span class='bullminclasmax'>$moy_gen_classe[$i]<br />\n";
+					echo "<span class='bullminclasmax'>$moy_generale_classe<br />\n";
 					echo "<span class='bullminclasmax'>$moy_max_classe<br />\n";
 					echo "</td>\n";
 				}
