@@ -434,9 +434,9 @@
 
 				if($min_max_moyclas!=1){
 					// Colonne Min:
-					echo "<td style=\"text-align: center;\">-</td>";
+					echo "<td style=\"text-align: center;\">$moy_min_classe</td>";
 					// Colonne Max:
-					echo "<td style=\"text-align: center;\">-</td>\n";
+					echo "<td style=\"text-align: center;\">$moy_max_classe</td>\n";
 				}
 				// Colonne Moyenne générale de la classe:
 				echo "<td style=\"text-align: center;\">";
