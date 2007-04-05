@@ -53,9 +53,11 @@ if (!isset($_GET['cpt'])) {
     $cpt = $_GET['cpt'];
 }
 
-if (($_POST['maj'])=="9") { 
-echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>";
+$maj=isset($_POST['maj']) ? $_POST['maj'] : (isset($_GET['maj']) ? $_GET['maj'] : NULL);
+//if (($_POST['maj'])=="9") {
+if ($maj=="9") {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 }
 
 function init_time() {
@@ -1054,7 +1056,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 } else {
     echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
     echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>";
-	
+
     echo "<p>Il est très vivement conseillé de <b>faire une sauvegarde de la base MySql avant de lancer la procédure.</b></p>\n";
     echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name=formulaire>";
     echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
