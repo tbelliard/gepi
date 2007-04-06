@@ -987,7 +987,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les appréciations des matières:
+        Afficher les appréciations des matières :
         </td>
         <td>
         <?php
@@ -1003,7 +1003,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les données sur les absences:
+        Afficher les données sur les absences :
         </td>
         <td>
         <?php
@@ -1019,7 +1019,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les avis du conseil de classe:
+        Afficher les avis du conseil de classe :
         </td>
         <td>
         <?php
@@ -1036,7 +1036,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher données sur les AID:
+        Afficher les données sur les AID :
         </td>
         <td>
         <?php
@@ -1068,7 +1068,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les graphiques indiquant les niveaux (A, B, C+, C-, D ou E):
+        Afficher les graphiques indiquant les niveaux (A, B, C+, C-, D ou E) :
         </td>
         <td>
         <?php
@@ -1084,7 +1084,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom du professeur principal et du proviseur:
+        Afficher le nom du professeur principal et du proviseur :
         </td>
         <td>
         <?php
@@ -1100,7 +1100,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher l'établissement d'origine sur le bulletin:
+        Afficher l'établissement d'origine sur le bulletin :
         </td>
         <td>
         <?php
@@ -1123,7 +1123,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	echo ">\n";
 ?>
         <td style="font-variant: small-caps;">
-        Afficher la photo de l'élève sur le bulletin:
+        Afficher la photo de l'élève sur le bulletin :
         </td>
         <td>
 <?php
@@ -1152,11 +1152,11 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	}
 ?>
     <tr id='ligne_bull_photo_hauteur_max'>
-	<td style="font-variant: small-caps;">Hauteur maximale de la photo en pixels:</td>
+	<td style="font-variant: small-caps;">Hauteur maximale de la photo en pixels :</td>
 	<td><input type="text" name="bull_photo_hauteur_max" size='4' value="<?php echo $bull_photo_hauteur_max;?>" /></td>
     </tr>
     <tr id='ligne_bull_photo_largeur_max'>
-	<td style="font-variant: small-caps;">Largeur maximale de la photo en pixels:</td>
+	<td style="font-variant: small-caps;">Largeur maximale de la photo en pixels :</td>
 	<td><input type="text" name="bull_photo_largeur_max" size='4' value="<?php echo $bull_photo_largeur_max;?>" />
 
 	<script type='text/javascript'>
@@ -1186,7 +1186,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de téléphone de l'établissement.
+        Afficher le numéro de téléphone de l'établissement :
         </td>
         <td>
         <?php
@@ -1203,7 +1203,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de fax de l'établissement.
+        Afficher le numéro de fax de l'établissement :
         </td>
         <td>
         <?php
@@ -1220,7 +1220,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan='2'>
-        Intitulé de la colonne Appréciations:<br />
+        Intitulé de la colonne Appréciations : 
         <?php
 		echo "<input type=\"text\" name=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
         ?>
@@ -1229,7 +1229,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la formule figurant en bas de chaque bulletin.
+        Afficher la formule figurant en bas de chaque bulletin : 
         </td>
         <td>
         <?php
@@ -1255,9 +1255,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
-		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</i><br />
 		<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />
-		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?></i><br />
+		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</i><br />
         </ul>
 		</td>
         <td> <br />
@@ -1277,7 +1277,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     </tr>
 	
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation. : </td>
+        <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation : </td>
         <td>
 	    <?php
         echo "<input type=\"radio\" name=\"min_max_moyclas\" value='1' ";
