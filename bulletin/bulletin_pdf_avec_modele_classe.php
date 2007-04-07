@@ -74,10 +74,10 @@ Header('Pragma: public');
 
 //variable de session
   if(!empty($_SESSION['classe'][0]) and $_SESSION['classe'][0] != '')
-   { $id_classe = $_SESSION['classe']; } else { unset($_SESSION['classe']); }
+   { $id_classe = $_SESSION['classe']; } else { unset($_SESSION['classe']); $id_classe[0]=0; }
    
   if(!empty($_SESSION['eleve'][0]) and $_SESSION['eleve'] != '')
-   { $id_eleve = $_SESSION['eleve']; unset($_SESSION['classe']); } else { unset($_SESSION["eleve"]); }
+   { $id_eleve = $_SESSION['eleve']; unset($_SESSION['classe']); } else { unset($_SESSION["eleve"]); $id_eleve[0]=0; }
   
    $periode = $_SESSION['periode'];
    $periode_ferme = $_SESSION['periode_ferme'];
@@ -824,7 +824,7 @@ if(!empty($model_bulletin)) {
 		    while ( $donner = mysql_fetch_array( $call_eleve ))
 			{
 			    //AJOUT ERIC
-				$eleve_id_classe[cpt_i]=$donner['id'];
+				$eleve_id_classe[$cpt_i]=$donner['id'];
 				
 				$ident_eleve[$cpt_i] = $donner['login'];
 				$ident_eleve_sel1 = $ident_eleve[$cpt_i];
