@@ -165,18 +165,15 @@ if ($action == "modifier")
 // header
 $titre_page = "Gestion des motifs d'absence";
 require_once("../../lib/header.inc");
+
+
+echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
+echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | ";
+echo "<a href='index.php'>Retour module absence</a> | ";
+if ($action=="modifier" OR $action=="ajouter") echo "<a href=\"admin_actions_absences.php?action=visualiser\">Retour à la définition des motifs</a>";
+if ($action=="visualiser") echo "<a href=\"admin_actions_absences.php?action=ajouter\">Ajouter un ou des motif(s)</a>";
+echo "</p>";
 ?>
-
-<p class=bold>|
-<a href="../../accueil.php">Accueil</a>|
-<a href="../../accueil_modules.php">Retour administration des modules</a>|
-<a href='index.php'>Retour module absence</a>|
-<?php if ($action=="modifier" OR $action=="ajouter") echo "<a href=\"admin_actions_absences.php?action=visualiser\">Retour à la définition des motifs</a>"; ?>
-<?php if ($action=="visualiser") echo "<a href=\"admin_actions_absences.php?action=ajouter\">Ajouter un ou des motif(s)</a>"; ?>
-|
-
-
-</p>
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">

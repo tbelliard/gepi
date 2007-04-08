@@ -1,7 +1,6 @@
 <?php
 /*
-*
-*$Id$
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -435,26 +434,26 @@ if($echelle_y === 'E') {
 
 ?>
 <p class=bold><a href='gestion_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
-<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> | 
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> | 
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> | 
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
-<div style="text-align: center; margin: auto; width: 95%;">
+<div style="text-align: center; width: 760px; margin: auto;">
 
 <?php /* DIV contenant le formulaire de recherche */ ?>
   <div style="border: 2px solid #D9EF1D; width: 210px; height: 360px; float: left; margin-top: 17px; text-align: center;">
-	<div class="entete_stats"><b>Système d'alert</b></div>
+	<div class="entete_stats"><b>Système d'alerte</b></div>
 	<div>
 		<form name="form1" method="post" action="statistiques.php">
 	               <select name="type[]" id="type" multiple="multiple" size="3" tabindex="1" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
       			    <optgroup label="Les types">
-		               <option value="A" <?php if(!empty($type) and in_array('A', $type)) { ?>selected="selected"<?php } ?>>Les absence</option>
-        		       <option value="R" <?php if(!empty($type) and in_array('R', $type)) { ?>selected="selected"<?php } ?>>Les retard</option>
-                	       <option value="D" <?php if(!empty($type) and in_array('D', $type)) { ?>selected="selected"<?php } ?>>Les dispense</option>
-	                       <option value="I" <?php if(!empty($type) and in_array('I', $type)) { ?>selected="selected"<?php } ?>>Les passage à l'infirmerie</option>
+		               <option value="A" <?php if(!empty($type) and in_array('A', $type)) { ?>selected="selected"<?php } ?>>Les absences</option>
+        		       <option value="R" <?php if(!empty($type) and in_array('R', $type)) { ?>selected="selected"<?php } ?>>Les retards</option>
+                	       <option value="D" <?php if(!empty($type) and in_array('D', $type)) { ?>selected="selected"<?php } ?>>Les dispenses</option>
+	                       <option value="I" <?php if(!empty($type) and in_array('I', $type)) { ?>selected="selected"<?php } ?>>Les passages à l'infirmerie</option>
 			    </optgroup>
 	               </select><br />
 
@@ -503,7 +502,7 @@ if($echelle_y === 'E') {
       			    <optgroup label="Les échelles (X)">
 		               <option value="M" <?php if(!empty($echelle_x) and $echelle_x === 'M') { ?>selected="selected"<?php } ?>>Par mois</option>
         		       <option value="J" <?php if(!empty($echelle_x) and $echelle_x === 'J') { ?>selected="selected"<?php } ?>>Par jour</option>
-                	       <option value="P" <?php if(!empty($echelle_x) and $echelle_x === 'P') { ?>selected="selected"<?php } ?>>Par heure (période)</option>
+                	       <?php /* <option value="P" <?php if(!empty($echelle_x) and $echelle_x === 'P') { ?>selected="selected"<?php } ?>>Par heure (période)</option> */ ?>
                 	       <option value="C" <?php if(!empty($echelle_x) and $echelle_x === 'C') { ?>selected="selected"<?php } ?>>Par classe</option>
                 	       <option value="E" <?php if(!empty($echelle_x) and $echelle_x === 'E') { ?>selected="selected"<?php } ?>>Par élève</option>
 			    </optgroup>
@@ -511,8 +510,8 @@ if($echelle_y === 'E') {
 
 	               <select name="echelle_y" id="echelle_y" size="1" tabindex="7" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
       			    <optgroup label="Les échelles (Y)">
-		               <option value="E" <?php if(!empty($echelle_y) and $echelle_y === 'P') { ?>selected="selected"<?php } ?>>Nombre d'enregistrement</option>
-		               <option value="H" <?php if(!empty($echelle_y) and $echelle_y === 'H') { ?>selected="selected"<?php } ?>>Nombre d'heure</option>
+		               <option value="E" <?php if(!empty($echelle_y) and $echelle_y === 'P') { ?>selected="selected"<?php } ?>>Nombre d'enregistrements</option>
+		               <option value="H" <?php if(!empty($echelle_y) and $echelle_y === 'H') { ?>selected="selected"<?php } ?>>Nombre d'heures</option>
 			    </optgroup>
 	               </select><br />
 
@@ -524,8 +523,8 @@ if($echelle_y === 'E') {
 	</div>
   </div>
 
-  <div style="margin-left: 210px; width: 73%;">
-	<div class="entete_stats_message">Grpahique de statistiques</div>
+  <div style="margin-left: 210px; width: 555px;">
+	<div class="entete_stats_message">Graphique des statistiques</div>
 	<div style="background-color: #EFEFEF; border-left: 4px solid #D9EF1D;">
 
 	<?php /* DIV contenant le graphique et le tableau des données */ ?>
@@ -535,9 +534,9 @@ if($echelle_y === 'E') {
 
 	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
 		<?php $_SESSION['donnee_e'] = ''; $_SESSION['donnee_e'] = $donnee_select; ?>
-			<img src="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>
+			<img src="../lib/graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>
 			<?php /* <a href="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>fdfdfdf</a> */ ?>
-	<?php } else { ?>Aucune données correspondant à votre rechercher n'a été trouvée<?php } ?>
+	<?php } else { ?>Aucune donnée correspondant à votre rechercher n'a été trouvée<?php } ?>
 		</div>
 
 	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>

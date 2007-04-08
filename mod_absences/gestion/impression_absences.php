@@ -1,7 +1,6 @@
 <?php
 /*
-*
-*$Id$
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -509,12 +508,12 @@ function DecocheCheckbox() {
 </script>
 
 <p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
-<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> | 
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> | 
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> | 
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
-<div class="norme_absence centre">[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> | <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> | <a href="impression_absences.php?type_impr=bpc">Bilan pour les conseils</a> | <a href="impression_absences.php?type_impr=fic">Fiche récapitulative</a> | <a href="impression_absences.php?type_impr=eti">Etiquette</a> ]</div><br />
+<div class="norme_absence centre">[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> | <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> | <a href="impression_absences.php?type_impr=bpc">Bilan pour les conseils</a> | <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> | <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
 
 <?php if($type_impr == "laf") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -565,16 +564,16 @@ function DecocheCheckbox() {
 </td>
 <td style="text-align: right;">
 <select name="choix" style="width: 198px; border: 1px solid #000000; cursor: pointer; margin-bottom: 2px;">
-<option value="1" <?php if(empty($choix) or (!empty($choix) and $choix === '1')) { ?>selected="selected"<?php } ?>>Tous les courrier</option>
-<option value="2" <?php if(!empty($choix) and $choix === '2') { ?>selected="selected"<?php } ?>>Courrier expédié</option>
-<option value="3" <?php if(!empty($choix) and $choix === '3') { ?>selected="selected"<?php } ?>>Courrier non expédié</option>
-<option value="4" <?php if(!empty($choix) and $choix === '4') { ?>selected="selected"<?php } ?>>Courrier sans réponse</option>
-<option value="5" <?php if(!empty($choix) and $choix === '5') { ?>selected="selected"<?php } ?>>Courrier avec réponse</option>
+<option value="1" <?php if(empty($choix) or (!empty($choix) and $choix === '1')) { ?>selected="selected"<?php } ?>>Tous les courriers</option>
+<option value="2" <?php if(!empty($choix) and $choix === '2') { ?>selected="selected"<?php } ?>>Courriers expédiés</option>
+<option value="3" <?php if(!empty($choix) and $choix === '3') { ?>selected="selected"<?php } ?>>Courriers non expédiés</option>
+<option value="4" <?php if(!empty($choix) and $choix === '4') { ?>selected="selected"<?php } ?>>Courriers sans réponse</option>
+<option value="5" <?php if(!empty($choix) and $choix === '5') { ?>selected="selected"<?php } ?>>Courriers avec réponse</option>
 </select><br />
 <select name="action_lettre" style="width: 90px; border: 1px solid #000000; cursor: pointer;">
 <option value="1" <?php if(empty($action_lettre) or (!empty($action_lettre) and $action_lettre === '1')) { ?>selected="selected"<?php } ?>>&eacute;mis le</option>
-<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>poster le</option>
-<option value="3" <?php if(!empty($action_lettre) and $action_lettre === '3') { ?>selected="selected"<?php } ?>>r&eacute;ponse re&ccedil;us le</option>
+<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>posté le</option>
+<option value="3" <?php if(!empty($action_lettre) and $action_lettre === '3') { ?>selected="selected"<?php } ?>>r&eacute;ponse re&ccedil;ue le</option>
 <option value="4" <?php if(!empty($action_lettre) and $action_lettre === '4') { ?>selected="selected"<?php } ?>>émis depuis le</option>
 <option value="5" <?php if(!empty($action_lettre) and $action_lettre === '5') { ?>selected="selected"<?php } ?>>ne pas tenir compte de la date</option>
 </select>
@@ -597,12 +596,12 @@ function DecocheCheckbox() {
 	<table style="margin: auto; text-align: left; width: 750px; border: 2px solid #000000; background-color: #FFFFFF;" cellpadding="0" cellspacing="1">	  <tbody>
 	    <tr class="fond_vert">
 	      <td align="center" nowrap="nowrap" valign="middle" style="width: 20px; font-weight:bold;"></td>
-	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 280px; font-weight:bold;">personne concern&eacute;</td>
+	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 280px; font-weight:bold;">personnes concern&eacute;es</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 120px; font-weight:bold;">courrier type</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 90px; font-weight:bold;">&eacute;mis</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 90px; font-weight:bold;">envoy&eacute;</td>
 	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 90px; font-weight:bold;">r&eacute;ponse</td>
-	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 80px; font-weight:bold;">status</td>
+	      <td align="center" nowrap="nowrap" valign="middle" class="norme_absence_blanc" style="width: 80px; font-weight:bold;">statut</td>
 	    </tr>
 	    <?php $i = '0'; $ic = '1';
 		//while ( $i < 5)
@@ -629,12 +628,12 @@ function DecocheCheckbox() {
 	    ?><tr id="tra<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel'; document.getElementById('tra<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>'; document.getElementById('tra<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
 	      <td align="center" nowrap="nowrap" valign="middle"></td>
 	      <td align="center" nowrap="nowrap" valign="middle" style="text-align: left;" colspan="7" >
-		Status
+		Statut
 			<select name="statu_lettre[0]" style="width: 130px; border: 1px solid #000000;">
-				<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyer</option>
+				<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyé</option>
 				<option value="en attente" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'en attente') { ?>selected="selected"<?php } ?>>en attente</option>
-				<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponse reçus</option>
-				<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courrier annuler</option>
+				<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçues</option>
+				<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulés</option>
 			</select>
 		Remarque <input type="texte" name="remarque_lettre_suivi[0]" style="width: 150px; border: 1px solid #000000;" />
 		<?php /* en prévision ?
@@ -660,7 +659,7 @@ function DecocheCheckbox() {
 <?php } ?>
 	    <?php $i = $i + 1; } ?>
             <tr class="fond_vert">
-              <td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettre affiché <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
+              <td colspan="7" class="norme_absence_blanc"><?php if($nombre_d_entre!='' and $nombre_d_entre!='0') { ?>Nombre de lettres affichées <strong><?php echo $nombre_d_entre.'</strong>'; } else { ?>Aucune sélection<?php } ?></td>
 	    </tr>
             <tr>
               <td colspan="6" class="norme_absence">
@@ -696,7 +695,7 @@ function DecocheCheckbox() {
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Bilan des absences général</div>
+            <div class="titre_tableau_gestion">Bilan général des absences</div>
             <div class="norme_absence" style="text-align: left;">
             Classe
                 <select name="classe">
@@ -915,7 +914,7 @@ function DecocheCheckbox() {
                     <option value="1">Classe, Nom, Prénom</option>
                     <option value="2">Nom, Prénom</option>
                 </select><br />
-		Type d'étiquette
+		Types d'étiquettes
                 <select name="etiquette_type">
                     <option value="1">NOM Prénom, Classe</option>
                     <option value="2">NOM Prénom, Classe, Numéro élève</option>
@@ -945,7 +944,7 @@ function DecocheCheckbox() {
 	<form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>&amp;action_etiquette=bibliotheque" name="form10">
           <table style="width: 650px; margin: auto; border: 1px solid #000000;" cellpadding="0" cellspacing="0">
 	    <tr class="fond_vert">
-	     <td class="titre_tableau_gestion" colspan="3">Bibliothèque des format d'étiquettes</td>
+	     <td class="titre_tableau_gestion" colspan="3">Bibliothèque des formats d'étiquettes</td>
 	    </tr>
             <tr class="fond_vert">          
 	      <td style="width: 17px;"></td>
@@ -1001,7 +1000,7 @@ function DecocheCheckbox() {
       <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form6">
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
         <legend style="clear: both" class="legend_texte">&nbsp;Sélection&nbsp;</legend>
-            <div class="titre_tableau_gestion">Gestion des type de lettre</div>
+            <div class="titre_tableau_gestion">Gestion des types de lettre</div>
             <div class="norme_absence" style="text-align: center;">
 	    <select name="lettre_type" size="6" style="width: 448px; border: 1px solid #000000;">
 		    <?php
@@ -1020,7 +1019,7 @@ function DecocheCheckbox() {
 			?>
 		  </optgroup>
 		  </select><br />
-		  Si vous désirez en créer, saisisez le titre ici: <input name="lettre_type_nouv" style="width: 150px; border: 1px solid #000000;" value="<?php if ($action_choix_lettre === 'renommer') { $titre = titre_lettre_type($lettre_type); echo $titre[0]; } ?>" /><input name="reponse_lettre_type" value="oui" type="checkbox" title="désirez-vous une réponse à ce type de lettre" <?php if( ($action_choix_lettre === 'renommer' and $titre[1] === 'oui') or $action_choix_lettre != 'renommer' ) { ?>checked="checked"<?php } ?> />
+		  Si vous désirez en créer, saisissez le titre ici: <input name="lettre_type_nouv" style="width: 150px; border: 1px solid #000000;" value="<?php if ($action_choix_lettre === 'renommer') { $titre = titre_lettre_type($lettre_type); echo $titre[0]; } ?>" /><input name="reponse_lettre_type" value="oui" type="checkbox" title="désirez-vous une réponse à ce type de lettre" <?php if( ($action_choix_lettre === 'renommer' and $titre[1] === 'oui') or $action_choix_lettre != 'renommer' ) { ?>checked="checked"<?php } ?> />
 
   		  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
 		  <?php if (!empty($erreur)) { ?><span class="erreur_rouge_jaune"><?php echo $erreur.' (<strong>'.$lettre_type_nouv.'</strong>)'; ?></span><?php } ?>
@@ -1034,12 +1033,13 @@ function DecocheCheckbox() {
    <?php // afficher les informations sur la lettre 
 	if($type_impr === 'crea_lettre' and !empty($lettre_type) and $action_choix_lettre != 'supprimer' and $action_choix_lettre != 'modifier') { ?>
      <br />
-[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenue de la lettre sélectionné</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothèque des cadres</a> ]
-
+[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenu de la lettre sélectionnée</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothèque des cadres</a> ] 
+<br />
+<br />
 <?php if(empty($sous_rubrique)) { ?>
 <div style="float: right; margin-right: 20px; border: 1px solid #000000; background-color: #C2CFC5; height: 150px; width: 210px; background-image: url('../images/1.png'); background-repeat: repeat-x;">
       <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>#crea_lettre" name="form7">
-	    <strong style="color: #FFFFFF;">Cadre disponible</strong><br />
+	    <strong style="color: #FFFFFF;">Cadres disponibles</strong><br />
 	    <select name="cadre_selection[]" size="6" style="width: 200px; border: 0px solid #000000; filter:alpha(opacity=75); -moz-opacity:0.75; -khtml-opacity: 0.75; opacity: 0.75;" multiple="multiple">
 		    <?php
 			  $categorie_pass = '';
@@ -1063,7 +1063,7 @@ function DecocheCheckbox() {
      <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>#crea_lettre" name="form8">
      <table style="width: 550px; margin: auto; border: 1px solid #000000;" cellpadding="0" cellspacing="0">
 	  <tr class="fond_vert">
-	   <td class="titre_tableau_gestion" colspan="8">Contenue de la lettre - <?php echo titre_lettre_type($lettre_type) ?></td>
+	   <td class="titre_tableau_gestion" colspan="8">Contenu de la lettre - <?php echo titre_lettre_type($lettre_type) ?></td>
 	  </tr>
           <tr class="fond_vert">          
 	    <td style="width: 17px;"></td>
@@ -1084,7 +1084,7 @@ function DecocheCheckbox() {
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">
 	            <td style="text-align: center;"><a name="crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"></a><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=aff_modifier_cadre#crea_lettre<?php echo $data_1['cadre_lettre_tc']; ?>"><img src="../../images/edit16.png" title="modifier le cadre" border="0" alt="" /></a></td>
-	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
+	            <td style="text-align: center;"><a href="impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;id=<?php echo $data_1['id_lettre_tc']; ?>&amp;cadre_selection=<?php echo $data_1['cadre_lettre_tc']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>&amp;action_lettre=supprimer_cadre#crea_lettre" onClick="return confirm('Etes-vous sûr de vouloir le supprimer...')"><img src="../../images/delete16.png" title="supprimer le cadre" border="0" alt="" /></a></td>
                     <td class="norme_absence"><?php echo $data_1['nom_lettre_cadre']; ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="x_lettre_tc" value="<?php echo $data_1['x_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['x_lettre_tc']; } ?></td>
                     <td class="norme_absence" style="text-align: center;"><?php if($action_lettre === 'aff_modifier_cadre' and $cadre_selection === $data_1['cadre_lettre_tc']) { ?><input maxlength="6" size="4" name="y_lettre_tc" value="<?php echo $data_1['y_lettre_tc']; ?>" style="border: 1px solid #B3BFB8;" /><?php } else { echo $data_1['y_lettre_tc']; } ?></td>
@@ -1102,7 +1102,7 @@ function DecocheCheckbox() {
          <?php $i = $i + 1; } ?>
 	</table>
 	</form>
-<a href="lettre_pdf.php?lettre_type=<?php echo $lettre_type; ?>&amp;mode=apercus">Lancer un aperçus</a>
+<a href="lettre_pdf.php?lettre_type=<?php echo $lettre_type; ?>&amp;mode=apercus">Lancer un aperçu</a>
 
 <?php }
 
@@ -1159,8 +1159,8 @@ if($sous_rubrique === 'gb') { ?>
 		<optgroup label="Courrier">
 		   <option value="[courrier_demande_par]">courrier demandé par</option><?php echo "\n"; ?>
 		   <option value="[raison]">raison du courrier</option><?php echo "\n"; ?>
-		   <option value="[courrier_signe_par_fonction]">courrier signée par fonct.</option><?php echo "\n"; ?>
-		   <option value="[courrier_signe_par]">courrier signée par</option><?php echo "\n"; ?>
+		   <option value="[courrier_signe_par_fonction]">courrier signé par fonct.</option><?php echo "\n"; ?>
+		   <option value="[courrier_signe_par]">courrier signé par</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Elève">
 		   <option value="[nom_eleve]">Nom</option><?php echo "\n"; ?>
@@ -1173,8 +1173,8 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[liste_ret]">Liste des retards</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Responsable">
-		   <option value="[civilitee_court_responsable]">Civilitée court</option><?php echo "\n"; ?>
-		   <option value="[civilitee_long_responsable]">Civilitée long</option><?php echo "\n"; ?>
+		   <option value="[civilitee_court_responsable]">Civilité court</option><?php echo "\n"; ?>
+		   <option value="[civilitee_long_responsable]">Civilité long</option><?php echo "\n"; ?>
 		   <option value="[nom_responsable]">Nom</option><?php echo "\n"; ?>
 		   <option value="[prenom_responsable]">Prénom</option><?php echo "\n"; ?>
 		   <option value="[adresse_responsable]">Adresse</option><?php echo "\n"; ?>
@@ -1182,8 +1182,8 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[ville_responsable]">Ville</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="CPE en charge de l'élève">
-		   <option value="[civilitee_court_cpe]">Civilitée court</option><?php echo "\n"; ?>
-		   <option value="[civilitee_long_cpe]">Civilitée long</option><?php echo "\n"; ?>
+		   <option value="[civilitee_court_cpe]">Civilité court</option><?php echo "\n"; ?>
+		   <option value="[civilitee_long_cpe]">Civilité long</option><?php echo "\n"; ?>
 		   <option value="[nom_cpe]">Nom</option><?php echo "\n"; ?>
 		   <option value="[prenom_cpe]">Prénom</option><?php echo "\n"; ?>
 		</optgroup>
@@ -1225,7 +1225,7 @@ if($sous_rubrique === 'gb') { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <?php if($type_impr === 'laf') { ?>
 <div style="text-align: center;">
-<br /><br />[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre'>Gestion de la création des type de lettre</a> ]
+<br /><br />[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>

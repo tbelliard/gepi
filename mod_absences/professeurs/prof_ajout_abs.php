@@ -322,12 +322,12 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
  // -->
 </script>
 
-<p class=bold>|<a href='../../accueil.php'>Accueil</a> |
-<?php if($etape=="2" OR $etape=="3") { ?><a href='prof_ajout_abs.php?passage_form=manuel'>Retour étape 1/2</a> | <?php } ?>
-<a href="../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs">Visualiser les absences</a> |
-</p>
-
-
+<?php
+echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
+if($etape=="2" OR $etape=="3") { echo "<a href='prof_ajout_abs.php?passage_form=manuel'>Retour étape 1/2</a> |";  }
+echo "<a href=\"../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs\">Visualiser les absences</a>";
+echo "</p>";
+?>
 
 <?php
 // Première étape
@@ -417,7 +417,7 @@ foreach($groups as $group) {
 	  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
           <input value="valider" name="Valider" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
           <br /><br />
-          nous sommes le : <?php  echo date('d/m/Y') ?> et il est actuellement : <?php echo date('G:i')  ?>
+          Nous sommes le : <?php  echo date('d/m/Y') ?> et il est actuellement : <?php echo date('G:i')  ?>
    </form>
    </fieldset>
  </div>

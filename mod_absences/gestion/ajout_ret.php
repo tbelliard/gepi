@@ -1,5 +1,8 @@
 <?php
 /*
+*
+* $Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -225,7 +228,7 @@ $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?><?php if($page == 2) { ?>&select_fiche_eleve=<?php echo $eleve_absent[0]; } ?>'>Retour</a>|
+<p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?><?php if($page == 2) { ?>&select_fiche_eleve=<?php echo $eleve_absent[0]; } ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p><?php
 
 $i = '0';

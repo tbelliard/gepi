@@ -4157,17 +4157,79 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');");
 
-
+        // Ajout Mod_absences
+		$result .= "&nbsp;->Création de la table vs_alerts_eleves<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_eleves'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `vs_alerts_eleves` (
+								  `id_alert_eleve` int(11) NOT NULL auto_increment,
+								  `eleve_alert_eleve` varchar(100) NOT NULL,
+								  `date_alert_eleve` date NOT NULL,
+								  `groupe_alert_eleve` int(11) NOT NULL,
+								  `type_alert_eleve` int(11) NOT NULL,
+								  `nb_trouve` int(11) NOT NULL,
+								  `temp_insert` varchar(100) NOT NULL,
+								  `etat_alert_eleve` tinyint(4) NOT NULL,
+								  `etatpar_alert_eleve` varchar(100) NOT NULL,
+								  PRIMARY KEY  (`id_alert_eleve`)
+								  );");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }	
+		
+		$result .= "&nbsp;->Création de la table vs_alerts_groupes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_groupes'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `vs_alerts_groupes` (
+								  `id_alert_groupe` int(11) NOT NULL auto_increment,
+								  `nom_alert_groupe` varchar(150) NOT NULL,
+								  `creerpar_alert_groupe` varchar(100) NOT NULL,
+								  PRIMARY KEY  (`id_alert_groupe`)
+								  );");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }		
+		
+		$result .= "&nbsp;->Création de la table vs_alerts_types<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_types'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `vs_alerts_types` (
+								  `id_alert_type` int(11) NOT NULL auto_increment,
+								  `groupe_alert_type` int(11) NOT NULL,
+								  `type_alert_type` varchar(10) NOT NULL,
+								  `specifisite_alert_type` varchar(25) NOT NULL,
+								  `eleve_concerne` text NOT NULL,
+								  `date_debut_comptage` date NOT NULL,
+								  `nb_comptage_limit` varchar(200) NOT NULL,
+								  PRIMARY KEY  (`id_alert_type`)
+								  );");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }				
+		 // Fin Ajout Mod_absences	
+			
+			
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
             $result .= $result_inter;
         }
         $result_inter = '';
-
-
-
-
 
     }
 

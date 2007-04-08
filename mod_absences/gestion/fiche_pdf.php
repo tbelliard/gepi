@@ -1,7 +1,6 @@
 <?php
 /*
-*
-*$Id$
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -687,7 +686,7 @@ $pdf->SetFillColor(255,255,255);
         $cpt_lettre_envoye = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre de lettre expédié : '.$cpt_lettre_envoye, 0, 2, 'L', 0);
 	// nombre de lettre resté sans réponse
-        $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND statu_lettre_suivi = 'recus'"),0);
+        $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Lettre resté sans réponse : '.$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
         $cpt_lettre_avertissement = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
@@ -772,9 +771,16 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 					$pass = '';					
 					if ( $j < 10 ) { $jour_num = '0'.$j; } else { $jour_num = $j; }
 					$jour_select = $mois[$i]['num_annee'].'-'.$mois[$i]['num_mois'].'-'.$jour_num;
-					if ( !empty($info_absence[$jour_select]) ) {
+
+					if ( !empty($info_absence[$jour_select.'-0']) ) {
+
+					   // boucle pour vérifier si plusieurs horraire dans cette journé
+					   $cpt_horraire_jour = 0;
+					   $jour_select_tt = $jour_select.'-'.$cpt_horraire_jour;
+					   while ( !empty($info_absence[$jour_select_tt]) ) 
+					   {
 						// connaitre si l'absence à été le matin
-						if ( $info_absence[$jour_select]['heure_debut'] >= '06:00:00' and $info_absence[$jour_select]['heure_fin'] <= '13:00:00' ) {
+						if ( $info_absence[$jour_select_tt]['heure_debut'] >= '06:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '13:00:00' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
 							$valeur_y_carre = $pdf->GetY();
@@ -794,7 +800,7 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 							$pass = 'ok';
 						}
 						// connaitre si l'absence à été l'après-midi
-						if ( $info_absence[$jour_select]['heure_debut'] > '13:00:00' and $info_absence[$jour_select]['heure_fin'] <= '19:00:00' ) {
+						if ( $info_absence[$jour_select_tt]['heure_debut'] > '13:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '19:00:00' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
 							$valeur_y_carre = $pdf->GetY();
@@ -814,7 +820,7 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 							$pass = 'ok';
 						}
 						// connaitre si l'absence à été tout la journée
-						if ( $info_absence[$jour_select]['heure_debut'] > '06:00:00' and $info_absence[$jour_select]['heure_fin'] <= '19:00:00' and $pass != 'ok' ) {
+						if ( $info_absence[$jour_select_tt]['heure_debut'] > '06:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '19:00:00' and $pass != 'ok' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
 							$valeur_y_carre = $pdf->GetY();
@@ -827,12 +833,14 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 							  // si après midi on déplace la case +$l_jour_case
 							$pdf->SetXY($valeur_x_carre, $valeur_y_carre);
 							// cellule de l'absences
-							$pdf->Cell($l_jour_case, $h_mois, 'J', $cadre, 0, 'C', 1);
+							$pdf->Cell($l_jour_case, $h_mois, 'MA', $cadre, 0, 'C', 1);
 							// on remet les valeurs initial
 							$pdf->SetXY($valeur_x_carre, $valeur_y_carre);
 							$pdf->SetTextColor(0, 0, 0);
 						}
-
+					   $cpt_horraire_jour = $cpt_horraire_jour + 1;
+					   $jour_select_tt = $jour_select.'-'.$cpt_horraire_jour;
+					   }
 					}
 
 				 } else { 

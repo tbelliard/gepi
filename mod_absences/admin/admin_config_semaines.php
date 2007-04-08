@@ -95,10 +95,9 @@ if ( $action === 'visualiser' )
         }
 }
 
-
+echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
+echo "<a href='index.php'>Retour module absence</a> </p>";
 ?>
-<p class=bold>|
-<a href="../../accueil.php">Accueil</a>|<a href="../../accueil_modules.php">Retour administration des modules</a>|<a href='index.php'>Retour module absence</a>|</p>
 
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>

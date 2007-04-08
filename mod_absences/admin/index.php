@@ -57,11 +57,12 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été
 // header
 $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc");
+
+
+echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
+echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> |";
+echo "</p>";
 ?>
-<p class=bold>
-|<a href="../../accueil.php">Accueil</a>|
-<a href="../../accueil_modules.php">Retour administration des modules</a>|
-</p>
 <H2>Gestion des absences par les CPE</H2>
 <i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</i>
 <br />

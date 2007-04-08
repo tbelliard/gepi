@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 15/06/2006
+ * $Id$
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -71,16 +71,16 @@ else  {
 
 $date_ce_jour = date('d/m/Y');
 ?>
-<p class=bold>|<a href='./gestion_absences.php?type=<?php echo $type; ?>'>Retour</a>|
+<p class=bold><a href='./gestion_absences.php?type=<?php echo $type; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
   <table class="entete_tableau_selection" border="0" cellspacing="0" cellpadding="2">
     <tr>
       <td class="titre_tableau_selection" colspan="2"><b>
-      <?php if($type == "A") { ?>Absence d'un ou plusieurs &eacute;l&egrave;ve(s)<?php }
-       if($type == "D") { ?>Dispence d'un &eacute;l&egrave;ve(s)<?php }
-       if($type == "R") { ?>Retard d'un ou plusieurs &eacute;l&egrave;ve(s)<?php }
+      <?php if($type == "A") { ?>Absences d'un ou plusieurs &eacute;l&egrave;ve(s)<?php }
+       if($type == "D") { ?>Dispences d'un &eacute;l&egrave;ve(s)<?php }
+       if($type == "R") { ?>Retards d'un ou plusieurs &eacute;l&egrave;ve(s)<?php }
        if($type == "I") { ?>Infirmerie d'un &eacute;l&egrave;ve(s)<?php } ?>
        </b></td>
     </tr>
@@ -88,7 +88,7 @@ $date_ce_jour = date('d/m/Y');
       <td class="td_tableau_selection">
         <form name="form1" method="post" action="select.php?type=<?php echo $type; ?>">
          <fieldset class="fieldset_efface">
-            sélection de la classe :
+            Sélection de la classe :
             <select name="classe_choix">
               <option value="tous" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
               <?php
@@ -104,10 +104,10 @@ $date_ce_jour = date('d/m/Y');
           </fieldset>
          </form>
       <?php if($type == "A" OR $type == "R") { ?>
-         <span class="norme_absence_bleu">* Pour sélectionner plusieurs élèves : touche CTRL enfoncée puis sélectionnez les différents élèves en cliquant dessus.</span><br /><br />
+         <span class="norme_absence_bleu">* Pour sélectionner plusieurs élèves : touche CTRL enfoncée puis sélectionner les différents élèves en cliquant dessus.</span><br /><br />
       <?php } ?>
       <?php if($type == "A") { ?>
-         <span class="norme_absence_bleu">* Si aucun élève sélectionné, la classe entière sera sélectionnée.</span><br /><br />
+         <span class="norme_absence_bleu">* Si aucun élève n'est sélectionné, la classe entière sera sélectionnée.</span><br /><br />
       <?php } ?>
       </td>
       <td class="td_tableau_selection">

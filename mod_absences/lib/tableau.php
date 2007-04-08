@@ -315,8 +315,10 @@ if ($recherche == "afficher")
 ?>
 
 
-<?php if( $pagedarriver === 'gestion_absences') { ?><p class=bold>| <a href="../gestion/gestion_absences.php">Retour</a> |</p><?php } ?>
-<?php if( $pagedarriver === 'prof_ajout_abs') { ?><p class=bold>| <a href="../professeurs/prof_ajout_abs.php">Retour</a> |</p><?php } ?>
+<?php
+ if( $pagedarriver === 'gestion_absences') { echo "<p class=bold> <a href=\"../gestion/gestion_absences.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>"; } 
+ if( $pagedarriver === 'prof_ajout_abs') { echo "<p class=bold> <a href=\"../professeurs/prof_ajout_abs.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>"; }
+?>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
@@ -400,10 +402,10 @@ if ($recherche == "afficher")
                   } ?>
                  </tr>
                  <tr>
-                   <td class="norme_absence">pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
+                   <td class="norme_absence">Pour le motif : <?php echo motif_de($data_div['motif_absence_eleve']); ?></td>
                  </tr>
                  <tr>
-                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+                   <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
                  </tr>
                  <tr>
                    <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -474,10 +476,10 @@ if ($recherche == "afficher")
                   } ?>
              </tr>
              <tr>
-               <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+               <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
-               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e por justification : </b><?php } ?></span></td>
+               <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute;e por justification : </b><?php } ?></span></td>
              </tr>
              <tr>
                <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -533,10 +535,10 @@ if ($recherche == "afficher")
               <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> est dispensé<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?><br /> du <?php echo date_frl($data_div['d_date_absence_eleve']); ?> au <?php echo date_frl($data_div['a_date_absence_eleve']); ?><br />plus d'info : <?php echo $data_div['info_absence_eleve']; ?></td>
            </tr>
             <tr>
-              <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+              <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
             </tr>
             <tr>
-              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>n'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
+              <td class="norme_absence"><?php if ($data_div['justify_absence_eleve'] != "O") {?><span class="norme_absence_rouge"><b>N'a pas donn&eacute;e de justification</b><? } else { ?><span class="norme_absence_vert"><b>a donn&eacute; pour justification : </b><?php } ?></span></td>
             </tr>
             <tr>
               <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -602,7 +604,7 @@ if ($recherche == "afficher")
                   } ?>
              </tr>
              <tr>
-               <td class="norme_absence">pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
+               <td class="norme_absence">Pour le motif : <?php echo motab($data_div['motif_absence_eleve']); ?></td>
              </tr>
              <tr>
                <td class="norme_absence"><?php if(!empty($data_div['info_justify_absence_eleve'])) { ?><blockquote><?php echo $data_div['info_justify_absence_eleve']; ?></blockquote><?php } ?></td>
@@ -652,3 +654,4 @@ if ($recherche == "afficher")
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<?php require("../../lib/footer.inc.php"); ?>

@@ -761,3 +761,12 @@ a.info:hover span,a.info:focus span,a.info:active span {
 	padding-left: 10px;
 }
 
+.information_etat_ae {
+	color: #E8F1F4;
+	background-color: #BF0000; /* #555555 */
+	text-align: center;
+	font-weight: bold;
+	border: 0px solid #F8F8F8;
+	margin: 0px 20px 2px 20px;
+	font-size: 14px;
+}

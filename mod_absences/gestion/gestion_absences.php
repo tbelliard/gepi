@@ -1,7 +1,6 @@
 <?php
 /*
-*
-*$Id$
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -392,20 +391,20 @@ require_once("../../lib/header.inc");
 ?>
 <?php /* La page gestion global des absences */ ?>
 <p class="bold"><a href='<?php if($select_fiche_eleve=='' and $fiche_eleve=='' and $choix!='lemessager') { ?>../../accueil.php<?php } else { ?>gestion_absences.php<?php } ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
-<a href="./impression_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
+<a href="./impression_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
   <form method="post" action="gestion_absences.php?type=<?php echo $type; ?>&amp;choix=<?php echo $choix; ?>" name="choix_type_vs" style="margin: auto; text-align: center;">
    <fieldset class="fieldset_efface">
      <input name="date_ce_jour" type="hidden" value="<?php echo $date_ce_jour; ?>" />
      <select name="type">
-        <option value="A" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="A") {echo "selected"; } ?>>Absence</option>
-        <option value="R" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="R") {echo "selected"; } ?>>Retard</option>
+        <option value="A" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="A") {echo "selected"; } ?>>Absences</option>
+        <option value="R" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="R") {echo "selected"; } ?>>Retards</option>
         <option value="I" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="I") {echo "selected"; } ?>>Infirmerie</option>
-        <option value="D" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="D") {echo "selected"; } ?>>Dispense</option>
+        <option value="D" onClick="javascript:document.choix_type_vs.submit()" <?php if ($type=="D") {echo "selected"; } ?>>Dispenses</option>
      </select><input name="submit8" type="image" src="../../images/enabled.png" style="border: 0px;" />
 		<?php /* <input type="submit" name="submit8" value="&lt;&lt;" />*/ ?>
      &nbsp; <a href="select.php?type=<?php echo $type; ?>&amp;classe_choix=<?php echo $classe_choix; ?>">Ajouter</a> - <a href="../lib/tableau.php?type=<?php echo $type; ?>&amp;pagedarriver=gestion_absences">Tableau</a>
@@ -416,13 +415,13 @@ require_once("../../lib/header.inc");
 <div class="centre"><hr width="550" size="1"/></div>
 <div class="centre">
 <?php if($type == "A" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absence sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absence avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Absences avec motif</a> ]
 <?php } if($type == "R" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retard sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retard avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Retards avec motif</a> ]
 <?php } if($type == "I" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">infirmerie avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Infirmerie avec motif</a> ]
 <?php } if($type == "D" and $fiche_eleve == "") { ?>
-[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispense sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispense avec motif</a> ]
+[ <a href="gestion_absences.php?choix=top10&amp;type=<?php echo $type; ?>">Top 10</a> | <a href="gestion_absences.php?choix=sm&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses sans motif</a> | <a href="gestion_absences.php?choix=am&amp;type=<?php echo $type; ?>&amp;date_ce_jour=<?php echo $date_ce_jour; ?>">Dispenses avec motif</a> ]
 <?php } ?>
 </div>
 
@@ -589,7 +588,7 @@ require_once("../../lib/header.inc");
        <fieldset class="fieldset_efface">
         <table class="td_tableau_gestion" border="0" cellspacing="1" cellpadding="2">
           <tr>
-            <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absence sans motif<?php } ?><?php if ($type=="R") { ?>Retard sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispense sans motif<?php } ?></b></td>
+            <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
           </tr>
           <?php
          $total = 0;
@@ -648,7 +647,7 @@ require_once("../../lib/header.inc");
           <?php //Affiche le calendrier
                 minicals($year, $month, $day, $classe_choix, $type, 'gestion_absences');
           ?>
-          Informations donnée pour la date du<br /><b><?php echo date_frl($date_ce_jour); ?></b><br /><br />
+          Informations données pour la date du<br /><b><?php echo date_frl($date_ce_jour); ?></b><br /><br />
           Classe &nbsp;
           <select name="classe_choix">
             <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
@@ -665,7 +664,7 @@ require_once("../../lib/header.inc");
           <?php if (getSettingValue("active_module_trombinoscopes")=='y')  { ?>
               <input type="checkbox" name="photo" value="avec_photo" id="avecphoto" onClick="javascript:document.form1.submit()"   <?php  if ($photo=="avec_photo") { ?>checked="checked"<?php } ?> /><label for="avecphoto" style="cursor: pointer;">Avec photo</label><br /><br />
           <?php } ?>
-          Pour voir, toutes les <?php if($type == "A") { ?>Absence<?php } if($type == "R") { ?>Retard<?php } if($type == "I") { ?>Infirmerie<?php } if($type == "D") { ?>Dispense<?php } ?> n'ayant pas eu de justificatif, veuillez cocher la case ci-dessous.<br />
+          Pour voir, toutes les <?php if($type == "A") { ?>absences<?php } if($type == "R") { ?>Retards<?php } if($type == "I") { ?>Infirmerie<?php } if($type == "D") { ?>Dispenses<?php } ?> n'ayant pas eu de justificatif, veuillez cocher la case ci-dessous.<br />
             <input type="checkbox" name="choix" id="voirabssansjust" value="sma" onClick="javascript:document.form1.submit()" <?php  if ($choix=="sma") { ?>checked="checked"<?php } ?> />
             <label for="voirabssansjust" style="cursor: pointer;"><?php if($type == "A") { ?>Absence<?php } if($type == "R") { ?>Retard<?php } if($type == "I") { ?>Infirmerie<?php } if($type == "D") { ?>Dispense<?php } ?> sans justification</label>
           </fieldset>
@@ -737,7 +736,7 @@ require_once("../../lib/header.inc");
       <fieldset class="fieldset_efface">
        <table class="td_tableau_gestion" border="0" cellspacing="1" cellpadding="2">
         <tr>
-          <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absence sans motif<?php } ?><?php if ($type=="R") { ?>Retard sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispense sans motif<?php } ?></b></td>
+          <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences sans motif<?php } ?><?php if ($type=="R") { ?>Retards sans motif<?php } ?><?php if ($type=="I") { ?>Infirmerie sans motif<?php } ?><?php if ($type=="D") { ?>Dispenses sans motif<?php } ?></b></td>
         </tr>
         <?php
          $total = 0;
@@ -888,7 +887,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
    <fieldset class="fieldset_efface">
     <table class="td_tableau_gestion" border="0" cellspacing="1" cellpadding="2">
         <tr>
-          <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absence avec motif<?php } ?><?php if ($type=="R") { ?>Retard avec motif<?php } ?><?php if ($type=="I") { ?>Infirmerie avec motif<?php } ?><?php if ($type=="D") { ?>Dispense avec motif<?php } ?></b></td>
+          <td colspan="3" class="titre_tableau_gestion" nowrap><b><?php if ($type=="A") { ?>Absences avec motif<?php } ?><?php if ($type=="R") { ?>Retards avec motif<?php } ?><?php if ($type=="I") { ?>Infirmerie avec motif<?php } ?><?php if ($type=="D") { ?>Dispenses avec motif<?php } ?></b></td>
         </tr>
         <?php
          $total = 0;
@@ -946,7 +945,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
             <?php //Affiche le calendrier
                 minicals($year, $month, $day, $classe_choix, $type, 'gestion_absences');
             ?>
-            Informations donnée pour la date du<br /><b><?php echo date_frl($date_ce_jour); ?></b><br /><br />
+            Informations données pour la date du<br /><b><?php echo date_frl($date_ce_jour); ?></b><br /><br />
             Classe &nbsp;
             <select name="classe_choix">
               <option value="" selected onClick="javascript:document.form1.submit()">Toutes les classes</option>
@@ -1031,7 +1030,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 
 <?php /* fiche identitée de l'élève */ ?>
 <a name="ident"></a>
-<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identitée élève</div>
+<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identité élève</div>
 <div style="border-top: 2px solid #2C7E8F; /* #FF9F2F */ border-bottom: 2px solid #2C7E8F; width: 100%; margin: auto; padding: 0; position: relative;">
 	<div style="height: 135px; background: transparent url(../images/grid_10.png)">
 		<div style="float: left; margin: 12.5px;">
@@ -1071,7 +1070,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 <?php /* fin fiche identitée de l'élève */ ?>
 
     <div style="text-align: center;">
-	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'élève">Suivi de l'élève</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentéisme non justifié">Absentéisme non justifié</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuel</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="Répartissement des absences">Répartissement des absences</a> ]
+	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'élève">Suivi de l'élève</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentéisme non justifié">Absentéisme non justifié</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuelle</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="Répartissement des absences">Répartition des absences</a> ]
     </div><br />
 
 <?php /* DIV global */ ?>
@@ -1083,7 +1082,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 <?php /* DIV du suivi de l'élève */ ?>
 	   <?php if ( $aff_fiche==='suivieleve' or $aff_fiche==='' ) { ?>
 		<a name="suivieleve"></a>
-		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Actualitée élève</div>
+		<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Actualité élève</div>
 		<div style="border-top: 2px solid #2C7E8F; border-bottom: 2px solid #2C7E8F;">
 			<div style="background: transparent url(../images/grid_10.png); padding-top: 5px;">
 
@@ -1538,7 +1537,11 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
                    }
 	?><div style="font-size: 14px; text-align: center; margin: auto;"><strong>Statistique sur une année</strong></div>
 	<?php
-		echo @tableau_annuel($select_fiche_eleve, '8', '12', '2006', $tableau_info_donnee);
+		$gepiYear = getSettingValue('gepiYear');
+		$annee_select = explode('-',$gepiYear);
+		if ( empty($annee_select[1]) ) { $annee_select = explode('/',$gepiYear); }
+		if ( empty($annee_select[1]) ) { $annee_select = explode(' ',$gepiYear); }
+		echo @tableau_annuel($select_fiche_eleve, '8', '12', trim($annee_select[0]), $tableau_info_donnee);
 	?>
 			</div>
 		</div>
@@ -1562,8 +1565,8 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
            <td colspan="2" class="titre_tableau_gestion"><b>Le messager</b></td>
        </tr>
        <tr class="td_tableau_absence_1">
-           <td class="norme_absence_min" style="text-align: center; width: 50%;">Les prioritaire</td>
-           <td class="norme_absence_min" style="text-align: center; width: 50%;">Les message</td>
+           <td class="norme_absence_min" style="text-align: center; width: 50%;">Les prioritaires</td>
+           <td class="norme_absence_min" style="text-align: center; width: 50%;">Les messages</td>
        </tr>
        <tr class="td_tableau_absence_2">
            <td class="norme_absence_min" valign="top">
@@ -1697,13 +1700,12 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		} 
 
 		$tab1 = crer_tableau_jaj($tableau);
-		$tab2 = rech_tableau_heurepresent($tab1, '08:00:00', '09:00:00');
-echo '<pre>';
-print_r($tab1);
-print_r($tab2);
-echo '</pre>';*/
+		$tab2 = rech_tableau_heurepresent($tab1, '08:00:00', '09:00:00');*/
+//$tab1 = repartire_jour('baba','A','2007-01-01','2007-06-01');
+//echo '<pre>';
+//print_r($tab1);
+//echo '</pre>';
 
 require("../../lib/footer.inc.php");
 ?>
 <?php mysql_close(); ?>
-

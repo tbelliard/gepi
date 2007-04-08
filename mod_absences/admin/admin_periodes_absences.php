@@ -180,17 +180,16 @@ if ($action == "modifier")
  }
 
 
+
+echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
+echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | ";
+echo "<a href='index.php'>Retour module absence</a> | ";
+
+if ($action=="modifier" or $action=="ajouter") echo "<a href=\"admin_periodes_absences.php?action=visualiser\">Retour accueil créneaux horaires</a>";
+if ($action=="visualiser") echo "<a href=\"admin_periodes_absences.php?action=ajouter\">Ajouter un créneaux horaires</a>";
+
+echo "</p>";
 ?>
-<p class=bold>|
-<a href="../../accueil.php">Accueil</a>|
-<a href="../../accueil_modules.php">Retour administration des modules</a>|
-<a href='index.php'>Retour module absence</a>|
-<?php if ($action=="modifier" or $action=="ajouter") echo "<a href=\"admin_periodes_absences.php?action=visualiser\">Retour accueil créneaux horaires</a>"; ?>
-<?php if ($action=="visualiser") echo "<a href=\"admin_periodes_absences.php?action=ajouter\">Ajouter un créneaux horaires</a>";?>|
-
-
-
-</p>
 <?php if ($action == "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">

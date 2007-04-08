@@ -70,6 +70,8 @@ die();
 		   else { if (isset($_GET['specifisite_alert_type_p'])) { $specifisite_alert_type_p = $_GET['specifisite_alert_type_p']; } if (isset($_POST['specifisite_alert_type_p'])) { $specifisite_alert_type_p = $_POST['specifisite_alert_type_p']; } }
 		if (empty($_GET['specifisite_alert_type_c']) and empty($_POST['specifisite_alert_type_c'])) { $specifisite_alert_type_c = ''; }
 		   else { if (isset($_GET['specifisite_alert_type_c'])) { $specifisite_alert_type_c = $_GET['specifisite_alert_type_c']; } if (isset($_POST['specifisite_alert_type_c'])) { $specifisite_alert_type_c = $_POST['specifisite_alert_type_c']; } }
+		if (empty($_GET['specifisite_alert_type_f']) and empty($_POST['specifisite_alert_type_f'])) { $specifisite_alert_type_f = ''; }
+		   else { if (isset($_GET['specifisite_alert_type_f'])) { $specifisite_alert_type_f = $_GET['specifisite_alert_type_f']; } if (isset($_POST['specifisite_alert_type_f'])) { $specifisite_alert_type_f = $_POST['specifisite_alert_type_f']; } }
 		if ( $type_alert_type === 'P' ) { $specifisite_alert_type = $specifisite_alert_type_p; }
 		if ( $type_alert_type === 'C' ) { $specifisite_alert_type = $specifisite_alert_type_c; }
 		if ( $type_alert_type === 'F' ) { $specifisite_alert_type = $specifisite_alert_type_f; }
@@ -79,6 +81,9 @@ die();
 	   else { if (isset($_GET['date_debut_comptage'])) { $date_debut_comptage = $_GET['date_debut_comptage']; } if (isset($_POST['date_debut_comptage'])) { $date_debut_comptage = $_POST['date_debut_comptage']; } }
 	if (empty($_GET['nb_comptage_limit']) and empty($_POST['nb_comptage_limit'])) { $nb_comptage_limit = ''; }
 	   else { if (isset($_GET['nb_comptage_limit'])) { $nb_comptage_limit = $_GET['nb_comptage_limit']; } if (isset($_POST['nb_comptage_limit'])) { $nb_comptage_limit = $_POST['nb_comptage_limit']; } }
+
+	if (empty($_GET['etat_alert_eleve']) and empty($_POST['etat_alert_eleve'])) { $etat_alert_eleve = ''; }
+	   else { if (isset($_GET['etat_alert_eleve'])) { $etat_alert_eleve = $_GET['etat_alert_eleve']; } if (isset($_POST['etat_alert_eleve'])) { $etat_alert_eleve = $_POST['etat_alert_eleve']; } }
 
 	if (empty($_GET['action']) and empty($_POST['action'])) { $action = ''; }
 	   else { if (isset($_GET['action'])) { $action = $_GET['action']; } if (isset($_POST['action'])) { $action = $_POST['action']; } }
@@ -322,7 +327,7 @@ if ( ( $action_sql === 'nouveau_alert_groupe' or $action_sql === 'modifier_alert
 
 if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 
-	// on vérifie s'il n'existe pas une alerte de même nom
+	// on vérifie s'il existe une alerte
 	      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
 		if ( $test_existance != '0' )
 		{
@@ -333,6 +338,13 @@ if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 			if ( $test_existance != '0' )
 			{
 				$requete = "DELETE FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'";
+		              	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			}
+		      // on vérifie s'il existe des alert eleve définie pour ce groupe si oui on les supprimes
+		      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+			if ( $test_existance != '0' )
+			{
+				$requete = "DELETE FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'";
 		              	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			}
 		} else { $message_erreur = 'Cette id n\'exite pas.'; }
@@ -393,6 +405,12 @@ if ( $action === 'modifier_alert_type' and $valide_form === 'yes' ) {
 		} else { $message_erreur = 'Cette id n\'exite pas.'; }
 }
 
+if ( $action_sql === 'modif_etat_ae' and $valide_form === 'yes' ) {
+	if ( $etat_alert_eleve === '0' ) { $personnelle_active = ''; } else { $personnelle_active = $_SESSION['login']; }
+	$requete = "UPDATE ".$prefix_base."vs_alerts_eleves SET etat_alert_eleve = '".$etat_alert_eleve."', etatpar_alert_eleve = '".$personnelle_active."' WHERE  id_alert_eleve = '".$id_alert_eleve."'";
+        $execution_requete = mysql_query($requete);
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
 require_once("../../lib/header.inc");
@@ -409,20 +427,20 @@ function twAfficheCache(nObjet,nEtat) {
 </script> 
 <p class=bold><a href='gestion_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
 
-<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a>|
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a>|
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a>|
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alert</a>|
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a> 
 </p>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center; margin: auto; width: 95%;">
 
   <div style="border: 2px solid #BF0000; width: 25%; height: 150px; float: left; margin-top: 17px;">
-	<div class="entete_alert"><b>Système d'alert</b></div>
+	<div class="entete_alert"><b>Système d'alerte</b></div>
 	<div>
 		<form name="form1" method="post" action="alert_suivi.php">
-			Choix du groupe d'alert
+			Choix du groupe d'alerte
 	               <select name="id_alert_groupe" id="id_alert_groupe" tabindex="1" style="width: 98%; border : 1px solid #000000; margin-top: 5px;">
                  		<?php
 				$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes ORDER BY nom_alert_groupe ASC";
@@ -431,7 +449,7 @@ function twAfficheCache(nObjet,nEtat) {
 				{ ?>
 	                          <option value="<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>" <?php if ( !empty($id_alert_groupe) and $id_alert_groupe === $donnee_alert_groupe['id_alert_groupe'] ) { ?>selected="selected"<?php } ?>><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></option>
         	          <?php } ?>
-	               </select><br /><a href="alert_suivi.php?action_page=gestion_ag&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=editer_alert_groupe&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>">gérer les groupes d'alerts</a><br /><br />
+	               </select><br /><a href="alert_suivi.php?action_page=gestion_ag&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=editer_alert_groupe&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>">gérer les groupes d'alerte</a><br /><br />
 		       <input type="hidden" name="action_page" value="alert" />
 		       <input type="submit" name="submit1" value="Valider" tabindex="2" /><br />
 		</form>
@@ -440,7 +458,7 @@ function twAfficheCache(nObjet,nEtat) {
 
 <?php if ( $action_page === '' or $action_page === 'alert' ) { ?>
   <div style="margin-left: 25%; width: 74%;">
-	<div class="entete_alert_message">ALERT EN COURT</div>
+	<div class="entete_alert_message">ALERTE EN COURS</div>
 	<div class="scroll" style="background-color: #EFEFEF; border-left: 4px solid #BF0000;">
 		<table style="width: 98%; margin: 5px;" cellspacing="1" cellpadding="0">
 		  <tr class="entete_alert_message">
@@ -455,7 +473,11 @@ function twAfficheCache(nObjet,nEtat) {
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 		  <tr class="<?php echo $couleur_cellule; ?>">
 			<td style="text-align: left; padding: 2px;"><a href="alert_suivi.php?id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;id_alert_eleve=<?php echo $donnee_alert_eleve['id_alert_eleve']; ?>#ea"><?php echo $donnee_alert_eleve['nom'].' '.$donnee_alert_eleve['prenom']; ?></a></td>
-			<td style="width: 200px; padding: 2px;">non attribué</td>
+			<td style="width: 200px; padding: 2px;">
+				<?php if ( $donnee_alert_eleve['etat_alert_eleve'] === '0' ) { ?>Non classé<?php } ?>
+				<?php if ( $donnee_alert_eleve['etat_alert_eleve'] === '1' ) { ?>Convocation élève<?php } ?>
+				<?php if ( $donnee_alert_eleve['etat_alert_eleve'] === '2' ) { ?>Déclassé<?php } ?>
+			</td>
 		  </tr>
 		  <?php $i_cpt = $i_cpt + 1; } ?>
 		</table>
@@ -493,6 +515,8 @@ function twAfficheCache(nObjet,nEtat) {
 					$date_debut_alert = $donnee_alert_eleve['date_alert_eleve'];
 					$groupe_alert = $donnee_alert_eleve['groupe_alert_eleve'];
 					$nb_compte = $donnee_alert_eleve['nb_trouve'];
+					$etat_alert_eleve = $donnee_alert_eleve['etat_alert_eleve'];
+					$etatpar_alert_eleve = $donnee_alert_eleve['etatpar_alert_eleve'];
 				}
 			?>
 		<a name="ea"></a>
@@ -533,7 +557,32 @@ function twAfficheCache(nObjet,nEtat) {
 		               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
 	        	       	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
 				{
-?><li>correspond à une limite de <strong><?php echo $donnee_alert_type['nb_comptage_limit']; ?></strong> de type <strong><?php echo $donnee_alert_type['type_alert_type'].' '.$donnee_alert_type['specifisite_alert_type']; ?></strong> depuis le <strong><?php echo date_fr($donnee_alert_type['date_debut_comptage']); ?></strong>.</li><?php
+?><li>correspond à une limite de <strong><?php echo $donnee_alert_type['nb_comptage_limit']; ?></strong> de type <strong>
+<?php
+	$type_alert = '';
+	if ( $donnee_alert_type['type_alert_type'] === 'C' ) { $type_alert = 'courrier'; }
+	if ( $donnee_alert_type['type_alert_type'] === 'P' ) { $type_alert = 'Présence de l\'élève'; }
+	if ( $donnee_alert_type['type_alert_type'] === 'F' ) { $type_alert = 'Action sur la fiche élève'; }
+
+	$spec_type_alert = '';
+	if ( $donnee_alert_type['type_alert_type'] === 'C' )
+	{ 
+		$spec_type_alert = lettre_type($donnee_alert_type['specifisite_alert_type']);
+	}
+	if ( $donnee_alert_type['type_alert_type'] === 'P' )
+	{
+		if ( $donnee_alert_type['specifisite_alert_type'] === 'A' ) { $spec_type_alert = 'absence'; }
+		if ( $donnee_alert_type['specifisite_alert_type'] === 'R' ) { $spec_type_alert = 'retard'; }
+		if ( $donnee_alert_type['specifisite_alert_type'] === 'D' ) { $spec_type_alert = 'dispense'; }
+		if ( $donnee_alert_type['specifisite_alert_type'] === 'I' ) { $spec_type_alert = 'passage à l\'infirmerie'; }		
+	}
+	if ( $donnee_alert_type['type_alert_type'] === 'F' )
+	{
+		$spec_type_alert = fiche_action_type($donnee_alert_type['specifisite_alert_type']);
+	}
+?>
+
+<?php echo $type_alert.' ('.$spec_type_alert.')'; ?></strong> depuis le <strong><?php echo date_fr($donnee_alert_type['date_debut_comptage']); ?></strong>.</li><?php
 				}
 ?></ul><br /><?php
 
@@ -543,7 +592,35 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<strong><?php echo $prenom_eleve; ?></strong> à franchit ce niveau le : <strong><?php echo date_fr($date_debut_alert); ?></strong> avec un total de <strong><?php echo $nb_compte; ?></strong>.
 */ ?>
 				</div>
-		<br />
+
+
+
+				<div style="font-size: 150%; background: #555555; color: #FFFFFF;">Etat de l'alerte</div>
+				<div style="margin-left: 10px; padding-left: 10px;">
+					<div class="information_etat_ae">
+						<?php if ( $etat_alert_eleve === '0' ) { ?>Cette alerte n'a pas d'action sélectionnée pour l'instant <?php } ?>
+						<?php if ( $etat_alert_eleve === '1' ) { ?>L'élève a été convoqué par <?php echo qui($etatpar_alert_eleve); ?> pour cette alerte<?php } ?>
+						<?php if ( $etat_alert_eleve === '2' ) { echo qui($etatpar_alert_eleve); ?> ne tient pas compte de cette alerte<?php } ?>
+					</div>
+
+					<?php
+					// seul la personne qui avait saisi peut modifier
+					if ( $etatpar_alert_eleve === $_SESSION['login'] or $etatpar_alert_eleve === '' ) { ?>
+					<form name="form3" method="post" action="alert_suivi.php#ea">
+				               	<input type="radio" name="etat_alert_eleve" id="eae1" value="1" onClick="javascript:document.form3.submit()" <?php  if ( $etat_alert_eleve === '1' ) { ?>checked="checked"<?php } ?> /><label for="eae1" style="cursor: pointer;">Convocation de l'élève.</label><br />
+				               	<input type="radio" name="etat_alert_eleve" id="eae2" value="2" onClick="javascript:document.form3.submit()" <?php  if ( $etat_alert_eleve === '2' ) { ?>checked="checked"<?php } ?> /><label for="eae2" style="cursor: pointer;">Ne pas tenir compte de cette alerte.</label><br />
+				               	<input type="radio" name="etat_alert_eleve" id="eae0" value="0" onClick="javascript:document.form3.submit()" <?php  if ( $etat_alert_eleve === '0' ) { ?>checked="checked"<?php } ?> /><label for="eae0" style="cursor: pointer;">Pas de sélection pour le moment.</label><br />
+						<input type="hidden" name="id_alert_groupe" value="<?php echo $id_alert_groupe; ?>" />
+						<input type="hidden" name="id_alert_eleve" value="<?php echo $id_alert_eleve; ?>" />
+						<input type="hidden" name="action_sql" value="modif_etat_ae" />
+						<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+						<input type="submit" name="submit3" value="<?php if ( $etat_alert_eleve === '0' ) { ?>Valider<?php } else { ?>Modifier<?php } ?>" />
+					</form>
+					<?php } ?>
+				</div>
+
+
+
 		</div>
 	<?php } ?>
   </div>
@@ -551,7 +628,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 
 <?php if ( $action_page === 'gestion_ag' ) { ?>
   <div style="margin-left: 25%; width: 74%;">
-	<div class="entete_alert_message">Gestion des groupes d'alert</div>
+	<div class="entete_alert_message">Gestion des groupes d'alerte</div>
 	<div class="scroll" style="background-color: #EFEFEF; border-left: 4px solid #BF0000;">
 		<form name="form2" method="post" action="alert_suivi.php">
 		<label for="nom_alert_groupe" style="cursor: pointer;">Nouveau</label> <input name="nom_alert_groupe" id="nom_alert_groupe" value="<?php if ( isset($nom_alert_groupe) and !empty($nom_alert_groupe) ) { echo $nom_alert_groupe; } ?>" style="border: 1px solid #B3BFB8;" />
@@ -567,7 +644,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 		</form>
 		<table style="width: 98%; margin: 5px;" cellspacing="1" cellpadding="0">
 		  <tr class="entete_alert_message">
-			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Désignation du groupe d'alert</td>
+			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Désignation du groupe d'alerte</td>
 			<td style="width: 25px; padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;"></td>
 			<td style="width: 25px; padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;"></td>
 		  </tr>
@@ -581,21 +658,26 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 			  <tr class="<?php echo $couleur_cellule; ?>">
 				<td style="text-align: left; padding: 2px;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=editer_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg" title="editer le groupe"><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></a></td>
 			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=modifier_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
-			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_groupe&amp;action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_groupe&amp;action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>" onClick="return confirm('Attention cela va supprimer toutes les alerts élève pour ce groupe...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
 			  </tr>
 		<?php } ?>
 		</table>
 	</div>
 
 	<?php if ( $id_alert_groupe != '' and ( $action === 'editer_alert_groupe' or $action === 'modifier_alert_type' ) ) { ?>
+			<?php
+			// on vérifie s'il existe des alert eleve définie si oui on ne peut plus ajouter ou modifier les type pour ce groupe
+		      	$test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+			if ( $test_existance != '0' ) { $editer_ce_groupe = 'non'; } else {  $editer_ce_groupe = 'oui'; } ?>
 		<div style="background-color: #EFEFEF; border-left: 4px solid #BF0000; width: 98.5%; margin-left: 4px; text-align: left;">
 		<a name="eg"></a>
+	<?php if ( $editer_ce_groupe != 'non' ) { ?>
 		<form name="form3" method="post" action="alert_suivi.php#eg">
 		       Type
 	               <select name="type_alert_type" id="type_alert_type" tabindex="1" style="border : 1px solid #000000; margin-top: 5px;">
-	                          <option value="P" <?php if ( !empty($type_alert_type) and $type_alert_type === 'P' ) { ?>selected="selected"<?php } ?> onclick="twAfficheCache('monForm-A',1);twAfficheCache('monForm-B',0);">Présence</option>
-	                          <option value="C" <?php if ( !empty($type_alert_type) and $type_alert_type === 'C' ) { ?>selected="selected"<?php } ?> onclick="twAfficheCache('monForm-B',1);twAfficheCache('monForm-A',0);">Courrier</option>
-	                          <option value="F" <?php if ( !empty($type_alert_type) and $type_alert_type === 'F' ) { ?>selected="selected"<?php } ?>>Fiche élève</option>
+	                          <option value="P" <?php if ( !empty($type_alert_type) and $type_alert_type === 'P' ) { ?>selected="selected"<?php } ?> onclick="twAfficheCache('monForm-A',1);twAfficheCache('monForm-B',0);twAfficheCache('monForm-C',0);">Présence</option>
+	                          <option value="C" <?php if ( !empty($type_alert_type) and $type_alert_type === 'C' ) { ?>selected="selected"<?php } ?> onclick="twAfficheCache('monForm-B',1);twAfficheCache('monForm-A',0);twAfficheCache('monForm-C',0);">Courrier</option>
+	                          <option value="F" <?php if ( !empty($type_alert_type) and $type_alert_type === 'F' ) { ?>selected="selected"<?php } ?> onclick="twAfficheCache('monForm-B',0);twAfficheCache('monForm-A',0);twAfficheCache('monForm-C',1);">Fiche élève</option>
 	               </select>
 		       <span id="monForm-A" style="position:absolute;visibility:hidden;">
 	               <select name="specifisite_alert_type_p" id="specifisite_alert_type_p" tabindex="1" style="border: 1px solid #000000; margin-top: 5px;">
@@ -617,6 +699,19 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 			?>
 		</optgroup>
 		  </select></span>
+			<span id="monForm-C" style="position:absolute;visibility:hidden;">
+	                <select name="specifisite_alert_type_f" style="border: 1px solid #000000; margin-top: 5px;">
+		<optgroup label="Type action">
+		    <?php
+			$requete_action ="SELECT * FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
+		        $execution_action = mysql_query($requete_action) or die('Erreur SQL !'.$requete_action.'<br />'.mysql_error());
+	  		while ($donner_action = mysql_fetch_array($execution_action))
+		  	 {
+			   ?><option value="<?php echo $donner_action['id_absence_action']; ?>" <?php if (isset($specifisite_alert_type_f) and $specifisite_alert_type_f === $donner_action['id_absence_action']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_action['def_absence_action']); ?></option><?php echo "\n";
+			 }
+			?>
+		</optgroup>
+		  </select></span>
 			<br />
 			à partir du&nbsp;<input name="date_debut_comptage" onfocus="javascript:this.select()" type="text" value="<?php if ( isset($date_debut_comptage) and !empty($date_debut_comptage) ) { echo $date_debut_comptage; } else { echo $date_ce_jour; } ?>" size="10" maxlength="10" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 			au bout d'<input name="nb_comptage_limit" type="text" value="<?php if(isset($nb_comptage_limit) and !empty($nb_comptage_limit)) { echo $nb_comptage_limit; } else { ?>1<?php } ?>" size="2" maxlength="10" />fois
@@ -630,14 +725,17 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
 				<input type="submit" name="submit3" value="<?php if ( $action != 'modifier_alert_type' ) { ?>Ajouter<?php } else { ?>Modifier<?php } ?>" />
 		</form>
+		<?php } else { echo '* Modification du groupe impossible. Il y a des alerts d\'élèves relevé.'; } ?>
 		<table style="width: 98%; margin: 5px;" cellspacing="1" cellpadding="0">
 		  <tr class="entete_alert_message">
 			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Type</td>
 			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Spécificiter</td>
 			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Depuis le</td>
 			<td style="padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;">Au bout de</td>
+		      <?php if ( $editer_ce_groupe != 'non' ) { ?>
 			<td style="width: 25px; padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;"></td>
 			<td style="width: 25px; padding: 2px; text-align: center; font-weight: bold; color: #E8F1F4;"></td>
+		      <?php } ?>
 		  </tr>
 		  <?php
 			$i_couleur = '1';
@@ -667,8 +765,10 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 				<td style="text-align: center; padding: 2px;"><?php echo $donnee_alert_type['specifisite_alert_type']; ?></td>
 				<td style="text-align: center; padding: 2px;"><?php echo date_fr($donnee_alert_type['date_debut_comptage']); ?></td>
 				<td style="text-align: center; padding: 2px;"><?php echo $donnee_alert_type['nb_comptage_limit']; ?> fois</td>
+			      <?php if ( $editer_ce_groupe != 'non' ) { ?>
 			        <td style="text-align: center;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;action=modifier_alert_type&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
 			        <td style="text-align: center;"><a href="alert_suivi.php?action_sql=supprimer_alert_type&amp;action_page=<?php echo $action_page; ?>&amp;action=<?php echo $action; ?>&amp;id_alert_groupe=<?php echo $id_alert_groupe; ?>&amp;id_alert_type=<?php echo $donnee_alert_type['id_alert_type']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+			      <?php } ?>
 			  </tr>
 		<?php } ?>
 		</table>
