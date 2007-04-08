@@ -1,5 +1,7 @@
 <?php
 /*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -148,9 +150,9 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold>| <a href='../accueil.php'>Retour</a> |
-<?php if($etape=="2" AND $classe!="toutes" AND $classe != "toutesg" AND $classe!="") { ?><a href='trombinoscopes.php'>Retour à la sélection</a> | <?php } ?>
-<?php if($etape=="2" AND $classe!="toutes" AND $classe != "toutesg" AND $classe!="") { ?><a href="trombi_impr.php?classe=<?php echo $go_classe; ?>" target="_blank">Format imprimable</a> |<?php } ?>
+<p class=bold><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
+<?php if($etape=="2" AND $classe!="toutes" AND $classe != "toutesg" AND $classe!="") { ?> | <a href='trombinoscopes.php'>Retour à la sélection</a> | <?php } ?>
+<?php if($etape=="2" AND $classe!="toutes" AND $classe != "toutesg" AND $classe!="") { ?><a href="trombi_impr.php?classe=<?php echo $go_classe; ?>" target="_blank">Format imprimable</a> <?php } ?>
 </p>
 
 <?php if($classe=="toutes" or $classe == "toutesg" OR ($classe=="" AND $eleve_initial=="")) { ?>

@@ -1,5 +1,7 @@
 <?php
 /*
+*$Id$
+*
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -83,7 +85,7 @@ require_once("../lib/header.inc");
 <input type="hidden" name="is_posted" value="1" />
 <br />
 <H2>Configuration d'affichage</H2>
-&nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeur maxi des largeur et des hauteur.</i><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.</i><br />
 <span style="font-weight: bold;">Pour l'écran</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_aff_trombinoscopes"); ?>" />&nbsp;
 hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_aff_trombinoscopes"); ?>" />
@@ -92,7 +94,7 @@ hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" 
 hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />
 <br />
 <H2>Configuration du redimessionnement des photos</H2>
-<i>La désactivation du redimessionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimessionnement est désactivé, les photos transferé sur le site ne serons pas réduite en 340x240.</i>
+<i>La désactivation du redimessionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimessionnement est désactivé, les photos transferées sur le site ne seront pas réduites en 340x240.</i>
 <br />
 <input type="radio" name="activer_redimensionne" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> />&nbsp;Activer le redimensionnement des photos en 120x160<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
@@ -100,7 +102,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 <ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked="checked"<?php } ?> /> 0°
 <input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked="checked"<?php } ?> /> 90°
 <input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked="checked"<?php } ?> /> 180°
-<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Selectionner une valeur si vous désirer une rotation de la photo original</li>
+<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
 </ul>
 <input type="hidden" name="is_posted" value="1" />
 <div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>

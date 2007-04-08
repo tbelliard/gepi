@@ -60,7 +60,7 @@ require_once("../../lib/header.inc");
 
 
 echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> |";
+echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a>";
 echo "</p>";
 ?>
 <H2>Gestion des absences par les CPE</H2>
@@ -68,10 +68,10 @@ echo "</p>";
 <br />
 <form action="index.php" name="form1" method="post">
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_absence")=='y') echo " checked"; ?> />&nbsp;Activer le module de la gestion des absences<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_absence")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la gestions des absences
+<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_absence")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la gestion des absences
 <input type="hidden" name="is_posted" value="1" />
 <br />
-<i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisie par les professeur. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
+<i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
 Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</i>
 <H2>Saisie des absences par les professeurs</H2>
 <input type="radio" name="activer_prof" value="y" <?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked"; ?> />&nbsp;Activer le module de la saisie des absences par les professeurs<br />
@@ -83,7 +83,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <blockquote>
   <a href="admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
   <a href="admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
-  <a href="admin_config_semaines.php?action=visualiser">Définir les type de semaines</a><br />
+  <a href="admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
   <a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
   <a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
 </blockquote>

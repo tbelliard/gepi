@@ -1,5 +1,7 @@
 <?php
 /*
+*$Id$
+*
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.

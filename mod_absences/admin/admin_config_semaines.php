@@ -44,7 +44,7 @@ if (!checkAccess()) {
     die();
 }
 // header
-$titre_page = "Définition des horaire d'ouverture de l'établissement";
+$titre_page = "Définition des types de semaine de l'établissement";
 require_once("../../lib/header.inc");
 
 

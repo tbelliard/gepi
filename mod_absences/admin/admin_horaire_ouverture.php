@@ -44,7 +44,7 @@ if (!checkAccess()) {
     die();
 }
 // header
-$titre_page = "Définition des horaire d'ouverture de l'établissement";
+$titre_page = "Définition des horaires d'ouverture de l'établissement";
 require_once("../../lib/header.inc");
 
 
@@ -135,7 +135,7 @@ if ( $action === 'visualiser' )
 
 
 echo "<br /><p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | <a href='index.php'>Retour module absence</a> |</p>";
+echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | <a href='index.php'>Retour module absence</a></p>";
 ?>
 
 <?php if ($action === "visualiser") { ?>
