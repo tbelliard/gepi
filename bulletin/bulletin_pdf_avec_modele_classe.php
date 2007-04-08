@@ -571,6 +571,8 @@ if(!empty($model_bulletin)) {
 		
 			$autorise_sous_matiere[$classe_id]=$donner_model['autorise_sous_matiere'];
 			$affichage_haut_responsable[$classe_id]=$donner_model['affichage_haut_responsable'];
+
+			$largeur_matiere[$classe_id] = $donner_model['largeur_matiere'];
 		} // while
 	}//FOR
 	  
@@ -688,6 +690,8 @@ if(!empty($model_bulletin)) {
 	
 		$autorise_sous_matiere[$classe_id] = '1'; //autorise l'affichage des sous matière
 		$affichage_haut_responsable[$classe_id] = '1'; //affiche le nom du haut responsable de la classe
+
+		$largeur_matiere[$classe_id] = 40; // largeur de la colonne matiere
 	} //ELSE
 	/*
 	//ESSAI POUR VERIFICATION
@@ -1386,9 +1390,9 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		$hauteur_entete_pardeux = $hauteur_entete/2;
 	 	 $pdf->SetXY($X_note_app[$classe_id], $Y_note_app[$classe_id]);
 	 	 $pdf->SetFont($caractere_utilse[$classe_id],'',10);
-		 $largeur_matiere = 40;
-		 $pdf->Cell($largeur_matiere, $hauteur_entete, $titre_entete_matiere[$classe_id],1,0,'C');
-		 $largeur_utilise = $largeur_matiere;
+		 //$largeur_matiere = 40;
+		 $pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete, $titre_entete_matiere[$classe_id],1,0,'C');
+		 $largeur_utilise = $largeur_matiere[$classe_id];
 
 		// coéfficient matière
 		if($active_coef_moyenne[$classe_id]==='1') {
@@ -1645,8 +1649,8 @@ $cpt_ordre = $cpt_ordre + 1;
  				{
 					$pdf->SetFont($caractere_utilse[$classe_id],'',10);
 					$pdf->SetFillColor($couleur_categorie_entete1[$classe_id], $couleur_categorie_entete2[$classe_id], $couleur_categorie_entete3[$classe_id]);
-					$pdf->Cell($largeur_matiere, $hauteur_info_categorie[$classe_id], unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']),'TLB',0,'L',$couleur_categorie_entete[$classe_id]);
-					$largeur_utilise = $largeur_matiere;
+					$pdf->Cell($largeur_matiere[$classe_id], $hauteur_info_categorie[$classe_id], unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']),'TLB',0,'L',$couleur_categorie_entete[$classe_id]);
+					$largeur_utilise = $largeur_matiere[$classe_id];
 
 					// coéfficient matière
 					if($active_coef_moyenne[$classe_id]==='1') {
@@ -1817,7 +1821,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				$hauteur_caractere_matiere=10;
 				$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere_matiere);
 				$val = $pdf->GetStringWidth($matiere[$ident_eleve_aff][$id_periode][$m]['matiere']);
-				$taille_texte = ($largeur_matiere);
+				$taille_texte = ($largeur_matiere[$classe_id]);
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 				 if($taille_texte<$val)
@@ -1828,7 +1832,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				  } else { $grandeur_texte='ok'; }
                 		}
 				$grandeur_texte='test';
-		 	$pdf->Cell($largeur_matiere, $espace_entre_matier/2, $matiere[$ident_eleve_aff][$id_periode][$m]['matiere'],'LR',1,'L');
+		 	$pdf->Cell($largeur_matiere[$classe_id], $espace_entre_matier/2, $matiere[$ident_eleve_aff][$id_periode][$m]['matiere'],'LR',1,'L');
 			$Y_decal = $Y_decal+($espace_entre_matier/2);
 		 	$pdf->SetXY($X_bloc_matiere, $Y_decal);
 		 	$pdf->SetFont($caractere_utilse[$classe_id],'',8);
@@ -1847,7 +1851,7 @@ $cpt_ordre = $cpt_ordre + 1;
 				elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
 				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
 				$val = $pdf->GetStringWidth($text_prof);
-				$taille_texte = ($largeur_matiere);
+				$taille_texte = ($largeur_matiere[$classe_id]);
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 				 if($taille_texte<$val)
@@ -1860,15 +1864,15 @@ $cpt_ordre = $cpt_ordre + 1;
 				$grandeur_texte='test';
 		 	        $pdf->SetX($X_bloc_matiere);
 				if( empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-				 	$pdf->Cell($largeur_matiere, $espace_matiere_prof, $text_prof,'LRB',1,'L');
+				 	$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
 				}
 				if( !empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-				 	$pdf->Cell($largeur_matiere, $espace_matiere_prof, $text_prof,'LR',1,'L');
+				 	$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
 				}
 			$nb_pass_count = $nb_pass_count + 1;
 			}
 		 	//$pdf->Cell($largeur_matiere, $espace_entre_matier/3, $matiere[$ident_eleve_aff][$id_periode][$m]['prof'],'LRB',0,'L');
-			$largeur_utilise = $largeur_matiere;
+			$largeur_utilise = $largeur_matiere[$classe_id];
 
 			// coéfficient matière
 			if($active_coef_moyenne[$classe_id]==='1') {
@@ -2051,8 +2055,8 @@ $cpt_ordre = $cpt_ordre + 1;
 	 	 $pdf->SetXY($X_note_moy_app, $Y_note_moy_app);
 	 	 $pdf->SetFont($caractere_utilse[$classe_id],'',10);
 		 $pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		 $pdf->Cell($largeur_matiere, $hauteur_entete_moyenne_general[$classe_id], "Moyenne générale",1,0,'C', $couleur_moy_general[$classe_id]);
-		 $largeur_utilise = $largeur_matiere;
+		 $pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "Moyenne générale",1,0,'C', $couleur_moy_general[$classe_id]);
+		 $largeur_utilise = $largeur_matiere[$classe_id];
 
 		// coéfficient matière
 		if($active_coef_moyenne[$classe_id]==='1') {

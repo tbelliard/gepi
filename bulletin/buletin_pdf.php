@@ -611,6 +611,8 @@ if(!empty($model_bulletin))
 
 	$autorise_sous_matiere=$donner_model['autorise_sous_matiere'];
 	$affichage_haut_responsable=$donner_model['affichage_haut_responsable'];
+
+	$largeur_matiere = $donner_model['largeur_matiere'];
 	}
 } else {
 	// information d'activation des différents partie du bulletin
@@ -717,6 +719,8 @@ if(!empty($model_bulletin))
 
 	$autorise_sous_matiere = '1'; //autorise l'affichage des sous matière
 	$affichage_haut_responsable = '1'; //affiche le nom du haut responsable de la classe
+
+	$largeur_matiere = 40; // largeur de la colonne matiere
 	}
 
 
@@ -1341,7 +1345,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		$hauteur_entete_pardeux = $hauteur_entete/2;
 	 	 $pdf->SetXY($X_note_app, $Y_note_app);
 	 	 $pdf->SetFont($caractere_utilse,'',10);
-		 $largeur_matiere = 40;
+		 // $largeur_matiere = 40;
 		 $pdf->Cell($largeur_matiere, $hauteur_entete, $titre_entete_matiere,1,0,'C');
 		 $largeur_utilise = $largeur_matiere;
 

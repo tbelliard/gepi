@@ -2587,6 +2587,7 @@ if (isset ($_POST['maj'])) {
 				  `ordre_entete_model_bulletin` tinyint(4) NOT NULL,
 				  `affiche_etab_origine` tinyint(4) NOT NULL,
 				  `imprime_pour` tinyint(4) NOT NULL,
+				  `largeur_matiere` FLOAT NOT NULL,
 				  PRIMARY KEY  (`id_model_bulletin`)
 				);";
 	        $query = mysql_query($sql);
@@ -2750,7 +2751,7 @@ if (isset ($_POST['maj'])) {
 		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Standard')";
 		$test1=mysql_query($sql);
 		if(mysql_num_rows($test1)==0){
-			$sql="INSERT INTO model_bulletin VALUES('', 'Standard', 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0.01, 2, 0, 1, 1, 0, 0, 0, 0);";
+			$sql="INSERT INTO model_bulletin VALUES('', 'Standard', 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0.01, 2, 0, 1, 1, 0, 0, 0, 0, 40);";
 			$insert=mysql_query($sql);
 	        if ($insert) {
 	            $result .= "<font color=\"green\">Ok !</font><br />";
@@ -2766,7 +2767,7 @@ if (isset ($_POST['maj'])) {
 		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Standard avec photo')";
 		$test1=mysql_query($sql);
 		if(mysql_num_rows($test1)==0){
-			$sql="INSERT INTO model_bulletin VALUES('', 'Standard avec photo', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0, 2, 0, 1, 1, 0, 0, 0, 0);";
+			$sql="INSERT INTO model_bulletin VALUES('', 'Standard avec photo', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0, 2, 0, 1, 1, 0, 0, 0, 0, 40);";
 			$insert=mysql_query($sql);
 	        if ($insert) {
 	            $result .= "<font color=\"green\">Ok !</font><br />";
@@ -2782,7 +2783,7 @@ if (isset ($_POST['maj'])) {
 		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Affiche tout')";
 		$test1=mysql_query($sql);
 		if(mysql_num_rows($test1)==0){
-			$sql="INSERT INTO model_bulletin VALUES('', 'Affiche tout', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 16.5, 6.5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 1, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 1, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 1, 0.01, 2, 0, 1, 1, 2, 1, 1, 1);";
+			$sql="INSERT INTO model_bulletin VALUES('', 'Affiche tout', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 16.5, 6.5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 1, 1, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 1, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 1, 0.01, 2, 0, 1, 1, 2, 1, 1, 1, 40);";
 			$insert=mysql_query($sql);
 	        if ($insert) {
 	            $result .= "<font color=\"green\">Ok !</font><br />";
@@ -2793,6 +2794,30 @@ if (isset ($_POST['maj'])) {
 		else{
 			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
 		}
+		
+		
+		$result .= "&nbsp;->Ajout du champ `largeur_matiere` à la table model_bulletin <br />";
+	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'largeur_matiere'"));
+	        if ($test1 == 0) {
+	           $query1 = mysql_query("ALTER TABLE `model_bulletin` ADD `largeur_matiere` FLOAT NOT NULL AFTER `imprime_pour`");
+	           if ($query1) {
+	              $result .= "<font color=\"green\">Ok !</font><br />";
+
+				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET `largeur_matiere`='40' WHERE 1");
+                  if($update_entete_model_bulletin){
+                    $result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"green\">Ok !</font><br />";
+				  } else{
+					$result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"red\">Erreur !</font><br />";
+				  }
+				  
+	           } else {
+	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+	          }
+	        } else {
+	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	        }
+		
 // Fin modif ERIC Bulletin PDF
 
 
