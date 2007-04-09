@@ -2794,8 +2794,8 @@ if (isset ($_POST['maj'])) {
 		else{
 			$result .= "<font color=\"blue\">Le modèle existe déjà.</font><br />";
 		}
-		
-		
+
+
 		$result .= "&nbsp;->Ajout du champ `largeur_matiere` à la table model_bulletin <br />";
 	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'largeur_matiere'"));
 	        if ($test1 == 0) {
@@ -2810,14 +2810,14 @@ if (isset ($_POST['maj'])) {
 				  } else{
 					$result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"red\">Erreur !</font><br />";
 				  }
-				  
+
 	           } else {
 	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
 	          }
 	        } else {
 	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	        }
-		
+
 // Fin modif ERIC Bulletin PDF
 
 
@@ -3582,6 +3582,20 @@ if (isset ($_POST['maj'])) {
 			}
 		}
 
+
+		$sql="SHOW COLUMNS FROM eleves WHERE type='date' AND field='naissance';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0){
+				$result.="-> Correction du type du champ 'naissance' de la table 'eleves' en type 'date': ";
+				$sql="ALTER TABLE `eleves` CHANGE `naissance` `naissance` DATE NULL DEFAULT NULL;";
+				$res=mysql_query($sql);
+				if($res){
+						$result .= "<font color=\"green\">Ok !</font><br />\n";
+				} else {
+						$result .= "<font color=\"red\">Erreur</font><br />\n";
+				}
+		}
+
     }
 
     if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
@@ -4180,8 +4194,8 @@ if (isset ($_POST['maj'])) {
             }
         } else {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
-        }	
-		
+        }
+
 		$result .= "&nbsp;->Création de la table vs_alerts_groupes<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_groupes'"));
         if ($test1 == 0) {
@@ -4198,8 +4212,8 @@ if (isset ($_POST['maj'])) {
             }
         } else {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
-        }		
-		
+        }
+
 		$result .= "&nbsp;->Création de la table vs_alerts_types<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'vs_alerts_types'"));
         if ($test1 == 0) {
@@ -4220,10 +4234,10 @@ if (isset ($_POST['maj'])) {
             }
         } else {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
-        }				
-		 // Fin Ajout Mod_absences	
-			
-			
+        }
+		 // Fin Ajout Mod_absences
+
+
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
         } else {
