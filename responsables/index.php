@@ -157,12 +157,31 @@ require_once("../lib/header.inc");
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
+	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysql_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-		echo "</body>\n";
-		echo "</html>\n";
+		require("../lib/footer.inc.php");
 		die();
+	}
+
+	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else{
+		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
 	}
 }
 

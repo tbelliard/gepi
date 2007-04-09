@@ -63,7 +63,7 @@ if($test){
 	$ligtmp=mysql_fetch_object($test);
 	if($ligtmp->value>0){
 		echo "<p>La mise à jour a déjà été effectuée.</p>\n";
-		echo "</body>\n</html>\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 	else{

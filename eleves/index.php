@@ -283,6 +283,40 @@ else
     $retour = "../accueil.php";
 if (isset($quelles_classes)) $retour = "index.php";
 echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| ";
+
+
+
+if(!getSettingValue('conv_new_resp_table')){
+	$sql="SELECT 1=1 FROM responsables";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else{
+		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
+}
+
+
 ?>
 <a href="modify_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a> |
  <a href="modify_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a>

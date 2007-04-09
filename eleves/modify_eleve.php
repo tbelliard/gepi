@@ -576,6 +576,40 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
 
+
+
+if(!getSettingValue('conv_new_resp_table')){
+	$sql="SELECT 1=1 FROM responsables";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else{
+		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
+}
+
+
+
 ?>
 <form enctype="multipart/form-data" action="modify_eleve.php" method=post>
 <?php

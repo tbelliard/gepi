@@ -47,9 +47,21 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	$msg="";
 	if (($nom != '') and ($prenom != '') and ($adr1 != '') and ($commune != '') and ($cp != '') ) {
 		$ok = 'yes';
-	} else {
-		$msg = "Un ou plusieurs champs obligatoires sont vides !";
-		$ok = 'no';
+	}
+	else{
+		if(isset($_POST['adr_id_existant'])){
+			if (($nom != '') and ($prenom != '') and ($_POST['adr_id_existant']!='')) {
+				$ok = 'yes';
+			}
+			else{
+				$msg = "Un ou plusieurs champs obligatoires sont vides !";
+				$ok = 'no';
+			}
+		}
+		else{
+			$msg = "Un ou plusieurs champs obligatoires sont vides !";
+			$ok = 'no';
+		}
 	}
 
 	if($ok=='yes'){
@@ -362,11 +374,33 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
 if(!getSettingValue('conv_new_resp_table')){
-	echo "<p>Une conversion des données responsables est requise.</p>\n";
-	echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-	echo "</body>\n";
-	echo "</html>\n";
-	die();
+	$sql="SELECT 1=1 FROM responsables";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0){
+		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0){
+		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else{
+		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
 }
 
 ?>
@@ -562,6 +596,12 @@ echo "<p align='center'>\n";
 echo "<select name='add_ele_id'>\n";
 echo "<option value=''>--- Ajouter un élève ---</option>\n";
 //$sql="SELECT ele_id,nom,prenom FROM eleves ORDER BY nom,prenom";
+
+/*
+// *************************
+// A REVOIR: Si aucun responsable n'est encore saisi, on ne récupère pas l'ensemble des élèves...
+//           Le mode de "détection/listage" n'est pas valide.
+// *************************
 $sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
 $res_ele=mysql_query($sql);
 $compteur=0;
@@ -575,6 +615,22 @@ while($lig_ele=mysql_fetch_object($res_ele)){
 		$compteur++;
 	}
 }
+*/
+
+$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e ORDER BY e.nom,e.prenom";
+$res_ele=mysql_query($sql);
+$compteur=0;
+while($lig_ele=mysql_fetch_object($res_ele)){
+	// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
+	//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
+	$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)<2){
+		echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+		$compteur++;
+	}
+}
+
 echo "</select>\n";
 echo "<br />\n(<i>$compteur élèves n'ont pas leurs deux responsables légaux</i>)\n";
 echo "</p>\n";
