@@ -485,3 +485,4 @@ INSERT INTO `setting` VALUES ('security_alert2_probation_block_user', 'yes');
 INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');
 INSERT INTO setting VALUES ('bull_intitule_app', 'Appréciations / Conseils');
 INSERT INTO `droits` VALUES('/mod_absences/gestion/alert_suivi.php', 'V', 'V', 'V', 'V', 'V', 'F', 'F','système d''alerte de suivi d''élève', '');
+INSERT INTO `droits` VALUES ('/gestion/efface_photos.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression des photos non associées à des élèves', '');

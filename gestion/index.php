@@ -124,6 +124,10 @@ require_once("../lib/header.inc");
     <td>Permet de réinitialiser les bases en effaçant toutes les données élèves de la base.
     </td>
 </tr>
+<tr>
+    <td width=200><a href="efface_photos.php">Effacer les photos</a></td>
+    <td>Permet d'effacer les photos des élèves qui ne sont plus dans la base.</td>
+</tr>
 
 </table>
 

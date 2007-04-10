@@ -83,7 +83,8 @@ if (isset($is_posted) and ($is_posted == '2')) {
     }
 }
 
-if (isset($is_posted) and ($is_posted == '1') and empty($_FILES["photo"])) {
+//if (isset($is_posted) and ($is_posted == '1') and empty($_FILES["photo"])) {
+if (isset($is_posted) and ($is_posted == '1')) {
     $calldata = mysql_query("SELECT * FROM eleves");
     $nombreligne = mysql_num_rows($calldata);
     $i = 0;
