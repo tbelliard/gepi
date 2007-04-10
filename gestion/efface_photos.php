@@ -46,7 +46,7 @@ if (!checkAccess()) {
 $titre_page = "Outil de gestion | Effacement des photos élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-?><p class=bold>|<a href='index.php'>Retour</a>|</p>
+?><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Effacement des photos d'élèves</h2>
 <?php
 if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
