@@ -353,36 +353,39 @@ echo "</form>";
 if (isset($_POST['duree2'])) {
    $duree2 = $_POST['duree2'];
 } else {
-   $duree2 = '2';
+   $duree2 = '20dernieres';
 }
 switch( $duree2 ) {
+   case '20dernieres' :
+   $display_duree="les 20 dernières";
+   break;
    case 2:
-   $display_duree="deux jours";
+   $display_duree="depuis deux jours";
    break;
    case 7:
-   $display_duree="une semaine";
+   $display_duree="depuis une semaine";
    break;
    case 15:
-   $display_duree="quinze jours";
+   $display_duree="depuis quinze jours";
    break;
    case 30:
-   $display_duree="un mois";
+   $display_duree="depuis un mois";
    break;
    case 60:
-   $display_duree="deux mois";
+   $display_duree="depuis deux mois";
    break;
    case 183:
-   $display_duree="six mois";
+   $display_duree="depuis six mois";
    break;
    case 365:
-   $display_duree="un an";
+   $display_duree="depuis un an";
    break;
    case 'all':
-   $display_duree="le début";
+   $display_duree="depuis le début";
    break;
 }
 
-echo "<h3 class='gepi'>Journal des connexions depuis <b>".$display_duree."</b></H3>";
+echo "<h3 class='gepi'>Journal des connexions <b>".$display_duree."</b></H3>";
 
 ?>
 <div title="Journal des connections" style="width: 100%;">
@@ -396,31 +399,34 @@ echo "<h3 class='gepi'>Journal des connexions depuis <b>".$display_duree."</b></
 <?php
 
 echo "<form action=\"gestion_connect.php\" name=\"form_affiche_log\" method=\"post\">";
-echo "Afficher le journal des connexions depuis : <select name=\"duree2\" size=\"1\">";
+echo "Afficher le journal des connexions : <select name=\"duree2\" size=\"1\">";
+echo "<option ";
+if ($duree2 == '20dernieres') echo "selected";
+echo " value='20dernieres'>les 20 dernières</option>";
 echo "<option ";
 if ($duree2 == 2) echo "selected";
-echo " value=2>Deux jours</option>";
+echo " value=2>depuis Deux jours</option>";
 echo "<option ";
 if ($duree2 == 7) echo "selected";
-echo " value=7>Une semaine</option>";
+echo " value=7>depuis Une semaine</option>";
 echo "<option ";
 if ($duree2 == 15) echo "selected";
-echo " value=15 >Quinze jours</option>";
+echo " value=15 >depuis Quinze jours</option>";
 echo "<option ";
 if ($duree2 == 30) echo "selected";
-echo " value=30>Un mois</option>";
+echo " value=30>depuis Un mois</option>";
 echo "<option ";
 if ($duree2 == 60) echo "selected";
-echo " value=60>Deux mois</option>";
+echo " value=60>depuis Deux mois</option>";
 echo "<option ";
 if ($duree2 == 183) echo "selected";
-echo " value=183>Six mois</option>";
+echo " value=183>depuis Six mois</option>";
 echo "<option ";
 if ($duree2 == 365) echo "selected";
-echo " value=365>Un an</option>";
+echo " value=365>depuis Un an</option>";
 echo "<option ";
 if ($duree2 == 'all') echo "selected";
-echo " value='all'>Le début</option>";
+echo " value='all'>depuis Le début</option>";
 echo "</select>";
 echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
@@ -440,11 +446,12 @@ echo "</form>";
     </tr>
 <?php
 $requete = '';
+$requete1 = '';
 if ($duree2 != 'all') $requete = "where l.START > now() - interval " . $duree2 . " day";
-
+if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='';}
 $sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
  l.AUTOCLOSE, l.END, u.email
-from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by START desc";
+from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by START desc ".$requete1;
 
 // $row[0] : log.LOGIN
 // $row[1] : USER
