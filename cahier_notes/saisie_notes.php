@@ -372,7 +372,7 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
     //echo "<p class=cn>La boîte $nom_conteneur ne contient aucune évaluation. </p>\n";
     echo "<p class=cn>";
-    if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "La";}else{echo "Le";}
+    if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "La ";}else{echo "Le ";}
     echo htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune évaluation. </p>\n";
     echo "</body></html>\n";
     die();
