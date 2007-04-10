@@ -208,5 +208,9 @@ echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a
 
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } ?>
+<?php mysql_close(); }
+
+require("../../lib/footer.inc.php");
+
+ ?>
 

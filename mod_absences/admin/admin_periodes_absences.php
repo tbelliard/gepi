@@ -264,10 +264,10 @@ echo "</p>";
          <tr>
           <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="3" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déjas<?php } ?>
+          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déja<?php } ?>
           <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas définie<?php } ?>
           <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de début n'est pas définie<?php } ?>
-          <?php if ($verification_erreur[$nb] == 3) { ?>Tous les champs ne sont pas remplie<?php } ?>
+          <?php if ($verification_erreur[$nb] == 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
           <?php if ($verification_erreur[$nb] == 6) { ?>L'heure de fin ne peut pas être plus petite que l'heure de début<?php } ?>
           </b><br /></td>
          </tr>
@@ -292,5 +292,9 @@ echo "</p>";
     </form>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } ?>
+<?php mysql_close(); } 
+
+require("../../lib/footer.inc.php");
+
+?>
 

@@ -75,7 +75,7 @@ function last_connection() {
     }
 
    // vérifie si on nest dans le modules absences
-   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi");
+   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
     if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css" /><?php
     }

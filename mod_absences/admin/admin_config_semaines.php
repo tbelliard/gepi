@@ -110,7 +110,7 @@ echo "<a href='index.php'>Retour module absence</a> </p>";
 	<table cellpadding="0" cellspacing="1" class="tab_table">
 	  <tbody>
 	      <tr>
-	        <td colspan="2" class="tab_titre"><div class="norme_absence_gris_bleu"><strong>D&eacute;finition des type de semaines</strong></div></td>
+	        <td colspan="2" class="tab_titre">D&eacute;finition des type de semaines</td>
 	      </tr>
 	    <tr>
 	      <th class="tab_th" style="width: 100px;">Semaine n°</th>
@@ -137,5 +137,9 @@ echo "<a href='index.php'>Retour module absence</a> </p>";
 
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } ?>
+<?php mysql_close(); } 
+
+require("../../lib/footer.inc.php");
+
+?>
 

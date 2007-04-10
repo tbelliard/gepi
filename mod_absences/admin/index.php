@@ -87,5 +87,6 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
   <a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
   <a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
 </blockquote>
-</body>
-</html>
+<?PHP
+require("../../lib/footer.inc.php");
+?>

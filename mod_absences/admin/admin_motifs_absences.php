@@ -285,4 +285,8 @@ echo "</p>";
     </form>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } ?>
+<?php mysql_close(); } 
+
+require("../../lib/footer.inc.php");
+
+?>
