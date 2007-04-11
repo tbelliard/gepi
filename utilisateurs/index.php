@@ -230,7 +230,7 @@ while ($i < $nombreligne){
     // Affichage du lien 'supprimer'
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>";
     // Affichage du lien pour l'impression des paramètres
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>";
     // Fin de la ligne courante
     echo "</tr>";
     }
