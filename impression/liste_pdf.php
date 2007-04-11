@@ -160,7 +160,7 @@ $pdf->SetAutoPageBreak(true, $MargeBas);
 // DE   IMPRIME.PHP
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
-$id_periode=isset($_POST['periode_num']) ? $_POST["periode_num"] : NULL;
+$id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 
 //On recupère les variables pour l'affichage
 // DE  IMPRIME_SERIE.PHP
