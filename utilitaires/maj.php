@@ -1699,35 +1699,39 @@ if (isset ($_POST['maj'])) {
         $nb_del1 = 0;
         $res1 = true;
         $test_groupes = mysql_query("select distinct(g.id) FROM groupes g WHERE NOT EXISTS (SELECT distinct(id_groupe) FROM j_groupes_classes jgc WHERE jgc.id_groupe = g.id)");
-        for ($g=0;$g<mysql_num_rows($test_groupes);$g++) {
-            $del_groupe_id = mysql_result($test_groupes, $g, "id");
-            $res1 = mysql_query("DELETE FROM g, jeg, jgm, jgp USING groupes g, j_eleves_groupes jeg, j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE (" .
-                    "g.id = '" . $del_groupe_id . "' AND " .
-                    "jeg.id_groupe = '" . $del_groupe_id . "' AND " .
-                    "jgm.id_groupe = '" . $del_groupe_id . "' AND " .
-                    "jgp.id_groupe = '" . $del_groupe_id . "')");
-            if ($res1) {
-                $nb_del1++;
-            } else {
-                echo mysql_error();
-            }
-        }
+		if($test_groupes){
+			for ($g=0;$g<mysql_num_rows($test_groupes);$g++) {
+				$del_groupe_id = mysql_result($test_groupes, $g, "id");
+				$res1 = mysql_query("DELETE FROM g, jeg, jgm, jgp USING groupes g, j_eleves_groupes jeg, j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE (" .
+						"g.id = '" . $del_groupe_id . "' AND " .
+						"jeg.id_groupe = '" . $del_groupe_id . "' AND " .
+						"jgm.id_groupe = '" . $del_groupe_id . "' AND " .
+						"jgp.id_groupe = '" . $del_groupe_id . "')");
+				if ($res1) {
+					$nb_del1++;
+				} else {
+					echo mysql_error();
+				}
+			}
+		}
 
         $nb_del2 = 0;
         $res2 = true;
         $test_eleves = mysql_query("select jeg.login, jeg.periode, jeg.id_groupe FROM j_eleves_groupes jeg WHERE NOT EXISTS (SELECT jec.login FROM j_eleves_classes jec WHERE (jec.periode = jeg.periode AND jec.login = jeg.login))");
-        for ($g=0;$g<mysql_num_rows($test_eleves);$g++) {
-            $del_eleve = mysql_result($test_eleves, $g, "login");
-            $del_periode = mysql_result($test_eleves, $g, "periode");
-            $del_groupe = mysql_result($test_eleves, $g, "id_groupe");
-            $res2 = mysql_query("DELETE FROM j_eleves_groupes WHERE (" .
-                    "login = '" . $del_eleve . "' AND " .
-                    "periode = '" . $del_periode . "' AND " .
-                    "id_groupe = '" . $del_groupe . "')");
-            if ($res2) {
-                $nb_del2++;
-            }
-        }
+		if($test_eleves){
+			for ($g=0;$g<mysql_num_rows($test_eleves);$g++) {
+				$del_eleve = mysql_result($test_eleves, $g, "login");
+				$del_periode = mysql_result($test_eleves, $g, "periode");
+				$del_groupe = mysql_result($test_eleves, $g, "id_groupe");
+				$res2 = mysql_query("DELETE FROM j_eleves_groupes WHERE (" .
+						"login = '" . $del_eleve . "' AND " .
+						"periode = '" . $del_periode . "' AND " .
+						"id_groupe = '" . $del_groupe . "')");
+				if ($res2) {
+					$nb_del2++;
+				}
+			}
+		}
 
         if ($res1 && $res2) {
             $result .= "<font color=\"green\">Ok !</font><br />";
@@ -2748,6 +2752,30 @@ if (isset ($_POST['maj'])) {
 
 		}
 
+
+		$result .= "&nbsp;->Ajout du champ `largeur_matiere` à la table model_bulletin <br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'largeur_matiere'"));
+		if ($test1 == 0) {
+			$query1 = mysql_query("ALTER TABLE `model_bulletin` ADD `largeur_matiere` FLOAT NOT NULL AFTER `imprime_pour`");
+			if ($query1) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+
+				//maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
+				$update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET `largeur_matiere`='40' WHERE 1");
+				if($update_entete_model_bulletin){
+				$result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"green\">Ok !</font><br />";
+				} else{
+				$result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"red\">Erreur !</font><br />";
+				}
+
+			} else {
+			$result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+
 		$result .= "&nbsp;->Ajout du modèle 'Standard' de bulletin PDF<br />";
 		$sql="SELECT id_model_bulletin FROM model_bulletin WHERE (nom_model_bulletin='Standard')";
 		$test1=mysql_query($sql);
@@ -2797,27 +2825,7 @@ if (isset ($_POST['maj'])) {
 		}
 
 
-		$result .= "&nbsp;->Ajout du champ `largeur_matiere` à la table model_bulletin <br />";
-	        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'largeur_matiere'"));
-	        if ($test1 == 0) {
-	           $query1 = mysql_query("ALTER TABLE `model_bulletin` ADD `largeur_matiere` FLOAT NOT NULL AFTER `imprime_pour`");
-	           if ($query1) {
-	              $result .= "<font color=\"green\">Ok !</font><br />";
 
-				  //maintenant que le champs existe, mise à jour des données pour les 3 types de  bulletin fourni
-				  $update_entete_model_bulletin=mysql_query("UPDATE model_bulletin SET `largeur_matiere`='40' WHERE 1");
-                  if($update_entete_model_bulletin){
-                    $result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"green\">Ok !</font><br />";
-				  } else{
-					$result.="-&gt; Mise à jour du paramètre `largeur_matiere` à 40 pour tous les modèles<font color=\"red\">Erreur !</font><br />";
-				  }
-
-	           } else {
-	            $result .= "<font color=\"red\">Erreur (le champ existe déjà ?)</font><br />";
-	          }
-	        } else {
-	            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
-	        }
 
 // Fin modif ERIC Bulletin PDF
 
@@ -3584,6 +3592,8 @@ if (isset ($_POST['maj'])) {
 		}
 
 
+		/*
+		// Cette requête ne fonctionne pas en 4.0.24-10sarge
 		$sql="SHOW COLUMNS FROM eleves WHERE type='date' AND field='naissance';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0){
@@ -3595,6 +3605,26 @@ if (isset ($_POST['maj'])) {
 				} else {
 						$result .= "<font color=\"red\">Erreur</font><br />\n";
 				}
+		}
+		*/
+
+		$sql="show columns from eleves like 'naissance';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0){
+			//$lig=mysql_fetch_object($res);
+			//echo $lig->type."<br />\n";
+			$lig=mysql_fetch_array($res);
+			//echo $lig[1]."<br />\n";
+			if(strtolower($lig[1])!='date'){
+				$result.="-> Correction du type du champ 'naissance' de la table 'eleves' en type 'date': ";
+				$sql="ALTER TABLE `eleves` CHANGE `naissance` `naissance` DATE NULL DEFAULT NULL;";
+				$res=mysql_query($sql);
+				if($res){
+						$result .= "<font color=\"green\">Ok !</font><br />\n";
+				} else {
+						$result .= "<font color=\"red\">Erreur</font><br />\n";
+				}
+			}
 		}
 
     }
