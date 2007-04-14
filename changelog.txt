@@ -2,6 +2,19 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.5.0-rc2 (03/04/2007)
+===========================
+
+Nouvelles fonctionalités
+------------------------
+- possibilité de définir des commentaires types pour la saisie des avis du conseil de classe
+
+Corrections de bugs
+-------------------
+- correction de la détection d'une conversion nécessaires des données 'responsables'
+- correction du listage des élèves qui n'ont pas leurs deux responsables définis
+
+
 Gepi-1.5.0-rc1 (03/04/2007)
 ===========================
 
