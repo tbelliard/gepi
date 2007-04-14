@@ -14,12 +14,40 @@
 	};
 	*/
 
+	/*
 	// Check access
-	// INSERT INTO droits VALUES ('/saisie/saisie_commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Saisie de commentaires-types', '');
+	// INSERT INTO droits VALUES ('/saisie/saisie_commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'V', 'Saisie de commentaires-types', '');
+	// Le checkAccess ne fonctionne que si la session est valide.
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
 		die();
 	}
+	*/
+
+	//echo "<p>REQUEST_URI=".$_SERVER['REQUEST_URI']."</p>\n";
+	//REQUEST_URI=/steph/gepi-cvs/saisie/saisie_avis2.php?periode_num=1&id_classe=1&fiche=y&current_eleve_login=TOTO_G&ind_eleve_login_suiv=3
+	// Un accès direct à https://127.0.0.1/steph/gepi-cvs/saisie/saisie_commentaires_types.php se solde par un échec parce qu'aucun paramètre n'est initialisé pour l'accès à MySQL
+
+	// L'appel à initialisations.inc.php est nécessaire pour récupérer le gepiPath
+	//echo "<p>gepiPath=".$gepiPath."</p>\n";
+
+	$tmp_chemin=$gepiPath."/saisie/saisie_avis2.php";
+	if(substr($_SERVER['REQUEST_URI'],0,strlen($tmp_chemin))!=$tmp_chemin){
+		/*
+		echo "<html>\n";
+		echo "<head>\n";
+		echo "<title>Accès non autorisé!</title>\n";
+		echo "</head>\n";
+		echo "<body>\n";
+		echo "<p><b>ERREUR:</b> Accès non autorisé!</p>\n";
+		echo "</body>\n";
+		echo "</html>\n";
+		*/
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+
 
 	$sql="show tables";
 	$res_tables=mysql_query($sql);
