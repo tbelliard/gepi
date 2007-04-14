@@ -72,7 +72,7 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a></p>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a></p>\n";
 
 echo "<p><span class = 'grand'>Première phase d'importation des moyennes et appréciations </span>";
 //echo "<p class = 'bold'>Groupe : " . $current_group["description"] ." (" . $current_group["classlist_string"] . ")| Matière : " . $current_group["matiere"]["nom_complet"] . " | Période : $nom_periode[$periode_num]</p>";
@@ -87,20 +87,22 @@ if (!isset($is_posted)) {
     <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" checked /></p>
     <INPUT TYPE=HIDDEN name=is_posted value = 1 />
     <?php
-    echo "<input type=hidden name=id_groupe value='" . $id_groupe . "' />";
-    echo "<input type=hidden name=periode_num value='" . $periode_num . "' />";
+    echo "<input type=hidden name=id_groupe value='" . $id_groupe . "' />\n";
+    echo "<input type=hidden name=periode_num value='" . $periode_num . "' />\n";
     ?>
     </FORM>
     <?php
-    echo "<p>Vous avez décidé d'importer directement un fichier de moyennes et/ou d'appréciations. Le fichier d'importation doit être au format csv (séparateur : point-virgule) et doit contenir les trois champs suivants :<br />";
-    echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'élève (<b>voir les explications plus bas</b>).<br />";
-    echo "--> <B>NOTE</B> : note entre 0 et 20 avec le point ou la virgule comme symbole décimal.<br />Autres codes possibles (sans les guillemets) : \"<b>abs</b>\" pour \"absent\", \"<b>disp</b>\" pour \"dispensé\", \"<b>-</b>\" pour absence de note.<br />Si ce champ est vide, Il n'y aura pas modification de la note déjà enregistrée dans GEPI pour l'élève en question.<br />";
-    echo "--> <B>Appréciation</B> : le texte de l'appréciation de l'élève.<br />Si ce champ est vide, Il n'y aura pas modification de l'appréciation enregistrée dans GEPI pour l'élève en question.</p>";
-    echo "<p>Pour constituer le fichier d'importation vous avez besoin de connaître l'identifiant <b>GEPI</b> de chaque élève. Vous pouvez télécharger:";
-    echo "<ul>";
-    echo "<li>le fichier élèves (identifiant GEPI, sans nom et prénom) en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App'><b>cliquant ici</b></a></li>";
-    echo "<li>ou bien le fichier élèves (nom - prénom - identifiant GEPI) en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=5&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_Note_App'><b>cliquant ici</b></a><br />(<i>ce deuxième fichier n'est pas directement adapté à l'import<br />(il faudra en supprimer les colonnes Nom et Prénom avant import)</i>)</li>";
-    echo "<p>Une fois téléchargé, utilisez votre tableur habituel pour ouvrir ce fichier en précisant que le type de fichier est csv avec point-virgule comme séparateur.</p>";
+    echo "<p>Vous avez décidé d'importer directement un fichier de moyennes et/ou d'appréciations. Le fichier d'importation doit être au format csv (séparateur : point-virgule) et doit contenir les trois champs suivants :<br />\n";
+    echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'élève (<b>voir les explications plus bas</b>).<br />\n";
+    echo "--> <B>NOTE</B> : note entre 0 et 20 avec le point ou la virgule comme symbole décimal.<br />Autres codes possibles (sans les guillemets) : \"<b>abs</b>\" pour \"absent\", \"<b>disp</b>\" pour \"dispensé\", \"<b>-</b>\" pour absence de note.<br />Si ce champ est vide, Il n'y aura pas modification de la note déjà enregistrée dans GEPI pour l'élève en question.<br />\n";
+    echo "--> <B>Appréciation</B> : le texte de l'appréciation de l'élève.<br />Si ce champ est vide, Il n'y aura pas modification de l'appréciation enregistrée dans GEPI pour l'élève en question.</p>\n";
+    echo "<p>Pour constituer le fichier d'importation vous avez besoin de connaître l'identifiant <b>GEPI</b> de chaque élève. Vous pouvez télécharger:</p>\n";
+    echo "<ul>\n";
+    echo "<li>le fichier élèves (identifiant GEPI, sans nom et prénom) en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App'><b>cliquant ici</b></a></li>\n";
+    echo "<li>ou bien le fichier élèves (nom - prénom - identifiant GEPI) en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=5&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_Note_App'><b>cliquant ici</b></a><br />(<i>ce deuxième fichier n'est pas directement adapté à l'import<br />(il faudra en supprimer les colonnes Nom et Prénom avant import)</i>)</li>\n";
+    echo "</ul>\n";
+
+    echo "<p>Une fois téléchargé, utilisez votre tableur habituel pour ouvrir ce fichier en précisant que le type de fichier est csv avec point-virgule comme séparateur.</p>\n";
 
 }
 if (isset($is_posted )) {
@@ -115,7 +117,7 @@ if (isset($is_posted )) {
             echo "Impossible d'ouvrir le fichier CSV";
         } else {
             $row = 0;
-            echo "<table border=1><tr><td><p class='bold'>IDENTIFIANT</p></td><td><p class='bold'>Nom</p></td><td><p class='bold'>Prénom</p></td><td><p class='bold'>Note</p></td><td><p class='bold'>Appréciation</p></td></tr>";
+            echo "<table border=1>\n<tr>\n<td><p class='bold'>IDENTIFIANT</p></td>\n<td><p class='bold'>Nom</p></td>\n<td><p class='bold'>Prénom</p></td>\n<td><p class='bold'>Note</p></td>\n<td><p class='bold'>Appréciation</p></td>\n</tr>\n";
             $valid = 1;
             while(!feof($fp)) {
                 if (isset($en_tete)) {
@@ -136,7 +138,7 @@ if (isset($is_posted )) {
                 // On ne retient que les lignes qui comportent 2 ou 3 champs dont au moins un est non vide
                 if ((($num == 3) or ($num == 2)) and ($champs_vides == 'no')) {
                     $row++;
-                    echo "<tr>";
+                    echo "<tr>\n";
                     for ($c=0; $c<$num; $c++) {
                         $col3 = '';
                         $reg_app = '';
@@ -156,22 +158,22 @@ if (isset($is_posted )) {
                                 // Si l'élève ne suit pas la matière
                                 //
                                 if (in_array($data[$c], $current_group["eleves"][$periode_num]["list"]))  {
-                                    echo "<td><p>$data[$c]</p></td>";
+                                    echo "<td><p>$data[$c]</p></td>\n";
                                 } else {
-                                    echo "<td><p><font color = red>* $data[$c] ??? *</font></p></td>";
+                                    echo "<td><p><font color = red>* $data[$c] ??? *</font></p></td>\n";
                                     $valid = 0;
                                 }
-                                echo "<td><p>$nom_eleve</p></td>";
+                                echo "<td><p>$nom_eleve</p></td>\n";
                                 //echo "<td><p>$prenom_eleve</p></td>";
                                 echo "<td><p>$prenom_eleve</p>";
                                 $data_login = urlencode($data[$c]);
-                                echo "<INPUT TYPE=HIDDEN name='$reg_login' value = $data_login />";
-                                echo "</td>";
+                                echo "<input type='hidden' name='$reg_login' value=\"$data_login\" />";
+                                echo "</td>\n";
                             } else {
-                                echo "<td><font color = red>???</font></td>";
-                                echo "<td><font color = red>???</font></td>";
-                                echo "<td><font color = red>???</font></td>";
-                                echo "<td><font color = red>???</font></td>";
+                                echo "<td><font color = red>???</font></td>\n";
+                                echo "<td><font color = red>???</font></td>\n";
+                                echo "<td><font color = red>???</font></td>\n";
+                                echo "<td><font color = red>???</font></td>\n";
                                 $valid = 0;
                             }
                             break;
@@ -185,39 +187,40 @@ if (isset($is_posted )) {
                                         //echo "<td><p>$data[$c]</p></td>";
                                         echo "<td><p>$data[$c]</p>";
                                         $reg_note = "reg_".$row."_note";
-                                        echo "<INPUT TYPE=HIDDEN name='$reg_note' value = $data[$c] />";
-                                        echo "</td>";
+                                        echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
+                                        echo "</td>\n";
                                     } else {
-                                        echo "<td><font color = red>???</font></td>";
+                                        echo "<td><font color = red>???</font></td>\n";
                                         $valid = 0;
                                     }
                                 } else {
-                                    echo "<td><font color = red>???</font></td>";
+                                    echo "<td><font color = red>???</font></td>\n";
                                     $valid = 0;
                                 }
                             } else {
                                 $tempo = strtolower($data[$c]);
                                 if (($tempo == "disp") or ($tempo == "abs") or ($tempo == "-")) {
                                     //echo "<td><p>$data[$c]</p></td>";
-                                    echo "<td><p>$data[$c]</p>";
+                                    echo "<td><p>$data[$c]</p>\n";
                                     $reg_note = "reg_".$row."_note";
-                                    echo "<INPUT TYPE=HIDDEN name='$reg_note' value = $data[$c] />";
-                                    echo "</td>";
+                                    echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
+                                    echo "</td>\n";
                                 } else if ($data[$c] == "") {
                                     //echo "<td><p><font color = green>ND</font></p></td>";
                                     echo "<td><p><font color = green>ND</font></p>";
                                     $reg_note = "reg_".$row."_note";
-                                    echo "<INPUT TYPE=HIDDEN name='$reg_note' value = '' />";
-                                    echo "</td>";
+                                    echo "<input type='hidden' name='$reg_note' value='' />";
+                                    echo "</td>\n";
                                     $non_def = 'yes';
                                 } else {
-                                    echo "<td><font color = red>???</font></td>";
+                                    echo "<td><font color = red>???</font></td>\n";
                                     $valid = 0;
                                 }
                             }
                             break;
                         case 2:
                             // Appréciation
+							$non_def='';
                             if ($data[$c] == "") {
                                 $col3 = "<font color = green>ND</font>";
                                 $non_def = 'yes';
@@ -228,28 +231,36 @@ if (isset($is_posted )) {
                             }
                             $reg_app = "reg_".$row."_app";
 //                            echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app>";
+								echo "<td><p>$col3</p>";
+								if($non_def!='yes'){
+									echo "<input type='hidden' name='$reg_app' value=\"$data_app\" />";
+								}
+								echo "</td>\n</tr>\n";
                             break;
                         }
                     }
-                    //echo "<td><p>$col3</p></td></tr>";
+                    //echo "<td><p>$col3</p>"</td></tr>";
+					/*
                     echo "<td><p>$col3</p>";
                     echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app />";
-                    echo "</td></tr>";
+                    echo "</td>\n</tr>\n";
+					*/
+                    echo "</tr>\n";
                 // fin de la condition "if ($num == 3)"
                 }
 
             // fin de la boucle "while(!feof($fp))"
             }
             fclose($fp);
-            echo "</table>";
-            echo "<p>Première phase de l'importation : $row entrées importées !</p>";
+            echo "</table>\n";
+            echo "<p>Première phase de l'importation : $row entrées importées !</p>\n";
             if ($row > 0) {
                 if ($valid == '1') {
-                    echo "<INPUT TYPE=HIDDEN name=nb_row value = $row />";
-                    echo "<input type=hidden name=id_groupe value= $id_groupe />";
-                    echo "<input type=hidden name=periode_num value= $periode_num />";
-                    echo "<input type=submit value='Enregistrer les données' />";
-                    echo "</FORM>";
+                    echo "<input type='hidden' name='nb_row' value=\"$row\" />\n";
+                    echo "<input type='hidden' name='id_groupe' value=\"$id_groupe\" />\n";
+                    echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
+                    echo "<input type='submit' value='Enregistrer les données' />\n";
+                    echo "</form>\n";
                     ?>
                     <script type="text/javascript" language="javascript">
                     <!--
@@ -258,19 +269,19 @@ if (isset($is_posted )) {
                     </script>
                     <?php
                 } else {
-                    echo "<p class='bold'>AVERTISSEMENT : Les symboles <font color=red>???</font> signifient que le champ en question n'est pas valide. L'opération d'importation des données ne peut continuer normalement. Veuillez corriger le fichier à importer <br /></p>";
-                    echo "</FORM>";
+                    echo "<p class='bold'>AVERTISSEMENT : Les symboles <font color=red>???</font> signifient que le champ en question n'est pas valide. L'opération d'importation des données ne peut continuer normalement. Veuillez corriger le fichier à importer <br /></p>\n";
+                    echo "</form>\n";
                 }
                 if ($non_def == 'yes') {
-                    echo "<p class='bold'>Les symboles <font color=green>ND</font> signifient que le champ en question sera ignoré. Il n'y aura donc pas modification de la donnée existante dans la base de GEPI.<br /></p>";
+                    echo "<p class='bold'>Les symboles <font color=green>ND</font> signifient que le champ en question sera ignoré. Il n'y aura donc pas modification de la donnée existante dans la base de GEPI.<br /></p>\n";
                 }
             } else {
-                echo "<p>L'importation a échoué !</p>";
+                echo "<p>L'importation a échoué !</p>\n";
             }
         }
     // suite de la condition "if($csv_file != "none")"
     } else {
-        echo "<p>Aucun fichier n'a été sélectionné !</p>";
+        echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
     // fin de la condition "if($csv_file != "none")"
     }
 }
