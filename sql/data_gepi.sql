@@ -381,6 +381,7 @@ INSERT INTO setting VALUES ('bull_ecart_bloc_nom', '1');
 INSERT INTO setting VALUES ('addressblock_debug', 'n');
 INSERT INTO droits VALUES ('/utilitaires/recalcul_moy_conteneurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction des moyennes des conteneurs', '');
 INSERT INTO droits VALUES ('/saisie/commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Saisie de commentaires-types', '');
+INSERT INTO droits VALUES ('/saisie/saisie_commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Saisie de commentaires-types', '');
 INSERT INTO droits VALUES ('/mod_absences/lib/fiche_eleve.php', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Fiche du suivie de l''élève', '');
 INSERT INTO droits VALUES ('/cahier_notes/releve_pdf.php', 'V', 'V', 'F', 'V', 'F', 'F', 'V', 'Relevé de note au format PDF', '');
 INSERT INTO droits VALUES ('/impression/parametres_impression_pdf.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Impression des listes PDF; réglage des paramètres', '');
