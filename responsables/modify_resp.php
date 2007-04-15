@@ -43,28 +43,42 @@ if (!checkAccess()) {
     die();
 }
 
+/*
+echo "\$is_posted=$is_posted<br />";
+echo "\$_POST[is_posted]=".$_POST['is_posted']."<br />";
+echo "\$_GET[is_posted]=".$_GET['is_posted']."<br />";
+*/
+
 if (isset($is_posted) and ($is_posted == '1')) {
 	$msg="";
-	if (($nom != '') and ($prenom != '') and ($adr1 != '') and ($commune != '') and ($cp != '') ) {
-		$ok = 'yes';
+
+	//$adr_id_existant=isset($_POST['adr_id_existant']) ? $_POST['adr_id_existant'] : '';
+
+	//echo "\$choisir_ad_existante=$choisir_ad_existante<br />";
+
+	$choisir_ad_existante=isset($_POST['choisir_ad_existante']) ? $_POST['choisir_ad_existante'] : '';
+
+	//echo "\$choisir_ad_existante=$choisir_ad_existante<br />";
+
+
+	$ok='';
+	if(($nom=='')||($prenom=='')){
+		$ok='no';
 	}
 	else{
-		if(isset($_POST['adr_id_existant'])){
-			if (($nom != '') and ($prenom != '') and ($_POST['adr_id_existant']!='')) {
-				$ok = 'yes';
-			}
-			else{
-				$msg = "Un ou plusieurs champs obligatoires sont vides !";
-				$ok = 'no';
-			}
+		if($choisir_ad_existante=='oui'){
+			// On crée la personne si elle n'existe pas et on enchaine avec la page choix_adr_existante.php
+			$ok='yes';
 		}
-		else{
-			$msg = "Un ou plusieurs champs obligatoires sont vides !";
-			$ok = 'no';
+		elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
+			$ok='yes';
 		}
 	}
 
-	if($ok=='yes'){
+	if($ok!='yes'){
+		$msg = "Un ou plusieurs champs obligatoires sont vides !";
+	}
+	else{
 		if(!isset($nouv_resp)){
 			if(isset($pers_id)){
 				$sql="UPDATE resp_pers SET nom='$nom',
@@ -73,11 +87,13 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								tel_port='$tel_port',
 								tel_prof='$tel_prof',
 								mel='$mel'";
+				/*
 				//if($adr_id_existant!=""){
 				if((isset($select_ad_existante))&&($adr_id_existant!="")){
 					$adr_id=$adr_id_existant;
 					$sql.=",adr_id='$adr_id'";
 				}
+				*/
 				$sql.="WHERE pers_id='$pers_id'";
 				//echo "$sql<br />\n";
 				$res_update=mysql_query($sql);
@@ -96,7 +112,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 
 			// On n'insère pas les saisies des champs adr1, adr2,... si une adresse existante a été sélectionnée:
-			if($adr_id_existant==""){
+			//if($adr_id_existant==""){
+			if($choisir_ad_existante==""){
 				//echo "a<br />";
 				if(isset($changement_adresse)){
 					//echo "b<br />";
@@ -172,6 +189,11 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					}
 				}
 			}
+			else{
+				// On redirige vers choix_adr_existante.php
+				header("Location: choix_adr_existante.php?pers_id=$pers_id");
+				die();
+			}
 		}
 		else{
 			// Nouveau responsable:
@@ -192,43 +214,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$pers_id="p".sprintf("%09d",$nb);
 			}
 
-			//if($adr_id_existant==""){
-			if((!isset($select_ad_existante))||($adr_id_existant=="")){
-				// Recherche du plus grand adr_id
-				$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
-				//echo "$sql<br />\n";
-				$res1=mysql_query($sql);
-				if(mysql_num_rows($res1)==0){
-					//$adr_id="a1";
-					$adr_id="a".sprintf("%09d","1");
-				}
-				else{
-					$ligtmp=mysql_fetch_object($res1);
-					$nb=substr($ligtmp->adr_id,1);
-					$nb++;
-					//$adr_id="a".$nb;
-					$adr_id="a".sprintf("%09d",$nb);
-				}
 
-				if(isset($adr_id)){
-					$sql="INSERT INTO resp_adr SET adr1='$adr1',
-									adr2='$adr2',
-									adr3='$adr3',
-									adr4='$adr4',
-									cp='$cp',
-									commune='$commune',
-									pays='$pays',
-									adr_id='$adr_id'";
-					//echo "$sql<br />\n";
-					$res_insert=mysql_query($sql);
-					if(!$res_insert){
-						$msg.="Erreur lors de l'insertion de l'adresse dans 'resp_adr'. ";
-					}
-				}
-			}
-			else{
-				$adr_id=$adr_id_existant;
-			}
 
 			// Insertion du nouvel utilisateur dans resp_pers:
 			$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
@@ -237,19 +223,90 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
 								tel_prof='$tel_prof',
-								mel='$mel',
-								adr_id='$adr_id'";
+								mel='$mel'";
 			//echo "$sql<br />\n";
 			$res_insert=mysql_query($sql);
 			if(!$res_insert){
 				$msg.="Erreur lors de l'insertion dans 'resp_pers'. ";
 			}
-			//$sql="SELECT adr_id";
+			else{
+				//if($adr_id_existant==""){
+				//if((!isset($select_ad_existante))||($adr_id_existant=="")){
+				if($choisir_ad_existante==""){
+					//echo "<p>1</p>";
+
+					// Recherche du plus grand adr_id
+					$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
+					//echo "$sql<br />\n";
+					$res1=mysql_query($sql);
+					if(mysql_num_rows($res1)==0){
+						//$adr_id="a1";
+						$adr_id="a".sprintf("%09d","1");
+					}
+					else{
+						$ligtmp=mysql_fetch_object($res1);
+						$nb=substr($ligtmp->adr_id,1);
+						$nb++;
+						//$adr_id="a".$nb;
+						$adr_id="a".sprintf("%09d",$nb);
+					}
+
+					if(isset($adr_id)){
+						$sql="INSERT INTO resp_adr SET adr1='$adr1',
+										adr2='$adr2',
+										adr3='$adr3',
+										adr4='$adr4',
+										cp='$cp',
+										commune='$commune',
+										pays='$pays',
+										adr_id='$adr_id'";
+						//echo "$sql<br />\n";
+						$res_insert=mysql_query($sql);
+						if(!$res_insert){
+							$msg.="Erreur lors de l'insertion de l'adresse dans 'resp_adr'. ";
+						}
+						else{
+							$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$pers_id'";
+							$res_update=mysql_query($sql);
+							if(!$res_update){
+								$msg.="Erreur lors de la mise à jour de l'association de la personne avec son adresse. ";
+							}
+						}
+					}
+				}
+				else{
+					//$adr_id=$adr_id_existant;
+					//echo "<p>2</p>";
+
+					// On redirige vers choix_adr_existante.php
+					header("Location: choix_adr_existante.php?pers_id=$pers_id");
+					die();
+				}
+
+				/*
+				// Insertion du nouvel utilisateur dans resp_pers:
+				$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
+									nom='$nom',
+									prenom='$prenom',
+									tel_pers='$tel_pers',
+									tel_port='$tel_port',
+									tel_prof='$tel_prof',
+									mel='$mel',
+									adr_id='$adr_id'";
+				//echo "$sql<br />\n";
+				$res_insert=mysql_query($sql);
+				if(!$res_insert){
+					$msg.="Erreur lors de l'insertion dans 'resp_pers'. ";
+				}
+				//$sql="SELECT adr_id";
+				*/
+			}
 		}
 
 
 		// Partie élèves:
-		if(isset($cpt)){
+		//if(isset($cpt)){
+		if((isset($cpt))&&(isset($pers_id))&&($msg=='')){
 			//echo "1<br />";
 			for($i=0;$i<$cpt;$i++){
 				//echo " $i<br />";
@@ -303,7 +360,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 		}
 
-		if(isset($add_ele_id)){
+		//if(isset($add_ele_id)){
+		if((isset($add_ele_id))&&(isset($pers_id))&&($msg=='')){
 			if($add_ele_id!=''){
 				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$add_ele_id'";
 				$test=mysql_query($sql);
@@ -325,6 +383,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 		}
 
+		/*
 		if(isset($suppr_ad)){
 			$temoin_suppr=0;
 			for($i=0;$i<count($suppr_ad);$i++){
@@ -361,6 +420,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 		}
 		elseif($msg==""){
+		*/
+		if($msg==""){
 			$msg="Enregistrement réussi.";
 		}
 	}
@@ -406,7 +467,7 @@ if(!getSettingValue('conv_new_resp_table')){
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="modify_resp.php">Ajouter un responsable</a></p>
 
-<form enctype="multipart/form-data" action="modify_resp.php" method="post">
+<form enctype="multipart/form-data" name="resp" action="modify_resp.php" method="post">
 <?php
 $temoin_adr=0;
 //if (isset($ereno)) {
@@ -720,11 +781,31 @@ if(mysql_num_rows($res_adr)>0){
 }
 */
 echo "</table>\n";
+
+if(isset($pers_id)){
+	echo "<p>Ou <a href='choix_adr_existante.php?pers_id=$pers_id'>Choisir une adresse existante.</a></p>";
+}
+else{
+	//echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?choisir_adr_existante=oui' onClick=''>Choisir une adresse existante.</a></p>";
+
+	echo "<script type='text/javascript'>
+	function creer_pers_id_puis_choisir_adr_exist(){
+		document.forms.resp.choisir_ad_existante.value='oui';
+		//setTimeout('document.forms.resp.submit()',5000);
+		document.forms.resp.submit();
+	}
+</script>\n";
+
+	echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."' onClick='creer_pers_id_puis_choisir_adr_exist();return false;'>Choisir une adresse existante.</a></p>";
+	echo "<input type='hidden' name='choisir_ad_existante' value='' />";
+}
+
 echo "</div>\n";
 
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
+/*
 $sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
@@ -739,6 +820,8 @@ if(mysql_num_rows($res_adr)>0){
 	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Code postal</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>";
 	echo "Commune";
+*/
+
 /*
 	// AJOUTER un champ SELECT avec javascript pour n'afficher que telle ou telle commune
 	$sql="SELECT DISTINCT commune FROM resp_adr ORDER BY commune";
@@ -752,6 +835,7 @@ if(mysql_num_rows($res_adr)>0){
 		echo "</select>\n";
 	}
 */
+/*
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Pays</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:#96C8F0;'>Responsable associé</td>\n";
@@ -824,6 +908,7 @@ if(mysql_num_rows($res_adr)>0){
 </script>\n";
 
 }
+*/
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 ?>
