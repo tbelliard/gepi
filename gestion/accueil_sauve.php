@@ -638,7 +638,7 @@ if (isset($action) and ($action == 'system_dump'))  {
     $dbUser = escapeshellarg($dbUser);
     $dbPass = escapeshellarg($dbPass);
     $dbDb = escapeshellarg($dbDb);
-	$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --create-options --quick -Q --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>";
