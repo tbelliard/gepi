@@ -370,7 +370,7 @@ function resumeSession()
     session_name("GEPI");
     session_start();
     if ((!isset($_SESSION)) or (!isset($_SESSION['login']))){
-        tentative_intrusion(1, "Tentative d'accès à une page sans être logué.");
+        tentative_intrusion(1, "Tentative d'accès à une page sans être logué (peut provenir d'un timeout de session).");
         return "0";
         die();
     }
