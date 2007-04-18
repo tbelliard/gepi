@@ -638,7 +638,26 @@ if (isset($action) and ($action == 'system_dump'))  {
     $dbUser = escapeshellarg($dbUser);
     $dbPass = escapeshellarg($dbPass);
     $dbDb = escapeshellarg($dbDb);
-	$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --create-options --quick -Q --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	
+	$req_version = mysql_result(mysql_query("SELECT version();"), 0);
+	$ver_mysql = explode(".", $req_version);
+	if (!is_numeric(substr($ver_mysql[2], 1, 1))) {
+		$ver_mysql[2] = substr($ver_mysql[2], 0, 1);
+	} else {
+		$ver_mysql[2] = substr($ver_mysql[2], 0, 2);
+	}
+	
+	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
+		$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
+		// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
+		$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	} else {
+		// Et là c'est qu'on a une version inférieure à 4.0.17
+		$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	}
+	
+	
 	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>";
