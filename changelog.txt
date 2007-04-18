@@ -13,6 +13,8 @@ Corrections de bugs
 -------------------
 - correction de la détection d'une conversion nécessaires des données 'responsables'
 - correction du listage des élèves qui n'ont pas leurs deux responsables définis
+* ajout des droits pour un admin d'imprimer (lorsque'un modèle de bulletin vient d'être créé ou une option modifiée, cela permet de visualiser le résultat des modifications)
+- bulletin PDF : On n'imprime plus que les périodes fermées. Suppression de la case à cocher "Période fermée" dans la selection des périodes pour le bulletins PDF.
 
 
 Gepi-1.5.0-rc1 (03/04/2007)

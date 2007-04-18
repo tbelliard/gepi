@@ -53,8 +53,12 @@ if (!checkAccess()) {
 	    else { if (isset($_GET['creer_pdf'])) {$creer_pdf=$_GET['creer_pdf'];} if (isset($_POST['creer_pdf'])) {$creer_pdf=$_POST['creer_pdf'];} }
 	if (empty($_GET['type_bulletin']) and empty($_POST['type_bulletin'])) {$type_bulletin="";}
 	    else { if (isset($_GET['type_bulletin'])) {$type_bulletin=$_GET['type_bulletin'];} if (isset($_POST['type_bulletin'])) {$type_bulletin=$_POST['type_bulletin'];} }
-	if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
+	// ERIC on n'imprime plus que les periodes fermées
+	/*
+	   if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
 	   else { if (isset($_GET['periode_ferme'])) { $periode_ferme = $_GET['periode_ferme']; } if (isset($_POST['periode_ferme'])) { $periode_ferme = $_POST['periode_ferme']; } }
+	*/
+	$periode_ferme = '1'; 
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
 
@@ -136,11 +140,20 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 						$login_scolarite = $_SESSION['login'];
 						$requete_classe = mysql_query("SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY nom_complet ASC");
 					} else {
-				            $requete_classe = mysql_query('SELECT * FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
-						} 
+					    if ($_SESSION["statut"] == "administrateur") {
+							// on selectionne toutes les classes
+							$sql_classe = "SELECT * FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec, periodes p WHERE ( jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe";
+							$requete_classe = mysql_query($sql_classe);
+						} else {
+						    $requete_classe = mysql_query('SELECT c.* FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
+						}
+				    }
+						
 			  		while ($donner_classe = mysql_fetch_array($requete_classe))
 				  	 {
-						$requete_cpt_nb_eleve_1 =  mysql_query('SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
+						$sql_cpt_nb_eleve_1 = "SELECT count(*) FROM eleves, classes, j_eleves_classes WHERE classes.id = ".$donner_classe['id_classe']." AND j_eleves_classes.id_classe=classes.id AND j_eleves_classes.login=eleves.login GROUP BY eleves.login";
+						$requete_cpt_nb_eleve_1 =  mysql_query($sql_cpt_nb_eleve_1);
+						
 						$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
 					   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option><?php
 					 }
@@ -152,13 +165,14 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 				<select tabindex="5" name="periode[]" size="4" multiple="multiple">
 				  <?php
 					// sélection des période disponible
-			                        $requete_periode = mysql_query('SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
+			            $requete_periode = mysql_query('SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
 				  		while($donner_periode = mysql_fetch_array($requete_periode))
 					  	 {
 						   ?><option value="<?php echo $donner_periode['nom_periode']; ?>" <?php if(!empty($periode) and in_array($donner_periode['nom_periode'], $periode)) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_periode['nom_periode']); ?></option><?php
 						 }
 				  ?>
-				  </select><input type="checkbox" name="periode_ferme" id="periode_ferme" value="1" <?php if( isset($periode_ferme) and $periode_ferme === '1' ) { ?>checked="checked"<?php } ?> title="Imprimer seulement les période fermée" alt="Imprimer seulement les période fermée" />
+				  </select>
+				  <!--<input type="checkbox" name="periode_ferme" id="periode_ferme" value="1" <?php if( isset($periode_ferme) and $periode_ferme === '1' ) { ?>checked="checked"<?php } ?> title="Imprimer seulement les période fermée" alt="Imprimer seulement les période fermée" />-->
 			      </td>
 			      <td align="left" nowrap="nowrap" valign="middle" colspan="1" rowspan="2" >
 				<select name="eleve[]" size="6" multiple="multiple" tabindex="4">
@@ -217,8 +231,8 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		  </center>
 		  </fieldset>
 		</form>
-
-		<?php
+							
+		<?php 
 	}
 	// fin de modification de la sélection pour le PDF Christian
 
@@ -230,9 +244,14 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
         //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
         $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
     } else {
-        $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+	    if ($_SESSION["statut"] == "administrateur") {
+		    // on selectionne toutes les classes
+            $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c WHERE 1");
+        } else {
+		    $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+		}
     }
-
+	
     $nombreligne = mysql_num_rows($calldata);
     if ($nombreligne > "1") {
 	  echo " | Total : $nombreligne ";
