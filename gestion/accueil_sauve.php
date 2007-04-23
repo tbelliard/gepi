@@ -149,6 +149,54 @@ if (isset($action) and ($action == 'del_protect'))  {
    }
 }
 
+function gzip($src, $level = 5, $dst = false){
+    // Pour compresser un fichier existant
+    
+    if($dst == false) {
+        $dst = $src.".gz";
+    }
+    if(file_exists($src)){
+        $filesize = filesize($src);
+        $src_handle = fopen($src, "r");
+        if(!file_exists($dst)){
+            $dst_handle = gzopen($dst, "w$level");
+            while(!feof($src_handle)){
+                $chunk = fread($src_handle, 32768);
+                gzwrite($dst_handle, $chunk);
+            }
+            fclose($src_handle);
+            gzclose($dst_handle);
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+function charset_to_iso($string, $method = "mbstring") {
+	// Cette fonction a pour objet de convertir, si nécessaire,
+	// la chaîne de caractères $string avec l'encodage iso-8859-1
+	// Il s'agit surtout de prendre en compte les backup réalisés
+	// avec mysqldump, qui encodent en utf8...
+
+	if (preg_match('%(?:[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})+%xs', $string)) {
+    	// Ce preg_match détecte la présence d'un caractère codé en utf-8
+    	// Donc si elle retourne true, il faut convertir :
+    	if ($method == "mbstring") {
+    		return mb_convert_encoding($string, "ISO-8859-1", "UTF-8");
+    		unset($string);
+    	} else {
+    		return iconv("UTF-8", "ISO-8859-1", $string);
+    		unset($string);
+    	}
+    } else {
+    	return $string;
+    	unset($string);
+    }
+}
+
 function deplacer_fichier_upload($source, $dest) {
     $ok = @copy($source, $dest);
     if (!$ok) $ok = @move_uploaded_file($source, $dest);
@@ -334,8 +382,17 @@ function restoreMySqlDump($dumpFile,$duree) {
             if (!isset($debut_req))  $debut_req = $buffer;
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
-            if ($formattedQuery)
-                if (mysql_query($formattedQuery)) {//réussie sinon continue à conca&téner
+            if ($formattedQuery) {
+                // Iconv désactivé pour l'instant... Il semble qu'il y ait une fuite mémoire...
+                //if (function_exists("iconv")) {
+                //	$sql = charset_to_iso($formattedQuery, "iconv");
+                //} elseif (function_exists("mbstring_convert_encoding")) {
+                if (function_exists("mb_convert_encoding")) {
+                  	$sql = charset_to_iso($formattedQuery, "mbstring");
+                } else {
+                	$sql = $formattedQuery;
+                }
+                if (mysql_query($sql)) {//réussie sinon continue à concaténer
                     $offset=gztell($fileHandle);
                     //echo $offset;
                     $formattedQuery = "";
@@ -343,6 +400,7 @@ function restoreMySqlDump($dumpFile,$duree) {
                     $cpt++;
                     //echo $cpt;
                 }
+            }
         }
     }
 
@@ -572,10 +630,10 @@ if (isset($action) and ($action == 'dump'))  {
            }
         } else {
 			// La sauvegarde est terminée. On compresse le fichier
-			$data = implode("", file($fichier));
-			$gzfile = gzopen($fichier.".gz", "w9");
-			$write = gzwrite($gzfile,$data);
-			gzclose($gzfile);
+			$compress = gzip($fichier, 9);
+			if ($compress) {
+				$filetype = ".sql.gz";
+			}
 			@unlink($fichier);
 			
             echo "<div align='center'><p>Sauvegarde Terminée.<br/>\n";
