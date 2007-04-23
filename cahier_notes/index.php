@@ -222,7 +222,19 @@ if  (isset($id_racine) and ($id_racine!='')) {
     echo "<a href='index.php'> Mes enseignements </a>|\n";
     //echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'>" . $current_group["description"] . " : Choisir une autre période</a>|";
     echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> " . htmlentities($current_group["description"]) . " : Choisir une autre période</a>\n";
+
+	//==================================
+	// AJOUT: boireaus EXPORT...
+    echo " | <a href='export_cahier_notes.php?id_racine=".$id_racine."'>Exporter les notes</a>\n";
+	//==================================
+
     if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+
+		//==================================
+		// AJOUT: boireaus EXPORT...
+		echo " | <a href='import_cahier_notes.php?id_racine=".$id_racine."'>Importer les notes</a>\n";
+		//==================================
+
         //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&mode_navig=retour_index'>Créer une boîte</a>|";
 
         //echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'>Créer une boîte</a>|\n";
@@ -335,6 +347,5 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
        echo "</span></p>\n";
     }
 }
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>
