@@ -370,11 +370,16 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
 	$nb_dev  = mysql_num_rows($appel_dev);
 
+	if($nb_dev>45){
+		echo "<p>L'export ODS ne supporte actuellement que la génération d'un fichier d'au plus 46 devoirs.</p>\n";
+	}
+
 	unset($id_dev);
 	$id_dev=array();
 
 	$cpt=0;
-	while($lig_dev=mysql_fetch_object($appel_dev)){
+	//while($lig_dev=mysql_fetch_object($appel_dev)){
+	while(($lig_dev=mysql_fetch_object($appel_dev))&&($cpt<46)){
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
