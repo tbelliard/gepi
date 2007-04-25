@@ -2,12 +2,13 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.0-rc2 (03/04/2007)
+Gepi-1.5.0-rc2 (25/04/2007)
 ===========================
 
 Nouvelles fonctionalités
 ------------------------
 - possibilité de définir des commentaires types pour la saisie des avis du conseil de classe
+- ajout d'un module d'import/export des carnets de notes
 
 Corrections de bugs
 -------------------
