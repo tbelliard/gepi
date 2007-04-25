@@ -9,6 +9,8 @@ Nouvelles fonctionalités
 ------------------------
 - possibilité de définir des commentaires types pour la saisie des avis du conseil de classe
 - ajout d'un module d'import/export des carnets de notes
+- paramétrage plus fin des droits d'accès des professeurs aux résultats des élèves
+- possibilité de choisir entre le nouveau design ou un design plus proche des anciennes versions (dans Gestion générale->Configuration Générale)
 
 Corrections de bugs
 -------------------
