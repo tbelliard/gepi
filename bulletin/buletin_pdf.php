@@ -123,7 +123,13 @@ function calcul_toute_moyenne_classe ($groupe_select, $periode_select)
 		$addition_des_notes = $addition_des_notes+$note;
 		$cpt_notes=$cpt_notes+1;
 	 }
-	$moyenne_groupe = $addition_des_notes / $cpt_notes;
+	if ($cpt_notes == 0) {
+		$moyenne_groupe = "-";
+		$moyenne_mini = "-";
+		$moyenne_maxi = "-";
+	} else {
+		$moyenne_groupe = $addition_des_notes / $cpt_notes;
+	}
 
 	// renvoie un tableau avec [moyenne dugroupe | moyenne mini du groupe | moyenne maxi du groupe]
 	return array($moyenne_groupe, $moyenne_mini, $moyenne_maxi);
@@ -611,8 +617,7 @@ if(!empty($model_bulletin))
 
 	$autorise_sous_matiere=$donner_model['autorise_sous_matiere'];
 	$affichage_haut_responsable=$donner_model['affichage_haut_responsable'];
-
-	$largeur_matiere = $donner_model['largeur_matiere'];
+	$largeur_matiere=$donner_model['largeur_matiere'];
 	}
 } else {
 	// information d'activation des différents partie du bulletin
@@ -694,7 +699,7 @@ if(!empty($model_bulletin))
 		  $couleur_categorie_entete2='239';
 		  $couleur_categorie_entete3='239';
 		  $couleur_moy_general = '1';
-	          $couleur_moy_general1='239';
+	      $couleur_moy_general1='239';
 		  $couleur_moy_general2='239';
 		  $couleur_moy_general3='239';
 		  $titre_entete_matiere='Matière';
@@ -961,6 +966,21 @@ if(!empty($model_bulletin))
 
 	//recherche des données de notation et d'appreciation
 		//on recherche les donne élève par élève
+	
+	// Avant toute chose, on s'assure que les rangs sont recalculés si nécessaire
+	if ($active_rang === '1') {
+		$tab_classes = array_unique($classe_id);
+		$affiche_categories = false;
+		$test_coef = "1";
+		foreach($tab_classes as $id_classe) {
+			$periode_en_cours = 0;
+			while(!empty($periode_classe[$id_classe][$periode_en_cours])) {
+				$periode_num = $periode_classe[$id_classe][$periode_en_cours];
+				include "../lib/calcul_rang.inc.php";				
+				$periode_en_cours++;
+			}
+		}
+	}
 
 $passage_deux = 'non';
 $cpt_info_eleve=1;
@@ -976,14 +996,67 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		$moy_general_eleve = 0;
 		$cpt_info_eleve_matiere=0;
 		//prendre toutes les matières dont fait partie l'élève dans une période donné
-			// système de classement par ordre
-			$systeme_de_classement=''.$prefix_base.'matieres.nom_complet ASC';
-			if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' '.$prefix_base.'j_matieres_categories_classes.priority ASC, '.$prefix_base.'j_groupes_classes.priorite ASC, '.$prefix_base.'matieres_categories.id ASC,'.$systeme_de_classement; }
-			if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' '.$prefix_base.'j_groupes_classes.priorite ASC, '.$systeme_de_classement; }
-	//	$requete_toute_matier = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'matieres, '.$prefix_base.'groupes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'matieres_notes.login = "'.$ident_eleve[$cpt_info_eleve].'" AND '.$prefix_base.'matieres_notes.periode = "'.$id_periode.'" AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'matieres_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'matieres_categories.id ORDER BY '.$systeme_de_classement.'');
-	$requete_toute_matier = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'matieres, '.$prefix_base.'groupes, '.$prefix_base.'matieres_categories, '.$prefix_base.'j_groupes_classes, '.$prefix_base.'j_matieres_categories_classes WHERE '.$prefix_base.'matieres_notes.login = "'.$ident_eleve[$cpt_info_eleve].'" AND '.$prefix_base.'matieres_notes.periode = "'.$id_periode.'" AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'matieres_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'matieres_categories.id AND '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.$prefix_base.'j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id ORDER BY '.$systeme_de_classement.'');
+		
+		if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') {
+			// Requête pour le classement par catégories de matières
+			$requete_toute_matier = mysql_query("SELECT " .
+						"jeg.id_groupe id_groupe, " .
+						"m.nom_complet nom_long_matiere,  " .
+						"mc.nom_complet nom_categorie ".
+					"FROM " .
+						"j_groupes_classes jgc, " .
+						"j_eleves_classes jec, " .
+						"j_eleves_groupes jeg, " .
+						"j_groupes_matieres jgm, " .
+						"j_matieres_categories_classes jmcc, " .
+						"matieres_categories mc, " .
+						"matieres m " .
+					"WHERE (" .
+						"jec.login = '".$ident_eleve[$cpt_info_eleve]."' AND " .
+						"jec.periode = '".$id_periode."' AND " .
+						"jeg.login = jec.login AND " .
+						"jeg.periode = jec.periode AND " .
+						"jgc.categorie_id = jmcc.categorie_id AND " .
+						"jmcc.classe_id = jec.id_classe AND " .
+						"mc.id = jgc.categorie_id AND " .
+						"jgc.id_classe = jec.id_classe AND " .
+						"jgc.id_groupe = jeg.id_groupe AND " .
+						"jgm.id_groupe = jeg.id_groupe AND " .
+						"m.matiere = jgm.id_matiere" .
+					") " .
+					"GROUP BY id_groupe ORDER BY jmcc.priority,jmcc.categorie_id,jgc.priorite,m.nom_complet");
+			
+			} else {
+			// Requête pour le classement sans catégories de matières
+			$requete_toute_matier = mysql_query("SELECT " .
+						"jeg.id_groupe id_groupe, " .
+						"m.nom_complet nom_long_matiere,  " .
+						"mc.nom_complet nom_categorie ".
+					"FROM " .
+						"j_groupes_classes jgc, " .
+						"j_eleves_classes jec, " .
+						"j_eleves_groupes jeg, " .
+						"j_groupes_matieres jgm, " .
+						"j_matieres_categories_classes jmcc, " .
+						"matieres_categories mc, " .
+						"matieres m " .
+					"WHERE (" .
+						"jec.login = '".$ident_eleve[$cpt_info_eleve]."' AND " .
+						"jec.periode = '".$id_periode."' AND " .
+						"jeg.login = jec.login AND " .
+						"jeg.periode = jec.periode AND " .
+						"mc.id = jgc.categorie_id AND " .
+						"jgc.id_classe = jec.id_classe AND " .
+						"jgc.id_groupe = jeg.id_groupe AND " .
+						"jgm.id_groupe = jeg.id_groupe AND " .
+						"m.matiere = jgm.id_matiere" .
+					") " .
+					"GROUP BY id_groupe ORDER BY jgc.priorite,m.nom_complet");
+			}
+		
+
 		// compteur du nombre de matière
-		$nombre_de_matiere =  mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'matieres_notes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'matieres, '.$prefix_base.'groupes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'matieres_notes.login = "'.$ident_eleve[$cpt_info_eleve].'" AND '.$prefix_base.'matieres_notes.periode = "'.$id_periode.'" AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'matieres_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'matieres_categories.id ORDER BY '.$prefix_base.'matieres_categories.id ASC'),0);
+//		$nombre_de_matiere = mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'matieres_notes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'matieres, '.$prefix_base.'groupes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'matieres_notes.login = "'.$ident_eleve[$cpt_info_eleve].'" AND '.$prefix_base.'matieres_notes.periode = "'.$id_periode.'" AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'matieres_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'matieres_categories.id ORDER BY '.$prefix_base.'matieres_categories.id ASC'),0);
 		//login de l'élève
 		$login_eleve_select = $ident_eleve[$cpt_info_eleve]; // login de l'élève
 		// mise à 0 des totals coef
@@ -993,12 +1066,12 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$id_groupe_aff=$donner_toute_matier['id_groupe'];
 
 			// ses matières
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['matiere'] = $donner_toute_matier[9]; // nom long de la matière je ne peut utilise le nom_complet car il est déjas utiliser avec les catégorie
+			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['matiere'] = $donner_toute_matier['nom_long_matiere']; // nom long de la matière je ne peut utilise le nom_complet car il est déjas utiliser avec les catégorie
 			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['id_groupe'] = $donner_toute_matier['id_groupe']; // id du groupe
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'] = $donner_toute_matier['nom_complet']; // nom de la catégorie de la matière
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_toute_matier['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = $donner_toute_matier['rang']; // rang de l'élève pour une matière donnée dans une périodes données
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = $donner_toute_matier['affiche_moyenne']; // afficher ou ne pas afficher la moyenne de la catégorie
+			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'] = $donner_toute_matier['nom_categorie']; // nom de la catégorie de la matière
+
+			//$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = $donner_toute_matier['affiche_moyenne']; // afficher ou ne pas afficher la moyenne de la catégorie
+ 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
 			// calcule du nombre d'élève fesant partie de ce groupe
 			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_eleves_groupes WHERE periode="'.$id_periode.'" AND id_groupe="'.$id_groupe_aff.'"'),0); }
@@ -1012,8 +1085,14 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max'] = $moyenne_general_groupe[$groupe_matiere][2]; //moyenne maximal du groupe
 
 			//calcule du nombre de note dans une période donner pour un groupe
-			if($active_nombre_note==='1') {
-			  $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere']=mysql_result(mysql_query('SELECT count(*) FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (nd.login = "'.$login_eleve_select.'" and nd.id_devoir = d.id and d.display_parents="1" and cn.id_groupe = "'.$id_groupe_aff.'" and d.id_racine = cn.id_cahier_notes AND cn.periode="1")'),0);
+			if($active_nombre_note==='1' or $active_nombre_note_case === '1') {
+			  // Nombre total de devoirs
+			  $sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE (cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."');";
+			  $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = mysql_num_rows(mysql_query($sql));
+			  //$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere']=mysql_result(mysql_query('SELECT count(*) FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (nd.login = "'.$login_eleve_select.'" and nd.id_devoir = d.id and d.display_parents="1" and cn.id_groupe = "'.$id_groupe_aff.'" and d.id_racine = cn.id_cahier_notes AND cn.periode="1")'),0);
+			  // Nombre de devoir de l'élève
+			  $sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login='".$login_eleve_select."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."' AND cnd.statut='');";
+			  $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = mysql_num_rows(mysql_query($sql));
 			 }
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
@@ -1025,6 +1104,22 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			        $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['prof'][$k]=affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe);
 			        $k++;
 			}
+
+			 $res_note_rang = mysql_query("SELECT note, rang " .
+			 		"FROM matieres_notes WHERE (" .
+			 		"login='".$login_eleve_select."' AND " .
+			 		"id_groupe='".$groupe_matiere."' AND " .
+			 		"periode='".$id_periode."')");
+			 if (mysql_num_rows($res_note_rang) > 0) {
+			 	$note_rang = mysql_fetch_array($res_note_rang);
+			 } else {
+			 	$note_rang = array("note" => "-", "rang" => "-");
+			 }
+
+			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $note_rang['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
+			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = $note_rang['rang']; // rang de l'élève pour une matière donnée dans une périodes données
+			 
+			 $note_rang = '';
 
 			// autre requete pour rechercher les appréciation d'une matière pour une période donné
 			 $appreciation = mysql_fetch_array(mysql_query('SELECT * FROM '.$prefix_base.'matieres_appreciations WHERE login="'.$login_eleve_select.'" AND id_groupe="'.$groupe_matiere.'" AND periode="'.$id_periode.'"'));
@@ -1051,8 +1146,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 //			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
 			 if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			  if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; }
+			  if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0'; }
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 //			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_classe]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_classe]+1;
 			}
 
@@ -1079,6 +1176,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			 $sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']=mysql_result($test_cn, $n, 'cnc.note');
 	                 $n++;
         	        }
+
+			$nombre_de_matiere = $nombre_de_matiere + 1;
 
 		 $cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
 		 }
@@ -1152,6 +1251,11 @@ while($cpt_info_eleve<=$nb_eleve_total)
 	}
 $cpt_info_eleve=$cpt_info_eleve+1;
 }
+
+// christian pdf
+//echo "<pre>";
+//print_r($matiere);
+//echo "</pre>";
 	// définition d'une variable
 	$hauteur_pris = 0;
 
@@ -1176,6 +1280,9 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
   $ident_eleve_aff = $ident_eleve[$nb_eleve_aff];
     $cpt_info_periode=0;
 	$id_classe_selection = $classe_id[$nb_eleve_aff]; // classe de l'élève
+
+	// quand on change d'élève on vide les variables suivante
+	$categorie_passe = '';
 
 	$total_moyenne_classe_en_calcul=0; $total_moyenne_min_en_calcul=0; $total_moyenne_max_en_calcul=0; $total_coef_en_calcul=0;
 
@@ -1434,8 +1541,8 @@ if ( $ordre_entete_model_bulletin === '6' ) {
 
 
 // les moyennes eleve, classe, min, max
-		if( $active_moyenne==='1') {
-/*
+/*		if( $active_moyenne==='1') {
+
 	 	 $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app);
 		 $largeur_moyenne = $largeur_d_une_moyenne * $nb_entete_moyenne;
  		 $text_entete_moyenne = 'Moyenne';
@@ -1456,8 +1563,8 @@ if ( $ordre_entete_model_bulletin === '6' ) {
 			    if ( $type_bulletin === '2' and $active_moyenne_eleve === '1' and $nb_entete_moyenne > 1 )
 			    {
 				    $largeur_d_une_moyenne = $largeur_moyenne / ( $nb_entete_moyenne - 1 );
-			    }*/
-		}
+			    }
+		}*/
 
 $cpt_ordre = 0;
 $chapeau_moyenne = 'non';
@@ -1479,6 +1586,19 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 				$largeur_moyenne = $largeur_d_une_moyenne * ( $nb_entete_moyenne - 1 );
 				$text_entete_moyenne = 'Pour la classe';
 			 	$pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app);
+				$hauteur_caractere=10;
+					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);		
+					$val = $pdf->GetStringWidth($text_entete_moyenne);
+					$taille_texte = $largeur_moyenne;
+					$grandeur_texte='test';
+					while($grandeur_texte!='ok') {
+					 if($taille_texte<$val) 
+					  {
+					     $hauteur_caractere = $hauteur_caractere-0.3;
+					     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+					     $val = $pdf->GetStringWidth($text_entete_moyenne);
+					  } else { $grandeur_texte='ok'; }
+			        	}
 				 $pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, $text_entete_moyenne,1,0,'C');
 				$chapeau_moyenne = 'oui';
 			}
@@ -1507,6 +1627,7 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			$text_moy_classe = 'Classe';
 			if ( $entete_model_bulletin === '2' ) { $text_moy_classe = 'Moy.'; }
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, $text_moy_classe,1,0,'C');
+			$X_moyenne_classe = $X_note_app+$largeur_utilise;
 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 	  	    }
 		    //min
@@ -1515,6 +1636,7 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			     $hauteur_caractere = '8.5';
 			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, "Min.",1,0,'C');
+			$X_min_classe = $X_note_app+$largeur_utilise;
 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 		    }
 		    //max
@@ -1523,6 +1645,7 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			     $hauteur_caractere = '8.5';
 			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_pardeux, "Max.",1,0,'C');
+			$X_max_classe = $X_note_app+$largeur_utilise;
 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 		    }
 		
@@ -1537,9 +1660,11 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		  $largeur_utilise = $largeur_utilise + $largeur_rang;
 		}
 
-		// graphique de nvieau
+		// graphique de niveau
 		 if( $active_graphique_niveau === '1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 	 	  $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app);
+			     $hauteur_caractere = '10';
+			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		  $pdf->Cell($largeur_niveau, $hauteur_entete_pardeux, "Niveau",'LR',0,'C');
 	 	  $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app+4);
 	 	  $pdf->SetFont($caractere_utilse,'',8);
@@ -1548,6 +1673,8 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		 }
 
 		//appreciation
+			     $hauteur_caractere = '10';
+			     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 		 if($active_appreciation==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
 	 	  $pdf->SetXY($X_note_app+$largeur_utilise, $Y_note_app);
 			if ( !empty($ordre_moyenne[$cpt_ordre+1]) ) { 
@@ -1588,11 +1715,13 @@ $cpt_ordre = $cpt_ordre + 1;
 		 if($active_moyenne==='1') { $hauteur_toute_entete=$hauteur_entete+$hauteur_entete_moyenne_general; } else { $hauteur_toute_entete=$hauteur_entete; }
 		 $hauteur_bloc_matiere=$hauteur_note_app-$hauteur_toute_entete;
 		 $X_note_moy_app = $X_note_app; $Y_note_moy_app = $Y_note_app+$hauteur_note_app-$hauteur_entete;
+
 	         if($active_entete_regroupement==='1') {
 		  $espace_entre_matier = ($hauteur_bloc_matiere-($nb_categories_select*5))/$nb_matiere;
 		 } else { $espace_entre_matier = $hauteur_bloc_matiere/$nb_matiere; }
 	 	 $pdf->SetXY($X_bloc_matiere, $Y_bloc_matiere);
 		 $Y_decal = $Y_bloc_matiere;
+		 
 		 for($m=0; $m<$nb_matiere; $m++)
 		  {
 		 	$pdf->SetXY($X_bloc_matiere, $Y_decal);
@@ -1602,9 +1731,23 @@ $cpt_ordre = $cpt_ordre + 1;
 				//si on affiche les moyenne des catégorie
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe)
  				{
-					$pdf->SetFont($caractere_utilse,'',10);
+					$hauteur_caractere_catego = 10;
+					$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_catego);
+					$tt_catego = unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']);
+					$val = $pdf->GetStringWidth($tt_catego);
+					$taille_texte = ($largeur_matiere);
+					$grandeur_texte='test';
+					while($grandeur_texte!='ok') {
+					 if($taille_texte<$val)
+					  {
+					     	$hauteur_caractere_catego = $hauteur_caractere_catego-0.3;
+				     		$pdf->SetFont($caractere_utilse,'',$hauteur_caractere_catego);
+				     		$val = $pdf->GetStringWidth($tt_catego);
+					  } else { $grandeur_texte='ok'; }
+                			}
+					$grandeur_texte='test';
 					$pdf->SetFillColor($couleur_categorie_entete1, $couleur_categorie_entete2, $couleur_categorie_entete3);
-					$pdf->Cell($largeur_matiere, $hauteur_info_categorie, unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']),'TLB',0,'L',$couleur_categorie_entete);
+					$pdf->Cell($largeur_matiere, $hauteur_info_categorie, $tt_catego,'TLB',0,'L',$couleur_categorie_entete);
 					$largeur_utilise = $largeur_matiere;
 
 					// coéfficient matière
@@ -1625,67 +1768,104 @@ $cpt_ordre = $cpt_ordre + 1;
 					$pdf->SetFillColor(0, 0, 0);
 
 					// les moyennes eleve, classe, min, max par catégorie
-				 	   $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-						$cpt_ordre = 0;
-						$chapeau_moyenne = 'non';
-						while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
+				 	$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+					
+					$cpt_ordre = 0;
+					$chapeau_moyenne = 'non';
+					while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 				            //eleve
-		 			    if($active_moyenne_eleve==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
-					     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					     if($active_moyenne_regroupement==='1') {
-						$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
-						if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
-						 {
-							$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
-					 	        $pdf->SetFont($caractere_utilse,'B',8);
-			 			        $pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3);
-						        $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, present_nombre($calcule_moyenne_eleve_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),1,0,'C',$active_reperage_eleve);
-							$pdf->SetFillColor(0, 0, 0);
-						 } else {
-				 			        $pdf->SetFillColor(255, 255, 255);
-							        $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','TL',0,'C',$active_reperage_eleve);
-							}
-					     } else {
-					     	      $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
-					            }
-		 			     $largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne;
+		 			   if($active_moyenne_eleve==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+						     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+						     if($active_moyenne_regroupement==='1') {
+								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
+								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
+								 {
+									if ($matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve'] == "") {
+										$valeur = "-";
+									} else {
+										$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];  
+										$valeur = present_nombre($calcule_moyenne_eleve_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+									}			 	    
+							 	    $pdf->SetFont($caractere_utilse,'B',8);
+					 			    $pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3);
+								    $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie,$valeur,1,0,'C',$active_reperage_eleve);
+									$pdf->SetFillColor(0, 0, 0);
+									$valeur = "";
+								} else {
+						 		    $pdf->SetFillColor(255, 255, 255);
+								    $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','TL',0,'C',$active_reperage_eleve);
+								}
+						     } else {
+						        $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+						     }
+			 			     
+			 			     $largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne;
 					    }
 				            //classe
 		 			    if($active_moyenne_classe==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
-					     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					     if($active_moyenne_regroupement==='1') {
-						$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
-						if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
-						{
-						 $calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_classe']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
-						 $calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
-				 	         $pdf->SetFont($caractere_utilse,'',8);
-					         $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
-						} else {
-						         $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
-						       }
-					     } else {
-					 	      $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
-					            }
+	//					     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+						     $pdf->SetXY($X_moyenne_classe, $Y_decal);
+						     if($active_moyenne_regroupement==='1') {
+								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
+								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
+								{
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_classe']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
+					 	         	$pdf->SetFont($caractere_utilse,'',8);
+						         	$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
+								} else {
+							   		      $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+							   		}
+						     } else {
+					 	      		$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C'); 
+					                    }
 		 			     $largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne;
 					    }
+				 	    
 				 	    $pdf->SetFont($caractere_utilse,'',10);
 				            //min
 		 			    if($active_moyenne_min==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
-					     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					     $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+					     $pdf->SetXY($X_min_classe, $Y_decal);
+						     if($active_moyenne_regroupement==='1') {
+								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
+								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
+								{
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_min']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
+					 	         	$pdf->SetFont($caractere_utilse,'',8);
+						         	$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
+								} else {
+							      		   $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+								        }
+						     } else {
+					 	      		$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C'); 
+					                    }
 		 			     $largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne;
 					    }
+
 				            //max
 		 			    if($active_moyenne_max==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
-					     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					     $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+					     $pdf->SetXY($X_max_classe, $Y_decal);
+						     if($active_moyenne_regroupement==='1') {
+								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
+								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
+								{
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_max']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
+							 		$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
+					 	         	$pdf->SetFont($caractere_utilse,'',8);
+						         	$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
+								} else {
+							      		   $pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C');
+								        }
+						     } else {
+					 	      		$pdf->Cell($largeur_d_une_moyenne, $hauteur_info_categorie, '','T',0,'C'); 
+					                    }
 		 			     $largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne;
 					    }
 					$cpt_ordre = $cpt_ordre + 1;
-				}
-  				  $largeur_utilise = 0;
-// fin de boucle d'ordre
+					}
+		  			$largeur_utilise = 0;
+					// fin de boucle d'ordre
 					 
 					// rang de l'élève
 					if($active_rang==='1') {
@@ -1710,6 +1890,7 @@ $cpt_ordre = $cpt_ordre + 1;
 
 				}
 			}
+			
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']===$categorie_passe) { $categorie_passe_count=$categorie_passe_count+1; } else { $categorie_passe_count=0; }
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe) { $categorie_passe_count=$categorie_passe_count+1; }
 				// fin des moyen par catégorie
@@ -1725,19 +1906,10 @@ $cpt_ordre = $cpt_ordre + 1;
 					$hauteur_regroupement=$espace_entre_matier*$categorie_passe_count;
 
 					//placement du cadre
-					if($nb_eleve_aff===0) { $enplus = 5; }
-					if($nb_eleve_aff!=0) { $enplus = 0; }
-					
-					/*if($active_entete_regroupement==='1') {
-				 	   $pdf->SetXY($X_bloc_matiere-5, $Y_decal-$hauteur_regroupement+$espace_entre_matier);
-					} else {
-						   if($nb_eleve_aff===0) { $enplus_2 = 1.8; }
-						   if($nb_eleve_aff!=0) { $enplus_2 = 1.5; }
-						   $pdf->SetXY($X_bloc_matiere-5, $Y_decal-$hauteur_regroupement+$hauteur_entete+5+$enplus+$enplus_2);
-						}*/
+						if($nb_eleve_aff===0) { $enplus = 5; }
+						if($nb_eleve_aff!=0) { $enplus = 0; }
 						
-					$pdf->SetXY($X_bloc_matiere-5,
-					$Y_decal-$hauteur_regroupement+$espace_entre_matier);
+					    $pdf->SetXY($X_bloc_matiere-5,$Y_decal-$hauteur_regroupement+$espace_entre_matier);
 					
 		 		        $pdf->SetFillColor($couleur_categorie_cote1, $couleur_categorie_cote2, $couleur_categorie_cote3);
 					if($couleur_categorie_cote === '1') { $mode_choix_c = '2'; } else { $mode_choix_c = '1'; }
@@ -1853,19 +2025,22 @@ $cpt_ordre = $cpt_ordre + 1;
 			if($active_nombre_note_case==='1') {
 		 	 $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 	 	 	 $pdf->SetFont($caractere_utilse,'',10);
-			 $pdf->Cell($largeur_nombre_note, $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'],1,0,'C');
+			 $valeur = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] . "/" . $matiere[$ident_eleve_aff][$id_periode][$m]['nb_total_notes_matiere'];
+			 $pdf->Cell($largeur_nombre_note, $espace_entre_matier, $valeur,1,0,'C');
 			 $largeur_utilise = $largeur_utilise+$largeur_nombre_note;
 			}
 
 			// les moyennes eleve, classe, min, max
 $cpt_ordre = 0;
-while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
+while (!empty($ordre_moyenne[$cpt_ordre]) ) {
 			    //eleve
-		 	    if( $active_moyenne_eleve === '1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+		 	    if($active_moyenne_eleve === '1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 			     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 	 		     $pdf->SetFont($caractere_utilse,'B',10);
-		             $pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3);
+		         $pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3);
+				
 				//calcul nombre de sous affichage
+				
 				$nb_sousaffichage='1';
 				if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
@@ -1874,29 +2049,79 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			     if($toute_moyenne_meme_col==='1') { if($active_moyenne_classe==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 			     if($toute_moyenne_meme_col==='1') { if($active_moyenne_min==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 			     if($toute_moyenne_meme_col==='1') { if($active_moyenne_max==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
-			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',2,'C',$active_reperage_eleve);
+			     
+			     // On filtre si la moyenne est vide, on affiche seulement un tiret
+				 if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'] == "-") {
+					$valeur = "-";
+				 } else {
+					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+			 	 }	
+			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, $valeur,'TLR',2,'C',$active_reperage_eleve);
+			     $valeur = "";
+			     
 			     if($active_coef_sousmoyene==='1') {
 				$pdf->SetFont($caractere_utilse,'I',7);
-				$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'coef. 2.0','LR',2,'C',$active_reperage_eleve);
+				$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'coef. '.$matiere[$ident_eleve_aff][$id_periode][$m]['coef'],'LR',2,'C',$active_reperage_eleve);
 			     }
-			     if($toute_moyenne_meme_col==='1') {
+			    
+			    if($toute_moyenne_meme_col==='1') {
+					// On affiche toutes les moyennes dans la même colonne
 				$pdf->SetFont($caractere_utilse,'I',7);
-				if($active_moyenne_classe==='1') { $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'cla.'.present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'LR',2,'C',$active_reperage_eleve); }
-				if($active_moyenne_min==='1') { $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'min.'.present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'LR',2,'C',$active_reperage_eleve); }
-				if($active_moyenne_max==='1') { $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'max.'.present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'LR',2,'C',$active_reperage_eleve); }
+				if($active_moyenne_classe==='1') { 
+					if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'] == "-") {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$active_reperage_eleve);
+				}
+				if($active_moyenne_min==='1') {
+					if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'] == "-") {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$active_reperage_eleve);
+				}
+				if($active_moyenne_max==='1') {
+					if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'] == "-") {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, 'max.'.$valeur,'LR',2,'C',$active_reperage_eleve); 
+					$valeur = ''; // on remet à vide.
+				}
+			    
 			     }
 			     if($active_nombre_note==='1') {
-				$pdf->SetFont($caractere_utilse,'I',7);
-				$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier/$nb_sousaffichage, '12 not.','LR',2,'C',$active_reperage_eleve);
+					$pdf->SetFont($caractere_utilse,'I',7);
+					$espace_pour_nb_note = $espace_entre_matier/$nb_sousaffichage;
+						$espace_pour_nb_note = $espace_pour_nb_note / 2;
+					$valeur1 = ''; $valeur2 = '';
+					if ( $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] != 0 ) {
+						$valeur1 = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'].' note(s)';
+						$valeur2 = 'sur '.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_total_notes_matiere'];
+					}
+					$pdf->Cell($largeur_d_une_moyenne, $espace_pour_nb_note, $valeur1, 'LR',2,'C',$active_reperage_eleve);
+					$pdf->Cell($largeur_d_une_moyenne, $espace_pour_nb_note, $valeur2, 'LR',2,'C',$active_reperage_eleve);
+					$valeur1 = ''; $valeur2 = '';
 			     }
 		 	     $pdf->SetFont($caractere_utilse,'',10);
 			     $pdf->SetFillColor(0, 0, 0);
 			     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
-			    }
+			    
+			    } // Fin affichage élève
+			    
 			    //classe
  			    if( $active_moyenne_classe === '1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 			     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
+				 if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'] == "-") {
+					$valeur = "-";
+				 } else {
+					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+				 }
+			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcule de la moyenne général de la classe
 				if(empty($moyenne_classe[$id_classe][$id_periode])) { $total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
 	 		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
@@ -1905,15 +2130,25 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
  			    if( $active_moyenne_min==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 			     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 			     $pdf->SetFont($caractere_utilse,'',8);
-			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLR',0,'C');
+				 if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'] == "-") {
+						$valeur = "-";
+				 } else {
+						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+				 }
+			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcule de la moyenne mini
 				if(empty($moyenne_min[$id_classe][$id_periode])) { $total_moyenne_min_en_calcul=$total_moyenne_min_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
 			     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 			    }
 			    //max
  			    if( $active_moyenne_max === '1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
-			     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-			     $pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),'TLRB',0,'C');
+			     	$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+					 if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'] == "-") {
+							$valeur = "-";
+					 } else {
+							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero);
+					 }
+			     	$pdf->Cell($largeur_d_une_moyenne, $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcule de la moyenne maxi
 				if(empty($moyenne_max[$id_classe][$id_periode])) { $total_moyenne_max_en_calcul=$total_moyenne_max_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
 			     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
@@ -1924,7 +2159,7 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			// rang de l'élève
 			if($active_rang==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 		 	 $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-	 	 	 $pdf->SetFont($caractere_utilse,'',10);
+	 	 	 $pdf->SetFont($caractere_utilse,'',8);
 			 $pdf->Cell($largeur_rang, $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['rang'].'/'.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_eleve_rang'],1,0,'C');
 			 $largeur_utilise = $largeur_utilise+$largeur_rang;
 			}
@@ -1943,7 +2178,9 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
                                 if (($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=12) and ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']<15)) { $place_eleve=1;}
                                 if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=15) { $place_eleve=0;}
                             }
-			 $pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2), $largeur_niveau, $espace_entre_matier, $data_grap[$id_periode][$id_groupe_graph], $place_eleve);
+			 if (array_sum($data_grap[$id_periode][$id_groupe_graph]) != 0) {
+			 	$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2), $largeur_niveau, $espace_entre_matier, $data_grap[$id_periode][$id_groupe_graph], $place_eleve);
+			 }
 			 $place_eleve=''; // on vide la variable
 			 $largeur_utilise = $largeur_utilise+$largeur_niveau;
 			}
@@ -2046,13 +2283,22 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 	 	     $pdf->SetFont($caractere_utilse,'B',10);
 		     $pdf->SetFillColor($couleur_moy_general1, $couleur_moy_general2, $couleur_moy_general3);
-		      	if($active_reperage_eleve==='1') { $pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3); $couleur_moy_general = 1; }
-		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_moyenne_general, present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),1,0,'C',$couleur_moy_general);
-		 	if($active_reperage_eleve==='1' and $couleur_moy_general==='1') { $couleur_moy_general = 0; }
+		     
+		     // On a deux paramètres de couleur qui se croisent. On utilise une variable tierce.
+		     $utilise_couleur = $couleur_moy_general;
+		     if($active_reperage_eleve==='1') {
+		     	// Si on affiche une couleur spécifique pour les moyennes de l'élève,
+		     	// on utilise cette couleur ici aussi, quoi qu'il arrive
+		     	$pdf->SetFillColor($couleur_reperage_eleve1, $couleur_reperage_eleve2, $couleur_reperage_eleve3);
+		     	$utilise_couleur = 1;
+		     }
+		     $pdf->Cell($largeur_d_une_moyenne, $hauteur_entete_moyenne_general, present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix, $nb_chiffre_virgule, $chiffre_avec_zero),1,0,'C',$utilise_couleur);
+		 	 //if($active_reperage_eleve==='1' and $couleur_moy_general==='1') { $couleur_moy_general = 0; }
 	 	     $pdf->SetFont($caractere_utilse,'',10);
 	 	     $pdf->SetFillColor(0, 0, 0);
  		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne;
 		    }
+		    
 		    //classe
 	 	    if($active_moyenne_classe==='1' and $active_moyenne === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 		     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
@@ -2088,11 +2334,16 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		    }
 
 		// rang de l'élève
-		if($active_rang==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
+		if($active_rang==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
 	 	 $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
  	         $pdf->SetFont($caractere_utilse,'',8);
 		 $pdf->SetFillColor($couleur_moy_general1, $couleur_moy_general2, $couleur_moy_general3);
-		 $pdf->Cell($largeur_rang, $hauteur_entete_moyenne_general, $rang_eleve_classe[$ident_eleve_aff][$id_periode].'/'.$classe_effectif_tab[$id_classe_selection][$id_periode]['effectif'],'TLRB',0,'C', $couleur_moy_general);
+		 if ($rang_eleve_classe[$ident_eleve_aff][$id_periode] != 0) {
+		 	$rang_a_afficher = $rang_eleve_classe[$ident_eleve_aff][$id_periode].'/'.$classe_effectif_tab[$id_classe_selection][$id_periode]['effectif'];
+		 } else {
+		 	$rang_a_afficher = "";
+		 }
+		 $pdf->Cell($largeur_rang, $hauteur_entete_moyenne_general, $rang_a_afficher ,'TLRB',0,'C', $couleur_moy_general);
 		 $largeur_utilise = $largeur_utilise + $largeur_rang;
 		}
 
