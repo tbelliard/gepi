@@ -214,16 +214,18 @@ if (isset($_POST['mode_generation_login'])) {
     }
 }
 
-if (isset($_POST['export_cn_ods'])) {
-    //if (!saveSetting("export_cn_ods", $_POST['export_cn_ods'])) {
-    if (!saveSetting("export_cn_ods", 'y')) {
-        $msg .= "Erreur lors de l'enregistrement de l'autorisation de l'export au format ODS !";
-    }
-}
-else{
-    if (!saveSetting("export_cn_ods", 'n')) {
-        $msg .= "Erreur lors de l'enregistrement de l'interdiction de l'export au format ODS !";
-    }
+if(isset($_POST['is_posted'])){
+	if (isset($_POST['export_cn_ods'])) {
+		//if (!saveSetting("export_cn_ods", $_POST['export_cn_ods'])) {
+		if (!saveSetting("export_cn_ods", 'y')) {
+			$msg .= "Erreur lors de l'enregistrement de l'autorisation de l'export au format ODS !";
+		}
+	}
+	else{
+		if (!saveSetting("export_cn_ods", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction de l'export au format ODS !";
+		}
+	}
 }
 
 // Load settings
