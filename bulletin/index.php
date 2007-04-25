@@ -142,16 +142,16 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 					} else {
 					    if ($_SESSION["statut"] == "administrateur") {
 							// on selectionne toutes les classes
-							$sql_classe = "SELECT * FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec, periodes p WHERE ( jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe";
+							$sql_classe = "SELECT p.id_classe, c.* FROM classes c, periodes p WHERE (p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe";
 							$requete_classe = mysql_query($sql_classe);
 						} else {
 						    $requete_classe = mysql_query('SELECT c.* FROM '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_professeurs jep, '.$prefix_base.'j_eleves_classes jec, '.$prefix_base.'periodes p WHERE ( jep.professeur = "'.$_SESSION['login'].'" AND jep.login = jec.login AND jec.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY c.classe');
 						}
 				    }
-						
+
 			  		while ($donner_classe = mysql_fetch_array($requete_classe))
 				  	 {
-						$sql_cpt_nb_eleve_1 = "SELECT count(*) FROM eleves, classes, j_eleves_classes WHERE classes.id = ".$donner_classe['id_classe']." AND j_eleves_classes.id_classe=classes.id AND j_eleves_classes.login=eleves.login GROUP BY eleves.login";
+						$sql_cpt_nb_eleve_1 = "SELECT count(eleves.login) FROM eleves, classes, j_eleves_classes WHERE classes.id = ".$donner_classe['id_classe']." AND j_eleves_classes.id_classe=classes.id AND j_eleves_classes.login=eleves.login GROUP BY eleves.login";
 						$requete_cpt_nb_eleve_1 =  mysql_query($sql_cpt_nb_eleve_1);
 						
 						$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);

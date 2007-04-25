@@ -2,8 +2,6 @@
 /*
  *
  * $Id$
- * 
- * Last modification  : 17/03/2007
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  *
