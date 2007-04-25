@@ -184,7 +184,6 @@ if (isset($_POST['gepi_prof_suivi'])) {
     }
 }
 
-
 // Initialiser à 'Boite'
 if (isset($_POST['gepi_denom_boite'])) {
     if (!saveSetting("gepi_denom_boite", $_POST['gepi_denom_boite'])) {
@@ -194,6 +193,12 @@ if (isset($_POST['gepi_denom_boite'])) {
 if (isset($_POST['gepi_denom_boite_genre'])) {
     if (!saveSetting("gepi_denom_boite_genre", $_POST['gepi_denom_boite_genre'])) {
         $msg .= "Erreur lors de l'enregistrement de gepi_denom_boite_genre !";
+    }
+}
+
+if (isset($_POST['gepi_stylesheet'])) {
+    if (!saveSetting("gepi_stylesheet", $_POST['gepi_stylesheet'])) {
+        $msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
     }
 }
 
@@ -361,6 +366,16 @@ require_once("../lib/header.inc");
     		<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom</option>
     		<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronqué à 19 caractères)</option>
     		<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronqué à 8 caractères)</option>
+       </select>
+       </td>
+    </tr>
+    <tr>
+        <td style="font-variant: small-caps;">
+        Feuille de style à utiliser :</td>
+       <td>
+       <select name='gepi_stylesheet'>
+    		<option value='style'<?php if (getSettingValue("gepi_stylesheet")=='style') echo " SELECTED"; ?>> Nouveau design</option>
+    		<option value='style_old'<?php if (getSettingValue("gepi_stylesheet")=='style_old') echo " SELECTED"; ?>> Design proche des anciennes versions (1.4.*)</option>
        </select>
        </td>
     </tr>

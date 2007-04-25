@@ -65,7 +65,7 @@ function last_connection() {
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
-<link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/style.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/<?php echo getSettingValue("gepi_stylesheet");?>.css" />
 <!-- ======================================== -->
 <!-- AJOUT pour les trombinoscopes et absences-->
 <?php

@@ -497,3 +497,4 @@ INSERT INTO setting VALUES ('GepiAccesMoyennesProfToutesClasses', 'yes');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProf', 'yes');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfTousEleves', 'no');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfToutesClasses', 'no');
+INSERT INTO setting VALUES ('gepi_stylesheet', 'style');
