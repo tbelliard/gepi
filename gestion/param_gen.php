@@ -214,6 +214,7 @@ if (isset($_POST['mode_generation_login'])) {
     }
 }
 
+/*
 if(isset($_POST['is_posted'])){
 	if (isset($_POST['export_cn_ods'])) {
 		//if (!saveSetting("export_cn_ods", $_POST['export_cn_ods'])) {
@@ -227,6 +228,7 @@ if(isset($_POST['is_posted'])){
 		}
 	}
 }
+*/
 
 // Load settings
 if (!loadSettings()) {
@@ -382,6 +384,7 @@ require_once("../lib/header.inc");
        </td>
     </tr>
 	<?php
+/*
 		echo "<tr>\n";
 		if(file_exists("../lib/ss_zip.class.php")){
 			echo "<td style='font-variant: small-caps;'>Permettre l'export des carnets de notes au format ODS :<br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)</td>\n";
@@ -400,6 +403,7 @@ require_once("../lib/header.inc");
 			$svg_param=saveSetting("export_cn_ods", 'n');
 		}
 		echo "</tr>\n";
+*/
 	?>
     <tr>
         <td style="font-variant: small-caps;">
