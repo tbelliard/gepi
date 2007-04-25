@@ -472,12 +472,28 @@ $condition = (
     AND
         ((($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") == "yes"))
         OR
-        (($_SESSION['statut'] == "professeur") AND
-            ((getSettingValue("GepiAccesReleveProf") == "yes") OR
-                ((getSettingValue("GepiAccesReleveProfP") == "yes") AND ($test_prof_suivi != "0"))))
+        (
+        ($_SESSION['statut'] == "professeur") AND
+            (
+            (getSettingValue("GepiAccesReleveProf") == "yes") OR
+            (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
+            (getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") OR
+            ((getSettingValue("GepiAccesReleveProfP") == "yes") AND ($test_prof_suivi != "0"))
+            )
+        )
         OR
         (($_SESSION['statut'] == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
 
+$condition2 = ($_SESSION['statut'] != "professeur" OR
+				(
+				$_SESSION['statut'] == "professeur" AND
+				(
+	            	(getSettingValue("GepiAccesMoyennesProf") == "yes") OR
+	            	(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
+	            	(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")
+				)
+				)
+			);
 
 $chemin = array();
 if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes.php";
@@ -489,9 +505,9 @@ $expli = array();
 if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, élève par élève, classe par classe.";
 
 
-if ($condition) $chemin[] = "/cahier_notes/index2.php";
-if ($condition) $titre[] = "Visualisation des moyennes des carnets de notes";
-if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.";
+if ($condition && $condition2) $chemin[] = "/cahier_notes/index2.php";
+if ($condition && $condition2) $titre[] = "Visualisation des moyennes des carnets de notes";
+if ($condition && $condition2) $expli[] = "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.";
 
 
 $nb_ligne = count($chemin);
@@ -515,82 +531,77 @@ if ($affiche=='yes') {
 // Outils de gestion des absences : module de Christian Chapel
 //
 
-// NOTE : CE MODULE N'EST PAS CONSIDERE COMME STABLE POUR LE MOMENT
-// Il est donc désactivé par une variable dans le fichier global.inc
-
-if ($force_abs) {
 //On vérifie si le module est activé
-    if (getSettingValue("active_module_absence")=='y') {
-    //
-    // Gestion Absences, dispenses, retards
-    //
-        $chemin = array();
-        $chemin[] = "/mod_absences/gestion/gestion_absences.php";
+if (getSettingValue("active_module_absence")=='y') {
+//
+// Gestion Absences, dispenses, retards
+//
+    $chemin = array();
+    $chemin[] = "/mod_absences/gestion/gestion_absences.php";
 
-        $titre = array();
-        $titre[] = "Gestion Absences, dispenses, retards et infirmeries";
+    $titre = array();
+    $titre[] = "Gestion Absences, dispenses, retards et infirmeries";
 
-        $expli = array();
-        $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
+    $expli = array();
+    $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
 
-        $nb_ligne = count($chemin);
-        $affiche = 'no';
-        for ($i=0;$i<$nb_ligne;$i++) {
-            if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-        }
-        if ($affiche=='yes') {
-              //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-   			  echo "<table class='menu'>\n";
-              echo "<tr>\n";
-              echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
-              echo "</tr>\n";
-              for ($i=0;$i<$nb_ligne;$i++) {
-                affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-            }
-            echo "</table>\n";
-        }
+    $nb_ligne = count($chemin);
+    $affiche = 'no';
+    for ($i=0;$i<$nb_ligne;$i++) {
+        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
     }
-
-    //
-    // Outils de gestion des absences par les professeurs : module de Christian Chapel
-    //
-
-    //On vérifie si le module est activé
-    if (getSettingValue("active_module_absence_professeur")=='y') {
-    //
-    // Gestion des ajout d'Absences par les professeurs
-    //
-        $chemin = array();
-        $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
-
-        $titre = array();
-        $titre[] = "Gestion des Absences par le professeur";
-
-        $expli = array();
-        $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
-
-        $nb_ligne = count($chemin);
-        $affiche = 'no';
-        for ($i=0;$i<$nb_ligne;$i++) {
-            if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    if ($affiche=='yes') {
+          //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		  echo "<table class='menu'>\n";
+          echo "<tr>\n";
+          echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
+          echo "</tr>\n";
+          for ($i=0;$i<$nb_ligne;$i++) {
+            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
         }
-        if ($affiche=='yes') {
-              //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    		  echo "<table class='menu'>\n";
-              echo "<tr>\n";
-              echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
-              echo "</tr>\n";
-              for ($i=0;$i<$nb_ligne;$i++) {
-                affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-            }
-            echo "</table>\n";
-        }
+        echo "</table>\n";
     }
-
-    //
-    // Outils de gestion des trombinoscopes : module de Christian Chapel
-    //
 }
+
+//
+// Outils de gestion des absences par les professeurs : module de Christian Chapel
+//
+
+//On vérifie si le module est activé
+if (getSettingValue("active_module_absence_professeur")=='y') {
+//
+// Gestion des ajout d'Absences par les professeurs
+//
+    $chemin = array();
+    $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
+
+    $titre = array();
+    $titre[] = "Gestion des Absences par le professeur";
+
+    $expli = array();
+    $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
+
+    $nb_ligne = count($chemin);
+    $affiche = 'no';
+    for ($i=0;$i<$nb_ligne;$i++) {
+        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    }
+    if ($affiche=='yes') {
+          //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		  echo "<table class='menu'>\n";
+          echo "<tr>\n";
+          echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
+          echo "</tr>\n";
+          for ($i=0;$i<$nb_ligne;$i++) {
+            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+        }
+        echo "</table>\n";
+    }
+}
+
+//
+// Outils de gestion des trombinoscopes : module de Christian Chapel
+//
 
 //On vérifie si le module est activé
 if (getSettingValue("active_module_trombinoscopes")=='y') {
@@ -629,7 +640,37 @@ if (file_exists("./lpi/accueil.php")) require("./lpi/accueil.php");
 
 //
 // Visualisation / Impression
+//
 
+$conditions_moyennes = (
+        ($_SESSION['statut'] != "professeur")
+        OR
+        (
+        ($_SESSION['statut'] == "professeur") AND
+            (
+            (getSettingValue("GepiAccesMoyennesProf") == "yes") OR
+            (getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
+            (getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")
+            )
+        )
+        );
+$conditions_bulsimples = (
+        	(
+	        ($_SESSION['statut'] != "eleve") AND ($_SESSION['statut'] != "responsable")
+        	)
+        AND
+        (
+        ($_SESSION['statut'] != "professeur") OR
+        (
+	    	($_SESSION['statut'] == "professeur") AND
+	            (
+	            (getSettingValue("GepiAccesBulletinSimpleProf") == "yes") OR
+	            (getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes") OR
+	            (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes")
+	            )
+        	)
+        )
+        );
 $chemin = array();
 //===========================
 // AJOUT:boireaus
@@ -644,8 +685,8 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_S
 //===========================
 $chemin[] = "/visualisation/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/prepa_conseil/index1.php";
-$chemin[] = "/prepa_conseil/index2.php";
-if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+if ($conditions_moyennes) $chemin[] = "/prepa_conseil/index2.php";
+if ($conditions_bulsimples)
 	$chemin[] = "/prepa_conseil/index3.php";
 
 $titre = array();
@@ -666,8 +707,8 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
         $titre[] =  "Visualiser mes moyennes et appréciations des bulletins ";
     else
         $titre[] =  "Visualiser les moyennes et appréciations des bulletins ";
-$titre[] = "Visualiser toutes les moyennes d'une classe";
-if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+if ($conditions_moyennes) $titre[] = "Visualiser toutes les moyennes d'une classe";
+if ($conditions_bulsimples)
 	$titre[] = "Visualiser les bulletins simplifiés";
 
 $expli = array();
@@ -683,14 +724,15 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_S
 }
 
 //===========================
+
 $expli[] = "Visualisation graphique des résultats des élèves ou des classes, en croisant les données de multiples manières.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     if ($_SESSION['statut']!='scolarite')
         $expli[] = "Tableau récapitulatif de vos moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.";
     else
         $expli[] = "Tableau récapitulatif des moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.";
-$expli[] = "Tableau récapitulatif des moyennes d'une classe.";
-if ($_SESSION['statut']!='responsable' and $_SESSION['statut'] != "eleve")
+if ($conditions_moyennes) $expli[] = "Tableau récapitulatif des moyennes d'une classe.";
+if ($conditions_bulsimples)
 	$expli[] = "Bulletins simplifiés d'une classe.";
 
 

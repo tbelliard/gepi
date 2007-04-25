@@ -654,7 +654,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 // fin rajout christian
 
     } else if ($_SESSION['statut'] == 'professeur') {
-        if ((getSettingValue("GepiAccesReleveProfP") == "yes") AND (getSettingValue("GepiAccesReleveProf") !="yes")) {
+        if ((getSettingValue("GepiAccesReleveProfP") == "yes") AND (getSettingValue("GepiAccesReleveProf") !="yes") AND (getSettingValue("GepiAccesReleveProfTousEleves") !="yes") AND (getSettingValue("GepiAccesReleveProfToutesClasses") !="yes")) {
+            // Si on est là ça veut dire que seul un prof de suivi peut voir les relevés
             $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
             $nombre_classe = mysql_num_rows($call_prof_classe);
             if ($nombre_classe == "0") {
@@ -670,9 +671,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
                     $i++;
                 }
             }
-        } else if (getSettingValue("GepiAccesReleveProf") == "yes") {
-
-            if (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") {
+        } else if (getSettingValue("GepiAccesReleveProf") == "yes" OR (getSettingValue("GepiAccesReleveProfToutesClasses") =="yes") OR (getSettingValue("GepiAccesReleveProfTousEleves") =="yes")) {
+            if (getSettingValue("GepiAccesReleveProfTousEleves") == "yes" AND (getSettingValue("GepiAccesReleveProfToutesClasses") != "yes")) {
             echo "<p>Vous pouvez choisir de visualiser les relevés de notes de tous les élèves des classes dans lesquelles vous enseignez, ou bien seulement les élèves que vous avez effectivement en cours. Si vous n'enseignez qu'à des classes entières, cela revient au même.</p>\n";
             // Ici le code pour sélectionner les classes dans lesquelles le prof enseigne
             $_login = $_SESSION['login'];
@@ -702,6 +702,39 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
                 echo "<p><a href='visu_releve_notes.php?id_classe=$id_classe'>$classe</a></p>";
                 $i++;
             }
+        } elseif (getSettingValue("GepiAccesReleveProfToutesClasses") =="yes") {
+            echo "<p>Vous pouvez choisir de visualiser les relevés de notes de toutes les classes, ou bien seulement pour les élèves que vous avez effectivement en cours.</p>\n";
+            // Ici le code pour sélectionner toutes les classes
+            $_login = $_SESSION['login'];
+            $calldata = mysql_query("SELECT id id_classe, classe classe " .
+                                    "FROM classes " .
+                                    "ORDER BY classe");
+            $nb_classes = mysql_num_rows($calldata);
+
+            $i = "0";
+            if ($nb_classes == "1") {
+                echo "<p>Vous avez accès à la classe suivante :</p>\n";
+            } else {
+                echo "<p>Vous avez accès aux classes suivantes :</p>\n";
+            }
+			$nb_class_par_colonne=round($nb_classes/3);
+	        echo "<table width='100%'>\n";
+	        echo "<tr valign='top' align='center'>\n";
+	        $i = 0;
+	        echo "<td align='left'>\n";
+	        while ($i < $nb_classes){
+			$id_classe = mysql_result($calldata, $i, "id_classe");
+			$classe_liste = mysql_result($calldata, $i, "classe");
+	
+			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+				echo "</td>\n";
+				echo "<td align='left'>\n";
+			}
+	
+			echo "<a href='visu_releve_notes.php?id_classe=$id_classe'>$classe_liste</a><br />\n";
+			$i++;
+	        }
+	        echo "</table>\n";
         }
 
         $login = $_SESSION['login'];
@@ -761,7 +794,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     if ($current_group) unset($id_classe);
     // On teste si le professeur a le droit d'être ici
 
-    if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
+    if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfTousEleves")!="yes") AND (getSettingValue("GepiAccesReleveProfToutesClasses")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
         tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
@@ -775,7 +808,11 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
-    } else if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") == "yes")) {
+    } else if (($_SESSION['statut']=='professeur') AND 
+    			(getSettingValue("GepiAccesReleveProf")!="yes") AND 
+    			(getSettingValue("GepiAccesReleveProfTousEleves")!="yes") AND
+    			(getSettingValue("GepiAccesReleveProfToutesClasses")!="yes") AND  
+    			(getSettingValue("GepiAccesReleveProfP") == "yes")) {
         $test_classe = sql_query1("SELECT distinct c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc
         WHERE (
         s.professeur='" . $_SESSION['login'] . "' AND
@@ -788,29 +825,35 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
             die();
         }
 
-    } else if (($_SESSION['statut'] == "professeur") AND (getSettingValue("GepiAccesReleveProf") == "yes")) {
+    } else if (($_SESSION['statut'] == "professeur") AND
+     			(getSettingValue("GepiAccesReleveProf") == "yes") OR
+     			(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
+     			(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")
+     			) {
 
         // On commence par regarder si on est dans le cas de la sélection d'un groupe un d'une classe
         if (!$current_group) {
             // Dans le cas d'une classe, on vérifie que l'accès est autorisé
-            if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes") {
+            if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes" AND getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
                 tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes de toute une classe alors qu'il n'est autorisé qu'à accéder aux relevés des élèves de ses groupes uniquement.");
                 echo "Vous n'êtes pas autorisé à visualiser l'ensemble des élèves de cette classe ! Sélectionnez uniquement un groupe parmi ceux auxquels vous enseignez.</body></html>\n";
                 die();
             } else {
-                // il a le droit de visualiser des classes. On vérifie s'il est bien professeur dans la classe demandée
-
-                $test_classe = sql_query1("SELECT DISTINCT jgc.id_classe FROM " .
-                        "j_groupes_professeurs jgp, j_groupes_classes jgc ".
-                        "WHERE (" .
-                        "jgc.id_classe = '". $id_classe . "' AND ".
-                        "jgp.login = '". $_SESSION['login'] . "' AND " .
-                        "jgc.id_groupe = jgp.id_groupe" .
-                        ")");
-                if ($test_classe == '-1') {
-                    tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe dans laquelle il n'est pas professeur.");
-                    echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
-                die();
+                if (getSettingValue("GepiAccesReleveProfToutesClasses") != "yes") {
+	                // il a le droit de visualiser des classes. On vérifie s'il est bien professeur dans la classe demandée
+	
+	                $test_classe = sql_query1("SELECT DISTINCT jgc.id_classe FROM " .
+	                        "j_groupes_professeurs jgp, j_groupes_classes jgc ".
+	                        "WHERE (" .
+	                        "jgc.id_classe = '". $id_classe . "' AND ".
+	                        "jgp.login = '". $_SESSION['login'] . "' AND " .
+	                        "jgc.id_groupe = jgp.id_groupe" .
+	                        ")");
+	                if ($test_classe == '-1') {
+	                    tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe dans laquelle il n'est pas professeur.");
+	                    echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
+	                die();
+	                }
                 }
             }
         }
@@ -1040,7 +1083,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
 	// Si on arrive là, on va afficher des relevés. On fait tout un tas de vérifications de sécurité
 	// pour s'assurer que personne n'est là illégalement.
-    if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
+    if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfTousEleves")!="yes") AND (getSettingValue("GepiAccesReleveProfToutesClasses")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
         tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé, avec passage volontaire de paramètres à la page.");
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
@@ -1054,7 +1097,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         echo "Vous ne pouvez pas accéder à cette page.";
         require("../lib/footer.inc.php");
         die();
-    } else if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfP") == "yes")) {
+    } else if (($_SESSION['statut']=='professeur') 
+    	AND (getSettingValue("GepiAccesReleveProfP") == "yes")
+    	AND (getSettingValue("GepiAccesReleveProf") != "yes")
+    	AND (getSettingValue("GepiAccesReleveProfTousEleves") != "yes")
+    	AND (getSettingValue("GepiAccesReleveProfToutesClasses") != "yes")
+    	) {
         $test_classe = sql_query1("SELECT distinct c.id FROM classes c, j_eleves_professeurs s, j_eleves_classes cc
         WHERE (
         s.professeur='" . $_SESSION['login'] . "' AND
@@ -1068,31 +1116,42 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
             die();
         }
 
-    } else if (($_SESSION['statut'] == "professeur") AND (getSettingValue("GepiAccesReleveProf") == "yes")) {
+    } else if (($_SESSION['statut'] == "professeur") AND ((getSettingValue("GepiAccesReleveProf") == "yes") OR (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR (getSettingValue("GepiAccesReleveProfToutesClasses") == "yes"))) {
 
         // On commence par regarder si on est dans le cas de la sélection d'un groupe un d'une classe
         if (!$current_group) {
             // Dans le cas d'une classe, on vérifie que l'accès est autorisé
-            if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes") {
+            if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes" AND getSettingValue("GepiAccesReleveProfToutesClasses") != "yes") {
                 tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'élèves pour toutes la classe (alors qu'il n'est autorisé à voir que ses groupes), avec passage volontaire de paramètres à la page.");
                 echo "Vous n'êtes pas autorisé à visualiser l'ensemble des élèves de cette classe ! Sélectionnez uniquement un groupe parmi ceux auxquels vous enseignez.</body></html>\n";
                 die();
             } else {
-                // il a le droit de visualiser des classes. On vérifie s'il est bien professeur dans la classe demandée
-
-                $test_classe = sql_query1("SELECT DISTINCT jgc.id_classe FROM " .
-                        "j_groupes_professeurs jgp, j_groupes_classes jgc ".
-                        "WHERE (" .
-                        "jgc.id_classe = '". $id_classe . "' AND ".
-                        "jgp.login = '". $_SESSION['login'] . "' AND " .
-                        "jgc.id_groupe = jgp.id_groupe" .
-                        ")");
-                if ($test_classe == '-1') {
-                	tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe où il n'enseigne pas, avec passage volontaire de paramètres à la page.");
-                    echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.\n";
-                    require("../lib/footer.inc.php");
-                	die();
-                }
+            	if (getSettingValue("GepiAccesReleveProfToutesClasses") != "yes") {
+	                // il a le droit de visualiser des classes. On vérifie s'il est bien professeur dans la classe demandée
+	
+	                $test_classe = sql_query1("SELECT DISTINCT jgc.id_classe FROM " .
+	                        "j_groupes_professeurs jgp, j_groupes_classes jgc ".
+	                        "WHERE (" .
+	                        "jgc.id_classe = '". $id_classe . "' AND ".
+	                        "jgp.login = '". $_SESSION['login'] . "' AND " .
+	                        "jgc.id_groupe = jgp.id_groupe" .
+	                        ")");
+	                if ($test_classe == '-1') {
+	                	tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'une classe où il n'enseigne pas, avec passage volontaire de paramètres à la page.");
+	                    echo "Vous n'êtes pas professeur dans cette classe ! Vous ne pouvez pas accéder à cette page.\n";
+	                    require("../lib/footer.inc.php");
+	                	die();
+	                }
+            	}
+            }
+        } else {
+        	// On est dans le cas d'un groupe, on s'assure que le prof est bien prof dans le groupe !
+        	$test = mysql_num_rows(mysql_query("SELECT * FROM j_groupes_professeurs WHERE (login = '".$_SESSION['login']."' AND id_groupe = '".$id_groupe."')"));
+            if ($test == "0") {
+            	tentative_intrusion(3, "Tentative d'un professeur d'accéder aux relevés de notes d'un groupe où il n'enseigne pas, avec passage volontaire de paramètres à la page.");
+                echo "Vous n'êtes pas professeur dans ce groupe ! Vous ne pouvez pas accéder à cette page.\n";
+                require("../lib/footer.inc.php");
+            	die();
             }
         }
     }

@@ -1,6 +1,6 @@
 INSERT INTO utilisateurs SET login = 'ADMIN', nom = 'GEPI', prenom = 'Administrateur', civilite = 'M.', password = 'ab4f63f9ac65152575886860dde480a1', statut = 'administrateur', etat = 'actif', change_mdp = 'y';
 INSERT INTO setting VALUES ('version', '1.5.0');
-INSERT INTO setting VALUES ('versionRc', '1');
+INSERT INTO setting VALUES ('versionRc', '2');
 INSERT INTO setting VALUES ('versionBeta', '');
 INSERT INTO setting VALUES ('sessionMaxLength', '30');
 INSERT INTO setting VALUES ('Impression','<center><p class = \"grand\">Gestion des Elèves Par Internet</p></center>\r\n<br />\r\n<p class = \"grand\">Qu\'est-ce que GEPI ?</p>\r\n\r\n<p>Afin d\'étudier les modalités d\'informatisation des bulletins scolaires : notes et appréciations via Internet, une expérimentation (baptisée Gestion des Elèves Par Internet)a été mise en place. Cette expérimentation concerne les classes suivantes : \r\n<br />* ....\r\n<br />* ....\r\n<br />\r\n<br />\r\nCeci vous concerne car vous êtes professeur enseignant dans l\'une ou l\'autre de ces classes.\r\n<br />\r\n<br />\r\nA partir de la réception de ce document, vous pourrez remplir les bulletins informatisés :\r\n<span class = \"norme\">\r\n<UL><li>soit au lycée à partir de n\'importe quel poste connecté à Internet,\r\n<li>soit chez vous si vous disposez d\'une connexion Internet.\r\n</ul>\r\n</span>\r\n<p class = \"grand\">Comment accéder au module de saisie (notes etappréciations) :</p>\r\n<span class = \"norme\">\r\n<UL>\r\n    <LI>Se connecter à Internet\r\n    <LI>Lancer un navigateur (FireFox de préférence, Opera, Internet Explorer, ...)\r\n    <LI>Se connecter au site : https://adresse_du_site/gepi\r\n    <LI>Après quelques instants une page apparaît vous invitant à entrer un nom d\'identifiant et un mot de passe (cesinformations figurent en haut de cette page).\r\n    <br />ATTENTION : votre mot de passe est strictement confidentiel.\r\n    <br />\r\n    <br />Une fois ces informations fournies, cliquez sur le bouton \"Ok\".\r\n    <LI> Après quelques instants une page d\'accueil apparaît.<br />\r\nLa première fois, Gepi vous demande de changer votre mot de passe.\r\nChoisissez-en un facile à retenir, mais non trivial (évitez toute date\r\nde naissance, nom d\'animal familier, prénom, etc.), et contenant\r\nlettre(s), chiffre(s), et caractère(s) non alphanumérique(s).<br />\r\nLes fois suivantes, vous arriverez directement au menu général de\r\nl\'application. Pour bien prendre connaissance des possibilités de\r\nl\'application, n\'hésitez pas à essayer tous les liens disponibles !\r\n</ul></span>\r\n<p class = \"grand\">Remarque :</p>\r\n<p>GEPI est prévu pour que chaque professeur ne puisse modifier les notes ou les appréciations que dans les rubriques qui le concernent et uniquement pour ses élèves.\r\n<br />\r\nJe reste à votre disposition pour tout renseignement complémentaire.\r\n    <br />\r\n    Le proviseur adjoint\r\n</p>');
@@ -40,6 +40,7 @@ INSERT INTO setting VALUES ('GepiAccesReleveScol', 'yes');
 INSERT INTO setting VALUES ('GepiAccesReleveCpe', 'no');
 INSERT INTO setting VALUES ('GepiAccesReleveProf', 'no');
 INSERT INTO setting VALUES ('GepiAccesReleveProfTousEleves', 'no');
+INSERT INTO setting VALUES ('GepiAccesReleveProfToutesClasses', 'no');
 INSERT INTO setting VALUES ('GepiAccesReleveProfP', 'yes');
 INSERT INTO setting VALUES ('page_garde_imprime', 'no');
 INSERT INTO setting VALUES ('page_garde_texte', 'Madame, Monsieur<br/><br/>Veuillez trouvez ci-joint le bulletin scolaire de votre enfant. Nous vous rappelons que la journ&eacute;e <span style="font-weight: bold;">Portes ouvertes</span> du Lyc&eacute;e aura lieu samedi 20 mai entre 10 h et 17 h.<br/><br/>Veuillez agr&eacute;er, Madame, Monsieur, l''expression de mes meilleurs sentiments.<br/><br/><div style="text-align: right;">Le proviseur</div>');
@@ -490,3 +491,9 @@ INSERT INTO `droits` VALUES ('/responsables/gerer_adr.php', 'V', 'F', 'F', 'F', 
 INSERT INTO `droits` VALUES ('/responsables/choix_adr_existante.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Choix adresse de responsable existante', '');
 INSERT INTO `droits` VALUES ('/cahier_notes/export_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Export CSV/ODS du cahier de notes', '');
 INSERT INTO `droits` VALUES ('/cahier_notes/import_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Import CSV du cahier de notes', '');
+INSERT INTO setting VALUES ('GepiAccesMoyennesProf', 'yes');
+INSERT INTO setting VALUES ('GepiAccesMoyennesProfTousEleves', 'yes');
+INSERT INTO setting VALUES ('GepiAccesMoyennesProfToutesClasses', 'yes');
+INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProf', 'yes');
+INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfTousEleves', 'no');
+INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfToutesClasses', 'no');

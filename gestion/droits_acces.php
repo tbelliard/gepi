@@ -140,6 +140,38 @@ if (isset($_POST['OK'])) {
     if (!saveSetting("GepiAccesReleveProfTousEleves", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveProf !";
     }
+    if (isset($_POST['GepiAccesReleveProfToutesClasses'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesReleveProfToutesClasses", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesReleveProfToutesClasses !";
+    }
+    if (isset($_POST['GepiAccesMoyennesProf'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesMoyennesProf", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesMoyennesProf !";
+    }
+    if (isset($_POST['GepiAccesMoyennesProfTousEleves'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesMoyennesProfTousEleves", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesMoyennesProfTousEleves !";
+    }
+    if (isset($_POST['GepiAccesMoyennesProfToutesClasses'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesMoyennesProfToutesClasses", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesMoyennesProfToutesClasses !";
+    }
     if (isset($_POST['GepiAccesReleveEleve'])) {
         $temp = "yes";
     } else {
@@ -283,7 +315,30 @@ if (isset($_POST['OK'])) {
     if (!saveSetting("GepiAccesCpePPEmailParent", $temp)) {
         $msg .= "Erreur lors de l'enregistrement de GepiAccesCpePPEmailParent !";
     }	
-    
+    if (isset($_POST['GepiAccesBulletinSimpleProf'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesBulletinSimpleProf", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimpleProf !";
+    }
+    if (isset($_POST['GepiAccesBulletinSimpleProfTousEleves'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesBulletinSimpleProfTousEleves", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimpleProfTousEleves !";
+    }
+    if (isset($_POST['GepiAccesBulletinSimpleProfToutesClasses'])) {
+        $temp = "yes";
+    } else {
+        $temp = "no";
+    }
+    if (!saveSetting("GepiAccesBulletinSimpleProfToutesClasses", $temp)) {
+        $msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimpleProfToutesClasses !";
+    }  
     if (isset($_POST['GepiAccesBulletinSimpleParent'])) {
         $temp = "yes";
     } else {
@@ -346,6 +401,13 @@ require_once("../lib/header.inc");
        	<td>
         <input type="checkbox" name="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves des classes dans lesquelles il enseigne<br />
         <input type="checkbox" name="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)<br/>
+        <input type="checkbox" name="GepiAccesReleveProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesReleveProfToutesClasses")=='yes') echo "checked"; ?> /> a accès aux relevés de notes des élèves de toutes les classes<br/>
+        <input type="checkbox" name="GepiAccesMoyennesProf" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProf")=='yes') echo "checked"; ?> /> a accès aux moyennes des élèves des classes dans lesquelles il enseigne<br />
+        <input type="checkbox" name="GepiAccesMoyennesProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux moyennes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)<br/>
+        <input type="checkbox" name="GepiAccesMoyennesProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProfToutesClasses")=='yes') echo "checked"; ?> /> a accès aux moyennes des élèves de toutes les classes<br/>
+        <input type="checkbox" name="GepiAccesBulletinSimpleProf" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProf")=='yes') echo "checked"; ?> /> a accès aux bulletins simples des élèves des classes dans lesquelles il enseigne<br />
+        <input type="checkbox" name="GepiAccesBulletinSimpleProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfTousEleves")=='yes') echo "checked"; ?> /> a accès aux bulletins simples de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)<br/>
+        <input type="checkbox" name="GepiAccesBulletinSimpleProfToutesClasses" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=='yes') echo "checked"; ?> /> a accès aux bulletins simples des élèves de toutes les classes<br/>
         <input type="checkbox" name="GepiPasswordReinitProf" value="yes" <?php if (getSettingValue("GepiPasswordReinitProf")=='yes') echo "checked"; ?> /> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
        	</td>
     </tr>    

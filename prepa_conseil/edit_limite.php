@@ -92,6 +92,26 @@ if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND
 	die();
 }
 
+if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+	if ($test == "0") {
+		tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+		echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+}
+
+if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" and $choix_edit == "2") {
+	$test = mysql_num_rows(mysql_query("SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
+	if ($test == "0") {
+		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
+		echo "Vous ne pouvez pas accéder à cet élève !";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+}
+
 // On a passé les barrières, on passe au traitement
 
 $gepiYear = getSettingValue("gepiYear");
@@ -131,11 +151,52 @@ if ($choix_edit == '2') {
 }
 
 if ($choix_edit != '2') {
-    if ($choix_edit == '1') {
-        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND e.login = c.login) ORDER BY e.nom,e.prenom");
-    } else {
-        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p WHERE (c.id_classe='$id_classe' AND e.login = c.login AND p.login=c.login AND p.professeur='$login_prof') ORDER BY e.nom,e.prenom");
-    }
+	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		// On ne sélectionne que les élèves que le professeur a en cours
+	    if ($choix_edit == '1') {
+	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jeg.login AND " .
+				"jeg.login = jec.login AND " .
+				"jeg.id_groupe = jgp.id_groupe AND " .
+				"jgp.login = '".$_SESSION['login']."') " .
+				"ORDER BY e.nom,e.prenom");
+	    } else {
+	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp, j_eleves_professeurs jep " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jeg.login AND " .
+				"jeg.login = p.login AND " .
+				"p.professeur = '".$login_prof."'" .
+				"p.login = jec.login AND " .
+				"jeg.id_groupe = jgp.id_groupe AND " .
+				"jgp.login = '".$_SESSION['login']."') " .
+				"ORDER BY e.nom,e.prenom");
+	    }
+	} else {
+	    // On sélectionne sans restriction
+	    if ($choix_edit == '1') {
+	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        		"FROM eleves e, j_eleves_classes c " .
+	        		"WHERE (" .
+	        		"c.id_classe='$id_classe' AND " .
+	        		"e.login = c.login" .
+	        		") ORDER BY e.nom,e.prenom");
+	    } else {
+	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
+	        		"FROM eleves e, j_eleves_classes c, j_eleves_professeurs p " .
+	        		"WHERE (" .
+	        		"c.id_classe='$id_classe' AND " .
+	        		"e.login = c.login AND " .
+	        		"p.login=c.login AND " .
+	        		"p.professeur='$login_prof'" .
+	        		") ORDER BY e.nom,e.prenom");
+		}
+	}
+    
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
     $i=0;
     $k=0;

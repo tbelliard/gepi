@@ -78,6 +78,27 @@ if ($login_eleve and $login_eleve != null) {
 	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 }
 
+if (isset($id_classe)) {
+	// On regarde si le type est correct :
+	if (!is_numeric($id_classe)) {
+		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
+		echo "Erreur.";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+	// On teste si un professeur a le droit d'accéder à cette classe
+	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		if ($test == "0") {
+			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+			require ("../lib/footer.inc.php");
+			die();
+		}
+	}
+}
+
+
 //**************** EN-TETE *******************************
 $titre_page = "Edition simplifiée des bulletins";
 require_once("../lib/header.inc");
@@ -122,8 +143,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	}
 	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
-	elseif($_SESSION['statut'] == 'professeur'){
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes"){
 		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+	}
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes") {
+		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
 	elseif($_SESSION['statut'] == 'cpe'){
@@ -166,7 +190,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";	
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
-	}	
+	}
 } else if (!isset($choix_edit)) {
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 	    echo " | <a href = \"index3.php\">Choisir une autre classe</a></p>";
@@ -176,7 +200,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	    echo "<table><tr>\n";
 	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
-	    echo "<td>Les bulletins simplifiés de tous les élèves de la classe</td></tr>\n";
+	    echo "<td>Les bulletins simplifiés de tous les élèves de la classe";
+		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
+			echo " (uniquement les élèves que j'ai en cours)";
+		}
+		echo "</td></tr>\n";
 	
 	    $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
 	    $nb_lignes = mysql_num_rows($call_suivi);
@@ -204,7 +232,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>\n";
 	    echo "<td>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : \n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
-	    $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
+	    
+	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		    $call_eleve = mysql_query("SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jeg.login AND " .
+				"jeg.login = jec.login AND " .
+				"jeg.id_groupe = jgp.id_groupe AND " .
+				"jgp.login = '".$_SESSION['login']."') " .
+				"ORDER BY e.nom,e.prenom");
+	    } else {
+		    $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
+	    }
 	    $nombreligne = mysql_num_rows($call_eleve);
 	    $i = "0" ;
 	    while ($i < $nombreligne) {

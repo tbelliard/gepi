@@ -3639,6 +3639,14 @@ if (isset ($_POST['maj'])) {
     if (($force_maj == 'yes') or (quelle_maj("1.5.0"))) {
         $result .= "<br /><br /><b>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</b><br />";
 
+	    $result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
+        $query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
+        if ($query28) {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= "<font color=\"red\">Erreur</font><br />";
+        }
+
 	    $result .= "&nbsp;->Ajout du champ responsable à la table droits<br />";
 	    $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 	    if ($test1 == 0) {
@@ -3829,7 +3837,7 @@ if (isset ($_POST['maj'])) {
         }
         $result_inter = '';
 
-	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux bulletins simplifiés<br/>";
+	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux bulletins simplifiés et relevés de notes<br/>";
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleEleve'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -3839,6 +3847,50 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleParent', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProf'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProf', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProfTousEleves'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfTousEleves', 'no');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProfToutesClasses'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfToutesClasses', 'no');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveProfTousEleves'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveProfTousEleves', 'yes');");
+
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+        $result_inter = '';
+
+	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux moyennes par les professeurs<br/>";
+        
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProf'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProf', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProfTousEleves'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProfTousEleves', 'yes');");
+
+        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProfToutesClasses'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0)
+            $result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProfToutesClasses', 'yes');");
 
         if ($result_inter == '') {
             $result .= "<font color=\"green\">Ok !</font><br />";
@@ -4121,15 +4173,6 @@ if (isset ($_POST['maj'])) {
 	    } else {
 	        $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	    }
-
-	    $result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
-        $query28 = mysql_query("ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");
-        if ($query28) {
-            $result .= "<font color=\"green\">Ok !</font><br />";
-        } else {
-            $result .= "<font color=\"red\">Erreur</font><br />";
-        }
-
 
 	    $result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
 

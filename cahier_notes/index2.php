@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 12/11/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -39,8 +39,42 @@ if (!checkAccess()) {
     die();
 }
 
+// On fait quelques tests si le statut est 'prof', pour vérifier les restrictions d'accès
+if ($_SESSION['statut'] == "professeur") {
+	if ( (getSettingValue("GepiAccesMoyennesProf") != "yes") AND
+         (getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes") AND
+         (getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes")
+       ) {
+       	tentative_intrusion("1","Tentative d'accès par un prof aux moyennes des carnets de notes sans avoir les autorisations nécessaires.");
+       	echo "Vous n'êtes pas autorisé à être ici.";
+		require ("../lib/footer.inc.php");
+		die();
+       }
+	
+}
+
+
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+if (isset($id_classe)) {
+	// On regarde si le type est correct :
+	if (!is_numeric($id_classe)) {
+		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
+		echo "Erreur.";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+	// On teste si le professeur a le droit d'accéder à cette classe
+	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		if ($test == "0") {
+			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+			require ("../lib/footer.inc.php");
+			die();
+		}
+	}
+}
 
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des moyennes des carnets de notes";
@@ -164,8 +198,11 @@ if (isset($id_classe)) {
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	}
 	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
-	elseif($_SESSION['statut'] == 'professeur'){
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"){
 		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+	}
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
+		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
 	elseif($_SESSION['statut'] == 'cpe'){
@@ -202,5 +239,10 @@ if (isset($id_classe)) {
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
 echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
+if ($_SESSION['statut'] == "professeur" 
+	AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"
+	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
+		echo "<p>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</p>";
+	}
 require ("../lib/footer.inc.php");
 ?>

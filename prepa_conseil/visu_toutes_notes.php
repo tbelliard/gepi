@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 08/11/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -46,6 +46,31 @@ if ($num_periode=="annee") {
 } else {
     $referent="une_periode";
 }
+
+// On filtre au niveau sécurité pour s'assurer qu'un prof n'est pas en train de chercher
+// à visualiser des données pour lesquelles il n'est pas autorisé
+
+if (isset($id_classe)) {
+	// On regarde si le type est correct :
+	if (!is_numeric($id_classe)) {
+		tentative_intrusion("3", "Changement de la valeur de id_classe pour un type non numérique, en changeant la valeur d'un champ 'hidden' d'un formulaire.");
+		echo "Erreur.";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+	// On teste si le professeur a le droit d'accéder à cette classe
+	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		if ($test == "0") {
+			tentative_intrusion("3", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation. Tentative avancée : changement des valeurs de champs de type 'hidden' du formulaire.");
+			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+			require ("../lib/footer.inc.php");
+			die();
+		}
+	}
+}
+
+
 $larg_tab = isset($_POST['larg_tab']) ? $_POST['larg_tab'] :  NULL;
 $bord = isset($_POST['bord']) ? $_POST['bord'] :  NULL;
 $aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] :  NULL;
@@ -60,12 +85,42 @@ $aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  
 $couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] :  NULL;
 include "../lib/periodes.inc.php";
 
-if ($referent=="une_periode")
-    // Calcul sur une seule période
-    $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
-else {
-    // Calcul sur l'année
-    $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
+// On appelle les élèves
+if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	// On ne sélectionne que les élèves que le professeur a en cours
+	if ($referent=="une_periode")
+		// Calcul sur une seule période
+		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jeg.login AND " .
+				"jeg.login = jec.login AND " .
+				"jeg.id_groupe = jgp.id_groupe AND " .
+				"jgp.login = '".$_SESSION['login']."' AND " .
+				"jec.periode = '$num_periode' AND " .
+				"jeg.periode = '$num_periode') " .
+				"ORDER BY e.nom,e.prenom");
+	else {
+		// Calcul sur l'année
+		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
+				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
+				"WHERE (" .
+				"jec.id_classe='$id_classe' AND " .
+				"e.login = jeg.login AND " .
+				"jeg.login = jec.login AND " .
+				"jeg.id_groupe = jgp.id_groupe AND " .
+				"jgp.login = '".$_SESSION['login']."') " .
+				"ORDER BY e.nom,e.prenom");
+	}
+} else {
+	if ($referent=="une_periode")
+		// Calcul sur une seule période
+		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
+	else {
+		// Calcul sur l'année
+		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
+	}
 }
 
 $nb_lignes_eleves = mysql_num_rows($appel_donnees_eleves);
