@@ -102,33 +102,38 @@ tronquer_nom_court
 */
 
 	if(isset($_POST['save_params'])){
+		if($_POST['save_params']=="y"){
 
-		function save_params_graphe($nom,$valeur){
-			global $msg;
-			if(!saveSetting("$nom", $valeur)){
-				$msg.="Erreur lors de l'enregistrement du paramètre $nom<br />";
+			function save_params_graphe($nom,$valeur){
+				global $msg;
+				if(!saveSetting("$nom", $valeur)){
+					$msg.="Erreur lors de l'enregistrement du paramètre $nom<br />";
+				}
+			}
+
+			//$erreur_save_params="";
+			if(isset($_POST['affiche_photo'])){save_params_graphe('graphe_affiche_photo',$_POST['affiche_photo']);}
+			else{save_params_graphe('graphe_affiche_photo','non');}
+			if(isset($_POST['largeur_imposee_photo'])){save_params_graphe('graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
+			if(isset($_POST['affiche_mgen'])){save_params_graphe('graphe_affiche_mgen',$_POST['affiche_mgen']);}
+			else{save_params_graphe('graphe_affiche_mgen','non');}
+			if(isset($_POST['affiche_minmax'])){save_params_graphe('graphe_affiche_minmax',$_POST['affiche_minmax']);}
+			else{save_params_graphe('graphe_affiche_minmax','non');}
+			if(isset($_POST['affiche_moy_annuelle'])){save_params_graphe('graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
+			else{save_params_graphe('graphe_affiche_moy_annuelle','non');}
+			if(isset($_POST['largeur_graphe'])){save_params_graphe('graphe_largeur_graphe',$_POST['largeur_graphe']);}
+			if(isset($_POST['hauteur_graphe'])){save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
+			if(isset($_POST['taille_police'])){save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
+			if(isset($_POST['epaisseur_traits'])){save_params_graphe('graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
+			if(isset($_POST['temoin_image_escalier'])){save_params_graphe('graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
+			else{save_params_graphe('graphe_temoin_image_escalier','non');}
+			if(isset($_POST['tronquer_nom_court'])){save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
+
+			if($msg==''){
+				$msg="Paramètres enregistrés.";
 			}
 		}
-
-		//$erreur_save_params="";
-		if(isset($_POST['affiche_photo'])){save_params_graphe('graphe_affiche_photo',$_POST['affiche_photo']);}
-		else{save_params_graphe('graphe_affiche_photo','non');}
-		if(isset($_POST['largeur_imposee_photo'])){save_params_graphe('graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
-		if(isset($_POST['affiche_mgen'])){save_params_graphe('graphe_affiche_mgen',$_POST['affiche_mgen']);}
-		else{save_params_graphe('graphe_affiche_mgen','non');}
-		if(isset($_POST['affiche_minmax'])){save_params_graphe('graphe_affiche_minmax',$_POST['affiche_minmax']);}
-		else{save_params_graphe('graphe_affiche_minmax','non');}
-		if(isset($_POST['affiche_moy_annuelle'])){save_params_graphe('graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
-		else{save_params_graphe('graphe_affiche_moy_annuelle','non');}
-		if(isset($_POST['largeur_graphe'])){save_params_graphe('graphe_largeur_graphe',$_POST['largeur_graphe']);}
-		if(isset($_POST['hauteur_graphe'])){save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
-		if(isset($_POST['taille_police'])){save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
-		if(isset($_POST['epaisseur_traits'])){save_params_graphe('graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
-		if(isset($_POST['temoin_image_escalier'])){save_params_graphe('graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
-		else{save_params_graphe('graphe_temoin_image_escalier','non');}
-		if(isset($_POST['tronquer_nom_court'])){save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
 	}
-
 }
 
 //**************** EN-TETE *****************
@@ -646,6 +651,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "<form action='$_PHP_SELF' name='form_choix_eleves' method='POST'>\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
+	echo "<input type='hidden' name='is_posted' value='y' />\n";
 
 	// Affichage de la photo si elle existe:
 	if((isset($eleve1))&&($affiche_photo!="non")){
@@ -682,7 +688,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
 		$nombreligne = mysql_num_rows($call_eleve);
 
-		echo "<select name='eleve1'>\n";
+		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
 		while($ligne=mysql_fetch_object($call_eleve)){
@@ -704,7 +710,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
-		echo "<select name='eleve2'>\n";
+		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		for($cpt=1;$cpt<=$nombreligne;$cpt++){
 			if($tab_login_eleve[$cpt]==$eleve2){
 				$selected=" selected='yes'";
@@ -763,9 +769,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// 'eleve1b' est destiné au passage du nom de l'élève par les boutons Précédent/Suivant
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
-		echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-		echo "<input type='submit' name='choix_eleves' value='Envoyer' />\n";
-		echo "<input type='button' name='precedent' value='>>' onClick='eleve_suivant();' />\n";
+
+	    if($precedent>0){
+			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
+			echo "<a href='javascript:eleve_precedent();'>Elève précédent</a><br />\n";
+		}
+
+		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
+		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\">Actualiser</a>\n";
+
+	    if($suivant<$nombreligne+1){
+			echo "<br />\n";
+			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
+			echo "<a href='javascript:eleve_suivant();'>Elève suivant</a>";
+		}
 		echo "</p>\n";
 
 		//echo "<hr width='150'>\n";
@@ -794,7 +811,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if($choix_periode=='periode'){$checked=" checked='yes'";}else{$checked="";}
 	//echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' checked='true'$checked />\n";
 	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked />\n";
-	echo "<select name='periode' onfocus=\"document.getElementById('choix_periode').checked='true'\">\n";
+	echo "<select name='periode' onfocus=\"document.getElementById('choix_periode').checked='true'\" onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 	for($i=1;$i<$nb_periode;$i++){
 		if($periode==$nom_periode[$i]){$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='$nom_periode[$i]'$selected>$nom_periode[$i]</option>\n";
@@ -938,7 +955,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "</div>\n";
 
 	if($_SESSION['statut']=='scolarite'){
-		echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
+		//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
+		echo "<input type='hidden' name='save_params' value='' />\n";
+		echo "<input type='button' onClick=\"document.forms['form_choix_eleves'].save_params.value='y';document.forms['form_choix_eleves'].submit();\" name='Enregistrer' value='Enregistrer les paramètres' />\n";
 	}
 	echo "</div>\n";
 
@@ -1822,6 +1841,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//====================================================================
 	echo "</tr>\n";
 	echo "</table>\n";
+
+	if(!isset($_POST['is_posted'])){
+		// Pour la première validation lors de l'accès à la page de graphe et ainsi obtenir directement le premier affichage:
+		echo "<script type='text/javascript'>
+	document.forms['form_choix_eleves'].submit();
+</script>\n";
+	}
 }
 require("../lib/footer.inc.php");
 ?>
