@@ -58,7 +58,7 @@ if (!checkAccess()) {
 	   if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
 	   else { if (isset($_GET['periode_ferme'])) { $periode_ferme = $_GET['periode_ferme']; } if (isset($_POST['periode_ferme'])) { $periode_ferme = $_POST['periode_ferme']; } }
 	*/
-	$periode_ferme = '1'; 
+	$periode_ferme = '1';
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
 
@@ -72,23 +72,23 @@ if (!checkAccess()) {
 	$_SESSION['periode'] = $periode;
 	$_SESSION['periode_ferme'] = $periode_ferme;
 	$_SESSION['type_bulletin'] = $type_bulletin;
-	
-//ERIC	
-	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {  
+
+//ERIC
+	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
 	    // le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
-  	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");	
-		if ($option_modele_bulletin!=1) { 
+  	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
+		if ($option_modele_bulletin!=1) {
 	      if ($type_bulletin == -1) {
 		    //cas avec les modèles affectés aux classes.
-	        header("Location: bulletin_pdf_avec_modele_classe.php"); 
+	        header("Location: bulletin_pdf_avec_modele_classe.php");
 		  } else {
 		    //cas sans les modèles affectés à chaque classe .
-			header("Location: buletin_pdf.php");     
+			header("Location: buletin_pdf.php");
 		  }
 		} else { // on utilise le modèle définie dans les paramètres de la classe.
 		    //cas avec les modèles affectés aux classes.
-	        header("Location: bulletin_pdf_avec_modele_classe.php"); 
-		}   
+	        header("Location: bulletin_pdf_avec_modele_classe.php");
+		}
 	}
 // FIN Christian renvoye vers le fichier PDF bulletin
 
@@ -153,7 +153,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 				  	 {
 						$sql_cpt_nb_eleve_1 = "SELECT count(eleves.login) FROM eleves, classes, j_eleves_classes WHERE classes.id = ".$donner_classe['id_classe']." AND j_eleves_classes.id_classe=classes.id AND j_eleves_classes.login=eleves.login GROUP BY eleves.login";
 						$requete_cpt_nb_eleve_1 =  mysql_query($sql_cpt_nb_eleve_1);
-						
+
 						$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
 					   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option><?php
 					 }
@@ -201,18 +201,18 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 			  </tbody>
 		</table>
 			<?php if ( $message_erreur != '' ) { ?><span style="color: #FF0000; font-weight: bold;"><?php echo $message_erreur; ?></span><?php } ?>
-		  
+
 
 <?PHP
 //ERIC
 		$option_modele_bulletin=getSettingValue("option_modele_bulletin");
-			
+
 		if ($option_modele_bulletin!=1) {
 		    echo "<br />Choisir le modèle de bulletin<br/>";
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
 			// sélection des modèle des bulletins.
 			$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
-			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes 
+			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
 				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>";
 			}
 				while($donner_modele = mysql_fetch_array($requete_modele)) {
@@ -224,15 +224,15 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		    echo "<input type=\"hidden\" name=\"type_bulletin\" value=\"-1\" />";
 		}
 ?>
-		 		  
+
 		  <br /><br />
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
 		  </center>
 		  </fieldset>
 		</form>
-							
-		<?php 
+
+		<?php
 	}
 	// fin de modification de la sélection pour le PDF Christian
 
@@ -251,7 +251,7 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 		    $calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
 		}
     }
-	
+
     $nombreligne = mysql_num_rows($calldata);
     if ($nombreligne > "1") {
 	  echo " | Total : $nombreligne ";
@@ -263,16 +263,28 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
     echo "</p>\n";
     echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins.<br />\n";
 
+	unset($lien_classe);
+	unset($txt_classe);
+	$i = 0;
+	while ($i < $nombreligne){
+		$lien_classe[]="index.php?id_classe=".mysql_result($calldata, $i, "id");
+		$txt_classe[]=mysql_result($calldata, $i, "classe");
+		$i++;
+	}
+
+	tab_liste($txt_classe,$lien_classe,3);
+
+	/*
 	$nb_class_par_colonne=round($nombreligne/3);
-        //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
+	//echo "<table width='100%' border='1'>\n";
+	echo "<table width='100%'>\n";
+	echo "<tr valign='top' align='center'>\n";
 
-    $i = 0;
+	$i = 0;
 
-        echo "<td align='left'>\n";
+	echo "<td align='left'>\n";
 
-    while ($i < $nombreligne){
+	while ($i < $nombreligne){
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -280,14 +292,15 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 			echo "<td align='left'>\n";
 		}
 
-        $ide_classe = mysql_result($calldata, $i, "id");
-        $classe_liste = mysql_result($calldata, $i, "classe");
-        echo "<br /><a href='index.php?id_classe=$ide_classe'>$classe_liste</a>\n";
-        $i++;
-    }
-        echo "</td>\n";
-        echo "</tr>\n";
-        echo "</table>\n";
+		$ide_classe = mysql_result($calldata, $i, "id");
+		$classe_liste = mysql_result($calldata, $i, "classe");
+		echo "<br /><a href='index.php?id_classe=$ide_classe'>$classe_liste</a>\n";
+		$i++;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	*/
 }
 if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	echo "<a href=\"index.php\">Choisir une autre classe</a>|";

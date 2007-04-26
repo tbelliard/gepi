@@ -71,13 +71,25 @@ if (!(isset($id_classe))) {
 
 	$lignes = mysql_num_rows($appel_donnees);
 
+	unset($lien_classe);
+	unset($txt_classe);
+	$i = 0;
+	while ($i < $nombreligne){
+		$lien_classe[]="verif_bulletins.php?id_classe=".mysql_result($appel_donnees, $i, "id");
+		$txt_classe[]=ucfirst(mysql_result($appel_donnees, $i, "classe"));
+		$i++;
+	}
+
+	tab_liste($txt_classe,$lien_classe,3);
+
+	/*
 	$nb_class_par_colonne=round($lignes/3);
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
+	echo "<table width='100%'>\n";
+	echo "<tr valign='top' align='center'>\n";
 
 	$i = 0;
 
-        echo "<td align='left'>\n";
+	echo "<td align='left'>\n";
 	while($i < $lignes){
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -89,9 +101,10 @@ if (!(isset($id_classe))) {
 		echo "<a href='verif_bulletins.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
 		$i++;
 	}
-        echo "</td>\n";
-        echo "</tr>\n";
-        echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	*/
 
 	//echo "</td><td></td></table>";
 } else if (!(isset($per))){
@@ -116,11 +129,11 @@ if (!(isset($id_classe))) {
     if (!$flag) {
         echo "<p>ATTENTION : certains élèves de cette classe n'ont pas de CPE responsable attribué. Cela génèrera un msesage d'erreur sur la page d'édition des bulletins. Il faut corriger ce problème avant impression (contactez l'administrateur).";
     }
-    
+
 	$sql_classe="SELECT * FROM `classes`WHERE id=$id_classe";
 	$call_classe=mysql_query($sql_classe);
 	$nom_classe=mysql_result($call_classe,0,"classe");
-	
+
     echo "<b> Classe : $nom_classe - Choisissez la période : </b></p><br />\n";
     include "../lib/periodes.inc.php";
     $i="1";
@@ -169,10 +182,10 @@ if (!(isset($id_classe))) {
     //
     //Début de la boucle élève
     //
-	
+
    // Affichage sur 3 colonnes
 	$nb_eleve_par_colonne=round($nb_eleves/2);
-	
+
 	echo "<table width='100%'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
@@ -181,16 +194,16 @@ if (!(isset($id_classe))) {
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "<td align='left'>\n";
 
-	
+
     while($j < $nb_eleves) {
-	
+
 	    //affichage 2 colonnes
 		if(($cpt_i>0)&&(round($cpt_i/$nb_eleve_par_colonne)==$cpt_i/$nb_eleve_par_colonne)){
 			echo "</td>\n";
 			echo "<td align='left'>\n";
 		}
-		
-	
+
+
         $id_eleve[$j] = mysql_result($appel_donnees_eleves, $j, "login");
         $eleve_nom[$j] = mysql_result($appel_donnees_eleves, $j, "nom");
         $eleve_prenom[$j] = mysql_result($appel_donnees_eleves, $j, "prenom");
@@ -205,7 +218,7 @@ if (!(isset($id_classe))) {
         //
         //Début de la boucle matière
         //
-		
+
         $affiche_nom = 1;
         $affiche_mess_app = 1;
         $affiche_mess_note = 1;
@@ -427,11 +440,11 @@ if (!(isset($id_classe))) {
 
         $j++;
     //Fin de la boucle élève
-	
+
 		$cpt_i++;
-		
+
 	}
-	
+
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -441,7 +454,7 @@ if (!(isset($id_classe))) {
 		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>";
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>";
-		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";	
+		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";
     } else {
         echo "<br /><p class='bold'>*** Fin des vérifications. ***</p>";
 		/*

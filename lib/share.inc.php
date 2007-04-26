@@ -24,7 +24,7 @@ function verif_mot_de_passe($password,$flag) {
             return false;
         else
             return true;
-            
+
 }
 
 function test_unique_login($s) {
@@ -414,7 +414,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
         $m = strftime("%b", mktime(0, 0, 0, $i, 1, $year));
 
         //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m\n";
-        
+
         // Si problème avec l'encodage, essayer la ligne suivante
         //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">".iconv('UTF-8','ISO-8859-1', $m)."</option>\n";
         echo "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m</option>\n";
@@ -1367,7 +1367,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	// $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes
 	// pour la classe, soit le login d'un élève, auquel cas on affiche tous les groupes
 	// pour l'élève en question
-	
+
   $out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
   <select name=\"matiere\" onChange=\"matiere_go()\">";
 
@@ -1437,7 +1437,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$login_resp."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 0) {
 			// Aucun élève associé
 		$out_html = "<p>Vous semblez n'être responsable d'aucun élève ! Contactez l'administrateur pour corriger cette erreur.</p>";
@@ -1449,7 +1449,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
 	  $out_html = "<form name=\"eleve\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Elève :</i></b><br />
 	  <select name=\"eleve\" onChange=\"eleve_go()\">";
-	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";		
+	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
 		   	$selected = ($current_eleve->login == $current->login) ? "selected" : "";
@@ -1458,7 +1458,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 		   }
 		   $link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&login_eleve=".$current_eleve->login;
 		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>";
-		}   
+		}
 	  $out_html .= "</select>
 	  <script type=\"text/javascript\">
 	  <!--
@@ -1470,7 +1470,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	  }
 	  // -->
 	  </SCRIPT>
-	
+
 	  <noscript>
 	  <input type=submit value=\"OK\" />
 	  </noscript>
@@ -1511,11 +1511,11 @@ function tentative_intrusion($_niveau, $_description) {
 	global $_SERVER;
 	global $_SESSION;
 	global $gepiPath;
-	
+
 	// On commence par enregistrer la tentative en question
 
 	if (!isset($_SESSION['login'])) {
-		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utiliser logué.		
+		// Ici, ça veut dire que l'attaque est extérieure. Il n'y a pas d'utiliser logué.
 		$user_login = "-";
 	} else {
 		$user_login = $_SESSION['login'];
@@ -1532,24 +1532,24 @@ function tentative_intrusion($_niveau, $_description) {
 			"fichier = '".$fichier."', " .
 			"description = '".addslashes($_description)."', " .
 			"statut = 'new'");
-	
+
 	// On a enregistré.
-	
+
 	// On initialise des marqueurs pour les deux actions possibles : envoie d'un email à l'admin
 	// et blocage du compte de l'utilisateur
-	
+
 	$send_email = false;
 	$block_user = false;
-	
+
 	// Est-ce qu'on envoie un mail quoi qu'il arrive ?
 	if (getSettingValue("security_alert_email_admin") == "yes" AND $_niveau >= getSettingValue("security_alert_email_min_level")) {
 		$send_email = true;
 	}
-	
+
 	// Si la tentative d'intrusion a été effectuée par un utilisateur connecté à Gepi,
 	// on regarde si des seuils ont été dépassés et si certaines actions doivent être
 	// effectuées.
-	
+
 	if ($user_login != "-") {
 		// On récupère quelques infos
 		$req = mysql_query("SELECT nom, prenom, statut, niveau_alerte, observation_securite FROM utilisateurs WHERE (login = '".$user_login."')");
@@ -1560,35 +1560,35 @@ function tentative_intrusion($_niveau, $_description) {
 		} else {
 			$obs = "normal";
 		}
-		
+
 		// D'abord, on met à jour le niveau cumulé
 		$nouveau_cumul = (int)$user->niveau_alerte+(int)$_niveau;
-		
+
 		$res = mysql_query("UPDATE utilisateurs SET niveau_alerte = '".$nouveau_cumul ."' WHERE (login = '".$user_login."')");
-		
+
 		$seuil1 = false;
 		$seuil2 = false;
 		// Maintenant on regarde les seuils.
 		if ($nouveau_cumul >= getSettingValue("security_alert1_".$obs."_cumulated_level")
 				AND $nouveau_cumul < getSettingValue("security_alert2_".$obs."_cumulated_level")) {
-			// Seuil 1	
+			// Seuil 1
 			if (getSettingValue("security_alert1_".$obs."_email_admin") == "yes") $send_email = true;
 			if (getSettingValue("security_alert1_".$obs."_block_user") == "yes") $block_user = true;
 			$seuil1 = true;
-		
+
 		} elseif ($nouveau_cumul >= getSettingValue("security_alert2_".$obs."_cumulated_level")) {
 			// Seuil 2
 			if (getSettingValue("security_alert2_".$obs."_email_admin") == "yes") $send_email = true;
 			if (getSettingValue("security_alert2_".$obs."_block_user") == "yes") $block_user = true;
 			$seuil2 = true;
 		}
-		
+
 		// On désactive le compte de l'utilisateur si nécessaire :
 		if ($block_user) {
 			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$user_login."')");
 		}
 	} // Fin : if ($user_login != "-")
-	
+
 	// On envoie un email à l'administrateur si nécessaire
 	if ($send_email) {
 		$message = "** Alerte automatique sécurité Gepi **\n\n";
@@ -1610,12 +1610,46 @@ function tentative_intrusion($_niveau, $_description) {
 			if ($seuil2) $message .= "L'utilisateur a dépassé le seuil d'alerte 2.\n\n";
 			if ($block_user) $message .= "Le compte de l'utilisateur a été désactivé.\n";
 		}
-		
+
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
 		    "GEPI : Alerte sécurité -- Tentative d'intrusion",
 		    $message,
 		   "From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
 	}
+}
+
+function tab_liste($tab_txt,$tab_lien,$nbcol){
+	// Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+
+	// Nombre d'enregistrements à afficher
+	$nombreligne=count($tab_txt);
+
+	if(!is_int($nbcol)){
+		$nbcol=3;
+	}
+
+	// Nombre de lignes dans chaque colonne:
+	$nb_class_par_colonne=round($nombreligne/$nbcol);
+
+	echo "<table width='100%'>\n";
+	echo "<tr valign='top' align='center'>\n";
+	echo "<td align='left'>\n";
+
+	$i = 0;
+	while ($i < $nombreligne){
+
+		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+
+		echo "<br />\n";
+		echo "<a href='".$tab_lien[$i]."'>".$tab_txt[$i]."</a>";
+		$i++;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 }
 ?>

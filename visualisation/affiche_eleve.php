@@ -246,7 +246,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "</div>\n";
 
 	//echo "<form action='$_PHP_SELF' name='form_choix_classe' method='post'>\n";
-	echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
+	//echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 	echo "<p>Sélectionnez la classe : </p>\n";
 	echo "<blockquote>\n";
 	//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -266,6 +266,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			ORDER BY classe");
 	}
 	$nombre_lignes = mysql_num_rows($call_data);
+
+	unset($lien_classe);
+	unset($txt_classe);
+	$i = 0;
+	while ($i < $nombre_lignes){
+		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id");
+		$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
+		$i++;
+	}
+
+	tab_liste($txt_classe,$lien_classe,3);
+
+	/*
 	echo "<select name='id_classe' size='".min($nombre_lignes,10)."'>\n";
 	$i = 0;
 	while ($i < $nombre_lignes){
@@ -277,9 +290,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	echo "</select><br />\n";
 	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n";
+	*/
 	echo "</blockquote>\n";
 	//echo "</p>\n";
-	echo "</form>\n";
+	//echo "</form>\n";
 } elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
 	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
