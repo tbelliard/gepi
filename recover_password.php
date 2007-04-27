@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -240,7 +240,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
     <td style="text-align: center; width: 40%;"><input type="password" id="confirmation" name="no_anti_inject_confirmation" size="16" tabindex="2" /></td>
   </tr>
   <tr>
-    <td style="text-align: center; padding-top: 10px;">
+    <td style="text-align: center; padding-top: 10px;"><a class='small' href='login.php'>Retour page de login</a>
     </td>
     <td style="text-align: center; width: 40%; padding-top: 20px;"><input type="submit" name="submit" value="Valider" style="font-variant: small-caps;" tabindex="3" /></td>
   </tr>
@@ -266,7 +266,6 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
 <br/>Si votre login et votre e-mail sont corrects, vous recevrez sur cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
 <span class='red'>Vous devez réinitialiser votre mot de passe dans les 15 minutes suivant la validation de ce formulaire.</span></p>
 <form action="recover_password.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
-
 <fieldset id="login_box" style="width: 50%; margin-top: 0;">
 <div id="header">
 <h2>Mot de passe perdu</h2>
@@ -291,7 +290,7 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
     <td style="text-align: center; width: 40%;"><input type="text" id="email" name="email" size="16" tabindex="2" /></td>
   </tr>
   <tr>
-    <td style="text-align: center; padding-top: 10px;">
+    <td style="text-align: center; padding-top: 10px;"><a class='small' href='login.php'>Retour page de login</a>
     </td>
     <td style="text-align: center; width: 40%; padding-top: 20px;"><input type="submit" name="submit" value="Valider" style="font-variant: small-caps;" tabindex="3" /></td>
   </tr>
@@ -304,7 +303,7 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
 <?php } ?>
 
 <div class="center" style="margin-bottom: 32px;">
-<p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
+<p>[<a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">contacter l'administrateur</a>]</p>
 </div>
 <div id="login_footer">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
