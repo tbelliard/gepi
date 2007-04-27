@@ -865,7 +865,7 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']) and (($_GET['maj'])=="9"))) {
 	echo "<H2 align=\"center\">Etape 9/$total_etapes</H2>\n";
 
-	echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
+	//echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
 
 	echo "<H2>Nettoyage des aberrations sur les groupes</H2>\n";
 
