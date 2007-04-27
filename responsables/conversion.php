@@ -133,7 +133,7 @@ if($temoin==1){
 		echo "<p>Vous pouvez effectuer la mise à jour des tables:</p>\n";
 		echo "<ul>";
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>avec SCONET</a>: Dans ce cas, il faut fournir des fichiers CSV générés <a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>ici</a> depuis des fichiers XML extraits de SCONET.<br />\nSi vous effectuez ce choix, vous pourrez par la suite effectuer de nouveaux imports pour insérer les élèves/responsables arrivés en cours d'année.<br />\nCe choix implique que le champ ELENOET de la table 'eleves' soit correctement rempli avec des valeurs correspondant à celles de l'ancien F_ELE.DBF<br />\nLe contenu de la table 'responsables' est ignoré et les nouvelles tables responsables sont remplies d'après les CSV fournis.</li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>sans SCONET</a>: Dans ce cas, on ne fait que la conversion des tables.<br />\nVous devrez dans ce cas gérer les futures nouvelles inscriptions à la main (<i>ou par des imports CSV</i>).<br />\nIci, c'est la liaison ERENO de vos tables 'eleves' et 'responsables' qui est utilisée pour assurer la migration vers les nouvelles tables.</li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>sans SCONET</a>: Dans ce cas, on ne fait que la conversion des tables.<br />\nVous devrez dans ce cas gérer les futures nouvelles inscriptions à la main (<i>ou par des imports CSV</i>).<br />\nIci, c'est la liaison ERENO de vos tables 'eleves' et 'responsables' qui est utilisée pour assurer la migration vers les nouvelles tables.<br />\nCe mode ne permet pas de mises à jour en cours d'année.</li>\n";
 		echo "</ul>";
 
 		$sql="SELECT * FROM eleves WHERE elenoet=''";
@@ -160,264 +160,272 @@ if($temoin==1){
 
 	}
 	elseif($mode==2){
-		$erreur=0;
-		$sql="SELECT * FROM eleves ORDER BY nom,prenom";
-		$res1=mysql_query($sql);
-		if(mysql_num_rows($res1)>0){
-			// On vide les tables avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
-			$sql="TRUNCATE TABLE resp_adr";
-			$res_truncate=mysql_query($sql);
-			$sql="TRUNCATE TABLE resp_pers";
-			$res_truncate=mysql_query($sql);
-			$sql="TRUNCATE TABLE responsables2";
-			$res_truncate=mysql_query($sql);
 
-			while($lig1=mysql_fetch_object($res1)){
-				//if($lig1->ele_id==''){
-				unset($ele_id);
-				if(!isset($lig1->ele_id)){
-					$ele_id="";
-				}
-				else{
-					$ele_id=$lig1->ele_id;
-				}
+		if(!isset($confirmer)){
+			echo "<p><b>ATTENTION:</b> Le mode sans SCONET ne permet pas de mises à jour en cours d'année.<br />\nCela signifie que les corrections effectuées sur votre logiciel de gestion des élèves et responsables (<i>changements d'adresses, corrections,...</i>) ne pourront pas être automatiquement importées dans GEPI.<br />Vous aurez donc une double-saisie à effectuer pour gérer ces mises à jour.<br />\nLe mode avec SCONET, lui, permettrait d'importer les corrections en cours d'année.</p>\n";
+			echo "<p>Ce choix est irréversible.<br />\nEtes-vous sûr que vous ne souhaitez pas utiliser l'import avec SCONET?</p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=2&amp;confirmer=oui'>OUI</a> ou <a href='".$_SERVER['PHP_SELF']."'>NON</a></p>\n";
+		}
+		else{
+			$erreur=0;
+			$sql="SELECT * FROM eleves ORDER BY nom,prenom";
+			$res1=mysql_query($sql);
+			if(mysql_num_rows($res1)>0){
+				// On vide les tables avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
+				$sql="TRUNCATE TABLE resp_adr";
+				$res_truncate=mysql_query($sql);
+				$sql="TRUNCATE TABLE resp_pers";
+				$res_truncate=mysql_query($sql);
+				$sql="TRUNCATE TABLE responsables2";
+				$res_truncate=mysql_query($sql);
 
-				if($ele_id==''){
-					//echo "<p>On va générer un ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet)<br />\n";
-					// Recherche du plus grand ele_id:
-					$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
-					//echo "$sql<br />\n";
-					$res_ele_id_eleve=mysql_query($sql);
-					if(mysql_num_rows($res_ele_id_eleve)>0){
-						$tmp=0;
-						$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
-						$tmp=substr($lig_ele_id_eleve->ele_id,1);
-						$tmp++;
-						$max_ele_id=$tmp;
+				while($lig1=mysql_fetch_object($res1)){
+					//if($lig1->ele_id==''){
+					unset($ele_id);
+					if(!isset($lig1->ele_id)){
+						$ele_id="";
 					}
 					else{
-						$max_ele_id=1;
+						$ele_id=$lig1->ele_id;
 					}
 
-					$sql="SELECT ele_id FROM responsables2 WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
-					//echo "$sql<br />\n";
-					$res_ele_id_responsables2=mysql_query($sql);
-					if(mysql_num_rows($res_ele_id_responsables2)>0){
-						$tmp=0;
-						$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
-						$tmp=substr($lig_ele_id_responsables2->ele_id,1);
-						$tmp++;
-						$max_ele_id2=$tmp;
+					if($ele_id==''){
+						//echo "<p>On va générer un ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet)<br />\n";
+						// Recherche du plus grand ele_id:
+						$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
+						//echo "$sql<br />\n";
+						$res_ele_id_eleve=mysql_query($sql);
+						if(mysql_num_rows($res_ele_id_eleve)>0){
+							$tmp=0;
+							$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
+							$tmp=substr($lig_ele_id_eleve->ele_id,1);
+							$tmp++;
+							$max_ele_id=$tmp;
+						}
+						else{
+							$max_ele_id=1;
+						}
+
+						$sql="SELECT ele_id FROM responsables2 WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
+						//echo "$sql<br />\n";
+						$res_ele_id_responsables2=mysql_query($sql);
+						if(mysql_num_rows($res_ele_id_responsables2)>0){
+							$tmp=0;
+							$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
+							$tmp=substr($lig_ele_id_responsables2->ele_id,1);
+							$tmp++;
+							$max_ele_id2=$tmp;
+						}
+						else{
+							$max_ele_id2=1;
+						}
+
+						$tmp=max($max_ele_id,$max_ele_id2);
+						$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
+
+						//$sql="UPDATE eleves SET ele_id='$ele_id' WHERE elenoet='$lig1->elenoet'";
+						$sql="UPDATE eleves SET ele_id='$ele_id' WHERE login='$lig1->login'";
+						//echo "$sql<br />\n";
+						$res_update=mysql_query($sql);
+						if(!$res_update){
+							//echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+							echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
+							$erreur++;
+						}
+						else{
+							//echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
+							echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
+						}
 					}
 					else{
-						$max_ele_id2=1;
+						//echo "<p>$lig1->nom $lig1->prenom ($lig1->elenoet) dispose déjà d'un ele_id<br />\n";
+						$ele_id=$lig1->ele_id;
 					}
+					/*
+					echo "<p>nom=$lig1->nom<br />\n";
+					echo "prenom=$lig1->prenom<br />\n";
+					echo "elenoet=$lig1->elenoet<br />\n";
+					echo "ereno=$lig1->ereno<br />\n";
+					echo "ele_id=$ele_id</p>\n";
+					*/
 
-					$tmp=max($max_ele_id,$max_ele_id2);
-					$ele_id="e".sprintf("%09d",max($max_ele_id,$max_ele_id2));
+					if($lig1->ereno!=''){
+						$sql="SELECT * FROM responsables WHERE ereno='$lig1->ereno'";
+						//echo "$sql<br />\n";
+						$res2=mysql_query($sql);
+						if(mysql_num_rows($res2)>0){
+							while($lig2=mysql_fetch_object($res2)){
+								// Est-ce que cet ereno a déjà fait l'objet d'une insertion dans les nouvelles tables?
+								// Recherche des pers_id ou recherche du plus grand pers_id affecté.
 
-					//$sql="UPDATE eleves SET ele_id='$ele_id' WHERE elenoet='$lig1->elenoet'";
-					$sql="UPDATE eleves SET ele_id='$ele_id' WHERE login='$lig1->login'";
-					//echo "$sql<br />\n";
-					$res_update=mysql_query($sql);
-					if(!$res_update){
-						//echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
-						echo "<font color='red'>Erreur</font> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
-						$erreur++;
-					}
-					else{
-						//echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
-						echo "<p>Définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
-					}
-				}
-				else{
-					//echo "<p>$lig1->nom $lig1->prenom ($lig1->elenoet) dispose déjà d'un ele_id<br />\n";
-					$ele_id=$lig1->ele_id;
-				}
-				/*
-				echo "<p>nom=$lig1->nom<br />\n";
-				echo "prenom=$lig1->prenom<br />\n";
-				echo "elenoet=$lig1->elenoet<br />\n";
-				echo "ereno=$lig1->ereno<br />\n";
-				echo "ele_id=$ele_id</p>\n";
-				*/
-
-				if($lig1->ereno!=''){
-					$sql="SELECT * FROM responsables WHERE ereno='$lig1->ereno'";
-					//echo "$sql<br />\n";
-					$res2=mysql_query($sql);
-					if(mysql_num_rows($res2)>0){
-						while($lig2=mysql_fetch_object($res2)){
-							// Est-ce que cet ereno a déjà fait l'objet d'une insertion dans les nouvelles tables?
-							// Recherche des pers_id ou recherche du plus grand pers_id affecté.
-
-							$sql="SELECT r2.* FROM responsables2 r2, responsables r, eleves e WHERE r2.ele_id=e.ele_id AND r.ereno=e.ereno AND e.ereno='$lig1->ereno'";
-							//echo "$sql<br />\n";
-							$test=mysql_query($sql);
-							if(mysql_num_rows($test)>0){
-								// Le couple de responsables correspondant à $lig1->ereno est déjà dans les nouvelles tables.
-								while($ligtmp=mysql_fetch_object($test)){
-									//$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$lig1->ele_id'";
-									$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$ele_id'";
-									//echo "$sql<br />\n";
-									$test2=mysql_query($sql);
-									if(mysql_num_rows($test2)==0){
-										// L'élève courant n'est pas encore inscrit...
-										//$sql="INSERT INTO responsables2 SET ele_id='$lig1->ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
-										$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
+								$sql="SELECT r2.* FROM responsables2 r2, responsables r, eleves e WHERE r2.ele_id=e.ele_id AND r.ereno=e.ereno AND e.ereno='$lig1->ereno'";
+								//echo "$sql<br />\n";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)>0){
+									// Le couple de responsables correspondant à $lig1->ereno est déjà dans les nouvelles tables.
+									while($ligtmp=mysql_fetch_object($test)){
+										//$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$lig1->ele_id'";
+										$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$ele_id'";
 										//echo "$sql<br />\n";
-										$res_insert=mysql_query($sql);
-										if(!$res_insert){
-											echo "<font color='red'>Erreur</font> lors de l'insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id<br />\n";
-											$erreur++;
-										}
-										else{
-											echo "Insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id <br />\n";
-										}
-									}
-								}
-							}
-							else{
-								// Le couple n'a pas encore été inscrit dans les nouvelles tables.
-
-								// Recherche du plus grand pers_id:
-								$sql="SELECT pers_id FROM resp_pers WHERE pers_id LIKE 'p%' ORDER BY pers_id DESC";
-								//echo "$sql<br />\n";
-								$restmp=mysql_query($sql);
-								if(mysql_num_rows($restmp)==0){
-									$nb1=1;
-								}
-								else{
-									$ligtmp=mysql_fetch_object($restmp);
-									$nb1=substr($ligtmp->pers_id,1);
-									$nb1++;
-								}
-								$pers_id="p".sprintf("%09d",$nb1);
-
-								// Recherche du plus grand adr_id:
-								$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
-								//echo "$sql<br />\n";
-								$restmp=mysql_query($sql);
-								if(mysql_num_rows($restmp)==0){
-									$nb2=1;
-								}
-								else{
-									$ligtmp=mysql_fetch_object($restmp);
-									$nb2=substr($ligtmp->adr_id,1);
-									$nb2++;
-								}
-								$adr_id="a".sprintf("%09d",$nb2);
-
-
-
-
-								if($lig2->nom1!=''){
-									$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='1', pers_contact='1'";
-									//echo "$sql<br />\n";
-									$res_insert1=mysql_query($sql);
-									if(!$res_insert1){
-										echo "<font color='red'>Erreur</font> lors de l'insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
-										$erreur++;
-									}
-									else{
-										echo "Insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
-									}
-
-									//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
-									$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom1)."',prenom='".addslashes($lig2->prenom1)."',adr_id='$adr_id'";
-									//echo "$sql<br />\n";
-									$res_insert2=mysql_query($sql);
-									if(!$res_insert2){
-										echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
-										$erreur++;
-									}
-									else{
-										echo "Insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
-									}
-
-									//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr1',adr2='$lig2->adr1_comp',cp='$lig2->cp1',commune='$lig2->commune1',adr_id='$adr_id'";
-									$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr1)."',adr2='".addslashes($lig2->adr1_comp)."',cp='$lig2->cp1',commune='".addslashes($lig2->commune1)."',adr_id='$adr_id'";
-									//echo "$sql<br />\n";
-									$res_insert3=mysql_query($sql);
-									if(!$res_insert3){
-										echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
-										$erreur++;
-									}
-									else{
-										echo "Insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
-									}
-								}
-
-
-								if($lig2->nom2!=''){
-									// Pour le deuxième responsable:
-									$nb1++;
-									$pers_id="p".sprintf("%09d",$nb1);
-
-									if(($lig2->adr2!=$lig2->adr1)||($lig2->adr2_comp!=$lig2->adr1_comp)||($lig2->cp2!=$lig2->cp1)||($lig2->commune2!=$lig2->commune1)){
-										if(($lig2->adr2!='')||($lig2->adr2_comp!='')||($lig2->cp2!='')||($lig2->commune2!='')){
-											$nb2++;
-											$adr_id="a".sprintf("%09d",$nb2);
-
-											echo "Le deuxième responsable n'a pas la même adresse.<br />\n";
-
-											//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr2',adr2='$lig2->adr2_comp',cp='$lig2->cp2',commune='$lig2->commune2',adr_id='$adr_id'";
-											$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr2)."',adr2='".addslashes($lig2->adr2_comp)."',cp='$lig2->cp2',commune='".addslashes($lig2->commune2)."',adr_id='$adr_id'";
+										$test2=mysql_query($sql);
+										if(mysql_num_rows($test2)==0){
+											// L'élève courant n'est pas encore inscrit...
+											//$sql="INSERT INTO responsables2 SET ele_id='$lig1->ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
+											$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
 											//echo "$sql<br />\n";
-											$res_insert3=mysql_query($sql);
-											if(!$res_insert3){
-												echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
+											$res_insert=mysql_query($sql);
+											if(!$res_insert){
+												echo "<font color='red'>Erreur</font> lors de l'insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id<br />\n";
 												$erreur++;
 											}
 											else{
-												echo "Insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
+												echo "Insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id <br />\n";
 											}
 										}
 									}
+								}
+								else{
+									// Le couple n'a pas encore été inscrit dans les nouvelles tables.
 
-									$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='2', pers_contact='1'";
+									// Recherche du plus grand pers_id:
+									$sql="SELECT pers_id FROM resp_pers WHERE pers_id LIKE 'p%' ORDER BY pers_id DESC";
 									//echo "$sql<br />\n";
-									$res_insert1=mysql_query($sql);
-									if(!$res_insert1){
-										echo "<font color='red'>Erreur</font> de l'insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
-										$erreur++;
+									$restmp=mysql_query($sql);
+									if(mysql_num_rows($restmp)==0){
+										$nb1=1;
 									}
 									else{
-										echo "Insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
+										$ligtmp=mysql_fetch_object($restmp);
+										$nb1=substr($ligtmp->pers_id,1);
+										$nb1++;
 									}
+									$pers_id="p".sprintf("%09d",$nb1);
 
-									//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
-									$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom2)."',prenom='".addslashes($lig2->prenom2)."',adr_id='$adr_id'";
+									// Recherche du plus grand adr_id:
+									$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
 									//echo "$sql<br />\n";
-									$res_insert2=mysql_query($sql);
-									if(!$res_insert2){
-										echo "<font color='red'>Erreur</font> de l'insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
-										$erreur++;
+									$restmp=mysql_query($sql);
+									if(mysql_num_rows($restmp)==0){
+										$nb2=1;
 									}
 									else{
-										echo "Insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
+										$ligtmp=mysql_fetch_object($restmp);
+										$nb2=substr($ligtmp->adr_id,1);
+										$nb2++;
+									}
+									$adr_id="a".sprintf("%09d",$nb2);
+
+
+
+
+									if($lig2->nom1!=''){
+										$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='1', pers_contact='1'";
+										//echo "$sql<br />\n";
+										$res_insert1=mysql_query($sql);
+										if(!$res_insert1){
+											echo "<font color='red'>Erreur</font> lors de l'insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
+											$erreur++;
+										}
+										else{
+											echo "Insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
+										}
+
+										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom1)."',prenom='".addslashes($lig2->prenom1)."',adr_id='$adr_id'";
+										//echo "$sql<br />\n";
+										$res_insert2=mysql_query($sql);
+										if(!$res_insert2){
+											echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
+											$erreur++;
+										}
+										else{
+											echo "Insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
+										}
+
+										//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr1',adr2='$lig2->adr1_comp',cp='$lig2->cp1',commune='$lig2->commune1',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr1)."',adr2='".addslashes($lig2->adr1_comp)."',cp='$lig2->cp1',commune='".addslashes($lig2->commune1)."',adr_id='$adr_id'";
+										//echo "$sql<br />\n";
+										$res_insert3=mysql_query($sql);
+										if(!$res_insert3){
+											echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
+											$erreur++;
+										}
+										else{
+											echo "Insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
+										}
+									}
+
+
+									if($lig2->nom2!=''){
+										// Pour le deuxième responsable:
+										$nb1++;
+										$pers_id="p".sprintf("%09d",$nb1);
+
+										if(($lig2->adr2!=$lig2->adr1)||($lig2->adr2_comp!=$lig2->adr1_comp)||($lig2->cp2!=$lig2->cp1)||($lig2->commune2!=$lig2->commune1)){
+											if(($lig2->adr2!='')||($lig2->adr2_comp!='')||($lig2->cp2!='')||($lig2->commune2!='')){
+												$nb2++;
+												$adr_id="a".sprintf("%09d",$nb2);
+
+												echo "Le deuxième responsable n'a pas la même adresse.<br />\n";
+
+												//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr2',adr2='$lig2->adr2_comp',cp='$lig2->cp2',commune='$lig2->commune2',adr_id='$adr_id'";
+												$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr2)."',adr2='".addslashes($lig2->adr2_comp)."',cp='$lig2->cp2',commune='".addslashes($lig2->commune2)."',adr_id='$adr_id'";
+												//echo "$sql<br />\n";
+												$res_insert3=mysql_query($sql);
+												if(!$res_insert3){
+													echo "<font color='red'>Erreur</font> lors de l'insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
+													$erreur++;
+												}
+												else{
+													echo "Insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
+												}
+											}
+										}
+
+										$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='2', pers_contact='1'";
+										//echo "$sql<br />\n";
+										$res_insert1=mysql_query($sql);
+										if(!$res_insert1){
+											echo "<font color='red'>Erreur</font> de l'insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
+											$erreur++;
+										}
+										else{
+											echo "Insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
+										}
+
+										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom2)."',prenom='".addslashes($lig2->prenom2)."',adr_id='$adr_id'";
+										//echo "$sql<br />\n";
+										$res_insert2=mysql_query($sql);
+										if(!$res_insert2){
+											echo "<font color='red'>Erreur</font> de l'insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
+											$erreur++;
+										}
+										else{
+											echo "Insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
+										}
 									}
 								}
 							}
 						}
 					}
 				}
-			}
 
-			if($erreur==0){
-				echo "<p>L'opération s'est correctement déroulée.</p>\n";
-				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
+				if($erreur==0){
+					echo "<p>L'opération s'est correctement déroulée.</p>\n";
+					echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
 
-				// On renseigne le témoin de mise à jour effectuée:
-				saveSetting("conv_new_resp_table", 1);
-				saveSetting("import_maj_xml_sconet", 0);
+					// On renseigne le témoin de mise à jour effectuée:
+					saveSetting("conv_new_resp_table", 1);
+					saveSetting("import_maj_xml_sconet", 0);
+				}
+				else{
+					echo "<p>Des erreurs se sont produites.</p>\n";
+				}
 			}
 			else{
-				echo "<p>Des erreurs se sont produites.</p>\n";
+				echo "<p>Il semble que la table 'eleves' soit vide.</p>\n";
 			}
-		}
-		else{
-			echo "<p>Il semble que la table 'eleves' soit vide.</p>\n";
 		}
 	}
 	elseif($mode==1){
