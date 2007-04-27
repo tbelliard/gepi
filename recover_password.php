@@ -98,9 +98,9 @@ if (isset($_POST['login'])) {
 	        	//- Debug - echo $mail_content;
 	        	//- Debug - if ($mail_content) {		
 	        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
-	        		$message = "Un mail vient de vous être envoyé.";
+	        		$message = "Un courriel vient de vous être envoyé.";
 	        	} else {
-	        		$message = "Erreur lors de l'envoi du mail.";
+	        		$message = "Erreur lors de l'envoi du courriel.";
 	        	}
 	        } else {
 	        	echo mysql_error();
@@ -261,9 +261,9 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 } else {
 ?>
 
-<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de réinitialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre login et votre adresse e-mail.
-Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
-<br/>Si votre login et votre e-mail sont corrects, vous recevrez sur cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
+<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de réinitialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre identifiant et votre courriel.
+Ce courriel doit être déjà associée à votre compte au sein de Gepi.
+<br/>Si votre identifiant et courriel sont corrects, vous recevrez sur cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
 <span class='red'>Vous devez réinitialiser votre mot de passe dans les 15 minutes suivant la validation de ce formulaire.</span></p>
 <form action="recover_password.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 <fieldset id="login_box" style="width: 50%; margin-top: 0;">
