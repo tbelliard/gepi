@@ -223,15 +223,15 @@ echo "<p>Vous pouvez définir deux seuils d'alerte et leurs actions associées. Ce
 echo "<p>Un utilisateur peut être placé en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de définir une politique plus restrictive en cas de récidive.</p>";
 
 echo "<table class='normal'>";
-echo "<tr><th>Niveau</th><th>Utilisateur sans antécédent</th><th>Utilisateur surveillé</th></tr>";
+echo "<tr><th>Seuil</th><th>Utilisateur sans antécédent</th><th>Utilisateur surveillé</th></tr>";
 
 // Niveau d'alerte 1
 echo "<tr><td>";
-echo "<p>Niveau 1</p>";
+echo "<p>Seuil 1</p>";
 echo "</td><td>";
 
 // Utilisateur sans antécédent
-echo "Seuil cumulé : ";
+echo "Niveau cumulé : ";
 echo "<select name='security_alert1_normal_cumulated_level' size='1'>";
 for ($i = 1; $i <= 15;$i++) {
 	echo "<option value='$i'";
@@ -249,7 +249,7 @@ echo " /> Désactiver le compte de l'utilisateur<br/>";
 echo "</td><td>";
 
 // Utilisateur en observation
-echo "Seuil cumulé : ";
+echo "Niveau cumulé : ";
 echo "<select name='security_alert1_probation_cumulated_level' size='1'>";
 for ($i = 1; $i <= 15;$i++) {
 	echo "<option value='$i'";
@@ -268,11 +268,11 @@ echo "</td></tr>";
 
 // Niveau d'alerte 2
 echo "<tr><td>";
-echo "<p>Niveau 2</p>";
+echo "<p>Seuil 2</p>";
 echo "</td><td>";
 
 // Utilisateur sans antécédent
-echo "Seuil cumulé : ";
+echo "Niveau cumulé : ";
 echo "<select name='security_alert2_normal_cumulated_level' size='1'>";
 for ($i = 1; $i <= 15;$i++) {
 	echo "<option value='$i'";
@@ -290,7 +290,7 @@ echo " /> Désactiver le compte de l'utilisateur<br/>";
 echo "</td><td>";
 
 // Utilisateur en observation
-echo "Seuil cumulé : ";
+echo "Niveau cumulé : ";
 echo "<select name='security_alert2_probation_cumulated_level' size='1'>";
 for ($i = 1; $i <= 15;$i++) {
 	echo "<option value='$i'";
