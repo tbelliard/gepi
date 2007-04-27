@@ -7,7 +7,7 @@ body {
     color: #330033;
     background: #E9E9E4;
     /*background: #E9E9E4;*/
-    font: normal normal 10pt Verdana, sans-serif;
+    font: normal normal 11pt Verdana, sans-serif;
 }
 
 @media screen  {
@@ -96,7 +96,7 @@ table.normal td {
 
 
 p {
-    font: normal normal 10pt Verdana, sans-serif;
+    font: normal normal 11pt Verdana, sans-serif;
     letter-spacing: -0.05em;
     margin: 5px;
 }
@@ -125,7 +125,7 @@ a:active {
 
 input,submit,p,td,li,ul {
     color: #330033;
-    font: normal 10pt Verdana;
+    font: normal 11pt Verdana;
 }
 
 textarea {

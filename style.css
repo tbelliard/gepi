@@ -5,14 +5,14 @@ body {
     margin: 0;
     /*margin: 5px;*/
     color: #330033;
-    background: white;
+    background: #EEEEEE;
     /*background: #E9E9E4;*/
-    font: normal normal 10pt Verdana, sans-serif;
+    font: normal normal 11pt Verdana, sans-serif;
 }
 
 @media screen  {
     body {
-        background: white;
+        background: #EAEAEA;
     }
 }
 
@@ -96,7 +96,7 @@ table.normal td {
 
 
 p {
-    font: normal normal 10pt Verdana, sans-serif;
+    font: normal normal 11pt Verdana, sans-serif;
     letter-spacing: -0.05em;
     margin: 5px;
 }
@@ -125,7 +125,7 @@ a:active {
 
 input,submit,p,td,li,ul {
     color: #330033;
-    font: normal 10pt Verdana;
+    font: normal 11pt Verdana;
 }
 
 textarea {
@@ -416,7 +416,7 @@ table.menu {
     border-bottom: 1px solid lightgrey;
     margin: 10px;
     padding-left: 0px;
-    background-image: url("./images/background/left-top-corner.jpg");
+    background-image: url("./images/background/left-top-corner.png");
     background-repeat: no-repeat;
     /*background-position: 16% 1%;    */
     background-position: -1px 0%;
