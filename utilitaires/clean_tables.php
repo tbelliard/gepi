@@ -1058,7 +1058,8 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 } else {
     echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
-    echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>";
+    //echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>";
+	echo "</p>\n";
 
     echo "<p>Il est très vivement conseillé de <b>faire une sauvegarde de la base MySql avant de lancer la procédure.</b></p>\n";
     echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php?action=dump\" method=post name=formulaire>";
