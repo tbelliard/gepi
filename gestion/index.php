@@ -41,7 +41,7 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outils de gestion";
+$titre_page = "Gestion générale";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
