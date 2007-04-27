@@ -221,6 +221,13 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
+			if ($_SESSION['statut'] == 'administrateur'){
+				echo "<p class='bold'><a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+			}
+			else{
+				echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+			}
+
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
