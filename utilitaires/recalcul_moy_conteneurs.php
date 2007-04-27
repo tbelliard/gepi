@@ -78,7 +78,7 @@ $titre_page = "Carnet de notes - Correction des moyennes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Retour page précédente</a></p></div>\n";
+echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page précédente</a></p></div>\n";
 
 if(!isset($_POST['recalculer'])){
 	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
