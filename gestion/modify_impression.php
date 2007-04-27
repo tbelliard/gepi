@@ -90,7 +90,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=parents"> Fiche Parents </a>|<a href="modify_impression.php?fiche=eleves"> Fiche Elèves </a></p>
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche Responsables </a>|<a href="modify_impression.php?fiche=eleves"> Fiche Elèves </a></p>
 
 <?php
 
@@ -106,7 +106,7 @@ $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET
 echo "<table width=600>\n";
 echo "<tr>\n<td>\n";
 
-Switch ($fiche) {
+switch ($fiche) {
 case 'personnels' :
 		$impression = getSettingValue("Impression");
 		$nb_impression = getSettingValue("ImpressionNombre");
@@ -135,12 +135,12 @@ case 'personnels' :
 		echo "</div>\n";
     break;
    
-case 'parents' :
+case 'responsables' :
 		$impression_parent = getSettingValue("ImpressionFicheParent");
 		$nb_impression_parent = getSettingValue("ImpressionNombreParent");
 
-		echo "<h3 class='gepi'><center>Fiche d'information : Parents</center></h3>\n";
-		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'parent'.</p>\n";
+		echo "<h3 class='gepi'><center>Fiche d'information : Responsables</center></h3>\n";
+		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression_parent' size='1'>\n";
 		for ($i=1;$i<25;$i++) {
