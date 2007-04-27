@@ -107,7 +107,7 @@ if (isset($_POST['login'])) {
 	        }
 		} // Fin: statut autorisé
 	} else {
-		$message = "Votre login ou votre email n'est pas valide.";
+		$message = "Votre identifiant ou votre courriel n'est pas valide.";
 	}
 }
 
@@ -277,7 +277,7 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
 		if ($message) {
 			echo("<p style='color: red; margin:0;padding:0 0 0 30px;'>" . $message . "</p></td></tr>");
 		} else {
-			echo "<p style='margin:0;padding:0;'>Veuillez indiquer votre login et votre email</p>";
+			echo "<p style='margin:0;padding:0;'>Veuillez indiquer votre identifiant et votre courriel</p>";
 	?>
   	</td>
   </tr>
@@ -286,7 +286,7 @@ Cette adresse e-mail doit être déjà associée à votre compte au sein de Gepi.
     <td style="text-align: center; width: 40%;"><input type="text" id="login" name="login" size="16" tabindex="1" /></td>
   </tr>
   <tr>
-    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="email">Adresse e-mail</label></td>
+    <td style="text-align: right; width: 50%; font-variant: small-caps;"><label for="email">Courriel</label></td>
     <td style="text-align: center; width: 40%;"><input type="text" id="email" name="email" size="16" tabindex="2" /></td>
   </tr>
   <tr>
