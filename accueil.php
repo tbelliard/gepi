@@ -204,6 +204,18 @@ if ($affiche=='yes') {
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/configure.png' alt='Admin' class='link'/> - Administration</th>\n";
     echo "</tr>\n";
+    // Affichage du bouton pour lancer une sauvegarde
+    echo "<tr>";
+    echo "<td colspan='2' style='text-align: center; padding: 10px;'>";
+    echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" name=\"formulaire\">\n";
+    if (getSettingValue("mode_sauvegarde") == "mysqldump") {
+    	echo "<input type='hidden' name='action' value='system_dump' />";
+    } else {
+    	echo "<input type='hidden' name='action' value='dump' />";
+    }
+    echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form>\n";
+	echo "<span class='small'>(le répertoire \"documents\" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé)</span>\n";
+    echo "</td></tr>";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
@@ -799,27 +811,6 @@ if ($affiche=='yes') {
     echo "</table>\n";
 }
 
-
-if ($_SESSION['statut'] == 'administrateur') {
-    //echo "<br /><br /><table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<br /><br /><table>\n";
-    echo "<tr><td align='left'><center>\n";
-    echo "<div><b>Créer un fichier de sauvegarde/restauration de la base de données ".$dbDb."</b></div>\n";
-    echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" name=\"formulaire\">\n";
-    if (getSettingValue("mode_sauvegarde") == "mysqldump") {
-    	echo "<input type='hidden' name='action' value='system_dump' />";
-    } else {
-    	echo "<input type='hidden' name='action' value='dump' />";
-    }
-    echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form></center>\n";
-    echo "<span class='small'><b>Remarque</b> :</span>
-    <ul>
-    <li><span class='small'>le répertoire \"documents\" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé.</span></li>
-    </ul>\n";
-    echo "</td></tr></table>\n";
-}
-
-require_once("./lib/microtime.php");
 ?>
 </center>
 </div>
