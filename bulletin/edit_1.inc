@@ -22,7 +22,8 @@
     //========================================
 	if($min_max_moyclas!=1){
 	    //Eric Ajout
-		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
+		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
+		echo "<td style=\"text-align: center; \"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
 
 		//Eric Suppr
 		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Min</span></td>\n";
