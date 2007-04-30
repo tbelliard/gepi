@@ -86,6 +86,7 @@ if(!isset($msg)){
 	$msg="";
 }
 
+// On permet au compte scolarité d'enregistrer les paramètres d'affichage du graphe
 if($_SESSION['statut']=='scolarite'){
 /*
 affiche_photo
@@ -217,7 +218,6 @@ if ($_SESSION['statut'] == "responsable") {
 			}
 		}
 	}
-
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
@@ -299,6 +299,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "</blockquote>\n";
 	//echo "</p>\n";
 	//echo "</form>\n";
+
+	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
+
 } elseif ($_SESSION['statut'] == "responsable" and $login_eleve == null) {
 	// On demande à l'utilisateur de choisir l'élève pour lequel il souhaite visualiser les données
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
@@ -306,8 +309,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		echo "<p><a href='affiche_eleve.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
+	// Après ça, on arrive en fin de page avec le require("../lib/footer.inc.php");
 
 } else {
+	// A ce stade:
+	// - la classe est choisie (prof, scol ou cpe) ou récupérée d'après le login élève choisi (responsable, eleve): $id_classe
+	// - le login élève est imposé pour un utilisateur connecté élève ou responsable: $login_eleve et $eleve1=$login_eleve
+	//   sinon, on récupère $_POST['eleve1']
+
+	// Capture des mouvements de la souris et affichage des cadres d'info
+	// Remonté pour éviter/limiter des erreurs JavaScript lors du chargement...
+	echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		/*
@@ -321,10 +333,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// La classe est choisie.
 		// On ajoute l'accès/retour à une autre classe:
 		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
-		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
+		//echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
+		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a>";
 
 		// =================================
 		// AJOUT: boireaus
+		// Pour proposer de passer à la classe suivante ou à la précédente
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
 		if($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
@@ -365,11 +379,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// =================================
 
 		if(isset($id_class_prec)){
-			if($id_class_prec!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>|";}
+			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
 		}
 		if(isset($id_class_suiv)){
-			if($id_class_suiv!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>|";}
+			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 		}
+		echo "</p>\n";
 		echo "</div>\n";
 	} else {
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
@@ -384,8 +399,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if($eleve1b!=''){
 		$eleve1=$eleve1b;
 	}
+	/*
+	// Modif: pour éviter une fausse alerte en 'responsable' sur la valeur de $eleve2
+	//$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
+	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : "moyclasse";
+	*/
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
-
 
 	// Vérification de sécurité
 	if ($_SESSION['statut'] == "eleve") {
@@ -411,6 +430,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 		// On filtre eleve2 :
+		if(!isset($eleve2)) {$eleve2 = "moyclasse";}
 		if ($eleve2 != "moyclasse" and $eleve2 != "moymin" and $eleve2 != "moymax") {
 			tentative_intrusion(3, "Tentative de manipulation de la seconde source de données sur la visualisation graphique des résultats (détournement de _eleve2_, qui ne peut, dans le cas d'un utilisateur parent ou eleve, ne correspondre qu'à une moyenne et non un autre élève).");
 			$eleve2 = "moyclasse";
@@ -431,6 +451,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
+	//======================================================================
+	//======================================================================
+	//======================================================================
+
+	// On récupère de $_POST les paramètres d'affichage s'ils ont été transmis, sinon, on les récupère dans la base MySQL.
 
 	//$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : '';
 	if(isset($_POST['affiche_photo'])){
@@ -630,15 +655,180 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "\$temoin_imageps=$temoin_imageps<br />";
 
 
+	//======================================================================
+	//======================================================================
+	//======================================================================
+
+	if(isset($_POST['parametrer_affichage'])){
+		if($_POST['parametrer_affichage']=='y'){
+			/*
+			foreach($_POST as $post => $val){
+				echo $post.' : '.$val."<br />\n";
+			}
+			*/
+
+			echo "<h2>Paramétrage de l'affichage du graphique</h2>\n";
+
+			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_parametrage_affichage' method='post'>\n";
+			echo "<p align='center'><input type='submit' name='Valider' value='Valider' /></p>\n";
+
+			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+			echo "<input type='hidden' name='is_posted' value='y' />\n";
+			if($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable"){
+				echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
+				echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
+			}
+			else{
+				echo "<input type='hidden' name='eleve1' value='".$eleve1."'/>\n";
+				echo "<input type='hidden' name='numeleve1' value='".$_POST['numeleve1']."'/>\n";
+			}
+			echo "<input type='hidden' name='eleve2' value='".$eleve2."'/>\n";
+			echo "<input type='hidden' name='choix_periode' value='".$choix_periode."'/>\n";
+			echo "<input type='hidden' name='periode' value='".$periode."'/>\n";
+
+			// Paramètres:
+			echo "<p><b>Moyennes et périodes</b></p>\n";
+			echo "<blockquote>\n";
+
+			if($affiche_mgen=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			echo "<table border='0'>\n";
+			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
+
+			if($affiche_minmax=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			echo "<tr valign='top'><td>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</td><td><input type='checkbox' name='affiche_minmax' value='oui'$checked /></td></tr>\n";
+
+			//$affiche_moy_annuelle
+			if($affiche_moy_annuelle=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			echo "<tr valign='top'><td>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td><input type='checkbox' name='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
+
+			echo "</table>\n";
+			echo "</blockquote>\n";
+
+			//echo "<hr width='150' />\n";
+
+			// Paramètres d'affichage:
+			// - dimensions de l'image
+			echo "<p><b>Graphe</b></p>\n";
+			echo "<blockquote>\n";
+			echo "<table border='0'>\n";
+			echo "<tr><td>Largeur (<i>en pixels</i>):</td><td><input type='text' name='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
+			//echo " - \n";
+			echo "<tr><td>Hauteur (<i>en pixels</i>):</td><td><input type='text' name='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
+
+			// - taille des polices
+			echo "<tr><td>Taille des polices:</td><td><select name='taille_police'>\n";
+			for($i=1;$i<=6;$i++){
+				if($taille_police==$i){$selected=" selected='yes'";}else{$selected="";}
+				echo "<option value='$i'$selected>$i</option>\n";
+			}
+			echo "</select></td></tr>\n";
+
+			// - epaisseur des traits
+			echo "<tr><td>Epaisseur des courbes:</td><td><select name='epaisseur_traits'>\n";
+			for($i=1;$i<=6;$i++){
+				if($epaisseur_traits==$i){$selected=" selected='yes'";}else{$selected="";}
+				echo "<option value='$i'$selected>$i</option>\n";
+			}
+			echo "</select></td></tr>\n";
+
+			// - modèle de couleurs
+
+			//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			if($temoin_image_escalier=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
+			echo "<tr><td>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+
+			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
+			echo "<tr><td>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</td><td><select name='tronquer_nom_court'>\n";
+			for($i=0;$i<=10;$i++){
+				if($tronquer_nom_court==$i){$selected=" selected='yes'";}else{$selected="";}
+				echo "<option value='$i'$selected>$i</option>\n";
+			}
+			echo "</select></td></tr>\n";
+			echo "</table>\n";
+			echo "</blockquote>\n";
+
+
+
+			// - Affichage de la photo
+			echo "<p><b>Paramètres des photos</b></p>\n";
+			echo "<blockquote>\n";
+			echo "<table border='0'>\n";
+			if(($affiche_photo=='')||($affiche_photo=='oui')){$checked=" checked='yes'";}else{$checked="";}
+			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><input type='radio' name='affiche_photo' value='oui'$checked />Oui / \n";
+			if($affiche_photo=='non'){$checked=" checked='yes'";}else{$checked="";}
+			echo "Non<input type='radio' name='affiche_photo' value='non'$checked /></td></tr>\n";
+
+			// - Largeur imposée pour la photo
+			echo "<tr><td>Largeur de la photo (<i>en pixels</i>):</td><td><input type='text' name='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' /></td></tr>\n";
+			//echo "</p>\n";
+			echo "</table>\n";
+			echo "</blockquote>\n";
+
+
+
+			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+				echo "<p><b>Couleurs</b></p>\n";
+				echo "<blockquote>\n";
+				//echo "<hr width='150' />\n";
+				//echo "<p>\n";
+				echo "<a href='choix_couleurs.php' target='blank'>Modifier les couleurs</a>\n";
+				//echo "</p>\n";
+				echo "</blockquote>\n";
+			}
+
+
+			echo "<p align='center'>";
+			if($_SESSION['statut']=='scolarite'){
+				//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
+				echo "<input type='hidden' name='save_params' value='' />\n";
+				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramètres dans la base' />\n";
+				echo "<br />\n";
+			}
+
+			echo "<input type='submit' name='Valider' value='Valider' /></p>\n";
+
+			echo "</form>\n";
+
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
+
+
+
+
+
 	// Nom de la classe:
 	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
 
 
 
+	/*
+	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
+		if(!isset($eleve1)){
+			$call_eleve = mysql_query("SELECT DISTINCT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) ORDER BY nom,prenom LIMIT 1");
+			if(mysql_num_rows($call_eleve)!=0){
+				$ligtmp=mysql_fetch_object($call_eleve);
+				$eleve1=$ligtmp->login;
+				$eleve2='moyclasse';
+				$num_periode=1;
+				$periode=1;
+				$choix_periode="periode";
+			}
+		}
+	}
+	*/
+
+
+
 	// Infos DEBUG:
 	//echo "<p>classe=$classe<br />eleve1=$eleve1<br />eleve2=$eleve2<br />choix_periode=$choix_periode<br />periode=$periode<br />largeur_imposee_photo=$largeur_imposee_photo</p>\n";
 
+
+	// Capture des mouvements de la souris et affichage des cadres d'info
+	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
 
 	echo "<table>\n";
@@ -680,7 +870,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 	echo "<p>\n";
-	echo "Classe de $classe\n";
+	echo "<b>Classe de $classe</b>\n";
 	echo "<br />\n";
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
@@ -688,6 +878,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) order by nom,prenom");
 		$nombreligne = mysql_num_rows($call_eleve);
 
+		echo "Choisir l'élève:<br />\n";
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
@@ -710,6 +901,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
+		echo "et comparer avec:<br />\n";
 		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		for($cpt=1;$cpt<=$nombreligne;$cpt++){
 			if($tab_login_eleve[$cpt]==$eleve2){
@@ -785,7 +977,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 		echo "</p>\n";
 
-		//echo "<hr width='150'>\n";
+		echo "<hr width='150' />\n";
 
 	} else {
 		// Cas d'un responsable ou d'un élève :
@@ -804,10 +996,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
 		echo "</select>\n";
 		echo "<br />\n";
-		echo "<input type='submit' name='choix_eleves' value='Envoyer' style='margin-bottom: 3px;'/><br/>\n";
+		echo "<input type='submit' name='choix_eleves' value='Afficher' style='margin-bottom: 3px;'/><br />\n";
 	}
 
 	// Choix de la période
+	echo "Choisir la période:<br />\n";
 	if($choix_periode=='periode'){$checked=" checked='yes'";}else{$checked="";}
 	//echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' checked='true'$checked />\n";
 	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked />\n";
@@ -823,6 +1016,30 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<hr width='150' />\n";
 
+	//======================================================================
+	//======================================================================
+	//======================================================================
+
+	//========================
+	// PARAMETRES D'AFFICHAGE
+	//========================
+
+	echo "<input type='hidden' name='affiche_mgen' value='$affiche_mgen' />\n";
+	echo "<input type='hidden' name='affiche_minmax' value='$affiche_minmax' />\n";
+	echo "<input type='hidden' name='affiche_moy_annuelle' value='$affiche_moy_annuelle' />\n";
+	echo "<input type='hidden' name='largeur_graphe' value='$largeur_graphe' />\n";
+	echo "<input type='hidden' name='hauteur_graphe' value='$hauteur_graphe' />\n";
+	echo "<input type='hidden' name='taille_police' value='$taille_police' />\n";
+	echo "<input type='hidden' name='epaisseur_traits' value='$epaisseur_traits' />\n";
+	echo "<input type='hidden' name='temoin_image_escalier' value='$temoin_image_escalier' />\n";
+	echo "<input type='hidden' name='tronquer_nom_court' value='$tronquer_nom_court' />\n";
+	echo "<input type='hidden' name='affiche_photo' value='$affiche_photo' />\n";
+	echo "<input type='hidden' name='largeur_imposee_photo' value='$largeur_imposee_photo' />\n";
+
+	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
+	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
+
+/*
 	echo "<script type='text/javascript'>
 	function display_div(){
 		if(document.getElementById('id_params').checked==true){
@@ -842,6 +1059,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	}
 </script>\n";
+
 
 	echo "<input type='checkbox' name='params' id='id_params' value='oui' onchange='display_div()' /> <b>Afficher les paramètres</b><br />\n";
 
@@ -970,8 +1188,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	document.getElementById('div_params_3').style.display='none';
 	document.getElementById('div_params_4').style.display='none';
 	</script>\n";
+*/
+
+	//======================================================================
+	//======================================================================
+	//======================================================================
 
 
+	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	echo "</form>\n";
 	echo "</td>\n";
 
@@ -981,8 +1205,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
 	// Et calcul de l'age (si le serveur est à l'heure;o).
+	/*
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")){
+	*/
+	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
+		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")
+		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_periode == "toutes_periodes")){
 		// Informations sur l'élève $eleve1:
 		$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 		$result_infos_eleve=mysql_query($sql);
@@ -1099,6 +1328,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$matiere=array();
 			$matiere_nom=array();
 
+			# Image Map
+			//$chaine_map="<map name='imagemap'>\n";
+			// $largeurGrad -> 50
+			// $largeurBandeDroite=80;
+			// $largeur=$largeurTotale-$largeurGrad-$largeurBandeDroite;
+			// $largeur=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+			// $nbMat=count($matiere);
+			// $largeurMat=round($largeur/$nbMat);
+			/*
+			$largeurGrad=50;
+			$largeurBandeDroite=80;
+			$largeur=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+			$nbMat=;
+			*/
+			$tab_imagemap=array();
+
 			$cpt=1;
 			// Boucle sur l'ordre des matières:
 			// On ne va retenir que les matières du premier élève.
@@ -1196,6 +1441,27 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 							$coef_serie[1][$cpt2]=$ligntmp->coef;
 						}
 					}
+
+
+					$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
+					affiche_debug("$sql<br />");
+					$app_eleve_query=mysql_query($sql);
+					echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+					if(mysql_num_rows($app_eleve_query)>0){
+						$ligtmp=mysql_fetch_object($app_eleve_query);
+
+						echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+						//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
+						echo "<b>".htmlentities($current_matiere_nom).":</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
+						echo "</div>\n";
+
+						//$chaine_map.="";
+						//$tab_imagemap[]=$cpt;
+					}
+					echo "</div>\n";
+
+					// On stocke dans un tableau, les numéros $cpt correspondant aux matières que l'élève a.
+					$tab_imagemap[]=$cpt;
 				}
 				else{
 					// L'élève n'a pas cette matière.
@@ -1206,6 +1472,54 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 
 			//echo "\$cpt2=$cpt2<br />";
+
+
+
+			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
+			$res_avis=mysql_query($sql);
+			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+			if(mysql_num_rows($res_avis)>0){
+				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+				echo "<b>Avis du Conseil de classe:</b><br />\n";
+				$lig_avis=mysql_fetch_object($res_avis);
+				echo htmlentities($lig_avis->avis)."\n";
+				echo "</div>\n";
+			}
+			echo "</div>\n";
+
+
+
+			# Image Map
+			//$chaine_map="<map name='imagemap'>\n";
+			// $largeurGrad -> 50
+			// $largeurBandeDroite=80;
+			// $largeur=$largeurTotale-$largeurGrad-$largeurBandeDroite;
+			// $largeur=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+			// $nbMat=count($matiere);
+			// $largeurMat=round($largeur/$nbMat);
+
+			if(count($tab_imagemap)>0){
+				$largeurGrad=50;
+				$largeurBandeDroite=80;
+				$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+				$nbMat=count($tab_imagemap);
+				$largeurMat=round($largeur_utile/$nbMat);
+
+				echo "<map name='imagemap'>\n";
+				for($i=0;$i<count($tab_imagemap);$i++){
+					$x0=$largeurGrad+$i*$largeurMat;
+					$x1=$x0+$largeurMat;
+					//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				}
+
+				$x0=$largeurGrad+$i*$largeurMat;
+				$x1=$largeur_graphe;
+				echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+
+				echo "</map>\n";
+			}
+
 
 			// Calcul de la moyenne générale de l'élève $eleve1:
 			if($affiche_mgen=='oui'){
@@ -1366,6 +1680,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 
 			echo "<!-- \$seriemoy=$seriemoy -->\n";
+
 
 			// Calcul des moyennes maximales pour les matières de $eleve1:
 			for($j=1;$j<=count($matiere);$j++){
@@ -1548,43 +1863,76 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//echo "";
 
+
+
+			/*
+			for($j=1;$j<=count($matiere);$j++){
+				$sql="SELECT ";
+				echo "<div id='div_matiere_$j' style='visibility:hidden'></div>";
+			}
+			*/
+
+
+
 			echo "<a name='graph'></a>\n";
 			//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
 			//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_data=3'>";
 			//echo "<p>img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'</p>";
 			//echo "<img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
 			//echo "<img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe&mgen1=$mgen[1]&mgen2=$mgen[2]&largeur_graphe=$largeur_graphe&hauteur_graphe=$hauteur_graphe&taille_police=$taille_police'>";
-			echo "<img src='draw_graphe.php?";
-			//echo "&amp;temp1=$serie[1]";
-			echo "temp1=$serie[1]";
-			echo "&amp;temp2=$serie[2]";
-			echo "&amp;etiquette=$liste_matieres";
-			echo "&amp;titre=$graph_title";
-			echo "&amp;v_legend1=$eleve1";
-			echo "&amp;v_legend2=$eleve2";
-			echo "&amp;compteur=$compteur";
-			echo "&amp;nb_series=$nb_series";
-			echo "&amp;id_classe=$id_classe";
-			echo "&amp;mgen1=$mgen[1]";
-			echo "&amp;mgen2=$mgen[2]";
-			//echo "&amp;periode=$periode";
-			echo "&amp;periode=".rawurlencode($periode);
-			echo "&amp;largeur_graphe=$largeur_graphe";
-			echo "&amp;hauteur_graphe=$hauteur_graphe";
-			echo "&amp;taille_police=$taille_police";
-			echo "&amp;epaisseur_traits=$epaisseur_traits";
-			if($affiche_minmax=="oui"){
-				echo "&amp;seriemin=$seriemin";
-				echo "&amp;seriemax=$seriemax";
+
+			//echo "<a href=\"javascript:document.getElementById('div_matiere_2').style.display=''\" onMouseover=\"document.getElementById('div_matiere_2').style.display=''\" onMouseout=\"document.getElementById('div_matiere_2').style.display='none'\">";
+
+			if(count($matiere)>0){
+				echo "<img src='draw_graphe.php?";
+				//echo "&amp;temp1=$serie[1]";
+				echo "temp1=$serie[1]";
+				echo "&amp;temp2=$serie[2]";
+				echo "&amp;etiquette=$liste_matieres";
+				echo "&amp;titre=$graph_title";
+				echo "&amp;v_legend1=$eleve1";
+				echo "&amp;v_legend2=$eleve2";
+				echo "&amp;compteur=$compteur";
+				echo "&amp;nb_series=$nb_series";
+				echo "&amp;id_classe=$id_classe";
+				echo "&amp;mgen1=$mgen[1]";
+				echo "&amp;mgen2=$mgen[2]";
+				//echo "&amp;periode=$periode";
+				echo "&amp;periode=".rawurlencode($periode);
+				echo "&amp;largeur_graphe=$largeur_graphe";
+				echo "&amp;hauteur_graphe=$hauteur_graphe";
+				echo "&amp;taille_police=$taille_police";
+				echo "&amp;epaisseur_traits=$epaisseur_traits";
+				if($affiche_minmax=="oui"){
+					echo "&amp;seriemin=$seriemin";
+					echo "&amp;seriemax=$seriemax";
+				}
+				echo "&amp;tronquer_nom_court=$tronquer_nom_court";
+				//echo "'>";
+				//echo "&amp;temoin_imageps=$temoin_imageps";
+				echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+				echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+				echo "usemap='#imagemap' ";
+				echo "/>\n";
+				//echo "</a>\n";
 			}
-			echo "&amp;tronquer_nom_court=$tronquer_nom_court";
-			//echo "'>";
-			//echo "&amp;temoin_imageps=$temoin_imageps";
-			echo "&amp;temoin_image_escalier=$temoin_image_escalier";
-			echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' />\n";
 
 
 			//echo "<img src='draw_artichow_fig7.php?eleves=$eleves&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series'>";
+
+
+			/*
+			if(isset($_SESSION['graphe_largeurMat'])){echo "\$_SESSION['graphe_largeurMat']=".$_SESSION['graphe_largeurMat']."<br />";}
+			if(isset($_SESSION['graphe_x0'])){echo "\$_SESSION['graphe_x0']=".$_SESSION['graphe_x0']."<br />";}
+			*/
+
+			// $largeurGrad -> 50
+			// $largeurBandeDroite=80;
+			// $largeur=$largeurTotale-$largeurGrad-$largeurBandeDroite;
+			// $nbMat=count($matiere);
+			// $largeurMat=round($largeur/$nbMat);
+
+
 		}
 		else{
 			// On va afficher toutes les périodes
@@ -1664,6 +2012,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$nb_series=$nb_periode;
 			for($i=1;$i<=$nb_series;$i++){$serie[$i]="";}
 
+
+			unset($tab_imagemap);
+			$tab_imagemap=array();
+
 			//$temoin_au_moins_une_vraie_moyenne="";
 			// $liste_temp va contenir les séries à envoyer au graphe et éventuellement les moyennes générales sur les différentes périodes.
 			$liste_temp="";
@@ -1671,6 +2023,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			while($lign_periode=mysql_fetch_object($result_periode)){
 
 				$num_periode[$cpt]=$lign_periode->num_periode;
+				//$nom_periode[$cpt]=$lign_periode->nom_periode;
+				$tab_imagemap[$cpt]=array();
 
 				// Compteur du nombre de matières avec une note autre que ABS,...
 				$cpt2=0;
@@ -1715,6 +2069,33 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 							//$temoin_au_moins_une_vraie_moyenne="oui";
 						}
 					}
+
+
+
+
+
+					$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode[$cpt]' AND jgm.id_matiere='$matiere[$i]' AND ma.id_groupe=jgm.id_groupe)";
+					affiche_debug("$sql<br />");
+					$app_eleve_query=mysql_query($sql);
+					//echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+					if(mysql_num_rows($app_eleve_query)>0){
+						$ligtmp=mysql_fetch_object($app_eleve_query);
+
+						/*
+						echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+						//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
+						echo "<b>$current_matiere:</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
+						echo "</div>\n";
+						*/
+
+						$tab_imagemap[$cpt][$i]=htmlentities($ligtmp->appreciation);
+						$info_imagemap[$i]="Au moins une appréciation";
+					}
+					else{
+						$tab_imagemap[$cpt][$i]="";
+					}
+					//echo "</div>\n";
+
 				}
 
 				if($liste_temp==""){
@@ -1754,6 +2135,65 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				$cpt++;
 			}
 
+
+
+
+			for($i=1;$i<=count($matiere);$i++){
+				echo "<div id='div_matiere_$i' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+				if(isset($info_imagemap[$i])){
+					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+					echo "<b>".htmlentities($matiere_nom[$i]).":</b><br />";
+					echo "<table border='1' align='center'>\n";
+					for($j=1;$j<=count($num_periode);$j++){
+						if($tab_imagemap[$j][$i]!=""){
+							echo "<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
+						}
+					}
+					echo "</table>\n";
+					echo "</div>\n";
+				}
+				echo "</div>\n";
+			}
+
+			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode";
+			$res_avis=mysql_query($sql);
+			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+			if(mysql_num_rows($res_avis)>0){
+				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+				echo "<b>Avis du Conseil de classe:</b><br />";
+				echo "<table border='1' align='center'>\n";
+				while($lig_avis=mysql_fetch_object($res_avis)){
+					echo "<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
+				}
+				echo "</table>\n";
+				echo "</div>\n";
+			}
+			echo "</div>\n";
+
+			//if(count($tab_imagemap)>0){
+				$largeurGrad=50;
+				$largeurBandeDroite=80;
+				$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
+				$nbMat=count($matiere);
+				$largeurMat=round($largeur_utile/$nbMat);
+
+				echo "<map name='imagemap'>\n";
+				//for($i=0;$i<count($tab_imagemap);$i++){
+				for($i=1;$i<=count($matiere);$i++){
+					$x0=$largeurGrad+($i-1)*$largeurMat;
+					$x1=$x0+$largeurMat;
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$i,'affiche');\" onMouseout=\"div_info('div_matiere_',$i,'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				}
+
+				$x0=$largeurGrad+($i-1)*$largeurMat;
+				$x1=$largeur_graphe;
+				echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+
+				echo "</map>\n";
+			//}
+
+
+
 			$nbp=$nb_periode+1;
 
 			echo "<a name='graph'></a>\n";
@@ -1783,7 +2223,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "'>";
 			//echo "&amp;temoin_imageps=$temoin_imageps";
 			echo "&amp;temoin_image_escalier=$temoin_image_escalier";
-			echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' />\n";
+			echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+			echo "usemap='#imagemap' ";
+			echo "/>\n";
 		}
 
 	/*
@@ -1815,7 +2257,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		if(isset($prenom1)){
 			echo "<p align='center'>$prenom1 $nom1";
-			if($doublant1!="-"){echo " (<i>$doublant1</i>)";}
+			//if($doublant1!="-"){echo " (<i>$doublant1</i>)";}
+			if(($doublant1!="-")&&($doublant1!="")){echo " (<i>$doublant1</i>)";}
 			echo " né";
 			if($sexe1=="F"){echo "e";}
 			echo " le $naissance1[2]/$naissance1[1]/$naissance1[0] (<i>soit $age1 $precision1</i>).</p>";
@@ -1848,6 +2291,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	document.forms['form_choix_eleves'].submit();
 </script>\n";
 	}
+
+	//echo "<div id='div_truc' style='position: absolute; z-index: 1000; top: 300px; left: 0px; width: 0px; border: 1px solid black; background-color:white; display:none;'>BLABLA</div>\n";
+	//echo "<div id='div_truc' class='infodiv'>BLABLA</div>\n";
+	//echo "<div id='divtruc' class='infodiv'>BLABLA</div>\n";
+
 }
 require("../lib/footer.inc.php");
 ?>

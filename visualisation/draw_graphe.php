@@ -439,6 +439,10 @@
 
 	//Largeur de chaque colonne "matière":
 	$largeurMat=round($largeur/$nbMat);
+	//$_SESSION['graphe_largeurMat']=$largeurMat;
+
+	//$_SESSION['graphe_x0']=$largeurGrad;
+	// ZUT! Je ne récupère pas la variable...
 	//===========================================
 
 
