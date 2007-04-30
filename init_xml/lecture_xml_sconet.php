@@ -125,7 +125,8 @@ function extr_valeur($lig){
 					echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a>|</p>\n";
 
 					if(!isset($_POST['is_posted'])){
-						echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
+						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
+						echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves, responsables,...<br />\n";
 						echo "</p>\n";
 						/*
 						echo "<p>Cette page génère des fichiers CSV:</p>\n";

@@ -110,7 +110,8 @@ function createRandomPassword() {
             else{
                 echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h1>\n";
                 if(!isset($_POST['is_posted'])){
-                    echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, matières,... mais pas encore les liaisons profs/matières/classes.<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
+                    //echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, matières,... mais pas encore les liaisons profs/matières/classes.<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
+                    echo "<p>Cette page permet de remplir des tables temporaires avec les informations professeurs, matières,...<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
                     echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
                     echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
                     echo "<p>Veuillez fournir le fichier XML: \n";
