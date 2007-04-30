@@ -49,7 +49,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
@@ -57,7 +57,7 @@ if ($_SESSION['statut'] == "responsable") {
 		$error_login = true;
 	}
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter le formulaire.
-	
+
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
 	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
@@ -137,12 +137,12 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	$nom_eleve = mysql_result($eleve, 0, "nom");
 	$prenom_eleve = mysql_result($eleve, 0, "prenom");
 	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
-	
-	
+
+
    	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve . "</h3>\n";
-   	
+
     echo "<table border='0'>\n";
-    
+
     // On commence par le CPE
     $req = mysql_query("SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
     		"FROM utilisateurs u,j_eleves_cpe jec " .
@@ -155,18 +155,20 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     echo "<td>";
     // On affiche l'email s'il est non nul, si le cpe l'a autorisé, et si l'utilisateur est autorisé par les droits d'accès globaux
     if ($cpe->email!="" AND $cpe->show_email == "yes" AND (
-    	($_SESSION['statut'] == "responsable" AND 
-    			(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR 
+    	($_SESSION['statut'] == "responsable" AND
+    			(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes" OR
     			getSettingValue("GepiAccesCpePPEmailParent") == "yes"))
     	OR
-    	($_SESSION['statut'] == "eleve" AND 
-    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR 
+    	($_SESSION['statut'] == "eleve" AND
+    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes" OR
     		getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
     		)
     	)){
-        echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".$cpe->nom . " ".ucfirst(strtolower($cpe->prenom))."</a>";
+        //echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".$cpe->nom . " ".ucfirst(strtolower($cpe->prenom))."</a>";
+        echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
     } else {
-        echo $cpe->nom." ".ucfirst(strtolower($cpe->prenom));
+        //echo $cpe->nom." ".ucfirst(strtolower($cpe->prenom));
+		echo affiche_utilisateur($cpe->cpe_login,$id_classe);
     }
     echo "</td></tr>\n";
 
@@ -182,52 +184,54 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 							"ORDER BY jgc.priorite, m.matiere");
 	while ($groupe = mysql_fetch_object($groupes)) {
 		// On est dans la boucle 'groupes'. On traite les groupes un par un.
-        
+
         // Matière correspondant au groupe:
         echo "<tr valign='top'><td>".htmlentities($groupe->nom_complet)."</td>\n";
-        
+
         // Professeurs
         echo "<td>";
         $sql="SELECT jgp.login,u.nom,u.prenom,u.email,u.show_email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
         $result_prof=mysql_query($sql);
         while($lig_prof=mysql_fetch_object($result_prof)){
-		    
+
             // Le prof est-il PP de l'élève ?
             $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
             $res_pp=mysql_query($sql);
 
 			if($lig_prof->email!="" AND $lig_prof->show_email == "yes" AND
-		    	(($_SESSION['statut'] == "responsable" AND 
+		    	(($_SESSION['statut'] == "responsable" AND
 		    		(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
 		    			OR
 		    		 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysql_num_rows($res_pp)>0)
 		    		 )
         		) OR (
-				  $_SESSION['statut'] == "eleve" AND 
+				  $_SESSION['statut'] == "eleve" AND
 		    		(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes"
 		    			OR
 		    		 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysql_num_rows($res_pp)>0)
 		    		 )
 		    	)
 		    	)){
-                echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
+                //echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
+                echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
             }
             else{
-                echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
+                //echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
+				echo affiche_utilisateur($lig_prof->login,$id_classe);
             }
-            
-            
+
+
             if(mysql_num_rows($res_pp)>0){
                  echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
             }
             echo "<br />\n";
         }
         echo "</td>\n";
-        echo "</tr>\n";	
+        echo "</tr>\n";
 	}
 	// On a fini le traitement.
 	echo "</table>\n";
-   	
+
 }
 
 require "../lib/footer.inc.php";
