@@ -498,3 +498,4 @@ INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProf', 'yes');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfTousEleves', 'no');
 INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfToutesClasses', 'no');
 INSERT INTO setting VALUES ('gepi_stylesheet', 'style');
+INSERT INTO droits VALUES ('/gestion/options_connect.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Options de connexions', '');
