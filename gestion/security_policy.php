@@ -198,7 +198,9 @@ $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+//on récupère le chemin de la page d'appel pour en faire le lien de retour
+$url_retour = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
+echo "<p class=bold><a href='$url_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 echo "<form action='security_policy.php' method='post'>";
 echo "<center><input type='submit' value='Enregistrer' /></center>";
