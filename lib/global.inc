@@ -280,6 +280,6 @@ $liste_tables = array(
 //=============================
 // SAISIE DE COMMENTAIRES-TYPES
 // Pour permettre la saisie de commentaires-type, renseigner à 'y' la variable $commentaires_types dans /lib/global.inc
-$commentaires_types="n";
-
+//$commentaires_types="y";
+// Ce n'est plus utilisé. Des valeurs dans la table setting remplacent maintenant ce paramètre: CommentairesTypesScol et CommentairesTypesPP
 ?>

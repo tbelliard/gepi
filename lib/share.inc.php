@@ -182,6 +182,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 
 function affiche_utilisateur($login,$id_classe) {
     $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
+	//$tmp="mysql_num_rows($req)=".mysql_num_rows($req);
     $nom = @mysql_result($req, 0, 'nom');
     $prenom = @mysql_result($req, 0, 'prenom');
     $civilite = @mysql_result($req, 0, 'civilite');
@@ -228,6 +229,7 @@ function affiche_utilisateur($login,$id_classe) {
 
     }
     return $result;
+    //return $tmp;
 }
 
 // Verifie si l'extension d_base est active

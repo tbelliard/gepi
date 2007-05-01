@@ -235,7 +235,10 @@ if (isset($fiche)) {
 	//============================
 	// Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
 	// Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
-	if((file_exists('saisie_commentaires_types.php'))&&($commentaires_types=='y')){
+	//if((file_exists('saisie_commentaires_types.php'))&&($commentaires_types=='y')){
+	if((file_exists('saisie_commentaires_types.php'))
+		&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
 		include('saisie_commentaires_types.php');
 	}
 	//============================

@@ -1,6 +1,6 @@
 <?php
 $starttime = microtime();
-/* 
+/*
  * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -121,7 +121,7 @@ if ($force_ref) {
     $parsed_uri = parse_url($uri);
 
     if (
-    	!isset($_SERVER['HTTPS']) 
+    	!isset($_SERVER['HTTPS'])
     	OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
     	OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
     	) {
@@ -338,13 +338,21 @@ while ($i < $nb_aid) {
 //==============================
 // Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
 // Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
-if((file_exists('saisie/commentaires_types.php'))&&($commentaires_types=='y')){
+//if((file_exists('saisie/commentaires_types.php'))&&($commentaires_types=='y')){
+if(file_exists('saisie/commentaires_types.php')) {
+	/*
     //echo "AAAAAAAAAAAAAAA";
     if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
     {
         // Pas d'accès au module;
     }
     else{
+	*/
+	//echo "SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['statut']."'<br />";
+	//echo mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))."<br />";
+    if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
+		OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
+    {
         //echo "BBBBBBBBBBB";
         $chemin[] = "/saisie/commentaires_types.php";
         $titre[] = "Saisie de commentaires-types";
@@ -381,7 +389,7 @@ $chemin = array();
 $titre = array();
 $expli = array();
 
-// Cahier de texte 
+// Cahier de texte
 $condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
 		($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
@@ -401,7 +409,7 @@ if ($condition) {
 $condition = (
 		getSettingValue("active_carnets_notes")=='y' AND (
 			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
-			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')			
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
 			));
 if ($condition) {
     $chemin[] = "/cahier_notes/visu_releve_notes.php";
@@ -416,7 +424,7 @@ if ($condition) {
 // Equipes pédagogiques
 $condition = (
 			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesEquipePedaParent") == 'yes')
-			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") == 'yes')			
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesEquipePedaEleve") == 'yes')
 			);
 if ($condition) {
     $chemin[] = "/groupes/visu_profs_eleve.php";
@@ -431,7 +439,7 @@ if ($condition) {
 // Bulletins simplifiés
 $condition = (
 			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesBulletinSimpleParent") == 'yes')
-			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") == 'yes')			
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesBulletinSimpleEleve") == 'yes')
 			);
 if ($condition) {
     $chemin[] = "/prepa_conseil/index3.php";
@@ -446,7 +454,7 @@ if ($condition) {
 // Graphiques
 $condition = (
 			($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") == 'yes')
-			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") == 'yes')			
+			OR ($_SESSION['statut'] == "eleve" AND getSettingValue("GepiAccesGraphEleve") == 'yes')
 			);
 if ($condition) {
     $chemin[] = "/visualisation/affiche_eleve.php";

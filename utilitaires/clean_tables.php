@@ -1056,6 +1056,136 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	echo "<hr />\n";
 	echo "<H2 align=\"center\">Fin de la vérification des tables</H2>\n";
 
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') {
+	// Le code de Stéphane concernant la vérification des auto_increment après le bug détecté
+	// concernant les backups réalisé avec la commande système mysqldump
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>";
+	echo "</p>\n";
+
+	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
+
+		$liste_tab=array("classes","id","`id` smallint(6) unsigned NOT NULL auto_increment",
+							"cn_cahier_notes","id_cahier_notes","`id_cahier_notes` int(11) NOT NULL auto_increment",
+							"cn_conteneurs","id","`id` int(11) NOT NULL auto_increment",
+							"cn_devoirs","id","`id` int(11) NOT NULL auto_increment",
+							"commentaires_types","id","`id` INT( 11 ) NOT NULL AUTO_INCREMENT",
+							"ct_devoirs_entry","id_ct","`id_ct` int(11) NOT NULL auto_increment",
+							"ct_documents","id","`id` int(11) NOT NULL auto_increment",
+							"ct_entry","id_ct","`id_ct` int(11) NOT NULL auto_increment",
+							"ct_types_documents","id_type","`id_type` bigint(21) NOT NULL auto_increment",
+							"messages","id","`id` int(11) NOT NULL auto_increment",
+							"suivi_eleve_cpe","id_suivi_eleve_cpe","`id_suivi_eleve_cpe` int(11) NOT NULL auto_increment",
+							"absences_eleves","id_absence_eleve","`id_absence_eleve` int(11) NOT NULL auto_increment",
+							"absences_creneaux","id_definie_periode","`id_definie_periode` int(11) NOT NULL auto_increment",
+							"absences_motifs","id_motif_absence","`id_motif_absence` int(11) NOT NULL auto_increment",
+							"groupes","id","`id` int(11) NOT NULL auto_increment",
+							"miseajour","id_miseajour","`id_miseajour` int(11) NOT NULL auto_increment",
+							"absences_actions","id_absence_action","`id_absence_action` int(11) NOT NULL auto_increment",
+							"edt_classes","id_edt_classe","`id_edt_classe` int(11) NOT NULL auto_increment",
+							"model_bulletin","id_model_bulletin","`id_model_bulletin` int(11) NOT NULL auto_increment",
+							"edt_dates_special","id_edt_date_special","`id_edt_date_special` int(11) NOT NULL auto_increment",
+							"edt_semaines","id_edt_semaine","`id_edt_semaine` int(11) NOT NULL auto_increment",
+							"etiquettes_formats","id_etiquette_format","`id_etiquette_format` int(11) NOT NULL auto_increment",
+							"horaires_etablissement","id_horaire_etablissement","`id_horaire_etablissement` int(11) NOT NULL auto_increment",
+							"lettres_cadres","id_lettre_cadre","`id_lettre_cadre` int(11) NOT NULL auto_increment",
+							"lettres_suivis","id_lettre_suivi","`id_lettre_suivi` int(11) NOT NULL auto_increment",
+							"lettres_tcs","id_lettre_tc","`id_lettre_tc` int(11) NOT NULL auto_increment",
+							"lettres_types","id_lettre_type","`id_lettre_type` int(11) NOT NULL auto_increment",
+							"vs_alerts_eleves","id_alert_eleve","`id_alert_eleve` int(11) NOT NULL auto_increment",
+							"vs_alerts_groupes","id_alert_groupe","`id_alert_groupe` int(11) NOT NULL auto_increment",
+							"vs_alerts_types","id_alert_type","`id_alert_type` int(11) NOT NULL auto_increment"
+							);
+
+		$temoin_poursuivre_corrections='yes';
+		$corrections = array();
+		echo "<p>";
+		for($i=0;$i<count($liste_tab);$i+=3){
+			$sql="SHOW TABLES LIKE '$liste_tab[$i]'";
+			$test=mysql_num_rows(mysql_query($sql));
+			//echo "$test<br />";
+			if($test>0){
+				$sql="show columns from $liste_tab[$i] like '".$liste_tab[$i+1]."';";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0){
+					unset($lig);
+					$lig=mysql_fetch_array($res);
+
+					$temoin="no";
+					//echo "<p>";
+					for($j=0;$j<count($lig);$j++){
+						if(isset($lig[$j])){
+							//echo "\$lig[$j]=$lig[$j]<br />";
+							if($lig[$j]=='auto_increment'){$temoin="yes";break;}
+						}
+					}
+					//echo "</p>";
+
+					echo "<br />Champ auto_increment de la table '$liste_tab[$i]': ";
+					if($temoin=='yes'){
+						echo "<font color='green'>OK</font>";
+					} else {
+						echo "<font color='red'>ERREUR (le champ a été ajouté à la liste des corrections).</font>";
+						// On enregistre les infos dans un tableau distinct
+						$corrections[] = array($liste_tab[$i], $liste_tab[$i+1], $liste_tab[$i+2]);
+
+						echo "<br /><b>Test d'intégrité :</b> ";
+						$sql="SELECT 1=1 FROM $liste_tab[$i] WHERE ".$liste_tab[$i+1]."='0'";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)==0){
+							echo "<font color='blue'>Aucun dégat ne semble encore fait sur cette table.</font><br />";
+						} else {
+							$temoin_poursuivre_corrections='no';
+							echo "<font color='red'>Erreur : des dégâts ont déjà été faits sur cette table.</font> Aucune correction de la structure de la base de données n'aura lieu. Vous devez corriger les incohérences dans la base de données en recherchant les entrées ayant pour valeur '0' sur le champ supposé auto-incrémenté (champ ".$liste_tab[$i+1].")<br />";
+						}
+					}
+				}
+			}
+		}
+		echo "</p>";
+		// Si aucun dégât n'a été constaté et qu'on a des tables à corriger, on le fait maintenant
+		if ($temoin_poursuivre_corrections=='yes') {
+			echo "<h2>Corrections effectives</h2>";
+
+			if (empty($corrections)) {
+				// Si aucune table n'avait de problème, pas besoin de corriger.
+				//echo "<br /><p>Aucune table n'a besoin de corrections.</p>";
+				echo "<p>Aucune table n'a besoin de corrections.</p>";
+			} else {
+				// On procède aux corrections
+				foreach($corrections as $correct_table) {
+					echo "<br />Correction de la table ".$correct_table[0]." : ";
+					$sql="ALTER TABLE ".$correct_table[0]." CHANGE ".$correct_table[1]." ".$correct_table[2];
+					$res=mysql_query($sql);
+					if ($res) {
+						// La correction s'est bien passée
+						echo "<font color='green'>OK</font>";
+					} else {
+						echo "<font color='red'>ERREUR ! </font><br />";
+						echo "Vous devez vérifier la cause du dysfonctionnement et faire la correction à la main (le champ à passer en auto_increment est : ".$corrections[1].")<br />";
+						echo "Vous devriez interdire les connexions ('Gestion générale/Gestion des connexions/Désactiver les connexions') et contacter la liste de diffusion des utilisateurs pour prendre conseil.";
+					}
+				}
+			}
+		} else {
+			// Des erreurs d'intégrité ont été détectées : on ne change rien...
+			echo "<p><font color='red'>Aucune correction n'a été tentée.</font> Des problèmes d'intégrité des données ont été détectés, la procédure ne peut pas continuer. Vous devez corriger les problèmes à la main (recherchez les entrées ayant la valeur '0' pour le champ supposé auto-incrémenté) et relancer cette procédure.</p>";
+		}
+
+	} else {
+		echo "<h2>Vérification des champs auto-incrémentés</h2>";
+		echo "<p>La procédure suivante vérifie l'intégrité de certains champs de la base de données et tente de corriger les erreurs rencontrées si elles existent.</p>";
+		echo "<p>Ce script ne doit être exécuté que si vous avez restauré sur votre Gepi une sauvegarde réalisée avec une version 1.4.4 en utilisant la méthode 'mysqldump' (et non la méthode classique de sauvegarde Gepi sans mysqldump).</p>";
+		echo "<p>La procédure débute par une série de tests sur les champs devant être auto-incrémentés. Si aucun problème n'est rencontré, aucune modification n'est faite. Si certains champs n'ont pas l'option d'auto-incrémentation, des tests sont faits sur l'intégrité des données. Si aucun problème d'intégrité des données n'a été détecté, la procédure corrigera les champs nécessaires. Sinon, un message d'erreur sera affiché et aucune modification ne sera effectuée sur la base de données.</p>";
+		echo "<p>Si vous êtes sûr de vouloir continuer, cliquez sur le bouton ci-dessous.</p>";
+	    echo "<form action=\"clean_tables.php\" method=\"post\">";
+	    echo "<center><input type=submit value='Lancer la procédure' /></center>";
+	    echo "<input type='hidden' name='action' value='check_auto_increment' />";
+	    echo "<input type='hidden' name='is_confirmed' value='yes' />";
+	    echo "</form>\n";
+	}
+
 } else {
     echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
     //echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>";
@@ -1100,6 +1230,16 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
     echo "<form action=\"recalcul_moy_conteneurs.php\" method=\"post\">";
     echo "<center><input type=submit value='Recalculer les moyennes de conteneurs' /></center>";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>La procédure de sauvegarde avec la commande 'mysqldump' dans la version 1.4.4-stable contenait un bug aboutissant à la perte de la fonction auto_increment sur certains champs, ce qui peut aboutir très rapidement à des incohérences dans la base de données.</p>";
+	echo "<p>Si vous avez restauré une sauvegarde générée avec la méthode mysqldump, vous devez absolument lancer cette vérification le plus rapidement possible et corriger les erreurs si le script ne peut les corriger automatiquement.</p>";
+    echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>";
+    echo "<form action=\"clean_tables.php\" method=\"post\">";
+    echo "<center><input type=submit value='Contrôler les champs auto-incrémentés' /></center>";
+    echo "<input type='hidden' name='action' value='check_auto_increment' />";
     echo "</form>\n";
 }
 

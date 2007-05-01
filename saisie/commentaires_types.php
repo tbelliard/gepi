@@ -88,10 +88,21 @@ function get_classe_from_id($id){
 |</p>
 
 <?php
+/*
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
 	die("Droits insuffisants pour effectuer cette opération");
 }
+*/
+if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
+	OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
+{
+	// Accès autorisé à la page
+}
+else{
+	die("Droits insuffisants pour effectuer cette opération");
+}
+
 ?>
 
 
@@ -116,7 +127,29 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 			//echo "<p>Pour quelle classe et quelles périodes souhaitez-vous définir/modifier les commentaires-type?</p>\n";
 			echo "<p>Pour quelle classe souhaitez-vous définir/modifier les commentaires-type?</p>\n";
 			echo "<blockquote>\n";
-			$sql="select distinct id,classe from classes order by classe";
+
+			// A REVOIR: Il ne faut lister que les classes appropriées.
+			//$sql="select distinct id,classe from classes order by classe";
+			// if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
+			// OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
+			if($_SESSION['statut']=='professeur'){
+				$sql="SELECT DISTINCT c.id,c.classe FROM j_eleves_classes jec, classes c, j_eleves_professeurs jep
+									WHERE jec.id_classe=c.id AND
+										jec.login=jep.login AND
+										jep.professeur='".$_SESSION['login']."'
+									ORDER BY c.classe";
+			}
+			elseif($_SESSION['statut']=='scolarite'){
+				$sql="SELECT DISTINCT c.id,c.classe FROM j_scol_classes jsc, classes c
+									WHERE jsc.id_classe=c.id AND
+										jsc.login='".$_SESSION['login']."'
+									ORDER BY c.classe";
+			}
+			else{
+				// CA NE DEVRAIT PAS ARRIVER...
+				$sql="select distinct id,classe from classes order by classe";
+			}
+
 			$resultat_classes=mysql_query($sql);
 			if(mysql_num_rows($resultat_classes)==0){
 				echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
@@ -278,13 +311,15 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 				}
 
 				echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
-	/*
+
+				/*
 				echo "$id_classe: ";
 				for($i=0;$i<count($num_periode);$i++){
 					echo "$num_periode[$i] -";
 				}
 				echo "<br />";
-	*/
+				*/
+
 
 				// Récupération du nom de la classe
 				$sql="select * from classes where id='$id_classe'";
@@ -590,7 +625,24 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 					echo "<p>Pour quelles classes souhaitez-vous supprimer les commentaires-type existant et les remplacer par ceux de $classe_source?</p>\n";
 					// AJOUTER UN JavaScript POUR 'Tout cocher'
 
-					$sql="select distinct id,classe from classes order by classe";
+					//$sql="select distinct id,classe from classes order by classe";
+					if($_SESSION['statut']=='professeur'){
+						$sql="SELECT DISTINCT c.id,c.classe FROM j_eleves_classes jec, classes c, j_eleves_professeurs jep
+											WHERE jec.id_classe=c.id AND
+												jec.login=jep.login AND
+												jep.professeur='".$_SESSION['login']."'
+											ORDER BY c.classe";
+					}
+					elseif($_SESSION['statut']=='scolarite'){
+						$sql="SELECT DISTINCT c.id,c.classe FROM j_scol_classes jsc, classes c
+											WHERE jsc.id_classe=c.id AND
+												jsc.login='".$_SESSION['login']."'
+											ORDER BY c.classe";
+					}
+					else{
+						// CA NE DEVRAIT PAS ARRIVER...
+						$sql="select distinct id,classe from classes order by classe";
+					}
 					$resultat_classes=mysql_query($sql);
 					if(mysql_num_rows($resultat_classes)==0){
 						echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
