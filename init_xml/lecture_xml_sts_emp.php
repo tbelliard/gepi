@@ -22,6 +22,11 @@ header("Location: ../logout.php?auto=1");
 die();
 }
 
+//**************** EN-TETE *****************
+$titre_page = "XML de STS: Génération de CSV";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+
 
 //================================================
 // Fonction de génération de mot de passe récupérée sur TotallyPHP
@@ -52,16 +57,15 @@ function createRandomPassword() {
 //================================================
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <title>Lecture du XML Emploi du temps de Sts-web et génération de CSV</title>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
     <meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
-    <!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
     <link type="text/css" rel="stylesheet" href="../style.css" />
 </head>
-<body>
+<body-->
     <div class="content">
         <?php
 
@@ -92,7 +96,8 @@ function createRandomPassword() {
 
 
             if(isset($_GET['nettoyage'])){
-                echo "<h1 align='center'>Suppression des CSV</h1>\n";
+                //echo "<h1 align='center'>Suppression des CSV</h1>\n";
+                echo "<h2 align='center'>Suppression des CSV</h2>\n";
                 echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
                 $tabfich=array("f_wind.csv","f_men.csv","f_gpd.csv","f_div.csv","f_tmt.csv","profs.html");
                 for($i=0;$i<count($tabfich);$i++){
@@ -108,21 +113,22 @@ function createRandomPassword() {
                 }
             }
             else{
-                echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h1>\n";
+                //echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h1>\n";
+                echo "<h2 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h2>\n";
                 if(!isset($_POST['is_posted'])){
                     //echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, matières,... mais pas encore les liaisons profs/matières/classes.<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
                     echo "<p>Cette page permet de remplir des tables temporaires avec les informations professeurs, matières,...<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
                     echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
                     echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
                     echo "<p>Veuillez fournir le fichier XML: \n";
-                    echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\">\n";
-                    echo "<input type='hidden' name='is_posted' value='yes'>\n";
+                    echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\" />\n";
+                    echo "<input type='hidden' name='is_posted' value='yes' />\n";
                     echo "</p>\n";
-                    echo "<p><input type=\"radio\" name=\"mdp\" value=\"alea\" checked> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
-                    echo "<input type=\"radio\" name=\"mdp\" value=\"date\"> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
-                    echo "<input type='hidden' name='is_posted' value='yes'>\n";
+                    echo "<p><input type=\"radio\" name=\"mdp\" value=\"alea\" checked /> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
+                    echo "<input type=\"radio\" name=\"mdp\" value=\"date\" /> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
+                    echo "<input type='hidden' name='is_posted' value='yes' />\n";
                     //echo "</p>\n";
-                    echo "<p><input type='submit' value='Valider'></p>\n";
+                    echo "<p><input type='submit' value='Valider' /></p>\n";
                     echo "</form>\n";
                 }
                 else{
@@ -1641,5 +1647,6 @@ die();
         ?>
         <p>Retour à l'<a href="index.php">index</a></p>
     </div>
-</body>
-</html>
+<!--/body>
+</html-->
+<?php require("../lib/footer.inc.php");?>

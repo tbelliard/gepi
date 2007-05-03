@@ -83,8 +83,8 @@ require_once("../lib/header.inc");
 		<p><a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
 		<p><b>AJOUT:</b> <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p></li>
 	</ul-->
-	<p><a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
-	<p><b>AJOUT:</b> <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p>
+	<p>Professeurs, matières,...: <a href='lecture_xml_sts_emp.php'>Générer les fichiers CSV à partir de l'export XML de STS</a>.</p>
+	<p>Elèves: <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p>
 </li>
 <li>
 	<p>Pour procéder aux importations:</p>

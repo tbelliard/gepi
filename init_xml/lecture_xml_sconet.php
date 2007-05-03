@@ -23,6 +23,11 @@ if (!checkAccess()) {
 	die();
 }
 
+//**************** EN-TETE *****************
+$titre_page = "XML de SCONET: Génération de CSV";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+
 function extr_valeur($lig){
 	unset($tabtmp);
 	$tabtmp=explode(">",ereg_replace("<",">",$lig));
@@ -30,16 +35,15 @@ function extr_valeur($lig){
 }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title>Lecture du XML Emploi du temps de Sts-web et génération de CSV</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
 	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
-	<!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
 	<link type="text/css" rel="stylesheet" href="../style.css" />
 </head>
-<body>
+<body-->
 	<div class="content">
 		<?php
 			// Pour importer séparemment les ElevesAvecAdresses.xml, Nomenclature.xml et d'autre part le Responsables.xml,
@@ -80,7 +84,8 @@ function extr_valeur($lig){
 			}
 
 			if(isset($_GET['nettoyage'])){
-				echo "<h1 align='center'>Suppression des CSV</h1>\n";
+				//echo "<h1 align='center'>Suppression des CSV</h1>\n";
+				echo "<h2 align='center'>Suppression des CSV</h2>\n";
 				echo "<p><a href='";
 				if(isset($_SESSION['ad_retour'])){
 					echo $_SESSION['ad_retour'];
@@ -107,7 +112,8 @@ function extr_valeur($lig){
 				}
 			}
 			else{
-				echo "<h1 align='center'>Lecture des XML de Sconet et génération de CSV</h1>\n";
+				//echo "<h1 align='center'>Lecture des XML de Sconet et génération de CSV</h1>\n";
+				echo "<h2 align='center'>Lecture des XML de Sconet et génération de CSV</h2>\n";
 				echo "<p><a href='index.php'>Retour</a>|\n";
 
 				if(!isset($etape)){
@@ -1493,5 +1499,4 @@ function extr_valeur($lig){
 		?>
 		<!--p>Retour à l'<a href="index.php">index</a></p-->
 	</div>
-</body>
-</html>
+<?php require("../lib/footer.inc.php");?>
