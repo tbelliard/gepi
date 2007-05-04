@@ -56,6 +56,7 @@ function extr_valeur($lig){
 				$_SESSION['ad_retour']=$_GET['ad_retour'];
 			}
 
+			//echo "\$_SESSION['ad_retour']=".$_SESSION['ad_retour']."<br />";
 
 			unset($remarques);
 			$remarques=array();
@@ -114,7 +115,15 @@ function extr_valeur($lig){
 			else{
 				//echo "<h1 align='center'>Lecture des XML de Sconet et génération de CSV</h1>\n";
 				echo "<h2 align='center'>Lecture des XML de Sconet et génération de CSV</h2>\n";
-				echo "<p><a href='index.php'>Retour</a>|\n";
+				//echo "<p><a href='index.php'>Retour</a>|\n";
+				echo "<p><a href='";
+				if(isset($_SESSION['ad_retour'])){
+					echo $_SESSION['ad_retour'];
+				}
+				else{
+					echo "index.php";
+				}
+				echo "'>Retour</a>|";
 
 				if(!isset($etape)){
 					echo "</p>\n";
@@ -1465,9 +1474,9 @@ function extr_valeur($lig){
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
 							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
 							echo "<table border='0'>\n";
-							echo "<tr><td>Fichier Elèves:</td><td><a href='save_csv.php?fileid=6'>personnes.csv</a></td></tr>\n";
-							echo "<tr><td>Fichier Etablissements:</td><td><a href='save_csv.php?fileid=7'>responsables.csv</a></td></tr>\n";
-							echo "<tr><td>Fichier Elève/Etablissement:</td><td><a href='save_csv.php?fileid=8'>adresses.csv</a></td></tr>\n";
+							echo "<tr><td>Fichier Personnes Responsables:</td><td><a href='save_csv.php?fileid=6'>personnes.csv</a></td></tr>\n";
+							echo "<tr><td>Fichier Responsables:</td><td><a href='save_csv.php?fileid=7'>responsables.csv</a></td></tr>\n";
+							echo "<tr><td>Fichier Adresses:</td><td><a href='save_csv.php?fileid=8'>adresses.csv</a></td></tr>\n";
 							echo "</table>\n";
 							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
 							if(count($remarques)>0){

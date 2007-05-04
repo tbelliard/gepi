@@ -54,6 +54,14 @@ echo "<p class=bold>";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
+echo "<h2>Conversion eleves/responsables</h2>\n";
+
+// Suppression de l'adresse de retour mise pour permettre la génération des CSV
+if(isset($_SESSION['ad_retour'])){
+	unset($_SESSION['ad_retour']);
+}
+
+
 // Solution de conversion d'une part...
 // ... et proposer d'autre part une mise à jour par import Sconet
 
@@ -459,6 +467,8 @@ if($temoin==1){
 				else{
 					echo "<p>Dans un premier temps, on renseigne le nouveau champ 'ele_id' dans la table 'eleves'.</p>\n";
 
+					echo "<div id='div_eleves' style='display:none;'>\n";
+
 					$tabchamps = array("ELENOET","ELE_ID");
 
 					$erreur=0;
@@ -529,13 +539,19 @@ if($temoin==1){
 									}
 								}
 								else{
-									echo "<font color='red'>Aucun élève avec l'ELENOET $affiche[0] n'a été trouvé dans votre table 'eleves'; il pourra être créé lors d'un import ultérieur.</font>\n";
+									echo "<font color='red'>Aucun élève avec l'ELENOET $affiche[0] n'a été trouvé dans votre table 'eleves'; il pourra être créé lors d'un import ultérieur.</font><br />\n";
 									$tab_elenoet_non_trouves[]=$affiche[0];
 								}
 							}
 						}
 					}
 					fclose($fp);
+
+					echo "</div>\n";
+
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_eleves').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_eleves').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><br /></p>\n";
+
 				}
 			}
 
@@ -555,6 +571,8 @@ if($temoin==1){
 				}
 				else{
 					echo "<p>Lecture du PERSONNES.CSV pour renseigner la nouvelle table 'resp_pers' avec les nom, prénom, téléphone,... des responsables.</p>";
+
+					echo "<div id='div_personnes' style='display:none;'>\n";
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE resp_pers";
@@ -636,11 +654,16 @@ if($temoin==1){
 					//dbase_close($fp);
 					fclose($fp);
 
+					echo "</div>\n";
+
 					if ($nb_reg_no3 != 0) {
 						echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
 						echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$nb_record3." enregistrements au total).</p>\n";
 					}
+
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_personnes').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><br /></p>\n";
 
 				}
 			} else if (trim($csv_file['name'])=='') {
@@ -667,6 +690,8 @@ if($temoin==1){
 				}
 				else{
 					echo "<p>Lecture du fichier RESPONSABLES.CSV pour renseigner les associations eleves/responsables.</p>\n";
+
+					echo "<div id='div_responsables' style='display:none;'>\n";
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE responsables2";
@@ -743,12 +768,17 @@ if($temoin==1){
 					//dbase_close($fp);
 					fclose($fp);
 
+					echo "</div>\n";
+
 					if ($nb_reg_no1 != 0) {
 						echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					}
 					else {
 						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$nb_record1." enregistrements au total).</p>\n";
 					}
+
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_responsables').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><br /></p>\n";
 
 				}
 			} else if (trim($csv_file['name'])=='') {
@@ -774,6 +804,8 @@ if($temoin==1){
 				}
 				else{
 					echo "<p>Lecture du fichier ADRESSES.CSV</p>";
+
+					echo "<div id='div_adresses' style='display:none;'>\n";
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE resp_adr";
@@ -854,14 +886,21 @@ if($temoin==1){
 					//dbase_close($fp);
 					fclose($fp);
 
+					echo "</div>\n";
+
 					if ($nb_reg_no2 != 0) {
 						echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur.</p>\n";
 					} else {
 						echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$nb_record2." enregistrements au total).</p>\n";
 					}
 
+					echo "<p><a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='';return false;\">Afficher</a> / <a href=\"#\" onClick=\"document.getElementById('div_adresses').style.display='none';return false;\">Masquer</a> les détails.</p>\n";
+					echo "<p><br /></p>\n";
+
 					if(count($tab_elenoet_non_trouves)>0){
 						echo "<h2>ATTENTION</h2>\n";
+						echo "<p>Le fichier 'eleves.csv' fourni contenait des ELENOET d'élèves non présents dans votre table 'eleves'.<br />Ces nouveaux élèves inscrits dans Sconet n'ont pas été créés.<br />Seule la conversion des données existantes a été effectuée.<br />Vous pourrez procéder à un nouvel <a href='maj_import.php'>import par mise à jour</a> pour créer ces élèves.</p>\n";
+						echo "<p><br /></p>\n";
 						echo "<p>Récapitulatif des ELENOET non trouvés dans votre table 'eleves':<br />\n";
 						echo "$tab_elenoet_non_trouves[0]";
 						for($i=0;$i<count($tab_elenoet_non_trouves);$i++){
