@@ -1,6 +1,7 @@
 <?php
 /*
- * Last modification  : 04/10/2006
+ * Last modification  : 09/05/2007
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -157,7 +158,7 @@ if($temoin==1){
 			echo "</tr>\n";
 			while($lig1=mysql_fetch_object($res1)){
 				echo "<tr>\n";
-				echo "<td>$lig1->login</td>\n";
+				echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig1->login' target='_blank'>$lig1->login</a></td>\n";
 				echo "<td>$lig1->nom</td>\n";
 				echo "<td>$lig1->prenom</td>\n";
 				echo "<td>$lig1->naissance</td>\n";
@@ -903,7 +904,7 @@ if($temoin==1){
 						echo "<p><br /></p>\n";
 						echo "<p>Récapitulatif des ELENOET non trouvés dans votre table 'eleves':<br />\n";
 						echo "$tab_elenoet_non_trouves[0]";
-						for($i=0;$i<count($tab_elenoet_non_trouves);$i++){
+						for($i=1;$i<count($tab_elenoet_non_trouves);$i++){
 							echo ", $tab_elenoet_non_trouves[$i]";
 						}
 						echo "</p>\n";

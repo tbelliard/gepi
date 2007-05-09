@@ -577,7 +577,10 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 }
 
 
-
+/*
+// Désactivé pour permettre de renseigner un ELENOET manquant pour une conversion avec sconet
+// Cela a en revanche été conservé sur la page index.php
+// On ne devrait donc arriver ici lorsqu'une conversion est réclamée qu'en venant de conversion.php pour remplir un ELENOET
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -607,7 +610,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		}
 	}
 }
-
+*/
 
 
 ?>
