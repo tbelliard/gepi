@@ -325,6 +325,10 @@ if(!getSettingValue('conv_new_resp_table')){
 $droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 if ($droits == "V") {
    echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>";
+
+	if(getSettingValue("import_maj_xml_sconet")==1){
+		echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+	}
 }
 ?>
 </p>
