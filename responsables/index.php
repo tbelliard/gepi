@@ -259,52 +259,98 @@ if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
 $num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
 
 
-$cpt=0;
-if(($order_by=="nom,prenom")&&($num_resp==0)){
-	$cpt=0;
-	$sql="SELECT DISTINCT pers_id FROM resp_pers";
-	$res1=mysql_query($sql);
-	if(mysql_num_rows($res1)>0){
-		while($lig1=mysql_fetch_object($res1)){
-			$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$lig1->pers_id'";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0){
-				$cpt++;
-			}
+unset($chaine_recherche);
+if(isset($val_rech)){
+	//$order_by=="nom,prenom";
+	$limit="TOUS";
+	if($val_rech!=""){
+		// FILTRER LES CARACTERES DE $val_rech?
+		switch($mode_rech){
+			case "contient":
+					$valeur_cherchee="%$val_rech%";
+				break;
+			case "commence par":
+					$valeur_cherchee="$val_rech%";
+				break;
+			case "se termine par":
+					$valeur_cherchee="%$val_rech";
+				break;
+		}
+
+		switch($crit_rech){
+			case "prenom":
+					$crit_rech="prenom";
+				break;
+			default:
+					$crit_rech="nom";
+				break;
+		}
+
+		switch($champ_rech){
+			case "resp1":
+					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
+					$num_resp=1;
+				break;
+			case "resp2":
+					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
+					$num_resp=2;
+				break;
+			case "eleves":
+					$chaine_recherche="e.$crit_rech LIKE '$valeur_cherchee'";
+					$num_resp="ele";
+				break;
 		}
 	}
 }
-elseif(($order_by=="nom,prenom")&&($num_resp==1)){
-	// Pour ne récupérer qu'une seule occurence de pers_id:
-	$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-			rp.pers_id=r.pers_id AND
-			r.resp_legal='$num_resp'
-		ORDER BY $order_by";
-	$res1=mysql_query($sql);
-	$cpt=mysql_num_rows($res1);
-}
-elseif(($order_by=="nom,prenom")&&($num_resp==2)){
-	$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-			rp.pers_id=r.pers_id AND
-			r.resp_legal='$num_resp'
-		ORDER BY $order_by";
-	$res1=mysql_query($sql);
-	$cpt=mysql_num_rows($res1);
-}
-elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
-	$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
-	$res1=mysql_query($sql);
-	$cpt=mysql_num_rows($res1);
-}
+else{
+	// Y a-t-il des responsables,... dans la base pour le mode choisi.
+	$cpt=0;
+	if(($order_by=="nom,prenom")&&($num_resp==0)){
+		$cpt=0;
+		$sql="SELECT DISTINCT pers_id FROM resp_pers";
+		$res1=mysql_query($sql);
+		if(mysql_num_rows($res1)>0){
+			while($lig1=mysql_fetch_object($res1)){
+				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$lig1->pers_id'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0){
+					$cpt++;
+				}
+			}
+		}
+	}
+	elseif(($order_by=="nom,prenom")&&($num_resp==1)){
+		// Pour ne récupérer qu'une seule occurence de pers_id:
+		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+				rp.pers_id=r.pers_id AND
+				r.resp_legal='$num_resp'
+			ORDER BY $order_by";
+		$res1=mysql_query($sql);
+		$cpt=mysql_num_rows($res1);
+	}
+	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
+		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+				rp.pers_id=r.pers_id AND
+				r.resp_legal='$num_resp'
+			ORDER BY $order_by";
+		$res1=mysql_query($sql);
+		$cpt=mysql_num_rows($res1);
+	}
+	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
+		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
+		$res1=mysql_query($sql);
+		$cpt=mysql_num_rows($res1);
+	}
 
 
-if($cpt==0){
-	echo "<p>Aucun responsable trouvé.</p>\n";
-	require("../lib/footer.inc.php");
-	die();
+	if($cpt==0){
+		echo "<p>Aucun responsable trouvé.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 }
 
-
+//echo "<p>\$chaine_recherche=$chaine_recherche et \$num_resp=$num_resp</p>";
 
 echo "<form enctype='multipart/form-data' name='liste_resp' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
@@ -392,12 +438,48 @@ echo "		}
 </script>\n";
 
 
+echo "<div style='text-align:center;'>\n";
+echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
+echo "<div id='div_rech' style='display:none;' align='center'>\n";
+echo "<table border='0'><tr><td>parmi les </td>\n";
+echo "<td>\n";
+echo "<input type='radio' name='champ_rech' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
+echo "<br />\n";
+echo "<input type='radio' name='champ_rech' value='resp2' /> responsables (<i>légal 2</i>)\n";
+echo "<br />\n";
+echo "<input type='radio' name='champ_rech' value='eleves' /> élèves\n";
+echo "</td>\n";
+echo "<td>\n";
+echo " ceux dont le \n";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='radio' name='crit_rech' value='nom' checked /> nom\n";
+echo "<br />\n";
+echo "<input type='radio' name='crit_rech' value='prenom' /> prénom\n";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='radio' name='mode_rech' value='contient' checked /> contient \n";
+echo "<br />\n";
+echo "<input type='radio' name='mode_rech' value='commence par' /> commence par \n";
+echo "<br />\n";
+echo "<input type='radio' name='mode_rech' value='se termine par' /> se termine par \n";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='text' name='val_rech' value='' />\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+echo "</div>\n";
+echo "</div>\n";
 
 echo "<center><input type='submit' value='Valider' /></center>\n";
 echo "<table border='1' align='center'>\n";
 
-if($num_resp==0){
+//if($num_resp==0){
+if("$num_resp"=="0"){
 	// Afficher les personnes non associées à des élèves.
+
+	//echo "<tr><td colspan='3'>TEMOIN: $num_resp</td></tr>";
 
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
@@ -411,7 +493,7 @@ if($num_resp==0){
 	$res1=mysql_query($sql);
 	if(mysql_num_rows($res1)>0){
 		while($lig1=mysql_fetch_object($res1)){
-			$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$lig1->pers_id'";
+			$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0){
 
@@ -515,8 +597,12 @@ else{
 		// Pour ne récupérer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp'
-			ORDER BY $order_by";
+				r.resp_legal='$num_resp'";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY $order_by";
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
@@ -822,7 +908,12 @@ else{
 	*/
 	//elseif(($order_by=="nom,prenom")&&($_GET['tri']=="ele")){
 	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
-		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
+		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY e.nom,e.prenom";
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
