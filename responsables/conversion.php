@@ -900,7 +900,7 @@ if($temoin==1){
 
 					if(count($tab_elenoet_non_trouves)>0){
 						echo "<h2>ATTENTION</h2>\n";
-						echo "<p>Le fichier 'eleves.csv' fourni contenait des ELENOET d'élèves non présents dans votre table 'eleves'.<br />Ces nouveaux élèves inscrits dans Sconet n'ont pas été créés.<br />Seule la conversion des données existantes a été effectuée.<br />Vous pourrez procéder à un nouvel <a href='maj_import.php'>import par mise à jour</a> pour créer ces élèves.</p>\n";
+						echo "<p>Le fichier 'eleves.csv' fourni contenait des ELENOET d'élèves non présents dans la table 'eleves' de votre base GEPI.<br />Ces nouveaux élèves inscrits dans Sconet n'ont pas été créés.<br />Seule la conversion des données existantes a été effectuée.<br />Vous pourrez procéder à un nouvel <a href='maj_import.php'>import par mise à jour</a> pour créer ces élèves.</p>\n";
 						echo "<p><br /></p>\n";
 						echo "<p>Récapitulatif des ELENOET non trouvés dans votre table 'eleves':<br />\n";
 						echo "$tab_elenoet_non_trouves[0]";
