@@ -8,6 +8,7 @@ Gepi-1.5.0 (??/??/2007)
 Corrections de bugs
 ------------------
 - affichage multiple des groupes multi-classes lors de la sélection d'un carnet de notes par le prof
+- mise à jour de la détection des codes civilités lors de la synchro avec Scribe Ng
 
 Gepi-1.5.0-rc2 (25/04/2007)
 ===========================
