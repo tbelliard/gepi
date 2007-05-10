@@ -192,6 +192,10 @@ if (isset($_POST['security_alert2_probation_block_user'])) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_block_user !";
     }
 
+	if (empty($msg)) {
+		$msg = "Les données ont bien été enregistrées.";
+	}
+
 } // Fin : if isset($_POST)
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
