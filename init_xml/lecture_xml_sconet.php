@@ -547,8 +547,8 @@ function extr_valeur($lig){
 										echo "<td>".$eleves[$i]["code_sexe"]."</td>\n";
 									}
 									else{
-										echo "<td style='background-color:red'>1</td>\n";
-										$remarques[]="Le sexe de l'élève ".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]." n'est pas renseigné.";
+										echo "<td style='background-color:red'>1<a name='sexe_manquant_".$i."'></a></td>\n";
+										//$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
 									}
 									echo "<td>".$eleves[$i]["date_naiss"]."</td>\n";
 									echo "<td>";
@@ -568,9 +568,14 @@ function extr_valeur($lig){
 											else{
 												echo $eleves[$i]["structures"][$j]["code_structure"];
 												$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+
+												if(!isset($eleves[$i]["code_sexe"])){
+													$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+												}
 											}
 										}
 										else{
+											echo "&nbsp;";
 										}
 									}
 									else{
@@ -965,7 +970,7 @@ function extr_valeur($lig){
 
 
 
-							echo "<div style='position:absolute; top: 70px; left: 300px; width: 300px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
+							echo "<div style='position:absolute; top: 70px; left: 300px; width: 350px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
 							echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
 							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";

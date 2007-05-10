@@ -1447,7 +1447,8 @@ else{
 				}
 				else{
 					echo "'>";
-					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){						$chaine_adr="";
+					if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2->pays!="")){
+						$chaine_adr="";
 						if($lig2->adr1!=""){
 							//echo "$lig2->adr1, ";
 							$chaine_adr.=stripslashes("$lig2->adr1, ");
@@ -1585,7 +1586,7 @@ else{
 				if((in_array($personne[$pers_id]["adr_id"],$adr_modif))||(in_array($personne[$pers_id]["adr_id"],$adr_new))){
 					if(isset($lig2)){
 						echo " background-color:lightgreen;'>";
-						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2->pays!="")){
 							// Normalement, il ne devrait pas y avoir d'antislashes dans la BDD.
 							$chaine_adr="";
 							if($lig2->adr1!=""){
@@ -1643,7 +1644,7 @@ else{
 				else{
 					echo "'>";
 					if(isset($lig2)){
-						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2-pays!="")){
+						if(($lig2->adr1!="")||($lig2->adr2!="")||($lig2->adr3!="")||($lig2->adr4!="")||($lig2->cp!="")||($lig2->commune!="")||($lig2->pays!="")){
 							// Normalement, il ne devrait pas y avoir d'antislashes dans la BDD.
 							$chaine_adr="";
 							if($lig2->adr1!=""){
