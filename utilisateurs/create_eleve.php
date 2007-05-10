@@ -1,6 +1,8 @@
 <?php
 /*
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * $Id$
+ * 
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -134,12 +136,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
+$titre_page = "Créer des comptes d'accès élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
-<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<a href="edit_eleve.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
 $quels_eleves = mysql_query("SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (" .
@@ -150,7 +152,7 @@ if($nb==0){
 	echo "<p>Tous les élèves ont un compte utilisateur.</p>\n";
 }
 else{
-	echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte utilisateur.</p>";
+	echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte d'accès à Gepi.</p>";
 
 	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
 		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Pour le moment, les logins élèves de Gepi sont générés selon une méthode interne à Gepi. Il est donc peu probable que le SSO fonctionne pour les comptes élèves.</p>";

@@ -143,7 +143,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
+$titre_page = "Créer des comptes d'accès responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>

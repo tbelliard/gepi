@@ -62,7 +62,7 @@ if ($mode != "personnels") {
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 <br/><br/>
-<p>Sur cette page, vous pouvez gérer les utilisateurs ayant accès à Gepi grâce à un identifiant et un mot de passe.</p>
+<p>Sur cette page, vous pouvez gérer les comptes d'accès des utilisateurs ayant accès à Gepi grâce à un identifiant et un mot de passe.</p>
 <p>Cliquez sur le type d'utilisateurs que vous souhaitez gérer :</p>
 <p style='padding-left: 10%; margin-top: 15px;'><a href="index.php?mode=personnels"><img src='../images/icons/forward.png' alt='Personnels' class='back_link' /> Personnels de l'établissement (professeurs, scolarité, CPE, administrateurs)</a></p>
 <p style='padding-left: 10%; margin-top: 15px;'><a href="edit_responsable.php"><img src='../images/icons/forward.png' alt='Responsables' class='back_link' /> Responsables d'élèves (parents)</a></p>

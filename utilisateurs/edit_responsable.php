@@ -188,13 +188,13 @@ if ($action == "rendre_inactif") {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Modifier un compte parent";
+$titre_page = "Modifier des comptes responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
-<a href="create_responsable.php"> Ajouter des utilisateurs</a>
+<a href="create_responsable.php"> Ajouter de nouveaux comptes</a>
 <?php
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
   // Eric Faut-il garder la ligne ?
@@ -254,4 +254,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 }
 ?>
 </table>
-<?php require("../lib/footer.inc.php");?>
+<?php
+if (mysql_num_rows($quels_parents) == "0") {
+	echo "<p>Pour créer de nouveaux comptes d'accès associés aux responsables d'élèves définis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";
+}
+require("../lib/footer.inc.php");?>

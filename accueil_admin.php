@@ -98,7 +98,7 @@ $chemin = array(
 $titre = array(
 "Gestion des établissements",
 "Gestion des matières",
-"Gestion des utilisateurs",
+"Gestion des comptes d'accès des utilisateurs",
 "Gestion des élèves",
 "Gestion des responsables élèves",
 "Gestion des classes",
@@ -109,7 +109,7 @@ $titre = array(
 $expli = array(
 "Définir, modifier, supprimer des établissements de la base de données.",
 "Définir, modifier, supprimer des matières de la base de données.",
-"Définir, modifier, supprimer les comptes utilisateurs.",
+"Gérer les comptes d'accès permettant aux utilisateurs de se connecter à Gepi (personnels de l'établissement, élèves et responsables).",
 "Définir, modifier, supprimer les élèves.",
 "Définir, modifier, supprimer les responsables élèves.",
 "Définir, modifier, supprimer les classes.
