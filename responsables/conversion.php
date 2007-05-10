@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 09/05/2007
+ * 
  * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -68,7 +68,7 @@ if(isset($_SESSION['ad_retour'])){
 
 $sql="SELECT value FROM setting WHERE name='conv_new_resp_table'";
 $test=mysql_query($sql);
-if($test){
+if(mysql_num_rows($test) > 0){
 	$ligtmp=mysql_fetch_object($test);
 	if($ligtmp->value>0){
 		echo "<p>La mise à jour a déjà été effectuée.</p>\n";
