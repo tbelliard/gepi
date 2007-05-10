@@ -6,13 +6,13 @@
  		if ($_civilite == 1) {
  			$_civilite = "M.";
  		} elseif ($_civilite == 2) {
+ 			$_civilite = "Mme";
+ 		} elseif ($_civilite == 3) {
  			$_civilite = "Mlle";
  		} else {
  			$_civilite = "Mme";
  		}
 
-
- 	
  	// Si l'utilisateur existe déjà, on met simplement à jour ses informations...
  	$test = mysql_query("SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
  	if (mysql_num_rows($test) > 0) {
@@ -35,8 +35,6 @@
  	if ($_civilite != "M" && $_civilite != "F") {
  		if ($_civilite == 1) {
  			$_civilite = "M";
- 		} elseif ($_civilite == 0) {
- 			$_civilite = "F";
  		} else {
  			$_civilite = "F";
  		}
