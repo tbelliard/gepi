@@ -261,6 +261,9 @@ while (list($name, $adress) = each($gepiAuthors)) {
     echo("<a href=\"mailto:" . $adress . "\">" . $name . "</a> ");
     $i++;
 }
+	echo "<br/><br/>";
+	echo "<img src='".$gepiPath."/images/php-powered.png' alt='php powered'>&nbsp;";
+	echo "<img src='".$gepiPath."/images/mysql-powered.png' alt='mysql powered'>";
 
 ?>
 </div>
