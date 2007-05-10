@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 06/05/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -403,11 +403,13 @@ if (!isset($quelles_classes)) {
     </form>
     <?php
 } else {
+
+    echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique. Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.</p>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index.php\" method=\"post\">\n";
     if (!isset($order_type)) { $order_type='nom,prenom';}
     echo "<table border=1 cellpadding=2>\n";
     echo "<tr>\n";
-    echo "<td><p>Login</p></td>\n";
+    echo "<td><p>Identifiant</p></td>\n";
     echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes'>Nom Prénom</a></p></td>\n";
     echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes'>Sexe</a></p></td>\n";
     echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes'>Date de naissance</a></p></td>\n";
@@ -496,7 +498,6 @@ if (!isset($quelles_classes)) {
     }
     echo "</table>\n";
     echo "<p>Total : $nombreligne éleves</p>\n";
-    echo "<p>Remarque : le login ne permet pas aux élèves de se connecter à Gepi. Il sert simplement d'identifiant unique.</p>\n";
     ?>
     <!--/table-->
     <input type=hidden name=is_posted value=1 />
