@@ -2,6 +2,13 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.5.0 (??/??/2007)
+===========================
+
+Corrections de bugs
+------------------
+- affichage multiple des groupes multi-classes lors de la sélection d'un carnet de notes par le prof
+
 Gepi-1.5.0-rc2 (25/04/2007)
 ===========================
 
