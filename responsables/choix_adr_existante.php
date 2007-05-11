@@ -112,10 +112,9 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
-?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
-<?php
+
 $sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)==0){
