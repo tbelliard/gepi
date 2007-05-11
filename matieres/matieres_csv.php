@@ -202,43 +202,67 @@ else{
                 //$ligne = dbase_get_record($fp,$k);
             while(!feof($fp)){
                 $temoin_erreur="non";
-                $ligne=explode(";",fgets($fp,4096));
-                //$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
-                //$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
+                //$ligne=explode(";",fgets($fp,4096));
+                $tmp_lig=fgets($fp,4096);
+				if(trim($tmp_lig)!=""){
+					$ligne=explode(";",$tmp_lig);
+					//$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
+					//$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
 
-                for($i=0;$i<2; $i++) {
-                    $affiche[$i]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$i]))));
-                    if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
-                        $temoin_erreur="oui";
-                        //echo "<!--  -->\n";
-                        $msg.="Le nom <font color='red'>$affiche[$i]</font> ne convient pas.<br />\n";
-                        $nb_reg_no++;
-                    }
-                }
+					/*
+					for($i=0;$i<2; $i++) {
+						$affiche[$i]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$i]))));
+						if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+							$temoin_erreur="oui";
+							//echo "<!--  -->\n";
+							$msg.="Le nom <font color='red'>$affiche[$i]</font> ne convient pas.<br />\n";
+							$nb_reg_no++;
+						}
+					}
+					*/
 
-                /*
-                for($i = 0; $i < count($tabchamps); $i++) {
-                    $affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
-                }
-                */
-                //if(($affiche[0]!="")&&($affiche[1]!="")){
-                if(($affiche[0]!="")&&($affiche[1]!="")&&($temoin_erreur!="oui")){
-                    $verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
-                    $resverif = mysql_num_rows($verif);
-                    if($resverif == 0) {
-                        $req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0'");
-                        if(!$req) {
-                            $nb_reg_no++;
-                            //echo mysql_error();
-                            echo "<tr><td colspan='2'><font color='red'>".mysql_error()."</font></td></tr>\n";
-                        } else {
-                            echo "<tr><td><p><font color='red'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>\n";
-                        }
-                    } else {
-                        $nom_complet = mysql_result($verif,0,'nom_complet');
-                        echo "<tr><td><p><font color='green'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
-                    }
-                }
+					$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
+					if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
+					//if((strlen(ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+						$temoin_erreur="oui";
+						//echo "<!--  -->\n";
+						$msg.="Le nom <font color='red'>$affiche[0]</font> ne convient pas.<br />\n";
+						$nb_reg_no++;
+					}
+
+					$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
+					//if((strlen(ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
+					if((strlen(ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
+						$temoin_erreur="oui";
+						//echo "<!--  -->\n";
+						$msg.="Le nom <font color='red'>$affiche[1]</font> ne convient pas.<br />\n";
+						$nb_reg_no++;
+					}
+
+					/*
+					for($i = 0; $i < count($tabchamps); $i++) {
+						$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
+					}
+					*/
+					//if(($affiche[0]!="")&&($affiche[1]!="")){
+					if(($affiche[0]!="")&&($affiche[1]!="")&&($temoin_erreur!="oui")){
+						$verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
+						$resverif = mysql_num_rows($verif);
+						if($resverif == 0) {
+							$req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0'");
+							if(!$req) {
+								$nb_reg_no++;
+								//echo mysql_error();
+								echo "<tr><td colspan='2'><font color='red'>".mysql_error()."</font></td></tr>\n";
+							} else {
+								echo "<tr><td><p><font color='red'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>\n";
+							}
+						} else {
+							$nom_complet = mysql_result($verif,0,'nom_complet');
+							echo "<tr><td><p><font color='green'>".htmlentities($affiche[0])."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+						}
+					}
+				}
             }
             echo "</table>\n";
             //dbase_close($fp);
