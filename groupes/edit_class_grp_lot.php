@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 30/08/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -268,9 +268,9 @@ echo "<script language='javascript' type='text/javascript'>
 
 // On peut basculer entre deux modes de saisis : seulement les groupes déjà associés, ou bien nouveaux groupes
 if ($display == "current") {
-	echo "<p>--> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=new'>Ajouter de nouveaux groupes</a></p>";
+	echo "<p><img src='../images/icons/add.png' alt'' class='back_link'/> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=new'>Ajouter de nouveaux groupes</a></p>";
 } else {
-	echo "<p>--> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=current'>Editer les groupes existants</a></p>";
+	echo "<p><img src='../images/icons/configure.png' alt'' class='back_link'/> <a href='edit_class_grp_lot.php?id_classe=".$id_classe."&amp;display=current'>Editer les groupes existants</a></p>";
 }
 //echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='new_groups' method='post'>";

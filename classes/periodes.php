@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/04/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -137,8 +137,9 @@ require_once("../lib/header.inc");
 
 
 <form enctype="multipart/form-data" method="post" action="periodes.php">
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' value='Enregistrer' />
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 </p>
+<center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
 
@@ -185,7 +186,7 @@ if ($test_periode == 0) {
     </table>
     </center>
 <?php } ?>
-<input type='submit' value='Enregistrer' />
+<center><input type='submit' value='Enregistrer' style='margin: 30px 0 30px 0;'/></center>
 <input type='hidden' name='is_posted' value="yes" />
 <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
 </form>

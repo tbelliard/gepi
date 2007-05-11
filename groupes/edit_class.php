@@ -1,8 +1,8 @@
 <?php
 /*
-* Last modification  : 30/08/2006
+* $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -266,7 +266,7 @@ for($i=0;$i<10;$i++){
         echo "<br/>";
         echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
         echo "<table border = '0' width='100%'><tr><td width='25%'>";
-        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/delete16.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo " -- <span class=\"norme\">";
         echo "<b>";
         if ($total == "1") {
@@ -341,7 +341,7 @@ for($i=0;$i<10;$i++){
 
         $inscrits = substr($inscrits, 0, -1);
 
-        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "'>Elèves inscrits (" . $inscrits . ")</a>";
+        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits (" . $inscrits . ")</a>";
         echo "</b></td>";
         echo "<td width='20%'>Priorité d'affichage";
         //=================================

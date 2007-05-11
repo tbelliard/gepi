@@ -165,10 +165,13 @@ $classe = mysql_result($call_classe, "0", "classe");
 <form enctype="multipart/form-data" action="classes_const.php" method=post>
 <p class=bold>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href="prof_suivi.php?id_classe=<?php echo $id_classe; ?>"><?php echo getSettingValue("gepi_prof_suivi"); ?> : saisie rapide</a>
- | <a href="classes_ajout.php?id_classe=<?php echo $id_classe;?>">Ajouter des élèves à la classe</a>
- | <input type="submit" value="Enregistrer" /></p>
+</p>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
-<p><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p> 
+<center><input type="submit" value="Enregistrer" /></center>
+<p>
+<img src='../images/icons/add_user.png' alt='' /> <a href="classes_ajout.php?id_classe=<?php echo $id_classe;?>">Ajouter des élèves à la classe</a>
+</p>
+<p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p> 
 <?php
 $call_eleves = mysql_query("SELECT DISTINCT j.login FROM j_eleves_classes j, eleves e WHERE (j.id_classe = '$id_classe' and e.login = j.login) ORDER BY e.nom, e.prenom");
 $nombreligne = mysql_num_rows($call_eleves);
@@ -288,7 +291,7 @@ if ($nombreligne == '0') {
         $k++;
     }
     echo "</table>";
-    echo "<input type='submit' value='Enregistrer' /><br />";
+    echo "<center><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></center><br />";
 
 }
 
