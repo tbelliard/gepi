@@ -102,11 +102,18 @@ while ($i < $nombre_lignes){
         if ($current_niveau == $type_etab) {$current_niveau_nom = $nom_etablissement;}
     }
     $current_type = mysql_result($call_data, $i, "type");
-    if ($current_type == 'aucun')
+    if ($current_type == 'aucun'){
         $current_type = '';
-    else
-        $current_type = $type_etablissement2[$current_type][$current_niveau];
-    $current_cp = mysql_result($call_data, $i, "cp");
+	}
+    else{
+        if(isset($type_etablissement2[$current_type][$current_niveau])){
+			$current_type = $type_etablissement2[$current_type][$current_niveau];
+		}
+		else{
+			$current_type = '';
+		}
+    }
+	$current_cp = mysql_result($call_data, $i, "cp");
     $current_ville = mysql_result($call_data, $i, "ville");
     echo "<tr><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>";
     echo "<td>$current_nom</td>";

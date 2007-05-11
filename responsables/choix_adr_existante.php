@@ -252,7 +252,7 @@ else{
 	if($limit!='TOUS'){
 		$sql.=" LIMIT $debut,$limit";
 	}
-	echo "<tr><td colspan='7'>$sql</td></tr>";
+	//echo "<tr><td colspan='7'>$sql</td></tr>";
 	$res_adr=mysql_query($sql);
 
 
