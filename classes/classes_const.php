@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 05/05/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -213,16 +213,23 @@ if ($nombreligne == '0') {
         echo "<tr><td><p>".$nom_eleve." ".$prenom_eleve ;
         echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."'>Matières suivies</a></b>";
         echo "</p></td>";
-        echo "<td><p>I-ext.|Int.|D/P|Ext.<br /><input type='radio' name='$regime_login' value='i-e'";
+        echo "<td style='padding: 0;'>";
+		
+		echo "<table style='border-collaspe: collapse;'><tr>";
+		echo "<td style='text-align: center;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
         if ($regime == 'i-e') {echo "CHECKED";}
-        echo " />&nbsp;&nbsp;&nbsp;<input type='radio' name='$regime_login' value='int.'";
+        echo " /></td>";
+		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
         if ($regime == 'int.') {echo "CHECKED";}
-        echo " />&nbsp;&nbsp;&nbsp;<input type='radio' name='$regime_login' value='d/p'";
+        echo " /></td>";
+		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
         if ($regime == 'd/p') {echo "CHECKED";}
-        echo " />&nbsp;&nbsp;&nbsp;<input type='radio' name='$regime_login' value='ext.'";
+        echo " /></td>";
+		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
         if ($regime == 'ext.') {echo "CHECKED";}
         //echo " /></p></td><td><p><center><input type='checkbox' name='$doublant_login' value='yes'";
-        echo " /></p></td><td><p align='center'><input type='checkbox' name='$doublant_login' value='yes'";
+        echo " /></td></tr></table>";
+		echo "<td><p align='center'><input type='checkbox' name='$doublant_login' value='yes'";
         if ($doublant == 'R') {echo "CHECKED";}
         //echo " /></center></p></td><td><p><select size='1' name='$prof_login'>";
         echo " /></p></td><td><p><select size='1' name='$prof_login'>";
