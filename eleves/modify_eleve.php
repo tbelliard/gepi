@@ -94,6 +94,7 @@ echo "\$eleve_login=$eleve_login<br />";
 echo "\$valider_choix_resp=$valider_choix_resp<br />";
 echo "\$definir_resp=$definir_resp<br />";
 */
+// Validation d'un choix de responsable
 if((isset($eleve_login))&&(isset($definir_resp))&&(isset($_POST['valider_choix_resp']))) {
 	if($definir_resp==1){
 		$pers_id=$reg_resp1;
@@ -172,6 +173,7 @@ if((isset($eleve_login))&&(isset($definir_resp))&&(isset($_POST['valider_choix_r
 
 
 
+// Validation d'un choix d'établissement d'origine
 if((isset($eleve_login))&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
 
 	if($reg_etab==""){
@@ -223,6 +225,7 @@ if((isset($eleve_login))&&(isset($definir_etab))&&(isset($_POST['valider_choix_e
 
 
 //================================================
+// Validation de modifications dans le formulaire de nom, prénom,...
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	// Détermination du format de la date de naissance
 	$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE");
@@ -514,12 +517,70 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		*/
 
 		if (!$reg_data) {
-			$msg = "Erreur lors de l'enregistrement des données !";
+			$msg = "Erreur lors de l'enregistrement des données ! ";
 		} else {
 			//$msg = "Les modifications ont bien été enregistrées !";
 			// MODIF POUR AFFICHER MES TEMOINS...
-			$msg .= "Les modifications ont bien été enregistrées !";
+			$msg .= "Les modifications ont bien été enregistrées ! ";
 		}
+
+
+		// Envoi de la photo
+		if(isset($reg_no_gep)){
+			if($reg_no_gep!=""){
+				if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
+					if(isset($_POST['suppr_filephoto'])){
+						if($_POST['suppr_filephoto']=='y'){
+							if(unlink("../photos/eleves/$reg_no_gep.jpg")){
+								$msg.="La photo ../photos/eleves/$reg_no_gep.jpg a été supprimée. ";
+							}
+							else{
+								$msg.="Echec de la suppression de la photo ../photos/eleves/$reg_no_gep.jpg ";
+							}
+						}
+					}
+
+					// Contrôler qu'un seul élève a bien cet elenoet???
+					$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
+					$test=mysql_query($sql);
+					$nb_elenoet=mysql_num_rows($test);
+					if($nb_elenoet==1){
+						// filephoto
+						$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+						if($filephoto_tmp!=""){
+							$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+							$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+							// Tester la taille max de la photo?
+
+							if(is_uploaded_file($filephoto_tmp)){
+								$dest_file="../photos/eleves/$reg_no_gep.jpg";
+								$source_file=stripslashes("$filephoto_tmp");
+								$res_copy=copy("$source_file" , "$dest_file");
+								if($res_copy){
+									$msg.="Mise en place de la photo effectuée.";
+								}
+								else{
+									$msg.="Erreur lors de la mise en place de la photo.";
+								}
+							}
+							else{
+								$msg.="Erreur lors de l'upload de la photo.";
+							}
+						}
+					}
+					elseif($nb_elenoet==0){
+							$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+					}
+					else{
+						$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
+					}
+				}
+				else{
+					$msg.="Le numéro GEP proposé contient des caractères non numériques.";
+				}
+			}
+		}
+
 
 		$temoin_ele_id="";
 		$sql="SELECT ele_id FROM eleves WHERE login='$eleve_login'";
@@ -1011,12 +1072,38 @@ echo "<tr>\n";
 
 if(isset($reg_no_gep)){
 	$photo="../photos/eleves/".$reg_no_gep.".jpg";
+	echo "<td align='center'>\n";
+	$temoin_photo="non";
 	if(file_exists($photo)){
-		echo "<td>\n";
+		$temoin_photo="oui";
+		//echo "<td>\n";
+		echo "<div align='center'>\n";
 		$dimphoto=redimensionne_image($photo);
 		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
-		echo "</td>\n";
+		//echo "</td>\n";
+		//echo "<br />\n";
+		echo "</div>\n";
+		echo "<div style='clear:both;'></div>\n";
 	}
+	echo "<div align='center'>\n";
+	echo "<span style='font-size:xx-small;'>";
+	echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+	if($temoin_photo=="oui"){
+		echo "Modifier le fichier photo</a>\n";
+	}
+	else{
+		echo "Envoyer un fichier photo</a>\n";
+	}
+	echo "</span>\n";
+	echo "<div id='div_upload_photo' style='display:none;'>";
+	echo "<input type='file' name='filephoto' />\n";
+	if(file_exists($photo)){
+		echo "<br />\n";
+		echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
+	}
+	echo "</div>\n";
+	echo "</div>\n";
+	echo "</td>\n";
 }
 echo "</tr>\n";
 echo "</table>\n";
