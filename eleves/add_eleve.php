@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: add_eleve.php 388 2007-05-09 17:01:44Z crob $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -63,11 +63,6 @@ unset($eleve_login);
 $eleve_login = isset($_POST["eleve_login"]) ? $_POST["eleve_login"] : (isset($_GET["eleve_login"]) ? $_GET["eleve_login"] : NULL);
 
 
-$definir_resp = isset($_POST["definir_resp"]) ? $_POST["definir_resp"] : (isset($_GET["definir_resp"]) ? $_GET["definir_resp"] : NULL);
-if(($definir_resp!=1)&&($definir_resp!=2)){$definir_resp=NULL;}
-
-$definir_etab = isset($_POST["definir_etab"]) ? $_POST["definir_etab"] : (isset($_GET["definir_etab"]) ? $_GET["definir_etab"] : NULL);
-
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -82,145 +77,6 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
-
-
-/*
-foreach($_POST as $post => $val){
-	echo $post.' : '.$val."<br />\n";
-}
-
-echo "\$eleve_login=$eleve_login<br />";
-echo "\$valider_choix_resp=$valider_choix_resp<br />";
-echo "\$definir_resp=$definir_resp<br />";
-*/
-if((isset($eleve_login))&&(isset($definir_resp))&&(isset($_POST['valider_choix_resp']))) {
-	if($definir_resp==1){
-		$pers_id=$reg_resp1;
-	}
-	else{
-		$pers_id=$reg_resp2;
-	}
-
-	if($pers_id==""){
-		// Recherche de l'ele_id
-		$sql="SELECT ele_id FROM eleves WHERE login='$eleve_login'";
-		$res_ele=mysql_query($sql);
-		if(mysql_num_rows($res_ele)==0){
-			$msg="Erreur: L'élève $eleve_login n'a pas l'air présent dans la table 'eleves'.";
-		}
-		else{
-			$lig_ele=mysql_fetch_object($res_ele);
-
-			$sql="DELETE FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND resp_legal='$definir_resp'";
-			$suppr=mysql_query($sql);
-			if($suppr){
-				$msg="Suppression de l'association de l'élève avec le responsable $definir_resp réussie.";
-			}
-			else{
-				$msg="Echec de la suppression l'association de l'élève avec le responsable $definir_resp.";
-			}
-		}
-	}
-	else{
-		$sql="SELECT 1=1 FROM resp_pers WHERE pers_id='$pers_id'";
-		$test=mysql_query($sql);
-
-		if(mysql_num_rows($test)==0){
-			$msg="Erreur: L'identifiant de responsable proposé n'existe pas.";
-		}
-		else{
-			// Recherche de l'ele_id
-			$sql="SELECT ele_id FROM eleves WHERE login='$eleve_login'";
-			$res_ele=mysql_query($sql);
-			if(mysql_num_rows($res_ele)==0){
-				$msg="Erreur: L'élève $eleve_login n'a pas l'air présent dans la table 'eleves'.";
-			}
-			else{
-				$lig_ele=mysql_fetch_object($res_ele);
-
-				//$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$pers_id' AND ele_id='$lig_ele->ele_id' AND resp_legal='$definir_resp'";
-				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND resp_legal='$definir_resp'";
-				$test=mysql_query($sql);
-
-				if(mysql_num_rows($test)==0){
-					$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$lig_ele->ele_id', resp_legal='$definir_resp', pers_contact='1'";
-					$insert=mysql_query($sql);
-					if($insert){
-						$msg="Association de l'élève avec le responsable $definir_resp réussie.";
-					}
-					else{
-						$msg="Echec de l'association de l'élève avec le responsable $definir_resp.";
-					}
-				}
-				else{
-					$sql="UPDATE responsables2 SET pers_id='$pers_id' WHERE ele_id='$lig_ele->ele_id' AND resp_legal='$definir_resp'";
-					$update=mysql_query($sql);
-					if($update){
-						$msg="Association de l'élève avec le responsable $definir_resp réussie.";
-					}
-					else{
-						$msg="Echec de l'association de l'élève avec le responsable $definir_resp.";
-					}
-				}
-			}
-		}
-	}
-	unset($definir_resp);
-}
-
-
-
-
-if((isset($eleve_login))&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
-
-	if($reg_etab==""){
-		$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
-		$suppr=mysql_query($sql);
-		if($suppr){
-			$msg="Suppression de l'association de l'élève avec un établissement réussie.";
-		}
-		else{
-			$msg="Echec de la suppression l'association de l'élève avec un établissement.";
-		}
-	}
-	else{
-		$sql="SELECT 1=1 FROM etablissements WHERE id='$reg_etab'";
-		//echo "$sql<br />";
-		$test=mysql_query($sql);
-
-		if(mysql_num_rows($test)==0){
-			$msg="Erreur: L'établissement choisi (<i>$reg_etab</i>) n'existe pas dans la table 'etablissement'.";
-		}
-		else{
-			$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
-			$test=mysql_query($sql);
-
-			if(mysql_num_rows($test)==0){
-				$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$eleve_login', id_etablissement='$reg_etab'";
-				$insert=mysql_query($sql);
-				if($insert){
-					$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
-				}
-				else{
-					$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
-				}
-			}
-			else{
-				$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$eleve_login'";
-				$update=mysql_query($sql);
-				if($update){
-					$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
-				}
-				else{
-					$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
-				}
-			}
-		}
-	}
-	unset($definir_etab);
-}
-
 
 //================================================
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
@@ -270,11 +126,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	// $reg_login non vide correspond à un nouvel élève.
 	// On a saisi un login avant de valider
 	if (($continue == 'yes') and (isset($reg_login))) {
-		// CE CAS NE DOIT PLUS SE PRODUIRE PUISQUE J'AI AJOUTé UNE PAGE add_eleve.php D'APRES L'ANCIENNE modify_eleve.php
-		// On doit nécessairement passer dans le else plus bas...
-
-		//echo "\$reg_login=$reg_login<br/>";
-
 		$msg = '';
 		$ok = 'yes';
 		if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
@@ -375,8 +226,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						ele_id = '".$ele_id."'
 						");
 
-
-					/*
 					$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 					$test_resp1=mysql_query($sql);
 					if(mysql_num_rows($test_resp1)>0){
@@ -443,12 +292,9 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 							}
 						}
 					}
-					*/
 
-					// Régime:
-					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
-					/*
 					// Régime et établissement d'origine:
+					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
 					$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
 					$count2 = mysql_num_rows($call_test);
 					if ($count2 == "0") {
@@ -462,7 +308,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 							$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
 						}
 					}
-					*/
 					if ((!$reg_data1) or (!$reg_data3)) {
 						$msg = "Erreur lors de l'enregistrement des données";
 					} elseif ($mode == "unique") {
@@ -471,7 +316,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						die();
 					} elseif ($mode == "multiple") {
 						$mess=rawurlencode("Elève enregistré.Vous pouvez saisir l'élève suivant.");
-						header("Location: modify_eleve.php?mode=multiple&msg=$mess");
+						header("Location: add_eleve.php?mode=multiple&msg=$mess");
 						die();
 					}
 				} else {
@@ -497,7 +342,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 			}
 		}
 
-		/*
 		$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
 		$count = mysql_num_rows($call_test);
 		if ($count == "0") {
@@ -511,7 +355,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
 			}
 		}
-		*/
 
 		if (!$reg_data) {
 			$msg = "Erreur lors de l'enregistrement des données !";
@@ -534,7 +377,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		}
 
 
-		/*
 		if($temoin_ele_id==""){
 			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
 			$test_resp1=mysql_query($sql);
@@ -603,10 +445,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				}
 			}
 		}
-		*/
-
-
-
 
 /*
 		$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
@@ -776,165 +614,8 @@ if(!getSettingValue('conv_new_resp_table')){
 
 
 ?>
-<form enctype="multipart/form-data" action="modify_eleve.php" method=post>
+<form enctype="multipart/form-data" action="add_eleve.php" method=post>
 <?php
-
-//eleve_login=$eleve_login&amp;definir_resp=1
-if(isset($definir_resp)){
-	if(!isset($valider_choix_resp)){
-		echo "<p>Choix du responsable légal <b>$definir_resp</b> pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
-
-		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
-		echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
-
-		if($definir_resp==1){
-			$pers_id=$eleve_no_resp1;
-		}
-		else{
-			$pers_id=$eleve_no_resp2;
-		}
-
-		//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-		$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp ORDER BY rp.nom, rp.prenom";
-		$call_resp=mysql_query($sql);
-		$nombreligne = mysql_num_rows($call_resp);
-		// si la table des responsables est non vide :
-		if ($nombreligne != 0) {
-			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Valider' /></p>\n";
-			echo "<table align='center' border='1'>\n";
-			echo "<tr>\n";
-			echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' /></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Responsable légal $definir_resp</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Adresse</b></td>\n";
-			echo "</tr>\n";
-
-			$cpt=1;
-			while($lig_resp=mysql_fetch_object($call_resp)){
-				if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
-				echo "<tr>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'><input type='radio' name='reg_resp".$definir_resp."' value='$lig_resp->pers_id' ";
-				if($lig_resp->pers_id==$pers_id){
-					echo "checked ";
-				}
-				echo "/></td>";
-				echo "<td style='text-align:center; background-color:$couleur;'><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>";
-
-				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$lig_resp->pers_id' AND rp.adr_id=ra.adr_id";
-				$res_adr=mysql_query($sql);
-				if(mysql_num_rows($res_adr)==0){
-					// L'adresse du responsable n'est pas définie:
-					//echo "<font color='red'>L'adresse du responsable légal n'est pas définie</font>: <a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>Définir l'adresse du responsable légal</a>\n";
-					echo "&nbsp;";
-				}
-				else{
-					$chaine_adr1="";
-					$lig_adr=mysql_fetch_object($res_adr);
-					if("$lig_adr->adr1"!=""){$chaine_adr1.="$lig_adr->adr1, ";}
-					if("$lig_adr->adr2"!=""){$chaine_adr1.="$lig_adr->adr2, ";}
-					if("$lig_adr->adr3"!=""){$chaine_adr1.="$lig_adr->adr3, ";}
-					if("$lig_adr->adr4"!=""){$chaine_adr1.="$lig_adr->adr4, ";}
-					if("$lig_adr->cp"!=""){$chaine_adr1.="$lig_adr->cp, ";}
-					if("$lig_adr->commune"!=""){$chaine_adr1.="$lig_adr->commune";}
-					if("$lig_adr->pays"!=""){$chaine_adr1.=" (<i>$lig_adr->pays</i>)";}
-					echo $chaine_adr1;
-				}
-
-				echo "</td>\n";
-				echo "</tr>\n";
-				$cpt++;
-			}
-
-			echo "</table>\n";
-			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Valider' /></p>\n";
-		}
-		else{
-			echo "<p>aucun responsable n'est défini</p>\n";
-		}
-
-		echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
-		echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
-		echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
-	}
-	else{
-		// On valide l'enregistrement...
-		// ... il faut le faire plus haut avant le header...
-	}
-	echo "</form>\n";
-	require("../lib/footer.inc.php");
-	die();
-}
-
-
-
-
-
-
-if(isset($definir_etab)){
-	if(!isset($valider_choix_etab)){
-		echo "<p>Choix de l'établissement d'origine pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
-
-		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
-		echo "<input type='hidden' name='definir_etab' value='y' />\n";
-
-		$sql="SELECT * FROM etablissements ORDER BY ville,nom";
-		$call_etab=mysql_query($sql);
-		$nombreligne = mysql_num_rows($call_etab);
-		if ($nombreligne != 0) {
-			echo "<p align='center'><input type='submit' name='valider_choix_etab' value='Valider' /></p>\n";
-			echo "<table align='center' border='1'>\n";
-			echo "<tr>\n";
-			echo "<td><input type='radio' name='reg_etab' value='' /></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>RNE</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Niveau</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Type</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Nom</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Code postal</b></td>\n";
-			echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Ville</b></td>\n";
-			echo "</tr>\n";
-
-			$cpt=1;
-			while($lig_etab=mysql_fetch_object($call_etab)){
-				if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
-				echo "<tr>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'><input type='radio' name='reg_etab' value='$lig_etab->id' ";
-				if($lig_etab->id==$id_etab){
-					echo "checked ";
-				}
-				echo "/></td>";
-				echo "<td style='text-align:center; background-color:$couleur;'><a href='../etablissements/modify_etab.php?id=$lig_etab->id' target='_blank'>$lig_etab->id</a></td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->niveau</td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->type</td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->nom</td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->cp</td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->ville</td>\n";
-
-				echo "</tr>\n";
-				$cpt++;
-			}
-
-			echo "</table>\n";
-			echo "<p align='center'><input type='submit' name='valider_choix_etab' value='Valider' /></p>\n";
-		}
-		else{
-			echo "<p>Aucun établissement n'est défini</p>\n";
-		}
-
-		echo "<p>Si un établissement ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
-		echo "en vous rendant dans [Gestion des bases-><a href='../etablissements/index.php'>Gestion des établissements</a>]</p>\n";
-	}
-	else{
-		// On valide l'enregistrement...
-		// ... il faut le faire plus haut avant le header...
-	}
-	echo "</form>\n";
-	require("../lib/footer.inc.php");
-	die();
-}
-
-
-
-
 echo "<table>\n";
 echo "<tr>\n";
 echo "<td>\n";
@@ -1056,222 +737,236 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 <br />- Les champs * sont obligatoires.</p>
 <?php
 
+//$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='1' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
+$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
+$call_resp=mysql_query($sql);
+$nombreligne = mysql_num_rows($call_resp);
+// si la table des responsables est non vide :
+if ($nombreligne != 0) {
+	$chaine_adr1 = '';
+	$chaine_adr2 = '';
+	$chaine_resp2 = '';
+
+	echo "<br /><hr /><H3>Envoi des bulletins par voie postale</H3>";
+	echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
+	echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>";
+
+	echo "<td><select size=1 name='reg_resp1'>\n";
+	echo "<option value='(vide)' ";
+	if(!(isset($eleve_no_resp1))){
+		echo " SELECTED";
+	}
+	echo ">(vide)</option>\n";
+	$i = 0;
+	//while ($i < $nombreligne){
+	while($lig_resp1=mysql_fetch_object($call_resp)){
+	        echo "<option value='".$lig_resp1->pers_id."'";
+		if ($lig_resp1->pers_id==$eleve_no_resp1) {
+			echo " SELECTED";
+		}
+		echo ">\n";
+
+		echo "$lig_resp1->nom $lig_resp1->prenom | ";
+		/*
+		if($lig_resp1->adr1!=''){echo "$lig_resp1->adr1 ";}
+		if($lig_resp1->adr2!=''){echo "$lig_resp1->adr2 ";}
+		if($lig_resp1->adr3!=''){echo "$lig_resp1->adr3 ";}
+		if($lig_resp1->adr4!=''){echo "$lig_resp1->adr4 ";}
+		echo "- ";
+		if($lig_resp1->cp!=''){echo "$lig_resp1->cp, ";}
+		if($lig_resp1->commune!=''){echo "$lig_resp1->commune ";}
+		if($lig_resp1->pays!=''){echo "$lig_resp1->pays";}
+		*/
+
+		$chaine_adr1_tmp="";
+		if($lig_resp1->adr1!=''){$chaine_adr1_tmp.="$lig_resp1->adr1 ";}
+		if($lig_resp1->adr2!=''){$chaine_adr1_tmp.="$lig_resp1->adr2 ";}
+		if($lig_resp1->adr3!=''){$chaine_adr1_tmp.="$lig_resp1->adr3 ";}
+		if($lig_resp1->adr4!=''){$chaine_adr1_tmp.="$lig_resp1->adr4 ";}
+		$chaine_adr1_tmp.="- ";
+		if($lig_resp1->cp!=''){$chaine_adr1_tmp.="$lig_resp1->cp, ";}
+		if($lig_resp1->commune!=''){$chaine_adr1_tmp.="$lig_resp1->commune ";}
+		if($lig_resp1->pays!=''){$chaine_adr1_tmp.="$lig_resp1->pays";}
+
+		echo $chaine_adr1_tmp;
+
+		if ($lig_resp1->pers_id==$eleve_no_resp1) {
+			$chaine_adr1=$chaine_adr1_tmp;
+		}
+
+		echo "</option>\n";
+	}
+
+
+/*
+$call_resp = mysql_query("SELECT * FROM responsables ORDER BY nom1, prenom1");
+$nombreligne = mysql_num_rows($call_resp);
+// si la table des responsables est non vide :
+if ($nombreligne != 0) {
+    $chaine_adr1 = '';
+    $chaine_adr2 = '';
+    $chaine_resp2 = '';
+    echo "<br /><hr /><H3>Envoi des bulletins par voie postale</H3>";
+    echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
+    echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>";
+
+    echo "<td><select size = 1 name = 'reg_resp1'>";
+    echo "<option value='(vide)' "; if (!(isset($eleve_no_resp))) {echo " SELECTED";} echo ">(vide)</option>";
+    $i = 0;
+    while ($i < $nombreligne){
+        $ereno = mysql_result($call_resp , $i, "ereno");
+        $nom1 = mysql_result($call_resp , $i, "nom1");
+        $prenom1 = mysql_result($call_resp , $i, "prenom1");
+        $adr1 = mysql_result($call_resp , $i, "adr1");
+        $adr1_comp = mysql_result($call_resp , $i, "adr1_comp");
+        $commune1 = mysql_result($call_resp , $i, "commune1");
+        $cp1 = mysql_result($call_resp , $i, "cp1");
+        $nom2 = mysql_result($call_resp , $i, "nom2");
+        $prenom2 = mysql_result($call_resp , $i, "prenom2");
+        $adr2 = mysql_result($call_resp , $i, "adr2");
+        $commune2 = mysql_result($call_resp , $i, "commune2");
+        $cp2 = mysql_result($call_resp , $i, "cp2");
+        echo "<option value=".$ereno." ";
+        if ($ereno == $eleve_no_resp) {
+            echo " SELECTED";
+            $chaine_adr1 = $adr1." - ".$cp1.", ".$commune1;
+            if ($adr2 != '') {
+                $chaine_adr2 = $adr2." - ".$cp2.", ".$commune2;
+                $chaine_resp2 = $nom2." ".$prenom2;
+            }
+            if (substr($adr1, 0, strlen($adr1)-1) == substr($adr2, 0, strlen($adr1)-1) and ($cp1 == $cp2) and ($commune1 == $commune2)) {
+                $message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
+            } else {
+                if ($chaine_adr2 != '') {
+                    $message =  "<b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b>";
+                } else {
+                    $message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+                }
+            }
+
+
+        }
+        echo ">".$nom1." ".$prenom1." | ".$adr1." ".$adr1_comp." - ".$cp1.", ".$commune1."</option>";
+
+        $i++;
+    }
+*/
+
+    echo "</select></td></tr>";
+
+
+	if($eleve_no_resp2!=0){
+		$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='2' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id='$ele_id' AND r.pers_id='$eleve_no_resp2'";
+		$res_resp2=mysql_query($sql);
+		if(mysql_num_rows($res_resp2)>0){
+			$lig_resp2=mysql_fetch_object($res_resp2);
+			echo "<tr><td><b>Deuxième responsable légal : </b></td>";
+			echo "<td>".$lig_resp2->nom." ".$lig_resp2->prenom." | ";
+
+			/*
+			if($lig_resp2->adr1!=''){echo "$lig_resp2->adr1 ";}
+			if($lig_resp2->adr2!=''){echo "$lig_resp2->adr2 ";}
+			if($lig_resp2->adr3!=''){echo "$lig_resp2->adr3 ";}
+			if($lig_resp2->adr4!=''){echo "$lig_resp2->adr4 ";}
+			echo "- ";
+			if($lig_resp2->cp!=''){echo "$lig_resp2->cp, ";}
+			if($lig_resp2->commune!=''){echo "$lig_resp2->commune ";}
+			if($lig_resp2->pays!=''){echo "$lig_resp2->pays";}
+			*/
+
+			if($lig_resp2->adr1!=''){$chaine_adr2.="$lig_resp2->adr1 ";}
+			if($lig_resp2->adr2!=''){$chaine_adr2.="$lig_resp2->adr2 ";}
+			if($lig_resp2->adr3!=''){$chaine_adr2.="$lig_resp2->adr3 ";}
+			if($lig_resp2->adr4!=''){$chaine_adr2.="$lig_resp2->adr4 ";}
+			$chaine_adr2.="- ";
+			if($lig_resp2->cp!=''){$chaine_adr2.="$lig_resp2->cp, ";}
+			if($lig_resp2->commune!=''){$chaine_adr2.="$lig_resp2->commune ";}
+			if($lig_resp2->pays!=''){$chaine_adr2.="$lig_resp2->pays";}
+
+			echo $chaine_adr2;
+
+			echo "</td></tr>" ;
+
+
+			if(substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
+				$message = "<b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
+			} else {
+				if($chaine_adr2!='') {
+					$message =  "<b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b>";
+				} else {
+					$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+				}
+			}
+
+		}
+		else{
+			$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+		}
+	}
+	elseif($eleve_no_resp1!=0){
+		$message =  "<b>Le bulletin sera envoyé au responsable légal ci-dessus.</b>";
+	}
+	/*
+	else{
+		$message="";
+	}
+	*/
+/*
+    if ($chaine_adr2 != '') {
+        echo "<tr><td><b>Deuxième responsable légal : </b></td>";
+        echo "<td>".$chaine_resp2." | ".$chaine_adr2."</td></tr>" ;
+    }
+*/
+
+    echo "</table>\n";
+    echo "<br />Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base
+    (après avoir, le cas échéant, sauvegardé cette fiche)
+    <br />en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]";
+
+    if ($chaine_adr1 != '') {
+		if(!isset($message)){$message="";}
+        echo "<br />";
+        echo $message;
+        echo "<br />";
+    }
+
+}
+
+
+
+
+?>
+<br /><hr /><H3>Etablissement d'origine</h3>
+<p>Etablissement d'origine :
+<select size = 1 name = 'reg_etab'>
+<?php
+$calldata = mysql_query("SELECT * FROM etablissements ORDER BY id");
+$nombreligne = mysql_num_rows($calldata);
+echo "<option value='(vide)' "; if (!($id_etab)) {echo " SELECTED";} echo ">(vide)</option>";
+$i = 0;
+while ($i < $nombreligne){
+    $list_etab_id = mysql_result($calldata, $i, "id");
+    $list_etab_nom = mysql_result($calldata, $i, "nom");
+    $list_etab_cp = mysql_result($calldata, $i, "cp");
+    if ($list_etab_cp == 0) {$list_etab_cp = '';}
+    $list_etab_ville = mysql_result($calldata, $i, "ville");
+    $list_etab_niveau = mysql_result($calldata, $i, "niveau");
+    foreach ($type_etablissement as $type_etab => $nom_etablissement) {
+        if ($list_etab_niveau == $type_etab) {$list_etab_niveau = $nom_etablissement;}
+    }
+    echo "<option value=$list_etab_id "; if ($list_etab_id == $id_etab) {echo " SELECTED";} echo ">$list_etab_id | $list_etab_nom - $list_etab_niveau ($list_etab_cp";
+    if ($list_etab_cp != '') {echo ", ";}
+    echo "$list_etab_ville)</option>";
+$i++;
+}
+
+echo "</select>";
 echo "<input type=hidden name=is_posted value=\"1\" />";
 if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />";
 if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />";
 if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />";
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />";
 echo "<center><input type=submit value=Enregistrer /></center>";
-echo "</form>\n";
-
-
-
-if(isset($eleve_login)){
-	//$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='1' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-	//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp ORDER BY rp.nom, rp.prenom";
-	$call_resp=mysql_query($sql);
-	$nombreligne = mysql_num_rows($call_resp);
-	// si la table des responsables est non vide :
-	if ($nombreligne != 0) {
-
-		echo "<br />\n";
-		echo "<hr />\n";
-		echo "<h3>Envoi des bulletins par voie postale</h3>\n";
-		echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-		echo "<br />\n<br />\n";
-
-		$temoin_tableau="";
-		$chaine_adr1='';
-		if($eleve_no_resp1==0){
-			// Le responsable 1 n'est pas défini:
-			echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Définir le responsable légal 1</a></p>\n";
-		}
-		else{
-			$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$eleve_no_resp1'";
-			$res_resp=mysql_query($sql);
-			if(mysql_num_rows($res_resp)==0){
-				// Bizarre: Le responsable 1 n'est pas défini:
-				echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Définir le responsable légal 1</a></p>\n";
-			}
-			else{
-				$temoin_tableau="oui";
-				$lig_resp=mysql_fetch_object($res_resp);
-				echo "<table border='0'>\n";
-				echo "<tr valign='top'>\n";
-				echo "<td rowspan='2'>Le responsable légal 1 est: </td>\n";
-				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier l'association</a></td>\n";
-				echo "</tr>\n";
-
-				echo "<tr valign='top'>\n";
-				// La 1ère colonne est dans le rowspan
-
-				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp1' AND rp.adr_id=ra.adr_id";
-				$res_adr=mysql_query($sql);
-				if(mysql_num_rows($res_adr)==0){
-					// L'adresse du responsable 1 n'est pas définie:
-					echo "<td colspan='2'>\n";
-					echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
-					echo "</td>\n";
-				}
-				else{
-					echo "<td>\n";
-					$lig_adr=mysql_fetch_object($res_adr);
-					if("$lig_adr->adr1"!=""){$chaine_adr1.="$lig_adr->adr1, ";}
-					if("$lig_adr->adr2"!=""){$chaine_adr1.="$lig_adr->adr2, ";}
-					if("$lig_adr->adr3"!=""){$chaine_adr1.="$lig_adr->adr3, ";}
-					if("$lig_adr->adr4"!=""){$chaine_adr1.="$lig_adr->adr4, ";}
-					if("$lig_adr->cp"!=""){$chaine_adr1.="$lig_adr->cp, ";}
-					if("$lig_adr->commune"!=""){$chaine_adr1.="$lig_adr->commune";}
-					if("$lig_adr->pays"!=""){$chaine_adr1.=" (<i>$lig_adr->pays</i>)";}
-					echo $chaine_adr1;
-					echo "</td>\n";
-					echo "<td>\n";
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>Modifier l'adresse du responsable</a>\n";
-					echo "</td>\n";
-				}
-				echo "</tr>\n";
-				//echo "</table>\n";
-			}
-		}
-
-
-
-
-
-		$chaine_adr2='';
-		if($eleve_no_resp2==0){
-			// Le responsable 2 n'est pas défini:
-			if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
-
-			echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Définir le responsable légal 2</a></p>\n";
-		}
-		else{
-			$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$eleve_no_resp2'";
-			$res_resp=mysql_query($sql);
-			if(mysql_num_rows($res_resp)==0){
-				// Bizarre: Le responsable 2 n'est pas défini:
-				if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
-
-				echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Définir le responsable légal 2</a></p>\n";
-			}
-			else{
-				$lig_resp=mysql_fetch_object($res_resp);
-
-				if($temoin_tableau!="oui"){
-					echo "<table border='0'>\n";
-					$temoin_tableau="oui";
-				}
-				echo "<tr valign='top'>\n";
-				echo "<td rowspan='2'>Le responsable légal 2 est: </td>\n";
-				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
-				echo "</tr>\n";
-
-				echo "<tr valign='top'>\n";
-				// La 1ère colonne est dans le rowspan
-
-				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp2' AND rp.adr_id=ra.adr_id";
-				$res_adr=mysql_query($sql);
-				if(mysql_num_rows($res_adr)==0){
-					// L'adresse du responsable 2 n'est pas définie:
-					echo "<td colspan='2'>\n";
-					echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
-					echo "</td>\n";
-				}
-				else{
-					echo "<td>\n";
-					$lig_adr=mysql_fetch_object($res_adr);
-					if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
-					if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
-					if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
-					if("$lig_adr->adr4"!=""){$chaine_adr2.="$lig_adr->adr4, ";}
-					if("$lig_adr->cp"!=""){$chaine_adr2.="$lig_adr->cp, ";}
-					if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
-					if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
-					echo "$chaine_adr2";
-					echo "</td>\n";
-					echo "<td>\n";
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Modifier l'adresse du responsable</a>\n";
-					echo "</td>\n";
-				}
-				echo "</tr>\n";
-				//echo "</table>\n";
-			}
-		}
-		if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
-
-
-
-		if("$chaine_adr2"!=""){
-			if("$chaine_adr1"!=""){
-				if("$chaine_adr1"!="$chaine_adr2"){
-					echo "<p><b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b></p>\n";
-				}
-				else{
-					echo "<p><b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b></p>\n";
-				}
-			}
-			else{
-				echo "<p><b>Le bulletin ne sera envoyé qu'au deuxième responsable.</b></p>\n";
-			}
-		}
-		else{
-			if("$chaine_adr1"!=""){
-				echo "<p><b>Le bulletin ne sera envoyé qu'au premier responsable.</b></p>\n";
-			}
-			else{
-				echo "<p><b>Aucune adresse n'est renseignée. Le bulletin ne pourra pas être envoyé.</b></p>\n";
-			}
-		}
-
-
-		if(($eleve_no_resp1==0)||($eleve_no_resp2==0)){
-			echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
-			echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
-			echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
-		}
-	}
-}
-
-
-
-if(isset($eleve_login)){
-
-	echo "<br />\n";
-	echo "<hr />\n";
-
-	echo "<h3>Etablissement d'origine</h3>\n";
-
-	$sql="SELECT * FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
-	$res_etab=mysql_query($sql);
-	if(mysql_num_rows($res_etab)==0) {
-		echo "<p>L'établissement d'origine de l'élève n'est pas renseigné.<br />\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Renseigner l'établissement d'origine</a>";
-		echo "</p>\n";
-	}
-	else{
-		$lig_etab=mysql_fetch_object($res_etab);
-
-		$sql="SELECT * FROM etablissements WHERE id='$lig_etab->id_etablissement'";
-		$res_etab2=mysql_query($sql);
-		if(mysql_num_rows($res_etab2)==0) {
-			echo "<p>L'association avec l'identifiant d'établissement existe (<i>$lig_etab->id_etablissement</i>), mais les informations correspondantes n'existent pas dans la table 'etablissement'.<br />\n";
-
-			echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
-			echo "</p>\n";
-		}
-		else{
-			echo "<p>L'établissement d'origine de l'élève est:<br />\n";
-			$lig_etab2=mysql_fetch_object($res_etab2);
-			echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
-			echo "</p>\n";
-		}
-	}
-	echo "<p><br /></p>\n";
-}
-
+echo "</form>";
 require("../lib/footer.inc.php");
 ?>

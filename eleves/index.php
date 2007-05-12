@@ -319,8 +319,10 @@ if(!getSettingValue('conv_new_resp_table')){
 
 
 ?>
-<a href="modify_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a> |
- <a href="modify_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a>
+<!--a href="modify_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a> |
+ <a href="modify_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a-->
+<a href="add_eleve.php?mode=unique">Ajouter un élève à la base (simple)</a> |
+ <a href="add_eleve.php?mode=multiple">Ajouter des élèves à la base (à la chaîne)</a>
 <?php
 $droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 if ($droits == "V") {
