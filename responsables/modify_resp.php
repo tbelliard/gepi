@@ -783,7 +783,11 @@ if(mysql_num_rows($res_adr)>0){
 echo "</table>\n";
 
 if(isset($pers_id)){
-	echo "<p>Ou <a href='choix_adr_existante.php?pers_id=$pers_id'>Choisir une adresse existante.</a></p>";
+	echo "<p>Ou <a href='choix_adr_existante.php?pers_id=$pers_id";
+	if(isset($adr_id)){
+		echo "&amp;adr_id_actuel=$adr_id";
+	}
+	echo "'>Choisir une adresse existante.</a></p>\n";
 }
 else{
 	//echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?choisir_adr_existante=oui' onClick=''>Choisir une adresse existante.</a></p>";

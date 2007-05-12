@@ -2,6 +2,8 @@
 /*
  * Last modification  : 14/04/2006
  *
+ * $Id$
+ *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -115,15 +117,21 @@ if(!getSettingValue('conv_new_resp_table')){
 echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 
-$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
-$res_adr=mysql_query($sql);
-if(mysql_num_rows($res_adr)==0){
+//$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+//$res_adr=mysql_query($sql);
+$sql="SELECT COUNT(adr_id) nb_adr FROM resp_adr";
+$res_nb=mysql_query($sql);
+$tmp_nb=mysql_fetch_object($res_nb);
+$nb_adr=$tmp_nb->nb_adr;
+//if(mysql_num_rows($res_adr)==0){
+if($nb_adr==0){
 	echo "<p>Aucune adresse n'est encore définie.<p>\n";
 }
 else{
 	$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$pers_id'";
 	$res_info_pers=mysql_query($sql);
 	$lig_pers=mysql_fetch_object($res_info_pers);
+
 
 	echo "<p>Choix d'une adresse pour $lig_pers->nom $lig_pers->prenom (<i>$pers_id</i>)</p>\n";
 
@@ -152,15 +160,17 @@ else{
 	echo "<option value='20'$selected>20</option>\n";
 	if($limit==50){$selected=" selected='true'";}else{$selected="";}
 	echo "<option value='50'$selected>50</option>\n";
-	for($i=100;$i<=500;$i+=100){
+	//for($i=100;$i<=500;$i+=100){
+	for($i=100;$i<=$nb_adr;$i+=100){
 		if($limit==$i){$selected=" selected='true'";}else{$selected="";}
 		echo "<option value='$i'$selected>$i</option>\n";
 	}
-	echo "<option value='TOUS'>TOUS</option>\n";
+	echo "<option value='TOUS'>TOUS ($nb_adr)</option>\n";
 	echo "</select> enregistrements à partir de l'enregistrement n°\n";
 	echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
 
-	$cpt=mysql_num_rows($res_adr);
+	//$cpt=mysql_num_rows($res_adr);
+	$cpt=$nb_adr;
 
 	if(isset($cpt)){
 		//echo "<p>limit=$limit debut=$debut cpt=$cpt</p>";
@@ -214,15 +224,56 @@ else{
 
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 	//echo "<center><input type='submit' value='Valider' /></center>\n";
+
+
+	if(isset($adr_id_actuel)){
+		echo "<input type='hidden' name='adr_id_actuel' value='$adr_id_actuel' />\n";
+	}
+
+
+	echo "<div style='text-align:center;'>\n";
+	echo "ou <a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Filtrer:</a>\n";
+	echo "<div id='div_rech' style='display:none;' align='center'>\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td>les adresses dont \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='crit_rech' value='adr' checked /> une ligne 'adrX'\n";
+	echo "<br />\n";
+	echo "<input type='radio' name='crit_rech' value='cp' /> le code postal\n";
+	echo "<br />\n";
+	echo "<input type='radio' name='crit_rech' value='commune' /> le nom de commune\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='mode_rech' value='contient' checked /> contient \n";
+	echo "<br />\n";
+	echo "<input type='radio' name='mode_rech' value='commence par' /> commence par \n";
+	echo "<br />\n";
+	echo "<input type='radio' name='mode_rech' value='se termine par' /> se termine par \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' name='val_rech' value='' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<center><input type='submit' value='Afficher' /></center>\n";
+
+	echo "</div>\n";
+	echo "</div>\n";
+
+
+
+
 	echo "</form>\n";
 
 
-
+	echo "<hr width='200px' align='center' />\n";
 
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
-	echo "<center><input type='submit' value='Valider' /></center>\n";
+	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
@@ -241,13 +292,52 @@ else{
 	//echo "<td style='text-align:center; font-weight:bold; background-color:red;'>Supprimer adresse(s)</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value='' checked /></td>\n";
-	echo "<td style='text-align:center; background-color:#FAFABE;' colspan='7'>Ne pas utiliser une adresse existante</td>\n";
-	echo "</tr>\n";
 
 
-	$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+
+	unset($chaine_recherche);
+	if(isset($val_rech)){
+		//$order_by=="nom,prenom";
+		// On ne mixe pas les modes de recherche
+		$limit="TOUS";
+		if($val_rech!=""){
+			// FILTRER LES CARACTERES DE $val_rech?
+			switch($mode_rech){
+				case "contient":
+						$valeur_cherchee="%$val_rech%";
+				break;
+				case "commence par":
+						$valeur_cherchee="$val_rech%";
+					break;
+				case "se termine par":
+						$valeur_cherchee="%$val_rech";
+					break;
+			}
+
+			switch($crit_rech){
+				case "adr":
+						$chaine_recherche="((adr1 LIKE '$valeur_cherchee') OR (adr2 LIKE '$valeur_cherchee') OR (adr3 LIKE '$valeur_cherchee') OR (adr4 LIKE '$valeur_cherchee'))";
+						$num_resp=1;
+					break;
+				case "cp":
+						$chaine_recherche="cp LIKE '$valeur_cherchee'";
+						$num_resp=2;
+					break;
+				case "commune":
+						$chaine_recherche="commune LIKE '$valeur_cherchee'";
+					break;
+			}
+		}
+	}
+
+
+
+
+	$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr";
+	if(isset($chaine_recherche)){
+		$sql.=" WHERE $chaine_recherche";
+	}
+	echo " ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 	if($limit!='TOUS'){
 		$sql.=" LIMIT $debut,$limit";
 	}
@@ -255,6 +345,155 @@ else{
 	$res_adr=mysql_query($sql);
 
 
+	$cpt=0;
+	unset($tab_adr);
+	$tab_adr=array();
+	$temoin_adr_actuelle_dans_la_page="non";
+	while($lig_adr=mysql_fetch_object($res_adr)){
+		$tab_adr[$cpt]=array();
+		$tab_adr[$cpt]["adr_id"]=$lig_adr->adr_id;
+		$tab_adr[$cpt]["adr1"]=$lig_adr->adr1;
+		$tab_adr[$cpt]["adr2"]=$lig_adr->adr2;
+		$tab_adr[$cpt]["adr3"]=$lig_adr->adr3;
+		$tab_adr[$cpt]["adr4"]=$lig_adr->adr4;
+		$tab_adr[$cpt]["cp"]=$lig_adr->cp;
+		$tab_adr[$cpt]["commune"]=$lig_adr->commune;
+		$tab_adr[$cpt]["pays"]=$lig_adr->pays;
+
+		if(isset($adr_id_actuel)){
+			if($adr_id_actuel==$lig_adr->adr_id){
+				// L'adresse actuel est dans la partie de la table qui va être affichée
+				$temoin_adr_actuelle_dans_la_page="oui";
+			}
+		}
+		$cpt++;
+	}
+
+
+	if(!isset($adr_id_actuel)){
+		echo "<tr>\n";
+		echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value='' ";
+		//if(!isset($adr_id_actuel)){
+			echo "checked ";
+		//}
+		echo "/></td>\n";
+		echo "<td style='text-align:center; background-color:#FAFABE;' colspan='7'>Ne pas utiliser une adresse existante (<i>ne pas modifier</i>)</td>\n";
+		echo "</tr>\n";
+	}
+
+	if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="non")) {
+		$sql="SELECT * FROM resp_adr WHERE adr_id='$adr_id_actuel'";
+		$res_adr_actuelle=mysql_query($sql);
+
+		if(mysql_num_rows($res_adr_actuelle)!=0){
+			$lig_adr_actuelle=mysql_fetch_object($res_adr_actuelle);
+			echo "<tr style='background-color:orange;'>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr_actuelle->adr_id\" checked /></td>\n";
+			echo "<td style='text-align:center;'>$lig_adr_actuelle->adr_id</td>\n";
+			echo "<td style='text-align:center;'>\n";
+			if($lig_adr_actuelle->adr1!=""){
+				echo $lig_adr_actuelle->adr1;
+			}
+			if($lig_adr_actuelle->adr2!=""){
+				echo "-".$lig_adr_actuelle->adr2;
+			}
+			if($lig_adr_actuelle->adr3!=""){
+				echo "-".$lig_adr_actuelle->adr3;
+			}
+			if($lig_adr_actuelle->adr4!=""){
+				echo "-".$lig_adr_actuelle->adr4;
+			}
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>$lig_adr_actuelle->cp\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>$lig_adr_actuelle->commune\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>$lig_adr_actuelle->pays\n";
+			echo "</td>\n";
+
+			echo "<td style='text-align:center;'>";
+			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr_actuelle->adr_id'";
+			$res_pers=mysql_query($sql);
+			if(mysql_num_rows($res_pers)>0){
+				$ligtmp=mysql_fetch_object($res_pers);
+				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				while($ligtmp=mysql_fetch_object($res_pers)){
+					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				}
+				echo "$chaine";
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+	}
+
+
+	for($i=0;$i<count($tab_adr);$i++){
+		if(($tab_adr[$i]["adr1"]!="")||($tab_adr[$i]["adr2"]!="")||($tab_adr[$i]["adr3"]!="")||($tab_adr[$i]["adr4"]!="")||($tab_adr[$i]["commune"]!="")){
+			//echo "<tr>\n";
+			//echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+			if($i%2==0){$couleur="silver";}else{$couleur="white";}
+			if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="oui")) {
+				if($tab_adr[$i]["adr_id"]==$adr_id_actuel){
+					echo "<tr style='background-color:orange;'>\n";
+					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+					echo "checked ";
+					echo "/></td>\n";
+				}
+				else{
+					echo "<tr style='background-color:$couleur;'>\n";
+					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+					echo "/></td>\n";
+				}
+			}
+			else{
+				echo "<tr style='background-color:$couleur;'>\n";
+				echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+				echo "/></td>\n";
+			}
+			//echo "/></td>\n";
+
+
+			echo "<td style='text-align:center;'>".$tab_adr[$i]["adr_id"]."</td>\n";
+			echo "<td style='text-align:center;'>\n";
+			if($tab_adr[$i]["adr1"]!=""){
+				echo $tab_adr[$i]["adr1"];
+			}
+			if($tab_adr[$i]["adr2"]!=""){
+				echo "-".$tab_adr[$i]["adr2"];
+			}
+			if($tab_adr[$i]["adr3"]!=""){
+				echo "-".$tab_adr[$i]["adr3"];
+			}
+			if($tab_adr[$i]["adr4"]!=""){
+				echo "-".$tab_adr[$i]["adr4"];
+			}
+
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>".$tab_adr[$i]["cp"]."\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>".$tab_adr[$i]["commune"]."\n";
+			echo "</td>\n";
+			echo "<td style='text-align:center;'>".$tab_adr[$i]["pays"]."\n";
+			echo "</td>\n";
+
+			echo "<td style='text-align:center;'>";
+			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='".$tab_adr[$i]["adr_id"]."'";
+			$res_pers=mysql_query($sql);
+			if(mysql_num_rows($res_pers)>0){
+				$ligtmp=mysql_fetch_object($res_pers);
+				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				while($ligtmp=mysql_fetch_object($res_pers)){
+					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				}
+				echo "$chaine";
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+	}
+
+	/*
 	$cpt=0;
 	while($lig_adr=mysql_fetch_object($res_adr)){
 		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
@@ -322,11 +561,12 @@ else{
 			$cpt++;
 		}
 	}
+	*/
 
 	echo "</table>\n";
 	//echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 	//echo "<center><input type='button' value='Valider' onClick='reporter_valeur()' /></center>\n";
-	echo "<center><input type='submit' value='Valider' /></center>\n";
+	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 	echo "</div>\n";
 
 	echo "<input type='hidden' name='is_posted' value='choix_adr_existante' />\n";
