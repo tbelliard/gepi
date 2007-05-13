@@ -250,6 +250,23 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 <p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
 <p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
 </div>
+
+<script language="javascript" type="text/javascript">
+<!--
+	//function mel(destinataire){
+	//	chaine_mel = "mailto:"+destinataire+"?subject=[GEPI]";
+	function pigeon(a,b){
+		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+-->
+</script>
+
+
 <div id="login_footer">
 <a href="http://gepi.mutualibre.org/">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
 Copyright &copy; 2001-2007
@@ -257,9 +274,12 @@ Copyright &copy; 2001-2007
 reset($gepiAuthors);
 $i = 0;
 while (list($name, $adress) = each($gepiAuthors)) {
-    if ($i != "0") echo ", ";
-    echo("<a href=\"mailto:" . $adress . "\">" . $name . "</a> ");
-    $i++;
+	if ($i != "0") echo ", ";
+	//echo("<a href=\"mailto:" . $adress . "\">" . $name . "</a> ");
+	$tmp_adr=explode("@",$adress);
+	//echo("<a href=\"javascript:pigeon('" . $adress . "');\">" . $name . "</a> ");
+	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">" . $name . "</a> ");
+	$i++;
 }
 	echo "<br/><br/>";
 	echo "<img src='".$gepiPath."/images/php-powered.png' alt='php powered'>&nbsp;";
