@@ -659,7 +659,7 @@ function SetDefaultValues(nb){
 // fin du script -->
 </script>
 
-<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> 
+<p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 | <a href="./index.php"> Imprimer les bulletins au format HTML</a>
 | <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
 </p>
@@ -851,7 +851,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         ?>
 	</td>
     </tr>
-	
+
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Taille en points du texte de l'avis du conseil de classe :
@@ -867,7 +867,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         <td><input type="text" name="bull_categ_font_size_avis" size="20" value="<?php echo $bull_categ_font_size_avis; ?>" />
         </td>
     </tr>
-	
+
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Police de caractères pour l'avis du conseil de classe :
@@ -897,7 +897,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         ?>
 	</td>
     </tr>
-	
+
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Style de caractères pour l'avis du conseil de classe :
@@ -926,7 +926,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         ?>
 	</td>
     </tr>
-	
+
 </table>
 <hr />
 
@@ -1117,7 +1117,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 <?php
 if (getSettingValue("active_module_trombinoscopes")=='y') {
-	echo "<tr";
+	echo "<tr ";
 	if($nb_ligne % 2){echo "bgcolor=".$bgcolor;}
 	$nb_ligne++;
 	echo ">\n";
@@ -1220,7 +1220,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan='2'>
-        Intitulé de la colonne Appréciations : 
+        Intitulé de la colonne Appréciations :
         <?php
 		echo "<input type=\"text\" name=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
         ?>
@@ -1229,7 +1229,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la formule figurant en bas de chaque bulletin : 
+        Afficher la formule figurant en bas de chaque bulletin :
         </td>
         <td>
         <?php
@@ -1264,18 +1264,18 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <?php
 		echo "<input type='radio' name='choix_bulletin' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
-		echo"/> Choix 1<br />";
+		echo " /> Choix 1<br />";
 		echo "<input type='radio' name='choix_bulletin' value='2'";
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
-		echo"/> Choix 2<br />";
+		echo " /> Choix 2<br />";
 		echo "<input type='radio' name='choix_bulletin' value='3'";
-		echo "toto".getSettingValue("choix_bulletin");
+		//echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '3') echo " checked";
-		echo"/> Choix 3<br />";
+		echo " /> Choix 3<br />";
         ?>
         </td>
     </tr>
-	
+
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation : </td>
         <td>
@@ -1289,7 +1289,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         ?>
         </td>
     </tr>
-	
+
 </table>
 <hr />
 
