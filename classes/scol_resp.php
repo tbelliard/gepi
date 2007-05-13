@@ -160,6 +160,9 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 		$scol_login[$i]=$lig_scol->login;
 		$i++;
 	}
+	$ligne_comptes_scol.="<td>\n";
+	$ligne_comptes_scol.="&nbsp;\n";
+	$ligne_comptes_scol.="</td>\n";
 	$ligne_comptes_scol.="</tr>\n";
 	echo $ligne_comptes_scol;
 
@@ -168,12 +171,17 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	for($i=0;$i<$nb;$i++){
 		echo "<td style='text-align:center;'>\n";
 
-		echo "<a href='javascript:modif_case($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		//echo "<a href='javascript:modif_case($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href=\"javascript:modif_case($i,true,'col')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "<a href=\"javascript:modif_case($i,false,'col')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 
 		echo "<input type='hidden' name='scol_login[$i]' value='$scol_login[$i]' />";
 		echo "</td>\n";
 	}
+	echo "<td>\n";
+	echo "&nbsp;\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -199,6 +207,11 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' $checked/>\n";
 				echo "</td>\n";
 			}
+			echo "<td>\n";
+			echo "<a href=\"javascript:modif_case($j,true,'lig')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href=\"javascript:modif_case($j,false,'lig')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "</td>\n";
 			echo "</tr>\n";
 			$j++;
 		}
@@ -219,12 +232,37 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	//============================================
 	// AJOUT: boireaus
 	echo "<script type='text/javascript' language='javascript'>
+		/*
 		function modif_case(id_login,statut){
 			// id_login: numéro de colonne correspondant au login
 			// statut: true ou false
 			for(k=0;k<$nombre_lignes;k++){
 				if(document.getElementById('case_'+id_login+'_'+k)){
 					document.getElementById('case_'+id_login+'_'+k).checked=statut;
+				}
+			}
+			changement();
+		}
+		*/
+
+		function modif_case(id,statut,mode){
+			// id: numéro de:
+			//					. colonne correspondant au login
+			//					. ligne
+			// statut: true ou false
+			// mode: col ou lig
+			if(mode=='col'){
+				for(k=0;k<$nombre_lignes;k++){
+					if(document.getElementById('case_'+id+'_'+k)){
+						document.getElementById('case_'+id+'_'+k).checked=statut;
+					}
+				}
+			}
+			else{
+				for(k=0;k<".count($scol_login).";k++){
+					if(document.getElementById('case_'+k+'_'+id)){
+						document.getElementById('case_'+k+'_'+id).checked=statut;
+					}
 				}
 			}
 			changement();
