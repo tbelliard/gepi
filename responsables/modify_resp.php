@@ -70,7 +70,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			// On crée la personne si elle n'existe pas et on enchaine avec la page choix_adr_existante.php
 			$ok='yes';
 		}
-		elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
+		//elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
+		elseif(($adr1 != '') and ($commune != '') and (($cp != '')||($pays != ''))){
 			$ok='yes';
 		}
 	}
@@ -739,9 +740,11 @@ echo "<tr><td>Adresse * : </td><td><input type=text size=50 name=adr1 value = \"
 echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr2 value = \"".$adr2."\" /></td></tr>\n";
 echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr3 value = \"".$adr3."\" /></td></tr>\n";
 echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr4 value = \"".$adr4."\" /></td></tr>\n";
-echo "<tr><td>Code postal * : </td><td><input type=text size=6 name=cp value = \"".$cp."\" /></td></tr>\n";
+echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = \"".$cp."\" />";
+echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" />\n";
+echo "</td></tr>\n";
 echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" /></td></tr>\n";
-echo "<tr><td>Pays : </td><td><input type=text size=50 name=pays value = \"".$pays."\" /></td></tr>\n";
+//echo "<tr><td>Pays : </td><td><input type=text size=50 name=pays value = \"".$pays."\" /></td></tr>\n";
 
 /*
 $sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
@@ -808,6 +811,8 @@ echo "</div>\n";
 
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+
+echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit être rempli</p>\n";
 
 /*
 $sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
