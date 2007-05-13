@@ -86,7 +86,7 @@ if (empty($style)) $style = "style";
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/saisie_absences.css" /><?php
     }
 ?>
-<!-- ============================= -->
+<!-- ======================================== -->
 
 <script type="text/javascript" language="javascript">
 <?php if (isset($affiche_message) and ($affiche_message == 'yes')) { ?>
@@ -114,6 +114,7 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
   visibility: hidden;
 }
 </style>
+
 <!-- Gestion de l'expiration des session - Patrick Duthilleul -->
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -138,6 +139,7 @@ function show_message_deconnexion(){
 }
 //-->
 </script>
+
 <!-- christian -->
 <script type='text/javascript' language='JavaScript'>
     function ouvre_popup(url){
@@ -168,94 +170,101 @@ function show_message_deconnexion(){
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 ?>
 </head>
+<!-- ************************* -->
+<!-- Début du corps de la page -->
+<!-- ************************* -->
 <body onLoad="show_message_deconnexion()">
 
-<?php if (isset($titre_page)) {
-  if ($_SESSION['statut'] == "administrateur") {
-  	$rc = null;
-  	$beta = null;
-    if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
-    if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
-	echo "<div id='version_gepi'>v".$gepiVersion.$rc.$beta."</div>";	    
-  }
-?>
-<div id="header">
-<!-- Header start -->
-   <!-- Page title, access rights -->
-   <div id="headerLeft">
-      <?php
-      echo("<h3>" . $titre_page . "</h3>\n");
-      ?>
-   </div>
-   <!-- User name, status, main matter, home, logout, account management -->
-   <div id="headerRight">
-      <?php
-      echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
-      if ($_SESSION['statut'] == "administrateur") {
-         echo "<span class='red'>Administrateur</span>";
-      } elseif ($_SESSION['statut'] == "professeur") {
-         $nom_complet_matiere = sql_query1("select nom_complet from matieres
-         where matiere = '".$_SESSION['matiere']."'");
-         if ($nom_complet_matiere != '-1') {
-            //echo("Professeur de : " . $nom_complet_matiere);
-            echo("Professeur de : " . htmlentities($nom_complet_matiere));
-         } else {
-            echo "Invité";
-         }
-      } elseif ($_SESSION['statut'] == "scolarite") {
-      	echo "Scolarité";
-      } elseif ($_SESSION['statut'] == "cpe") {
-      	echo "CPE";
-      }
-      $temp = '';
-    // christian
-    echo "<br />\n";
-    //On vérifie si le module de mise à jour est activé
-    if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
-        ?><a href="javascript:ouvre_popup()"><img style="border: 0px; width: 15px; height: 15px;" src="<?php echo($gepiPath); ?>/images/info.png" alt="info" title="info" align="top" /></a> <?php
-    }
-    //christian
+<?php
+if (isset($titre_page)) {
+	if ($_SESSION['statut'] == "administrateur") {
+		$rc = null;
+		$beta = null;
+		if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
+		if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
+		echo "<div id='version_gepi'>v".$gepiVersion.$rc.$beta."</div>";
+	}
+
+	echo "<div id='header'>\n";
+	echo "<!-- Header start -->\n";
+
+		echo "\n";
+		echo "<!-- Page title, access rights -->\n";
+		echo "<div id='headerLeft'>\n";
+			echo("<h3>" . $titre_page . "</h3>\n");
+		echo "</div>\n";
+
+		echo "\n";
+		echo "<!-- User name, status, main matter, home, logout, account management -->\n";
+		echo "<div id='headerRight'>\n";
+			echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
+			if ($_SESSION['statut'] == "administrateur") {
+				echo "<span class='red'>Administrateur</span>";
+			} elseif ($_SESSION['statut'] == "professeur") {
+				$nom_complet_matiere = sql_query1("select nom_complet from matieres
+				where matiere = '".$_SESSION['matiere']."'");
+				if ($nom_complet_matiere != '-1') {
+					//echo("Professeur de : " . $nom_complet_matiere);
+					echo("Professeur de : " . htmlentities($nom_complet_matiere));
+				} else {
+					echo "Invité";
+				}
+			} elseif ($_SESSION['statut'] == "scolarite") {
+				echo "Scolarité";
+			} elseif ($_SESSION['statut'] == "cpe") {
+				echo "CPE";
+			}
+			$temp = '';
+			// christian
+			echo "<br />\n";
+			//On vérifie si le module de mise à jour est activé
+			if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
+				echo "<a href='javascript:ouvre_popup()'><img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' /></a>\n";
+			}
+			//christian
 
 
-      echo "<br />\n";
-      echo "<span class='grey'>";
-      ?>
-      <a href="<?php echo($gepiPath); ?>/accueil.php"><img src='<?php echo($gepiPath); ?>/images/icons/home.png' alt='Accueil' style='bottom: -1px;'/>  Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php"><img src='<?php echo($gepiPath); ?>/images/icons/buddy.png' alt='Mon compte' /> Gérer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0"><img src='<?php echo($gepiPath); ?>/images/icons/quit_16.png' alt='Se déconnecter' /> Déconnexion</a>
-      </span>
-   </div>
-   <div id="headerBottomLeft">
-      <?php if (isset($affiche_connexion)) echo last_connection()."\n"; ?>
-   </div>
+			echo "<br />\n";
+			echo "<span class='grey'>";
+			echo "<a href='$gepiPath/accueil.php'><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' />  Accueil</a> - <a href='$gepiPath/utilisateurs/mon_compte.php'><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' /> Gérer mon compte</a> - <a href='$gepiPath/logout.php?auto=0'><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' /> Déconnexion</a>";
+			echo "</span>\n";
+		echo "</div>\n";
 
-   <!-- Contact -->
-   <div id="headerBottomRight">
-      <?php
-      $prefix = '';
-      if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
+		echo "\n";
+		echo "<div id='headerBottomLeft'>\n";
+			if (isset($affiche_connexion)){echo last_connection()."\n";}
+		echo "</div>\n";
 
-      if ($_SESSION['statut'] == 'administrateur') {
-         echo "<a href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
-      } else {
-         echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
-//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
-      }
-      echo " - <a href=\"javascript:centrerpopup('".$prefix."gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
-       - <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
-       //- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a></b>";
-      ?>
+		echo "\n";
+		echo "<!-- Contact -->\n";
+		echo "<div id='headerBottomRight'>\n";
+			$prefix = '';
+			if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
 
-   </div>
-</div>
-   <?php
+			if ($_SESSION['statut'] == 'administrateur') {
+				echo "<a href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
+			} else {
+				echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+			//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
+			}
+			echo " - <a href=\"javascript:centrerpopup('".$prefix."gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
+			- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
+			//- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a></b>";
+		echo "</div>\n";
+	echo "\n";
+	echo "<!-- Header end -->\n";
+	echo "</div>\n";
+	echo "\n";
 }
-echo "<div id='container'>";
+
+echo "<div id='container'>\n";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
-   $msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
-   if ($msg != '') {
-      echo "<div class=\"headerMessage\">";
-      echo($msg);
-      echo "</div>";
-   }
+	$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);
+	if ($msg != '') {
+		echo "<div class=\"headerMessage\">";
+		echo($msg);
+		echo "</div>";
+	}
 }
 
 //if (isset($titre_page)) echo "</div>";
