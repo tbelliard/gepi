@@ -252,13 +252,10 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 }
 // fin de l'envoi des photos du trombinoscope
 
-
-
-
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves";
 require_once("../lib/header.inc");
-//**************** FIN EN-TETE *****************
+//************** FIN EN-TETE *****************
 ?>    <script type='text/javascript' language="JavaScript">
     function verif1() {
     document.formulaire.quelles_classes[2].checked = true;
