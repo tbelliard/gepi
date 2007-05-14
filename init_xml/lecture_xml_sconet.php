@@ -87,15 +87,15 @@ function extr_valeur($lig){
 			if(isset($_GET['nettoyage'])){
 				//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 				echo "<h2 align='center'>Suppression des CSV</h2>\n";
-				echo "<p><a href='";
+				echo "<p p class=bold><a href='";
 				if(isset($_SESSION['ad_retour'])){
 					echo $_SESSION['ad_retour'];
 				}
 				else{
 					echo "index.php";
 				}
-				echo "'>Retour</a> | ";
-				echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a> | </p>\n";
+				echo "'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 
 				echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
 				//$tabfich=array("f_ele.csv","f_ere.csv");
@@ -116,14 +116,14 @@ function extr_valeur($lig){
 				//echo "<h1 align='center'>Lecture des XML de Sconet et génération de CSV</h1>\n";
 				echo "<h2 align='center'>Lecture des XML de Sconet et génération de CSV</h2>\n";
 				//echo "<p><a href='index.php'>Retour</a>|\n";
-				echo "<p><a href='";
+				echo "<p class=bold><a href='";
 				if(isset($_SESSION['ad_retour'])){
 					echo $_SESSION['ad_retour'];
 				}
 				else{
 					echo "index.php";
 				}
-				echo "'>Retour</a> | ";
+				echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 				if(!isset($etape)){
 					echo "</p>\n";
@@ -137,7 +137,7 @@ function extr_valeur($lig){
 					echo "</form>\n";
 				}
 				else{
-					echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a> | </p>\n";
+					echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 
 					if(!isset($_POST['is_posted'])){
 						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
