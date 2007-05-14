@@ -94,8 +94,8 @@ function extr_valeur($lig){
 				else{
 					echo "index.php";
 				}
-				echo "'>Retour</a>|";
-				echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a>|</p>\n";
+				echo "'>Retour</a> | ";
+				echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a> | </p>\n";
 
 				echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
 				//$tabfich=array("f_ele.csv","f_ere.csv");
@@ -123,7 +123,7 @@ function extr_valeur($lig){
 				else{
 					echo "index.php";
 				}
-				echo "'>Retour</a>|";
+				echo "'>Retour</a> | ";
 
 				if(!isset($etape)){
 					echo "</p>\n";
@@ -137,7 +137,7 @@ function extr_valeur($lig){
 					echo "</form>\n";
 				}
 				else{
-					echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a>|</p>\n";
+					echo "<a href='".$_SERVER['PHP_SELF']."'>Autre import</a> | </p>\n";
 
 					if(!isset($_POST['is_posted'])){
 						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
@@ -863,13 +863,221 @@ function extr_valeur($lig){
 							// Génération d'un etablissements.csv
 							echo "<h3>Génération d'un fichier etablissements.csv</h3>\n";
 							echo "<blockquote>\n";
-	/*
-	for($i=0;$i<count($eleves);$i++){
-		echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
-		echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
-	}
-	*/
+
+							/*
+							for($i=0;$i<count($eleves);$i++){
+								echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
+								echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
+							}
+							*/
+
+							/*
+								$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
+								"CODE_RNE",
+								"SIGLE",
+								"DENOM_PRINC",
+								"DENOM_COMPL",
+								"LIGNE1_ADRESSE",
+								"LIGNE2_ADRESSE",
+								"LIGNE3_ADRESSE",
+								"LIGNE4_ADRESSE",
+								"BOITE_POSTALE",
+								"MEL",
+								"TELEPHONE",
+								"LL_COMMUNE_INSEE"
+								);
+							*/
+
+							function maj_min_comp($chaine){
+								$tmp_tab1=explode(" ",$chaine);
+								$new_chaine="";
+								for($i=0;$i<count($tmp_tab1);$i++){
+									$tmp_tab2=explode("-",$tmp_tab1[$i]);
+									$new_chaine.=ucfirst(strtolower($tmp_tab2[0]));
+									for($j=1;$j<count($tmp_tab2);$j++){
+										$new_chaine.="-".ucfirst(strtolower($tmp_tab2[$j]));
+									}
+									$new_chaine.=" ";
+								}
+								$new_chaine=trim($new_chaine);
+								return $new_chaine;
+							}
+
+
 							$fich=fopen("../backup/$dirname/csv/etablissements.csv","w+");
+
+							fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;code_postal;LL_COMMUNE_INSEE\n");
+							// RNE, Nom étab, ecole/college/lycee, public/prive, CP, ville
+
+							echo "<table border='1'>\n";
+							echo "<tr>\n";
+							/*
+							for($i=0;$i<count($tab_champs_scol_an_dernier);$i++){
+								echo "<th>$tab_champs_scol_an_dernier[$i]</th>\n";
+							}
+							*/
+							echo "<th>RNE</th>\n";
+							echo "<th>Nom</th>\n";
+							echo "<th>Niveau</th>\n";
+							echo "<th>Type</th>\n";
+							echo "<th>Code postal</th>\n";
+							echo "<th>Commune</th>\n";
+							echo "</tr>\n";
+							$i=0;
+							while($i<count($eleves)){
+								// Ligne commentée pour ne pas exclure des établissements parce qu'un élève y est passé et a quitté le notre.
+								//if($eleves[$i]["structures"][0]["code_structure"]!=""){
+									$temoin_tmp="";
+									$chaine="";
+									for($k=0;$k<$i;$k++){
+										if((isset($eleves[$k]["scolarite_an_dernier"]["code_rne"]))&&(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"]))){
+											if($eleves[$k]["scolarite_an_dernier"]["code_rne"]==$eleves[$i]["scolarite_an_dernier"]["code_rne"]){$temoin_tmp="oui";}
+										}
+									}
+									if($temoin_tmp!="oui"){
+										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+											if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
+												echo "<tr>\n";
+												//$chaine="";
+												//echo "<td>$i: ".$eleves[$i]["nom"]."</td>\n";
+												/*
+												for($j=0;$j<count($tab_champs_scol_an_dernier);$j++){
+													$tmpmin=strtolower($tab_champs_scol_an_dernier[$j]);
+													echo "<td>";
+													if(isset($eleves[$i]["scolarite_an_dernier"]["$tmpmin"])){
+														echo $eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
+														$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
+													}
+													else{
+														echo "&nbsp;";
+													}
+													echo "</td>\n";
+
+													//$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"].";";
+													$chaine.=";";
+												}
+												*/
+
+												// RNE
+												echo "<td>";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+													echo $eleves[$i]["scolarite_an_dernier"]["code_rne"];
+													$chaine.=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
+												}
+												else{
+													echo "&nbsp;";
+												}
+												echo "</td>\n";
+												$chaine.=";";
+
+												// NOM
+												echo "<td>";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+													echo maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]);
+													$chaine.=maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]);
+												}
+												else{
+													echo "&nbsp;";
+												}
+												echo "</td>\n";
+												$chaine.=";";
+
+												// NIVEAU
+												echo "<td>";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													/*
+													switch($eleves[$i]["scolarite_an_dernier"]["denom_princ"]){
+														case :
+															echo "";
+															$chaine.="";
+															break;
+														case :
+															echo "";
+															$chaine.="";
+															break;
+														case :
+															echo "";
+															$chaine.="";
+															break;
+													}
+													*/
+													if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														echo "ecole";
+														$chaine.="ecole";
+													}
+													elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														echo "college";
+														$chaine.="college";
+													}
+													elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+															echo "lprof";
+															$chaine.="lprof";
+														}
+														else{
+															echo "lycee";
+															$chaine.="lycee";
+														}
+													}
+													else{
+														echo "&nbsp;";
+														$chaine.="";
+													}
+												}
+												else{
+													echo "&nbsp;";
+												}
+												echo "</td>\n";
+												$chaine.=";";
+
+												// TYPE
+												echo "<td>";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														echo "prive";
+														$chaine.="prive";
+													}
+													else{
+														echo "public";
+														$chaine.="public";
+													}
+												}
+												else{
+													echo "&nbsp;";
+												}
+												echo "</td>\n";
+												$chaine.=";";
+
+												// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
+												// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
+												echo "<td>";
+												echo "&nbsp;";
+												echo "</td>\n";
+												$chaine.=";";
+
+												// COMMUNE
+												echo "<td>";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
+													echo maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]);
+													$chaine.=maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]);
+												}
+												else{
+													echo "&nbsp;";
+												}
+												echo "</td>\n";
+												$chaine.=";";
+
+												echo "</tr>\n";
+											}
+											$chaine=substr($chaine,0,strlen($chaine)-1);
+											fwrite($fich,$chaine."\n");
+										}
+									}
+								//}
+								$i++;
+							}
+
+							/*
 							//fwrite($fich,"CODE_RNE;SIGLE;DENOM_PRINC;DENOM_COMPL;LIGNE1_ADRESSE;LIGNE2_ADRESSE;LIGNE3_ADRESSE;LIGNE4_ADRESSE;BOITE_POSTALE;MEL;TELEPHONE;LL_COMMUNE_INSEE\n");
 							fwrite($fich,"CODE_STRUCTURE;CODE_RNE;SIGLE;DENOM_PRINC;DENOM_COMPL;LIGNE1_ADRESSE;LIGNE2_ADRESSE;LIGNE3_ADRESSE;LIGNE4_ADRESSE;BOITE_POSTALE;MEL;TELEPHONE;LL_COMMUNE_INSEE\n");
 
@@ -920,6 +1128,8 @@ function extr_valeur($lig){
 								//}
 								$i++;
 							}
+							*/
+
 							echo "</table>\n";
 							fclose($fich);
 							echo "<p><a href='save_csv.php?fileid=9'>etablissements.csv</a></p>\n";
