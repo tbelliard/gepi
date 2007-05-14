@@ -1,9 +1,9 @@
 <?php
 /*
-*
-*$Id$
-*
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ *
+ * $Id$
+ *
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -95,23 +95,19 @@ if ( $action === 'visualiser' )
         }
 }
 
-echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href='index.php'>Retour module absence</a> </p>";
+echo "<p class=bold><a href='index.php'><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 ?>
 
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
-
-
-
+<h2>Définition des type de semaines</h2>
+<form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
+<input type="submit" name="submit" value="Enregistrer" />
+<br/><br/>
 <?php /* gestion des horaire d'ouverture */ ?>
-  <form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
 	<table cellpadding="0" cellspacing="1" class="tab_table">
 	  <tbody>
-	      <tr>
-	        <td colspan="2" class="tab_titre">D&eacute;finition des type de semaines</td>
-	      </tr>
 	    <tr>
 	      <th class="tab_th" style="width: 100px;">Semaine n°</th>
 	      <th class="tab_th" style="width: 100px;">Type</th>
@@ -124,15 +120,13 @@ echo "<a href='index.php'>Retour module absence</a> </p>";
 	      <td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 	    </tr>
 	    <?php $i = $i + 1; } ?>
-	      <tr>
-	         <td colspan="2" style="text-align: center;">
-			<input type="hidden" name="action_sql" value="modifier" />
-			<input type="submit" name="submit" value="Valider" />
-		 </td>
-	      </tr>
 	  </tbody>
 	</table>
+	<br/>
+			<input type="hidden" name="action_sql" value="modifier" />
+			<input type="submit" name="submit" value="Enregistrer" />
   </form>
+  <br/><br/>
 <?php /* fin de gestion des horaire d'ouverture */ ?>
 
 <? /* fin du div de centrage du tableau pour ie5 */ ?>

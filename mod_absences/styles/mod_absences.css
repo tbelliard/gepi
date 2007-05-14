@@ -584,7 +584,7 @@ legend {
 	/* fin couleur dans administration du module absences */
 
 .input_sans_bord {
-	border: 0px;
+	border: 1px solid white;
 }
 
 .input_sans_bord:hover {

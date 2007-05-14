@@ -1,9 +1,9 @@
 <?php
 /*
-*
-*$Id$
-*
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ *
+ * $Id$
+ *
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -163,28 +163,29 @@ if ($action == "modifier")
  }
 
 // header
-$titre_page = "Gestion des motifs d'absence";
+$titre_page = "Gestion des actions de suivi";
 require_once("../../lib/header.inc");
 
 
-echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | ";
-echo "<a href='index.php'>Retour module absence</a> | ";
-if ($action=="modifier" OR $action=="ajouter") echo "<a href=\"admin_actions_absences.php?action=visualiser\">Retour à la définition des motifs</a>";
-if ($action=="visualiser") echo "<a href=\"admin_actions_absences.php?action=ajouter\">Ajouter un ou des motif(s)</a>";
+echo "<p class=bold>";
+if ($action=="modifier" OR $action=="ajouter") {
+	echo "<a href=\"admin_actions_absences.php?action=visualiser\">";
+} elseif ($action=="visualiser") {
+	echo "<a href='index.php'>";
+}
+echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-    <br />
+    <h2>Définition des actions de suivi</h2>
+    <p><a href="admin_actions_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une ou des action(s)</a></p>
+    <br/>
     <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr>
-        <td colspan="5" class="tab_titre">D&eacute;finition des motifs d'absence</td>
-      </tr>
-      <tr>
-        <td class="tab_th">Initial</td>
-        <td class="tab_th">Définition</td>
+        <td class="tab_th">Code</td>
+        <td class="tab_th">Description</td>
         <td class="tab_th" style="width: 25px;"></td>
         <td class="tab_th" style="width: 25px;"></td>
       </tr>
@@ -197,8 +198,8 @@ echo "</p>";
         <tr class="<?php echo $couleur_cellule; ?>">
           <td><?php echo $data_motif['init_absence_action']; ?></td>
           <td><?php echo $data_motif['def_absence_action']; ?></td>
-          <td><a href="admin_actions_absences.php?action=modifier&amp;id_motif=<?php echo $data_motif['id_absence_action']; ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="" /></a></td>
-          <td><?php if ( $data_motif['init_absence_action'] != 'A' and $data_motif['init_absence_action'] != 'LP' and $data_motif['init_absence_action'] != 'RC' and $data_motif['init_absence_action'] != 'RD' and $data_motif['init_absence_action'] != 'CE' ) { ?><a href="admin_actions_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_absence_action']; ?>" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a><?php } ?></td>
+          <td><a href="admin_actions_absences.php?action=modifier&amp;id_motif=<?php echo $data_motif['id_absence_action']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
+          <td><?php if ( $data_motif['init_absence_action'] != 'A' and $data_motif['init_absence_action'] != 'LP' and $data_motif['init_absence_action'] != 'RC' and $data_motif['init_absence_action'] != 'RD' and $data_motif['init_absence_action'] != 'CE' ) { ?><a href="admin_actions_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_motif=<?php echo $data_motif['id_absence_action']; ?>" onClick="return confirm('Etes-vous sur de vouloir supprimer cette action ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a><?php } ?></td>
         </tr>
      <?php } ?>
     </table>
@@ -207,17 +208,19 @@ echo "</p>";
 <?php } ?>
 
 <?php if ($action === "ajouter" or $action === "modifier") { ?>
+<div style="text-align:center">
   <?php if ($action === "ajouter") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
-<div style="text-align:center">
+
+	<h2>Ajout d'actions de suivi</h2>
     <form method="post" action="admin_actions_absences.php?action=ajouter" name="form1" id="form1">
      <fieldset class="fieldset_efface">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
-          <th class="tab_th">Nombre de motifs à ajouter</th>
+          <th class="tab_th">Nombre d'actions à ajouter</th>
         </tr>
         <tr style="text-align: right;">
-          <td class="couleur_ligne_1"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Cr&eacute;er" /></td>
+          <td class="couleur_ligne_1"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre à jour" /></td>
         </tr>
       </table>
      </fieldset>
@@ -227,11 +230,8 @@ echo "</p>";
      <fieldset class="fieldset_efface">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
-          <td colspan="3" class="tab_titre"><?php if($action=="ajouter") { ?>Ajout d'un ou plusieurs motif(s)<?php } if($action=="modifier") { ?>Modifier un motif<?php } ?></td>
-        </tr>
-        <tr>
-          <th class="tab_th">Initital</th>
-          <th colspan="2" class="tab_th">Définition</th>
+          <th class="tab_th">Code</th>
+          <th colspan="2" class="tab_th">Description</th>
         </tr>
         <?php
         $i = '1';
@@ -242,7 +242,7 @@ echo "</p>";
          <tr>
           <td class="centre"><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="2" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] === 2) { ?>Cette initiale pour le motif existe déjà<?php } ?>
+          <?php if ($verification_erreur[$nb] === 2) { ?>Le code saisi existe déjà<?php } ?>
           <?php if ($verification_erreur[$nb] === 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
           </b><br /></td>
          </tr>
@@ -271,19 +271,16 @@ echo "</p>";
               <input type="hidden" name="id_motif[<?php echo $nb; ?>]" value="<?php if (isset($id_definie_motif_erreur[$nb])) { echo $id_definie_motif_erreur[$nb]; } else { echo $id_motif; } ?>" />
             <?php } ?>
         <?php $nb = $nb + 1; } ?>
-        <tr>
-          <td colspan="3">
-              <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
-              <input type="submit" name="Submit" value="<?php if($action=="ajouter") { ?>Créer motif(s)<?php } if($action=="modifier") { ?>Modifier le motif<?php } ?>" />
-          </td>
-        </tr>
       </table>
+     <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
+     <br/>
+     <input type="submit" name="Submit" value="Enregistrer" />
      </fieldset>
     </form>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); }
+<?php
+}
 
 require("../../lib/footer.inc.php");
-
  ?>

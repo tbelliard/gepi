@@ -1,9 +1,9 @@
 <?php
 /*
-*
-*$Id$
-*
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ *
+ *$Id$
+ *
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -59,8 +59,7 @@ $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc");
 
 
-echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a>";
+echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
 <H2>Gestion des absences par les CPE</H2>

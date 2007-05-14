@@ -1,9 +1,9 @@
 <?php
 /*
-*
-*$Id$
-*
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ *
+ * $Id$
+ *
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -181,26 +181,25 @@ if ($action == "modifier")
 
 
 
-echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-echo "<a href=\"../../accueil_modules.php\">Retour administration des modules</a> | ";
-echo "<a href='index.php'>Retour module absence</a> | ";
-
-if ($action=="modifier" or $action=="ajouter") echo "<a href=\"admin_periodes_absences.php?action=visualiser\">Retour accueil créneaux horaires</a>";
-if ($action=="visualiser") echo "<a href=\"admin_periodes_absences.php?action=ajouter\">Ajouter un créneaux horaires</a>";
-
+echo "<p class=bold>";
+if ($action=="modifier" or $action=="ajouter") {
+	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">";
+} else {
+	echo "<a href='index.php'>";
+}
+echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
 <?php if ($action == "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-<br />
+<h2>Définition des créneaux horaires</h2>
+<a href="admin_periodes_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un créneau horaire</a>
+<br/><br/>
     <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr>
-        <td colspan="5" class="tab_titre">D&eacute;finition des créneaux horaires</td>
-      </tr>
-      <tr>
-        <th class="tab_th" style="width: 80px;">créneaux</th>
-        <th class="tab_th" style="width: 90px;">heure de d&eacute;but</th>
+        <th class="tab_th" style="width: 80px;">code</th>
+        <th class="tab_th" style="width: 90px;">heure de début</th>
         <th class="tab_th" style="width: 90px;">heure de fin</th>
         <th class="tab_th" style="width: 25px;"></th>
         <th class="tab_th" style="width: 25px;"></th>
@@ -215,43 +214,45 @@ echo "</p>";
           <td><?php echo $data_periode['nom_definie_periode']; ?></td>
           <td><?php echo $data_periode['heuredebut_definie_periode']; ?></td>
           <td><?php echo $data_periode['heurefin_definie_periode']; ?></td>
-          <td><a href="admin_periodes_absences.php?action=modifier&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../images/modification.png" width="18" height="22" title="Modifier" border="0" alt="Modifier" /></a></td>
-          <td><a href="admin_periodes_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous sur de vouloire le supprimer...')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
+          <td><a href="admin_periodes_absences.php?action=modifier&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
+          <td><a href="admin_periodes_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
         </tr>
      <?php } ?>
-	<tr>
-	<td colspan="5">&nbsp;</td>
-	</tr>
     </table>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
+<br/><br/>
 <?php } ?>
 
 
 <?php if ($action == "ajouter" or $action == "modifier") { ?>
-  <?php if ($action == "ajouter") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
+  <?php if ($action == "ajouter") { ?>
+
+	<h2>Ajout de créneaux horaires</h2>
+
     <form name="form1" method="post" action="admin_periodes_absences.php?action=ajouter">
       <table class="tab_table">
         <tr>
-          <th class="tab_th">Nombre de créneaux horaires &agrave; ajouter</th>
+          <th class="tab_th">Nombre de créneaux horaires à ajouter</th>
         </tr>
         <tr>
-          <td class="couleur_ligne_1" style="text-align: right;"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Cr&eacute;er" /></td>
+          <td class="couleur_ligne_1" style="text-align: right;"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre à jour" /></td>
         </tr>
       </table>
     </form>
 	<br />
-  <?php } ?>
+  <?php }
+  
+    if ($action=="modifier") {
+		echo "<h2>Modifier un créneau horaire</h2>";
+	}
+	?>
     <form action="admin_periodes_absences.php?action=visualiser&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
-          <td colspan="4" class="tab_titre"><?php if($action=="ajouter") { ?>Ajout d'un ou plusieurs créneau(x) horaire(s)<?php } if($action=="modifier") { ?>Modifier des créneaux horaires<?php } ?></td>
-        </tr>
-        <tr>
-          <th class="tab_th">Créneau</th>
-          <th class="tab_th">Heure de d&eacute;but</th>
+          <th class="tab_th">Code</th>
+          <th class="tab_th">Heure de début</th>
           <th class="tab_th">Heure de fin</th>
           <th class="tab_th">Suite logique</th>
         </tr>
@@ -282,17 +283,15 @@ echo "</p>";
               <input type="hidden" name="id_periode[<?php echo $nb; ?>]" value="<?php if (isset($id_definie_periode_erreur[$nb])) { echo $id_definie_periode_erreur[$nb]; } else { echo $id_periode; } ?>" />
             <?php } ?>
         <?php $nb = $nb + 1; } ?>
-        <tr>
-          <td colspan="4">
-              <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
-              <input type="submit" name="Submit" value="<?php if($action=="ajouter") { ?>Créer créneau(x) horaire(s)<?php } if($action=="modifier") { ?>Modifier le créneau horaire<?php } ?>" />
-          </td>
-        </tr>
       </table>
+      
+      <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
+      <br/>
+      <input type="submit" name="Submit" value="Enregistrer" />
     </form>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } 
+<?php } 
 
 require("../../lib/footer.inc.php");
 

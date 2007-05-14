@@ -139,8 +139,9 @@ input {
     padding-left: 2px;
 }
 
-input:hover, input:active {
+input:hover, input:active, input:focus {
     border-color: red;
+    background: #FFFFF1;
 }
 
 div.center {
