@@ -3,9 +3,7 @@
  *
  * $Id$
  *
- * Last modification  : 19/06/2006
- *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -271,7 +269,8 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 		}
 	}
 
- $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej);
+ $datej = date('Y-m-d'); 
+ $annee_en_cours_t=annee_en_cours_t($datej);
  $datejour = date('d/m/Y');
  $type_de_semaine = semaine_type($datejour);
 
@@ -301,7 +300,7 @@ $i = 0;
 
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des absences";
+$titre_page = "Saisie des absences";
 require_once("../../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -355,10 +354,8 @@ echo "</p>";
 
 if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") { ?>
  <div style="text-align: center; margin: auto; width: 550px;">
-   <fieldset>
-     <legend>Etape 1/2</legend>
+	<h2>Saisie des absences : choix du cours</h2>
        <form method="post" action="prof_ajout_abs.php" name="absence">
-          ABSENCES<br />
           Date
 	  <?php if(empty($d_date_absence_eleve)) { $d_date_absence_eleve=date('d/m/Y'); } ?>
           <input size="10" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
@@ -411,15 +408,15 @@ foreach($groups as $group) {
           if (getSettingValue("active_module_trombinoscopes")=='y')
               ?><input type="checkbox" name="photo" value="avec_photo" />Avec photo<br /><?php
           ?>
-          <input type="checkbox" name="edt_enregistrement" value="1" />Enregistrer dans la base emploi du temps cette sélection<br />
+          <input type="checkbox" name="edt_enregistrement" value="1" />Mémoriser cette sélection<br />
           <input value="2" name="etape" type="hidden" />
           <input value="<?php echo $passage_form; ?>" name="passage_form" type="hidden" />
 	  <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-          <input value="valider" name="Valider" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+          <br/>
+          <input value="Afficher les élèves" name="Valider" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
           <br /><br />
           Nous sommes le : <?php  echo date('d/m/Y') ?> et il est actuellement : <?php echo date('G:i')  ?>
    </form>
-   </fieldset>
  </div>
 <?php } ?>
 
@@ -429,14 +426,22 @@ foreach($groups as $group) {
 
 <?php
 // Deuxième étape
-if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { ?>
+if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
+$current_groupe = get_group($classe);	
+?>
+
 <div style="text-align: center; margin: auto; width: 550px;">
-  <fieldset>
-    <legend>Etape 2/2</legend>
       <form method="post" action="prof_ajout_abs.php" name="liste_absence_eleve">
-      <div style="text-align: center; font: normal 12pt verdana, sans-serif;">Gestion des absences<br />du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong> de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong> à <strong><?php echo heure_court($a_heure_absence_eleve); ?></strong></div>
-      <?php if($passage_auto==='oui' and $passage_form==='') { ?><div style="text-align: center; font: normal 10pt verdana, sans-serif;"><a href="prof_ajout_abs.php?passage_form=manuel">Ceci n'est pas la bonne liste d'appel</a></div><?php } ?>
+      <div style="text-align: center; font: normal 12pt verdana, sans-serif;">
+      	Saisie des absences<br/>
+      	du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong> de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong> à <strong><?php echo heure_court($a_heure_absence_eleve); ?></strong><br/>
+		<?php echo "<b>".$current_groupe["description"]."</b> (".$current_groupe["classlist_string"] .")";?>
+      </div>
+      <?php if($passage_auto==='oui' and $passage_form==='') { ?><div style="text-align: center; font: normal 10pt verdana, sans-serif;"><a href="prof_ajout_abs.php?passage_form=manuel">Ceci n'est pas la bonne liste d'appel ?</a></div><?php } ?>
       <br />
+	   <div style="text-align: center; margin-bottom: 20px;">
+	   	<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+	   </div>
       <table style="text-align: left; width: 500px;" border="0" cellpadding="0" cellspacing="1">
       <tbody>
         <tr class="titre_tableau_gestion" style="white-space: nowrap;">
@@ -448,7 +453,7 @@ if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
         //if(empty($classe) and !empty($eleve_initial) and empty($eleve_absent)) {$requete_liste_eleve ="SELECT * FROM eleves WHERE eleves.nom  LIKE '".$eleve_initial."%' GROUP BY nom, prenom"; }
         //if(!empty($classe) and empty($eleve_initial) and empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
         //if(empty($classe) and empty($eleve_initial) and !empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login = '".$eleve_absent[0]."' AND eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
-	$requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom";
+		$requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom";
         $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
         $cpt_eleve = '0';
         $ic = '1';
@@ -529,10 +534,12 @@ if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
            <input type="hidden" name="d_heure_absence_eleve" value="<?php echo $d_heure_absence_eleve; ?>" />
            <input type="hidden" name="etape" value="2" />
            <input type="hidden" name="a_heure_absence_eleve" value="<?php echo $a_heure_absence_eleve; ?>" />
-	   <input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-           <div style="text-align: center;"><input value="valider" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" /></div>
+	   		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+           <div style="text-align: center; margin: 20px;">
+           	<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+           </div>
         </form>
-  </fieldset>
 </div>
-<?php } ?>
-<?php mysql_close(); ?>
+<?php }
+require("../../lib/footer.inc.php");
+?>
