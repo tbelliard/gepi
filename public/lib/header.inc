@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 04/04/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/style.css" />
 <script src="../lib/functions.js" type="text/javascript" language="javascript"></script>
-<LINK REL="SHORTCUT ICON" type="image/x-icon" href="./favicon.ico" /></head>
+<LINK REL="SHORTCUT ICON" type="image/x-icon" href="../favicon.ico" /></head>
 <body>
 <?php if (isset($titre_page)) {?>
   <!-- Header start -->
