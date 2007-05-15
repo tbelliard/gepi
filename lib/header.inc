@@ -189,7 +189,8 @@ if (isset($titre_page)) {
 	echo "<!-- Header start -->\n";
 	echo "<div id='header'>\n";
 	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
-	echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+	//echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+	echo "<table id='table_header' border='0' width='100%'>\n";
 
 	//echo "<tr height='20px'>\n";
 	//echo "<tr height='20%'>\n";

@@ -561,6 +561,13 @@ img.link {
 
 /*=================================*/
 
+#table_header {
+	color: white;
+	background-image: url("./images/background/darkfade.png");
+	margin: 0;
+	padding: 0;
+}
+
 #table_header a {
     color: lightgrey;
 }
