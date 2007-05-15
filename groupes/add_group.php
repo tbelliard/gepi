@@ -135,7 +135,13 @@ if (isset($_POST['is_posted'])) {
                     header("Location: ./edit_group.php?id_groupe=$create&msg=$msg&id_classe=$id_classe&mode=$mode");
                 } else {
                     $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
-					if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
+					//if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
+					if (count($reg_professeurs) == 1) {
+						if($res){$msg.="Affectation du professeur à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation du professeur à l'enseignement. ";}
+					}
+					else{
+						if($res){$msg.="Affectation des professeurs à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation des professeurs à l'enseignement. ";}
+					}
                     //header("Location: ./edit_class.php?id_classe=$id_classe");
                     header("Location: ./edit_class.php?id_classe=$id_classe&msg=$msg");
                 }
