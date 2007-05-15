@@ -42,13 +42,13 @@ if (!checkAccess()) {
     die();
 }
 
-if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or ($_SESSION['statut'] == 'responsable') or ($_SESSION['statut'] == 'eleve'))
+if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or ($_SESSION['statut'] == 'responsable') or ($_SESSION['statut'] == 'eleve')) {
     // Mot de passe comportant des lettres et des chiffres
     $flag = 0;
-else
+} else {
     // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
     $flag = 1;
-
+}
 
 if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
     $msg = '';

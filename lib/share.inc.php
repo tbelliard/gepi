@@ -15,7 +15,7 @@ function verif_mot_de_passe($password,$flag) {
     if ($flag == 1)
         if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )
             return false;
-        elseif ( ereg("^[[:alnum:]$char_spec]{".getSettingValue("longmin_pwd").",}$", $password) )
+        elseif ( preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password))
             return true; else return false;
     else
         if ( ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password) )

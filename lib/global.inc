@@ -17,7 +17,7 @@ $weekstarts = 1;
 $longmax_login = "10";
 
 // caracteres speciaux pour les mots de passe
-$char_spec = "&\"'-|_=}+<>,?;.:/!§%";
+$char_spec = "&\"'-|=}+<>,?;.:/!§%";
 
 // labels des périodes
 $gepiClosedPeriodLabel = "période close";
