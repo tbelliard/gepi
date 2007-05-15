@@ -498,7 +498,7 @@ legend {
     margin-right: auto;
     margin-top: -13px;
     margin-bottom: 12px;
-//    margin: -12px 12px 12px 12px;
+/*    margin: -12px 12px 12px 12px;*/
     padding: 0.1em;
     width: 90%;
 }
@@ -518,7 +518,7 @@ legend {
 	border-color: black;
 	width: 100%;
 	border-collapse: collapse;
-	margin: auto; // pour centrer le tableau
+	margin: auto;
 }
 
 .td_calendrier_mois {
@@ -548,7 +548,7 @@ legend {
 	border-color: black;
 	width: 400px;
 	border-collapse: collapse;
-	margin: auto; // pour centrer le tableau
+	margin: auto;
 }
 
 .td_semaine_jour {
@@ -575,11 +575,11 @@ legend {
 
 	/* couleur dans administration du module absences */
 	.couleur_ligne_1 {
-		background: #B7DDFF; //#EFEFEF
+		background: #B7DDFF; 
 	}
 
 	.couleur_ligne_2 {
-		background: #88C7FF; //DFDFDF
+		background: #88C7FF;
 	}
 	/* fin couleur dans administration du module absences */
 
@@ -588,19 +588,18 @@ legend {
 }
 
 .input_sans_bord:hover {
-	background: #FFFFDF; // #000000
-	color: #000000; //#FFFFFF
+	background: #FFFFDF; 
+	color: #000000; 
 }
 
 .input_sans_bord:focus {
-	background: #FEFF9F; // #000000
-	color: #000000; //#FFFFFF
+	background: #FEFF9F;
+	color: #000000;
 }
 
 .tab_table {
     margin: auto;
     border: 0px;
-    padding: auto;
     background: #088CB9;
     color: #E0EDF1;
     text-align: center;
@@ -652,11 +651,11 @@ legend {
 
 	/* couleur dans le module absences */
 	.couleur_ligne_3 {
-		background: #E8F1F4; //#EFEFEF
+		background: #E8F1F4;
 	}
 
 	.couleur_ligne_4 {
-		background: #C6DCE3; //DFDFDF
+		background: #C6DCE3;
 	}
 	/* fin couleur dans le module absences */
 
@@ -695,11 +694,11 @@ legend {
 
 	/* couleur dans le module absences alert*/
 	.couleur_ligne_5 {
-		background: #FFDFDF; //#EFEFEF
+		background: #FFDFDF;
 	}
 
 	.couleur_ligne_6 {
-		background: #FFBFBF; //DFDFDF
+		background: #FFBFBF;
 	}
 	/* fin couleur dans le module absences alert */
 
