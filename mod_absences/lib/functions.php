@@ -9,6 +9,15 @@ function classe_de($id_classe_eleve) {
     return($id_classe_eleve);
 }
 
+function classe_court_de($id_classe_eleve) {
+    global $prefix_base;
+    $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
+    $execution_classe_eleve = mysql_query($requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysql_error());
+    $data_classe_eleve = mysql_fetch_array($execution_classe_eleve);
+    $id_classe_eleve = $data_classe_eleve['classe'];
+    return($id_classe_eleve);
+}
+
 //fonction permettant de connaître le motif d'une absence
 function motif_de($nc_motif) {
     global $prefix_base;
@@ -1566,5 +1575,22 @@ function get_id($champ, $table)
     }
     return count($ids) + 1;
 } 
+
+// fonction permettant de connaitre les initiales des 4 environement Absence, Infirmerie, Dispense, Retard
+// ex: initial_mode('absence') > A5
+function initial_mode($initial_choix)
+  {
+
+    global $prefix_base;
+
+      if( $initial_choix == '' ) { $initial_donnee = ''; }
+      //on cherche l'initial demandé
+	$requete_initial_choix ="SELECT * FROM ".$prefix_base."absences_motifs WHERE def_motif_absence = '".$initial_choix."'";
+    	$execution_initial_choix = mysql_query($requete_initial_choix) or die('Erreur SQL !'.$requete_initial_choix.'<br />'.mysql_error());
+    	$donnee_initial_choix = mysql_fetch_array($execution_initial_choix);
+    	$initial_donnee = $donnee_initial_choix['init_motif_absence'];
+    return($initial_donnee);
+
+  }
 
 ?>

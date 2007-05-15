@@ -189,7 +189,7 @@ class bilan_PDF extends FPDF
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
 	}
 	if($telephone_etab=="" and $fax_etab!="" and $mel_etab!="")
 	{
@@ -197,11 +197,11 @@ class bilan_PDF extends FPDF
 	}
 	if($telephone_etab!="" and $fax_etab=="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Mèl : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab=="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
 	$this->Cell(0, 4.5, $adresse, 0, 1, 'C', '');
@@ -277,23 +277,23 @@ if ($du != $au)
 }
 //tableau
 $pdf->SetX(30);
-$pdf->SetY(60);
+$pdf->SetY(52);
             $pdf->SetFont('Arial','',9.5);
             $pdf->Cell(55, 5, 'Nom et Prénom', 1, 0, 'C', '');
-            $pdf->Cell(15, 5, 'Classe', 1, 0, 'C', '');
-            $pdf->Cell(40, 5, 'Motif', 1, 0, 'C', '');
-            $pdf->Cell(40, 5, 'Du', 1, 0, 'C', '');
-            $pdf->Cell(40, 5, 'Au', 1, 1, 'C', '');
+            $pdf->Cell(17, 5, 'Classe', 1, 0, 'C', '');
+            $pdf->Cell(42, 5, 'Motif', 1, 0, 'C', '');
+            $pdf->Cell(38, 5, 'Du', 1, 0, 'C', '');
+            $pdf->Cell(38, 5, 'Au', 1, 1, 'C', '');
 
-if ($classe != "tous" AND $eleve == "tous")
+if ($classe != "tous" and $eleve == "tous")
     {
       $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
     }
-if ($classe == "tous" AND $eleve == "tous")
+if ($classe == "tous" and $eleve == "tous")
     {
       $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
     }
-if (($classe != "tous" OR $classe == "tous") AND $eleve != "tous")
+if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
     {
       $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
     }
@@ -307,19 +307,22 @@ while ( $data_1 = mysql_fetch_array($execution_1))
             $ident_eleve = strtoupper($data_1['nom'])." ".ucfirst($data_1['prenom']);
             $pdf->Cell(55, 5, $ident_eleve, 1, 0, '', '');
             $classe_eleve = classe_de($data_1['login']);
-            $pdf->Cell(15, 5, $classe_eleve, 1, 0, '', '');
-            $motif = motab_c($data_1['motif_absence_eleve'])." (".$data_1['type_absence_eleve'].")";
-            $pdf->Cell(40, 5, $motif, 1, 0, '', '');
+            $pdf->Cell(17, 5, $classe_eleve, 1, 0, '', '');
+		$motif_abrege = $data_1['motif_absence_eleve'];
+		$motif_texte['A'] = '';
+		if ( !isset($motif_texte[$motif_abrege]) ) { $motif_texte[$motif_abrege] = motif_type_abs($motif_abrege); }
+            $motif = tronquer_texte($motif_texte[$motif_abrege], '20')." (".$data_1['type_absence_eleve'].")";
+            $pdf->Cell(42, 5, $motif, 1, 0, '', '');
             $debut = date_fr($data_1['d_date_absence_eleve'])." à ".heure($data_1['d_heure_absence_eleve']);
-            $pdf->Cell(40, 5, $debut, 1, 0, '', '');
-            if($data_1['a_heure_absence_eleve'] == "" OR $data_1['a_heure_absence_eleve'] == "00:00:00" OR $data_1['a_heure_absence_eleve'] == $data_1['d_heure_absence_eleve'])
+            $pdf->Cell(38, 5, $debut, 1, 0, '', '');
+            if($data_1['a_heure_absence_eleve'] == "" or $data_1['a_heure_absence_eleve'] == "00:00:00" or $data_1['a_heure_absence_eleve'] == $data_1['d_heure_absence_eleve'])
             {
             $fin = "";
             } else {
                      $fin = date_fr($data_1['a_date_absence_eleve'])." à ".heure($data_1['a_heure_absence_eleve']);
                    }
 
-            $pdf->Cell(40, 5, $fin, 1, 1, '', '');
+            $pdf->Cell(38, 5, $fin, 1, 1, '', '');
       }
     $pdf->Cell(0, 5, '(A): absence     (R): retard     (I): infirmerie     (D): dispense', 0, 1, '', '');
 

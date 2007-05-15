@@ -273,14 +273,14 @@ class bilan_PDF extends FPDF
 	$this->Line(10, 280, 200, 280);
 	$this->SetFont('Arial','',10);
 	$this->SetY(280);
-	$adresse = $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	$adresse = $niveau_etab."  ".$nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
 	if($adresse2_etab!="")
 	{
-	  $niveau_etab." de ".$nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
+	  $niveau_etab."  ".$nom_etab." - ".$adresse1_etab." ".$adresse2_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab." - Mèl : ".$mel_etab;
 	}
 	if($telephone_etab=="" and $fax_etab!="" and $mel_etab!="")
 	{
@@ -288,11 +288,11 @@ class bilan_PDF extends FPDF
 	}
 	if($telephone_etab!="" and $fax_etab=="" and $mel_etab!="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Mèl : ".$mel_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Mèl : ".$mel_etab;
 	}
 	if($telephone_etab!="" and $fax_etab!="" and $mel_etab=="")
 	{
-	  $adresse2 = "Tel : ".$telephone_etab." - Fax : ".$fax_etab;
+	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
 	$this->Cell(0, 4.5, $adresse, 0, 1, 'C', '');
@@ -399,7 +399,7 @@ while ( $data_1 = mysql_fetch_array($execution_1))
       }
 
             $pdf->Cell(54, 5, '', 0, 1, 'C', '');
-            $pdf->Cell(55, 5, 'Les Retard', 0, 1, '', '');
+            $pdf->Cell(55, 5, 'Les Retards', 0, 1, '', '');
             $pdf->Cell(55, 5, 'Le', 1, 0, '', '');
             $pdf->Cell(131, 5, 'le motif spécifiée', 1, 1, 'C', '');
 $requete_2 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
@@ -444,9 +444,9 @@ while ( $data_3 = mysql_fetch_array($execution_3))
 
 
 $pdf->SetY(250);
-if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseillé Principal d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principal d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principal d\'Education'; }
+if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseiller Principal d\'Education'; }
+if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principale d\'Education'; }
+if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principale d\'Education'; }
 $pdf->Cell(0, 5, $nomine, 0, 1, 'R', '');
 $pdf->Cell(0, 5, $civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i], 0, 1, 'R', '');
 }
