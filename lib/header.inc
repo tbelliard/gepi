@@ -185,6 +185,107 @@ if (isset($titre_page)) {
 		echo "<div id='version_gepi'>v".$gepiVersion.$rc.$beta."</div>";
 	}
 
+
+	echo "<!-- Header start -->\n";
+	echo "<div id='header'>\n";
+	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+	echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+
+	//echo "<tr height='20px'>\n";
+	//echo "<tr height='20%'>\n";
+	echo "<tr>\n";
+		//echo "<td rowspan='3' style='margin:0;padding:0;'><img src='$gepiPath/images/background/darkfade.png' alt='Bricolage pas chouette pour fixer la hauteur du tableau'  style='margin:0;padding:0;' /></td>\n";
+		//echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:100px; margin:0;padding:0;'></div></td>\n";
+		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div></td>\n";
+
+		echo "<!-- Page title, access rights -->\n";
+		echo "<td id='td_headerLeft' rowspan='2'>\n";
+		//echo "<div style='border: 1px solid lime; margin-top:20px; margin-bottom:20px;'><h3>".$titre_page."</h3></div>\n";
+		echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
+		//echo "<h3>".$titre_page."</h3>\n";
+
+
+		echo "<!-- Dernière connexion -->\n";
+		if (isset($affiche_connexion)){echo last_connection()."\n";}
+
+		echo "</td>\n";
+
+
+
+		echo "<!-- User name, status, main matter, home, logout, account management -->\n";
+		echo "<td id='td_headerTopRight'>\n";
+		echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
+		if ($_SESSION['statut'] == "administrateur") {
+			echo "<span class='red'>Administrateur</span>\n";
+		} elseif ($_SESSION['statut'] == "professeur") {
+			$nom_complet_matiere = sql_query1("select nom_complet from matieres
+			where matiere = '".$_SESSION['matiere']."'");
+			if ($nom_complet_matiere != '-1') {
+				//echo("Professeur de : " . $nom_complet_matiere);
+				echo("Professeur de : " . htmlentities($nom_complet_matiere));
+			} else {
+				echo "Invité";
+			}
+		} elseif ($_SESSION['statut'] == "scolarite") {
+			echo "Scolarité";
+		} elseif ($_SESSION['statut'] == "cpe") {
+			echo "CPE";
+		}
+
+		// A QUOI SERT CE $temp ?
+		$temp = '';
+		// christian
+		echo "<br />\n";
+		//On vérifie si le module de mise à jour est activé
+		if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
+			echo "<a href='javascript:ouvre_popup()'><img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' /></a>\n";
+		}
+		//christian
+
+		echo "</td>\n";
+		echo "</tr>\n";
+
+
+
+		echo "<tr>\n";
+		// Les TD précédents sont dans des rowspan
+
+		echo "<td  id='td_headerBottomRight'>\n";
+		echo "<span class='grey'>";
+		echo "<a href='$gepiPath/accueil.php'><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' />&nbsp;Accueil</a>\n";
+		echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' />&nbsp;Gérer mon compte</a>\n";
+		echo " - <a href='$gepiPath/logout.php?auto=0'><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' />&nbsp;Déconnexion</a>\n";
+		echo "</span>\n";
+
+		echo "<br />\n";
+
+		echo "<!-- Contact -->\n";
+		$prefix = '';
+		if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
+
+		echo "<span style='border-top: 1px dotted orange;'>\n";
+		if ($_SESSION['statut'] == 'administrateur') {
+			echo "<a href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
+		} else {
+			echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+		//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
+		}
+		echo " - <a href=\"javascript:centrerpopup('".$prefix."gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
+		- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
+		//- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a></b>";
+		echo "</span>\n";
+
+		echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+	echo "\n";
+	echo "</div>\n";
+	echo "<!-- Header end -->\n";
+	echo "\n";
+}
+
+/*
 	echo "<div id='header'>\n";
 	echo "<!-- Header start -->\n";
 
@@ -256,6 +357,7 @@ if (isset($titre_page)) {
 	echo "</div>\n";
 	echo "\n";
 }
+*/
 
 echo "<div id='container'>\n";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
