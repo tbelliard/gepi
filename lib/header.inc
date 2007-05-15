@@ -110,9 +110,6 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
     right: 5%;
   }
 }
-@media print  {
-  visibility: hidden;
-}
 </style>
 
 <!-- Gestion de l'expiration des session - Patrick Duthilleul -->
