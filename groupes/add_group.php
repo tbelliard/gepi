@@ -116,9 +116,9 @@ if (isset($_POST['is_posted'])) {
         // pas d'erreur : on continue avec la création du groupe
         $create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_categorie);
         if (!$create) {
-            $msg .= "Erreur lors de la création du groupe.";
+            $msg .= "Erreur lors de la création du groupe. ";
         } else {
-            $msg = "L'enseignement a bien été créé.";
+            $msg = "L'enseignement a bien été créé. ";
             $msg = urlencode($msg);
 
             // On s'occupe des profs, s'il y en a.
@@ -135,7 +135,9 @@ if (isset($_POST['is_posted'])) {
                     header("Location: ./edit_group.php?id_groupe=$create&msg=$msg&id_classe=$id_classe&mode=$mode");
                 } else {
                     $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
-                    header("Location: ./edit_class.php?id_classe=$id_classe");
+					if($res){$msg.="Mise à jour du groupe effectuée. ";}else{$msg.="Echec de la mise à jour du groupe. ";}
+                    //header("Location: ./edit_class.php?id_classe=$id_classe");
+                    header("Location: ./edit_class.php?id_classe=$id_classe&msg=$msg");
                 }
         }
 
@@ -272,7 +274,7 @@ if ($reg_matiere != null) {
         $total_profs = array_unique($prof_list["list"]);
         $p = 0;
         foreach($total_profs as $prof_login) {
-            echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."'>\n";
+            echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
             echo "<input type='checkbox' name='prof_".$p."' />";
             echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"]. "<br/>";
             $p++;
@@ -285,7 +287,7 @@ if ($reg_matiere != null) {
 echo "<div style='float: left; width: 100%'>";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";
-echo "<p><center><input type='submit' value='Valider' /></center></p>\n";
+echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 echo "</div>";
 echo "</div>";
 
