@@ -235,11 +235,13 @@ div#version_gepi {
 }
 div#header {
     width: 100%;
-    height: 100px;
+    /*height: 100px;*/
     margin: 0;
     padding: 0;
     color: white;
-    background-image: url("./images/background/darkfade.png");
+    /*background-image: url("./images/background/darkfade.png");*/
+	/* Couleur pour le débordement du tableau...*/
+	background-color: #4a4a59;
 }
 
 div#header a {
@@ -563,7 +565,13 @@ img.link {
 
 #table_header {
 	color: white;
+	/*
+	Ca ne fonctionne pas! Pas pris en compte???
+	J'ai remis cette partie directement dans la page si on est en gepi_style=style.
+	*/
 	background-image: url("./images/background/darkfade.png");
+    background-repeat: repeat-x;
+	/*background-color: red;*/
 	margin: 0;
 	padding: 0;
 }
