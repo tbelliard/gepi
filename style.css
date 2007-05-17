@@ -231,7 +231,8 @@ div#version_gepi {
     left: 0;
     padding-top: 2px;
     padding-left: 10px;
-    color: grey;
+    /*color: grey;*/
+    color: red;
 }
 div#header {
     width: 100%;
@@ -589,6 +590,9 @@ img.link {
 #td_headerLeft{
 	vertical-align: center;
 	font-size: 10pt;
+
+	/* Ajout pour que les dernières connexions apparaissent aussi en blanc et ressortent bien sur le bandeau sombre de l'entête */
+	color: white;
 }
 
 #td_headerLeft h3 {
