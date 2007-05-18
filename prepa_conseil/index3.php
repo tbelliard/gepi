@@ -154,7 +154,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	}
     $nombreligne = mysql_num_rows($calldata);
-    echo "Total : $nombreligne classes|</p>\n";
+    echo " | Total : $nombreligne classes </p>\n";
     echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
     //echo "<table border=0>\n";
 	$nb_class_par_colonne=round($nombreligne/3);
@@ -193,7 +193,54 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 } else if (!isset($choix_edit)) {
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-	    echo " | <a href = \"index3.php\">Choisir une autre classe</a></p>";
+	    echo " | <a href = \"index3.php\">Choisir une autre classe</a>";
+		
+		// Ajout lien classe précédente / classe suivante	
+		if($_SESSION['statut']=='scolarite'){
+			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='professeur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		}
+		elseif($_SESSION['statut']=='cpe'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+				p.id_classe = c.id AND
+				jec.id_classe=c.id AND
+				jec.periode=p.num_periode AND
+				jecpe.e_login=jec.login AND
+				jecpe.cpe_login='".$_SESSION['login']."'
+				ORDER BY classe";
+		}
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$id_class_prec=0;
+			$id_class_suiv=0;
+			$temoin_tmp=0;
+			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				if($lig_class_tmp->id==$id_classe){
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+						$id_class_suiv=$lig_class_tmp->id;
+					}
+					else{
+						$id_class_suiv=0;
+					}
+				}
+				if($temoin_tmp==0){
+					$id_class_prec=$lig_class_tmp->id;
+				}
+			}
+		}
+		// =================================
+		if(isset($id_class_prec)){
+			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+		}
+		if(isset($id_class_suiv)){
+			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a></p>";}
+		}
+		//fin ajout lien classe précédente / classe suivante
+		
+		
 	    $classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 	    $nom_classe = mysql_result($classe_eleve, 0, "classe");
 	    echo "<p class='grand'>Classe de $nom_classe</p>\n";
