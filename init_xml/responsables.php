@@ -202,7 +202,8 @@ if (!isset($is_posted)) {
 		}
 		else{
 			// on constitue le tableau des champs à extraire
-			$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+			//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+			$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -252,11 +253,12 @@ if (!isset($is_posted)) {
 									pers_id = '$affiche[0]',
 									nom = '$affiche[1]',
 									prenom = '$affiche[2]',
-									tel_pers = '$affiche[3]',
-									tel_port = '$affiche[4]',
-									tel_prof = '$affiche[5]',
-									mel = '$affiche[6]',
-									adr_id = '$affiche[7]'
+									civilite = '".ucfirst(strtolower($affiche[3]))."',
+									tel_pers = '$affiche[4]',
+									tel_port = '$affiche[5]',
+									tel_prof = '$affiche[6]',
+									mel = '$affiche[7]',
+									adr_id = '$affiche[8]'
 									");
 						if(!$req) {
 							$nb_reg_no3++;

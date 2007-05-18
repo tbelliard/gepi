@@ -1233,8 +1233,23 @@ function extr_valeur($lig){
 								$temoin_resp=0;
 								$temoin_addr=-1;
 
+								/*
 								$tab_champs_personne=array("NOM",
 								"PRENOM",
+								"TEL_PERSONNEL",
+								"TEL_PORTABLE",
+								"TEL_PROFESSIONNEL",
+								"MEL",
+								"ACCEPTE_SMS",
+								"ADRESSE_ID",
+								"CODE_PROFESSION",
+								"COMMUNICATION_ADRESSE"
+								);
+								*/
+
+								$tab_champs_personne=array("NOM",
+								"PRENOM",
+								"LC_CIVILITE",
 								"TEL_PERSONNEL",
 								"TEL_PORTABLE",
 								"TEL_PROFESSIONNEL",
@@ -1502,12 +1517,14 @@ function extr_valeur($lig){
 
 							echo "<p>Personnes:</p>\n";
 							$fich=fopen("../backup/$dirname/csv/personnes.csv","w+");
-							fwrite($fich,"pers_id;nom;prenom;tel_pers;tel_port;tel_prof;mel;adr_id\n");
+							//fwrite($fich,"pers_id;nom;prenom;tel_pers;tel_port;tel_prof;mel;adr_id\n");
+							fwrite($fich,"pers_id;nom;prenom;civilite;tel_pers;tel_port;tel_prof;mel;adr_id\n");
 							echo "<table border='1'>\n";
 							echo "<tr>\n";
 							echo "<th>Identifiant</th>\n";
 							echo "<th>Nom</th>\n";
 							echo "<th>Prenom</th>\n";
+							echo "<th>Civilité</th>\n";
 							echo "<th>Tel_personnel</th>\n";
 							echo "<th>Tel_portable</th>\n";
 							echo "<th>Tel_professionnel</th>\n";
@@ -1517,7 +1534,8 @@ function extr_valeur($lig){
 							//echo "<th>Code_profession</th>\n";
 							//echo "<th>Communication_adresse</th>\n";
 							echo "</tr>\n";
-							$tabtmppersonnes=array("personne_id","nom","prenom","tel_personnel","tel_portable","tel_professionnel","mel","adresse_id");
+							//$tabtmppersonnes=array("personne_id","nom","prenom","tel_personnel","tel_portable","tel_professionnel","mel","adresse_id");
+							$tabtmppersonnes=array("personne_id","nom","prenom","lc_civilite","tel_personnel","tel_portable","tel_professionnel","mel","adresse_id");
 							$i=0;
 							while($i<count($personnes)){
 								/*
