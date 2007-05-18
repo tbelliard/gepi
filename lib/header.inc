@@ -165,6 +165,17 @@ function show_message_deconnexion(){
 }
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
+
+
+if(isset($style_screen_ajout)){
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
+	}
+}
+
 ?>
 </head>
 <!-- ************************* -->
@@ -202,7 +213,12 @@ if (isset($titre_page)) {
 
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
+
+		// Pour empêcher de trop réduire la taille de la cellule de gauche
+		echo "<div style='width:380px;'></div>\n";
+
 		//echo "<div style='border: 1px solid lime; margin-top:20px; margin-bottom:20px;'><h3>".$titre_page."</h3></div>\n";
+		//echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
 		echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
 		//echo "<h3>".$titre_page."</h3>\n";
 
@@ -216,6 +232,11 @@ if (isset($titre_page)) {
 
 		echo "<!-- User name, status, main matter, home, logout, account management -->\n";
 		echo "<td id='td_headerTopRight'>\n";
+
+		// Pour empêcher de trop réduire la taille de la cellule de droite
+		echo "<div style='width:400px;'></div>\n";
+
+
 		echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
 		if ($_SESSION['statut'] == "administrateur") {
 			echo "<span class='red'>Administrateur</span>\n";
