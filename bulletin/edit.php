@@ -163,8 +163,8 @@ font-style: normal;\n";
 			echo "margin-bottom: ".$p_bulletin_margin."pt;\n";
             }
 	echo "}\n";
-	
-//$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");	
+
+//$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 
 $bull_categ_font_size_avis=	getSettingValue("bull_categ_font_size_avis");
 $bull_police_avis=getSettingValue("bull_police_avis");
@@ -190,8 +190,8 @@ case "Gras et Italique":
     break;
 default :
     echo "font-style: normal;";
-}         
-echo "}\n";	
+}
+echo "}\n";
 	?>
 
         @media print  {
@@ -339,7 +339,7 @@ echo "}\n";
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis");
-	
+
 	$bull_affiche_eleve_une_ligne=getSettingValue("bull_affiche_eleve_une_ligne");
 	$bull_mention_nom_court=getSettingValue("bull_mention_nom_court");
 
@@ -855,7 +855,13 @@ while ($i < $nombre_eleves2) {
         $ele_id='';
         $ele_id = @mysql_result($appel_liste_eleves, $i, "ele_id");
         if ($ele_id!='') {
+		/*
 		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+					WHERE r.ele_id='$ele_id' AND
+						rp.adr_id=ra.adr_id AND
+						r.pers_id=rp.pers_id");
+		*/
+		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
 					WHERE r.ele_id='$ele_id' AND
 						rp.adr_id=ra.adr_id AND
 						r.pers_id=rp.pers_id");
@@ -864,6 +870,7 @@ while ($i < $nombre_eleves2) {
 
 		$nom_resp=array();
 		$prenom_resp=array();
+		$civilite_resp=array();
 		$adr1_resp=array();
 		$adr2_resp=array();
 		$adr3_resp=array();
@@ -874,12 +881,19 @@ while ($i < $nombre_eleves2) {
 		while($lig_resp=mysql_fetch_object($call_resp)){
 			$nom_resp[$cpt]=$lig_resp->nom;
 			$prenom_resp[$cpt]=$lig_resp->prenom;
+			$civilite_resp[$cpt]=$lig_resp->civilite;
 			$adr1_resp[$cpt]=$lig_resp->adr1;
 			$adr2_resp[$cpt]=$lig_resp->adr2;
 			$adr3_resp[$cpt]=$lig_resp->adr3;
 			$adr4_resp[$cpt]=$lig_resp->adr4;
 			$cp_resp[$cpt]=$lig_resp->cp;
 			$commune_resp[$cpt]=$lig_resp->commune;
+
+			echo "<!--\n";
+			echo "\$nom_resp[$cpt]=$nom_resp[$cpt]\n";
+			echo "\$civilite_resp[$cpt]=$civilite_resp[$cpt]\n";
+			echo "\n-->\n";
+
 			$cpt++;
 		}
 		if ($nom_resp[1]=='') {
@@ -888,7 +902,13 @@ while ($i < $nombre_eleves2) {
 			$ligne3="";
 		}
 		else{
-			$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+			if($civilite_resp[1]!=""){
+				$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+			}
+			else{
+				$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+			}
+			echo "<!-- \$ligne1=$ligne1 -->\n";
 			$ligne2=$adr1_resp[1];
 			if($adr2_resp[1]!=""){
 				$ligne2.="<br />\n".$adr2_resp[1];
@@ -996,7 +1016,14 @@ while ($i < $nombre_eleves2) {
 		or ($cp_resp[1]!=$cp_resp[2])
 		or ($commune_resp[1]!=$commune_resp[2]))
 		and ($adr1_resp[2]!='')) {
-			$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+			//$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+			if($civilite_resp[2]!=""){
+				$ligne1=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+			}
+			else{
+				$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+			}
+
 			$ligne2=$adr1_resp[2];
 			if($adr2_resp[2]!=""){
 				$ligne2.="<br />\n".$adr2_resp[2];
@@ -1066,7 +1093,13 @@ while ($i < $nombre_eleves2) {
 			$ligne3 = $cp1." ".$commune1;
 */
 			if(isset($nom_resp[1])){
-				$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				//$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				if($civilite_resp[1]!=""){
+					$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+				}
+				else{
+					$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				}
 				$ligne2=$adr1_resp[1];
 				if($adr2_resp[1]!=""){
 					$ligne2.="<br />\n".$adr2_resp[1];
@@ -1097,7 +1130,13 @@ while ($i < $nombre_eleves2) {
 */
 
 			if(isset($nom_resp[2])){
-				$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+				//$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+				if($civilite_resp[2]!=""){
+					$ligne1=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+				}
+				else{
+					$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+				}
 				$ligne2=$adr1_resp[2];
 				if($adr2_resp[2]!=""){
 					$ligne2.="<br />\n".$adr2_resp[2];
@@ -1202,7 +1241,7 @@ echo "'>\n";
 
 
         	        //affichage des données sur une seule ligne ou plusieurs
-        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes		
+        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
@@ -1218,15 +1257,15 @@ echo "'>\n";
 			if ($current_eleve_regime == "i-e"){
 			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
 			}
-			//Eric Ajout			
+			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
 				echo "<BR />";
 				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
 				}
 			}
-			
-			if ($bull_mention_nom_court == 'no') { 
+
+			if ($bull_mention_nom_court == 'no') {
 				//Eric Ajout et supp
 				//echo "<BR />";
 				//echo ", $current_classe";
@@ -1234,7 +1273,7 @@ echo "'>\n";
 			    echo "<BR />";
 				echo "$current_classe";
 			}
-			
+
         } else { //sur une ligne
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
@@ -1243,7 +1282,7 @@ echo "'>\n";
 			} else {
 				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
 			}
-			
+
 			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo ", Externe";}
 			if ($current_eleve_regime == "int.") {echo ", Interne";}
@@ -1255,7 +1294,7 @@ echo "'>\n";
 				if ($current_eleve_sexe == "M"){echo ", Redoublant";}else{echo ", Redoublante";}
 				}
 			}
-			if ($bull_mention_nom_court == 'yes') { 
+			if ($bull_mention_nom_court == 'yes') {
 				echo ", $current_classe";
 			}
 		}
@@ -1343,7 +1382,7 @@ echo "'>\n";
 		}
 
 	        //affichage des données sur une seule ligne ou plusieurs
-        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes		
+        if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
 			if ($current_eleve_sexe == "M") {
@@ -1359,15 +1398,15 @@ echo "'>\n";
 			if ($current_eleve_regime == "i-e"){
 			   if ($current_eleve_sexe == "M"){echo "Interne&nbsp;externé";}else{echo "Interne&nbsp;externée";}
 			}
-			//Eric Ajout			
+			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
 				echo "<BR />";
 				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
 				}
 			}
-			
-			if ($bull_mention_nom_court == 'no') { 
+
+			if ($bull_mention_nom_court == 'no') {
 				//Eric Ajout et supp
 				//echo "<BR />";
 				//echo ", $current_classe";
@@ -1375,7 +1414,7 @@ echo "'>\n";
 			    echo "<BR />";
 				echo "$current_classe";
 			}
-			
+
         } else { //sur une ligne
 			echo "<p class='bulletin'>\n";
 			echo "<b><span class=\"bgrand\">$current_eleve_nom $current_eleve_prenom</span></b><br />";
@@ -1384,7 +1423,7 @@ echo "'>\n";
 			} else {
 				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
 			}
-			
+
 			if ($current_eleve_regime == "d/p") {echo ", Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo ", Externe";}
 			if ($current_eleve_regime == "int.") {echo ", Interne";}
@@ -1396,7 +1435,7 @@ echo "'>\n";
 				if ($current_eleve_sexe == "M"){echo ", Redoublant";}else{echo ", Redoublante";}
 				}
 			}
-			if ($bull_mention_nom_court == 'yes') { 
+			if ($bull_mention_nom_court == 'yes') {
 				echo ", $current_classe";
 			}
 		}
