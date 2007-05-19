@@ -9,6 +9,8 @@ Corrections de bugs
 ------------------
 - affichage multiple des groupes multi-classes lors de la sélection d'un carnet de notes par le prof
 - mise à jour de la détection des codes civilités lors de la synchro avec Scribe Ng
+- bulletin PDF : Lors du calcul de la moyenne générale et par catégorie, en cas d'absence de moyenne pour une matière, les moyennes calculées étaient fausses. 
+
 
 Gepi-1.5.0-rc2 (25/04/2007)
 ===========================

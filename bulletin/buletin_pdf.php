@@ -865,7 +865,7 @@ if(!empty($model_bulletin))
 			        } else {
 				            $date_naissance[$cpt_i] = 'Née le '.date_fr($donner['naissance']);
 				       }
-				$classe_id[$cpt_i] = $donner['id'];
+				$classe_tableau_id[$cpt_i] = $donner['id'];
 				$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 				$classe_nomcour[$cpt_i] = $donner['classe'];
 				$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
@@ -890,9 +890,9 @@ if(!empty($model_bulletin))
 					}
 
 				//connaitre le professeur responsable de l'élève
-				$requete_pp = mysql_query('SELECT professeur FROM '.$prefix_base.'j_eleves_professeurs WHERE (login="'.$ident_eleve[$cpt_i].'" AND id_classe="'.$classe_id[$cpt_i].'")');
+				$requete_pp = mysql_query('SELECT professeur FROM '.$prefix_base.'j_eleves_professeurs WHERE (login="'.$ident_eleve[$cpt_i].'" AND id_classe="'.$classe_tableau_id[$cpt_i].'")');
         			$prof_suivi_login = @mysql_result($requete_pp, '0', 'professeur');
-				$pp_classe[$cpt_i] = '<b>'.ucfirst(getSettingValue("gepi_prof_suivi")).' : </b><i>'.affiche_utilisateur($prof_suivi_login,$classe_id[$cpt_i]).'</i>';
+				$pp_classe[$cpt_i] = '<b>'.ucfirst(getSettingValue("gepi_prof_suivi")).' : </b><i>'.affiche_utilisateur($prof_suivi_login,$classe_tableau_id[$cpt_i]).'</i>';
 
 				//les responsables
 				$nombre_de_responsable = 0;
@@ -950,7 +950,7 @@ if(!empty($model_bulletin))
 				//connaître le cpe de l'élève
 				$query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '".$ident_eleve[$cpt_i]."')");
 			        $current_eleve_cperesp_login = @mysql_result($query, "0", "login");
-				$cpe_eleve[$cpt_i] = '<i>'.affiche_utilisateur($current_eleve_cperesp_login,$classe_id[$cpt_i]).'</i>';
+				$cpe_eleve[$cpt_i] = '<i>'.affiche_utilisateur($current_eleve_cperesp_login,$classe_tableau_id[$cpt_i]).'</i>';
 
 				//=================================
 				// AJOUT: boireaus
@@ -967,7 +967,7 @@ if(!empty($model_bulletin))
 	
 	// Avant toute chose, on s'assure que les rangs sont recalculés si nécessaire
 	if ($active_rang === '1') {
-		$tab_classes = array_unique($classe_id);
+		$tab_classes = array_unique($classe_tableau_id);
 		$affiche_categories = false;
 		$test_coef = "1";
 		foreach($tab_classes as $id_classe) {
@@ -985,7 +985,7 @@ $cpt_info_eleve=1;
 while($cpt_info_eleve<=$nb_eleve_total)
  {
     $cpt_info_periode=0;
-	$id_classe = $classe_id[$cpt_info_eleve]; // classe de l'élève
+	$id_classe = $classe_tableau_id[$cpt_info_eleve]; // classe de l'élève
 
 	while(!empty($periode_classe[$id_classe][$cpt_info_periode]))
 	 {
@@ -1121,20 +1121,28 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			// autre requete pour rechercher les appréciation d'une matière pour une période donné
 			 $appreciation = mysql_fetch_array(mysql_query('SELECT * FROM '.$prefix_base.'matieres_appreciations WHERE login="'.$login_eleve_select.'" AND id_groupe="'.$groupe_matiere.'" AND periode="'.$id_periode.'"'));
-	                 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['appreciation'] = $appreciation['appreciation'];
+	         $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['appreciation'] = $appreciation['appreciation'];
 			 $appreciation=''; //remise à vide de la variable
 
 			// connaitre le coefficient de la matière
-			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef']='1';
-			 if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on le connait on ne retourne pas le chercher
+			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef']='1';
+			 if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on leconnait on ne retourne pas le chercher
 			 {
 			 	$coef_matiere[$id_classe][$groupe_matiere] = mysql_fetch_array(mysql_query('SELECT * FROM '.$prefix_base.'j_groupes_classes WHERE id_classe="'.$id_classe.'" AND id_groupe="'.$groupe_matiere.'"'));
 				if($coef_matiere[$id_classe][$groupe_matiere]['coef']!=0.0)
 				{
-	                 	     $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
-				} else { $coef_matiere[$id_classe][$groupe_matiere]['coef'] = '1'; $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '1'; }
-			 } else { $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef']; }
-			 $total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				} else { $coef_matiere[$id_classe][$groupe_matiere]['coef'] = '0'; 
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '0'; 
+				}
+			 } else { 
+			 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef']; 
+			 }
+			 if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '' 
+			    and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') { 
+			 $total_coef =$total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+			 }
+			 //$total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 
 			//calcule des moyennes par catégorie
 			if($active_entete_regroupement==='1') {
@@ -1143,8 +1151,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 //			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
 			 if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
-			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			  if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0'; }
+			 if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
+			   $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+			 }
+			 if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0'; }
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
@@ -1277,7 +1287,7 @@ $responsable_place = 0;
 while(!empty($nom_eleve[$nb_eleve_aff])) {
   $ident_eleve_aff = $ident_eleve[$nb_eleve_aff];
     $cpt_info_periode=0;
-	$id_classe_selection = $classe_id[$nb_eleve_aff]; // classe de l'élève
+	$id_classe_selection = $classe_tableau_id[$nb_eleve_aff]; // classe de l'élève
 
 	// quand on change d'élève on vide les variables suivante
 	$categorie_passe = '';
