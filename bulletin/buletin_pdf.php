@@ -1414,8 +1414,18 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	  if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
 	 }
 	 if($affiche_effectif_classe==='1') {
-	  if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") { $pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,0,''); }
+		if($affiche_numero_impression==='1') {
+			$pass_ligne = '0';
+		} else { $pass_ligne = '2'; }
+		if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
+			$pdf->Cell(45,4.5, 'Effectif :
+			'.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].'
+			élèves',0,$pass_ligne,''); }
 	 }
+	 //if($affiche_effectif_classe==='1') {
+	 // if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") { $pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,0,''); }
+	 //}
+	 
 	 if($affiche_numero_impression==='1') {
 	  $num_ordre = $i;
 	  $pdf->Cell(45,4, 'Bulletin N° '.$num_ordre,0,2,'');
