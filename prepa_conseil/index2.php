@@ -69,7 +69,58 @@ require_once("../lib/header.inc");
 <?php
 if (isset($id_classe)) {
     $current_eleve_classe = sql_query1("SELECT classe FROM classes WHERE id='$id_classe'");
-    echo " | <a href=\"index2.php\">Choisir une autre classe</a> | Classe : ".$current_eleve_classe."</p>";
+    echo " | <a href=\"index2.php\">Choisir une autre classe</a>";
+
+
+	// ===========================================
+	// Ajout lien classe précédente / classe suivante
+	if($_SESSION['statut']=='scolarite'){
+		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+	}
+	elseif($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+			p.id_classe = c.id AND
+			jec.id_classe=c.id AND
+			jec.periode=p.num_periode AND
+			jecpe.e_login=jec.login AND
+			jecpe.cpe_login='".$_SESSION['login']."'
+			ORDER BY classe";
+	}
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+	if(isset($id_class_prec)){
+		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+	}
+	if(isset($id_class_suiv)){
+		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+	}
+	//fin ajout lien classe précédente / classe suivante
+	// ===========================================
+
+
+	echo " | Classe : ".$current_eleve_classe."</p>";
     echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
     echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\"><tr>";
     echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
@@ -163,7 +214,7 @@ if (isset($id_classe)) {
 */
     echo "<br />\n<center><input type=\"submit\" name=\"ok\" value=\"Valider\" /></center>";
     echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tête et dans une nouvelle page. Pour revenir à cet écran, il vous suffit de fermer la fenêtre du tableau des notes.</span>";
-    if ($_SESSION['statut'] == "professeur" 
+    if ($_SESSION['statut'] == "professeur"
 	AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"
 	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
 		echo "<br />\n<span class='small'>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</span>";
