@@ -121,7 +121,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 //if (!isset($id_classe)) {
 
 	//modification christian pour le choix des bulletins au format PDF
-	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='index.php?format='>Impression au format HTML</a><?php } 
+	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF </a><?php } else { ?><a href='index.php?format='>Impression au format HTML </a><?php } 
 	//fin de modification
 
        //modification Christian CHAPEL
@@ -333,7 +333,7 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 	*/
 }
 if (isset($id_classe) and $format != 'pdf' and $modele === '') {
-	echo "<a href=\"index.php\">Choisir une autre classe</a>|";
+	echo " | <a href=\"index.php\">Choisir une autre classe</a>";
 /*
 	// On choisit le periode :
 	echo "<p><b>Choisissez la période : </b></p>\n";
