@@ -469,12 +469,14 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Nom court du devoir</text:p></table:table-cell>');
 
-	for($i=0;$i<count($nomc_dev);$i++){
+	//for($i=0;$i<count($nomc_dev);$i++){
+	for($i=0;$i<$nb_dev;$i++){
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="string"><text:p>'.$nomc_dev[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prévu un maximum de 46 colonnes de devoirs...
-	$nb_vide=46-count($nomc_dev);
+	//$nb_vide=46-count($nomc_dev);
+	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" table:number-columns-repeated="'.$nb_vide.'"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
 
@@ -487,12 +489,14 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Coefficient</text:p></table:table-cell>');
 
-	for($i=0;$i<count($coef_dev);$i++){
+	//for($i=0;$i<count($coef_dev);$i++){
+	for($i=0;$i<$nb_dev;$i++){
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce6" office:value-type="float" office:value="'.strtr($coef_dev[$i],",",".").'"><text:p>'.$coef_dev[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prévu un maximum de 46 colonnes de devoirs...
-	$nb_vide=46-count($coef_dev);
+	//$nb_vide=46-count($coef_dev);
+	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:number-columns-repeated="'.$nb_vide.'" table:style-name="ce6"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
 
@@ -505,12 +509,14 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce1" table:number-columns-repeated="3"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="string"><text:p>Date</text:p></table:table-cell>');
 
-	for($i=0;$i<count($date_dev);$i++){
+	//for($i=0;$i<count($date_dev);$i++){
+	for($i=0;$i<$nb_dev;$i++){
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="date" office:date-value="'.$date_dev[$i].'"><text:p>'.$date_dev_fr[$i].'</text:p></table:table-cell>');
 	}
 
 	// PB: J'ai prévu un maximum de 46 colonnes de devoirs...
-	$nb_vide=46-count($date_dev);
+	//$nb_vide=46-count($date_dev);
+	$nb_vide=46-$nb_dev;
 	$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" table:number-columns-repeated="'.$nb_vide.'"/>');
 	$ecriture=fwrite($fichier_tmp_xml,'</table:table-row>');
 
@@ -539,7 +545,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 	$num_col=6;
 
-	for($i=0;$i<count($moy_dev);$i++){
+	//for($i=0;$i<count($moy_dev);$i++){
+	for($i=0;$i<$nb_dev;$i++){
 		//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce8" table:formula="oooc:=IF([.'.$tabcol[$num_col].'3]=&quot;&quot;;&quot;&quot;;IF(ISERROR(AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100]));&quot;&quot;;AVERAGE([.'.$tabcol[$num_col].'6:.'.$tabcol[$num_col].'100])))" office:value-type="float" office:value="'.strtr($moy_dev[$i],',','.').'"><text:p>'.$moy_dev[$i].'</text:p></table:table-cell>');
