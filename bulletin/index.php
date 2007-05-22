@@ -76,7 +76,7 @@ if (!checkAccess()) {
 //ERIC
 	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
 	    // le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
-  	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
+  /*	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
 		if ($option_modele_bulletin!=1) {
 	      if ($type_bulletin == -1) {
 		    //cas avec les modèles affectés aux classes.
@@ -89,6 +89,8 @@ if (!checkAccess()) {
 		    //cas avec les modèles affectés aux classes.
 	        header("Location: bulletin_pdf_avec_modele_classe.php");
 		}
+		*/
+	 header("Location: bulletin_pdf_avec_modele_classe.php");	
 	}
 // FIN Christian renvoye vers le fichier PDF bulletin
 
@@ -119,7 +121,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 //if (!isset($id_classe)) {
 
 	//modification christian pour le choix des bulletins au format PDF
-	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='index.php?format='>Impression au format HTML</a><?php } ?> | <?php
+	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='index.php?format='>Impression au format HTML</a><?php } 
 	//fin de modification
 
        //modification Christian CHAPEL
@@ -232,6 +234,34 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		  </fieldset>
 		</form>
 
+<!-- TEXTE EXPLICATIF-->
+<br />
+<br />
+<p>Vous allez effectuer l'impression de bulletin au format PDF. Voici quelques conseils pour utiliser l'interface.</p>
+<ul>
+<li>
+	<p><b>Procédure à suivre pour imprimer des classes complètes :</b><br /></p>
+	<ul>
+		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
+		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
+		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p><br/></li>
+	</ul>
+</li>
+<li>
+	<p><b>Procédure à suivre pour imprimer quelques élèves dans des classes :</b><br /></p>
+	<ul>
+		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Cliquer sur le bouton "Liste élèves".</p></li>
+		<li><p>Sélectionner la ou les élèves à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
+		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
+		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p></li>
+	</ul>
+</li>
+</ul>
+
+		
 		<?php
 	}
 	// fin de modification de la sélection pour le PDF Christian
