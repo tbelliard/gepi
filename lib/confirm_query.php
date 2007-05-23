@@ -288,11 +288,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[4] = "SELECT * FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
     $req[4] = "DELETE FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
 
-    $mess[5] = "Table des périodes de l'observatoire :";
-    $test_nb[5] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
-    $req[5] = "DELETE FROM periodes_observatoire WHERE id_classe ='$cible1'";
+    $nombre_req = 5;
 
-    $nombre_req = 6;
+	$test_existence=mysql_query("SHOW TABLES LIKE 'periodes_observatoire';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[5] = "Table des périodes de l'observatoire :";
+		$test_nb[5] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
+		$req[5] = "DELETE FROM periodes_observatoire WHERE id_classe ='$cible1'";
+
+		$nombre_req = 6;
+	}
 
     break;
     case "del_aid":
@@ -342,9 +347,9 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         $test_nb[] = "SELECT * FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
         $req[] = "DELETE FROM j_eleves_groupes WHERE (login='$cible1' and periode='$cible2')";
         $nombre_req++;
-    }    
-    
-    
+    }
+
+
     break;
 
     }
