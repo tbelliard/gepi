@@ -46,6 +46,7 @@ if ($resultat_session == 'c') {
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
+    //header("Location: ../logout.php?auto=1&amp;pb_checkAccess=y");
     die();
 }
 
@@ -394,7 +395,11 @@ if ($id_groupe != null) {
     }
     $str = substr($str, 0, -2);
     echo $str . ")</p>";
-    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de texte en accès public</a>\n";
+
+	if(getSettingValue('cahier_texte_acces_public')!='no'){
+	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de texte en accès public</a>\n";
+	}
+
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
        echo "<br />(Identifiant : ".getSettingValue("cahiers_texte_login_pub")." - Mot de passe : ".getSettingValue("cahiers_texte_passwd_pub").")\n";
     echo "</td>\n";
@@ -429,9 +434,16 @@ if (($id_groupe == null)) {
        echo " <b><b>AVERTISSEMENT</b> : l'accès à l'interface de consultation publique du cahier de texte est entièrement libre et n'est soumise à aucune restriction.</b>\n";
     }
     echo "<br /><br />En utilisant le cahier de texte électronique de GEPI :
-    <ul>
-    <li>vous acceptez que vos nom, prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de texte</a>,</li>
-    <li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusées sur ce même site.</li>
+    <ul>\n";
+
+	if(getSettingValue('cahier_texte_acces_public')!='no'){
+		echo "<li>vous acceptez que vos nom, initiale de prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de texte</a>,</li>\n";
+	}
+	else{
+		echo "<li>l'accès au cahier de texte est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>)</a>,</li>\n";
+	}
+
+    echo "<li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusées sur ce même site.</li>
     <li>vous vous engagez à respecter les règles fixées concernant les cahiers de texte (Circulaire du 3 mai 1961 adressée aux recteurs - RLR, 550-1 b)</li>
     <li>vous vous engagez à ne pas faire figurer d'informations nominatives concernant les élèves</li>
     </ul>\n";
