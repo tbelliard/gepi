@@ -135,16 +135,25 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[3] = "SELECT * FROM j_groupes_professeurs WHERE login='$cible1'";
     $req[3] = "DELETE FROM j_groupes_professeurs WHERE login='$cible1';";
 
-    $mess[4] = "Table des responsable de l'observatoire :";
-    $test_nb[4] = "SELECT * FROM observatoire_config WHERE content='$cible1'";
-    $req[4] = "DELETE FROM observatoire_config WHERE content='$cible1';";
+    $nombre_req = 4;
 
-    $mess[5] = "Table des responsable de champs particuliers de l'observatoire :";
-    $test_nb[5] = "SELECT * FROM observatoire_j_resp_champ WHERE login='$cible1'";
-    $req[5] = "DELETE FROM observatoire_j_resp_champ WHERE login='$cible1';";
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_config';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des responsables de l'observatoire :";
+		$test_nb[] = "SELECT * FROM observatoire_config WHERE content='$cible1'";
+		$req[] = "DELETE FROM observatoire_config WHERE content='$cible1';";
 
+		$nombre_req++;
+	}
 
-    $nombre_req = 6;
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_j_resp_champ';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des responsables de champs particuliers de l'observatoire :";
+		$test_nb[] = "SELECT * FROM observatoire_j_resp_champ WHERE login='$cible1'";
+		$req[] = "DELETE FROM observatoire_j_resp_champ WHERE login='$cible1';";
+
+		$nombre_req++;
+	}
 
     break;
 
@@ -183,15 +192,26 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[] = "SELECT * FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
     $req[] = "DELETE FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
 
-    $mess[] = "Table des niveaux (observatoire) :";
-    $test_nb[] = "SELECT * FROM observatoire WHERE matiere ='$cible1'";
-    $req[] = "DELETE FROM observatoire WHERE matiere ='$cible1'";
+    $nombre_req = 3;
 
-    $mess[] = "Table des commentaires (observatoire) :";
-    $test_nb[] = "SELECT * FROM observatoire_comment WHERE matiere ='$cible1'";
-    $req[] = "DELETE FROM observatoire_comment WHERE matiere ='$cible1'";
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des niveaux (observatoire) :";
+		$test_nb[] = "SELECT * FROM observatoire WHERE matiere ='$cible1'";
+		$req[] = "DELETE FROM observatoire WHERE matiere ='$cible1'";
 
-    $nombre_req = 5;
+		$nombre_req++;
+	}
+
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_comment';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des commentaires (observatoire) :";
+		$test_nb[] = "SELECT * FROM observatoire_comment WHERE matiere ='$cible1'";
+		$req[] = "DELETE FROM observatoire_comment WHERE matiere ='$cible1'";
+
+		$nombre_req++;
+	}
+
     break;
 
     case "del_eleve":
@@ -244,27 +264,47 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[11] = "SELECT * FROM cn_notes_conteneurs WHERE login='$cible1'";
     $req[11] = "DELETE FROM cn_notes_conteneurs WHERE login='$cible1';";
 
-    $mess[12] = "Table des niveaux (observatoire) :";
-    $test_nb[12] = "SELECT * FROM observatoire WHERE login ='$cible1'";
-    $req[12] = "DELETE FROM observatoire WHERE login ='$cible1'";
+    $nombre_req = 12;
 
-    $mess[13] = "Table du suivi (observatoire) :";
-    $test_nb[13] = "SELECT * FROM observatoire_suivi WHERE login ='$cible1'";
-    $req[13] = "DELETE FROM observatoire_suivi WHERE login ='$cible1'";
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des niveaux (observatoire) :";
+		$test_nb[] = "SELECT * FROM observatoire WHERE login ='$cible1'";
+		$req[] = "DELETE FROM observatoire WHERE login ='$cible1'";
 
-    $mess[14] = "Table des commentaires (observatoire) :";
-    $test_nb[14] = "SELECT * FROM observatoire_comment WHERE login ='$cible1'";
-    $req[14] = "DELETE FROM observatoire_comment WHERE login ='$cible1'";
+		$nombre_req++;
+	}
 
-    $mess[15] = "Table des absences :";
-    $test_nb[15] = "SELECT * FROM absences WHERE login ='$cible1'";
-    $req[15] = "DELETE FROM absences WHERE login ='$cible1'";
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_suivi';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table du suivi (observatoire) :";
+		$test_nb[] = "SELECT * FROM observatoire_suivi WHERE login ='$cible1'";
+		$req[] = "DELETE FROM observatoire_suivi WHERE login ='$cible1'";
 
-    $mess[16] = "Table de jointure élève/régime :";
-    $test_nb[16] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
-    $req[16] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
+		$nombre_req++;
+	}
 
-    $nombre_req = 17;
+	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_comment';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des commentaires (observatoire) :";
+		$test_nb[] = "SELECT * FROM observatoire_comment WHERE login ='$cible1'";
+		$req[] = "DELETE FROM observatoire_comment WHERE login ='$cible1'";
+
+		$nombre_req++;
+	}
+
+    $mess[] = "Table des absences :";
+    $test_nb[] = "SELECT * FROM absences WHERE login ='$cible1'";
+    $req[] = "DELETE FROM absences WHERE login ='$cible1'";
+
+	$nombre_req++;
+
+    $mess[] = "Table de jointure élève/régime :";
+    $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
+    $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
+
+	$nombre_req++;
+
     break;
     case "del_classe":
     //Suppression d'une classe
@@ -292,11 +332,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'periodes_observatoire';");
 	if(mysql_num_rows($test_existence)>0){
-		$mess[5] = "Table des périodes de l'observatoire :";
-		$test_nb[5] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
-		$req[5] = "DELETE FROM periodes_observatoire WHERE id_classe ='$cible1'";
+		$mess[] = "Table des périodes de l'observatoire :";
+		$test_nb[] = "SELECT * FROM periodes_observatoire WHERE id_classe ='$cible1'";
+		$req[] = "DELETE FROM periodes_observatoire WHERE id_classe ='$cible1'";
 
-		$nombre_req = 6;
+		$nombre_req++;
 	}
 
     break;
