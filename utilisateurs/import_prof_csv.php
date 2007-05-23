@@ -96,7 +96,8 @@ $fd = '';
 
 
 
-$appel_donnees = mysql_query("SELECT * FROM utilisateurs ORDER BY nom, prenom");
+//$appel_donnees = mysql_query("SELECT * FROM utilisateurs ORDER BY nom, prenom");
+$appel_donnees = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom");
 
 $nombre_lignes = mysql_num_rows($appel_donnees);
 
