@@ -192,6 +192,14 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 <script src="lib/functions.js" type="text/javascript" language="javascript"></script>
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
+<?php
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
+	}
+?>
 </head>
 <body onload="document.getElementById('login').focus()">
 <div>
@@ -246,10 +254,6 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 </fieldset>
 </form>
 </div>
-<div class="center" style="margin-bottom: 32px;">
-<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
-<p><a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">[Contacter l'administrateur]</a></p>
-</div>
 
 <script language="javascript" type="text/javascript">
 <!--
@@ -265,6 +269,17 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 	}
 -->
 </script>
+
+<div class="center" style="margin-bottom: 32px;">
+<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
+<p>
+<?php
+	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+	$tmp_adr=explode("@",$gepiAdminAdress);
+	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> ");
+?>
+</p>
+</div>
 
 
 <div id="login_footer">
