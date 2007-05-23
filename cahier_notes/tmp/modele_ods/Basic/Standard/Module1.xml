@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module1" script:language="StarBasic">REM  *****  BASIC  *****
+
+Sub Main
+
+End Sub
+
+
+sub Export_CSV
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+dim NomFichierOds as string
+dim NomFichierCsv as string
+NomFichierOds = ThisComponent.URL
+NomFichierCsv = Mid(NomFichierOds,1,Len(NomFichierOds)-3) &amp; &quot;csv&quot;
+
+rem ----------------------------------------------------------------------
+dim args1(2) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;URL&quot;
+args1(0).Value = NomFichierOds
+args1(1).Name = &quot;FilterName&quot;
+args1(1).Value = &quot;calc8&quot;
+args1(2).Name = &quot;SelectionOnly&quot;
+args1(2).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(3) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;URL&quot;
+args2(0).Value = NomFichierCsv
+args2(1).Name = &quot;FilterName&quot;
+args2(1).Value = &quot;Text - txt - csv (StarCalc)&quot;
+args2(2).Name = &quot;FilterOptions&quot;
+args2(2).Value = &quot;59,0,22,1&quot;
+args2(3).Name = &quot;SelectionOnly&quot;
+args2(3).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+dim args3(2) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;URL&quot;
+args3(0).Value = NomFichierOds
+args3(1).Name = &quot;FilterName&quot;
+args3(1).Value = &quot;calc8&quot;
+args3(2).Name = &quot;SelectionOnly&quot;
+args3(2).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args3())
+
+
+end sub
+</script:module>
