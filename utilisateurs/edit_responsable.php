@@ -1,7 +1,7 @@
 <?php
 /*
  * $Id$
- * 
+ *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -68,7 +68,7 @@ if ($mode == "classe") {
 		if (!$quels_parents) $msg .= mysql_error();
 	} else {
 		$error = true;
-		$msg .= "Vous devez sélectionner au moins une classe !<br/>";
+		$msg .= "Vous devez sélectionner au moins une classe !<br />";
 	}
 }
 
@@ -98,13 +98,13 @@ if ($action == "rendre_inactif") {
 				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 				$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
 				if (!$res) {
-					$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br/>";
+					$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br />";
 				} else {
 					$nb_comptes++;
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été désactivés.";		
+		$msg .= "$nb_comptes comptes ont été désactivés.";
 	}
 } elseif ($action == "rendre_actif") {
 	// Activation d'utilisateurs préalablement désactivés
@@ -129,15 +129,15 @@ if ($action == "rendre_inactif") {
 				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 				$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
 				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br/>";
+					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
 				} else {
 					$nb_comptes++;
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été activés.";		
+		$msg .= "$nb_comptes comptes ont été activés.";
 	}
-	
+
 } elseif ($action == "supprimer") {
 	// Suppression d'un ou plusieurs utilisateurs
 	if ($mode == "individual") {
@@ -162,27 +162,27 @@ if ($action == "rendre_inactif") {
 				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 				$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
 				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br/>";
+					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
 				} else {
 					$res = mysql_query("UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
 					$nb_comptes++;
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été supprimés.";		
+		$msg .= "$nb_comptes comptes ont été supprimés.";
 	}
 } elseif ($action == "reinit_password") {
 	if ($mode != "classe") {
 		$msg .= "Erreur : Vous devez sélectionner une classe.";
 	} elseif ($mode == "classe") {
 		if ($_POST['classe'] == "all") {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";			
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
 		} else if (is_numeric($_POST['classe'])) {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";			
+			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
 		}
 	}
 }
@@ -193,40 +193,62 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
-<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |
 <a href="create_responsable.php"> Ajouter de nouveaux comptes</a>
 <?php
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
   // Eric Faut-il garder la ligne ?
   //  echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
 }
-echo "</p>";
-	echo "<p><b>Actions par lot</b> :";
-	echo "<form action='edit_responsable.php' method='post'>";
-	echo "<input type='hidden' name='mode' value='classe' />";
-	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif";
-	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif ";
-	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe";
-	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br/>";
-	echo "<br/>";
-	echo "<select name='classe' size='1'>";
-	echo "<option value='none'>Sélectionnez une classe</option>";
-	echo "<option value='all'>Toutes les classes</option>";
+
+$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
+if(mysql_num_rows($quels_parents)==0){
+	echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables à l'aide du lien ci-dessus.</p>\n";
+	require("../lib/footer.inc.php");
+	die;
+}
+echo "</p>\n";
+
+	//echo "<p><b>Actions par lot</b> :";
+
+	echo "<form action='edit_responsable.php' method='post'>\n";
+
+	echo "<p style='font-weight:bold;'>Actions par lot pour les comptes responsables existants : </p>\n";
+	echo "<blockquote>\n";
+	echo "<p>\n";
+	echo "<select name='classe' size='1'>\n";
+	echo "<option value='none'>Sélectionnez une classe</option>\n";
+	echo "<option value='all'>Toutes les classes</option>\n";
 	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>";
+		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
-	echo "</select>";
-	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />";
-	echo "</form>";
+	echo "</select>\n";
+
+	echo "<br />\n";
+
+	echo "<input type='hidden' name='mode' value='classe' />\n";
+	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
+	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
+	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
+	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
+	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</p>\n";
+
+	echo "</blockquote>\n";
+	echo "</form>\n";
+
+
+	echo "<p><br /></p>\n";
+
+echo "<p><b>Liste des comptes responsables existants</b> :\n";
 ?>
-<br/><br/>
 <table border="1">
 <tr>
 	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
 </tr>
 <?php
-$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
+//$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
 while ($current_parent = mysql_fetch_object($quels_parents)) {
 	echo "<tr>\n";
@@ -236,19 +258,25 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "<td>";
 			echo $current_parent->nom . " " . $current_parent->prenom;
 		echo "</td>\n";
-		echo "<td>";
-			echo $current_parent->etat;
-			echo "<br/>";
+		echo "<td align='center'>";
 			if ($current_parent->etat == "actif") {
+				echo "<font color='green'>".$current_parent->etat."</font>";
+				echo "<br />";
 				echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login."'>Désactiver";
 			} else {
+				echo "<font color='red'>".$current_parent->etat."</font>";
+				echo "<br />";
 				echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login."'>Activer";
 			}
 			echo "</a>";
 		echo "</td>\n";
 		echo "<td>";
-		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a><br/>";
-		echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
+
+		if($current_parent->etat == "actif"){
+			echo "<br />";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+		}
 		echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -258,4 +286,5 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 if (mysql_num_rows($quels_parents) == "0") {
 	echo "<p>Pour créer de nouveaux comptes d'accès associés aux responsables d'élèves définis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";
 }
-require("../lib/footer.inc.php");?>
+require("../lib/footer.inc.php");
+?>

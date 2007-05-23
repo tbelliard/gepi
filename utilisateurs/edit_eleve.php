@@ -1,7 +1,7 @@
 <?php
 /*
  * $Id$
- * 
+ *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -98,7 +98,7 @@ if ($action == "rendre_inactif") {
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été désactivés.";		
+		$msg .= "$nb_comptes comptes ont été désactivés.";
 	}
 } elseif ($action == "rendre_actif") {
 	// Activation d'utilisateurs préalablement désactivés
@@ -129,9 +129,9 @@ if ($action == "rendre_inactif") {
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été activés.";		
+		$msg .= "$nb_comptes comptes ont été activés.";
 	}
-	
+
 } elseif ($action == "supprimer") {
 	// Suppression d'un ou plusieurs utilisateurs
 	if ($mode == "individual") {
@@ -161,7 +161,7 @@ if ($action == "rendre_inactif") {
 				}
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été supprimés.";		
+		$msg .= "$nb_comptes comptes ont été supprimés.";
 	}
 } elseif ($action == "reinit_password") {
 	if ($mode != "classe") {
@@ -169,14 +169,14 @@ if ($action == "rendre_inactif") {
 	} elseif ($mode == "classe") {
 		if ($_POST['classe'] == "all") {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";			
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		} else if (is_numeric($_POST['classe'])) {
 			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";			
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		}
 	}
 }
@@ -186,7 +186,7 @@ $titre_page = "Modifier des comptes élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |
 <a href="create_eleve.php"> Ajouter de nouveaux comptes</a>
 <?php
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
@@ -194,33 +194,53 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     // Eric Faut-il garder la ligne ?
     //echo " | <a href=\"reset_passwords.php?user_status=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'eleve\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe (impression HTML)</a>";
 }
-	echo "</p>";
-	echo "<p><b>Actions par lot</b> :";
-	echo "<form action='edit_eleve.php' method='post'>";
-	echo "<input type='hidden' name='mode' value='classe' />";
-	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif";
-	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif ";
-	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe";
-	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br/>";
-	echo "<br/>";
-	echo "<select name='classe' size='1'>";
-	echo "<option value='none'>Sélectionnez une classe</option>";
-	echo "<option value='all'>Toutes les classes</option>";
+
+$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
+if(mysql_num_rows($quels_eleves)==0){
+	echo "<p>Aucun compte élève n'existe encore.<br />Vous pouvez ajouter des comptes élèves à l'aide du lien ci-dessus.</p>\n";
+	require("../lib/footer.inc.php");
+	die;
+}
+echo "</p>\n";
+
+	//echo "<p><b>Actions par lot</b> :";
+	echo "<form action='edit_eleve.php' method='post'>\n";
+	echo "<p style='font-weight:bold;'>Actions par lot pour les comptes élèves existants : </p>\n";
+	echo "<blockquote>\n";
+	echo "<p>\n";
+
+	echo "<select name='classe' size='1'>\n";
+	echo "<option value='none'>Sélectionnez une classe</option>\n";
+	echo "<option value='all'>Toutes les classes</option>\n";
 	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>";
+		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
-	echo "</select>";
-	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />";
-	echo "</form>";
+	echo "</select>\n";
+	echo "<br />\n";
+
+	echo "<input type='hidden' name='mode' value='classe' />\n";
+	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
+	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
+	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
+	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
+	//echo "<br />\n";
+	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</p>\n";
+	echo "</blockquote>\n";
+	echo "</form>\n";
+
+
+	echo "<p><br /></p>\n";
+
+echo "<p><b>Liste des comptes élèves existants</b> :\n";
 ?>
-<br/><br/>
 <table border="1">
 <tr>
 	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
 </tr>
 <?php
-$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
+//$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
 
 while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 	echo "<tr>";
@@ -230,19 +250,27 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<td>";
 			echo $current_eleve->nom . " " . $current_eleve->prenom;
 		echo "</td>";
-		echo "<td>";
-			echo $current_eleve->etat;
-			echo "<br/>";
+		echo "<td align='center'>";
+			//echo $current_eleve->etat;
+			//echo "<br/>";
 			if ($current_eleve->etat == "actif") {
+				echo "<font color='green'>".$current_eleve->etat."</font>";
+				echo "<br />";
 				echo "<a href='edit_eleve.php?action=rendre_inactif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Désactiver";
 			} else {
+				echo "<font color='red'>".$current_eleve->etat."</font>";
+				echo "<br />";
 				echo "<a href='edit_eleve.php?action=rendre_actif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Activer";
 			}
 			echo "</a>";
 		echo "</td>";
 		echo "<td>";
-		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a><br/>";
-		echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
+
+		if($current_eleve->etat == "actif"){
+			echo "<br/>";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+		}
 		echo "</td>\n";
 	echo "</tr>";
 }

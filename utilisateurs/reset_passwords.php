@@ -90,9 +90,17 @@ if ($user_classe AND !is_numeric($user_classe)) {
 //Ajout Eric ==> les données à sortir sont différentes suivant la demande de réinitialisation faite (elv / resp) et au niveau du responsable en fonction du fait classe / tous (dans ce cas, il faut rechercher la classe
 $cas_traite = 0;
 
+//echo "\$user_login=$user_login<br />";
+//echo "\$mode_impression=$mode_impression<br />";
+
+
 //TODO: Sans doute faudrait-il ajouter des tests ici, si jamais un jour quelqu'un d'autre que l'administrateur peut accéder à la page.
 if ($user_login) {
 	// Si on est ici, c'est qu'on a demandé la réinitialisation du mot de passe d'un seul utilisateur. C'est simple :)
+
+		// On ne récupère pas les infos responsable si statut='responsable'
+
+		// ATTENTION: Un utilisateur inactif n'apparaitra pas...
 		$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 				"login = '" . $user_login ."' and " .
 				"etat='actif' and " .
@@ -102,7 +110,7 @@ if ($user_login) {
 	if ($user_status) {
 		if ($user_classe) {
 			// On a un statut et une classe. Cette opération s'applique soit aux élèves soit aux parents
-			
+
 			if ($user_status == "responsable") {
 				// Sélection de tous les responsables d'élèves de la classe donnée
 				/*$call_user_info = mysql_query("SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email " .
@@ -115,22 +123,22 @@ if ($user_login) {
 						"jec.id_classe = '".$user_classe."')");
 				*/
 				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, jec.id_classe, ra.*
-								FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e, resp_adr ra 
-								WHERE ( u.login = r.login AND 
-								u.statut = 'responsable' AND 
-								r.pers_id = re.pers_id AND 
-								re.ele_id = e.ele_id AND 
+								FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e, resp_adr ra
+								WHERE ( u.login = r.login AND
+								u.statut = 'responsable' AND
+								r.pers_id = re.pers_id AND
+								re.ele_id = e.ele_id AND
 								e.login = jec.login AND
-								r.adr_id = ra.adr_id AND 
+								r.adr_id = ra.adr_id AND
 								jec.id_classe = '$user_classe')";
 				$call_user_info = mysql_query($sql_user_resp);
 				//echo $sql_user_resp;
 				$cas_traite=1;
-				
+
 				$sql_classe = "SELECT * FROM classes WHERE id=$user_classe";
 				$data_user_classe = mysql_query($sql_classe);
 				$classe_resp= mysql_result($data_user_classe, 0, "classe");
-				
+
 			} elseif ($user_status == "eleve") {
 				// Sélection de tous les utilisateurs élèves de la classe donnée
 				$call_user_info = mysql_query("SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email " .
@@ -158,11 +166,11 @@ if ($user_login) {
 									AND rp.pers_id = r2.pers_id
 									AND r2.ele_id = e.ele_id
 									AND jec.login = e.login )
-									ORDER BY jec.id_classe";	
+									ORDER BY jec.id_classe";
 				//echo $sql_user_info;
 				$call_user_info = mysql_query($sql_user_info);
 				$cas_traite=2;
-				
+
 			} elseif ($user_status == "eleve"){
 			    $login_en_cours = $_SESSION['login'];
 			    $sql_user_info = "SELECT DISTINCT (u.login), u.nom, u.prenom, u.statut, u.password, u.email, jec.id_classe
@@ -179,7 +187,7 @@ if ($user_login) {
 	} else {
 		// Ni statut ni classe ni login n'ont été transmis. On sélectionne alors tous les personnels de l'établissement,
 		// c'est à dire tout le monde sauf l'administrateur connecté actuellement, les parents, et les élèves.
-		
+
 		$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 				"login!='" . $_SESSION['login'] . "' and " .
 				"etat='actif' and " .
@@ -190,7 +198,11 @@ if ($user_login) {
 	}
 }
 
+
 $nb_users = mysql_num_rows($call_user_info);
+
+//echo "\$nb_users=$nb_users<br />";
+
 $p = 0;
 $saut = 1;
 while ($p < $nb_users) {
@@ -204,17 +216,17 @@ while ($p < $nb_users) {
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
-	
+
 	  $resp_adr1=mysql_result($call_user_info, $p, "adr1");
 	  $resp_adr1=mysql_result($call_user_info, $p, "adr1");
 	  $resp_adr2=mysql_result($call_user_info, $p, "adr2");
-	  $resp_adr3=mysql_result($call_user_info, $p, "adr3");	  
+	  $resp_adr3=mysql_result($call_user_info, $p, "adr3");
 	  $resp_adr4=mysql_result($call_user_info, $p, "adr4");
 	  $resp_cp=mysql_result($call_user_info, $p, "cp");
 	  $resp_commune=mysql_result($call_user_info, $p, "commune");
 	  $resp_pays=mysql_result($call_user_info, $p, "pays");
 	  $resp_pers_id=mysql_result($call_user_info, $p, "pers_id");
-	  
+
 	  //recherche des élèves +  leur classe associés aux responsables
 	  $sql_resp_eleves="SELECT DISTINCT c.id, e. * , c. *
 						FROM responsables2 r2, eleves e, classes c, j_eleves_classes jec
@@ -227,7 +239,7 @@ while ($p < $nb_users) {
 	  //echo "<br>".$sql_resp_eleves;
 	  $call_resp_eleves=mysql_query($sql_resp_eleves);
 	  $nb_elv_resp = mysql_num_rows($call_resp_eleves);
-	  
+
 	  //init du tableau elv_resp
 	  for ($i=0;$i<7;$i++) {
 	      $elv_resp['nom'][$i] = '';
@@ -235,17 +247,17 @@ while ($p < $nb_users) {
 		  $elv_resp['classe'][$i] = '';
 		  $elv_resp['nom_complet_classe'][$i] = '';
 	  }
-	  
+
 	  $i = 0;
       while ($i < $nb_elv_resp){
           $elv_resp['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
 		  $elv_resp['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
 		  $elv_resp['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
 		  $elv_resp['nom_complet_classe'][$i] = mysql_result($call_resp_eleves, $i, "nom_complet");
-		  
+
     	  $i++;
       }
-	  
+
 	  // il va y avoir la classe à récuperer
 	  if ($cas_traite==2) {
 		$user_classe = $resp_pers_id=mysql_result($call_user_info, $p, "id_classe");
@@ -253,10 +265,11 @@ while ($p < $nb_users) {
 		$sql_classe = "SELECT * FROM classes WHERE id=$user_classe";
 		$data_user_classe = mysql_query($sql_classe);
 		$classe_resp= mysql_result($data_user_classe, 0, "classe");
-	  }	
+	  }
 
-	  
+
 	}
+
 
     // On réinitialise le mot de passe
     $new_password = pass_gen();
@@ -278,10 +291,13 @@ while ($p < $nb_users) {
         $classe[$i] = mysql_result($call_data, $i, "classe");
         $i++;
     }
-	
+
+//echo "\$user_login=$user_login<br />";
+//echo "\$mode_impression=$mode_impression<br />";
+
 // Ajout Eric
 	switch ($mode_impression) {
-	
+
 	case 'html':
 		if ($user_statut == "responsable") {
 			$impression = getSettingValue("ImpressionFicheParent");
@@ -293,21 +309,22 @@ while ($p < $nb_users) {
 			$impression = getSettingValue("Impression");
 			$nb_fiches = getSettingValue("ImpressionNombre");
 		}
-		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
-		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
-		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
-		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
-		echo "</p>";
+		echo "<table border='0'>\n";
+		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
+		echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+		echo "<tr><td>Adresse E-mail : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
+		echo "</table>";
 		echo $impression;
 		if ($saut == $nb_fiches) {
-			echo "<p class=saut>&nbsp</p>";
+			echo "<p class='saut'>&nbsp;</p>\n";
 			$saut = 1;
 		} else {
 			$saut++;
 		}
-		
+
 		break;
-		
+
 	case 'csv' :
 		// création d'un tableau contenant toutes les informations à exporter
 		$donnees_personne_csv['login'][$p] = $user_login;
@@ -315,33 +332,33 @@ while ($p < $nb_users) {
 		$donnees_personne_csv['prenom'][$p] = $user_prenom;
 		$donnees_personne_csv['new_password'][$p] = $new_password ;
 		$donnees_personne_csv['user_email'][$p] = $user_email;
-		
-		
+
+
 		if ($user_status) {
-		
-		    //recherche de la classe de l'élève si mode 
+
+		    //recherche de la classe de l'élève si mode
 			if ($user_status == 'eleve') {
 				$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
 				$data_user_classe = mysql_query($sql_classe);
 				$classe_eleve = mysql_result($data_user_classe, 0, "classe");
 				$donnees_personne_csv['classe'][$p] = $classe_eleve;
 			}
-			
-			//on poursuit le tableau $donnees_personne_csv avec l'adresse pour un mailling et des élèves associées 
+
+			//on poursuit le tableau $donnees_personne_csv avec l'adresse pour un mailling et des élèves associées
 			if ($user_status =='responsable') {
-			
+
 			    $donnees_personne_csv['classe'][$p] = $classe_resp;
-			
+
 				$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 				$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 				$resp_adr2=mysql_result($call_user_info, $p, "adr2");
-				$resp_adr3=mysql_result($call_user_info, $p, "adr3");	  
+				$resp_adr3=mysql_result($call_user_info, $p, "adr3");
 				$resp_adr4=mysql_result($call_user_info, $p, "adr4");
 				$resp_cp=mysql_result($call_user_info, $p, "cp");
 				$resp_commune=mysql_result($call_user_info, $p, "commune");
 				$resp_pays=mysql_result($call_user_info, $p, "pays");
-				
-				//on met les données dans le tableau 
+
+				//on met les données dans le tableau
 				$donnees_personne_csv['adr1'][$p] = $resp_adr1;
 				$donnees_personne_csv['adr2'][$p] = $resp_adr2;
 				$donnees_personne_csv['adr3'][$p] = $resp_adr3;
@@ -349,7 +366,7 @@ while ($p < $nb_users) {
 				$donnees_personne_csv['cp'][$p] = $resp_cp;
 				$donnees_personne_csv['commune'][$p] = $resp_commune;
 				$donnees_personne_csv['pays'][$p] = $resp_pays;
-				
+
 				// On crée une chaine de carctères par élèves (Prénom, Nom, classe nom long et classe nom court)
 				$nb_elv=sizeof($elv_resp['nom']);
 			    $i=0;
@@ -359,7 +376,7 @@ while ($p < $nb_users) {
 				  $chaine_elv.=" ".$elv_resp['nom'][$i];
 				  $chaine_elv.=" ".$elv_resp['nom_complet_classe'][$i];
 				  if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
-				  
+
 				  switch ($i) {
 				  case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
 				  case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
@@ -373,10 +390,10 @@ while ($p < $nb_users) {
 				}
 			}
 		}
-		
-		
+
+
 		break;
-		
+
 	case 'pdf': //uniquement pour les élèves
 		// création d'un tableau contenant toutes les informations à exporter
 		$donnees_personne_csv['login'][$p] = $user_login;
@@ -384,8 +401,8 @@ while ($p < $nb_users) {
 		$donnees_personne_csv['prenom'][$p] = $user_prenom;
 		$donnees_personne_csv['new_password'][$p] = $new_password ;
 		$donnees_personne_csv['user_email'][$p] = $user_email;
-		
-		//recherche de la classe de l'élève si mode 
+
+		//recherche de la classe de l'élève si mode
 		if ($user_status) {
 			if ($user_status == 'eleve') {
 				$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
@@ -393,10 +410,10 @@ while ($p < $nb_users) {
 				$classe_eleve = mysql_result($data_user_classe, 0, "classe");
 			}
 		}
-		
+
 		$donnees_personne_csv['classe'][$p] = $classe_eleve;
 		break;
-		
+
 	default:
 		if ($user_statut == "responsable") {
 			$impression = getSettingValue("ImpressionFicheParent");
@@ -408,21 +425,22 @@ while ($p < $nb_users) {
 			$impression = getSettingValue("Impression");
 			$nb_fiches = getSettingValue("ImpressionNombre");
 		}
-		echo "<p>A l'attention de  <span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span>";
-		echo "<br />Nom de login : <span class = \"bold\">" . $user_login . "</span>";
-		echo "<br />Mot de passe : <span class = \"bold\">" . $new_password . "</span>";
-		echo "<br />Adresse E-mail : <span class = \"bold\">" . $user_email . "</span>";
-		echo "</p>";
+		echo "<table border='0'>\n";
+		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
+		echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+		echo "<tr><td>Adresse E-mail : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
+		echo "</table>";
 		echo $impression;
 		if ($saut == $nb_fiches) {
-			echo "<p class=saut>&nbsp</p>";
+			echo "<p class='saut'>&nbsp;</p>\n";
 			$saut = 1;
 		} else {
 			$saut++;
 		}
-		
+
 	} //fin switch
-    	
+
     $p++;
 
 }
@@ -430,19 +448,19 @@ while ($p < $nb_users) {
 // redirection à la fin de la génération des mots de passe
 	switch ($mode_impression) {
 	case 'csv' :
-	    //sauvegarde des données dans la session Admin	
+	    //sauvegarde des données dans la session Admin
 	   $_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
-	   
+
 	    //redirection vers password_csv.php
 		header("Location: ./password_csv.php"); die();
 		break;
-	case 'pdf' : 
-         //sauvegarde des données dans la session Admin	
+	case 'pdf' :
+         //sauvegarde des données dans la session Admin
 	   $_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
-	   
+
 	    //redirection vers password_csv.php
 		header("Location: ../impression/password_pdf.php"); die();
-		break;	
+		break;
 	}
 require("../lib/footer.inc.php");
 ?>
