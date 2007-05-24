@@ -33,12 +33,12 @@ if ($resultat_session == 'c') {
     die();
 };
 
-/*
+// INSERT INTO `droits` VALUES ('/cahier_notes/export_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Export CSV/ODS du cahier de notes', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-*/
+
 
 //On vérifie si le module est activé
 if (getSettingValue("active_carnets_notes")!='y') {
@@ -59,6 +59,9 @@ $chemin_ods="tmp";
 if(isset($nettoyage)){
 	if(!ereg(".ods$",$nettoyage)){
 		$msg="Le fichier n'est pas d'extension ODS.";
+	}
+	elseif(!ereg("^".$_SESSION['login'],$nettoyage)){
+		$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 	}
 	else{
 		if(strlen(ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){

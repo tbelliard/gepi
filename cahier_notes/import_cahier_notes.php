@@ -39,6 +39,7 @@ die();
 };
 
 
+// INSERT INTO `droits` VALUES ('/cahier_notes/import_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Import CSV du cahier de notes', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
