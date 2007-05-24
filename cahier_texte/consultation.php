@@ -88,7 +88,7 @@ if ($_SESSION['statut'] == 'eleve') {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
@@ -141,6 +141,18 @@ $titre_page = "Cahier de texte";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
+//echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
+//echo "<p>id_classe=$id_classe</p>";
+if($selected_eleve_login!=""){
+	$sql="SELECT * FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC";
+	$res_ele_classe=mysql_query($sql);
+	if(mysql_num_rows($res_ele_classe)>0){
+		$ligtmp=mysql_fetch_object($res_ele_classe);
+		//echo "<p>id_classe=$ligtmp->id_classe et periode=$ligtmp->periode</p>";
+		$selected_eleve_classe=$ligtmp->id_classe;
+	}
+}
+
 // On vérifie que la date demandée est bien comprise entre la date de début des cahiers de texte et la date de fin des cahiers de texte :
 if ($today < getSettingValue("begin_bookings")) {
    $today = getSettingValue("begin_bookings");
@@ -176,7 +188,9 @@ if ($current_group) {
   $i=0;
   foreach ($current_group["profs"]["users"] as $prof) {
     if ($i != 0) echo ", ";
-    echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+    //echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+	//echo "\$id_classe=$id_classe<br />".$prof["login"]."<br />";
+	echo affiche_utilisateur($prof["login"],$selected_eleve_classe);
     $i++;
   }
   echo ")</b>\n";
@@ -219,7 +233,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "g.id = jeg.id_groupe and " .
                 "jeg.login = '" . $selected_eleve->login . "' and " .
                 "jeg.periode = p.num_periode and " .
-                "p.verouiller = 'N' and " .                
+                "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "jec.periode = '1' and " .
@@ -245,12 +259,18 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
                 $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
                 $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
-                $test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+                //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+                $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
                 $res_prof = sql_query($test_prof);
                 $chaine = "";
                 for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
                   if ($k != 0) $chaine .= ", ";
-                  $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+                  //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+					// ???????????????????????????????
+					// Faudrait-il modifier ici pour utiliser
+					$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
+					// Comment est utilisé $chaine???
+					// ???????????????????????????????
                 }
                 $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine."):</u></b></small></font>".$html;
                 // fichier joint
@@ -267,7 +287,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
     die();
     //AFfichage page de garde
 } elseif ($nb_test == 0) {
-	echo "<center>";	
+	echo "<center>";
 	if ($_SESSION['statut'] == "responsable") {
 		echo "<h3 class='gepi'>Choisissez un élève et une matière.</h3>\n";
 	} elseif ($_SESSION['statut'] == "eleve") {
@@ -275,7 +295,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	} else {
 		echo "<h3 class='gepi'>Choisissez une classe et une matière.</h3>\n";
 	}
-	echo "</center>";	
+	echo "</center>";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -285,7 +305,11 @@ echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 
 // Première colonne : affichage du 'travail à faire' à venir
 echo "<tr><td width = \"30%\" valign=\"top\">\n";
+// ?????????????????????????????????????????????????????????
 echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de texte</a><br /><br />\n";
+// Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
+// ?????????????????????????????????????????????????????????
+
 // Affichage des devoirs
 if ($delai == "") die("Erreur : Délai de visualisation des devois non défini. Contactez l'administrateur de GEPI de votre établissement.");
 // Si l'affichage des devoirs est activée, on affiche les devoirs
@@ -303,7 +327,7 @@ if ($delai != 0) {
                 "g.id = jeg.id_groupe and " .
                 "jeg.login = '" . $selected_eleve->login . "' and " .
                 "jeg.periode = p.num_periode and " .
-                "p.verouiller = 'N' and " .                
+                "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "jec.periode = '1' and " .
@@ -316,7 +340,7 @@ if ($delai != 0) {
 	                "g.id = jgc.id_groupe and " .
 	                "jgc.id_classe = '" . $id_classe . "' and " .
 	                "ct.contenu != '' and " .
-	                "ct.date_ct = '$jour')");        	
+	                "ct.date_ct = '$jour')");
         }
         $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
@@ -345,12 +369,14 @@ if ($delai != 0) {
                 $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
                 $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
                 $matiere_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
-                $test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+                //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
+                $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
                 $res_prof = sql_query($test_prof);
                 $chaine = "";
                 for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
                   if ($k != 0) $chaine .= ", ";
-                  $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+                  //$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+					$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
                 }
                 $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine.") :</u></b></small></font>\n".$html;
                 // fichier joint
