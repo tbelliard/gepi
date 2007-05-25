@@ -114,6 +114,18 @@ if (($donnees_personne_csv)) {
 				$fd.="$classe;$login;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
 				}
 	break;
+	default:
+			// ni élève ni responsable
+			$fd.="LOGIN;NOM;PRENOM;PASSWORD;EMAIL\n";
+			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
+				$login = $donnees_personne_csv['login'][$i];
+				$nom = $donnees_personne_csv['nom'][$i];
+				$prenom = $donnees_personne_csv['prenom'][$i];
+				$password = $donnees_personne_csv['new_password'][$i];
+				$email = $donnees_personne_csv['user_email'][$i];
+				$fd.="$login;$nom;$prenom;$password;$email\n";
+				}
+	break;
     }
 		
 } else {
