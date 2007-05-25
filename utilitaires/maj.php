@@ -4344,6 +4344,18 @@ if (isset ($_POST['maj'])) {
         $result_inter = '';
 
 
+        $result .= "&nbsp;->Ajout du champ temp_dir à la table utilisateurs<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'temp_dir'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `utilisateurs` ADD `temp_dir` VARCHAR( 255 ) NOT NULL AFTER `observation_securite`");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
 
     }
 
