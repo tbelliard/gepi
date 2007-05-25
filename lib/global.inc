@@ -41,6 +41,7 @@ $gepiOpenPeriodLabel = "période ouverte";
 // A n'utiliser que de manière temporaire pour régler un problème !!
 $block_sso = false ; // false|true
 
+$style_screen_ajout = "n";
 
 ##############################################################
 # Paramètres propres à une authentification sur un serveur LCS
