@@ -36,30 +36,61 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 <script src="../lib/functions.js" type="text/javascript" language="javascript"></script>
 <LINK REL="SHORTCUT ICON" type="image/x-icon" href="../favicon.ico" /></head>
 <body>
-<?php if (isset($titre_page)) {?>
-  <!-- Header start -->
-  <div id="header">
-  <!-- Page title, access rights -->
-    <div id="headerLeft" style='height: 90px;'>
-    <?php
-    echo("<h3>" . $titre_page . "</h3>");
-    ?>
-    </div>
+<?php if (isset($titre_page)) {
 
-    <!-- User name, status, main matter, home, logout, account management -->
-    <div id="headerRight" style='height: 65px; font-size: 12pt;'>
-    <?php echo getSettingValue("gepiSchoolName"); ?> : module public de consultation
-    </div>
+	echo "<!-- Header start -->\n";
+	echo "<div id='header'>\n";
+	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+	if(getSettingValue('gepi_stylesheet')=='style'){
+		echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
+	}
+	else{
+		echo "<table id='table_header' border='0' width='100%'>\n";
+	}
 
-    <!-- Contact -->
-    <div id="headerBottomRight">
-    <?php
-    echo "<a href=\"index.php\">Accueil</a> - ";
-    echo "<a href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a> - ";
-    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
-    ?>
-    </div>
-  </div>
- <?php }
+	//echo "<tr height='20px'>\n";
+	//echo "<tr height='20%'>\n";
+	echo "<tr>\n";
+		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div></td>\n";
+
+		echo "<!-- Page title, access rights -->\n";
+		echo "<td id='td_headerLeft' rowspan='2'>\n";
+
+		// Pour empêcher de trop réduire la taille de la cellule de gauche
+		echo "<div style='width:380px;'></div>\n";
+		echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
+
+		echo "</td>\n";
+
+		echo "<td id='td_headerTopRight'>\n";
+
+		// Pour empêcher de trop réduire la taille de la cellule de droite
+		echo "<div style='width:400px;'></div>\n";
+
+    	echo getSettingValue("gepiSchoolName"). " : module public de consultation";
+
+		echo "</td>\n";
+		echo "</tr>\n";
+
+
+
+		echo "<tr>\n";
+		// Les TD précédents sont dans des rowspan
+
+		echo "<td id='td_headerBottomRight' style='padding-bottom: 5px;'>\n";
+		echo "<span class='grey'>";
+		    echo "<a href=\"index.php\">Accueil</a> - ";
+		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
+		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
+		echo "</span>\n";
+
+		echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+	echo "\n";
+	echo "</div>\n";
+	echo "<!-- Header end -->\n";
+}
    ?>
  <div id="container">
