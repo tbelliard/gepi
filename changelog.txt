@@ -2,14 +2,35 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.0 (??/??/2007)
+Gepi-1.5.0-rc3 (25/05/2007)
 ===========================
+
+Nouvelles fonctionalités
+------------------------
+- possibilité de ne pas faire appaître le lien 'contacter administrateur' sur la page de login
+- l'export CSV lors des mots de passe régénéré est également disponible pour la réinitialisation des mots de passe des profs
+- import/export au format ODS pour les carnets de notes et outils de saisie
+- nouveaux logos PHP-powered et MySQL-powered sur la page de login
+- ajout d'un formulaire de recherche sur la page de gestion des responsables
 
 Corrections de bugs
 ------------------
 - affichage multiple des groupes multi-classes lors de la sélection d'un carnet de notes par le prof
 - mise à jour de la détection des codes civilités lors de la synchro avec Scribe Ng
 - bulletin PDF : Lors du calcul de la moyenne générale et par catégorie, en cas d'absence de moyenne pour une matière, les moyennes calculées étaient fausses. 
+- problèmes d'affichage de l'en-tête du cahier de texte en accès public
+- le lien 'Visiter le site de Gepi' s'ouvre dans une nouvelle fenêtre, et non la fenêtre courante
+- ajout de tests sur /lib/confirm_query.php pour certaines opérations faisant référence à des tables inexistantes (observatoire)
+- ajout de DROP TABLE IF EXISTS manquant dans structure_gepi.sql
+- traitement javascript anti-spam sur les mailto
+- l'export CSV de la liste des professeurs exportait aussi des utilisateurs ayant un autre statut
+- plusieurs corrections sur la génération des bulletins au format PDF (reste des bugs à corriger)
+- bulletin : affichage de la civilité des responsables si champ non vide
+- importation de la civilité des responsables, désormais présente dans les XML de Sconet
+- quelques corrections et modifications sur le modules absences
+- amélioration des styles pour support de résolutions basses
+- amélioration de l'ergonomie des outils de paramétrage du module absences
+- bug d'affichage du lien d'accès public au cahier de texte lorsque les connexions étaient désactivées
 
 
 Gepi-1.5.0-rc2 (25/04/2007)
