@@ -96,6 +96,12 @@ if ($_SESSION['statut'] == "administrateur") {
         echo "Veuillez vérifier que le répertoire /backup de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
     }
 
+    // Vérification et/ou changement du répertoire temp
+    if (!check_temp_directory()) {
+        echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
+        echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
+    }
+
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
     $sql = "select LOGIN from log where END > now()";

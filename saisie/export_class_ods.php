@@ -49,8 +49,8 @@ if(getSettingValue("export_cn_ods")!='y') {
 unset($nettoyage);
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
-$chemin_ods="tmp";
-
+$chemin_temp="../temp/".getSettingValue("temp_directory");
+$chemin_modele_ods="export_note_app_modele_ods";
 
 if(isset($nettoyage)){
 	if(!ereg(".ods$",$nettoyage)){
@@ -64,11 +64,11 @@ if(isset($nettoyage)){
 			$msg="Le fichier proposé n'est pas valide: '".ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 		}
 		else{
-			if(!file_exists("$chemin_ods/$nettoyage")){
+			if(!file_exists("$chemin_temp/$nettoyage")){
 				$msg="Le fichier choisi n'existe pas.";
 			}
 			else{
-				unlink("$chemin_ods/$nettoyage");
+				unlink("$chemin_temp/$nettoyage");
 				$msg=rawurlencode("Suppression réussie!");
 			}
 		}
@@ -153,6 +153,7 @@ function remplace_accents($chaine){
 }
 
 $nom_fic=$_SESSION['login'];
+$nom_fic.="_notes_appreciations";
 $nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description']));
 $nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"]));
 $nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode));
@@ -182,7 +183,7 @@ $tmp_fich.="_".strtr(microtime()," ","_");
 $tmp_fich.=".xml";
 //echo "\$tmp_fich=$tmp_fich<br />\n";
 
-$tmp_fich=$chemin_ods."/".$tmp_fich;
+$tmp_fich=$chemin_temp."/".$tmp_fich;
 
 $fichier_tmp_xml=fopen("$tmp_fich","w+");
 $ecriture=fwrite($fichier_tmp_xml,'<?xml version="1.0" encoding="UTF-8"?>
@@ -295,27 +296,27 @@ content.xml
 */
 
 
-$zip->add_file($chemin_ods.'/modele_ods/Basic/script-lc.xml', 'Basic/script-lc.xml');
-$zip->add_file($chemin_ods.'/modele_ods/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
-$zip->add_file($chemin_ods.'/modele_ods/Basic/Standard/Export_CSV.xml', 'Basic/Standard/Export_CSV.xml');
+$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
+$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
+$zip->add_file($chemin_modele_ods.'/Basic/Standard/Export_CSV.xml', 'Basic/Standard/Export_CSV.xml');
 
 // On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
-//$zip->add_file($chemin_ods.'/modele_ods/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
+//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
 
-$zip->add_file($chemin_ods.'/modele_ods/META-INF/manifest.xml', 'META-INF/manifest.xml');
-$zip->add_file($chemin_ods.'/modele_ods/settings.xml', 'settings.xml');
-$zip->add_file($chemin_ods.'/modele_ods/meta.xml', 'meta.xml');
-//$zip->add_file($chemin_ods.'/modele_ods/Thumbnails', 'Thumbnails');
-$zip->add_file($chemin_ods.'/modele_ods/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
-$zip->add_file($chemin_ods.'/modele_ods/mimetype', 'mimetype');
-$zip->add_file($chemin_ods.'/modele_ods/styles.xml', 'styles.xml');
+$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
+$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
+$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
+//$zip->add_file($chemin_modele_ods.'/modele_ods/Thumbnails', 'Thumbnails');
+$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
+$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
+$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
 
 $zip->save("$tmp_fich.zip");
 
 
-if(file_exists("$chemin_ods/$nom_fic")){unlink("$chemin_ods/$nom_fic");}
-//rename("$tmp_fich.zip","$chemin_ods/$chaine_tmp.$nom_fic");
-rename("$tmp_fich.zip","$chemin_ods/$nom_fic");
+if(file_exists("$chemin_temp/$nom_fic")){unlink("$chemin_temp/$nom_fic");}
+//rename("$tmp_fich.zip","$chemin_modele_ods/$chaine_tmp.$nom_fic");
+rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
 
 // Suppression du fichier content...xml
 unlink($tmp_fich);
@@ -336,12 +337,12 @@ echo "</div>\n";
 
 echo "<h2>$titre</h2>\n";
 
-echo "<p>Télécharger: <a href='$chemin_ods/$nom_fic'>$nom_fic</a></p>\n";
+echo "<p>Télécharger: <a href='$chemin_temp/$nom_fic'>$nom_fic</a></p>\n";
 
 /*
-echo "filetype($chemin_ods/$nom_fic)=".filetype("$chemin_ods/$nom_fic")."<br />\n";
+echo "filetype($chemin_modele_ods/$nom_fic)=".filetype("$chemin_modele_ods/$nom_fic")."<br />\n";
 
-$fp=fopen("$chemin_ods/$nom_fic","r");
+$fp=fopen("$chemin_modele_ods/$nom_fic","r");
 $ligne=fgets($fp, 4096);
 fclose($fp);
 
