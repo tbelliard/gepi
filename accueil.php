@@ -97,10 +97,28 @@ if ($_SESSION['statut'] == "administrateur") {
     }
 
     // Vérification et/ou changement du répertoire temp
+	/*
     if (!check_temp_directory()) {
         echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
         echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
     }
+	*/
+
+    if (!check_user_temp_directory()) {
+        echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
+		//if($_SESSION['statut']=='administrateur'){
+			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
+		/*
+		}
+		else{
+			echo "Veuillez contacter l'administrateur pour résoudre ce problème.<br/>\n";
+			$_SESSION['user_temp_directory']='n';
+		}
+		*/
+    }
+	else{
+		$_SESSION['user_temp_directory']='y';
+	}
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
@@ -139,6 +157,25 @@ if ($force_ref) {
     }
 
     echo "</div>\n";
+}
+elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")){
+    if (!check_user_temp_directory()) {
+        echo "<div>\n";
+		echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
+		/*
+		if($_SESSION['statut']=='administrateur'){
+			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
+		}
+		else{
+		*/
+			echo "Veuillez contacter l'administrateur pour résoudre ce problème.<br/>\n";
+			$_SESSION['user_temp_directory']='n';
+		//}
+        echo "</div>\n";
+    }
+	else{
+		$_SESSION['user_temp_directory']='y';
+	}
 }
 echo "<center>\n";
 

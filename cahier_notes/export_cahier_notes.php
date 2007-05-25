@@ -54,33 +54,56 @@ $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
 
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
-$chemin_temp="../temp/".getSettingValue("temp_directory");
-$chemin_modele_ods="export_cn_modele_ods";
 
-if(isset($nettoyage)){
-	if(!ereg(".ods$",$nettoyage)){
-		$msg="Le fichier n'est pas d'extension ODS.";
-	}
-	elseif(!ereg("^".$_SESSION['login'],$nettoyage)){
-		$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
-	}
-	else{
-		if(strlen(ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
-			$msg="Le fichier proposé n'est pas valide: '".ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+if($_SESSION['user_temp_directory']!='y'){
+	$type_export="CSV";
+}
+else{
+	if(getSettingValue("export_cn_ods")=='y') {
+		$user_tmp=get_user_temp_directory();
+		if(!$user_tmp){
+			/*
+			$msg="Votre dossier temporaire n'est pas accessible.";
+			header("Location: index.php?msg=".rawurlencode($msg));
+			die();
+			*/
+			// L'export ODS n'est pas possible.
+			$msg="Votre dossier temporaire n'est pas accessible. Seul l'export CSV est possible.";
+			$type_export="CSV";
 		}
-		else{
-			if(!file_exists("$chemin_temp/$nettoyage")){
-				$msg="Le fichier choisi n'existe pas.";
+
+		//$chemin_temp="../temp/".getSettingValue("temp_directory");
+		$chemin_temp="../temp/".$user_tmp;
+
+
+		$chemin_modele_ods="export_cn_modele_ods";
+
+		if(isset($nettoyage)){
+			if(!ereg(".ods$",$nettoyage)){
+				$msg="Le fichier n'est pas d'extension ODS.";
+			}
+			elseif(!ereg("^".$_SESSION['login'],$nettoyage)){
+				$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 			}
 			else{
-				unlink("$chemin_temp/$nettoyage");
-				$msg=rawurlencode("Suppression réussie!");
+				if(strlen(ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
+					$msg="Le fichier proposé n'est pas valide: '".ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+				}
+				else{
+					if(!file_exists("$chemin_temp/$nettoyage")){
+						$msg="Le fichier choisi n'existe pas.";
+					}
+					else{
+						unlink("$chemin_temp/$nettoyage");
+						$msg=rawurlencode("Suppression réussie!");
+					}
+				}
 			}
+
+			header("Location: index.php?msg=$msg");
+			die();
 		}
 	}
-
-    header("Location: index.php?msg=$msg");
-    die();
 }
 
 // On teste si le carnet de notes appartient bien à la personne connectée

@@ -96,7 +96,12 @@ if ($current_group) {
             echo "<br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App'>Télécharger le fichier des identifiants GEPI avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</a>";
             echo "<br />\n";
 			if(getSettingValue("export_cn_ods")=='y') {
-				echo "-> <a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i'>Télécharger un fichier tableur OpenOffice (<i>ODS</i>) avec les identifiants GEPI, les colonnes Moyennes et Appréciations de cette classe.</a>\n";
+				if($_SESSION['user_temp_directory']=='y'){
+					echo "-> <a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i'>Télécharger un fichier tableur OpenOffice (<i>ODS</i>) avec les identifiants GEPI, les colonnes Moyennes et Appréciations de cette classe.</a>\n";
+				}
+				else{
+					echo "-> <font color='red'>L'export tableur ODS n'est pas possible.</font>";
+				}
 				echo "<br />\n";
 			}
             echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<i>les champs vides ne sont pas importés</i>)\n";

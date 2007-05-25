@@ -1692,4 +1692,110 @@ function check_temp_directory(){
 	*/
 }
 
+function check_user_temp_directory(){
+	// Fonction destinée à créer un dossier /temp/<alea> propre au prof
+
+	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
+	$res_temp_dir=mysql_query($sql);
+
+	if(mysql_num_rows($res_temp_dir)==0){
+		// Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
+		return false;
+	}
+	else{
+		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
+		$dirname=$lig_temp_dir->temp_dir;
+
+		if($dirname==""){
+			// Le dossier n'existe pas
+			// On créé le répertoire temp
+			$length = rand(35, 45);
+			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+			$dirname = $_SESSION['login']."_".$r;
+			$create = mkdir("./temp/".$dirname, 0700);
+
+			if($create){
+				$fich=fopen("./temp/".$dirname."/index.html","w+");
+				fwrite($fich,'<html><head><script type="text/javascript">
+	document.location.replace("../login.php")
+</script></head></html>
+');
+				fclose($fich);
+
+				$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$_SESSION['login']."'";
+				$res_update=mysql_query($sql);
+				if($res_update){
+					//return $dirname;
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			if(!file_exists("./temp/".$dirname)){
+				// Le dossier n'existe pas
+				// On créé le répertoire temp
+				$create = mkdir("./temp/".$dirname, 0700);
+
+				if($create){
+					$fich=fopen("./temp/".$dirname."/index.html","w+");
+					fwrite($fich,'<html><head><script type="text/javascript">
+	document.location.replace("../login.php")
+</script></head></html>
+');
+					fclose($fich);
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			else{
+				$fich=fopen("./temp/".$dirname."/test_ecriture.tmp","w+");
+				$ecriture=fwrite($fich,'Test d écriture.');
+				$fermeture=fclose($fich);
+				if(file_exists("./temp/".$dirname."/test_ecriture.tmp")){
+					unlink("./temp/".$dirname."/test_ecriture.tmp");
+				}
+
+				if(($fich)&&($ecriture)&&($fermeture)){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+	}
+}
+
+function get_user_temp_directory(){
+	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
+	$res_temp_dir=mysql_query($sql);
+	if(mysql_num_rows($res_temp_dir)>0){
+		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
+		$dirname=$lig_temp_dir->temp_dir;
+
+		if(($dirname!="")&&(strlen(ereg_replace("[A-Za-z0-9_]","",$dirname))==0)) {
+			if(file_exists("../temp/$dirname")){
+				return $dirname;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+	}
+	else{
+		return false;
+	}
+}
+
 ?>

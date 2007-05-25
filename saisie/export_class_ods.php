@@ -49,7 +49,17 @@ if(getSettingValue("export_cn_ods")!='y') {
 unset($nettoyage);
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
-$chemin_temp="../temp/".getSettingValue("temp_directory");
+
+$user_tmp=get_user_temp_directory();
+if(!$user_tmp){
+	$msg="Votre dossier temporaire n'est pas accessible.";
+    header("Location: index.php?msg=".rawurlencode($msg));
+    die();
+}
+
+//$chemin_temp="../temp/".getSettingValue("temp_directory");
+$chemin_temp="../temp/".$user_tmp;
+
 $chemin_modele_ods="export_note_app_modele_ods";
 
 if(isset($nettoyage)){
