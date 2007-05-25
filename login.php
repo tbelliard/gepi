@@ -274,9 +274,11 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 <p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
 <p>
 <?php
-	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
-	$tmp_adr=explode("@",$gepiAdminAdress);
-	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> ");
+	if(getSettingValue("gepiAdminAdressPageLogin")!='n'){
+		$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+		$tmp_adr=explode("@",$gepiAdminAdress);
+		echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> ");
+	}
 ?>
 </p>
 </div>

@@ -173,6 +173,23 @@ if (isset($_POST['gepiAdminAdress'])) {
         $msg .= "Erreur lors de l'enregistrement de l'adresse email !";
     }
 }
+
+
+if (isset($_POST['is_posted'])) {
+	if ($_POST['is_posted']=='1') {
+		if (isset($_POST['gepiAdminAdressPageLogin'])) {
+			if (!saveSetting("gepiAdminAdressPageLogin", 'y')) {
+				$msg .= "Erreur lors de l'enregistrement de l'affichage de adresse email sur la page de login !";
+			}
+		}
+		else{
+			if (!saveSetting("gepiAdminAdressPageLogin", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du non-affichage de adresse email sur la page de login !";
+			}
+		}
+	}
+}
+
 if (isset($_POST['longmin_pwd'])) {
     if (!saveSetting("longmin_pwd", $_POST['longmin_pwd'])) {
         $msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
@@ -326,6 +343,18 @@ require_once("../lib/header.inc");
         Email de l'administrateur du site :
         </td>
         <td><input type="text" name="gepiAdminAdress" size="20" value="<?php echo(getSettingValue("gepiAdminAdress")); ?>" />
+        </td>
+    </tr>
+    <tr>
+        <td style="font-variant: small-caps;">
+        Faire apparaitre le lien [Contacter l'administrateur] sur la page de login :
+        </td>
+        <td>
+		<input type="checkbox" name="gepiAdminAdressPageLogin" value="y"
+        <?php
+			if(getSettingValue("gepiAdminAdressPageLogin")!='n'){echo " checked";}
+		?>
+		 />
         </td>
     </tr>
     <tr>
