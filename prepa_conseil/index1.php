@@ -66,6 +66,13 @@ require_once("../lib/header.inc");
     //**************** FIN EN-TETE *****************
 if (isset($_SESSION['chemin_retour'])) $retour = $_SESSION['chemin_retour'] ; else $retour = "index1.php";
 
+if ($en_tete!="yes"){
+	echo "<script type='text/javascript'>
+	document.body.style.backgroundColor='white';
+</script>\n";
+}
+
+
 if (!$current_group) {
     unset($_SESSION['chemin_retour']);
     echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
@@ -118,7 +125,7 @@ if (!$current_group) {
             } else {
                 $flag2 = 'yes';
             }
-			
+
             if ($flag2 == "yes") {
                 $display_class = mysql_result($appel_donnees, $i, "classe");
         	echo "<span class='norme'>";
@@ -126,11 +133,11 @@ if (!$current_group) {
                 if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
                 //echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
                 //echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
-				
+
 				echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . " </a>\n";
-								
+
 				// pas de nom si c'est un prof qui demande la page.
-				if ($_SESSION['statut']!='professeur') { 
+				if ($_SESSION['statut']!='professeur') {
 					$id_groupe_en_cours = $group["id"];
 					//recherche profs du groupe
 					$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
@@ -148,7 +155,7 @@ if (!$current_group) {
 					}
 					echo ")";
 				}
-				
+
 				echo "<br />\n";
             }
         }
