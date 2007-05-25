@@ -1661,7 +1661,7 @@ function check_temp_directory(){
 	$dirname=getSettingValue("temp_directory");
 
 	if(($dirname=='')||(!file_exists("./temp/$dirname"))){
-		// Il n existe pas
+		// Il n'existe pas
 		// On créé le répertoire temp
 		$length = rand(35, 45);
 		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
