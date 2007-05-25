@@ -166,15 +166,12 @@ function show_message_deconnexion(){
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
-
-if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
-	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
-	}
+if($style_screen_ajout=='y'){
+	// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+	// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+	echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
 }
+
 
 ?>
 </head>
@@ -288,7 +285,7 @@ if (isset($titre_page)) {
 
 		echo "<span style='border-top: 1px dotted orange;'>\n";
 		if ($_SESSION['statut'] == 'administrateur') {
-			echo "<a href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
+			echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
 		} else {
 			echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
 		//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
