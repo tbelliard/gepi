@@ -1659,7 +1659,6 @@ function check_temp_directory(){
 	// Fonction destinée à créer un dossier /temp/<alea>
 
 	$dirname=getSettingValue("temp_directory");
-
 	if(($dirname=='')||(!file_exists("./temp/$dirname"))){
 		// Il n'existe pas
 		// On créé le répertoire temp
@@ -1669,19 +1668,22 @@ function check_temp_directory(){
 		$create = mkdir("./temp/".$dirname, 0700);
 
 		if ($create) {
-			$fich=fopen("./temp/".$dirname,"w+");
-			fwrite($fich,'<script type="text/javascript">
+			$fich=fopen("./temp/".$dirname."/index.html","w+");
+			fwrite($fich,'<html><head><script type="text/javascript">
     document.location.replace("../login.php")
-</script>
+</script></head></html>
 ');
 			fclose($fich);
 
 			saveSetting("temp_directory", $dirname);
 			//return $dirname;
+			return true;
 		} else {
 			return false;
 			die();
 		}
+	} else {
+		return true;
 	}
 	/*
 	else{
