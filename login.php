@@ -277,7 +277,7 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 	if(getSettingValue("gepiAdminAdressPageLogin")!='n'){
 		$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 		$tmp_adr=explode("@",$gepiAdminAdress);
-		echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> ");
+		echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> \n");
 	}
 ?>
 </p>
@@ -295,12 +295,12 @@ while (list($name, $adress) = each($gepiAuthors)) {
 	//echo("<a href=\"mailto:" . $adress . "\">" . $name . "</a> ");
 	$tmp_adr=explode("@",$adress);
 	//echo("<a href=\"javascript:pigeon('" . $adress . "');\">" . $name . "</a> ");
-	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">" . $name . "</a> ");
+	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">" . $name . "</a> \n");
 	$i++;
 }
-	echo "<br/><br/>";
-	echo "<img src='".$gepiPath."/images/php-powered.png' alt='php powered'>&nbsp;";
-	echo "<img src='".$gepiPath."/images/mysql-powered.png' alt='mysql powered'>";
+	echo "<br/><br/>\n";
+	echo "<img src='".$gepiPath."/images/php-powered.png' alt='php powered' />&nbsp;\n";
+	echo "<img src='".$gepiPath."/images/mysql-powered.png' alt='mysql powered' />\n";
 
 ?>
 </div>

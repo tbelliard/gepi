@@ -651,3 +651,25 @@ img.link {
 	color: #999999;
 }
 */
+
+.gestion_temp_dir th {
+	/*
+		vert: #aae6aa
+		bleu: #96c8f0
+		jaune: #fafabe
+	*/
+	background-color: #aae6aa;
+	font-weight:bold;
+	text-align:center;
+}
+
+.gestion_temp_dir td {
+	text-align:center;
+}
+
+.gestion_temp_dir .lig0 {
+	background-color: white;
+}
+.gestion_temp_dir .lig1 {
+	background-color: silver;
+}

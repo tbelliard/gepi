@@ -1798,4 +1798,77 @@ function get_user_temp_directory(){
 	}
 }
 
+function volume_human($volume){
+	if($volume>=1048576){
+		$volume=round(10*$volume/1048576)/10;
+		return $volume." Mo";
+	}
+	elseif($volume>=1024){
+		$volume=round(10*$volume/1024)/10;
+		return $volume." ko";
+	}
+	else{
+		return $volume." o";
+	}
+}
+
+function volume_dir_human($dir){
+	global $totalsize;
+	$totalsize=0;
+
+	$volume=volume_dir($dir);
+	return volume_human($volume);
+}
+
+function volume_dir($dir){
+	global $totalsize;
+
+	$handle = @opendir($dir);
+	while ($file = @readdir ($handle)){
+		if (eregi("^\.{1,2}$",$file))
+			continue;
+		//if(is_dir($dir.$file)){
+		if(is_dir("$dir/$file")){
+			$totalsize+=show_dir("$dir/$file");
+		}
+		else{
+			$tabtmpsize=stat("$dir/$file");
+			$size=$tabtmpsize[7];
+
+			$totalsize+=$size;
+		}
+	}
+	@closedir($handle);
+
+	return($totalsize);
+}
+
+function vider_dir($dir){
+	$statut=true;
+	$handle = @opendir($dir);
+	while ($file = @readdir ($handle)){
+		if (eregi("^\.{1,2}$",$file)){
+			continue;
+		}
+		//if(is_dir($dir.$file)){
+		if(is_dir("$dir/$file")){
+			// On ne cherche pas à vider récursivement.
+			$statut=false;
+
+			echo "<!-- DOSSIER: $dir/$file -->\n";
+			// En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
+		}
+		else{
+			if(!unlink($dir."/".$file)) {
+				$statut=false;
+				echo "<!-- Echec suppression: $dir/$file -->\n";
+				break;
+			}
+		}
+	}
+	@closedir($handle);
+
+	return $statut;
+}
+
 ?>

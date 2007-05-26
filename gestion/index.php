@@ -128,6 +128,10 @@ require_once("../lib/header.inc");
     <td width=200><a href="efface_photos.php">Effacer les photos</a></td>
     <td>Permet d'effacer les photos des élèves qui ne sont plus dans la base.</td>
 </tr>
+<tr>
+    <td width=200><a href="gestion_temp_dir.php">Gestion des dossiers temporaires</a></td>
+    <td>Permet de contrôler le volume occupé par les dossiers temporaires (<i>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</i>), de supprimer ces dossiers,...</td>
+</tr>
 
 </table>
 

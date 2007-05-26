@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();};
 
-// INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
+// INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -142,7 +142,7 @@ if(!isset($prof)){
 	}
 	// Affichage sur 3 colonnes
 	$nb_prof_par_colonne=round($nb_prof/3);
-	
+
 	echo "<table width='100%'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
@@ -157,11 +157,11 @@ if(!isset($prof)){
 			echo "</td>\n";
 			echo "<td align='left'>\n";
 		}
-		
+
 		$lig_prof=mysql_fetch_object($res_profs);
-		
+
 		echo "<input type='checkbox' id='prof".$i."' name='prof[]' value='$lig_prof->login' /> ".ucfirst(strtolower($lig_prof->prenom))." ".strtoupper($lig_prof->nom)."<br />\n";
-		
+
 		$i++;
 	}
 	echo "</td>\n";
