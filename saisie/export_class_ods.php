@@ -162,6 +162,14 @@ function remplace_accents($chaine){
 	return $retour;
 }
 
+
+function remplace_speciaux_utf8($chaine){
+	$retour=ereg_replace("&",'&amp;',ereg_replace('"','&quot;',ereg_replace("'","&apos;",ereg_replace("<","&lt;",ereg_replace(">","&gt;",ereg_replace(";",'.',"$chaine"))))));
+	return $retour;
+}
+
+
+
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_notes_appreciations";
 $nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description']));
@@ -257,7 +265,7 @@ if($nb_ele>0){
 
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.ereg_replace('\\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
-			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(utf8_encode($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');
+			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(utf8_encode(remplace_speciaux_utf8($lig_appreciation->appreciation))).'</text:p></table:table-cell></table:table-row>');
 
 
 			// Il doit falloir remplacer les accents par leur valeur en UTF8
