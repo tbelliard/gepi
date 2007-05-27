@@ -44,12 +44,12 @@ if (isset($_POST['login'])) {
 			"email = '" . $email . "')");
 	if (mysql_num_rows($test) == 1) {
 		// On a un utilisateur qui a bien ces coordonnées.
-		
+
 		// On va maintenant vérifier son statut, et s'assurer que le statut en question
 		// est bien autorisé à utiliser l'outil de réinitialisation
 		$user_statut = mysql_result($test, 0);
 		$ok = false;
-		
+
 		if (
 			($user_statut == "administrateur" AND getSettingValue("GepiPasswordReinitAdmin") == "yes") OR
 			($user_statut == "professeur" AND getSettingValue("GepiPasswordReinitProf") == "yes") OR
@@ -62,7 +62,7 @@ if (isset($_POST['login'])) {
 		} else {
 			$ok = false;
 		}
-		
+
 		if (!$ok) {
 			$message = "Pour des raisons de sécurité, votre statut utilisateur ne vous permet pas de réinitialiser votre mot de passe par cette procédure. Vous devrez donc contacter l'administrateur pour obtenir un nouveau mot de passe.";
 		} else {
@@ -86,7 +86,7 @@ if (isset($_POST['login'])) {
 	        	} else {
 	        		$ticket_url .= "http://";
 	        	}
-	        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket; 
+	        	$ticket_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "?ticket=".$ticket;
 	        	$mail_content = "Bonjour,\n" .
 	        			"Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : .\n" .
 	        			$ticket_url . "\n" .
@@ -94,9 +94,9 @@ if (isset($_POST['login'])) {
 	        			"Ce lien doit être utilisé avant l'heure suivante : " .
 	        			date("G:i:s",$expiration_timestamp) ."\n" .
 	        			", sous peine de n'être plus valide.\n";
-	        	
+
 	        	//- Debug - echo $mail_content;
-	        	//- Debug - if ($mail_content) {		
+	        	//- Debug - if ($mail_content) {
 	        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
 	        		$message = "Un courriel vient de vous être envoyé.";
 	        	} else {
@@ -133,7 +133,7 @@ if (isset($_POST['no_anti_inject_password'])) {
 			    // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
 			    $flag = 1;
 			}
-			
+
 			if ($NON_PROTECT["password"] != $NON_PROTECT["confirmation"]) {
 				$message = "Mot de passe et confirmation non identiques !";
 			} else if (!(verif_mot_de_passe($NON_PROTECT['password'],$flag))) {
@@ -150,7 +150,7 @@ if (isset($_POST['no_anti_inject_password'])) {
 				}
 			}
 		}
-	}	
+	}
 }
 
 ?>
@@ -180,7 +180,7 @@ if ((getSettingValue("disable_login"))=='yes') {
 
 if (isset($update_successful)) {
 	echo "<p style='margin-top: 100px; color:red;'>Votre mot de passe a été mis à jour avec succès.</p>";
-	echo "<p class=bold style='margin-left: auto; margin-right: auto; margin-top: 40px;'><a href=\"login.php\"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour page de login</a></p>";	
+	echo "<p class=bold style='margin-left: auto; margin-right: auto; margin-top: 40px;'><a href=\"login.php\"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour page de login</a></p>";
 	echo "</div></body></html>";
 	die();
 }
@@ -247,23 +247,23 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 </table>
 </fieldset>
 </form>
-</div>	
-	
-	
-	<?php			
+</div>
+
+
+	<?php
 		}
 	}
-	
+
 	if ($error) {
-		echo "<p style='margin-top: 100px; color:red;'>Votre ticket n'est pas valide.</p>";		
+		echo "<p style='margin-top: 100px; color:red;'>Votre ticket n'est pas valide.</p>";
 	}
 
 } else {
 ?>
 
-<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de réinitialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre identifiant et votre courriel.
-Ce courriel doit être déjà associée à votre compte au sein de Gepi.
-<br/>Si votre identifiant et courriel sont corrects, vous recevrez sur cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
+<p style='margin-top: 60px;padding-left: 20%; padding-right: 20%;'>Afin de réinitialiser votre mot de passe, vous devez valider ce formulaire en indiquant votre identifiant et votre adresse de courriel.
+Cette adresse doit être déjà associée à votre compte au sein de Gepi.
+<br/>Si vos identifiant et adresse sont corrects, vous recevrez à cette adresse les instructions pour réinitialiser votre mot de passe.<br/>
 <span class='red'>Vous devez réinitialiser votre mot de passe dans les 15 minutes suivant la validation de ce formulaire.</span></p>
 <form action="recover_password.php" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 <fieldset id="login_box" style="width: 50%; margin-top: 0;">
