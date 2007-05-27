@@ -97,6 +97,10 @@ require_once("../lib/header.inc");
     <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
     <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
 </tr>
+<tr>
+    <td width=200><a href="param_couleurs.php">Paramétrage des couleurs</a></td>
+    <td>Paramétrage des couleurs de fond d'écran et du dégradé d'entête.</td>
+</tr>
 </table>
 
 <table class='menu'>

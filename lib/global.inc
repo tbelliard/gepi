@@ -283,4 +283,12 @@ $liste_tables = array(
 // Pour permettre la saisie de commentaires-type, renseigner à 'y' la variable $commentaires_types dans /lib/global.inc
 //$commentaires_types="y";
 // Ce n'est plus utilisé. Des valeurs dans la table setting remplacent maintenant ce paramètre: CommentairesTypesScol et CommentairesTypesPP
+
+//=============================
+// Le fichier style_screen_ajout.css est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
+// Chargé juste avant la section <body> dans le /lib/header.inc,
+// ses propriétés écrasent les propriétés définies auparavant dans le </head>.
+// Une sécurité... il suffit de passer la variable $style_screen_ajout à 'n' pour désactiver le fichier CSS style_screen_ajout.css et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+$style_screen_ajout='y';
+
 ?>
