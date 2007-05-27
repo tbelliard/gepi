@@ -1443,7 +1443,7 @@ La page de garde contient les informations suivantes :
 <li>un texte que vous pouvez personnaliser (voir plus bas).</li>
 </ul>
 <b><a href='javascript:centrerpopup("./modele_page_garde.php",600,600,"scrollbars=yes,statusbar=yes,menubar=yes,resizable=yes")'>Aperçu de la page de garde</a></b>
-(Attention : la mise en page des bulletins est très différente à l'écran et à l'impression.
+(Attention : la mise en page <!--des bulletins -->est très différente à l'écran et à l'impression.
 Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre compte du résultat.
 </td></tr></table></center>
 <table cellpadding="8" cellspacing="0" width="100%" border="0">
