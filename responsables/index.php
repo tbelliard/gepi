@@ -378,7 +378,8 @@ if(!isset($limit)){
 }
 
 //echo "Afficher <select name='limit'>\n";
-echo "<input type='submit' value='Afficher' />\n";
+//echo "<input type='submit' value='Afficher' />\n";
+echo "<input type='button' value='Afficher' onClick='decoche_suppr_et_valide();' />\n";
 
 echo "<select name='limit'>\n";
 if($limit==20){$selected=" selected='true'";}else{$selected="";}
@@ -487,6 +488,8 @@ echo "</div>\n";
 
 echo "<table border='1' align='center'>\n";
 
+$cpt_suppr=0;
+
 //if($num_resp==0){
 if("$num_resp"=="0"){
 	// Afficher les personnes non associées à des élèves.
@@ -542,7 +545,8 @@ if("$num_resp"=="0"){
 				echo "</td>\n";
 
 				echo "<td style='text-align:center;'>\n";
-				echo "<input type='checkbox' name='suppr_resp0[]' value='$lig1->pers_id' />";
+				echo "<input type='checkbox' name='suppr_resp0[]' id='suppr_$cpt_suppr' value='$lig1->pers_id' />";
+				$cpt_suppr++;
 				echo "</td>\n";
 				echo "</tr>\n";
 
@@ -604,6 +608,8 @@ else{
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Supprimer</td>\n";
 	$ligne_titre.="</tr>\n";
+
+	$max_cpt_res4=0;
 
 	if(($order_by=="nom,prenom")&&($num_resp==1)){
 		// Pour ne récupérer qu'une seule occurence de pers_id:
@@ -675,7 +681,9 @@ else{
 								echo " rowspan='".mysql_num_rows($res3)."'";
 							}
 							echo ">\n";
-							echo "<input type='checkbox' name='suppr_resp1[]' value='$lig1->pers_id' />";
+							//echo "<input type='checkbox' name='suppr_resp1[]' id='suppr_resp1_$cpt' value='$lig1->pers_id' />";
+							echo "<input type='checkbox' name='suppr_resp1[]' id='suppr_$cpt_suppr' value='$lig1->pers_id' />";
+							$cpt_suppr++;
 							echo "</td>\n";
 
 
@@ -694,6 +702,7 @@ else{
 										r.resp_legal=$autre_resp";
 									$res4=mysql_query($sql);
 									if(mysql_num_rows($res4)>0){
+										//$cpt_res4=0;
 										while($lig4=mysql_fetch_object($res4)){
 											echo "<td style='text-align:center;'>\n";
 											echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>$lig4->nom $lig4->prenom</a>\n";
@@ -709,8 +718,14 @@ else{
 											echo "</td>\n";
 
 
-											echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp2[]' value='$lig4->pers_id' /></td>\n";
+											//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp2[]' id='suppr_resp2_".$cpt."_".$cpt_res4."' value='$lig4->pers_id' /></td>\n";
+											//$cpt_res4++;
+
+											echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp2[]' id='suppr_$cpt_suppr' value='$lig4->pers_id' /></td>\n";
+											$cpt_suppr++;
 										}
+
+										//if($max_cpt_res4<$cpt_res4){$max_cpt_res4=$cpt_res4;}
 									}
 									else{
 										echo "<td>&nbsp;</td>\n";
@@ -805,12 +820,18 @@ else{
 											if(($lig4->commune!='')||($lig4->cp!='')){echo "<br />\n$lig4->cp $lig4->commune\n";}
 											if($lig4->pays!=''){echo "<br />\n$lig4->pays\n";}
 											echo "</td>\n";
+
+											echo "<td style='text-align:center;'>\n";
+											echo "<input type='checkbox' name='suppr_resp1[]' id='suppr_$cpt_suppr' value='$lig4->pers_id' />";
+											$cpt_suppr++;
+											echo "</td>\n";
 										}
 
+										/*
 										echo "<td style='text-align:center;'>\n";
 										echo "<input type='checkbox' name='suppr_resp1[]' value='$lig4->pers_id' />";
 										echo "</td>\n";
-
+										*/
 
 									}
 									else{
@@ -850,7 +871,8 @@ else{
 											echo " rowspan='".mysql_num_rows($res3)."'";
 										}
 										echo ">\n";
-										echo "<input type='checkbox' name='suppr_resp2[]' value='$lig1->pers_id' />";
+										echo "<input type='checkbox' name='suppr_resp2[]' id='suppr_$cpt_suppr' value='$lig1->pers_id' />";
+										$cpt_suppr++;
 										echo "</td>\n";
 									}
 
@@ -891,7 +913,8 @@ else{
 									echo " rowspan='".mysql_num_rows($res3)."'";
 								}
 								echo ">\n";
-								echo "<input type='checkbox' name='suppr_resp2[]' value='$lig1->pers_id' />";
+								echo "<input type='checkbox' name='suppr_resp2[]' id='suppr_$cpt_suppr' value='$lig1->pers_id' />";
+								$cpt_suppr++;
 								echo "</td>\n";
 
 								echo "</tr>\n";
@@ -974,7 +997,8 @@ else{
 						echo "</td>\n";
 
 						echo "<td style='text-align:center;'>\n";
-						echo "<input type='checkbox' name='suppr_resp1[]' value='$lig2->pers_id' />";
+						echo "<input type='checkbox' name='suppr_resp1[]' id='suppr_$cpt_suppr' value='$lig2->pers_id' />";
+						$cpt_suppr++;
 						echo "</td>\n";
 					//}
 				}
@@ -1009,7 +1033,8 @@ else{
 					echo "</td>\n";
 
 					echo "<td style='text-align:center;'>\n";
-					echo "<input type='checkbox' name='suppr_resp2[]' value='$lig3->pers_id' />";
+					echo "<input type='checkbox' name='suppr_resp2[]' id='suppr_$cpt_suppr' value='$lig3->pers_id' />";
+					$cpt_suppr++;
 					echo "</td>\n";
 				}
 				else{
@@ -1025,6 +1050,17 @@ else{
 	}
 }
 echo "</table>\n";
+
+echo "<script type='text/javascript'>
+	function decoche_suppr_et_valide(){
+		for(i=0;i<$cpt_suppr;i++){
+			if(document.getElementById('suppr_'+i)){
+				document.getElementById('suppr_'+i).checked=false;
+			}
+		}
+		document.liste_resp.submit();
+	}
+</script>\n";
 //echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 echo "<center><input type='submit' value='Valider' /></center>\n";
 echo "</form>\n";
