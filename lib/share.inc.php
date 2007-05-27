@@ -1829,7 +1829,7 @@ function volume_dir($dir){
 			continue;
 		//if(is_dir($dir.$file)){
 		if(is_dir("$dir/$file")){
-			$totalsize+=show_dir("$dir/$file");
+			$totalsize+=volume_dir("$dir/$file");
 		}
 		else{
 			$tabtmpsize=stat("$dir/$file");

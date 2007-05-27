@@ -326,7 +326,8 @@ $titre_page = "Choix des couleurs GEPI";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+//echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "<div class='norme'><p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
@@ -591,7 +592,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 
 
 
- 	echo "<p><b>Dégradé:</b></p>\n";
+	echo "<p><b>Dégradé:</b></p>\n";
 	echo "<blockquote>\n";
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
@@ -685,6 +686,12 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	//echo "<p style='text-align:center;'><input type='submit' name='ok' value='Valider' /></p>\n";
 	echo "<p style='text-align:center;'><input type='button' name='ok' value='Valider' onClick='calcule_et_valide()' /></p>\n";
+
+
+	echo "<p><b>Remarque:</b></p>";
+	echo "<blockquote>\n";
+	echo "<p>Il peut arriver qu'il faille insister après validation pour que le navigateur recharge bien la page (<i>problème de cache du navigateur</i>).<br />Vous pouvez forcer le rechargement avec CTRL+MAJ+R.</p>\n";
+	echo "</blockquote>\n";
 
 /*
 	//echo "<input type='text' name='truc' value='100' size='3' onkeypress='test_clavier(\"truc\")' />\n";
