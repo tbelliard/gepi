@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 23/10/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -176,11 +176,23 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
                 )");
                 $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
                 $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
-                if ($current_coef[$j] != 0) {
+                
+		        // On teste si l'élève a un coef spécifique pour cette matière
+		        $test_coef = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+		        		"login = '".$current_eleve_login[$i]."' AND " .
+		        		"id_groupe = '".$current_group[$j]["id"]."' AND " .
+		        		"name = 'coef')");
+		        if (mysql_num_rows($test_coef) > 0) {
+		        	$coef_eleve = mysql_result($test_coef, 0);
+		        } else {
+		        	$coef_eleve = $current_coef[$j];
+		        }
+                
+                if ($coef_eleve != 0) {
                     if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
-                        $total_coef[$i] += $current_coef[$j];
-                        $moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
-                        $moy_gen_eleve[$i] += $current_coef[$j]*$current_eleve_note[$j][$i];
+                        $total_coef[$i] += $coef_eleve;
+                        $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+                        $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
                     }
                }
             }

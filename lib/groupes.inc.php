@@ -479,6 +479,9 @@ function set_eleve_groupe_setting($_login, $_id_groupe, $_setting_name, $_settin
     foreach($queries as $query) {
         $res = mysql_query($query);
     }
+	if ($_setting_name == "coef") {
+		$req = mysql_query("update groupes set recalcul_rang = 'y' where (id='".$_id_groupe."')");
+	}
 
     return true;
 }

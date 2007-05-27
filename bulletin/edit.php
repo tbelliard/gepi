@@ -702,6 +702,19 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 					)");
 					$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
 					$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+					
+					// On détermine le coefficient pour cette matière
+					// On teste si l'élève a un coef spécifique pour cette matière
+		            $test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+		            		"login = '".$current_eleve_login[$i]."' AND " .
+		            		"id_groupe = '".$current_group[$j]["id"]."' AND " .
+		            		"name = 'coef')");
+		            if (mysql_num_rows($test_coef_eleve) > 0) {
+		            	$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+		            } else {
+		            	$current_eleve_coef[$j][$i] = $current_coef[$j];
+		            }
+					
 				}
 				//flush();
 				$j++;

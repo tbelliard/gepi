@@ -250,7 +250,7 @@
                         echo "</span></td>\n";
 
             if ($test_coef != 0 and $affiche_coef == "y")  {
-                            if ($current_coef[$j] > 0){$print_coef= $current_coef[$j];}else{$print_coef='-';}
+                            if ($current_eleve_coef[$j][$i] > 0){$print_coef= $current_eleve_coef[$j][$i];}else{$print_coef='-';}
                             echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'>".$print_coef."</span></td>\n";
                         }
 
