@@ -1084,7 +1084,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom du professeur principal et du proviseur :
+        Afficher le nom du professeur principal et du chef d'établissement :
         </td>
         <td>
         <?php
