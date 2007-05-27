@@ -72,6 +72,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a></p>";
 
+echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulés'). Pour remettre à zéro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>";
+
 echo "<table class='menu' style='width: 90%;'>\n";
 echo "<tr>\n";
 echo "<th colspan='5'>Alertes récentes (<a href='security_panel.php?action=archiver'>archiver</a>)</th>\n";
@@ -114,7 +116,7 @@ while ($row = mysql_fetch_object($req)) {
 	echo "</td>";
 	echo "<td>".$row->date."</td>";
 	echo "<td>".$row->niveau."</td>";
-	echo "<td><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</td>";
+	echo "<td><p class='small'><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</p></td>";
 	echo "<td>";
 	if (!empty($user)) {
 		echo "<p>";
@@ -130,6 +132,8 @@ while ($row = mysql_fetch_object($req)) {
 		}
 		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login."'>Réinitialiser cumul</a>";
 		echo "</p>";
+	} else {
+		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>";
 	}
 	echo "</td>\n";
 	echo "</tr>";
@@ -223,7 +227,7 @@ while ($row = mysql_fetch_object($req)) {
 	echo "</td>";
 	echo "<td>".$row->date."</td>";
 	echo "<td>".$row->niveau."</td>";
-	echo "<td><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</td>";
+	echo "<td><p class='small'><b>Page : ".$row->fichier."</b><br/>".stripslashes($row->description)."</p></td>";
 	echo "<td>";
 	if (!empty($user)) {
 		echo "<p>";
@@ -239,6 +243,8 @@ while ($row = mysql_fetch_object($req)) {
 		}
 		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login."'>Réinitialiser cumul</a>";
 		echo "</p>";
+	} else {
+		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>";
 	}
 	echo "</td>\n";
 	echo "</tr>";
