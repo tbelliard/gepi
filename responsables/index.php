@@ -260,7 +260,10 @@ $num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_res
 
 
 unset($chaine_recherche);
-if(isset($val_rech)){
+if(!isset($val_rech)) {$val_rech="";}
+//if(isset($val_rech)){
+if($val_rech!=""){
+	//echo "\$val_rech=$val_rech<br />";
 	//$order_by=="nom,prenom";
 	$limit="TOUS";
 	if($val_rech!=""){
@@ -349,6 +352,8 @@ else{
 		die();
 	}
 }
+
+//echo "cpt=$cpt<br />";
 
 //echo "<p>\$chaine_recherche=$chaine_recherche et \$num_resp=$num_resp</p>";
 
