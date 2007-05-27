@@ -148,33 +148,16 @@ $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_clas
 $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
-
-
 //**************** EN-TETE *****************
 $titre_page = "Export des notes/appréciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-
-
-function remplace_accents($chaine){
-	$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-	return $retour;
-}
-
-
-function remplace_speciaux_utf8($chaine){
-	$retour=ereg_replace("&",'&amp;',ereg_replace('"','&quot;',ereg_replace("'","&apos;",ereg_replace("<","&lt;",ereg_replace(">","&gt;",ereg_replace(";",'.',"$chaine"))))));
-	return $retour;
-}
-
-
-
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_notes_appreciations";
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description']));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"]));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
 
 // Génération d'un fichier tableur ODS
@@ -265,7 +248,7 @@ if($nb_ele>0){
 
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.ereg_replace('\\n',' ',$lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 			//$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
-			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(utf8_encode(remplace_speciaux_utf8($lig_appreciation->appreciation))).'</text:p></table:table-cell></table:table-row>');
+			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.nl2br(caract_ooo($lig_appreciation->appreciation)).'</text:p></table:table-cell></table:table-row>');
 
 
 			// Il doit falloir remplacer les accents par leur valeur en UTF8

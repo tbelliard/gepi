@@ -191,16 +191,12 @@ if(!isset($type_export)){
 	die();
 }
 
-function remplace_accents($chaine){
-	$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-	return $retour;
-}
 
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_cn";
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description']));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"]));
-$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
+$nom_fic.="_".ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
 
 if($type_export=="CSV"){
 
@@ -406,7 +402,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
-		$nomc_dev[$cpt]=ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($lig_dev->nom_court));
+		$nomc_dev[$cpt]=ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($lig_dev->nom_court,'all'));
 
 		// Problème avec les 17.5 qui sont convertis en dates
 		//$coef_dev[$cpt]=$lig_dev->coef;
@@ -658,7 +654,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_LOGIN_ELEVE</text:p></table:table-cell>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_nom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_prenom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_classe[$i].'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_nom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_prenom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_classe[$i]).'</text:p></table:table-cell>');
 
 
 		// OpenOffice recalcule les valeurs lors de l'ouverture du document...

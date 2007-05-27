@@ -1871,4 +1871,50 @@ function vider_dir($dir){
 	return $statut;
 }
 
+function caract_ooo($chaine){
+	if(function_exists('utf8_encode')){
+		$retour=utf8_encode($chaine);
+	}
+	else{
+		$caract_accent=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
+		$caract_utf8=array("Ã€","Ã ","Ã‚","Ã¢","Ã„","Ã¤","Ã‰","Ã©","Ã¨","ÃŠ","Ãª","Ã‹","Ã«","Ã","Ã®","Ã","Ã¯","Ã”","Ã´","Ã–","Ã¶","Ã™","Ã¹","Ã›","Ã»","Ãœ","Ã¼","u");
+
+		$retour=$chaine;
+		for($i=0;$i<count($caract_accent);$i++){
+			$retour=str_replace($caract_accent[$i],$caract_utf8[$i],$retour);
+		}
+	}
+
+	$caract_special=array("&",
+							'"',
+							"'",
+							"<",
+							">");
+
+	$caract_sp_encode=array("&amp;",
+							"&quot;",
+							"&apos;",
+							"&lt;",
+							"&gt;");
+
+	for($i=0;$i<count($caract_special);$i++){
+		$retour=str_replace($caract_special[$i],$caract_sp_encode[$i],$retour);
+	}
+
+	return $retour;
+}
+
+function remplace_accents($chaine,$mode){
+	//$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+	if($mode='all'){
+		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
+		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"__ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+	}
+	else{
+		// On remplace les caractères accentués par leurs équivalents non accentués.
+		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+	}
+	return $retour;
+}
+
 ?>
