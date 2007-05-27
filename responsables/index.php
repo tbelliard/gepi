@@ -377,7 +377,10 @@ if(!isset($limit)){
 	$limit=20;
 }
 
-echo "Afficher <select name='limit'>\n";
+//echo "Afficher <select name='limit'>\n";
+echo "<input type='submit' value='Afficher' />\n";
+
+echo "<select name='limit'>\n";
 if($limit==20){$selected=" selected='true'";}else{$selected="";}
 echo "<option value='20'$selected>20</option>\n";
 if($limit==50){$selected=" selected='true'";}else{$selected="";}
@@ -403,6 +406,8 @@ else{
 }
 
 echo "</p>\n";
+
+
 
 echo "<script type='text/javascript'>
 	function precedent(){
@@ -474,10 +479,12 @@ echo "<input type='text' name='val_rech' value='' />\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
+echo "<center><input type='submit' value='Valider' /></center>\n";
 echo "</div>\n";
 echo "</div>\n";
 
-echo "<center><input type='submit' value='Valider' /></center>\n";
+//echo "<center><input type='submit' value='Valider' /></center>\n";
+
 echo "<table border='1' align='center'>\n";
 
 //if($num_resp==0){
