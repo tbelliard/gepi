@@ -834,6 +834,43 @@ if ($affiche=='yes') {
     echo "</table>\n";
 }
 
+
+// **********************************
+// Gestion Notanet
+
+$chemin = array();
+$chemin[] = "/mod_notanet/notanet.php";
+$chemin[] = "/mod_notanet/fiches_brevet.php";
+
+$titre = array();
+$titre[] = "Notanet";
+$titre[] = "Fiches Brevet";
+
+$expli = array();
+$expli[] = "Cet outil permet d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.<br />L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.";
+$expli[] = "Cet outil permet de générer les fiches brevet.";
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+    echo "<table class='menu'>\n";
+    echo "<tr>\n";
+    echo "<th colspan='2'><img src='./images/icons/document.png' alt='Notanet/Fiches Brevet' class='link'/> - Notanet/Fiches Brevet</th>\n";
+    echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+// **********************************
+
+
+
 // Gestion des messages
 
 $chemin = array();

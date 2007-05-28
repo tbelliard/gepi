@@ -446,6 +446,10 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des couleurs pour Gepi', '');";
 
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès aux fiches brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet.php','V','F','F','F','F','F','F','Accès à l export NOTANET','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');";
+
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));

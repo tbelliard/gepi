@@ -85,6 +85,7 @@ $chemin = array(
 if ($force_abs) $chemin[] = "/mod_absences/admin/index.php";
 if ($force_msj) $chemin[] = "/mod_miseajour/admin/index.php";
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
+$chemin[] = "/mod_notanet/notanet_admin.php";
 
 $titre = array(
 "Cahier de texte",
@@ -92,6 +93,7 @@ $titre = array(
 if ($force_abs) $titre[] = "Absences";
 if ($force_msj) $titre[] = "Mise à jour automatisée";
 $titre[] = "Trombinoscope";
+$titre[] = "Pour gérer le module Notanet/Fiches Brevet";
 
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
@@ -99,6 +101,7 @@ $expli = array(
 if ($force_abs) $expli[] = "Pour gérer le module absences";
 if ($force_msj) $expli[] = "Pour gérer le module de mise à jour de GEPI";
 $expli[] = "Pour gérer le module trombinoscope";
+$expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 
 $nb_ligne = count($chemin);
 //
