@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 // Pour GEPI 1.4.3 à 1.4.4
 // INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','Accès aux fiches brevet','');
 // Pour GEPI 1.5.x
-// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès aux fiches brevet','');
+// INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès à l export NOTANET','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -1418,7 +1418,10 @@ else {
 							}
 							else{
 								//if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){
+								if($tabmatieres[$j][-1]=="NOTNONCA"){
 									$temoin_NOTNONCA++;
+									//echo "<!-- \$temoin_NOTNONCA=$temoin_NOTNONCA \n\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."-->\n";
+								}
 								//}
 							}
 							// ...=====...($tabmatieres[$j][-1]!='NOTNONCA')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')
@@ -1586,8 +1589,9 @@ else {
 										}
 										//echo "</td>\n";
 
-										$num_lig++;
+										//$num_lig++;
 									}
+									$num_lig++;
 
 									/*
 									echo "<td style='border: 1px solid black; text-align:right;'>\n";
@@ -1670,8 +1674,9 @@ else {
 											echo "</td>\n";
 										}
 
-										$num_lig++;
+										//$num_lig++;
 									}
+									$num_lig++;
 
 									echo "</tr>\n";
 								}
@@ -2154,7 +2159,11 @@ else {
 							}
 							else{
 								//if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){
+									//$temoin_NOTNONCA++;
+								if($tabmatieres[$j][-1]=="NOTNONCA"){
 									$temoin_NOTNONCA++;
+									//echo "<!-- \$temoin_NOTNONCA=$temoin_NOTNONCA \n\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."-->\n";
+								}
 								//}
 							}
 							// ...=====...($tabmatieres[$j][-1]!='NOTNONCA')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')
@@ -2721,7 +2730,11 @@ else {
 							}
 							else{
 								//if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){
+									//$temoin_NOTNONCA++;
+								if($tabmatieres[$j][-1]=="NOTNONCA"){
 									$temoin_NOTNONCA++;
+									//echo "<!-- \$temoin_NOTNONCA=$temoin_NOTNONCA \n\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."-->\n";
+								}
 								//}
 							}
 							// ...=====...($tabmatieres[$j][-1]!='NOTNONCA')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')
@@ -3370,7 +3383,11 @@ else {
 							}
 							else{
 								//if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){
+									//$temoin_NOTNONCA++;
+								if($tabmatieres[$j][-1]=="NOTNONCA"){
 									$temoin_NOTNONCA++;
+									//echo "<!-- \$temoin_NOTNONCA=$temoin_NOTNONCA \n\$tabmatieres[$j][0]=".$tabmatieres[$j][0]."-->\n";
+								}
 								//}
 							}
 							// ...=====...($tabmatieres[$j][-1]!='NOTNONCA')&&($tabmatieres[$j][-4]!='non dispensee dans l etablissement')
@@ -3574,6 +3591,5 @@ else {
 }
 // Fermeture du DIV container initialisé dans le header.inc
 //echo "</div>\n";
-
 require("../lib/footer.inc.php");
 ?>
