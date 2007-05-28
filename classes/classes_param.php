@@ -122,12 +122,62 @@ if (isset($_POST['is_posted'])) {
                         $register = mysql_query("UPDATE classes SET display_mat_cat='".$_POST['display_mat_cat_'.$per]."' where id='".$id_classe."'");
                         if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                     }
-					
+
 					if ((isset($_POST['modele_bulletin_'.$per])) AND ($_POST['modele_bulletin_'.$per]!=0)) {
                         $register = mysql_query("UPDATE classes SET modele_bulletin_pdf='".$_POST['modele_bulletin_'.$per]."' where id='".$id_classe."'");
                         if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                     }
 
+					if (isset($_POST['rn_nomdev_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_nomdev='".$_POST['rn_nomdev_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_toutcoefdev_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_toutcoefdev='".$_POST['rn_toutcoefdev_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_coefdev_si_diff_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_coefdev_si_diff='".$_POST['rn_coefdev_si_diff_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_datedev_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_datedev='".$_POST['rn_datedev_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_sign_chefetab_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_sign_chefetab='".$_POST['rn_sign_chefetab_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_sign_pp_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_sign_pp='".$_POST['rn_sign_pp_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+					if (isset($_POST['rn_sign_resp_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_sign_resp='".$_POST['rn_sign_resp_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+
+					if(strlen(ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
+
+					if (isset($_POST['rn_sign_nblig_'.$per])) {
+                        $register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
+                        if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+                    }
+
+
+					if (isset($_POST['rn_formule_'.$per])) {
+						if ($_POST['rn_formule_'.$per]!='') {
+							$register = mysql_query("UPDATE classes SET rn_formule='".$_POST['rn_formule_'.$per]."' where id='".$id_classe."'");
+							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+						}
+					}
 
 			// On enregistre les infos relatives aux catégories de matières
 			$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
@@ -295,15 +345,12 @@ while ($per < $max_periode) {
 <br />
 <table border='0'>
 <tr>
-	<td>
-	  <b><H2>Paramètres généraux : </H2></b>
+	<td colspan='3'>
+	  <h2><b>Paramètres généraux : </b></h2>
 	</td>
-	<td>
-	</td>
-	</tr>
-	<tr>
-	<tr>
-	<tr>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-weight: bold;">
     Afficher les rubriques de matières sur le bulletin (HTML),<br />les relevés de notes (HTML), et les outils de visualisation :
     </td>
@@ -312,8 +359,9 @@ while ($per < $max_periode) {
 		echo "<input type='checkbox' value='y' name='display_mat_cat_".$per."' />\n";
 	?>
     </td>
-    </tr>
+</tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-weight: bold;" valign="top">
 	Paramétrage des catégories de matière pour cette classe<br />
 	(<i>la prise en compte de ce paramètrage est conditionnée<br />
@@ -321,46 +369,46 @@ while ($per < $max_periode) {
 	'Afficher les rubriques de matières...' ci-dessus</i>)
 	</td>
 	<td>
+		<table style='border: 1px solid black;'>
+		<tr>
+			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+		</tr>
+		<?php
+		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
+		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+			$current_priority = $row["priority"];
+			$current_affiche_moyenne = "0";
 
-<table style='border: 1px solid black;'>
-<tr>
-	<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
-</tr>
-<?php
-$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-	$current_priority = $row["priority"];
-	$current_affiche_moyenne = "0";
-
-	echo "<tr>\n";
-	echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-	echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
-	for ($i=0;$i<11;$i++) {
-		echo "<option value='$i'";
-		//if ($current_priority == $i) echo " SELECTED";
-		echo ">$i</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-	echo "<input type='checkbox' name='moyenne_".$row["id"]."_".$per."'";
-	//if ($current_affiche_moyenne == '1') echo " CHECKED";
-	echo " />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-}
-?>
-</table>
-</td>
+			echo "<tr>\n";
+			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
+			echo "<td style='padding: 5px; text-align: center;'>\n";
+			echo "<select name='priority_".$row["id"]."_".$per."' size='1'>\n";
+			for ($i=0;$i<11;$i++) {
+				echo "<option value='$i'";
+				//if ($current_priority == $i) echo " SELECTED";
+				echo ">$i</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+			echo "<td style='padding: 5px; text-align: center;'>\n";
+			echo "<input type='checkbox' name='moyenne_".$row["id"]."_".$per."'";
+			//if ($current_affiche_moyenne == '1') echo " CHECKED";
+			echo " />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		?>
+		</table>
+	</td>
 </tr>
     <tr>
-	<td>
-	  <b><H2>Paramètres bulletin HTML : </H2></b>
+	<td colspan='3'>
+	  <h2><b>Paramètres bulletin HTML : </b></h2>
 	</td>
 	<td>
 	</td>
 	</tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
         <b>Afficher sur le bulletin le rang de chaque élève : </b>
 	</td>
@@ -371,6 +419,7 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	</tr>
 
 	<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
 	<b>Afficher le bloc adresse du responsable de l'élève : </b>
 	</td>
@@ -381,6 +430,7 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	</tr>
 
 	<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
 	<b>Afficher les coefficients des matières<br />(<i>uniquement si au moins un coef différent de 0</i>) : </b>
 	</td>
@@ -391,6 +441,7 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	</tr>
 
 	<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
 	<b>Afficher les moyennes générales sur les bulletins<br />(<i>uniquement si au moins un coef différent de 0</i>) : </b>
 	</td>
@@ -401,6 +452,7 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	</tr>
 
 	<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
 	<b>Afficher sur le bulletin le nombre de devoirs : </b>
 	</td>
@@ -410,13 +462,14 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 	</td>
 	</tr>
     <tr>
-	<td>
-	  <b><H2>Paramètres bulletin PDF : </H2></b>
+	<td colspan='3'>
+	  <h2><b>Paramètres bulletin PDF : </b></h2>
 	</td>
 	<td>
 	</td>
 	</tr>
 	<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
 	   Sélectionner le modèle de bulletin pour l'impression en PDF :
 	</td>
@@ -433,6 +486,84 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 		?>
 	</td>
 </tr>
+
+
+<!-- ========================================= -->
+<tr>
+	<td colspan='3'>
+	  <h2><b>Paramètres des relevés de notes : </b></h2>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher le nom des devoirs :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_nomdev_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_nomdev_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_toutcoefdev_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_toutcoefdev_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_coefdev_si_diff_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher les dates des devoirs :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td>Formule/Message à insérer sous le relevé de notes :</td>
+	<td><input type=text size=40 name="rn_formule_<?php echo $per;?>" value="" /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_sign_chefetab_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature du prof principal :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_sign_pp_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_sign_pp_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature des parents/responsables :</td>
+    <td>
+        <input type="radio" name="<?php echo "rn_sign_resp_".$per; ?>" value="y" />Oui
+        <input type="radio" name="<?php echo "rn_sign_resp_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
+    <td><input type="text" name="rn_sign_nblig_<?php echo $per;?>" value="" size="3" /></td>
+</tr>
+
 
 </table>
 <hr />
