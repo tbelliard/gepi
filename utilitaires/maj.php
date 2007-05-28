@@ -4365,6 +4365,126 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
         }
 
+
+
+
+        $result .= "&nbsp;->Ajout du champ rn_nomdev à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_nomdev'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_nomdev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_toutcoefdev à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_toutcoefdev'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_toutcoefdev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_coefdev_si_diff à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_coefdev_si_diff'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_coefdev_si_diff` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_datedev à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_datedev'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_datedev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_sign_chefetab à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_chefetab'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_chefetab` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_sign_pp à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_pp'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_pp` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_sign_resp à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_resp'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_resp` CHAR( 1 ) NOT NULL DEFAULT 'n';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_sign_nblig à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_nblig'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_nblig` INT( 11 ) NOT NULL DEFAULT '3';");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout du champ rn_formule à la table classes<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_formule'"));
+        if ($test1 == 0) {
+            $query3 = mysql_query("ALTER TABLE `classes` ADD `rn_formule` TEXT NOT NULL;");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+        }
+
     }
 
 

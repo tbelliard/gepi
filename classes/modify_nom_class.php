@@ -51,9 +51,26 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($display_coef)) $display_coef = 'y'; else $display_coef = 'n';
 	if (isset($display_mat_cat)) $display_mat_cat = 'y'; else $display_mat_cat = 'n';
 	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
-	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
+	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_nbdev = 'n';
 
 	if (!isset($modele_bulletin)) $$modele_bulletin = 1;
+
+	// =========================
+	// AJOUT: boireaus
+	//rn_formule
+	//rn_sign_nblig
+
+	if(strlen(ereg_replace("[0-9]","",$rn_sign_nblig))!=0){$rn_sign_nblig=3;}
+
+	if (isset($rn_nomdev)){$rn_nomdev='y';}else{$rn_nomdev='n';}
+	if (isset($rn_toutcoefdev)){$rn_toutcoefdev='y';}else{$rn_toutcoefdev='n';}
+	if (isset($rn_coefdev_si_diff)){$rn_coefdev_si_diff='y';}else{$rn_coefdev_si_diff='n';}
+	if (isset($rn_datedev)){$rn_datedev='y';}else{$rn_datedev='n';}
+	if (isset($rn_sign_chefetab)){$rn_sign_chefetab='y';}else{$rn_sign_chefetab='n';}
+	if (isset($rn_sign_pp)){$rn_sign_pp='y';}else{$rn_sign_pp='n';}
+	if (isset($rn_sign_resp)){$rn_sign_resp='y';}else{$rn_sign_resp='n';}
+	// =========================
+
 
 	if (isset($id_classe)) {
 		if ($reg_class_name) {
@@ -62,7 +79,28 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			//$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '$reg_formule', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen' WHERE id = '$id_classe'");
 
-			$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name', nom_complet='$reg_nom_complet', suivi_par='$reg_suivi_par', formule= '".html_entity_decode($reg_formule)."', format_nom='$reg_format', display_rang='$display_rang', display_address='$display_address', display_coef='$display_coef', display_mat_cat ='$display_mat_cat', display_nbdev ='$display_nbdev',display_moy_gen='$display_moy_gen', modele_bulletin_pdf='$modele_bulletin' WHERE id = '$id_classe'");
+			$register_class = mysql_query("UPDATE classes SET classe='$reg_class_name',
+													nom_complet='$reg_nom_complet',
+													suivi_par='$reg_suivi_par',
+													formule= '".html_entity_decode($reg_formule)."',
+													format_nom='$reg_format',
+													display_rang='$display_rang',
+													display_address='$display_address',
+													display_coef='$display_coef',
+													display_mat_cat ='$display_mat_cat',
+													display_nbdev ='$display_nbdev',
+													display_moy_gen='$display_moy_gen',
+													modele_bulletin_pdf='$modele_bulletin',
+													rn_nomdev='$rn_nomdev',
+													rn_toutcoefdev='$rn_toutcoefdev',
+													rn_coefdev_si_diff='$rn_coefdev_si_diff',
+													rn_datedev='$rn_datedev',
+													rn_sign_chefetab='$rn_sign_chefetab',
+													rn_sign_pp='$rn_sign_pp',
+													rn_sign_resp='$rn_sign_resp',
+													rn_sign_nblig='$rn_sign_nblig',
+													rn_formule='$rn_formule'
+												WHERE id = '$id_classe'");
 
 			if (!$register_class) {
 					$msg .= "Une erreur s'est produite lors de la modification de la classe.";
@@ -96,7 +134,28 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if ($reg_class_name) {
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat'");
 		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev'");
-		$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev', display_moy_gen='$display_moy_gen', modele_bulletin_pdf='$modele_bulletin'");
+		$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name',
+													nom_complet = '$reg_nom_complet',
+													suivi_par = '$reg_suivi_par',
+													formule = '$reg_formule',
+													format_nom = '$reg_format',
+													display_rang = '$display_rang',
+													display_address = '$display_address',
+													display_coef = '$display_coef',
+													display_mat_cat = '$display_mat_cat',
+													display_nbdev ='$display_nbdev',
+													display_moy_gen='$display_moy_gen',
+													modele_bulletin_pdf='$modele_bulletin',
+													rn_nomdev='$rn_nomdev',
+													rn_toutcoefdev='$rn_toutcoefdev',
+													rn_coefdev_si_diff='$rn_coefdev_si_diff',
+													rn_datedev='$rn_datedev',
+													rn_sign_chefetab='$rn_sign_chefetab',
+													rn_sign_pp='$rn_sign_pp',
+													rn_sign_resp='$rn_sign_resp',
+													rn_sign_nblig='$rn_sign_nblig',
+													rn_formule='$rn_formule'
+												");
 		if (!$register_class) {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
 		} else {
@@ -151,6 +210,19 @@ if (isset($id_classe)) {
 	$display_nbdev = mysql_result($call_nom_class, 0, 'display_nbdev');
 	$display_moy_gen = mysql_result($call_nom_class, 0, 'display_moy_gen');
 	$modele_bulletin_pdf = mysql_result($call_nom_class, 0, 'modele_bulletin_pdf');
+
+	// =========================
+	// AJOUT: boireaus
+	$rn_nomdev=mysql_result($call_nom_class, 0, 'rn_nomdev');
+	$rn_toutcoefdev=mysql_result($call_nom_class, 0, 'rn_toutcoefdev');
+	$rn_coefdev_si_diff=mysql_result($call_nom_class, 0, 'rn_coefdev_si_diff');
+	$rn_datedev=mysql_result($call_nom_class, 0, 'rn_datedev');
+	$rn_formule=mysql_result($call_nom_class, 0, 'rn_formule');
+	$rn_sign_chefetab=mysql_result($call_nom_class, 0, 'rn_sign_chefetab');
+	$rn_sign_pp=mysql_result($call_nom_class, 0, 'rn_sign_pp');
+	$rn_sign_resp=mysql_result($call_nom_class, 0, 'rn_sign_resp');
+	$rn_sign_nblig=mysql_result($call_nom_class, 0, 'rn_sign_nblig');
+	// =========================
 } else {
 	$classe = '';
 	$nom_complet = '';
@@ -164,6 +236,19 @@ if (isset($id_classe)) {
 	$display_nbdev = 'n';
 	$display_moy_gen = 'n';
 	$modele_bulletin_pdf = NULL;
+
+	// =========================
+	// AJOUT: boireaus
+	$rn_nomdev='n';
+	$rn_toutcoefdev='n';
+	$rn_coefdev_si_diff='n';
+	$rn_datedev='n';
+	$rn_formule='';
+	$rn_sign_chefetab='n';
+	$rn_sign_pp='n';
+	$rn_sign_resp='n';
+	$rn_sign_nblig=3;
+	// =========================
 }
 
 ?>
@@ -187,15 +272,15 @@ if (isset($id_classe)) {
 <?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>
 <br />
 <br />
+<!-- ========================================= -->
 <table style="border: 0;" cellpadding="5" cellspacing="5">
 <tr>
-	<td>
-	  <b><H2>Paramètres généraux : </H2></b>
-	</td>
-	<td>
+	<td colspan='3'>
+	  <h2><b>Paramètres généraux : </b></h2>
 	</td>
 </tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
     Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :
     </td>
@@ -203,63 +288,62 @@ if (isset($id_classe)) {
     </td>
 </tr>
 <tr>
-<tr>
-<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
 	Paramétrage des catégories de matière pour cette classe (uniquement si case ci-dessus cochée)
 	</td>
 	<td>
-<table style='border: 1px solid black;'>
-<tr>
-	<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
-</tr>
-<?php
-$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-	// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
-	if (isset($id_classe)) {
-		$infos = mysql_fetch_object(mysql_query("SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "')"));
-	} else {
-		$infos = false;
-	}
-	if (!$infos) {
-		$current_priority = $row["priority"];
-		$current_affiche_moyenne = "0";
-	} else {
-		$current_priority = $infos->priority;
-		$current_affiche_moyenne = $infos->affiche_moyenne;
-	}
-
-	echo "<tr>\n";
-	echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-			echo "<select name='priority_".$row["id"]."' size='1'>\n";
-			for ($i=0;$i<11;$i++) {
-				echo "<option value='$i'";
-				if ($current_priority == $i) echo " SELECTED";
-				echo ">$i</option>\n";
+		<table style='border: 1px solid black;'>
+		<tr>
+			<td style='width: auto;'>Catégorie</td><td style='width: 100px; text-align: center;'>Priorité d'affichage</td><td style='width: 100px; text-align: center;'>Afficher la moyenne sur le bulletin</td>
+		</tr>
+		<?php
+		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
+		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+			// Pour la catégorie, on récupère les infos déjà enregistrées pour la classe
+			if (isset($id_classe)) {
+				$infos = mysql_fetch_object(mysql_query("SELECT priority, affiche_moyenne FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] ."' and classe_id = '" . $id_classe . "')"));
+			} else {
+				$infos = false;
 			}
-			echo "</select>\n";
-	echo "</td>\n";
-	echo "<td style='padding: 5px; text-align: center;'>\n";
-		echo "<input type='checkbox' name='moyenne_".$row["id"]."'";
-		if ($current_affiche_moyenne == '1') echo " CHECKED";
-		echo " />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-}
-?>
-</table>
+			if (!$infos) {
+				$current_priority = $row["priority"];
+				$current_affiche_moyenne = "0";
+			} else {
+				$current_priority = $infos->priority;
+				$current_affiche_moyenne = $infos->affiche_moyenne;
+			}
+
+			echo "<tr>\n";
+			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
+			echo "<td style='padding: 5px; text-align: center;'>\n";
+					echo "<select name='priority_".$row["id"]."' size='1'>\n";
+					for ($i=0;$i<11;$i++) {
+						echo "<option value='$i'";
+						if ($current_priority == $i) echo " SELECTED";
+						echo ">$i</option>\n";
+					}
+					echo "</select>\n";
+			echo "</td>\n";
+			echo "<td style='padding: 5px; text-align: center;'>\n";
+				echo "<input type='checkbox' name='moyenne_".$row["id"]."'";
+				if ($current_affiche_moyenne == '1') echo " CHECKED";
+				echo " />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		?>
+		</table>
 </td>
 </tr>
+<!-- ========================================= -->
 <tr>
-	<td>
-	  <b><H2>Paramètres bulletin HTML : </H2></b>
-	</td>
-	<td>
+	<td colspan='3'>
+	  <h2><b>Paramètres bulletin HTML : </b></h2>
 	</td>
 </tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps; width: 35%;">
     Afficher sur le bulletin le rang de chaque élève&nbsp;:
     </td>
@@ -267,21 +351,23 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     </td>
 </tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
     Afficher le bloc adresse du responsable de l'élève :
     </td>
     <td><input type="checkbox" value="y" name="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
     </td>
 </tr>
-    <tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
     Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :
     </td>
     <td><input type="checkbox" value="y" name="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
     </td>
 </tr>
-</tr>
-    <tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
     Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :
     </td>
@@ -289,26 +375,28 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     </td>
 </tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
     Afficher le nombre de devoirs sur le bulletin :
     </td>
     <td><input type="checkbox" value="y" name="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
     </td>
 </tr>
-	<td>
-	  <b><H2>Paramètres bulletin PDF : </H2></b>
-	</td>
-	<td>
+<!-- ========================================= -->
+<tr>
+	<td colspan='3'>
+	  <h2><b>Paramètres bulletin PDF : </b></h2>
 	</td>
 </tr>
 <tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
 	   Sélectionner le modèle de bulletin pour l'impression en PDF :
 	</td>
 	<td><?PHP
 	    // Pour la classe, quel est le modèle de bulletin déja selectionné
 	    $quel_modele=$modele_bulletin_pdf;
-		
+
 		//echo $quel_modele;
 		echo "<select tabindex=\"5\" name=\"modele_bulletin\">";
 		if ($quel_modele == NULL) {
@@ -317,15 +405,83 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 		// sélection des modèle des bulletins.
 	    $requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 		while($donner_modele = mysql_fetch_array($requete_modele)) {
-		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";  
-			if($quel_modele==$donner_modele['id_model_bulletin']) { 
-			    echo "selected=\"selected\""; 
-			} 
+		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
+			if($quel_modele==$donner_modele['id_model_bulletin']) {
+			    echo "selected=\"selected\"";
+			}
 			echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
 		}
 		 echo "</select>\n";
 		?>
 	</td>
+</tr>
+<!-- ========================================= -->
+<tr>
+	<td colspan='3'>
+	  <h2><b>Paramètres des relevés de notes : </b></h2>
+	</td>
+</tr>
+<!--
+Afficher le nom des devoirs.
+Afficher tous les coefficients des devoirs.
+Afficher les coefficients des devoirs si des coefficients différents
+> > sont présents.
+Afficher les dates des devoirs.
+> >
+> >Et
+Afficher un texte... (correspondant à ta demande)
+> >Et encore
+Afficher une case pour la signature des parents/responsables
+Afficher une case pour la signature du prof principal
+Afficher une case pour la signature du chef d'établissement
+-->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher le nom des devoirs :</td>
+    <td><input type="checkbox" value="y" name="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs :</td>
+    <td><input type="checkbox" value="y" name="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents :</td>
+    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher les dates des devoirs :</td>
+    <td><input type="checkbox" value="y" name="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td>Formule/Message à insérer sous le relevé de notes :</td>
+	<td><input type=text size=40 name="rn_formule" value="<?php echo $rn_formule; ?>" /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement :</td>
+    <td><input type="checkbox" value="y" name="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature du prof principal :</td>
+    <td><input type="checkbox" value="y" name="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> /></td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Afficher une case pour la signature des parents/responsables :</td>
+    <td><input type="checkbox" value="y" name="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?> /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
+    <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" /></td>
 </tr>
 
 </table>

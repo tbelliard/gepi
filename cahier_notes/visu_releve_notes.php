@@ -141,13 +141,96 @@ if (empty($_GET['creer_pdf']) AND empty($_POST['creer_pdf'])) {$creer_pdf="";}
 
 //====================================================================
 // MODIF: boireaus
-$avec_nom_devoir=isset($_POST["avec_nom_devoir"]) ? $_POST["avec_nom_devoir"] : "";
-$avec_coef_devoir=isset($_POST["avec_coef_devoir"]) ? $_POST["avec_coef_devoir"] : "";
-$avec_tous_coef_devoir=isset($_POST["avec_tous_coef_devoir"]) ? $_POST["avec_tous_coef_devoir"] : "";
-$chaine_coef="coef.: ";
-//echo "<!--\$chaine_coef=$chaine_coef-->\n";
-$avec_date_devoir=isset($_POST["avec_date_devoir"]) ? $_POST["avec_date_devoir"] : "";
-//====================================================================
+if(!isset($choix_edit)){
+	if((isset($id_classe))||(isset($id_groupe))){
+		// On recherche les infos dans la table 'classes':
+		if(!isset($id_classe)){
+			// Récupérer l'identifiant de la première classe associée au groupe.
+			$sql="SELECT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe'";
+			$res_grp_tmp=mysql_query($sql);
+			if(mysql_num_rows($res_grp_tmp)>0){
+				$lig_grp_tmp=mysql_fetch_object($res_grp_tmp);
+				$tmp_id_classe=$lig_grp_tmp->id_classe;
+			}
+			else{
+				$tmp_id_classe="NON_TROUVé";
+			}
+		}
+		else{
+			$tmp_id_classe=$id_classe;
+		}
+
+		$sql="SELECT * FROM classes WHERE id='$tmp_id_classe'";
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$lig_class_tmp=mysql_fetch_object($res_class_tmp);
+			/*
+			$rn_nomdev=$lig_class_tmp->rn_nomdev;
+			$rn_toutcoefdev=$lig_class_tmp->rn_toutcoefdev;
+			$rn_coefdev_si_diff=$lig_class_tmp->rn_coefdev_si_diff;
+			$rn_sign_chefetab=$lig_class_tmp->rn_sign_chefetab;
+			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
+			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
+			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
+			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+			*/
+			$avec_nom_devoir=$lig_class_tmp->rn_nomdev;
+			$avec_tous_coef_devoir=$lig_class_tmp->rn_toutcoefdev;
+			$avec_coef_devoir=$lig_class_tmp->rn_coefdev_si_diff;
+			$avec_date_devoir=$lig_class_tmp->rn_datedev;
+
+			$rn_sign_chefetab=$lig_class_tmp->rn_sign_chefetab;
+			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
+			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
+			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
+			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+
+			$chaine_coef="coef.: ";
+		}
+		else{
+			$avec_nom_devoir="";
+			$avec_coef_devoir="";
+			$avec_tous_coef_devoir="";
+			$chaine_coef="coef.: ";
+			$avec_date_devoir="";
+
+			$rn_sign_chefetab="n";
+			$rn_sign_pp="n";
+			$rn_sign_resp="n";
+			$rn_sign_nblig="n";
+			$rn_formule="";
+		}
+	}
+	/*
+	else{
+		$avec_nom_devoir="";
+		$avec_coef_devoir="";
+		$avec_tous_coef_devoir="";
+		$chaine_coef="coef.: ";
+		$avec_date_devoir="";
+
+		$rn_sign_chefetab="n";
+		$rn_sign_pp="n";
+		$rn_sign_resp="n";
+		$rn_sign_nblig="n";
+		$rn_formule="";
+	}
+	*/
+}
+else{
+	$avec_nom_devoir=isset($_POST["avec_nom_devoir"]) ? $_POST["avec_nom_devoir"] : "";
+	$avec_coef_devoir=isset($_POST["avec_coef_devoir"]) ? $_POST["avec_coef_devoir"] : "";
+	$avec_tous_coef_devoir=isset($_POST["avec_tous_coef_devoir"]) ? $_POST["avec_tous_coef_devoir"] : "";
+	$chaine_coef="coef.: ";
+	//echo "<!--\$chaine_coef=$chaine_coef-->\n";
+	$avec_date_devoir=isset($_POST["avec_date_devoir"]) ? $_POST["avec_date_devoir"] : "";
+
+	$rn_sign_chefetab=isset($_POST["rn_sign_chefetab"]) ? $_POST["rn_sign_chefetab"] : "";
+	$rn_sign_pp=isset($_POST["rn_sign_pp"]) ? $_POST["rn_sign_pp"] : "";
+	$rn_sign_resp=isset($_POST["rn_sign_resp"]) ? $_POST["rn_sign_resp"] : "";
+	$rn_sign_nblig=isset($_POST["rn_sign_nblig"]) ? $_POST["rn_sign_nblig"] : 3;
+	$rn_formule=isset($_POST["rn_formule"]) ? $_POST["rn_formule"] : "";
+}//====================================================================
 
 include "../lib/periodes.inc.php";
 
@@ -178,6 +261,12 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	global $avec_tous_coef_devoir;
 	global $chaine_coef;
 	global $avec_date_devoir;
+
+	global $rn_sign_chefetab;
+	global $rn_sign_pp;
+	global $rn_sign_resp;
+	global $rn_sign_nblig;
+	global $rn_formule;
 	//====================================================================
 	global $categories;
 	global $cat_names;
@@ -493,6 +582,65 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 		$j++;
 	}
 	echo "</table>\n";
+
+/*
+	global $rn_sign_chefetab;
+	global $rn_sign_pp;
+	global $rn_sign_resp;
+	global $rn_sign_nblig;
+	global $rn_formule;
+*/
+
+	if(($rn_sign_chefetab=='y')||($rn_sign_pp=='y')||($rn_sign_resp=='y')){
+		$nb_cases=0;
+		if($rn_sign_chefetab=='y'){
+			$nb_cases++;
+		}
+		if($rn_sign_pp=='y'){
+			$nb_cases++;
+		}
+		if($rn_sign_resp=='y'){
+			$nb_cases++;
+		}
+		$largeur_case=round($larg_tab/$nb_cases);
+
+		echo "<table border='1' width='$larg_tab'>\n";
+		echo "<tr>\n";
+
+		if($rn_sign_chefetab=='y'){
+			echo "<td width='$largeur_case'>\n";
+			echo "<b>Signature du chef d'établissement:</b>";
+			for($i=0;$i<$rn_sign_nblig;$i++){
+				echo "<br />\n";
+			}
+			echo "</td>\n";
+		}
+
+		if($rn_sign_pp=='y'){
+			echo "<td width='$largeur_case'>\n";
+			echo "<b>Signature du ".getSettingValue("gepi_prof_suivi").":</b>";
+			for($i=0;$i<$rn_sign_nblig;$i++){
+				echo "<br />\n";
+			}
+			echo "</td>\n";
+		}
+
+		if($rn_sign_resp=='y'){
+			echo "<td width='$largeur_case'>\n";
+			echo "<b>Signature des responsables:</b>";
+			for($i=0;$i<$rn_sign_nblig;$i++){
+				echo "<br />\n";
+			}
+			echo "</td>\n";
+		}
+
+		echo "</tr>\n";
+		echo "</table>\n";
+	}
+
+	if($rn_formule!=""){
+		echo "<p>".htmlentities($rn_formule)."</p>\n";
+	}
 }
 
 //**************** EN-TETE *******************************
@@ -1087,14 +1235,45 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     //====================================================================
     // MODIF: boireaus
     // Pour permettre de ne pas afficher les noms des devoirs
-    echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' checked /> Afficher le nom des devoirs.\n";
-    echo "<br />\n";
-    echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' /> Afficher tous les coefficients des devoirs.\n";
-    echo "<br />\n";
-    echo "<input type='checkbox' name='avec_coef_devoir' value='oui' /> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+    echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+	if($avec_nom_devoir=="y"){echo "checked ";}
+	echo "/> Afficher le nom des devoirs.\n";
 
     echo "<br />\n";
-	echo "<input type='checkbox' name='avec_date_devoir' value='oui' /> Afficher les dates des devoirs.\n";
+    echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+	if($avec_tous_coef_devoir=="y"){echo "checked ";}
+	echo "/> Afficher tous les coefficients des devoirs.\n";
+
+    echo "<br />\n";
+    echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+	if($avec_coef_devoir=="y"){echo "checked ";}
+	echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+
+    echo "<br />\n";
+	echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+	if($avec_date_devoir=="y"){echo "checked ";}
+	echo "/> Afficher les dates des devoirs.\n";
+
+	echo "<br />\n";
+	echo "<input type='checkbox' name='rn_sign_chefetab' value='y' ";
+	if($rn_sign_chefetab=="y"){echo "checked ";}
+	echo "/> Afficher une case pour la signature du chef d'établissement.\n";
+
+	echo "<br />\n";
+	echo "<input type='checkbox' name='rn_sign_pp' value='y' ";
+	if($rn_sign_pp=="y"){echo "checked ";}
+	echo "/> Afficher une case pour la signature du ".getSettingValue("gepi_prof_suivi").".\n";
+
+	echo "<br />\n";
+	echo "<input type='checkbox' name='rn_sign_resp' value='y' ";
+	if($rn_sign_resp=="y"){echo "checked ";}
+	echo "/> Afficher une case pour la signature des parents/responsables.\n";
+
+	echo "<br />\n";
+	echo "Nombre de lignes pour la signature si une case est affichée: <input type='text' name='rn_sign_nblig' value='$rn_sign_nblig' size='2' />\n";
+
+	echo "<br />\n";
+	echo "Formule à afficher en bas de page:<br /><input type='text' name='rn_formule' value=\"$rn_formule\" size='40' />\n";
 
     //====================================================================
 
