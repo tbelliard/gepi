@@ -74,7 +74,8 @@ if (!(isset($id_classe))) {
 	unset($lien_classe);
 	unset($txt_classe);
 	$i = 0;
-	while ($i < $nombreligne){
+	//while ($i < $nombreligne){
+	while ($i < $lignes){
 		$lien_classe[]="verif_bulletins.php?id_classe=".mysql_result($appel_donnees, $i, "id");
 		$txt_classe[]=ucfirst(mysql_result($appel_donnees, $i, "classe"));
 		$i++;
