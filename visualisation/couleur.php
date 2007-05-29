@@ -51,7 +51,8 @@ if (!checkAccess()) {
 $objet=isset($_POST['objet']) ? $_POST['objet'] : (isset($_GET['objet']) ? $_GET['objet'] : NULL);
 
 //ACQUISITION DES DIMENSIONS DE L'IMAGE POUR CONTROLER LES LIMITES DU CLIC
-$image="img/couleurs_gimp2.png";
+//$image="img/couleurs_gimp2.png";
+$image="../images/couleurs_gimp2.png";
 $dimensions=getimagesize($image);
 $largeur=$dimensions[0];
 $hauteur=$dimensions[1];
@@ -146,6 +147,17 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
 }
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
+
+
+if(isset($style_screen_ajout)){
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+	}
+}
+
 ?>
 
 <body <?php echo $bgcouleur; ?> onLoad="show_message_deconnexion()">
