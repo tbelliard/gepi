@@ -109,7 +109,9 @@ if (!(isset($id_classe))) {
 
 	//echo "</td><td></td></table>";
 } else if (!(isset($per))){
-    echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+    //echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+    echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+    //echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
     // On teste si les élèves ont bien un CPE responsable
 
@@ -153,7 +155,8 @@ if (!(isset($id_classe))) {
         $i++;
     }
 } else {
-    echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+    //echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+    echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
     $bulletin_rempli = 'yes';
     $call_classe = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
     $classe = mysql_result($call_classe, "0", "classe");
