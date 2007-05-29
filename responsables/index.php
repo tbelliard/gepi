@@ -198,6 +198,33 @@ $titre_page = "Gestion des responsables élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+function get_class_from_ele_login($ele_login){
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$res_class=mysql_query($sql);
+
+	$tab_classe=array();
+	if(mysql_num_rows($res_class)>0){
+		while($lig_tmp=mysql_fetch_object($res_class)){
+			$tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+		}
+	}
+	return $tab_classe;
+}
+
+function liens_class_from_ele_login($ele_login){
+	$chaine="";
+	$tab_classe=get_class_from_ele_login($ele_login);
+	if(isset($tab_classe)){
+		if(count($tab_classe)>0){
+			foreach ($tab_classe as $key => $value){
+				$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+			}
+			$chaine="(".substr($chaine,2).")";
+		}
+	}
+	return $chaine;
+}
+
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -693,7 +720,9 @@ else{
 									if($cpt_temoin>0){
 										echo "<tr style='background-color:".$alt.";'>\n";
 									}
-									echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig3->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig3->nom $lig3->prenom</a></td>\n";
+									echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig3->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig3->nom $lig3->prenom</a>";
+									echo "<br />".liens_class_from_ele_login($lig3->login);
+									echo "</td>\n";
 
 									$sql="SELECT rp.nom,rp.prenom,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
 										rp.pers_id=r.pers_id AND
@@ -754,8 +783,13 @@ else{
 		// Pour ne récupérer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp'
-			ORDER BY $order_by";
+				r.resp_legal='$num_resp'";
+		//	ORDER BY $order_by";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY $order_by";
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
