@@ -1104,9 +1104,25 @@ else {
 								echo ">\n";
 								echo "<p class='discipline'>";
 								//echo "<span class='discipline'>";
+
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
-									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
+
+										// ==============================
+										// recherche de la matière facultative pour l'élève
+										$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
+										$res_mat_fac=mysql_query($sql_mat_fac);
+										if(mysql_num_rows($res_mat_fac)>0){
+											$lig_mat_fac=mysql_fetch_object($res_mat_fac);
+
+											echo ": ".$lig_mat_fac->mat;
+										}
+										// ==============================
+
+										//echo ": ".$lig_mat_fac->mat;
+									}
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
@@ -1851,7 +1867,22 @@ else {
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
-									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
+
+										// ==============================
+										// recherche de la matière facultative pour l'élève
+										$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
+										$res_mat_fac=mysql_query($sql_mat_fac);
+										if(mysql_num_rows($res_mat_fac)>0){
+											$lig_mat_fac=mysql_fetch_object($res_mat_fac);
+
+											echo ": ".$lig_mat_fac->mat;
+										}
+										// ==============================
+
+										//echo ": ".$lig_mat_fac->mat;
+									}
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
@@ -2417,7 +2448,22 @@ else {
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
-									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
+
+										// ==============================
+										// recherche de la matière facultative pour l'élève
+										$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
+										$res_mat_fac=mysql_query($sql_mat_fac);
+										if(mysql_num_rows($res_mat_fac)>0){
+											$lig_mat_fac=mysql_fetch_object($res_mat_fac);
+
+											echo ": ".$lig_mat_fac->mat;
+										}
+										// ==============================
+
+										//echo ": ".$lig_mat_fac->mat;
+									}
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
@@ -3132,7 +3178,22 @@ else {
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
-									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
+									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
+
+										// ==============================
+										// recherche de la matière facultative pour l'élève
+										$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
+										$res_mat_fac=mysql_query($sql_mat_fac);
+										if(mysql_num_rows($res_mat_fac)>0){
+											$lig_mat_fac=mysql_fetch_object($res_mat_fac);
+
+											echo ": ".$lig_mat_fac->mat;
+										}
+										// ==============================
+
+										//echo ": ".$lig_mat_fac->mat;
+									}
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
