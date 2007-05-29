@@ -92,7 +92,7 @@ E-mail pour la réponse : <?php if ($_SESSION['statut'] != "responsable" AND $_SE
 <input type="text" name="email_reponse" size="40" maxlength="256" /><br/>
 <?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") { ?>
 Ou numéro de votre casier en salle des professeurs pour la réponse :
-<input type="text" name="casier" size="40" maxlength="256" value="Casier N°"><br/><br/>
+<input type="text" name="casier" size="40" maxlength="256" value="Casier N°" /><br/><br/>
 <?php } ?>
 <input type="submit" value="Envoyer le message" />
 
