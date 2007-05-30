@@ -117,7 +117,8 @@ $p = 1;
                   $eleve_sql=mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe_pdf.'" AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.nom, '.$prefix_base.'eleves.prenom ORDER BY nom, prenom ASC');
                   while($eleve_data = mysql_fetch_array($eleve_sql))
                     {
-                        $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
+                       // $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
+                       $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve_data['login']."'"),0);
                         if ($test != "0")
                          {
                                	$id[$nb] = $eleve_data['login'];

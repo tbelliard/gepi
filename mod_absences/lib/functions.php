@@ -18,6 +18,16 @@ function classe_court_de($id_classe_eleve) {
     return($id_classe_eleve);
 }
 
+// fonction permettant de connaitre le régime de l'élève
+function regime($id_eleve) {
+    global $prefix_base;
+    $requete_regime_eleve ="SELECT e.login , jer.login , jer.regime FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_regime jer WHERE e.login = jer.login AND e.login = '".$id_eleve."'";
+    $execution_regime_eleve = mysql_query($requete_regime_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysql_error());
+    $data_regime_eleve = mysql_fetch_array($execution_regime_eleve);
+    $regime_eleve = $data_regime_eleve['regime'];
+    return($regime_eleve);
+}
+
 //fonction permettant de connaître le motif d'une absence
 function motif_de($nc_motif) {
     global $prefix_base;

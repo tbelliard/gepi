@@ -225,15 +225,18 @@ class bilan_PDF extends FPDF
   //contage des pages
       if ($classe != "tous" and $eleve == "tous")
         {
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+//          $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+          $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
       if ($classe == "tous" and $eleve == "tous")
         {
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+//          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+            $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
       if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
         {
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+//          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
         }
 
         //je compte le nombre de page
@@ -250,8 +253,8 @@ $pdf->SetAutoPageBreak(true);
 // champs facultatifs
 $pdf->SetAuthor('');
 $pdf->SetCreator('créer avec Fpdf');
-$pdf->SetTitle('Titre');
-$pdf->SetSubject('Sujet');
+$pdf->SetTitle('Bilan des absences général');
+$pdf->SetSubject('Bilan des absences général');
 
 $pdf->SetMargins(10,10);
 $page = 0;
@@ -287,15 +290,18 @@ $pdf->SetY(52);
 
 if ($classe != "tous" and $eleve == "tous")
     {
-      $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+//      $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+	$requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
     }
 if ($classe == "tous" and $eleve == "tous")
     {
-      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
+//      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
+        $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
     }
 if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
     {
-      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+//      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+        $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
     }
 
 $execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
@@ -304,9 +310,10 @@ while ( $data_1 = mysql_fetch_array($execution_1))
       //tableau des absences
             $pdf->SetFont('Arial','',9);
             $pdf->SetFont('Arial','',9);
-            $ident_eleve = strtoupper($data_1['nom'])." ".ucfirst($data_1['prenom']);
+		$regime = regime($data_1['login']);
+            $ident_eleve = strtoupper($data_1['nom'])." ".ucfirst($data_1['prenom'])." (".$regime.")";
             $pdf->Cell(55, 5, $ident_eleve, 1, 0, '', '');
-            $classe_eleve = classe_de($data_1['login']);
+            $classe_eleve = classe_court_de($data_1['login']);
             $pdf->Cell(17, 5, $classe_eleve, 1, 0, '', '');
 		$motif_abrege = $data_1['motif_absence_eleve'];
 		$motif_texte['A'] = '';
