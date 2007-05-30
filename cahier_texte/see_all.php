@@ -80,7 +80,7 @@ if ($_SESSION['statut'] == 'eleve') {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 1) {
 			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
@@ -121,12 +121,12 @@ if ($current_imprime == 'n') {
   $largeur = "5%";
 }
 //**************** EN-TETE *****************
-if ($current_imprime=='n') $titre_page = "Cahier de texte - Vue d'ensemble";
+if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    die("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    die("<center><p class='grand'>Le cahier de textes n'est pas accessible pour le moment.</p></center>");
 }
 echo "<table border='0' width=\"98%\" cellspacing=0 align=\"center\"><tr>";
 echo "<td valign='top' width=".$largeur.">";
@@ -135,17 +135,22 @@ if ($current_imprime=='n') {
 		echo make_eleve_select_html('see_all.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
 	}
 	if ($selected_eleve_login != "") echo make_matiere_select_html('see_all.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
-	
-	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {	
+
+	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
   		echo make_classes_select_html('see_all.php', $id_classe, $year, $month, $day);
   		if ($id_classe != -1) echo make_matiere_select_html('see_all.php', $id_classe, $id_groupe, $year, $month, $day);
 	}
 }
 echo "</td>";
 echo "<td style=\"text-align:center;\">";
-echo "<p><span class='grand'>Cahier de texte";
-if ($current_group) echo " - $matiere_nom";
-if ($id_classe != -1) echo "<br />$classe_nom";
+echo "<p><span class='grand'>Cahier de textes";
+if ($current_group) {
+	echo " - $matiere_nom";
+	echo " - classe de ".$current_group['classlist_string'];
+}
+if ($id_classe != -1) {
+	echo "<br />$classe_nom";
+}
 echo "</span>";
 
   // Test si le cahier de texte est partagé
@@ -163,7 +168,7 @@ echo "</p></td>";
 echo "</tr></table>";
 if ($current_group) {
     if ($current_imprime=='n')
-    echo "<a href='consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> - ";	
+    echo "<a href='consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> - ";
     if ($current_imprime=='n')
     echo "<a href=see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe&amp;ordre=$ordre&amp;imprime=$current_imprime>Trier dans l'ordre inverse</a> - ";
     echo "<a href=see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe&amp;ordre=$current_ordre&amp;imprime=$imprime>$text_imprime</a>";
@@ -197,7 +202,7 @@ if ($html != '') {
     echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$html."</td></tr></table>";
 }
 
-echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTE: compte-rendus de séance</b></div><br />";
+echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de séance</b></div><br />";
 
 $req_notices =
     "select 'c' type, contenu, date_ct, id_ct
