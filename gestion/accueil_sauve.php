@@ -151,7 +151,7 @@ if (isset($action) and ($action == 'del_protect'))  {
 
 function gzip($src, $level = 5, $dst = false){
     // Pour compresser un fichier existant
-    
+
     if($dst == false) {
         $dst = $src.".gz";
     }
@@ -635,7 +635,7 @@ if (isset($action) and ($action == 'dump'))  {
 				$filetype = ".sql.gz";
 			}
 			@unlink($fichier);
-			
+
             echo "<div align='center'><p>Sauvegarde Terminée.<br/>\n";
 
 			//$nomsql.$filetype
@@ -696,7 +696,7 @@ if (isset($action) and ($action == 'system_dump'))  {
     $dbUser = escapeshellarg($dbUser);
     $dbPass = escapeshellarg($dbPass);
     $dbDb = escapeshellarg($dbDb);
-	
+
 	$req_version = mysql_result(mysql_query("SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
 	if (!is_numeric(substr($ver_mysql[2], 1, 1))) {
@@ -704,7 +704,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	} else {
 		$ver_mysql[2] = substr($ver_mysql[2], 0, 2);
 	}
-	
+
 	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
 		$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 	} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
@@ -714,8 +714,8 @@ if (isset($action) and ($action == 'system_dump'))  {
 		// Et là c'est qu'on a une version inférieure à 4.0.17
 		$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 	}
-	
-	
+
+
 	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>";
@@ -760,7 +760,7 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 
 <H3>Créer un fichier de sauvegarde/restauration de la base <?php echo $dbDb; ?></H3>
 <p>Deux méthodes de sauvegarde sont disponibles : l'utilisation de la commande système mysqldump ou bien le système intégré à Gepi.<br/>
-La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.</br>
+La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.<br />
 La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
 <form enctype="multipart/form-data" action="accueil_sauve.php" method=post name=formulaire>
 <center><input type="submit" value="Sauvegarder" />
