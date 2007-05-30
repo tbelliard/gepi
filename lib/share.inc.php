@@ -1944,4 +1944,34 @@ function liens_class_from_ele_login($ele_login){
 	return $chaine;
 }
 
+function statut_accentue($user_statut){
+	switch($user_statut){
+		case "administrateur":
+			$chaine="administrateur";
+			break;
+		case "scolarite":
+			$chaine="scolarité";
+			break;
+		case "professeur":
+			$chaine="professeur";
+			break;
+		case "secours":
+			$chaine="secours";
+			break;
+		case "cpe":
+			$chaine="cpe";
+			break;
+		case "eleve":
+			$chaine="élève";
+			break;
+		case "responsable":
+			$chaine="responsable";
+			break;
+		default:
+			$chaine="statut inconnu";
+			break;
+	}
+	return $chaine;
+}
+
 ?>
