@@ -62,6 +62,17 @@ require_once("../../lib/header.inc");
 // Mes fonctions
 	include("../lib/functions.php");
 
+// fonction affiche les moyennes avec les arrondies et le nombre de chiffre après la virgule
+// precision '0.01' '0.1' '0.25' '0.5' '1'
+function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_zero)
+ {
+	if ( $precision === '' or $precision === '0.0' or $precision === '0' ) { $precision = '0.01'; }
+	$nombre=number_format(round($nombre/$precision)*$precision, $nb_chiffre_virgule, ',', '');
+        $nombre_explose = explode(",",$nombre);
+	if($nombre_explose[1]==='0' and $chiffre_avec_zero==='1') { $nombre=$nombre_explose[0]; }
+        return($nombre);
+ }
+
 // Variable prédéfinit
 	$date_ce_jour = date('d/m/Y');
 	$date_ce_jour_sql = date('Y-m-d');
@@ -565,6 +576,7 @@ if($echelle_y === 'E') {
 							$i = $i + 1;
 						}
 					}
+
 				// valeur du tableau
 				$donnee_tableau = array_values($_SESSION['donnee_e']);
 					if ( $echelle_y === 'H' ) {
@@ -576,6 +588,30 @@ if($echelle_y === 'E') {
 							$i = $i + 1;
 						}
 					}
+
+			// pour l'affichage des données en pourcentage
+			if ( $type_graphique === 'camembert' )
+			{
+			// calcule du pourcentage des données
+				// calcule du total des valeurs
+				$donnee_tableau = array_values($_SESSION['donnee_e']);
+				$i = 0; $total_des_valeurs = 0; $donnee_tableau_pourcentage = '';
+				while ( !empty($donnee_tableau[$i]) )
+				{	
+					$total_des_valeurs = $total_des_valeurs + $donnee_tableau[$i];
+					$donnee_tableau_pourcentage[$i] = $donnee_tableau[$i];
+				$i = $i + 1;
+				}
+				// remise des informations en pourcentage
+				$i = 0;
+				while ( !empty($donnee_tableau[$i]) )
+				{	
+					$donnee_tableau[$i] = ( $donnee_tableau_pourcentage[$i] * 100 ) / $total_des_valeurs;
+					$donnee_tableau[$i] = present_nombre($donnee_tableau[$i], '0.1', 1, 1).'%';
+				$i = $i + 1;
+				}
+			}
+
 				// compte le total d'entrée du tableau
 				$cpt_total_entree = count($entete_tableau);
 				// nombre d'entrée à affiché par ligne
