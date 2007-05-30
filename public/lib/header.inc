@@ -34,15 +34,38 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/style.css" />
 <script src="../lib/functions.js" type="text/javascript" language="javascript"></script>
-<LINK REL="SHORTCUT ICON" type="image/x-icon" href="../favicon.ico" /></head>
+<LINK REL="SHORTCUT ICON" type="image/x-icon" href="../favicon.ico" />
+
+<?php
+if(isset($style_screen_ajout)){
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+	}
+}
+?>
+
+</head>
 <body>
 <?php if (isset($titre_page)) {
 
 	echo "<!-- Header start -->\n";
 	echo "<div id='header'>\n";
 	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
+
 	if(getSettingValue('gepi_stylesheet')=='style'){
-		echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
+		//echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
+
+		if(getSettingValue('utiliser_degrade')=='y'){
+			$degrade_entete="degrade1";
+		}
+		else{
+			$degrade_entete="darkfade";
+		}
+
+		echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/$degrade_entete.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
 	}
 	else{
 		echo "<table id='table_header' border='0' width='100%'>\n";
