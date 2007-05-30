@@ -964,7 +964,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	    if($precedent>0){
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-			echo "<a href='javascript:eleve_precedent();'>Elève précédent</a><br />\n";
+			echo "<a href='javascript:eleve_precedent();'>Élève précédent</a><br />\n";
 		}
 
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
@@ -973,7 +973,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    if($suivant<$nombreligne+1){
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
-			echo "<a href='javascript:eleve_suivant();'>Elève suivant</a>";
+			echo "<a href='javascript:eleve_suivant();'>Élève suivant</a>";
 		}
 		echo "</p>\n";
 
@@ -1003,7 +1003,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "Choisir la période:<br />\n";
 	if($choix_periode=='periode'){$checked=" checked='yes'";}else{$checked="";}
 	//echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' checked='true'$checked />\n";
-	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked />\n";
+	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked onchange=\"document.forms['form_choix_eleves'].submit();\" />\n";
 	echo "<select name='periode' onfocus=\"document.getElementById('choix_periode').checked='true'\" onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 	for($i=1;$i<$nb_periode;$i++){
 		if($periode==$nom_periode[$i]){$selected=" selected='yes'";}else{$selected="";}
@@ -1012,7 +1012,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "</select>\n";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes'){$checked=" checked='yes'";}else{$checked="";}
-	echo "<input type='radio' name='choix_periode' value='toutes_periodes'$checked /> Toutes les périodes\n";
+	echo "<input type='radio' name='choix_periode' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes\n";
 
 	echo "<hr width='150' />\n";
 
