@@ -201,7 +201,7 @@ echo "<form action=\"./consultation.php\" method=\"post\" style=\"width: 100%;\"
 genDateSelector("", $day, $month, $year,'');
 echo "<input type=hidden name=id_groupe value=$id_groupe />\n";
 echo "<input type=hidden name=id_classe value=$id_classe />\n";
-echo "<input type=\"submit\" value=\"OK\"/></form>\n";
+echo "<input type=\"submit\" value=\"OK\" /></form>\n";
 //Affiche le calendrier
 minicals($year, $month, $day, $id_groupe, 'consultation.php?');
 echo "</td>";
@@ -284,6 +284,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         }
     }
     if ($nb_dev != 0) echo "</td></tr></table><br />";
+	require("../lib/footer.inc.php");
     die();
     //AFfichage page de garde
 } elseif ($nb_test == 0) {

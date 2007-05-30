@@ -1022,7 +1022,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
         $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
         $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7'></td>\n";
+        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7' /></td>\n";
      } else
       echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
     }
@@ -1371,7 +1371,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	// pour l'élève en question
 
   $out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
-  <select name=\"matiere\" onChange=\"matiere_go()\">";
+  <select name=\"matiere\" onChange=\"matiere_go()\">\n";
 
   if (is_numeric($id_ref)) {
   	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)";
@@ -1405,11 +1405,11 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    if (is_numeric($id_ref)) {
    		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]";
    } else {
-   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;&login_eleve=$id_ref&amp;id_groupe=$row[0]";
+   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]";
    }
    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine;
    }
-  $out_html .= "</select>
+  $out_html .= "\n</select>
   <script type=\"text/javascript\">
   <!--
   function matiere_go()
@@ -1419,12 +1419,12 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
     if (destination) location.href = destination;
   }
   // -->
-  </SCRIPT>
+  </script>
 
   <noscript>
   <input type=submit value=\"OK\" />
   </noscript>
-  </form>";
+  </form>\n";
 
   return $out_html;
 }
@@ -1450,7 +1450,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	} else {
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
 	  $out_html = "<form name=\"eleve\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Elève :</i></b><br />
-	  <select name=\"eleve\" onChange=\"eleve_go()\">";
+	  <select name=\"eleve\" onChange=\"eleve_go()\">\n";
 	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
@@ -1458,8 +1458,8 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 		   } else {
 		   	$selected = "";
 		   }
-		   $link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&login_eleve=".$current_eleve->login;
-		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>";
+		   $link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
+		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>\n";
 		}
 	  $out_html .= "</select>
 	  <script type=\"text/javascript\">
@@ -1476,7 +1476,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	  <noscript>
 	  <input type=submit value=\"OK\" />
 	  </noscript>
-	  </form>";
+	  </form>\n";
 	}
 	return $out_html;
 }
