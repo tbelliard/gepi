@@ -51,7 +51,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -194,7 +194,7 @@ if ( $lettre_action === 'originaux' ) {
 			if(!isset($signature_qui[$t2])) { $signature[$i] = qui($donne_persone['quienvoi_lettre_suivi']); }
 
 		// information sur le/la cpe qui suit l'élève
-		$cpe_de_l_eleve[$i] = cpe_eleve($id_eleve[$i]);		
+		$cpe_de_l_eleve[$i] = cpe_eleve($id_eleve[$i]);
 
 		//information complémentaire pour la lettre
 			$remarque[$i] = ''; $date_debut[$i] = ''; $heure_debut[$i] = ''; $date_fin[$i] = ''; $heure_fin[$i] = '';
@@ -343,7 +343,7 @@ $type_lettre = $lettre_type_selectionne[$i];
 		$L_max_logo='75'; // Longeur maxi du logo
 		$H_max_logo='75'; // hauteur maxi du logo
 		$logo = '../../images/'.getSettingValue('logo_etab');
-		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
+		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 		if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
 		 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
@@ -353,7 +353,7 @@ $type_lettre = $lettre_type_selectionne[$i];
 		 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 		 //logo
 	         $pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
-		} else { 
+		} else {
 			  $X_etab = $X_entete_etab; $Y_etab = $Y_entete_etab;
 		       }
 
@@ -366,26 +366,26 @@ $type_lettre = $lettre_type_selectionne[$i];
 	 	 $pdf->SetXY($X_etab,$Y_etab);
 	 	 $pdf->SetFont($caractere_utilse,'',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
-		 $pdf->Cell(90,7, $gepiSchoolName,0,2,''); 
+		 $pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
 	   	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 		 $pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 		  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
 		  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 		  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
-		 $pdf->Cell(90,5, $entete_communic,0,2,''); 
+		 $pdf->Cell(90,5, $entete_communic,0,2,'');
 		}
 		if($entente_mel==='1') {
 		  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 		}
 
 while($cpt_i_cadre<$i_cadre)
