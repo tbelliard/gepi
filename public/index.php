@@ -72,17 +72,17 @@ if ($year > $maxyear) $year = $maxyear;
 while (!checkdate($month, $day, $year)) $day--;
 $today=mktime(0,0,0,$month,$day,$year);
 //**************** EN-TETE *****************
-$titre_page = "Cahier de texte";
+$titre_page = "Cahier de textes";
 require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    echo("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas accessible pour le moment.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
 if (getSettingValue("cahier_texte_acces_public")!='yes') {
-    echo("<center><p class='grand'>Le cahier de texte n'est pas en accès public.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas en accès public.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
@@ -110,7 +110,7 @@ if ($test_login > 0) {
 }
 echo "</td>\n";
 echo "<td style=\"text-align:center;\">\n";
-echo "<p><span class='grand'>Cahier de texte";
+echo "<p><span class='grand'>Cahier de textes";
 if ($id_classe != -1) echo "<br />$classe_nom";
 if ($id_matiere != -1) echo "- $matiere_nom ($matiere_nom_court)";
 echo "</span>\n";
@@ -201,7 +201,7 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
         echo "<IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"\" /><br />\n";
     }
-    echo "<br /><br /><p>Ce cahier de texte est géré sous <a href='http://gepi.mutualibre.org/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées).\n<br />GEPI est un logiciel libre et gratuit diffusé sous la licence GPL.</p><br />\n";
+    echo "<br /><br /><p>Ce cahier de textes est géré sous <a href='http://gepi.mutualibre.org/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées).\n<br />GEPI est un logiciel libre et gratuit diffusé sous la licence GPL.</p><br />\n";
     echo "<br /><a href='http://www.php.net'><img src=\"../php4.gif\" alt=\"Powered by php4\" width=\"88\" height=\"31\" style=\"border: 0;\" />\n</a><a href='http://www.mysql.org'> <img src=\"../mysqllogo.gif\" alt=\"Powered by MySQL\" width=\"88\" height=\"31\" style=\"border: 0;\" /></a>\n";
     echo "</center></body></html>";
     die();
@@ -212,7 +212,7 @@ echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 
 // Première colonne : affichage du 'travail à faire' à venir
 echo "<tr><td width = \"30%\" valign=\"top\">\n";
-echo "<a href='see_all.php?id_classe=$id_classe&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de texte</a><br /><br />\n";
+echo "<a href='see_all.php?id_classe=$id_classe&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a><br /><br />\n";
 // Affichage des devoirs
 if ($delai == "") die("Erreur : Délai de visualisation des devois non défini. Contactez l'administrateur de GEPI de votre établissement.");
 // Si l'affichage des devoirs est activée, on affiche les devoirs
