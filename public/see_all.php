@@ -65,17 +65,17 @@ if ($current_imprime == 'n') {
   $largeur = "5%";
 }
 //**************** EN-TETE *****************
-if ($current_imprime=='n') $titre_page = "Cahier de texte - Vue d'ensemble";
+if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    echo("<center><p class='grand'>Le cahier de texte n'est pas accessible pour le moment.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas accessible pour le moment.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
 if (getSettingValue("cahier_texte_acces_public")!='yes') {
-    echo("<center><p class='grand'>Le cahier de texte n'est pas en accès public.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas en accès public.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
@@ -87,7 +87,7 @@ if ($current_imprime=='n') {
 }
 echo "</td>";
 echo "<td style=\"text-align:center;\">";
-echo "<p><span class='grand'>Cahier de texte";
+echo "<p><span class='grand'>Cahier de textes";
 if ($id_classe != -1) echo "<br />$classe_nom";
 if ($current_group) echo "- $matiere_nom";
 echo "</span>";
@@ -132,7 +132,7 @@ if ($html != '') {
     echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$html."</td></tr></table>";
 }
 
-echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTE: compte-rendus de séance</b></div><br />";
+echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de séance</b></div><br />";
 
 $req_notices =
     "select 'c' type, contenu, date_ct, id_ct

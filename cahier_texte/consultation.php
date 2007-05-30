@@ -42,7 +42,7 @@ if (!checkAccess()) {
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
-    tentative_intrusion(1, "Tentative d'accès au cahier de texte en consultation alors que le module n'est pas activé.");
+    tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
     die("Le module n'est pas activé.");
 }
 
@@ -78,7 +78,7 @@ if ($login_eleve) {
 if ($_SESSION['statut'] == 'eleve') {
 	// On enregistre si un élève essaie de voir le cahier de texte d'un autre élève
 	if ($selected_eleve) {
-		if ($selected_eleve->login != $_SESSION['login']) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de texte d'un autre élève.");
+		if ($selected_eleve->login != $_SESSION['login']) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");
 	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
@@ -108,7 +108,7 @@ if ($_SESSION['statut'] == 'eleve') {
 		if (!$ok) {
 			// Si on est là, ce qu'un utilisateur au statut 'responsable' a essayé
 			// de sélectionner un élève pour lequel il n'est pas responsable.
-			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de texte d'un autre élève que le ou les sien(s).");
+			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
 			$selected_eleve = false;
 		}
 	}
@@ -137,7 +137,7 @@ if ($year > $maxyear) $year = $maxyear;
 while (!checkdate($month, $day, $year)) $day--;
 $today=mktime(0,0,0,$month,$day,$year);
 //**************** EN-TETE *****************
-$titre_page = "Cahier de texte";
+$titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
@@ -178,7 +178,7 @@ if ($_SESSION['statut'] == 'responsable') {
 if ($selected_eleve_login != "") echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
 echo "</td>\n";
 echo "<td style=\"text-align:center;\">\n";
-echo "<p><span class='grand'>Cahier de texte";
+echo "<p><span class='grand'>Cahier de textes";
 if ($current_group) echo " - $matiere_nom ($matiere_nom_court)";
 if ($id_classe != null) echo "<br />$classe_nom";
 echo "</span>\n";
@@ -306,7 +306,7 @@ echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 // Première colonne : affichage du 'travail à faire' à venir
 echo "<tr><td width = \"30%\" valign=\"top\">\n";
 // ?????????????????????????????????????????????????????????
-echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de texte</a><br /><br />\n";
+echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a><br /><br />\n";
 // Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
 // ?????????????????????????????????????????????????????????
 
