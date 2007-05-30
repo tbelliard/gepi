@@ -967,6 +967,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     if ($current_group) unset($id_classe);
     // On teste si le professeur a le droit d'être ici
 
+	//echo "<p>\$_SESSION['statut']=".$_SESSION['statut']."</p>";
+
     if (($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesReleveProf")!="yes") AND (getSettingValue("GepiAccesReleveProfTousEleves")!="yes") AND (getSettingValue("GepiAccesReleveProfToutesClasses")!="yes") AND (getSettingValue("GepiAccesReleveProfP") != "yes")) {
         tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes sans y être autorisé.");
         echo "Vous ne pouvez pas accéder à cette page.";
@@ -997,15 +999,23 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
             echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe ! Vous ne pouvez pas accéder à cette page.</body></html>\n";
             die();
         }
-
+	/*
     } else if (($_SESSION['statut'] == "professeur") AND
      			(getSettingValue("GepiAccesReleveProf") == "yes") OR
      			(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
      			(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")
      			) {
+	*/
+    } else if (($_SESSION['statut'] == "professeur") AND
+     			((getSettingValue("GepiAccesReleveProf") == "yes") OR
+     			(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
+     			(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes"))
+     			) {
 
         // On commence par regarder si on est dans le cas de la sélection d'un groupe un d'une classe
         if (!$current_group) {
+			//echo "<p>\$current_group false</p>";
+
             // Dans le cas d'une classe, on vérifie que l'accès est autorisé
             if (getSettingValue("GepiAccesReleveProfTousEleves") != "yes" AND getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
                 tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes de toute une classe alors qu'il n'est autorisé qu'à accéder aux relevés des élèves de ses groupes uniquement.");
@@ -1234,47 +1244,87 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
     //====================================================================
     // MODIF: boireaus
-    // Pour permettre de ne pas afficher les noms des devoirs
-    echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
-	if($avec_nom_devoir=="y"){echo "checked ";}
-	echo "/> Afficher le nom des devoirs.\n";
 
-    echo "<br />\n";
-    echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
-	if($avec_tous_coef_devoir=="y"){echo "checked ";}
-	echo "/> Afficher tous les coefficients des devoirs.\n";
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		$avec_nom_devoir="n";
+		$avec_tous_coef_devoir="n";
+		$avec_coef_devoir="n";
+		$avec_date_devoir="n";
+		$rn_sign_chefetab="n";
+		$rn_sign_pp="n";
+		$rn_sign_resp="n";
+		$rn_sign_nblig=0;
+		$rn_formule="";
 
-    echo "<br />\n";
-    echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
-	if($avec_coef_devoir=="y"){echo "checked ";}
-	echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+		if($avec_nom_devoir=="y"){echo "checked ";}
+		echo "/> Afficher le nom des devoirs.\n";
 
-    echo "<br />\n";
-	echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
-	if($avec_date_devoir=="y"){echo "checked ";}
-	echo "/> Afficher les dates des devoirs.\n";
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+		if($avec_tous_coef_devoir=="y"){echo "checked ";}
+		echo "/> Afficher tous les coefficients des devoirs.\n";
 
-	echo "<br />\n";
-	echo "<input type='checkbox' name='rn_sign_chefetab' value='y' ";
-	if($rn_sign_chefetab=="y"){echo "checked ";}
-	echo "/> Afficher une case pour la signature du chef d'établissement.\n";
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+		if($avec_coef_devoir=="y"){echo "checked ";}
+		echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
 
-	echo "<br />\n";
-	echo "<input type='checkbox' name='rn_sign_pp' value='y' ";
-	if($rn_sign_pp=="y"){echo "checked ";}
-	echo "/> Afficher une case pour la signature du ".getSettingValue("gepi_prof_suivi").".\n";
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+		if($avec_date_devoir=="y"){echo "checked ";}
+		echo "/> Afficher les dates des devoirs.\n";
 
-	echo "<br />\n";
-	echo "<input type='checkbox' name='rn_sign_resp' value='y' ";
-	if($rn_sign_resp=="y"){echo "checked ";}
-	echo "/> Afficher une case pour la signature des parents/responsables.\n";
+		echo "<br />\n";
 
-	echo "<br />\n";
-	echo "Nombre de lignes pour la signature si une case est affichée: <input type='text' name='rn_sign_nblig' value='$rn_sign_nblig' size='2' />\n";
+		echo "<input type='hidden' name='rn_sign_chefetab' value='n' />\n";
+		echo "<input type='hidden' name='rn_sign_pp' value='n' />\n";
+		echo "<input type='hidden' name='rn_sign_resp' value='n'/>\n";
+		echo "<input type='hidden' name='rn_sign_nblig' value='$rn_sign_nblig' />\n";
+		echo "<input type='hidden' name='rn_formule' value=\"$rn_formule\" />\n";
+	}
+	else{
+		// Pour permettre de ne pas afficher les noms des devoirs
+		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+		if($avec_nom_devoir=="y"){echo "checked ";}
+		echo "/> Afficher le nom des devoirs.\n";
 
-	echo "<br />\n";
-	echo "Formule à afficher en bas de page:<br /><input type='text' name='rn_formule' value=\"$rn_formule\" size='40' />\n";
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+		if($avec_tous_coef_devoir=="y"){echo "checked ";}
+		echo "/> Afficher tous les coefficients des devoirs.\n";
 
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+		if($avec_coef_devoir=="y"){echo "checked ";}
+		echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+
+		echo "<br />\n";
+		echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+		if($avec_date_devoir=="y"){echo "checked ";}
+		echo "/> Afficher les dates des devoirs.\n";
+
+		echo "<br />\n";
+		echo "<input type='checkbox' name='rn_sign_chefetab' value='y' ";
+		if($rn_sign_chefetab=="y"){echo "checked ";}
+		echo "/> Afficher une case pour la signature du chef d'établissement.\n";
+
+		echo "<br />\n";
+		echo "<input type='checkbox' name='rn_sign_pp' value='y' ";
+		if($rn_sign_pp=="y"){echo "checked ";}
+		echo "/> Afficher une case pour la signature du ".getSettingValue("gepi_prof_suivi").".\n";
+
+		echo "<br />\n";
+		echo "<input type='checkbox' name='rn_sign_resp' value='y' ";
+		if($rn_sign_resp=="y"){echo "checked ";}
+		echo "/> Afficher une case pour la signature des parents/responsables.\n";
+
+		echo "<br />\n";
+		echo "Nombre de lignes pour la signature si une case est affichée: <input type='text' name='rn_sign_nblig' value='$rn_sign_nblig' size='2' />\n";
+
+		echo "<br />\n";
+		echo "Formule à afficher en bas de page:<br /><input type='text' name='rn_formule' value=\"$rn_formule\" size='40' />\n";
+	}
     //====================================================================
 
     if (!$current_group) {
