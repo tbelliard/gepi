@@ -100,7 +100,7 @@ $pdf->SetAutoPageBreak(true, $MargeBas);
 if (!isset($_SESSION['donnees_export_csv_password'])) { $MargeHaut = false ; } else {$donnees_personne_csv =  $_SESSION['donnees_export_csv_password'];}
 $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
 
-$texte_presentation = 'Attention : Votre identifiant et mot de passe sont confidentiels. A votre première connexion, vous devrez changer votre mot de passe.';
+$texte_presentation = 'Attention : Votre mot de passe est confidentiel. A votre première connexion, vous devrez changer votre mot de passe.';
 
 //recherche du dossier racine de GEPI pour obtenir l'adresse de l'application à saisir dans le navigateur
 $url = parse_url($_SERVER['REQUEST_URI']);
@@ -140,7 +140,7 @@ if (($donnees_personne_csv)) {
 		$pdf->Setxy($X_tableau,$y_tmp);
 		$pdf->SetFont($caractere_utilise,'B',8);
 		$texte = "\nA l'attention de ".$prenom." ".$nom." , classe de ".$classe.
-				 " :                         Voici vos identifiants et mot de passe pour accéder à vos notes.\nIdentifiant : ".$login.
+				 " :                         Voici vos identifiant et mot de passe pour accéder à vos notes.\nIdentifiant : ".$login.
 				 "\nMot de passe : ".$password.
 				// "\nEmail : ".$email.
 				 "\nAdresse du site Gepi à saisir dans votre navigateur Internet : ".$adresse_site_gepi."\n".$texte_presentation."\n\n";

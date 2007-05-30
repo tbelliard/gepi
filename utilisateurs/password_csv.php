@@ -76,7 +76,7 @@ if (($donnees_personne_csv)) {
 	switch ($statut) {
 	case 'eleve':
 			//pour un élève
-			$fd.="CLASSE;LOGIN;NOM;PRENOM;PASSWORD;EMAIL\n";
+			$fd.="CLASSE;IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				$classe = $donnees_personne_csv['classe'][$i];
 				$login = $donnees_personne_csv['login'][$i];
@@ -89,7 +89,7 @@ if (($donnees_personne_csv)) {
 	break;
 	case 'responsable':
 			//pour un responsable
-			$fd.="CLASSE;LOGIN;NOM;PRENOM;PASSWORD;EMAIL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
+			$fd.="CLASSE;IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				$classe = $donnees_personne_csv['classe'][$i];
 				$login = $donnees_personne_csv['login'][$i];
@@ -116,7 +116,7 @@ if (($donnees_personne_csv)) {
 	break;
 	default:
 			// ni élève ni responsable
-			$fd.="LOGIN;NOM;PRENOM;PASSWORD;EMAIL\n";
+			$fd.="IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				$login = $donnees_personne_csv['login'][$i];
 				$nom = $donnees_personne_csv['nom'][$i];
