@@ -50,7 +50,7 @@ case "envoi":
     //N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
     $message = "Demandeur : ".$nama."\nEtablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
     if ($email_reponse == '') {
-        echo "<br><br><br><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
+        echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
     } else {
         $envoi = mail(getSettingValue("gepiAdminAdress"),
             "Demande d'aide dans GEPI",
@@ -59,9 +59,9 @@ case "envoi":
            .($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
            ."X-Mailer: PHP/" . phpversion());
         if ($envoi) {
-            echo "<br><br><br><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br>une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br><br><br><a href=\"javascript:self.close();\">Fermer</a></p>";
+            echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
         } else {
-            echo "<br><br><br><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
+            echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
         }
     }
     break;
@@ -69,8 +69,8 @@ case "envoi":
 default://formulaire d'envoi
     echo "<form action='contacter_admin_pub.php' method='post' name='doc'>";
     echo "<table cellpadding='5'>";
-    echo "<tr><td>Message posté par&nbsp;:</td><td><input type='text' name='nama' value='Indiquez votre nom et votre prénom' size=40 maxlength='256'></td></tr>";
-    echo "<tr><td>Votre e-mail pour la réponse (obligatoire)</td><td><input type='text' name='email_reponse' size='40' maxlength='256'></td></tr>";
+    echo "<tr><td>Message posté par&nbsp;:</td><td><input type='text' name='nama' value='Indiquez votre nom et votre prénom' size=40 maxlength='256' /></td></tr>";
+    echo "<tr><td>Votre e-mail pour la réponse (obligatoire)</td><td><input type='text' name='email_reponse' size='40' maxlength='256' /></td></tr>";
     echo "<tr><td>Nom et prénom de l'administrateur&nbsp;: </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
 
     echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
@@ -79,9 +79,9 @@ default://formulaire d'envoi
     ?>
 
 
-    <input type="hidden" name="action" value="envoi">
-    <textarea name="message" cols="80" rows="8">Contenu du message : </textarea><br>
-    <input type="submit" value="Envoyer le message">
+    <input type="hidden" name="action" value="envoi" />
+    <textarea name="message" cols="80" rows="8">Contenu du message : </textarea><br />
+    <input type="submit" value="Envoyer le message" />
 
     </form>
     <?php
