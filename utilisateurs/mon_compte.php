@@ -102,7 +102,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
             $no_modif = "no";
         }
     }
-    
+
     if ($no_modif == "yes") {
         $msg = $msg."<br />Aucune modification n'a été apportée !";
     }
@@ -150,7 +150,8 @@ echo "<tr><td></td><td><input type='checkbox' name='reg_show_email' value='yes'"
 if ($user_show_email == "yes") echo " CHECKED";
 echo "/> Autoriser l'affichage de mon adresse email pour les utilisateurs non personnels de l'établissement **</td></tr>";
 }
-echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>";
+//echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>";
+echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>";
 echo "</table>";
 
 /*
@@ -183,7 +184,7 @@ if (empty($groups)) {
 	}
 	echo "</ul>";
 }
-	
+
 $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
 $nombre_classe = mysql_num_rows($call_prof_classe);
 if ($nombre_classe != "0") {
@@ -327,7 +328,8 @@ if ($res) {
             $temp1 = "<font color=green>";
             $temp2 = "</font>";
         } else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
-            $temp1 = "<font color=orange>";
+            //$temp1 = "<font color=orange>";
+			$temp1 = "<font color='#FFA500'>";
             $temp2 = "</font>";
         } else if ($row[4] == 4) {
             $temp1 = "<b><font color=red>";
