@@ -309,11 +309,26 @@ while ($p < $nb_users) {
 			$impression = getSettingValue("Impression");
 			$nb_fiches = getSettingValue("ImpressionNombre");
 		}
+
+		$tab_tmp_classe=get_class_from_ele_login($user_login);
+
 		echo "<table border='0'>\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
-		echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
-		echo "<tr><td>Adresse E-mail : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
+		echo "<tr><td>Classe : </td><td><span class = \"bold\">";
+		if(count($tab_tmp_classe)>0){
+			$chaine="";
+			foreach ($tab_tmp_classe as $key => $value){
+				//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+				$chaine.=", $value";
+			}
+			$chaine=substr($chaine,2);
+			echo $chaine;
+		}
+		echo "</span></td></tr>\n";
+		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
 		echo "</table>";
 		echo $impression;
 		if ($saut == $nb_fiches) {
@@ -425,12 +440,29 @@ while ($p < $nb_users) {
 			$impression = getSettingValue("Impression");
 			$nb_fiches = getSettingValue("ImpressionNombre");
 		}
+
+		$tab_tmp_classe=get_class_from_ele_login($user_login);
+
 		echo "<table border='0'>\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
-		echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
+		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
-		echo "<tr><td>Adresse E-mail : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
+		echo "<tr><td>Classe : </td><td><span class = \"bold\">";
+		if(count($tab_tmp_classe)>0){
+			$chaine="";
+			foreach ($tab_tmp_classe as $key => $value){
+				//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+				$chaine.=", $value";
+			}
+			$chaine=substr($chaine,2);
+			echo $chaine;
+		}
+		echo "</span></td></tr>\n";
+		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
 		echo "</table>";
+
+
 		echo $impression;
 		if ($saut == $nb_fiches) {
 			echo "<p class='saut'>&nbsp;</p>\n";

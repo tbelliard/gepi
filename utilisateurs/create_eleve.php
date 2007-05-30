@@ -1,7 +1,7 @@
 <?php
 /*
  * $Id$
- * 
+ *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -104,7 +104,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 			if (!$reg) {
 				$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br/>";
-			} else {			
+			} else {
 				$nb_comptes++;
 			}
 		}
@@ -116,18 +116,20 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		if ($nb_comptes > 0) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-				$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>";
+				//$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>";
+				//$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>Imprimer la fiche de bienvenue</a>";
+				$msg .= "<a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche de bienvenue</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				if ($_POST['classe'] == "all") {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&mode=pdf'>Imprimer la ou les fiche(s) de bienvenue (Impression PDF)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Impression PDF)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&mode=pdf'>Imprimer la ou les fiche(s) de bienvenue (Impression PDF)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) de bienvenue (Impression PDF)</a>";
 				}
 			}
 			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";

@@ -1917,4 +1917,31 @@ function remplace_accents($chaine,$mode){
 	return $retour;
 }
 
+function get_class_from_ele_login($ele_login){
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$res_class=mysql_query($sql);
+
+	$tab_classe=array();
+	if(mysql_num_rows($res_class)>0){
+		while($lig_tmp=mysql_fetch_object($res_class)){
+			$tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+		}
+	}
+	return $tab_classe;
+}
+
+function liens_class_from_ele_login($ele_login){
+	$chaine="";
+	$tab_classe=get_class_from_ele_login($ele_login);
+	if(isset($tab_classe)){
+		if(count($tab_classe)>0){
+			foreach ($tab_classe as $key => $value){
+				$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+			}
+			$chaine="(".substr($chaine,2).")";
+		}
+	}
+	return $chaine;
+}
+
 ?>
