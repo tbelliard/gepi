@@ -691,8 +691,11 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         }
         echo "</table>\n";
 */
+
         //echo "<table border='0'>\n";
-	$nb_class_par_colonne=round($nombreligne/3);
+
+		/*
+		$nb_class_par_colonne=round($nombreligne/3);
         //echo "<table width='100%' border='1'>\n";
         echo "<table width='100%'>\n";
         echo "<tr valign='top' align='center'>\n";
@@ -712,6 +715,19 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		$i++;
         }
         echo "</table>\n";
+		*/
+
+		$i = 0;
+		unset($tab_lien);
+		unset($tab_txt);
+		while ($i < $nombreligne){
+			$tab_lien[$i] = "visu_releve_notes.php?id_classe=".mysql_result($calldata, $i, "id");
+			$tab_txt[$i] = mysql_result($calldata, $i, "classe");
+			$i++;
+
+		}
+		tab_liste($tab_txt,$tab_lien,3);
+
 // rajout christian
 	}
 // fin rajout christian
@@ -890,6 +906,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
             } else {
                 echo "<p>Vous avez accès aux classes suivantes :</p>\n";
             }
+
+			/*
 			$nb_class_par_colonne=round($nb_classes/3);
 	        echo "<table width='100%'>\n";
 	        echo "<tr valign='top' align='center'>\n";
@@ -908,6 +926,19 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			$i++;
 	        }
 	        echo "</table>\n";
+			*/
+
+			$i = 0;
+			unset($tab_lien);
+			unset($tab_txt);
+			while ($i < $nb_classes){
+				$tab_lien[$i] = "visu_releve_notes.php?id_classe=".mysql_result($calldata, $i, "id");
+				$tab_txt[$i] = mysql_result($calldata, $i, "classe");
+				$i++;
+
+			}
+			tab_liste($tab_txt,$tab_lien,3);
+
         }
 
         $login = $_SESSION['login'];

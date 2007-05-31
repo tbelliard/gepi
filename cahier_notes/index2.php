@@ -50,7 +50,7 @@ if ($_SESSION['statut'] == "professeur") {
 		require ("../lib/footer.inc.php");
 		die();
        }
-	
+
 }
 
 
@@ -216,6 +216,7 @@ if (isset($id_classe)) {
 	*/
 
 	$lignes = mysql_num_rows($appel_donnees);
+	/*
 	$nb_class_par_colonne=round($lignes/3);
         echo "<table width='100%'>\n";
         echo "<tr valign='top' align='center'>\n";
@@ -235,11 +236,24 @@ if (isset($id_classe)) {
         echo "</td>\n";
         echo "</tr>\n";
         echo "</table>\n";
+	*/
+
+	$i = 0;
+	unset($tab_lien);
+	unset($tab_txt);
+	while ($i < $lignes){
+		$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".mysql_result($appel_donnees, $i, "id");
+		$tab_txt[$i] = mysql_result($appel_donnees, $i, "classe");
+		$i++;
+
+	}
+	tab_liste($tab_txt,$tab_lien,3);
+
 	//echo "</p>\n";
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
 echo "Cela ne correspond pas nécessairement à ce qui apparaitra sur le bulletin après saisie d'autres résultats et ajustements éventuels des coefficients.</p>\n";
-if ($_SESSION['statut'] == "professeur" 
+if ($_SESSION['statut'] == "professeur"
 	AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"
 	AND getSettingValue("GepiAccesMoyennesProfToutesTousEleves") != "yes") {
 		echo "<p>Si vous n'enseignez pas à des classes entières, seuls les élèves auxquels vous enseignez apparaîtront dans la liste, et les moyennes calculés ne prendront en compte que les élèves affichés.</p>";

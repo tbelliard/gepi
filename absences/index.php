@@ -63,6 +63,8 @@ if (!isset($id_classe)) {
     echo "</p>\n<p>Total : $nombreligne classes - ";
     echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
     echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'un moins un élève de la classe.</p>";
+
+	/*
     $i = 0;
     while ($i < $nombreligne){
         $id_classe = mysql_result($calldata, $i, "id");
@@ -71,6 +73,21 @@ if (!isset($id_classe)) {
         $i++;
 
     }
+	*/
+
+    $i = 0;
+	unset($tab_lien);
+	unset($tab_txt);
+    while ($i < $nombreligne){
+        $tab_lien[$i] = "index.php?id_classe=".mysql_result($calldata, $i, "id");
+        $tab_txt[$i] = mysql_result($calldata, $i, "classe");
+        $i++;
+
+    }
+	tab_liste($tab_txt,$tab_lien,3);
+
+
+
     echo "<br />\n";
 } else {
     // On choisit la période :
