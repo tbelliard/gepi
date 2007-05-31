@@ -572,7 +572,7 @@ function DecocheCheckbox() {
 </select><br />
 <select name="action_lettre" style="width: 90px; border: 1px solid #000000; cursor: pointer;">
 <option value="1" <?php if(empty($action_lettre) or (!empty($action_lettre) and $action_lettre === '1')) { ?>selected="selected"<?php } ?>>&eacute;mis le</option>
-<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>posté le</option>
+<option value="2" <?php if(!empty($action_lettre) and $action_lettre === '2') { ?>selected="selected"<?php } ?>>postés le</option>
 <option value="3" <?php if(!empty($action_lettre) and $action_lettre === '3') { ?>selected="selected"<?php } ?>>r&eacute;ponse re&ccedil;ue le</option>
 <option value="4" <?php if(!empty($action_lettre) and $action_lettre === '4') { ?>selected="selected"<?php } ?>>émis depuis le</option>
 <option value="5" <?php if(!empty($action_lettre) and $action_lettre === '5') { ?>selected="selected"<?php } ?>>ne pas tenir compte de la date</option>
@@ -632,8 +632,8 @@ function DecocheCheckbox() {
 			<select name="statu_lettre[0]" style="width: 130px; border: 1px solid #000000;">
 				<option value="envoyer" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'envoyer') { ?>selected="selected"<?php } ?>>envoyé</option>
 				<option value="en attente" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'en attente') { ?>selected="selected"<?php } ?>>en attente</option>
-				<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçues</option>
-				<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulés</option>
+				<option value="recus" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'recus') { ?>selected="selected"<?php } ?>>réponses reçue</option>
+				<option value="annuler" <?php if($donner_liste_courrier['statu_lettre_suivi'] === 'annuler') { ?>selected="selected"<?php } ?>>courriers annulé</option>
 			</select>
 		Remarque <input type="texte" name="remarque_lettre_suivi[0]" style="width: 150px; border: 1px solid #000000;" />
 		<?php /* en prévision ?

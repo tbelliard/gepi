@@ -473,7 +473,7 @@ if($echelle_y === 'E') {
 			<input name="justification" id="jus3" value="N" tabindex="9" type="radio" <?php if(!empty($justification) and $justification === 'N') { ?>checked="checked"<?php } ?> /><label for="jus3" title="Non justifié" style="cursor: pointer;">Non justi.</label><br />
 
 	                <select name="classe[]" id="classe" multiple="multiple" size="3" tabindex="2" style="width: 200px; border : 1px solid #000000; margin-top: 5px;">
-			    <optgroup label="Les classe">
+			    <optgroup label="Les classes">
           		        <option value="" <?php if($classe[0] === '') { ?>selected="selected"<?php } ?>>toutes</option>
                  		<?php
 				$requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet ASC";
