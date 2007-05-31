@@ -2,6 +2,11 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.5.1-rcx (xx/xx/2007)
+===========================
+- ajout d'un script afin de créer un remplaçant pour un professeur
+
+
 Gepi-1.5.0-rc3 (25/05/2007)
 ===========================
 

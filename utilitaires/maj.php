@@ -449,6 +449,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès aux fiches brevet','');";
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet.php','V','F','F','F','F','F','F','Accès à l export NOTANET','');";
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/utilisateurs/creer_remplacant.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'script de création d un remplaçant', '');";
 
 	//$tab_req[] = "";
 

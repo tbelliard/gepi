@@ -152,6 +152,7 @@ while ($i < $nombreligne){
 
     // Affichage du statut
     $col[$i][3]=$user_statut;
+	$col[$i][7]=$user_statut; // le status de de la personne
     if ($user_statut == "administrateur") { $color_='red';}
     if ($user_statut == "secours") { $color_='red';}
     if ($user_statut == "professeur") { $color_='green'; }
@@ -223,7 +224,13 @@ while ($i < $nombreligne){
     }
 
     echo "<tr><td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][1]}</span></p></td>";
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>";
+	if ($col[$i][7] == "professeur") {
+		echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>";
+		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
+		echo "</td>";
+	} else {
+	  echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>";
+	}
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][3]}</span></p></td>";
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][4]}</span></p></td>";
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][5]}</span></p></td>";
