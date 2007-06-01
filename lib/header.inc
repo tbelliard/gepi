@@ -261,6 +261,28 @@ if (isset($titre_page)) {
 			echo "Scolarité";
 		} elseif ($_SESSION['statut'] == "cpe") {
 			echo "CPE";
+		} elseif ($_SESSION['statut'] == "eleve") {
+			$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
+			echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
+		} elseif ($_SESSION['statut'] == "responsable") {
+			$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+			$chaine_enfants="";
+			if(count($tab_tmp_ele)>0){
+				$chaine_enfants=$tab_tmp_ele[1];
+				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
+				if(count($tab_tmp_info_classes)>0){
+					$chaine_enfants.=" (<i>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</i>)";
+				}
+				for($i=3;$i<count($tab_tmp_ele);$i+=2){
+					$chaine_enfants.=", ".$tab_tmp_ele[$i];
+					unset($tab_tmp_info_classes);
+					$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+					if(count($tab_tmp_info_classes)>0){
+						$chaine_enfants.=" (<i>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</i>)";
+					}
+				}
+			}
+			echo "Responsable de $chaine_enfants";
 		}
 
 		// A QUOI SERT CE $temp ?

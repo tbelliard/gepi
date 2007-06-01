@@ -1930,6 +1930,39 @@ function get_class_from_ele_login($ele_login){
 	return $tab_classe;
 }
 
+function get_noms_classes_from_ele_login($ele_login){
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$res_class=mysql_query($sql);
+
+	$tab_classe=array();
+	if(mysql_num_rows($res_class)>0){
+		while($lig_tmp=mysql_fetch_object($res_class)){
+			$tab_classe[]=$lig_tmp->classe;
+		}
+	}
+	return $tab_classe;
+}
+
+function get_enfants_from_resp_login($resp_login){
+	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+											responsables2 r,
+											resp_pers rp
+										WHERE e.ele_id=r.ele_id AND
+											rp.pers_id=r.pers_id AND
+											rp.login='$resp_login'
+										ORDER BY e.nom,e.prenom;";
+	$res_ele=mysql_query($sql);
+
+	$tab_ele=array();
+	if(mysql_num_rows($res_ele)>0){
+		while($lig_tmp=mysql_fetch_object($res_ele)){
+			$tab_ele[]=$lig_tmp->login;
+			$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+		}
+	}
+	return $tab_ele;
+}
+
 function liens_class_from_ele_login($ele_login){
 	$chaine="";
 	$tab_classe=get_class_from_ele_login($ele_login);
