@@ -1193,7 +1193,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 		} else {
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-			echo "<p clas='bold'>Elève : ";
+			echo "<p class='bold'>Elève : ";
 			echo "<input type='hidden' name='choix_edit' value='2'/>";
 	    	echo "<select size=\"1\" name=\"login_eleve\">";
 	    	// On initialise un tableau pour stocker les différentes classes impliquées (ceci pour récupérer ensuite les périodes)
