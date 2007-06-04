@@ -843,6 +843,15 @@ else {
 
 	$num_fb_col=$tabmatieres["num_fb_col"];
 
+/*
+	echo "<style type='text/css'>
+	@media print {
+		.noprint {
+				display: none;
+		}
+	}
+</style>\n";
+*/
 
 	// BOUCLE SUR LA LISTE DES CLASSES
 	for($i=0;$i<count($id_classe);$i++){
@@ -896,12 +905,15 @@ else {
 			}
 		}
 
+
 		echo "<div class='noprint'>\n";
 		//echo $type_brevet;
 		echo "<p>Fiches Brevet de la classe de <b>".get_classe_from_id($id_classe[$i])."</b></p>\n";
 		//echo "<hr />\n";
-		echo "<p class='saut'>&nbsp;</p>\n";
+		if($i>0){echo "<p class='saut'>&nbsp;</p>\n";}
 		echo "</div>\n";
+		if($i==0){echo "<p class='saut'>&nbsp;</p>\n";}
+
 
 		//$sql="SELECT DISTINCT login FROM notanet WHERE id_classe='$id_classe[$i]' ORDER BY login";
 		$sql="SELECT DISTINCT e.* FROM eleves e, notanet n WHERE n.id_classe='$id_classe[$i]' AND n.login=e.login ORDER BY e.login";
