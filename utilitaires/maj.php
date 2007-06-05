@@ -111,16 +111,28 @@ if (isset ($_POST['submit'])) {
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
     <HTML>
     <HEAD>
-    <meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
-    <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-    <META HTTP-EQUIV="Expires" CONTENT="0" />
-    <link REL="stylesheet" href="../style.css" type="text/css" />
-    <TITLE>Mise à jour de la base de donnée GEPI</TITLE>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="../style.css" type="text/css" />
+    <title>Mise à jour de la base de donnée GEPI</title>
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="icon" type="image/ico" href="../favicon.ico" />
+
+	<?php
+		if(isset($style_screen_ajout)){
+			// Styles paramétrables depuis l'interface:
+			if($style_screen_ajout=='y'){
+				// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+				// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+			}
+		}
+	?>
+
     </head>
-    <BODY>
+    <body>
 <?php
 
 
@@ -433,7 +445,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/gestion/efface_photos.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression des photos non associées à des élèves', '');";
 
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/responsables/gerer_adr.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des adresses de responsables', '');";
-	$tab_req[] = "INSERT INTO `droits` VALUES ('/responsables/choix_adr_existante.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Choix adresse de responsable existante', '');";
+	$tab_req[] = "INSERT INTO `droits` VALUES ('/responsables/choix_adr_existante.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Choix adresse de responsable existante', '');";
 
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/cahier_notes/export_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Export CSV/ODS du cahier de notes', '');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/cahier_notes/import_cahier_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Import CSV du cahier de notes', '');";
