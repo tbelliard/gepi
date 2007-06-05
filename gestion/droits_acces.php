@@ -393,6 +393,35 @@ if (isset($_POST['OK'])) {
 	if (!saveSetting("GepiAccesGraphParent", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesGraphParent !";
 	}
+
+
+	if (isset($_POST['GepiAccesVisuToutesEquipProf'])) {
+		$temp = 'yes';
+	} else {
+		$temp = 'no';
+	}
+	if (!saveSetting("GepiAccesVisuToutesEquipProf", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesVisuToutesEquipProf !";
+	}
+
+	if (isset($_POST['GepiAccesVisuToutesEquipScol'])) {
+		$temp = 'yes';
+	} else {
+		$temp = 'no';
+	}
+	if (!saveSetting("GepiAccesVisuToutesEquipScol", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesVisuToutesEquipScol !";
+	}
+
+	if (isset($_POST['GepiAccesVisuToutesEquipCpe'])) {
+		$temp = 'yes';
+	} else {
+		$temp = 'no';
+	}
+	if (!saveSetting("GepiAccesVisuToutesEquipCpe", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesVisuToutesEquipCpe !";
+	}
+
 }
 
 // Load settings
@@ -466,6 +495,12 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitProf" value="yes" <?php if (getSettingValue("GepiPasswordReinitProf")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</td>
 			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipProf" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipProf")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>
@@ -529,6 +564,11 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitScolarite" value="yes" <?php if (getSettingValue("GepiPasswordReinitScolarite")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> peut réinitialiser elle-même son mot de passe perdu (si fonction activée)
 			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipScol" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipScol")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
+			</tr>
 			</table>
 		</td>
 	</tr>
@@ -544,6 +584,11 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitCpe" value="yes" <?php if (getSettingValue("GepiPasswordReinitCpe")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipCpe" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipCpe")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
 			</tr>
 			</table>
 		</td>

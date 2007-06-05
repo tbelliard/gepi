@@ -221,8 +221,8 @@ else{
 
     //$sql="SELECT id,classe FROM classes ORDER BY classe";
     if($_SESSION['statut']=='scolarite'){
-	//$sql="SELECT id,classe FROM classes ORDER BY classe";
-	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
     }
     if($_SESSION['statut']=='professeur'){
         $sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
@@ -233,6 +233,17 @@ else{
     if($_SESSION['statut']=='administrateur'){
         $sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
     }
+
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
     $result_classes=mysql_query($sql);
     $nb_classes = mysql_num_rows($result_classes);
     //echo "<select name='id_classe' size='1'>\n";
