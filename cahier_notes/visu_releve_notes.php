@@ -895,9 +895,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
             echo "<p>Vous pouvez choisir de visualiser les relevés de notes de toutes les classes, ou bien seulement pour les élèves que vous avez effectivement en cours.</p>\n";
             // Ici le code pour sélectionner toutes les classes
             $_login = $_SESSION['login'];
-            $calldata = mysql_query("SELECT id id_classe, classe classe " .
+            //$sql="SELECT id id_classe, classe classe " .
+            $sql="SELECT id, classe " .
                                     "FROM classes " .
-                                    "ORDER BY classe");
+                                    "ORDER BY classe";
+            //echo "<p>$sql</p>\n";
+			$calldata = mysql_query($sql);
             $nb_classes = mysql_num_rows($calldata);
 
             $i = "0";
