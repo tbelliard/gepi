@@ -562,7 +562,7 @@ while ($j < $nombre_groupes) {
     $current_matiere_nom_complet[$j] = $current_group[$j]["matiere"]["nom_complet"];
     //==========================================
 
-    // Si ça na pas été fait dans calcul_moy_inc.php, on prépare les :
+    // Si ça n'a pas été fait dans calcul_moy_inc.php, on prépare les :
     // tableaux $current_eleve_note, $current_eleve_statut et $current_classe_matiere_moyenne
     if ($test_coef == 0) {
         // Moyenne de la classe dans la matière $current_matiere[$j]
@@ -590,10 +590,57 @@ while ($j < $nombre_groupes) {
                 )");
                 $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
                 $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+
+				// On détermine le coefficient pour cette matière
+				// On teste si l'élève a un coef spécifique pour cette matière
+				$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+						"login = '".$current_eleve_login[$i]."' AND " .
+						"id_groupe = '".$current_group[$j]["id"]."' AND " .
+						"name = 'coef')");
+				if (mysql_num_rows($test_coef_eleve) > 0) {
+					$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+				} else {
+					$current_eleve_coef[$j][$i] = $current_coef[$j];
+				}
+
+
             }
             $i++;
         }
     }
+	else{
+        $i=0;
+        while ($i < $nombre_eleves) {
+
+			//echo "$current_eleve_login[$i] - ";
+
+			// EST-CE QU'ON NE VA PAS AVOIR UNE BLAGUE A REAFFECTER LE TABLEAU $current_eleve_login???
+			// IL FAUDRAIT VOIR CE QUE DONNE calcul_moy_inc.php
+			// PROVOQUER L'AFFICHAGE...
+            //$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+
+			//echo "$current_eleve_login[$i]<br />";
+			// L'ordre a l'air d'être le même...
+			// Pas de modif de $current_eleve_login[$i], on récupère celui rempli par calcul_moy_inc.php
+
+            // Maintenant on regarde si l'élève suit bien cette matière ou pas
+            if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
+				// On détermine le coefficient pour cette matière
+				// On teste si l'élève a un coef spécifique pour cette matière
+				$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+						"login = '".$current_eleve_login[$i]."' AND " .
+						"id_groupe = '".$current_group[$j]["id"]."' AND " .
+						"name = 'coef')");
+				if (mysql_num_rows($test_coef_eleve) > 0) {
+					$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+				} else {
+					$current_eleve_coef[$j][$i] = $current_coef[$j];
+				}
+
+            }
+            $i++;
+        }
+	}
 
     $j++;
 }
@@ -687,6 +734,9 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 			//$nombre_eleves2 = mysql_num_rows($appel_liste_eleves);
 			//echo "\$nombre_eleves2=$nombre_eleves2<br />";
 
+			// DEBUG:
+			//echo "DEBUG: \$nombre_groupes=$nombre_groupes<br />";
+
 			$j=0;
 			while ($j < $nombre_groupes) {
 				//$i=0;
@@ -702,7 +752,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 					)");
 					$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
 					$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
-					
+
 					// On détermine le coefficient pour cette matière
 					// On teste si l'élève a un coef spécifique pour cette matière
 		            $test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
@@ -714,7 +764,7 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 		            } else {
 		            	$current_eleve_coef[$j][$i] = $current_coef[$j];
 		            }
-					
+
 				}
 				//flush();
 				$j++;
