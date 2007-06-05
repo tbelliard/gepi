@@ -237,7 +237,7 @@ foreach ($liste_eleves as $eleve_login) {
                     }
                     $mess[$k] =$mess[$k]."</td>\n";
                 } else {
-				
+
                     // Ajout Eric affichage des notes au dessus de la saisie des appréciations
 					$liste_notes ='';
 					// Nombre de contrôles
@@ -245,7 +245,7 @@ foreach ($liste_eleves as $eleve_login) {
 					//echo "\n<!--sql=$sql-->\n";
 					$result_nbct=mysql_query($sql);
 					$current_eleve_nbct=mysql_num_rows($result_nbct);
-				
+
 					// on prend les notes dans $string_notes
 					$liste_notes='';
 					if ($result_nbct ) {
@@ -253,12 +253,12 @@ foreach ($liste_eleves as $eleve_login) {
 							if ($liste_notes != '') $liste_notes .= ", ";
 							$liste_notes .= $snnote['note'];
 						}
-					} 
-					
-					if ($current_eleve_nbct ==0) {
-					  $liste_notes='Pas de notes dans le carnet pour cette période.';
 					}
- 				   
+
+					if ($current_eleve_nbct ==0) {
+					  $liste_notes='Pas de note dans le carnet pour cette période.';
+					}
+
                    //$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
                    $mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
                 }
