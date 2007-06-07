@@ -1,6 +1,6 @@
 <?php
 /*
- * 
+ *
  * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -494,11 +494,22 @@ if($temoin==1){
 
 					// On range dans tabindice les indices des champs retenus
 					unset($tabindice);
+					/*
 					for ($k = 0; $k < count($tabchamps); $k++) {
 						for ($i = 0; $i < count($en_tete); $i++) {
 							if (trim($en_tete[$i]) == $tabchamps[$k]) {
 								$tabindice[] = $i;
 								//echo "Champ $tabchamps[$k] trouvé à l'indice $i<br />";
+							}
+						}
+					}
+					*/
+					$cpt_tmp=0;
+					for ($k = 0; $k < count($tabchamps); $k++) {
+						for ($i = 0; $i < count($en_tete); $i++) {
+							if (trim($en_tete[$i]) == $tabchamps[$k]) {
+								$tabindice[$cpt_tmp]=$i;
+								$cpt_tmp++;
 							}
 						}
 					}
@@ -602,11 +613,22 @@ if($temoin==1){
 
 					// On range dans tabindice les indices des champs retenus
 					unset($tabindice);
+					/*
 					for ($k = 0; $k < count($tabchamps); $k++) {
 						for ($i = 0; $i < count($en_tete); $i++) {
 							if (trim($en_tete[$i]) == $tabchamps[$k]) {
 								$tabindice[] = $i;
 								//echo "Champ $tabchamps[$k] trouvé à l'indice $i<br />";
+							}
+						}
+					}
+					*/
+					$cpt_tmp=0;
+					for ($k = 0; $k < count($tabchamps); $k++) {
+						for ($i = 0; $i < count($en_tete); $i++) {
+							if (trim($en_tete[$i]) == $tabchamps[$k]) {
+								$tabindice[$cpt_tmp]=$i;
+								$cpt_tmp++;
 							}
 						}
 					}
@@ -721,11 +743,22 @@ if($temoin==1){
 
 					// On range dans tabindice les indices des champs retenus
 					unset($tabindice);
+					/*
 					for ($k = 0; $k < count($tabchamps); $k++) {
 						for ($i = 0; $i < count($en_tete); $i++) {
 							if (trim($en_tete[$i]) == $tabchamps[$k]) {
 								$tabindice[] = $i;
 								//echo "Champ $tabchamps[$k] trouvé à l'indice $i<br />";
+							}
+						}
+					}
+					*/
+					$cpt_tmp=0;
+					for ($k = 0; $k < count($tabchamps); $k++) {
+						for ($i = 0; $i < count($en_tete); $i++) {
+							if (trim($en_tete[$i]) == $tabchamps[$k]) {
+								$tabindice[$cpt_tmp]=$i;
+								$cpt_tmp++;
 							}
 						}
 					}
@@ -835,11 +868,22 @@ if($temoin==1){
 
 					// On range dans tabindice les indices des champs retenus
 					unset($tabindice);
+					/*
 					for ($k = 0; $k < count($tabchamps); $k++) {
 						for ($i = 0; $i < count($en_tete); $i++) {
 							if (trim($en_tete[$i]) == $tabchamps[$k]) {
 								$tabindice[] = $i;
 								//echo "Champ $tabchamps[$k] trouvé à l'indice $i<br />";
+							}
+						}
+					}
+					*/
+					$cpt_tmp=0;
+					for ($k = 0; $k < count($tabchamps); $k++) {
+						for ($i = 0; $i < count($en_tete); $i++) {
+							if (trim($en_tete[$i]) == $tabchamps[$k]) {
+								$tabindice[$cpt_tmp]=$i;
+								$cpt_tmp++;
 							}
 						}
 					}

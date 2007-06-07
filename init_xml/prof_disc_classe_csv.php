@@ -180,12 +180,16 @@ if (!isset($is_posted)) {
 */
 			// On range dans tabindice les indices des champs retenus
 			// On repère l'indice des colonnes GROCOD et DIVCOD
+			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps2); $k++) {
 				for ($i = 0; $i < count($en_tete); $i++) {
 					//if ($en_tete[$i] == $tabchamps2[$k]) {
 					if (trim($en_tete[$i]) == $tabchamps2[$k]) {
-						$tabindice2[] = $i;
-						affiche_debug("\$tabindice2[]=$i<br />\n");
+						//$tabindice2[] = $i;
+						//affiche_debug("\$tabindice2[]=$i<br />\n");
+						$tabindice2[$cpt_tmp] = $i;
+						affiche_debug("\$tabindice2[$cpt_tmp]=$i<br />\n");
+						$cpt_tmp++;
 					}
 				}
 			}
@@ -283,6 +287,7 @@ if (!isset($is_posted)) {
 			affiche_debug("count(\$tabchamps)=".count($tabchamps)."<br />\n");
 			//affiche_debug("count(\$en_tete)=".count($en_tete)."<br />\n");
 			affiche_debug("count(\$en_tete2)=".count($en_tete2)."<br />\n");
+			/*
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				//for ($i = 0; $i < count($en_tete); $i++) {
 				for ($i = 0; $i < count($en_tete2); $i++) {
@@ -291,6 +296,17 @@ if (!isset($is_posted)) {
 					if (trim($en_tete2[$i]) == $tabchamps[$k]) {
 						$tabindice[] = $i;
 						affiche_debug("\$tabindice[]=$i<br />\n");
+					}
+				}
+			}
+			*/
+			$cpt_tmp=0;
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete2); $i++) {
+					if (trim($en_tete2[$i]) == $tabchamps[$k]) {
+						$tabindice[$cpt_tmp]=$i;
+						affiche_debug("\$tabindice[$cpt_tmp]=$i<br />\n");
+						$cpt_tmp++;
 					}
 				}
 			}

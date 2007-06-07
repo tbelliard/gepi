@@ -204,6 +204,7 @@ if (!isset($is_posted)) {
 			// on constitue le tableau des champs à extraire
 			//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
 			$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
+			//echo "\$tabchamps=array(\"pers_id\",\"nom\",\"prenom\",\"civilite\",\"tel_pers\",\"tel_port\",\"tel_prof\",\"mel\",\"adr_id\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -212,9 +213,11 @@ if (!isset($is_posted)) {
 					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
+					unset($en_tete);
 					for($i=0;$i<sizeof($temp);$i++){
 						$temp2=explode(",",$temp[$i]);
 						$en_tete[$i]=$temp2[0];
+						//echo "\$en_tete[$i]=$temp2[0];<br />\n";
 					}
 
 					$nbchamps=sizeof($en_tete);
@@ -224,10 +227,23 @@ if (!isset($is_posted)) {
 			fclose ($fp);
 
 			// On range dans tabindice les indices des champs retenus
+			/*
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				for ($i = 0; $i < count($en_tete); $i++) {
 					if (trim($en_tete[$i]) == $tabchamps[$k]) {
 						$tabindice[] = $i;
+					}
+				}
+			}
+			*/
+			unset($tabindice);
+			$cpt_tmp=0;
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete); $i++) {
+					if (trim($en_tete[$i]) == $tabchamps[$k]) {
+						$tabindice[$cpt_tmp]=$i;
+						//echo "\$tabindice[$cpt_tmp]=$i<br />\n";
+						$cpt_tmp++;
 					}
 				}
 			}
@@ -309,6 +325,7 @@ if (!isset($is_posted)) {
 		else{
 			// on constitue le tableau des champs à extraire
 			$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
+			//echo "\$tabchamps=array(\"ele_id\",\"pers_id\",\"resp_legal\",\"pers_contact\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -317,9 +334,11 @@ if (!isset($is_posted)) {
 					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
+					unset($en_tete);
 					for($i=0;$i<sizeof($temp);$i++){
 						$temp2=explode(",",$temp[$i]);
 						$en_tete[$i]=$temp2[0];
+						//echo "\$en_tete[$i]=$temp2[0];<br />\n";
 					}
 
 					$nbchamps=sizeof($en_tete);
@@ -329,10 +348,23 @@ if (!isset($is_posted)) {
 			fclose ($fp);
 
 			// On range dans tabindice les indices des champs retenus
+			/*
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				for ($i = 0; $i < count($en_tete); $i++) {
 					if (trim($en_tete[$i]) == $tabchamps[$k]) {
 						$tabindice[] = $i;
+					}
+				}
+			}
+			*/
+			unset($tabindice);
+			$cpt_tmp=0;
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete); $i++) {
+					if (trim($en_tete[$i]) == $tabchamps[$k]) {
+						$tabindice[$cpt_tmp]=$i;
+						//echo "\$tabindice[$cpt_tmp]=$i<br />\n";
+						$cpt_tmp++;
 					}
 				}
 			}
@@ -409,6 +441,7 @@ if (!isset($is_posted)) {
 		else{
 			// on constitue le tableau des champs à extraire
 			$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
+			//echo "\$tabchamps=array(\"adr_id\",\"adr1\",\"adr2\",\"adr3\",\"adr4\",\"cp\",\"pays\",\"commune\");<br />\n";
 
 			$nblignes=0;
 			while (!feof($fp)) {
@@ -417,9 +450,11 @@ if (!isset($is_posted)) {
 					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
+					unset($en_tete);
 					for($i=0;$i<sizeof($temp);$i++){
 						$temp2=explode(",",$temp[$i]);
 						$en_tete[$i]=$temp2[0];
+						//echo "\$en_tete[$i]=$temp2[0];<br />\n";
 					}
 
 					$nbchamps=sizeof($en_tete);
@@ -429,10 +464,23 @@ if (!isset($is_posted)) {
 			fclose ($fp);
 
 			// On range dans tabindice les indices des champs retenus
+			/*
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				for ($i = 0; $i < count($en_tete); $i++) {
 					if (trim($en_tete[$i]) == $tabchamps[$k]) {
 						$tabindice[] = $i;
+					}
+				}
+			}
+			*/
+			unset($tabindice);
+			$cpt_tmp=0;
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete); $i++) {
+					if (trim($en_tete[$i]) == $tabchamps[$k]) {
+						$tabindice[$cpt_tmp]=$i;
+						//echo "\$tabindice[$cpt_tmp]=$i<br />\n";
+						$cpt_tmp++;
 					}
 				}
 			}
