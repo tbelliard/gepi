@@ -84,6 +84,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			if(isset($pers_id)){
 				$sql="UPDATE resp_pers SET nom='$nom',
 								prenom='$prenom',
+								civilite='$civilite',
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
 								tel_prof='$tel_prof',
@@ -221,6 +222,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
 								nom='$nom',
 								prenom='$prenom',
+								civilite='$civilite',
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
 								tel_prof='$tel_prof',
@@ -489,6 +491,7 @@ if (isset($pers_id)) {
 
 	$nom=$lig_pers->nom;
 	$prenom=$lig_pers->prenom;
+	$civilite=$lig_pers->civilite;
 	$tel_pers=$lig_pers->tel_pers;
 	$tel_port=$lig_pers->tel_port;
 	$tel_prof=$lig_pers->tel_prof;
@@ -522,6 +525,7 @@ else{
 // Initialisation des variables, si nécessaire:
 if (!isset($nom)) $nom='';
 if (!isset($prenom)) $prenom='';
+if (!isset($civilite)) $civilite='';
 if (!isset($adr1)) $adr1='';
 if (!isset($adr2)) $adr2='';
 if (!isset($adr3)) $adr3='';
@@ -546,6 +550,37 @@ echo "<td valign='top'>\n";
 	echo "<table>\n";
 	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=nom value = \"".$nom."\" /></td></tr>\n";
 	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=prenom value = \"".$prenom."\" /></td></tr>\n";
+	echo "<tr><td>Civilité : </td><td>\n";
+
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	// AFFICHER AVEC JAVASCRIPT CE QUI EST ENREGISTRé/SAISI...
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='civilite' value=\"\" ";
+	if($civilite==""){echo "checked ";}
+	echo "/> X \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='civilite' value=\"M.\" ";
+	if($civilite=="M."){echo "checked ";}
+	echo "/> M. \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='civilite' value=\"Mme\" ";
+	if($civilite=="Mme"){echo "checked ";}
+	echo "/> Mme \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='civilite' value=\"Mlle\" ";
+	if($civilite=="Mlle"){echo "checked ";}
+	echo "/> Mlle\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "</td></tr>\n";
 	echo "<tr><td>Tel.perso : </td><td><input type=text size=15 name=tel_pers value = \"".$tel_pers."\" /></td></tr>\n";
 	echo "<tr><td>Tel.portable : </td><td><input type=text size=15 name=tel_port value = \"".$tel_port."\" /></td></tr>\n";
 	echo "<tr><td>Tel.professionnel : </td><td><input type=text size=15 name=tel_prof value = \"".$tel_prof."\" /></td></tr>\n";

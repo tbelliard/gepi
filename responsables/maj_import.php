@@ -890,6 +890,12 @@ else{
 						if(!feof($fp)){
 							$ligne = fgets($fp, 4096);
 							if(trim($ligne)!=""){
+
+								//=========================
+								// AJOUT: boireaus 20070607
+								unset($affiche);
+								//=========================
+
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
@@ -921,6 +927,7 @@ else{
 								}
 
 								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
+								//echo "$sql<br />\n";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
 									$adr_new[]=$affiche[0];
@@ -992,7 +999,9 @@ else{
 					//$res_truncate=mysql_query($sql);
 
 					// on constitue le tableau des champs à extraire
-					$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+					//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+					$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
+					//echo "\$tabchamps=array(\"pers_id\",\"nom\",\"prenom\",\"civilite\",\"tel_pers\",\"tel_port\",\"tel_prof\",\"mel\",\"adr_id\");<br />\n";
 
 					$nblignes=0;
 					while (!feof($fp)) {
@@ -1004,6 +1013,7 @@ else{
 							for($i=0;$i<sizeof($temp);$i++){
 								$temp2=explode(",",$temp[$i]);
 								$en_tete[$i]=$temp2[0];
+								//echo "\$en_tete[$i]=$temp2[0]<br />\n";
 							}
 
 							$nbchamps=sizeof($en_tete);
@@ -1013,10 +1023,18 @@ else{
 					fclose ($fp);
 
 					// On range dans tabindice les indices des champs retenus
+					$cpt_tmp=0;
 					for ($k = 0; $k < count($tabchamps); $k++) {
 						for ($i = 0; $i < count($en_tete); $i++) {
 							if (trim($en_tete[$i]) == $tabchamps[$k]) {
-								$tabindice[] = $i;
+							//if (trim($en_tete[$i]) == trim($tabchamps[$k])) {
+								//$tabindice[] = $i;
+								//echo "\$tabindice[] = $i<br />\n";
+
+								$tabindice[$cpt_tmp]=$i;
+								//echo "\$tabindice[$cpt_tmp]=$i<br />\n";
+								$cpt_tmp++;
+
 							}
 						}
 					}
@@ -1037,6 +1055,7 @@ else{
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+									//echo "\$affiche[$i]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(\$tabligne[\$tabindice[$i]]))))=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(\$tabligne[$tabindice[$i]]))))=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(".$tabligne[$tabindice[$i]]."))));<br />\n";
 								}
 								/*
 								$req = mysql_query("insert into resp_pers set
@@ -1059,9 +1078,12 @@ else{
 
 								// Stockage des données:
 								$personne[$affiche[0]]=array();
+								echo "<p>\n";
 								for($i=1;$i<count($tabchamps);$i++) {
 									$personne[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
+									//echo "\$personne[$affiche[0]][\"$tabchamps[$i]\"]=\$affiche[$i]=".$affiche[$i]."<br />\n";
 								}
+								echo "</p>\n";
 
 								$sql="SELECT * FROM resp_pers WHERE (pers_id='$affiche[0]')";
 								$res1=mysql_query($sql);
@@ -1070,14 +1092,17 @@ else{
 									//echo "Ajout de pers_id=$affiche[0] pour $affiche[1] $affiche[2]<br />\n";
 								}
 								else{
+									//(ucfirst(strtolower(stripslashes($lig->civilite)))!=ucfirst(strtolower(stripslashes($affiche[3]))))||
+
 									$lig=mysql_fetch_object($res1);
 									if((stripslashes($lig->nom)!=stripslashes($affiche[1]))||
 									(stripslashes($lig->prenom)!=stripslashes($affiche[2]))||
-									(stripslashes($lig->tel_pers)!=stripslashes($affiche[3]))||
-									(stripslashes($lig->tel_port)!=stripslashes($affiche[4]))||
-									(stripslashes($lig->tel_prof)!=stripslashes($affiche[5]))||
-									(stripslashes($lig->mel)!=stripslashes($affiche[6]))||
-									(stripslashes($lig->adr_id)!=stripslashes($affiche[7]))){
+									(strtolower(stripslashes($lig->civilite))!=(strtolower(stripslashes($affiche[3]))))||
+									(stripslashes($lig->tel_pers)!=stripslashes($affiche[4]))||
+									(stripslashes($lig->tel_port)!=stripslashes($affiche[5]))||
+									(stripslashes($lig->tel_prof)!=stripslashes($affiche[6]))||
+									(stripslashes($lig->mel)!=stripslashes($affiche[7]))||
+									(stripslashes($lig->adr_id)!=stripslashes($affiche[8]))) {
 										$pers_modif[]=$affiche[0];
 										//echo "Modification de pers_id=$affiche[0] pour $affiche[1] $affiche[2]<br />\n";
 									}
@@ -1087,6 +1112,8 @@ else{
 					}
 					//dbase_close($fp);
 					fclose($fp);
+
+					//echo "<p>===================================================</p>\n";
 
 					/*
 					if ($nb_reg_no3 != 0) {
@@ -1152,7 +1179,7 @@ else{
 
 
 			// Recherche des personnes sans modif dans personnes.csv,
-			// mais avec modif de l'adresse pour la ajouter au tableau $pers_modif
+			// mais avec modif de l'adresse pour l'ajouter au tableau $pers_modif
 			for($i=0;$i<count($adr_modif);$i++){
 				$temoin="";
 				for($j=0;$j<count($pers_modif);$j++){
@@ -1183,11 +1210,16 @@ else{
 							$pers_modif[]=$pers_id;
 							$personne[$pers_id]["nom"]=$lig1->nom;
 							$personne[$pers_id]["prenom"]=$lig1->prenom;
+							$personne[$pers_id]["civilite"]=ucfirst(strtolower($lig1->civilite));
 							$personne[$pers_id]["tel_pers"]=$lig1->tel_pers;
 							$personne[$pers_id]["tel_port"]=$lig1->tel_port;
 							$personne[$pers_id]["tel_prof"]=$lig1->tel_prof;
 							$personne[$pers_id]["mel"]=$lig1->mel;
 							$personne[$pers_id]["adr_id"]=$adr_modif[$i];
+
+							//echo "<p>\$personne[$pers_id][\"nom\"]=".$personne[$pers_id]["nom"]."<br />\n";
+							//echo "\$personne[$pers_id][\"prenom\"]=".$personne[$pers_id]["prenom"]."<br />\n";
+							//echo "\$personne[$pers_id][\"adr_id\"]=".$personne[$pers_id]["adr_id"]."</p>\n";
 
 						}
 					}
@@ -1223,7 +1255,7 @@ else{
 
 			echo "<td rowspan='2'>&nbsp;</td>\n";
 
-			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='4'>Responsable</td>\n";
+			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='5'>Responsable</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color:#FAFABE;' rowspan='2'>Adresse</td>\n";
 			//echo "<td style='text-align:center; font-weight:bold;' colspan='3'>Elève</td>\n";
 			echo "</tr>\n";
@@ -1231,6 +1263,7 @@ else{
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_id</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Nom</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
+			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Civilité</td>\n";
 			echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Contact</td>\n";
 			//echo "<td style='text-align:center; font-weight:bold;'>ele_id</td>\n";
 			//echo "<td style='text-align:center; font-weight:bold;'>Nom</td>\n";
@@ -1261,6 +1294,7 @@ else{
 
 				echo "<td style='text-align:center;'>$pers_id";
 				echo "<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
+				//echo "<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 				echo "</td>\n";
 
 				$sql="SELECT * FROM resp_pers WHERE (pers_id='$pers_id')";
@@ -1294,6 +1328,25 @@ else{
 				echo stripslashes($personne[$pers_id]["prenom"]);
 				echo "<input type='hidden' name='modif_".$cpt."_prenom' value=\"".stripslashes($personne[$pers_id]["prenom"])."\" />\n";
 				echo "</td>\n";
+
+
+				//======================================
+				echo "<td style='text-align:center;";
+				if(stripslashes($lig1->civilite)!=stripslashes($personne[$pers_id]["civilite"])){
+					echo " background-color:lightgreen;'>";
+					if($lig1->civilite!=''){
+						echo stripslashes($lig1->civilite)." <font color='red'>-&gt;</font>\n";
+					}
+				}
+				else{
+					echo "'>";
+				}
+				echo stripslashes($personne[$pers_id]["civilite"]);
+				echo "<input type='hidden' name='modif_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
+				//echo "<input type='text' name='modif_".$cpt."_civilite' value=\"".stripslashes($personne[$pers_id]["civilite"])."\" />\n";
+				echo "</td>\n";
+				//======================================
+
 
 				echo "<td style='text-align:center;'>";
 					echo "<table border='1' width='100%'>\n";
@@ -1435,6 +1488,7 @@ else{
 							$temoin_non_vide="oui";
 						}
 						echo "<input type='hidden' name='modif_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
+						//echo "<input type='text' name='modif_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
 					}
 					if($temoin_non_vide=="oui"){
 						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo stripslashes($adresse[$adr_id]["$tabadr[1]"]);}
@@ -1479,8 +1533,12 @@ else{
 						}
 						echo $chaine_adr;
 					}
+					//echo "<b>TEMOIN 0:</b>";
 				}
+				//echo "$sql";
+				//echo "<b>TEMOIN:</b>";
 				echo "<input type='hidden' name='modif_".$cpt."_adr_id' value='".$personne[$pers_id]["adr_id"]."' />\n";
+				//echo "<input type='text' name='modif_".$cpt."_adr_id' value='".$personne[$pers_id]["adr_id"]."' />\n";
 				echo "</td>\n";
 
 				/*
@@ -1535,6 +1593,13 @@ else{
 				echo stripslashes($personne[$pers_id]["prenom"]);
 				echo "<input type='hidden' name='new_".$cpt."_prenom' value=\"".stripslashes($personne[$pers_id]["prenom"])."\" />\n";
 				echo "</td>\n";
+
+				//======================================
+				echo "<td style='text-align:center;'>";
+				echo stripslashes($personne[$pers_id]["civilite"]);
+				echo "<input type='hidden' name='new_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
+				echo "</td>\n";
+				//======================================
 
 				echo "<td style='text-align:center;'>";
 					echo "<table border='1' width='100%'>\n";
@@ -1631,6 +1696,7 @@ else{
 							$temoin_non_vide="oui";
 						}
 						echo "<input type='hidden' name='new_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
+						//echo "<input type='text' name='new_".$cpt."_".$tabadr[$k]."' value=\"".stripslashes($adresse[$adr_id]["$tabadr[$k]"])."\" />\n";
 					}
 					if($temoin_non_vide=="oui"){
 						if($adresse[$adr_id]["$tabadr[1]"]!=""){echo stripslashes($adresse[$adr_id]["$tabadr[1]"]);}
@@ -1680,6 +1746,7 @@ else{
 					}
 				}
 				echo "<input type='hidden' name='new_".$cpt."_adr_id' value='".$personne[$pers_id]["adr_id"]."' />\n";
+				//echo "<input type='text' name='new_".$cpt."_adr_id' value='".$personne[$pers_id]["adr_id"]."' />\n";
 				echo "</td>\n";
 
 				/*
@@ -1736,6 +1803,7 @@ else{
 					$pers_id=$_POST['modif_'.$cpt.'_pers_id'];
 					$nom=traitement_magic_quotes(corriger_caracteres($_POST['modif_'.$cpt.'_nom']));
 					$prenom=traitement_magic_quotes(corriger_caracteres($_POST['modif_'.$cpt.'_prenom']));
+					$civilite=$_POST['modif_'.$cpt.'_civilite'];
 					$tel_pers=$_POST['modif_'.$cpt.'_tel_pers'];
 					$tel_prof=$_POST['modif_'.$cpt.'_tel_prof'];
 					$tel_port=$_POST['modif_'.$cpt.'_tel_port'];
@@ -1748,6 +1816,7 @@ else{
 
 					$sql="UPDATE resp_pers SET nom='$nom',
 									prenom='$prenom',
+									civilite='$civilite',
 									tel_pers='$tel_pers',
 									tel_port='$tel_port',
 									tel_prof='$tel_prof',
@@ -1826,6 +1895,7 @@ else{
 					$pers_id=$_POST['new_'.$cpt.'_pers_id'];
 					$nom=traitement_magic_quotes(corriger_caracteres($_POST['new_'.$cpt.'_nom']));
 					$prenom=traitement_magic_quotes(corriger_caracteres($_POST['new_'.$cpt.'_prenom']));
+					$civilite=$_POST['new_'.$cpt.'_civilite'];
 					$tel_pers=$_POST['new_'.$cpt.'_tel_pers'];
 					$tel_prof=$_POST['new_'.$cpt.'_tel_prof'];
 					$tel_port=$_POST['new_'.$cpt.'_tel_port'];
@@ -1838,6 +1908,7 @@ else{
 					$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
 									nom='$nom',
 									prenom='$prenom',
+									civilite='$civilite',
 									tel_pers='$tel_pers',
 									tel_port='$tel_port',
 									tel_prof='$tel_prof',

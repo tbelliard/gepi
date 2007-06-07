@@ -525,7 +525,10 @@ if("$num_resp"=="0"){
 
 				echo "<tr style='background-color:".$alt.";'>\n";
 				echo "<td style='text-align:center;'>\n";
-				echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig1->nom $lig1->prenom</a>\n";
+				//echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig1->nom $lig1->prenom</a>\n";
+				echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>";
+				if($lig1->civilite!=""){echo "$lig1->civilite \n";}
+				echo "$lig1->nom $lig1->prenom</a>\n";
 				echo "</td>\n";
 
 
@@ -643,7 +646,7 @@ else{
 
 				if($num_resp==1){$autre_resp=2;}else{$autre_resp=1;}
 
-				$sql="SELECT rp.nom,rp.prenom,ra.* FROM resp_pers rp, resp_adr ra WHERE
+				$sql="SELECT rp.nom,rp.prenom,rp.civilite,ra.* FROM resp_pers rp, resp_adr ra WHERE
 										rp.adr_id=ra.adr_id AND
 										rp.pers_id='$lig1->pers_id'
 									ORDER BY $order_by";
@@ -659,7 +662,10 @@ else{
 								echo " rowspan='".mysql_num_rows($res3)."'";
 							}
 							echo ">\n";
-							echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+							//echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+							echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>";
+							if($lig2->civilite!=""){echo "$lig2->civilite \n";}
+							echo "$lig2->nom $lig2->prenom</a>\n";
 							echo "</td>\n";
 
 							echo "<td style='text-align:center;'";
@@ -697,7 +703,7 @@ else{
 									echo "<br />".liens_class_from_ele_login($lig3->login);
 									echo "</td>\n";
 
-									$sql="SELECT rp.nom,rp.prenom,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
+									$sql="SELECT rp.nom,rp.prenom,rp.civilite,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
 										rp.pers_id=r.pers_id AND
 										rp.adr_id=ra.adr_id AND
 										r.ele_id='$lig3->ele_id' AND
@@ -707,7 +713,10 @@ else{
 										//$cpt_res4=0;
 										while($lig4=mysql_fetch_object($res4)){
 											echo "<td style='text-align:center;'>\n";
-											echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>$lig4->nom $lig4->prenom</a>\n";
+											//echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>$lig4->nom $lig4->prenom</a>\n";
+											echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>";
+											if($lig4->civilite!=""){echo "$lig4->civilite \n";}
+											echo "$lig4->nom $lig4->prenom</a>\n";
 											echo "</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
@@ -785,7 +794,7 @@ else{
 
 				if($num_resp==1){$autre_resp=2;}else{$autre_resp=1;}
 
-				$sql="SELECT rp.nom,rp.prenom,ra.* FROM resp_pers rp, resp_adr ra WHERE
+				$sql="SELECT rp.nom,rp.prenom,rp.civilite,ra.* FROM resp_pers rp, resp_adr ra WHERE
 										rp.adr_id=ra.adr_id AND
 										rp.pers_id='$lig1->pers_id'
 									ORDER BY $order_by";
@@ -807,7 +816,7 @@ else{
 									}
 
 
-									$sql="SELECT rp.nom,rp.prenom,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
+									$sql="SELECT rp.nom,rp.prenom,rp.civilite,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
 										rp.pers_id=r.pers_id AND
 										rp.adr_id=ra.adr_id AND
 										r.ele_id='$lig3->ele_id' AND
@@ -816,7 +825,10 @@ else{
 									if(mysql_num_rows($res4)>0){
 										while($lig4=mysql_fetch_object($res4)){
 											echo "<td style='text-align:center;'>\n";
-											echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>$lig4->nom $lig4->prenom</a>\n";
+											//echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>$lig4->nom $lig4->prenom</a>\n";
+											echo "<a href='modify_resp.php?pers_id=$lig4->pers_id'>";
+											if($lig4->civilite!=""){echo "$lig4->civilite \n";}
+											echo "$lig4->nom $lig4->prenom</a>\n";
 											echo "</td>\n";
 
 											echo "<td style='text-align:center;'>\n";
@@ -857,7 +869,10 @@ else{
 											echo " rowspan='".mysql_num_rows($res3)."'";
 										}
 										echo ">\n";
-										echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+										//echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+										echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>";
+										if($lig2->civilite!=""){echo "$lig2->civilite \n";}
+										echo "$lig2->nom $lig2->prenom</a>\n";
 										echo "</td>\n";
 
 										echo "<td style='text-align:center;'";
@@ -899,7 +914,10 @@ else{
 									echo " rowspan='".mysql_num_rows($res3)."'";
 								}
 								echo ">\n";
-								echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+								//echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+								echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>";
+								if($lig2->civilite!=""){echo "$lig2->civilite \n";}
+								echo "$lig2->nom $lig2->prenom</a>\n";
 								echo "</td>\n";
 
 								echo "<td style='text-align:center;'";
@@ -977,7 +995,7 @@ else{
 					$alt='white';
 				}
 
-				$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM resp_pers rp, resp_adr ra, responsables2 r WHERE
+				$sql="SELECT rp.nom,rp.prenom,rp.civilite,rp.pers_id,ra.* FROM resp_pers rp, resp_adr ra, responsables2 r WHERE
 						r.pers_id=rp.pers_id AND
 						rp.adr_id=ra.adr_id AND
 						r.resp_legal='1' AND
@@ -991,7 +1009,10 @@ else{
 					//while($lig2=mysql_fetch_object($res2)){
 						$lig2=mysql_fetch_object($res2);
 						echo "<td style='text-align:center;'>\n";
-						echo "<a href='modify_resp.php?pers_id=$lig2->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+						//echo "<a href='modify_resp.php?pers_id=$lig2->pers_id'>$lig2->nom $lig2->prenom</a>\n";
+						echo "<a href='modify_resp.php?pers_id=$lig2->pers_id'>";
+						if($lig2->civilite!=""){echo "$lig2->civilite \n";}
+						echo "$lig2->nom $lig2->prenom</a>\n";
 						echo "</td>\n";
 
 						echo "<td style='text-align:center;'>\n";
@@ -1018,7 +1039,7 @@ else{
 				echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig1->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig1->nom $lig1->prenom</a></td>\n";
 
 
-				$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM resp_pers rp, resp_adr ra, responsables2 r WHERE
+				$sql="SELECT rp.nom,rp.prenom,rp.civilite,rp.pers_id,ra.* FROM resp_pers rp, resp_adr ra, responsables2 r WHERE
 						r.pers_id=rp.pers_id AND
 						rp.adr_id=ra.adr_id AND
 						r.resp_legal='2' AND
@@ -1027,7 +1048,10 @@ else{
 				if(mysql_num_rows($res3)>0){
 					$lig3=mysql_fetch_object($res3);
 					echo "<td style='text-align:center;'>\n";
-					echo "<a href='modify_resp.php?pers_id=$lig3->pers_id'>$lig3->nom $lig3->prenom</a>\n";
+					//echo "<a href='modify_resp.php?pers_id=$lig3->pers_id'>$lig3->nom $lig3->prenom</a>\n";
+					echo "<a href='modify_resp.php?pers_id=$lig3->pers_id'>";
+					if($lig3->civilite!=""){echo "$lig3->civilite \n";}
+					echo "$lig3->nom $lig3->prenom</a>\n";
 					echo "</td>\n";
 
 					echo "<td style='text-align:center;'>\n";
