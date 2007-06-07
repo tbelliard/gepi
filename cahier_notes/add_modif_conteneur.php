@@ -859,8 +859,9 @@ else{
 
 	echo "<h3 class='gepi'>Pondération</h3>\n";
 	echo "<table>\n<tr><td>";
-	echo "Pour chaque élève, augmente ou diminue de la valeur indiquée ci-contre, le coefficient de la meilleur note de <b>$nom_court</b> :&nbsp;
-	<br /><i>Si la valeur est 0, il n'y a aucune pondération.</i></td>";
+	//echo "Pour chaque élève, augmente ou diminue de la valeur indiquée ci-contre, le coefficient de la meilleur note de <b>$nom_court</b> :&nbsp;";
+	//echo "<br /><i>Si la valeur est 0, il n'y a aucune pondération.</i></td>";
+	echo "Pour chaque élève, le coefficient de la meilleure note de <b>$nom_court</b> augmente ou diminue de : &nbsp;</td>\n";
 	echo "<td><input type='text' name = 'ponderation' size='4' value = \"".$ponderation."\" onfocus=\"javascript:this.select()\" /></td></tr>\n</table>\n";
 
 	if ($parent != 0) {
