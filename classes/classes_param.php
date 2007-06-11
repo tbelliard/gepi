@@ -408,6 +408,7 @@ while ($per < $max_periode) {
 	<td>
 	</td>
 	</tr>
+	<tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td valign="top">
         <b>Afficher sur le bulletin le rang de chaque élève : </b>
