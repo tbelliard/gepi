@@ -479,6 +479,7 @@ while($i < $lignes_groupes){
 		ccn.periode='$num_periode' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_moyenne = mysql_query($sql);
 	}
@@ -487,6 +488,7 @@ while($i < $lignes_groupes){
 		ccn.id_groupe='".$current_group["id"]."' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_moyenne = mysql_query($sql);
 	}
@@ -517,6 +519,7 @@ while($i < $lignes_groupes){
 				ccn.periode='$num_periode' AND
 				cc.id_racine = ccn.id_cahier_notes AND
 				cnc.id_conteneur=cc.id AND
+				cc.id=cc.id_racine AND
 				cnc.login='".$current_eleve_login[$j]."'";
 				//echo "$sql";
 				$res_moy=mysql_query($sql);
@@ -620,6 +623,7 @@ while($i < $lignes_groupes){
 					ccn.periode='$p' AND
 					cc.id_racine = ccn.id_cahier_notes AND
 					cnc.id_conteneur=cc.id AND
+					cc.id=cc.id_racine AND
 					cnc.login='".$current_eleve_login[$j]."'";
 					//echo "$sql";
 					$res_moy=mysql_query($sql);
@@ -723,6 +727,7 @@ while($i < $lignes_groupes){
 		ccn.periode='$num_periode' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_moyenne = mysql_query($sql);
 
@@ -732,6 +737,7 @@ while($i < $lignes_groupes){
 		ccn.periode='$num_periode' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_max = mysql_query($sql);
 
@@ -741,6 +747,7 @@ while($i < $lignes_groupes){
 		ccn.periode='$num_periode' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_min = mysql_query($sql);
 	}
@@ -750,6 +757,7 @@ while($i < $lignes_groupes){
 		ccn.id_groupe='".$current_group["id"]."' AND
 		cc.id_racine = ccn.id_cahier_notes AND
 		cnc.id_conteneur=cc.id AND
+		cc.id=cc.id_racine AND
 		cnc.statut='y'";
 		$call_moyenne = mysql_query($sql);
 	}
