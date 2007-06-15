@@ -55,14 +55,21 @@ switch($action)
 //envoi du message
 case "envoi":
 //N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
+
+$corps_message=$message;
+
 $message = "Demandeur : ".$nama."\n";
 $message = "Statut : ".$_SESSION['statut']."\n";
 $message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
+
+$message.="\n".$corps_message."\n";
+
 if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
 	$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
 } else {
 	$message .= "\n\nMode de réponse : par email (si spécifié)";
 }
+
 $envoi = mail(getSettingValue("gepiAdminAdress"),
     "Demande d'aide dans GEPI",
     $message,
