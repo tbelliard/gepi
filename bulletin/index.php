@@ -63,9 +63,9 @@ if (!checkAccess()) {
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
 
 	$message_erreur = '';
-		if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les période(s) !'; }
-		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) !'; }
-		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oublier pas de sélectioner la ou les classe(s) et la ou les période(s) !'; }
+		if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les période(s) !'; }
+		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) !'; }
+		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) et la ou les période(s) !'; }
 
 	$_SESSION['classe'] = $classe;
 	$_SESSION['eleve'] = $eleve;
@@ -90,7 +90,7 @@ if (!checkAccess()) {
 	        header("Location: bulletin_pdf_avec_modele_classe.php");
 		}
 		*/
-	 header("Location: bulletin_pdf_avec_modele_classe.php");	
+	 header("Location: bulletin_pdf_avec_modele_classe.php");
 	}
 // FIN Christian renvoye vers le fichier PDF bulletin
 
@@ -121,7 +121,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 //if (!isset($id_classe)) {
 
 	//modification christian pour le choix des bulletins au format PDF
-	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF </a><?php } else { ?><a href='index.php?format='>Impression au format HTML </a><?php } 
+	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF </a><?php } else { ?><a href='index.php?format='>Impression au format HTML </a><?php }
 	//fin de modification
 
        //modification Christian CHAPEL
@@ -261,7 +261,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 </li>
 </ul>
 
-		
+
 		<?php
 	}
 	// fin de modification de la sélection pour le PDF Christian

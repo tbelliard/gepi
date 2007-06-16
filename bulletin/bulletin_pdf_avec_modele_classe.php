@@ -123,7 +123,11 @@ function calcul_toute_moyenne_classe ($groupe_select, $periode_select)
     global $prefix_base;
 
 	$addition_des_notes=0; $note=0; $cpt_notes=0; $moyenne_mini=20; $moyenne_maxi=0;
-	$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'"');
+	// ===========================================
+	// MODIF: boireaus 20070616
+	//$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'"');
+	$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'matieres_notes WHERE '.$prefix_base.'matieres_notes.id_groupe = "'.$groupe_select.'" AND '.$prefix_base.'matieres_notes.periode = "'.$periode_select.'" AND matieres_notes.statut=""');
+	// ===========================================
 	while ($donner_note = mysql_fetch_array($requete_note))
 	 {
 		$note = $donner_note['note'];
@@ -1114,13 +1118,24 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			        $k++;
 			}
 
-			 $res_note_rang = mysql_query("SELECT note, rang " .
+			 //$res_note_rang = mysql_query("SELECT note, rang " .
+			 //		"FROM matieres_notes WHERE (" .
+			 //		"login='".$login_eleve_select."' AND " .
+			 //		"id_groupe='".$groupe_matiere."' AND " .
+			 //		"periode='".$id_periode."')");
+			 $res_note_rang = mysql_query("SELECT note, statut, rang " .
 			 		"FROM matieres_notes WHERE (" .
 			 		"login='".$login_eleve_select."' AND " .
 			 		"id_groupe='".$groupe_matiere."' AND " .
 			 		"periode='".$id_periode."')");
 			 if (mysql_num_rows($res_note_rang) > 0) {
-			 	$note_rang = mysql_fetch_array($res_note_rang);
+				$note_rang=mysql_fetch_array($res_note_rang);
+			 	if($note_rang['statut']!=''){
+					//$note_rang['note']=$note_rang['statut'];
+					$note_rang['note']="-";
+					// Le tiret est accepté à l'affichage pour la note, mais pas 'disp'???
+					$note_rang['rang']="-";
+				}
 			 } else {
 			 	$note_rang = array("note" => "-", "rang" => "-");
 			 }
@@ -1155,7 +1170,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
             if (mysql_num_rows($test_coef_eleve) > 0) {
             	$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = mysql_result($test_coef_eleve, 0);
             } else {
-				if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on leconnait on ne retourne pas le chercher
+				if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on le connait on ne retourne pas le chercher
 				 {
 				 	$coef_matiere[$id_classe][$groupe_matiere] = mysql_fetch_array(mysql_query('SELECT * FROM '.$prefix_base.'j_groupes_classes WHERE id_classe="'.$id_classe.'" AND id_groupe="'.$groupe_matiere.'"'));
 					if($coef_matiere[$id_classe][$groupe_matiere]['coef']!=0.0)
@@ -1224,7 +1239,17 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		 $info_bulletin[$login_eleve_select][$id_periode]['nb_matiere']=$nombre_de_matiere;
 		 //calcule de la moyenne général de l'élève pour un période données
 	 	 // if($nombre_de_matiere!=0) { $info_bulletin[$login_eleve_select][$id_periode][moy_general_eleve] = $moy_general_eleve/$info_bulletin[$login_eleve_select][$id_periode][nb_matiere]; } else { $info_bulletin[$login_eleve_select][$id_periode][moy_general_eleve]=0; }
-	 	 if($nombre_de_matiere!=0) { $info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve'] = $moy_general_eleve/$total_coef; } else { $info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve']='0'; }
+	 	 if($nombre_de_matiere!=0) {
+			if($total_coef>0){
+				$info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve'] = $moy_general_eleve/$total_coef;
+			}
+			else{
+				$info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve'] = "-";
+			}
+		}
+		else {
+			$info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve']='0';
+		}
 		 $moy_gene_eleve = $info_bulletin[$login_eleve_select][$id_periode]['moy_general_eleve'];
 
 		// gestion des graphique de niveau pour la classe
@@ -1240,15 +1265,27 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			// mini et maxi de la classe
 			if(empty($moyenne_classe_minmax[$id_periode][$id_classe]['min'])) { $moyenne_classe_minmax[$id_periode][$id_classe]['min']='20'; }
 			if(empty($moyenne_classe_minmax[$id_periode][$id_classe]['max'])) { $moyenne_classe_minmax[$id_periode][$id_classe]['max']='0'; }
-			if($moyenne_classe_minmax[$id_periode][$id_classe]['min']>$moy_gene_eleve) { $moyenne_classe_minmax[$id_periode][$id_classe]['min'] = $moy_gene_eleve; }
-			if($moyenne_classe_minmax[$id_periode][$id_classe]['max']<$moy_gene_eleve) { $moyenne_classe_minmax[$id_periode][$id_classe]['max'] = $moy_gene_eleve; }
+			//=====================================
+			// MODIF: boireaus 20070616
+			if($moy_gene_eleve!="-"){
+				if($moyenne_classe_minmax[$id_periode][$id_classe]['min']>$moy_gene_eleve) { $moyenne_classe_minmax[$id_periode][$id_classe]['min'] = $moy_gene_eleve; }
+				if($moyenne_classe_minmax[$id_periode][$id_classe]['max']<$moy_gene_eleve) { $moyenne_classe_minmax[$id_periode][$id_classe]['max'] = $moy_gene_eleve; }
+			}
+			//=====================================
 
 		     if ($moy_gene_eleve >= 15) { $data_grap_classe[$id_periode][$id_classe][0]=$data_grap_classe[$id_periode][$id_classe][0]+1; }
 		     else if (($moy_gene_eleve >= 12) and ($moy_gene_eleve < 15)) { $data_grap_classe[$id_periode][$id_classe][1]=$data_grap_classe[$id_periode][$id_classe][1]+1; }
 		     else if (($moy_gene_eleve >= 10) and ($moy_gene_eleve < 12)) { $data_grap_classe[$id_periode][$id_classe][2]=$data_grap_classe[$id_periode][$id_classe][2]+1; }
 	             else if (($moy_gene_eleve >= 8) and ($moy_gene_eleve < 10)) { $data_grap_classe[$id_periode][$id_classe][3]=$data_grap_classe[$id_periode][$id_classe][3]+1; }
           	     else if (($moy_gene_eleve >= 5) and ($moy_gene_eleve < 8)) { $data_grap_classe[$id_periode][$id_classe][4]=$data_grap_classe[$id_periode][$id_classe][4]+1; }
- 	             else { $data_grap_classe[$id_periode][$id_classe][5]=$data_grap_classe[$id_periode][$id_classe][5]+1; }
+ 	             else {
+					//=====================================
+					// MODIF: boireaus 20070616
+					if($moy_gene_eleve!="-"){
+						$data_grap_classe[$id_periode][$id_classe][5]=$data_grap_classe[$id_periode][$id_classe][5]+1;
+					}
+					//=====================================
+				}
 //                }
 
 		 //avis du conseil de classe pour un élève et une période donnée
