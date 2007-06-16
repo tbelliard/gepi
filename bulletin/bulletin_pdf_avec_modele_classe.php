@@ -992,12 +992,24 @@ for ($z=0;$z<$nb_classes_selectionnees;$z++) {
 		}
 	}
 
+//=====================
+// AJOUT: boireaus 20070616
+$matiere=array();
+//=====================
+
 $passage_deux = 'non';
 $cpt_info_eleve=1;
 while($cpt_info_eleve<=$nb_eleve_total)
  {
     $cpt_info_periode=0;
 	$id_classe = $classe_tableau_id[$cpt_info_eleve]; // classe de l'élève
+
+	//$login_eleve_select = $ident_eleve[$cpt_info_eleve]; // login de l'élève
+	//=====================
+	// AJOUT: boireaus 20070616
+	$matiere[$ident_eleve[$cpt_info_eleve]]=array();
+	//$matiere[$ident_eleve[$cpt_info_eleve]][$id_periode]=array();
+	//=====================
 
 	//AJOUT ERIC
 	$classe_id=$id_classe;
@@ -1009,6 +1021,12 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		$moy_general_eleve = 0;
 		$cpt_info_eleve_matiere=0;
 		//prendre toutes les matières dont fait partie l'élève dans une période donné
+
+		//=====================
+		// AJOUT: boireaus 20070616
+		//$matiere[$ident_eleve[$cpt_info_eleve]]=array();
+		$matiere[$ident_eleve[$cpt_info_eleve]][$id_periode]=array();
+		//=====================
 
 		if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
 			// Requête pour le classement par catégories de matières
