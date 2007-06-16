@@ -2501,7 +2501,12 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 	 	     $pdf->SetFont($caractere_utilse[$classe_id],'',8);
 		     $pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
 //			if(empty($moyenne_classe[$id_classe_selection][$id_periode])) { $moyenne_classe[$id_classe_selection][$id_periode]=$total_moyenne_classe_en_calcul/$total_coef_en_calcul; }
-			$moyenne_classe = $total_moyenne_classe_en_calcul / $total_coef_en_calcul;
+			if($total_coef_en_calcul!=0){
+				$moyenne_classe = $total_moyenne_classe_en_calcul / $total_coef_en_calcul;
+			}
+			else{
+				$moyenne_classe="-";
+			}
 		     $pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_classe, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
  		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
 		    }
@@ -2512,7 +2517,14 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		     $pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 	 	     $pdf->SetFont($caractere_utilse[$classe_id],'',8);
 		     $pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		$moyenne_min = $total_moyenne_min_en_calcul / $total_coef_en_calcul;
+
+			if($total_coef_en_calcul!=0){
+				$moyenne_min = $total_moyenne_min_en_calcul / $total_coef_en_calcul;
+			}
+			else{
+				$moyenne_min="-";
+			}
+
 //		     $pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_min[$id_classe_selection][$id_periode], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general);
 		     $pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_min, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
  		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
@@ -2523,7 +2535,14 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 	 	     $pdf->SetFont($caractere_utilse[$classe_id],'',8);
 		     $pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
 //			if(empty($moyenne_min[$id_classe_selection][$id_periode])) { $moyenne_max[$id_classe_selection][$id_periode]=$total_moyenne_max_en_calcul/$total_coef_en_calcul; }
-	 		$moyenne_max = $total_moyenne_max_en_calcul / $total_coef_en_calcul;
+
+			if($total_coef_en_calcul!=0){
+		 		$moyenne_max = $total_moyenne_max_en_calcul / $total_coef_en_calcul;
+			}
+			else{
+				$moyenne_max="-";
+			}
+
 //		    $pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_max[$id_classe_selection][$id_periode], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general);
 		     $pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_max, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
  		     $largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
