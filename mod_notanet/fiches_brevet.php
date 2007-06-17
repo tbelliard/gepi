@@ -285,13 +285,6 @@ function get_classe_from_id($id){
 	}
 }
 
-function formate_date($date){
-	$tmp_date=explode(" ",$date);
-	$tab_date=explode("-",$tmp_date[0]);
-
-	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
-}
-
 // Bibliothèque pour Notanet et Fiches brevet
 include("lib_brevets.php");
 

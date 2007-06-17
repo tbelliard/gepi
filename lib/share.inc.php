@@ -2007,4 +2007,25 @@ function statut_accentue($user_statut){
 	return $chaine;
 }
 
+function get_nom_classe($id_classe){
+	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
+	$res_class=mysql_query($sql);
+
+	if(mysql_num_rows($res_class)>0){
+		$lig_tmp=mysql_fetch_object($res_class);
+		$classe=$lig_tmp->classe;
+		return $classe;
+	}
+	else{
+		return false;
+	}
+}
+
+function formate_date($date){
+	$tmp_date=explode(" ",$date);
+	$tab_date=explode("-",$tmp_date[0]);
+
+	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
+}
+
 ?>
