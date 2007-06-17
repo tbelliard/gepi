@@ -54,7 +54,7 @@ if ($_SESSION['statut'] == "responsable") {
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
 			"r.login = '".$_SESSION['login']."')");
-			
+
 	if (mysql_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
 		$login_eleve = mysql_result($get_eleves, 0);
@@ -62,7 +62,7 @@ if ($_SESSION['statut'] == "responsable") {
 		$error_login = true;
 	}
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter un choix.
-	
+
 } else if ($_SESSION['statut'] == "eleve") {
 	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
 		tentative_intrusion(2, "Tentative d'un élève de visualiser le bulletin simplifié d'un autre élève.");
@@ -155,47 +155,52 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
     $nombreligne = mysql_num_rows($calldata);
     echo " | Total : $nombreligne classes </p>\n";
-    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
-    //echo "<table border=0>\n";
-	$nb_class_par_colonne=round($nombreligne/3);
-        //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
-        echo "<td align='left'>\n";
-    $i = 0;
-    while ($i < $nombreligne){
-        $id_classe = mysql_result($calldata, $i, "id");
-        $classe_liste = mysql_result($calldata, $i, "classe");
-        //echo "<tr><td><a href='index3.php?id_classe=$id_classe'>$classe_liste</a></td></tr>\n";
-	if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-		echo "</td>\n";
-		//echo "<td style='padding: 0 10px 0 10px'>\n";
-		echo "<td align='left'>\n";
+
+	if($nombreligne==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-        echo "<a href='index3.php?id_classe=$id_classe'>$classe_liste</a><br />\n";
-        $i++;
-    }
-    echo "</table>\n";
-    
+	else{
+		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
+		//echo "<table border=0>\n";
+		$nb_class_par_colonne=round($nombreligne/3);
+			//echo "<table width='100%' border='1'>\n";
+			echo "<table width='100%'>\n";
+			echo "<tr valign='top' align='center'>\n";
+			echo "<td align='left'>\n";
+		$i = 0;
+		while ($i < $nombreligne){
+			$id_classe = mysql_result($calldata, $i, "id");
+			$classe_liste = mysql_result($calldata, $i, "classe");
+			//echo "<tr><td><a href='index3.php?id_classe=$id_classe'>$classe_liste</a></td></tr>\n";
+			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+				echo "</td>\n";
+				//echo "<td style='padding: 0 10px 0 10px'>\n";
+				echo "<td align='left'>\n";
+			}
+			echo "<a href='index3.php?id_classe=$id_classe'>$classe_liste</a><br />\n";
+			$i++;
+		}
+		echo "</table>\n";
+	}
 } else if ($_SESSION['statut'] == "responsable" AND $login_eleve == null) {
 	// Si on est là, c'est que le responsable est responsable de plusieurs élèves. Il doit donc
 	// choisir celui pour lequel il souhaite visualiser le bulletin simplifié
-	
+
 	$quels_eleves = mysql_query("SELECT e.login, e.nom, e.prenom " .
 				"FROM eleves e, responsables2 re, resp_pers r WHERE (" .
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "')");
 
-	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";	
+	echo "<p>Cliquez sur le nom de l'élève pour lequel vous souhaitez visualiser un bulletin simplifié :</p>";
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
 } else if (!isset($choix_edit)) {
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 	    echo " | <a href = \"index3.php\">Choisir une autre classe</a>";
-		
-		// Ajout lien classe précédente / classe suivante	
+
+		// Ajout lien classe précédente / classe suivante
 		if($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
@@ -239,8 +244,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a></p>";}
 		}
 		//fin ajout lien classe précédente / classe suivante
-		
-		
+
+
 	    $classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 	    $nom_classe = mysql_result($classe_eleve, 0, "classe");
 	    echo "<p class='grand'>Classe de $nom_classe</p>\n";
@@ -252,7 +257,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo " (uniquement les élèves que j'ai en cours)";
 		}
 		echo "</td></tr>\n";
-	
+
 	    $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
 	    $nb_lignes = mysql_num_rows($call_suivi);
 	    $indice = 1;
@@ -273,13 +278,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	        echo "</select></td></tr>\n";
 	        $indice = 2;
 	    }
-	
-	
+
+
 	    echo "<tr>\n";
 	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>\n";
 	    echo "<td>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : \n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
-	    
+
 	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		    $call_eleve = mysql_query("SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
@@ -307,7 +312,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
     	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
     	$prenom_eleve = mysql_result($eleve, 0, "prenom");
     	$nom_eleve = mysql_result($eleve, 0, "nom");
-    	
+
 	    echo "<p class='grand'>Elève : ".$prenom_eleve." ".$nom_eleve."</p>\n";
 	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	    echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";

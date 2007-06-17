@@ -744,12 +744,14 @@ if (isset($eleve_login)) {
     $call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
     $id_etab = @mysql_result($call_etab, "0", "id");
 
+	//echo "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)<br />";
 
 	if(!isset($ele_id)){
 		$ele_id=mysql_result($call_eleve_info, "0", "ele_id");
 	}
 
 	$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='1'";
+	//echo "$sql<br />\n";
 	$res_resp1=mysql_query($sql);
 	if(mysql_num_rows($res_resp1)>0){
 		$lig_no_resp1=mysql_fetch_object($res_resp1);
@@ -758,8 +760,10 @@ if (isset($eleve_login)) {
 	else{
 		$eleve_no_resp1=0;
 	}
+	//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 	$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
+	//echo "$sql<br />\n";
 	$res_resp2=mysql_query($sql);
 	if(mysql_num_rows($res_resp2)>0){
 		$lig_no_resp2=mysql_fetch_object($res_resp2);
@@ -928,6 +932,7 @@ if(isset($definir_resp)){
 
 
 
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 
 
@@ -994,6 +999,7 @@ if(isset($definir_etab)){
 }
 
 
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 
 echo "<table>\n";
@@ -1070,6 +1076,8 @@ echo "<tr>\n";
 </table>
 <?php
 
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
+
 if(isset($reg_no_gep)){
 	$photo="../photos/eleves/".$reg_no_gep.".jpg";
 	echo "<td align='center'>\n";
@@ -1108,6 +1116,8 @@ if(isset($reg_no_gep)){
 echo "</tr>\n";
 echo "</table>\n";
 
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
+
 if (($reg_no_gep == '') and (isset($eleve_login))) {
    echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
 
@@ -1121,6 +1131,7 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 		}
 	}
 }
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 ?>
 <center><table border = '1' CELLPADDING = '5'>
@@ -1151,6 +1162,7 @@ if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />";
 echo "<center><input type=submit value=Enregistrer /></center>";
 echo "</form>\n";
 
+//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 
 if(isset($eleve_login)){
@@ -1165,12 +1177,18 @@ if(isset($eleve_login)){
 		echo "<br />\n";
 		echo "<hr />\n";
 		echo "<h3>Envoi des bulletins par voie postale</h3>\n";
+
+		//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
+
 		echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
 		echo "<br />\n<br />\n";
 
 		$temoin_tableau="";
 		$chaine_adr1='';
-		if($eleve_no_resp1==0){
+		// Lorsque le $eleve_no_resp1 est non numérique (cas sans sconet), on a p000000012 et il considère que p000000012==0
+		// Il faut comparer des chaines de caractères.
+		//if($eleve_no_resp1==0){
+		if("$eleve_no_resp1"=="0"){
 			// Le responsable 1 n'est pas défini:
 			echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Définir le responsable légal 1</a></p>\n";
 		}
@@ -1228,7 +1246,8 @@ if(isset($eleve_login)){
 
 
 		$chaine_adr2='';
-		if($eleve_no_resp2==0){
+		//if($eleve_no_resp2==0){
+		if("$eleve_no_resp2"=="0"){
 			// Le responsable 2 n'est pas défini:
 			if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
 
@@ -1314,7 +1333,8 @@ if(isset($eleve_login)){
 		}
 
 
-		if(($eleve_no_resp1==0)||($eleve_no_resp2==0)){
+		//if(($eleve_no_resp1==0)||($eleve_no_resp2==0)){
+		if(("$eleve_no_resp1"=="0")||("$eleve_no_resp2"=="0")){
 			echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 			echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
 			echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
@@ -1341,20 +1361,26 @@ if(isset($eleve_login)){
 	else{
 		$lig_etab=mysql_fetch_object($res_etab);
 
-		$sql="SELECT * FROM etablissements WHERE id='$lig_etab->id_etablissement'";
-		$res_etab2=mysql_query($sql);
-		if(mysql_num_rows($res_etab2)==0) {
-			echo "<p>L'association avec l'identifiant d'établissement existe (<i>$lig_etab->id_etablissement</i>), mais les informations correspondantes n'existent pas dans la table 'etablissement'.<br />\n";
-
-			echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
+		if("$lig_etab->id_etablissement"==""){
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Définir l'établissement d'origine</a>";
 			echo "</p>\n";
 		}
 		else{
-			echo "<p>L'établissement d'origine de l'élève est:<br />\n";
-			$lig_etab2=mysql_fetch_object($res_etab2);
-			echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
-			echo "</p>\n";
+			$sql="SELECT * FROM etablissements WHERE id='$lig_etab->id_etablissement'";
+			$res_etab2=mysql_query($sql);
+			if(mysql_num_rows($res_etab2)==0) {
+				echo "<p>L'association avec l'identifiant d'établissement existe (<i>$lig_etab->id_etablissement</i>), mais les informations correspondantes n'existent pas dans la table 'etablissement'.<br />\n";
+
+				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
+				echo "</p>\n";
+			}
+			else{
+				echo "<p>L'établissement d'origine de l'élève est:<br />\n";
+				$lig_etab2=mysql_fetch_object($res_etab2);
+				echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
+				echo "</p>\n";
+			}
 		}
 	}
 	echo "<p><br /></p>\n";

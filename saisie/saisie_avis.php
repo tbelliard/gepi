@@ -65,23 +65,28 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) 
 	}
 
     $nombre_classe = mysql_num_rows($call_classe);
-    $j = "0";
-    while ($j < $nombre_classe) {
-        $id_classe = mysql_result($call_classe, $j, "id");
-        $classe_suivi = mysql_result($call_classe, $j, "classe");
-        echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</a>";
-        echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis2.php?id_classe=$id_classe'>Saisir les avis, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
-        include "../lib/periodes.inc.php";
-        $k="1";
-        while ($k < $nb_periode) {
-           if ($ver_periode[$k] != "O") {
-               echo "<b>$classe_suivi</b> --- ".ucfirst($nom_periode[$k]);
-               echo " --- <a href='import_app_cons.php?id_classe=$id_classe&amp;periode_num=$k'>Importer un fichier d'appréciations (format csv)</a><br />";
-           }
-           $k++;
-        }
-        $j++;
-    }
+	if($nombre_classe==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+	}
+	else{
+		$j = "0";
+		while ($j < $nombre_classe) {
+			$id_classe = mysql_result($call_classe, $j, "id");
+			$classe_suivi = mysql_result($call_classe, $j, "classe");
+			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</a>";
+			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis2.php?id_classe=$id_classe'>Saisir les avis, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
+			include "../lib/periodes.inc.php";
+			$k="1";
+			while ($k < $nb_periode) {
+			if ($ver_periode[$k] != "O") {
+				echo "<b>$classe_suivi</b> --- ".ucfirst($nom_periode[$k]);
+				echo " --- <a href='import_app_cons.php?id_classe=$id_classe&amp;periode_num=$k'>Importer un fichier d'appréciations (format csv)</a><br />";
+			}
+			$k++;
+			}
+			$j++;
+		}
+	}
 } else {
     $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
     $nombre_classe = mysql_num_rows($call_prof_classe);

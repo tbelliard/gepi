@@ -244,24 +244,30 @@ if (isset($id_classe)) {
 			ORDER BY classe");
 	}
     $lignes = mysql_num_rows($appel_donnees);
-    $i = 0;
-	$nb_class_par_colonne=round($lignes/3);
-        //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
-        echo "<td align='left'>\n";
-    while($i < $lignes){
-	$id_classe = mysql_result($appel_donnees, $i, "id");
-	$display_class = mysql_result($appel_donnees, $i, "classe");
-	if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-		echo "</td>\n";
-		//echo "<td style='padding: 0 10px 0 10px'>\n";
-		echo "<td align='left'>\n";
+
+	if($lignes==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	echo "<a href='index2.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
-	$i++;
-    }
-    echo "</table>\n";
+	else{
+		$i = 0;
+		$nb_class_par_colonne=round($lignes/3);
+			//echo "<table width='100%' border='1'>\n";
+			echo "<table width='100%'>\n";
+			echo "<tr valign='top' align='center'>\n";
+			echo "<td align='left'>\n";
+		while($i < $lignes){
+		$id_classe = mysql_result($appel_donnees, $i, "id");
+		$display_class = mysql_result($appel_donnees, $i, "classe");
+		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+			echo "</td>\n";
+			//echo "<td style='padding: 0 10px 0 10px'>\n";
+			echo "<td align='left'>\n";
+		}
+		echo "<a href='index2.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
+		$i++;
+		}
+		echo "</table>\n";
+	}
 }
 require("../lib/footer.inc.php");
 ?>

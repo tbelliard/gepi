@@ -291,19 +291,24 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 	  echo "classe";
     }
     echo "</p>\n";
-    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins.<br />\n";
 
-	unset($lien_classe);
-	unset($txt_classe);
-	$i = 0;
-	while ($i < $nombreligne){
-		$lien_classe[]="index.php?id_classe=".mysql_result($calldata, $i, "id");
-		$txt_classe[]=mysql_result($calldata, $i, "classe");
-		$i++;
+	if($nombreligne==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
+	else{
+		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins.<br />\n";
 
-	tab_liste($txt_classe,$lien_classe,3);
+		unset($lien_classe);
+		unset($txt_classe);
+		$i = 0;
+		while ($i < $nombreligne){
+			$lien_classe[]="index.php?id_classe=".mysql_result($calldata, $i, "id");
+			$txt_classe[]=mysql_result($calldata, $i, "classe");
+			$i++;
+		}
 
+		tab_liste($txt_classe,$lien_classe,3);
+	}
 	/*
 	$nb_class_par_colonne=round($nombreligne/3);
 	//echo "<table width='100%' border='1'>\n";

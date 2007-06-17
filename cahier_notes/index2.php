@@ -238,17 +238,21 @@ if (isset($id_classe)) {
         echo "</table>\n";
 	*/
 
-	$i = 0;
-	unset($tab_lien);
-	unset($tab_txt);
-	while ($i < $lignes){
-		$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".mysql_result($appel_donnees, $i, "id");
-		$tab_txt[$i] = mysql_result($appel_donnees, $i, "classe");
-		$i++;
-
+	if($lignes==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	tab_liste($tab_txt,$tab_lien,3);
+	else{
+		$i = 0;
+		unset($tab_lien);
+		unset($tab_txt);
+		while ($i < $lignes){
+			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".mysql_result($appel_donnees, $i, "id");
+			$tab_txt[$i] = mysql_result($appel_donnees, $i, "classe");
+			$i++;
 
+		}
+		tab_liste($tab_txt,$tab_lien,3);
+	}
 	//echo "</p>\n";
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";

@@ -71,17 +71,23 @@ if (!(isset($id_classe))) {
 
 	$lignes = mysql_num_rows($appel_donnees);
 
-	unset($lien_classe);
-	unset($txt_classe);
-	$i = 0;
-	//while ($i < $nombreligne){
-	while ($i < $lignes){
-		$lien_classe[]="verif_bulletins.php?id_classe=".mysql_result($appel_donnees, $i, "id");
-		$txt_classe[]=ucfirst(mysql_result($appel_donnees, $i, "classe"));
-		$i++;
-	}
 
-	tab_liste($txt_classe,$lien_classe,3);
+	if($lignes==0){
+		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+	}
+	else{
+		unset($lien_classe);
+		unset($txt_classe);
+		$i = 0;
+		//while ($i < $nombreligne){
+		while ($i < $lignes){
+			$lien_classe[]="verif_bulletins.php?id_classe=".mysql_result($appel_donnees, $i, "id");
+			$txt_classe[]=ucfirst(mysql_result($appel_donnees, $i, "classe"));
+			$i++;
+		}
+
+		tab_liste($txt_classe,$lien_classe,3);
+	}
 
 	/*
 	$nb_class_par_colonne=round($lignes/3);

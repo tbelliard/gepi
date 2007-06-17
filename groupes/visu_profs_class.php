@@ -256,7 +256,7 @@ else{
     }
     */
     if(mysql_num_rows($result_classes)==0){
-        echo "<p>Il semble qu'aucune classe n'ait encore été créée.</p>\n";
+        echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
     }
     else{
         $nb_classes=mysql_num_rows($result_classes);
