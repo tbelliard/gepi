@@ -61,7 +61,7 @@ $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysql_num_rows($call_data);
 if ($nombre_lignes != 0) {
     $flag = 1;
-    echo "<table cellpadding=3 cellspacing=0 style='border: none; border-collapse: collapse;'>";
+    echo "<table cellpadding=3 cellspacing=0 style='border: none; border-collapse: collapse;'>\n";
     $i = 0;
     while ($i < $nombre_lignes){
         $id_classe = mysql_result($call_data, $i, "id");
@@ -70,22 +70,22 @@ if ($nombre_lignes != 0) {
         if ($flag==1) { echo " class='fond_sombre'"; $flag = 0;} else {$flag=1;};
         echo "><td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>";
 		echo "<b>$classe</b> ";
-        echo "</td>";
+        echo "</td>\n";
 		echo "<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>";
-		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='' /> Périodes</a></td>";
+		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='' /> Périodes</a></td>\n";
 		//echo "<td>|<a href='modify_class.php?id_classe=$id_classe'>Gérer les matières</a></td>";
 		echo "<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>";
         $nb_per = mysql_num_rows(mysql_query("select id_classe from periodes where id_classe = '$id_classe'"));
         if ($nb_per != 0) {
             echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt='' /> Élèves</a></td><td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>";
         } else {
-            echo "&nbsp;</td><td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>";
+            echo "&nbsp;</td>\n<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>";
         }
         if ($nb_per != 0) {
-            echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a></td>";
+            echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a></td>\n";
 			echo "<td style='padding: 5px; padding-right: 10px; border-right: 1px solid #BBBBBB;'>";
         } else {
-            echo "&nbsp;</td><td>";
+            echo "&nbsp;</td>\n<td>";
         }
 
 	//=======================================
@@ -96,18 +96,27 @@ if ($nombre_lignes != 0) {
         <a href='../lib/confirm_query.php?liste_cible=$id_classe&amp;action=del_classe'>Supprimer la classe</a> |
         </td><td>";
 */
-        echo "[<a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe'>config. simplifiée</a>]</td>";
+        if ($nb_per != 0) {
+			echo "[<a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe'>config. simplifiée</a>]</td>\n";
+		}
+		else {
+            echo "&nbsp;</td>\n";
+        }
+
 		echo "<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>
-	<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt='' /> Paramètres</a></td><td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>
-        <a href='../lib/confirm_query.php?liste_cible=$id_classe&amp;action=del_classe'><img src='../images/icons/delete.png' alt='' /> Supprimer</a>
-        </td><td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>";
+	<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt='' /> Paramètres</a></td>\n";
+
+		echo "<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB;'>
+        <a href='../lib/confirm_query.php?liste_cible=$id_classe&amp;action=del_classe'><img src='../images/icons/delete.png' alt='' /> Supprimer</a></td>\n";
+
+		echo "<td style='padding: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px solid #BBBBBB; border-right: 1px solid #BBBBBB;'>";
 	//=======================================
 
 
         if ($nb_per == 0) echo " <b>(Classe virtuelle)</b> "; else echo "&nbsp;";
 
-        echo "</td></tr>";
-    $i++;
+        echo "</td>\n</tr>\n";
+    	$i++;
     }
 
     echo "</table>";

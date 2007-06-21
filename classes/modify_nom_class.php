@@ -51,7 +51,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($display_coef)) $display_coef = 'y'; else $display_coef = 'n';
 	if (isset($display_mat_cat)) $display_mat_cat = 'y'; else $display_mat_cat = 'n';
 	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
-	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_nbdev = 'n';
+	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_moy_gen = 'n';
 
 	if (!isset($modele_bulletin)) $$modele_bulletin = 1;
 
