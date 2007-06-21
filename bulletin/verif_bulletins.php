@@ -136,7 +136,7 @@ if (!(isset($id_classe))) {
     }
 
     if (!$flag) {
-        echo "<p>ATTENTION : certains élèves de cette classe n'ont pas de CPE responsable attribué. Cela génèrera un msesage d'erreur sur la page d'édition des bulletins. Il faut corriger ce problème avant impression (contactez l'administrateur).";
+        echo "<p>ATTENTION : certains élèves de cette classe n'ont pas de CPE responsable attribué. Cela génèrera un message d'erreur sur la page d'édition des bulletins. Il faut corriger ce problème avant impression (contactez l'administrateur).";
     }
 
 	$sql_classe="SELECT * FROM `classes`WHERE id=$id_classe";
