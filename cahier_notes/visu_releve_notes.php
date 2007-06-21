@@ -679,7 +679,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) AND empty($format))
 	{
 // fin rajout christian
-        echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les relevés de notes :</p>\n";
+        //echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les relevés de notes :</p>\n";
 /*
         echo "<table border='0'>\n";
         $i = 0;
@@ -717,17 +717,22 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         echo "</table>\n";
 		*/
 
-		$i = 0;
-		unset($tab_lien);
-		unset($tab_txt);
-		while ($i < $nombreligne){
-			$tab_lien[$i] = "visu_releve_notes.php?id_classe=".mysql_result($calldata, $i, "id");
-			$tab_txt[$i] = mysql_result($calldata, $i, "classe");
-			$i++;
-
+		if($nombreligne==0){
+			echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 		}
-		tab_liste($tab_txt,$tab_lien,3);
+		else{
+	        echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les relevés de notes :</p>\n";
+			$i = 0;
+			unset($tab_lien);
+			unset($tab_txt);
+			while ($i < $nombreligne){
+				$tab_lien[$i] = "visu_releve_notes.php?id_classe=".mysql_result($calldata, $i, "id");
+				$tab_txt[$i] = mysql_result($calldata, $i, "classe");
+				$i++;
 
+			}
+			tab_liste($tab_txt,$tab_lien,3);
+		}
 // rajout christian
 	}
 // fin rajout christian

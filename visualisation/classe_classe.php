@@ -74,7 +74,7 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
 			ORDER BY classe";
 	}
 
-	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
+	if(((getSettingValue("GepiAccesMoyennesProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
 		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
 		((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe'))) {
 		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";

@@ -258,7 +258,8 @@ require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
 ?>    <script type='text/javascript' language="JavaScript">
     function verif1() {
-    document.formulaire.quelles_classes[2].checked = true;
+		//document.formulaire.quelles_classes[2].checked = true;
+		document.formulaire.quelles_classes[3].checked = true;
     }
     function verif2() {
     <?php $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -346,58 +347,134 @@ if (!isset($quelles_classes)) {
     ?>
     <form enctype="multipart/form-data" action="index.php" method="post" name="formulaire">
     <!--table cellpadding="5"-->
-    <table cellpadding="5" width="100%">
-    <tr><td>
-    <span class = "norme"><input type="radio" name="quelles_classes" value="toutes" onclick="verif2()" checked />
-    <?php echo "Tous les élèves.</span><br />"; ?>
-    <span class = "norme"><input type="radio" name="quelles_classes" value="na" onclick="verif2()" />
-    <?php echo "Les élèves non affectés à une classe.</span><br />\n"; ?>
-    <?php
+    <table cellpadding="5" width="100%" border='0'>
+    <!--tr><td-->
+
+	<?php
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='quelles_classes' value='toutes' onclick='verif2()' checked />\n";
+	echo "</td>\n";
+	echo "<td>\n";
+    echo "<span class='norme'>Tous les élèves.</span><br />";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+/*
+        $calldata = mysql_query("select e.* from eleves e
+        LEFT JOIN j_eleves_classes c ON c.login=e.login
+        where c.login is NULL
+        ORDER BY $order_type
+        ");
+*/
+
+
+	$sql="SELECT 1=1 FROM eleves e
+        LEFT JOIN j_eleves_classes c ON c.login=e.login
+        where c.login is NULL;";
+	$test_na=mysql_query($sql);
+	//if($test_na){
+	if(mysql_num_rows($test_na)==0){
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "&nbsp;\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class='norme'>Tous les élèves sont affectés dans une classe.</span><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	else{
+		echo "<tr>\n";
+		echo "<td>\n";
+	    echo "<input type='radio' name='quelles_classes' value='na' onclick='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class='norme'>Les élèves non affectés à une classe (<i>".mysql_num_rows($test_na)."</i>).</span><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
+	$test_incomplet=mysql_query($sql);
+	if(mysql_num_rows($test_incomplet)==0){
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "&nbsp;\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class='norme'>Tous les élèves ont leur Elenoet et leur Numéro national (INE) renseigné.</span><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+	else{
+		echo "<tr>\n";
+		echo "<td>\n";
+	    echo "<input type='radio' name='quelles_classes' value='incomplet' onclick='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<span class='norme'>Les élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
     $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     $nb = mysql_num_rows($classes_list);
     if ($nb !=0) {
-        echo "<span class = \"norme\"><input type=\"radio\" name=\"quelles_classes\" value=\"certaines\" />";
+		echo "<tr>\n";
+		echo "<td valign='top'>\n";
 
-        echo "Seulement les élèves des classes sélectionnées ci-dessous : </span><br />\n";
+        echo "<input type=\"radio\" name=\"quelles_classes\" value=\"certaines\" />";
 
-	$nb_class_par_colonne=round($nb/3);
-        //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='center'>\n";
+		echo "</td>\n";
+		echo "<td valign='top'>\n";
 
-        $i = '0';
+        echo "<span class = \"norme\">Seulement les élèves des classes sélectionnées ci-dessous : </span><br />\n";
 
-        echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "<td align='left'>\n";
+			$nb_class_par_colonne=round($nb/3);
+			//echo "<table width='100%' border='1'>\n";
+			echo "<table width='100%'>\n";
+			echo "<tr valign='top' align='center'>\n";
 
-        while ($i < $nb) {
-		$id_classe = mysql_result($classes_list, $i, 'id');
-		$temp = "case_".$id_classe;
-		$classe = mysql_result($classes_list, $i, 'classe');
+			$i = '0';
 
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-			echo "</td>\n";
-			//echo "<td style='padding: 0 10px 0 10px'>\n";
+			echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 			echo "<td align='left'>\n";
-		}
 
-		//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
-		//echo "Classe : $classe </span><br />\n";
-		echo "<input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
-		echo "Classe : $classe<br />\n";
-		$i++;
-        }
-        echo "</td>\n";
-        echo "</tr>\n";
-        echo "</table>\n";
+			while ($i < $nb) {
+			$id_classe = mysql_result($classes_list, $i, 'id');
+			$temp = "case_".$id_classe;
+			$classe = mysql_result($classes_list, $i, 'classe');
+
+			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+				echo "</td>\n";
+				//echo "<td style='padding: 0 10px 0 10px'>\n";
+				echo "<td align='left'>\n";
+			}
+
+			//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
+			//echo "Classe : $classe </span><br />\n";
+			echo "<input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
+			echo "Classe : $classe<br />\n";
+			$i++;
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
+		echo "</td>\n";
+		echo "</tr>\n";
     }
+
     ?>
+	</table>
     <input type="hidden" name="is_posted" value="2" />
-    </td>
+    <!--/td-->
     <!--td valign="top" align="center">
     <input type=submit value=Valider />
     </td-->
-    </tr></table>
+    <!--/tr></table-->
     <p align='center'><input type=submit value=Valider /></p>
     </form>
     <?php
@@ -449,6 +526,10 @@ if (!isset($quelles_classes)) {
         $calldata = mysql_query("select e.* from eleves e
         LEFT JOIN j_eleves_classes c ON c.login=e.login
         where c.login is NULL
+        ORDER BY $order_type
+        ");
+    } else if ($quelles_classes == 'incomplet') {
+        $calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
         ORDER BY $order_type
         ");
     }
