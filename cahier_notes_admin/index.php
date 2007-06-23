@@ -85,7 +85,7 @@ require_once("../lib/header.inc");
 		echo "Permettre l'export des carnets de notes au format ODS.<br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)\n";
 	}
 	else{
-		echo "En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' target='_blank'>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitée est disponible gratuitement.\n";
+		echo "En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' target='_blank'>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitée est disponible gratuitement.<br />Emplacement alternatif: <a href='http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip'>http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip</a>\n";
 
 		// Comme la bibliothèque n'est pas présente, on force la valeur à 'n':
 		$svg_param=saveSetting("export_cn_ods", 'n');
