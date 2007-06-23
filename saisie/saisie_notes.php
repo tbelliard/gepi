@@ -78,8 +78,9 @@ if ($_SESSION['statut'] != "secours") {
 if (isset($is_posted) and ($is_posted == 'yes')) {
 
     foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
-        $k=1;
-        while ($k < $nb_periode) {
+        //$k=1;
+        $k=$periode_cn;
+        //while ($k < $nb_periode) {
             if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
                 $eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
                 if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
@@ -112,12 +113,13 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
                 }
             }
 
-            $k++;
-        }
+            //$k++;
+        //}
     }
     // on indique qu'il faut le cas échéant procéder à un recalcul du rang des élèves
-    $k=1;
-    while ($k < $nb_periode) {
+    //$k=1;
+	$k=$periode_cn;
+    //while ($k < $nb_periode) {
         if (isset($modif[$k]) and ($modif[$k] == 'yes')) {
             $recalcul_rang = sql_query1("select recalcul_rang from groupes
             where id='".$current_group["id"]."' limit 1");
@@ -132,8 +134,8 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
             $req = mysql_query("update groupes set recalcul_rang = '".$recalcul_rang."'
             where id='".$current_group["id"]."'");
         }
-        $k++;
-    }
+        //$k++;
+    //}
 
 
     $affiche_message = 'yes';
@@ -362,6 +364,10 @@ foreach ($liste_eleves as $eleve_login) {
     $k=1;
     while ($k < $nb_periode) {
 
+		$appel_cahier_notes_periode = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
+		$id_racine_periode = @mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
+
+
         if (in_array($eleve_login, $current_group["eleves"][$k]["list"])) {
             //
             // si l'élève appartient au groupe pour cette période
@@ -385,7 +391,8 @@ foreach ($liste_eleves as $eleve_login) {
                 // si la période est verrouillée pour l'élève
                 //
 
-				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				//$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine_periode')");
 				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
 					$moy = @mysql_result($moyenne_query, 0, "note");
@@ -449,7 +456,8 @@ foreach ($liste_eleves as $eleve_login) {
 				// PAS COMPLETEMENT...
                 //
 
-				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				//$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine_periode')");
 				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
 					$moy = @mysql_result($moyenne_query, 0, "note");
@@ -585,6 +593,10 @@ while ($k < $nb_periode) {
     //if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
 	//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
 	if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
+
+		$appel_cahier_notes_periode = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
+		$id_racine_periode = @mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
+		/*
         $call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
         (
         j.id_groupe='" . $current_group["id"] ."' AND
@@ -592,6 +604,15 @@ while ($k < $nb_periode) {
         n.login = j.login AND
         n.statut='y' AND
         n.id_conteneur='$id_racine'
+        )");
+		*/
+        $call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
+        (
+        j.id_groupe='" . $current_group["id"] ."' AND
+        j.periode = '$periode_cn' AND
+        n.login = j.login AND
+        n.statut='y' AND
+        n.id_conteneur='$id_racine_periode'
         )");
 
         $moy_moy = mysql_result($call_moy_moy, 0, "moyenne");
