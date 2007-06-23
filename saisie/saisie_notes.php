@@ -165,11 +165,16 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 
 $affiche_bascule = 'no';
 $i = 1;
-
+/*
 while ($i < $nb_periode) {
     if (($current_group["classe"]["ver_periode"]["all"][$i] >= 2) and ($periode_cn == $i)) $affiche_bascule = 'yes';
     $i++;
 }
+*/
+if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
+	$affiche_bascule = 'yes';
+}
+
 echo "<p class=bold>";
 if (isset($retour_cn)) {
     echo "<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes évaluations</a>";
@@ -181,16 +186,16 @@ echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . 
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>";
 echo "</p>";
-echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</H2>";
+echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</h2>\n";
+
 echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 if (($affiche_bascule == 'yes') and ($is_posted == 'bascule')) echo "change = 'yes';"; else echo "change = 'no';";
-
 echo "</script>\n";
 
 //echo "<table  border=\"0\">\n";
 if ($affiche_bascule == 'yes') {
-//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font></td></tr>\n";
-if ($id_racine == '') echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";
+	//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font></td></tr>\n";
+	if ($id_racine == '') echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\">\n";
     if ($is_posted != 'bascule') {
         //echo "<tr><td><input type=\"submit\" value=\"Recopier\"></td><td> : Recopier la colonne \"carnet de notes\" dans la colonne \"bulletin\"</td></tr>\n";
@@ -258,42 +263,67 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 ?>
 
 <!--tr><td><input type=submit value=Enregistrer></td><td> : Enregistrer les moyennes dans le bulletin</td></tr></table-->
-<p><input type="submit" value="Enregistrer" /> : Enregistrer les moyennes dans le bulletin
-</p>
-<p><i>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code 'n' ou '-' pour absence de note.</i></p>
+
 <?php
-echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
-?>
-<table border=1 cellspacing=2 cellpadding=1>
-<tr>
-    <td><b><a href="saisie_notes.php?id_groupe=<?php echo $id_groupe;?>&amp;periode_cn=<?php echo $periode_cn;?>&amp;order_by=nom">Nom Prénom</a></b></td>
-    <?php
+	// Il ne faudrait afficher le bouton d'enregistrement que si la période choisie est ouverte ou seulement partiellement close.
+	if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
+		echo "<p><input type='submit' value='Enregistrer' /> : Enregistrer les moyennes dans le bulletin</p>\n";
+
+		echo "<p><i>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code 'n' ou '-' pour absence de note.</i></p>\n";
+	}
+
+	echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
+
+	echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
+	echo "<tr>\n";
+    echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom'>Nom Prénom</a></b></td>\n";
+
     if ($multiclasses) {
         echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe'>Classe</a></b></td>";
     }
     $i = 1;
     while ($i < $nb_periode) {
+		/*
         if (($periode_cn == $i) and ($current_group["classe"]["ver_periode"]["all"][$i] >= 2)) {
+        //if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
             echo "<th bgcolor=\"$couleur_fond\" colspan=\"2\"><b>".ucfirst($nom_periode[$i])."</b></th>\n";
         } else {
             echo "<td><b>".ucfirst($nom_periode[$i])."</b></td>\n";
         }
+		*/
+
+		echo "<th ";
+		if ($periode_cn == $i) {
+			echo "bgcolor=\"$couleur_fond\" ";
+		}
+		//echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i])."</b></th>\n";
+		echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i&amp;retour_cn=yes'>".ucfirst($nom_periode[$i])."</a></b>";
+		//$statut_verrouillage=$current_group["classe"]["ver_periode"]["all"][$i];
+		//echo "<br />\$statut_verrouillage=$statut_verrouillage";
+		echo "</th>\n";
+
         $i++;
     }
-echo "</tr>";
-echo "<tr><td>&nbsp;</td>";
-if ($multiclasses) echo "<td>&nbsp;</td>";
+	echo "</tr>\n";
+
+	echo "<tr>\n<td>&nbsp;</td>\n";
+	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
 
     $i = 1;
     while ($i < $nb_periode) {
-        if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
-            if ($periode_cn == $i) {
-                echo "<td bgcolor=\"$couleur_moy_cn\">Carnet de notes</td><td bgcolor=\"$couleur_fond\">Bulletin</td>\n";
+        //if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+        //if ($current_group["classe"]["ver_periode"]["all"][$i] >= 1) {
+        if ($current_group["classe"]["ver_periode"]["all"][$i]!=0) {
+			if ($periode_cn == $i) {
+                echo "<td bgcolor=\"$couleur_moy_cn\" style='text-align:center;'>Carnet<br />de notes</td><td bgcolor=\"$couleur_fond\"  style='text-align:center;'>Bulletin</td>\n";
             } else {
-                echo "<td>&nbsp;</td>\n";
+                //echo "<td>&nbsp;</td>\n";
+                echo "<td style='text-align:center;'>Carnet<br />de notes</td><td style='text-align:center;'>Bulletin</td>\n";
             }
         } else {
-            echo "<td><b>".ucfirst($gepiClosedPeriodLabel)."</b></td>\n";
+            echo "<td style='text-align:center;' colspan='2'";
+			if ($periode_cn == $i) {echo " bgcolor='$couleur_fond'";}
+			echo "><b>".ucfirst($gepiClosedPeriodLabel)."</b></td>\n";
         }
         //echo "</td>\n";
         $i++;
@@ -306,7 +336,7 @@ if ($multiclasses) echo "<td>&nbsp;</td>";
 if ($order_by != "classe") {
     $liste_eleves = $current_group["eleves"]["all"]["list"];
 } else {
-    // Ici, on tri par classe
+    // Ici, on trie par classe
     // On va juste créer une liste des élèves pour chaque classe
     $tab_classes = array();
     foreach($current_group["classes"]["list"] as $classe_id) {
@@ -348,28 +378,60 @@ foreach ($liste_eleves as $eleve_login) {
             $eleve_statut = @mysql_result($note_query, 0, "statut");
             $eleve_note = @mysql_result($note_query, 0, "note");
             $eleve_login_t[$k] = $eleve_login."_t".$k;
-            if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
+
+            //if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N") {
+            if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "O") {
                 //
-                // si la période est verrouillée
+                // si la période est verrouillée pour l'élève
                 //
 
-                if ($periode_cn == $k) {
-                    // Affichage de la colonne du carnet de notes
-                    $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
-                    $statut_moy = @mysql_result($moyenne_query, 0, "statut");
-                    if ($statut_moy == 'y') {
-                        $moy = @mysql_result($moyenne_query, 0, "note");
-                    } else {
-                        $moy = '&nbsp;';
-                    }
-                    $mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>$moy</center></td>\n";
-                    $temp = "bgcolor=$couleur_fond";
+				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+				if ($statut_moy == 'y') {
+					$moy = @mysql_result($moyenne_query, 0, "note");
+				} else {
+					$moy = '&nbsp;';
+				}
+
+				//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
+				if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
+					// La période n'est pas complètement verrouillée pour tous.
+
+					if ($periode_cn == $k) {
+						// Affichage de la colonne du carnet de notes
+						/*
+						$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+						$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+						if ($statut_moy == 'y') {
+							$moy = @mysql_result($moyenne_query, 0, "note");
+						} else {
+							$moy = '&nbsp;';
+						}
+						*/
+						$mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>$moy</center></td>\n";
+						$temp = " bgcolor='$couleur_fond'";
+
+						// Affichage de la colonne 'note'
+						$mess[$k] =$mess[$k]."<td$temp><center><b>";
+					}
+					else{
+						// Affichage de la colonne du carnet de notes
+						$mess[$k] = "<td><center>$moy</center></td>\n";
+						// Affichage de la colonne 'note' du bulletin
+						$mess[$k] =$mess[$k]."<td><center><b>";
+					}
                 } else {
                     $mess[$k] = '';
                     $temp = "";
+
+					// Affichage de la colonne 'note'
+					$mess[$k] =$mess[$k]."<td colspan='2'";
+					if ($periode_cn == $k) {$mess[$k].=" bgcolor='$couleur_fond'";}
+					$mess[$k].="><center><b>";
                 }
-                // Affichage de la colonne 'note'
-                $mess[$k] =$mess[$k]."<td><center><b>";
+
+                // Affichage de la colonne 'note' -> REMONTé
+                //$mess[$k] =$mess[$k]."<td><center><b>";
                 if ($eleve_statut != '') {
                     $mess[$k] = $mess[$k].$eleve_statut;
                 } else {
@@ -383,54 +445,94 @@ foreach ($liste_eleves as $eleve_login) {
                 $mess[$k] =$mess[$k]."</b></center></td>\n";
             } else {
                 //
-                // si la période n'est pas verrouillée
+                // si la période n'est pas verrouillée pour l'élève
+				// PAS COMPLETEMENT...
                 //
+
+				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+				if ($statut_moy == 'y') {
+					$moy = @mysql_result($moyenne_query, 0, "note");
+				} else {
+					$moy = '&nbsp;';
+				}
 
                 if ($periode_cn == $k) {
                     // Affichage de la colonne du carnet de notes
-                    $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
+					/*
+					$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
                     $statut_moy = @mysql_result($moyenne_query, 0, "statut");
                     if ($statut_moy == 'y') {
                         $moy = @mysql_result($moyenne_query, 0, "note");
                     } else {
                         $moy = '&nbsp;';
                     }
+					*/
                     $mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>$moy</center></td>\n";
                     $temp = "bgcolor=$couleur_fond";
                 } else {
-                    $mess[$k] = '';
+                    //$mess[$k] = '';
+                    $mess[$k] = "<td><center>$moy</center></td>\n";
                     $temp = "";
                 }
+
                 // Affichage de la colonne 'note'
-                if (($periode_cn == $k) and ($is_posted=='bascule')) {
-                    $mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
-                    if ($statut_moy == 'y') {
-                        $mess[$k] = $mess[$k]."\"".@mysql_result($moyenne_query, 0, "note")."\"";
-                    } else {
-                        $mess[$k] = $mess[$k]."\"\"";
-                    }
-                    $mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></center></td>\n";
-                } else {
-                    $mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
-                    if ($eleve_statut != '') {
-                        $mess[$k] = $mess[$k]."\"".$eleve_statut."\"";
-                    } else {
-                        $mess[$k] = $mess[$k]."\"".$eleve_note."\"";
-                    }
-                    $mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></center></td>\n";
-                }
+				if ($periode_cn == $k){
+					if (($periode_cn == $k) and ($is_posted=='bascule')) {
+						$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
+						if ($statut_moy == 'y') {
+							$mess[$k] = $mess[$k]."\"".@mysql_result($moyenne_query, 0, "note")."\"";
+						} else {
+							$mess[$k] = $mess[$k]."\"\"";
+						}
+						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></center></td>\n";
+					} else {
+						$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
+						if ($eleve_statut != '') {
+							$mess[$k] = $mess[$k]."\"".$eleve_statut."\"";
+						} else {
+							$mess[$k] = $mess[$k]."\"".$eleve_note."\"";
+						}
+						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></center></td>\n";
+					}
+				}
+				else{
+					$mess[$k] = $mess[$k]."<td><center><b>";
+					if ($eleve_statut != '') {
+						$mess[$k] = $mess[$k].$eleve_statut;
+					} else {
+						$mess[$k] = $mess[$k].$eleve_note;
+					}
+					$mess[$k] = $mess[$k]."</b></center></td>\n";
+				}
             }
 
-            } else {
+		} else {
             //
             // si l'élève n'est pas dans le groupe pour la période
             //
             $suit_option[$k] = 'no';
+			/*
             if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
                 $mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>-</center></td><td bgcolor=\"$couleur_fond\"><center>-</center></td>\n";
             } else {
                $mess[$k] = "<td><center>-</center></td>\n";
             }
+			*/
+
+			//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
+			if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
+				if ($periode_cn == $k) {
+					$mess[$k]="<td bgcolor=\"$couleur_moy_cn\"><center>-</center></td><td bgcolor=\"$couleur_fond\"><center>-</center></td>\n";
+				} else {
+					$mess[$k]="<td><center>-</center></td><td><center>-</center></td>\n";
+				}
+			} else {
+				$mess[$k]="<td colspan='2'";
+				if($periode_cn == $k){$mess[$k].=" bgcolor='$couleur_fond'";}
+				$mess[$k]."><center>-</center></td>\n";
+			}
+
         }
 
         $k++;
@@ -449,7 +551,7 @@ foreach ($liste_eleves as $eleve_login) {
         $num_id++;
         if ($order_by == "nom" OR $prev_classe == $eleve_classe OR $prev_classe == null) {
             echo "<tr><td>$eleve_nom $eleve_prenom</td>";
-            if ($multiclasses) echo "<td>$eleve_classe</td>";
+            if ($multiclasses) echo "<td style='text-align:center;'>$eleve_classe</td>";
             echo "\n";
             $prev_classe = $eleve_classe;
         } else {
@@ -471,16 +573,18 @@ foreach ($liste_eleves as $eleve_login) {
 
 echo "<tr>";
 if ($multiclasses) {
-    echo "<td colspan=2>";
+    echo "<td colspan='2'>";
 } else {
     echo "<td>";
 }
-echo "Moyennes :</td>";
+echo "Moyennes :</td>\n";
 
 $k='1';
 $temp = '';
 while ($k < $nb_periode) {
-    if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
+    //if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
+	//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
+	if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
         $call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
         (
         j.id_groupe='" . $current_group["id"] ."' AND
@@ -496,12 +600,25 @@ while ($k < $nb_periode) {
         } else {
            $affiche_moy = "&nbsp;";
         }
-        echo "<td bgcolor=\"$couleur_moy_cn\"><center><b>$affiche_moy</b></center></td>\n";
-        $temp = "bgcolor=\"$couleur_fond\"";
+
+		if ($periode_cn == $k) {
+			echo "<td bgcolor=\"$couleur_moy_cn\"><center>$affiche_moy</center></td>\n";
+			$temp = "bgcolor=\"$couleur_fond\"";
+		}
+		else{
+			echo "<td><center>$affiche_moy</center></td>\n";
+			$temp = "";
+		}
     } else {
-        $temp = '';
+        //$temp = '';
+        $temp = " colspan='2'";
+		if($periode_cn == $k){
+			$temp.=" bgcolor='$couleur_fond'";
+		}
     }
-    if (($is_posted=='bascule') and (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2))) {
+
+    //if (($is_posted=='bascule') and (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2))) {
+    if (($is_posted=='bascule') and (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k]!=0))) {
         echo "<td><center><b>$affiche_moy</b></center></td>\n";
     } else {
         $call_moyenne_t[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
@@ -514,7 +631,7 @@ while ($k < $nb_periode) {
                                     ")");
         $moyenne_t[$k] = mysql_result($call_moyenne_t[$k], 0, "moyenne");
         if ($moyenne_t[$k] != '') {
-            echo "<td ".$temp."><center>$moyenne_t[$k]</center></td>\n";
+            echo "<td ".$temp."><center><b>$moyenne_t[$k]</b></center></td>\n";
         } else {
             echo "<td ".$temp.">&nbsp;</td>\n";
         }
@@ -540,10 +657,15 @@ if ($is_posted == 'bascule') {
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
 <?php
 if (isset($retour_cn)) echo "<input type=\"hidden\" name=\"retour_cn\" value=\"".$retour_cn."\" />\n";
+
+if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
+	echo "<center>\n";
+	echo "<div id='fixe'>\n";
+	echo "<input type='submit' value='Enregistrer' />\n";
+	echo "</div>\n";
+	echo "</center>\n";
+}
 ?>
-<center><div id="fixe">
-<input type="submit" value="Enregistrer" />
-</div></center>
 
 </form>
 
