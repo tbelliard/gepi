@@ -449,7 +449,7 @@ echo "}\n";
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-echo "\$test_coef=$test_coef<br />\n";
+//echo "\$test_coef=$test_coef<br />\n";
 
 // Afficher la moyenne générale? (également conditionné par la présence d'un coef non nul au moins)
 $display_moy_gen = sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
