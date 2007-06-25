@@ -1,4 +1,5 @@
-<?PHP
+<?php
+	//echo "\$test_coef=$test_coef<br />\n";
         // On initialise le tableau des notes et appréciations :
         echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
     echo "<thead>\n";
@@ -453,13 +454,15 @@
             }
         }
 
-
+	//echo "<tr><td>\$display_moy_gen=$display_moy_gen</td><td>\$test_coef=$test_coef</td><td>\$total_coef=$total_coef</td><td>\$total_coef_eleve[$i]=$total_coef_eleve[$i]</td></tr>\n";
 
 	//if($ne_pas_afficher_moy_gen==""){
 	if($display_moy_gen=="y"){
 		// Affichage des moyennes générales
 		if ($test_coef != 0) {
-			if ($total_coef != 0) {
+			//echo "<tr><td>\$display_moy_gen=$display_moy_gen</td><td>\$test_coef=$test_coef</td><td>\$total_coef=$total_coef</td><td>\$total_coef_eleve[$i]=$total_coef_eleve[$i]</td></tr>\n";
+			//if ($total_coef != 0) {
+			if ($total_coef_eleve[$i] != 0) {
 				echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px;\"><span class='bulletin'><b>Moyenne générale</b></span></td>\n";
 
 				if ($affiche_coef == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}

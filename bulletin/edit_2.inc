@@ -1,4 +1,4 @@
-<?PHP
+<?php
         // On initialise le tableau des notes et appréciations :
         echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
     echo "<thead>\n";
@@ -20,7 +20,7 @@
         echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Nb.dev</span></td>\n";
     }
     //========================================
-	
+
         echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>&Eacute;lève</span></td>\n";
         if ($affiche_graph == 'y')  {
             //echo"</td>\n<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
@@ -35,23 +35,23 @@
             //echo "<td colspan=\"2\"><span class='bulletin'>Appréciation/Conseils</span></td>\n";
             echo "<td colspan=\"2\" rowspan=\"2\"><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
         }
-		
+
 		if($min_max_moyclas!=1){
 	    //Eric Ajout
-		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";  
+		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
 		echo "<td style=\"text-align: center; \"colspan=\"3\"><span class='bulletin'>Pour la classe</span></td>\n";
-		
+
 		//Eric Suppr
 		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Min</span></td>\n";
 		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Max</span></td>\n";
-		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Classe</span></td>\n";		
+		//echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Classe</span></td>\n";
 	}
 	else{
 		// Min/Classe/Max en une seule colonne
 		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Classe m/C/M</span></td>\n";
-	}	
+	}
         echo "</tr>\n";
-			
+
 	    // Eric Ajout
 	    if($min_max_moyclas!=1){
 	  	    echo "<tr>\n";
@@ -65,7 +65,7 @@
 		  echo "<tr>\n";
 		  echo "</tr>\n";
 	    }
-		
+
     echo "</thead>\n";
 
         // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
@@ -118,8 +118,8 @@
                 $n++;
             }
             $nb_ligne_par_matiere = max($nb_ligne_cn,1) ;
-			
-			// ERIC : Ajout booleen pour n'afficher qu'une seule fois les moyennes min, max et moy pour la classe lorsqu'il y a des sous matières 
+
+			// ERIC : Ajout booleen pour n'afficher qu'une seule fois les moyennes min, max et moy pour la classe lorsqu'il y a des sous matières
 			$impression_une_ligne_par_matiere = false;
 
             // Si l'élève suit bien cette matière ou pas
@@ -185,14 +185,14 @@
                         //$nb_last_cols = 0;
                         $nb_last_cols = 1;
                         if ($test_coef != 0 and $affiche_coef == "y") { $nb_total_cols++; $nb_first_cols++;}
-            
+
             echo "<!-- \n";
             echo "\$test_coef=$test_coef\n";
             echo "\$affiche_coef=$affiche_coef\n";
             echo "\$nb_total_cols=$nb_total_cols\n";
             echo "\$nb_first_cols=$nb_first_cols\n";
             echo " -->\n";
-            
+
             //==========================================
             // AJOUT: boireaus
                         if ($affiche_nbdev == 'y') {$nb_total_cols++; $nb_first_cols++;}
@@ -221,19 +221,19 @@
                         echo "<p style='padding: 0; margin:0; font-size: ".$bull_categ_font_size."px;'>".$cat_name."</p></td>\n";
                         if ($affiche_cat_moyenne == "1") {
 				echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center'>".$moy_cat_eleve[$i][$prev_cat_id]."</td>\n"; // moy elv
-				
+
 				echo "<td colspan='" . $nb_last_cols . "'>&nbsp;</td>\n";
-                
+
 				//ERIC  Modif pour les cas où les moy sont regroupées en fin de bulletin dans une seule cas
 				if($min_max_moyclas!=1){
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>"."-"."</td>\n"; // max classe
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$moy_cat_classe[$i][$prev_cat_id]."</td>\n"; //moy classe
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>"."-"."</td>\n"; // max classe
-                } 
-				else { 
-				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$moy_cat_classe[$i][$prev_cat_id]."</td>\n"; //moy classe  
+                }
+				else {
+				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".$moy_cat_classe[$i][$prev_cat_id]."</td>\n"; //moy classe
 				}
-				
+
                         }
                         echo "</tr>\n";
                     }
@@ -358,7 +358,7 @@
                         }
                         echo "</td>\n";
                     }
-	if (!$impression_une_ligne_par_matiere)	{		
+	if (!$impression_une_ligne_par_matiere)	{
         //Eric Modif ordre max moy min
 		if($min_max_moyclas!=1){
 			// Colonne Note minimale:
@@ -380,8 +380,8 @@
 			}
 			echo "<span class='bulletin'>$note</span>";
 			echo "</td>\n";
-			
-			
+
+
 			// Colonne Note maximale:
 			echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\">";
 			if ($current_matiere_note_max != '-1') {
@@ -426,7 +426,7 @@
     }
 	//ERIC Ajout
     $impression_une_ligne_par_matiere = true;
-	
+
                     echo "</tr>\n";
                 }
             }
@@ -461,12 +461,13 @@
 	if($display_moy_gen=="y"){
 		// Affichage des moyennes générales
 		if ($test_coef != 0) {
-			if ($total_coef != 0) {
+			//if ($total_coef != 0) {
+			if ($total_coef_eleve[$i] != 0) {
 				echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px;\"><span class='bulletin'><b>Moyenne générale</b></span></td>\n";
 
 				if ($affiche_coef == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}
 				if ($affiche_nbdev == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}
-							
+
 				// Colonne Moyenne générale d'élève:
 				echo "<td style=\"text-align: center;\">";
 				echo "<span class='bulletin'><b>".$moy_gen_eleve[$i]."</b></span></td>\n";
@@ -494,7 +495,7 @@
 					//echo "<td colspan=\"2\"><span class='bulletin'>-</span></td>\n</tr>\n";
 					echo "<td colspan=\"2\"><span class='bulletin'>-</span></td>\n";
 				}
-/*				
+/*
                 //Eric Modif ordre max ; moy ; min + affichage min et max de la moyenne de la classe après les appréciations
 				if($min_max_moyclas!=1){
 					// Colonne Min:
@@ -502,13 +503,13 @@
 					echo "<span class='bulletin'>".min($moy_gen_eleve)."</span>";
 				    echo "</td>\n";
 				}
-				
+
 				// Colonne Moyenne générale de la classe:
 				echo "<td style=\"text-align: center;\">";
 				echo "<span class='bulletin'>$moy_gen_classe[$i]</span>";
 				echo "</td>\n";
-	            
-				if($min_max_moyclas!=1){	
+
+				if($min_max_moyclas!=1){
 					// Colonne Max:
 				    echo "<td style=\"text-align: center;\">";
 					echo "<span class='bulletin'>".max($moy_gen_eleve)."</span>";
@@ -521,14 +522,14 @@
 					echo "<td style=\"text-align: center;\">";
 					echo "<span class='bulletin'>$moy_min_classe</span>";
 				    echo "</td>\n";
-				
-				
+
+
 				// Colonne Moyenne générale de la classe:
 				echo "<td style=\"text-align: center;\">";
 				echo "<span class='bulletin'>$moy_generale_classe</span>";
 				echo "</td>\n";
-	            
-					
+
+
 					// Colonne Max:
 				    echo "<td style=\"text-align: center;\">";
 					echo "<span class='bulletin'>$moy_max_classe</span>";
@@ -541,7 +542,7 @@
 					echo "<span class='bullminclasmax'>$moy_max_classe<br />\n";
 					echo "</td>\n";
 				}
-				
+
 				echo "</tr>\n";
 			}
 		}

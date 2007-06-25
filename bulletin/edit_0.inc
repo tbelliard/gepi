@@ -426,7 +426,8 @@
 	if($display_moy_gen=="y"){
 		// Affichage des moyennes générales
 		if ($test_coef != 0) {
-			if ($total_coef != 0) {
+			//if ($total_coef != 0) {
+			if ($total_coef_eleve[$i] != 0) {
 				echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px;\"><span class='bulletin'><b>Moyenne générale</b></span></td>\n";
 
 				if ($affiche_coef == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}
@@ -440,7 +441,7 @@
 					// Colonne Moyenne générale de la classe:
 					echo "<td style=\"text-align: center;\">";
 					//echo "<span class='bulletin'>$moy_gen_classe[$i]</span>";
-					echo "<span class='bulletin'>$moy_generale_classe</span>";	
+					echo "<span class='bulletin'>$moy_generale_classe</span>";
 				} else {
 				   //Eric Ajout colonne min classe max une seule cellule
 				    echo "<td style=\"text-align: center;\">";
@@ -449,7 +450,7 @@
 					echo "<span class='bullminclasmax'>$moy_max_classe<br />\n";
 					//echo "</td>\n";
 				}
-					
+
 				echo "</td>\n";
 
 				// Colonne Moyenne générale d'élève:

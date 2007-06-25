@@ -449,7 +449,7 @@ echo "}\n";
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-
+echo "\$test_coef=$test_coef<br />\n";
 
 // Afficher la moyenne générale? (également conditionné par la présence d'un coef non nul au moins)
 $display_moy_gen = sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
@@ -592,17 +592,22 @@ while ($j < $nombre_groupes) {
                 $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
 
 				// On détermine le coefficient pour cette matière
-				// On teste si l'élève a un coef spécifique pour cette matière
-				$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
-						"login = '".$current_eleve_login[$i]."' AND " .
-						"id_groupe = '".$current_group[$j]["id"]."' AND " .
-						"name = 'coef')");
-				if (mysql_num_rows($test_coef_eleve) > 0) {
-					$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
-				} else {
-					$current_eleve_coef[$j][$i] = $current_coef[$j];
+				if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
+					$current_eleve_coef[$j][$i]=1;
 				}
-
+				else{
+					// On teste si l'élève a un coef spécifique pour cette matière
+					$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+							"login = '".$current_eleve_login[$i]."' AND " .
+							"id_groupe = '".$current_group[$j]["id"]."' AND " .
+							"name = 'coef')");
+					if (mysql_num_rows($test_coef_eleve) > 0) {
+						$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+					} else {
+						$current_eleve_coef[$j][$i] = $current_coef[$j];
+					}
+				}
+				$current_eleve_coef[$j][$i]=number_format($current_eleve_coef[$j][$i],1, ',', ' ');
 
             }
             $i++;
@@ -626,17 +631,22 @@ while ($j < $nombre_groupes) {
             // Maintenant on regarde si l'élève suit bien cette matière ou pas
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
 				// On détermine le coefficient pour cette matière
-				// On teste si l'élève a un coef spécifique pour cette matière
-				$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
-						"login = '".$current_eleve_login[$i]."' AND " .
-						"id_groupe = '".$current_group[$j]["id"]."' AND " .
-						"name = 'coef')");
-				if (mysql_num_rows($test_coef_eleve) > 0) {
-					$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
-				} else {
-					$current_eleve_coef[$j][$i] = $current_coef[$j];
+				if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
+					$current_eleve_coef[$j][$i]=1;
 				}
-
+				else{
+					// On teste si l'élève a un coef spécifique pour cette matière
+					$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+							"login = '".$current_eleve_login[$i]."' AND " .
+							"id_groupe = '".$current_group[$j]["id"]."' AND " .
+							"name = 'coef')");
+					if (mysql_num_rows($test_coef_eleve) > 0) {
+						$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+					} else {
+						$current_eleve_coef[$j][$i] = $current_coef[$j];
+					}
+				}
+				$current_eleve_coef[$j][$i]=number_format($current_eleve_coef[$j][$i],1, ',', ' ');
             }
             $i++;
         }
@@ -754,17 +764,23 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 					$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
 
 					// On détermine le coefficient pour cette matière
-					// On teste si l'élève a un coef spécifique pour cette matière
-		            $test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
-		            		"login = '".$current_eleve_login[$i]."' AND " .
-		            		"id_groupe = '".$current_group[$j]["id"]."' AND " .
-		            		"name = 'coef')");
-		            if (mysql_num_rows($test_coef_eleve) > 0) {
-		            	$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
-		            } else {
-		            	$current_eleve_coef[$j][$i] = $current_coef[$j];
-		            }
 
+					// On teste si l'élève a un coef spécifique pour cette matière
+					if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")){
+						$current_eleve_coef[$j][$i]=1;
+					}
+					else{
+						$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+								"login = '".$current_eleve_login[$i]."' AND " .
+								"id_groupe = '".$current_group[$j]["id"]."' AND " .
+								"name = 'coef')");
+						if (mysql_num_rows($test_coef_eleve) > 0) {
+							$current_eleve_coef[$j][$i] = mysql_result($test_coef_eleve, 0);
+						} else {
+							$current_eleve_coef[$j][$i] = $current_coef[$j];
+						}
+					}
+					$current_eleve_coef[$j][$i]=number_format($current_eleve_coef[$j][$i],1, ',', ' ');
 				}
 				//flush();
 				$j++;
