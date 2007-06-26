@@ -17,6 +17,12 @@ global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 //- $gepiYear : année
 //- $id_classe : identifiant de la classe.
 
+//====================
+// Ajout: boireaus 20070626
+$affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."'");
+//echo "\$affiche_coef=$affiche_coef<br />\n";
+//====================
+
 //echo "\$affiche_categories=$affiche_categories<br />";
 if(!getSettingValue("bull_intitule_app")){
 	$bull_intitule_app="Appréciations/Conseils";
@@ -117,8 +123,15 @@ $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
 echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$compteur";
 if ($total != '') {echo "/$total";}
-echo "</td>";
-if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\"><p class='bull_simpl'>Coef.</p></td>\n";
+echo "</td>\n";
+
+//====================
+// Modif: boireaus 20070626
+if($affiche_coef=='y'){
+	if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\"><p class='bull_simpl'>Coef.</p></td>\n";
+}
+//====================
+
 echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
 echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lève</td>\n";
 if ($affiche_rang=='y')
@@ -292,8 +305,13 @@ while ($j < $nombre_groupes) {
 
                 // On détermine le nombre de colonnes pour le colspan
                 $nb_total_cols = 4;
-                if ($test_coef != 0) $nb_total_cols++;
-                if ($affiche_rang == 'y')  $nb_total_cols++;
+				//====================
+				// Modif: boireaus 20070626
+				if($affiche_coef=='y'){
+                	if ($test_coef != 0) $nb_total_cols++;
+                }
+				//====================
+				if ($affiche_rang == 'y')  $nb_total_cols++;
 
                 // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
                 $affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
@@ -317,12 +335,18 @@ while ($j < $nombre_groupes) {
         }
         echo "</td>\n";
 
-        if ($test_coef != 0) {
-            if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
-            echo "<td width=\"$larg_col2\"";
-            if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-            echo " align=\"center\"><p class='bull_simpl'>".$print_coef."</p></td>\n";
-        }
+		//====================
+		// Modif: boireaus 20070626
+		if($affiche_coef=='y'){
+			if ($test_coef != 0) {
+				if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
+				echo "<td width=\"$larg_col2\"";
+				if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
+				echo " align=\"center\"><p class='bull_simpl'>".$print_coef."</p></td>\n";
+			}
+		}
+		//====================
+
         $nb=$periode1;
         $print_tr = 'no';
         while ($nb < $periode2+1) {
@@ -331,7 +355,7 @@ while ($j < $nombre_groupes) {
             $note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
             if ($note != "0,0")  {echo $note;} else {echo "-";}
             echo "</td>\n";
-		echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>\n<b>";
+			echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>\n<b>";
             $flag_moy[$nb] = 'no';
             if ($current_eleve_note[$nb] != '') {
                 if ($current_eleve_statut[$nb] != '') {
@@ -457,9 +481,14 @@ if ($test_coef != 0) {
     echo "<tr>\n<td";
     if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
     echo ">\n<p class='bull_simpl'><b>Moyenne générale</b></p>\n</td>\n";
-    echo "<td";
-    if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
-    echo " align=\"center\">-</td>\n";
+	//====================
+	// Modif: boireaus 20070626
+	if($affiche_coef=='y'){
+		echo "<td";
+		if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
+		echo " align=\"center\">-</td>\n";
+	}
+	//====================
 
     $nb=$periode1;
     $print_tr = 'no';
@@ -552,12 +581,12 @@ while ($nb < $periode2+1) {
     echo "<td valign=top class='bull_simpl'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
 	//Ajout Eric
 	if ($current_eleve_appreciation_absences != "") {
-	  echo "<tr>\n"; 
+	  echo "<tr>\n";
       echo "<td valign=top class='bull_simpl'>&nbsp;</td>\n";
       echo "<td valign=top class='bull_simpl' colspan=\"3\">";
 	  echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
 	}
-	
+
     $nb++;
 }
 echo "</table>\n";
