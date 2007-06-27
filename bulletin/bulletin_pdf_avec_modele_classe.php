@@ -1586,8 +1586,19 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	 if($affiche_date_naissance[$classe_id]==='1') {
 		if($date_naissance[$i]!="") { $pdf->Cell(90,5, $date_naissance[$i],0,2,''); }
 	 }
+
 	 if($affiche_dp[$classe_id]==='1') {
-		if($dp[$i]!="") {
+	  if($dp[$i]!="") { $pdf->Cell(90,4, $dp[$i],0,2,''); }
+	 }
+	 if($affiche_doublement[$classe_id]==='1') {
+	  if($doublement[$i]!="") { $pdf->Cell(90,4.5, $doublement[$i],0,2,''); }
+	 }
+	 if($affiche_nom_court[$classe_id]==='1') {
+	  if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
+	 }
+
+	//if($affiche_dp[$classe_id]==='1') {
+	//	if($dp[$i]!="") {
 			/*
 			if ($affiche_doublement[$classe_id]=='1') {
 				if ($doublement[$i]!="") {
@@ -1605,22 +1616,24 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			}
 			*/
 
-			$pdf->Cell(90,4, $dp[$i],0,2,'');
-			//$pdf->Cell(50,4, $dp[$i].$ajout_virg,0,$pass_ligne,'');
-		}
-	 }
-	 if($affiche_doublement[$classe_id]==='1') {
-		$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
-	 }
-	 if($affiche_nom_court[$classe_id]==='1') {
-		if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
-	 }
+	//		$pdf->Cell(90,4, $dp[$i],0,2,'');
+	//		//$pdf->Cell(50,4, $dp[$i].$ajout_virg,0,$pass_ligne,'');
+	//	}
+	 //}
+	 //if($affiche_doublement[$classe_id]==='1') {
+	//	$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
+	 //}
+	 //if($affiche_nom_court[$classe_id]==='1') {
+	//	if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
+	 //}
 
 /*
+	// INSERTION DE L'INE DE L'ELEVE
 	if($bull_pdf_INE_eleve=="y"){
 		$pdf->Cell(45,4.5, 'N°INE : '.$INE_eleve[$i],0,2,'');
 	}
 */
+
 
 	 if($affiche_effectif_classe[$classe_id]==='1') {
 		if($affiche_numero_impression[$classe_id]==='1') {

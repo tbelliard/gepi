@@ -52,6 +52,8 @@ if (isset($_POST['option_modele_bulletin'])) {
     }
 
 	/*
+	// Enregistrement commenté parce qu'il ne faut pas fiche le bazar sur la 1.5.0 en cours de stabilisation
+	// et parce que je ne suis pas venu à bout du positionnement dans le bulletin.
 	if(isset($_POST['bull_pdf_INE_eleve'])){
 		if (!saveSetting("bull_pdf_INE_eleve", $_POST['bull_pdf_INE_eleve'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
@@ -315,6 +317,7 @@ if (isset($_POST['option_modele_bulletin'])) {
 if(!empty($valide_modif_model))
  {
 	/*
+	// Il ne faut pas mettre là une variable destinée à arriver dans 'setting' pour toutes les classes et tous les modèles PDF.
 	if(isset($_POST['bull_pdf_INE_eleve'])){
 		if (!saveSetting("bull_pdf_INE_eleve", $_POST['bull_pdf_INE_eleve'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
@@ -442,6 +445,7 @@ echo "</p><br/><br/>";
 	echo "</table>\n<hr />\n";
 
 	/*
+	// Commenté parce que j'ai un soucis sur le bulletin PDF pour tout positionner.
 	echo "<p>";
 	echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='y'";
 	if(getSettingValue('bull_pdf_INE_eleve')=='y') {
@@ -637,6 +641,7 @@ echo "</p><br/><br/>";
 
 			<?php
 				/*
+				// Il ne faut pas mettre là une variable destinée à arriver dans 'setting' pour toutes les classes et tous les modèles PDF.
 				echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='1'";
 				if($bull_pdf_INE_eleve=='y') {
 					echo " checked='checked'";
