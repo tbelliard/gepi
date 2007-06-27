@@ -202,20 +202,45 @@ foreach ($categories as $cat_id) {
 
 $total_cat_eleve = array();
 $total_cat_classe = array();
-$total_cat_coef = array();
+
+//===========================
+// MODIF: boireaus 20070627
+//$total_cat_coef = array();
+$total_cat_coef_eleve = array();
+$total_cat_coef_classe = array();
+//===========================
+
+//===========================
+// AJOUT: boireaus 20070627
+$total_coef_eleve=array();
+$total_coef_classe=array();
+//===========================
 
 $nb=$periode1;
 while ($nb < $periode2+1) {
     $total_points_classe[$nb] = 0;
     $total_points_eleve[$nb] = 0;
-    $total_coef[$nb] = 0;
+
+	//===========================
+	// MODIF: boireaus 20070627
+    //$total_coef[$nb] = 0;
+    $total_coef_eleve[$nb] = 0;
+    $total_coef_classe[$nb] = 0;
+	//===========================
+
     $total_cat_eleve[$nb] = array();
     $total_cat_classe[$nb] = array();
     $total_cat_coef[$nb] = array();
     foreach($categories as $cat_id) {
         $total_cat_eleve[$nb][$cat_id] = 0;
         $total_cat_classe[$nb][$cat_id] = 0;
-        $total_cat_coef[$nb][$cat_id] = 0;
+
+		//===========================
+		// MODIF: boireaus 20070627
+        //$total_cat_coef[$nb][$cat_id] = 0;
+        $total_cat_coef_eleve[$nb][$cat_id] = 0;
+        $total_cat_coef_classe[$nb][$cat_id] = 0;
+		//===========================
     }
     $nb++;
 }
@@ -232,6 +257,7 @@ while ($j < $nombre_groupes) {
 
     $group_id = mysql_result($appel_liste_groupes, $j, "id_groupe");
     $current_group = get_group($group_id);
+	// Coefficient pour le groupe
     $current_coef = $current_group["classes"]["classes"][$id_classe]["coef"];
 
     $current_matiere_professeur_login = $current_group["profs"]["list"];
@@ -269,6 +295,20 @@ while ($j < $nombre_groupes) {
             $current_eleve_statut[$nb] = @mysql_result($current_eleve_note_query, 0, "statut");
             $current_eleve_appreciation_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$current_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
             $current_eleve_appreciation[$nb] = @mysql_result($current_eleve_appreciation_query, 0, "appreciation");
+
+			// Coefficient personnalisé pour l'élève?
+			$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
+					"login = '".$current_eleve_login."' AND " .
+					"id_groupe = '".$group_id."' AND " .
+					"name = 'coef')";
+			$test_coef_personnalise = mysql_query($sql);
+			if (mysql_num_rows($test_coef_personnalise) > 0) {
+				$coef_eleve = mysql_result($test_coef_personnalise, 0);
+			} else {
+				// Coefficient du groupe:
+				$coef_eleve = $current_coef;
+			}
+            $coef_eleve=number_format($coef_eleve,1, ',', ' ');
         } else {
             $current_eleve_note[$nb] = '';
             $current_eleve_statut[$nb] = 'Non suivie';
@@ -339,7 +379,8 @@ while ($j < $nombre_groupes) {
 		// Modif: boireaus 20070626
 		if($affiche_coef=='y'){
 			if ($test_coef != 0) {
-				if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
+				//if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
+				if ($coef_eleve > 0) $print_coef= $coef_eleve; else $print_coef='-';
 				echo "<td width=\"$larg_col2\"";
 				if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 				echo " align=\"center\"><p class='bull_simpl'>".$print_coef."</p></td>\n";
@@ -431,20 +472,39 @@ while ($j < $nombre_groupes) {
             $print_tr = 'yes';
             $nb++;
         }
+
         // On calcule les moyennes générales de l'élève et de la classe :
         if ($test_coef != 0) {
            $nb=$periode1;
            while ($nb < $periode2+1) {
               if ($flag_moy[$nb] == 'yes') {
-                 $total_coef[$nb] += $current_coef;
-                 $total_points_classe[$nb] += $current_coef*$current_classe_matiere_moyenne[$nb];
-                 $total_points_eleve[$nb] += $current_coef*$current_eleve_note[$nb];
-		//if($affiche_categories=='1'){
-		if(($affiche_categories=='1')||($affiche_categories==true)){
-                 $total_cat_classe[$nb][$prev_cat_id] += $current_coef*$current_classe_matiere_moyenne[$nb];
-                 $total_cat_eleve[$nb][$prev_cat_id] += $current_coef*$current_eleve_note[$nb];
-                 $total_cat_coef[$nb][$prev_cat_id] += $current_coef;
-		}
+
+				//===========================
+				// MODIF: boireaus 20070627
+				//$total_coef[$nb] += $current_coef;
+				//$total_points_classe[$nb] += $current_coef*$current_classe_matiere_moyenne[$nb];
+				//$total_points_eleve[$nb] += $current_coef*$current_eleve_note[$nb];
+
+				$total_coef_eleve[$nb] += $coef_eleve;
+				$total_points_eleve[$nb] += $coef_eleve*$current_eleve_note[$nb];
+
+				$total_coef_classe[$nb] += $current_coef;
+				$total_points_classe[$nb] += $current_coef*$current_classe_matiere_moyenne[$nb];
+				//===========================
+
+				//if($affiche_categories=='1'){
+				if(($affiche_categories=='1')||($affiche_categories==true)){
+					$total_cat_classe[$nb][$prev_cat_id] += $current_coef*$current_classe_matiere_moyenne[$nb];
+
+					//===========================
+					// MODIF: boireaus 20070627
+					//$total_cat_eleve[$nb][$prev_cat_id] += $current_coef*$current_eleve_note[$nb];
+					$total_cat_eleve[$nb][$prev_cat_id] += $coef_eleve*$current_eleve_note[$nb];
+					//$total_cat_coef[$nb][$prev_cat_id] += $current_coef;
+					$total_cat_coef_eleve[$nb][$prev_cat_id] += $coef_eleve;
+					$total_cat_coef_classe[$nb][$prev_cat_id] += $current_coef;
+					//===========================
+				}
               }
               $nb++;
            }
@@ -499,14 +559,16 @@ if ($test_coef != 0) {
 	//=============================
         echo "<td class='bull_simpl' align=\"center\">\n";
         if ($total_points_classe[$nb] != 0) {
-            $moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
+            //$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
+            $moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
         } else {
             $moy_classe = '-';
         }
         echo "$moy_classe";
         echo "</td>\n<td class='bull_simpl' align=\"center\">\n";
         if ($total_points_eleve[$nb] != '0') {
-            $moy_eleve=number_format($total_points_eleve[$nb]/$total_coef[$nb],1, ',', ' ');
+            //$moy_eleve=number_format($total_points_eleve[$nb]/$total_coef[$nb],1, ',', ' ');
+            $moy_eleve=number_format($total_points_eleve[$nb]/$total_coef_eleve[$nb],1, ',', ' ');
         } else {
             $moy_eleve = '-';
         }
@@ -523,12 +585,27 @@ if ($test_coef != 0) {
         if ($affiche_categories) {
             echo "<td class='bull_simpl'>\n";
             foreach($categories as $cat_id) {
-                if ($total_cat_coef[$nb][$cat_id] != "0") {
-                    $moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
-                    $moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
 
-                    echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
-                }
+				// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
+				// Tester si cette catégorie doit avoir sa moyenne affichée
+                $affiche_cat_moyenne=mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')"), 0);
+				if($affiche_cat_moyenne){
+					//if ($total_cat_coef[$nb][$cat_id] != "0") {
+					if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
+						//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
+						//$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
+						$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef_eleve[$nb][$cat_id],1, ',', ' ');
+
+						if ($total_cat_coef_classe[$nb][$cat_id] != "0") {
+							$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef_classe[$nb][$cat_id],1, ',', ' ');
+						}
+						else{
+							$moy_classe="-";
+						}
+
+						echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
+					}
+				}
             }
             echo "</td>\n</tr>\n";
         } else {
