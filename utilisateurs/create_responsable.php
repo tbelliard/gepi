@@ -125,16 +125,16 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "lcs" AND getSettingValue("use_sso") != "ldap_scribe") {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-				$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$reg_login."'>";
+				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				if ($_POST['classe'] == "all") {
-				    $msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='change' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				}
 			}
 			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";

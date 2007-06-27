@@ -83,18 +83,19 @@ $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="help.php">Aide</a></p>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href="help.php">Aide</a></p>
 <?php
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
 if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"  or ((getSettingValue("use_sso") == "lcs") and ($testpassword =='')) or getSettingValue("use_sso") == "ldap_scribe") {
     echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure.";
-    echo "</body></html>";
+    echo "</div>\n";
+    echo "</body></html>\n";
     die();
 }
 
-echo "<p class = 'grand'>Changement du mot de passe</p>";
+echo "<p class='grand'>Changement du mot de passe</p>\n";
 if ($user_login != $_SESSION['login']) {
     if ($user_statut == 'professeur')
         // Mot de passe comportant des lettres et des chiffres
@@ -102,22 +103,24 @@ if ($user_login != $_SESSION['login']) {
     else
         // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
         $flag = 1;
-    echo "<form enctype=\"multipart/form-data\" action=\"change_pwd.php\" method=post>";
-    echo "<span class = \"norme\">";
+    echo "<form enctype=\"multipart/form-data\" action=\"change_pwd.php\" method='post'>\n";
+    echo "<div class=\"norme\">";
     echo "Identifiant : ".$user_login;
     echo "<br />Nom : $user_nom&nbsp;&nbsp;&nbsp;Prénom : $user_prenom";
+	//echo "</span>\n";
     echo "<p>Il est fortement conseillé de ne pas choisir un mot de passe trop simple.
-    <br><br><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum. ";
+    <br /><br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum. ";
     if ($flag == 1)
         echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".$char_spec;
     else
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
     echo "</b></p>\n";
-    echo "<br /><table>\n<tr><td>Nouveau mot de passe (".getSettingValue("longmin_pwd")." caractères minimum) : </td>\n<td><input type=password name=no_anti_inject_password size=20></td></tr>\n";
-    echo "<tr><td>Nouveau mot de passe (à confirmer) :</td><td><input type=password name=reg_password2 size=20></td></tr>\n";
-    echo "</table><input type=hidden name=valid value=\"yes\">\n";
-    echo "<input type=hidden name=user_login value=".$user_login.">\n";
-    echo "<br /><center><input type=submit value=Enregistrer></center></span></form>\n";
+    echo "<br />\n";
+	echo "<table>\n<tr><td>Nouveau mot de passe (".getSettingValue("longmin_pwd")." caractères minimum) : </td>\n<td><input type=password name=no_anti_inject_password size=20 /></td></tr>\n";
+    echo "<tr><td>Nouveau mot de passe (à confirmer) :</td><td><input type=password name=reg_password2 size=20 /></td></tr>\n";
+    echo "</table><input type=hidden name=valid value=\"yes\" />\n";
+    echo "<input type=hidden name=user_login value=".$user_login." />\n";
+    echo "<br /><center><input type=submit value=Enregistrer /></center></div></form>\n";
 } else {
     echo "<p>Pour des raisons de sécurité, veuillez utiliser le module \"mon compte\" accessible à partir de la page d'accueil pour changer votre mot de passe !</p>";
 }

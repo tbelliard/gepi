@@ -76,8 +76,13 @@ if ($mode != "personnels") {
 <?php
 
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-    echo " | Réinitialiser mots de passe : " .
+    /*
+	echo " | Réinitialiser mots de passe : " .
     		"<a href=\"reset_passwords.php\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\" target='_blank'>HTML</a>" .
+    		" - <a href=\"reset_passwords.php?mode=csv\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
+	*/
+    echo " | Réinitialiser mots de passe : " .
+    		"<a href=\"reset_passwords.php?mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\" target='_blank'>HTML</a>" .
     		" - <a href=\"reset_passwords.php?mode=csv\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
 }
 ?>

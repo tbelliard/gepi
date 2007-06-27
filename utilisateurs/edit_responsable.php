@@ -219,7 +219,21 @@ echo "</p>\n";
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
-	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+
+	//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+	$quelles_classes = mysql_query("SELECT DISTINCT c.id,c.classe FROM classes c,
+																		j_eleves_classes jec,
+																		eleves e,
+																		responsables2 r,
+																		resp_pers rp,
+																		utilisateurs u
+										WHERE jec.login=e.login AND
+												e.ele_id=r.ele_id AND
+												r.pers_id=rp.pers_id AND
+												rp.login=u.login AND
+												jec.id_classe=c.id
+										ORDER BY classe");
+
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
@@ -275,7 +289,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 
 		if($current_parent->etat == "actif"){
 			echo "<br />";
-			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+			//echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
 		}
 		echo "</td>\n";
 	echo "</tr>\n";

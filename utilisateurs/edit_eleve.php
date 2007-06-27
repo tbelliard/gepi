@@ -195,7 +195,7 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     //echo " | <a href=\"reset_passwords.php?user_status=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'eleve\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe (impression HTML)</a>";
 }
 
-$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
+$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
 if(mysql_num_rows($quels_eleves)==0){
 	echo "<p>Aucun compte élève n'existe encore.<br />Vous pouvez ajouter des comptes élèves à l'aide du lien ci-dessus.</p>\n";
 	require("../lib/footer.inc.php");
@@ -212,7 +212,13 @@ echo "</p>\n";
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
-	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+
+	//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+	$quelles_classes = mysql_query("SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, utilisateurs u
+										WHERE jec.login=u.login AND
+												jec.id_classe=c.id
+										ORDER BY classe");
+
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
@@ -269,7 +275,8 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 
 		if($current_eleve->etat == "actif"){
 			echo "<br/>";
-			echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
+			//echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
 		}
 		echo "</td>\n";
 	echo "</tr>";

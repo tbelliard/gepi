@@ -72,7 +72,7 @@ if (($donnees_personne_csv)) {
 	$sql_statut="SELECT statut FROM utilisateurs WHERE login='$login'";
 	$resultat_statut = mysql_query($sql_statut);
 	$statut = mysql_result($resultat_statut, 0, "statut");
-	
+
 	switch ($statut) {
 	case 'eleve':
 			//pour un élève
@@ -104,13 +104,13 @@ if (($donnees_personne_csv)) {
 				$cp = $donnees_personne_csv['cp'][$i];
 				$commune = $donnees_personne_csv['commune'][$i];
 				$pays = $donnees_personne_csv['pays'][$i];
-				$elv1 = $donnees_personne_csv['elv1'][$i];
-				$elv2 = $donnees_personne_csv['elv2'][$i];
-				$elv3 = $donnees_personne_csv['elv3'][$i];
-				$elv4 = $donnees_personne_csv['elv4'][$i];
-				$elv5 = $donnees_personne_csv['elv5'][$i];
-				$elv6 = $donnees_personne_csv['elv6'][$i];
-				$elv7 = $donnees_personne_csv['elv7'][$i];
+				$elv1 = isset($donnees_personne_csv['elv1'][$i]) ? $donnees_personne_csv['elv1'][$i] : "";
+				$elv2 = isset($donnees_personne_csv['elv2'][$i]) ? $donnees_personne_csv['elv2'][$i] : "";
+				$elv3 = isset($donnees_personne_csv['elv3'][$i]) ? $donnees_personne_csv['elv3'][$i] : "";
+				$elv4 = isset($donnees_personne_csv['elv4'][$i]) ? $donnees_personne_csv['elv4'][$i] : "";
+				$elv5 = isset($donnees_personne_csv['elv5'][$i]) ? $donnees_personne_csv['elv5'][$i] : "";
+				$elv6 = isset($donnees_personne_csv['elv6'][$i]) ? $donnees_personne_csv['elv6'][$i] : "";
+				$elv7 = isset($donnees_personne_csv['elv7'][$i]) ? $donnees_personne_csv['elv7'][$i] : "";
 				$fd.="$classe;$login;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
 				}
 	break;
@@ -127,7 +127,7 @@ if (($donnees_personne_csv)) {
 				}
 	break;
     }
-		
+
 } else {
   echo "Erreur de session";
 }
