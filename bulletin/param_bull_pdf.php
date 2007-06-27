@@ -44,12 +44,28 @@ if (!checkAccess()) {
 
 $reg_ok = 'yes';
 $msg = '';
-	if (isset($_POST['option_modele_bulletin'])) {
+if (isset($_POST['option_modele_bulletin'])) {
 
     if (!saveSetting("option_modele_bulletin", $_POST['option_modele_bulletin'])) {
         $msg .= "Erreur lors de l'enregistrement de option_modele_bulletin !";
         $reg_ok = 'no';
     }
+
+	/*
+	if(isset($_POST['bull_pdf_INE_eleve'])){
+		if (!saveSetting("bull_pdf_INE_eleve", $_POST['bull_pdf_INE_eleve'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	else{
+		if (!saveSetting("bull_pdf_INE_eleve", "n")) {
+			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	*/
+
 }
 
 // Christian renvoye vers le fichier PDF bulletin
@@ -298,11 +314,26 @@ $msg = '';
 // début ajouter/modifier/supprimer des modèles
 if(!empty($valide_modif_model))
  {
+	/*
+	if(isset($_POST['bull_pdf_INE_eleve'])){
+		if (!saveSetting("bull_pdf_INE_eleve", $_POST['bull_pdf_INE_eleve'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	else{
+		if (!saveSetting("bull_pdf_INE_eleve", "n")) {
+			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	*/
+
 	if($action_model==='ajouter') { $requete_model='INSERT INTO '.$prefix_base.'model_bulletin (nom_model_bulletin,active_bloc_datation,active_bloc_eleve,active_bloc_adresse_parent,active_bloc_absence,active_bloc_note_appreciation,active_bloc_avis_conseil,active_bloc_chef,active_photo,active_coef_moyenne,active_nombre_note,active_nombre_note_case,active_moyenne,active_moyenne_eleve,active_moyenne_classe,active_moyenne_min,active_moyenne_max,active_regroupement_cote,active_entete_regroupement,active_moyenne_regroupement,active_rang,active_graphique_niveau,active_appreciation,affiche_doublement,affiche_date_naissance,affiche_dp,affiche_nom_court,affiche_effectif_classe,affiche_numero_impression,caractere_utilse,X_parent,Y_parent,X_eleve,Y_eleve,cadre_eleve,X_datation_bul,Y_datation_bul,cadre_datation_bul,hauteur_info_categorie,X_note_app,Y_note_app,longeur_note_app,hauteur_note_app,largeur_coef_moyenne,largeur_nombre_note,largeur_d_une_moyenne,largeur_niveau,largeur_rang,X_absence,Y_absence,hauteur_entete_moyenne_general,X_avis_cons,Y_avis_cons,longeur_avis_cons,hauteur_avis_cons,cadre_avis_cons,X_sign_chef,Y_sign_chef,longeur_sign_chef,hauteur_sign_chef,cadre_sign_chef,affiche_filigrame,texte_filigrame,affiche_logo_etab,entente_mel,entente_tel,entente_fax,L_max_logo,H_max_logo, toute_moyenne_meme_col,active_reperage_eleve,couleur_reperage_eleve1,couleur_reperage_eleve2,couleur_reperage_eleve3,couleur_categorie_entete,couleur_categorie_entete1,couleur_categorie_entete2,couleur_categorie_entete3,couleur_categorie_cote,couleur_categorie_cote1,couleur_categorie_cote2,couleur_categorie_cote3,couleur_moy_general,couleur_moy_general1,couleur_moy_general2,couleur_moy_general3,titre_entete_matiere,titre_entete_coef,titre_entete_nbnote,titre_entete_rang,titre_entete_appreciation,active_coef_sousmoyene,arrondie_choix,nb_chiffre_virgule,chiffre_avec_zero,autorise_sous_matiere,affichage_haut_responsable,entete_model_bulletin,ordre_entete_model_bulletin,affiche_etab_origine,imprime_pour,largeur_matiere)
 					VALUES ("'.$nom_model_bulletin.'", "'.$active_bloc_datation.'", "'.$active_bloc_eleve.'", "'.$active_bloc_adresse_parent.'", "'.$active_bloc_absence.'", "'.$active_bloc_note_appreciation.'", "'.$active_bloc_avis_conseil.'", "'.$active_bloc_chef.'", "'.$active_photo.'", "'.$active_coef_moyenne.'", "'.$active_nombre_note.'", "'.$active_nombre_note_case.'", "'.$active_moyenne.'", "'.$active_moyenne_eleve.'", "'.$active_moyenne_classe.'", "'.$active_moyenne_min.'", "'.$active_moyenne_max.'", "'.$active_regroupement_cote.'", "'.$active_entete_regroupement.'", "'.$active_moyenne_regroupement.'", "'.$active_rang.'", "'.$active_graphique_niveau.'", "'.$active_appreciation.'", "'.$affiche_doublement.'", "'.$affiche_date_naissance.'", "'.$affiche_dp.'", "'.$affiche_nom_court.'", "'.$affiche_effectif_classe.'", "'.$affiche_numero_impression.'", "'.$caractere_utilse.'", "'.$X_parent.'", "'.$Y_parent.'", "'.$X_eleve.'", "'.$Y_eleve.'", "'.$cadre_eleve.'", "'.$X_datation_bul.'", "'.$Y_datation_bul.'", "'.$cadre_datation_bul.'", "'.$hauteur_info_categorie.'", "'.$X_note_app.'", "'.$Y_note_app.'", "'.$longeur_note_app.'", "'.$hauteur_note_app.'", "'.$largeur_coef_moyenne.'", "'.$largeur_nombre_note.'", "'.$largeur_d_une_moyenne.'", "'.$largeur_niveau.'", "'.$largeur_rang.'", "'.$X_absence.'", "'.$Y_absence.'", "'.$hauteur_entete_moyenne_general.'", "'.$X_avis_cons.'", "'.$Y_avis_cons.'", "'.$longeur_avis_cons.'", "'.$hauteur_avis_cons.'", "'.$cadre_avis_cons.'", "'.$X_sign_chef.'", "'.$Y_sign_chef.'", "'.$longeur_sign_chef.'", "'.$hauteur_sign_chef.'", "'.$cadre_sign_chef.'", "'.$affiche_filigrame.'","'.$texte_filigrame.'","'.$affiche_logo_etab.'","'.$entente_mel.'","'.$entente_tel.'","'.$entente_fax.'","'.$L_max_logo.'","'.$H_max_logo.'","'.$toute_moyenne_meme_col.'","'.$active_reperage_eleve.'", "'.$couleur_reperage_eleve1.'", "'.$couleur_reperage_eleve2.'", "'.$couleur_reperage_eleve3.'", "'.$couleur_categorie_entete.'", "'.$couleur_categorie_entete1.'", "'.$couleur_categorie_entete2.'", "'.$couleur_categorie_entete3.'", "'.$couleur_categorie_cote.'", "'.$couleur_categorie_cote1.'", "'.$couleur_categorie_cote2.'", "'.$couleur_categorie_cote3.'", "'.$couleur_moy_general.'", "'.$couleur_moy_general1.'", "'.$couleur_moy_general2.'", "'.$couleur_moy_general3.'", "'.$titre_entete_matiere.'", "'.$titre_entete_coef.'", "'.$titre_entete_nbnote.'", "'.$titre_entete_rang.'", "'.$titre_entete_appreciation.'", "'.$active_coef_sousmoyene.'", "'.$arrondie_choix.'", "'.$nb_chiffre_virgule.'", "'.$chiffre_avec_zero.'", "'.$autorise_sous_matiere.'", "'.$affichage_haut_responsable.'", "'.$entete_model_bulletin.'", "'.$ordre_entete_model_bulletin.'", "'.$affiche_etab_origine.'", "'.$imprime_pour.'", "'.$largeur_matiere.'")'; }
 	if($action_model==='modifier') { $requete_model='UPDATE '.$prefix_base.'model_bulletin SET nom_model_bulletin="'.$nom_model_bulletin.'", active_bloc_datation="'.$active_bloc_datation.'", active_bloc_eleve="'.$active_bloc_eleve.'", active_bloc_adresse_parent="'.$active_bloc_adresse_parent.'", active_bloc_absence="'.$active_bloc_absence.'", active_bloc_note_appreciation="'.$active_bloc_note_appreciation.'", active_bloc_avis_conseil="'.$active_bloc_avis_conseil.'", active_bloc_chef="'.$active_bloc_chef.'", active_photo="'.$active_photo.'", active_coef_moyenne="'.$active_coef_moyenne.'", active_nombre_note="'.$active_nombre_note.'", active_nombre_note_case="'.$active_nombre_note_case.'", active_moyenne="'.$active_moyenne.'", active_moyenne_eleve="'.$active_moyenne_eleve.'", active_moyenne_classe="'.$active_moyenne_classe.'", active_moyenne_min="'.$active_moyenne_min.'", active_moyenne_max="'.$active_moyenne_max.'", active_regroupement_cote="'.$active_regroupement_cote.'", active_entete_regroupement="'.$active_entete_regroupement.'", active_moyenne_regroupement="'.$active_moyenne_regroupement.'", active_rang="'.$active_rang.'", active_graphique_niveau="'.$active_graphique_niveau.'", active_appreciation="'.$active_appreciation.'", affiche_doublement="'.$affiche_doublement.'", affiche_date_naissance="'.$affiche_date_naissance.'", affiche_dp="'.$affiche_dp.'", affiche_nom_court="'.$affiche_nom_court.'", affiche_effectif_classe="'.$affiche_effectif_classe.'", affiche_numero_impression="'.$affiche_numero_impression.'", caractere_utilse="'.$caractere_utilse.'", X_parent="'.$X_parent.'", Y_parent="'.$Y_parent.'", X_eleve="'.$X_eleve.'", Y_eleve="'.$Y_eleve.'", cadre_eleve="'.$cadre_eleve.'", X_datation_bul="'.$X_datation_bul.'", Y_datation_bul="'.$Y_datation_bul.'", cadre_datation_bul="'.$cadre_datation_bul.'", hauteur_info_categorie="'.$hauteur_info_categorie.'", X_note_app="'.$X_note_app.'", Y_note_app="'.$Y_note_app.'", longeur_note_app="'.$longeur_note_app.'", hauteur_note_app="'.$hauteur_note_app.'", largeur_coef_moyenne="'.$largeur_coef_moyenne.'", largeur_nombre_note="'.$largeur_nombre_note.'", largeur_d_une_moyenne="'.$largeur_d_une_moyenne.'", largeur_niveau="'.$largeur_niveau.'", largeur_rang="'.$largeur_rang.'", X_absence="'.$X_absence.'", Y_absence="'.$Y_absence.'", hauteur_entete_moyenne_general="'.$hauteur_entete_moyenne_general.'", X_avis_cons="'.$X_avis_cons.'", Y_avis_cons="'.$Y_avis_cons.'", longeur_avis_cons="'.$longeur_avis_cons.'", hauteur_avis_cons="'.$hauteur_avis_cons.'", cadre_avis_cons="'.$cadre_avis_cons.'",
 					 X_sign_chef="'.$X_sign_chef.'", Y_sign_chef="'.$Y_sign_chef.'", longeur_sign_chef="'.$longeur_sign_chef.'", hauteur_sign_chef="'.$hauteur_sign_chef.'", cadre_sign_chef="'.$cadre_sign_chef.'", affiche_filigrame="'.$affiche_filigrame.'", texte_filigrame="'.$texte_filigrame.'", affiche_logo_etab="'.$affiche_logo_etab.'", entente_mel="'.$entente_mel.'", entente_tel="'.$entente_tel.'", entente_fax="'.$entente_fax.'", L_max_logo="'.$L_max_logo.'", H_max_logo="'.$H_max_logo.'", toute_moyenne_meme_col="'.$toute_moyenne_meme_col.'", active_reperage_eleve="'.$active_reperage_eleve.'", couleur_reperage_eleve1="'.$couleur_reperage_eleve1.'", couleur_reperage_eleve2="'.$couleur_reperage_eleve2.'", couleur_reperage_eleve3="'.$couleur_reperage_eleve3.'", couleur_categorie_entete="'.$couleur_categorie_entete.'", couleur_categorie_entete1="'.$couleur_categorie_entete1.'", couleur_categorie_entete2="'.$couleur_categorie_entete2.'", couleur_categorie_entete3="'.$couleur_categorie_entete3.'", couleur_categorie_cote="'.$couleur_categorie_cote.'", couleur_categorie_cote1="'.$couleur_categorie_cote1.'", couleur_categorie_cote2="'.$couleur_categorie_cote2.'", couleur_categorie_cote3="'.$couleur_categorie_cote3.'", couleur_moy_general="'.$couleur_moy_general.'", couleur_moy_general1="'.$couleur_moy_general1.'", couleur_moy_general2="'.$couleur_moy_general2.'", couleur_moy_general3="'.$couleur_moy_general3.'", titre_entete_matiere="'.$titre_entete_matiere.'", titre_entete_coef="'.$titre_entete_coef.'", titre_entete_nbnote="'.$titre_entete_nbnote.'", titre_entete_rang="'.$titre_entete_rang.'", titre_entete_appreciation="'.$titre_entete_appreciation.'", active_coef_sousmoyene="'.$active_coef_sousmoyene.'", arrondie_choix="'.$arrondie_choix.'", nb_chiffre_virgule="'.$nb_chiffre_virgule.'", chiffre_avec_zero="'.$chiffre_avec_zero.'", autorise_sous_matiere="'.$autorise_sous_matiere.'", affichage_haut_responsable="'.$affichage_haut_responsable.'", entete_model_bulletin="'.$entete_model_bulletin.'", ordre_entete_model_bulletin="'.$ordre_entete_model_bulletin.'", affiche_etab_origine="'.$affiche_etab_origine.'", imprime_pour = "'.$imprime_pour.'", largeur_matiere = "'.$largeur_matiere.'" WHERE id_model_bulletin="'.$id_model_bulletin.'" LIMIT 1'; }
-	if($id_model_bulletin!='1') { 
+	if($id_model_bulletin!='1') {
 	    if($action_model==='supprimer') {
     	    $requete_model='DELETE FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin ="'.$id_model_bulletin.'"  LIMIT 1';
 			//AJOUT ERIC Si on supprime un modèle, s'il est utilisé pour une classe on réinitialise pour la classe la valeur à NULL du champs modele_bulletin_pdf
@@ -350,7 +381,7 @@ echo "</p><br/><br/>";
 		       <?php
 			$i = '1';
 			$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin');
-    			while($data_model = mysql_fetch_array($requete_model)) { 
+    			while($data_model = mysql_fetch_array($requete_model)) {
 		       		if ($i === '1') { $i = '2'; $couleur_cellule = '#CCCCCC'; } else { $couleur_cellule = '#DEDEDE'; $i = '1'; } ?>
 		       <tr>
 		         <td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%; background: <?php echo $couleur_cellule; ?>;"><?php echo ucfirst($data_model['nom_model_bulletin']); ?></td>
@@ -367,12 +398,12 @@ echo "</p><br/><br/>";
 			 <br />
 			 <br />
     <hr />
-   <?PHP
+   <?php
 //ERIC
     $nb_ligne = 1;
 	$bgcolor = "#DEDEDE";
 	echo "<form name=\"formulaire\" action=\"param_bull_pdf.php\" method=\"post\" style=\"width: 100%\">\n";
-	echo "<H3>Options gestion des modèles d'impression PDF</H3>\n";
+	echo "<h3>Options gestion des modèles d'impression PDF</h3>\n";
 	echo "<table cellpadding=\"8\" cellspacing=\"0\" width=\"100%\" border=\"0\">\n";
 
     echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
@@ -385,7 +416,7 @@ echo "</p><br/><br/>";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
-	
+
 	echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
     echo "Le modèle utilisé par défaut est celui défini dans les paramètres de la classe. Un autre modèle pourra être choisi lors de l'impression des bulletins. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
@@ -396,7 +427,7 @@ echo "</p><br/><br/>";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
-	
+
 	echo "<tr ";  if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; echo " >\n"; $nb_ligne++;
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
     echo "Le modèle devra être choisi au moment de l'impression indépendamment du modèle paramétré dans les paramètres de la classe. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
@@ -407,21 +438,31 @@ echo "</p><br/><br/>";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
-	
-	echo "</table>\n<hr />\n";
-	
-    
 
-	echo"<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" style=\"font-variant: small-caps;\"/></center>";	 
+	echo "</table>\n<hr />\n";
+
+	/*
+	echo "<p>";
+	echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='y'";
+	if(getSettingValue('bull_pdf_INE_eleve')=='y') {
+		echo " checked='checked'";
+	}
+	echo " />&nbsp;Afficher le numéro INE de l'élève sur le bulletin PDF.";
+	echo "</p>\n";
+
+	echo "<hr />\n";
+	*/
+
+	echo"<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" style=\"font-variant: small-caps;\"/></center>";
 	echo"</form>";
-	?>		 
-			 
-			 
-			 
+	?>
+
+
+
 		     <?php
 		 }
 		if($modele==='aff' and ($action_model==='ajouter' or $action_model==='modifier' or $action_model==='supprimer') and empty($valide_modif_model)) //affiche la liste des modèles
-		 { 
+		 {
 			if(empty($modele_action)) { $model_bulletin=''; } else { $model_bulletin=$modele_action; }
 			if($action_model==='ajouter' or $action_model==='modifier') {
 			if($action_model==='ajouter' and $copie_model === '' ) { $requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="1"'); }
@@ -593,6 +634,17 @@ echo "</p><br/><br/>";
 			<input name="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> />&nbsp;si doublement<br />
 			<input name="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> />&nbsp;la date de naissance<br />
 			<input name="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> />&nbsp;le régime<br />
+
+			<?php
+				/*
+				echo "<input name='bull_pdf_INE_eleve' style='border: 1px solid #74748F;' type='checkbox' value='1'";
+				if($bull_pdf_INE_eleve=='y') {
+					echo " checked='checked'";
+				}
+				echo " />&nbsp;le régime<br />\n"
+				*/
+			?>
+
 			<input name="affiche_nom_court" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_nom_court) and $affiche_nom_court==='1') { ?>checked="checked"<?php } ?> />&nbsp;nom court de la classe<br />
 			<input name="affiche_effectif_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_effectif_classe) and $affiche_effectif_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;effectif de la classe<br />
 			<input name="affiche_numero_impression" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_impression) and $affiche_numero_impression==='1') { ?>checked="checked"<?php } ?> />&nbsp;numéro d'impression<br />
@@ -722,7 +774,7 @@ echo "</p><br/><br/>";
 		</table>
 		</form>
 		<?php }
-	} 
+	}
 
 
 require("../lib/footer.inc.php");

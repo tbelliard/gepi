@@ -90,6 +90,15 @@ Header('Pragma: public');
 
    $type_bulletin = $model_bulletin; // le modèle sélectionné dans le menu deroulant
 
+	/*
+	if(getSettingValue('bull_pdf_INE_eleve')=='y') {
+		$bull_pdf_INE_eleve="y";
+	}
+	else{
+		$bull_pdf_INE_eleve="n";
+	}
+	*/
+
 function redimensionne_image($photo, $L_max, $H_max)
  {
 	// prendre les informations sur l'image
@@ -877,6 +886,10 @@ for ($z=0;$z<$nb_classes_selectionnees;$z++) {
 			        } else {
 				            $date_naissance[$cpt_i] = 'Née le '.date_fr($donner['naissance']);
 				       }
+
+				$INE_eleve[$cpt_i] = $donner['no_gep'];
+
+
 				$classe_tableau_id[$cpt_i] = $donner['id'];
 				$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 				$classe_nomcour[$cpt_i] = $donner['classe'];
@@ -1180,7 +1193,11 @@ while($cpt_info_eleve<=$nb_eleve_total)
             		"id_groupe = '".$current_group[$j]["id"]."' AND " .
             		"name = 'coef')");
 			*/
-            $test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+
+
+
+            /*
+			$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
             		"login = '".$login_eleve_select."' AND " .
             		"id_groupe = '".$groupe_matiere."' AND " .
             		"name = 'coef')");
@@ -1188,19 +1205,32 @@ while($cpt_info_eleve<=$nb_eleve_total)
             if (mysql_num_rows($test_coef_eleve) > 0) {
             	$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = mysql_result($test_coef_eleve, 0);
             } else {
+			*/
 				if(empty($coef_matiere[$id_classe][$groupe_matiere]['coef'])) // si on le connait on ne retourne pas le chercher
 				 {
 				 	$coef_matiere[$id_classe][$groupe_matiere] = mysql_fetch_array(mysql_query('SELECT * FROM '.$prefix_base.'j_groupes_classes WHERE id_classe="'.$id_classe.'" AND id_groupe="'.$groupe_matiere.'"'));
 					if($coef_matiere[$id_classe][$groupe_matiere]['coef']!=0.0)
 					{
-					$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
-					} else { $coef_matiere[$id_classe][$groupe_matiere]['coef'] = '0';
-					$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '0';
+						$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
+					} else {
+						$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '0';
+						$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '0';
 					}
 				 } else {
-				 $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
+					$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = $coef_matiere[$id_classe][$groupe_matiere]['coef'];
 				 }
+            //}
+
+            $test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+            		"login = '".$login_eleve_select."' AND " .
+            		"id_groupe = '".$groupe_matiere."' AND " .
+            		"name = 'coef')");
+			// ==================================================
+            if (mysql_num_rows($test_coef_eleve) > 0) {
+            	$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = mysql_result($test_coef_eleve, 0);
             }
+
+
 
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
 			    and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
@@ -1212,8 +1242,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			if($active_entete_regroupement[$classe_id]==='1') {
 			 $categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
 			  if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0'; }
+
+			//echo "\$coef_matiere[$id_classe][$groupe_matiere]['coef']=".$coef_matiere[$id_classe][$groupe_matiere]['coef']."<br />";
+
 			 $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-//			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
+
+			//			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
+
 			 if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
 			 if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
 			   $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
@@ -1549,17 +1584,44 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	 $pdf->Cell(90,7, $nom_eleve[$i]." ".$prenom_eleve[$i],0,2,'');
 	 $pdf->SetFont($caractere_utilse[$classe_id],'',10);
 	 if($affiche_date_naissance[$classe_id]==='1') {
-	  if($date_naissance[$i]!="") { $pdf->Cell(90,5, $date_naissance[$i],0,2,''); }
+		if($date_naissance[$i]!="") { $pdf->Cell(90,5, $date_naissance[$i],0,2,''); }
 	 }
 	 if($affiche_dp[$classe_id]==='1') {
-	  if($dp[$i]!="") { $pdf->Cell(90,4, $dp[$i],0,2,''); }
+		if($dp[$i]!="") {
+			/*
+			if ($affiche_doublement[$classe_id]=='1') {
+				if ($doublement[$i]!="") {
+					$pass_ligne=0;
+					$ajout_virg=", ";
+				}
+				else{
+					$pass_ligne=0;
+					$ajout_virg="";
+				}
+			}
+			else{
+				$pass_ligne=2;
+				$ajout_virg="";
+			}
+			*/
+
+			$pdf->Cell(90,4, $dp[$i],0,2,'');
+			//$pdf->Cell(50,4, $dp[$i].$ajout_virg,0,$pass_ligne,'');
+		}
 	 }
 	 if($affiche_doublement[$classe_id]==='1') {
-	  if($doublement[$i]!="") { $pdf->Cell(90,4.5, $doublement[$i],0,2,''); }
+		$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
 	 }
 	 if($affiche_nom_court[$classe_id]==='1') {
-	  if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
+		if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
 	 }
+
+/*
+	if($bull_pdf_INE_eleve=="y"){
+		$pdf->Cell(45,4.5, 'N°INE : '.$INE_eleve[$i],0,2,'');
+	}
+*/
+
 	 if($affiche_effectif_classe[$classe_id]==='1') {
 		if($affiche_numero_impression[$classe_id]==='1') {
 			$pass_ligne = '0';
@@ -1569,6 +1631,9 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			'.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].'
 			élèves',0,$pass_ligne,''); }
 	 }
+
+
+
 	 //if($affiche_effectif_classe==='1') {
 	 // if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") { $pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,0,''); }
 	 //}
