@@ -349,16 +349,32 @@ if (($aff_rang) and ($referent=="une_periode")) {
 
 $j = '0';
 while($j < $nb_lignes_tableau) {
-   $total_coef[$j+$ligne_supl] = 0;
-   $total_points[$j+$ligne_supl] = 0;
-   $total_cat_coef[$j+$ligne_supl] = array();
-   $total_cat_points[$j+$ligne_supl] = array();
+   //$total_coef[$j+$ligne_supl] = 0;
+   $total_coef_classe[$j+$ligne_supl] = 0;
+   $total_coef_eleve[$j+$ligne_supl] = 0;
+
+   //$total_points[$j+$ligne_supl] = 0;
+   $total_points_classe[$j+$ligne_supl] = 0;
+   $total_points_eleve[$j+$ligne_supl] = 0;
+
+   //$total_cat_coef[$j+$ligne_supl] = array();
+   $total_cat_coef_classe[$j+$ligne_supl] = array();
+   $total_cat_coef_eleve[$j+$ligne_supl] = array();
+
+   //$total_cat_points[$j+$ligne_supl] = array();
+   $total_cat_points_classe[$j+$ligne_supl] = array();
+   $total_cat_points_eleve[$j+$ligne_supl] = array();
    // =================================
    // MODIF: boireaus
    if ($affiche_categories) {
 	foreach ($categories as $cat_id) {
-	$total_cat_coef[$j+$ligne_supl][$cat_id] = 0;
-	$total_cat_points[$j+$ligne_supl][$cat_id] = 0;
+		//$total_cat_coef[$j+$ligne_supl][$cat_id] = 0;
+		$total_cat_coef_classe[$j+$ligne_supl][$cat_id] = 0;
+		$total_cat_coef_eleve[$j+$ligne_supl][$cat_id] = 0;
+
+		//$total_cat_points[$j+$ligne_supl][$cat_id] = 0;
+		$total_cat_points_classe[$j+$ligne_supl][$cat_id] = 0;
+		$total_cat_points_eleve[$j+$ligne_supl][$cat_id] = 0;
 	}
    }
    // =================================
@@ -387,7 +403,10 @@ while($i < $lignes_groupes){
 
     $var_group_id = mysql_result($groupeinfo, $i, "id_groupe");
     $current_group = get_group($var_group_id);
+	// Coeff pour la classe
     $current_coef = mysql_result($groupeinfo, $i, "coef");
+	// A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
+
 
     if ($affiche_categories) {
     // On regarde si on change de catégorie de matière
@@ -397,6 +416,22 @@ while($i < $lignes_groupes){
     }
     $j = '0';
     while($j < $nb_lignes_tableau) {
+
+		// Coefficient personnalisé pour l'élève?
+		$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
+				"login = '".$current_eleve_login[$j]."' AND " .
+				"id_groupe = '".$current_group["id"]."' AND " .
+				"name = 'coef')";
+		$test_coef_personnalise = mysql_query($sql);
+		if (mysql_num_rows($test_coef_personnalise) > 0) {
+			$coef_eleve = mysql_result($test_coef_personnalise, 0);
+		} else {
+			// Coefficient du groupe:
+			$coef_eleve = $current_coef;
+		}
+		$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+
+
       if ($referent == "une_periode") {
         if (!in_array($current_eleve_login[$j], $current_group["eleves"][$num_periode]["list"])) {
             $col[$k][$j+$ligne_supl] = "/";
@@ -411,18 +446,45 @@ while($i < $lignes_groupes){
                     $col[$k][$j+$ligne_supl] = number_format($temp,1, ',', ' ');
                     if ($current_coef > 0) {
                         // ===================================
-			// MODIF: boireaus
-			//if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
-			if ($affiche_categories) {
-                        	if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
-			}
+						// MODIF: boireaus
+						//if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
+						if ($affiche_categories) {
+							if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
+						}
                         // ===================================
-                        $total_coef[$j+$ligne_supl] += $current_coef;
-                        $total_points[$j+$ligne_supl] += $current_coef*$temp;
-			if ($affiche_categories) {
-				$total_cat_coef[$j+$ligne_supl][$prev_cat_id] += $current_coef;
-				$total_cat_points[$j+$ligne_supl][$prev_cat_id] += $current_coef*$temp;
-			}
+
+
+						// Coefficient personnalisé pour l'élève?
+						$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
+								"login = '".$current_eleve_login[$j]."' AND " .
+								"id_groupe = '".$current_group["id"]."' AND " .
+								"name = 'coef')";
+						$test_coef_personnalise = mysql_query($sql);
+						if (mysql_num_rows($test_coef_personnalise) > 0) {
+							$coef_eleve = mysql_result($test_coef_personnalise, 0);
+						} else {
+							// Coefficient du groupe:
+							$coef_eleve = $current_coef;
+						}
+						$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+
+                        //$total_coef[$j+$ligne_supl] += $current_coef;
+                        $total_coef_eleve[$j+$ligne_supl] += $coef_eleve;
+                        $total_coef_classe[$j+$ligne_supl] += $current_coef;
+                        //$total_points[$j+$ligne_supl] += $current_coef*$temp;
+                        //$total_points[$j+$ligne_supl] += $coef_eleve*$temp;
+                        $total_points_eleve[$j+$ligne_supl] += $coef_eleve*$temp;
+                        $total_points_classe[$j+$ligne_supl] += $current_coef*$temp;
+
+						if ($affiche_categories) {
+							//$total_cat_coef[$j+$ligne_supl][$prev_cat_id] += $current_coef;
+							$total_cat_coef_classe[$j+$ligne_supl][$prev_cat_id] += $current_coef;
+							$total_cat_coef_eleve[$j+$ligne_supl][$prev_cat_id] += $coef_eleve;
+
+							//$total_cat_points[$j+$ligne_supl][$prev_cat_id] += $current_coef*$temp;
+							$total_cat_points_eleve[$j+$ligne_supl][$prev_cat_id] += $coef_eleve*$temp;
+							$total_cat_points_classe[$j+$ligne_supl][$prev_cat_id] += $current_coef*$temp;
+						}
                     }
                 } else {
                     $col[$k][$j+$ligne_supl] = '-';
@@ -461,12 +523,20 @@ while($i < $lignes_groupes){
              $col[$k][$j+$ligne_supl] = number_format($moy,1, ',', ' ');
              if ($current_coef > 0) {
                  if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
-                 $total_coef[$j+$ligne_supl] += $current_coef;
-                 $total_points[$j+$ligne_supl] += $current_coef*$moy;
-		if ($affiche_categories) {
-			$total_cat_coef[$j+$ligne_supl][$prev_cat_id] += $current_coef;
-			$total_cat_points[$j+$ligne_supl][$prev_cat_id] += $current_coef*$moy;
-		}
+                 //$total_coef[$j+$ligne_supl] += $current_coef;
+                 $total_coef_classe[$j+$ligne_supl] += $current_coef;
+                 $total_coef_eleve[$j+$ligne_supl] += $coef_eleve;
+                 //$total_points[$j+$ligne_supl] += $current_coef*$moy;
+                 $total_points_classe[$j+$ligne_supl] += $current_coef*$moy;
+                 $total_points_eleve[$j+$ligne_supl] += $coef_eleve*$moy;
+				if ($affiche_categories) {
+					//$total_cat_coef[$j+$ligne_supl][$prev_cat_id] += $current_coef;
+					//$total_cat_points[$j+$ligne_supl][$prev_cat_id] += $current_coef*$moy;
+					$total_cat_coef_eleve[$j+$ligne_supl][$prev_cat_id] += $coef_eleve;
+					$total_cat_coef_classe[$j+$ligne_supl][$prev_cat_id] += $current_coef;
+					$total_cat_points_eleve[$j+$ligne_supl][$prev_cat_id] += $coef_eleve*$moy;
+					$total_cat_points_classe[$j+$ligne_supl][$prev_cat_id] += $current_coef*$moy;
+				}
              }
          } else {
              // Bien que suivant la matière, l'élève n'a aucune note à toutes les période (absent, pas de note, disp ...)
@@ -487,6 +557,7 @@ while($i < $lignes_groupes){
 
     if ($test_coef != 0) {
         if ($current_coef > 0) {
+			// A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
             $col[$k][0] = number_format($current_coef,1, ',', ' ');
         } else {
             $col[$k][0] = "-";
@@ -534,33 +605,38 @@ while($i < $lignes_groupes){
 if ($ligne_supl == 1) {
     // Les moyennes pour chaque catégorie
     if ($affiche_categories) {
-	foreach($displayed_categories as $cat_id) {
-		$nb_col++;
-		$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
-		$j = '0';
-		while($j < $nb_lignes_tableau) {
-		if ($total_cat_coef[$j+$ligne_supl][$cat_id] > 0) {
-			$col[$nb_col][$j+$ligne_supl] = number_format($total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id],1, ',', ' ');
-			$moy_cat_classe_point[$cat_id] +=$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id];
-			$moy_cat_classe_effectif[$cat_id]++;
-			$moy_cat_classe_min[$cat_id] = min($moy_cat_classe_min[$cat_id],$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id]);
-			$moy_cat_classe_max[$cat_id] = max($moy_cat_classe_max[$cat_id],$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id]);
-		} else {
-			$col[$nb_col][$j+$ligne_supl] = '/';
+		foreach($displayed_categories as $cat_id) {
+			$nb_col++;
+			$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
+			$j = '0';
+			while($j < $nb_lignes_tableau) {
+				//if ($total_cat_coef[$j+$ligne_supl][$cat_id] > 0) {
+				if ($total_cat_coef_eleve[$j+$ligne_supl][$cat_id] > 0) {
+					//$col[$nb_col][$j+$ligne_supl] = number_format($total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id],1, ',', ' ');
+					$col[$nb_col][$j+$ligne_supl] = number_format($total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id],1, ',', ' ');
+					//$moy_cat_classe_point[$cat_id] +=$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id];
+					$moy_cat_classe_point[$cat_id] +=$total_cat_points_classe[$j+$ligne_supl][$cat_id]/$total_cat_coef_classe[$j+$ligne_supl][$cat_id];
+					$moy_cat_classe_effectif[$cat_id]++;
+					//$moy_cat_classe_min[$cat_id] = min($moy_cat_classe_min[$cat_id],$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id]);
+					//$moy_cat_classe_max[$cat_id] = max($moy_cat_classe_max[$cat_id],$total_cat_points[$j+$ligne_supl][$cat_id]/$total_cat_coef[$j+$ligne_supl][$cat_id]);
+					$moy_cat_classe_min[$cat_id] = min($moy_cat_classe_min[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
+					$moy_cat_classe_max[$cat_id] = max($moy_cat_classe_max[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
+				} else {
+					$col[$nb_col][$j+$ligne_supl] = '/';
+				}
+				$j++;
+			}
+			$col[$nb_col][0] = "-";
+			if ($moy_cat_classe_point[$cat_id] == 0) {
+				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
+				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
+				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
+			} else {
+				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_cat_classe_point[$cat_id]/$moy_cat_classe_effectif[$cat_id],1, ',', ' ');
+				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_cat_classe_min[$cat_id],1, ',', ' ');
+				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_cat_classe_max[$cat_id],1, ',', ' ');
+			}
 		}
-		$j++;
-		}
-		$col[$nb_col][0] = "-";
-		if ($moy_cat_classe_point[$cat_id] == 0) {
-		$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
-		$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
-		$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
-		} else {
-		$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_cat_classe_point[$cat_id]/$moy_cat_classe_effectif[$cat_id],1, ',', ' ');
-		$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_cat_classe_min[$cat_id],1, ',', ' ');
-		$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_cat_classe_max[$cat_id],1, ',', ' ');
-		}
-	}
     }
 
     // La moyenne générale
@@ -569,12 +645,17 @@ if ($ligne_supl == 1) {
     $ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
     $j = '0';
     while($j < $nb_lignes_tableau) {
-        if ($total_coef[$j+$ligne_supl] > 0) {
-            $col[$nb_col][$j+$ligne_supl] = number_format($total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl],1, ',', ' ');
-            $moy_classe_point +=$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl];
+        //if ($total_coef[$j+$ligne_supl] > 0) {
+        if ($total_coef_eleve[$j+$ligne_supl] > 0) {
+            //$col[$nb_col][$j+$ligne_supl] = number_format($total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl],1, ',', ' ');
+            $col[$nb_col][$j+$ligne_supl] = number_format($total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl],1, ',', ' ');
+            //$moy_classe_point +=$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl];
+            $moy_classe_point +=$total_points_classe[$j+$ligne_supl]/$total_coef_classe[$j+$ligne_supl];
             $moy_classe_effectif++;
-            $moy_classe_min = min($moy_classe_min,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
-            $moy_classe_max = max($moy_classe_max,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
+            //$moy_classe_min = min($moy_classe_min,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
+            //$moy_classe_max = max($moy_classe_max,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
+            $moy_classe_min = min($moy_classe_min,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
+            $moy_classe_max = max($moy_classe_max,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
         } else {
             $col[$nb_col][$j+$ligne_supl] = '/';
         }
