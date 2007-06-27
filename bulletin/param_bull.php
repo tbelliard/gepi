@@ -532,6 +532,14 @@ if(isset($_POST['bull_intitule_app'])) {
     }
 }
 
+if(isset($_POST['bull_affiche_INE_eleve'])) {
+    if (!saveSetting("bull_affiche_INE_eleve", $_POST['bull_affiche_INE_eleve'])) {
+        $msg .= "Erreur lors de l'enregistrement de bull_affiche_INE_eleve !";
+        $reg_ok = 'no';
+    }
+}
+
+
 if(isset($_POST['bull_affiche_tel'])) {
     if (!saveSetting("bull_affiche_tel", $_POST['bull_affiche_tel'])) {
         $msg .= "Erreur lors de l'enregistrement de bull_affiche_tel !";
@@ -938,13 +946,14 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 <?php
 //Informations devant figurer sur le bulletin scolaire</H3>
 ?>
-<H3>Informations devant figurer sur le bulletin scolaire</H3>
+<h3>Informations devant figurer sur le bulletin scolaire</h3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0">
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe :
         </td>
-        <td>
+        <!--td style='width:8em; text-align:right;'-->
+        <td style='width:8em;'>
         <?php
         echo "<input type=\"radio\" name=\"bull_mention_nom_court\" value=\"yes\" ";
         if (getSettingValue("bull_mention_nom_court") == 'yes') echo " checked";
@@ -1223,6 +1232,23 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         Intitulé de la colonne Appréciations :
         <?php
 		echo "<input type=\"text\" name=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
+        ?>
+        </td>
+    </tr>
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le numéro INE de l'élève :
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_INE_eleve") == 'y') echo " checked";
+        echo " />&nbsp;Oui";
+        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_INE_eleve") != 'y') echo " checked";
+        echo " />&nbsp;Non";
+
         ?>
         </td>
     </tr>

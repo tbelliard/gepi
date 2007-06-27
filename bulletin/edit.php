@@ -402,6 +402,17 @@ echo "}\n";
 	}
 
 
+
+
+	if(!getSettingValue("bull_affiche_INE_eleve")){
+		$bull_affiche_INE_eleve="n";
+	}
+	else{
+		$bull_affiche_INE_eleve=getSettingValue("bull_affiche_INE_eleve");
+	}
+
+
+
 	function redimensionne_image($photo){
 		global $bull_photo_largeur_max, $bull_photo_hauteur_max;
 
@@ -856,6 +867,9 @@ while ($i < $nombre_eleves2) {
 	if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
 	$query = mysql_query("SELECT u.login login FROM utilisateurs u, j_eleves_cpe j WHERE (u.login = j.cpe_login AND j.e_login = '" . $current_eleve_login[$i] . "')");
 	$current_eleve_cperesp_login = @mysql_result($query, "0", "login");
+
+	// Numéro INE de l'élève:
+	$current_eleve_INE = mysql_result($appel_liste_eleves, $i, "no_gep");
 
 
     //determination du nombre de bulletins à imprimer
@@ -1378,6 +1392,10 @@ echo "'>\n";
 			}
 		}
 
+		if($bull_affiche_INE_eleve=="y"){
+			echo "<br />\n";
+			echo "Numéro INE: $current_eleve_INE";
+		}
 
 		if($bull_affiche_etab=="y"){
 			$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
@@ -1665,7 +1683,12 @@ echo "'>\n";
             echo "<td style=\"vertical-align: top;\">";
             // 1) l'avis
             echo "<span class='bulletin'><i>Avis du Conseil de classe : </i><br /></span>";
-			echo "<span class='avis_bulletin'>$current_eleve_avis</span>";
+			if($current_eleve_avis!=""){
+				echo "<span class='avis_bulletin'>$current_eleve_avis</span>";
+			}
+			else{
+				echo "<span class='avis_bulletin'>&nbsp;</span>";
+			}
             if ($current_eleve_avis == '') {
                 // Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
                 $n = 0;
