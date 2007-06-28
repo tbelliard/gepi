@@ -87,7 +87,7 @@ function extr_valeur($lig){
 			if(isset($_GET['nettoyage'])){
 				//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 				echo "<h2 align='center'>Suppression des CSV</h2>\n";
-				echo "<p p class=bold><a href='";
+				echo "<p class=bold><a href='";
 				if(isset($_SESSION['ad_retour'])){
 					echo $_SESSION['ad_retour'];
 				}
@@ -193,6 +193,175 @@ function extr_valeur($lig){
 						echo "</form>\n";
 					}
 					else{
+						$post_max_size=ini_get('post_max_size');
+						$upload_max_filesize=ini_get('upload_max_filesize');
+						$max_execution_time=ini_get('max_execution_time');
+						$memory_limit=ini_get('memory_limit');
+
+						echo '
+<script type="text/javascript">//<![CDATA[
+
+//*****************************************************************************
+// Do not remove this notice.
+//
+// Copyright 2001 by Mike Hall.
+// See http://www.brainjar.com for terms of use.
+//*****************************************************************************
+
+// Determine browser and version.
+
+function Browser() {
+
+  var ua, s, i;
+
+  this.isIE    = false;
+  this.isNS    = false;
+  this.version = null;
+
+  ua = navigator.userAgent;
+
+  s = "MSIE";
+  if ((i = ua.indexOf(s)) >= 0) {
+    this.isIE = true;
+    this.version = parseFloat(ua.substr(i + s.length));
+    return;
+  }
+
+  s = "Netscape6/";
+  if ((i = ua.indexOf(s)) >= 0) {
+    this.isNS = true;
+    this.version = parseFloat(ua.substr(i + s.length));
+    return;
+  }
+
+  // Treat any other "Gecko" browser as NS 6.1.
+
+  s = "Gecko";
+  if ((i = ua.indexOf(s)) >= 0) {
+    this.isNS = true;
+    this.version = 6.1;
+    return;
+  }
+}
+
+var browser = new Browser();
+
+// Global object to hold drag information.
+
+var dragObj = new Object();
+dragObj.zIndex = 0;
+
+function dragStart(event, id) {
+
+  var el;
+  var x, y;
+
+  // If an element id was given, find it. Otherwise use the element being
+  // clicked on.
+
+  if (id)
+    dragObj.elNode = document.getElementById(id);
+  else {
+    if (browser.isIE)
+      dragObj.elNode = window.event.srcElement;
+    if (browser.isNS)
+      dragObj.elNode = event.target;
+
+    // If this is a text node, use its parent element.
+
+    if (dragObj.elNode.nodeType == 3)
+      dragObj.elNode = dragObj.elNode.parentNode;
+  }
+
+  // Get cursor position with respect to the page.
+
+  if (browser.isIE) {
+    x = window.event.clientX + document.documentElement.scrollLeft
+      + document.body.scrollLeft;
+    y = window.event.clientY + document.documentElement.scrollTop
+      + document.body.scrollTop;
+  }
+  if (browser.isNS) {
+    x = event.clientX + window.scrollX;
+    y = event.clientY + window.scrollY;
+  }
+
+  // Save starting positions of cursor and element.
+
+  dragObj.cursorStartX = x;
+  dragObj.cursorStartY = y;
+  dragObj.elStartLeft  = parseInt(dragObj.elNode.style.left, 10);
+  dragObj.elStartTop   = parseInt(dragObj.elNode.style.top,  10);
+
+  if (isNaN(dragObj.elStartLeft)) dragObj.elStartLeft = 0;
+  if (isNaN(dragObj.elStartTop))  dragObj.elStartTop  = 0;
+
+  // Update element s z-index.
+
+  dragObj.elNode.style.zIndex = ++dragObj.zIndex;
+
+  // Capture mousemove and mouseup events on the page.
+
+  if (browser.isIE) {
+    document.attachEvent("onmousemove", dragGo);
+    document.attachEvent("onmouseup",   dragStop);
+    window.event.cancelBubble = true;
+    window.event.returnValue = false;
+  }
+  if (browser.isNS) {
+    document.addEventListener("mousemove", dragGo,   true);
+    document.addEventListener("mouseup",   dragStop, true);
+    event.preventDefault();
+  }
+}
+
+function dragGo(event) {
+
+  var x, y;
+
+  // Get cursor position with respect to the page.
+
+  if (browser.isIE) {
+    x = window.event.clientX + document.documentElement.scrollLeft
+      + document.body.scrollLeft;
+    y = window.event.clientY + document.documentElement.scrollTop
+      + document.body.scrollTop;
+  }
+  if (browser.isNS) {
+    x = event.clientX + window.scrollX;
+    y = event.clientY + window.scrollY;
+  }
+
+  // Move drag element by the same amount the cursor has moved.
+
+  dragObj.elNode.style.left = (dragObj.elStartLeft + x - dragObj.cursorStartX) + "px";
+  dragObj.elNode.style.top  = (dragObj.elStartTop  + y - dragObj.cursorStartY) + "px";
+
+  if (browser.isIE) {
+    window.event.cancelBubble = true;
+    window.event.returnValue = false;
+  }
+  if (browser.isNS)
+    event.preventDefault();
+}
+
+function dragStop(event) {
+
+  // Stop capturing mousemove and mouseup events.
+
+  if (browser.isIE) {
+    document.detachEvent("onmousemove", dragGo);
+    document.detachEvent("onmouseup",   dragStop);
+  }
+  if (browser.isNS) {
+    document.removeEventListener("mousemove", dragGo,   true);
+    document.removeEventListener("mouseup",   dragStop, true);
+  }
+}
+
+//]]></script>
+';
+
 
 						if($etape==1){
 							$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
@@ -206,7 +375,23 @@ function extr_valeur($lig){
 								fclose($fp);
 								echo "<p>Terminé.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.</p>\n";
+								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+
+								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+								if($max_execution_time!=0){
+									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
+								}
+								else{
+									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
+								}
+								echo " ou une charge maximale trop réduite";
+								if("$memory_limit"!="0"){
+									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
+								}
+								else{
+									echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
+								}
+								echo ".</p>\n";
 								echo "</blockquote>\n";
 
 
@@ -590,7 +775,9 @@ function extr_valeur($lig){
 
 							}
 							else{
-								echo "<p>ERREUR! Le fichier Elèves n'a pas pu être ouvert.<br /><a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Elèves n'a pas pu être ouvert.<br />\n";
+								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
 
@@ -691,7 +878,9 @@ function extr_valeur($lig){
 								echo "</blockquote>\n";
 							}
 							else{
-								echo "<p>ERREUR! Le fichier Nomenclature.xml n'a pas pu être ouvert.<br /><a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Nomenclature.xml n'a pas pu être ouvert.<br />\n";
+								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
 							function ouinon($nombre){
@@ -1180,7 +1369,9 @@ function extr_valeur($lig){
 
 
 
-							echo "<div style='position:absolute; top: 70px; left: 300px; width: 350px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
+
+							//echo "<div style='position:absolute; top: 70px; left: 300px; width: 350px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
+							echo "<div id='boxInfo' style='position:absolute; top: 70px; left: 300px; width: 400px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0;'  onmousedown=\"dragStart(event, 'boxInfo')\">\n";
 							echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
 							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
@@ -1214,7 +1405,23 @@ function extr_valeur($lig){
 								fclose($fp);
 								echo "<p>Terminé.</p>\n";
 
-								echo "<p>Aller à la section <a href='#csv'>CSV</a>.</p>\n";
+								echo "<p>Aller à la section <a href='#csv'>CSV</a>.<br />\n";
+
+								echo "Si vous patientez, des liens directs seront proposés (<i>dans un cadre jaune</i>) pour télécharger les fichiers.<br />Si la page finit son chargement sans générer de cadre jaune, il se peut que la configuration de PHP donne un temps de traitement trop court";
+								if($max_execution_time!=0){
+									echo " (<i>".$max_execution_time."s sur votre serveur</i>)";
+								}
+								else{
+									echo " (<i>consultez la valeur de la variable 'max_execution_time' dans votre 'php.ini'</i>)";
+								}
+								echo " ou une charge maximale trop réduite";
+								if("$memory_limit"!="0"){
+									echo " (<i>".$memory_limit." sur votre serveur</i>)\n";
+								}
+								else{
+									echo " (<i>consultez la valeur de la variable 'memory_limit' dans votre 'php.ini'</i>)";
+								}
+								echo ".</p>\n";
 								echo "</blockquote>\n";
 
 
@@ -1506,7 +1713,9 @@ function extr_valeur($lig){
 								echo "</blockquote>\n";
 							}
 							else{
-								echo "<p>ERREUR! Le fichier Responsables n'a pas pu être ouvert.<br /><a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
+								echo "<p><span style='color:red'>ERREUR!</span> Le fichier Responsables n'a pas pu être ouvert.<br />\n";
+								echo "Contrôlez si la taille du fichier XML ne dépasse pas la taille maximale autorisée par votre serveur: ".$upload_max_filesize."<br />\n";
+								echo "<a href='".$_SERVER['PHP_SELF']."'>Retour</a>.</p>\n";
 							}
 
 
@@ -1702,7 +1911,9 @@ function extr_valeur($lig){
 
 
 
-							echo "<div style='position:absolute; top: 70px; left: 300px; width: 300px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
+							//echo "<div style='position:absolute; top: 70px; left: 300px; width: 300px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0; '>\n";
+							echo "<div id='boxInfo' style='position:absolute; top: 70px; left: 300px; width: 300px; background: yellow; border: 1px solid black; padding-left: 5px; padding-right: 5px; padding-top: 0;'  onmousedown=\"dragStart(event, 'boxInfo')\">\n";
+
 							echo "<h4 style='margin:0; padding:0; text-align:center;'>GEPI</h4>\n";
 							//echo "<p style='margin-top: 0;'>Effectuez un Clic-droit/Enregistrer la cible du lien sous... pour chacun des fichiers ci-dessous.</p>\n";
 							echo "<p style='margin-top: 0;'>Récupérez les CSV suivants (<i>pas par clic-droit</i>).</p>\n";
