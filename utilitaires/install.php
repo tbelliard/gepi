@@ -98,13 +98,13 @@ if (file_exists($nom_fic)) {
             if (($test2 !=0) and ($test1 != 'no') and ($test3 !=0)) {
                 begin_html();
                 if ($etape == 5) {
-                    echo "<br /><h2 class='gepi'>Dernière étape : C'est terminé !</h2>";
-                    echo "<P>";
-                    echo "<P>Vous pouvez maintenant commencer à utiliser GEPI ...</p>";
-                    echo "<P>Pour vous connecter la première fois en tant qu'administrateur, utilisez le nom de connection \"admin\" et le mot de passe \"azerty\". N'oubliez pas de changer le mot de passe !</p>";
-                    echo "<br /><center><a href = '../login.php'>Se connecter à GEPI</a></center>";
+                    echo "<br /><h2 class='gepi'>Dernière étape : C'est terminé !</h2>\n";
+                    echo "<p>&nbsp;</p>\n";
+                    echo "<p>Vous pouvez maintenant commencer à utiliser GEPI ...</p>\n";
+                    echo "<p>Pour vous connecter la première fois en tant qu'administrateur, utilisez le nom de connection \"admin\" et le mot de passe \"azerty\". N'oubliez pas de changer le mot de passe !</p>\n";
+                    echo "<br /><center><a href = '../login.php'>Se connecter à GEPI</a></center>\n";
                 } else {
-                    echo "<h2 class='gepi'>Espace interdit - GEPI est déjà installé.</h2>";
+                    echo "<h2 class='gepi'>Espace interdit - GEPI est déjà installé.</h2>\n";
                 }
                 end_html();
                 die();
@@ -117,8 +117,8 @@ if ($etape == 4) {
 
     begin_html();
 
-    echo "<br /><h2 class='gepi'>Quatrième étape : Création des tables de la base</h2>";
-    echo "<P>";
+    echo "<br /><h2 class='gepi'>Quatrième étape : Création des tables de la base</h2>\n";
+    echo "<p>";
 
     $link = mysql_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']);
 
@@ -154,7 +154,8 @@ if ($etape == 4) {
             if (substr($query,-1)==";") {
                 $reg = mysql_query($query);
                 if (!$reg) {
-                    echo "<p><font color=red>ERROR</font> : '$query'";
+                    echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
+                    //echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
                     $result_ok = 'no';
                 }
             }
@@ -202,16 +203,16 @@ if ($etape == 4) {
         }
 
         if ($ok == 'yes') {
-            echo "<B>La structure de votre base de données est installée.</B><P>Vous pouvez passer à l'étape suivante.";
-            echo "<FORM ACTION='install.php' METHOD='post'>";
-            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='5' />";
-            echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' />";
-            echo "</FORM>";
+            echo "<B>La structure de votre base de données est installée.</B>\n<p>Vous pouvez passer à l'étape suivante.</p>\n";
+            echo "<FORM ACTION='install.php' METHOD='post'>\n";
+            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='5' />\n";
+            echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+            echo "</FORM>\n";
         }
     }
 
     if (($result_ok != 'yes') or ($ok != 'yes')) {
-        echo "<p><B>L'opération a échoué.</B> Retournez à la page précédente, sélectionnez une autre base ou créez-en une nouvelle. Vérifiez les informations fournies par votre hébergeur.</p>";
+        echo "<p><B>L'opération a échoué.</B> Retournez à la page précédente, sélectionnez une autre base ou créez-en une nouvelle. Vérifiez les informations fournies par votre hébergeur.</p>\n";
     }
 
     end_html();
@@ -222,29 +223,31 @@ else if ($etape == 3) {
 
     begin_html();
 
-    echo "<br /><h2 class='gepi'>Troisième étape : Choix de votre base</h2>";
+    echo "<br /><h2 class='gepi'>Troisième étape : Choix de votre base</h2>\n";
 
-    echo "<P>";
+    echo "<p>&nbsp;</p>\n";
 
-    echo "<FORM ACTION='install.php' METHOD='post'>";
-    echo "<INPUT TYPE='hidden' NAME='etape' VALUE='4' />";
-    echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />";
-    echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />";
-    echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" /><P>";
+    echo "<FORM ACTION='install.php' METHOD='post'>\n";
+    echo "<INPUT TYPE='hidden' NAME='etape' VALUE='4' />\n";
+    echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />\n";
+    echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />\n";
+    echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" />\n";
 
     $link = @mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
     $result = @mysql_list_dbs();
 
-    echo "<fieldset><label><B>Choisissez votre base :</B><br /></label>";
+    echo "<fieldset><label><B>Choisissez votre base :</B><br /></label>\n";
     $checked = false;
     if ($result AND (($n = @mysql_num_rows($result)) > 0)) {
-        echo "<p><B>Le serveur MySQL contient plusieurs bases de données.<br />Sélectionnez celle dans laquelle vous voulez implanter GEPI</b></p>";
-        echo "<UL>";
+        echo "<p><B>Le serveur MySQL contient plusieurs bases de données.<br />Sélectionnez celle dans laquelle vous voulez implanter GEPI</b></p>\n";
+        echo "<UL>\n";
         $bases = "";
         for ($i = 0; $i < $n; $i++) {
             $table_nom = mysql_dbname($result, $i);
-            $base = "<INPUT NAME=\"choix_db\" VALUE=\"".$table_nom."\" TYPE=Radio id='tab$i'";
-            $base_fin = " /><label for='tab$i'>".$table_nom."</label><br />\n";
+            //$base = "<INPUT NAME=\"choix_db\" VALUE=\"".$table_nom."\" TYPE=Radio id='tab$i'";
+            //$base_fin = " /><label for='tab$i'>".$table_nom."</label><br />\n";
+            $base = "<li style='list-style-type:none;'><INPUT NAME=\"choix_db\" VALUE=\"".$table_nom."\" TYPE=Radio id='tab$i'";
+            $base_fin = " /><label for='tab$i'>".$table_nom."</label></li>\n";
             if ($table_nom == $_POST['login_db']) {
                 $bases = "$base CHECKED$base_fin".$bases;
                 $checked = true;
@@ -253,17 +256,17 @@ else if ($etape == 3) {
                 $bases .= "$base$base_fin\n";
             }
         }
-        echo $bases."</UL>";
+        echo $bases."</UL>\n";
         echo "ou... ";
     }
     else {
-        echo "<B>Le programme d'installation n'a pas pu lire les noms des bases de données installées.</B>Soit aucune base n'est disponible, soit la fonction permettant de lister les bases a été désactivée pour des raisons de sécurité.<P>";
+        echo "<B>Le programme d'installation n'a pas pu lire les noms des bases de données installées.</B>Soit aucune base n'est disponible, soit la fonction permettant de lister les bases a été désactivée pour des raisons de sécurité.<p>\n";
         if ($_POST['login_db']) {
-            echo "Dans la seconde alternative, il est probable qu'une base portant votre nom de connexion soit utilisable :";
-            echo "<UL>";
-            echo "<INPUT NAME=\"choix_db\" VALUE=\"".$_POST['login_db']."\" TYPE=Radio id='stand' CHECKED />";
+            echo "Dans la seconde alternative, il est probable qu'une base portant votre nom de connexion soit utilisable :\n";
+            echo "<UL>\n";
+            echo "<INPUT NAME=\"choix_db\" VALUE=\"".$_POST['login_db']."\" TYPE=Radio id='stand' CHECKED />\n";
             echo "<label for='stand'>".$_POST['login_db']."</label><br />\n";
-            echo "</UL>";
+            echo "</UL>\n";
             echo "ou... ";
             $checked = true;
         }
@@ -271,16 +274,16 @@ else if ($etape == 3) {
     echo "<INPUT NAME=\"choix_db\" VALUE=\"new_gepi\" TYPE=Radio id='nou'";
     if (!$checked) echo " CHECKED";
     echo " /> <label for='nou'>Créer une nouvelle base de données :</label> ";
-    echo "<INPUT TYPE='text' NAME='table_new' CLASS='fondo' VALUE=\"gepi\" SIZE='20' /></fieldset><P>";
-    echo "<p><b>Attention</b> : lors de la prochaine étape :";
-    echo "<ul>";
-    if (file_exists($nom_fic)) echo "<li>le fichier \"".$nom_fic."\" sera actualisé avec les données que vous avez fourni,</li>";
-    echo "<LI>les tables GEPI seront créées dans la base sélectionnée. Si celle-ci contient déjà des tables GEPI, ces tables, ainsi que les données qu'elles contiennent, seront supprimées et remplacées par une nouvelle structure.</LI></ul>";
+    echo "<INPUT TYPE='text' NAME='table_new' CLASS='fondo' VALUE=\"gepi\" SIZE='20' /></fieldset>\n\n";
+    echo "<p><b>Attention</b> : lors de la prochaine étape :</p>\n";
+    echo "<ul>\n";
+    if (file_exists($nom_fic)) echo "<li>le fichier \"".$nom_fic."\" sera actualisé avec les données que vous avez fourni,</li>\n";
+    echo "<LI>les tables GEPI seront créées dans la base sélectionnée. Si celle-ci contient déjà des tables GEPI, ces tables, ainsi que les données qu'elles contiennent, seront supprimées et remplacées par une nouvelle structure.</LI>\n</ul>\n";
 
-    echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' />";
+    echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
 
 
-    echo "</FORM>";
+    echo "</FORM>\n";
 
     end_html();
 
@@ -289,30 +292,31 @@ else if ($etape == 3) {
 else if ($etape == 2) {
     begin_html();
 
-    echo "<br /><h2 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</H2>";
+    echo "<br /><h2 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</h2>\n";
 
     echo "<!--";
     $link = mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
     $db_connect = mysql_errno();
-    echo "-->";
+    echo "-->\n";
 
-    echo "<P>";
+    //echo "<P>\n";
 
     if (($db_connect=="0") && $link){
-        echo "<B>La connexion a réussi.</B><P> Vous pouvez passer à l'étape suivante.</p>";
+        echo "<B>La connexion a réussi.</B><p> Vous pouvez passer à l'étape suivante.</p>\n";
 
-        echo "<FORM ACTION='install.php' METHOD='post'>";
-        echo "<INPUT TYPE='hidden' NAME='etape' VALUE='3' />";
-        echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />";
-        echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />";
-        echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" /><P>";
+        echo "<FORM ACTION='install.php' METHOD='post'>\n";
+        echo "<INPUT TYPE='hidden' NAME='etape' VALUE='3' />\n";
+        echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />\n";
+        echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />\n";
+        echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" />\n";
 
-        echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' />";
-        echo "</FORM>";
+        echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+
+        echo "</FORM>\n";
     }
     else {
-        echo "<B>La connexion au serveur MySQL a échoué.</B>";
-        echo "<P>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>";
+        echo "<B>La connexion au serveur MySQL a échoué.</B>\n";
+        echo "<p>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>\n";
     }
 
     end_html();
@@ -321,26 +325,29 @@ else if ($etape == 2) {
 else if ($etape == 1) {
     begin_html();
 
-    echo "<br /><h2 class='gepi'>Première étape : la connexion MySQL</h2>";
+    echo "<br />\n<h2 class='gepi'>Première étape : la connexion MySQL</h2>\n";
 
-    echo "<P>Vous devez avoir en votre possession les codes de connexion au serveur MySQL. Si ce n'est pas le cas, contactez votre hébergeur ou bien l'administrateur technique du serveur sur lequel vous voulez implanter GEPI.</p>";
+    echo "<P>Vous devez avoir en votre possession les codes de connexion au serveur MySQL. Si ce n'est pas le cas, contactez votre hébergeur ou bien l'administrateur technique du serveur sur lequel vous voulez implanter GEPI.</p>\n";
 
     unset($adresse_db);
     $adresse_db = isset($_POST["adresse_db"]) ? $_POST["adresse_db"] : 'localhost';
     $login_db = '';
     $pass_db = '';
 
-    echo "<p><FORM ACTION='install.php' METHOD='post'>";
-    echo "<INPUT TYPE='hidden' NAME='etape' VALUE='2' />";
-    echo "<fieldset><label><B>Adresse de la base de donnée</B><br /></label>";
-    echo "(Souvent cette adresse correspond à celle de votre site, parfois elle correspond à la mention &laquo;localhost&raquo;, parfois elle est laissée totalement vide.)<br />";
-    echo "<INPUT  TYPE='text' NAME='adresse_db' CLASS='formo' VALUE=\"$adresse_db\" SIZE='40' /></fieldset><P>";
-    echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>";
-    echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><P>";
-    echo "<fieldset><label><B>Le mot de passe de connexion</B><br /></label>";
-    echo "<INPUT TYPE='password' NAME='pass_db' CLASS='formo' VALUE=\"$pass_db\" SIZE='40' /></fieldset><P>";
-    echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' />";
-    echo "</FORM>";
+    echo "<FORM ACTION='install.php' METHOD='post'>\n";
+    echo "<INPUT TYPE='hidden' NAME='etape' VALUE='2' />\n";
+    echo "<fieldset><label><B>Adresse de la base de donnée</B><br /></label>\n";
+    echo "(Souvent cette adresse correspond à celle de votre site, parfois elle correspond à la mention &laquo;localhost&raquo;, parfois elle est laissée totalement vide.)<br />\n";
+    echo "<INPUT  TYPE='text' NAME='adresse_db' CLASS='formo' VALUE=\"$adresse_db\" SIZE='40' /></fieldset><br />\n";
+
+    echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>\n";
+    echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><br />\n";
+
+    echo "<fieldset><label><B>Le mot de passe de connexion</B><br /></label>\n";
+    echo "<INPUT TYPE='password' NAME='pass_db' CLASS='formo' VALUE=\"$pass_db\" SIZE='40' /></fieldset><br />\n";
+
+    echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+    echo "</FORM>\n";
 
     end_html();
 
@@ -357,26 +364,26 @@ else if ($etape == 1) {
 
     if ($affiche_etape0 == 'yes') {
         begin_html();
-        echo "<h2 class='gepi'>Installation de la base Mysql</h2>";
-        echo "<FORM ACTION='install.php' METHOD='post'>";
+        echo "<h2 class='gepi'>Installation de la base Mysql</h2>\n";
+        echo "<FORM ACTION='install.php' METHOD='post'>\n";
         if ($test_write == 'no') {
-            echo "<h3 class='gepi'>Problème de droits d'accès :</h3";
-            echo "<p>Le répertoire \"/secure\" n'est pas accessible en écriture.</p>";
-            echo "<P>Utilisez votre client FTP afin de régler ce problème ou bien contactez l'administrateur technique. Une fois cette manipulation effectuée, vous pourrez continuer en cliquant sur le bouton en bas de la page.</p>";
-            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='' />";
+            echo "<h3 class='gepi'>Problème de droits d'accès :</h3>\n";
+            echo "<p>Le répertoire \"/secure\" n'est pas accessible en écriture.</p>\n";
+            echo "<P>Utilisez votre client FTP afin de régler ce problème ou bien contactez l'administrateur technique. Une fois cette manipulation effectuée, vous pourrez continuer en cliquant sur le bouton en bas de la page.</p>\n";
+            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='' />\n";
         } else {
-            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='1' />";
+            echo "<INPUT TYPE='hidden' NAME='etape' VALUE='1' />\n";
         }
         if ($file_existe == 'yes') {
-            echo "<h3 class='gepi'>Présence d'un fichier ".$nom_fic." :</h3>";
+            echo "<h3 class='gepi'>Présence d'un fichier ".$nom_fic." :</h3>\n";
             echo "<p>Un fichier nommé <b>\"connect.inc.php\"</b> est actuellement présent dans le répertoire \"/secure\".
             C'est peut-être la trace d'une ancienne installation. Par ailleurs, ce fichier contient peut-être les informations de connexion à la base MySql que vous souhaitez conserver.
-            <br /><b>Attention : ce fichier et ce qu'il contient sera supprimé lors de cette nouvelle installation</b>.</p>";
+            <br /><b>Attention : ce fichier et ce qu'il contient sera supprimé lors de cette nouvelle installation</b>.</p>\n";
         }
 
 
-        echo "<INPUT TYPE='submit' CLASS='fondl' Value = 'Continuer' NAME='Continuer' />";
-        echo "</FORM>";
+        echo "<INPUT TYPE='submit' CLASS='fondl' Value = 'Continuer' NAME='Continuer' />\n";
+        echo "</FORM>\n";
         end_html();
     } else {
         header("Location: ./install.php?etape=1");
