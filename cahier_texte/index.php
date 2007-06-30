@@ -431,7 +431,7 @@ if (($id_groupe == null)) {
        echo " <b>AVERTISSEMENT</b> : En raison du caractère personnel du contenu, l'accès au <a href=\"../public\">site de consultation publique du cahier de texte</a> est restreint.
        Pour accéder aux cahiers de texte, le visiteur (élève, parent, ...) doit être en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
     } else {
-       echo " <b><b>AVERTISSEMENT</b> : l'accès à l'interface de consultation publique du cahier de texte est entièrement libre et n'est soumise à aucune restriction.</b>\n";
+       echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accès à l'interface de consultation publique du cahier de texte est entièrement libre et n'est soumise à aucune restriction.</b>\n";
     }
     echo "<br /><br />En utilisant le cahier de texte électronique de GEPI :
     <ul>\n";
@@ -440,7 +440,7 @@ if (($id_groupe == null)) {
 		echo "<li>vous acceptez que vos nom, initiale de prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de texte</a>,</li>\n";
 	}
 	else{
-		echo "<li>l'accès au cahier de texte est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>)</a>,</li>\n";
+		echo "<li>l'accès au cahier de texte est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>),</li>\n";
 	}
 
     echo "<li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusées sur ce même site.</li>
@@ -456,7 +456,8 @@ if (($id_groupe == null)) {
     <li>documents divers,</li>
     <li>évaluations, ...</li>
     </ul>\n";
-    echo "</body></html>\n";
+    //echo "</body></html>\n";
+	require("../lib/footer.inc.php");
     die();
 }
 
