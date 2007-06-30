@@ -155,7 +155,35 @@ $couleur_devoirs = '#AAE6AA';
 $couleur_fond = '#AAE6AA';
 $couleur_moy_cn = '#96C8F0';
 
+
+
 if (!isset($periode_cn)) $periode_cn = 0;
+
+if($periode_cn==0){
+	//echo "A";
+	foreach($current_group["classes"]["classes"] as $classe){
+		//echo "B";
+		if($periode_cn==0){
+			//echo "C";
+			for($i=1;$i<=count($current_group["classe"]["ver_periode"][$classe['id']]);$i++){
+				//echo "$i";
+				if($current_group["classe"]["ver_periode"][$classe['id']][$i]=="N"){
+					$periode_cn=$i;
+					//echo "\$periode_cn=$i<br />";
+					break;
+				}
+			}
+		}
+		else{
+			break;
+		}
+	}
+
+	// Si jamais aucune période n'est ouverte:
+	if($periode_cn==0){
+		$periode_cn=1;
+	}
+}
 
 // appel du carnet de notes
 if ($periode_cn != 0) {
