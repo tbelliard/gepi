@@ -68,8 +68,13 @@ if ($current_group) {
     echo "<p class='grand'> Groupe : " . htmlentities($current_group["description"]) . " ($classes) | Matière : ".htmlentities($matiere_nom)."</p>\n";
     echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
 
-    echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes manuellement</a></li>\n";
-    echo "<li><a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations manuellement</a></li>\n</ul>\n";
+    //echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes manuellement</a></li>\n";
+    //echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes</a> (<i>avec importation éventuelle à partir du carnet de notes</i>)</li>\n";
+    echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes</a></li>\n";
+    //echo "<li><a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations manuellement</a></li>\n</ul>\n";
+    echo "<li><a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a></li>\n</ul>\n";
+	/*
+	// Ce n'est plus utile... c'est à la première période ouverte que l'on accède avec la saisie manuelle.
     $i="1";
     // Avec affichage de la colonne "carnet de note"
     while ($i < $nb_periode) {
@@ -79,6 +84,7 @@ if ($current_group) {
         }
         $i++;
     }
+	*/
     $i="1";
 
     // importation par csv

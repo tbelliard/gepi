@@ -331,7 +331,12 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 			echo "bgcolor=\"$couleur_fond\" ";
 		}
 		//echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i])."</b></th>\n";
-		echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i&amp;retour_cn=yes'>".ucfirst($nom_periode[$i])."</a></b>";
+		if(isset($retour_cn)){
+			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i&amp;retour_cn=yes'>".ucfirst($nom_periode[$i])."</a></b>";
+		}
+		else{
+			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'>".ucfirst($nom_periode[$i])."</a></b>";
+		}
 		//$statut_verrouillage=$current_group["classe"]["ver_periode"]["all"][$i];
 		//echo "<br />\$statut_verrouillage=$statut_verrouillage";
 		echo "</th>\n";
