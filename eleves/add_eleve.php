@@ -737,8 +737,12 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 <br />- Les champs * sont obligatoires.</p>
 <?php
 
+// PROBLEME: On ne récupère que les responsables déjà associés à un élève !
+
 //$sql="SELECT rp.nom,rp.prenom,rp.pers_id,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.resp_legal='1' AND r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
+//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
+$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
+
 $call_resp=mysql_query($sql);
 $nombreligne = mysql_num_rows($call_resp);
 // si la table des responsables est non vide :
@@ -747,9 +751,9 @@ if ($nombreligne != 0) {
 	$chaine_adr2 = '';
 	$chaine_resp2 = '';
 
-	echo "<br /><hr /><H3>Envoi des bulletins par voie postale</H3>";
+	echo "<br /><hr /><h3>Envoi des bulletins par voie postale</h3>\n";
 	echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-	echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>";
+	echo "<br /><br /><table><tr><td><b>Responsable légal principal : </b></td>\n";
 
 	echo "<td><select size=1 name='reg_resp1'>\n";
 	echo "<option value='(vide)' ";
