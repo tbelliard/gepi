@@ -89,8 +89,10 @@ function redimensionne_image($photo)
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
     // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
+     //$nouvelle_largeur = $largeur / $ratio;
+     //$nouvelle_hauteur = $hauteur / $ratio;
+     $nouvelle_largeur = round($largeur / $ratio);
+     $nouvelle_hauteur = round($hauteur / $ratio);
 
     return array($nouvelle_largeur, $nouvelle_hauteur);
  }
@@ -270,5 +272,9 @@ require_once("../lib/header.inc");
 </div>
 <?php } ?>
 
-<?php mysql_close(); ?>
+<?php
+	mysql_close();
+
+	require("../lib/footer.inc.php");
+?>
 
