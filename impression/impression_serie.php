@@ -55,7 +55,7 @@ echo "</p>\n";
 
 if ($id_choix_periode != 0) {
   $periode = "Période N°".$id_choix_periode;
-  echo "<h3><center>".$periode."</center></h3>";
+  echo "<h3 align='center'>".$periode."</h3>\n";
   echo "<h3>Liste des classes : ";
    echo "</h3>\n";
 } else {
@@ -94,11 +94,11 @@ echo "<div style=\"text-align: center;\">\n
 					                     FROM `periodes`, `classes` , `j_scol_classes` jsc
 										 WHERE (jsc.login='$login_scolarite'
 										 AND jsc.id_classe=classes.id
-										 AND `periodes`.`num_periode` = ".$id_choix_periode." 
+										 AND `periodes`.`num_periode` = ".$id_choix_periode."
 										 AND `classes`.`id` = `periodes`.`id_classe`)
 										 ORDER BY `nom_complet` ASC";
                     } else {
-					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC"; 
+					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 					}
 					$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
 					echo "		<optgroup label=\"-- Les classes --\">\n";
