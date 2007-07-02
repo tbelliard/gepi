@@ -62,7 +62,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 
 	$ok='';
-	if(($nom=='')||($prenom=='')){
+	if(($resp_nom=='')||($resp_prenom=='')){
 		$ok='no';
 	}
 	else{
@@ -82,8 +82,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	else{
 		if(!isset($nouv_resp)){
 			if(isset($pers_id)){
-				$sql="UPDATE resp_pers SET nom='$nom',
-								prenom='$prenom',
+				$sql="UPDATE resp_pers SET nom='$resp_nom',
+								prenom='$resp_prenom',
 								civilite='$civilite',
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
@@ -104,10 +104,15 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				} else {
 					// On met également à jour la table utilisateurs si le responsable a un compte
 					$test1_login = mysql_result(mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
+					//echo "\$test1_login=$test1_login<br />\n";
 					if ($test1_login != '') {
-						$test2_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$test1_login."'"), 0);
+						$sql="SELECT count(login) FROM utilisateurs WHERE login = '".$test1_login."'";
+						//echo "$sql<br />\n";
+						$test2_login = mysql_result(mysql_query($sql), 0);
 						if ($test2_login == 1) {
-							$res = mysql_query("UPDATE utilisateurs SET nom = '".$nom."', prenom = '" . $prenom . "', email = '" . $mel . "' WHERE login ='" . $test1_login ."'");
+							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', email = '" . $mel . "' WHERE login ='" . $test1_login ."'";
+							//echo "$sql<br />\n";
+							$res = mysql_query($sql);
 						}
 					}
 				}
@@ -220,8 +225,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// Insertion du nouvel utilisateur dans resp_pers:
 			$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
-								nom='$nom',
-								prenom='$prenom',
+								nom='$resp_nom',
+								prenom='$resp_prenom',
 								civilite='$civilite',
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
@@ -489,8 +494,8 @@ if (isset($pers_id)) {
 
 	$lig_pers=mysql_fetch_object($res_resp);
 
-	$nom=$lig_pers->nom;
-	$prenom=$lig_pers->prenom;
+	$resp_nom=$lig_pers->nom;
+	$resp_prenom=$lig_pers->prenom;
 	$civilite=$lig_pers->civilite;
 	$tel_pers=$lig_pers->tel_pers;
 	$tel_port=$lig_pers->tel_port;
@@ -523,8 +528,8 @@ else{
 }
 
 // Initialisation des variables, si nécessaire:
-if (!isset($nom)) $nom='';
-if (!isset($prenom)) $prenom='';
+if (!isset($resp_nom)) $resp_nom='';
+if (!isset($resp_prenom)) $resp_prenom='';
 if (!isset($civilite)) $civilite='';
 if (!isset($adr1)) $adr1='';
 if (!isset($adr2)) $adr2='';
@@ -548,8 +553,8 @@ echo "<td valign='top'>\n";
 	echo "</p>\n";
 
 	echo "<table>\n";
-	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=nom value = \"".$nom."\" /></td></tr>\n";
-	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=prenom value = \"".$prenom."\" /></td></tr>\n";
+	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=resp_nom value = \"".$resp_nom."\" /></td></tr>\n";
+	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" /></td></tr>\n";
 	echo "<tr><td>Civilité : </td><td>\n";
 
 	echo "<table border='0'>\n";
