@@ -121,6 +121,16 @@ if($gepi_prof_suivi==""){
 	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
 	<!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
 	<link type="text/css" rel="stylesheet" href="../style.css" />
+<?php
+	if(isset($style_screen_ajout)){
+		// Styles paramétrables depuis l'interface:
+		if($style_screen_ajout=='y'){
+			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+		}
+	}
+?>
 </head>
 <body>
 
