@@ -77,7 +77,7 @@ if (empty($style)) $style = "style";
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_trombinoscopes/styles/styles.css" /><?php
     }
 
-   // vérifie si on nest dans le modules absences
+   // vérifie si on est dans le modules absences
    $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
     if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
         ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css" /><?php
@@ -165,6 +165,28 @@ function show_message_deconnexion(){
 }
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
+
+
+if(isset($style_specifique)){
+	// Il faudrait filtrer le contenu de la variable...
+	// ne doit contenir que certains types de caractères et se terminer par .css
+	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
+		// Styles spécifiques à une page:
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+	}
+}
+
+if(isset($javascript_specifique)){
+	// Il faudrait filtrer le contenu de la variable...
+	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
+		// Javascript spécifique à une page:
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
+	}
+}
+
+
 
 if(isset($style_screen_ajout)){
 	// Styles paramétrables depuis l'interface:

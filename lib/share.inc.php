@@ -2028,4 +2028,17 @@ function formate_date($date){
 	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 }
 
+function getPref($login,$item,$default){
+	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
+	$res_prefs=mysql_query($sql);
+
+	if(mysql_num_rows($res_prefs)>0){
+		$ligne=mysql_fetch_object($res_prefs);
+		return $ligne->value;
+	}
+	else{
+		return $default;
+	}
+}
+
 ?>

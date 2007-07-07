@@ -40,6 +40,7 @@ if (!checkAccess()) {
 }
 
 
+/*
 function getPref($login,$item,$default){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
@@ -52,8 +53,7 @@ function getPref($login,$item,$default){
 		return $default;
 	}
 }
-
-
+*/
 
 $prof=isset($_POST['prof']) ? $_POST['prof'] : NULL;
 $page=isset($_POST['page']) ? $_POST['page'] : NULL;
@@ -63,7 +63,27 @@ $msg="";
 if(isset($enregistrer)){
 
 	for($i=0;$i<count($prof);$i++){
-		if($page=='add_modif_dev'){
+		if($page=='accueil'){
+			$tab=array('accueil_simpl','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf','accueil_aff_txt_icon');
+			for($j=0;$j<count($tab);$j++){
+				unset($valeur);
+				$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+
+				if(isset($valeur)){
+					$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
+					//echo $sql."<br />\n";
+					$res_suppr=mysql_query($sql);
+					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
+					//echo $sql."<br />\n";
+					if($res_insert=mysql_query($sql)){
+					}
+					else{
+						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
+					}
+				}
+			}
+		}
+		elseif($page=='add_modif_dev'){
 			$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
@@ -218,6 +238,7 @@ else{
 		echo "<tr><td valign='top'>Paramétrage de l'interface simplifiée pour :</td>\n";
 		echo "<td>";
 		echo "<input type='hidden' name='page' id='id_page' />\n";
+		echo "<input type='button' name='choix1' value=\"Page d'accueil\" onclick=\"document.getElementById('id_page').value='accueil';document.forms['formulaire'].submit();\" /> <br />\n";
 		echo "<input type='button' name='choix1' value=\"Création d'évaluation\" onclick=\"document.getElementById('id_page').value='add_modif_dev';document.forms['formulaire'].submit();\" /> <br />\n";
 		echo "<input type='button' name='choix1' value=\"Création de ".strtolower(getSettingValue("gepi_denom_boite"))."\" onclick=\"document.getElementById('id_page').value='add_modif_conteneur';document.forms['formulaire'].submit();\" />";
 		echo "</td></tr>\n";
@@ -236,7 +257,96 @@ else{
 
 		echo "<input type='hidden' name='page' value='$page' />\n";
 
-		if($page=='add_modif_dev'){
+		if($page=='accueil'){
+			echo "<h2>Choix des items de la page d'accueil</h2>\n";
+
+			echo "<p>Vous allez paramétrer des préférences pour $chaine_profs.</p>\n";
+
+			// Récupération des valeurs.
+			/*
+
+			$pref_accueil_ct="y";
+			$pref_accueil_trombino="y";
+			// Préférences jouant sur les colspan de période:
+			$pref_accueil_trombino="y";
+			$pref_accueil_bull="y";
+			// Le bulletin simplifié est inclus dans la partie Visualisation
+			//$pref_accueil_bullsimp="y";
+			$pref_accueil_visu="y";
+			$pref_accueil_liste_pdf="y";
+
+			// 1: icones
+			// 2: textes
+			// 3: icones et textes
+			//$accueil_aff_txt_icon=3;
+			$accueil_aff_txt_icon=isset($_GET['txtico']) ? $_GET['txtico'] : 3;
+
+			*/
+
+			echo "<p>Pour ce(s) professeur(s), utiliser l'interface simplifiée par défaut: Oui <input type='radio' name='accueil_simpl' value='y' checked /> / <input type='radio' name='accueil_simpl' value='n' /> Non</p>\n";
+
+			echo "<p>Pour fixer les valeurs ci-dessous, validez le formulaire.</p>\n";
+			echo "<table border='1'>\n";
+			echo "<tr>\n";
+			echo "<td style='font-weight: bold; text-align:left;'>Item</td>\n";
+			echo "<td style='font-weight: bold; text-align:center;'>Afficher</td>\n";
+			echo "<td style='font-weight: bold; text-align:center;'>Cacher</td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher le lien Cahier de textes:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_ct' value='y' checked /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_ct' value='n' /></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher le lien Trombinoscope:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_trombino' value='y' /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_trombino' value='n' checked /></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher le lien Carnet de notes:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_cn' value='y' checked /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_cn' value='n' /></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher les liens Saisie des notes et des appréciations du bulletin:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_bull' value='y' checked /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_bull' value='n' /></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher les liens Visualisation des graphes et des bulletins simplifiés:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_visu' value='y' /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_visu' value='n' checked /></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>Afficher le lien Listes PDF des élèves:</td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_liste_pdf' value='y' /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_liste_pdf' value='n' checked /></td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
+
+			echo "<p>Afficher le lien Listes PDF des élèves:</p>\n";
+			echo "<table border='0'>\n";
+			echo "<tr>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='1' checked /></td>\n";
+			echo "<td> Afficher les icones seuls.</td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='2' /></td>\n";
+			echo "<td> Afficher les textes seuls.</td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='3' /></td>\n";
+			echo "<td> Afficher les textes et les icones.</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
+
+			echo "<p>Pour accéder aux rubriques non sélectionnées et aux autres rubriques non proposées dans l'interface simplifiée, le professeur doit repasser en interface complète.</p>\n";
+
+			echo "<input type='hidden' name='enregistrer' value='oui' />\n";
+		}
+		elseif($page=='add_modif_dev'){
 			echo "<h2>Choix des items de la page: Création d'évaluation</h2>\n";
 
 			echo "<p>Vous allez paramétrer des préférences pour $chaine_profs.</p>\n";

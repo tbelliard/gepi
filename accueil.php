@@ -52,8 +52,53 @@ if (!checkAccess()) {
 
 unset ($_SESSION['order_by']);
 
+
+if($_SESSION['statut']=='professeur'){
+	$accueil_simpl=isset($_GET['accueil_simpl']) ? $_GET['accueil_simpl'] : NULL;
+	if(!isset($accueil_simpl)){
+		$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl',"n");
+		$accueil_simpl=$pref_accueil_simpl;
+	}
+
+	if($accueil_simpl=="y"){
+		header("Location: ./accueil_simpl_prof.php");
+	}
+}
+else{
+	$accueil_simpl=NULL;
+}
+
 // End standart header
 require_once("./lib/header.inc");
+
+/*
+$tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
+
+echo "<div id='decompte' style='float: right; border: 1px solid black;'></div>
+
+<script type='text/javascript'>
+cpt=".$tmp_timeout.";
+compte_a_rebours='y';
+
+function decompte(cpt){
+	if(compte_a_rebours=='y'){
+		document.getElementById('decompte').innerHTML=cpt;
+		if(cpt>0){
+			cpt--;
+		}
+
+		setTimeout(\"decompte(\"+cpt+\")\",1000);
+	}
+	else{
+		document.getElementById('decompte').style.display='none';
+	}
+}
+
+decompte(cpt);
+
+</script>\n";
+*/
+
 
 $tab[0] = "administrateur";
 $tab[1] = "professeur";
@@ -177,6 +222,15 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||
 		$_SESSION['user_temp_directory']='y';
 	}
 }
+
+if($_SESSION['statut']=="professeur"){
+	echo "<p class='bold'>\n";
+	echo "<a href='accueil_simpl_prof.php'>Interface simplifiée</a>";
+	//echo " | \n";
+	echo "</p>\n";
+}
+
+
 echo "<center>\n";
 
 //Affichage des messages
@@ -841,15 +895,15 @@ if (getSettingValue("active_notanet")=='y') {
 	$chemin = array();
 	$chemin[] = "/mod_notanet/notanet.php";
 	$chemin[] = "/mod_notanet/fiches_brevet.php";
-	
+
 	$titre = array();
 	$titre[] = "Notanet";
 	$titre[] = "Fiches Brevet";
-	
+
 	$expli = array();
 	$expli[] = "Cet outil permet d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.<br />L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.";
 	$expli[] = "Cet outil permet de générer les fiches brevet.";
-	
+
 	$nb_ligne = count($chemin);
 	$affiche = 'no';
 	for ($i=0;$i<$nb_ligne;$i++) {

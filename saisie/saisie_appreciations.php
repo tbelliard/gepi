@@ -120,11 +120,16 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $titre_page = "Saisie des appréciations";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+$tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
 </script>
 <?php
+
+
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
@@ -176,6 +181,36 @@ if ($order_by != "classe") {
         $liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
     }
 }
+
+
+// Fonction de renseignement du champ qui doit obtenir le focus après validation
+echo "<script type='text/javascript'>
+
+function focus_suivant(num){
+	temoin='';
+	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	dernier=num+".count($liste_eleves)."
+	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
+	// (pour réussir à passer un élève qui ne serait plus dans la période)
+	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	for(i=num;i<dernier;i++){
+		suivant=i+1;
+		if(temoin==''){
+			if(document.getElementById('n'+suivant)){
+				document.getElementById('info_focus').value=suivant;
+				temoin=suivant;
+			}
+		}
+	}
+
+	document.getElementById('info_focus').value=temoin;
+}
+
+</script>\n";
+
+
+
+
 
 $prev_classe = null;
 $num_id = 10;
@@ -260,7 +295,13 @@ foreach ($liste_eleves as $eleve_login) {
 					}
 
                    //$mess[$k] = "<td>".$note."</td>\n<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows=2 cols=100 wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
-                   $mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
+
+                   //$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
+
+                   //$mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onfocus=\"document.getElementById('info_focus').value='n".$k.$num_id."'\">".$eleve_app."</textarea></td>\n";
+
+                   $mess[$k] = "<td>".$note."</td>\n<td>Contenu du carnet de notes : ".$liste_notes."<br /><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$eleve_login_t[$k]."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">".$eleve_app."</textarea></td>\n";
+
                 }
         } else {
             //
@@ -318,12 +359,58 @@ foreach ($liste_eleves as $eleve_login) {
     $i++;
 
 }
+
 ?>
 
 <input type="hidden" name="is_posted" value="yes" />
 <input type="hidden" name="id_groupe" value="<?php echo "$id_groupe";?>" />
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
-<center><div id="fixe"><input type="submit" value="Enregistrer" /></div></center>
+<center><div id="fixe"><input type="submit" value="Enregistrer" /><br />
+
+<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+<div id='decompte'></div>
+
+<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
+</div></center>
 </form>
+
+<?php
+// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+
+echo "<script type='text/javascript'>
+cpt=".$tmp_timeout.";
+compte_a_rebours='y';
+
+function decompte(cpt){
+	if(compte_a_rebours=='y'){
+		document.getElementById('decompte').innerHTML=cpt;
+		if(cpt>0){
+			cpt--;
+		}
+
+		setTimeout(\"decompte(\"+cpt+\")\",1000);
+	}
+	else{
+		document.getElementById('decompte').style.display='none';
+	}
+}
+
+decompte(cpt);
+
+";
+
+// Après validation, on donne le focus au champ qui suivait celui qui vien d'être rempli
+if(isset($_POST['champ_info_focus'])){
+	if($_POST['champ_info_focus']!=""){
+		echo "// On positionne le focus...
+	document.getElementById('n".$_POST['champ_info_focus']."').focus();
+\n";
+	}
+}
+
+echo "</script>\n";
+
+?>
 <br /><br /><br /><br />
 <?php require("../lib/footer.inc.php");?>
