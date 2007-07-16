@@ -651,3 +651,10 @@ img.link {
 	color: #999999;
 }
 */
+
+.infobulle_entete {
+	background-color: #4a4a59;
+}
+.infobulle_corps {
+	background-color: #EAEAEA;
+}

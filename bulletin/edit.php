@@ -1695,7 +1695,15 @@ echo "'>\n";
             // 1) l'avis
             echo "<span class='bulletin'><i>Avis du Conseil de classe : </i><br /></span>";
 			if($current_eleve_avis!=""){
-				echo "<span class='avis_bulletin'>$current_eleve_avis</span>";
+				echo "<span class='avis_bulletin'>";
+				//$current_eleve_avis
+				if((strstr($current_eleve_avis,">"))||(strstr($current_eleve_avis,"<"))){
+					echo $current_eleve_avis;
+				}
+				else{
+					echo nl2br($current_eleve_avis);
+				}
+				echo "</span>";
 			}
 			else{
 				echo "<span class='avis_bulletin'>&nbsp;</span>";

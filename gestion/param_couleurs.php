@@ -309,6 +309,78 @@ fieldset#login_box div#header {
 		}
 
 
+
+
+
+		if(isset($_POST['utiliser_couleurs_perso_infobulles'])){
+			if(!saveSetting('utiliser_couleurs_perso_infobulles','y')) {
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_infobulles'. ";
+				$nb_err++;
+			}
+
+			//couleur_infobulle_fond_corps
+			//couleur_infobulle_fond_entete
+
+			if(isset($_POST['couleur_infobulle_fond_entete'])){
+				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
+					$couleur_infobulle_fond_entete="4a4a59";
+				}
+				else{
+					$couleur_infobulle_fond_entete=$_POST['couleur_infobulle_fond_entete'];
+				}
+
+				if(saveSetting('couleur_infobulle_fond_entete',$couleur_infobulle_fond_entete)) {
+					//$msg.="Enregistrement effectué. ";
+					$temoin_modif++;
+				}
+				else{
+					$msg.="Erreur lors de la sauvegarde de 'couleur_infobulle_fond_entete'. ";
+					$nb_err++;
+				}
+			}
+
+			if(isset($_POST['couleur_infobulle_fond_corps'])){
+				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
+					$couleur_infobulle_fond_corps="EAEAEA";
+				}
+				else{
+					$couleur_infobulle_fond_corps=$_POST['couleur_infobulle_fond_corps'];
+				}
+
+				if(saveSetting('couleur_infobulle_fond_corps',$couleur_infobulle_fond_corps)) {
+					//$msg.="Enregistrement effectué. ";
+					$temoin_modif++;
+				}
+				else{
+					$msg.="Erreur lors de la sauvegarde de 'couleur_infobulle_fond_corps'. ";
+					$nb_err++;
+				}
+			}
+
+			if($nb_err==0){
+				$fich=fopen("../style_screen_ajout.css","a+");
+				fwrite($fich,"
+.infobulle_entete {
+	background-color: #$couleur_infobulle_fond_entete;
+}
+.infobulle_corps {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+");
+				fclose($fich);
+			}
+
+		}
+		else{
+			if(!saveSetting('utiliser_couleurs_perso_infobulles','n')) {
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_infobulles'. ";
+				$nb_err++;
+			}
+		}
+
+
+
+
 /*
 //$temoin_fichier_regenere
 				if($temoin_modif==0){
@@ -399,7 +471,7 @@ foreach($_POST as $post => $val){
 
 
 	//var liste=new Array('style_body_backgroundcolor');
-	var liste=new Array('style_body_backgroundcolor','degrade_haut','degrade_bas');
+	var liste=new Array('style_body_backgroundcolor','degrade_haut','degrade_bas','couleur_infobulle_fond_corps','couleur_infobulle_fond_entete');
 
 	function init(){
 		for(i=0;i<liste.length;i++){
@@ -509,6 +581,21 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	}
 
 
+/*
+	$tabcouleurs['style_body_backgroundcolor']=array();
+	$style_body_backgroundcolor=getSettingValue('style_body_backgroundcolor');
+	//echo "\$style_body_backgroundcolor=$style_body_backgroundcolor<br />";
+	if($style_body_backgroundcolor!=""){
+		$tabcouleurs['style_body_backgroundcolor']=tab_rvb($style_body_backgroundcolor);
+	}
+	else{
+		// #EAEAEA
+		// 14*16+10
+		$tabcouleurs['style_body_backgroundcolor']['R']=234;
+		$tabcouleurs['style_body_backgroundcolor']['V']=234;
+		$tabcouleurs['style_body_backgroundcolor']['B']=234;
+	}
+*/
 
 	echo "<form name='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<p><b>Couleurs:</b></p>\n";
@@ -554,12 +641,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			echo "</td>\n";
 			echo "<td style='text-align:center; border: 1px solid black;'>body{background-color: #XXXXXX;}</td>\n";
 			for($j=0;$j<count($comp);$j++){
+				/*
 				$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
 				$res_couleur=mysql_query($sql);
 				if(mysql_num_rows($res_couleur)>0){
 					$tmp=mysql_fetch_object($res_couleur);
 					$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 				}
+				*/
 				echo "<td style='text-align:center; border: 1px solid black;'>\n";
 				//echo "$sql<br />";
 				//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab[$i]."\")' />\n";
@@ -570,6 +659,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 				echo "</td>\n";
 			}
 			echo "<td id='".$tab[$i]."' style='text-align:center; border: 1px solid black;'>\n";
+			// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 			echo "<input type='hidden' name='$tab[$i]' value='$tab[$i]' />\n";
 			echo "&nbsp;&nbsp;&nbsp;</td>\n";
 			echo "<td style='text-align:center; border: 1px solid black;'>\n";
@@ -652,18 +742,21 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			echo "</td>\n";
 
 			for($j=0;$j<count($comp);$j++){
+				/*
 				$sql="SELECT value FROM setting WHERE name='".$tab_degrade[$i]."_".$comp[$j]."'";
 				$res_couleur=mysql_query($sql);
 				if(mysql_num_rows($res_couleur)>0){
 					$tmp=mysql_fetch_object($res_couleur);
 					$tabcouleurs[$tab_degrade[$i]][$comp[$j]]=$tmp->value;
 				}
+				*/
 				echo "<td style='text-align:center; border: 1px solid black;'>\n";
 				echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab_degrade[$i]."\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
 
 				echo "</td>\n";
 			}
 			echo "<td id='".$tab_degrade[$i]."' style='text-align:center; border: 1px solid black;'>\n";
+			// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 			echo "<input type='hidden' name='$tab_degrade[$i]' value='$tab_degrade[$i]' />\n";
 			echo "&nbsp;&nbsp;&nbsp;</td>\n";
 
@@ -677,6 +770,135 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 		echo "</table>\n";
 	echo "</table>\n";
 	echo "</blockquote>\n";
+
+
+
+
+
+
+
+
+
+
+
+	$tabcouleurs['couleur_infobulle_fond_entete']=array();
+	$couleur_infobulle_fond_entete=getSettingValue('couleur_infobulle_fond_entete');
+	if($couleur_infobulle_fond_entete!=""){
+		$tabcouleurs['couleur_infobulle_fond_entete']=tab_rvb($couleur_infobulle_fond_entete);
+	}
+	else{
+		// #4a4a59
+		// 4*16+10=74 et 5*16+9=89
+		$tabcouleurs['couleur_infobulle_fond_entete']['R']=74;
+		$tabcouleurs['couleur_infobulle_fond_entete']['V']=74;
+		$tabcouleurs['couleur_infobulle_fond_entete']['B']=89;
+	}
+
+	$tabcouleurs['couleur_infobulle_fond_corps']=array();
+	$couleur_infobulle_fond_corps=getSettingValue('couleur_infobulle_fond_corps');
+	if($couleur_infobulle_fond_corps!=""){
+		$tabcouleurs['couleur_infobulle_fond_corps']=tab_rvb($couleur_infobulle_fond_corps);
+	}
+	else{
+		// #EAEAEA
+		// 14*16+10=234
+		$tabcouleurs['couleur_infobulle_fond_corps']['R']=234;
+		$tabcouleurs['couleur_infobulle_fond_corps']['V']=234;
+		$tabcouleurs['couleur_infobulle_fond_corps']['B']=234;
+	}
+
+	echo "<p><b>Couleurs des 'infobulles':</b></p>\n";
+	echo "<blockquote>\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' value='y' ";
+	if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y'){
+		echo "checked ";
+	}
+	echo "/> ";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "Utiliser des couleurs personnalisées pour les infobulles.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "&nbsp;";
+	echo "</td>\n";
+	echo "<td>\n";
+		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
+
+		echo "<tr style='background-color:white;'>\n";
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Motif</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
+		}
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
+
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de fond de l'entête des infobulles";
+		echo "</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			/*
+			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+			$res_couleur=mysql_query($sql);
+			if(mysql_num_rows($res_couleur)>0){
+				$tmp=mysql_fetch_object($res_couleur);
+				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+			}
+			*/
+
+			echo "<td style='text-align:center; border: 1px solid black;'>\n";
+			echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_entete\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "</td>\n";
+		}
+		echo "<td id='couleur_infobulle_fond_entete' style='text-align:center; border: 1px solid black;'>\n";
+		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+		echo "<input type='hidden' name='couleur_infobulle_fond_entete' value='couleur_infobulle_fond_entete' />\n";
+		echo "&nbsp;&nbsp;&nbsp;</td>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>\n";
+		echo "<a href='#' onClick='reinit_couleurs(\"couleur_infobulle_fond_entete\");return false;'>Réinitialiser</a>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de fond du corps des infobulles";
+		echo "</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			/*
+			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+			$res_couleur=mysql_query($sql);
+			if(mysql_num_rows($res_couleur)>0){
+				$tmp=mysql_fetch_object($res_couleur);
+				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+			}
+			*/
+
+			echo "<td style='text-align:center; border: 1px solid black;'>\n";
+			echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_corps\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "</td>\n";
+		}
+		echo "<td id='couleur_infobulle_fond_corps' style='text-align:center; border: 1px solid black;'>\n";
+		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+		echo "<input type='hidden' name='couleur_infobulle_fond_corps' value='couleur_infobulle_fond_corps' />\n";
+		echo "&nbsp;&nbsp;&nbsp;</td>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>\n";
+		echo "<a href='#' onClick='reinit_couleurs(\"couleur_infobulle_fond_corps\");return false;'>Réinitialiser</a>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</blockquote>\n";
+
+
 
 
 

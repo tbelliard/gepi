@@ -99,6 +99,9 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $titre_page = "Saisie des avis | Saisie";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+$tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
@@ -148,17 +151,48 @@ if ($id_classe) {
     }
     $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
+
+
+
+	// Fonction de renseignement du champ qui doit obtenir le focus après validation
+	echo "<script type='text/javascript'>
+
+function focus_suivant(num){
+	temoin='';
+	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	dernier=num+".$nombre_lignes."
+	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
+	// (pour réussir à passer un élève qui ne serait plus dans la période)
+	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	for(i=num;i<dernier;i++){
+		suivant=i+1;
+		if(temoin==''){
+			if(document.getElementById('n'+suivant)){
+				document.getElementById('info_focus').value=suivant;
+				temoin=suivant;
+			}
+		}
+	}
+
+	document.getElementById('info_focus').value=temoin;
+}
+
+</script>\n";
+
+
+
+
     $i = "0";
     $num_id=10;
     while($i < $nombre_lignes) {
         $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
         $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
         $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
-        echo "<table width=\"750\" border=1 cellspacing=2 cellpadding=5>";
-        echo "<tr>";
-        echo "<td width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></td>";
-        echo "<td><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b></div></td>";
-        echo "</tr>";
+        echo "<table width=\"750\" border=1 cellspacing=2 cellpadding=5>\n";
+        echo "<tr>\n";
+        echo "<td width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></td>\n";
+        echo "<td><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b></div></td>\n";
+        echo "</tr>\n";
 
         $k='1';
         while ($k < $nb_periode) {
@@ -171,41 +205,107 @@ if ($id_classe) {
         $k='1';
         while ($k < $nb_periode) {
             if ($ver_periode[$k] != "N") {
-                echo "<tr><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>";
+                echo "<tr>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
             } else {
-                echo "<tr><td>$nom_periode[$k]</td>";
+                echo "<tr>\n<td>$nom_periode[$k]</td>\n";
             }
             if ($ver_periode[$k] != "O") {
                 $call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
                 $result_test = mysql_num_rows($call_eleve);
                 if ($result_test != 0) {
                     //echo "<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
-                    echo "<td><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
+
+                    //echo "<td>\n<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
+
+					// onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\"
+
+                    echo "<td>\n<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">";
+
                     echo "$current_eleve_avis_t[$k]";
-                    echo "</textarea></td>";
+                    echo "</textarea>\n";
+					//echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='no_anti_inject_".$current_eleve_login_t[$k]."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajout CC</a>";
+					echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='n".$k.$num_id."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajouter un commentaire-type</a>\n";
+					echo "</td>\n";
                 } else {
-                    echo "<td><p>$current_eleve_avis_t[$k]&nbsp;</p></td>";
+                    echo "<td><p>$current_eleve_avis_t[$k]&nbsp;</p></td>\n";
                 }
             } else {
                 echo "<td><p class=\"medium\">";
                 echo "$current_eleve_avis_t[$k]";
-                echo "</p></td>";
+                echo "</p></td>\n";
             }
+			echo "</tr>\n";
             $k++;
         }
-        echo "</tr>";
+        //echo "</tr>";
         $num_id++;
         $i++;
-        echo"</table><br /><br />";
+        echo "</table>\n<br />\n<br />\n";
+
     }
+
+
+	if((file_exists('saisie_commentaires_types.php'))
+		&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
+		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+		//include('saisie_commentaires_types.php');
+		//include('saisie_commentaires_types2.php');
+		include('saisie_commentaires_types2b.php');
+		//echo "AAAAAAAAAAAAA";
+	}
+
 
     if ($test_periode_ouverte == 'yes') {
         ?>
         <input type=hidden name=is_posted value="yes" />
         <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
-        <center><div id="fixe"><input type=submit value=Enregistrer /></div></center>
+        <center><div id="fixe"><input type=submit value=Enregistrer />
+
+		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+		<div id='decompte'></div>
+
+		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+		<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
+
+		</div></center>
         <br /><br /><br /><br />
+
         <?php
+			// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
+
+			echo "<script type='text/javascript'>
+cpt=".$tmp_timeout.";
+compte_a_rebours='y';
+
+function decompte(cpt){
+	if(compte_a_rebours=='y'){
+		document.getElementById('decompte').innerHTML=cpt;
+		if(cpt>0){
+			cpt--;
+		}
+
+		setTimeout(\"decompte(\"+cpt+\")\",1000);
+	}
+	else{
+		document.getElementById('decompte').style.display='none';
+	}
+}
+
+decompte(cpt);
+
+";
+
+		// Après validation, on donne le focus au champ qui suivait celui qui vien d'être rempli
+		if(isset($_POST['champ_info_focus'])){
+			if($_POST['champ_info_focus']!=""){
+				echo "// On positionne le focus...
+			document.getElementById('n".$_POST['champ_info_focus']."').focus();
+		\n";
+			}
+		}
+
+		echo "</script>\n";
+
     }
 }
 

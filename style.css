@@ -677,3 +677,10 @@ img.link {
 .gestion_temp_dir .lig1 {
 	background-color: silver;
 }
+
+.infobulle_entete {
+	background-color: #4a4a59;
+}
+.infobulle_corps {
+	background-color: #EAEAEA;
+}

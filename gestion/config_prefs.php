@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();};
 
-// INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
+// INSERT INTO droits VALUES ('/gestion/consult_prefs.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -55,25 +55,57 @@ function getPref($login,$item,$default){
 }
 */
 
+//$page=isset($_GET['page']) ? $_GET['page'] : NULL;
+$page=isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : NULL);
+
 $prof=isset($_POST['prof']) ? $_POST['prof'] : NULL;
-$page=isset($_POST['page']) ? $_POST['page'] : NULL;
+
+if($_SESSION['statut']!="administrateur"){
+	unset($prof);
+	$prof=array($_SESSION['login']);
+}
+
+//$page=isset($_POST['page']) ? $_POST['page'] : NULL;
 $enregistrer=isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
 $msg="";
 
-if(isset($enregistrer)){
+// Tester les valeurs de $page
+// Les valeurs autorisées sont (actuellement): accueil, add_modif_dev, add_modif_conteneur
+//if(isset($page)){
+if((isset($page))&&($_SESSION['statut']=="administrateur")){
+	if(($page!="accueil_simpl")&&($page!="add_modif_dev")&&($page!="add_modif_conteneur")){
+		$page=NULL;
+		$enregistrer=NULL;
+		$msg="La page choisie ne convient pas.";
+	}
+}
 
+if(isset($enregistrer)){
 	for($i=0;$i<count($prof);$i++){
-		if($page=='accueil'){
+		//if($page=='accueil_simpl'){
+		if(($page=='accueil_simpl')||($_SESSION['statut']=='professeur')){
 			$tab=array('accueil_simpl','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf','accueil_aff_txt_icon');
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
-				$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				$tmp_champ=$tab[$j]."_".$i;
+				$valeur=isset($_POST[$tmp_champ]) ? $_POST[$tmp_champ] : NULL;
+
+				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
+				//echo $sql."<br />\n";
+				$res_suppr=mysql_query($sql);
 
 				if(isset($valeur)){
-					$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
-					//echo $sql."<br />\n";
-					$res_suppr=mysql_query($sql);
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
+					//echo $sql."<br />\n";
+					if($res_insert=mysql_query($sql)){
+					}
+					else{
+						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
+					}
+				}
+				else{
+					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
 					if($res_insert=mysql_query($sql)){
 					}
@@ -83,17 +115,30 @@ if(isset($enregistrer)){
 				}
 			}
 		}
-		elseif($page=='add_modif_dev'){
+
+		if(($page=='add_modif_dev')||($_SESSION['statut']=='professeur')){
 			$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
-				$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				$tmp_champ=$tab[$j]."_".$i;
+				$valeur=isset($_POST[$tmp_champ]) ? $_POST[$tmp_champ] : NULL;
+
+				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
+				//echo $sql."<br />\n";
+				$res_suppr=mysql_query($sql);
 
 				if(isset($valeur)){
-					$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
-					//echo $sql."<br />\n";
-					$res_suppr=mysql_query($sql);
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
+					//echo $sql."<br />\n";
+					if($res_insert=mysql_query($sql)){
+					}
+					else{
+						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
+					}
+				}
+				else{
+					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
 					if($res_insert=mysql_query($sql)){
 					}
@@ -103,17 +148,30 @@ if(isset($enregistrer)){
 				}
 			}
 		}
-		elseif($page=='add_modif_conteneur'){
+
+		if(($page=='add_modif_conteneur')||($_SESSION['statut']=='professeur')){
 			$tab=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
-				$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
+				$tmp_champ=$tab[$j]."_".$i;
+				$valeur=isset($_POST[$tmp_champ]) ? $_POST[$tmp_champ] : NULL;
+
+				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
+				//echo $sql."<br />\n";
+				$res_suppr=mysql_query($sql);
 
 				if(isset($valeur)){
-					$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
-					//echo $sql."<br />\n";
-					$res_suppr=mysql_query($sql);
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
+					//echo $sql."<br />\n";
+					if($res_insert=mysql_query($sql)){
+					}
+					else{
+						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
+					}
+				}
+				else{
+					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
 					if($res_insert=mysql_query($sql)){
 					}
@@ -129,9 +187,17 @@ if(isset($enregistrer)){
 		$msg="Enregistrement réussi.";
 	}
 
-	unset($page);
+	//unset($page);
 }
 
+// Style spécifique pour la page:
+$style_specifique="gestion/config_prefs";
+
+// Couleur pour les cases dans lesquelles une modif est faite:
+$couleur_modif='orange';
+
+// Message d'alerte pour ne pas quitter par erreur sans valider:
+$themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer?";
 
 
 //**************** EN-TETE *****************
@@ -139,355 +205,481 @@ $titre_page = "Configuration des interfaces simplifiées";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+// Initialisation de la variable utilisée pour noter si des modifications ont été effectuées dans la page.
+echo "<script type='text/javascript'>
+	change='no';
+</script>\n";
 
-if(!isset($prof)){
+/*
+- Choisir la page à afficher
+- Choisir les profs? ou juste répéter la ligne de titre?
+*/
+
+echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+echo "<div class='norme'><p class=bold>";
+echo "<a href='";
+if($_SESSION['statut']=='administrateur'){
+	echo "index.php";
+}
+else{
+	echo "../accueil.php";
+}
+echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+
+//if(!isset($page)){
+if((!isset($page))&&($_SESSION['statut']=="administrateur")){
 	echo "</div>\n";
 
-	echo "<h2>Choix des professeurs</h2>\n";
-
-	echo "<p>Choisissez les professeurs dont vous souhaitez paramétrer les interfaces simplifiées.</p>\n";
-	echo "<p>Tout <a href='javascript:modif_coche(true)'>cocher</a> / <a href='javascript:modif_coche(false)'>décocher</a>.</p>";
-
-	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE (statut='professeur'AND etat='actif') ORDER BY nom,prenom";
-	$res_profs=mysql_query($sql);
-	$nb_prof=mysql_num_rows($res_profs);
-	if($nb_prof==0){
-		echo "<p>ERREUR: Il semble qu'aucun professeur ne soit encore défini.</p>\n";
-		echo "</form>\n";
-		echo "</body>\n";
-		echo "</html>\n";
-		die();
-	}
-	// Affichage sur 3 colonnes
-	$nb_prof_par_colonne=round($nb_prof/3);
-
-	echo "<table width='100%'>\n";
-	echo "<tr valign='top' align='center'>\n";
-
-	$i = 0;
-
-	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
-	echo "<td align='left'>\n";
-
-	while ($i < $nb_prof) {
-
-		if(($i>0)&&(round($i/$nb_prof_par_colonne)==$i/$nb_prof_par_colonne)){
-			echo "</td>\n";
-			echo "<td align='left'>\n";
-		}
-
-		$lig_prof=mysql_fetch_object($res_profs);
-
-		echo "<input type='checkbox' id='prof".$i."' name='prof[]' value='$lig_prof->login' /> ".ucfirst(strtolower($lig_prof->prenom))." ".strtoupper($lig_prof->nom)."<br />\n";
-
-		$i++;
-	}
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-
-	echo "<script type='text/javascript'>
-		function modif_coche(statut){
-			for(k=0;k<$i;k++){
-				if(document.getElementById('prof'+k)){
-					document.getElementById('prof'+k).checked=statut;
-				}
-			}
-			//changement();
-		}
-	</script>\n";
-
-	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
+	echo "<p>Cette page permet de configurer l'interface simplifiée pour:</p>\n";
+	echo "<ul>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=accueil_simpl'>Page d'accueil simplifiée pour les professeurs</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_dev'>Page de création d'évaluation</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_conteneur'>Page de création de ".strtolower(getSettingValue("gepi_denom_boite"))."</a></li>\n";
+	echo "</ul>\n";
 
 }
 else{
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres professeurs</a>";
+	if($_SESSION['statut']=="administrateur"){
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix de la page</a>";
+	}
 	echo "</div>\n";
 
-	if(!isset($page)){
-		echo "<h2>Choix de la page</h2>\n";
 
-		if(count($prof)==0){
-			echo "<p>ERREUR: Il semble qu'aucun professeur n'ait été sélectionné.</p>\n";
-			echo "</form>\n";
-			echo "</body>\n";
-			echo "</html>\n";
+	unset($prof);
+	$prof=array();
+	if($_SESSION['statut']=="administrateur"){
+
+		$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom";
+		$res_prof=mysql_query($sql);
+		if(mysql_num_rows($res_prof)==0){
+			echo "<p>Aucun professeur n'est encore défini.<br />Commencez par créer les comptes professeurs.</p>\n";
+			require("../lib/footer.inc.php");
 			die();
 		}
 
-		echo "<p>Vous allez paramétrer des préférences pour ";
-		$chaine_profs="";
-		for($i=0;$i<count($prof);$i++){
-			echo "<input type='hidden' name='prof[$i]' value='$prof[$i]' />\n";
-			$sql="SELECT nom,prenom FROM utilisateurs WHERE login='$prof[$i]' ORDER BY nom,prenom";
-			$res_prof=mysql_query($sql);
-			$lig_prof=mysql_fetch_object($res_prof);
-			$chaine_profs.=ucfirst(strtolower($lig_prof->prenom))." ".strtoupper($lig_prof->nom).", ";
+		$i=0;
+		while($lig_prof=mysql_fetch_object($res_prof)){
+			$prof[$i]=array();
+			$prof[$i]['login']=$lig_prof->login;
+			$prof[$i]['nom']=$lig_prof->nom;
+			$prof[$i]['prenom']=$lig_prof->prenom;
+			$i++;
 		}
-		$chaine_profs=substr($chaine_profs,0,strlen($chaine_profs)-2);
-		echo $chaine_profs.".</p>\n";
-
-		/*
-		echo "<p>Vous devez maintenant choisir la page pour laquelle vous souhaitez paramétrer les items de l'interface simplifiée.</p>\n";
-		echo "<p><input type='radio' name='page' value='add_modif_dev' checked /> Création d'évaluation<br />\n";
-		echo "<input type='radio' name='page' value='add_modif_conteneur' /> Création de ".strtolower(getSettingValue("gepi_denom_boite"))."</p>\n";
-		*/
-		echo "<table border='0'>\n";
-		echo "<tr><td valign='top'>Paramétrage de l'interface simplifiée pour :</td>\n";
-		echo "<td>";
-		echo "<input type='hidden' name='page' id='id_page' />\n";
-		echo "<input type='button' name='choix1' value=\"Page d'accueil\" onclick=\"document.getElementById('id_page').value='accueil';document.forms['formulaire'].submit();\" /> <br />\n";
-		echo "<input type='button' name='choix1' value=\"Création d'évaluation\" onclick=\"document.getElementById('id_page').value='add_modif_dev';document.forms['formulaire'].submit();\" /> <br />\n";
-		echo "<input type='button' name='choix1' value=\"Création de ".strtolower(getSettingValue("gepi_denom_boite"))."\" onclick=\"document.getElementById('id_page').value='add_modif_conteneur';document.forms['formulaire'].submit();\" />";
-		echo "</td></tr>\n";
-		echo "</table>\n";
 	}
 	else{
-		$chaine_profs="";
-		for($i=0;$i<count($prof);$i++){
-			echo "<input type='hidden' name='prof[$i]' value='$prof[$i]' />\n";
-			$sql="SELECT nom,prenom FROM utilisateurs WHERE login='$prof[$i]' ORDER BY nom,prenom";
-			$res_prof=mysql_query($sql);
-			$lig_prof=mysql_fetch_object($res_prof);
-			$chaine_profs.=ucfirst(strtolower($lig_prof->prenom))." ".strtoupper($lig_prof->nom).", ";
-		}
-		$chaine_profs=substr($chaine_profs,0,strlen($chaine_profs)-2);
-
-		echo "<input type='hidden' name='page' value='$page' />\n";
-
-		if($page=='accueil'){
-			echo "<h2>Choix des items de la page d'accueil</h2>\n";
-
-			echo "<p>Vous allez paramétrer des préférences pour $chaine_profs.</p>\n";
-
-			// Récupération des valeurs.
-			/*
-
-			$pref_accueil_ct="y";
-			$pref_accueil_trombino="y";
-			// Préférences jouant sur les colspan de période:
-			$pref_accueil_trombino="y";
-			$pref_accueil_bull="y";
-			// Le bulletin simplifié est inclus dans la partie Visualisation
-			//$pref_accueil_bullsimp="y";
-			$pref_accueil_visu="y";
-			$pref_accueil_liste_pdf="y";
-
-			// 1: icones
-			// 2: textes
-			// 3: icones et textes
-			//$accueil_aff_txt_icon=3;
-			$accueil_aff_txt_icon=isset($_GET['txtico']) ? $_GET['txtico'] : 3;
-
-			*/
-
-			echo "<p>Pour ce(s) professeur(s), utiliser l'interface simplifiée par défaut: Oui <input type='radio' name='accueil_simpl' value='y' checked /> / <input type='radio' name='accueil_simpl' value='n' /> Non</p>\n";
-
-			echo "<p>Pour fixer les valeurs ci-dessous, validez le formulaire.</p>\n";
-			echo "<table border='1'>\n";
-			echo "<tr>\n";
-			echo "<td style='font-weight: bold; text-align:left;'>Item</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Afficher</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Cacher</td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le lien Cahier de textes:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_ct' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_ct' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le lien Trombinoscope:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_trombino' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_trombino' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le lien Carnet de notes:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_cn' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_cn' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher les liens Saisie des notes et des appréciations du bulletin:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_bull' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_bull' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher les liens Visualisation des graphes et des bulletins simplifiés:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_visu' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_visu' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le lien Listes PDF des élèves:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_liste_pdf' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_liste_pdf' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-
-
-			echo "<p>Afficher le lien Listes PDF des élèves:</p>\n";
-			echo "<table border='0'>\n";
-			echo "<tr>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='1' checked /></td>\n";
-			echo "<td> Afficher les icones seuls.</td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='2' /></td>\n";
-			echo "<td> Afficher les textes seuls.</td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='accueil_aff_txt_icon' value='3' /></td>\n";
-			echo "<td> Afficher les textes et les icones.</td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-
-
-			echo "<p>Pour accéder aux rubriques non sélectionnées et aux autres rubriques non proposées dans l'interface simplifiée, le professeur doit repasser en interface complète.</p>\n";
-
-			echo "<input type='hidden' name='enregistrer' value='oui' />\n";
-		}
-		elseif($page=='add_modif_dev'){
-			echo "<h2>Choix des items de la page: Création d'évaluation</h2>\n";
-
-			echo "<p>Vous allez paramétrer des préférences pour $chaine_profs.</p>\n";
-
-			// Récupération des valeurs.
-			/*
-			$aff_nom_court=getPref($_SESSION['login'],'add_modif_dev_nom_court','y');
-			$aff_nom_complet=getPref($_SESSION['login'],'add_modif_dev_nom_complet','n');
-			$aff_description=getPref($_SESSION['login'],'add_modif_dev_description','n');
-			$aff_coef=getPref($_SESSION['login'],'add_modif_dev_coef','y');
-			$aff_date=getPref($_SESSION['login'],'add_modif_dev_date','y');
-			$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
-			*/
-
-			echo "<p>Pour ce(s) professeur(s), utiliser l'interface simplifiée par défaut: Oui <input type='radio' name='add_modif_dev_simpl' value='y' checked /> / <input type='radio' name='add_modif_dev_simpl' value='n' /> Non</p>\n";
-
-			echo "<p>Pour fixer les valeurs ci-dessous, validez le formulaire.</p>\n";
-			echo "<table border='1'>\n";
-			echo "<tr>\n";
-			echo "<td style='font-weight: bold; text-align:left;'>Item</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Afficher</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Cacher</td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Nom_court:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_nom_court' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_nom_court' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Nom_complet:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_nom_complet' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_nom_complet' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Description:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_description' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_description' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Coefficient:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_coef' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_coef' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Date:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_date' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_date' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			//echo "<td>Afficher le champ Emplacement du/de la ".ucfirst(strtolower(getSettingValue("gepi_denom_boite"))).":</td>\n";
-			echo "<td>Afficher le champ Emplacement de l'évaluation :</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_boite' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_dev_boite' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-
-			echo "<p>Les champs suivants ne sont pas accessibles en interface simplifiée:</p>\n";
-			echo "<ul>\n";
-			echo "<li>Faire apparaître la note de l'évaluation sur le relevé de notes de l'élève (<i>valeur par défaut: 'oui'</i>)</li>\n";
-			echo "<li>Statut de l'évaluation (<i>valeur par défaut: 'La note de l'évaluation entre dans le calcul de la moyenne'</i>)</li>\n";
-			echo "</ul>\n";
-			echo "<p>Pour paramétrer autrement ces champs, le professeur doit repasser en interface complète.</p>\n";
-
-			echo "<p><i>NOTE:</i> L'accès à ces champs en interface simplifiée pourra être ajouté dans le futur.</p>\n";
-
-
-			echo "<input type='hidden' name='enregistrer' value='oui' />\n";
-
-		}
-		elseif($page=='add_modif_conteneur'){
-			echo "<h2>Choix des items de la page: Création de ".strtolower(getSettingValue("gepi_denom_boite"))."</h2>\n";
-
-			echo "<p>Vous allez paramétrer des préférences pour $chaine_profs.</p>\n";
-
-			echo "<p>Pour ce(s) professeur(s), utiliser l'interface simplifiée par défaut: Oui <input type='radio' name='add_modif_conteneur_simpl' value='y' checked /> / <input type='radio' name='add_modif_conteneur_simpl' value='n' /> Non</p>\n";
-
-			echo "<p>Pour fixer les valeurs ci-dessous, validez le formulaire.</p>\n";
-			echo "<table border='1'>\n";
-			echo "<tr>\n";
-			echo "<td style='font-weight: bold; text-align:left;'>Item</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Afficher</td>\n";
-			echo "<td style='font-weight: bold; text-align:center;'>Cacher</td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Nom_court:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_nom_court' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_nom_court' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Nom_complet:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_nom_complet' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_nom_complet' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Description:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_description' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_description' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Coefficient:</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_coef' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_coef' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Emplacement du/de la ".ucfirst(strtolower(getSettingValue("gepi_denom_boite"))).":</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_boite' value='y' checked /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_boite' value='n' /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Afficher le(a) ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))." sur le relevé de notes:<br />La valeur par défaut du champ (<i>affiché ou non</i>) est 'oui'.</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_aff_display_releve_notes' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_aff_display_releve_notes' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>Afficher le champ Afficher le(a) ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))." sur le bulletin:<br />La valeur par défaut du champ (<i>affiché ou non</i>) est 'non'.</td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_aff_display_bull' value='y' /></td>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='add_modif_conteneur_aff_display_bull' value='n' checked /></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-
-			echo "<p>Les champs suivants ne sont pas accessibles en interface simplifiée:</p>\n";
-			echo "<ul>\n";
-			echo "<li>Précision du calcul de la moyenne du/de la ".strtolower(getSettingValue("gepi_denom_boite"))." (<i>valeur par défaut: 'Arrondir au dixième de point supérieur'</i>)</li>\n";
-			echo "<li>Pondération: Pour chaque élève, augmente ou diminue de la valeur indiquée ci-contre, le coefficient de la meilleur note du/de la ".strtolower(getSettingValue("gepi_denom_boite"))." (<i>valeur par défaut: '0'</i>)</li>\n";
-			echo "<li>Notes prises en comptes dans le calcul de la moyenne du/de la ".strtolower(getSettingValue("gepi_denom_boite"))." (<i>valeur par défaut: 'la moyenne s'effectue sur toutes les notes contenues à la racine du conteneur et sur les moyennes des sous-conteneurs, en tenant compte des options dans ces sous-conteneurs'</i>)</li>\n";
-			/*
-			Notes prises en comptes dans le calcul de la moyenne de la sous-matière TN
-			la moyenne s'effectue sur toutes les notes contenues à la racine de TN et sur les moyennes de la sous-matière TN2, en tenant compte des options dans cette sous-matière
-			la moyenne s'effectue sur toutes les notes contenues dans TN et dans la sous-matière TN2, sans tenir compte des options définies dans cette sous-matière
-			*/
-			echo "</ul>\n";
-			echo "<p>Pour paramétrer autrement ces champs, le professeur doit repasser en interface complète.</p>\n";
-
-			echo "<p><i>NOTE:</i> L'accès à ces champs en interface simplifiée pourra être ajouté dans le futur.</p>\n";
-		}
-		echo "<input type='hidden' name='enregistrer' value='oui' />\n";
-		echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
+		$i=0;
+		$prof[$i]['login']=$_SESSION['login'];
+		$prof[$i]['nom']=$_SESSION['nom'];
+		$prof[$i]['prenom']=$_SESSION['prenom'];
 	}
-}
 
-//echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
+	$nb_profs=count($prof);
+
+
+	function cellule_checkbox($prof_login,$item,$num,$special){
+		echo "<td";
+		echo " id='td_".$item."_".$num."' ";
+		//echo " style='text-align:center; ";
+		$checked="";
+		$coche="";
+		$sql="SELECT * FROM preferences WHERE login='$prof_login' AND name='$item'";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			$lig_test=mysql_fetch_object($test);
+			if($lig_test->value=="y"){
+				//echo " style='background-color: lightgreen;'";
+				//echo "background-color: lightgreen;";
+				echo " class='coche'";
+				$checked=" checked";
+				$coche="y";
+			}
+			else{
+				//echo " style='background-color: lightgray;'";
+				//echo "background-color: lightgray;";
+				echo " class='decoche'";
+				$coche="n";
+			}
+		}
+		//echo "'";
+		echo ">";
+		echo "<input type='checkbox' name='$item"."_"."$num' id='$item"."_"."$num' value='y'";
+
+		/*
+		// Supprimé après avoir permis l'affichage des tableaux sur une seule page pour l'accès prof à ses propres paramétrages
+		if($special=="y"){
+			echo " onchange=\"modif_ligne($num)\"";
+		}
+		*/
+
+		echo $checked;
+		//echo " onchange='changement();'";
+		echo " onchange=\"changement_et_couleur('$item"."_"."$num','";
+		if($special=="y"){
+			echo "td_nomprenom_$num";
+		}
+		echo "');\"";
+		echo " />";
+
+		if($special=="y"){
+			if($coche=="y"){
+				echo "<script type='text/javascript'>
+	document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgreen';
+</script>\n";
+			}
+			elseif($coche=="n"){
+				echo "<script type='text/javascript'>
+	document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgray';
+</script>\n";
+			}
+		}
+
+		echo "</td>\n";
+	}
+
+
+/*
+	echo "<style type='text/css'>
+	table.contenu {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+
+	.contenu th {
+		font-weight:bold;
+		text-align: center;
+		background-color: white;
+		border: 1px solid black;
+	}
+
+	.contenu td {
+		vertical-align: middle;
+		text-align: center;
+		border: 1px solid black;
+	}
+
+	.contenu tr.entete {
+		background-color: white;
+	}
+
+	.contenu .coche {
+		background-color: lightgreen;
+	}
+
+	.contenu .decoche {
+		background-color: lightgray;
+	}
+</style>\n";
+*/
+
+	echo "<p align='center'><input type=\"submit\" name='enregistrer' value=\"Valider\" style=\"font-variant: small-caps;\" /></p>\n";
+
+	//if($page=="accueil_simpl"){
+	if(($page=="accueil_simpl")||($_SESSION['statut']=='professeur')){
+		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les professeurs</p>\n";
+
+		$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
+		//accueil_aff_txt_icon
+
+		//echo "<table border='1'>\n";
+		echo "<table class='contenu'>\n";
+
+		// 1ère ligne
+		//$lignes_entete="<tr style='background-color: white;'>\n";
+		$lignes_entete="<tr class='entete'>\n";
+		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
+		$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 2ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		$lignes_entete.="<th>le Cahier de textes</th>\n";
+		$lignes_entete.="<th>le Trombinoscope</th>\n";
+		$lignes_entete.="<th>le Carnet de notes</th>\n";
+		$lignes_entete.="<th>les notes et appréciations des Bulletins</th>\n";
+		$lignes_entete.="<th>la Visualisation des graphes et bulletins simplifiés</th>\n";
+		$lignes_entete.="<th>les Listes PDF des élèves</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 3ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		for($i=0;$i<count($tabchamps);$i++){
+			$lignes_entete.="<th>";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			$lignes_entete.="</th>\n";
+		}
+		$lignes_entete.="</tr>\n";
+
+
+		//$i=0;
+		//while($lig_prof=mysql_fetch_object($res_prof)){
+		for($i=0;$i<count($prof);$i++){
+			if($i-ceil($i/10)*10==0){
+				echo $lignes_entete;
+			}
+
+			echo "<tr>\n";
+
+			echo "<td id='td_nomprenom_".$i."'>";
+			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
+			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
+			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
+			echo "</td>\n";
+
+			/*
+			cellule_checkbox($prof[$i]['login'],'accueil_simpl',$i,'y');
+
+			cellule_checkbox($prof[$i]['login'],'accueil_ct',$i,'');
+			cellule_checkbox($prof[$i]['login'],'accueil_trombino',$i,'');
+			cellule_checkbox($prof[$i]['login'],'accueil_cn',$i,'');
+			cellule_checkbox($prof[$i]['login'],'accueil_bull',$i,'');
+			cellule_checkbox($prof[$i]['login'],'accueil_visu',$i,'');
+			cellule_checkbox($prof[$i]['login'],'accueil_liste_pdf',$i,'');
+			*/
+
+			$j=0;
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//for($j=0;$j<count($tabchamps);$j++){
+			for($j=1;$j<count($tabchamps);$j++){
+				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
+			}
+
+			echo "</tr>\n";
+			//$i++;
+		}
+
+		echo "</table>\n";
+	}
+
+
+
+
+
+
+
+
+	if(($page=="add_modif_dev")||($_SESSION['statut']=='professeur')){
+		echo "<p>Paramétrage de la page de <b>création d'évaluation</b> pour les professeurs</p>\n";
+
+		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_boite');
+
+		//echo "<table border='1'>\n";
+		echo "<table class='contenu'>\n";
+
+		// 1ère ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete="<tr class='entete'>\n";
+		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
+		$lignes_entete.="<th colspan='6'>Afficher le champ</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 2ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		$lignes_entete.="<th>Nom court</th>\n";
+		$lignes_entete.="<th>Nom complet</th>\n";
+		$lignes_entete.="<th>Description</th>\n";
+		$lignes_entete.="<th>Coefficient</th>\n";
+		$lignes_entete.="<th>Date</th>\n";
+		$lignes_entete.="<th>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 3ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		for($i=0;$i<count($tabchamps);$i++){
+			$lignes_entete.="<th>";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			$lignes_entete.="</th>\n";
+		}
+		$lignes_entete.="</tr>\n";
+
+
+		//$i=0;
+		//while($lig_prof=mysql_fetch_object($res_prof)){
+		for($i=0;$i<count($prof);$i++){
+			if($i-ceil($i/10)*10==0){
+				echo $lignes_entete;
+			}
+
+			echo "<tr>\n";
+
+			//echo "<td>";
+			echo "<td id='td_nomprenom_".$i."'>";
+			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
+			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
+			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
+			echo "</td>\n";
+
+			$j=0;
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//for($j=0;$j<count($tabchamps);$j++){
+			for($j=1;$j<count($tabchamps);$j++){
+				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
+			}
+
+			echo "</tr>\n";
+			//$i++;
+		}
+
+		echo "</table>\n";
+	}
+
+
+
+
+
+
+	if(($page=="add_modif_conteneur")||($_SESSION['statut']=='professeur')){
+		echo "<p>Paramétrage de la page de <b>création de ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</b> pour les professeurs</p>\n";
+
+		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
+
+		//echo "<table border='1'>\n";
+		echo "<table class='contenu'>\n";
+
+		// 1ère ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete="<tr class='entete'>\n";
+		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
+		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 2ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		$lignes_entete.="<th>Nom court</th>\n";
+		$lignes_entete.="<th>Nom complet</th>\n";
+		$lignes_entete.="<th>Description</th>\n";
+		$lignes_entete.="<th>Coefficient</th>\n";
+		$lignes_entete.="<th>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</th>\n";
+		$lignes_entete.="<th>Afficher sur le relevé de notes</th>\n";
+		$lignes_entete.="<th>Afficher sur le bulletin</th>\n";
+		$lignes_entete.="</tr>\n";
+
+		// 3ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		for($i=0;$i<count($tabchamps);$i++){
+			$lignes_entete.="<th>";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			$lignes_entete.="</th>\n";
+		}
+		$lignes_entete.="</tr>\n";
+
+
+		//$i=0;
+		//while($lig_prof=mysql_fetch_object($res_prof)){
+		for($i=0;$i<count($prof);$i++){
+			if($i-ceil($i/10)*10==0){
+				echo $lignes_entete;
+			}
+
+			echo "<tr>\n";
+
+			//echo "<td>";
+			echo "<td id='td_nomprenom_".$i."'>";
+			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
+			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
+			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
+			echo "</td>\n";
+
+			$j=0;
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//for($j=0;$j<count($tabchamps);$j++){
+			for($j=1;$j<count($tabchamps);$j++){
+				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
+			}
+
+			echo "</tr>\n";
+			//$i++;
+		}
+
+		echo "</table>\n";
+	}
+
+
+
+
+
+
+
+
+	// La page n'est considérée que pour l'admin pour réduire la longueur de la liste
+	if($_SESSION['statut']=='administrateur'){
+		echo "<input type=\"hidden\" name='page' value=\"$page\" />\n";
+	}
+
+	echo "<p align='center'><input type=\"submit\" name='enregistrer' value=\"Valider\" style=\"font-variant: small-caps;\" /></p>\n";
+
+	echo "<script type='text/javascript' language='javascript'>
+	function modif_coche(item,statut){
+		// statut: true ou false
+		for(k=0;k<$nb_profs;k++){
+			if(document.getElementById(item+'_'+k)){
+				document.getElementById(item+'_'+k).checked=statut;
+
+				document.getElementById('td_'+item+'_'+k).style.backgroundColor='$couleur_modif';
+			}
+		}
+		changement();
+	}
+
+	function changement_et_couleur(id,special){
+		if(document.getElementById(id)){
+			document.getElementById('td_'+id).style.backgroundColor='$couleur_modif';
+		}
+
+		if(special!=''){
+			document.getElementById(special).style.backgroundColor='$couleur_modif';
+		}
+
+		changement();
+	}
+";
+
+	/*
+	echo "
+	function modif_ligne(num){";
+
+	$liste_champs="";
+	for($k=0;$k<count($tabchamps);$k++){
+		if($k>0){$liste_champs.=", ";}
+		$liste_champs.="'$tabchamps[$k]'";
+	}
+
+		echo "
+		tabchamps=Array($liste_champs);
+		for(k=0;k<tabchamps.length;k++){
+			item=tabchamps[k];
+			if(document.getElementById('td_'+item+'_'+num)){
+				document.getElementById('td_'+item+'_'+num).style.backgroundColor='orange';
+			}
+		}
+		changement();
+	}
+";
+	*/
+	echo "</script>\n";
+
+
+	echo "<p><i>Remarques:</i></p>\n";
+	echo "<ul>\n";
+	echo "<li>La prise en compte des champs choisis est conditionnée par le fait d'avoir coché ou non la colonne 'Utiliser l'interface simplifiée' pour l'utilisateur considéré.</li>\n";
+	echo "<li>Les champs non proposés dans les interfaces simplifiées restent accessibles aux utilisateurs en cliquant sur les liens 'Interface complète' proposés dans les pages d'interfaces simplifiées .</li>\n";
+	echo "</ul>\n";
+	//}
+}
 
 echo "</form>\n";
 echo "<br />\n";

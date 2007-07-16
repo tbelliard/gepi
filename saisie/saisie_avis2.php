@@ -62,6 +62,10 @@ $fiche = isset($_POST["fiche"]) ? $_POST["fiche"] :(isset($_GET["fiche"]) ? $_GE
 $current_eleve_login = isset($_POST["current_eleve_login"]) ? $_POST["current_eleve_login"] :(isset($_GET["current_eleve_login"]) ? $_GET["current_eleve_login"] :NULL);
 $ind_eleve_login_suiv = isset($_POST["ind_eleve_login_suiv"]) ? $_POST["ind_eleve_login_suiv"] :(isset($_GET["ind_eleve_login_suiv"]) ? $_GET["ind_eleve_login_suiv"] :NULL);
 $current_eleve_login_ap = isset($NON_PROTECT["current_eleve_login_ap"]) ? traitement_magic_quotes(corriger_caracteres($NON_PROTECT["current_eleve_login_ap"])) :NULL;
+//================================
+// AJOUT: boireaus 20070713
+//$current_eleve_login_ap=nl2br($current_eleve_login_ap);
+//================================
 $affiche_message = isset($_GET["affiche_message"]) ? $_GET["affiche_message"] :NULL;
 
 include "../lib/periodes.inc.php";
@@ -136,7 +140,7 @@ require_once("../lib/header.inc");
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
-    echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a></p>\n";
+    echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>\n";
     echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
     include "../lib/periodes.inc.php";
     $i="1";
@@ -156,7 +160,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
 if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
     ?>
-    <p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a></p>
+    <p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a></p>
     <p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
 
     <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
@@ -228,9 +232,13 @@ if (isset($fiche)) {
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
 	echo "<a name=\"app\"></a><textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='80' wrap='virtual' onchange=\"changement()\">";
 	echo "$current_eleve_avis";
 	echo "</textarea>\n";
+	echo "</td>\n";
 
 	//============================
 	// Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
@@ -239,9 +247,14 @@ if (isset($fiche)) {
 	if((file_exists('saisie_commentaires_types.php'))
 		&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
 		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
-		include('saisie_commentaires_types.php');
+		//include('saisie_commentaires_types.php');
+		echo "<td align='center'>\n";
+		include('saisie_commentaires_types2.php');
+		echo "</td>\n";
 	}
 	//============================
+	echo "</tr>\n";
+	echo "</table>\n";
     ?>
 
     <input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
@@ -249,7 +262,8 @@ if (isset($fiche)) {
     <input type=hidden name=periode_num value="<?php echo "$periode_num";?>" />
     <input type=hidden name=current_eleve_login value="<?php echo "$current_eleve_login";?>" />
     <input type=hidden name=ind_eleve_login_suiv value="<?php echo "$ind_eleve_login_suiv";?>" />
-    <br /><input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
+    <!--br /-->
+	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" /><br /><br />&nbsp;
     </form>
     <?php

@@ -374,7 +374,7 @@ INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', '
 INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'Génération de CSV élèves', '');
 INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Choix des couleurs des graphiques des résultats scolaires', '');
 INSERT INTO droits VALUES ('/visualisation/couleur.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Choix d une couleur pour le graphique des résultats scolaires', '');
-INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
+INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
 INSERT INTO setting VALUES ('addressblock_font_size', '12');
 INSERT INTO setting VALUES ('addressblock_logo_etab_prop', '50');
 INSERT INTO setting VALUES ('addressblock_classe_annee', '35');
