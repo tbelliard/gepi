@@ -178,6 +178,12 @@ if ($use_sso == "ldap_scribe") {
     <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.
     </td>
 </tr>
+<tr>
+    <td width=200><a href="../init_xml2/index.php">Initialisation des données à partir de fichiers XML</a></td>
+    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
+	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources.
+    </td>
+</tr>
 <?php
 }
 ?>
