@@ -46,6 +46,9 @@ $liste_tables_del = array(
 //"droits",
 //"eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 //"j_aid_eleves",
 //"j_aid_utilisateurs",
@@ -90,7 +93,7 @@ require_once("../lib/header.inc");
 // On vérifie si l'extension d_base est active
 verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3></center>";
+echo "<h3 class='gepi' align='center'>Deuxième phase d'initialisation<br />Importation des responsables</h3>\n";
 
 if (isset($step1)) {
     $j=0;
@@ -105,9 +108,9 @@ if (isset($step1)) {
         echo "<p><b>ATTENTION ...</b><br />";
         echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>";
         echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
-        echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
-        echo "<input type=hidden name='step1' value='y'>";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procédure'>";
+        echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>";
+        echo "<input type=hidden name='step1' value='y' />";
+        echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
         echo "</form>";
         die();
     }
@@ -124,11 +127,11 @@ if (!isset($is_posted)) {
 
     echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
     echo "<p>Importation du fichier <b>F_ere.dbf</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.";
-    echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
-    echo "<input type=hidden name='is_posted' value='yes'>";
-    echo "<input type=hidden name='step1' value='y'>";
-    echo "<p><input type='file' size='80' name='dbf_file'>";
-    echo "<p><input type=submit value='Valider'>";
+    echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>";
+    echo "<input type=hidden name='is_posted' value='yes' />";
+    echo "<input type=hidden name='step1' value='y' />";
+    echo "<p><input type='file' size='80' name='dbf_file' />";
+    echo "<p><input type=submit value='Valider' />";
     echo "</form>";
 
 } else {
@@ -137,7 +140,7 @@ if (!isset($is_posted)) {
         $fp = dbase_open($dbf_file['tmp_name'], 0);
         if(!$fp) {
             echo "<p>Impossible d'ouvrir le fichier dbf</p>";
-            echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
         } else {
             // on constitue le tableau des champs à extraire
             $tabchamps = array("ERENO", "ERENOM", "EREPRE", "EREADR", "EREADRS", "ERECLD", "ERELCOM", "EREANOM", "EREAPRE", "EREAADR", "EREACLD", "EREALCOM");
@@ -163,7 +166,7 @@ if (!isset($is_posted)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
                 echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-                echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
                 die();
             }
 
@@ -220,17 +223,21 @@ if (!isset($is_posted)) {
                 echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>";
             }
 
+			// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+			saveSetting("conv_new_resp_table", 0);
+
         }
     } else if (trim($dbf_file['name'])=='') {
         echo "<p>Aucun fichier n'a été sélectionné !<br />";
         //echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
-        echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
         echo "<p>Le fichier sélectionné n'est pas valide !<br />";
         //echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
-        echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

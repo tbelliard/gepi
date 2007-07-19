@@ -107,6 +107,9 @@ $liste_tables_del = array(
 //"droits",
 "eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",
@@ -145,8 +148,8 @@ if (!isset($step2)) {
         echo "<p><b>ATTENTION ...</b><br />";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>";
         echo "<form enctype='multipart/form-data' action='step2.php' method=post>";
-        echo "<input type=hidden name='step2' value='y'>";
-        echo "<input type='submit' value='Poursuivre la procédure'>";
+        echo "<input type=hidden name='step2' value='y' />";
+        echo "<input type='submit' value='Poursuivre la procédure' />";
         echo "</form>";
         die();
     }
@@ -244,6 +247,10 @@ if (isset($is_posted)) {
     $res = mysql_query("delete from periodes where verouiller='T'");
     echo "<p>Vous venez d'effectuer l'enregistrement des données concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller à l'étape suivante pour enregistrer les données concernant les élèves.";
     echo "<center><p><a href='step3.php'>Accéder à l'étape 3</a></p></center>";
+
+	// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+	saveSetting("conv_new_resp_table", 0);
+
 } else {
     // On commence par "marquer" les classes existantes dans la base
     $sql = mysql_query("UPDATE periodes SET verouiller='T'");
@@ -252,7 +259,7 @@ if (isset($is_posted)) {
     $nb = mysql_num_rows($call_data);
     $i = "0";
     echo "<form enctype='multipart/form-data' action='step2.php' method=post name='formulaire'>";
-    echo "<input type=hidden name='is_posted' value='yes'>";
+    echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<p>Les classes en vert indiquent des classes déjà existantes dans la base GEPI.<br />Les classes en rouge indiquent des classes nouvelles et qui vont être ajoutées à la base GEPI.<br /></p>";
     echo "<p>Pour les nouvelles classes, des noms standards sont utilisés pour les périodes (période 1, période 2...), et seule la première période n'est pas verrouillée. Vous pourrez modifier ces paramètres ultérieurement</p>";
     echo "<p>Attention !!! Il n'y a pas de tests sur les champs entrés. Soyez vigilant à ne pas mettre des caractères spéciaux dans les champs ...</p>";
@@ -297,18 +304,18 @@ fonctionnalités offertes ci-dessous :</td>
  <tr>
   <td colspan="4">&nbsp;</td>
   <td align="right">le nom au bas du bulletin sera &nbsp;:&nbsp;</td>
-  <td><input type="text" name="nom" maxlength="80" size="40">
+  <td><input type="text" name="nom" maxlength="80" size="40" />
   <input type ="button" name="but_nom" value="Recopier"
-onclick="javascript:MetVal('nom')"></td>
+onclick="javascript:MetVal('nom')" /></td>
  </td>
 </tr>
  <tr>
   <td colspan="4">&nbsp;</td>
   <td align="right">la formule au bas du bulletin sera
 &nbsp;:&nbsp;</td>
-  <td><input type="text" name="pour" maxlength="80" size="40">
+  <td><input type="text" name="pour" maxlength="80" size="40" />
   <input type ="button" name="but_pour" value="Recopier"
-onclick="javascript:MetVal('pour')"></td>
+onclick="javascript:MetVal('pour')" /></td>
  </td>
 </tr>
 <tr>
@@ -343,19 +350,19 @@ onclick="javascript:MetVal('pour')"></td>
             $formule = mysql_result($test_classe_exist, 0, 'formule');
         }
         echo "<tr>";
-        echo "<td><center><input type=\"checkbox\"></center></td>";
+        echo "<td><center><input type=\"checkbox\" /></center></td>";
         echo "<td>";
         echo "<p><b><center>$nom_court</center></b></p>";
         echo "";
         echo "</td>";
         echo "<td>";
-        echo "<input type=text name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\"> ";
+        echo "<input type=text name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\" /> ";
         echo "</td>";
         echo "<td>";
-        echo "<input type=text name='reg_suivi[$classe_id]' value=\"".$suivi_par."\">";
+        echo "<input type=text name='reg_suivi[$classe_id]' value=\"".$suivi_par."\" />";
         echo "</td>";
         echo "<td>";
-        echo "<input type=text name='reg_formule[$classe_id]' value=\"".$formule."\">";
+        echo "<input type=text name='reg_formule[$classe_id]' value=\"".$formule."\" />";
         echo "</td>";
         echo "<td>";
         echo "<select size=1 name='reg_periodes_num[$classe_id]'>";
@@ -369,9 +376,10 @@ onclick="javascript:MetVal('pour')"></td>
         $i++;
     }
     echo "</table>";
-    echo "<input type=hidden name='step2' value='y'>";
-    echo "<center><input type='submit' value='Enregistrer les données'></center>";
+    echo "<input type=hidden name='step2' value='y' />";
+    echo "<center><input type='submit' value='Enregistrer les données' /></center>";
     echo "</form>";
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
