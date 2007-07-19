@@ -46,7 +46,8 @@ $liste_tables_del = array(
 //"droits",
 //"eleves",
 // ==================================
-//"responsables",
+// On vide l'ancienne table responsables pour ne pas conserver des infos d'années antérieures:
+"responsables",
 
 "responsables2",
 "resp_pers",

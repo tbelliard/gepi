@@ -591,7 +591,8 @@ if($temoin==1){
 					$res_truncate=mysql_query($sql);
 
 					// on constitue le tableau des champs à extraire
-					$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+					//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
+					$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
 
 					$nblignes=0;
 					while (!feof($fp)) {
@@ -655,21 +656,22 @@ if($temoin==1){
 											pers_id = '$affiche[0]',
 											nom = '$affiche[1]',
 											prenom = '$affiche[2]',
-											tel_pers = '$affiche[3]',
-											tel_port = '$affiche[4]',
-											tel_prof = '$affiche[5]',
-											mel = '$affiche[6]',
-											adr_id = '$affiche[7]'
+											civilite = '".ucfirst(strtolower($affiche[3]))."',
+											tel_pers = '$affiche[4]',
+											tel_port = '$affiche[5]',
+											tel_prof = '$affiche[6]',
+											mel = '$affiche[7]',
+											adr_id = '$affiche[8]'
 											";
 								//echo "$sql<br />\n";
 								$req = mysql_query($sql);
 								if(!$req) {
 									$nb_reg_no3++;
 									echo mysql_error();
-									echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[3], $affiche[4], $affiche[5], le mel $affiche[6] et le numéro d'adresse $affiche[7].<br />\n";
+									echo "<font color='red'>Erreur</font> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
 								} else {
 									$nb_record3++;
-									echo "Insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[3], $affiche[4], $affiche[5], le mel $affiche[6] et le numéro d'adresse $affiche[7].<br />\n";
+									echo "Insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
 								}
 							}
 						}

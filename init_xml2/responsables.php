@@ -86,7 +86,9 @@
 //"droits",
 //"eleves",
 // ==================================
-//"responsables",
+// On vide l'ancienne table responsables pour ne pas conserver des infos d'années antérieures:
+"responsables",
+
 "responsables2",
 "resp_pers",
 "resp_adr",
@@ -399,6 +401,7 @@
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
 							$sql.="nom='".$personnes[$i]["nom"]."', ";
 							$sql.="prenom='".$personnes[$i]["prenom"]."', ";
+							$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
 							$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
 							$sql.="tel_port='".$personnes[$i]["tel_portable"]."', ";
 							$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
