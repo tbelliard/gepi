@@ -53,6 +53,9 @@ $liste_tables_del = array(
 //"droits",
 //"eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr"
 //"etablissements",
 //"j_aid_eleves",
 //"j_aid_utilisateurs",
@@ -98,23 +101,23 @@ if (!isset($_POST["action"])) {
     // On sélectionne le fichier à importer
     //
 
-    echo "<p>Vous allez effectuer la deuxième étape : elle consiste à importer le fichier <b>g_responsables.csv</b> contenant les données élèves.";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
-    echo "<ul><li>Identifiant élève interne à l'établissement (n°, et non login)</li>" .
-            "<li>Nom du responsable</li>" .
-            "<li>Prénom</li>" .
-            "<li>Civilité</li>" .
-            "<li>Ligne 1 adresse</li>" .
-            "<li>Ligne 2 adresse</li>" .
-            "<li>Code postal</li>" .
-            "<li>Commune</li>" .
-            "</ul>";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>g_responsables.csv</b>.";
-    echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>";
-    echo "<input type='hidden' name='action' value='upload_file' />";
-    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />";
-    echo "<p><input type='submit' value='Valider' />";
-    echo "</form>";
+    echo "<p>Vous allez effectuer la deuxième étape : elle consiste à importer le fichier <b>g_responsables.csv</b> contenant les données élèves.</p>\n";
+    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>\n";
+    echo "<ul><li>Identifiant élève interne à l'établissement (n°, et non login)</li>\n" .
+            "<li>Nom du responsable</li>\n" .
+            "<li>Prénom</li>\n" .
+            "<li>Civilité</li>\n" .
+            "<li>Ligne 1 adresse</li>\n" .
+            "<li>Ligne 2 adresse</li>\n" .
+            "<li>Code postal</li>\n" .
+            "<li>Commune</li>\n" .
+            "</ul>\n";
+    echo "<p>Veuillez préciser le nom complet du fichier <b>g_responsables.csv</b>.</p>\n";
+    echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
+    echo "<input type='hidden' name='action' value='upload_file' />\n";
+    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+    echo "<p><input type='submit' value='Valider' />\n";
+    echo "</form>\n";
 
 } else {
     //
@@ -178,80 +181,91 @@ if (!isset($_POST["action"])) {
             // On vérifie que l'élève existe
             $test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_eleve . "'"), 0);
 
-            if ($test == 0 OR !$test) {
-                // Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
-                echo "<p>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>";
-            } else {
-                // Test positif : on peut donc enregistrer les données de responsable.
+			if($reg_id_eleve==""){
+				echo "<p>Erreur : L'identifiant élève est vide pour $reg_prenom $reg_nom</p>\n";
+			}
+			else{
+				if ($test == 0 OR !$test) {
+					// Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
+					echo "<p>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
+				} else {
+					// Test positif : on peut donc enregistrer les données de responsable.
 
-                // On regarde si une entrée existe déjà pour l'élève en question
-                $test = mysql_query("SELECT ereno, nom1, nom2 FROM responsables WHERE ereno = '" . $reg_id_eleve . "'");
-                $insert = null;
+					// On regarde si une entrée existe déjà pour l'élève en question
+					$test = mysql_query("SELECT ereno, nom1, nom2 FROM responsables WHERE ereno = '" . $reg_id_eleve . "'");
+					$insert = null;
 
-                if (mysql_num_rows($test) == 0) {
-                    // Aucune entrée n'existe. On enregistre le responsable comme premier responsable
+					if (mysql_num_rows($test) == 0) {
+						// Aucune entrée n'existe. On enregistre le responsable comme premier responsable
 
-                    $insert = mysql_query("INSERT INTO responsables SET " .
-                        "ereno = '" . $reg_id_eleve . "', " .
-                        "nom1 = '" . $reg_nom . "', " .
-                        "prenom1 = '" . $reg_prenom . "', " .
-                        "adr1 = '" . $reg_adresse1 . "', " .
-                        "adr1_comp = '" . $reg_adresse2 . "', " .
-                        "commune1 = '" . $reg_commune . "', " .
-                        "cp1 = '" . $reg_code_postal . "'");
+						$sql="INSERT INTO responsables SET " .
+							"ereno = '" . $reg_id_eleve . "', " .
+							"nom1 = '" . $reg_nom . "', " .
+							"prenom1 = '" . $reg_prenom . "', " .
+							"adr1 = '" . $reg_adresse1 . "', " .
+							"adr1_comp = '" . $reg_adresse2 . "', " .
+							"commune1 = '" . $reg_commune . "', " .
+							"cp1 = '" . $reg_code_postal . "'";
+						$insert = mysql_query($sql);
 
-                } else {
-                    // Une entrée existe
-                    // On regarde si le responsable 1 a déjà été saisi
-                    if (mysql_result($test, 0, "nom1") == "") {
-                        $insert = mysql_query("UPDATE responsables SET " .
-                            "nom1 = '" . $reg_nom . "', " .
-                            "prenom1 = '" . $reg_prenom . "', " .
-                            "adr1 = '" . $reg_adresse1 . "', " .
-                            "adr1_comp = '" . $reg_adresse2 . "', " .
-                            "commune1 = '" . $reg_commune . "', " .
-                            "cp1 = '" . $reg_code_postal . "' " .
-                            "WHERE " .
-                            "ereno = '" . $reg_id_eleve . "'");
+					} else {
+						// Une entrée existe
+						// On regarde si le responsable 1 a déjà été saisi
+						if (mysql_result($test, 0, "nom1") == "") {
+							$sql="UPDATE responsables SET " .
+								"nom1 = '" . $reg_nom . "', " .
+								"prenom1 = '" . $reg_prenom . "', " .
+								"adr1 = '" . $reg_adresse1 . "', " .
+								"adr1_comp = '" . $reg_adresse2 . "', " .
+								"commune1 = '" . $reg_commune . "', " .
+								"cp1 = '" . $reg_code_postal . "' " .
+								"WHERE " .
+								"ereno = '" . $reg_id_eleve . "'";
+							$insert = mysql_query($sql);
 
-                    } else if (mysql_result($test, 0, "nom2") == "") {
-                        $insert = mysql_query("UPDATE responsables SET " .
-                            "nom2 = '" . $reg_nom . "', " .
-                            "prenom2 = '" . $reg_prenom . "', " .
-                            "adr2 = '" . $reg_adresse1 . "', " .
-                            "adr2_comp = '" . $reg_adresse2 . "', " .
-                            "commune2 = '" . $reg_commune . "', " .
-                            "cp2 = '" . $reg_code_postal . "' " .
-                            "WHERE " .
-                            "ereno = '" . $reg_id_eleve . "'");
+						} else if (mysql_result($test, 0, "nom2") == "") {
+							$sql="UPDATE responsables SET " .
+								"nom2 = '" . $reg_nom . "', " .
+								"prenom2 = '" . $reg_prenom . "', " .
+								"adr2 = '" . $reg_adresse1 . "', " .
+								"adr2_comp = '" . $reg_adresse2 . "', " .
+								"commune2 = '" . $reg_commune . "', " .
+								"cp2 = '" . $reg_code_postal . "' " .
+								"WHERE " .
+								"ereno = '" . $reg_id_eleve . "'";
+							$insert = mysql_query($sql);
 
-                    } else {
-                        // Erreur ! Les deux responsables ont déjà été saisis...
-                        echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>";
-                    }
+						} else {
+							// Erreur ! Les deux responsables ont déjà été saisis...
+							echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
+						}
 
 
-                }
+					}
 
-                if ($insert == false) {
-                    $error++;
-                    echo mysql_error();
-                } else {
-                    $total++;
-                }
+					if ($insert == false) {
+						$error++;
+						$erreur_mysql=mysql_error();
+						if($erreur_mysql!=""){echo "<p><font color='red'>".$erreur_mysql."</font></p>\n";}
+						//echo "<p>$sql</p>\n";
+					} else {
+						$total++;
+					}
 
-            }
-
+				}
+			}
 
             $i++;
             if (!isset($_POST['ligne'.$i.'_nom'])) $go = false;
         }
 
-        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-        if ($total > 0) echo "<p>" . $total . " responsables ont été enregistrés.</p>";
+        if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
+        if ($total > 0) echo "<p>" . $total . " responsables ont été enregistrés.</p>\n";
 
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";
+        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
+		// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+		saveSetting("conv_new_resp_table", 0);
 
     } else if ($_POST['action'] == "upload_file") {
         //
@@ -271,8 +285,8 @@ if (!isset($_POST["action"])) {
 
             if(!$fp) {
                 // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
-                echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
-                echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+                echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>\n";
             } else {
 
                 // Fichier ouvert ! On attaque le traitement
@@ -346,65 +360,66 @@ if (!isset($_POST["action"])) {
                 // Fin de l'analyse du fichier.
                 // Maintenant on va afficher tout ça.
 
-                echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>";
-                echo "<input type='hidden' name='action' value='save_data' />";
-                echo "<table>";
-                echo "<tr><td>ID élève</td><td>Nom</td><td>Prénom</td><td>Civilité</td><td>Ligne 1 adresse</td><td>Ligne 2 adresse</td><td>Code postal</td><td>Commune</td></tr>";
+                echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
+                echo "<input type='hidden' name='action' value='save_data' />\n";
+                echo "<table>\n";
+                echo "<tr><td>ID élève</td><td>Nom</td><td>Prénom</td><td>Civilité</td><td>Ligne 1 adresse</td><td>Ligne 2 adresse</td><td>Code postal</td><td>Commune</td></tr>\n";
 
                 for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>";
-                    echo "<td>";
+                    echo "<tr>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["id_eleve"];
-                    echo "<input type='hidden' name='ligne".$i."_id_eleve' value='" . $data_tab[$i]["id_eleve"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_id_eleve' value='" . $data_tab[$i]["id_eleve"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["nom"];
-                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["prenom"];
-                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["civilite"];
-                    echo "<input type='hidden' name='ligne".$i."_civilite' value='" . $data_tab[$i]["civilite"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_civilite' value='" . $data_tab[$i]["civilite"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["adresse1"];
-                    echo "<input type='hidden' name='ligne".$i."_adresse1' value='" . $data_tab[$i]["adresse1"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_adresse1' value='" . $data_tab[$i]["adresse1"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["adresse2"];
-                    echo "<input type='hidden' name='ligne".$i."_adresse2' value='" . $data_tab[$i]["adresse2"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_adresse2' value='" . $data_tab[$i]["adresse2"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["code_postal"];
-                    echo "<input type='hidden' name='ligne".$i."_code_postal' value='" . $data_tab[$i]["code_postal"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_code_postal' value='" . $data_tab[$i]["code_postal"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["commune"];
-                    echo "<input type='hidden' name='ligne".$i."_commune' value='" . $data_tab[$i]["commune"] . "'>";
-                    echo "</td>";
-                    echo "</tr>";
+                    echo "<input type='hidden' name='ligne".$i."_commune' value='" . $data_tab[$i]["commune"] . "' />\n";
+                    echo "</td>\n";
+                    echo "</tr>\n";
                 }
 
-                echo "</table>";
+                echo "</table>\n";
 
-                echo "<input type='submit' value='Enregistrer'>";
+                echo "<input type='submit' value='Enregistrer' />\n";
 
-                echo "</form>";
+                echo "</form>\n";
             }
 
         } else if (trim($csv_file['name'])=='') {
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />";
-            echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+            echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
         } else {
-            echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-            echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+            echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>\n";
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

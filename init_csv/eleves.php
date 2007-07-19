@@ -53,6 +53,9 @@ $liste_tables_del = array(
 //"droits",
 "eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",
@@ -90,7 +93,7 @@ require_once("../lib/header.inc");
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves</h3></center>";
+echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves</h3></center>\n";
 
 
 if (!isset($_POST["action"])) {
@@ -98,24 +101,24 @@ if (!isset($_POST["action"])) {
     // On sélectionne le fichier à importer
     //
 
-    echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>g_eleves.csv</b> contenant les données élèves.";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
-    echo "<ul><li>Nom</li>" .
-            "<li>Prénom</li>" .
-            "<li>Date de naissance au format JJ/MM/AAAA</li>" .
-            "<li>n° identifiant interne à l'établissement (indispensable : c'est ce numéro qui est utilisé pour faire la liaison lors des autres importations)</li>" .
-            "<li>n° identifiant national</li>" .
-            "<li>Code établissement précédent</li>" .
-            "<li>Doublement (OUI ou NON)</li>" .
-            "<li>Régime (INTERN ou EXTERN ou IN.EX. ou DP DAN)</li>" .
-            "<li>Sexe (F ou M)</li>" .
-            "</ul>";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves.csv</b>.";
-    echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>";
-    echo "<input type='hidden' name='action' value='upload_file' />";
-    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />";
-    echo "<p><input type='submit' value='Valider' />";
-    echo "</form>";
+    echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>g_eleves.csv</b> contenant les données élèves.</p>\n";
+    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+    echo "<ul><li>Nom</li>\n" .
+            "<li>Prénom</li>\n" .
+            "<li>Date de naissance au format JJ/MM/AAAA</li>\n" .
+            "<li>n° identifiant interne à l'établissement (indispensable : c'est ce numéro qui est utilisé pour faire la liaison lors des autres importations)</li>\n" .
+            "<li>n° identifiant national</li>\n" .
+            "<li>Code établissement précédent</li>\n" .
+            "<li>Doublement (OUI ou NON)</li>\n" .
+            "<li>Régime (INTERN ou EXTERN ou IN.EX. ou DP DAN)</li>\n" .
+            "<li>Sexe (F ou M)</li>\n" .
+            "</ul>\n";
+    echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves.csv</b>.</p>\n";
+    echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
+    echo "<input type='hidden' name='action' value='upload_file' />\n";
+    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+    echo "<p><input type='submit' value='Valider' />\n";
+    echo "</form>\n";
 
 } else {
     //
@@ -280,11 +283,13 @@ if (!isset($_POST["action"])) {
             if (!isset($_POST['ligne'.$i.'_nom'])) break 1;
         }
 
-        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-        if ($total > 0) echo "<p>" . $total . " élèves ont été enregistrés.</p>";
+        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
+        if ($total > 0) echo "<p>" . $total . " élèves ont été enregistrés.</p>\n";
 
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";
+        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
+		// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
+		saveSetting("conv_new_resp_table", 0);
 
     } else if ($_POST['action'] == "upload_file") {
         //
@@ -304,8 +309,8 @@ if (!isset($_POST["action"])) {
 
             if(!$fp) {
                 // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
-                echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
-                echo "<p><a href='eleves.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+                echo "<p><a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>\n";
             } else {
 
                 // Fichier ouvert ! On attaque le traitement
@@ -407,8 +412,8 @@ if (!isset($_POST["action"])) {
                 // Fin de l'analyse du fichier.
                 // Maintenant on va afficher tout ça.
 
-                echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>";
-                echo "<input type='hidden' name='action' value='save_data' />";
+                echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
+                echo "<input type='hidden' name='action' value='save_data' />\n";
                 //echo "<table>";
                 //echo "<tr><td>Nom</td><td>Prénom</td><td>Sexe</td><td>Date de naissance</td><td>n° étab.</td><td>n° nat.</td><td>Code étab.</td><td>Double.</td><td>Régime</td></tr>";
 
@@ -416,60 +421,61 @@ if (!isset($_POST["action"])) {
                 //  echo "<tr>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["nom"];
-                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["prenom"];
-                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["sexe"];
-                    echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["naissance"];
-                    echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["id_int"];
-                    echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["id_nat"];
-                    echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["etab_prec"];
-                    echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["doublement"];
-                    echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "'>";
+                    echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "' />\n";
                 //  echo "</td>";
                 //  echo "<td>";
                 //  echo $data_tab[$i]["regime"];
-                    echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "'>\n";
+                    echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "' />\n";
                 //  echo "</td>";
                 //  echo "</tr>";
                 }
 
                 //echo "</table>";
-                echo "$k élèves ont été détectés dans le fichier.</br>";
-                echo "<input type='submit' value='Enregistrer'>";
+                echo "$k élèves ont été détectés dans le fichier.<br />\n";
+                echo "<input type='submit' value='Enregistrer' />\n";
 
-                echo "</form>";
+                echo "</form>\n";
             }
 
         } else if (trim($csv_file['name'])=='') {
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />";
-            echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+            echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
         } else {
             echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-            echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<a href='eleves.php'>Cliquer ici </a> pour recommencer !</p>";
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

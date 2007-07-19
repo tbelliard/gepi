@@ -49,61 +49,53 @@ require_once("../lib/header.inc");
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
 <ul>
-<li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes, qui seront seulement mises à jour si nécessaire :<br /><br />
+<li><p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes, qui seront seulement mises à jour si nécessaire :<br /><br />
 - les données relatives aux établissements,<br />
 - les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
 - les données relatives aux matières : identifiants et intitulés complets,<br />
 - les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
-- Les données relatives aux différents types d'AID.</li><br />
+- Les données relatives aux différents types d'AID.<br />&nbsp;</p></li>
 
-<li>L'initialisation s'effectue en plusieurs phases successives, chacune nécessitant un fichier CSV spécifique, que vous devrez fournir au bon format :<br />
+<li><p>L'initialisation s'effectue en plusieurs phases successives, chacune nécessitant un fichier CSV spécifique, que vous devrez fournir au bon format :</p>
     <ul>
-    <br />
-    <li><a href='eleves.php'>Procéder à la première phase</a> d'importation des élèves. <b>g_eleves.csv</b> est requis.
+    <li><p><a href='eleves.php'>Procéder à la première phase</a> d'importation des élèves. <b>g_eleves.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre les champs suivants :
-    	<br/>Nom ; Prénom ; Date de naissance ; n° identifiant interne (étab) ; n° identifiant national ; Code établissement précédent ; Doublement (OUI | NON) ; Régime (INTERN | EXTERN | IN.EX. | DP DAN) ; Sexe (F ou M)</li>
-    <br />
-    
-    <li><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>g_responsables.csv</b> est requis.
+    	<br/>Nom ; Prénom ; Date de naissance ; n° identifiant interne (étab) ; n° identifiant national ; Code établissement précédent ; Doublement (OUI | NON) ; Régime (INTERN | EXTERN | IN.EX. | DP DAN) ; Sexe (F ou M)<br />&nbsp;</p></li>
+
+    <li><p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>g_responsables.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
-    	<br/>n° d'identifiant élève interne à l'établissement ; Nom du responsable ; Prénom du responsable ; Civilité ;  Ligne 1 Adresse ; Ligne 2 Adresse ; Code postal ; Commune</li>
-    <br />
-    
-    <li><a href='disciplines.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>g_disciplines.csv</b> est requis.
+    	<br/>n° d'identifiant élève interne à l'établissement ; Nom du responsable ; Prénom du responsable ; Civilité ;  Ligne 1 Adresse ; Ligne 2 Adresse ; Code postal ; Commune<br />&nbsp;</p></li>
+
+    <li><p><a href='disciplines.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>g_disciplines.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
-    	<br/>Nom court matière ; Nom long matière</li>
-    <br />
-    
-    <li><a href='professeurs.php'>Procéder à la quatrième phase</a> d'importation des professeurs : le fichier <b>g_professeurs.csv</b> est requis.
+    	<br/>Nom court matière ; Nom long matière<br />&nbsp;</p></li>
+
+    <li><p><a href='professeurs.php'>Procéder à la quatrième phase</a> d'importation des professeurs : le fichier <b>g_professeurs.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
-    	<br/>Nom ; Prénom ; Civilité ; Adresse e-mail</li>
-    <br />
-    
-    <li><a href='eleves_classes.php'>Procéder à la cinquième phase</a> d'affectation des élèves aux classes  : le fichier <b>g_eleves_classes.csv</b> requis.
+    	<br/>Nom ; Prénom ; Civilité ; Adresse e-mail<br />&nbsp;</p></li>
+
+    <li><p><a href='eleves_classes.php'>Procéder à la cinquième phase</a> d'affectation des élèves aux classes  : le fichier <b>g_eleves_classes.csv</b> requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
     	<br/>n° d'identifiant élève interne à l'établissement ; Identifiant court de la classe
-    	<br/>Remarque : cette opération créé automatiquement les classes dans Gepi, mais ne leur attribue qu'un nom court (identifiant). Vous devrez ajouter le nom long par l'interface de gestion des classes.</li>
-    <br />
+    	<br/>Remarque : cette opération créé automatiquement les classes dans Gepi, mais ne leur attribue qu'un nom court (identifiant). Vous devrez ajouter le nom long par l'interface de gestion des classes.<br />&nbsp;</p></li>
 
-    
-    <li><a href='prof_disc_classes.php'>Procéder à la sixième phase</a> d'affectation des matières à chaque professeur et d'affectation des professeurs dans chaque classe : le fichier <b>g_prof_disc_classes.csv</b> requis. Cette importation va définir les compétences des professeurs et créer les groupes d'enseignement dans chaque classe.
+
+    <li><p><a href='prof_disc_classes.php'>Procéder à la sixième phase</a> d'affectation des matières à chaque professeur et d'affectation des professeurs dans chaque classe : le fichier <b>g_prof_disc_classes.csv</b> requis. Cette importation va définir les compétences des professeurs et créer les groupes d'enseignement dans chaque classe.
     	<br />Il doit contenir, dans l'ordre, les champs suivants :
     	<br />Login du professeur ; Nom court de la matière ; Le ou les identifiants de classe (séparés par des !) ; Le type de cours (CG (= cours général) | OPT (= option))
     	<br />Remarques :
     	<br />Si le dernier champ est vide et qu'une seule classe est présente dans le troisième champ, le type sera défini comme "général". S'il est vide et que plusieurs classes ont été définies, alors le type sera défini comme "option".
     	<br />Lorsque l'enseignement est général, tous les élèves de la classe sont automatiquement associés à cet enseignement.
     	<br />Lorsque l'enseignement est une option, aucun élève n'y est associé, l'association se faisant à la septième étape.
-    	<br />Attention ! Ne mettez plusieurs classes pour une même matière que s'il s'agit d'un seul enseignement ! Si un professeur enseigne la même matière dans deux classes différentes, il faut alors deux lignes distinctes dans le fichier CSV, avec une seule classe définie pour chaque ligne.</li>
-    <br />
-    
-    <li><a href='eleves_options.php'>Procéder à la septième phase</a> d'affectation des élèves à chaque groupe d'option : le fichier <b>g_eleves_options.csv</b> est requis.
+    	<br />Attention ! Ne mettez plusieurs classes pour une même matière que s'il s'agit d'un seul enseignement ! Si un professeur enseigne la même matière dans deux classes différentes, il faut alors deux lignes distinctes dans le fichier CSV, avec une seule classe définie pour chaque ligne.<br />&nbsp;</p></li>
+
+    <li><p><a href='eleves_options.php'>Procéder à la septième phase</a> d'affectation des élèves à chaque groupe d'option : le fichier <b>g_eleves_options.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre, les champs suivants :
     	<br/>n° d'identifiant élève interne à l'établissement ; Identifiants des matières suivies en option, séparés par des !
-    	<br/>Remarque : si plusieurs groupes avec la même matière sont trouvés dans la classe de l'élève, alors l'élève sera associé à tous ces différents groupes.</li>
-    <br />
+    	<br/>Remarque : si plusieurs groupes avec la même matière sont trouvés dans la classe de l'élève, alors l'élève sera associé à tous ces différents groupes.<br />&nbsp;</p></li>
     </ul>
-    <br />
+	<br />
 </li>
-<li>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
+<li><p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p></li>
 </ul>
 <?php require("../lib/footer.inc.php");?>

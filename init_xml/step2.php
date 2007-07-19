@@ -93,7 +93,7 @@ document.formulaire.elements[i+a].value = b ;
 </script>
 
 <?php
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>";
+echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves, constitution des classes et affectation des élèves dans les classes</h3></center>";
 echo "<center><h3 class='gepi'>Deuxième étape : Enregistrement des classes</h3></center>";
 
 $liste_tables_del = array(
@@ -107,6 +107,9 @@ $liste_tables_del = array(
 //"droits",
 "eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",

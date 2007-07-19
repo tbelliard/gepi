@@ -109,6 +109,9 @@ $liste_tables_del = array(
 "eleves",
 "responsables",
 // NE FAUDRAIT-IL PAS VIDER ICI responsables2, resp_pers et reps_adr?
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",
