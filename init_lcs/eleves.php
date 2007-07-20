@@ -50,6 +50,9 @@ $liste_tables_del = array(
 //"droits",
 "eleves",
 "responsables",
+"responsables2",
+"resp_pers",
+"resp_adr",
 //"etablissements",
 "j_aid_eleves",
 "j_aid_utilisateurs",
@@ -291,6 +294,11 @@ if (isset($_POST['step'])) {
             echo "<input type=\"submit\" value=\"Accéder à l'étape 2\" />";
             echo "</form>";
             echo "</center>";
+
+			// On sauvegarde le témoin du fait qu'il va falloir
+			// convertir pour générer l'ELE_ID et remplir ensuite les nouvelles tables responsables:
+			saveSetting("conv_new_resp_table", 0);
+
 
         } else {
             // Les données n'ont pas encore été postées, on affiche donc le tableau des classes
