@@ -334,16 +334,16 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if ($affiche != 'partiel') {
             echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>";
             echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
-            echo "<input type=hidden name='is_posted' value='no'>";
-            echo "<input type=hidden name='affiche' value='partiel'>";
-            echo "<center><input type='submit' value='Affichage partiel'></center>";
+            echo "<input type=hidden name='is_posted' value='no' />";
+            echo "<input type=hidden name='affiche' value='partiel' />";
+            echo "<center><input type='submit' value='Affichage partiel' /></center>";
             echo "</form>";
         } else {
             echo "<p>--> Pour afficher toutes les lignes, cliquez sur le bouton \"Afficher tout\" :</p>";
             echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
-            echo "<input type=hidden name='is_posted' value='no'>";
-            echo "<input type=hidden name='affiche' value='tout'>";
-            echo "<center><input type='submit' value='Afficher tout'></center>";
+            echo "<input type=hidden name='is_posted' value='no' />";
+            echo "<input type=hidden name='affiche' value='tout' />";
+            echo "<center><input type='submit' value='Afficher tout' /></center>";
             echo "</form>";
         }
     }
@@ -351,6 +351,8 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<center><input type='submit' value='Enregistrer'></center>";
-    echo "</form></body></html>";
+    echo "</form>";
 }
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>

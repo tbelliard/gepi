@@ -57,17 +57,23 @@ echo "<h3 class='gepi'>Deuxième étape : importation des options suivies par les 
 $test1 = mysql_result(mysql_query("SELECT count(*) FROM eleves"),0);
 if ($test1 ==0) {
     echo "<p class='grand'>Aucun élève actuellement dans la base : la procédure d'initialisation des options ne peut continuer !</p>";
+	echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
     die();
 } else {
     $test2 = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_classes"),0);
     if ($test2 ==0) {
         echo "<p class='grand'>Les classes n'ont pas encore été constituées : la procédure d'initialisation des options ne peut continuer !</p>";
+		echo "<p><br /></p>\n";
+		require("../lib/footer.inc.php");
         die();
     } else {
 
         $test3 = mysql_result(mysql_query("SELECT count(*) FROM temp_gep_import WHERE LOGIN !=''"),0);
         if ($test3 ==0) {
             echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier F_ELE.DBF</p>";
+			echo "<p><br /></p>\n";
+			require("../lib/footer.inc.php");
             die();
         }
     }
@@ -84,7 +90,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 
 	// Initialisation de la variable pour indiquer qu'un groupe n'existe pas pour la matière indiquée en option
 	$no_group = array();
-	
+
     $nb_per = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 
     $nb_options = 0;
@@ -95,7 +101,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
         $i++;
     }
     $tempo = substr($tempo, 0, -2);
-    
+
     $call_data = mysql_query("SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
     $tab_options = array();
     while ($row = mysql_fetch_object($call_data)) {
@@ -128,16 +134,16 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
         while ($row = mysql_fetch_array($call_data, MYSQL_NUM)) {
 	        $j="0";
 	        while ($j < $nb_options) {
-	        	
+
 	            $suit_option = 'no';
 	            if (in_array($tab_options[$j], $row)) {
 	                $suit_option = 'yes';
 	            }
-	            
+
 	            if ($suit_option == 'no') {
 
                 	// On commence par récupérer l'ID du groupe concerné
-                	
+
                 	if (!in_array($tab_options[$j], $no_group)) {
 	                	$group_id = @mysql_result(mysql_query("SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm where (" .
 	                			"g.id = jgm.id_groupe and " .
@@ -162,7 +168,6 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante de nettoyage des tables GEPI.</p>";
 
 echo "<center><p><a href='clean_tables.php'>Suppression des données inutiles</a></p></center>";
-
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

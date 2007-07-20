@@ -113,9 +113,11 @@ if (!isset($step1)) {
         echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>";
 
         echo "<form enctype='multipart/form-data' action='disciplines.php' method=post>";
-        echo "<input type=hidden name='step1' value='y'>";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procédure'>";
+        echo "<input type=hidden name='step1' value='y' />";
+        echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
         echo "</form>";
+		echo "<p><br /></p>\n";
+		require("../lib/footer.inc.php");
         die();
     }
 }
@@ -132,10 +134,10 @@ if (!isset($is_posted)) {
     echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
     echo "<p>Importation du fichier <b>F_tmt.dbf</b> contenant les données relatives aux matières : veuillez préciser le nom complet du fichier <b>F_tmt.dbf</b>.";
     echo "<form enctype='multipart/form-data' action='disciplines.php' method=post>";
-    echo "<input type=hidden name='is_posted' value='yes'>";
-    echo "<input type=hidden name='step1' value='y'>";
-    echo "<p><input type='file' size='80' name='dbf_file'>";
-    echo "<p><input type=submit value='Valider'>";
+    echo "<input type=hidden name='is_posted' value='yes' />";
+    echo "<input type=hidden name='step1' value='y' />";
+    echo "<p><input type='file' size='80' name='dbf_file' />";
+    echo "<p><input type=submit value='Valider' />";
     echo "</form>";
 
 } else {
@@ -144,7 +146,7 @@ if (!isset($is_posted)) {
         $fp = dbase_open($dbf_file['tmp_name'], 0);
         if(!$fp) {
             echo "<p>Impossible d'ouvrir le fichier dbf</p>";
-            echo "<p><a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p><a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
         } else {
             // on constitue le tableau des champs à extraire
             $tabchamps = array("MATIMN","MATILC");
@@ -156,7 +158,7 @@ if (!isset($is_posted)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
                 echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-                echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
                 die();
             }
 
@@ -210,15 +212,13 @@ if (!isset($is_posted)) {
         }
     } else if (trim($dbf_file['name'])=='') {
         echo "<p>Aucun fichier n'a été sélectionné !<br />";
-        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
         echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }
-
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

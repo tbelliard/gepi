@@ -381,15 +381,13 @@ if (!isset($is_posted)) {
         }
     } else if ((trim($dbf_file['name'])=='') or (trim($dbf_file2['name'])=='')) {
         echo "<p>Veuillez préciser les fichiers !<br />";
-        echo "<a href='prof_disc_classe.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='prof_disc_classe.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
         echo "<p>Fichier(s) sélectionné(s) non valide(s) !<br />";
-        echo "<a href='prof_disc_classe.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='prof_disc_classe.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }
-
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

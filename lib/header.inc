@@ -197,6 +197,31 @@ if(isset($style_screen_ajout)){
 	}
 }
 
+
+//===================================
+// Pour aérer les infobulles si jamais Javascript n'est pas actif.
+// Sinon, avec le position:absolute, les div se superposent.
+$posDiv_infobulle=0;
+// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
+
+$tabdiv_infobulle=array();
+$tabid_infobulle=array();
+
+// Choix de l'unité pour les dimensions des DIV: em, px,...
+$unite_div_infobulle="em";
+// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
+
+echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
+echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
+
+// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+echo "<script type='text/javascript'>
+	temporisation_chargement='n';
+</script>\n";
+
+//===================================
+
+
 ?>
 </head>
 <!-- ************************* -->

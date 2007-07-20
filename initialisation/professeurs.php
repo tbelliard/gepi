@@ -111,9 +111,11 @@ if (!isset($step1)) {
         echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base GEP de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
         echo "</ul>";
         echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
-        echo "<input type=hidden name='step1' value='y'>";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procédure'>";
+        echo "<input type=hidden name='step1' value='y' />";
+        echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
         echo "</form>";
+		echo "<p><br /></p>\n";
+		require("../lib/footer.inc.php");
         die();
     }
 }
@@ -131,22 +133,22 @@ if (!isset($is_posted)) {
     echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
     echo "<p>Importation du fichier <b>F_wind.dbf</b> contenant les données relatives aux professeurs.";
     echo "<p>Veuillez préciser le nom complet du fichier <b>F_wind.dbf</b>.";
-    echo "<input type=hidden name='is_posted' value='yes'>";
-    echo "<input type=hidden name='step1' value='y'>";
-    echo "<p><input type='file' size='80' name='dbf_file'>";
+    echo "<input type=hidden name='is_posted' value='yes' />";
+    echo "<input type=hidden name='step1' value='y' />";
+    echo "<p><input type='file' size='80' name='dbf_file' />";
     echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>";
-    echo "<input type='radio' name='login_gen_type' value='name' checked> nom";
-    echo "<br /><input type='radio' name='login_gen_type' value='name8'> nom (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_gen_type' value='fname8'> pnom (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_gen_type' value='fname19'> pnom (tronqué à 19 caractères)";
-    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname'> prenom.nom";
-    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname19'> prenom.nom (tronqué à 19 caractères)";
-    echo "<br /><input type='radio' name='login_gen_type' value='namef8'> nomp (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_gen_type' value='lcs'> pnom (façon LCS)";
+    echo "<input type='radio' name='login_gen_type' value='name' checked /> nom";
+    echo "<br /><input type='radio' name='login_gen_type' value='name8' /> nom (tronqué à 8 caractères)";
+    echo "<br /><input type='radio' name='login_gen_type' value='fname8' /> pnom (tronqué à 8 caractères)";
+    echo "<br /><input type='radio' name='login_gen_type' value='fname19' /> pnom (tronqué à 19 caractères)";
+    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname' /> prenom.nom";
+    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname19' /> prenom.nom (tronqué à 19 caractères)";
+    echo "<br /><input type='radio' name='login_gen_type' value='namef8' /> nomp (tronqué à 8 caractères)";
+    echo "<br /><input type='radio' name='login_gen_type' value='lcs' /> pnom (façon LCS)";
     echo "<br /><br /><p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>";
-    echo "<br /><input type='radio' name='sso' value='no' checked> Non";
-    echo "<br /><input type='radio' name='sso' value='yes'> Oui (aucun mot de passe ne sera généré)";
-    echo "<p><input type=submit value='Valider'>";
+    echo "<br /><input type='radio' name='sso' value='no' checked /> Non";
+    echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera généré)";
+    echo "<p><input type=submit value='Valider' />";
     echo "</form>";
 
 } else {
@@ -402,13 +404,13 @@ if (!isset($is_posted)) {
         }
     } else if (trim($dbf_file['name'])=='') {
         echo "<p>Aucun fichier n'a été sélectionné !<br />";
-        echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
         echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-        echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>

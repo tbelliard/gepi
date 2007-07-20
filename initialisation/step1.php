@@ -154,7 +154,6 @@ if (!isset($is_posted)) {
     }
 }
 
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
 ?>
-
-</body>
-</html>

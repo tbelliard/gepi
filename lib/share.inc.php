@@ -2041,4 +2041,120 @@ function getPref($login,$item,$default){
 	}
 }
 
+function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow){
+	/*
+		$id:			Identifiant du DIV conteneur
+		$titre:			Texte du titre du DIV
+		$bg_titre:		Couleur de fond de la barre de titre.
+						Si $bg_titre est vide, on utilise la couleur par défaut
+						correspondant à .infobulle_entete (défini dans style.css
+						et éventuellement modifié dans style_screen_ajout.css)
+		$texte:			Texte du contenu du DIV
+		$bg_texte:		Couleur de fond du DIV contenant le texte.
+						Si $bg_texte est vide, on utilise la couleur par défaut
+						correspondant à .infobulle_corps (défini dans style.css
+						et éventuellement modifié dans style_screen_ajout.css)
+		$largeur:		Largeur du DIV conteneur
+		$hauteur:		Hauteur (minimale) du DIV conteneur
+						En mettant 0, on laisse le DIV s'adapter au contenu (se réduire/s'ajuster)
+		$drag:			'y' ou 'n' pour rendre le DIV draggable
+		$bouton_close:	'y' ou 'n' pour afficher le bouton Close
+						S'il est affiché, c'est dans la barre de titre.
+						Si la barre de titre n'est pas affichée, ce bouton ne peut pas être affiché.
+		$survol_close:	'y' ou 'n' pour refermer le DIV automatiquement lorsque le survol quitte le DIV
+		$overflow:		'y' ou 'n' activer l'overflow automatique sur la partie Texte.
+						Il faut que $hauteur soit non nulle
+	*/
+	global $posDiv_infobulle;
+	global $tabid_infobulle;
+	global $unite_div_infobulle;
+	global $niveau_arbo;
+
+	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
+	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
+	//$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;";
+	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
+
+
+	// On fait la liste des identifiants de DIV pour cacher les Div avec javascript en fin de chargement de la page (dans /lib/footer.inc.php).
+	$tabid_infobulle[]=$id;
+
+	// Conteneur:
+	if($bg_texte==''){
+		$div="<div id='$id' class='infobulle_corps' style='$style_box width: ".$largeur.$unite_div_infobulle."; ";
+	}
+	else{
+		$div="<div id='$id' style='$style_box background-color: $bg_texte; width: ".$largeur.$unite_div_infobulle."; ";
+	}
+	if($hauteur!=0){
+		$div.="height: ".$hauteur.$unite_div_infobulle."; ";
+	}
+	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est désactivé:
+	$div.="left:".$posDiv.$unite_div_infobulle.";";
+	$div.="'>\n";
+
+
+	// Barre de titre:
+	// Elle n'est affichée que si le titre est non vide
+	if($titre!=""){
+		if($bg_titre==''){
+			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur.$unite_div_infobulle.";'";
+		}
+		else{
+			$div.="<div style='$style_bar background-color: $bg_titre; width: ".$largeur.$unite_div_infobulle.";'";
+		}
+		if($drag=="y"){
+			// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
+			$div.=" onmousedown=\"dragStart(event, '$id')\"";
+		}
+		$div.=">\n";
+
+		if($bouton_close=="y"){
+			//$div.="<div style='$style_close'><a href='#' onClick=\"cacher_div('$id');return false;\">X</a></div>\n";
+			$div.="<div style='$style_close'><a href='#' onClick=\"cacher_div('$id');return false;\">";
+			if(isset($niveau_arbo)&&$niveau_arbo==0){
+				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			else{
+				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+			$div.="</a></div>\n";
+		}
+		$div.="<span style='padding-left: 1px;'>\n";
+		$div.=$titre."\n";
+		$div.="</span>\n";
+		$div.="</div>\n";
+	}
+
+
+	// Partie texte:
+	$div.="<div";
+	if($survol_close=="y"){
+		// On referme le DIV lorsque la souris quitte la zone de texte.
+		$div.=" onmouseout=\"cacher_div('$id');\"";
+	}
+	$div.=">\n";
+	if(($overflow=='y')&&($hauteur!=0)){
+		$hauteur_hors_titre=$hauteur-1;
+		$div.="<div style='width: ".$largeur.$unite_div_infobulle."; height: ".$hauteur_hors_titre.$unite_div_infobulle."; overflow: auto;'>\n";
+		$div.="<span style='padding-left: 1px;'>\n";
+		$div.=$texte;
+		$div.="</span>\n";
+		$div.="</div>\n";
+	}
+	else{
+		$div.="<span style='padding-left: 1px;'>\n";
+		$div.=$texte;
+		$div.="</span>\n";
+	}
+	$div.="</div>\n";
+
+	$div.="</div>\n";
+
+	// Les div vont s'afficher côte à côte sans superposition en bas de page si JavaScript est désactivé:
+	$posDiv_infobulle=$posDiv_infobulle+$largeur;
+
+	return $div;
+}
+
 ?>
