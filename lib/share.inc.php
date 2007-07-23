@@ -2157,4 +2157,29 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	return $div;
 }
 
+function debug_var(){
+	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
+	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
+	echo "<p>Variables envoyées en POST:</p>\n";
+	echo "<blockquote>\n";
+	foreach($_POST as $post => $val){
+		echo "\$_POST['".$post."']=".$val."<br />\n";
+	}
+	echo "</blockquote>\n";
+
+	echo "<p>Variables envoyées en GET:</p>\n";
+	echo "<blockquote>\n";
+	foreach($_GET as $get => $val){
+		echo "\$_GET['".$get."']=".$val."<br />\n";
+	}
+	echo "</blockquote>\n";
+
+	echo "<p>Variables envoyées en SESSION:</p>\n";
+	echo "<blockquote>\n";
+	foreach($_SESSION as $variable => $val){
+		echo "\$_SESSION['".$variable."']=".$val."<br />\n";
+	}
+	echo "</blockquote>\n";
+	echo "</div>\n";
+}
 ?>

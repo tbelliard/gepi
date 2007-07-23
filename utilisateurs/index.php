@@ -39,10 +39,203 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
+
+$msg="";
+
+// pour l'envoi des photos du trombinoscope
+
+ if (empty($_POST['action']) and empty($_GET['action'])) { $action = ''; }
+    else { if (empty($_POST['action'])){$action = ''; } if (empty($_GET['action'])){$action = $_POST['action'];} }
+ if (empty($_POST['total_photo']) and empty($_GET['total_photo'])) { $total_photo = ''; }
+    else { if (empty($_POST['total_photo'])){$total_photo = ""; } if (empty($_GET['total_photo'])){$total_photo = $_POST['total_photo'];} }
+ if (empty($_FILES['photo'])) { $photo = ''; } else { $photo = $_FILES['photo']; }
+ if (empty($_POST['quiestce'])) { $quiestce = ''; } else { $quiestce = $_POST['quiestce']; }
+
+function ImageFlip($imgsrc, $type)
+	{
+	  //source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
+	   $width = imagesx($imgsrc);
+	   $height = imagesy($imgsrc);
+
+	   $imgdest = imagecreatetruecolor($width, $height);
+
+	   switch( $type )
+		   {
+		   // mirror wzgl. osi
+		   case IMAGE_FLIP_HORIZONTAL:
+			   for( $y=0 ; $y<$height ; $y++ )
+				   imagecopy($imgdest, $imgsrc, 0, $height-$y-1, 0, $y, $width, 1);
+			   break;
+
+		   case IMAGE_FLIP_VERTICAL:
+			   for( $x=0 ; $x<$width ; $x++ )
+				   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
+			   break;
+
+		   case IMAGE_FLIP_BOTH:
+			   for( $x=0 ; $x<$width ; $x++ )
+				   imagecopy($imgdest, $imgsrc, $width-$x-1, 0, $x, 0, 1, $height);
+
+			   $rowBuffer = imagecreatetruecolor($width, 1);
+			   for( $y=0 ; $y<($height/2) ; $y++ )
+				   {
+				   imagecopy($rowBuffer, $imgdest  , 0, 0, 0, $height-$y-1, $width, 1);
+				   imagecopy($imgdest  , $imgdest  , 0, $height-$y-1, 0, $y, $width, 1);
+				   imagecopy($imgdest  , $rowBuffer, 0, $y, 0, 0, $width, 1);
+				   }
+
+			   imagedestroy( $rowBuffer );
+			   break;
+		   }
+
+	   return( $imgdest );
+	}
+
+function ImageRotateRightAngle( $imgSrc, $angle )
+{
+	//source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
+	$angle = min( ( (int)(($angle+45) / 90) * 90), 270 );
+	if( $angle == 0 )
+	return( $imgSrc );
+	$srcX = imagesx( $imgSrc );
+	$srcY = imagesy( $imgSrc );
+
+	switch( $angle )
+	{
+		case 90:
+		$imgDest = imagecreatetruecolor( $srcY, $srcX );
+		for( $x=0; $x<$srcX; $x++ )
+		for( $y=0; $y<$srcY; $y++ )
+		imagecopy($imgDest, $imgSrc, $srcY-$y-1, $x, $x, $y, 1, 1);
+		break;
+
+		case 180:
+		$imgDest = ImageFlip( $imgSrc, IMAGE_FLIP_BOTH );
+		break;
+
+		case 270:
+		$imgDest = imagecreatetruecolor( $srcY, $srcX );
+		for( $x=0; $x<$srcX; $x++ )
+		for( $y=0; $y<$srcY; $y++ )
+		imagecopy($imgDest, $imgSrc, $y, $srcX-$x-1, $x, $y, 1, 1);
+		break;
+	}
+
+		return( $imgDest );
+}
+
+
+function deplacer_fichier_upload($source, $dest) {
+    $ok = @copy($source, $dest);
+    if (!$ok) $ok = @move_uploaded_file($source, $dest);
+    return $ok;
+}
+
+
+function test_ecriture_backup() {
+    $ok = 'no';
+    if ($f = @fopen("../photos/personnels/test", "w")) {
+        @fputs($f, '<'.'?php $ok = "yes"; ?'.'>');
+        @fclose($f);
+        include("../photos/personnels/test");
+        $del = @unlink("../photos/personnels/test");
+    }
+    return $ok;
+}
+
+// fonction de sécuritée
+// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
+ if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
+ if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {$uid_post='';}
+    else { if (isset($_GET['uid_post'])) {$uid_post=$_GET['uid_post'];} if (isset($_POST['uid_post'])) {$uid_post=$_POST['uid_post'];} }
+	$uid = md5(uniqid(microtime(), 1));
+	   // on remplace les %20 par des espaces
+	    $uid_post = eregi_replace('%20',' ',$uid_post);
+	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'oui'; } else { $valide_form = 'non'; }
+	$_SESSION['uid_prime'] = $uid;
+// fin de la fonction de sécuritée
+
+if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $valide_form === 'oui' )  {
+	$nb_succes_photos=0;
+	$nb_photos_proposees=0;
+	$cpt_photo = 0;
+	while($cpt_photo < $total_photo) {
+		if($_FILES['photo']['type'][$cpt_photo] != "") {
+			$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
+
+			$nb_photos_proposees++;
+
+			/*
+			echo "\$sav_photo['name'][$cpt_photo]=".$sav_photo['name'][$cpt_photo]."<br />\n";
+			echo "preg_match('/jpg$/',\$sav_photo['name'][$cpt_photo])=".preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])."<br />\n";
+			echo "\$sav_photo['type'][$cpt_photo]=".$sav_photo['type'][$cpt_photo]."<br />\n";
+			*/
+
+			if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
+				//$msg = "Erreur de téléchargement niveau 1.";
+				$msg .= "Erreur de téléchargement niveau 1 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
+			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
+				//$msg = "Erreur de téléchargement niveau 2.";
+				$msg .= "Erreur de téléchargement niveau 2 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
+			//} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
+			} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) || $sav_photo['type'][$cpt_photo] != "image/jpeg"){
+				//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
+				$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
+			} else {
+				$dest = "../photos/personnels/";
+				$n = 0;
+				//$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
+				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/personnels/".$quiestce[$cpt_photo].".jpg")) {
+					//$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/personnels/";
+					$msg = "Problème de transfert : le fichier '".$sav_photo['name'][$cpt_photo]."' n'a pas pu être transféré sur le répertoire photos/personnels/<br />\n";
+				} else {
+					//$msg = "Téléchargement réussi.";
+					$nb_succes_photos++;
+					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+						// si le redimensionnement des photos est activé on redimenssionne
+						$source = imagecreatefromjpeg("../photos/personnels/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
+						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
+						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
+
+						//rotation de l'image si choix différent de rien
+						//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+
+						// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+						$largeur_source = imagesx($source);
+						$hauteur_source = imagesy($source);
+						$largeur_destination = imagesx($destination);
+						$hauteur_destination = imagesy($destination);
+
+						// On crée la miniature
+						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+						imagejpeg($destination, "../photos/personnels/".$quiestce[$cpt_photo].".jpg",100);
+					}
+				}
+			}
+		}
+		$cpt_photo = $cpt_photo + 1;
+	}
+
+	if($nb_photos_proposees==$nb_succes_photos) {
+		if($nb_succes_photos==1){
+			$msg.="Téléchargement réussi.";
+		}
+		else{
+			$msg.="Téléchargements réussis.";
+		}
+	}
+}
+// fin de l'envoi des photos du trombinoscope
+
 //**************** EN-TETE *****************************
 $titre_page = "Gestion des utilisateurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************************
+
+//echo "\$total_photo=$total_photo<br />\$nb_succes_photos=$nb_succes_photos<br />\$nb_photos_proposees=$nb_photos_proposees<br />";
 
 unset($display);
 $display = isset($_POST["display"]) ? $_POST["display"] : (isset($_GET["display"]) ? $_GET["display"] : (getSettingValue("display_users")!='' ? getSettingValue("display_users"): 'tous'));
@@ -103,7 +296,7 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
  </table>
 <input type=hidden name='mode' value='<?php echo $mode; ?>' />
 <input type=hidden name=order_by value=<?php echo $order_by; ?> />
-</form>
+
 <?php
 // Affichage du tableau
 echo "<table border=1 cellpadding=3>";
@@ -115,6 +308,9 @@ echo "<td><p class=small><b>classe(s)</b></p></td>";
 echo "<td><p class=small><b>suivi</b></p></td>";
 echo "<td><p class=small><b>supprimer</b></p></td>";
 echo "<td><p class=small><b>imprimer fiche bienvenue</b></p></td>";
+    if (getSettingValue("active_module_trombinoscopes")=='y') {
+    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>";
+    }
 echo "</tr>";
 $calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 		"statut = 'administrateur' OR " .
@@ -129,6 +325,9 @@ $i = 0;
 while ($i < $nombreligne){
     $user_nom = mysql_result($calldata, $i, "nom");
     $user_prenom = mysql_result($calldata, $i, "prenom");
+    // rajout trombinoscope
+    $user_civilite = mysql_result($calldata, $i, "civilite");
+    // fin de rajout trombinoscope
     $user_statut = mysql_result($calldata, $i, "statut");
     $user_login = mysql_result($calldata, $i, "login");
     $user_pwd = mysql_result($calldata, $i, "password");
@@ -145,6 +344,9 @@ while ($i < $nombreligne){
     // Affichage des login, noms et prénoms
     $col[$i][1] = $user_login;
     $col[$i][2] = "$user_nom $user_prenom";
+    // ajout pour le trombinoscope
+    $col[$i]['civ'] = $user_civilite;
+    // fin ajout
 
     $call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
     $nb_mat = mysql_num_rows($call_matieres);
@@ -245,12 +447,25 @@ while ($i < $nombreligne){
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>";
     // Affichage du lien pour l'impression des paramètres
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>";
+    // Affichage du téléchargement pour la photo si le module trombi est activé
+	if (getSettingValue("active_module_trombinoscopes")=='y') {
+        	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php $codephoto = md5($col[$i][1].''.$col[$i][2]); echo $codephoto; ?>" /><?php $photo = '../photos/personnels/'.$codephoto.'.jpg'; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
+        <?php
+		}
     // Fin de la ligne courante
     echo "</tr>";
     }
     $i++;
 }
 echo "</table>";
+// pour le module trombinoscope
+   // pour le trombinoscope on met la taille maximal d'une photos
+   ?><input type="hidden" name="MAX_FILE_SIZE" value="150000" />
+	<input type="hidden" name="action" value="depot_photo" />
+	<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" /><?php
+echo  "</form>";
+// fin module trombinoscope
 
 } // Fin : si $mode == personnels
 require("../lib/footer.inc.php");

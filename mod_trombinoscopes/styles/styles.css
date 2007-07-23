@@ -4,11 +4,11 @@ body {
         color: #000000;
      }
 
-form {
+t.form {
         font-size: 0.71em;
         width: 60em;
         min-width: 500px;
-        max-width: 80%;
+        max-width: 90%;
         margin: 0 auto;
         background-color: #FCF8ED;
         padding: 1em;
@@ -154,4 +154,17 @@ input[type="file"] {
     color: #FFFF33;
     font: normal 10pt Arial;
     text-align: center;
+}
+
+.tt {
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: none;
+    border-bottom: 1px solid lightgrey;
+    margin: 20px;
+    padding-left: 0px;
+    background-image: url("../../images/background/left-top-corner.png");
+    background-repeat: no-repeat;
+    /*background-position: 16% 1%;    */
+    background-position: -1px 0%;
 }
