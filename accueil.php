@@ -925,6 +925,134 @@ if (getSettingValue("active_notanet")=='y') {
 
 
 
+
+// **********************************
+// Gestion Années antérieures
+if (getSettingValue("active_annees_anterieures")=='y') {
+	$chemin = array();
+	$titre = array();
+	$expli = array();
+
+	if($_SESSION['statut']=='administrateur'){
+		$chemin[] = "/mod_annees_anterieures/index.php";
+		$titre[] = "Années antérieures";
+		$expli[] = "Cet outil permet de gérer et de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+	}
+	else{
+		if($_SESSION['statut']=='professeur') {
+			$AAProfTout=getSettingValue('AAProfTout');
+			$AAProfPrinc=getSettingValue('AAProfPrinc');
+			$AAProfClasses=getSettingValue('AAProfClasses');
+			$AAProfGroupes=getSettingValue('AAProfGroupes');
+
+			if(($AAProfTout=="yes")||($AAProfClasses=="yes")||($AAProfGroupes=="yes")){
+				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+				$titre[] = "Années antérieures";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+			}
+			elseif($AAProfPrinc=="yes"){
+				$sql="SELECT 1=1 FROM classes c,
+									j_eleves_professeurs jep
+							WHERE jep.professeur='".$_SESSION['login']."' AND
+									jep.id_classe=c.id
+									ORDER BY c.classe";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					$chemin[] = "/mod_annees_anterieures/index.php";
+					$titre[] = "Années antérieures";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			$AAScolTout=getSettingValue('AAScolTout');
+			$AAScolResp=getSettingValue('AAScolResp');
+
+			if($AAScolTout=="yes"){
+				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+				$titre[] = "Années antérieures";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+			}
+			elseif($AAScolResp=="yes"){
+				$sql="SELECT 1=1 FROM j_scol_classes jsc
+								WHERE jsc.login='".$_SESSION['login']."';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+					$titre[] = "Années antérieures";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='cpe') {
+			$AACpeTout=getSettingValue('AACpeTout');
+			$AACpeResp=getSettingValue('AACpeResp');
+
+			if($AACpeTout=="yes"){
+				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+				$titre[] = "Années antérieures";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+			}
+			elseif($AACpeResp=="yes"){
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+					$titre[] = "Années antérieures";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='responsable') {
+			$AAResponsable=getSettingValue('AAResponsable');
+
+			if($AAResponsable=="yes"){
+				// Est-ce que le responsable est bien associé à un élève?
+				$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND
+																					r.ele_id=e.ele_id AND
+																					rp.login='".$_SESSION['login']."'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+					$titre[] = "Années antérieures";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='eleve') {
+			$AAEleve=getSettingValue('AAEleve');
+
+			if($AAEleve=="yes"){
+				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
+				$titre[] = "Années antérieures";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+			}
+		}
+	}
+
+
+
+	$nb_ligne = count($chemin);
+	$affiche = 'no';
+	for ($i=0;$i<$nb_ligne;$i++) {
+		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	}
+	if ($affiche=='yes') {
+		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		echo "<table class='menu'>\n";
+		echo "<tr>\n";
+		echo "<th colspan='2'><img src='./images/icons/document.png' alt='Années antérieures' class='link'/> - Années antérieures</th>\n";
+		echo "</tr>\n";
+		for ($i=0;$i<$nb_ligne;$i++) {
+			affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+		}
+		echo "</table>\n";
+	}
+}
+// **********************************
+
+
+
 // Gestion des messages
 
 $chemin = array();

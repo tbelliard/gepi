@@ -93,10 +93,10 @@ if (isset($action) and ($action == 'upload'))  {
 if (isset($action) and ($action == 'sup'))  {
     if (isset($_GET['file']) && ($_GET['file']!='')) {
         if (@unlink("../backup/".$dirname."/".$_GET['file'])) {
-            $msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />";
+            $msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
         } else {
             $msg = "Un problème est survenu lors de la tentative de suppression du fichier <b>".$_GET['file']."</b>.<br />
-            Il s'agit peut-être un problème de droits sur le répertoire backup.<br />";
+            Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
         }
     }
 }
@@ -145,7 +145,7 @@ if (isset($action) and ($action == 'protect'))  {
 // Suppression de la protection
 if (isset($action) and ($action == 'del_protect'))  {
    if ((@unlink("../backup/".$dirname."/.htaccess")) and (@unlink("../backup/".$dirname."/.htpasswd"))) {
-       $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé";
+       $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé\n";
    }
 }
 
@@ -260,7 +260,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     global $TPSCOUR,$offsettable,$offsetrow,$cpt,$debug;
     $fileHandle = fopen($dumpFile, "a");
     if(!$fileHandle) {
-        echo "Ouverture de $dumpFile impossible<br />";
+        echo "Ouverture de $dumpFile impossible<br />\n";
         return FALSE;
     }
     if ($offsettable==0&&$offsetrow==-1){
@@ -281,7 +281,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $numtab++;
     }
     if (mysql_error()) {
-       echo "<hr /><font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysql_error()."<hr/>";
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysql_error()."<hr/>\n";
        return false;
        die();
     }
@@ -290,7 +290,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         // Dump de la strucutre table
         if ($offsetrow==-1){
             $todump = get_def($db,$tables[$offsettable]);
-            if (isset($debug)) echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />";
+            if (isset($debug)) echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />\n";
             fwrite($fileHandle,$todump);
             $offsetrow++;
             $cpt++;
@@ -298,7 +298,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
             return TRUE;
-        if (isset($debug)) echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>";
+        if (isset($debug)) echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>\n";
         $fin=0;
         while (!$fin){
             $todump = get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
@@ -310,14 +310,14 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
                 if ($rowtodump<$rowlimit) $fin=1;
                 current_time();
                 if ($duree>0 and $TPSCOUR>=$duree) {//on atteint la fin du temps imparti
-                    if (isset($debug)) echo "<br /><br /><b>Nombre de lignes actuellement dans le fichier : ".$cpt."</b><br />";
+                    if (isset($debug)) echo "<br /><br /><b>Nombre de lignes actuellement dans le fichier : ".$cpt."</b><br />\n";
                     return TRUE;
                 }
             } else {
                 $fin=1;$offsetrow=-1;
             }
         }
-        if (isset($debug)) echo "Pour cette table, nombre de lignes sauvegardées : ".$offsetrow."<br />";
+        if (isset($debug)) echo "Pour cette table, nombre de lignes sauvegardées : ".$offsetrow."<br />\n";
         if ($fin) $offsetrow=-1;
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
@@ -338,19 +338,19 @@ function restoreMySqlDump($dumpFile,$duree) {
     global $TPSCOUR,$offset,$cpt;
 
     if(!file_exists($dumpFile)) {
-         echo "$dumpFile non trouvé<br />";
+         echo "$dumpFile non trouvé<br />\n";
          return FALSE;
     }
     $fileHandle = gzopen($dumpFile, "rb");
 
     if(!$fileHandle) {
-        echo "Ouverture de $dumpFile impossible.<br />";
+        echo "Ouverture de $dumpFile impossible.<br />\n";
         return FALSE;
     }
 
     if ($offset!=0) {
         if (gzseek($fileHandle,$offset,SEEK_SET)!=0) { //erreur
-            echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br />";
+            echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br />\n";
             return FALSE;
         }
         //else
@@ -365,7 +365,7 @@ function restoreMySqlDump($dumpFile,$duree) {
             if ($old_offset == $offset) {
                 echo "<p align=\"center\"><b><font color=\"#FF0000\">La procédure de restauration ne peut pas continuer.
                 <br />Un problème est survenu lors du traitement d'une requête près de :.
-                <br />".$debut_req."</font></b></p><hr />";
+                <br />".$debut_req."</font></b></p><hr />\n";
                 return FALSE;
             }
             $old_offset = $offset;
@@ -405,7 +405,7 @@ function restoreMySqlDump($dumpFile,$duree) {
     }
 
     if (mysql_error())
-        echo "<hr />ERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />";
+        echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
 
     gzclose($fileHandle);
     $offset=-1;
@@ -489,40 +489,41 @@ require_once("../lib/header.inc");
 // Test d'écriture dans /backup
 $test_write = test_ecriture_backup();
 if ($test_write == 'no') {
-    echo "<h3 class='gepi'>Problème de droits d'accès :</h3>";
-    echo "<p>Le répertoire \"/backup\" n'est pas accessible en écriture.</p>";
-    echo "<P>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
-    Contactez l'administrateur technique afin de régler ce problème.</p>";
+    echo "<h3 class='gepi'>Problème de droits d'accès :</h3>\n";
+    echo "<p>Le répertoire \"/backup\" n'est pas accessible en écriture.</p>\n";
+    echo "<p>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
+    Contactez l'administrateur technique afin de régler ce problème.</p>\n";
     require("../lib/footer.inc.php");
     die();
 }
 
 if (!function_exists("gzwrite")) {
-    echo "<h3 class='gepi'>Problème de configuration :</h3>";
-    echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>";
-    echo "<P>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
-    Contactez l'administrateur technique afin de régler ce problème.</p>";
-    echo "</body></html>";
+    echo "<h3 class='gepi'>Problème de configuration :</h3>\n";
+    echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>\n";
+    echo "<p>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
+    Contactez l'administrateur technique afin de régler ce problème.</p>\n";
+    require("../lib/footer.inc.php");
     die();
 }
 
 // Confirmation de la restauration
 if (isset($action) and ($action == 'restaure_confirm'))  {
-    echo "<h3>Confirmation de la restauration de la base</h3>";
-    echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b>";
+    echo "<h3>Confirmation de la restauration de la base</h3>\n";
+    echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b>\n";
     echo "<p><b>ATTENTION :</b> La procédure de restauration de la base est <b>irréversible</b>. Le fichier de restauration doit être valide. Selon le contenu de ce fichier, tout ou partie de la structure actuelle de la base ainsi que des données existantes peuvent être supprimées et remplacées par la structure et les données présentes dans le fichier.
-    <br /><br /><b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>";
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
-    echo "<center><table cellpadding=\"5\" cellspacing=\"5\" border=\"0\"><tr><td>";
-    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>";
-    echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Oui' />";
-    echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />";
-    echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />";
-    echo "</FORM>";
-    echo "</td><td>";
-    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>";
-    echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Non' /></form></td></tr></table></center>";
-    echo "</body></html>";
+    <br /><br />\n<b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>\n";
+    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
+
+    echo "<center><table cellpadding=\"5\" cellspacing=\"5\" border=\"0\">\n<tr><td>\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
+    echo "<input type='submit' name='confirm' value = 'Oui' />\n";
+    echo "<input type=\"hidden\" name=\"action\" value=\"restaure\" />\n";
+    echo "<input type=\"hidden\" name=\"file\" value=\"".$_GET['file']."\" />\n";
+    echo "</form>\n";
+    echo "</td>\n<td>\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_non>\n";
+    echo "<input type='submit' name='confirm' value = 'Non' />\n</form>\n</td></tr>\n</table>\n</center>\n";
+    require("../lib/footer.inc.php");
     die();
 }
 
@@ -548,21 +549,21 @@ if (isset($action) and ($action == 'restaure'))  {
 
     if ($percent >= 0) {
         $percentwitdh=$percent*4;
-        echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
+        echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
     }
     flush();
     if ($offset!=-1) {
         if (restoreMySqlDump($path.$file,$duree)) {
-            if (isset($debug)) echo "<br /><b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a> pour poursuivre la restauration</b>";
-            if (!isset($debug))  echo "<br /><b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a></b>";
-            if (!isset($debug))  echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\";</script>";
+            if (isset($debug)) echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a> pour poursuivre la restauration</b>\n";
+            if (!isset($debug))  echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\">ici</a></b>\n";
+            if (!isset($debug))  echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path\";</script>\n";
             flush();
             exit;
         }
     } else {
 
-        echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>";
-        echo "</body></html>";
+        echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+		require("../lib/footer.inc.php");
         die();
     }
 }
@@ -582,7 +583,7 @@ if (isset($action) and ($action == 'dump'))  {
     $filename=$path.$nomsql.".".$filetype;
 
     if (!isset($_GET["duree"])&&is_file($filename)){
-        echo "<font color=\"#FF0000\"><center><b>Le fichier existe déjà. Patientez une minute avant de retenter la sauvegarde.</b></center></font><hr />";
+        echo "<font color=\"#FF0000\"><center><b>Le fichier existe déjà. Patientez une minute avant de retenter la sauvegarde.</b></center></font>\n<hr />\n";
     } else {
         init_time(); //initialise le temps
         //début de fichier
@@ -614,17 +615,17 @@ if (isset($action) and ($action == 'dump'))  {
 
         if ($percent >= 0) {
             $percentwitdh=$percent*4;
-            echo "<div align='center'><table width=\"400\" border=\"0\">
+            echo "<div align='center'>\n<table width=\"400\" border=\"0\">
             <tr><td width='400' align='center'><b>Sauvegarde en cours</b><br/>
             <br/>A la fin de la sauvegarde, Gepi vous proposera automatiquement de télécharger le fichier.
-            <br/><br/>Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
+            <br/><br/>Progression ".$percent."%</td></tr>\n<tr><td>\n<table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table>\n</td></tr>\n</table>\n</div>\n";
         }
         flush();
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
-                if (isset($debug)) echo "<br /><b>Cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a> pour poursuivre la sauvegarde.</b>";
-                if (!isset($debug))    echo "<br /><b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a></b>";
-                if (!isset($debug))    echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\";</script>";
+                if (isset($debug)) echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a> pour poursuivre la sauvegarde.</b>\n";
+                if (!isset($debug))    echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\">ici</a></b>\n";
+                if (!isset($debug))    echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path\";</script>\n";
                 flush();
                 exit;
            }
@@ -636,7 +637,7 @@ if (isset($action) and ($action == 'dump'))  {
 			}
 			@unlink($fichier);
 
-            echo "<div align='center'><p>Sauvegarde Terminée.<br/>\n";
+            echo "<div align='center'><p>Sauvegarde Terminée.<br />\n";
 
 			//$nomsql.$filetype
 			$handle=opendir($path);
@@ -718,42 +719,54 @@ if (isset($action) and ($action == 'system_dump'))  {
 
 	$exec = exec($command);
 	if (filesize($filename) > 10000) {
-		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>";
+		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
 	} else {
-		echo "<center><p style='color: red; font-weight: bold;'>Erreur lors de la sauvegarde.</p></center>";
+		echo "<center><p style='color: red; font-weight: bold;'>Erreur lors de la sauvegarde.</p></center>\n";
 	}
 }
 
 
-?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b><?php
+?><b><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></b>
+<?php
 // Test présence de fichiers htaccess
 if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../backup/".$dirname."/.htpasswd"))) {
-    echo "<h3 class='gepi'>Répertoire backup non protégé :</h3>";
+    echo "<h3 class='gepi'>Répertoire backup non protégé :</h3>\n";
     echo "<p><font color=\"#FF0000\"><b>Le répertoire \"/backup\" n'est actuellement pas protégé</b></font>.
-    Si vous stockez des fichiers dans ce répertoire, ils seront accessibles de l'extérieur à l'aide d'un simple navigateur.</p>";
+    Si vous stockez des fichiers dans ce répertoire, ils seront accessibles de l'extérieur à l'aide d'un simple navigateur.</p>\n";
     echo "<form action=\"accueil_sauve.php\" name=\"protect\" method=\"post\">\n";
-    echo "<table><tr><td>Nouvel identifiant : </td><td><input type=\"text\" name=\"login_backup\" value=\"\" size=\"20\" /></td></tr>";
-    echo "<tr><td>Nouveau mot de passe : </td><td><input type=\"password\" name=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>";
-    echo "<tr><td>Confirmation du mot de passe : </td><td><input type=\"password\" name=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>";
+    echo "<table><tr><td>Nouvel identifiant : </td><td><input type=\"text\" name=\"login_backup\" value=\"\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td>Nouveau mot de passe : </td><td><input type=\"password\" name=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td>Confirmation du mot de passe : </td><td><input type=\"password\" name=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>\n";
 
-    echo "<p align=\"center\"><input type=\"submit\" Value=\"Envoyer\" /></p>";
-    echo "<input type=\"hidden\" name=\"action\" value=\"protect\" />";
+    echo "<p align=\"center\"><input type=\"submit\" Value=\"Envoyer\" /></p>\n";
+    echo "<input type=\"hidden\" name=\"action\" value=\"protect\" />\n";
     echo "</form>\n";
-    echo "<hr />";
+    echo "<hr />\n";
 } else {
-    echo " | <a href='#' onClick=\"clicMenu('2')\" style=\"cursor: hand\"><b>Protection du répertoire backup</b></a>";
-    echo "<div style=\"display:none\" id=\"menu2\">";
-    echo "<table border=\"1\" cellpadding=\"5\" bgcolor=\"#C0C0C0\"><tr><td>
-    <h3 class='gepi'>Protection du répertoire backup :</h3>";
-    echo "<p>Le répertoire \"/backup\" est actuellement protégé par un identifiant et un mot de passe.
-    Pour accéder aux fichiers stockés dans ce répertoire à partir d'un navigateur web, il est nécessaire de s'authentifier.
-    <br /><br />Cliquez sur le bouton ci-dessous pour <b>supprimer la protection</b>
-    ou bien pour définir un nouvel <b>identifiant et un mot de passe</b></p>";
-    echo "<form action=\"accueil_sauve.php\" name=\"del_protect\" method=\"post\">\n";
-    echo "<p align=\"center\"><input type=\"submit\" Value=\"Modifier/supprimer la protection du répertoire\" /></p>";
-    echo "<input type=\"hidden\" name=\"action\" value=\"del_protect\" />";
-    echo "</form></tr></td></table>\n";
-    echo "<hr /></div>";
+    echo " | <a href='#' onClick=\"clicMenu('2')\" style=\"cursor: hand\"><b>Protection du répertoire backup</b></a>\n";
+    echo "<div style=\"display:none\" id=\"menu2\">\n";
+
+    echo "<table border=\"1\" cellpadding=\"5\" bgcolor=\"#C0C0C0\">
+	<tr>
+		<td>
+			<h3 class='gepi'>Protection du répertoire backup :</h3>\n";
+    echo "
+			<p>Le répertoire \"/backup\" est actuellement protégé par un identifiant et un mot de passe.
+			Pour accéder aux fichiers stockés dans ce répertoire à partir d'un navigateur web, il est nécessaire de s'authentifier.
+			<br /><br />Cliquez sur le bouton ci-dessous pour <b>supprimer la protection</b>
+			ou bien pour définir un nouvel <b>identifiant et un mot de passe</b></p>\n";
+    echo "
+			<form action=\"accueil_sauve.php\" name=\"del_protect\" method=\"post\">\n";
+    echo "
+			<p align=\"center\"><input type=\"submit\" Value=\"Modifier/supprimer la protection du répertoire\" /></p>\n";
+    echo "
+			<input type=\"hidden\" name=\"action\" value=\"del_protect\" />\n";
+    echo "
+			</form>
+		</td>
+	</tr>
+</table>\n";
+    echo "<hr /></div>\n";
 }
 
 ?>
@@ -815,42 +828,42 @@ closedir($handle);
 arsort($tab_file);
 
 if ($n > 0) {
-    echo "<h3>Fichiers de restauration</h3>";
-    echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.";
-    echo "<center><table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+    echo "<h3>Fichiers de restauration</h3>\n";
+    echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
+    echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
     $m = 0;
     foreach($tab_file as $value) {
-        echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>";
-        echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>";
-        echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>";
-        echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>";
-        echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>";
+        echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
+        echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>\n";
+        echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
+        echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
+        echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
         echo "</tr>\n";
         $m++;
     }
     clearstatcache();
-    echo "</table></center><hr />";
+    echo "</table>\n</center>\n<hr />\n";
 }
 
-echo "<h3>Uploader un fichier (de restauration) vers le répertoire backup</h3>";
-echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire2\">";
+echo "<h3>Uploader un fichier (de restauration) vers le répertoire backup</h3>\n";
+echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire2\">\n";
 $sav_file="";
 echo "Les fichiers de sauvegarde sont sauvegardés dans un sous-répertoire du répertoire \"/backup\", dont le nom change de manière aléatoire régulièrement.
 Si vous le souhaitez, vous pouvez uploader un fichier de sauvegarde directement dans ce répertoire.
-Une fois cela fait, vous pourrez le sélectionner dans la liste des fichiers de restauration, sur cette page.";
+Une fois cela fait, vous pourrez le sélectionner dans la liste des fichiers de restauration, sur cette page.\n";
 /*
 echo "<br />Selon la configuration du serveur et la taille du fichier, l'opération de téléchargement vers le répertoire \"/backup\" peut échouer
 (par exemple si la taille du fichier dépasse la <b>taille maximale autorisée lors des téléchargements</b>).
 <br />Si c'est le cas, signalez le problème à l'administrateur du serveur.
 <br /><br />Vous pouvez également directement télécharger le fichier par ftp dans le répertoire \"/backup\".";
 */
-echo "<br />Vous pouvez également directement télécharger le fichier par ftp dans le répertoire \"/backup\".";
+echo "<br />Vous pouvez également directement télécharger le fichier par ftp dans le répertoire \"/backup\".\n";
 
 echo "<br /><br /><b>Fichier à \"uploader\" </b>: <INPUT TYPE=FILE NAME=\"sav_file\" />
 <INPUT TYPE=\"HIDDEN\" name=\"action\" value=\"upload\" />
 <INPUT type=\"submit\" value=\"Valider\" name=\"bouton1\" />
 </form>
-<br />";
+<br />\n";
 
 $post_max_size=ini_get('post_max_size');
 $upload_max_filesize=ini_get('upload_max_filesize');
