@@ -239,6 +239,7 @@
 						$vide_table = mysql_query($sql);
 
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
+						/*
 						$fp=fopen($dest_file,"r");
 						if($fp){
 							echo "<p>Lecture du fichier Elèves...<br />\n";
@@ -249,146 +250,170 @@
 							fclose($fp);
 							//echo "<p>Terminé.</p>\n";
 						}
+						*/
 
-						// On commence par la section STRUCTURES pour ne récupérer que les ELE_ID d'élèves qui sont dans une classe.
-						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+						$fp=fopen($dest_file,"r");
+						if($fp){
+							// On commence par la section STRUCTURES pour ne récupérer que les ELE_ID d'élèves qui sont dans une classe.
+							echo "<p>\n";
+							echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
 
-						// PARTIE <STRUCTURES>
-						$cpt=0;
-						$eleves=array();
-						$temoin_structures=0;
-						$temoin_struct_ele=-1;
-						$temoin_struct=-1;
-						$i=-1;
-						while($cpt<count($ligne)){
-							if(strstr($ligne[$cpt],"<STRUCTURES>")){
-								echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								$temoin_structures++;
-							}
-							if(strstr($ligne[$cpt],"</STRUCTURES>")){
-								echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								$temoin_structures++;
-								break;
-							}
-							if($temoin_structures==1){
-								if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
-									$i++;
-									$eleves[$i]=array();
+							// PARTIE <STRUCTURES>
+							$cpt=0;
+							$eleves=array();
+							$temoin_structures=0;
+							$temoin_struct_ele=-1;
+							$temoin_struct=-1;
+							$i=-1;
+							//while($cpt<count($ligne)){
+							while(!feof($fp)){
+								$ligne=fgets($fp,4096);
 
-									//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-									unset($tabtmp);
-									$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-									//$tmp_eleve_id=trim($tabtmp[1]);
-									$eleves[$i]['eleve_id']=trim($tabtmp[1]);
+								//if(strstr($ligne[$cpt],"<STRUCTURES>")){
+								if(strstr($ligne,"<STRUCTURES>")){
+									echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									$temoin_structures++;
+								}
+								//if(strstr($ligne[$cpt],"</STRUCTURES>")){
+								if(strstr($ligne,"</STRUCTURES>")){
+									echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									$temoin_structures++;
+									break;
+								}
+								if($temoin_structures==1){
+									//if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
+									if(strstr($ligne,"<STRUCTURES_ELEVE ")){
+										$i++;
+										$eleves[$i]=array();
 
-									/*
-									// Recherche du $i de $eleves[$i] correspondant:
-									$temoin_ident="non";
-									for($i=0;$i<count($eleves);$i++){
-										if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
-											$temoin_ident="oui";
-											break;
-										}
-									}
-									if($temoin_ident!="oui"){
+										//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
 										unset($tabtmp);
-										$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-										$tmp_elenoet=trim($tabtmp[1]);
+										//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+										$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
+										//$tmp_eleve_id=trim($tabtmp[1]);
+										$eleves[$i]['eleve_id']=trim($tabtmp[1]);
 
+										/*
+										// Recherche du $i de $eleves[$i] correspondant:
+										$temoin_ident="non";
 										for($i=0;$i<count($eleves);$i++){
-											if($eleves[$i]["elenoet"]==$tmp_elenoet){
+											if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
 												$temoin_ident="oui";
 												break;
 											}
 										}
-									}
-									if($temoin_ident=="oui"){
-									*/
-										$eleves[$i]["structures"]=array();
-										$j=0;
-										$temoin_struct_ele=1;
-									//}
-								}
-								if(strstr($ligne[$cpt],"</STRUCTURES_ELEVE>")){
-									$temoin_struct_ele=0;
-								}
-								if($temoin_struct_ele==1){
-									if(strstr($ligne[$cpt],"<STRUCTURE>")){
-										$eleves[$i]["structures"][$j]=array();
-										$temoin_struct=1;
-									}
-									if(strstr($ligne[$cpt],"</STRUCTURE>")){
-										$j++;
-										$temoin_struct=0;
-									}
+										if($temoin_ident!="oui"){
+											unset($tabtmp);
+											$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+											$tmp_elenoet=trim($tabtmp[1]);
 
-									$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
-									if($temoin_struct==1){
-										for($loop=0;$loop<count($tab_champs_struct);$loop++){
-											if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
-												$tmpmin=strtolower($tab_champs_struct[$loop]);
-												$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
-												break;
+											for($i=0;$i<count($eleves);$i++){
+												if($eleves[$i]["elenoet"]==$tmp_elenoet){
+													$temoin_ident="oui";
+													break;
+												}
+											}
+										}
+										if($temoin_ident=="oui"){
+										*/
+											$eleves[$i]["structures"]=array();
+											$j=0;
+											$temoin_struct_ele=1;
+										//}
+									}
+									//if(strstr($ligne[$cpt],"</STRUCTURES_ELEVE>")){
+									if(strstr($ligne,"</STRUCTURES_ELEVE>")){
+										$temoin_struct_ele=0;
+									}
+									if($temoin_struct_ele==1){
+										//if(strstr($ligne[$cpt],"<STRUCTURE>")){
+										if(strstr($ligne,"<STRUCTURE>")){
+											$eleves[$i]["structures"][$j]=array();
+											$temoin_struct=1;
+										}
+										//if(strstr($ligne[$cpt],"</STRUCTURE>")){
+										if(strstr($ligne,"</STRUCTURE>")){
+											$j++;
+											$temoin_struct=0;
+										}
+
+										$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
+										if($temoin_struct==1){
+											for($loop=0;$loop<count($tab_champs_struct);$loop++){
+												//if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
+												if(strstr($ligne,"<".$tab_champs_struct[$loop].">")){
+													$tmpmin=strtolower($tab_champs_struct[$loop]);
+													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+													$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
+													//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
+													break;
+												}
 											}
 										}
 									}
 								}
+								$cpt++;
 							}
-							$cpt++;
-						}
+							fclose($fp);
 
-						$nb_err=0;
-						// $cpt: Identifiant id_tempo
-						$id_tempo=1;
-						for($i=0;$i<count($eleves);$i++){
+							$nb_err=0;
+							// $cpt: Identifiant id_tempo
+							$id_tempo=1;
+							for($i=0;$i<count($eleves);$i++){
 
-							$temoin_div_trouvee="";
-							if(isset($eleves[$i]["structures"])){
-								if(count($eleves[$i]["structures"])>0){
-									for($j=0;$j<count($eleves[$i]["structures"]);$j++){
-										if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
-											$temoin_div_trouvee="oui";
-											break;
+								$temoin_div_trouvee="";
+								if(isset($eleves[$i]["structures"])){
+									if(count($eleves[$i]["structures"])>0){
+										for($j=0;$j<count($eleves[$i]["structures"]);$j++){
+											if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
+												$temoin_div_trouvee="oui";
+												break;
+											}
+										}
+										if($temoin_div_trouvee!=""){
+											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 										}
 									}
-									if($temoin_div_trouvee!=""){
-										$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
-									}
 								}
+
+								if($temoin_div_trouvee=='oui'){
+									$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
+									$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
+									$sql.="divcod='".$eleves[$i]['classe']."';";
+									//echo "$sql<br />\n";
+									$res_insert=mysql_query($sql);
+									if(!$res_insert){
+										echo "Erreur lors de la requête $sql<br />\n";
+										$nb_err++;
+									}
+									$id_tempo++;
+								}
+							}
+							if($nb_err==0) {
+								echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							}
+							elseif($nb_err==1) {
+								echo "<p>$nb_err erreur.</p>\n";
+							}
+							else{
+								echo "<p>$nb_err erreurs</p>\n";
 							}
 
-							if($temoin_div_trouvee=='oui'){
-								$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
-								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
-								$sql.="divcod='".$eleves[$i]['classe']."';";
-								//echo "$sql<br />\n";
-								$res_insert=mysql_query($sql);
-								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
-									$nb_err++;
-								}
-								$id_tempo++;
-							}
-						}
-						if($nb_err==0) {
-							echo "<p>La première phase s'est passée sans erreur.</p>\n";
-						}
-						elseif($nb_err==1) {
-							echo "<p>$nb_err erreur.</p>\n";
+							$stat=$id_tempo-1-$nb_err;
+							echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
+
+							//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
+							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
+
+							require("../lib/footer.inc.php");
+							die();
 						}
 						else{
-							echo "<p>$nb_err erreurs</p>\n";
+							echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture...</p>\n";
+
+							require("../lib/footer.inc.php");
+							die();
 						}
-
-						$stat=$id_tempo-1-$nb_err;
-						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
-
-						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
-
-						require("../lib/footer.inc.php");
-						die();
 					}
 				}
 			} // Fin du $step=0
@@ -419,6 +444,7 @@
 						$cpt++;
 					}
 
+					/*
 					echo "<p>Lecture du fichier Elèves...<br />\n";
 					//echo "<blockquote>\n";
 					while(!feof($fp)){
@@ -426,7 +452,7 @@
 					}
 					fclose($fp);
 					//echo "<p>Terminé.</p>\n";
-
+					*/
 
 					echo "Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
 					//echo "<blockquote>\n";
@@ -469,53 +495,65 @@
 					);
 
 					// PARTIE <ELEVES>
-					while($cpt<count($ligne)){
+					//while($cpt<count($ligne)){
+					while(!feof($fp)){
+						$ligne=fgets($fp,4096);
 						//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
-						if(strstr($ligne[$cpt],"<ELEVES>")){
+						//if(strstr($ligne[$cpt],"<ELEVES>")){
+						if(strstr($ligne,"<ELEVES>")){
 							echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_eleves++;
 						}
-						if(strstr($ligne[$cpt],"</ELEVES>")){
+						//if(strstr($ligne[$cpt],"</ELEVES>")){
+						if(strstr($ligne,"</ELEVES>")){
 							echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_eleves++;
 							break;
 						}
 						if($temoin_eleves==1){
-							if(strstr($ligne[$cpt],"<ELEVE ")){
+							//if(strstr($ligne[$cpt],"<ELEVE ")){
+							if(strstr($ligne,"<ELEVE ")){
 								$i++;
 								$eleves[$i]=array();
 								$eleves[$i]["scolarite_an_dernier"]=array();
 
 								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
 								unset($tabtmp);
-								$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+								$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
 								$eleves[$i]["eleve_id"]=trim($tabtmp[1]);
 								affiche_debug("\$eleves[$i][\"eleve_id\"]=".$eleves[$i]["eleve_id"]."<br />\n");
 
 								unset($tabtmp);
-								$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
+								$tabtmp=explode('"',strstr($ligne," ELENOET="));
 								$eleves[$i]["elenoet"]=trim($tabtmp[1]);
 								//echo "\$eleves[$i][\"elenoet\"]=".$eleves[$i]["elenoet"]."<br />\n";
 								$temoin_ele=1;
 							}
-							if(strstr($ligne[$cpt],"</ELEVE>")){
+							//if(strstr($ligne[$cpt],"</ELEVE>")){
+							if(strstr($ligne,"</ELEVE>")){
 								$temoin_ele=0;
 							}
 							if($temoin_ele==1){
-								if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
+								//if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
+								if(strstr($ligne,"<SCOLARITE_AN_DERNIER>")){
 									$temoin_scol=1;
 								}
-								if(strstr($ligne[$cpt],"</SCOLARITE_AN_DERNIER>")){
+								//if(strstr($ligne[$cpt],"</SCOLARITE_AN_DERNIER>")){
+								if(strstr($ligne,"</SCOLARITE_AN_DERNIER>")){
 									$temoin_scol=0;
 								}
 
 								if($temoin_scol==0){
 									for($loop=0;$loop<count($tab_champs_eleve);$loop++){
-										if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
+										//if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
+										if(strstr($ligne,"<".$tab_champs_eleve[$loop].">")){
 											$tmpmin=strtolower($tab_champs_eleve[$loop]);
-											$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
 											affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -555,10 +593,12 @@
 									//echo "$i - ";
 									//$eleves[$i]["scolarite_an_dernier"]=array();
 									for($loop=0;$loop<count($tab_champs_scol_an_dernier);$loop++){
-										if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
+										//if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
+										if(strstr($ligne,"<".$tab_champs_scol_an_dernier[$loop].">")){
 											//echo "$i - ";
 											$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
-											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
 											affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -576,6 +616,7 @@
 						}
 						$cpt++;
 					}
+					fclose($fp);
 					echo "</p>\n";
 					flush();
 
@@ -661,6 +702,7 @@
 						$cpt++;
 					}
 
+					/*
 					echo "<p>Lecture du fichier Elèves...<br />\n";
 					//echo "<blockquote>\n";
 					while(!feof($fp)){
@@ -668,9 +710,10 @@
 					}
 					fclose($fp);
 					//echo "<p>Terminé.</p>\n";
+					*/
 					flush();
 
-
+					echo "<p>";
 					echo "Analyse du fichier pour extraire les informations de la section OPTIONS...<br />\n";
 					//echo "<blockquote>\n";
 
@@ -678,29 +721,36 @@
 					$cpt=0;
 					$eleves=array();
 					$i=-1;
+					$temoin_options=0;
 					$temoin_opt="";
 					$temoin_opt_ele="";
 					$cpt=0;
-					while($cpt<count($ligne)){
-						if(strstr($ligne[$cpt],"<OPTIONS>")){
+					//while($cpt<count($ligne)){
+					while(!feof($fp)){
+						$ligne=fgets($fp,4096);
+						//if(strstr($ligne[$cpt],"<OPTIONS>")){
+						if(strstr($ligne,"<OPTIONS>")){
 							echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_options++;
 						}
-						if(strstr($ligne[$cpt],"</OPTIONS>")){
+						//if(strstr($ligne[$cpt],"</OPTIONS>")){
+						if(strstr($ligne,"</OPTIONS>")){
 							echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_options++;
 							break;
 						}
 						if($temoin_options==1){
-							if(strstr($ligne[$cpt],"<OPTION ")){
+							//if(strstr($ligne[$cpt],"<OPTION ")){
+							if(strstr($ligne,"<OPTION ")){
 								$i++;
 								$eleves[$i]=array();
 
 								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
 								unset($tabtmp);
-								$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
+								$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
 								//$tmp_eleve_id=trim($tabtmp[1]);
 								$eleves[$i]['eleve_id']=trim($tabtmp[1]);
 
@@ -732,16 +782,19 @@
 									$temoin_opt=1;
 								//}
 							}
-							if(strstr($ligne[$cpt],"</OPTION>")){
+							//if(strstr($ligne[$cpt],"</OPTION>")){
+							if(strstr($ligne,"</OPTION>")){
 								$temoin_opt=0;
 							}
 							if($temoin_opt==1){
 							//if(($temoin_opt==1)&&($temoin_ident=="oui")){
-								if(strstr($ligne[$cpt],"<OPTIONS_ELEVE>")){
+								//if(strstr($ligne[$cpt],"<OPTIONS_ELEVE>")){
+								if(strstr($ligne,"<OPTIONS_ELEVE>")){
 									$eleves[$i]["options"][$j]=array();
 									$temoin_opt_ele=1;
 								}
-								if(strstr($ligne[$cpt],"</OPTIONS_ELEVE>")){
+								//if(strstr($ligne[$cpt],"</OPTIONS_ELEVE>")){
+								if(strstr($ligne,"</OPTIONS_ELEVE>")){
 									$j++;
 									$temoin_opt_ele=0;
 								}
@@ -749,9 +802,11 @@
 								$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
 								if($temoin_opt_ele==1){
 									for($loop=0;$loop<count($tab_champs_opt);$loop++){
-										if(strstr($ligne[$cpt],"<".$tab_champs_opt[$loop].">")){
+										//if(strstr($ligne[$cpt],"<".$tab_champs_opt[$loop].">")){
+										if(strstr($ligne,"<".$tab_champs_opt[$loop].">")){
 											$tmpmin=strtolower($tab_champs_opt[$loop]);
-											$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
 											//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 											break;
 										}
@@ -761,6 +816,7 @@
 						}
 						$cpt++;
 					}
+					fclose($fp);
 
 
 					// Insertion des codes numériques d'options
@@ -811,7 +867,7 @@
 				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
 				echo "<input type=\"file\" size=\"80\" name=\"nomenclature_xml_file\" /><br />\n";
-				echo "<input type='hidden' name='etape' value='$etape' />\n";
+				//echo "<input type='hidden' name='etape' value='$etape' />\n";
 				echo "<input type='hidden' name='step' value='4' />\n";
 				echo "<input type='hidden' name='is_posted' value='yes' />\n";
 				//echo "</p>\n";
@@ -887,6 +943,7 @@
 							die();
 						}
 
+						/*
 						echo "<p>Lecture du fichier Nomenclature...<br />\n";
 						//echo "<blockquote>\n";
 						while(!feof($fp)){
@@ -894,9 +951,10 @@
 						}
 						fclose($fp);
 						//echo "<p>Terminé.</p>\n";
+						*/
 						flush();
 
-
+						echo "<p>";
 						echo "Analyse du fichier pour extraire les associations CODE_MATIERE/CODE_GESTION...<br />\n";
 
 						$matieres=array();
@@ -915,40 +973,52 @@
 						$i=-1;
 						// Compteur de lignes du fichier:
 						$cpt=0;
-						while($cpt<count($ligne)){
+						$fp=fopen($dest_file,"r");
+						//while($cpt<count($ligne)){
+						while(!feof($fp)){
+							$ligne=fgets($fp,4096);
 							//echo htmlentities($ligne[$cpt])."<br />\n";
 
-							if(strstr($ligne[$cpt],"<MATIERES>")){
+							//if(strstr($ligne[$cpt],"<MATIERES>")){
+							if(strstr($ligne,"<MATIERES>")){
 								echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 								flush();
 								$temoin_matieres++;
 							}
-							if(strstr($ligne[$cpt],"</MATIERES>")){
+							//if(strstr($ligne[$cpt],"</MATIERES>")){
+							if(strstr($ligne,"</MATIERES>")){
 								echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 								flush();
 								$temoin_matieres++;
 								break;
 							}
 							if($temoin_matieres==1){
-								if(strstr($ligne[$cpt],"<MATIERE ")){
+								//if(strstr($ligne[$cpt],"<MATIERE ")){
+								if(strstr($ligne,"<MATIERE ")){
 									$i++;
 									$matieres[$i]=array();
 
-									affiche_debug("<p><b>".htmlentities($ligne[$cpt])."</b><br />\n");
+									//affiche_debug("<p><b>".htmlentities($ligne[$cpt])."</b><br />\n");
+									affiche_debug("<p><b>".htmlentities($ligne)."</b><br />\n");
 									unset($tabtmp);
-									$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+									//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+									$tabtmp=explode('"',strstr($ligne," CODE_MATIERE="));
 									$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
-									affiche_debug("\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n");
+									//affiche_debug("\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n");
+									affiche_debug("\$matieres[$i][\"code_matiere\"]=".$matieres[$i]["code_matiere"]."<br />\n");
 									$temoin_mat=1;
 								}
-								if(strstr($ligne[$cpt],"</MATIERE>")){
+								//if(strstr($ligne[$cpt],"</MATIERE>")){
+								if(strstr($ligne,"</MATIERE>")){
 									$temoin_mat=0;
 								}
 								if($temoin_mat==1){
 									for($loop=0;$loop<count($tab_champs_matiere);$loop++){
-										if(strstr($ligne[$cpt],"<".$tab_champs_matiere[$loop].">")){
+										//if(strstr($ligne[$cpt],"<".$tab_champs_matiere[$loop].">")){
+										if(strstr($ligne,"<".$tab_champs_matiere[$loop].">")){
 											$tmpmin=strtolower($tab_champs_matiere[$loop]);
-											$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+											$matieres[$i]["$tmpmin"]=extr_valeur($ligne);
 											affiche_debug("\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n");
 											break;
 										}

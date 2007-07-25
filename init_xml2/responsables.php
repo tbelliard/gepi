@@ -11,11 +11,11 @@
 	// Resume session
 	$resultat_session = resumeSession();
 	if ($resultat_session == 'c') {
-	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-	die();
+		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+		die();
 	} else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
-	die();
+		header("Location: ../logout.php?auto=1");
+		die();
 	};
 
 	if (!checkAccess()) {
@@ -309,6 +309,7 @@
 						$sql="TRUNCATE TABLE resp_pers;";
 						$vide_table = mysql_query($sql);
 
+						/*
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 						$fp=fopen($dest_file,"r");
 						if($fp){
@@ -320,6 +321,7 @@
 							fclose($fp);
 							//echo "<p>Terminé.</p>\n";
 						}
+						*/
 						flush();
 
 						echo "<p>Analyse du fichier pour extraire les informations de la section PERSONNES...<br />\n";
@@ -346,106 +348,145 @@
 						$i=-1;
 						// Compteur de lignes du fichier:
 						$cpt=0;
-						while($cpt<count($ligne)){
-							//echo htmlentities($ligne[$cpt])."<br />\n";
+						//while($cpt<count($ligne)){
+						$fp=fopen($dest_file,"r");
+						if($fp){
+							while(!feof($fp)){
+								$ligne=fgets($fp,4096);
 
-							if(strstr($ligne[$cpt],"<PERSONNES>")){
-								echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_personnes++;
-							}
-							if(strstr($ligne[$cpt],"</PERSONNES>")){
-								echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_personnes++;
-								break;
-							}
-							if($temoin_personnes==1){
-								if(strstr($ligne[$cpt],"<PERSONNE ")){
-									$i++;
-									$personnes[$i]=array();
+								//echo htmlentities($ligne[$cpt])."<br />\n";
 
-									//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-									unset($tabtmp);
-									$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
-									//$personnes[$i]["personne_id"]=trim($tabtmp[1]);
-									$personnes[$i]["personne_id"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[1])));
-									affiche_debug("\$personnes[$i][\"personne_id\"]=".$personnes[$i]["personne_id"]."<br />\n");
-									$temoin_pers=1;
+								//if(strstr($ligne[$cpt],"<PERSONNES>")){
+								if(strstr($ligne,"<PERSONNES>")){
+									echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									flush();
+									$temoin_personnes++;
 								}
-								if(strstr($ligne[$cpt],"</PERSONNE>")){
-									$temoin_pers=0;
+								//if(strstr($ligne[$cpt],"</PERSONNES>")){
+								if(strstr($ligne,"</PERSONNES>")){
+									echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									flush();
+									$temoin_personnes++;
+									break;
 								}
-								if($temoin_pers==1){
-									for($loop=0;$loop<count($tab_champs_personne);$loop++){
-										if(strstr($ligne[$cpt],"<".$tab_champs_personne[$loop].">")){
-											$tmpmin=strtolower($tab_champs_personne[$loop]);
-											//$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-											affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
-											break;
+								if($temoin_personnes==1){
+									//if(strstr($ligne[$cpt],"<PERSONNE ")){
+									if(strstr($ligne,"<PERSONNE ")){
+										$i++;
+										$personnes[$i]=array();
+
+										//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+										unset($tabtmp);
+										//$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
+										$tabtmp=explode('"',strstr($ligne," PERSONNE_ID="));
+										//$personnes[$i]["personne_id"]=trim($tabtmp[1]);
+										$personnes[$i]["personne_id"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[1])));
+										affiche_debug("\$personnes[$i][\"personne_id\"]=".$personnes[$i]["personne_id"]."<br />\n");
+										$temoin_pers=1;
+									}
+									//if(strstr($ligne[$cpt],"</PERSONNE>")){
+									if(strstr($ligne,"</PERSONNE>")){
+										$temoin_pers=0;
+									}
+									if($temoin_pers==1){
+										for($loop=0;$loop<count($tab_champs_personne);$loop++){
+											//if(strstr($ligne[$cpt],"<".$tab_champs_personne[$loop].">")){
+											if(strstr($ligne,"<".$tab_champs_personne[$loop].">")){
+												$tmpmin=strtolower($tab_champs_personne[$loop]);
+												//$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
+												//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
+												$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+												affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
+												break;
+											}
 										}
 									}
 								}
+								$cpt++;
 							}
-							$cpt++;
-						}
+							fclose($fp);
 
-						//traitement_magic_quotes(corriger_caracteres())
-						$nb_err=0;
-						$stat=0;
-						$i=0;
-						while($i<count($personnes)){
-							//$sql="INSERT INTO temp_resp_pers_import SET ";
-							$sql="INSERT INTO resp_pers SET ";
-							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-							$sql.="nom='".$personnes[$i]["nom"]."', ";
-							$sql.="prenom='".$personnes[$i]["prenom"]."', ";
-							$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
-							$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
-							$sql.="tel_port='".$personnes[$i]["tel_portable"]."', ";
-							$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
-							$sql.="mel='".$personnes[$i]["mel"]."', ";
-							$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
-							affiche_debug("$sql<br />\n");
-							$res_insert=mysql_query($sql);
-							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
-								flush();
-								$nb_err++;
+							//traitement_magic_quotes(corriger_caracteres())
+							$nb_err=0;
+							$stat=0;
+							$i=0;
+							while($i<count($personnes)){
+								//$sql="INSERT INTO temp_resp_pers_import SET ";
+								$sql="INSERT INTO resp_pers SET ";
+								$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
+								$sql.="nom='".$personnes[$i]["nom"]."', ";
+								$sql.="prenom='".$personnes[$i]["prenom"]."', ";
+								if(isset($personnes[$i]["lc_civilite"])){
+									$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+								}
+								if(isset($personnes[$i]["tel_personnel"])){
+									$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
+								}
+								if(isset($personnes[$i]["tel_portable"])){
+									$sql.="tel_port='".$personnes[$i]["tel_portable"]."', ";
+								}
+								if(isset($personnes[$i]["tel_professionnel"])){
+									$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
+								}
+								if(isset($personnes[$i]["mel"])){
+									$sql.="mel='".$personnes[$i]["mel"]."', ";
+								}
+								if(isset($personnes[$i]["adresse_id"])){
+									$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
+								}
+								else{
+									$sql.="adr_id='';";
+									// IL FAUDRAIT PEUT-ETRE REMPLIR UN TABLEAU
+									// POUR SIGNALER QUE CE RESPONSABLE RISQUE DE POSER PB...
+									// ... CEPENDANT, CEUX QUE J'AI REPéRéS ETAIENT resp_legal=0
+									// ILS NE DEVRAIENT PAS ETRE DESTINATAIRES DE BULLETINS,...
+								}
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysql_query($sql);
+								if(!$res_insert){
+									echo "Erreur lors de la requête $sql<br />\n";
+									flush();
+									$nb_err++;
+								}
+								else{
+									$stat++;
+								}
+
+								$i++;
+							}
+
+							/*
+							if($nb_err==0) {
+								echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							}
+							elseif($nb_err==1) {
+								echo "<p>$nb_err erreur.</p>\n";
 							}
 							else{
-								$stat++;
+								echo "<p>$nb_err erreurs</p>\n";
+							}
+							*/
+
+							if ($nb_err != 0) {
+								echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+							} else {
+								echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
 							}
 
-							$i++;
-						}
+							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
+							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-						/*
-						if($nb_err==0) {
-							echo "<p>La première phase s'est passée sans erreur.</p>\n";
-						}
-						elseif($nb_err==1) {
-							echo "<p>$nb_err erreur.</p>\n";
+							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
+
+							require("../lib/footer.inc.php");
+							die();
 						}
 						else{
-							echo "<p>$nb_err erreurs</p>\n";
+							echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture.</p>\n";
+
+							require("../lib/footer.inc.php");
+							die();
 						}
-						*/
-
-						if ($nb_err != 0) {
-							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
-						} else {
-							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
-						}
-
-						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
-						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
-
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
-
-						require("../lib/footer.inc.php");
-						die();
 					}
 				}
 			} // Fin du $step=0
@@ -472,15 +513,16 @@
 					$sql="TRUNCATE TABLE responsables2;";
 					$vide_table = mysql_query($sql);
 
-
+					/*
 					echo "<p>Lecture du fichier Responsables...<br />\n";
 					while(!feof($fp)){
 						$ligne[]=fgets($fp,4096);
 					}
 					fclose($fp);
+					*/
 					flush();
 
-
+					echo "<p>";
 					echo "Analyse du fichier pour extraire les informations de la section RESPONSABLES...<br />\n";
 
 					$responsables=array();
@@ -501,35 +543,43 @@
 					$i=-1;
 					// Compteur de lignes du fichier:
 					$cpt=0;
-					while($cpt<count($ligne)){
+					//while($cpt<count($ligne)){
+					while(!feof($fp)){
+						$ligne=fgets($fp,4096);
 						//echo htmlentities($ligne[$cpt])."<br />\n";
 
-						if(strstr($ligne[$cpt],"<RESPONSABLES>")){
+						//if(strstr($ligne[$cpt],"<RESPONSABLES>")){
+						if(strstr($ligne,"<RESPONSABLES>")){
 							echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_responsables++;
 						}
-						if(strstr($ligne[$cpt],"</RESPONSABLES>")){
+						//if(strstr($ligne[$cpt],"</RESPONSABLES>")){
+						if(strstr($ligne,"</RESPONSABLES>")){
 							echo "Fin de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_responsables++;
 							break;
 						}
 						if($temoin_responsables==1){
-							if(strstr($ligne[$cpt],"<RESPONSABLE_ELEVE>")){
+							//if(strstr($ligne[$cpt],"<RESPONSABLE_ELEVE>")){
+							if(strstr($ligne,"<RESPONSABLE_ELEVE>")){
 								$i++;
 								$responsables[$i]=array();
 								$temoin_resp=1;
 							}
-							if(strstr($ligne[$cpt],"</RESPONSABLE_ELEVE>")){
+							//if(strstr($ligne[$cpt],"</RESPONSABLE_ELEVE>")){
+							if(strstr($ligne,"</RESPONSABLE_ELEVE>")){
 								$temoin_resp=0;
 							}
 							if($temoin_resp==1){
 								for($loop=0;$loop<count($tab_champs_responsable);$loop++){
-									if(strstr($ligne[$cpt],"<".$tab_champs_responsable[$loop].">")){
+									//if(strstr($ligne[$cpt],"<".$tab_champs_responsable[$loop].">")){
+									if(strstr($ligne,"<".$tab_champs_responsable[$loop].">")){
 										$tmpmin=strtolower($tab_champs_responsable[$loop]);
 										//$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
+										//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
+										$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
 										affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
 										break;
 									}
@@ -538,6 +588,7 @@
 						}
 						$cpt++;
 					}
+					fclose($fp);
 
 
 					$nb_err=0;
@@ -618,12 +669,13 @@
 					$sql="TRUNCATE TABLE resp_adr;";
 					$vide_table = mysql_query($sql);
 
-
+					/*
 					echo "<p>Lecture du fichier Responsables...<br />\n";
 					while(!feof($fp)){
 						$ligne[]=fgets($fp,4096);
 					}
 					fclose($fp);
+					*/
 					flush();
 
 
@@ -650,42 +702,51 @@
 					$temoin_adr=-1;
 					// Compteur de lignes du fichier:
 					$cpt=0;
-					while($cpt<count($ligne)){
+					//while($cpt<count($ligne)){
+					while(!feof($fp)){
+						$ligne=fgets($fp,4096);
 						//echo htmlentities($ligne[$cpt])."<br />\n";
 
-						if(strstr($ligne[$cpt],"<ADRESSES>")){
+						//if(strstr($ligne[$cpt],"<ADRESSES>")){
+						if(strstr($ligne,"<ADRESSES>")){
 							echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_adresses++;
 						}
-						if(strstr($ligne[$cpt],"</ADRESSES>")){
+						//if(strstr($ligne[$cpt],"</ADRESSES>")){
+						if(strstr($ligne,"</ADRESSES>")){
 							echo "Fin de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 							flush();
 							$temoin_adresses++;
 							break;
 						}
 						if($temoin_adresses==1){
-							if(strstr($ligne[$cpt],"<ADRESSE ")){
+							//if(strstr($ligne[$cpt],"<ADRESSE ")){
+							if(strstr($ligne,"<ADRESSE ")){
 								$i++;
 								$adresses[$i]=array();
 
 								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
 								unset($tabtmp);
-								$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
+								//$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
+								$tabtmp=explode('"',strstr($ligne," ADRESSE_ID="));
 								//$adresses[$i]["adresse_id"]=trim($tabtmp[1]);
 								$adresses[$i]["adresse_id"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[1])));
 								$temoin_adr=1;
 							}
-							if(strstr($ligne[$cpt],"</ADRESSE>")){
+							//if(strstr($ligne[$cpt],"</ADRESSE>")){
+							if(strstr($ligne,"</ADRESSE>")){
 								$temoin_adr=0;
 							}
 
 							if($temoin_adr==1){
 								for($loop=0;$loop<count($tab_champs_adresse);$loop++){
-									if(strstr($ligne[$cpt],"<".$tab_champs_adresse[$loop].">")){
+									//if(strstr($ligne[$cpt],"<".$tab_champs_adresse[$loop].">")){
+									if(strstr($ligne,"<".$tab_champs_adresse[$loop].">")){
 										$tmpmin=strtolower($tab_champs_adresse[$loop]);
 										//$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
+										//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
+										$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
 										//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
 										break;
 									}
@@ -694,6 +755,7 @@
 						}
 						$cpt++;
 					}
+					fclose($fp);
 
 
 
@@ -704,13 +766,29 @@
 						//$sql="INSERT INTO temp_resp_adr_import SET ";
 						$sql="INSERT INTO resp_adr SET ";
 						$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
-						$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
-						$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
-						$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
-						$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
-						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
-						$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
-						$sql.="commune='".$adresses[$i]["libelle_postal"]."';";
+						if(isset($adresses[$i]["ligne1_adresse"])){
+							$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
+						}
+						if(isset($adresses[$i]["ligne2_adresse"])){
+							$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
+						}
+						if(isset($adresses[$i]["ligne3_adresse"])){
+							$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
+						}
+						if(isset($adresses[$i]["ligne4_adresse"])){
+							$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
+						}
+						if(isset($adresses[$i]["code_postal"])){
+							$sql.="cp='".$adresses[$i]["code_postal"]."', ";
+						}
+						if(isset($adresses[$i]["ll_pays"])){
+							$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
+						}
+						if(isset($adresses[$i]["libelle_postal"])){
+							$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
+						}
+						$sql=substr($sql,0,strlen($sql)-2);
+						$sql.=";";
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);
 						if(!$res_insert){

@@ -138,11 +138,13 @@ if (!isset($suite)) {
 		die();
 	}
 
+	/*
 	echo "<p>Lecture du fichier STS Emploi du temps...<br />\n";
 	while(!feof($fp)){
 		$ligne[]=fgets($fp,4096);
 	}
 	fclose($fp);
+	*/
 	flush();
 
 
@@ -152,26 +154,39 @@ if (!isset($suite)) {
 	$cpt=0;
 	$temoin_structure=0;
 	$temoin_groupes=0;
-	while($cpt<count($ligne)){
+	$temoin_divisions=0;
+	$temoin_div=-1;
+	$temoin_services=-1;
+	$temoin_disc=-1;
+	$temoin_enseignants=-1;
+	$temoin_grp=-1;
+	$temoin_div_appart=-1;
+	//while($cpt<count($ligne)){
+	while(!feof($fp)){
+		$ligne=fgets($fp,4096);
 		// On va récupérer les divisions et associations profs/matières...
-		if(strstr($ligne[$cpt],"<STRUCTURE>")){
+		//if(strstr($ligne[$cpt],"<STRUCTURE>")){
+		if(strstr($ligne,"<STRUCTURE>")){
 			echo "Début de la section STRUCTURE à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 			flush();
 			$temoin_structure++;
 		}
-		if(strstr($ligne[$cpt],"</STRUCTURE>")){
+		//if(strstr($ligne[$cpt],"</STRUCTURE>")){
+		if(strstr($ligne,"</STRUCTURE>")){
 			echo "Fin de la section STRUCTURE à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 			flush();
 			$temoin_structure++;
 		}
 		if($temoin_structure==1){
-			if(strstr($ligne[$cpt],"<DIVISIONS>")){
+			//if(strstr($ligne[$cpt],"<DIVISIONS>")){
+			if(strstr($ligne,"<DIVISIONS>")){
 				echo "Début de la section DIVISIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 				$temoin_divisions++;
 				$divisions=array();
 				$i=0;
 			}
-			if(strstr($ligne[$cpt],"</DIVISIONS>")){
+			//if(strstr($ligne[$cpt],"</DIVISIONS>")){
+			if(strstr($ligne,"</DIVISIONS>")){
 				echo "Fin de la section DIVISIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 				$temoin_divisions++;
 			}
@@ -184,23 +199,28 @@ if (!isset($suite)) {
 					$divisions[$i]["code"]=trim($tabtmp[1]);
 				}
 				*/
-				if(strstr($ligne[$cpt],"<DIVISION ")){
+				//if(strstr($ligne[$cpt],"<DIVISION ")){
+				if(strstr($ligne,"<DIVISION ")){
 					$temoin_div=1;
 					unset($tabtmp);
-					$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+					//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+					$tabtmp=explode('"',strstr($ligne," CODE="));
 					$divisions[$i]["code"]=trim($tabtmp[1]);
 				}
-				if(strstr($ligne[$cpt],"</DIVISION>")){
+				//if(strstr($ligne[$cpt],"</DIVISION>")){
+				if(strstr($ligne,"</DIVISION>")){
 					$temoin_div=0;
 					$i++;
 				}
 
 				if($temoin_div==1){
-					if(strstr($ligne[$cpt],"<SERVICES>")){
+					//if(strstr($ligne[$cpt],"<SERVICES>")){
+					if(strstr($ligne,"<SERVICES>")){
 						$temoin_services=1;
 						$j=0;
 					}
-					if(strstr($ligne[$cpt],"</SERVICES>")){
+					//if(strstr($ligne[$cpt],"</SERVICES>")){
+					if(strstr($ligne,"</SERVICES>")){
 						$temoin_services=0;
 					}
 
@@ -213,24 +233,29 @@ if (!isset($suite)) {
 							$divisions[$i]["services"][$j]["code_matiere"]=trim($tabtmp[1]);
 						}
 						*/
-						if(strstr($ligne[$cpt],"<SERVICE ")){
+						//if(strstr($ligne[$cpt],"<SERVICE ")){
+						if(strstr($ligne,"<SERVICE ")){
 							$temoin_disc=1;
 							unset($tabtmp);
-							$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+							//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+							$tabtmp=explode('"',strstr($ligne," CODE_MATIERE="));
 							$divisions[$i]["services"][$j]["code_matiere"]=trim($tabtmp[1]);
 						}
-						if(strstr($ligne[$cpt],"</SERVICE>")){
+						//if(strstr($ligne[$cpt],"</SERVICE>")){
+						if(strstr($ligne,"</SERVICE>")){
 							$temoin_disc=0;
 							$j++;
 						}
 
 						if($temoin_disc==1){
-							if(strstr($ligne[$cpt],"<ENSEIGNANTS>")){
+							//if(strstr($ligne[$cpt],"<ENSEIGNANTS>")){
+							if(strstr($ligne,"<ENSEIGNANTS>")){
 								$temoin_enseignants=1;
 								$divisions[$i]["services"][$j]["enseignants"]=array();
 								$k=0;
 							}
-							if(strstr($ligne[$cpt],"</ENSEIGNANTS>")){
+							//if(strstr($ligne[$cpt],"</ENSEIGNANTS>")){
+							if(strstr($ligne,"</ENSEIGNANTS>")){
 								$temoin_enseignants=0;
 							}
 							if($temoin_enseignants==1){
@@ -242,13 +267,16 @@ if (!isset($suite)) {
 									$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim($tabtmp[1]);
 								}
 								*/
-								if(strstr($ligne[$cpt],"<ENSEIGNANT ")){
+								//if(strstr($ligne[$cpt],"<ENSEIGNANT ")){
+								if(strstr($ligne,"<ENSEIGNANT ")){
 									//$temoin_ens=1;
 									unset($tabtmp);
-									$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+									//$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+									$tabtmp=explode('"',strstr($ligne," ID="));
 									$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim($tabtmp[1]);
 								}
-								if(strstr($ligne[$cpt],"</ENSEIGNANT>")){
+								//if(strstr($ligne[$cpt],"</ENSEIGNANT>")){
+								if(strstr($ligne,"</ENSEIGNANT>")){
 									//$temoin_ens=0;
 									$k++;
 								}
@@ -264,14 +292,16 @@ if (!isset($suite)) {
 
 			//echo "Analyse du fichier pour extraire les informations de la section GROUPES...<br />\n";
 
-			if(strstr($ligne[$cpt],"<GROUPES>")){
+			//if(strstr($ligne[$cpt],"<GROUPES>")){
+			if(strstr($ligne,"<GROUPES>")){
 				echo "Début de la section GROUPES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 				flush();
 				$temoin_groupes++;
 				$groupes=array();
 				$i=0;
 			}
-			if(strstr($ligne[$cpt],"</GROUPES>")){
+			//if(strstr($ligne[$cpt],"</GROUPES>")){
+			if(strstr($ligne,"</GROUPES>")){
 				echo "Fin de la section GROUPES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
 				flush();
 				$temoin_groupes++;
@@ -288,31 +318,38 @@ if (!isset($suite)) {
 					$m=0;
 				}
 				*/
-				if(strstr($ligne[$cpt],"<GROUPE ")){
+				//if(strstr($ligne[$cpt],"<GROUPE ")){
+				if(strstr($ligne,"<GROUPE ")){
 					$temoin_grp=1;
 					unset($tabtmp);
-					$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+					//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+					$tabtmp=explode('"',strstr($ligne," CODE="));
 					$groupes[$i]=array();
 					$groupes[$i]["code"]=trim($tabtmp[1]);
 					$j=0;
 					$m=0;
 				}
-				if(strstr($ligne[$cpt],"</GROUPE>")){
+				//if(strstr($ligne[$cpt],"</GROUPE>")){
+				if(strstr($ligne,"</GROUPE>")){
 					$temoin_grp=0;
 					$i++;
 				}
 
 				if($temoin_grp==1){
-					if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
+					//if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
+					if(strstr($ligne,"<LIBELLE_LONG>")){
 						unset($tabtmp);
-						$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+						//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+						$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 						$groupes[$i]["libelle_long"]=trim($tabtmp[2]);
 					}
 
-					if(strstr($ligne[$cpt],"<DIVISIONS_APPARTENANCE>")){
+					//if(strstr($ligne[$cpt],"<DIVISIONS_APPARTENANCE>")){
+					if(strstr($ligne,"<DIVISIONS_APPARTENANCE>")){
 						$temoin_div_appart=1;
 					}
-					if(strstr($ligne[$cpt],"</DIVISIONS_APPARTENANCE>")){
+					//if(strstr($ligne[$cpt],"</DIVISIONS_APPARTENANCE>")){
+					if(strstr($ligne,"</DIVISIONS_APPARTENANCE>")){
 						$temoin_div_appart=0;
 					}
 
@@ -325,9 +362,11 @@ if (!isset($suite)) {
 							$j++;
 						}
 						*/
-						if(strstr($ligne[$cpt],"<DIVISION_APPARTENANCE ")){
+						//if(strstr($ligne[$cpt],"<DIVISION_APPARTENANCE ")){
+						if(strstr($ligne,"<DIVISION_APPARTENANCE ")){
 							unset($tabtmp);
-							$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+							//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+							$tabtmp=explode('"',strstr($ligne," CODE="));
 							$groupes[$i]["divisions"][$j]["code"]=trim($tabtmp[1]);
 							$j++;
 						}
@@ -342,9 +381,11 @@ if (!isset($suite)) {
 						$groupes[$i]["code_matiere"]=trim($tabtmp[1]);
 					}
 					*/
-					if(strstr($ligne[$cpt],"<SERVICE ")){
+					//if(strstr($ligne[$cpt],"<SERVICE ")){
+					if(strstr($ligne,"<SERVICE ")){
 						unset($tabtmp);
-						$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+						//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
+						$tabtmp=explode('"',strstr($ligne," CODE_MATIERE="));
 						$groupes[$i]["code_matiere"]=trim($tabtmp[1]);
 					}
 
@@ -366,9 +407,11 @@ if (!isset($suite)) {
 						$m++;
 					}
 					*/
-					if(strstr($ligne[$cpt],"<ENSEIGNANT ")){
+					//if(strstr($ligne[$cpt],"<ENSEIGNANT ")){
+					if(strstr($ligne,"<ENSEIGNANT ")){
 						unset($tabtmp);
-						$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+						//$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+						$tabtmp=explode('"',strstr($ligne," ID="));
 						//$groupes[$i]["enseignant"][$m]["id"]=$tabtmp[3];
 						$groupes[$i]["enseignant"][$m]["id"]=trim($tabtmp[1]);
 						$m++;
@@ -379,6 +422,7 @@ if (!isset($suite)) {
 		}
 		$cpt++;
 	}
+	fclose($fp);
 
 
 	$tabfich=array("f_men.csv","f_gpd.csv");
@@ -452,12 +496,14 @@ if (!isset($suite)) {
 		$grocod=$groupes[$i]["code"];
 		affiche_debug("<p>Groupe $i: \$grocod=$grocod<br />\n");
 		for($m=0;$m<count($matiere);$m++){
-			affiche_debug("\$matiere[$m][\"code\"]=".$matiere[$m]["code"]." et \$groupes[$i][\"code_matiere\"]=".$groupes[$i]["code_matiere"]."<br />\n");
-			if($matiere[$m]["code"]==$groupes[$i]["code_matiere"]){
-				//$matimn=$programme[$k]["code_matiere"];
-				$matimn=$matiere[$m]["code_gestion"];
-				affiche_debug("<b>Trouvé: matière n°$m: \$matimn=$matimn</b><br />\n");
-				break;
+			if(isset($groupes[$i]["code_matiere"])){
+				affiche_debug("\$matiere[$m][\"code\"]=".$matiere[$m]["code"]." et \$groupes[$i][\"code_matiere\"]=".$groupes[$i]["code_matiere"]."<br />\n");
+				if($matiere[$m]["code"]==$groupes[$i]["code_matiere"]){
+					//$matimn=$programme[$k]["code_matiere"];
+					$matimn=$matiere[$m]["code_gestion"];
+					affiche_debug("<b>Trouvé: matière n°$m: \$matimn=$matimn</b><br />\n");
+					break;
+				}
 			}
 		}
 		//$groupes[$i]["enseignant"][$m]["id"]
@@ -466,23 +512,32 @@ if (!isset($suite)) {
 			for($j=0;$j<count($groupes[$i]["divisions"]);$j++){
 				$elstco=$groupes[$i]["divisions"][$j]["code"];
 				affiche_debug("\$elstco=$elstco<br />\n");
-				if(count($groupes[$i]["enseignant"])==0){
-					$chaine="$matimn;;$elstco";
-					if($fich){
-						fwrite($fich,html_entity_decode_all_version($chaine)."\n");
-					}
-					affiche_debug($chaine."<br />\n");
-				}
-				else{
-					for($m=0;$m<count($groupes[$i]["enseignant"]);$m++){
-						$numind=$groupes[$i]["enseignant"][$m]["id"];
-						//echo "$matimn;P$numind;$elstco<br />\n";
-						$chaine="$matimn;P$numind;$elstco";
+				if(isset($groupes[$i]["enseignant"])){
+					if(count($groupes[$i]["enseignant"])==0){
+						$chaine="$matimn;;$elstco";
 						if($fich){
 							fwrite($fich,html_entity_decode_all_version($chaine)."\n");
 						}
 						affiche_debug($chaine."<br />\n");
 					}
+					else{
+						for($m=0;$m<count($groupes[$i]["enseignant"]);$m++){
+							$numind=$groupes[$i]["enseignant"][$m]["id"];
+							//echo "$matimn;P$numind;$elstco<br />\n";
+							$chaine="$matimn;P$numind;$elstco";
+							if($fich){
+								fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+							}
+							affiche_debug($chaine."<br />\n");
+						}
+					}
+				}
+				else{
+					$chaine="$matimn;;$elstco";
+					if($fich){
+						fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+					}
+					affiche_debug($chaine."<br />\n");
 				}
 			}
 		}

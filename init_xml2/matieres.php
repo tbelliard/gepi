@@ -301,6 +301,7 @@
 
 
 
+						/*
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 						$fp=fopen($dest_file,"r");
 						if($fp){
@@ -312,6 +313,7 @@
 							fclose($fp);
 							//echo "<p>Terminé.</p>\n";
 						}
+						*/
 						flush();
 
 
@@ -324,147 +326,173 @@
 						$matiere=array();
 						$i=0;
 						$temoin_mat=0;
-						while($cpt<count($ligne)){
-							//echo htmlentities($ligne[$cpt])."<br />\n";
-							if(strstr($ligne[$cpt],"<MATIERES>")){
-								echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_matieres++;
-							}
-							if(strstr($ligne[$cpt],"</MATIERES>")){
-								echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_matieres++;
-							}
-							if($temoin_matieres==1){
-								// On analyse maintenant matière par matière:
-								/*
-								if(strstr($ligne[$cpt],"<MATIERE CODE=")){
-									$matiere[$i]=array();
-									unset($tabtmp);
-									//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
-									$tabtmp=explode('"',$ligne[$cpt]);
-									$matiere[$i]["code"]=trim($tabtmp[1]);
-									$temoin_mat=1;
+						//while($cpt<count($ligne)){
+						$fp=fopen($dest_file,"r");
+						if($fp){
+							while(!feof($fp)){
+								$ligne=fgets($fp,4096);
+
+								//echo htmlentities($ligne[$cpt])."<br />\n";
+								//if(strstr($ligne[$cpt],"<MATIERES>")){
+								if(strstr($ligne,"<MATIERES>")){
+									echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									flush();
+									$temoin_matieres++;
 								}
-								*/
-								if(strstr($ligne[$cpt],"<MATIERE ")){
-									$matiere[$i]=array();
-									unset($tabtmp);
-									//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
-									$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
-									$matiere[$i]["code"]=trim($tabtmp[1]);
-									$temoin_mat=1;
+								//if(strstr($ligne[$cpt],"</MATIERES>")){
+								if(strstr($ligne,"</MATIERES>")){
+									echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
+									flush();
+									$temoin_matieres++;
 								}
-								if(strstr($ligne[$cpt],"</MATIERE>")){
-									$temoin_mat=0;
-									$i++;
-								}
-								if($temoin_mat==1){
-									if(strstr($ligne[$cpt],"<CODE_GESTION>")){
+								if($temoin_matieres==1){
+									// On analyse maintenant matière par matière:
+									/*
+									if(strstr($ligne[$cpt],"<MATIERE CODE=")){
+										$matiere[$i]=array();
 										unset($tabtmp);
-										$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-										//$matiere[$i]["code_gestion"]=$tabtmp[2];
-										$matiere[$i]["code_gestion"]=trim(ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+										//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+										$tabtmp=explode('"',$ligne[$cpt]);
+										$matiere[$i]["code"]=trim($tabtmp[1]);
+										$temoin_mat=1;
 									}
-									if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
+									*/
+									//if(strstr($ligne[$cpt],"<MATIERE ")){
+									if(strstr($ligne,"<MATIERE ")){
+										$matiere[$i]=array();
 										unset($tabtmp);
-										$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-										//$matiere[$i]["libelle_court"]=$tabtmp[2];
-										$matiere[$i]["libelle_court"]=trim(ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+										//$tabtmp=explode("=",ereg_replace(">","",ereg_replace("<","",$ligne[$cpt])));
+										//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+										$tabtmp=explode('"',strstr($ligne," CODE="));
+										$matiere[$i]["code"]=trim($tabtmp[1]);
+										$temoin_mat=1;
 									}
-									if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
-										unset($tabtmp);
-										$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-										//$matiere[$i]["libelle_long"]=trim($tabtmp[2]);
-										$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+									//if(strstr($ligne[$cpt],"</MATIERE>")){
+									if(strstr($ligne,"</MATIERE>")){
+										$temoin_mat=0;
+										$i++;
 									}
-									if(strstr($ligne[$cpt],"<LIBELLE_EDITION>")){
-										unset($tabtmp);
-										$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
-										//$matiere[$i]["libelle_edition"]=trim($tabtmp[2]);
-										$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+									if($temoin_mat==1){
+										//if(strstr($ligne[$cpt],"<CODE_GESTION>")){
+										if(strstr($ligne,"<CODE_GESTION>")){
+											unset($tabtmp);
+											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$matiere[$i]["code_gestion"]=$tabtmp[2];
+											$matiere[$i]["code_gestion"]=trim(ereg_replace("[^a-zA-Z0-9&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+										}
+										//if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
+										if(strstr($ligne,"<LIBELLE_COURT>")){
+											unset($tabtmp);
+											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$matiere[$i]["libelle_court"]=$tabtmp[2];
+											$matiere[$i]["libelle_court"]=trim(ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü&_. -]","",html_entity_decode_all_version($tabtmp[2])));
+										}
+										//if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
+										if(strstr($ligne,"<LIBELLE_LONG>")){
+											unset($tabtmp);
+											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$matiere[$i]["libelle_long"]=trim($tabtmp[2]);
+											$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+										}
+										//if(strstr($ligne[$cpt],"<LIBELLE_EDITION>")){
+										if(strstr($ligne,"<LIBELLE_EDITION>")){
+											unset($tabtmp);
+											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
+											//$matiere[$i]["libelle_edition"]=trim($tabtmp[2]);
+											$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+										}
 									}
 								}
+								$cpt++;
 							}
-							$cpt++;
-						}
+							fclose($fp);
 
 
-						$i=0;
-						$nb_err=0;
-						$stat=0;
-						while($i<count($matiere)){
-							//$sql="INSERT INTO temp_resp_pers_import SET ";
-							$sql="INSERT INTO temp_matieres_import SET ";
-							$sql.="code='".$matiere[$i]["code"]."', ";
-							$sql.="code_gestion='".$matiere[$i]["code_gestion"]."', ";
-							$sql.="libelle_court='".$matiere[$i]["libelle_court"]."', ";
-							$sql.="libelle_long='".$matiere[$i]["libelle_long"]."', ";
-							$sql.="libelle_edition='".$matiere[$i]["libelle_edition"]."';";
-							affiche_debug("$sql<br />\n");
-							$res_insert=mysql_query($sql);
-							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
-								flush();
-								$nb_err++;
-							}
-							else{
-								$stat++;
-							}
-
-							$i++;
-						}
-
-
-
-						echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
-
-						echo "<table border=1 cellpadding=2 cellspacing=2>\n";
-
-						echo "<tr><td><p class=\"small\">Identifiant de la matière</p></td><td><p class=\"small\">Nom complet</p></td></tr>\n";
-
-						$i=0;
-						//$nb_err=0;
-						$nb_reg_no=0;
-						//$stat=0;
-						while($i<count($matiere)){
-							$sql="select matiere, nom_complet from matieres where matiere='".$matiere[$i]['code_gestion']."';";
-							$verif=mysql_query($sql);
-							$resverif = mysql_num_rows($verif);
-							if($resverif==0) {
-								$sql="insert into matieres set matiere='".$matiere[$i]['code_gestion']."', nom_complet='".$matiere[$i]['libelle_court']."', priority='0';";
-								$req=mysql_query($sql);
-								if(!$req) {
-									$nb_reg_no++;
-									echo mysql_error();
+							$i=0;
+							$nb_err=0;
+							$stat=0;
+							while($i<count($matiere)){
+								//$sql="INSERT INTO temp_resp_pers_import SET ";
+								$sql="INSERT INTO temp_matieres_import SET ";
+								$sql.="code='".$matiere[$i]["code"]."', ";
+								$sql.="code_gestion='".$matiere[$i]["code_gestion"]."', ";
+								$sql.="libelle_court='".$matiere[$i]["libelle_court"]."', ";
+								$sql.="libelle_long='".$matiere[$i]["libelle_long"]."', ";
+								$sql.="libelle_edition='".$matiere[$i]["libelle_edition"]."';";
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysql_query($sql);
+								if(!$res_insert){
+									echo "Erreur lors de la requête $sql<br />\n";
+									flush();
+									$nb_err++;
 								}
-								else {
-									echo "<tr><td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+								else{
+									$stat++;
 								}
+
+								$i++;
+							}
+
+
+
+							echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
+
+							echo "<table border=1 cellpadding=2 cellspacing=2>\n";
+
+							echo "<tr><td><p class=\"small\">Identifiant de la matière</p></td><td><p class=\"small\">Nom complet</p></td></tr>\n";
+
+							$i=0;
+							//$nb_err=0;
+							$nb_reg_no=0;
+							//$stat=0;
+							while($i<count($matiere)){
+								$sql="select matiere, nom_complet from matieres where matiere='".$matiere[$i]['code_gestion']."';";
+								$verif=mysql_query($sql);
+								$resverif = mysql_num_rows($verif);
+								if($resverif==0) {
+									$sql="insert into matieres set matiere='".$matiere[$i]['code_gestion']."', nom_complet='".$matiere[$i]['libelle_court']."', priority='0';";
+									$req=mysql_query($sql);
+									if(!$req) {
+										$nb_reg_no++;
+										echo mysql_error();
+									}
+									else {
+										echo "<tr><td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+									}
+								} else {
+									$nom_complet = mysql_result($verif,0,'nom_complet');
+									echo "<tr><td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+								}
+
+								$i++;
+							}
+
+							echo "</table>\n";
+
+							if ($nb_reg_no != 0) {
+								echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
 							} else {
-								$nom_complet = mysql_result($verif,0,'nom_complet');
-								echo "<tr><td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+								echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à la quatrième phase d'importation des professeurs.</p>";
 							}
 
-							$i++;
+							//echo "<center><p><a href='prof_csv.php'>Importation des professeurs</a></p></center>";
+							//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Importation des professeurs</a></p>\n";
+							echo "<p align='center'><a href='professeurs.php'>Importation des professeurs</a></p>\n";
+							echo "<p><br /></p>\n";
+
+							require("../lib/footer.inc.php");
+							die();
 						}
+						else{
+							echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture.</p>\n";
 
-						echo "</table>\n";
-
-						if ($nb_reg_no != 0) {
-							echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
-						} else {
-							echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à la quatrième phase d'importation des professeurs.</p>";
+							require("../lib/footer.inc.php");
+							die();
 						}
-
-						//echo "<center><p><a href='prof_csv.php'>Importation des professeurs</a></p></center>";
-						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Importation des professeurs</a></p>\n";
-						echo "<p align='center'><a href='professeurs.php'>Importation des professeurs</a></p>\n";
-						echo "<p><br /></p>\n";
-
-						require("../lib/footer.inc.php");
-						die();
 					}
 				}
 			}

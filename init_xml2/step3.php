@@ -55,8 +55,8 @@ require_once("../lib/header.inc");
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>";
-echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et affectation des élèves dans les classes</h3></center>";
+echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>\n";
+echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et affectation des élèves dans les classes</h3></center>\n";
 
 if (isset($is_posted) and ($is_posted == "yes")) {
     //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ERENO,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import ORDER BY DIVCOD,ELENOM,ELEPRE");
@@ -89,7 +89,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
         //$reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ereno='$reg_ereno'");
         $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'");
-        if (!$reg_eleve) echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.";
+        if (!$reg_eleve) echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";
 
         if ($reg_regime == "0") {$regime = "ext.";}
         if ($reg_regime == "2") {$regime = "d/p";}
@@ -100,7 +100,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if ($reg_doublant != "O") {$doublant = '-';}
 
         $register = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
-        if (!$register) echo "<p>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.";
+        if (!$register) echo "<p>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.</p>\n";
 
         $call_classes = mysql_query("SELECT * FROM classes");
         $nb_classes = mysql_num_rows($call_classes);
@@ -113,7 +113,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
                 $u = 1;
                 while ($u <= $number_periodes) {
                     $reg = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
-                    if (!$reg) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u";
+                    if (!$reg) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
                     $u++;
                 }
             }
@@ -122,7 +122,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         if ($reg_etab != '') {
             $register = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve='$reg_login',id_etablissement='$reg_etab'");
-            if (!$register) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.";
+            if (!$register) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
         }
         $i++;
     }
@@ -130,8 +130,8 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     $del = @mysql_query("DELETE FROM tempo2");
 
     //echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
-    echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>";
-    echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>";
+    echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>\n";
+    echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>\n";
     require("../lib/footer.inc.php");
 	die();
 }
@@ -143,13 +143,13 @@ else {
     $call_data = mysql_query("SELECT ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
     $i = "0";
-    echo "<p>Le tableau suivant affiche les données qui vont être enregistrées dans la base de donnée GEPI lorsque vous aurez confirmé ce choix tout en bas de la page.<br /><b>Tant que vous n'avez pas validé en bas de la page, aucune donnée n'est enregistrée !</b></p>";
+    echo "<p>Le tableau suivant affiche les données qui vont être enregistrées dans la base de donnée GEPI lorsque vous aurez confirmé ce choix tout en bas de la page.<br /><b>Tant que vous n'avez pas validé en bas de la page, aucune donnée n'est enregistrée !</b></p>\n";
     //echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>F_ELE.DBF</b> ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>";
-    echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>eleves.csv</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>";
-    echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>";
-    echo "<table border=1 cellpadding=2 cellspacing=2>";
+    echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>eleves.csv</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>\n";
+    echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>\n";
+    echo "<table border=1 cellpadding=2 cellspacing=2>\n";
     //echo "<tr><td><p class=\"small\">N° GEP</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
-    echo "<tr><td><p class=\"small\">N° INE</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
+    echo "<tr><td><p class=\"small\">N° INE</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>\n";
     $max_lignes_pb = 0;
     while ($i < $nb) {
         $ligne_pb = 'no';
@@ -325,16 +325,16 @@ else {
         if (!isset($affiche)) $affiche = 'tout';
         // On affiche la ligne du tableau
         if (($affiche != 'partiel') or (($affiche == 'partiel') and ($ligne_pb == 'yes'))) {
-            echo "<tr><td><p class=\"small\">$no_gep_aff</p></td>";
-            echo "<td><p class=\"small\">$login_eleve</p></td>";
-            echo "<td><p class=\"small\">$reg_nom_aff</p></td>";
-            echo "<td><p class=\"small\">$reg_prenom_aff</p></td>";
-            echo "<td><p class=\"small\">$reg_sexe_aff</p></td>";
-            echo "<td><p class=\"small\">$naissance</p></td>";
-            echo "<td><p class=\"small\">$reg_regime_aff</p></td>";
-            echo "<td><p class=\"small\">$reg_doublant_aff</p></td>";
-            echo "<td><p class=\"small\">$classe_aff</p></td>";
-            echo "<td><p class=\"small\">$reg_etab_aff</p></td></tr>";
+            echo "<tr><td><p class=\"small\">$no_gep_aff</p></td>\n";
+            echo "<td><p class=\"small\">$login_eleve</p></td>\n";
+            echo "<td><p class=\"small\">$reg_nom_aff</p></td>\n";
+            echo "<td><p class=\"small\">$reg_prenom_aff</p></td>\n";
+            echo "<td><p class=\"small\">$reg_sexe_aff</p></td>\n";
+            echo "<td><p class=\"small\">$naissance</p></td>\n";
+            echo "<td><p class=\"small\">$reg_regime_aff</p></td>\n";
+            echo "<td><p class=\"small\">$reg_doublant_aff</p></td>\n";
+            echo "<td><p class=\"small\">$classe_aff</p></td>\n";
+            echo "<td><p class=\"small\">$reg_etab_aff</p></td></tr>\n";
         }
 
         // Si la ligne comportait un problème, on incrémente max_lignes_pb
@@ -344,38 +344,39 @@ else {
         $i++;
 
     }
-    echo "</table>";
-    echo "<p><b>Nombre total de lignes : $nb</b><br />";
+    echo "</table>\n";
+    echo "<p><b>Nombre total de lignes : $nb</b><br />\n";
     if ($max_lignes_pb == 0) {
-        echo "Aucune erreur n'a été détectée !</p>";
+        echo "Aucune erreur n'a été détectée !</p>\n";
     } else {
-        echo "Des données manquantes ou incomplètes ont été détectées dans <b>$max_lignes_pb lignes</b> : Elles apparaissent dans le tableau ci-dessus en rouge !";
+        echo "Des données manquantes ou incomplètes ont été détectées dans <b>$max_lignes_pb lignes</b> : Elles apparaissent dans le tableau ci-dessus en rouge !\n";
         if ($affiche != 'partiel') {
-            echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>";
-            echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
-            echo "<input type=hidden name='is_posted' value='no' />";
-            echo "<input type=hidden name='affiche' value='partiel' />";
-            echo "<center><input type='submit' value='Affichage partiel' /></center>";
-            echo "</form>";
+            echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>\n";
+            echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
+            echo "<input type=hidden name='is_posted' value='no' />\n";
+            echo "<input type=hidden name='affiche' value='partiel' />\n";
+            echo "<center><input type='submit' value='Affichage partiel' /></center>\n";
+            echo "</form>\n";
         } else {
-            echo "<p>--> Pour afficher toutes les lignes, cliquez sur le bouton \"Afficher tout\" :</p>";
-            echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
-            echo "<input type=hidden name='is_posted' value='no' />";
-            echo "<input type=hidden name='affiche' value='tout' />";
-            echo "<center><input type='submit' value='Afficher tout' /></center>";
-            echo "</form>";
+            echo "<p>--> Pour afficher toutes les lignes, cliquez sur le bouton \"Afficher tout\" :</p>\n";
+            echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
+            echo "<input type=hidden name='is_posted' value='no' />\n";
+            echo "<input type=hidden name='affiche' value='tout' />\n";
+            echo "<center><input type='submit' value='Afficher tout' /></center>\n";
+            echo "</form>\n";
         }
     }
-    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>";
-    echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
+    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
+    echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
 
     //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
     //echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<input type=hidden name='is_posted' value='yes' />";
-    echo "<center><input type='submit' value='Enregistrer' /></center>";
-    echo "</form>";
+    echo "<input type=hidden name='is_posted' value='yes' />\n";
+    echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+    echo "</form>\n";
     //echo "</div>";
-    require("../lib/footer.inc.php");
+    echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
 }
 ?>

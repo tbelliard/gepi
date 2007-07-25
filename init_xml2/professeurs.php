@@ -236,133 +236,173 @@ else {
 		die();
 	}
 
+	/*
 	echo "<p>Lecture du fichier STS Emploi du temps...<br />\n";
 	while(!feof($fp)){
 		$ligne[]=fgets($fp,4096);
 	}
 	fclose($fp);
+	*/
 	flush();
 
-
+	echo "<p>";
 	echo "Analyse du fichier pour extraire les informations de la section INDIVIDUS...<br />\n";
 
 	$cpt=0;
 	$temoin_professeurs=0;
+	$temoin_profs_princ=-1;
+	$temoin_prof_princ=-1;
+	$temoin_disciplines=-1;
+	$temoin_disc=-1;
 	$prof=array();
 	$i=0;
 	$temoin_prof=0;
-	while($cpt<count($ligne)){
+	//while($cpt<count($ligne)){
+	while(!feof($fp)){
+		$ligne=fgets($fp,4096);
 		//echo htmlentities($ligne[$cpt])."<br />\n";
-		if(strstr($ligne[$cpt],"<INDIVIDUS>")){
+		//if(strstr($ligne[$cpt],"<INDIVIDUS>")){
+		if(strstr($ligne,"<INDIVIDUS>")){
 			echo "DÈbut de la section INDIVIDUS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
 			flush();
 			$temoin_professeurs++;
 		}
-		if(strstr($ligne[$cpt],"</INDIVIDUS>")){
+		//if(strstr($ligne[$cpt],"</INDIVIDUS>")){
+		if(strstr($ligne,"</INDIVIDUS>")){
 			echo "Fin de la section INDIVIDUS ‡ la ligne <span style='color: blue;'>$cpt</span><br />\n";
 			flush();
 			$temoin_professeurs++;
 		}
 		if($temoin_professeurs==1){
-			if(strstr($ligne[$cpt],"<INDIVIDU ")){
+			//if(strstr($ligne[$cpt],"<INDIVIDU ")){
+			if(strstr($ligne,"<INDIVIDU ")){
 				$prof[$i]=array();
 				unset($tabtmp);
-				$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+				//$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
+				$tabtmp=explode('"',strstr($ligne," ID="));
 				$prof[$i]["id"]=trim($tabtmp[1]);
-				$tabtmp=explode('"',strstr($ligne[$cpt]," TYPE="));
+				//$tabtmp=explode('"',strstr($ligne[$cpt]," TYPE="));
+				$tabtmp=explode('"',strstr($ligne," TYPE="));
 				$prof[$i]["type"]=trim($tabtmp[1]);
 				$temoin_prof=1;
 			}
-			if(strstr($ligne[$cpt],"</INDIVIDU>")){
+			//if(strstr($ligne[$cpt],"</INDIVIDU>")){
+			if(strstr($ligne,"</INDIVIDU>")){
 				$temoin_prof=0;
 				$i++;
 			}
 			if($temoin_prof==1){
-				if(strstr($ligne[$cpt],"<SEXE>")){
+				//if(strstr($ligne[$cpt],"<SEXE>")){
+				if(strstr($ligne,"<SEXE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["sexe"]=$tabtmp[2];
 					$prof[$i]["sexe"]=trim(ereg_replace("[^1-2]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<CIVILITE>")){
+				//if(strstr($ligne[$cpt],"<CIVILITE>")){
+				if(strstr($ligne,"<CIVILITE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["civilite"]=$tabtmp[2];
 					$prof[$i]["civilite"]=trim(ereg_replace("[^1-3]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<NOM_USAGE>")){
+				//if(strstr($ligne[$cpt],"<NOM_USAGE>")){
+				if(strstr($ligne,"<NOM_USAGE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["nom_usage"]=$tabtmp[2];
 					$prof[$i]["nom_usage"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<NOM_PATRONYMIQUE>")){
+				//if(strstr($ligne[$cpt],"<NOM_PATRONYMIQUE>")){
+				if(strstr($ligne,"<NOM_PATRONYMIQUE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["nom_patronymique"]=$tabtmp[2];
 					$prof[$i]["nom_patronymique"]=trim(ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<PRENOM>")){
+				//if(strstr($ligne[$cpt],"<PRENOM>")){
+				if(strstr($ligne,"<PRENOM>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["prenom"]=$tabtmp[2];
 					$prof[$i]["prenom"]=trim(ereg_replace("[^a-zA-Z0-9¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_. -]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
+				//if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
+				if(strstr($ligne,"<DATE_NAISSANCE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					//$prof[$i]["date_naissance"]=$tabtmp[2];
 					$prof[$i]["date_naissance"]=trim(ereg_replace("[^0-9-]","",$tabtmp[2]));
 				}
-				if(strstr($ligne[$cpt],"<GRADE>")){
+				//if(strstr($ligne[$cpt],"<GRADE>")){
+				if(strstr($ligne,"<GRADE>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					$prof[$i]["grade"]=trim($tabtmp[2]);
 				}
-				if(strstr($ligne[$cpt],"<FONCTION>")){
+				//if(strstr($ligne[$cpt],"<FONCTION>")){
+				if(strstr($ligne,"<FONCTION>")){
 					unset($tabtmp);
-					$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 					$prof[$i]["fonction"]=trim($tabtmp[2]);
 				}
 
 
 
-				if(strstr($ligne[$cpt],"<PROFS_PRINC>")){
+				//if(strstr($ligne[$cpt],"<PROFS_PRINC>")){
+				if(strstr($ligne,"<PROFS_PRINC>")){
 					$temoin_profs_princ=1;
 					//$prof[$i]["prof_princs"]=array();
 					$j=0;
 				}
-				if(strstr($ligne[$cpt],"</PROFS_PRINC>")){
+				//if(strstr($ligne[$cpt],"</PROFS_PRINC>")){
+				if(strstr($ligne,"</PROFS_PRINC>")){
 					$temoin_profs_princ=0;
 				}
 
 				if($temoin_profs_princ==1){
 
-					if(strstr($ligne[$cpt],"<PROF_PRINC>")){
+					//if(strstr($ligne[$cpt],"<PROF_PRINC>")){
+					if(strstr($ligne,"<PROF_PRINC>")){
 						$temoin_prof_princ=1;
 						$prof[$i]["prof_princ"]=array();
 					}
-					if(strstr($ligne[$cpt],"</PROF_PRINC>")){
+					//if(strstr($ligne[$cpt],"</PROF_PRINC>")){
+					if(strstr($ligne,"</PROF_PRINC>")){
 						$temoin_prof_princ=0;
 						$j++;
 					}
 
 					if($temoin_prof_princ==1){
-						if(strstr($ligne[$cpt],"<CODE_STRUCTURE>")){
+						//if(strstr($ligne[$cpt],"<CODE_STRUCTURE>")){
+						if(strstr($ligne,"<CODE_STRUCTURE>")){
 							unset($tabtmp);
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 							$prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
 							$temoin_au_moins_un_prof_princ="oui";
 						}
 
-						if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
+						//if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
+						if(strstr($ligne,"<DATE_DEBUT>")){
 							unset($tabtmp);
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 							$prof[$i]["prof_princ"][$j]["date_debut"]=trim($tabtmp[2]);
 						}
-						if(strstr($ligne[$cpt],"<DATE_FIN>")){
+						//if(strstr($ligne[$cpt],"<DATE_FIN>")){
+						if(strstr($ligne,"<DATE_FIN>")){
 							unset($tabtmp);
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 							$prof[$i]["prof_princ"][$j]["date_fin"]=trim($tabtmp[2]);
 						}
 					}
@@ -371,38 +411,47 @@ else {
 
 
 
-				if(strstr($ligne[$cpt],"<DISCIPLINES>")){
+				//if(strstr($ligne[$cpt],"<DISCIPLINES>")){
+				if(strstr($ligne,"<DISCIPLINES>")){
 					$temoin_disciplines=1;
 					$prof[$i]["disciplines"]=array();
 					$j=0;
 				}
-				if(strstr($ligne[$cpt],"</DISCIPLINES>")){
+				//if(strstr($ligne[$cpt],"</DISCIPLINES>")){
+				if(strstr($ligne,"</DISCIPLINES>")){
 					$temoin_disciplines=0;
 				}
 
 
 
 				if($temoin_disciplines==1){
-					if(strstr($ligne[$cpt],"<DISCIPLINE ")){
+					//if(strstr($ligne[$cpt],"<DISCIPLINE ")){
+					if(strstr($ligne,"<DISCIPLINE ")){
 						$temoin_disc=1;
 						unset($tabtmp);
-						$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+						//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
+						$tabtmp=explode('"',strstr($ligne," CODE="));
 						$prof[$i]["disciplines"][$j]["code"]=trim($tabtmp[1]);
 					}
-					if(strstr($ligne[$cpt],"</DISCIPLINE>")){
+					//if(strstr($ligne[$cpt],"</DISCIPLINE>")){
+					if(strstr($ligne,"</DISCIPLINE>")){
 						$temoin_disc=0;
 						$j++;
 					}
 
 					if($temoin_disc==1){
-						if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
+						//if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
+						if(strstr($ligne,"<LIBELLE_COURT>")){
 							unset($tabtmp);
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 							$prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
 						}
-						if(strstr($ligne[$cpt],"<NB_HEURES>")){
+						//if(strstr($ligne[$cpt],"<NB_HEURES>")){
+						if(strstr($ligne,"<NB_HEURES>")){
 							unset($tabtmp);
-							$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
+							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 							$prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
 						}
 					}
@@ -413,6 +462,7 @@ else {
 		}
 		$cpt++;
 	}
+	fclose($fp);
 
 	// Les $prof[$i]["disciplines"] ne sont pas utilisÈes sauf ‡ titre informatif ‡ l'affichage...
 	// Les $prof[$i]["prof_princ"][$j]["code_structure"] peuvent Ítre exploitÈes ‡ ce niveau pour dÈsigner les profs principaux.
@@ -730,13 +780,15 @@ else {
 
 	$tabchaine=array();
 	for($m=0;$m<count($prof);$m++){
-		for($n=0;$n<count($prof[$m]["prof_princ"]);$n++){
-			$tabchaine[]=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
-			//$chaine=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
-			//if($fich){
-			//	fwrite($fich,html_entity_decode_all_version($chaine)."\n");
-			//}
-			affiche_debug($chaine."<br />\n");
+		if(isset($prof[$m]["prof_princ"])){
+			for($n=0;$n<count($prof[$m]["prof_princ"]);$n++){
+				$tabchaine[]=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
+				//$chaine=$prof[$m]["prof_princ"][$n]["code_structure"].";"."P".$prof[$m]["id"];
+				//if($fich){
+				//	fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+				//}
+				affiche_debug($chaine."<br />\n");
+			}
 		}
 	}
 	sort($tabchaine);
