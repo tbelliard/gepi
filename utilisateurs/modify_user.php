@@ -204,8 +204,17 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
  			$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
 
+			$repertoire = '../photos/personnels/';
 			$ancien_code_photo = md5($user_login.''.$ancien_nom.' '.$ancien_prenom);
 			$nouveau_code_photo = md5($user_login.''.$_POST['reg_nom'].' '.$_POST['reg_prenom']);
+
+			// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
+			if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
+				$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
+				$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
+
+				@rename($ancien_nom_fichier, $nouveau_nom_fichier);
+			}
 
 		if(isset($ancien_code_photo)) {
 			if($ancien_code_photo != ""){
@@ -248,6 +257,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			// si suppression de la fiche il faut supprimer la photo
 
 		// fin pour le module trombinoscope
+
 
             $reg_data = mysql_query("UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."' WHERE login='".$user_login."'");
             $del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");

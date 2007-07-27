@@ -2090,7 +2090,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 		$div.="height: ".$hauteur.$unite_div_infobulle."; ";
 	}
 	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est désactivé:
-	$div.="left:".$posDiv.$unite_div_infobulle.";";
+	$div.="left:".$posDiv_infobulle.$unite_div_infobulle.";";
 	$div.="'>\n";
 
 

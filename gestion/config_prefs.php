@@ -84,7 +84,9 @@ if(isset($enregistrer)){
 	for($i=0;$i<count($prof);$i++){
 		//if($page=='accueil_simpl'){
 		if(($page=='accueil_simpl')||($_SESSION['statut']=='professeur')){
-			$tab=array('accueil_simpl','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf','accueil_aff_txt_icon');
+			//$tab=array('accueil_simpl','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf','accueil_aff_txt_icon');
+			$tab=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf');
+
 			for($j=0;$j<count($tab);$j++){
 				unset($valeur);
 				//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
@@ -377,8 +379,9 @@ else{
 	if(($page=="accueil_simpl")||($_SESSION['statut']=='professeur')){
 		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les professeurs</p>\n";
 
-		$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
+		//$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 		//accueil_aff_txt_icon
+		$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 
 		//echo "<table border='1'>\n";
 		echo "<table class='contenu'>\n";
@@ -388,6 +391,7 @@ else{
 		$lignes_entete="<tr class='entete'>\n";
 		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
+		$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
 		$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
 		$lignes_entete.="</tr>\n";
 

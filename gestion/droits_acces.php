@@ -28,17 +28,17 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
-die();
+	die();
 };
 // Check access
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
-die();
+	die();
 }
 
 $msg = '';
@@ -422,6 +422,96 @@ if (isset($_POST['OK'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesVisuToutesEquipCpe !";
 	}
 
+	// Années antérieures
+	if (isset($_POST['AAProfTout'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAProfTout", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAProfTout !";
+	}
+
+	if (isset($_POST['AAProfPrinc'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAProfPrinc", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAProfPrinc !";
+	}
+
+	if (isset($_POST['AAProfClasses'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAProfClasses", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAProfClasses !";
+	}
+
+	if (isset($_POST['AAProfGroupes'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAProfGroupes", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAProfGroupes !";
+	}
+
+	if (isset($_POST['AACpeTout'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AACpeTout", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AACpeTout !";
+	}
+
+	if (isset($_POST['AACpeResp'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AACpeResp", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AACpeResp !";
+	}
+
+	if (isset($_POST['AAScolTout'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAScolTout", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAScolTout !";
+	}
+
+	if (isset($_POST['AAScolResp'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAScolResp", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAScolResp !";
+	}
+
+	if (isset($_POST['AAResponsable'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAResponsable", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAResponsable !";
+	}
+
+	if (isset($_POST['AAEleve'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("AAEleve", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de AAEleve !";
+	}
 }
 
 // Load settings
@@ -501,6 +591,23 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
 			</tr>
 
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAProfTout" value="yes" <?php if (getSettingValue("AAProfTout")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures pour tous les élèves</td>
+			</tr>
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAProfClasses" value="yes" <?php if (getSettingValue("AAProfClasses")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement<br />
+				(<i>sans nécessairement avoir tous les élèves de la classe</i>)</td>
+			</tr>
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAProfGroupes" value="yes" <?php if (getSettingValue("AAProfGroupes")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données antérieures des élèves des groupes auxquels il enseigne<br />
+				(<i>il a ces élèves en classe</i>)
+				</td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>
@@ -533,6 +640,12 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProfP" value="yes" <?php if (getSettingValue("GepiAccesReleveProfP")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès aux relevés des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></td>
+			</tr>
+
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAProfPrinc" value="yes" <?php if (getSettingValue("AAProfPrinc")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures des élèves dont il est professeur principal</td>
 			</tr>
 			</table>
 	</tr>
@@ -569,6 +682,16 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipScol" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipScol")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
 			</tr>
+
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAScolTout" value="yes" <?php if (getSettingValue("AAScolTout")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures de tous les élèves</td>
+			</tr>
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAScolResp" value="yes" <?php if (getSettingValue("AAScolResp")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures des élèves des classes dont il est responsable</td>
+			</tr>
 			</table>
 		</td>
 	</tr>
@@ -589,6 +712,16 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipCpe" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipCpe")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès à la Visualisation de toutes les équipes</td>
+			</tr>
+
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AACpeTout" value="yes" <?php if (getSettingValue("AACpeTout")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures de tous les élèves</td>
+			</tr>
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AACpeResp" value="yes" <?php if (getSettingValue("AACpeResp")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures des élèves dont il est responsable</td>
 			</tr>
 			</table>
 		</td>
@@ -652,6 +785,12 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGraphEleve" value="yes" <?php if (getSettingValue("GepiAccesGraphEleve")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès à la visualisation graphique de ses résultats
 			</tr>
+
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAEleve" value="yes" <?php if (getSettingValue("AAEleve")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès à ses données d'années antérieures</td>
+			</tr>
 			</table>
 		</td>
 	</tr>
@@ -697,6 +836,12 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGraphParent" value="yes" <?php if (getSettingValue("GepiAccesGraphParent")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès à la visualisation graphique des résultats des élèves dont il est responsable
+			</tr>
+
+			<!-- Années antérieures -->
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="AAResponsable" value="yes" <?php if (getSettingValue("AAResponsable")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux données d'années antérieures des élèves dont il est responsable</td>
 			</tr>
 			</table>
 		</td>

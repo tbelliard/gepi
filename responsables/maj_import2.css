@@ -1,0 +1,19 @@
+table.majimport {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.majimport th {
+	font-weight:bold;
+	text-align: center;
+	background-color: white;
+	border: 1px solid black;
+	/*border-spacing:0;*/
+}
+
+.majimport td {
+	vertical-align: middle;
+	text-align: center;
+	border: 1px solid black;
+	/*border-collapse: collapse;*/
+}
