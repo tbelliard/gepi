@@ -2137,15 +2137,19 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	if(($overflow=='y')&&($hauteur!=0)){
 		$hauteur_hors_titre=$hauteur-1;
 		$div.="<div style='width: ".$largeur.$unite_div_infobulle."; height: ".$hauteur_hors_titre.$unite_div_infobulle."; overflow: auto;'>\n";
-		$div.="<span style='padding-left: 1px;'>\n";
+		//$div.="<span style='padding-left: 1px;'>\n";
+		$div.="<div style='padding-left: 1px;'>\n";
 		$div.=$texte;
-		$div.="</span>\n";
+		//$div.="</span>\n";
+		$div.="</div>\n";
 		$div.="</div>\n";
 	}
 	else{
-		$div.="<span style='padding-left: 1px;'>\n";
+		//$div.="<span style='padding-left: 1px;'>\n";
+		$div.="<div style='padding-left: 1px;'>\n";
 		$div.=$texte;
-		$div.="</span>\n";
+		//$div.="</span>\n";
+		$div.="</div>\n";
 	}
 	$div.="</div>\n";
 

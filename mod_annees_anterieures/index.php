@@ -84,8 +84,7 @@ echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
 echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données d'une année</a>.</p></li>\n";
 echo "<li><p><a href='nettoyer_annee_anterieure.php'>Nettoyage des données d'élèves ayant quitté l'établissement</a>.</p></li>\n";
-echo "<li><p>A FAIRE: Une page de correction des INE non renseignés lors de la conservation.</p></li>\n";
-echo "<li><p>A FAIRE: Une page de recherche des élèves dont l'INE n'étaient pas rempli lors de la sauvegarde.</p></li>\n";
+echo "<li><p><a href='corriger_ine.php'>Correction des INE non renseignés ou mal renseignés lors de la conservation</a>.</p></li>\n";
 echo "</ul>\n";
 
 echo "<p>Les pages de consultation:</p>\n";
