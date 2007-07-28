@@ -131,12 +131,12 @@ if(isset($step)){
 		($step==1)||
 		($step==2)||
 		($step==3)||
-		($step==7)||
-		($step==8)||
-		($step==9)||
 		($step==10)||
 		($step==11)||
-		($step==14)
+		($step==12)||
+		($step==13)||
+		($step==14)||
+		($step==17)
 		) {
 		echo "<div style='float: right; border: 1px solid black; width: 4em;'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -147,6 +147,7 @@ if(isset($step)){
 		echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est coché d'interrompre les passages automatiques à la page suivante","",12,0,"n","n","y","n");
 
 		echo "<script type='text/javascript'>
+	temporisation_chargement='ok';
 	cacher_div('div_stop');
 </script>\n";
 	}
@@ -1077,13 +1078,15 @@ else{
 					else{
 						echo "<p>Le(s) ELE_ID, pour lesquels une ou des différences ont déjà été repérées, sont: \n";
 					}
+					$chaine_ele_id_diff="";
 					for($i=0;$i<count($tab_ele_id_diff);$i++){
-						if($i>0){echo ", ";}
-						echo $tab_ele_id_diff[$i];
+						if($i>0){$chaine_ele_id_diff.=", ";}
+						$chaine_ele_id_diff.=$tab_ele_id_diff[$i];
 						//echo "$i: ";
 						echo "<input type='hidden' name='tab_ele_id_diff[]' value='$tab_ele_id_diff[$i]' />\n";
 						//echo "<br />\n";
 					}
+					echo $chaine_ele_id_diff;
 					echo "</p>\n";
 				}
 			}
@@ -1145,14 +1148,16 @@ else{
 				echo "<br />\n";
 				echo "En voici le(s) ELE_ID: ";
 				$cpt=0;
+				$chaine_ele_id="";
 				while($lig=mysql_fetch_object($test)){
-					if($cpt>0){echo ", ";}
-					echo $lig->ele_id;
+					if($cpt>0){$chaine_ele_id.=", ";}
+					$chaine_ele_id.=$lig->ele_id;
 					echo "<input type='hidden' name='tab_ele_id_diff[]' value='$lig->ele_id' />\n";
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_ele_id_diff[]=$lig->ele_id;
 				}
+				echo $chaine_ele_id;
 			}
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
@@ -1201,7 +1206,7 @@ else{
 				echo "<p>Aucune différence n'a été trouvée.</p>\n";
 
 				// A FAIRE: PERMETTRE DE PASSER AUX RESPONSABLES...
-				echo "<p>Voulez-vous <a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=6'>passer à la page d'importation/mise à jour des responsables</a></p>\n";
+				echo "<p>Voulez-vous <a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=9'>passer à la page d'importation/mise à jour des responsables</a></p>\n";
 			}
 			else{
 				echo "<p>".count($tab_ele_id_diff)." élève(s) restant à parcourir (<i>nouveau(x) ou modifié(s)</i>).</p>\n";
@@ -1271,6 +1276,8 @@ else{
 				}
 
 
+
+				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 
 				//echo "<table border='1'>\n";
 				echo "<table class='majimport'>\n";
@@ -1859,101 +1866,107 @@ else{
 
 				echo "<p>Ajout de ";
 				while($lig=mysql_fetch_object($res_new)){
-					//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
+					// ON VERIFIE QU'ON N'A PAS DEJA UN ELEVE DE MEME ele_id DANS eleves
+					// CELA PEUT ARRIVER SI ON JOUE AVEC F5
+					$sql="SELECT 1=1 FROM eleves WHERE ele_id='$lig->ELE_ID'";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)==0){
+						//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
 
-					if($cpt>0){echo ", ";}
+						if($cpt>0){echo ", ";}
 
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+						$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
 
-					switch($lig->ELEREG){
-						case 0:
-							$regime="ext.";
-							break;
-						case 2:
-							$regime="d/p";
-							break;
-						case 3:
-							$regime="int.";
-							break;
-						case 4:
-							$regime="i-e";
-							break;
-					}
-
-					switch($lig->ELEDOUBL){
-						case "O":
-							$doublant="R";
-							break;
-						case "N":
-							$doublant="-";
-							break;
-					}
-
-					$tmp_nom=$lig->ELENOM;
-					$tmp_prenom=$lig->ELEPRE;
-
-					// Générer un login...
-					$temp1 = strtoupper($tmp_nom);
-					$temp1 = strtr($temp1, " '-", "___");
-					$temp1 = substr($temp1,0,7);
-					$temp2 = strtoupper($tmp_prenom);
-					$temp2 = strtr($temp2, " '-", "___");
-					$temp2 = substr($temp2,0,1);
-					$login_eleve = $temp1.'_'.$temp2;
-
-					// On teste l'unicité du login que l'on vient de créer
-					$k = 2;
-					$test_unicite = 'no';
-					$temp = $login_eleve;
-					while ($test_unicite != 'yes') {
-						//$test_unicite = test_unique_e_login($login_eleve,$i);
-						$test_unicite = test_unique_login($login_eleve);
-						if ($test_unicite != 'yes') {
-							$login_eleve = $temp.$k;
-							$k++;
+						switch($lig->ELEREG){
+							case 0:
+								$regime="ext.";
+								break;
+							case 2:
+								$regime="d/p";
+								break;
+							case 3:
+								$regime="int.";
+								break;
+							case 4:
+								$regime="i-e";
+								break;
 						}
+
+						switch($lig->ELEDOUBL){
+							case "O":
+								$doublant="R";
+								break;
+							case "N":
+								$doublant="-";
+								break;
+						}
+
+						$tmp_nom=$lig->ELENOM;
+						$tmp_prenom=$lig->ELEPRE;
+
+						// Générer un login...
+						$temp1 = strtoupper($tmp_nom);
+						$temp1 = strtr($temp1, " '-", "___");
+						$temp1 = substr($temp1,0,7);
+						$temp2 = strtoupper($tmp_prenom);
+						$temp2 = strtr($temp2, " '-", "___");
+						$temp2 = substr($temp2,0,1);
+						$login_eleve = $temp1.'_'.$temp2;
+
+						// On teste l'unicité du login que l'on vient de créer
+						$k = 2;
+						$test_unicite = 'no';
+						$temp = $login_eleve;
+						while ($test_unicite != 'yes') {
+							//$test_unicite = test_unique_e_login($login_eleve,$i);
+							$test_unicite = test_unique_login($login_eleve);
+							if ($test_unicite != 'yes') {
+								$login_eleve = $temp.$k;
+								$k++;
+							}
+						}
+
+						// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
+						$sql="INSERT INTO eleves SET login='$login_eleve',
+												nom='".addslashes($lig->ELENOM)."',
+												prenom='".addslashes($lig->ELEPRE)."',
+												sexe='".$lig->ELESEXE."',
+												naissance='".$naissance."',
+												no_gep='".$lig->ELENONAT."',
+												elenoet='".$lig->ELENOET."',
+												ele_id='".$lig->ELE_ID."';";
+						$insert=mysql_query($sql);
+						if($insert){
+							echo "\n<span style='color:blue;'>";
+						}
+						else{
+							echo "\n<span style='color:red;'>";
+							$erreur++;
+						}
+						//echo "$sql<br />\n";
+						echo "$lig->ELEPRE $lig->ELENOM";
+						echo "</span>";
+
+
+						$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
+									regime='$regime',
+									login='$login_eleve';";
+						$res2=mysql_query($sql);
+						if(!$res2){
+							echo " <span style='color:red;'>(*)</span>";
+							$erreur++;
+						}
+
+
+						// On remplit aussi une table pour l'association avec la classe:
+						// On fait le même traitement que dans step2.php
+						// (dans step1.php, on a fait le même traitement que pour le remplissage de temp_gep_import2 ici)
+						$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
+						$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
+						$insert=mysql_query($sql);
+
+						$cpt++;
 					}
-
-					// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
-					$sql="INSERT INTO eleves SET login='$login_eleve',
-											nom='".addslashes($lig->ELENOM)."',
-											prenom='".addslashes($lig->ELEPRE)."',
-											sexe='".$lig->ELESEXE."',
-											naissance='".$naissance."',
-											no_gep='".$lig->ELENONAT."',
-											elenoet='".$lig->ELENOET."',
-											ele_id='".$lig->ELE_ID."';";
-					$insert=mysql_query($sql);
-					if($insert){
-						echo "\n<span style='color:blue;'>";
-					}
-					else{
-						echo "\n<span style='color:red;'>";
-						$erreur++;
-					}
-					//echo "$sql<br />\n";
-					echo "$lig->ELEPRE $lig->ELENOM";
-					echo "</span>";
-
-
-					$sql="INSERT INTO j_eleves_regime SET doublant='$doublant',
-								regime='$regime',
-								login='$login_eleve';";
-					$res2=mysql_query($sql);
-					if(!$res2){
-						echo " <span style='color:red;'>(*)</span>";
-						$erreur++;
-					}
-
-
-					// On remplit aussi une table pour l'association avec la classe:
-					// On fait le même traitement que dans step2.php
-					// (dans step1.php, on a fait le même traitement que pour le remplissage de temp_gep_import2 ici)
-					$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
-					$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
-					$insert=mysql_query($sql);
-
-					$cpt++;
 				}
 				echo "</p>\n";
 			}
@@ -1963,19 +1976,36 @@ else{
 
 
 
+			if($cpt==0){
+				// Pas de nouveau:
+				switch($erreur){
+					case 0:
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						break;
 
-			switch($erreur){
-				case 0:
-					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
-					break;
+					case 1:
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						break;
 
-				case 1:
-					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
-					break;
+					default:
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						break;
+				}
+			}
+			else{
+				switch($erreur){
+					case 0:
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						break;
 
-				default:
-					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
-					break;
+					case 1:
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						break;
+
+					default:
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						break;
+				}
 			}
 
 			break;
@@ -1986,14 +2016,584 @@ else{
 //              ... et d'affectation dans les options?
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 		case 6:
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			echo "<p>Affectation des nouveaux élèves dans leurs classes:</p>\n";
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			// DISTINCT parce qu'on peut avoir plusieurs enregistrements d'un même élève dans 'temp_ele_classe' si on a joué avec F5.
+			// ERREUR: Il faut régler le problème plus haut parce que si on insère plusieurs fois l'élève, il est plusieurs fois dans 'eleves' avec des logins différents.
+			$sql="SELECT DISTINCT e.*,t.divcod FROM temp_ele_classe t,eleves e WHERE t.ele_id=e.ele_id ORDER BY e.nom,e.prenom";
+			$res_ele=mysql_query($sql);
+
+			//echo mysql_num_rows($res_ele);
+
+			if(mysql_num_rows($res_ele)==0){
+				echo "<p>Bizarre: il semble que la table 'temp_ele_classe' ne contienne aucun identifiant de nouvel élève.</p>\n";
+				// FAUT-IL SAUTER A UNE AUTRE ETAPE?
+			}
+			else{
+
+				$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1";
+				$res_per=mysql_query($sql);
+
+				if(mysql_num_rows($res_per)==0){
+					echo "<p>Bizarre: il semble qu'aucune période ne soit encore définie.</p>\n";
+					// FAUT-IL SAUTER A UNE AUTRE ETAPE?
+				}
+				else{
+
+					$lig_per=mysql_fetch_object($res_per);
+					$max_per=$lig_per->num_periode;
+					echo "<input type='hidden' name='maxper' value='$max_per' />\n";
+
+					echo "<table class='majimport'>\n";
+					echo "<tr>\n";
+					echo "<th rowspan='2'>Elève</th>\n";
+					echo "<th rowspan='2'>Classe</th>\n";
+					echo "<th colspan='$max_per'>Périodes</th>\n";
+					echo "<th rowspan='2'>&nbsp;</th>\n";
+					echo "</tr>\n";
+
+					echo "<tr>\n";
+					for($i=1;$i<=$max_per;$i++){
+						echo "<th>\n";
+						echo "Période $i\n";
+						echo "<br />\n";
+						echo "<a href='javascript:modif_case($i,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+						echo "<a href='javascript:modif_case($i,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+						echo "</th>\n";
+					}
+					echo "</tr>\n";
+
+					$cpt=0;
+					$alt=-1;
+					while($lig_ele=mysql_fetch_object($res_ele)){
+						$alt=$alt*(-1);
+						echo "<tr style='background-color:";
+						if($alt==1){
+							echo "silver";
+						}
+						else{
+							echo "white";
+						}
+						echo ";'>\n";
+
+						echo "<td>";
+						echo "$lig_ele->nom $lig_ele->prenom";
+						echo "<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />\n";
+						echo "</td>\n";
+
+						$sql="SELECT c.id FROM classes c WHERE c.classe='$lig_ele->divcod';";
+						$res_classe=mysql_query($sql);
+						if(mysql_num_rows($res_classe)>0){
+							$lig_classe=mysql_fetch_object($res_classe);
+
+							echo "<td>";
+							echo $lig_ele->divcod;
+							echo "<input type='hidden' name='id_classe[$cpt]' value='$lig_classe->id' />\n";
+							echo "</td>\n";
+
+							$sql="SELECT p.num_periode FROM periodes p, classes c
+													WHERE p.id_classe=c.id AND
+															c.classe='$lig_ele->divcod'
+													ORDER BY num_periode;";
+							$res_per=mysql_query($sql);
+							$cpt_periode=1;
+							while($lig_per=mysql_fetch_object($res_per)){
+								echo "<td>\n";
+								echo "<input type='checkbox' name='periode_".$cpt."_[$cpt_periode]' id='case".$cpt."_".$cpt_periode."'  value='$cpt_periode' />\n";
+								echo "</td>\n";
+								$cpt_periode++;
+							}
+							for($i=$cpt_periode;$i<=$max_per;$i++){
+								echo "<td style='background-color: darkgray;'>\n";
+								echo "</td>\n";
+							}
+						}
+						else{
+							// La classe n'a pas été identifiée
+							$sql="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
+							$res_classe=mysql_query($sql);
+							echo "<td>\n";
+							if(mysql_num_rows($res_classe)>0){
+								echo "<select name='id_classe[$cpt]'>\n";
+								echo "<option value=''>---</option>\n";
+								while($lig_classe=mysql_fetch_object($res_classe)){
+									echo "<option value='$lig_classe->id'>$lig_classe->classe</option>\n";
+								}
+								echo "</select>\n";
+							}
+							echo "</td>\n";
+
+							for($i=1;$i<=$max_per;$i++){
+								echo "<td style='background-color: orange;'>\n";
+								echo "<input type='checkbox' name='periode_".$cpt."_[$i]' value='$i' />\n";
+								echo "</td>\n";
+							}
+						}
+
+						echo "<td>\n";
+						echo "<a href='javascript:modif_case($cpt,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+						echo "<a href='javascript:modif_case($cpt,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+						echo "</td>\n";
+
+						echo "</tr>\n";
+						$cpt++;
+					}
+					echo "</table>\n";
+				}
+			}
+
+
+			echo "<script type='text/javascript' language='javascript'>
+	function modif_case(rang,type,statut){
+		// type: col ou lig
+		// rang: le numéro de la colonne ou de la ligne
+		// statut: true ou false
+		if(type=='col'){
+			for(k=0;k<$cpt;k++){
+				if(document.getElementById('case'+k+'_'+rang)){
+					document.getElementById('case'+k+'_'+rang).checked=statut;
+				}
+			}
+		}
+		else{
+			for(k=1;k<=$max_per;k++){
+				if(document.getElementById('case'+rang+'_'+k)){
+					document.getElementById('case'+rang+'_'+k).checked=statut;
+				}
+			}
+		}
+		changement();
+	}
+</script>\n";
+
+			echo "<p><br /></p>\n";
+
+			//echo "<input type='hidden' name='step' value='6_1' />\n";
+			echo "<input type='hidden' name='step' value='7' />\n";
+			echo "<p><input type='submit' value='Valider' /></p>\n";
+
+			echo "</form>\n";
+			break;
+
+		//case "6_1":
+		case 7:
+			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : NULL;
+			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+			$maxper=isset($_POST['maxper']) ? $_POST['maxper'] : NULL;
+
+			if(!isset($login_eleve)){
+				echo "<p>Vous n'avez affecté aucun élève.</p>\n";
+			}
+			else{
+				echo "<p>\n";
+				for($i=0;$i<count($login_eleve);$i++){
+					$sql="SELECT nom, prenom FROM eleves WHERE login='$login_eleve[$i]'";
+					//echo $sql."<br />";
+					$res_ele=mysql_query($sql);
+					if(mysql_num_rows($res_ele)>0){
+						$lig_ele=mysql_fetch_object($res_ele);
+
+						echo "Affectation de $lig_ele->prenom $lig_ele->nom ";
+
+						//if(is_int($id_classe[$i])){
+						if(is_numeric($id_classe[$i])){
+							$tab_periode=isset($_POST['periode_'.$i.'_']) ? $_POST['periode_'.$i.'_'] : NULL;
+
+							if(isset($tab_periode)){
+								$sql="SELECT classe FROM classes WHERE id='$id_classe[$i]'";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)>0){
+									$lig_classe=mysql_fetch_object($test);
+
+									echo "en $lig_classe->classe pour ";
+									if(count($tab_periode)==1){
+										echo "la période ";
+									}
+									else{
+										echo "les périodes ";
+									}
+
+									$cpt_per=0;
+									for($j=1;$j<=$maxper;$j++){
+										if(isset($tab_periode[$j])){
+											//if(is_int($tab_periode[$j])){
+											if(is_numeric($tab_periode[$j])){
+												$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe[$i]' AND num_periode='$tab_periode[$j]'";
+												$test=mysql_query($sql);
+
+												if(mysql_num_rows($test)>0){
+													// VERIFICATION: Si on fait F5 pour rafraichir la page, on risque d'insérer plusieurs fois le même enregistrement.
+													$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$login_eleve[$i]' AND
+																						id_classe='$id_classe[$i]' AND
+																						periode='$tab_periode[$j]'";
+													$test=mysql_query($sql);
+
+													if(mysql_num_rows($test)==0){
+														$sql="INSERT INTO j_eleves_classes SET login='$login_eleve[$i]',
+																							id_classe='$id_classe[$i]',
+																							periode='$tab_periode[$j]',
+																							rang='0'";
+														$insert=mysql_query($sql);
+													}
+													if($cpt_per>0){echo ", ";}
+													echo "$j";
+													$cpt_per++;
+												}
+											}
+										}
+									}
+								}
+								else{
+									echo "dans aucune classe (<i>identifiant de classe invalide</i>).";
+								}
+							}
+							else{
+								echo "dans aucune classe (<i>aucune période cochée</i>).";
+							}
+						}
+						else{
+							echo "dans aucune classe (<i>identifiant de classe invalide</i>).";
+						}
+						echo "<br />\n";
+					}
+				}
+				echo "</p>\n";
+			}
+
+			echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=8'>inscription des nouveaux élèves dans les groupes</a>.</p>\n";
+
+			break;
+
+		case 8:
+
+			echo "<h2>Import/mise à jour élève</h2>\n";
+
+			$opt_eleve=isset($_POST['opt_eleve']) ? $_POST['opt_eleve'] : NULL;
+			$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : NULL;
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			if(!isset($opt_eleve)){
+				$sql="SELECT e.* FROM eleves e, temp_ele_classe t WHERE t.ele_id=e.ele_id ORDER BY e.nom,e.prenom";
+				$res_ele=mysql_query($sql);
+
+				if(mysql_num_rows($res_ele)==0){
+					// CA NE DEVRAIT PAS ARRIVER
+
+					echo "<p>Il semble qu'il n'y ait aucun élève à affecter.</p>\n";
+
+					// METTRE LE LIEN VERS L'ETAPE SUIVANTE
+
+					echo "</form>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
+
+				$lig_ele=mysql_fetch_object($res_ele);
+				$nom_eleve=$lig_ele->nom;
+				$prenom_eleve=$lig_ele->prenom;
+				$login_eleve=$lig_ele->login;
+				$ele_id=$lig_ele->ele_id;
+
+				while($lig_ele=mysql_fetch_object($res_ele)){
+					echo "<input type='hidden' name='eleve[]' value='$lig_ele->ele_id' />\n";
+				}
+
+			}
+			else{
+				$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : NULL;
+				$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
+				$res_per=mysql_query($sql);
+				$nb_periode=mysql_num_rows($res_per)+1;
+				/*
+				$cpt=1;
+				while($lig_per=mysql_fetch_object($res_per)){
+					$nom_periode[$cpt]=$lig_per->nom_periode;
+					$cpt++;
+				}
+				*/
+
+				$j = 1;
+				while ($j < $nb_periode) {
+					$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+					$nombre_ligne = mysql_num_rows($call_group);
+					$i=0;
+					while ($i < $nombre_ligne) {
+						$id_groupe = mysql_result($call_group, $i, "id");
+						$nom_groupe = mysql_result($call_group, $i, "name");
+						$id_group[$j] = $id_groupe."_".$j;
+						$test_query = mysql_query("SELECT 1=1 FROM j_eleves_groupes WHERE (" .
+								"id_groupe = '" . $id_groupe . "' and " .
+								"login = '" . $login_eleve . "' and " .
+								"periode = '" . $j . "')");
+						$test = mysql_num_rows($test_query);
+						if (isset($_POST[$id_group[$j]])) {
+							if ($test == 0) {
+								$req = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'");
+							}
+						} else {
+							$test1 = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+							$nb_test1 = mysql_num_rows($test1);
+							$test2 = mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+							$nb_test2 = mysql_num_rows($test2);
+							if (($nb_test1 != 0) or ($nb_test2 != 0)) {
+								$msg = $msg."--> Impossible de supprimer cette option pour l'élève $login_eleve car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $j ! Commencez par supprimer ces données !<br />";
+							} else {
+								if ($test != "0")  $req = mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$login_eleve."' and id_groupe='".$id_groupe."' and periode = '".$j."')");
+							}
+						}
+						$i++;
+					}
+					$j++;
+				}
+
+
+
+				if(isset($eleve)){
+					$sql="SELECT e.* FROM eleves e WHERE e.ele_id='$eleve[0]'";
+					$res_ele=mysql_query($sql);
+
+					$lig_ele=mysql_fetch_object($res_ele);
+					$nom_eleve=$lig_ele->nom;
+					$prenom_eleve=$lig_ele->prenom;
+					$login_eleve=$lig_ele->login;
+					$ele_id=$lig_ele->ele_id;
+
+					for($i=1;$i<count($eleve);$i++){
+						echo "<input type='hidden' name='eleve[]' value='$eleve[$i]' />\n";
+					}
+				}
+				else{
+					echo "<p>Tous les élèves ont été parcourus.</p>\n";
+
+					// METTRE LE LIEN VERS L'ETAPE SUIVANTE
+
+					echo "<input type='hidden' name='step' value='9' />\n";
+					echo "<p><input type='submit' value='Etape suivante: Responsables' /></p>\n";
+
+					echo "</form>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
+			}
+
+			echo "<input type='hidden' name='opt_eleve' value='y' />\n";
+
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_classes jec
+									WHERE jec.id_classe=c.id AND
+										jec.login='$login_eleve'";
+			$res_classe=mysql_query($sql);
+
+			if(mysql_num_rows($res_classe)==0){
+				echo "<p>$prenom_eleve $nom_eleve n'est dans aucune classe.</p>\n";
+
+				// PASSER AU SUIVANT...
+
+				echo "<input type='hidden' name='step' value='8' />\n";
+				echo "<p><input type='submit' value='Suite' /></p>\n";
+
+				echo "</form>\n";
+			}
+			else{
+				$lig_classe=mysql_fetch_object($res_classe);
+				$id_classe=$lig_classe->id;
+
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
+				$res_per=mysql_query($sql);
+
+				if(mysql_num_rows($res_per)==0){
+					echo "<p>L'élève $prenom_eleve $ele_nom_eleve serait dans une classe sans période???</p>\n";
+
+					// PASSER AU SUIVANT...
+					echo "</form>\n";
+				}
+				else{
+
+					$nb_periode=mysql_num_rows($res_per)+1;
+
+					$cpt=1;
+					while($lig_per=mysql_fetch_object($res_per)){
+						$nom_periode[$cpt]=$lig_per->nom_periode;
+						$cpt++;
+					}
+
+
+					echo "<p>Affectation dans les groupes de l'élève $prenom_eleve $nom_eleve (<i>$lig_classe->classe</i>)</p>\n";
+
+					echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+					echo "<input type='hidden' name='login_eleve' value='$login_eleve' />\n";
+
+
+					$sql="SELECT DISTINCT g.id, g.name FROM groupes g,
+															j_groupes_classes jgc
+									WHERE (g.id = jgc.id_groupe AND
+											jgc.id_classe = '" . $id_classe ."')
+									ORDER BY jgc.priorite, g.name";
+					$call_group=mysql_query($sql);
+					$nombre_ligne=mysql_num_rows($call_group);
+
+					//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
+					echo "<table class='majimport' cellpadding='5' cellspacing='0'>\n";
+					//echo "<tr align='center'><td><b>Matière</b></td>";
+					echo "<tr align='center'><th><b>Matière</b></th>\n";
+
+					$j = 1;
+					while ($j < $nb_periode) {
+						//echo "<td><b>".$nom_periode[$j]."</b><br />\n";
+						echo "<th><b>".$nom_periode[$j]."</b><br />\n";
+						echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+						echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+						//echo "</td>";
+						echo "</th>\n";
+						$j++;
+					}
+					//echo "<td>&nbsp;</td>\n";
+					echo "<th>&nbsp;</th>\n";
+					echo "</tr>\n";
+
+					$nb_erreurs=0;
+					$i=0;
+					$alt=-1;
+					while ($i < $nombre_ligne) {
+						$id_groupe = mysql_result($call_group, $i, "id");
+						$nom_groupe = mysql_result($call_group, $i, "name");
+
+						$alt=$alt*(-1);
+						echo "<tr style='background-color:";
+						if($alt==1){
+							echo "silver";
+						}
+						else{
+							echo "white";
+						}
+						echo ";'>\n";
+						echo "<td>".$nom_groupe;
+						echo "</td>\n";
+						$j = 1;
+						while ($j < $nb_periode) {
+							$test=mysql_query("SELECT 1=1 FROM j_eleves_groupes WHERE (" .
+									"id_groupe = '" . $id_groupe . "' and " .
+									"login = '" . $login_eleve . "' and " .
+									"periode = '" . $j . "')");
+
+							$sql="SELECT * FROM j_eleves_classes WHERE login='$login_eleve' AND periode='$j' AND id_classe='$id_classe'";
+							// CA NE VA PAS... SUR LES GROUPES A REGROUPEMENT, IL FAUT PRENDRE DES PRECAUTIONS...
+							$res_test_class_per=mysql_query($sql);
+							if(mysql_num_rows($res_test_class_per)==0){
+								if (mysql_num_rows($test) == "0") {
+									echo "<td>&nbsp;</td>\n";
+								}
+								else{
+									$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe'";
+									$res_grp=mysql_query($sql);
+									$temoin="";
+									while($lig_clas=mysql_fetch_object($res_grp)){
+										$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$lig_clas->id_classe' AND login='$login_eleve' AND periode='$j'";
+										$res_test_ele=mysql_query($sql);
+										if(mysql_num_rows($res_test_ele)==1){
+											$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
+											$res_tmp=mysql_query($sql);
+											$lig_tmp=mysql_fetch_object($res_tmp);
+											$clas_tmp=$lig_tmp->classe;
+
+											$temoin=$clas_tmp;
+										}
+									}
+
+									if($temoin!=""){
+										echo "<td><center>".$temoin."<input type=hidden name=".$id_groupe."_".$j." value='checked' /></center></td>\n";
+									}
+									else{
+										$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
+										echo "<td><center><a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a></center></td>\n";
+										$nb_erreurs++;
+									}
+								}
+							}
+							else{
+
+								/*
+								// Un autre test à faire:
+								// Si l'élève est resté dans le groupe alors qu'il n'est plus dans cette classe pour la période
+								$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$j' AND login='$login_eleve'";
+								*/
+
+								//=========================
+								// MODIF: boireaus
+								if (mysql_num_rows($test) == "0") {
+									//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." /></center></td>\n";
+									echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' /></center></td>\n";
+								} else {
+									//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
+									echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' checked /></center></td>\n";
+								}
+								//=========================
+							}
+							$j++;
+						}
+						//=========================
+						// AJOUT: boireaus
+						echo "<td>\n";
+						//echo "<input type='button' name='coche_lig_$i' value='C' onClick='modif_case($i,\"lig\",true)' />/\n";
+						//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
+						echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+						echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+						echo "</td>\n";
+						//=========================
+						echo "</tr>\n";
+						$i++;
+					}
+					echo "</table>\n";
+
+
+					echo "<script type='text/javascript' language='javascript'>
+	function modif_case(rang,type,statut){
+		// type: col ou lig
+		// rang: le numéro de la colonne ou de la ligne
+		// statut: true ou false
+		if(type=='col'){
+			for(k=0;k<$nombre_ligne;k++){
+				if(document.getElementById('case'+k+'_'+rang)){
+					document.getElementById('case'+k+'_'+rang).checked=statut;
+				}
+			}
+		}
+		else{
+			for(k=1;k<$nb_periode;k++){
+				if(document.getElementById('case'+rang+'_'+k)){
+					document.getElementById('case'+rang+'_'+k).checked=statut;
+				}
+			}
+		}
+		changement();
+	}
+</script>\n";
+
+					echo "<input type='hidden' name='step' value='8' />\n";
+					echo "<p><input type='submit' value='Valider' /></p>\n";
+					echo "</form>\n";
+				}
+
+			}
+
+
+			break;
+
+		case 9:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
-			echo "<input type='hidden' name='step' value='7' />\n";
+			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
@@ -2004,7 +2604,7 @@ else{
 			die();
 
 			break;
-		case 7:
+		case "10":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			$post_max_size=ini_get('post_max_size');
@@ -2238,7 +2838,7 @@ else{
 		}
 	}
 	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=8')\",2000);
+		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=11')\",2000);
 	}
 </script>\n";
 						}
@@ -2246,7 +2846,7 @@ else{
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=8'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11'>Suite</a></p>\n";
 
 
 						require("../lib/footer.inc.php");
@@ -2262,7 +2862,7 @@ else{
 			}
 
 			break;
-		case 8:
+		case "11":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			$dest_file="../temp/".$tempdir."/responsables.xml";
@@ -2405,21 +3005,21 @@ else{
 		}
 	}
 	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=9')\",2000);
+		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=12')\",2000);
 	}
 </script>\n";
 				}
 
 				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=9'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=12'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
 			}
 
 			break;
-		case 9:
+		case "12":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			$dest_file="../temp/".$tempdir."/responsables.xml";
@@ -2597,19 +3197,19 @@ else{
 		}
 	}
 	if(stop=='n'){
-		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=10')\",2000);
+		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=13')\",2000);
 	}
 </script>\n";
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=10'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
 			}
 			break;
-		case 10:
+		case 13:
 			// On va commencer les comparaisons...
 			// - resp_pers
 			// - resp_adr en rappelant la liste des personnes auxquelles l'adresse est rattachée...
@@ -2773,7 +3373,7 @@ else{
 
 			if(count($tab_pers_id)>20){
 				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
-				echo "<input type='hidden' name='step' value='10' />\n";
+				echo "<input type='hidden' name='step' value='13' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 				echo "<script type='text/javascript'>
@@ -2800,7 +3400,7 @@ else{
 					$insert=mysql_query($sql);
 				}
 
-				echo "<input type='hidden' name='step' value='11' />\n";
+				echo "<input type='hidden' name='step' value='14' />\n";
 				//echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 				echo "<p><input type='submit' value=\"Parcourir les différences d'adresses\" /></p>\n";
 
@@ -2821,7 +3421,7 @@ else{
 
 
 			break;
-		case 11:
+		case 14:
 
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
@@ -2932,7 +3532,7 @@ else{
 				}
 				$time2=time();
 				$delta=$time2-$time1;
-				echo "Durée:".$delta."<br />\n";
+				echo "Durée: ".$delta." secondes.<br />\n";
 
 				flush();
 
@@ -3010,14 +3610,16 @@ else{
 				echo "<br />\n";
 				echo "En voici le(s) adr_id: ";
 				$cpt=0;
+				$chaine_adr="";
 				while($lig=mysql_fetch_object($test)){
-					if($cpt>0){echo ", ";}
-					echo $lig->adr_id;
+					if($cpt>0){$chaine_adr.=", ";}
+					$chaine_adr.=$lig->adr_id;
 					echo "<input type='hidden' name='tab_adr_id_diff[]' value='$lig->adr_id' />\n";
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_adr_id_diff[]=$lig->adr_id;
 				}
+				echo $chaine_adr;
 			}
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
@@ -3026,7 +3628,7 @@ else{
 
 			if(count($tab_adr_id)>20){
 				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
-				echo "<input type='hidden' name='step' value='11' />\n";
+				echo "<input type='hidden' name='step' value='14' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 				echo "<script type='text/javascript'>
@@ -3081,7 +3683,7 @@ else{
 					// On fait des recherches en DISTINCT par la suite.
 				}
 
-				echo "<input type='hidden' name='step' value='12' />\n";
+				echo "<input type='hidden' name='step' value='15' />\n";
 				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 
 				/*
@@ -3102,7 +3704,7 @@ else{
 
 
 			break;
-		case 12:
+		case 15:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 
@@ -3767,14 +4369,14 @@ else{
 	}
 </script>\n";
 
-				echo "<input type='hidden' name='step' value='12' />\n";
+				echo "<input type='hidden' name='step' value='15' />\n";
 				echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
 			}
 			else{
 				// On est à la fin on peut passer à step=12 et effectuer les changements confirmés.
 				echo "<p>Toutes les différences concernant les personnes ont été parcourues.</p>\n";
 
-				echo "<input type='hidden' name='step' value='13' />\n";
+				echo "<input type='hidden' name='step' value='16' />\n";
 				echo "<p><input type='submit' value='Valider les modifications' /></p>\n";
 			}
 
@@ -3782,7 +4384,7 @@ else{
 			echo "</form>\n";
 
 			break;
-		case 13:
+		case 16:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
@@ -3793,7 +4395,7 @@ else{
 				echo "<p>Aucune modification n'a été confirmée/demandée.</p>\n";
 
 				// IL RESTE... les responsabilités
-				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=14'>mise à jour des responsabilités</a>.</p>\n";
+				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
 
 			}
 			else{
@@ -3946,20 +4548,20 @@ else{
 
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=14'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=14'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=14'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 				}
 			}
 
 			break;
-		case 14:
+		case 17:
 			//echo "<h2>Import/mise à jour des responsabilités</h2>\n";
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
@@ -4031,14 +4633,16 @@ else{
 					else{
 						echo "<p>Les couples ELE_ID/PERS_ID, pour lesquels une ou des différences ont déjà été repérées, sont: \n";
 					}
+					$chaine_ele_resp="";
 					for($i=0;$i<count($tab_resp_diff);$i++){
-						if($i>0){echo ", ";}
+						if($i>0){$chaine_ele_resp.=", ";}
 						$tab_tmp=explode("_",$tab_resp_diff[$i]);
-						echo $tab_tmp[1]."/".$tab_tmp[2];
+						$chaine_ele_resp.=$tab_tmp[1]."/".$tab_tmp[2];
 						//echo "$i: ";
 						echo "<input type='hidden' name='tab_resp_diff[]' value='$tab_resp_diff[$i]' />\n";
 						//echo "<br />\n";
 					}
+					echo $chaine_ele_resp;
 					echo "</p>\n";
 				}
 			}
@@ -4099,14 +4703,16 @@ else{
 				echo "<br />\n";
 				echo "En voici le(s) couple(s) ELE_ID/PERS_ID: ";
 				$cpt=0;
+				$chaine_ele_resp="";
 				while($lig=mysql_fetch_object($test)){
-					if($cpt>0){echo ", ";}
-					echo $lig->ele_id."/".$lig->pers_id;
+					if($cpt>0){$chaine_ele_resp.=", ";}
+					$chaine_ele_resp.=$lig->ele_id."/".$lig->pers_id;
 					echo "<input type='hidden' name='tab_resp_diff[]' value='t_".$lig->ele_id."_".$lig->pers_id."' />\n";
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_resp_diff[]="t_".$lig->ele_id."_".$lig->pers_id;
 				}
+				echo $chaine_ele_resp;
 			}
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
@@ -4116,7 +4722,7 @@ else{
 
 			if(count($tab_resp)>$eff_tranche){
 				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
-				echo "<input type='hidden' name='step' value='14' />\n";
+				echo "<input type='hidden' name='step' value='17' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 
@@ -4143,7 +4749,7 @@ else{
 					$update=mysql_query($sql);
 				}
 
-				echo "<input type='hidden' name='step' value='15' />\n";
+				echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 
 				echo "<script type='text/javascript'>
@@ -4163,7 +4769,7 @@ else{
 
 
 			break;
-		case 15:
+		case 18:
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
@@ -4692,11 +5298,11 @@ else{
 	}
 </script>\n";
 
-				echo "<input type='hidden' name='step' value='15' />\n";
+				echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 			}
 			else{
-				echo "<input type='hidden' name='step' value='16' />\n";
+				echo "<input type='hidden' name='step' value='19' />\n";
 
 				//echo "<p align='center'><input type=submit value='Terminer' /></p>\n";
 				echo "<p>Retour à:</p>\n";
@@ -4710,7 +5316,7 @@ else{
 			echo "</form>\n";
 
 			break;
-		case 16:
+		case 19:
 			echo "<h2>THE END ?</h2>\n";
 			break;
 	}

@@ -258,8 +258,8 @@ require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
 ?>    <script type='text/javascript' language="JavaScript">
     function verif1() {
-		//document.formulaire.quelles_classes[2].checked = true;
-		document.formulaire.quelles_classes[3].checked = true;
+		document.formulaire.quelles_classes[2].checked = true;
+		//document.formulaire.quelles_classes[3].checked = true;
     }
     function verif2() {
     <?php $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
