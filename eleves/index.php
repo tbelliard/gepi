@@ -256,32 +256,36 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 $titre_page = "Gestion des élèves";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
-?>    <script type='text/javascript' language="JavaScript">
+?>
+
+<script type='text/javascript' language="JavaScript">
     function verif1() {
-		document.formulaire.quelles_classes[2].checked = true;
-		//document.formulaire.quelles_classes[3].checked = true;
+		//document.formulaire.quelles_classes[2].checked = true;
+		document.formulaire.quelles_classes[3].checked = true;
     }
     function verif2() {
-    <?php $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-    $nb = mysql_num_rows($classes_list);
-    $k = '0';
-    while ($k < $nb) {
-        $id_classe = mysql_result($classes_list, $k, 'id');
-        ?>
-        document.formulaire.case_<?php echo $id_classe; ?>.checked = false;
-        <?php
-    $k++;
-    }
+    <?php
+		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$nb = mysql_num_rows($classes_list);
+		$k = '0';
+		while ($k < $nb) {
+			$id_classe = mysql_result($classes_list, $k, 'id');
+			?>
+				document.formulaire.case_<?php echo $id_classe; ?>.checked = false;
+			<?php
+		$k++;
+		}
     ?>
     }
-    </SCRIPT>
+</script>
+
 <?php
 if ($_SESSION['statut'] == 'administrateur')
     $retour = "../accueil_admin.php";
 else
     $retour = "../accueil.php";
 if (isset($quelles_classes)) $retour = "index.php";
-echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| ";
+echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | ";
 
 
 
@@ -324,7 +328,7 @@ if(!getSettingValue('conv_new_resp_table')){
 <?php
 $droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 if ($droits == "V") {
-   echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>";
+   echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>\n";
 
 	if(getSettingValue("import_maj_xml_sconet")==1){
 		echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
@@ -333,13 +337,13 @@ if ($droits == "V") {
 ?>
 </p>
 <?php
-echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>";
+echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
 $req = mysql_query("SELECT login FROM eleves");
 $test = mysql_num_rows($req);
 if ($test == '0') {
-    echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>";
-    echo "<p>Vous pouvez ajouter des élèves à la base en cliquant sur l'un des liens ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP</a></p>";
-    echo "</body></htm>";
+    echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>\n";
+    echo "<p>Vous pouvez ajouter des élèves à la base en cliquant sur l'un des liens ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP</a></p>\n";
+	require("../lib/footer.inc.php");
     die();
 }
 
@@ -381,6 +385,9 @@ if (!isset($quelles_classes)) {
 		echo "&nbsp;\n";
 		echo "</td>\n";
 		echo "<td>\n";
+
+	    echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='na' onclick='verif2()' /></span>\n";
+
 		echo "<span class='norme'>Tous les élèves sont affectés dans une classe.</span><br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -404,6 +411,9 @@ if (!isset($quelles_classes)) {
 		echo "&nbsp;\n";
 		echo "</td>\n";
 		echo "<td>\n";
+
+	    echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='incomplet' onclick='verif2()' /></span>\n";
+
 		echo "<span class='norme'>Tous les élèves ont leur Elenoet et leur Numéro national (INE) renseigné.</span><br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -496,9 +506,9 @@ if (!isset($quelles_classes)) {
     }
 //    echo "<td><p>Classe</p></td>";
     echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
-    echo "<td><p><input type=submit value=Supprimer onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>";
+    echo "<td><p><input type=submit value=Supprimer onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
-    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>";
+    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
     }
 	echo "</tr>\n";
 
@@ -566,7 +576,7 @@ if (!isset($quelles_classes)) {
         echo "<td><p>$eleve_classe</p></td>\n";
         echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
         //echo "<td><p><center><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></center></p></td></tr>\n";
-        echo "<td><p align='center'><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></p></td>";
+        echo "<td><p align='center'><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></p></td>\n";
 
 		if (getSettingValue("active_module_trombinoscopes")=='y') {
         	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php echo $elenoet; ?>" /><?php $photo = "../photos/eleves/".$elenoet.".jpg"; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($eleve_sexe=="F") { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
@@ -582,8 +592,9 @@ if (!isset($quelles_classes)) {
     <!--/table-->
     <input type=hidden name=is_posted value=1 />
 <?php
-  // pour le trombinoscope on met la taille maximal d'une photos
-  ?><input type="hidden" name="MAX_FILE_SIZE" value="150000" />
+  // pour le trombinoscope on met la taille maximale d'une photo
+?>
+	<input type="hidden" name="MAX_FILE_SIZE" value="150000" />
 	<input type="hidden" name="action" value="depot_photo" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" />
     </form>
