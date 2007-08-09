@@ -279,7 +279,7 @@ else{
 
 
 	function cellule_checkbox($prof_login,$item,$num,$special){
-		echo "<td";
+		echo "<td align='center'";
 		echo " id='td_".$item."_".$num."' ";
 		//echo " style='text-align:center; ";
 		$checked="";
