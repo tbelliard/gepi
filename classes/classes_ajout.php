@@ -184,25 +184,26 @@ $nombreligne = mysql_num_rows($call_eleves);
 
 if ($nombreligne == '0') {
 
-    echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>";
+    echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>\n";
 
 } else {
 
     $eleves_non_affectes = 'no';
 
-    echo "<table BORDER = '1' CELLPADDING = '5'><tr><td><p><b>Nom Prénom </b></p></td><td><p><b>Régime</b></p></td><td><p><b>Redoublant</b></p></td>";
+    echo "<table border='1' cellpadding='5'>\n<tr>\n<td><p><b>Nom Prénom </b></p></td>\n<td><p><b>Régime</b></p></td>\n<td><p><b>Redoublant</b></p></td>\n";
 
     $i="1";
 
         while ($i < $nb_periode) {
 
-        echo "<td><p><b>Ajouter per. $i</b></p></td>";
+        echo "<td><p><b>Ajouter per. $i</b></p></td>\n";
 
         $i++;
 
     }
-	
-	echo "<td><b><center>cocher / décocher <br/>toutes périodes</center></b></p></td>";
+
+	//echo "<td><b><center>cocher / décocher <br/>toutes périodes</center></b></p></td>\n";
+	echo "<td><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></td>\n";
 
     echo "</tr>";
 
@@ -311,14 +312,14 @@ if ($nombreligne == '0') {
                 }
 
             }
-			
+
 
         }
 
         if ($inserer_ligne == 'yes') {
 
             echo "<tr><td>\n";
-            echo "<input type=hidden name=$item_login value='yes' />";
+            echo "<input type=hidden name=$item_login value='yes' />\n";
 
             //echo "<tr><td><p>$nom_eleve $prenom_eleve</p></td>\n";
             echo "<p>$nom_eleve $prenom_eleve</p></td>\n";
@@ -350,7 +351,7 @@ if ($nombreligne == '0') {
 
 
             //echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
-            echo "</p></td><td><p align='center'><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
+            echo "</p></td>\n<td><p align='center'><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
 
             if ($doublant == 'R') { echo " CHECKED ";}
 
@@ -380,20 +381,20 @@ if ($nombreligne == '0') {
                 }
 
                 echo "</p></td>\n";
-				
+
                 $i++;
 
             }
-			
+
 			$elementlist = null;
 	        for ($i=1;$i<=sizeof($ajout_login);$i++) {
 			  //echo $ajout_login[$i]."<br>";
 			  $elementlist .= "'".$ajout_login[$i]."',";
 			}
 	        $elementlist = substr($elementlist, 0, -1);
-			
-			echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>";
-			
+
+			echo "<td><center><a href=\"javascript:CochePeriode($elementlist)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode($elementlist)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
+
 			echo "</tr>\n";
 
         }
