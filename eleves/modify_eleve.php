@@ -881,7 +881,7 @@ if(isset($definir_resp)){
 				if($lig_resp->pers_id==$pers_id){
 					echo "checked ";
 				}
-				echo "/></td>";
+				echo "/></td>\n";
 				echo "<td style='text-align:center; background-color:$couleur;'><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 				echo "<td style='text-align:center; background-color:$couleur;'>";
 
@@ -914,7 +914,7 @@ if(isset($definir_resp)){
 			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Valider' /></p>\n";
 		}
 		else{
-			echo "<p>aucun responsable n'est défini</p>\n";
+			echo "<p>Aucun responsable n'est défini.</p>\n";
 		}
 
 		echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
@@ -1038,10 +1038,10 @@ echo "<tr>\n";
         echo "<td>Identifiant GEPI * : </td>
         <td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
         if ($eleve_login) echo "value='$eleve_login'";
-        echo " /></td>";
+        echo " /></td>\n";
     } else {
         echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" /></td>";
+        <td><input type=text name=reg_login size=20 value=\"\" /></td>\n";
     }
     ?>
 </tr>
@@ -1062,13 +1062,13 @@ echo "<tr>\n";
     <?php
     echo "<td><input type=text name='reg_no_nat' size=20 ";
     if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
-    echo " /></td>";
+    echo " /></td>\n";
     ?>
 </tr>
 <?php
     echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-    echo " /></td>";
+    echo " /></td>\n";
 
 
     ?>
@@ -1154,12 +1154,12 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 <br />- Les champs * sont obligatoires.</p>
 <?php
 
-echo "<input type=hidden name=is_posted value=\"1\" />";
-if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />";
-if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />";
-if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />";
-if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />";
-echo "<center><input type=submit value=Enregistrer /></center>";
+echo "<input type=hidden name=is_posted value=\"1\" />\n";
+if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />\n";
+if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
+echo "<center><input type=submit value=Enregistrer /></center>\n";
 echo "</form>\n";
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";

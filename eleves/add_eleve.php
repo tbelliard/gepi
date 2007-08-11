@@ -169,7 +169,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						// PB si on fait ensuite un import sconet le pers_id risque de ne pas correspondre... de provoquer des collisions.
 						// QUAND ON LES METS A LA MAIN, METTRE UN ele_id, pers_id,... négatifs?
 
-						// PREFIXER D'UN a...
+						// PREFIXER D'UN e...
 
 						$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
 						$res_ele_id_eleve=mysql_query($sql);
@@ -226,69 +226,72 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						ele_id = '".$ele_id."'
 						");
 
-					$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-					$test_resp1=mysql_query($sql);
-					if(mysql_num_rows($test_resp1)>0){
-						// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
-						$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
-						$test_resp1b=mysql_query($sql);
-						if(mysql_num_rows($test_resp1b)==1){
-							// Le responsable 2 devient responsable 1.
+					if($reg_resp1!=""){
+						// Quand on laisse '(vide)' pour le choix du responsable, la variable est créée puisque le champ est posté, mais la variable est une chaine vide qui ne doit pas correspondre à une insertion dans responsables2
+						$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+						$test_resp1=mysql_query($sql);
+						if(mysql_num_rows($test_resp1)>0){
+							// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
+							$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
+							$test_resp1b=mysql_query($sql);
+							if(mysql_num_rows($test_resp1b)==1){
+								// Le responsable 2 devient responsable 1.
+								$temoin_maj_resp="";
+								$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
+								$test_resp1c=mysql_query($sql);
+								if(mysql_num_rows($test_resp1c)==1){
+									$lig_autre_resp=mysql_fetch_object($test_resp1c);
+									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+									$res_update=mysql_query($sql);
+									if(!$res_update){
+										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+										$temoin_maj_resp="PB";
+									}
+								}
+
+								if($temoin_maj_resp==""){
+									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
+									$res_update=mysql_query($sql);
+									if(!$res_update){
+										$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
+									}
+								}
+							}
+							// Sinon, l'association est déjà la bonne... pas de changement.
+						}
+						else{
+							// Il n'y a pas encore d'association entre cet élève et ce responsable
 							$temoin_maj_resp="";
 							$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
 							$test_resp1c=mysql_query($sql);
-							if(mysql_num_rows($test_resp1c)==1){
+							//if(mysql_num_rows($test_resp1c)==1){
+							if(mysql_num_rows($test_resp1c)>0){
 								$lig_autre_resp=mysql_fetch_object($test_resp1c);
-								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-								$res_update=mysql_query($sql);
-								if(!$res_update){
-									$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+
+								// Y avait-il un autre responsable légal n°2?
+								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
+								$res_menage=mysql_query($sql);
+								if(!$res_menage){
+									$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
 									$temoin_maj_resp="PB";
+								}
+								else{
+									// L'ancien resp_legal 1 devient resp_legal 2
+									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
+									$res_update=mysql_query($sql);
+									if(!$res_update){
+										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
+										$temoin_maj_resp="PB";
+									}
 								}
 							}
 
 							if($temoin_maj_resp==""){
-								$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-								$res_update=mysql_query($sql);
-								if(!$res_update){
+								$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
+								$reg_data2b=mysql_query($sql);
+								if(!$reg_data2b){
 									$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
 								}
-							}
-						}
-						// Sinon, l'association est déjà la bonne... pas de changement.
-					}
-					else{
-						// Il n'y a pas encore d'association entre cet élève et ce responsable
-						$temoin_maj_resp="";
-						$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-						$test_resp1c=mysql_query($sql);
-						//if(mysql_num_rows($test_resp1c)==1){
-						if(mysql_num_rows($test_resp1c)>0){
-							$lig_autre_resp=mysql_fetch_object($test_resp1c);
-
-							// Y avait-il un autre responsable légal n°2?
-							$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
-							$res_menage=mysql_query($sql);
-							if(!$res_menage){
-								$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
-								$temoin_maj_resp="PB";
-							}
-							else{
-								// L'ancien resp_legal 1 devient resp_legal 2
-								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-								$res_update=mysql_query($sql);
-								if(!$res_update){
-									$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
-									$temoin_maj_resp="PB";
-								}
-							}
-						}
-
-						if($temoin_maj_resp==""){
-							$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-							$reg_data2b=mysql_query($sql);
-							if(!$reg_data2b){
-								$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
 							}
 						}
 					}
@@ -548,6 +551,8 @@ if (isset($eleve_login)) {
 
 
 } else {
+	// On passe par là au premier accès à la page et si après validation le champ login n'a pas été saisi.
+	//echo "\$reg_nom=$reg_nom<br />\n";
     if (isset($reg_nom)) $eleve_nom = $reg_nom;
     if (isset($reg_prenom)) $eleve_prenom = $reg_prenom;
     if (isset($reg_email)) $eleve_email = $reg_email;
@@ -652,10 +657,10 @@ echo "<tr>\n";
         echo "<td>Identifiant GEPI * : </td>
         <td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
         if ($eleve_login) echo "value='$eleve_login'";
-        echo " /></td>";
+        echo " /></td>\n";
     } else {
         echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" /></td>";
+        <td><input type=text name=reg_login size=20 value=\"\" /></td>\n";
     }
     ?>
 </tr>
@@ -736,6 +741,11 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 <br />- la modification du régime de l'élève (demi-pensionnaire, interne, ...) s'effectue dans le module de gestion des classes !
 <br />- Les champs * sont obligatoires.</p>
 <?php
+/*
+echo "\$eleve_login=$eleve_login<br />\n";
+echo "\$ele_id=$ele_id<br />\n";
+echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
+*/
 
 // PROBLEME: On ne récupère que les responsables déjà associés à un élève !
 
@@ -758,17 +768,22 @@ if ($nombreligne != 0) {
 	echo "<td><select size=1 name='reg_resp1'>\n";
 	echo "<option value='(vide)' ";
 	if(!(isset($eleve_no_resp1))){
-		echo " SELECTED";
+		echo " selected";
+	}
+	elseif($eleve_no_resp1==0){
+		echo " selected";
 	}
 	echo ">(vide)</option>\n";
 	$i = 0;
 	//while ($i < $nombreligne){
 	while($lig_resp1=mysql_fetch_object($call_resp)){
-	        echo "<option value='".$lig_resp1->pers_id."'";
-		if ($lig_resp1->pers_id==$eleve_no_resp1) {
-			echo " SELECTED";
+		echo "<option value='".$lig_resp1->pers_id."'";
+		//if ($lig_resp1->pers_id==$eleve_no_resp1) {
+		// Cela donnait des trucs bizarres avec les valeurs non numériques p0000002 était assimilé à zéro.
+		if ("$lig_resp1->pers_id"=="$eleve_no_resp1") {
+			echo " selected";
 		}
-		echo ">\n";
+		echo ">";
 
 		echo "$lig_resp1->nom $lig_resp1->prenom | ";
 		/*
@@ -856,7 +871,7 @@ if ($nombreligne != 0) {
     }
 */
 
-    echo "</select></td></tr>";
+    echo "</select></td></tr>\n";
 
 
 	if($eleve_no_resp2!=0){
@@ -864,7 +879,7 @@ if ($nombreligne != 0) {
 		$res_resp2=mysql_query($sql);
 		if(mysql_num_rows($res_resp2)>0){
 			$lig_resp2=mysql_fetch_object($res_resp2);
-			echo "<tr><td><b>Deuxième responsable légal : </b></td>";
+			echo "<tr><td><b>Deuxième responsable légal : </b></td>\n";
 			echo "<td>".$lig_resp2->nom." ".$lig_resp2->prenom." | ";
 
 			/*
@@ -889,7 +904,7 @@ if ($nombreligne != 0) {
 
 			echo $chaine_adr2;
 
-			echo "</td></tr>" ;
+			echo "</td></tr>\n" ;
 
 
 			if(substr($lig_resp1->adr1,0,strlen($lig_resp1->adr1)-1)==substr($lig_resp2->adr1, 0, strlen($lig_resp2->adr1)-1) and ($lig_resp1->cp==$lig_resp2->cp) and ($lig_resp1->commune==$lig_resp2->commune) and ($lig_resp1->pays==$lig_resp2->pays)) {
@@ -929,9 +944,9 @@ if ($nombreligne != 0) {
 
     if ($chaine_adr1 != '') {
 		if(!isset($message)){$message="";}
-        echo "<br />";
+        echo "<br />\n";
         echo $message;
-        echo "<br />";
+        echo "<br />\n";
     }
 
 }
@@ -946,7 +961,7 @@ if ($nombreligne != 0) {
 <?php
 $calldata = mysql_query("SELECT * FROM etablissements ORDER BY id");
 $nombreligne = mysql_num_rows($calldata);
-echo "<option value='(vide)' "; if (!($id_etab)) {echo " SELECTED";} echo ">(vide)</option>";
+echo "<option value='(vide)' "; if (!($id_etab)) {echo " SELECTED";} echo ">(vide)</option>\n";
 $i = 0;
 while ($i < $nombreligne){
     $list_etab_id = mysql_result($calldata, $i, "id");
@@ -960,17 +975,18 @@ while ($i < $nombreligne){
     }
     echo "<option value=$list_etab_id "; if ($list_etab_id == $id_etab) {echo " SELECTED";} echo ">$list_etab_id | $list_etab_nom - $list_etab_niveau ($list_etab_cp";
     if ($list_etab_cp != '') {echo ", ";}
-    echo "$list_etab_ville)</option>";
+    echo "$list_etab_ville)</option>\n";
 $i++;
 }
 
-echo "</select>";
-echo "<input type=hidden name=is_posted value=\"1\" />";
-if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />";
-if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />";
-if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />";
-if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />";
-echo "<center><input type=submit value=Enregistrer /></center>";
-echo "</form>";
+echo "</select>\n";
+echo "<input type=hidden name=is_posted value=\"1\" />\n";
+if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />\n";
+if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
+echo "<center><input type=submit value=Enregistrer /></center>\n";
+echo "</form>\n";
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
