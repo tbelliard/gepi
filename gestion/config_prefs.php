@@ -316,21 +316,28 @@ else{
 		echo $checked;
 		//echo " onchange='changement();'";
 		echo " onchange=\"changement_et_couleur('$item"."_"."$num','";
-		if($special=="y"){
-			echo "td_nomprenom_$num";
+		//if($special=="y"){
+		if($special!=''){
+			//echo "td_nomprenom_$num";
+			//echo "td_nomprenom_".$num."_".$special;
+			$chaine_td="td_nomprenom_".$num."_".$special;
+			echo $chaine_td;
 		}
 		echo "');\"";
 		echo " />";
 
-		if($special=="y"){
+		//if($special=="y"){
+		if($special!=''){
 			if($coche=="y"){
 				echo "<script type='text/javascript'>
-	document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgreen';
+	//document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgreen';
+	document.getElementById('$chaine_td').style.backgroundColor='lightgreen';
 </script>\n";
 			}
 			elseif($coche=="n"){
 				echo "<script type='text/javascript'>
-	document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgray';
+	//document.getElementById('td_nomprenom_'+$num).style.backgroundColor='lightgray';
+	document.getElementById('$chaine_td').style.backgroundColor='lightgray';
 </script>\n";
 			}
 		}
@@ -377,7 +384,7 @@ else{
 
 	//if($page=="accueil_simpl"){
 	if(($page=="accueil_simpl")||($_SESSION['statut']=='professeur')){
-		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les professeurs</p>\n";
+		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les professeurs.</p>\n";
 
 		//$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 		//accueil_aff_txt_icon
@@ -427,7 +434,8 @@ else{
 
 			echo "<tr>\n";
 
-			echo "<td id='td_nomprenom_".$i."'>";
+			//echo "<td id='td_nomprenom_".$i."'>";
+			echo "<td id='td_nomprenom_".$i."_accueil_simpl'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
@@ -446,7 +454,8 @@ else{
 			*/
 
 			$j=0;
-			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'accueil_simpl');
 			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
@@ -479,7 +488,7 @@ else{
 		$lignes_entete="<tr class='entete'>\n";
 		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
-		$lignes_entete.="<th colspan='6'>Afficher le champ</th>\n";
+		$lignes_entete.="<th colspan='6'>Afficher les champs</th>\n";
 		$lignes_entete.="</tr>\n";
 
 		// 2ème ligne
@@ -515,7 +524,8 @@ else{
 			echo "<tr>\n";
 
 			//echo "<td>";
-			echo "<td id='td_nomprenom_".$i."'>";
+			//echo "<td id='td_nomprenom_".$i."'>";
+			echo "<td id='td_nomprenom_".$i."_add_modif_dev'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
@@ -523,7 +533,8 @@ else{
 			echo "</td>\n";
 
 			$j=0;
-			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'add_modif_dev');
 			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
@@ -591,7 +602,8 @@ else{
 			echo "<tr>\n";
 
 			//echo "<td>";
-			echo "<td id='td_nomprenom_".$i."'>";
+			//echo "<td id='td_nomprenom_".$i."'>";
+			echo "<td id='td_nomprenom_".$i."_add_modif_conteneur'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
@@ -599,7 +611,8 @@ else{
 			echo "</td>\n";
 
 			$j=0;
-			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
+			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'add_modif_conteneur');
 			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
