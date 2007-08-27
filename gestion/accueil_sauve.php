@@ -859,9 +859,9 @@ echo "<br />Selon la configuration du serveur et la taille du fichier, l'opérati
 */
 echo "<br />Vous pouvez également directement télécharger le fichier par ftp dans le répertoire \"/backup\".\n";
 
-echo "<br /><br /><b>Fichier à \"uploader\" </b>: <INPUT TYPE=FILE NAME=\"sav_file\" />
-<INPUT TYPE=\"HIDDEN\" name=\"action\" value=\"upload\" />
-<INPUT type=\"submit\" value=\"Valider\" name=\"bouton1\" />
+echo "<br /><br /><b>Fichier à \"uploader\" </b>: <input type=\"file\" name=\"sav_file\" />
+<input type=\"hidden\" name=\"action\" value=\"upload\" />
+<input type=\"submit\" value=\"Valider\" name=\"bouton1\" />
 </form>
 <br />\n";
 

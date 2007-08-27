@@ -455,16 +455,16 @@ require_once("../lib/header.inc");
 echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'établissement : </b></td></tr>\n";
 echo "<tr><td colspan=2>Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte</td></tr>\n";
 echo "<tr><td>Modifier le Logo (png, jpg et gif uniquement) : ";
-echo "<INPUT TYPE=FILE NAME=\"doc_file\" />\n";
-echo "<INPUT TYPE=SUBMIT name = \"valid_logo\" value = \"Enregistrer\" /><br />\n";
-echo "Supprimer le logo : <INPUT TYPE=SUBMIT name = \"sup_logo\" value = \"Supprimer le logo\" /></td>\n";
+echo "<input type=\"file\" name=\"doc_file\" />\n";
+echo "<input type=\"submit\" name=\"valid_logo\" value=\"Enregistrer\" /><br />\n";
+echo "Supprimer le logo : <input type=\"submit\" name=\"sup_logo\" value=\"Supprimer le logo\" /></td>\n";
 
 
 $nom_fic_logo = getSettingValue("logo_etab");
 
 $nom_fic_logo_c = "../images/".$nom_fic_logo;
 if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-   echo "<td><b>Logo actuel : </b><br /><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"logo\" /></td>\n";
+   echo "<td><b>Logo actuel : </b><br /><img src=\"".$nom_fic_logo_c."\" border='0' alt=\"logo\" /></td>\n";
 } else {
    echo "<td><b><i>Pas de logo actuellement</i></b></td>\n";
 }
