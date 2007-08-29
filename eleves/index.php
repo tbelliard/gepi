@@ -343,7 +343,7 @@ $test = mysql_num_rows($req);
 if ($test == '0') {
     echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>\n";
     echo "<p>Vous pouvez ajouter des élèves à la base en cliquant sur l'un des liens ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP</a></p>\n";
-	require("../lib/footer.inc.php");
+    require("../lib/footer.inc.php");
     die();
 }
 
@@ -485,7 +485,7 @@ if (!isset($quelles_classes)) {
     <input type=submit value=Valider />
     </td-->
     <!--/tr></table-->
-    <p align='center'><input type=submit value=Valider /></p>
+    <p align='center'><input type="submit" value="Valider" /></p>
     </form>
     <?php
 } else {
@@ -506,7 +506,7 @@ if (!isset($quelles_classes)) {
     }
 //    echo "<td><p>Classe</p></td>";
     echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
-    echo "<td><p><input type=submit value=Supprimer onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
+    echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
     	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
     }
@@ -564,8 +564,14 @@ if (!isset($quelles_classes)) {
         $eleve_id_classe = @mysql_result($call_classe, 0, "id");
         if ($eleve_classe == '') {$eleve_classe = "<font color='red'>N/A</font>";}
         $call_suivi = mysql_query("SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
-        $eleve_profsuivi_nom = @mysql_result($call_suivi, 0, "nom");
-        $eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
+		if(mysql_num_rows($call_suivi)==0){
+			$eleve_profsuivi_nom = "";
+			$eleve_profsuivi_prenom = "";
+		}
+		else{
+			$eleve_profsuivi_nom = @mysql_result($call_suivi, 0, "nom");
+			$eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
+		}
         if ($eleve_profsuivi_nom == '') {$eleve_profsuivi_nom = "<font color='red'>N/A</font>";}
         $delete_login = 'delete_'.$eleve_login;
         echo "<tr>\n";
@@ -576,7 +582,7 @@ if (!isset($quelles_classes)) {
         echo "<td><p>$eleve_classe</p></td>\n";
         echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
         //echo "<td><p><center><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></center></p></td></tr>\n";
-        echo "<td><p align='center'><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></p></td>\n";
+        echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
 
 		if (getSettingValue("active_module_trombinoscopes")=='y') {
         	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php echo $elenoet; ?>" /><?php $photo = "../photos/eleves/".$elenoet.".jpg"; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($eleve_sexe=="F") { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
@@ -590,10 +596,10 @@ if (!isset($quelles_classes)) {
     echo "<p>Total : $nombreligne éleves</p>\n";
     ?>
     <!--/table-->
-    <input type=hidden name=is_posted value=1 />
+    <input type="hidden" name="is_posted" value="1" />
 <?php
   // pour le trombinoscope on met la taille maximale d'une photo
-?>
+  ?>
 	<input type="hidden" name="MAX_FILE_SIZE" value="150000" />
 	<input type="hidden" name="action" value="depot_photo" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" />

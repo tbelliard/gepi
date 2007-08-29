@@ -305,7 +305,7 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 
 <div class="center" style="margin-bottom: 32px;">
 <p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
-<p>
+
 <?php
 	if(getSettingValue("gepiAdminAdressPageLogin")!='n'){
 		$gepiAdminAdress=getSettingValue("gepiAdminAdress");
@@ -314,6 +314,7 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 
 		//echo "$gepiAdminAdress<br />";
 
+		$compteur=0;
 		$tab_adr=array();
 		$tmp_adr1=explode(",",$gepiAdminAdress);
 		for($i=0;$i<count($tmp_adr1);$i++){
@@ -321,8 +322,12 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 			$tmp_adr2=explode("@",$tmp_adr1[$i]);
 			//echo "\$tmp_adr2[0]=$tmp_adr2[0]<br />";
 			//echo "\$tmp_adr2[1]=$tmp_adr2[1]<br />";
-			$tab_adr[]=$tmp_adr2[0];
-			$tab_adr[]=$tmp_adr2[1];
+			if((isset($tmp_adr2[0]))&&(isset($tmp_adr2[1]))) {
+				$tab_adr[$compteur]=$tmp_adr2[0];
+				$compteur++;
+				$tab_adr[$compteur]=$tmp_adr2[1];
+				$compteur++;
+			}
 		}
 
 		echo "<script type='text/javascript'>\n";
@@ -332,11 +337,13 @@ if ((getSettingValue("disable_login"))=='yes') echo "<br><br><font color=\"red\"
 		}
 		echo "</script>\n";
 
-		//echo("<a href=\"javascript:pigeon2(adm_adr);\">[Contacter l'administrateur]</a> \n");
-		echo("<a href=\"javascript:pigeon2();\">[Contacter l'administrateur]</a> \n");
+		if(count($tab_adr)>0){
+			//echo("<a href=\"javascript:pigeon2(adm_adr);\">[Contacter l'administrateur]</a> \n");
+			echo("<p><a href=\"javascript:pigeon2();\">[Contacter l'administrateur]</a></p>\n");
+		}
 	}
 ?>
-</p>
+
 </div>
 
 
@@ -351,7 +358,9 @@ while (list($name, $adress) = each($gepiAuthors)) {
 	//echo("<a href=\"mailto:" . $adress . "\">" . $name . "</a> ");
 	$tmp_adr=explode("@",$adress);
 	//echo("<a href=\"javascript:pigeon('" . $adress . "');\">" . $name . "</a> ");
-	echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">" . $name . "</a> \n");
+	if((isset($tmp_adr[0]))&&(isset($tmp_adr[1]))) {
+		echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">" . $name . "</a> \n");
+	}
 	$i++;
 }
 	echo "<br/><br/>\n";
