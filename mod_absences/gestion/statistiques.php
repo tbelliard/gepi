@@ -183,12 +183,12 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	// si on ne demande pas d'incorporer les longues absences
 	if(empty($long_absence) and $long_absence != '1')
 	 { $long_absence_cocher = "d_date_absence_eleve = a_date_absence_eleve"; }
-     
+
 // Requete SQL
 	// élève non sélectionné, classe non sélectionné
 	 if($eleve_selectionne === '' and $classe_selectionne === '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
-	
+
 	// Classe sélectionné, élève non sélectionné
 	 if($eleve_selectionne === '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$classe_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
@@ -197,7 +197,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	 if($eleve_selectionne != '' and $classe_selectionne != '')
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$eleve_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
-	     $i = '0';             
+	     $i = '0';
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
 	     // compte les données
 	     $cpt_donnees = mysql_num_rows($execution_komenti);
@@ -206,7 +206,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	if ( $cpt_donnees != '0' ) {
 	    // si oui on charge les informations
              while ( $donnee_base = mysql_fetch_array($execution_komenti))
-                { 
+                {
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['classe'] = $donnee_base['nom_complet'];
@@ -215,7 +215,7 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
-		} 
+		}
 	    $tab = crer_tableau_jaj($tableau);
 		// en cas d'erreur pour affiché les informations
 		//	echo '<pre>';
@@ -299,7 +299,7 @@ if($echelle_y === 'H') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + $total_minute;
 			}
-	   }	
+	   }
 	$i = $i + 1;
 	}
 }
@@ -382,7 +382,7 @@ if($echelle_y === 'E') {
 				if(empty($donnee_select[$eleve_eleve])) { $donnee_select[$eleve_eleve] = '0'; }
 				$donnee_select[$eleve_eleve] = $donnee_select[$eleve_eleve] + 1;
 			}
-	   }		
+	   }
 	$i = $i + 1;
 	}
 }
@@ -445,9 +445,9 @@ if($echelle_y === 'E') {
 
 ?>
 <p class=bold><a href='gestion_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
-<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> | 
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> | 
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> | 
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
@@ -478,7 +478,7 @@ if($echelle_y === 'E') {
                  		<?php
 				$requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet ASC";
 	                    	$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-	                    	while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) 
+	                    	while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe))
 				{ ?>
 	                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php if(!empty($classe) and in_array($data_liste_classe['id'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $data_liste_classe['nom_complet']; ?></option>
         	          <?php } ?>
@@ -547,13 +547,13 @@ if($echelle_y === 'E') {
 		<?php $_SESSION['donnee_e'] = ''; $_SESSION['donnee_e'] = $donnee_select; ?>
 			<img src="../lib/graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>
 			<?php /* <a href="graph_<?php echo $type_graphique; ?>.php?echelle_x=<?php echo $echelle_x; ?>&amp;echelle_y=<?php echo $echelle_y; ?>&amp;donnee_label=<?php echo $donnee_label; ?>&amp;donnee_titre[0]=<?php echo $donnee_titre[0]; ?>" alt="Graphique" style="border: 0px; margin: 0px; padding: 0px;"/>fdfdfdf</a> */ ?>
-	<?php } else { ?>Aucune donnée correspondant à votre rechercher n'a été trouvée<?php } ?>
+	<?php } else { ?>Aucune donnée correspondant à votre recherche n'a été trouvée<?php } ?>
 		</div>
 
 	<?php if ( $cpt_donnees != '0' and $donnee_select != '') { ?>
 		<?php /* DIV contenant le tableau des données */ ?>
 		<div>
-			<?php 
+			<?php
 				// donner d'entête du tableau
 				$entete_tableau = array_keys($_SESSION['donnee_e']);
 					if ( $echelle_x === 'M' ) {
@@ -597,7 +597,7 @@ if($echelle_y === 'E') {
 				$donnee_tableau = array_values($_SESSION['donnee_e']);
 				$i = 0; $total_des_valeurs = 0; $donnee_tableau_pourcentage = '';
 				while ( !empty($donnee_tableau[$i]) )
-				{	
+				{
 					$total_des_valeurs = $total_des_valeurs + $donnee_tableau[$i];
 					$donnee_tableau_pourcentage[$i] = $donnee_tableau[$i];
 				$i = $i + 1;
@@ -605,7 +605,7 @@ if($echelle_y === 'E') {
 				// remise des informations en pourcentage
 				$i = 0;
 				while ( !empty($donnee_tableau[$i]) )
-				{	
+				{
 					$donnee_tableau[$i] = ( $donnee_tableau_pourcentage[$i] * 100 ) / $total_des_valeurs;
 					$donnee_tableau[$i] = present_nombre($donnee_tableau[$i], '0.1', 1, 1).'%';
 				$i = $i + 1;
@@ -615,7 +615,7 @@ if($echelle_y === 'E') {
 				// compte le total d'entrée du tableau
 				$cpt_total_entree = count($entete_tableau);
 				// nombre d'entrée à affiché par ligne
-				$cpt_total_par_ligne = '3'; 
+				$cpt_total_par_ligne = '3';
 				// compte le nombre de ligne qu'il faut affciher
 				$cpt_ligne = $cpt_total_entree / $cpt_total_par_ligne;
 				// on explose la valeur pour savoir s'il y a des chiffre après la virgule

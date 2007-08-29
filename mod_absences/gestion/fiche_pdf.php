@@ -85,12 +85,12 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
-//permet de transformer les caractère html 
+//permet de transformer les caractère html
  function unhtmlentities($chaineHtml) {
          $tmp = get_html_translation_table(HTML_ENTITIES);
          $tmp = array_flip ($tmp);
          $chaineTmp = strtr ($chaineHtml, $tmp);
-  
+
          return $chaineTmp;
  }
 
@@ -195,7 +195,7 @@ if ( $etiquette_action === 'originaux' ) {
 	if (isset($id_classe[0])) {
  	$o=0; $prepa_requete = "";
         while(!empty($id_classe[$o]))
-	     { 
+	     {
 		if($o == "0") { $prepa_requete = 'ec.id_classe = "'.$id_classe[$o].'"'; }
 		if($o != "0") { $prepa_requete = $prepa_requete.' OR ec.id_classe = "'.$id_classe[$o].'" '; }
 		$o = $o + 1;
@@ -205,7 +205,7 @@ if ( $etiquette_action === 'originaux' ) {
 	if (!empty($id_eleve[0])) {
  	$o=0; $prepa_requete = "";
         while(!empty($id_eleve[$o]))
-	     { 
+	     {
 		if($o == "0") { $prepa_requete = 'e.login = "'.$id_eleve[$o].'"'; }
 		if($o != "0") { $prepa_requete = $prepa_requete.' OR e.login = "'.$id_eleve[$o].'" '; }
 		$o = $o + 1;
@@ -220,7 +220,7 @@ if ( $etiquette_action === 'originaux' ) {
 		    $nb_eleves = mysql_num_rows($call_eleve);
 		    $i = '0';
 		    while ( $donne_persone = mysql_fetch_array( $call_eleve ))
-			{  
+			{
 				// information sur l'élève
 				$id_eleve[$i] = $donne_persone['login']; // id de l'élève
 				$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'élève
@@ -315,7 +315,7 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
 {
     $xi=$this->GetX();
     $yi=$this->GetY();
-    
+
     $hrow=$this->FontSize;
     $textrows=$this->drawRows($w,$hrow,$strText,0,$align,0,0,0);
     $maxrows=floor($h/$this->FontSize);
@@ -528,8 +528,9 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	//bloc identification etablissement
 	$logo = '../../images/'.getSettingValue('logo_etab');
-	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
-	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
+	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
+	//if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
+	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='jpeg' or $format_du_logo==='png'))
 	{
 	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
 	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
@@ -543,26 +544,26 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
  	 $this->SetXY($X_etab,$Y_etab);
  	 $this->SetFont($caractere_utilse,'',14);
 	  $gepiSchoolName = getSettingValue('gepiSchoolName');
-	 $this->Cell(90,7, $gepiSchoolName,0,2,''); 
+	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
 	 $this->SetFont($caractere_utilse,'',10);
 	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 	  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
 	  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 	  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 	if( isset($entete_communic) and $entete_communic != '' ) {
-	 $this->Cell(90,5, $entete_communic,0,2,''); 
+	 $this->Cell(90,5, $entete_communic,0,2,'');
 	}
 	if($entente_mel==='1') {
 	  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-	 $this->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolEmail,0,2,'');
 	}
     }
 
@@ -574,7 +575,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
         //Police Arial Gras 6
         $this->SetFont('Arial','B',8);
         $this->Cell(0,4.5, "Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires.",0,0,'C');
-    } 
+    }
 }
 
 define('PARAGRAPH_STRING', '~~~');
@@ -652,13 +653,13 @@ $pdf->SetFillColor(255,255,255);
 	 $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6;
 	 $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul;
 	 if($cadre_datation_bul!=0) { $pdf->Rect($X_datation_bul, $Y_datation_bul, $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D'); }
-	 $pdf->Cell(90,7, "Classe de ".unhtmlentities($classe_nomlong_eleve[$cpt_eleve]),0,2,'C'); 
+	 $pdf->Cell(90,7, "Classe de ".unhtmlentities($classe_nomlong_eleve[$cpt_eleve]),0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',12);
-	 $pdf->Cell(90,5, "Année scolaire ".$annee_scolaire,0,2,'C'); 
+	 $pdf->Cell(90,5, "Année scolaire ".$annee_scolaire,0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',10);
-	 $pdf->Cell(90,5, "Fiche récapitualitive des absences",0,2,'C'); 
+	 $pdf->Cell(90,5, "Fiche récapitualitive des absences",0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',8);
-	 $pdf->Cell(95,7, $date_bulletin,0,2,'R'); 
+	 $pdf->Cell(95,7, $date_bulletin,0,2,'R');
 	 $pdf->SetFont($caractere_utilse,'',10);
 	}
 
@@ -669,7 +670,7 @@ $pdf->SetFillColor(255,255,255);
 	// nombre d'avertissement
 	// nombre d'exclusion
 	// nombre de retenue
-	
+
 
 	// placement en x du tableau
 	$x_divers = '110';
@@ -768,7 +769,7 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 					if(aff_jour($j, $mois[$i]['num_mois'], $mois[$i]['num_annee'])!='Dimanche') { $pdf->SetFillColor(255, 255, 255); $aff_couleur = '0'; } else { $pdf->SetFillColor(140, 239, 134); $aff_couleur = '1'; }
 					$cadre = 'LRTB';
 
-					$pass = '';					
+					$pass = '';
 					if ( $j < 10 ) { $jour_num = '0'.$j; } else { $jour_num = $j; }
 					$jour_select = $mois[$i]['num_annee'].'-'.$mois[$i]['num_mois'].'-'.$jour_num;
 
@@ -777,7 +778,7 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 					   // boucle pour vérifier si plusieurs horraire dans cette journé
 					   $cpt_horraire_jour = 0;
 					   $jour_select_tt = $jour_select.'-'.$cpt_horraire_jour;
-					   while ( !empty($info_absence[$jour_select_tt]) ) 
+					   while ( !empty($info_absence[$jour_select_tt]) )
 					   {
 						// connaitre si l'absence à été le matin
 						if ( $info_absence[$jour_select_tt]['heure_debut'] >= '06:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '13:00:00' ) {
@@ -843,7 +844,7 @@ $mois[$i]['mois'] = 'juil. 2007'; $mois[$i]['num_mois'] = '07'; $mois[$i]['num_m
 					   }
 					}
 
-				 } else { 
+				 } else {
 						if ( empty($mois[$i+1]) ) { $cadre = 'T'; } else { $cadre = 'TB'; } $aff_couleur = '0';
 					}
 
@@ -873,7 +874,7 @@ $annuel[$i]['mois'] = 'jan.';
 $i = $i + 1;
 }*/
 
-	
+
 	// placement en x du tableau
 	$x_annuel = '10';
 	// placement en y du tableau
@@ -1095,7 +1096,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 	$i = '0';
 	$maxHor = '11';
 	$icouleur = '1';
-	$aff_chiffre = '0'; 
+	$aff_chiffre = '0';
 		$tab_jour['lundi'] = '1';
 		$tab_jour['mardi'] = '2';
 		$tab_jour['mercredi'] = '3';
@@ -1168,7 +1169,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 	$i = '0';
 	$maxHor = '11';
 	$icouleur = '1';
-	$aff_chiffre = '0'; 
+	$aff_chiffre = '0';
 	while ($i < $maxHor) {
 		$y_semaine = $y_semaine + $h_semaine;
 		$pdf->SetXY($x_semaine, $y_semaine);
@@ -1201,14 +1202,14 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 
 	$l_graphique_max = $l_graphique * 2.8;
 	$h_graphique_max = $h_graphique * 2.8;
-	
+
 	//préparation des valeurs
 	// axe x
 	if ( !isset($valeur_x) ) {
 		$i = '0';
 		while ( !empty($mois[$i]) )
 		{
-			$valeur_x[$i] = $mois[$i]['mois_court']; 
+			$valeur_x[$i] = $mois[$i]['mois_court'];
 		$i = $i + 1;
 		}
 		$_SESSION['axe_x'] = $valeur_x;
@@ -1230,7 +1231,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 					$total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb'];
 				}
 			$valeur_y_abs[$i] = $total_abs;
-			$valeur_y_ret[$i] = $total_ret; 
+			$valeur_y_ret[$i] = $total_ret;
 		$i = $i + 1;
 		}
 		$_SESSION['axe_y_abs'] = $valeur_y_abs;
@@ -1245,7 +1246,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 	// génération du graphique
 	include('../lib/graph_double_ligne.php');
 
-	//$valeur=redimensionne_logo($graphique, $l_graphique_max, $h_graphique_max);
+	$valeur=redimensionne_logo($graphique, $l_graphique_max, $h_graphique_max);
 
 	// hauteur du graphique définie
 	$h_graphique = $valeur[1];

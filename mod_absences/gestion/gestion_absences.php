@@ -391,7 +391,7 @@ function DecocheCheckbox() {
   $annee_scolaire=annee_en_cours_t($datej);
 
 
-  
+
 ?>
 <?php /* La page gestion global des absences */ ?>
 <p class="bold"><a href='<?php if($select_fiche_eleve=='' and $fiche_eleve=='' and $choix!='lemessager') { ?>../../accueil.php<?php } else { ?>gestion_absences.php<?php } ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
@@ -448,7 +448,7 @@ function DecocheCheckbox() {
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
                 <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom']); ?> élève de <?php echo "<b>".classe_de($data_top10['login'])."</b>"; $id_classe_eleve = classe_de($data_top10['login']); ?><br />
-			<?php if ($type == "A") {?>Absence saisi : <?php } ?><?php if ($type == "R") {?>Retard saisi : <?php } ?><?php if ($type == "I") {?>Passage à l'infirmerie saisi : <?php } ?><?php if ($type == "D") {?>Dispensé saisi<?php } ?><b><?php echo $compte ?></b><br /></td>
+			<?php if ($type == "A") {?>Absence saisie : <?php } ?><?php if ($type == "R") {?>Retard saisi : <?php } ?><?php if ($type == "I") {?>Passage à l'infirmerie saisi : <?php } ?><?php if ($type == "D") {?>Dispense saisie : <?php } ?><b><?php echo $compte ?></b><br /></td>
                 <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                  echo "<td style=\"width: 60px; vertical-align: top\">";
                  $photos = "../../photos/eleves/".$data_top10['elenoet'].".jpg";
@@ -571,7 +571,7 @@ function DecocheCheckbox() {
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="2">Téléphone responsable :
-                  <?php 
+                  <?php
 			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -688,7 +688,7 @@ function DecocheCheckbox() {
 // ABSENCES SANS MOTIF
 //
 
-if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") { 
+if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
@@ -724,7 +724,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php 
+                  <?php
 			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -776,8 +776,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
                                       $id_eleve = $data_sans_motif['id_absence_eleve'];
                                       $id_eleve_photo = $data_sans_motif['elenoet'];
-                                      $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";            
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; } 
+                                      $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";
+                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
             <?php } ?>
@@ -854,9 +854,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
               <tr>
                 <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_avec_motif['nom'])."</b> ".ucfirst($data_avec_motif['prenom']); ?> élève de <?php echo "<b>".classe_de($data_avec_motif['login'])."</b>"; $id_classe_eleve = classe_de($data_avec_motif['login']); ?><br /><?php if ($data_avec_motif['type_absence_eleve']=="A") { ?> &agrave; &eacute;t&eacute; absent<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } } if  ($data_avec_motif['type_absence_eleve']=="R") { ?> est arrivé<?php if ($data_avec_motif['sexe'] == "F") { ?>e<?php } ?> en retard<?php } ?><?php if ($data_avec_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?><br /> le <?php echo date_frl($data_avec_motif['d_date_absence_eleve']); ?><?php if (($data_avec_motif['a_date_absence_eleve'] != $data_avec_motif['d_date_absence_eleve'] and $data_avec_motif['a_date_absence_eleve'] != "") or $data_avec_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_avec_motif['a_date_absence_eleve']); ?><?php } ?><br />
 <?php /*
-<?php if ($data_avec_motif['heure_retard_eleve'] == "" or $data_avec_motif['heure_retard_eleve'] != "00:00:00") { ?>à 
-<?php } else { ?>de <?php } ?><?php echo heure($data_avec_motif['d_heure_absence_eleve']); ?> 
-<?php if ($data_avec_motif['heure_retard_eleve'] != "00:00:00" or $data_avec_motif['heure_retard_eleve'] == "") { } 
+<?php if ($data_avec_motif['heure_retard_eleve'] == "" or $data_avec_motif['heure_retard_eleve'] != "00:00:00") { ?>à
+<?php } else { ?>de <?php } ?><?php echo heure($data_avec_motif['d_heure_absence_eleve']); ?>
+<?php if ($data_avec_motif['heure_retard_eleve'] != "00:00:00" or $data_avec_motif['heure_retard_eleve'] == "") { }
 else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve']); ?></td>
 */?>
 
@@ -879,7 +879,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
               </tr>
               <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php     
+                  <?php
 			$info_responsable = tel_responsable($data_avec_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -1023,7 +1023,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 
 
 <?php /* fiche élève */ ?>
-<?php if ( $select_fiche_eleve != '' ) { 
+<?php if ( $select_fiche_eleve != '' ) {
 
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
          $execution_liste_fiche = mysql_query($requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysql_error());
@@ -1083,6 +1083,11 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 	</div>
 </div>
 <?php /* fin fiche identitée de l'élève */ ?>
+
+<!--
+Pour éviter un centrage bizarre:
+-->
+<div style='clear: both;'>&nbsp;</div>
 
     <div style="text-align: center;">
 	[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#suivieleve" title="consulter le suivi de l'élève">Suivi de l'élève</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=abseleve#abseleve" title="consulter l'absentéisme non justifié">Absentéisme non justifié</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=tableauannuel" title="consulter la fiche de l'élève">Statistique annuelle</a> | <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;aff_fiche=suivieleve#tab_sem_abs" title="Répartissement des absences">Répartition des absences</a> ]
@@ -1144,21 +1149,21 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 		                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
 		                              <?php } ?>
 					</select><br />
-					Informé par: 
+					Informé par:
 						<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '1') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
+						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
 						<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '3') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label>
 						<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '5') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
 						<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>						 
+						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
 						<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '6') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
 
      <?php /* désactivé dans l'imédia peut servir par la suite
 	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
+	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
 	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
-	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label> 
+	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
 	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
 		*/ ?>
 					<div id='ligne_type_courrier'>
@@ -1217,12 +1222,12 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
                     <div class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />
 			<?php
 				// vérifie si on n'a le droit de supprimer la fiche on ne peut pas s'il y a un courrier attaché
-				$autorise_supprimer = 'non'; 
+				$autorise_supprimer = 'non';
 			        $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'suivi_eleve_cpe' AND partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."'"),0);
 			          if( $cpt_lettre_recus === '0' ) { $autorise_supprimer = 'oui'; }
 			?>
 				[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> <?php if ( $autorise_supprimer === 'oui' ) { ?>|<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer">supprimer</a><?php } ?> ] <?php /* [ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>">action</a> ] */ ?></span></div>
-		<?php // courrier attaché 
+		<?php // courrier attaché
 	        $courrier_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."' AND partde_lettre_suivi = 'suivi_eleve_cpe'"),0);
 	        if ($courrier_existance != '0') { ?>
 			<?php
@@ -1251,7 +1256,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 	</div>
 	<?php } ?>
 <?php /* fin du DIV du suivi de l'élève */ ?>
-	   
+
 
 <?php /* DIV de l'absentéisme de l'élève */ ?>
 	<?php if ( $aff_fiche === 'abseleve' ) { ?>
@@ -1367,7 +1372,7 @@ $du_explose = explode('/',$du);
 		$au_sql = $annee_au.'-'.$mois_au.'-'.$au_explose[0];
 
 	if ( $mois === '' ) { $mois = tableau_mois($mois_du, $annee_du, $mois_au, $annee_au); }
-			
+
 
 $info_absence = repartire_jour($login_eleve, 'A', $du_sql, $au_sql);
 $info_retard = repartire_jour($login_eleve, 'R', $du_sql, $au_sql);
@@ -1395,7 +1400,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		$i = '0';
 		while ( !empty($mois[$i]) )
 		{
-			$valeur_x[$i] = $mois[$i]['mois_court']; 
+			$valeur_x[$i] = $mois[$i]['mois_court'];
 		$i = $i + 1;
 		}
 		$_SESSION['axe_x'] = $valeur_x;
@@ -1417,7 +1422,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 					$total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb'];
 				}
 			$valeur_y_abs[$i] = $total_abs;
-			$valeur_y_ret[$i] = $total_ret; 
+			$valeur_y_ret[$i] = $total_ret;
 		$i = $i + 1;
 		}
 		$_SESSION['axe_y_abs'] = $valeur_y_abs;
@@ -1434,7 +1439,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $donnee_base = mysql_fetch_array($execution_komenti))
-                { 
+                {
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['classe'] = '';
@@ -1443,7 +1448,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
-		} 
+		}
 
 	$tab = crer_tableau_jaj($tableau);
 
@@ -1483,9 +1488,9 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 	$i = '0';
 	$maxHor = '11';
 	$icouleur = '1';
-	$aff_chiffre = '0'; 
+	$aff_chiffre = '0';
 	while ($i < $maxHor) {
-		if($icouleur === '1') { $couleur_cellule = '#FAFFEF'; } else { $couleur_cellule = '#F0FFCF'; } 
+		if($icouleur === '1') { $couleur_cellule = '#FAFFEF'; } else { $couleur_cellule = '#F0FFCF'; }
 	 ?><tr>
 		<td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php echo $Horaire[$i]; ?></td>
 	 	<?php if ( isset($semaine['lundi']['ouverture']) and $semaine['lundi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Mon", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
@@ -1589,7 +1594,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."' AND niveau_message_suivi_eleve_cpe='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
-                { 
+                {
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
@@ -1603,7 +1608,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."'  AND niveau_message_suivi_eleve_cpe!='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
-                { 
+                {
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
@@ -1689,7 +1694,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
                 du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
             </div>
       </fieldset>
-    </form>	   
+    </form>
 
 
 </td>
@@ -1704,7 +1709,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = 'baba'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $donnee_base = mysql_fetch_array($execution_komenti))
-                { 
+                {
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['date_debut'] = $donnee_base['d_date_absence_eleve'];
@@ -1712,7 +1717,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
-		} 
+		}
 
 		$tab1 = crer_tableau_jaj($tableau);
 		$tab2 = rech_tableau_heurepresent($tab1, '08:00:00', '09:00:00');*/
