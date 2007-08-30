@@ -369,7 +369,11 @@ while (list($name, $adress) = each($gepiAuthors)) {
 
 ?>
 </div>
-<?php if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");?>
+<?php
+	if(getSettingValue("gepi_pmv")!="n"){
+		if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");
+	}
+?>
 </div>
 </body>
 </html>

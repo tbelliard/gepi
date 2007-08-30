@@ -66,6 +66,7 @@ if (isset($_POST['valid_logo'])) {
    if (ereg("\.([^.]+)$", $doc_file['name'], $match)) {
        $ext = strtolower($match[1]);
        if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
+       //if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
           $msg = "les seules extensions autorisées sont gif, png et jpg";
        } else {
           $dest = '../images/';
@@ -228,6 +229,12 @@ if (isset($_POST['num_enregistrement_cnil'])) {
 if (isset($_POST['mode_generation_login'])) {
     if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
         $msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
+    }
+}
+
+if (isset($_POST['gepi_pmv'])) {
+    if (!saveSetting("gepi_pmv", $_POST['gepi_pmv'])) {
+        $msg .= "Erreur lors de l'enregistrement de gepi_pmv !";
     }
 }
 
@@ -469,6 +476,29 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
    echo "<td><b><i>Pas de logo actuellement</i></b></td>\n";
 }
 echo "</tr></table></form>\n";
+?>
 
+<hr />
+<form enctype="multipart/form-data" action="param_gen.php" method="post" name="form3" style="width: 100%;">
+<table border=0 cellpadding="5" cellspacing="5">
+	<tr>
+		<td style="font-variant: small-caps;">
+		Tester la présence du module phpMyVisite (<i>pmv.php</i>) :</td>
+	<td>
+        <input type="radio" name="gepi_pmv" value="y" <?php if(getSettingValue("gepi_pmv")=="y"){echo 'checked';} ?> /> Oui<br />
+        <input type="radio" name="gepi_pmv" value="n" <?php if(getSettingValue("gepi_pmv")=="n"){echo 'checked';} ?> /> Non<br />
+	</td>
+	</tr>
+</table>
+
+<input type="hidden" name="is_posted" value="1" />
+<center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
+
+<table><tr><td valign='top'><i>Remarque:</i></td><td>Il arrive que ce test de présence provoque un affichage d'erreur (<i>à propos de pmv.php</i>).<br />
+Dans ce cas, désactivez simplement le test.</td></tr></table>
+</form>
+<p><br /></p>
+
+<?php
 require("../lib/footer.inc.php");
 ?>
