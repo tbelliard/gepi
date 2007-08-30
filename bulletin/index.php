@@ -157,7 +157,8 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 						$requete_cpt_nb_eleve_1 =  mysql_query($sql_cpt_nb_eleve_1);
 
 						$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
-					   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option><?php
+					   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe) and in_array($donner_classe['id_classe'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $donner_classe['nom_complet']." (".$donner_classe['classe'].") "; ?>&nbsp;;&nbsp; Eff : <?php echo $requete_cpt_nb_eleve; ?></option>
+						<?php
 					 }
 					?>
 				  </optgroup>
@@ -170,7 +171,8 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 			            $requete_periode = mysql_query('SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
 				  		while($donner_periode = mysql_fetch_array($requete_periode))
 					  	 {
-						   ?><option value="<?php echo $donner_periode['nom_periode']; ?>" <?php if(!empty($periode) and in_array($donner_periode['nom_periode'], $periode)) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_periode['nom_periode']); ?></option><?php
+						   ?><option value="<?php echo $donner_periode['nom_periode']; ?>" <?php if(!empty($periode) and in_array($donner_periode['nom_periode'], $periode)) { ?> selected="selected"<?php } ?>><?php echo ucfirst($donner_periode['nom_periode']); ?></option>
+							<?php
 						 }
 				  ?>
 				  </select>
@@ -188,7 +190,8 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 			                        $requete_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 				  		while ($donner_eleve = mysql_fetch_array($requete_eleve))
 					  	 {
-						   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?> selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option><?php
+						   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?> selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option>
+							<?php
 						 }
 					}
 					?>
@@ -242,7 +245,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 <li>
 	<p><b>Procédure à suivre pour imprimer des classes complètes :</b><br /></p>
 	<ul>
-		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
 		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
 		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
 		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p><br/></li>
@@ -251,9 +254,9 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 <li>
 	<p><b>Procédure à suivre pour imprimer quelques élèves dans des classes :</b><br /></p>
 	<ul>
-		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
 		<li><p>Cliquer sur le bouton "Liste élèves".</p></li>
-		<li><p>Sélectionner la ou les élèves à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascensseur.</p></li>
+		<li><p>Sélectionner la ou les élèves à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
 		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
 		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
 		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p></li>
