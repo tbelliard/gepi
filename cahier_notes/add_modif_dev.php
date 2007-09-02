@@ -298,7 +298,8 @@ if (isset($_POST['ok'])) {
 */
 
 
-
+/*
+// Déplacée var /lib/share.inc.php
 function getPref($login,$item,$default){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
@@ -311,7 +312,7 @@ function getPref($login,$item,$default){
 		return $default;
 	}
 }
-
+*/
 
 // Interface simplifiée
 //$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");

@@ -321,7 +321,8 @@ if ($mode_navig == 'retour_saisie') {
     echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
 
-
+/*
+// Déplacée var /lib/share.inc.php
 function getPref($login,$item,$default){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
@@ -334,7 +335,7 @@ function getPref($login,$item,$default){
 		return $default;
 	}
 }
-
+*/
 
 // Interface simplifiée
 //$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");

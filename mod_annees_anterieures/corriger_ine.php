@@ -91,7 +91,7 @@ if(isset($confirmer)){
 	}
 	else{
 		// Ca ne devrait pas arriver: Soit tout est renseigné, soit rien n'est renseigné et on a pas validé le formulaire.
-		$msg="Des champs n'étaient pas correctement rensignés.";
+		$msg="Des champs n'étaient pas correctement renseignés.";
 	}
 
 	if(($msg=="")&&($cpt>0)){$msg="Enregistrement réussi.";}
