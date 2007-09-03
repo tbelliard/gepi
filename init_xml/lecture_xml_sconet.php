@@ -420,6 +420,7 @@ function dragStop(event) {
 								"CODE_SEXE",
 								);
 
+								/*
 								$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
 								"CODE_RNE",
 								"SIGLE",
@@ -432,6 +433,23 @@ function dragStop(event) {
 								"BOITE_POSTALE",
 								"MEL",
 								"TELEPHONE",
+								"LL_COMMUNE_INSEE"
+								);
+								*/
+
+								$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
+								"CODE_RNE",
+								"SIGLE",
+								"DENOM_PRINC",
+								"DENOM_COMPL",
+								"LIGNE1_ADRESSE",
+								"LIGNE2_ADRESSE",
+								"LIGNE3_ADRESSE",
+								"LIGNE4_ADRESSE",
+								"BOITE_POSTALE",
+								"MEL",
+								"TELEPHONE",
+								"CODE_COMMUNE_INSEE",
 								"LL_COMMUNE_INSEE"
 								);
 
@@ -543,13 +561,15 @@ function dragStop(event) {
 								}
 
 
-	/*
+								/*
 
-	for($i=0;$i<count($eleves);$i++){
-		echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
-		echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
-	}
-	*/
+								for($i=0;$i<count($eleves);$i++){
+									echo "\$eleves[$i][\"nom\"]=".$eleves[$i]["nom"]."<br />\n";
+									echo "\$eleves[$i][\"scolarite_an_dernier\"][\"code_rne\"]=".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."<br />\n";
+								}
+								*/
+
+
 								// PARTIE <OPTIONS>
 								$temoin_opt="";
 								$temoin_opt_ele="";
@@ -1095,7 +1115,8 @@ function dragStop(event) {
 
 							$fich=fopen("../backup/$dirname/csv/etablissements.csv","w+");
 
-							fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;code_postal;LL_COMMUNE_INSEE\n");
+							//fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;code_postal;LL_COMMUNE_INSEE\n");
+							fwrite($fich,"CODE_RNE;DENOM_COMPL;niveau;type;CODE_COMMUNE_INSEE;LL_COMMUNE_INSEE\n");
 							// RNE, Nom étab, ecole/college/lycee, public/prive, CP, ville
 
 							echo "<table border='1'>\n";
@@ -1238,9 +1259,16 @@ function dragStop(event) {
 												$chaine.=";";
 
 												// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
+												//              Ca y est, il a été ajouté.
 												// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
 												echo "<td>";
-												echo "&nbsp;";
+												if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
+													echo $eleves[$i]["scolarite_an_dernier"]["code_commune_insee"];
+													$chaine.=$eleves[$i]["scolarite_an_dernier"]["code_commune_insee"];
+												}
+												else{
+													echo "&nbsp;";
+												}
 												echo "</td>\n";
 												$chaine.=";";
 
