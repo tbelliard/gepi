@@ -1080,6 +1080,37 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 }
+// **********************************
+
+
+
+// EDT
+
+$chemin = array();
+$chemin[] = "/edt_organisation/index_edt.php";
+
+$titre = array();
+$titre[] = "Emploi du temps";
+
+$expli = array();
+$expli[] = "Cet outil permet la consultation/gestion de l'emploi du temps.";
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+    echo "<table class='menu'>\n";
+    echo "<tr>\n";
+    echo "<th colspan='2'><img src='./images/icons/document.png' alt='Emploi du temps' class='link'/> - Emploi du temps</th>\n";
+    echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
 
 ?>
 </center>

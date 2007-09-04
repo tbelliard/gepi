@@ -496,6 +496,9 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Graphique de la fiche élève', '1');";
 
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion de l emploi du temps', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');";
+
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -4411,8 +4414,12 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
         }
 
+	}
 
 
+
+    if (($force_maj == 'yes') or (quelle_maj("1.5.1"))) {
+        $result .= "<br /><br /><b>Mise à jour vers la version 1.5.1" . $rc . $beta . " :</b><br />";
 
         $result .= "&nbsp;->Ajout du champ rn_nomdev à la table classes<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_nomdev'"));
@@ -4531,7 +4538,168 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
         }
 
+		// Début de la 1.5.1? 20070904
+
+		// ====================================
+		// Ajouts concernant le dispositif EDT
+		$result .= "&nbsp;->Création de la table 'salle_cours'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'salle_cours'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE salle_cours (`id_salle` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `numero_salle` VARCHAR( 10 ) NOT NULL , `nom_salle` VARCHAR( 50 ) NOT NULL);");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Création de la table 'edt_cours'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_cours'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) collate latin1_general_ci NOT NULL, `id_salle` varchar(3) collate latin1_general_ci NOT NULL, `jour_semaine` varchar(10) collate latin1_general_ci NOT NULL, `id_definie_periode` varchar(3) collate latin1_general_ci NOT NULL, `duree` varchar(10) collate latin1_general_ci NOT NULL default '2', `heuredeb_dec` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_semaine` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_calendrier` varchar(3) collate latin1_general_ci NOT NULL default '0', `modif_edt` varchar(3) collate latin1_general_ci NOT NULL default '0', PRIMARY KEY  (`id_cours`));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Création de la table 'edt_setting'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_setting'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL);");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Création de la table 'edt_calendrier'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_calendrier'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_calendrier` (`id_calendrier` int(11) NOT NULL auto_increment,`classe_concerne_calendrier` text NOT NULL,`nom_calendrier` varchar(100) NOT NULL default '',`jourdebut_calendrier` date NOT NULL default '0000-00-00',`heuredebut_calendrier` time NOT NULL default '00:00:00',`jourfin_calendrier` date NOT NULL default '0000-00-00',`heurefin_calendrier` time NOT NULL default '00:00:00',`numero_periode` tinyint(4) NOT NULL default '0',`etabferme_calendrier` tinyint(4) NOT NULL,`etabvacances_calendrier` tinyint(4) NOT NULL,PRIMARY KEY (`id_calendrier`));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'nom_creneaux_s' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='nom_creneaux_s'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_salle' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_salle'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (7, 'edt_aff_salle', 'nom');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_matiere' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_matiere'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_creneaux' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_creneaux'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (4, 'edt_aff_creneaux', 'noms');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_init_infos' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (8, 'edt_aff_init_infos', 'oui');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_couleur' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_couleur'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_init_infos2' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos2'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (9, 'edt_aff_init_infos2', 'oui');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+		// Fin des ajouts concernant le dispositif EDT
+		// ====================================
+
+
+
+
     }
+
+
 
 
 

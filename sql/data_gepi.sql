@@ -532,6 +532,12 @@ INSERT INTO droits VALUES ('/responsables/maj_import2.php', 'V', 'F', 'F', 'F', 
 INSERT INTO droits VALUES ('/mod_annees_anterieures/corriger_ine.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction d INE dans la table annees_anterieures', '');
 INSERT INTO `droits` VALUES ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d élèves', '');
 INSERT INTO `droits` VALUES ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Graphique de la fiche élève', '1');
-INSERT INTO `edt_setting` (`id`, `reglage`, `valeur`) VALUES (1, 'nom_creneaux_s', '1'), (7, 'edt_aff_salle', 'nom'), (3, 'edt_aff_matiere', 'long'), (4, 'edt_aff_creneaux', 'noms'), (8, 'edt_aff_init_infos', 'oui'), (6, 'edt_aff_couleur', 'nb'), (9, 'edt_aff_init_infos2', 'oui');
-INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `description` , `statut` ) VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion de l''emploi du temps', '');
-INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `description` , `statut` ) VALUES ('/edt_organisation/edt_initialiser.php?initialiser=ok', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l''emploi du temps', '');
+INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion de l emploi du temps', '');
+INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');
+INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
+INSERT INTO edt_setting VALUES (7, 'edt_aff_salle', 'nom');
+INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
+INSERT INTO edt_setting VALUES (4, 'edt_aff_creneaux', 'noms');
+INSERT INTO edt_setting VALUES (8, 'edt_aff_init_infos', 'oui');
+INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');
+INSERT INTO edt_setting VALUES (9, 'edt_aff_init_infos2', 'oui');
