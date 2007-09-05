@@ -542,3 +542,4 @@ INSERT INTO edt_setting VALUES (4, 'edt_aff_creneaux', 'noms');
 INSERT INTO edt_setting VALUES (5, 'edt_aff_init_infos', 'oui');
 INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');
 INSERT INTO edt_setting VALUES (7, 'edt_aff_init_infos2', 'oui');
+INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');
