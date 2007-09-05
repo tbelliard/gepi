@@ -565,9 +565,9 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		}
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 
-	$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
-	//	$id_div = $rep_classe['classe'].$id_creneaux.$jour_semaine;
-	//$classe_js = creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
+	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
+		$id_div = $rep_classe['classe'].$id_creneaux.$jour_semaine;
+	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>\n".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 	}
 	// On récupère le nom et la civilite du prof en question
 	{
@@ -879,7 +879,7 @@ function aff_checked($aff, $valeur){
 	$rep_aff = mysql_fetch_array($req_aff);
 
 	if ($rep_aff['valeur'] === $valeur) {
-		$retour_aff = ("checked ");
+		$retour_aff = ("checked='checked' ");
 	}
 	else {
 		$retour_aff = ("");
