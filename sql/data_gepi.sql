@@ -532,9 +532,9 @@ INSERT INTO droits VALUES ('/responsables/maj_import2.php', 'V', 'F', 'F', 'F', 
 INSERT INTO droits VALUES ('/mod_annees_anterieures/corriger_ine.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction d INE dans la table annees_anterieures', '');
 INSERT INTO droits VALUES ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d élèves', '');
 INSERT INTO droits VALUES ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Graphique de la fiche élève', '1');
-INSERT INTO droits VALUES ('/edt_organisation/index_edt.php?calendrier=ok', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation du calendrier', '');
+INSERT INTO droits VALUES ('/edt_organisation/edt_calendrier.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation du calendrier', '');
 INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion de l emploi du temps', '');
-INSERT INTO droits VALUES ('/edt_organisation/index_edt.php?initialiser=ok', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');
+INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');
 INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
 INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');
 INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
