@@ -4612,7 +4612,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_salle'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (7, 'edt_aff_salle', 'nom');");
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4654,7 +4654,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (8, 'edt_aff_init_infos', 'oui');");
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (5, 'edt_aff_init_infos', 'oui');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4682,7 +4682,21 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos2'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (9, 'edt_aff_init_infos2', 'oui');");
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (7, 'edt_aff_init_infos2', 'oui');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'aff_cherche_salle' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='aff_cherche_salle'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
