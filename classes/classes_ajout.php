@@ -143,6 +143,32 @@ if (isset($is_posted) and ($is_posted == 1)) {
 
 }
 
+// =================================
+// AJOUT: boireaus
+$sql="SELECT id, classe FROM classes ORDER BY classe";
+$res_class_tmp=mysql_query($sql);
+if(mysql_num_rows($res_class_tmp)>0){
+    $id_class_prec=0;
+    $id_class_suiv=0;
+    $temoin_tmp=0;
+    while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+        if($lig_class_tmp->id==$id_classe){
+            $temoin_tmp=1;
+            if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+                $id_class_suiv=$lig_class_tmp->id;
+            }
+            else{
+                $id_class_suiv=0;
+            }
+        }
+        if($temoin_tmp==0){
+            $id_class_prec=$lig_class_tmp->id;
+        }
+    }
+}
+// =================================
+
+
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Ajout d'élèves à une classe";
 require_once("../lib/header.inc");
@@ -173,6 +199,11 @@ function DecochePeriode() {
 
 <p class=bold>
 <a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
+
+<?php
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+?>
 </p>
 <p><b>Ajout d'élèves à la classe de <?php echo $classe; ?></b><br />Liste des élèves non affectés à une classe :</p>
 
@@ -319,41 +350,41 @@ if ($nombreligne == '0') {
         if ($inserer_ligne == 'yes') {
 
             echo "<tr><td>\n";
-            echo "<input type=hidden name=$item_login value='yes' />\n";
+            echo "<input type='hidden' name=$item_login value='yes' />\n";
 
             //echo "<tr><td><p>$nom_eleve $prenom_eleve</p></td>\n";
             echo "<p>$nom_eleve $prenom_eleve</p></td>\n";
 
-            echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type=radio name='$regime_login' value='ext.'";
+            echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='$regime_login' value='ext.'";
 
-            if ($regime == 'ext.') { echo " CHECKED ";}
+            if ($regime == 'ext.') { echo " checked ";}
 
             echo " />\n";
 
             echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='int.'";
 
-            if ($regime == 'int.') { echo " CHECKED ";}
+            if ($regime == 'int.') { echo " checked ";}
 
             echo " />\n";
 
             echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='d/p' ";
 
-            if ($regime == 'd/p') { echo " CHECKED ";}
+            if ($regime == 'd/p') { echo " checked ";}
 
             echo " />\n";
 
             echo "&nbsp;&nbsp;&nbsp;<input type=radio name='$regime_login' value='i-e'";
 
-            if ($regime == 'i-e') { echo " CHECKED ";}
+            if ($regime == 'i-e') { echo " checked ";}
 
             echo " />\n";
 
 
 
             //echo "</p></td><td><p><center><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
-            echo "</p></td>\n<td><p align='center'><INPUT TYPE=CHECKBOX NAME='$doublant_login' VALUE='R'";
+            echo "</p></td>\n<td><p align='center'><input type='checkbox' name='$doublant_login' value='R'";
 
-            if ($doublant == 'R') { echo " CHECKED ";}
+            if ($doublant == 'R') { echo " checked ";}
 
             echo " />";
 
@@ -370,7 +401,7 @@ if ($nombreligne == '0') {
 
                 if ($nom_classe[$i] == 'vide') {
 
-                    echo "<INPUT TYPE=CHECKBOX NAME='$ajout_login[$i]' VALUE='yes' />";
+                    echo "<input type='checkbox' name='$ajout_login[$i]' value='yes' />";
 
                 } else {
 

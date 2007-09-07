@@ -81,6 +81,40 @@ if (isset($is_posted)) {
 	$affiche_message = 'yes';
 }
 $message_enregistrement = "Les modifications ont été enregistrées !";
+
+
+
+// =================================
+// AJOUT: boireaus
+$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, eleves e
+						WHERE jec.login=e.login AND
+							jec.id_classe='$id_classe'
+						ORDER BY e.nom,e.prenom";
+//echo "$sql<br />";
+//echo "\$login_eleve=$login_eleve<br />";
+$res_ele_tmp=mysql_query($sql);
+if(mysql_num_rows($res_ele_tmp)>0){
+    $login_eleve_prec=0;
+    $login_eleve_suiv=0;
+    $temoin_tmp=0;
+    while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+        if($lig_ele_tmp->login==$login_eleve){
+            $temoin_tmp=1;
+            if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+                $login_eleve_suiv=$lig_ele_tmp->login;
+            }
+            else{
+                $login_eleve_suiv=0;
+            }
+        }
+        if($temoin_tmp==0){
+            $login_eleve_prec=$lig_ele_tmp->login;
+        }
+    }
+}
+// =================================
+
+
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des matières par élève";
 require_once("../lib/header.inc");
@@ -90,8 +124,16 @@ require_once("../lib/header.inc");
 // MODIF: boireaus
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+
 echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo "</p>";
+
+if("$login_eleve_prec"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'>Elève précédent</a>";}
+if("$login_eleve_suiv"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'>Elève suivant</a>";}
+
+echo "</p>\n";
+
+//debug_var();
+
 //=============================
 
 ?>
@@ -105,8 +147,11 @@ $call_data_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$login_ele
 $nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
 $prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
 
-echo "<H3>".$nom_eleve." ".$prenom_eleve." - Classe : $classe</H3>";
-echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>";
+echo "<h3>".$nom_eleve." ".$prenom_eleve." - Classe : $classe</h3>\n";
+//echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>\n";
+echo "<p>Pour valider les modifications, cliquez sur le bouton.</p>\n";
+
+echo "<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>\n";
 
 // J'appelle les différents groupes existants pour la classe de l'élève
 
@@ -117,7 +162,7 @@ $nombre_ligne = mysql_num_rows($call_group);
 // MODIF: boireaus
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n<tr><td><b>Matière</b></td>";
 echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
-echo "<tr align='center'><td><b>Matière</b></td>";
+echo "<tr align='center'><td><b>Matière</b></td>\n";
 //=========================
 $j = 1;
 while ($j < $nb_periode) {
@@ -131,11 +176,11 @@ while ($j < $nb_periode) {
 	//echo "<input type='button' name='decoche_col_$j' value='D' onClick='modif_case($j,\"col\",false)' />\n";
 	echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-	echo "</td>";
+	echo "</td>\n";
 	//=========================
 	$j++;
 }
-echo "<td>&nbsp;</td>";
+echo "<td>&nbsp;</td>\n";
 echo "</tr>\n";
 
 $nb_erreurs=0;
@@ -253,9 +298,10 @@ if($nb_erreurs>0){
 }
 //============================================
 ?>
-<center><input type=submit value="Enregistrer les modifications" /></center>
+<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>
 <input type=hidden name=id_classe value=<?php echo $id_classe;?> />
 <input type=hidden name=login_eleve value=<?php echo $login_eleve;?> />
 <input type=hidden name=is_posted value=1 />
+<br />
 </form>
 <?php require("../lib/footer.inc.php");?>

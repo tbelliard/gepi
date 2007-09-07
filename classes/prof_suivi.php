@@ -177,7 +177,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
         if ($i == $nb_prof) {echo " selected ";}
 
-        echo">$i</option>";
+        echo">$i</option>\n";
 
     }
 
@@ -229,13 +229,13 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
     $nb = mysql_num_rows($call_prof);
 
-    echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=post>";
+    echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=post>\n";
 
     for ($i=1; $i < $nb_prof+1; $i++) {
 
-        echo "<p><select name='prof_suivi[$i]'>";
+        echo "<p><select name='prof_suivi[$i]'>\n";
 
-        echo "<option value=''>(vide)</option>";
+        echo "<option value=''>(vide)</option>\n";
 
         $j='0';
 
@@ -269,13 +269,13 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
             }
 
-            echo">$prof_prenom $prof_nom</option>";
+            echo ">$prof_prenom $prof_nom</option>\n";
 
             $j++;
 
         }
 
-        echo "</select></p>";
+        echo "</select></p>\n";
 
     }
 
@@ -319,17 +319,17 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
     if ($etape2 == 'no') {
 
-        echo "<p>Vous n'avez pas défini de ".getSettingValue("gepi_prof_suivi")." !</p>";
+        echo "<p>Vous n'avez pas défini de ".getSettingValue("gepi_prof_suivi")." !</p>\n";
 
-        echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=post>";
+        echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=post>\n";
 
-        echo "<input type='submit' value='Retour' /><br />";
+        echo "<input type='submit' value='Retour' /><br />\n";
 
-        echo "<input type='hidden' name='id_classe' value='$id_classe' />";
+        echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
-        echo "<input type='hidden' name='nb_prof' value='$nb_prof' />";
+        echo "<input type='hidden' name='nb_prof' value='$nb_prof' />\n";
 
-        echo "</form>";
+        echo "</form>\n";
 
     } else {
 
@@ -341,17 +341,20 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
         if ($nombreligne == '0') {
 
-            echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>";
+            echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 
             die();
 
         } else {
 
-            echo "<p>Cliquez sur le bouton \"Enregistrer\" en bas de la page pour enregistrer.</p>";
+            //echo "<p>Cliquez sur le bouton \"Enregistrer\" en bas de la page pour enregistrer.</p>\n";
+            echo "<p>Cliquez sur le bouton \"Enregistrer\" pour valider.</p>\n";
+            echo "<center><input type='submit' value='Enregistrer' /></center><br />\n";
 
             $k = '0';
 
-            echo "<table BORDER = '1' CELLPADDING = '5'><tr><td><p>Nom Prénom</p></td>";
+            echo "<table border='1' cellpadding='5'>\n";
+			echo "<tr><td><p>Nom Prénom</p></td>\n";
 
             for ($i=1; $i < $nb_prof_suivi+1; $i++) {
 
@@ -361,11 +364,12 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
                 $prof_prenom = mysql_result($call_prof, 0, "prenom");
 
-                echo "<td><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom</p></td>";
+                echo "<td><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom</p></td>\n";
 
             }
 
-            echo "<td><p class='small'>Pas de ".getSettingValue("gepi_prof_suivi")."</p></td></tr>";
+            echo "<td><p class='small'>Pas de ".getSettingValue("gepi_prof_suivi")."</p></td>\n";
+			echo "</tr>\n";
 
             While ($k < $nombreligne) {
 
@@ -385,7 +389,8 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
                 $prof_login = "prof_".$login_eleve;
 
-                echo "<tr><td><p>$nom_eleve $prenom_eleve</p></td>";
+                echo "<tr>\n";
+				echo "<td><p>$nom_eleve $prenom_eleve</p></td>\n";
 
                 $flag_prof = 'no';
 
@@ -401,35 +406,35 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
                     }
 
-                    echo " /></p></td>";
+                    echo " /></p></td>\n";
 
                 }
 
-                echo "<td><p><INPUT TYPE='radio' name='$prof_login' value=''";
+                echo "<td><p><input type='radio' name='$prof_login' value=''";
 
                 if (($flag_prof == 'no') and ($nb_prof_suivi!=1)) {
 
-                    echo " CHECKED ";
+                    echo " checked ";
 
                 }
 
-                echo " /></p></td>";
+                echo " /></p></td>\n";
 
-                echo "</tr>";
+                echo "</tr>\n";
 
                 $k++;
 
             }
 
-            echo "</table>";
-            echo "<center><input type='submit' value='Enregistrer' /></center><br />";
-            echo "<input type='hidden' name='id_classe' value='$id_classe' />";
-            echo "<input type='hidden' name='nb_prof' value='$nb_prof' />";
-            echo "<input type='hidden' name='etape2' value='yes' />";
-            echo "<input type='hidden' name='etape3' value='yes' />";
-            echo "<input type='hidden' name='nb_prof_suivi' value='$nb_prof_suivi' />";
-            echo "<input type='hidden' name='is_posted' value='1' />";
-            echo "</form>";
+            echo "</table>\n";
+            echo "<center><input type='submit' value='Enregistrer' /></center><br />\n";
+            echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+            echo "<input type='hidden' name='nb_prof' value='$nb_prof' />\n";
+            echo "<input type='hidden' name='etape2' value='yes' />\n";
+            echo "<input type='hidden' name='etape3' value='yes' />\n";
+            echo "<input type='hidden' name='nb_prof_suivi' value='$nb_prof_suivi' />\n";
+            echo "<input type='hidden' name='is_posted' value='1' />\n";
+            echo "</form>\n";
         }
     }
 }

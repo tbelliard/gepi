@@ -137,10 +137,11 @@ if (isset($is_posted)) {
         }
     $k++;
     }
-        if (($liste_cible != '') and ($autorisation_sup != 'no')) {
-            header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&liste_cible2=$liste_cible2&liste_cible3=$liste_cible3&action=retire_eleve");
 
+	if (($liste_cible != '') and ($autorisation_sup != 'no')) {
+		header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&liste_cible2=$liste_cible2&liste_cible3=$liste_cible3&action=retire_eleve");
     }
+
     if ($reg_ok == 'yes') {
       $message_enregistrement = "Les modifications ont été enregistrées !";
     } else if ($reg_ok == "impossible") {
@@ -150,6 +151,34 @@ if (isset($is_posted)) {
     }
     $affiche_message = 'yes';
 }
+
+
+
+// =================================
+// AJOUT: boireaus
+$sql="SELECT id, classe FROM classes ORDER BY classe";
+$res_class_tmp=mysql_query($sql);
+if(mysql_num_rows($res_class_tmp)>0){
+    $id_class_prec=0;
+    $id_class_suiv=0;
+    $temoin_tmp=0;
+    while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+        if($lig_class_tmp->id==$id_classe){
+            $temoin_tmp=1;
+            if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+                $id_class_suiv=$lig_class_tmp->id;
+            }
+            else{
+                $id_class_suiv=0;
+            }
+        }
+        if($temoin_tmp==0){
+            $id_class_prec=$lig_class_tmp->id;
+        }
+    }
+}
+// =================================
+
 
 
 //**************** EN-TETE **************************************
@@ -164,28 +193,37 @@ $classe = mysql_result($call_classe, "0", "classe");
 ?>
 <form enctype="multipart/form-data" action="classes_const.php" method=post>
 <p class=bold>
-<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <a href="prof_suivi.php?id_classe=<?php echo $id_classe; ?>"><?php echo getSettingValue("gepi_prof_suivi"); ?> : saisie rapide</a>
+<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href="prof_suivi.php?id_classe=<?php echo $id_classe; ?>"><?php echo ucfirst(getSettingValue("gepi_prof_suivi")); ?> : saisie rapide</a>
+<?php
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+?>
 </p>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <center><input type="submit" value="Enregistrer" /></center>
 <p>
 <img src='../images/icons/add_user.png' alt='' /> <a href="classes_ajout.php?id_classe=<?php echo $id_classe;?>">Ajouter des élèves à la classe</a>
 </p>
-<p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p> 
+<p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p>
 <?php
 $call_eleves = mysql_query("SELECT DISTINCT j.login FROM j_eleves_classes j, eleves e WHERE (j.id_classe = '$id_classe' and e.login = j.login) ORDER BY e.nom, e.prenom");
 $nombreligne = mysql_num_rows($call_eleves);
 if ($nombreligne == '0') {
-    echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>";
+    echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 } else {
     $k = '0';
-    echo "<table BORDER = '1' CELLPADDING = '5'><tr><td><p>Nom Prénom </p></td><td><p>Régime</p></td><td><p>Redoublant</p></td><td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>CPE responsable</p>";
+    echo "<table border='1' cellpadding='5'>\n";
+	echo "<tr>\n";
+	echo "<td><p>Nom Prénom </p></td>\n";
+	echo "<td><p>Régime</p></td>\n";
+	echo "<td><p>Redoublant</p></td>\n";
+	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>CPE responsable</p></td>\n";
     $i="1";
     while ($i < $nb_periode) {
-        echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>";
+        echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>\n";
         $i++;
     }
-    echo "</tr>";
+    echo "</tr>\n";
     While ($k < $nombreligne) {
         $login_eleve = mysql_result($call_eleves, $k, 'login');
         $call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
@@ -213,31 +251,42 @@ if ($nombreligne == '0') {
         $eleve_cperesp = @mysql_result($call_cperesp, '0', "cpe_login");
         $cpe_login = "cpe_".$login_eleve;
 
-        echo "<tr><td><p>".$nom_eleve." ".$prenom_eleve ;
+        echo "<tr>\n";
+		echo "<td><p>".$nom_eleve." ".$prenom_eleve ;
         echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."'>Matières suivies</a></b>";
-        echo "</p></td>";
-        echo "<td style='padding: 0;'>";
-		
-		echo "<table style='border-collaspe: collapse;'><tr>";
+        echo "</p></td>\n";
+        echo "<td style='padding: 0;'>\n";
+
+		echo "";
+
+		echo "<table style='border-collaspe: collapse;'>\n";
+		echo "<tr>\n";
 		echo "<td style='text-align: center;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
         if ($regime == 'i-e') {echo "CHECKED";}
-        echo " /></td>";
+        echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
         if ($regime == 'int.') {echo "CHECKED";}
-        echo " /></td>";
+        echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
         if ($regime == 'd/p') {echo "CHECKED";}
-        echo " /></td>";
+        echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
         if ($regime == 'ext.') {echo "CHECKED";}
         //echo " /></p></td><td><p><center><input type='checkbox' name='$doublant_login' value='yes'";
-        echo " /></td></tr></table>";
+        echo " /></td></tr></table>\n";
+
+		echo "";
+
+		echo "</td>\n";
+
 		echo "<td><p align='center'><input type='checkbox' name='$doublant_login' value='yes'";
         if ($doublant == 'R') {echo "CHECKED";}
         //echo " /></center></p></td><td><p><select size='1' name='$prof_login'>";
-        echo " /></p></td><td><p><select size='1' name='$prof_login'>";
+        echo " /></p></td>\n";
+		echo "<td>\n";
+		echo "<p><select size='1' name='$prof_login'>\n";
         $profsuivi = '(vide)';
-        echo "<option value='$profsuivi'>(vide)</option>";
+        echo "<option value='$profsuivi'>(vide)</option>\n";
         $call_prof = mysql_query("SELECT DISTINCT u.login, u.nom, u.prenom " .
         		"FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
         		"u.statut = 'professeur' and " .
@@ -251,14 +300,18 @@ if ($nombreligne == '0') {
             $profsuivi = mysql_result($call_prof, $i, "login");
             $prof_nom = mysql_result($call_prof, $i, "nom");
             $prof_prenom = mysql_result($call_prof, $i, "prenom");
-            echo "<option value='$profsuivi'"; if ($profsuivi==$eleve_profsuivi) { echo " SELECTED";} echo">$prof_prenom $prof_nom</option>";
+            echo "<option value='$profsuivi'";
+			if ($profsuivi==$eleve_profsuivi) { echo " SELECTED";}
+			echo ">$prof_prenom $prof_nom</option>\n";
         $i++;
         }
-        echo "</select></p></td>";
+        echo "</select></p>\n";
+		echo "</td>\n";
 
-        echo "<td><p><select size='1' name='$cpe_login'>";
+        echo "<td>\n";
+		echo "<p><select size='1' name='$cpe_login'>\n";
             $cperesp = "vide";
-            echo "<option value='$cperesp'>(vide)</option>";
+            echo "<option value='$cperesp'>(vide)</option>\n";
             $call_cpe = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
             $nb = mysql_num_rows($call_cpe);
             for ($i="0";$i<$nb;$i++) {
@@ -268,9 +321,10 @@ if ($nombreligne == '0') {
                 echo "<option value='$cperesp'";
                     if ($cperesp == $eleve_cperesp) echo " SELECTED";
                 echo ">" . $cperesp_prenom . " " . $cperesp_nom ;
-                echo "</option>";
+                echo "</option>\n";
             }
-        echo "</select></p></td>";
+        echo "</select></p>\n";
+		echo "</td>\n";
 
         $i="1";
         while ($i < $nb_periode) {
@@ -278,20 +332,21 @@ if ($nombreligne == '0') {
             $nb_ligne = mysql_num_rows($call_trim);
             if ($nb_ligne != 0) {
                 //echo "<td><p><center><input type='checkbox' name='$delete_login[$i]' value='yes' /></center></p></td>";
-                echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' value='yes' /></p></td>";
+                echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' value='yes' /></p></td>\n";
             } else {
                 $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
                 $nom_classe = @mysql_result($call_classe, 0, "classe");
                 //echo "<td><p><center>$nom_classe&nbsp;</center></p></td>";
-                echo "<td><p align='center'>$nom_classe&nbsp;</p></td>";
+                echo "<td><p align='center'>$nom_classe&nbsp;</p></td>\n";
             }
             $i++;
         }
-        echo "</tr>";
+        echo "</tr>\n";
         $k++;
     }
-    echo "</table>";
-    echo "<center><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></center><br />";
+    echo "</table>\n";
+    echo "<center><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></center>\n";
+	echo "<br />\n";
 
 }
 
