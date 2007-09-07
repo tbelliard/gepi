@@ -179,7 +179,7 @@ if (!isset($is_posted)) {
 		//$fp = @dbase_open($dbf_file['tmp_name'], 0);
 		$fp=fopen($dbf_file['tmp_name'],"r");
 		if(!$fp) {
-		echo "<p>Impossible d'ouvrir le fichier dbf !</p>";
+		echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
 		// on constitue le tableau des champs à extraire
