@@ -535,6 +535,7 @@ INSERT INTO droits VALUES ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V'
 INSERT INTO droits VALUES ('/edt_organisation/edt_calendrier.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation du calendrier', '');
 INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion de l emploi du temps', '');
 INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');
+INSERT INTO droits VALUES ('/edt_organisation/effacer_cours.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Effacer un cours des EdT', '');
 INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
 INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');
 INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
