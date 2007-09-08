@@ -129,6 +129,9 @@ if (isset($is_posted) and ($is_posted == "yes")) {
     // on vide la table tempo2 qui nous a servi à stocker les login temporaires des élèves
     $del = @mysql_query("DELETE FROM tempo2");
 
+	// On renseigne le témoin: La mise à jour à partir de sconet sera possible.
+	saveSetting("import_maj_xml_sconet", 1);
+
     //echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
     echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>\n";
     echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>\n";
