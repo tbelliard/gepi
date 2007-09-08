@@ -2,18 +2,48 @@
 
 /**
  * Fichier d'initialisation de l'EdT
- *
+ * Pour effacer la table avant une nouvelle initialisation il faut faire un TRUNCATE TABLE nom_table;
  * @version $Id$
  * @copyright 2007
  */
+$titre_page = "Emploi du temps".$sous_titre;
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions edt
+require_once("./fonctions_edt.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+   die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+// Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-if ($_SESSION['statut'] != "administrateur") {
-    die('Vous n\'êtes pas autorisé à afficher cette page ! De façon générale, il ne faut pas modifier la barre d\'adresse manuellement !');
-}
 
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php"); ?>
+
+
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+<?php
 	// Initialisation des variables de la page
 $initialiser = isset($_POST["initialiser"]) ? $_POST["initialiser"] : NULL;
 $choix_prof = isset($_POST["prof"]) ? $_POST["prof"] : NULL;
@@ -25,18 +55,19 @@ $heure_debut = isset($_POST["heure_debut"]) ? $_POST["heure_debut"] : NULL;
 $choix_semaine = isset($_POST["choix_semaine"]) ? $_POST["choix_semaine"] : NULL;
 $login_salle = isset($_POST["login_salle"]) ? $_POST["login_salle"] : NULL;
 $init = isset($_GET["init"]) ? $_GET["init"] : NULL;
-?>
-</center>
-<?php
+
 	// On affiche ou non les infos de base
 $aff_reglages = GetSettingEdt("edt_aff_init_infos");
 
 if ($aff_reglages == "oui") {
-	echo "<font size=\"2\">Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
+	echo "
+	<font size=\"2\">
+	Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
 <br />
 Pour les entr&eacute;es simples, la saisie manuelle est possible.
 Elle vous permettra de rentrer heure par heure des informations
-en v&eacute;rifiant si deux cours ne se chevauchent pas.</font>
+en v&eacute;rifiant si deux cours ne se chevauchent pas.
+	</font>
 <br /><span class=\"refus\"><h3>Attention ! seuls les enseignements
 définis dans Gepi peuvent apparaitre dans l'emploi du temps</h3></span>
 <br />";
@@ -48,9 +79,10 @@ else {
 echo '
 	<fieldset>
 		<legend>Saisie manuelle</legend>
-		<form action="index_edt.php" name="choix_prof" method="POST">
+		<form action="edt_initialiser.php" name="choix_prof" method="post">
 		<select name="prof" onchange=\'document.choix_prof.submit();\'>
-			<OPTION value="rien">Choix du professeur</OPTION>';
+			<option value="rien">Choix du professeur</option>
+	';
 
 	$tab_select = renvoie_liste("prof");
 
@@ -58,7 +90,7 @@ echo '
 for($i=0;$i<count($tab_select);$i++) {
 	if(isset($choix_prof)){
 		if($choix_prof==$tab_select[$i]["login"]){
-			$selected=" selected='true'";
+			$selected=" selected='selected'";
 		}
 		else{
 			$selected="";
@@ -67,12 +99,13 @@ for($i=0;$i<count($tab_select);$i++) {
 	else{
 		$selected="";
 	}
-	echo ("	<OPTION value='".$tab_select[$i]["login"]."'".$selected.">".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"]."</OPTION>\n");
+	echo "
+			<option value='".$tab_select[$i]["login"]."'".$selected.">".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"]."</option>\n";
 }
 
 echo '
-			<input type=hidden name="initialiser" value="ok" />
- 		</SELECT>
+			<input type="hidden" name="initialiser" value="ok" />
+ 		</select>
 		</form>';
 
 	// Ensuite, on propose la liste des enseignements de ce professeur associé à la matière
@@ -81,18 +114,19 @@ if (isset($choix_prof)) {
 <table border="0" cellspacing="4" cellpadding="0">
 	<tr>
 		<td>
-			<form action="index_edt.php" name="choix_enseignement" method="POST">
+			<form action="edt_initialiser.php" name="choix_enseignement" method="post">
 			<select name="enseignement">';
 echo "\n";
 
 		$tab_enseignements = get_groups_for_prof($choix_prof);
-echo "				<OPTION value=\"rien\">Choix de l'enseignement</OPTION>\n";
+echo "
+				<option value=\"rien\">Choix de l'enseignement</option>\n";
 
 
 		for($i=0; $i<count($tab_enseignements); $i++) {
 	if(isset($enseignement)){
 		if($enseignement==$tab_enseignements[$i]["id"]){
-			$selected=" selected='true'";
+			$selected=" selected='selected'";
 		}
 		else{
 			$selected="";
@@ -101,16 +135,17 @@ echo "				<OPTION value=\"rien\">Choix de l'enseignement</OPTION>\n";
 	else{
 		$selected="";
 	}
-			echo "	<OPTION value=\"".$tab_enseignements[$i]["id"]."\"".$selected.">".$tab_enseignements[$i]["classlist_string"]." : ".$tab_enseignements[$i]["description"]."</OPTION>\n";
+			echo "
+				<option value=\"".$tab_enseignements[$i]["id"]."\"".$selected.">".$tab_enseignements[$i]["classlist_string"]." : ".$tab_enseignements[$i]["description"]."</option>\n";
 		}
 echo '
 			</select>
 		</td>
-			<input type=hidden name="initialiser" value="ok" />
-			<input type=hidden name="prof" value="'.$choix_prof.'" />
+			<input type="hidden" name="initialiser" value="ok" />
+			<input type="hidden" name="prof" value="'.$choix_prof.'" />
 		<td>
-			<SELECT name="ch_jour_semaine">
-				<OPTION value="rien">Jour</OPTION>';
+			<select name="ch_jour_semaine">
+				<option value="rien">Jour</option>';
 echo "\n";
 
 	// On propose aussi le choix du jour
@@ -125,7 +160,7 @@ echo "\n";
 		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
 		if(isset($ch_jour_semaine)){
 			if($ch_jour_semaine==$tab_select_jour[$a]["jour_sem"]){
-				$selected=" selected='true'";
+				$selected=" selected='selected'";
 			}
 			else{
 				$selected="";
@@ -134,24 +169,25 @@ echo "\n";
 		else{
 		$selected="";
 		}
-		echo "	<OPTION value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</OPTION>\n";
+		echo "
+		<option value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</option>\n";
 	}
 echo '
-			</SELECT>
+			</select>
 		</td>
 	<br />
 	<br />
 		<td>
-			<SELECT name="ch_heure">
-				<OPTION value="rien">Horaire</OPTION>';
+			<select name="ch_heure">
+				<option value="rien">Horaire</option>';
 echo "\n";
 	// On propose aussi le choix de l'horaire
 
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
-	$rep_heure = mysql_fetch_array($req_heure);
+	$rep_heure = mysql_num_rows($req_heure);
 	$tab_select_heure = array();
 
-	for($b=0;$b<count($rep_heure);$b++) {
+	for($b=0; $b<$rep_heure; $b++) {
 
 		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
 		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
@@ -159,7 +195,7 @@ echo "\n";
 		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
 		if(isset($ch_heure)){
 			if($ch_heure==$tab_select_heure[$b]["id_heure"]){
-				$selected=" selected='true'";
+				$selected=" selected='selected'";
 			}
 			else{
 				$selected="";
@@ -168,58 +204,75 @@ echo "\n";
 		else{
 			$selected="";
 		}
-		echo "<OPTION value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</OPTION>\n";
+		echo "
+		<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n";
 
 	}
 echo '
-			</SELECT>
+			</select>
 		</td>
 		<td>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<SELECT name="heure_debut">
-				<OPTION value="0">Le cours commence au début d\'un créneau</OPTION>
-				<OPTION value="0.5">Le cours commence au milieu d\'un créneau</OPTION>
-			</SELECT>
+			<select name="heure_debut">
+				<option value="0">Le cours commence au début d\'un créneau</option>
+				<option value="0.5">Le cours commence au milieu d\'un créneau</option>
+			</select>
 		</td>';
 
 	// On propose aussi le choix du type de semaine et l'heure de début du cours
 
 echo '
 		<td>
-			<SELECT name="duree">
-				<OPTION value="2">1 heure</OPTION>
-				<OPTION value="3">1.5 heure</OPTION>
-				<OPTION value="4">2 heures</OPTION>
-				<OPTION value="5">2.5 heures</OPTION>
-				<OPTION value="6">3 heures</OPTION>
-				<OPTION value="7">3.5 heures</OPTION>
-				<OPTION value="8">4 heures</OPTION>
-			</SELECT>
+			<select name="duree">
+				<option value="2">1 heure</option>
+				<option value="3">1.5 heure</option>
+				<option value="4">2 heures</option>
+				<option value="5">2.5 heures</option>
+				<option value="6">3 heures</option>
+				<option value="7">3.5 heures</option>
+				<option value="8">4 heures</option>
+			</select>
 		</td>
 		<td>
-			<SELECT name="choix_semaine">
-				<OPTION value="0">Toutes les semaines</OPTION>
-				<OPTION value="2">Semaines paires</OPTION>
-				<OPTION value="1">Semaines impaires</OPTION>
-			</SELECT>
+			<select name="choix_semaine">
+				<option value="0">Toutes les semaines</option>
+		';
+// on récupère les types de semaines
+				//<option value="2">Semaines paires</option>
+				//<option value="1">Semaines impaires</option>
+	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
+	//mysql_query("SELECT type_edt_semaine FROM edt_semaines");
+	//mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
+	$nbre_semaines = mysql_num_rows($req_semaines);
+
+	for ($s=0; $s<$nbre_semaines; $s++) {
+			$rep_semaines[$s]["type_edt_semaine"] = mysql_result($req_semaines, $s, "type_edt_semaine");
+		echo '
+				<option value="'.$rep_semaines[$s]["type_edt_semaine"].'">Semaine '.$rep_semaines[$s]["type_edt_semaine"].'</option>
+		';
+	}
+
+echo '
+			</select>
 		</td>
 		<td>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<SELECT  name="login_salle">
-				<OPTION value="rien">Salle</OPTION>';
+			<select  name="login_salle">
+				<option value="rien">Salle</option>
+	';
 	// Choix de la salle
 	$tab_select_salle = renvoie_liste("salle");
 
 	for($c=0;$c<count($tab_select_salle);$c++) {
 		if(isset($login_salle)){
 			if($login_salle==$tab_select_salle[$c]["id_salle"]){
-				$selected=" selected='true'";
+				$selected=" selected='selected'";
 			}
 			else{
 				$selected="";
@@ -228,14 +281,15 @@ echo '
 		else{
 			$selected="";
 		}
-		echo ("				<OPTION value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</OPTION>\n");
+		echo "
+				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 	}
 echo '
-			</SELECT>
+			</select>
 		</td>
 		<td>
-			<SELECT name="periode_calendrier">
-				<OPTION value="rien">Année entière</OPTION>
+			<select name="periode_calendrier">
+				<option value="rien">Année entière</option>
 	';
 	// Choix de la période définie dans le calendrier
 	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
@@ -244,12 +298,12 @@ echo '
 			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
 			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
 			echo '
-				<OPTION value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</OPTION>
+				<option value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</option>
 			'."\n";
 		}
 
 echo '
-			</SELECT>
+			</select>
 		</td>
 		<td>
 			<input type="submit" name="Valider" value="Valider" />
@@ -264,7 +318,7 @@ echo '
 
 if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
 	echo '
-<font color="red">Vous devez renseigner tous les champs !</font><br />';
+<span class="refus">Vous devez renseigner tous les champs !</span><br />';
 }
 else {
 	if (isset($choix_prof) AND $enseignement != NULL) {
@@ -321,7 +375,7 @@ else {
 		}
 		$titre_listeleve = "Liste des élèves";
 
-	$classe_js = aff_popup("LISTE", "edt", $titre_listeleve, $contenu);
+	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>\n".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
 		echo "Ce cours est enregistré :<font color=\"green\" size=\"1\">Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font>";
 	}
 
@@ -340,7 +394,7 @@ echo '
 
 
 	// une fois initialisé, la partie suivante peut être verrouillée
-			// Pour dévérouiller, le traitement se fait ici là
+			// Pour déverrouiller, le traitement se fait ici là
 
 if (isset($init) AND $init == "ok") {
 	$req_reprendre_init = mysql_query("UPDATE edt_setting SET valeur = 'oui' WHERE reglage = 'edt_aff_init_infos2'");
@@ -353,7 +407,7 @@ $aff_reglages2 = GetSettingEdt("edt_aff_init_infos2");
 
 if ($aff_reglages2 == "oui") {
 	echo '<span class="refus">Le module EdT n\'est pas initialisé.
-	<a href="./index_edt.php?initialiser=ok&init=ko">Cliquer ici pour fermer l\'initialisation</a></span>';
+	<a href="./edt_initialiser.php?init=ko">Cliquer ici pour fermer l\'initialisation</a></span>';
 	echo "<br />\nPour l'initialisation du d&eacute;but d'ann&eacute;e, les diff&eacute;rents logiciels de conception des emplois
  du temps ne permettent pas d'avoir une seule proc&eacute;dure. Il convient donc de bien d&eacute;terminer ce
  qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d'avoir param&eacute;trer
@@ -366,10 +420,10 @@ if ($aff_reglages2 == "oui") {
  }
 else if ($aff_reglages2 == "non") {
 	echo '<span class="accept">Le module EdT est initialisé.
-	<a href="./index_edt.php?initialiser=ok&init=ok">Cliquer ici pour reprendre cette initialisation</a></span>';
+	<a href="./edt_initialiser.php?init=ok">Cliquer ici pour reprendre cette initialisation</a></span>';
 }
 else
-echo 'Il y a un problème de réglage dans votre base de données';
+echo 'Il y a un problème de réglage dans votre base de données, il faut peut-être la mettre à jour.';
 
 	/* A enlever après vérification de la fonction
 
@@ -409,4 +463,11 @@ $aff_tab_essai = array();
 		*/
 
 ?>
-<center>
+
+	</div>
+<br />
+<br />
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
+?>

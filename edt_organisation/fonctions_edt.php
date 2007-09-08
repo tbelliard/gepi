@@ -476,17 +476,17 @@ if (isset($nbre_ens)) {
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND isset($aff_precedent) AND $aff_precedent != 3) {
 				$case_tab = "<!--raf2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
-			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
-				$case_tab = "<td height=\"35\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
-			}
-			elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
-				$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
-			}
 			elseif (isset($aff_rien) AND $aff_rien == "oui") {
 				$case_tab = "<!--rien2b ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
 			else if (isset($aff_rien_dec) AND $aff_rien_dec == "oui") {
 				$case_tab = "<!--rien2c ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+			}
+			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
+				$case_tab = "<td height=\"35\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
+			}
+			elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
+				$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
 			else $case_tab = "<td rowspan=\"2\">-<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
 		}
@@ -536,7 +536,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE id_groupe = '".$enseignement."' AND jour_semaine = '".$jour_semaine."' AND id_definie_periode = '".$id_creneaux."'"));
 		// Seul l'admin peut effacer ou modifier ce cours
 		if ($_SESSION["statut"] == "administrateur") {
-			$effacer_cours = '<a href="./effacer_cours.php?id_cours ='.$req_recup_id["id_cours"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>';
+			$effacer_cours = '<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&type_edt='.$type_edt.'&identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>';
 		}
 		else $effacer_cours = "";
 
@@ -906,5 +906,16 @@ function nom_salle($id_salle_r){
 	return $nom_salle_r;
 }
 
+// Fonction CheckAccess revu pour l'EdT et ses includes multiples
+function checkAccessEdt($nom_fichier) {
+    $sql = "select ".$_SESSION['statut']." from droits where id = '/edt_organisation/'".$nom_fichier."''";
+    $dbCheckAccessEdt = mysql_query($sql);
+        if ($dbCheckAccessEdt == 'V') {
+            return (true);
+        } else {
+            tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
+            return (false);
+        }
+}
 
 ?>

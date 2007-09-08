@@ -1,6 +1,12 @@
 <?php
+
 /* Fichier destiné à paramétrer le calendrier de Gepi pour l'Emploi du temps */
 
+// Sécurité
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
 	// Initialisation des variables
 $new_periode = isset($_GET['new_periode']) ? $_GET['new_periode'] : (isset($_POST['new_periode']) ? $_POST['new_periode'] : NULL);
 $nom_periode = isset($_POST["nom_periode"]) ? $_POST["nom_periode"] : NULL;

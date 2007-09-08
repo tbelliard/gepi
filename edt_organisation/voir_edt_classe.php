@@ -26,9 +26,9 @@ if(isset($login_edt)){
 
 
 echo '
-		<input type="hidden" name="type_edt_2" value="classe" />
-		<input type="hidden" name="visioedt" value="classe1" />
-	</select>
+			<input type="hidden" name="type_edt_2" value="classe" />
+			<input type="hidden" name="visioedt" value="classe1" />
+		</select>
 	</form>';
 
 ?>

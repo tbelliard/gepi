@@ -27,6 +27,8 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
                 echo "<p><a href=\"./index_edt.php?initialiser=ok&csv=ok\">Cliquer ici </a> pour recommencer !</center></p>";
             } //!$fp
             else {
+            	// A partir de là, on vide la table edt_cours
+            $vider_table = mysql_query("TRUNCATE TABLE edt_cours");
             	// On affiche alors toutes les lignes de tous les champs
             	$nbre = 1;
 				while($tab = fgetcsv($fp, 1000, ";")) {
@@ -176,17 +178,16 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ...
 <br />
 	<li class="refus"><h4>Troisi&egrave;me &eacute;tape</h4></li>
+	<p>Attention, cette initialisation efface toutes les donn&eacute;es d&eacute;j&agrave; pr&eacute;sentes </p>
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.<br />
 	<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : <ul><li>num&eacute;ro salle (5 caract&egrave;res max.)</li><li>nom salle (30 caract&egrave;res max.)</li></ul></p>
 	<p>Veuillez préciser le nom complet du fichier <b>g_salles.csv</b>.</p>
 	<form enctype='multipart/form-data' action='index_edt.php' method='post'>
-	<input type='hidden' name='action' value='upload_file_salle' />
-	<input type='hidden' name='initialiser' value='ok' />
-	<input type='hidden' name='csv' value='ok' />
-	<p>
-	<input type="file" size="80" name="csv_file" /></p>
-	<p>
-	<input type='submit' value='Valider' /></p>
+		<input type='hidden' name='action' value='upload_file_salle' />
+		<input type='hidden' name='initialiser' value='ok' />
+		<input type='hidden' name='csv' value='ok' />
+		<p><input type="file" size="80" name="csv_file" /></p>
+		<p><input type='submit' value='Valider' /></p>
 	</form>
 	</div>
 <br />
