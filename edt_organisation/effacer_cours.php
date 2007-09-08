@@ -48,7 +48,7 @@ require_once("./menu.inc.php"); ?>
 
 <?php
 // Initialisation des variables
-$id_cours = isset($_GET["id_cours"]) ? $_GET["id_cours"] : NULL;
+$supprimer_cours = isset($_GET["supprimer_cours"]) ? $_GET["supprimer_cours"] : NULL;
 $type_edt = isset($_GET["type_edt"]) ? $_GET["type_edt"] : NULL;
 $identite = isset($_GET["identite"]) ? $_GET["identite"] : NULL;
 
