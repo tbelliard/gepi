@@ -537,6 +537,9 @@ INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V'
 INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation de l emploi du temps', '');
 INSERT INTO droits VALUES ('/edt_organisation/effacer_cours.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Effacer un cours des EdT', '');
 INSERT INTO droits VALUES ('/edt_organisation/ajouter_salle.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des salles', '');
+INSERT INTO droits VALUES ('/edt_organisation/edt_parametrer.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gérer les paramètres EdT', '');
+INSERT INTO droits VALUES ('/edt_organisation/voir_groupe.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Voir les groupes de Gepi', '');
+INSERT INTO droits VALUES ('/edt_organisation/modif_edt_tempo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Modification temporaire des EdT', '');
 INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
 INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');
 INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
