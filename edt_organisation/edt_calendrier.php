@@ -1,13 +1,47 @@
 <?php
 
 /* Fichier destiné à paramétrer le calendrier de Gepi pour l'Emploi du temps */
+$titre_page = "Emploi du temps - Calendrier";
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions edt
+require_once("./fonctions_edt.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+   die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
 
 // Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php"); ?>
+
+
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+
+<?php
 	// Initialisation des variables
+$calendrier = isset($_GET["calendrier"]) ? $_GET["calendrier"] : (isset($_POST["calendrier"]) ? $_POST["calendrier"] : NULL);
 $new_periode = isset($_GET['new_periode']) ? $_GET['new_periode'] : (isset($_POST['new_periode']) ? $_POST['new_periode'] : NULL);
 $nom_periode = isset($_POST["nom_periode"]) ? $_POST["nom_periode"] : NULL;
 $classes_concernees = isset($_POST["classes_concernees"]) ? $_POST["classes_concernees"] : NULL;
@@ -49,7 +83,7 @@ if (isset($calendrier) AND isset($modifier)) {
 	</center>
 <fieldset id="modif_periode">
 	<legend>Modifier la période pour le calendrier</legend>
-		<form name="modifier_periode" action="index_edt.php" method="POST">
+		<form name="modifier_periode" action="edt_calendrier.php" method="post">
 			<input type="hidden" name="calendrier" value="ok" />
 			<input type="hidden" name="modif_ok" value="'.$rep_modif["id_calendrier"].'" />
 		<p>
@@ -104,8 +138,8 @@ for($i=0; $i<count($tab_select); $i++) {
 			<span class="legende">Heure de fin</span>
 		</p>
 		<p>
-			<SELECT name="choix_periode">
-				<OPTION value="rien">Nouvelle</OPTION>'."\n";
+			<select name="choix_periode">
+				<option value="rien">Non</option>'."\n";
 	// Proposition de définition des périodes déjà existantes de la table periodes
 	$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
 	$nbre_periodes = mysql_num_rows($req_periodes);
@@ -117,21 +151,21 @@ for($i=0; $i<count($tab_select); $i++) {
 					$selected = " selected='true'";
 				}
 				else $selected = "";
-			echo '<OPTION value="'.$rep_periodes[$i]["num_periode"].'"'.$selected.'>'.$rep_periodes[$i]["nom_periode"].'</OPTION>'."\n";
+			echo '<option value="'.$rep_periodes[$i]["num_periode"].'"'.$selected.'>'.$rep_periodes[$i]["nom_periode"].'</option>'."\n";
 		}
 	echo '
-			</SELECT>
-			<span class="legende">Périodes</span>
+			</select>
+			<span class="legende">Périodes de notes ?</span>
 		</p>
 		<p>
-			<SELECT name="etabferme" />
+			<select name="etabferme" />
 		';
 		// On vérifie le ouvert - fermé
 		if ($rep_modif["etabferme_calendrier"] == "1") {
-			$selected1 = " selected='true'";
+			$selected1 = " selected='selected'";
 		} else $selected1 = "";
 		if ($rep_modif["etabferme_calendrier"] == "2") {
-			$selected2 = " selected='true'";
+			$selected2 = " selected='selected'";
 		} else $selected2 = "";
 	echo '
 				<option value="1"'.$selected1.'>Ouvert</option>
@@ -140,19 +174,19 @@ for($i=0; $i<count($tab_select); $i++) {
 			<span class="legende">Etablissement</span>
 		</p>
 		<p>
-			<SELECT name="vacances">
+			<select name="vacances">
 		';
 		// On vérifie le vacances - cours
 		if ($rep_modif["etabvacances_calendrier"] == "0") {
-			$selected1v = " selected='true'";
+			$selected1v = " selected='selected'";
 		} else $selected1v = "";
 		if ($rep_modif["etabvacances_calendrier"] == "1") {
-			$selected2v = " selected='true'";
+			$selected2v = " selected='selected'";
 		}else $selected2v = "";
 	echo '
 				<option value="0"'.$selected1v.'>Cours</option>
 				<option value="1"'.$selected2v.'>Vacances</option>
-			</SELECT>
+			</select>
 			<span class="legende">Vacances / Cours</span>
 		</p>
 			<input type="submit" name="valider" value="enregistrer" />
@@ -206,7 +240,7 @@ if ($modifier == NULL) {
 	echo '
 </center>
 	<p>
-	<a href="index_edt.php?calendrier=ok&new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUTER</a>
+	<a href="edt_calendrier.php?calendrier=ok&new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUTER</a>
 	</p>
 	';
 
@@ -264,7 +298,9 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 					$req_nomclasse = mysql_fetch_array(mysql_query("SELECT nom_complet FROM classes WHERE id = '".$expl_aff[$t]."'"));
 					$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
 				}
-				$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
+				//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
+				$id_div = "periode".$rep_affcalendar[$i]["id_calendrier"];
+				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
 			} // else
 		// Afficher de deux couleurs différentes
 
@@ -286,8 +322,8 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 		<td>'.$rep_affcalendar[$i]["heurefin_calendrier"].'</td>
 		<!--<td>'.$rep_affcalendar[$i]["numero_periode"].'</td>-->
 		<td>'.$ouvert_ferme.'</td>
-		<td class="modif_supr"><a href="index_edt.php?calendrier=ok&modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
-		<td class="modif_supr"><a href="index_edt.php?calendrier=ok&supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
 	</tr>
 		';
 	}
@@ -303,7 +339,7 @@ if ($new_periode == "ok") {
 	echo '
 <fieldset id="saisie_new_periode">
 	<legend>Saisir une nouvelle période pour le calendrier</legend>
-		<form name="nouvelle_periode" action="index_edt.php" method="POST">
+		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
 			<input type="hidden" name="calendrier" value="ok" />
 			<input type="hidden" name="new_periode" value="ok" />
 	<div id="div_classes_concernees">
@@ -346,8 +382,8 @@ for($i=0; $i<count($tab_select); $i++) {
 			<span class="legende">Heure de fin</span>
 		</p>
 		<p>
-			<SELECT name="choix_periode">
-				<OPTION value="rien">Nouvelle</OPTION>';
+			<select name="choix_periode">
+				<option value="rien">Nouvelle</option>';
 	// Proposition de définition des périodes déjà existantes de la table periodes
 	$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
 	$nbre_periodes = mysql_num_rows($req_periodes);
@@ -355,24 +391,24 @@ for($i=0; $i<count($tab_select); $i++) {
 		for ($i=0; $i<$nbre_periodes; $i++) {
 			$rep_periodes[$i]["num_periode"] = mysql_result($req_periodes, $i, "num_periode");
 			$rep_periodes[$i]["nom_periode"] = mysql_result($req_periodes, $i, "nom_periode");
-			echo '<OPTION value="'.$rep_periodes[$i]["num_periode"].'">'.$rep_periodes[$i]["nom_periode"].'</OPTION>';
+			echo '<option value="'.$rep_periodes[$i]["num_periode"].'">'.$rep_periodes[$i]["nom_periode"].'</option>';
 		}
 	echo '
-			</SELECT>
+			</select>
 			<span class="legende">Périodes</span>
 		</p>
 		<p>
-			<SELECT name="etabferme" />
+			<select name="etabferme" />
 				<option value="1">Ouvert</option>
 				<option value="2">Fermé</option>
 			</select>
 			<span class="legende">Etablissement</span>
 		</p>
 		<p>
-			<SELECT name="vacances">
+			<select name="vacances">
 				<option value="0">Cours</option>
 				<option value="1">Vacances</option>
-			</SELECT>
+			</select>
 			<span class="legende">Vacances / Cours</span>
 		</p>
 			<input type="submit" name="valider" value="enregistrer" />
@@ -385,4 +421,13 @@ for($i=0; $i<count($tab_select); $i++) {
 if (isset($message_new)) {
 	echo $message_new;
 }
+
+?>
+
+	</div>
+<br />
+<br />
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
 ?>

@@ -7,11 +7,17 @@
  * @copyright 2007
  */
 
+// Sécurité : éviter que quelqu'un appelle ce fichier seul
+$serveur_script = $_SERVER["SCRIPT_NAME"];
+$analyse = explode("/", $serveur_script);
+	if ($analyse[3] == "menu.inc.php") {
+		die();
+	}
+
 //===========================INITIALISATION DES VARIABLES=======
 // AJOUT: boireaus
 $modifedt=isset($_GET['modifedt']) ? $_GET['modifedt'] : (isset($_POST['modifedt']) ? $_POST['modifedt'] : NULL);
 $voirgroup=isset($_GET['voirgroup']) ? $_GET['voirgroup'] : (isset($_POST['voirgroup']) ? $_POST['voirgroup'] : NULL);
-$ajoutsalle=isset($_GET['ajoutsalle']) ? $_GET['ajoutsalle'] : (isset($_POST['ajoutsalle']) ? $_POST['ajoutsalle'] : NULL);
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
 $parametrer=isset($_GET['parametrer']) ? $_GET['parametrer'] : (isset($_POST['parametrer']) ? $_POST['parametrer'] : NULL);
 $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
@@ -26,7 +32,6 @@ elseif ($initialiser == "ok" AND $init_csv == "ok") $page_inc_edt = 'edt_init_cs
 elseif ($initialiser == "ok" AND $init_xml == "ok") $page_inc_edt = 'edt_init_xml.php';
 elseif ($parametrer == "ok") $page_inc_edt = 'edt_parametrer.php';
 elseif ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
-elseif ($calendrier == "ok") $page_inc_edt = 'edt_calendrier.php';
 elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
 elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'salle1')) $page_inc_edt = 'voir_edt.php';
 else $page_inc_edt = 'accueil_edt.php';
@@ -102,13 +107,13 @@ if ($_SESSION['statut'] == "administrateur") {
 			<dd id="smenu5">
 				<ul>
 					<li><a href="index_edt.php?voirgroup=ok">id_group</a></li>
-					<li><a href="index_edt.php?ajoutsalle=ok">Gérer les Salles</a></li>
+					<li><a href="ajouter_salle.php">Gérer les Salles</a></li>
 					<li><a href="edt_initialiser.php">Initialiser</a></li>
 					<li><a href="index_edt.php?parametrer=ok">Paramétrer</a></li>
 				</ul>
 			</dd>
 <br />
-		<dt onclick="javascript:montre();"><a href="index_edt.php?calendrier=ok">Calendrier</a></dt>
+		<dt onclick="javascript:montre();"><a href="edt_calendrier.php">Calendrier</a></dt>
 		';
 }
 ?>

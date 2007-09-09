@@ -6,12 +6,47 @@
  * @version $Id$
  * @copyright 2007
  */
-	// Un peu de vérification
-if ($_SESSION['statut'] != "administrateur") {
-    die('Vous n\'êtes pas autorisé à afficher cette page ! De façon générale, il ne faut pas modifier la barre d\'adresse manuellement !');
+$titre_page = "Emploi du temps".$sous_titre;
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions edt
+require_once("./fonctions_edt.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+   die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
 }
 
+// Sécurité
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
+
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php"); ?>
+
+
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+
+<?php
 	// Initialisation des variables
+$ajoutsalle=isset($_GET['ajoutsalle']) ? $_GET['ajoutsalle'] : (isset($_POST['ajoutsalle']) ? $_POST['ajoutsalle'] : NULL);
 $numero_salle = isset($_POST["numerosalle"]) ? $_POST["numerosalle"] : NULL;
 $nom_salle = isset($_POST["nomsalle"]) ? $_POST["nomsalle"] : NULL;
 $del_salle = isset($_POST["del_salle"]) ? $_POST["del_salle"] : NULL;
@@ -58,8 +93,8 @@ G&eacute;rer les salles de Gepi
 <fieldset id="aj_salle">
 
 	<legend>Ajouter une salle dans la base de donn&eacute;es</legend>
-<form name="ajouter_salle" action="index_edt.php" method="POST">
-	<table CELLSPACING="0" BORDER="0">
+<form name="ajouter_salle" action="ajouter_salle.php" method="post">
+	<table cellspacing="0" border="0">
 
 	<tr>
 		<td></td>
@@ -73,10 +108,10 @@ G&eacute;rer les salles de Gepi
     	<script type='text/javascript'>
 		document.getElementById('numerosalle').focus();
 		</script>
-    	<td><INPUT type="text" name="numerosalle" value="" size="5" maxlength="5" title="Vous pouvez utiliser le tabulateur pour changer de champ" onfocus="this.className='focus';" onblur="this.className='normal';" />
+    	<td><input type="text" name="numerosalle" value="" size="5" maxlength="5" title="Vous pouvez utiliser le tabulateur pour changer de champ" onfocus="this.className='focus';" onblur="this.className='normal';" />
 		<img src="../images/icons/ico_ampoule.png" title="Si vous ne pr&eacute;cisez pas le nom de la salle, son num&eacute;ro sera son nom." /></td>
     	<td>Nom de la salle : </td>
-    	<td><INPUT type="text" name="nomsalle" value="" size="30" maxlength="30" onfocus="this.className='focus';" onblur="this.className='normal';" /></td>
+    	<td><input type="text" name="nomsalle" value="" size="30" maxlength="30" onfocus="this.className='focus';" onblur="this.className='normal';" /></td>
 	</tr>
 
 	<tr>
@@ -153,17 +188,17 @@ if(isset($modif_salle)) {
 			<tr>
 				<td>
 
-	<form action="index_edt.php" method="POST" name="modifier_nom_salle1">
+	<form action="ajouter_salle.php" method="post" name="modifier_nom_salle1">
 		<input type="hidden" name="ajoutsalle" value="ok" />
 		<select name="modif_salle" onchange='document.modifier_nom_salle1.submit();'>>
-		<OPTION value="rien">Choix de la salle</OPTION>
+		<option value="rien">Choix de la salle</option>
 <?php
 	$tab_select = renvoie_liste("salle");
 
 	for($i=0;$i<count($tab_select);$i++) {
 			if(isset($modif_salle)){
 		if($modif_salle==$tab_select[$i]["id_salle"]){
-			$selected=" selected='true'";
+			$selected=" selected='selected'";
 		}
 		else{
 			$selected="";
@@ -173,7 +208,7 @@ if(isset($modif_salle)) {
 		$selected="";
 	}
 
-		echo ("		<OPTION value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["nom_salle"]."</OPTION>\n");
+		echo ("		<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["nom_salle"]."</option>\n");
 	}
 
 ?>
@@ -192,7 +227,7 @@ if (isset($modif_salle)) {
 		$ancien_nom = $new_name;
 	}
 	echo '
-	<form action="index_edt.php" method="POST" name="modifier_nom_salle">
+	<form action="ajouter_salle.php" name="modifier_nom_salle" method="post">
 		<input type="hidden" name="ajoutsalle" value="ok" />
 		<input type="text" name="new_name" size="30" maxlenght="30" value="'.$ancien_nom.'" />
 		<input type="hidden" name="modif_salle" value="'.$modif_salle.'" />
@@ -243,9 +278,9 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 			</td><td>
 
 	<!--choix de la salle-->
-	<form action="index_edt.php" name="effacer_salle" method="POST">
-		<SELECT  name="del_salle">
-			<OPTION value="rien">Salles</OPTION>
+	<form action="ajouter_salle.php" name="effacer_salle" method="post">
+		<select name="del_salle">
+			<option value="rien">Salles</option>
 <?php
 	$tab_select = renvoie_liste("salle");
 
@@ -254,14 +289,20 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 		echo ("			<OPTION value='".$tab_select[$i]["id_salle"]."'>".$tab_select[$i]["nom_salle"]."</OPTION>\n");
 	}
 ?>
-		</SELECT>
+		</select>
 		<input type="hidden" name="ajoutsalle" value="ok" />
 		<br /><br />
 		<input type="submit" name="Valider" value="Effacer" />
 		<br />
-	</FORM>
+	</form>
 
 			</td></tr>
 		</table>
 </fieldset>
-
+	</div>
+<br />
+<br />
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
+?>
