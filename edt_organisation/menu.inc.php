@@ -23,7 +23,7 @@ $init_csv = isset($_GET['csv']) ? $_GET['csv'] : (isset($_POST['csv']) ? $_POST[
 $init_xml = isset($_GET['xml']) ? $_GET['xml'] : (isset($_POST['xml']) ? $_POST['xml'] : NULL);
 
 	// Déterminer l'include dans le div id=lecorps
-elseif ($initialiser == "ok" AND $init_csv == "ok") $page_inc_edt = 'edt_init_csv.php';
+if ($initialiser == "ok" AND $init_csv == "ok") $page_inc_edt = 'edt_init_csv.php';
 elseif ($initialiser == "ok" AND $init_xml == "ok") $page_inc_edt = 'edt_init_xml.php';
 elseif ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
 elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
