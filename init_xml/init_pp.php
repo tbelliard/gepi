@@ -59,7 +59,7 @@ require_once("../lib/header.inc");
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>";
+echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>\n";
 
 if (!isset($step1)) {
 	$j=0;
@@ -71,14 +71,16 @@ if (!isset($step1)) {
 		$j++;
 	}
 	if ($flag != 0){
-		echo "<p><b>ATTENTION ...</b><br />";
-		echo "Des professeurs principaux sont actuellement définis dans la base GEPI<br /></p>";
-		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>";
+		echo "<p><b>ATTENTION ...</b><br />\n";
+		echo "Des professeurs principaux sont actuellement définis dans la base GEPI<br /></p>\n";
+		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>\n";
 
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
-		echo "<input type=hidden name='step1' value='y' />";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
-		echo "</form>";
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo "<input type='hidden' name='step1' value='y' />\n";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+		echo "</form>\n";
+		echo "<br />\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 }
@@ -92,14 +94,14 @@ if (!isset($is_posted)) {
 		$j++;
 	}
 
-	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée et si les professeurs ont été importés !</p>";
-	echo "<p>Importation du fichier <b>F_div.csv</b> contenant les associations classe/professeur principal  : veuillez préciser le nom complet du fichier <b>F_div.csv</b>.";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
-	echo "<input type=hidden name='is_posted' value='yes' />";
-	echo "<input type=hidden name='step1' value='y' />";
-	echo "<p><input type='file' size='80' name='dbf_file' />";
-	echo "<p><input type=submit value='Valider' />";
-	echo "</form>";
+	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée et si les professeurs ont été importés !</p>\n";
+	echo "<p>Importation du fichier <b>F_div.csv</b> contenant les associations classe/professeur principal  : veuillez préciser le nom complet du fichier <b>F_div.csv</b>.\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<input type=hidden name='is_posted' value='yes' />\n";
+	echo "<input type=hidden name='step1' value='y' />\n";
+	echo "<p><input type='file' size='80' name='dbf_file' />\n";
+	echo "<p><input type=submit value='Valider' />\n";
+	echo "</form>\n";
 
 } else {
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
@@ -184,6 +186,7 @@ if (!isset($is_posted)) {
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no = 0;
+			$nb_reg_ok = 0;
 			for($k = 1; ($k < $nblignes+1); $k++){
 				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
@@ -197,6 +200,7 @@ if (!isset($is_posted)) {
 							//echo "<tr><td colspan='2'>|\$affiche[$i]|=|$affiche[$i]|</td></tr>";
 							if($affiche[$i]==""){
 								$temoin_erreur="oui";
+								$nb_reg_no++;
 							}
 						}
 						if($temoin_erreur!="oui"){
@@ -220,25 +224,47 @@ if (!isset($is_posted)) {
 								$lig_prof=mysql_fetch_object($res_prof);
 
 								//$sql="SELECT login,periode FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login,periode"
-								$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
+								//$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
+								$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
 								$res_eleve=mysql_query($sql);
+								$temoin_erreur_classe=0;
 								while($lig_eleve=mysql_fetch_object($res_eleve)){
 									$sql="INSERT INTO j_eleves_professeurs VALUES('$lig_eleve->login','$lig_prof->col1','$id_classe')";
 									$res_prof_eleve=mysql_query($sql);
+									if(!$res_prof_eleve){
+										$temoin_erreur_classe++;
+										//echo "<tr><td>$sql</td></tr>\n";
+									}
 								}
-								echo "<tr><td>$affiche[0]</td><td>$lig_prof->col1</td></tr>\n";
+								if($temoin_erreur_classe==0){
+									echo "<tr style='background-color:#aae6aa;'><td>$affiche[0]</td><td>$lig_prof->col1</td></tr>\n";
+									$nb_reg_ok++;
+								}
+								else{
+									echo "<tr style='background-color:red;'><td>$affiche[0]</td><td>$lig_prof->col1</td></tr>\n";
+									$nb_reg_no++;
+								}
+								//echo "<tr><td>$affiche[0]</td><td>$lig_prof->col1</td></tr>\n";
 							}
+						}
+						else{
+							echo "<tr style='background-color:red;'><td>$affiche[0]</td><td>$affiche[1]</td></tr>\n";
 						}
 					}
 				}
 			}
-			echo "</table>";
+			echo "</table>\n";
 			//dbase_close($fp);
 			fclose($fp);
 			if ($nb_reg_no != 0) {
-				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs.<br />Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
-				echo "<p>L'importation des professeurs principaux dans la base GEPI a été effectuée avec succès !</p>";
+				if($nb_reg_ok>0){
+					echo "<p>L'importation des professeurs principaux dans la base GEPI a été effectuée avec succès !</p>\n";
+				}
+				else{
+					echo "<p>Aucun professeur principal n'a été inscrit dans la base GEPI !</p>\n";
+				}
 
 				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=dump'>sauvegarde</a><br />\n";
 				echo "Après cette sauvegarde, effectuez le nettoyage en repassant par 'Gestion générale/Initialisation des données à partir de fichiers DBF et XML/Procéder à la septième phase'.<br />\n";
@@ -250,13 +276,14 @@ if (!isset($is_posted)) {
 			}
 		}
 	} else if (trim($dbf_file['name'])=='') {
-		echo "<p>Aucun fichier n'a été sélectionné !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

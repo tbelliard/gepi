@@ -220,6 +220,7 @@ if (!isset($is_posted)) {
 								$nb_reg_no++;
 							}
 						}
+
 						if($temoin_erreur!="oui"){
 							$sql="SELECT id FROM classes WHERE classe='$affiche[0]'";
 							$res_classe=mysql_query($sql);
@@ -266,10 +267,13 @@ if (!isset($is_posted)) {
 								//echo "<tr><td>$affiche[0]</td><td>$lig_prof->col1</td></tr>\n";
 							}
 						}
+						else{
+							echo "<tr style='background-color:red;'><td>$affiche[0]</td><td>$affiche[1]</td></tr>\n";
+						}
 					}
 				}
 			}
-			echo "</table>";
+			echo "</table>\n";
 			//dbase_close($fp);
 			fclose($fp);
 
