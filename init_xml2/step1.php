@@ -51,7 +51,23 @@
 		}
 	}
 
-		// Etape...
+	function maj_min_comp($chaine){
+		$tmp_tab1=explode(" ",$chaine);
+		$new_chaine="";
+		for($i=0;$i<count($tmp_tab1);$i++){
+			$tmp_tab2=explode("-",$tmp_tab1[$i]);
+			$new_chaine.=ucfirst(strtolower($tmp_tab2[0]));
+			for($j=1;$j<count($tmp_tab2);$j++){
+				$new_chaine.="-".ucfirst(strtolower($tmp_tab2[$j]));
+			}
+			$new_chaine.=" ";
+		}
+		$new_chaine=trim($new_chaine);
+		return $new_chaine;
+	}
+
+
+	// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
 
@@ -426,6 +442,26 @@
 					die();
 				}
 				else{
+
+
+
+					$sql="CREATE TABLE IF NOT EXISTS `temp_etab_import` (
+													`id` char(8) NOT NULL default '',
+													`nom` char(50) NOT NULL default '',
+													`niveau` char(50) NOT NULL default '',
+													`type` char(50) NOT NULL default '',
+													`cp` int(10) NOT NULL default '0',
+													`ville` char(50) NOT NULL default '',
+													PRIMARY KEY  (`id`)
+													);";
+					$create_table = mysql_query($sql);
+
+					$sql="TRUNCATE TABLE temp_etab_import;";
+					$vide_table = mysql_query($sql);
+
+
+
+
 					// On récupère les ele_id des élèves qui sont affectés dans une classe
 					$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 					$res_ele_id=mysql_query($sql);
@@ -454,7 +490,7 @@
 					//echo "<p>Terminé.</p>\n";
 					*/
 
-					echo "Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
+					echo "<p>Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
 					//echo "<blockquote>\n";
 
 					$cpt=0;
@@ -491,6 +527,7 @@
 					"BOITE_POSTALE",
 					"MEL",
 					"TELEPHONE",
+					"CODE_COMMUNE_INSEE",
 					"LL_COMMUNE_INSEE"
 					);
 
@@ -624,7 +661,12 @@
 					affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
 					$stat=0;
 					$nb_err=0;
+					$stat_etab=0;
+					$nb_err_etab=0;
+					unset($tab_list_etab);
+					$tab_list_etab=array();
 					for($i=0;$i<count($eleves);$i++){
+						// On ne traite que les élèves affectés dans une classe ($tab_ele_id)
 						if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
 							/*
 							if(!isset($eleves[$i]["code_sexe"])){
@@ -653,6 +695,137 @@
 							}
 							else{
 								$stat++;
+							}
+
+
+							// Insertion des informations de l'établissement précédent dans une table temporaire:
+							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+								$sql="INSERT INTO temp_etab_import SET ";
+								$cpt_debut_requete=0;
+
+
+								if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
+
+									// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
+									if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
+										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
+
+										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+											$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
+											$cpt_debut_requete++;
+										}
+
+										/*
+										// NOM
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
+											$cpt_debut_requete++;
+										}
+										*/
+
+										// NIVEAU
+										$chaine="";
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="ecole";
+											}
+											elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="college";
+											}
+											elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													$chaine="lprof";
+												}
+												else{
+													$chaine="lycee";
+												}
+											}
+											else{
+												$chaine="";
+											}
+
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="niveau='".$chaine."'";
+											$cpt_debut_requete++;
+										}
+
+
+										// NOM
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
+											if($nom_etab=="") {
+												$nom_etab=ucfirst(strtolower($chaine));
+											}
+											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
+											$sql.="nom='".addslashes($nom_etab)."'";
+											$cpt_debut_requete++;
+										}
+										else{
+											$sql.=", ";
+											$nom_etab=ucfirst(strtolower($chaine));
+											$sql.="nom='".addslashes($nom_etab)."'";
+											$cpt_debut_requete++;
+										}
+
+
+										// TYPE
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="prive";
+											}
+											else{
+												$chaine="public";
+											}
+
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="type='".$chaine."'";
+											$cpt_debut_requete++;
+										}
+
+										// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
+										//              Ca y est, il a été ajouté.
+										// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
+										if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
+											$cpt_debut_requete++;
+										}
+
+										// COMMUNE
+										if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
+											$cpt_debut_requete++;
+										}
+
+										//echo "$sql<br />";
+
+										$res_insert_etab=mysql_query($sql);
+										if(!$res_insert_etab){
+											echo "Erreur lors de la requête $sql<br />\n";
+											$nb_err_etab++;
+											flush();
+										}
+										else{
+											$stat_etab++;
+										}
+									}
+								}
+
 							}
 						}
 					}
@@ -1109,6 +1282,295 @@
 						die();
 					}
 				}
+			}
+			elseif($step==5){
+
+				echo "<p>Etablissements d'origine des élèves.</p>\n";
+
+
+
+				$sql="SELECT * FROM temp_etab_import ORDER BY ville,nom";
+				$res_etab=mysql_query($sql);
+				if(mysql_num_rows($res_etab)==0){
+					echo "<p>Aucun établissement précédent n'a été trouvé.</p>\n";
+
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
+				}
+				else{
+					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+					/*
+					// Transféré vers /style.css
+					echo "<style type='text/css'>
+
+					table.boireaus {
+						border-style: solid;
+						border-width: 1px;
+						border-color: black;
+						border-collapse: collapse;
+					}
+
+					.boireaus th {
+						border-style: solid;
+						border-width: 1px;
+						border-color: black;
+						background-color: #fafabe;
+						font-weight:bold;
+						text-align:center;
+					}
+
+					.boireaus td {
+						text-align:center;
+						border-style: solid;
+						border-width: 1px;
+						border-color: black;
+					}
+
+					.boireaus .lig-1 {
+						background-color: white;
+					}
+					.boireaus .lig1 {
+						background-color: silver;
+					}
+					.boireaus .nouveau {
+						background-color: #96c8f0;
+					}
+					.boireaus .modif {
+						background-color: #aae6aa;
+					}
+
+					</style>\n";
+					*/
+
+					echo "<table class='boireaus'>\n";
+					echo "<tr>\n";
+					echo "<th>\n";
+					echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+					echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+					echo "</th>\n";
+					echo "<th>Statut</th>\n";
+					echo "<th>RNE</th>\n";
+					echo "<th>Nom</th>\n";
+					echo "<th>Niveau</th>\n";
+					echo "<th>Type</th>\n";
+					echo "<th>Code postal</th>\n";
+					echo "<th>Commune</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+					$nombre_ligne=0;
+					while($lig=mysql_fetch_object($res_etab)){
+						$alt=$alt*(-1);
+						$sql="SELECT * FROM etablissements WHERE id='$lig->id'";
+						$res_etab2=mysql_query($sql);
+						if(mysql_num_rows($res_etab2)==0){
+							// Nouvelle entrée
+
+							// #AAE6AA; vert
+							// #FAFABE; jaune
+							// #96C8F0; bleu
+
+							//echo "<tr style='background-color: #96C8F0;'>\n";
+							echo "<tr class='lig$alt'>\n";
+							echo "<td class='nouveau'>\n";
+							echo "<input type='checkbox' id='case$nombre_ligne' name='rne[]' value='$lig->id' />\n";
+							echo "</td>\n";
+
+							echo "<td class='nouveau'>\n";
+							echo "Nouveau\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->id\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->nom\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->niveau\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->type\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->cp\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->ville\n";
+							echo "</td>\n";
+
+							echo "</tr>\n";
+
+						}
+						else{
+							// Entrée existante
+							$lig2=mysql_fetch_object($res_etab2);
+
+							//echo "<tr style='background-color: #AAE6AA;'>\n";
+							echo "<tr class='lig$alt'>\n";
+							echo "<td class='modif'>\n";
+							echo "<input type='checkbox' id='case$nombre_ligne' name='rne_modif[]' value='$lig->id' />\n";
+							echo "</td>\n";
+
+							echo "<td class='modif'>\n";
+							echo "Modification\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							echo "$lig->id\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($lig->nom!=$lig2->nom){
+								echo "$lig2->nom";
+								echo " <span style='color:red'>-&gt;</span> ";
+							}
+							echo "$lig->nom\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($lig->niveau!=$lig2->niveau){
+								echo "$lig2->niveau";
+								echo " <span style='color:red'>-&gt;</span> ";
+							}
+							echo "$lig->niveau\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($lig->type!=$lig2->type){
+								echo "$lig2->type";
+								echo " <span style='color:red'>-&gt;</span> ";
+							}
+							echo "$lig->type\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($lig->cp!=$lig2->cp){
+								echo "$lig2->cp";
+								echo " <span style='color:red'>-&gt;</span> ";
+							}
+							echo "$lig->cp\n";
+							echo "</td>\n";
+
+							echo "<td>\n";
+							if($lig->ville!=$lig2->ville){
+								echo "$lig2->ville";
+								echo " <span style='color:red'>-&gt;</span> ";
+							}
+							echo "$lig->ville\n";
+							echo "</td>\n";
+
+							echo "</tr>\n";
+						}
+						$nombre_ligne++;
+					}
+					echo "</table>\n";
+
+					echo "<input type='hidden' name='step' value='6' />\n";
+					echo "<input type='hidden' name='is_posted' value='yes' />\n";
+					echo "<p><input type='submit' value='Valider' /></p>\n";
+					echo "</form>\n";
+
+
+					echo "<script type='text/javascript' language='javascript'>
+	function modif_case(statut){
+		// statut: true ou false
+		for(k=0;k<$nombre_ligne;k++){
+			if(document.getElementById('case'+k)){
+				document.getElementById('case'+k).checked=statut;
+			}
+		}
+		changement();
+	}
+</script>\n";
+
+				}
+
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+			elseif($step==6){
+
+				echo "<p>Etablissements d'origine des élèves.</p>\n";
+
+				$rne=isset($_POST['rne']) ? $_POST['rne'] : NULL;
+				$rne_modif=isset($_POST['rne_modif']) ? $_POST['rne_modif'] : NULL;
+
+				$nb_err=0;
+				$stat=0;
+				if(isset($rne)){
+					for($i=0;$i<count($rne);$i++){
+						$sql="INSERT INTO etablissements SELECT id,nom,niveau,type,cp,ville FROM temp_etab_import WHERE temp_etab_import.id='".$rne[$i]."'";
+						//echo "$sql<br />";
+						$res=mysql_query($sql);
+
+						if(!$res){
+							echo "Erreur lors de la requête $sql<br />\n";
+							flush();
+							$nb_err++;
+						}
+						else{
+							$stat++;
+						}
+					}
+				}
+
+				if($nb_err>0){
+					echo "<p>$nb_err erreur(s) lors de l'insertion des nouveaux établissements.</p>\n";
+				}
+				if($stat>0){
+					if($stat==1){
+						echo "<p>$stat nouvel établissement ajouté.</p>\n";
+					}
+					else{
+						echo "<p>$stat nouveaux établissements ajoutés.</p>\n";
+					}
+				}
+
+				$nb_err=0;
+				$stat=0;
+				if(isset($rne_modif)){
+					for($i=0;$i<count($rne_modif);$i++){
+						$sql="DELETE FROM etablissements WHERE id='".$rne_modif[$i]."'";
+						//echo "$sql<br />";
+						$res=mysql_query($sql);
+
+						$sql="INSERT INTO etablissements SELECT id,nom,niveau,type,cp,ville FROM temp_etab_import WHERE temp_etab_import.id='".$rne_modif[$i]."'";
+						//echo "$sql<br />";
+						$res=mysql_query($sql);
+
+						if(!$res){
+							echo "Erreur lors de la requête $sql<br />\n";
+							flush();
+							$nb_err++;
+						}
+						else{
+							$stat++;
+						}
+					}
+				}
+
+				if($nb_err>0){
+					echo "<p>$nb_err erreur(s) lors de la modification des établissements.</p>\n";
+				}
+				if($stat>0){
+					if($stat==1){
+						echo "<p>$stat modification d'établissement effectuée.</p>\n";
+					}
+					else{
+						echo "<p>$stat modifications d'établissements effectuées.</p>\n";
+					}
+				}
+
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
 			}
 			else{
 				// TERMINé?

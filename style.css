@@ -684,3 +684,45 @@ img.link {
 .infobulle_corps {
 	background-color: #EAEAEA;
 }
+/* ===================== */
+table.boireaus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	/*
+		vert: #aae6aa
+		bleu: #96c8f0
+		jaune: #fafabe
+	*/
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #fafabe;
+	font-weight:bold;
+	text-align:center;
+}
+
+.boireaus td {
+	text-align:center;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
+.boireaus .lig-1 {
+	background-color: white;
+}
+.boireaus .lig1 {
+	background-color: silver;
+}
+.boireaus .nouveau {
+	background-color: #96c8f0;
+}
+.boireaus .modif {
+	background-color: #aae6aa;
+}
+/* ===================== */

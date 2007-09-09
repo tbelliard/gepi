@@ -481,12 +481,14 @@ if (!isset($suite)) {
 				}
 			}
 			if($mat!=""){
-				for($k=0;$k<count($divisions[$i]["services"][$j]["enseignants"]);$k++){
-					$chaine=$mat.";P".$divisions[$i]["services"][$j]["enseignants"][$k]["id"].";".$classe;
-					if($fich){
-						fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+				if(isset($divisions[$i]["services"][$j]["enseignants"])) {
+					for($k=0;$k<count($divisions[$i]["services"][$j]["enseignants"]);$k++){
+						$chaine=$mat.";P".$divisions[$i]["services"][$j]["enseignants"][$k]["id"].";".$classe;
+						if($fich){
+							fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+						}
+						affiche_debug($chaine."<br />\n");
 					}
-					affiche_debug($chaine."<br />\n");
 				}
 			}
 		}
@@ -508,40 +510,41 @@ if (!isset($suite)) {
 		}
 		//$groupes[$i]["enseignant"][$m]["id"]
 		//$groupes[$i]["divisions"][$j]["code"]
-		if($matimn!=""){
-			for($j=0;$j<count($groupes[$i]["divisions"]);$j++){
-				$elstco=$groupes[$i]["divisions"][$j]["code"];
-				affiche_debug("\$elstco=$elstco<br />\n");
-				if(isset($groupes[$i]["enseignant"])){
-					if(count($groupes[$i]["enseignant"])==0){
+		if(isset($matimn)) {
+			if($matimn!=""){
+				for($j=0;$j<count($groupes[$i]["divisions"]);$j++){
+					$elstco=$groupes[$i]["divisions"][$j]["code"];
+					affiche_debug("\$elstco=$elstco<br />\n");
+					if(isset($groupes[$i]["enseignant"])){
+						if(count($groupes[$i]["enseignant"])==0){
+							$chaine="$matimn;;$elstco";
+							if($fich){
+								fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+							}
+							affiche_debug($chaine."<br />\n");
+						}
+						else{
+							for($m=0;$m<count($groupes[$i]["enseignant"]);$m++){
+								$numind=$groupes[$i]["enseignant"][$m]["id"];
+								//echo "$matimn;P$numind;$elstco<br />\n";
+								$chaine="$matimn;P$numind;$elstco";
+								if($fich){
+									fwrite($fich,html_entity_decode_all_version($chaine)."\n");
+								}
+								affiche_debug($chaine."<br />\n");
+							}
+						}
+					}
+					else{
 						$chaine="$matimn;;$elstco";
 						if($fich){
 							fwrite($fich,html_entity_decode_all_version($chaine)."\n");
 						}
 						affiche_debug($chaine."<br />\n");
 					}
-					else{
-						for($m=0;$m<count($groupes[$i]["enseignant"]);$m++){
-							$numind=$groupes[$i]["enseignant"][$m]["id"];
-							//echo "$matimn;P$numind;$elstco<br />\n";
-							$chaine="$matimn;P$numind;$elstco";
-							if($fich){
-								fwrite($fich,html_entity_decode_all_version($chaine)."\n");
-							}
-							affiche_debug($chaine."<br />\n");
-						}
-					}
-				}
-				else{
-					$chaine="$matimn;;$elstco";
-					if($fich){
-						fwrite($fich,html_entity_decode_all_version($chaine)."\n");
-					}
-					affiche_debug($chaine."<br />\n");
 				}
 			}
 		}
-
 	}
 	fclose($fich);
 
