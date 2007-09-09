@@ -1,8 +1,42 @@
 <?php
 // Fichier utilisé par l'administrateur pour paramétrer l'EdT de Gepi
-/*
 
-*/
+$titre_page = "Emploi du temps - Paramètres";
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions edt
+require_once("./fonctions_edt.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+// Sécurité
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
+
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php"); ?>
+
+
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+<center>
+<?php
 
 // Initialiser les variables
 $edt_aff_matiere=isset($_POST['edt_aff_matiere']) ? $_POST['edt_aff_matiere'] : NULL;
@@ -84,15 +118,15 @@ else {
 </center>
 <table cellpadding="5" cellspacing="0" border="0" height="150" width="100%">
 <tr><td>
-<form method=post action="index_edt.php">
+<form name="parametrer" method="post" action="edt_parametrer.php">
 
 <fieldset id="matiere">
 	<legend>Les matières</legend>
 		<span class="parametres">
-			<INPUT type="radio" name="edt_aff_matiere" value="court" <?php echo (aff_checked("edt_aff_matiere", "court")); ?>/>
+			<input type="radio" name="edt_aff_matiere" value="court" <?php echo (aff_checked("edt_aff_matiere", "court")); ?>/>
 			Noms courts (du type HG,...)
 <br />
-			<INPUT type="radio" name="edt_aff_matiere" value="long" <?php echo (aff_checked("edt_aff_matiere", "long")); ?>/>
+			<input type="radio" name="edt_aff_matiere" value="long" <?php echo (aff_checked("edt_aff_matiere", "long")); ?>/>
 			Noms longs (Histoire Géographie,...)
 
 		</span>
@@ -102,10 +136,10 @@ else {
 <fieldset id="horaires">
 	<legend>Affichage des horaires</legend>
 		<span class="parametres">
-			<INPUT type="radio" name="edt_aff_creneaux" value="noms" <?php echo (aff_checked("edt_aff_creneaux", "noms")); ?>/>
+			<input type="radio" name="edt_aff_creneaux" value="noms" <?php echo (aff_checked("edt_aff_creneaux", "noms")); ?>/>
 			Afficher le nom des cr&eacute;neaux (M1, M2,...)
 <br />
-			<INPUT type="radio" name="edt_aff_creneaux" value="heures" <?php echo (aff_checked("edt_aff_creneaux", "heures")); ?>/>
+			<input type="radio" name="edt_aff_creneaux" value="heures" <?php echo (aff_checked("edt_aff_creneaux", "heures")); ?>/>
 			Afficher les heures de d&eacute;but et de fin du cr&eacute;neaux
 		</span>
 </fieldset>
@@ -118,10 +152,10 @@ else {
 <fieldset id="couleurs">
 	<legend>Affichage général en couleur</legend>
 		<span class="parametres">
-			<INPUT type="radio" name="edt_aff_couleur" value="coul" <?php echo (aff_checked("edt_aff_couleur", "coul")); ?>/>
+			<input type="radio" name="edt_aff_couleur" value="coul" <?php echo (aff_checked("edt_aff_couleur", "coul")); ?>/>
 			Couleurs
 <br />
-			<INPUT type="radio" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
+			<input type="radio" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
 			Sans couleurs
 		</span>
 </fieldset>
@@ -130,10 +164,10 @@ else {
 <fieldset id="salles">
 	<legend>Affichage des salles</legend>
 		<span class="parametres">
-			<input type="radio" name="edt_aff_salle" value="nom" <?php echo (aff_checked("edt_aff_salle", "nom")); ?> />
+			<input type="radio" name="edt_aff_salle" value="nom" <?php echo (aff_checked("edt_aff_salle", "nom")); ?>/>
 			Par le nom de la salle (salle 2, salle de r&eacute;union,...)
 <br />
-			<input type="radio" name="edt_aff_salle" value="numero" <?php echo (aff_checked("edt_aff_salle", "numero")); ?> />
+			<input type="radio" name="edt_aff_salle" value="numero" <?php echo (aff_checked("edt_aff_salle", "numero")); ?>/>
 			Par le num&eacute;ro de la salle uniquement
 		</span>
 </fieldset>
@@ -157,9 +191,17 @@ else {
 		<td></td>
 	</tr>
 </table>
-<center>
-	<INPUT type="hidden" name="parametrer" value="ok">
-	<INPUT type="hidden" name="parametrer1" value="ok">
-	<INPUT type="submit" name="Valider" value="Valider">
+
+	<input type="hidden" name="parametrer" value="ok" />
+	<input type="hidden" name="parametrer1" value="ok" />
+	<input type="submit" name="Valider" value="Valider" />
 
 </form>
+	</div>
+<!--Fin du corps de la page-->
+<br />
+<br />
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
+?>

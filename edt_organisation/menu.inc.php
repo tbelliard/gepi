@@ -16,21 +16,15 @@ $analyse = explode("/", $serveur_script);
 
 //===========================INITIALISATION DES VARIABLES=======
 // AJOUT: boireaus
-$modifedt=isset($_GET['modifedt']) ? $_GET['modifedt'] : (isset($_POST['modifedt']) ? $_POST['modifedt'] : NULL);
 $voirgroup=isset($_GET['voirgroup']) ? $_GET['voirgroup'] : (isset($_POST['voirgroup']) ? $_POST['voirgroup'] : NULL);
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
-$parametrer=isset($_GET['parametrer']) ? $_GET['parametrer'] : (isset($_POST['parametrer']) ? $_POST['parametrer'] : NULL);
 $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
 $init_csv = isset($_GET['csv']) ? $_GET['csv'] : (isset($_POST['csv']) ? $_POST['csv'] : NULL);
 $init_xml = isset($_GET['xml']) ? $_GET['xml'] : (isset($_POST['xml']) ? $_POST['xml'] : NULL);
 
 	// Déterminer l'include dans le div id=lecorps
-if ($modifedt == "tempo") $page_inc_edt = 'modif_edt_tempo.php';
-elseif ($voirgroup == "ok") $page_inc_edt = 'voir_groupe.php';
-elseif ($ajoutsalle == "ok") $page_inc_edt = 'ajouter_salle.php';
 elseif ($initialiser == "ok" AND $init_csv == "ok") $page_inc_edt = 'edt_init_csv.php';
 elseif ($initialiser == "ok" AND $init_xml == "ok") $page_inc_edt = 'edt_init_xml.php';
-elseif ($parametrer == "ok") $page_inc_edt = 'edt_parametrer.php';
 elseif ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
 elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
 elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'salle1')) $page_inc_edt = 'voir_edt.php';
@@ -71,7 +65,7 @@ echo '<br />
 
 			<dd id="smenu3">
 				<ul>
-					<li><a href="index_edt.php?modifedt=tempo">temporairement</a></li>
+					<li><a href="modif_edt_tempo.php">temporairement</a></li>
 				</ul>
 			</dd>';
 }*/
@@ -106,10 +100,10 @@ if ($_SESSION['statut'] == "administrateur") {
 
 			<dd id="smenu5">
 				<ul>
-					<li><a href="index_edt.php?voirgroup=ok">id_group</a></li>
+					<li><a href="voir_groupe.php">Les groupes</a></li>
 					<li><a href="ajouter_salle.php">Gérer les Salles</a></li>
 					<li><a href="edt_initialiser.php">Initialiser</a></li>
-					<li><a href="index_edt.php?parametrer=ok">Paramétrer</a></li>
+					<li><a href="edt_parametrer.php">Paramétrer</a></li>
 				</ul>
 			</dd>
 <br />

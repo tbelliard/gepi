@@ -1,5 +1,21 @@
 <?php
-// Fichier qui permet de faire des recherches dans l'EdT
+/* Fichier qui permet de faire des recherches dans l'EdT*/
+
+// Sécurité, on vérifie le paramétrage de cette fonctionnalité
+$aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
+	if ($aff_cherche_salle == "tous") {
+		$aff_ok = "oui";
+	}
+	else if ($aff_cherche_salle == "admin") {
+		if ($_SESSION["statut"] != "administrateur") {
+			die();
+		}
+	}
+	else {
+	$aff_ok = "non";
+	die();
+	}
+
 
 $auto_aff_1 ="";
 $auto_aff_2 ="";

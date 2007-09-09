@@ -7,8 +7,45 @@
  * @copyright 2007
  */
 
+$titre_page = "Emploi du temps - Groupes";
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions edt
+require_once("./fonctions_edt.php");
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+   die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+// Sécurité
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
+
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php"); ?>
 
 
+<br />
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+
+<?php
 	echo'
 	<h3>Voici la liste de tous les enseignements enregistrés dans la base de Gepi</h3>
 	<table class="tab_edt">
@@ -42,14 +79,21 @@ $aff_nbr_group = mysql_num_rows($req_nbr_group);
 			$p_login = $groupe_complet["profs"]["list"][$b];
 
 
-echo ('<tr><td>'.$groupe_complet["id"].'</td><td>'.$groupe_complet["name"].'</td><td>'.$groupe_complet["description"].'</td><td>'.$groupe_complet["classes"]["classes"][$c_id]["classe"].'</td><td>'.$groupe_complet["profs"]["users"][$p_login]["nom"].' '.$groupe_complet["profs"]["users"][$p_login]["prenom"].'</td></tr>');
+echo '
+<tr>
+	<td>'.$groupe_complet["id"].'</td>
+	<td>'.$groupe_complet["name"].'</td>
+	<td>'.$groupe_complet["description"].'</td>
+	<td>'.$groupe_complet["classes"]["classes"][$c_id]["classe"].'</td>
+	<td>'.$groupe_complet["profs"]["users"][$p_login]["nom"].' '.$groupe_complet["profs"]["users"][$p_login]["prenom"].'</td>
+</tr>'."\n";
 		}
 		}
 }
 	echo '
 	</tbody>
 	</table>';
-/* Fonction retrouvée sur un forum et légèrement transformée qui permet de lire le contenu d'un tableau multidimentionnel
+/* Fonction qui permet de lire le contenu d'un tableau multidimentionnel
 function show_array($array)
 {
     for (reset($array); $key = key($array), $pos = pos($array); next($array))
@@ -65,4 +109,12 @@ function show_array($array)
     }
 }
 show_array($groupe_complet);*/
+?>
+
+	</div>
+<br />
+<br />
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
 ?>
