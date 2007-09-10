@@ -1051,7 +1051,6 @@ function parametres_tableau($larg_tab, $bord) {
     echo "<input type=\"submit\" value=\"Valider\" />\n";
     echo "</span></td></tr></table>\n";
 }
-
 function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
     // $col1_centre = 1 --> la première colonne est centrée
     // $col1_centre = 0 --> la première colonne est alignée à gauche
@@ -1091,7 +1090,6 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     }
     echo "</table>\n";
 }
-
 
 function dbase_filter($s){
   for($i = 0; $i < strlen($s); $i++){
@@ -1672,7 +1670,7 @@ function check_temp_directory(){
 		if ($create) {
 			$fich=fopen("./temp/".$dirname."/index.html","w+");
 			fwrite($fich,'<html><head><script type="text/javascript">
-    document.location.replace("../login.php")
+    document.location.replace("../../login.php")
 </script></head></html>
 ');
 			fclose($fich);
@@ -1719,7 +1717,7 @@ function check_user_temp_directory(){
 			if($create){
 				$fich=fopen("./temp/".$dirname."/index.html","w+");
 				fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("../login.php")
+	document.location.replace("../../login.php")
 </script></head></html>
 ');
 				fclose($fich);
@@ -1747,7 +1745,7 @@ function check_user_temp_directory(){
 				if($create){
 					$fich=fopen("./temp/".$dirname."/index.html","w+");
 					fwrite($fich,'<html><head><script type="text/javascript">
-	document.location.replace("../login.php")
+	document.location.replace("../../login.php")
 </script></head></html>
 ');
 					fclose($fich);
