@@ -19,13 +19,9 @@ $analyse = explode("/", $serveur_script);
 $voirgroup=isset($_GET['voirgroup']) ? $_GET['voirgroup'] : (isset($_POST['voirgroup']) ? $_POST['voirgroup'] : NULL);
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);
 $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_POST['salleslibres']) ? $_POST['salleslibres'] : NULL);
-$init_csv = isset($_GET['csv']) ? $_GET['csv'] : (isset($_POST['csv']) ? $_POST['csv'] : NULL);
-$init_xml = isset($_GET['xml']) ? $_GET['xml'] : (isset($_POST['xml']) ? $_POST['xml'] : NULL);
 
 	// Déterminer l'include dans le div id=lecorps
-if ($initialiser == "ok" AND $init_csv == "ok") $page_inc_edt = 'edt_init_csv.php';
-elseif ($initialiser == "ok" AND $init_xml == "ok") $page_inc_edt = 'edt_init_xml.php';
-elseif ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
+if ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
 elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
 elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'salle1')) $page_inc_edt = 'voir_edt.php';
 else $page_inc_edt = 'accueil_edt.php';

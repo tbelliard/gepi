@@ -414,9 +414,10 @@ if ($aff_reglages2 == "oui") {
  l'ensemble des informations relatives aux horaires de l'&eacute;tablissement. En suivant les instructions suivantes
  tout devrait bien se passer.<br />
 
- <div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&csv=ok\">Cliquer ici pour une initialisation par fichiers csv</a></div>
- <div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>
+ <div id=\"lien\"><a href=\"./edt_init_csv.php\">Cliquer ici pour une initialisation par fichiers csv</a></div>
  ";
+ //<div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>
+
  }
 else if ($aff_reglages2 == "non") {
 	echo '<span class="accept">Le module EdT est initialisé.
