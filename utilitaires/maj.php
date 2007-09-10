@@ -504,6 +504,8 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_parametrer.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gérer les paramètres EdT', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/voir_groupe.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Voir les groupes de Gepi', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/modif_edt_tempo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Modification temporaire des EdT', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_init_xml.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation EdT par xml', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_init_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'initialisation EdT par csv', '');";
 
 	//$tab_req[] = "";
 
@@ -4703,6 +4705,20 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 .= mysql_query("INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_calendrier_ouvert' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT name FROM setting WHERE value='edt_calendrier_ouvert'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 .= mysql_query("INSERT INTO setting VALUES ('edt_calendrier_ouvert', 'y');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
