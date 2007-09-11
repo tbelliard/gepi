@@ -31,7 +31,7 @@ function nbre_colonnes_tab_edt(){
 
 function retourne_creneaux(){
 
-	$req_nom_creneaux_r = mysql_query("SELECT nom_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
+	$req_nom_creneaux_r = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 
 	$rep_creneaux=array();
 	while($data_creneaux=mysql_fetch_array($req_nom_creneaux_r)) {
@@ -44,7 +44,7 @@ function retourne_creneaux(){
 
 function retourne_horaire(){
 
-	$req_nom_horaire = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
+	$req_nom_horaire = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 
 	$num_nom_horaire = mysql_num_rows($req_nom_horaire);
 
@@ -61,7 +61,7 @@ function retourne_horaire(){
 
 function retourne_id_creneaux(){
 
-	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode") or die('retourne_id_creneaux 1');
+	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode") or die('retourne_id_creneaux 1');
 
 	$rep_id_creneaux=array();
 	while($data_id_creneaux=mysql_fetch_array($req_id_creneaux)) {

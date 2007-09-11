@@ -45,7 +45,11 @@ if (!checkAccess()) {
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
-require_once("./menu.inc.php"); ?>
+require_once("./menu.inc.php");
+
+// Pour revenir proprement, on crée le $_SESSION["retouredt"]
+$_SESSION["retour"] = "edt";
+?>
 
 
 <br />
