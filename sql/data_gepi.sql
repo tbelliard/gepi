@@ -551,3 +551,5 @@ INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');
 INSERT INTO edt_setting VALUES (7, 'edt_aff_init_infos2', 'oui');
 INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');
 INSERT INTO setting VALUES ('edt_calendrier_ouvert', 'y');
+INSERT INTO setting VALUES ('active_annees_anterieures', 'n');
+INSERT INTO setting VALUES ('active_notanet', 'n');
