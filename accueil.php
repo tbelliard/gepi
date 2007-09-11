@@ -99,6 +99,8 @@ decompte(cpt);
 </script>\n";
 */
 
+	// Initialisation de $_SESSION["retour"]
+$_SESSION["retour"] = "";
 
 $tab[0] = "administrateur";
 $tab[1] = "professeur";
