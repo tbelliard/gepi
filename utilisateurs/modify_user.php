@@ -218,39 +218,41 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 		if(isset($ancien_code_photo)) {
 			if($ancien_code_photo != ""){
-					if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
-						if($_POST['suppr_filephoto']=='y'){
-							if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
-								$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
-							}
-							else{
-								$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
-							}
+				if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
+					if($_POST['suppr_filephoto']=='y'){
+						if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
+							$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
+						}
+						else{
+							$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
 						}
 					}
+				}
 
-					// filephoto
-						$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
-						if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
-							$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-							$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
-							// Tester la taille max de la photo?
+				// filephoto
+				if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
+					$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+					if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
+						$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+						// Tester la taille max de la photo?
 
-							if(is_uploaded_file($filephoto_tmp)){
-								$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
-								$source_file = stripslashes("$filephoto_tmp");
-								$res_copy=copy("$source_file" , "$dest_file");
-								if($res_copy){
-									$msg = "Mise en place de la photo effectuée.";
-								}
-								else{
-									$msg = "Erreur lors de la mise en place de la photo.";
-								}
+						if(is_uploaded_file($filephoto_tmp)){
+							$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
+							$source_file = stripslashes("$filephoto_tmp");
+							$res_copy=copy("$source_file" , "$dest_file");
+							if($res_copy){
+								$msg = "Mise en place de la photo effectuée.";
 							}
 							else{
-								$msg = "Erreur lors de l'upload de la photo.";
+								$msg = "Erreur lors de la mise en place de la photo.";
 							}
 						}
+						else{
+							$msg = "Erreur lors de l'upload de la photo.";
+						}
+					}
+				}
 			}
 		}
 
@@ -405,7 +407,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 	<div id="div_upload_photo" style="display: none;">
 		<input type="file" name="filephoto" size="12" />
 		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-	<?php	  
+	<?php
 	if(file_exists($photo)){
 		?><br /><input type="checkbox" name="suppr_filephoto" id="suppr_filephoto" value="y" />
 		  &nbsp;<label for="suppr_filephoto" style="cursor: pointer; cursor: hand;">Supprimer la photo existante</label><?php
