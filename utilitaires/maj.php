@@ -3026,6 +3026,7 @@ if (isset ($_POST['maj'])) {
 			else{
 				$result .= "<font color=\"red\">Erreur !</font><br />";
 			}
+		}
 		else{
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
