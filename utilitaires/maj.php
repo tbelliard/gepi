@@ -4730,7 +4730,7 @@ if (isset ($_POST['maj'])) {
         }
 
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_calendrier_ouvert' à la table 'setting'<br/>";
-        $req_test = mysql_query("SELECT name FROM setting WHERE value='edt_calendrier_ouvert'");
+        $req_test = mysql_query("SELECT value FROM setting WHERE name='edt_calendrier_ouvert'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 .= mysql_query("INSERT INTO setting VALUES ('edt_calendrier_ouvert', 'y');");
