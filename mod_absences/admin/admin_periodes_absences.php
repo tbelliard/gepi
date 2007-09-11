@@ -189,7 +189,12 @@ echo "<p class=bold>";
 if ($action=="modifier" or $action=="ajouter") {
 	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">";
 } else {
-	echo "<a href='index.php'>";
+	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "edt") {
+		$retour = "<a href='../../edt_organisation/index_edt.php'>";
+	}
+	else
+		$retour = "<a href='index.php'>";
+echo $retour;
 }
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
