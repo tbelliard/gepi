@@ -63,6 +63,8 @@ require_once("../../lib/header.inc");
 	   else { if (isset($_GET['heurefin_definie_periode'])) {$heurefin_definie_periode=$_GET['heurefin_definie_periode'];} if (isset($_POST['heurefin_definie_periode'])) {$heurefin_definie_periode=$_POST['heurefin_definie_periode'];} }
 	if (empty($_GET['suivi_definie_periode']) and empty($_POST['suivi_definie_periode'])) { $suivi_definie_periode = ''; }
 	   else { if (isset($_GET['suivi_definie_periode'])) { $suivi_definie_periode = $_GET['suivi_definie_periode']; } if (isset($_POST['suivi_definie_periode'])) { $suivi_definie_periode = $_POST['suivi_definie_periode']; } }
+	if (empty($_GET['type_creneaux']) and empty($_POST['type_creneaux'])) { $type_creneaux = ''; }
+	   else { if (isset($_GET['type_creneaux'])) { $type_creneaux = $_GET['type_creneaux']; } if (isset($_POST['type_creneaux'])) { $type_creneaux = $_POST['type_creneaux']; } }
 
 
 $total = '0'; $verification[0] = '1'; $erreur = '0';
@@ -75,6 +77,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
               $nom_definie_periode_ins = $_POST['nom_definie_periode'][$total];
               $heuredebut_definie_periode_ins = $_POST['heuredebut_definie_periode'][$total];
               $heurefin_definie_periode_ins = $_POST['heurefin_definie_periode'][$total];
+		if ( isset($type_creneaux[$total]) ) { $type_creneaux_ins = $type_creneaux[$total]; } else { $type_creneaux_ins = 'cours'; }
 		if ( isset($suivi_definie_periode[$total]) ) { $suivi_definie_periode_ins = $suivi_definie_periode[$total]; } else { $suivi_definie_periode_ins = ''; }
 
               if ($action_sql == "modifier") { $id_definie_periode_ins = $_POST['id_periode'][$total]; }
@@ -95,7 +98,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                                  if($action_sql == "ajouter")
                                   {
                                      // Requete d'insertion MYSQL
-                                        $requete = "INSERT INTO ".$prefix_base."absences_creneaux (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins')";
+                                        $requete = "INSERT INTO ".$prefix_base."absences_creneaux (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
                                   }
                                  if($action_sql == "modifier")
                                   {
@@ -104,7 +107,8 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                                                         nom_definie_periode = '$nom_definie_periode_ins',
                                                         heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
                                                         heurefin_definie_periode = '$heurefin_definie_periode_ins',
-							suivi_definie_periode = '$suivi_definie_periode_ins'
+							suivi_definie_periode = '$suivi_definie_periode_ins',
+							type_creneaux = '$type_creneaux_ins'
                                                         WHERE id_definie_periode = '".$id_definie_periode_ins."' ";
                                   }
                                 // Execution de cette requete dans la base cartouche
@@ -201,6 +205,7 @@ echo "</p>";
         <th class="tab_th" style="width: 80px;">code</th>
         <th class="tab_th" style="width: 90px;">heure de début</th>
         <th class="tab_th" style="width: 90px;">heure de fin</th>
+        <th class="tab_th" style="width: 90px;">type</th>
         <th class="tab_th" style="width: 25px;"></th>
         <th class="tab_th" style="width: 25px;"></th>
       </tr>
@@ -214,6 +219,7 @@ echo "</p>";
           <td><?php echo $data_periode['nom_definie_periode']; ?></td>
           <td><?php echo $data_periode['heuredebut_definie_periode']; ?></td>
           <td><?php echo $data_periode['heurefin_definie_periode']; ?></td>
+          <td><?php echo $data_periode['type_creneaux']; ?></td>
           <td><a href="admin_periodes_absences.php?action=modifier&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
           <td><a href="admin_periodes_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
         </tr>
@@ -243,7 +249,7 @@ echo "</p>";
     </form>
 	<br />
   <?php }
-  
+
     if ($action=="modifier") {
 		echo "<h2>Modifier un créneau horaire</h2>";
 	}
@@ -254,6 +260,7 @@ echo "</p>";
           <th class="tab_th">Code</th>
           <th class="tab_th">Heure de début</th>
           <th class="tab_th">Heure de fin</th>
+          <th class="tab_th">Type</th>
           <th class="tab_th">Suite logique</th>
         </tr>
         <?php
@@ -277,6 +284,12 @@ echo "</p>";
           <td><input name="nom_definie_periode[<?php echo $nb; ?>]" type="text" id="nom_definie_periode" size="10" maxlength="10" value="<?php if($action=="modifier") { echo $data_modif_periode['nom_definie_periode']; } elseif (isset($nom_definie_periode_erreur[$nb])) { echo $nom_definie_periode_erreur[$nb]; } ?>" class="input_sans_bord" /></td>
           <td><input name="heuredebut_definie_periode[<?php echo $nb; ?>]" type="text" id="heuredebut_definie_periode" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $data_modif_periode['heuredebut_definie_periode']; } elseif (isset($heuredebut_definie_periode_erreur[$nb])) { echo $heuredebut_definie_periode_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td>
           <td><input name="heurefin_definie_periode[<?php echo $nb; ?>]" type="text" id="heurefin_definie_periode" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $data_modif_periode['heurefin_definie_periode']; } elseif (isset($heurefin_definie_periode_erreur[$nb])) { echo $heurefin_definie_periode_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td>
+          <td>
+		<select name="type_creneaux[<?php echo $nb; ?>]" size="3" class="input_sans_bord">
+			<option value="cours" <?php if ( $action === 'modifier' ) { if ( $data_modif_periode['type_creneaux'] === 'cours' ) { ?>selected="selected"<?php } } elseif (isset($type_creneaux_erreur[$nb])) { if ( $type_creneaux_erreur[$nb] === 'cours' ) { ?>selected="selected"<?php } } ?>>cours</option>
+			<option value="pause" <?php if ( $action === 'modifier' ) { if ( $data_modif_periode['type_creneaux'] === 'pause' ) { ?>selected="selected"<?php } } elseif (isset($type_creneaux_erreur[$nb])) { if ( $type_creneaux_erreur[$nb] === 'pause' ) { ?>selected="selected"<?php } } ?>>pause</option>
+			<option value="repas" <?php if ( $action === 'modifier' ) { if ( $data_modif_periode['type_creneaux'] === 'repas' ) { ?>selected="selected"<?php } } elseif (isset($type_creneaux_erreur[$nb])) { if ( $type_creneaux_erreur[$nb] === 'repas' ) { ?>selected="selected"<?php } } ?>>repas</option>
+		</select>
 	  <td><input name="suivi_definie_periode[<?php echo $nb; ?>]" value="1" type="checkbox" <?php if ( ( $action === 'modifier' and $data_modif_periode['suivi_definie_periode'] === '1' ) or ( isset($suivi_definie_periode_erreur[$nb]) and $suivi_definie_periode_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?> title="suite logique des horaires" /></td>
         </tr>
             <?php if($action=="modifier") { ?>
@@ -284,16 +297,15 @@ echo "</p>";
             <?php } ?>
         <?php $nb = $nb + 1; } ?>
       </table>
-      
+
       <input type="hidden" name="nb_ajout" value="<?php echo $nb_ajout; ?>" />
       <br/>
       <input type="submit" name="Submit" value="Enregistrer" />
     </form>
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php } 
+<?php }
 
 require("../../lib/footer.inc.php");
 
 ?>
-
