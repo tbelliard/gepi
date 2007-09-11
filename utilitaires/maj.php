@@ -3016,6 +3016,20 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
 
+		$result .= "&nbsp;->Ajout du champ type_creneaux à la table absences_creneaux<br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux'"));
+		if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `absences_creneaux` ADD `type_creneaux` VARCHAR( 15 ) NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
 		$result .= "&nbsp;->Ajout du champ support_suivi_eleve_cpe à la table suivi_eleve_cpe<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM suivi_eleve_cpe LIKE 'support_suivi_eleve_cpe'"));
 		if ($test1 == 0) {
