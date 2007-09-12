@@ -204,7 +204,14 @@ if(!getSettingValue('conv_new_resp_table')){
 	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysql_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		}
+		else{
+			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+		}
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -213,7 +220,14 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+		}
+		else{
+			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+		}
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -229,7 +243,14 @@ if(!getSettingValue('conv_new_resp_table')){
 			}
 
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+
+			if($_SESSION['statut']=="administrateur"){
+				echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
+			}
+			else{
+				echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+			}
+
 			require("../lib/footer.inc.php");
 			die();
 		}

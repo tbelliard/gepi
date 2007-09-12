@@ -294,7 +294,14 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		}
+		else{
+			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+		}
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -303,7 +310,14 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-		echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		}
+		else{
+			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+		}
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -312,7 +326,14 @@ if(!getSettingValue('conv_new_resp_table')){
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+
+			if($_SESSION['statut']=="administrateur"){
+				echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+			}
+			else{
+				echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+			}
+
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -599,7 +620,7 @@ if (!isset($quelles_classes)) {
     <input type="hidden" name="is_posted" value="1" />
 <?php
   // pour le trombinoscope on met la taille maximale d'une photo
-  ?>
+?>
 	<input type="hidden" name="MAX_FILE_SIZE" value="150000" />
 	<input type="hidden" name="action" value="depot_photo" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" />
