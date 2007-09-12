@@ -354,7 +354,12 @@ while ($j < $nombre_groupes) {
 				if ($affiche_rang == 'y')  $nb_total_cols++;
 
                 // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
-                $affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+                $affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
+                if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+                	$affiche_cat_moyenne = false;
+                } else {
+                	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+                }
 
                 // On a toutes les infos. On affiche !
                 echo "<tr>\n";
@@ -588,7 +593,12 @@ if ($test_coef != 0) {
 
 				// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
 				// Tester si cette catégorie doit avoir sa moyenne affichée
-                $affiche_cat_moyenne=mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')"), 0);
+                $affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
+                if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+                	$affiche_cat_moyenne = false;
+                } else {
+                	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+                }
 				if($affiche_cat_moyenne){
 					//if ($total_cat_coef[$nb][$cat_id] != "0") {
 					if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
