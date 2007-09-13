@@ -483,9 +483,29 @@ foreach ($liste_eleves as $eleve) {
         $k=0;
         while ($k < $nb_dev) {
             $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
-            $eleve_statut = @mysql_result($note_query, 0, "statut");
-            $eleve_note = @mysql_result($note_query, 0, "note");
-            $eleve_comment = @mysql_result($note_query, 0, "comment");
+			// ==========================
+			// MODIF: boireaus 20070913
+            //$eleve_statut = @mysql_result($note_query, 0, "statut");
+            //$eleve_note = @mysql_result($note_query, 0, "note");
+            //$eleve_comment = @mysql_result($note_query, 0, "comment");
+            if($note_query){
+				if(mysql_num_rows($note_query)>0){
+					$eleve_statut = @mysql_result($note_query, 0, "statut");
+					$eleve_note = @mysql_result($note_query, 0, "note");
+					$eleve_comment = @mysql_result($note_query, 0, "comment");
+				}
+				else{
+					$eleve_statut = "";
+					$eleve_note = "";
+					$eleve_comment = "";
+				}
+			}
+			else{
+				$eleve_statut = "";
+				$eleve_note = "";
+				$eleve_comment = "";
+			}
+			// ==========================
             if ($eleve_comment != '') $nocomment[$k]='no';
             $eleve_login_note = $eleve_login[$i]."_note";
             $eleve_login_comment = $eleve_login[$i]."_comment";
