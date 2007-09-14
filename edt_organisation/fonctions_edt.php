@@ -694,7 +694,7 @@ function renvoie_liste($type) {
 	return $rep_liste;
 	}
 	if ($type == "classe") {
-		$req_liste = mysql_query("SELECT id, classe FROM classes");
+		$req_liste = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
 
 		$nb_liste = mysql_num_rows($req_liste);
 
@@ -707,7 +707,7 @@ function renvoie_liste($type) {
 	return $rep_liste;
 	}
 	if ($type == "salle") {
-		$req_liste = mysql_query("SELECT id_salle, nom_salle FROM salle_cours");
+		$req_liste = mysql_query("SELECT id_salle, nom_salle FROM salle_cours ORDER BY nom_salle");
 
 		$nb_liste = mysql_num_rows($req_liste);
 
