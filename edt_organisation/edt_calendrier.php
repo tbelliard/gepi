@@ -45,6 +45,8 @@ $calendrier = isset($_GET["calendrier"]) ? $_GET["calendrier"] : (isset($_POST["
 $new_periode = isset($_GET['new_periode']) ? $_GET['new_periode'] : (isset($_POST['new_periode']) ? $_POST['new_periode'] : NULL);
 $nom_periode = isset($_POST["nom_periode"]) ? $_POST["nom_periode"] : NULL;
 $classes_concernees = isset($_POST["classes_concernees"]) ? $_POST["classes_concernees"] : NULL;
+$jour_debut = isset($_POST["jour_debut"]) ? $_POST["jour_debut"] : NULL;
+$jour_fin = isset($_POST["jour_fin"]) ? $_POST["jour_fin"] : NULL;
 $jour_dperiode = isset($_POST["jour_dperiode"]) ? $_POST["jour_dperiode"] : NULL;
 $mois_dperiode = isset($_POST["mois_dperiode"]) ? $_POST["mois_dperiode"] : NULL;
 $annee_dperiode = isset($_POST["annee_dperiode"]) ? $_POST["annee_dperiode"] : NULL;
@@ -65,6 +67,8 @@ $message_new = NULL;
 $annee_actu = date("Y"); // année
 $mois_actu = date("m"); // mois sous la forme 01 à 12
 $jour_actu = date("d"); // jour sous la forme 01 à 31
+$date_jour = date("d/m/Y"); //jour/mois/année
+
 		// Recherche des infos déjà entrées dans Gepi
 	$req_heures = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement"));
 $heure_etab_deb = $req_heures["ouverture_horaire_etablissement"];
@@ -213,8 +217,14 @@ if (isset($modif_ok) AND isset($nom_periode)) {
 
 /* On traite les nouvelles entrées dans la table */
 if (isset($new_periode) AND isset($nom_periode)) {
-	$jourdebut = $annee_dperiode."-".$mois_dperiode."-".$jour_dperiode;
+$detail_jourdeb = explode("/", $jour_debut);
+$detail_jourfin = explode("/", $jour_debut);
+
+/*	$jourdebut = $annee_dperiode."-".$mois_dperiode."-".$jour_dperiode;
 	$jourfin = $annee_fperiode."-".$mois_fperiode."-".$jour_fperiode;
+*/
+	$jourdebut = $detail_jourdeb[2]."-".$detail_jourdeb[1]."-".$detail_jourdeb[0];
+	$jourfin = $detail_jourfin[2]."-".$detail_jourfin[1]."-".$detail_jourfin[0];
 		// On insère les classes qui sont concernées (0 = toutes)
 		if ($classes_concernees[0] == "0") {
 			$classes_concernees_insert = "0";
@@ -300,7 +310,7 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 				}
 				//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
 				$id_div = "periode".$rep_affcalendar[$i]["id_calendrier"];
-				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
+				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout="cacher_div('".$id_div."');">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
 			} // else
 		// Afficher de deux couleurs différentes
 
@@ -364,18 +374,32 @@ for($i=0; $i<count($tab_select); $i++) {
 			<span class="legende">Nom de la période</span>
 		</p>
 		<p>
-			<input type="text" name="jour_dperiode" maxlenght="2" size="2" value="01" />
+			';
+
+		/*	<input type="text" name="jour_dperiode" maxlenght="2" size="2" value="01" />
 			<input type="text" name="mois_dperiode" maxlenght="2" size="2" value="01" />
 			<input type="text" name="annee_dperiode" maxlenght="4" size="4" value="'.$annee_actu.'" />
+		*/
+	echo '
+		<input type="text" name="jour_debut" maxlenght="10" size="10" value="'.$date_jour.'" />
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&ch=jour_debut\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
 			<span class="legende">Premier jour</span>
 
 			<input type="text" name="heure_deb" maxlenght="8" size="8" value="'.$heure_etab_deb.'" />
 			<span class="legende">Heure de début</span>
 		</p>
 		<p>
-			<input type="text" name="jour_fperiode" maxlenght="2" size="2" value="31" />
+		';
+
+		/*	<input type="text" name="jour_fperiode" maxlenght="2" size="2" value="31" />
 			<input type="text" name="mois_fperiode" maxlenght="2" size="2" value="12" />
 			<input type="text" name="annee_fperiode" maxlenght="4" size="4" value="'.$annee_actu.'" />
+		*/
+	echo '
+		<input type="text" name="jour_fin" maxlenght="10" size="10" value="jj/mm/YYYY" />
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&ch=jour_fin\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
 			<span class="legende">Dernier jour</span>
 
 			<input type="text" name="heure_fin" maxlenght="8" size="8" value="'.$heure_etab_fin.'" />
