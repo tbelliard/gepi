@@ -86,7 +86,7 @@ require_once("../lib/header.inc");
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>";
+echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>\n";
 
 
 if (!isset($_POST["action"])) {
@@ -94,31 +94,31 @@ if (!isset($_POST["action"])) {
     // On sélectionne le fichier à importer
     //
 
-    echo "<p>Vous allez effectuer la quatrième étape : elle consiste à importer le fichier <b>g_professeurs.csv</b> contenant les données des professeurs.";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
-    echo "<ul><li>Nom</li>" .
-            "<li>Prénom</li>" .
-            "<li>Civilité</li>" .
-            "<li>Adresse e-mail</li>" .
-            "</ul>";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>g_professeurs.csv</b>.";
-    echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>";
-    echo "<input type='hidden' name='action' value='upload_file' />";
-    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />";
-    echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>";
-    echo "<input type='radio' name='login_mode' value='name' checked> nom";
-    echo "<br /><input type='radio' name='login_mode' value='name8'> nom (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_mode' value='fname8'> pnom (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_mode' value='fname19'> pnom (tronqué à 19 caractères)";
-    echo "<br /><input type='radio' name='login_mode' value='firstdotname'> prenom.nom";
-    echo "<br /><input type='radio' name='login_mode' value='firstdotname19'> prenom.nom (tronqué à 19 caractères)";
-    echo "<br /><input type='radio' name='login_mode' value='namef8'> nomp (tronqué à 8 caractères)";
-    echo "<br /><input type='radio' name='login_mode' value='lcs'> pnom (façon LCS)";
-    echo "<br /><br /><p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>";
-    echo "<br /><input type='radio' name='sso' value='no' checked> Non";
-    echo "<br /><input type='radio' name='sso' value='yes'> Oui (aucun mot de passe ne sera généré)";
-    echo "<p><input type='submit' value='Valider' />";
-    echo "</form>";
+    echo "<p>Vous allez effectuer la quatrième étape : elle consiste à importer le fichier <b>g_professeurs.csv</b> contenant les données des professeurs.</p>\n";
+    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+    echo "<ul><li>Nom</li>\n" .
+            "<li>Prénom</li>\n" .
+            "<li>Civilité</li>\n" .
+            "<li>Adresse e-mail</li>\n" .
+            "</ul>\n";
+    echo "<p>Veuillez préciser le nom complet du fichier <b>g_professeurs.csv</b>.</p>\n";
+    echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>\n";
+    echo "<input type='hidden' name='action' value='upload_file' />\n";
+    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+    echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?<br />\n";
+    echo "<input type='radio' name='login_mode' value='name' checked /> nom";
+    echo "<br />\n<input type='radio' name='login_mode' value='name8' /> nom (tronqué à 8 caractères)";
+    echo "<br />\n<input type='radio' name='login_mode' value='fname8' /> pnom (tronqué à 8 caractères)";
+    echo "<br />\n<input type='radio' name='login_mode' value='fname19' /> pnom (tronqué à 19 caractères)";
+    echo "<br />\n<input type='radio' name='login_mode' value='firstdotname' /> prenom.nom";
+    echo "<br />\n<input type='radio' name='login_mode' value='firstdotname19' /> prenom.nom (tronqué à 19 caractères)";
+    echo "<br />\n<input type='radio' name='login_mode' value='namef8' /> nomp (tronqué à 8 caractères)";
+    echo "<br />\n<input type='radio' name='login_mode' value='lcs' /> pnom (façon LCS)";
+    echo "<br />\n</p>\n<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>\n";
+    echo "<p>\n<input type='radio' name='sso' value='no' checked /> Non";
+    echo "<br />\n<input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera généré)</p>";
+    echo "<p><input type='submit' value='Valider' /></p>\n";
+    echo "</form>\n";
 
 } else {
     //
@@ -217,10 +217,10 @@ if (!isset($_POST["action"])) {
             if (!isset($_POST['ligne'.$i.'_nom'])) $go = false;
         }
 
-        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-        if ($total > 0) echo "<p>" . $total . " professeurs ont été enregistrés.</p>";
+        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
+        if ($total > 0) echo "<p>" . $total . " professeurs ont été enregistrés.</p>\n";
 
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";
+        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
 
     } else if ($_POST['action'] == "upload_file") {
@@ -241,8 +241,8 @@ if (!isset($_POST["action"])) {
 
             if(!$fp) {
                 // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
-                echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
-                echo "<p><a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+                echo "<p><a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>\n";
             } else {
 
                 // Fichier ouvert ! On attaque le traitement
@@ -403,57 +403,58 @@ if (!isset($_POST["action"])) {
                 // Fin de l'analyse du fichier.
                 // Maintenant on va afficher tout ça.
 
-                echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>";
-                echo "<input type='hidden' name='action' value='save_data' />";
-                echo "<table>";
-                echo "<tr><td>Login</td><td>Nom</td><td>Prénom</td><td>Civilité</td><td>Email</td></tr>";
+                echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>\n";
+                echo "<input type='hidden' name='action' value='save_data' />\n";
+                echo "<table border='1'>\n";
+                echo "<tr><th>Login</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Email</th></tr>\n";
 
                 for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>";
+                    echo "<tr>\n";
                     if ($data_tab[$i]["prof_exists"]) {
-                        echo "<td style='color: blue;'>";
+                        echo "<td style='color: blue;'>\n";
                     } else {
-                        echo "<td>";
+                        echo "<td>\n";
                     }
                     echo $data_tab[$i]["reg_login"];
-                    echo "<input type='hidden' name='ligne".$i."_login' value='" . $data_tab[$i]["reg_login"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_login' value='" . $data_tab[$i]["reg_login"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["nom"];
-                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["prenom"];
-                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["civilite"];
-                    echo "<input type='hidden' name='ligne".$i."_civilite' value='" . $data_tab[$i]["civilite"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_civilite' value='" . $data_tab[$i]["civilite"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["email"];
-                    echo "<input type='hidden' name='ligne".$i."_email' value='" . $data_tab[$i]["email"] . "'>";
-                    echo "</td>";
-                    echo "</tr>";
+                    echo "<input type='hidden' name='ligne".$i."_email' value='" . $data_tab[$i]["email"] . "' />\n";
+                    echo "</td>\n";
+                    echo "</tr>\n";
                 }
 
-                echo "</table>";
+                echo "</table>\n";
 
-                echo "<input type='submit' value='Enregistrer'>";
+                echo "<input type='submit' value='Enregistrer' />\n";
 
-                echo "</form>";
+                echo "</form>\n";
             }
 
         } else if (trim($csv_file['name'])=='') {
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />";
-            echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+            echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
         } else {
-            echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-            echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+            echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>\n";
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

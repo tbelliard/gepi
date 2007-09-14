@@ -103,8 +103,8 @@ if (!isset($_POST["action"])) {
 
     echo "<p>Vous allez effectuer la deuxième étape : elle consiste à importer le fichier <b>g_responsables.csv</b> contenant les données élèves.</p>\n";
     echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>\n";
-    echo "<ul><li>Identifiant élève interne à l'établissement (n°, et non login)</li>\n" .
-            "<li>Nom du responsable</li>\n" .
+    echo "<ul><li>Identifiant élève interne à l'établissement (n°, et non login) <b>(*)</b></li>\n" .
+            "<li>Nom du responsable <b>(*)</b></li>\n" .
             "<li>Prénom</li>\n" .
             "<li>Civilité</li>\n" .
             "<li>Ligne 1 adresse</li>\n" .
@@ -119,6 +119,7 @@ if (!isset($_POST["action"])) {
     echo "<p><input type='submit' value='Valider' />\n";
     echo "</form>\n";
 
+    echo "<p><i>NOTE:</i> Les champs marqués d'un <b>(*)</b> doivent être non vides.</p>\n";
 } else {
     //
     // Quelque chose a été posté
@@ -159,23 +160,33 @@ if (!isset($_POST["action"])) {
             // On nettoie et on vérifie :
             $reg_id_eleve = preg_replace("/[^0-9]/","",trim($reg_id_eleve));
 
-            $reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
+            //$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
+            $reg_nom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
             if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-            $reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
+            //$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
+            $reg_prenom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+
+			// ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸
+
             if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
 
-            if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
+            //if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") $reg_civilite = "M.";
+            if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
 
-            $reg_adresse1 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse1));
+            //$reg_adresse1 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse1));
+            $reg_adresse1 = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse1,"'"," ")))))));
+
             if (strlen($reg_adresse1) > 50) $reg_adresse1 = substr($reg_adresse1, 0, 50);
 
-            $reg_adresse2 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse2));
+            //$reg_adresse2 = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_adresse2));
+            $reg_adresse2 = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_adresse2,"'"," ")))))));
             if (strlen($reg_adresse2) > 50) $reg_adresse2 = substr($reg_adresse2, 0, 50);
 
             $reg_code_postal = preg_replace("/[^0-9]/","",trim($reg_code_postal));
             if (strlen($reg_code_postal) > 6) $reg_code_postal = substr($reg_code_postal, 0, 6);
 
-            $reg_commune = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_commune));
+            //$reg_commune = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($reg_commune));
+            $reg_commune = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($reg_commune,"'"," ")))))));
             if (strlen($reg_commune) > 50) $reg_commune = substr($reg_commune, 0, 50);
 
             // On vérifie que l'élève existe
@@ -185,73 +196,77 @@ if (!isset($_POST["action"])) {
 				echo "<p>Erreur : L'identifiant élève est vide pour $reg_prenom $reg_nom</p>\n";
 			}
 			else{
-				if ($test == 0 OR !$test) {
-					// Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
-					echo "<p>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
-				} else {
-					// Test positif : on peut donc enregistrer les données de responsable.
-
-					// On regarde si une entrée existe déjà pour l'élève en question
-					$test = mysql_query("SELECT ereno, nom1, nom2 FROM responsables WHERE ereno = '" . $reg_id_eleve . "'");
-					$insert = null;
-
-					if (mysql_num_rows($test) == 0) {
-						// Aucune entrée n'existe. On enregistre le responsable comme premier responsable
-
-						$sql="INSERT INTO responsables SET " .
-							"ereno = '" . $reg_id_eleve . "', " .
-							"nom1 = '" . $reg_nom . "', " .
-							"prenom1 = '" . $reg_prenom . "', " .
-							"adr1 = '" . $reg_adresse1 . "', " .
-							"adr1_comp = '" . $reg_adresse2 . "', " .
-							"commune1 = '" . $reg_commune . "', " .
-							"cp1 = '" . $reg_code_postal . "'";
-						$insert = mysql_query($sql);
-
+				if($reg_nom==""){
+					echo "<p>Erreur : Le nom du responsable est vide pour l'élève $reg_id_eleve</p>\n";
+				}
+				else{
+					if ($test == 0 OR !$test) {
+						// Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
+						echo "<p>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
 					} else {
-						// Une entrée existe
-						// On regarde si le responsable 1 a déjà été saisi
-						if (mysql_result($test, 0, "nom1") == "") {
-							$sql="UPDATE responsables SET " .
+						// Test positif : on peut donc enregistrer les données de responsable.
+
+						// On regarde si une entrée existe déjà pour l'élève en question
+						$test = mysql_query("SELECT ereno, nom1, nom2 FROM responsables WHERE ereno = '" . $reg_id_eleve . "'");
+						$insert = null;
+
+						if (mysql_num_rows($test) == 0) {
+							// Aucune entrée n'existe. On enregistre le responsable comme premier responsable
+
+							$sql="INSERT INTO responsables SET " .
+								"ereno = '" . $reg_id_eleve . "', " .
 								"nom1 = '" . $reg_nom . "', " .
 								"prenom1 = '" . $reg_prenom . "', " .
 								"adr1 = '" . $reg_adresse1 . "', " .
 								"adr1_comp = '" . $reg_adresse2 . "', " .
 								"commune1 = '" . $reg_commune . "', " .
-								"cp1 = '" . $reg_code_postal . "' " .
-								"WHERE " .
-								"ereno = '" . $reg_id_eleve . "'";
-							$insert = mysql_query($sql);
-
-						} else if (mysql_result($test, 0, "nom2") == "") {
-							$sql="UPDATE responsables SET " .
-								"nom2 = '" . $reg_nom . "', " .
-								"prenom2 = '" . $reg_prenom . "', " .
-								"adr2 = '" . $reg_adresse1 . "', " .
-								"adr2_comp = '" . $reg_adresse2 . "', " .
-								"commune2 = '" . $reg_commune . "', " .
-								"cp2 = '" . $reg_code_postal . "' " .
-								"WHERE " .
-								"ereno = '" . $reg_id_eleve . "'";
+								"cp1 = '" . $reg_code_postal . "'";
 							$insert = mysql_query($sql);
 
 						} else {
-							// Erreur ! Les deux responsables ont déjà été saisis...
-							echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
+							// Une entrée existe
+							// On regarde si le responsable 1 a déjà été saisi
+							if (mysql_result($test, 0, "nom1") == "") {
+								$sql="UPDATE responsables SET " .
+									"nom1 = '" . $reg_nom . "', " .
+									"prenom1 = '" . $reg_prenom . "', " .
+									"adr1 = '" . $reg_adresse1 . "', " .
+									"adr1_comp = '" . $reg_adresse2 . "', " .
+									"commune1 = '" . $reg_commune . "', " .
+									"cp1 = '" . $reg_code_postal . "' " .
+									"WHERE " .
+									"ereno = '" . $reg_id_eleve . "'";
+								$insert = mysql_query($sql);
+
+							} else if (mysql_result($test, 0, "nom2") == "") {
+								$sql="UPDATE responsables SET " .
+									"nom2 = '" . $reg_nom . "', " .
+									"prenom2 = '" . $reg_prenom . "', " .
+									"adr2 = '" . $reg_adresse1 . "', " .
+									"adr2_comp = '" . $reg_adresse2 . "', " .
+									"commune2 = '" . $reg_commune . "', " .
+									"cp2 = '" . $reg_code_postal . "' " .
+									"WHERE " .
+									"ereno = '" . $reg_id_eleve . "'";
+								$insert = mysql_query($sql);
+
+							} else {
+								// Erreur ! Les deux responsables ont déjà été saisis...
+								echo "<p>Erreur pour " . $reg_prenom . " " . $reg_nom . " ! Les deux responsables ont déjà été saisis.</p>\n";
+							}
+
+
 						}
 
-
+						if ($insert == false) {
+							$error++;
+							$erreur_mysql=mysql_error();
+							if($erreur_mysql!=""){echo "<p><font color='red'>".$erreur_mysql."</font></p>\n";}
+							//echo "<p>$sql</p>\n";
+						} else {
+							$total++;
+						}
 					}
-
-					if ($insert == false) {
-						$error++;
-						$erreur_mysql=mysql_error();
-						if($erreur_mysql!=""){echo "<p><font color='red'>".$erreur_mysql."</font></p>\n";}
-						//echo "<p>$sql</p>\n";
-					} else {
-						$total++;
-					}
-
 				}
 			}
 
@@ -319,24 +334,30 @@ if (!isset($_POST["action"])) {
                                 // On nettoie et on vérifie :
                             $tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
-                            $tabligne[1] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[1])));
+                            //$tabligne[1] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[1])));
+							$tabligne[1] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
                             if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
-                            $tabligne[2] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[2]));
+                            //$tabligne[2] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[2]));
+							$tabligne[2] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));
                             if (strlen($tabligne[2]) > 50) $tabligne[2] = substr($tabligne[2], 0, 50);
 
-                            if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") $tabligne[3] = "M.";
+                            //if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") $tabligne[3] = "M.";
+							if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") { $tabligne[3] = "";}
 
-                            $tabligne[4] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[4]));
+                            //$tabligne[4] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[4]));
+							$tabligne[4] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[4],"'"," ")))))));
                             if (strlen($tabligne[4]) > 50) $tabligne[4] = substr($tabligne[4], 0, 50);
 
-                            $tabligne[5] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[5]));
+                            //$tabligne[5] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[5]));
+							$tabligne[5] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[5],"'"," ")))))));
                             if (strlen($tabligne[5]) > 50) $tabligne[5] = substr($tabligne[5], 0, 50);
 
                             $tabligne[6] = preg_replace("/[^0-9]/","",trim($tabligne[6]));
                             if (strlen($tabligne[6]) > 6) $tabligne[6] = substr($tabligne[6], 0, 6);
 
-                            $tabligne[7] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[7]));
+                            //$tabligne[7] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[7]));
+							$tabligne[7] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtr($tabligne[7],"'"," ")))))));
                             if (strlen($tabligne[7]) > 50) $tabligne[7] = substr($tabligne[7], 0, 50);
 
 
@@ -367,11 +388,19 @@ if (!isset($_POST["action"])) {
 
                 for ($i=0;$i<$k-1;$i++) {
                     echo "<tr>\n";
-                    echo "<td>\n";
+                    echo "<td";
+                    if($data_tab[$i]["id_eleve"]==""){
+						echo " style='color:red;'";
+					}
+                    echo ">\n";
                     echo $data_tab[$i]["id_eleve"];
                     echo "<input type='hidden' name='ligne".$i."_id_eleve' value='" . $data_tab[$i]["id_eleve"] . "' />\n";
                     echo "</td>\n";
-                    echo "<td>\n";
+                    echo "<td";
+                    if($data_tab[$i]["id_eleve"]==""){
+						echo " style='color:red;'";
+					}
+                    echo ">\n";
                     echo $data_tab[$i]["nom"];
                     echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
                     echo "</td>\n";

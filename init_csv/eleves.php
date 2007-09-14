@@ -159,10 +159,14 @@ if (!isset($_POST["action"])) {
 
             // On nettoie et on vérifie :
             //$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-            $reg_nom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)));
+            //$reg_nom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)));
+            $reg_nom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+
             if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
             //$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
-            $reg_prenom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom));
+            //$reg_prenom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom));
+            $reg_prenom = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+
             if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
             $naissance = explode("/", $reg_naissance);
             if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
@@ -346,14 +350,16 @@ if (!isset($_POST["action"])) {
                             //=====================================
                             // MODIF: boireaus
                             //$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-                            $tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
+                            //$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
+							$tabligne[0] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
                             //=====================================
                             if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 
                             //=====================================
                             // MODIF: boireaus
                             //$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-                            $tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
+                            //$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
+							$tabligne[1] = ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
                             //=====================================
                             if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
@@ -414,51 +420,51 @@ if (!isset($_POST["action"])) {
 
                 echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
                 echo "<input type='hidden' name='action' value='save_data' />\n";
-                //echo "<table>";
-                //echo "<tr><td>Nom</td><td>Prénom</td><td>Sexe</td><td>Date de naissance</td><td>n° étab.</td><td>n° nat.</td><td>Code étab.</td><td>Double.</td><td>Régime</td></tr>";
+                echo "<table border='1'>\n";
+                echo "<tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Date de naissance</th><th>n° étab.</th><th>n° nat.</th><th>Code étab.</th><th>Double.</th><th>Régime</th></tr>\n";
 
                 for ($i=0;$i<$k;$i++) {
-                //  echo "<tr>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["nom"];
+                    echo "<tr>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["nom"];
                     echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["prenom"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["prenom"];
                     echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["sexe"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["sexe"];
                     echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["naissance"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["naissance"];
                     echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["id_int"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["id_int"];
                     echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["id_nat"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["id_nat"];
                     echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["etab_prec"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["etab_prec"];
                     echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["doublement"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["doublement"];
                     echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "' />\n";
-                //  echo "</td>";
-                //  echo "<td>";
-                //  echo $data_tab[$i]["regime"];
+                    echo "</td>\n";
+                    echo "<td>\n";
+                    echo $data_tab[$i]["regime"];
                     echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "' />\n";
-                //  echo "</td>";
-                //  echo "</tr>";
+                    echo "</td>\n";
+                    echo "</tr>\n";
                 }
 
-                //echo "</table>";
+                  echo "</table>\n";
                 echo "$k élèves ont été détectés dans le fichier.<br />\n";
                 echo "<input type='submit' value='Enregistrer' />\n";
 

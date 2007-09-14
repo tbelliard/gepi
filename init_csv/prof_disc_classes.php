@@ -102,7 +102,7 @@ require_once("../lib/header.inc");
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>";
+echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>\n";
 
 
 if (!isset($_POST["action"])) {
@@ -110,24 +110,24 @@ if (!isset($_POST["action"])) {
     // On sélectionne le fichier à importer
     //
 
-    echo "<p>Vous allez effectuer la sixième étape : elle consiste à importer le fichier <b>g_prof_disc_classes.csv</b> contenant les données relatives aux enseignements.";
-    echo "<p>ATTENTION ! Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
-    echo "<ul><li>Login du professeur</li>" .
-            "<li>Nom court de la matière</li>" .
-            "<li>Le ou les identifiant(s) de classe (séparés par un point d'exclamation ; ex : 1S1!1S2)</li>" .
-            "<li>Type d'enseignement (CG pour enseignement général suivi par toute la classe, OPT pour un enseignement optionnel)</li>" .
-            "</ul>";
-    echo "<p>Exemple de ligne pour un enseignement général :<br/>" .
-            "DUPONT.JEAN;MATHS;1S1;CG<br/>" .
-            "Exemple de ligne pour un enseignement optionnel avec des élèves de plusieurs classes :<br/>" .
-            "DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>g_prof_disc_classes.csv</b>.";
-    echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
-    echo "<input type='hidden' name='action' value='upload_file' />";
-    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />";
-    echo "<p><input type='submit' value='Valider' />";
-    echo "</form>";
+    echo "<p>Vous allez effectuer la sixième étape : elle consiste à importer le fichier <b>g_prof_disc_classes.csv</b> contenant les données relatives aux enseignements.</p>\n";
+    echo "<p>ATTENTION ! Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>\n";
+    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+    echo "<ul><li>Login du professeur</li>\n" .
+            "<li>Nom court de la matière</li>\n" .
+            "<li>Le ou les identifiant(s) de classe (séparés par un point d'exclamation ; ex : 1S1!1S2)</li>\n" .
+            "<li>Type d'enseignement (CG pour enseignement général suivi par toute la classe, OPT pour un enseignement optionnel)</li>\n" .
+            "</ul>\n";
+    echo "<p>Exemple de ligne pour un enseignement général :<br />\n" .
+            "DUPONT.JEAN;MATHS;1S1;CG<br />\n" .
+            "Exemple de ligne pour un enseignement optionnel avec des élèves de plusieurs classes :<br />\n" .
+            "DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>\n";
+    echo "<p>Veuillez préciser le nom complet du fichier <b>g_prof_disc_classes.csv</b>.</p>\n";
+    echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
+    echo "<input type='hidden' name='action' value='upload_file' />\n";
+    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+    echo "<p><input type='submit' value='Valider' />\n";
+    echo "</form>\n";
 
 } else {
     //
@@ -262,10 +262,10 @@ if (!isset($_POST["action"])) {
             if (!isset($_POST['ligne'.$i.'_prof'])) $go = false;
         }
 
-        if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-        if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>";
+        if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
+        if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>\n";
 
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";
+        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
 
     } else if ($_POST['action'] == "upload_file") {
@@ -286,8 +286,8 @@ if (!isset($_POST["action"])) {
 
             if(!$fp) {
                 // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
-                echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
-                echo "<p><a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+                echo "<p><a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
             } else {
 
                 // Fichier ouvert ! On attaque le traitement
@@ -344,49 +344,50 @@ if (!isset($_POST["action"])) {
                 // Fin de l'analyse du fichier.
                 // Maintenant on va afficher tout ça.
 
-                echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
-                echo "<input type='hidden' name='action' value='save_data' />";
-                echo "<table>";
-                echo "<tr><td>Login prof</td><td>Matière</td><td>Classe(s)</td><td>Type</td></tr>";
+                echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
+                echo "<input type='hidden' name='action' value='save_data' />\n";
+                echo "<table border='1'>\n";
+                echo "<tr><th>Login prof</th><th>Matière</th><th>Classe(s)</th><th>Type</th></tr>\n";
 
                 for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>";
-                    echo "<td>";
+                    echo "<tr>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["prof"];
-                    echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["matiere"];
-                    echo "<input type='hidden' name='ligne".$i."_matiere' value='" . $data_tab[$i]["matiere"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_matiere' value='" . $data_tab[$i]["matiere"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["classes"];
-                    echo "<input type='hidden' name='ligne".$i."_classes' value='" . $data_tab[$i]["classes"] . "'>";
-                    echo "</td>";
-                    echo "<td>";
+                    echo "<input type='hidden' name='ligne".$i."_classes' value='" . $data_tab[$i]["classes"] . "' />\n";
+                    echo "</td>\n";
+                    echo "<td>\n";
                     echo $data_tab[$i]["type"];
-                    echo "<input type='hidden' name='ligne".$i."_type' value='" . $data_tab[$i]["type"] . "'>";
-                    echo "</td>";
-                    echo "</tr>";
+                    echo "<input type='hidden' name='ligne".$i."_type' value='" . $data_tab[$i]["type"] . "' />\n";
+                    echo "</td>\n";
+                    echo "</tr>\n";
                 }
 
-                echo "</table>";
+                echo "</table>\n";
 
-                echo "<input type='submit' value='Enregistrer'>";
+                echo "<input type='submit' value='Enregistrer' />\n";
 
-                echo "</form>";
+                echo "</form>\n";
             }
 
         } else if (trim($csv_file['name'])=='') {
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />";
-            echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+            echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
         } else {
-            echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-            echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+            echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
