@@ -507,7 +507,7 @@ function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 	$sortire_de_la_boucle = 'non';
 	while ( $sortire_de_la_boucle != 'oui' )
 	{
-	  if ( $mois_passe.'-'.$annee_passe === $mois_au.'-'.$annee_au ) { $sortire_de_la_boucle = 'oui'; }
+
 		// si le moi passe n'est pas défini alors on le définie avec
 		if ( $mois_passe === '' and $annee_passe === '' )
 		{
@@ -515,21 +515,26 @@ function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 			$annee_passe = $annee_de;
 		}
 
-		// $mois[$i]['mois'] = 'aou. 2006';
-		   $tab_mois = array('01'=>"jan.", '02'=>"fev.", '03'=>"mar.", '04'=>"avr.", '05'=>"mai", '06'=>"jui.", '07'=>"juil.", '08'=>"aoû.", '09'=>"sep.", '10'=>"oct.", '11'=>"nov.", '12'=>"déc.");
+	  if ( $mois_passe.'-'.$annee_passe === $mois_au.'-'.$annee_au ) { $sortire_de_la_boucle = 'oui'; }
+
+		// tableau des nom des mois par rapport à leurs numéro
+		$tab_mois = array('01'=>"jan.", '02'=>"fev.", '03'=>"mar.", '04'=>"avr.", '05'=>"mai", '06'=>"jui.", '07'=>"juil.", '08'=>"aoû.", '09'=>"sep.", '10'=>"oct.", '11'=>"nov.", '12'=>"déc.");
+
 		$mois[$i]['mois'] = $tab_mois[$mois_passe].' '.$annee_passe;
 		$mois[$i]['mois_court'] = $tab_mois[$mois_passe];
-		// $mois[$i]['num_mois'] = '08';
 		$mois[$i]['num_mois'] = $mois_passe;
-		// $mois[$i]['num_mois_simple'] = '8';
-		// $mois[$i]['num_annee'] = '2006';
 		$mois[$i]['num_annee'] = $annee_passe;
-		$mois_suivant = explode('/',mois_suivant('01/'.$mois_passe.'/'.$annee_passe));
 
+	  if ( $sortire_de_la_boucle != 'oui' )
+	  {
+		$mois_suivant = explode('/',mois_suivant('01/'.$mois_passe.'/'.$annee_passe));
 		$mois_passe = $mois_suivant[1];
 		$annee_passe = $mois_suivant[2];
+	  }
+
 	$i = $i + 1;
 	}
+
 	return($mois);
 }
 
@@ -1217,8 +1222,18 @@ function repartire($login, $type, $du, $au)
 			}
 
  	     $tableau_de_donnees = '';
-             $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
-             $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+            // $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
+	     $requete = "SELECT * FROM ".$prefix_base."absences_eleves
+				  WHERE eleve_absence_eleve = '".$login."'
+			      	    AND type_absence_eleve = '".$type."'
+			       	    AND
+				    ( '".$du."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+				       	OR '".$au."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+				       	OR d_date_absence_eleve BETWEEN '".$du."' AND '".$au."'
+				       	OR a_date_absence_eleve BETWEEN '".$du."' AND '".$au."'
+				    )
+				  ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
+              $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
               while ( $donnee = mysql_fetch_array($execution))
                 {
 		$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
@@ -1273,7 +1288,7 @@ return $tableau_de_donnees;
 function repartire_jour($login, $type, $du, $au)
 {
 	global $prefix_base;
-
+	//date_default_timezone_set ('Europe/Paris') ;
 	     $i = '0';
 	// date_default_timezone_get(); // n'est compatible que PHP 5.0.1
 		if ( function_exists('date_default_timezone_get') ) {
@@ -1293,17 +1308,14 @@ function repartire_jour($login, $type, $du, $au)
 		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
 		if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
 		 {
-			$date = $donnee['d_date_absence_eleve'];
+			$date_select = $donnee['d_date_absence_eleve'];
 
 // incrémente en fonction du nombre de fois ou on trouve une heure de début pour un même jour
-if ( !isset($nb_horraire_date[$date]) ) { $nb_horraire_date[$date] = 0; } else { $nb_horraire_date[$date] = $nb_horraire_date[$date] + 1; }
-$nb_passage_horraire = $nb_horraire_date[$date];
-$date_tt = $date.'-'.$nb_passage_horraire;
+if ( !isset($nb_horraire_date[$date_select]) ) { $nb_horraire_date[$date_select] = 0; } else { $nb_horraire_date[$date_select] = $nb_horraire_date[$date_select] + 1; }
+$nb_passage_horraire = $nb_horraire_date[$date_select];
+$date_tt = $date_select.'-'.$nb_passage_horraire;
 
-			//=========================
-			// Ajout: C.Chapel 20070830
-			$pause="";
-			//=========================
+			$pause = '';
 			$tableau_de_donnees[$date_tt]['login'] = $donnee['eleve_absence_eleve'];
 			$tableau_de_donnees[$date_tt]['jour'] = jour_sem_sql($donnee['d_date_absence_eleve']);
 			$tab_jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
@@ -1334,7 +1346,7 @@ $date_tt = $date.'-'.$nb_passage_horraire;
 			 else { $tableau_de_donnees[$date_tt]['justifie'] = 'oui'; }
 
 			// statistique par mois
-			$tab_date = explode('-',$date);
+			$tab_date = explode('-',$date_select);
 			$mois = $tab_date[1];
 			$annee = $tab_date[0];
 			if ( !isset($tableau_de_donnees[$annee.'-'.$mois]) )
