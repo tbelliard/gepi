@@ -529,8 +529,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	//bloc identification etablissement
 	$logo = '../../images/'.getSettingValue('logo_etab');
 	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
-	//if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
-	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='jpeg' or $format_du_logo==='png'))
+	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
 	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
@@ -1226,7 +1225,7 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 					$total_abs = $info_absence[$annee_p.'-'.$mois_p]['nb'];
 				}
 				$total_ret = '0';
-				if ( isset($info_retard[$annee_p.'-'.$mois_p]) and ($info_absence[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_absence[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
+				if ( isset($info_retard[$annee_p.'-'.$mois_p]) and ($info_retard[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_retard[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
 					// $total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb_j'] + $info_absence[$annee_p.'-'.$mois_p]['nb_nj'];
 					$total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb'];
 				}

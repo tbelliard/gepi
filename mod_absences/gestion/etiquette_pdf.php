@@ -105,36 +105,51 @@ $etiquette_agencement = '3';
 	if($trie_par === '2') { $trie = 'ORDER BY e.nom ASC, e.prenom ASC'; }
 
 	$i = '0';
-	if($classe === 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e, ".$prefix_base."responsables r WHERE ec.id_classe = c.id AND ec.login = e.login AND e.ereno = r.ereno GROUP BY e.login ".$trie.""; }
-	if($classe != 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e, ".$prefix_base."responsables r WHERE c.id = '".$classe."' AND ec.id_classe = c.id AND ec.login = e.login AND e.ereno = r.ereno GROUP BY e.login ".$trie.""; }
-        
+	if($classe === 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
+	if($classe != 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE c.id = '".$classe."' AND ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
+
         $execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
         while ( $donne_persone = mysql_fetch_array($execution_persone))
 	 {
 
 		// information sur l'élève
 		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
+		$eleve_numid[$i] = $donne_persone['ele_id']; // numéro id de l'élève
+
 		$classe_eleve[$i] = classe_de($id_eleve[$i]);
 		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
 		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
 		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prénom de l'élève
 		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
 		$code_eleve[$i] = $donne_persone['no_gep']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
-		// information sur les parents
-		$civilitee_responsable['1'][$i] = 'M.'; // nom du premier responsable		
-		$nom_responsable['1'][$i] = strtoupper($donne_persone['nom1']); // nom du premier responsable
-		$prenom_responsable['1'][$i] = ucfirst($donne_persone['prenom1']); // prénom du premier responsable
-		$adresse_responsable['1'][$i] = $donne_persone['adr1']; // adresse du premier responsable
-		$adressecomp_responsable['1'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du premier responsable
-		$cp_responsable['1'][$i] = $donne_persone['cp1']; // code postal du premier responsable
-		$commune_responsable['1'][$i] = $donne_persone['commune1']; // commune du premier responsable
-		$civilitee_responsable['2'][$i] = 'Mme'; // nom du premier responsable		
-		$nom_responsable['2'][$i] = strtoupper($donne_persone['nom1']); // nom du deuxième responsable
-		$prenom_responsable['2'][$i] = ucfirst($donne_persone['prenom1']); // prénom du deuxième responsable
-		$adresse_responsable['2'][$i] = $donne_persone['adr1']; // adresse du deuxième responsable
-		$adressecomp_responsable['$nom_responsable2'][$i] = $donne_persone['adr1_comp']; // adresse complétmentaire du deuxième responsable
-		$cp_responsable['2'][$i] = $donne_persone[$i]['cp1']; // code postal du deuxième responsable
-		$commune_responsable['2'][$i] = $donne_persone['commune1']; // commune du deuxième responsable
+
+		// information sur les responsables
+		$nombre_de_responsable = 0;
+		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+		if($nombre_de_responsable != 0)
+		{
+			$cpt_parents = '1';
+			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+			while ($donner_parents = mysql_fetch_array($requete_parents))
+		  	{
+				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite'];
+			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom'];
+	        		$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom'];
+			        $adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1'];
+			        $adressecomp_responsable[$cpt_parents][$i] = $donner_parents['adr2'];
+			        $commune_responsable[$cpt_parents][$i] = $donner_parents['commune'];
+			        $cp_responsable[$cpt_parents][$i] = $donner_parents['cp'];
+				$cpt_parents = $cpt_parents + 1;
+			}
+		} else {
+				$civilitee_responsable['1'][$i] = '';
+			        $nom_responsable['1'][$i] = '';
+	        		$prenom_responsable['1'][$i] = '';
+			        $adresse_responsable['1'][$i] = '';
+			        $adressecomp_responsable['1'][$i] = '';
+			        $commune_responsable['1'][$i] = '';
+			        $cp_responsable['1'][$i] = '';
+			}
 
 		// nom et prénom, classe de l'élève
 		if($etiquette_type === '1') { $ligne[$i]['1'] = ' '.$nom_eleve[$i].' '.$prenom_eleve[$i]; $ligne[$i]['2'] = ' Classe: '.$classe_eleve[$i]; $ligne[$i]['3'] = ''; $ligne[$i]['4'] = ''; $ligne[$i]['5'] = ''; $cpt_ligne[$i] = '5'; }
@@ -174,114 +189,126 @@ require_once("../../fpdf/class.multicelltag.php");
 // mode paysage, a4, etc.
 $pdf=new FPDF_MULTICELLTAG('P','mm','A4');
 
-$pdf->Open();
-$pdf->SetAutoPageBreak(true);
+//$pdf->Open();
+$pdf->SetAutoPageBreak(false);
 
 	$caractere_utilse = 'Arial';
 
+//calcul du nombre d'étiquette
+$nombre_eleve = count($id_eleve);
+$nombre_etiquette_par_page = $nbl * $nbh;
+$nombre_de_page = ceil($nombre_eleve / $nombre_etiquette_par_page);
+//echo $nombre_etiquette_par_page.' '.$nombre_eleve.' '.$nombre_de_page.'<br/>';
 $i = '0';
-while(!empty($id_eleve[$i])) {
 
-$pdf->AddPage();
-
-$pdf->SetFont('arial','',11);
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFillColor(255,255,255);
-
-	// gestion des styles
-	$pdf->SetStyle("p","times","",11,"0,0,0");
-	$pdf->SetStyle("g","times","B",11,"0,0,0");
-	$pdf->SetStyle("b","times","B",11,"0,0,0");
-	$pdf->SetStyle("i","times","I",11,"0,0,0");
-	$pdf->SetStyle("u","times","U",11,"0,0,0");
-	$pdf->SetStyle("decal","times","",11,"0,0,120");
-	$pdf->SetStyle("pb","times","B",11,"0,0,0");
-	$pdf->SetStyle("t1","arial","",11,"254,252,222");
-	$pdf->SetStyle("t1","arial","",11,"0,151,200");
-	$pdf->SetStyle("t2","arial","",11,"0,151,200");
-	$pdf->SetStyle("t3","times","B",14,"203,0,48");
-	$pdf->SetStyle("t4","arial","BI",11,"0,151,200");
-	$pdf->SetStyle("hh","times","B",11,"255,189,12");
-	$pdf->SetStyle("ss","arial","",7,"203,0,48");
-	$pdf->SetStyle("font","helvetica","",10,"0,0,255");
-	$pdf->SetStyle("style","helvetica","BI",10,"0,0,220");
-	$pdf->SetStyle("size","times","BI",13,"0,0,120");
-	$pdf->SetStyle("color","times","BI",13,"0,255,255");
-
-	$pdf->SetY($ycote);
-	$ycote_passe = $ycote;
-	$ycote_passeh = $ycote;
-
+// initialisation du compteur d'élèves
 $cpt_eleve = '0';
-// boucle hauteur
-$cpt_i_h = '0';
-while($cpt_i_h<=$nbh)
- {
-	$xcote_passe = $xcote;
-	// boucle largeur
-	$cpt_i_l = '1';
-	while($cpt_i_l<=$nbl)
-	 {
-		$pdf->SetFont($caractere_utilse,'',11);
-		// hauteur de chaque ligne
-		$hauteur_select = $hauteur / $cpt_ligne[$i];
+// initialisation du compteur de page
+$cpt_page = 0;
+while ( $cpt_page < $nombre_de_page )
+{
+	// Ajout d'une page
+	$pdf->AddPage();
+	$pdf->SetFont('arial','',11);
+	$pdf->SetTextColor(0,0,0);
+	$pdf->SetFillColor(255,255,255);
 
-		if(!empty($ligne[$cpt_eleve]['1'])) {
+if ( !isset($xcote_origine) ) { $xcote_origine = $xcote; }
+if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 
-			$cpt_ligne_aff = '1';
-			while($cpt_ligne_aff <= $cpt_ligne[$i])
-			 {
+		// placement des premières étiquette
+		$pdf->SetY($ycote_origine);
+		$ycote_passe = $ycote_origine;
+		$ycote_passeh = $ycote_origine;
 
-				if( $cpt_ligne_aff != '1') { $ycote_passe = $ycote_passe + $hauteur_select; }
+	$cpt_etiquette = 0;
+	while ( $cpt_etiquette < $nombre_etiquette_par_page )
+	{
+
+		// boucle hauteur
+		$cpt_i_h = '0';
+		while ( $cpt_i_h < $nbh )
+		{
+
+			$xcote_passe = $xcote;
+
+			// boucle largeur
+			$cpt_i_l = '1';
+			while($cpt_i_l<=$nbl)
+			{
+
+				$pdf->SetFont($caractere_utilse,'',11);
+//echo $nombre_etiquette_par_page.' '.$cpt_etiquette.' '.$cpt_eleve.' '.$cpt_page.' '.$i.'<br/>';
 
 
-				$pdf->SetXY($xcote_passe, $ycote_passe);
-				// gestion des encadrements
-				$code_cadre = '0';
-				if($cadre === '1')
-				 {
-					if($cpt_ligne_aff === '1' and $cpt_ligne_aff != $cpt_ligne[$i]) { $code_cadre = 'TRL'; }
-					if($cpt_ligne_aff != '1' and $cpt_ligne_aff != $cpt_ligne[$i]) { $code_cadre = 'RL'; }
-					if($cpt_ligne_aff != '1' and $cpt_ligne_aff == $cpt_ligne[$i]) { $code_cadre = 'RLB'; }
-				 }
-				// calcule de la taille du texte des appréciation
-	 			 $hauteur_caractere = '11';
-					if($etiquette_type === '5' and $cpt_ligne_aff == '2') { $hauteur_caractere = '6'; }
+				if(!empty($ligne[$cpt_eleve]['1'])) {
 
-			 	 $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
-				 $val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
-				 $taille_texte = $largeur-2;
-				 $grandeur_texte='test';
-				 while($grandeur_texte!='ok') {
-					 if($taille_texte<$val) 
-					  {
-					     $hauteur_caractere = $hauteur_caractere-0.3;
-					     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
-					     $val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
-					  } else { $grandeur_texte='ok'; }
-	                		}
-					$grandeur_texte='test';
-				$pdf->Cell($largeur, $hauteur_select, $ligne[$cpt_eleve][$cpt_ligne_aff],$code_cadre,0,'L');
+				// hauteur de chaque ligne
+				$hauteur_select = $hauteur / $cpt_ligne[$i];
 
-//				$ycote_passe = $ycote_passe + $hauteur_select;
+					$cpt_ligne_aff = '1';
+					while($cpt_ligne_aff <= $cpt_ligne[$i])
+					{
 
-			$cpt_ligne_aff = $cpt_ligne_aff + 1;
+
+						if( $cpt_ligne_aff != '1') { $ycote_passe = $ycote_passe + $hauteur_select; }
+
+						$pdf->SetXY($xcote_passe, $ycote_passe);
+						// gestion des encadrements
+						$code_cadre = '0';
+						if($cadre === '1')
+						{
+							if($cpt_ligne_aff === '1' and $cpt_ligne_aff != $cpt_ligne[$i]) { $code_cadre = 'TRL'; }
+							if($cpt_ligne_aff != '1' and $cpt_ligne_aff != $cpt_ligne[$i]) { $code_cadre = 'RL'; }
+							if($cpt_ligne_aff != '1' and $cpt_ligne_aff == $cpt_ligne[$i]) { $code_cadre = 'RLB'; }
+						}
+						// calcule de la taille du texte des appréciation
+			 			$hauteur_caractere = '11';
+						if($etiquette_type === '5' and $cpt_ligne_aff == '2') { $hauteur_caractere = '6'; }
+
+					 	$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+						$val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
+					 	$taille_texte = $largeur-2;
+					 	$grandeur_texte='test';
+					 	while($grandeur_texte!='ok') {
+						 if($taille_texte<$val)
+						  {
+						     $hauteur_caractere = $hauteur_caractere-0.3;
+						     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
+						     $val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
+						  } else { $grandeur_texte='ok'; }
+		                		}
+						$grandeur_texte='test';
+						$pdf->Cell($largeur, $hauteur_select, $ligne[$cpt_eleve][$cpt_ligne_aff],$code_cadre,0,'L');
+
+					$cpt_ligne_aff = $cpt_ligne_aff + 1;
+					}
+
+				// compteur élève
+				$cpt_eleve = $cpt_eleve + 1;
+			$i = $i + 1;
+
+				// passer à la ligne
+				$xcote_passe = $xcote_passe + $largeur + $espacementx;
+
+				// placement de X et Y leur nouveau point
+				$ycote_passe = $ycote_passeh;
+				if($cpt_i_l == $nbl) { $ycote_passe = $ycote_passe + $hauteur + $espacementy; $ycote_passeh = $ycote_passe; $xcote_passe = $xcote; }
+
+				}
+		$cpt_etiquette = $cpt_etiquette + 1;
+			$cpt_i_l = $cpt_i_l + 1;
 			}
-			// passer à la ligne
-			$xcote_passe = $xcote_passe + $largeur + $espacementx;
 
-			// placement de X et Y leur nouveau point
-			$ycote_passe = $ycote_passeh; 
-			if($cpt_i_l == $nbl) { $ycote_passe = $ycote_passe + $hauteur + $espacementy; $ycote_passeh = $ycote_passe; $xcote_passe = $xcote; }
-
-			$cpt_eleve = $cpt_eleve + 1;
+	 	$cpt_i_h = $cpt_i_h + 1;
 		}
-	 $cpt_i_l = $cpt_i_l + 1;
-	 }
- $cpt_i_h = $cpt_i_h + 1;
- }
 
-$i = $i + 1;
+	// compteur du nombre d'étiquette affiché sur la page et fin de la boucle des etiquettes par page
+//	$cpt_etiquette = $cpt_etiquette + 1;
+	}
+
+// compteur de page et fin de la boucle des pages
+$cpt_page = $cpt_page + 1;
 }
 
 $pdf->Output('Etiquette_'.date("Ymd_Hi").'.pdf','I');
