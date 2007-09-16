@@ -485,7 +485,7 @@ echo "</tr></table></form>\n";
 		<td style="font-variant: small-caps;">
 		Tester la présence du module phpMyVisite (<i>pmv.php</i>) :</td>
 	<td>
-        <input type="radio" name="gepi_pmv" value="y" <?php if(getSettingValue("gepi_pmv")=="y"){echo 'checked';} ?> /> Oui<br />
+        <input type="radio" name="gepi_pmv" value="y" <?php if(getSettingValue("gepi_pmv")!="n"){echo 'checked';} ?> /> Oui<br />
         <input type="radio" name="gepi_pmv" value="n" <?php if(getSettingValue("gepi_pmv")=="n"){echo 'checked';} ?> /> Non<br />
 	</td>
 	</tr>

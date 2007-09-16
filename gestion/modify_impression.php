@@ -49,7 +49,7 @@ if (isset($_POST['ok'])) {
 			$erreur = true;
 		}
     }
-	
+
     if	(isset($_POST['impression_parentFCK'])) {
 		$imp = html_entity_decode_all_version($_POST['impression_parentFCK']);
 		if (!saveSetting("ImpressionFicheParent", $imp)) {
@@ -66,20 +66,20 @@ if (isset($_POST['ok'])) {
 		}
     }
 
-	
-    $nb = is_numeric($_POST['nb_impression']) ? $_POST['nb_impression'] : "1";
+
+    $nb = isset($_POST['nb_impression']) ? (is_numeric($_POST['nb_impression']) ? $_POST['nb_impression'] : "1") : 1;
     if (!saveSetting("ImpressionNombre", $nb)) {
     	$error = true;
     }
-    $nb = is_numeric($_POST['nb_impression_parent']) ? $_POST['nb_impression_parent'] : "1";
+    $nb = isset($_POST['nb_impression_parent']) ? (is_numeric($_POST['nb_impression_parent']) ? $_POST['nb_impression_parent'] : "1") : 1;
     if (!saveSetting("ImpressionNombreParent", $nb)) {
     	$error = true;
     }
-    $nb = is_numeric($_POST['nb_impression_eleve']) ? $_POST['nb_impression_eleve'] : "1";
+    $nb = isset($_POST['nb_impression_eleve']) ? (is_numeric($_POST['nb_impression_eleve']) ? $_POST['nb_impression_eleve'] : "1") : 1;
     if (!saveSetting("ImpressionNombreEleve", $nb)) {
     	$error = true;
     }
-   
+
     if (!$error) {
     	$msg = "Les paramètres ont bien été enregistrés.";
     }
@@ -98,20 +98,21 @@ if (!loadSettings()) {
     die("Erreur chargement settings");
 }
 
-echo "<br/>";
-echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, le texte diffère selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>";
+echo "<br />";
+echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, le texte diffère selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>\n";
 
 $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET["fiche"] : "personnels");
 
-echo "<table width=600>\n";
-echo "<tr>\n<td>\n";
+//echo "<table width=600>\n";
+//echo "<tr>\n<td>\n";
+echo "<div style='width: 600px;'>\n";
 
 switch ($fiche) {
 case 'personnels' :
 		$impression = getSettingValue("Impression");
 		$nb_impression = getSettingValue("ImpressionNombre");
-		
-		echo "<h3 class='gepi'><center>Fiche d'information : Personnels de l'établissement</center></h3>\n";
+
+		echo "<h3 class='gepi' align='center'>Fiche d'information : Personnels de l'établissement</h3>\n";
 		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'professeur', 'cpe', 'scolarite' .</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression' size='1'>\n";
@@ -120,10 +121,10 @@ case 'personnels' :
 			if ($nb_impression == $i) echo " SELECTED";
 			echo ">$i</option>\n";
 		}
-		echo "</select>\n"; 
-		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
-		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
-		echo "<br/><i>Mise en forme du message :</i>\n";
+		echo "</select>\n";
+		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
+		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_personnelFCK') ;
 		$oFCKeditor->BasePath = '../fckeditor/' ;
@@ -131,15 +132,15 @@ case 'personnels' :
 		$oFCKeditor->ToolbarSet = 'Basic' ;
 		$oFCKeditor->Value      = $impression ;
 		$oFCKeditor->Create() ;
-		
-		echo "</div>\n";
+
+		//echo "</div>\n";
     break;
-   
+
 case 'responsables' :
 		$impression_parent = getSettingValue("ImpressionFicheParent");
 		$nb_impression_parent = getSettingValue("ImpressionNombreParent");
 
-		echo "<h3 class='gepi'><center>Fiche d'information : Responsables</center></h3>\n";
+		echo "<h3 class='gepi' align='center'>Fiche d'information : Responsables</h3>\n";
 		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'responsable'.</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression_parent' size='1'>\n";
@@ -148,10 +149,10 @@ case 'responsables' :
 			if ($nb_impression_parent == $i) echo " SELECTED";
 			echo ">$i</option>\n";
 		}
-		echo "</select>\n"; 
-		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
-		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
-		echo "<br/><i>Mise en forme du message :</i>\n";
+		echo "</select>\n";
+		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
+		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_parentFCK') ;
 		$oFCKeditor->BasePath = '../fckeditor/' ;
@@ -159,16 +160,16 @@ case 'responsables' :
 		$oFCKeditor->ToolbarSet = 'Basic' ;
 		$oFCKeditor->Value      = $impression_parent ;
 		$oFCKeditor->Create() ;
-		
-		echo "</div>\n";		
+
+		//echo "</div>\n";
     break;
 
 case 'eleves' :
 
 		$impression_eleve = getSettingValue("ImpressionFicheEleve");
 		$nb_impression_eleve = getSettingValue("ImpressionNombreEleve");
-				
-		echo "<h3 class='gepi'><center>Fiche d'information : Elèves</center></h3>\n";
+
+		echo "<h3 class='gepi' align='center'>Fiche d'information : Elèves</h3>\n";
 		echo "<p>Cette fiche est imprimée lors de la création d'un nouvel utilisateur au statut 'eleve'.</p>\n";
 		echo "<p>Nombre de fiches à imprimer par page : \n";
 		echo "<select name='nb_impression_eleve' size='1'>\n";
@@ -177,10 +178,10 @@ case 'eleves' :
 			if ($nb_impression_eleve == $i) echo " SELECTED";
 			echo ">$i</option>\n";
 		}
-		echo "</select>\n"; 
-		echo "<INPUT TYPE=\"hidden\" NAME=\"fiche\" VALUE=\"$fiche\">\n";
-		echo "<br/>Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
-		echo "<br/><i>Mise en forme du message :</i>\n";
+		echo "</select>\n";
+		echo "<input type=\"hidden\" name=\"fiche\" value=\"$fiche\" />\n";
+		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
+		echo "<br /><i>Mise en forme du message :</i>\n";
 
 		$oFCKeditor = new FCKeditor('impression_eleveFCK') ;
 		$oFCKeditor->BasePath = '../fckeditor/' ;
@@ -188,22 +189,23 @@ case 'eleves' :
 		$oFCKeditor->ToolbarSet = 'Basic' ;
 		$oFCKeditor->Value      = $impression_eleve ;
 		$oFCKeditor->Create() ;
-		
-		echo "</div>\n";
+
+		//echo "</div>\n";
 	break;
 }
-echo "<input type=submit name=\"ok\" value='Enregistrer'>\n";
+echo "<input type='submit' name=\"ok\" value='Enregistrer' />\n";
 
-echo "<br/><br/>\n";
+echo "<br /><br />\n";
 echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >Aperçu de la fiche d'information</a></b>\n";
 echo "Attention : la mise en page des fiches est très différente à l'écran et à l'impression.";
 echo "Veillez à utiliser la fonction \"aperçu avant impression\" afin de vous rendre compte du résultat.\n";
 
 
-echo "</td>\n</tr>\n";
-echo "<table>\n";
+//echo "</td>\n</tr>\n";
+//echo "</table>\n";
+echo "</div>\n";
 
 ?>
 </form>
-<br/><br/>
+<br /><br />
 <?php require("../lib/footer.inc.php");?>

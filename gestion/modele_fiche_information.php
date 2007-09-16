@@ -36,17 +36,21 @@ $email = 'jbonnot@ici.fr';
 
 switch ($fiche) {
 case 'personnels' :
-		$impression = getSettingValue("Impression");
-		$nb_fiches = getSettingValue("ImpressionNombre");
-   break;
+	$impression = getSettingValue("Impression");
+	$nb_fiches = getSettingValue("ImpressionNombre");
+	break;
 case 'parents' :
-        $impression = getSettingValue("ImpressionFicheParent");
-		$nb_fiches = getSettingValue("ImpressionNombreParent");
-   break;
+	$impression = getSettingValue("ImpressionFicheParent");
+	$nb_fiches = getSettingValue("ImpressionNombreParent");
+	break;
+case 'responsables' :
+	$impression = getSettingValue("ImpressionFicheParent");
+	$nb_fiches = getSettingValue("ImpressionNombreParent");
+	break;
 case 'eleves' :
-		$impression = getSettingValue("ImpressionFicheEleve");
-		$nb_fiches = getSettingValue("ImpressionNombreEleve");
-   break;
+	$impression = getSettingValue("ImpressionFicheEleve");
+	$nb_fiches = getSettingValue("ImpressionNombreEleve");
+	break;
 }
 
 for ($i=0;$i<$nb_fiches;$i++) {
