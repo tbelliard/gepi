@@ -73,7 +73,7 @@ background: #6d6d83;
 }
 
 .tab_edt {
-	border: 1px solid black;
+	/*border: 1px solid black;*/
 	border-collapse: collapse;
 }
 
@@ -99,8 +99,8 @@ background: #6d6d83;
 	width: 100%;
 	height: 100%;
 	font-size: 0.6em;
-	cellpadding: 0px;
-	cellspacing: 0px;
+	padding: 0px;
+	border-spacing: 0px;
 	text-align: center;
 	border-collapse: collapse;
 }
