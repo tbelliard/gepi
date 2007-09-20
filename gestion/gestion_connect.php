@@ -235,7 +235,7 @@ echo "<table><tr>";
 echo "<td>Nombre maximum de tentatives de connexion infructueuses: </td>";
 echo "<td><input type=\"text\" name=\"nombre_tentatives_connexion\" value=\"".getSettingValue("nombre_tentatives_connexion")."\" size=\"20\" /></td>";
 echo "</tr><tr>";
-echo "<td>Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essai infructueux : </td>";
+echo "<td>Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essais infructueux : </td>";
 echo "<td><input type=\"text\" name=\"temps_compte_verrouille\" value=\"".getSettingValue("temps_compte_verrouille")."\" size=\"20\" /></td>";
 echo "</tr></table>";
 
