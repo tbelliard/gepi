@@ -576,9 +576,11 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k]="<td><center>-</center></td><td><center>-</center></td>\n";
 				}
 			} else {
+				//$mess[$k]="<td colspan='2' tric='1'";
 				$mess[$k]="<td colspan='2'";
+				//$mess[$k]="<td tric='1'";
 				if($periode_cn == $k){$mess[$k].=" bgcolor='$couleur_fond'";}
-				$mess[$k]."><center>-</center></td>\n";
+				$mess[$k].="><center>-</center></td>\n";
 			}
 
         }
