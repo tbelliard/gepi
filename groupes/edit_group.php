@@ -331,26 +331,44 @@ if ($mode == "groupe") {
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysql_num_rows($call_data);
     if ($nombre_lignes != 0) {
-        $i = 0;
-        while ($i < $nombre_lignes){
-            $id_classe_temp = mysql_result($call_data, $i, "id");
-            $classe = mysql_result($call_data, $i, "classe");
-            if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
-                echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
-                if (in_array($id_classe_temp, $reg_clazz)){
-			echo " CHECKED";
-		}
-                //echo " />$classe</option>";
-                echo " />$classe\n";
-                if (in_array($id_classe_temp, $reg_clazz)){
-			// Pour contrôler les suppressions de classes.
-			// On conserve la liste des classes précédemment cochées:
-			echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
-		}
+
+		$i = 0;
+
+        echo "<table width='100%'>\n";
+        echo "<tr valign='top' align='left'>\n";
+        echo "<td>\n";
+        $nb_class_par_colonne=round($nombre_lignes/3);
+		while ($i < $nombre_lignes){
+            if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+                echo "</td>\n";
+                echo "<td>\n";
             }
-        $i++;
-        }
-        echo "</p>\n";
+
+			$id_classe_temp = mysql_result($call_data, $i, "id");
+			$classe = mysql_result($call_data, $i, "classe");
+			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
+				//echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
+				echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
+				if (in_array($id_classe_temp, $reg_clazz)){
+					echo " CHECKED";
+				}
+				//echo " />$classe</option>";
+				echo " />$classe\n";
+				if (in_array($id_classe_temp, $reg_clazz)){
+					// Pour contrôler les suppressions de classes.
+					// On conserve la liste des classes précédemment cochées:
+					echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
+				}
+				echo "<br />\n";
+			}
+			$i++;
+		}
+        //echo "</p>\n";
+        echo "</td>\n";
+        echo "</tr>\n";
+        echo "</table>\n";
+
+
     } else {
         echo "<p>Aucune classe définie !</p>\n";
     }
