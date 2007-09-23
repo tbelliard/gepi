@@ -45,19 +45,83 @@ $titre_page = "Equipe pédagogique";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
+/*
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 echo "</p>\n";
+*/
 
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 //if(isset($_POST['id_classe'])){
 if(isset($id_classe)){
+	echo "<p class='bold'>";
+	//echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
+	//echo "</p>\n";
+
+
     if (!is_numeric($id_classe)){
+		echo "</p>\n";
+
         echo "<p><b>ERREUR</b>: Le numéro de classe choisi n'est pas valide.</p>\n";
         echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
     }
      else{
+		// =================================
+		// AJOUT: boireaus
+		//$sql="SELECT id, classe FROM classes ORDER BY classe";
+		if($_SESSION['statut']=='scolarite'){
+			//$sql="SELECT id,classe FROM classes ORDER BY classe";
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		}
+		if($_SESSION['statut']=='professeur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		}
+		if($_SESSION['statut']=='cpe'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		}
+		if($_SESSION['statut']=='administrateur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+
+		if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+		if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+		if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$id_class_prec=0;
+			$id_class_suiv=0;
+			$temoin_tmp=0;
+			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				if($lig_class_tmp->id==$id_classe){
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+						$id_class_suiv=$lig_class_tmp->id;
+					}
+					else{
+						$id_class_suiv=0;
+					}
+				}
+				if($temoin_tmp==0){
+					$id_class_prec=$lig_class_tmp->id;
+				}
+			}
+		}
+		// =================================
+
+		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+
+		echo "</p>\n";
+
         //$id_classe=$_POST["id_classe"];
         $classe=get_classe($id_classe);
 
@@ -215,6 +279,11 @@ if(isset($id_classe)){
     }
 }
 else{
+
+	echo "<p class='bold'>";
+	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "</p>\n";
+
     echo "<h3>Equipe pédagogique d'une classe</h3>\n";
     //echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
     echo "<p>Choix de la classe:</p>\n";
