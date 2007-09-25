@@ -323,7 +323,7 @@ if ($test_cahier_texte != 0) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Cahier de texte";
+$titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
@@ -350,7 +350,7 @@ echo "</SCRIPT></p>";
 $groups = get_groups_for_prof($_SESSION["login"]);
 if (empty($groups)) {
     echo "<br/><br/>";
-    echo "<b>Aucun cahier de texte n'est disponible.</b>";
+    echo "<b>Aucun cahier de textes n'est disponible.</b>";
     echo "<br/><br/>";
 }
 foreach($groups as $group) {
@@ -383,11 +383,11 @@ echo "</td>";
 
 // Deuxième cellule de la première ligne du tableau
 echo "<td align=\"center\">\n";
-echo "<p><span class='grand'>Cahier de texte</span>";
+echo "<p><span class='grand'>Cahier de textes</span>";
 if ($id_groupe != null) {
     echo "<span class='grand'><br />" . $current_group["description"] . " (" . $current_group["classlist_string"] . ")";
     echo "</span>\n";
-    // Test si le cahier de texte est partagé
+    // Test si le cahier de textes est partagé
     echo "<br />(";
     $str = null;
     foreach ($current_group["profs"]["users"] as $prof) {
@@ -397,7 +397,7 @@ if ($id_groupe != null) {
     echo $str . ")</p>";
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
-	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de texte en accès public</a>\n";
+	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n";
 	}
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
@@ -428,26 +428,26 @@ echo "</tr>\n</table>\n<hr />";
 // Si le choix du groupe n'a pas été fait, on affiche un texte d'explication et de mise en garde
 if (($id_groupe == null)) {
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
-       echo " <b>AVERTISSEMENT</b> : En raison du caractère personnel du contenu, l'accès au <a href=\"../public\">site de consultation publique du cahier de texte</a> est restreint.
-       Pour accéder aux cahiers de texte, le visiteur (élève, parent, ...) doit être en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
+       echo " <b>AVERTISSEMENT</b> : En raison du caractère personnel du contenu, l'accès au <a href=\"../public\">site de consultation publique du cahier de textes</a> est restreint.
+       Pour accéder aux cahiers de textes, le visiteur (élève, parent, ...) doit être en possession d'un nom d'utilisateur et d'un mot de passe valides.\n";
     } else {
-       echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accès à l'interface de consultation publique du cahier de texte est entièrement libre et n'est soumise à aucune restriction.</b>\n";
+       echo " <b><span style='font-weight:bold;'>AVERTISSEMENT</span> : l'accès à l'interface de consultation publique du cahier de textes est entièrement libre et n'est soumise à aucune restriction.</b>\n";
     }
-    echo "<br /><br />En utilisant le cahier de texte électronique de GEPI :
+    echo "<br /><br />En utilisant le cahier de textes électronique de GEPI :
     <ul>\n";
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
-		echo "<li>vous acceptez que vos nom, initiale de prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de texte</a>,</li>\n";
+		echo "<li>vous acceptez que vos nom, initiale de prénom, classes et matières enseignées apparaissent sur le <a href=\"../public\">site de consultation publique du cahier de textes</a>,</li>\n";
 	}
 	else{
-		echo "<li>l'accès au cahier de texte est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>),</li>\n";
+		echo "<li>l'accès au cahier de textes est limité aux utilisateurs disposant d'un compte (<i>ce peuvent être les élèves, les parents d'élèves si des comptes ont été créés pour eux, mais dans ce cas, les élèves n'ont accès qu'aux cahiers de textes des enseignements qu'ils suivent et les parents n'ont accès qu'aux cahiers de textes de leurs enfants</i>),</li>\n";
 	}
 
     echo "<li>vous acceptez que toutes les informations que vous fournissez dans ce module soient diffusées sur ce même site.</li>
-    <li>vous vous engagez à respecter les règles fixées concernant les cahiers de texte (Circulaire du 3 mai 1961 adressée aux recteurs - RLR, 550-1 b)</li>
+    <li>vous vous engagez à respecter les règles fixées concernant les cahiers de textes (Circulaire du 3 mai 1961 adressée aux recteurs - RLR, 550-1 b)</li>
     <li>vous vous engagez à ne pas faire figurer d'informations nominatives concernant les élèves</li>
     </ul>\n";
-    echo "<b>RAPPEL</b> : le cahier de texte constitue un outil de communication pour l'élève, les équipes disciplinaires
+    echo "<b>RAPPEL</b> : le cahier de textes constitue un outil de communication pour l'élève, les équipes disciplinaires
     et pluridisciplinaires, l'administration, le chef d'établissement, les corps d'inspection et les familles.
     Il relate le travail réalisé en classe :
     <ul>
@@ -699,7 +699,7 @@ echo "</td>";
 // Début de la colonne de droite
 echo "<td valign=\"top\">";
 $test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "')"));
-if ($test_ct_vide == 0) echo "<b><font color='red'>Actuellement ce cahier de texte est vide. Il n'est donc pas visible dans l'espace public.</font></b>\n";
+if ($test_ct_vide == 0) echo "<b><font color='red'>Actuellement ce cahier de textes est vide. Il n'est donc pas visible dans l'espace public.</font></b>\n";
 
 //
 // Affichage de la notice en modification
@@ -716,7 +716,7 @@ else
 $num_notice = NULL;
 $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
 // Si plusieurs notices pour ce jour, on numérote la notice en cours
-if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
+if (mysql_num_rows($appel_cahier__liste) > 1) {
     $cpt_compte_rendu_liste = "1";
     While ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
         if ($appel_cahier_texte_donne['id_ct'] == $id_ct) $num_notice = $cpt_compte_rendu_liste;
@@ -881,7 +881,7 @@ while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>
 
 <?php
 //
-// Suppression du cahier de texte jusqu'à une date choisie
+// Suppression du cahier de textes jusqu'à une date choisie
 //
 $last_date1 = sql_query1("SELECT date_ct FROM ct_entry WHERE (contenu != '' and id_groupe='" . $current_group["id"] . "' and date_ct != '') order by date_ct  LIMIT 1 ");
 $last_date2 = sql_query1("SELECT date_ct FROM ct_devoirs_entry WHERE (contenu != '' and id_groupe='" . $current_group["id"] . "' and date_ct != '') order by date_ct  LIMIT 1 ");
@@ -899,7 +899,7 @@ if ($last_date != "-1") {
 
     echo "Date de la notice la plus ancienne : ".strftime("%A %d %B %Y", $last_date)."<br /><br />";
 
-    echo "<b>Effacer toutes les données</b> (textes et documents joints) du cahier de texte avant la date ci-dessous :<br />";
+    echo "<b>Effacer toutes les données</b> (textes et documents joints) du cahier de textes avant la date ci-dessous :<br />";
     genDateSelector("sup_", $sday, $smonth, $syear,"more_years");
     echo "<input type='hidden' name='action' value='sup_serie' />";
     echo "<input type='hidden' name='id_groupe' value='".$current_group["id"]."' />";
