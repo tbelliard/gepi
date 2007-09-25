@@ -8,7 +8,7 @@
  */
 /* A REFAIRE COMME LES AUTRES ET AJOUTER LES DOIRTS DANS SQL ET MAJ.php */
 
-$titre_page = "Emploi du temps".$sous_titre;
+$titre_page = "Emploi du temps - Initialisation";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -115,10 +115,12 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		$rep_heuredeb_dec = '0';
 		}
 		// et la durée du cours et le type de semaine
-	$req_type_sem = mysql_query("SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 5");
+	$rep_duree = $tab[7] * 2;
+	$rep_typesemaine = $tab[8];
+	/*$req_type_sem = mysql_query("SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 5");
 	$rep_type_sem = mysql_fetch_array($req_type_sem);
 	$nbre_type_sem = mysql_num_rows($req_type_sem);
-	$rep_duree = $tab[7] * 2;
+
 		if ($tab[8] == "0" OR $tab[8] == "1" OR $tab[8] == "2") {
 			$rep_typesemaine = $tab[8];
 		}
@@ -127,7 +129,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 				$rep_typesemaine == $tab[8];
 			}
 			else $rep_typesemaine = "0";
-		}
+		}*/
 
 		// le champ modif_edt = 0 pour toutes les entrées
 		$rep_modifedt = '0';

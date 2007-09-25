@@ -73,8 +73,8 @@ background: #6d6d83;
 }
 
 .tab_edt {
-	/*border: 1px solid black;*/
-	border-collapse: collapse;
+	border: 1px solid black;
+	border-collapse: separate;
 }
 
 .tab_edt th {
@@ -87,7 +87,7 @@ background: #6d6d83;
 }
 
 .tab_edt td {
-	border: 1px solid black;
+	border: 1px solid white;
 	/*border: 1px solid #E9E9E4;*/
 	font: normal normal 9pt Verdana, sans-serif;
 	text-align: center;

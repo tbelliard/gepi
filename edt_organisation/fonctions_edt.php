@@ -231,6 +231,12 @@ function renvoie_duree($id_creneaux, $jour_semaine, $enseignement){
 	elseif ($reponse_duree == 6) {
 		$duree = "6";
 	}
+	elseif ($reponse_duree == 7) {
+		$duree = "7";
+	}
+	elseif ($reponse_duree == 8) {
+		$duree = "8";
+	}
 	elseif ($reponse_duree === 0 OR $reponse_duree == 0) {
 		$duree = "n";
 	}
@@ -577,9 +583,9 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 	}
 	// On récupère le type de semaine si besoin
-	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_groupe ='".$enseignement."'");
+	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
 	$rep_sem = mysql_fetch_array($req_sem);
-		if ($rep_sem["id_semaine"] == 0) {
+		if ($rep_sem["id_semaine"] == "0") {
 			$aff_sem = '';
 		}
 		else $aff_sem = ' - Sem.'.$rep_sem["id_semaine"];
