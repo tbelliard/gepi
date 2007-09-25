@@ -63,13 +63,14 @@ if (isset($_POST['h_max_imp_trombinoscopes'])) {
     if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
 }
 
+if (empty($_GET['sousrub']) and empty($_POST['sousrub'])) { $sousrub = ''; }
+   else { if (isset($_GET['sousrub'])) { $sousrub = $_GET['sousrub']; } if (isset($_POST['sousrub'])) { $sousrub = $_POST['sousrub']; } }
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 // header
 $titre_page = "Gestion du module trombinoscope";
 require_once("../lib/header.inc");
 ?>
-<!--link rel="stylesheet" href="../mod_absences/styles/mod_absences.css"-->
 
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
@@ -79,7 +80,6 @@ require_once("../lib/header.inc");
 <form action="trombinoscopes_admin.php" name="form1" method="post">
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked"; ?>  />&nbsp;Activer le module trombinoscope<br />
 <input type="radio" name="activer" value="n" <?php
-	//if (getSettingValue("active_module_trombinoscopes")=='n'){echo " checked";}
 	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked";}
 ?>  />&nbsp;Désactiver le module trombinoscope
 <input type="hidden" name="is_posted" value="1" />
@@ -107,5 +107,215 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 <input type="hidden" name="is_posted" value="1" />
 <div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>
 </form>
-</body>
-</html>
+
+<H2>Gestion des fichiers</H2>
+<ul>
+<li>Suppression
+ <ul>
+  <?php if( file_exists('../photos/personnels/') ) { ?>
+  <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vidé le dossier photos des personnels</a></li>
+  <?php } if( file_exists('../photos/eleves/') ) {?>
+  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vidé le dossier photos des élèves</a></li>
+  <?php } ?>
+ </ul>
+</li>
+<li>Gestion
+ <ul>
+  <?php if( file_exists('../photos/personnels/') ) { ?>
+  <li><a href="trombinoscopes_admin.php?sousrub=vp#liste">Voir les personnels n'ayant pas de photos</a></li>
+  <?php } if( file_exists('../photos/eleves/') ) {?>
+  <li><a href="trombinoscopes_admin.php?sousrub=ve#liste">Voir les élèves n'ayant pas de photos</a></li>
+  <?php } ?>
+ </ul>
+</li>
+</ul>
+
+
+<?php if ( $sousrub === 've' ) {
+
+	$cpt_eleve = '0';
+	$requete_liste_eleve = "SELECT * FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c WHERE e.login = jec.login AND jec.id_classe = c.id GROUP BY e.login ORDER BY id_classe, nom, prenom ASC";
+	$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+        while ( $donnee_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
+	{
+		$photo = '';
+		$eleve_login[$cpt_eleve] = $donnee_liste_eleve['login'];
+		$eleve_nom[$cpt_eleve] = $donnee_liste_eleve['nom'];
+		$eleve_prenom[$cpt_eleve] = $donnee_liste_eleve['prenom'];
+		$eleve_classe[$cpt_eleve] = $donnee_liste_eleve['nom_complet'];
+		$eleve_elenoet[$cpt_eleve] = $donnee_liste_eleve['elenoet'];
+		$photo = "../photos/eleves/".$eleve_elenoet[$cpt_eleve].".jpg";
+		if(file_exists($photo)) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
+		$cpt_eleve = $cpt_eleve + 1;
+	}
+
+	?><a name="liste"></a><h2>Liste des élèves n'ayant pas de photos</h2>
+	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	   <tr>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Classe</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Numéro élève</td>
+	   </tr>
+	<?php
+	$cpt_eleve = '0'; $classe_passe = ''; $i = '1';
+	while ( !empty($eleve_login[$cpt_eleve]) )
+	{
+	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+		if ( $eleve_photo[$cpt_eleve] === 'non' )
+		{
+			if ( $eleve_classe[$cpt_eleve] != $classe_passe and $cpt_eleve != '0' ) { ?><tr><td colspan="4">&nbsp;</td></tr><?php }
+		    ?><tr style="<?php echo $couleur_cellule; ?>">
+		        <td style="text-align: left;"><?php echo $eleve_nom[$cpt_eleve]; ?></td>
+		        <td style="text-align: left;"><?php echo $eleve_prenom[$cpt_eleve]; ?></td>
+		        <td style="text-align: center;"><?php echo $eleve_classe[$cpt_eleve]; ?></td>
+		        <td style="text-align: center;"><?php echo $eleve_elenoet[$cpt_eleve]; ?></td>
+		      </tr><?php
+		}
+		$classe_passe = $eleve_classe[$cpt_eleve];
+		$cpt_eleve = $cpt_eleve + 1;
+	}
+?>
+</table><br />
+<?php }
+
+if ( $sousrub === 'vp' ) {
+
+	$cpt_personnel = '0';
+	$requete_liste_personnel = "SELECT * FROM ".$prefix_base."utilisateurs u ORDER BY nom, prenom ASC";
+	$resultat_liste_personnel = mysql_query($requete_liste_personnel) or die('Erreur SQL !'.$requete_liste_personnel.'<br />'.mysql_error());
+        while ( $donnee_liste_personnel = mysql_fetch_array ($resultat_liste_personnel))
+	{
+		$photo = '';
+		$personnel_login[$cpt_personnel] = $donnee_liste_personnel['login'];
+		$personnel_nom[$cpt_personnel] = $donnee_liste_personnel['nom'];
+		$personnel_prenom[$cpt_personnel] = $donnee_liste_personnel['prenom'];
+		$codephoto = md5($personnel_login[$cpt_personnel].''.$personnel_nom[$cpt_personnel].' '.$personnel_prenom[$cpt_personnel]);
+		$photo = '../photos/personnels/'.$codephoto.'.jpg';
+		if(file_exists($photo)) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
+		$cpt_personnel = $cpt_personnel + 1;
+	}
+
+	?><a name="liste"></a><h2>Liste des personnels n'ayant pas de photos</h2>
+	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	   <tr>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
+	   </tr>
+	<?php
+	$cpt_personnel = '0'; $i = '1';
+	while ( !empty($personnel_login[$cpt_personnel]) )
+	{
+	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+		if ( $personnel_photo[$cpt_personnel] === 'non' )
+		{
+		    ?><tr style="<?php echo $couleur_cellule; ?>">
+		        <td style="text-align: left;"><?php echo $personnel_nom[$cpt_personnel]; ?></td>
+		        <td style="text-align: left;"><?php echo $personnel_prenom[$cpt_personnel]; ?></td>
+		      </tr><?php
+		}
+		$cpt_personnel = $cpt_personnel + 1;
+	}
+?>
+</table><br />
+<?php }
+
+if ( $sousrub === 'de' ) {
+
+	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité élève que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
+}
+
+if ( $sousrub === 'dp' ) {
+
+	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité personnel que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div><?php
+}
+
+
+if ( $sousrub === 'deok' ) {
+
+	// on liste les fichier du dossier photos/eleves
+	$folder = "../photos/eleves/";
+	$cpt_fichier = '0';
+	$dossier = opendir($folder);
+	while ($Fichier = readdir($dossier)) {
+	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+	    $nomFichier = $folder."".$Fichier;
+	    $fichier_sup[$cpt_fichier] = $nomFichier;
+	    $cpt_fichier = $cpt_fichier + 1;
+	  }
+	}
+	closedir($dossier);
+
+	//on supprime tout les fichiers
+	$cpt_fichier = '0';
+	?><a name="supprime"></a><h2>Liste des fichier concerné et leur états</h2>
+	  <table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	   <tr>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
+	   </tr><?php $i = '1';
+	while ( !empty($fichier_sup[$cpt_fichier]) )
+	{
+	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+		if(file_exists($fichier_sup[$cpt_fichier]))
+		{
+			@unlink($fichier_sup[$cpt_fichier]);
+
+			if(file_exists($fichier_sup[$cpt_fichier]))
+			{ $etat = 'erreur, vous n\'avez pas les droits pour supprimer ce fichier'; } else { $etat = 'supprimer'; }
+			?>
+		   <tr style="<?php echo $couleur_cellule; ?>">
+		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
+		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
+		   </tr><?php
+		}
+	  $cpt_fichier = $cpt_fichier + 1;
+	}
+
+}
+
+if ( $sousrub === 'dpok' ) {
+
+	// on liste les fichier du dossier photos/eleves
+	$folder = "../photos/personnels/";
+	$cpt_fichier = '0';
+	$dossier = opendir($folder);
+	while ($Fichier = readdir($dossier)) {
+	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+	    $nomFichier = $folder."".$Fichier;
+	    $fichier_sup[$cpt_fichier] = $nomFichier;
+	    $cpt_fichier = $cpt_fichier + 1;
+	  }
+	}
+	closedir($dossier);
+
+	//on supprime tout les fichiers
+	$cpt_fichier = '0';
+	?><a name="supprime"></a><h2>Liste des fichier concerné et leur états</h2>
+	  <table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	   <tr>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
+	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
+	   </tr><?php $i = '1';
+	while ( !empty($fichier_sup[$cpt_fichier]) )
+	{
+	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+		if(file_exists($fichier_sup[$cpt_fichier]))
+		{
+			@unlink($fichier_sup[$cpt_fichier]);
+
+			if(file_exists($fichier_sup[$cpt_fichier]))
+			{ $etat = 'erreur, vous n\'avez pas les droits pour supprimer ce fichier'; } else { $etat = 'supprimer'; }
+			?>
+		   <tr style="<?php echo $couleur_cellule; ?>">
+		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
+		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
+		   </tr><?php
+		}
+	  $cpt_fichier = $cpt_fichier + 1;
+	}
+
+}
+
+
+require("../lib/footer.inc.php"); ?>
