@@ -1206,7 +1206,8 @@ if(isset($eleve_login)){
 				echo "<tr valign='top'>\n";
 				echo "<td rowspan='2'>Le responsable légal 1 est: </td>\n";
 				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier l'association</a></td>\n";
+				//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier l'association</a></td>\n";
+				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier le responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
@@ -1272,7 +1273,8 @@ if(isset($eleve_login)){
 				echo "<tr valign='top'>\n";
 				echo "<td rowspan='2'>Le responsable légal 2 est: </td>\n";
 				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
+				//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
+				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier le responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
