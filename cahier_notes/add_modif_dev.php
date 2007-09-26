@@ -171,14 +171,15 @@ if (isset($_POST['ok'])) {
     }
 */
     if (isset($_POST['display_parents'])) {
-	if($_POST['display_parents']==1){
-		$display_parents=1;
-	}
-	else{
-		$display_parents=0;
-	}
+		if($_POST['display_parents']==1){
+			$display_parents=1;
+		}
+		else{
+			$display_parents=0;
+		}
     } else {
-        $display_parents=1;
+        //$display_parents=1;
+        $display_parents=0;
     }
 
     $reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
