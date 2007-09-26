@@ -171,7 +171,8 @@ if (count($tab_class_mat)!=0) {
 */
 
 // AJOUT Eric
-$groups = get_groups_for_prof($_SESSION["login"]);
+//$groups = get_groups_for_prof($_SESSION["login"]);
+$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 if (empty($groups)) {
 	echo "<br /><br />";
 } else {

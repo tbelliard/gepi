@@ -347,7 +347,8 @@ echo "</SCRIPT></p>";
 // **********************************************
 // Affichage des différents groupes du professeur
 // Récupération de toutes les infos sur le groupe
-$groups = get_groups_for_prof($_SESSION["login"]);
+//$groups = get_groups_for_prof($_SESSION["login"]);
+$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 if (empty($groups)) {
     echo "<br/><br/>";
     echo "<b>Aucun cahier de textes n'est disponible.</b>";
@@ -716,7 +717,8 @@ else
 $num_notice = NULL;
 $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
 // Si plusieurs notices pour ce jour, on numérote la notice en cours
-if (mysql_num_rows($appel_cahier__liste) > 1) {
+//if (mysql_num_rows($appel_cahier__liste) > 1) {
+if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
     $cpt_compte_rendu_liste = "1";
     While ( $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste)) {
         if ($appel_cahier_texte_donne['id_ct'] == $id_ct) $num_notice = $cpt_compte_rendu_liste;

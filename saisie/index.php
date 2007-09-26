@@ -125,7 +125,8 @@ if ($current_group) {
     if ($_SESSION["statut"] == "professeur") {
         echo "<p>Saisir les moyennes ou appréciations par classe :</p>\n";
 
-        $groups = get_groups_for_prof($_SESSION["login"]);
+        //$groups = get_groups_for_prof($_SESSION["login"]);
+		$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
         foreach ($groups as $group) {
 		//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
 		//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";

@@ -323,7 +323,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 	echo "</p>\n";
     $i++;
     }
-    echo "<H3>Visualisation uniquement : </H3>\n";
+    echo "<h3>Visualisation uniquement : </h3>\n";
     echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";
 
 }
@@ -333,7 +333,8 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
     <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
     <p>Accéder au carnet de notes : </p>
     <?php
-    $groups = get_groups_for_prof($_SESSION["login"]);
+    //$groups = get_groups_for_prof($_SESSION["login"]);
+    $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 
     if (empty($groups)) {
         echo "<br /><br />";
