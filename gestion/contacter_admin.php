@@ -59,7 +59,7 @@ case "envoi":
 $corps_message=$message;
 
 $message = "Demandeur : ".$nama."\n";
-$message = "Statut : ".$_SESSION['statut']."\n";
+$message .= "Statut : ".$_SESSION['statut']."\n";
 $message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
 
 $message.="\n".$corps_message."\n";
