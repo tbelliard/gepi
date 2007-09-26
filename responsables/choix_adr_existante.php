@@ -268,7 +268,7 @@ else{
 	echo "</form>\n";
 
 
-	echo "<hr width='200px' align='center' />\n";
+	echo "<hr width='20%' align='center' />\n";
 
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
@@ -337,7 +337,8 @@ else{
 	if(isset($chaine_recherche)){
 		$sql.=" WHERE $chaine_recherche";
 	}
-	echo " ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+	//echo " ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+	$sql.=" ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 	if($limit!='TOUS'){
 		$sql.=" LIMIT $debut,$limit";
 	}

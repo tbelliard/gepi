@@ -1220,10 +1220,12 @@ if(isset($eleve_login)){
 					echo "<td colspan='2'>\n";
 					echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
 					echo "</td>\n";
+					$adr_id_1er_resp="";
 				}
 				else{
 					echo "<td>\n";
 					$lig_adr=mysql_fetch_object($res_adr);
+					$adr_id_1er_resp=$lig_adr->adr_id;
 					if("$lig_adr->adr1"!=""){$chaine_adr1.="$lig_adr->adr1, ";}
 					if("$lig_adr->adr2"!=""){$chaine_adr1.="$lig_adr->adr2, ";}
 					if("$lig_adr->adr3"!=""){$chaine_adr1.="$lig_adr->adr3, ";}
@@ -1291,14 +1293,26 @@ if(isset($eleve_login)){
 				else{
 					echo "<td>\n";
 					$lig_adr=mysql_fetch_object($res_adr);
-					if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
-					if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
-					if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
-					if("$lig_adr->adr4"!=""){$chaine_adr2.="$lig_adr->adr4, ";}
-					if("$lig_adr->cp"!=""){$chaine_adr2.="$lig_adr->cp, ";}
-					if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
-					if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
-					echo "$chaine_adr2";
+
+					if(($lig_adr->adr_id!="")&&($lig_adr->adr_id!=$adr_id_1er_resp)){
+						if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
+						if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
+						if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
+						if("$lig_adr->adr4"!=""){$chaine_adr2.="$lig_adr->adr4, ";}
+						if("$lig_adr->cp"!=""){$chaine_adr2.="$lig_adr->cp, ";}
+						if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
+						if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
+
+						if("$chaine_adr1"=="$chaine_adr2"){
+							echo "$chaine_adr2<br />\n<span style='color: red;'>Les adresses sont identiques, mais sont enregistrées sous deux identifiants différents (<i>$adr_id_1er_resp et $lig_adr->adr_id</i>); vous devriez modifier l'adresse pour pointer vers le même identifiant d'adresse.</span>";
+						}
+						else{
+							echo "$chaine_adr2";
+						}
+					}
+					else{
+						echo "Même adresse.";
+					}
 					echo "</td>\n";
 					echo "<td>\n";
 					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Modifier l'adresse du responsable</a>\n";
