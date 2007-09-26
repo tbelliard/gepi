@@ -299,19 +299,19 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
 
 <?php
 // Affichage du tableau
-echo "<table border=1 cellpadding=3>";
-echo "<tr><td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></td>";
-echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></td>";
-echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></td>";
-echo "<td><p class=small><b>matière(s) si professeur</b></p></td>";
-echo "<td><p class=small><b>classe(s)</b></p></td>";
-echo "<td><p class=small><b>suivi</b></p></td>";
-echo "<td><p class=small><b>supprimer</b></p></td>";
-echo "<td><p class=small><b>imprimer fiche bienvenue</b></p></td>";
+echo "<table border=1 cellpadding=3>\n";
+echo "<tr><td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></td>\n";
+echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></td>\n";
+echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></td>\n";
+echo "<td><p class=small><b>matière(s) si professeur</b></p></td>\n";
+echo "<td><p class=small><b>classe(s)</b></p></td>\n";
+echo "<td><p class=small><b>suivi</b></p></td>\n";
+echo "<td><p class=small><b>supprimer</b></p></td>\n";
+echo "<td><p class=small><b>imprimer fiche bienvenue</b></p></td>\n";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
-    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>";
+    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
     }
-echo "</tr>";
+echo "</tr>\n";
 $calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 		"statut = 'administrateur' OR " .
 		"statut = 'professeur' OR " .
@@ -403,7 +403,7 @@ while ($i < $nombreligne){
     // MODIF: boireaus
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&id_groupe=".$user_classe["group_id"] . "'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;retour=oui'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
-        $col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
+        $col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />\n";
     //======================================
         $k++;
     }
@@ -417,7 +417,7 @@ while ($i < $nombreligne){
     while ($k < $nb_classes_suivies) {
         $user_classe_suivie_id = mysql_result($call_suivi, $k, "id_classe");
         $user_classe_suivie = mysql_result(mysql_query("SELECT classe FROM classes WHERE id='$user_classe_suivie_id'"),0);
-        $col[$i][6]=$col[$i][6]."$user_classe_suivie<br />";
+        $col[$i][6]=$col[$i][6]."$user_classe_suivie<br />\n";
         $k++;
     }
     if ($col[$i][6]=='') {$col[$i][6] = "&nbsp;";}
@@ -430,41 +430,41 @@ while ($i < $nombreligne){
         $bgcolor = '#A9A9A9';
     }
 
-    echo "<tr><td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][1]}</span></p></td>";
+    echo "<tr><td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][1]}</span></p></td>\n";
 	if ($col[$i][7] == "professeur") {
-		echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>";
+		echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
 		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
-		echo "</td>";
+		echo "</td>\n";
 	} else {
-	  echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>";
+	  echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
 	}
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][3]}</span></p></td>";
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][4]}</span></p></td>";
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][5]}</span></p></td>";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][3]}</span></p></td>\n";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][4]}</span></p></td>\n";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][5]}</span></p></td>\n";
     // Affichage de la classe suivie
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][6]}</span></p></td>";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][6]}</span></p></td>\n";
     // Affichage du lien 'supprimer'
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
     // Affichage du lien pour l'impression des paramètres
-    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>";
+    echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
     // Affichage du téléchargement pour la photo si le module trombi est activé
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
         	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php $codephoto = md5($col[$i][1].''.$col[$i][2]); echo $codephoto; ?>" /><?php $photo = '../photos/personnels/'.$codephoto.'.jpg'; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
         <?php
 		}
     // Fin de la ligne courante
-    echo "</tr>";
+    echo "</tr>\n";
     }
     $i++;
 }
-echo "</table>";
+echo "</table>\n";
 // pour le module trombinoscope
    // pour le trombinoscope on met la taille maximal d'une photos
    ?><input type="hidden" name="MAX_FILE_SIZE" value="150000" />
 	<input type="hidden" name="action" value="depot_photo" />
 	<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" /><?php
-echo  "</form>";
+echo  "</form>\n";
 // fin module trombinoscope
 
 } // Fin : si $mode == personnels
