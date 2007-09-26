@@ -1262,13 +1262,16 @@ function dragStop(event) {
 												//              Ca y est, il a été ajouté.
 												// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
 												echo "<td>";
+												// ERREUR: Le code_commune_insee est différent du code postal
+												/*
 												if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
 													echo $eleves[$i]["scolarite_an_dernier"]["code_commune_insee"];
 													$chaine.=$eleves[$i]["scolarite_an_dernier"]["code_commune_insee"];
 												}
 												else{
+												*/
 													echo "&nbsp;";
-												}
+												//}
 												echo "</td>\n";
 												$chaine.=";";
 
