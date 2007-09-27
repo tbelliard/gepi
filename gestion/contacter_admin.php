@@ -60,7 +60,11 @@ $corps_message=$message;
 
 $message = "Demandeur : ".$nama."\n";
 $message .= "Statut : ".$_SESSION['statut']."\n";
-$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
+// ===============
+// Modif 20070927:
+//$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
+$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n";
+// ===============
 
 $message.="\n".$corps_message."\n";
 
@@ -69,6 +73,11 @@ if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
 } else {
 	$message .= "\n\nMode de réponse : par email (si spécifié)";
 }
+
+// ===============
+// Ajout 20070927:
+unslashes($message);
+// ===============
 
 $envoi = mail(getSettingValue("gepiAdminAdress"),
     "Demande d'aide dans GEPI",
