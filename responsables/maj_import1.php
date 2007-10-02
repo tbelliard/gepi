@@ -950,10 +950,46 @@ else{
 									$adresse[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
 								}
 
+
+								/*
 								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
 								//echo "$sql<br />\n";
 								$res1=mysql_query($sql);
 								if(mysql_num_rows($res1)==0){
+									$adr_new[]=$affiche[0];
+										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
+								}
+								else{
+									$lig=mysql_fetch_object($res1);
+									if((stripslashes($lig->adr1)!=stripslashes($affiche[1]))||
+									(stripslashes($lig->adr2)!=stripslashes($affiche[2]))||
+									(stripslashes($lig->adr3)!=stripslashes($affiche[3]))||
+									(stripslashes($lig->adr4)!=stripslashes($affiche[4]))||
+									(stripslashes($lig->cp)!=stripslashes($affiche[5]))||
+									(stripslashes($lig->pays)!=stripslashes($affiche[6]))||
+									(stripslashes($lig->commune)!=stripslashes($affiche[7]))){
+										$adr_modif[]=$affiche[0];
+										//echo "Modification de l'adresse n°$affiche[0]<br />\n";
+									}
+								}
+								*/
+
+								$temoin_nouvelle_adresse="n";
+								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
+								//echo "$sql<br />\n";
+								$res1=mysql_query($sql);
+								if(mysql_num_rows($res1)==0){
+									$sql="SELECT * FROM resp_pers WHERE (adr_id='$affiche[0]')";
+									//echo "$sql<br />\n";
+									$res2=mysql_query($sql);
+									if(mysql_num_rows($res2)==0){
+										$adr_new[]=$affiche[0];
+										$temoin_nouvelle_adresse="y";
+										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
+									}
+								}
+
+								if($temoin_nouvelle_adresse=="y"){
 									$adr_new[]=$affiche[0];
 										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
 								}
