@@ -550,7 +550,7 @@ if (!isset($is_posted)) {
 
 
 	if(($nb_reg_no1==0)&&($nb_reg_no2==0)&&($nb_reg_no3==0)){
-		echo "<p>Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
+		echo "<p>Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troisième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
 		echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
 		echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
 	}
