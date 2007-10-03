@@ -244,7 +244,8 @@ if (isset($is_posted )) {
 								if($non_def!='yes'){
 									echo "<input type='hidden' name='$reg_app' value=\"$data_app\" />";
 								}
-								echo "</td>\n</tr>\n";
+								//echo "</td>\n</tr>\n";
+								echo "</td>\n";
                             break;
                         }
                     }
