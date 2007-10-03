@@ -218,7 +218,7 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 	if(!empty($heure_retard_eleve[$total])) {
 		 $d_heure_absence_eleve_ins = $heure_retard_eleve[$total];
 		 $a_heure_absence_eleve_ins = '';
-	 } else { 
+	 } else {
 		 $d_heure_absence_eleve_ins = $d_heure_absence_eleve;
 		 $a_heure_absence_eleve_ins = $a_heure_absence_eleve;
 		}
@@ -250,7 +250,7 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 
 
   // si l'utilisateur demande l'enregistrement dans l'emploi du temps
-	if($edt_enregistrement==='1') 
+	if($edt_enregistrement==='1')
 	{
 			//connaitre le jour de la date sélectionné
 			$jour_semaine = jour_semaine($d_date_absence_eleve);
@@ -269,7 +269,7 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 		}
 	}
 
- $datej = date('Y-m-d'); 
+ $datej = date('Y-m-d');
  $annee_en_cours_t=annee_en_cours_t($datej);
  $datejour = date('d/m/Y');
  $type_de_semaine = semaine_type($datejour);
@@ -340,9 +340,9 @@ echo "</p>";
 	// on vérifie si un emploi du temps pour ce prof n'est pas disponible
 //	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND datedebut_edt_classe <= "'.$datej.'" AND datefin_edt_classe >= "'.$datej.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
 	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
 	// on fait une boucle qui va faire un tour pour chaque enregistrement
-	while($data = mysql_fetch_array($req)) 
+	while($data = mysql_fetch_array($req))
 	{
 		$d_heure_absence_eleve = $data['heuredebut_edt_classe'];
 		$a_heure_absence_eleve = $data['heurefin_edt_classe'];
@@ -360,7 +360,7 @@ if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") {
 	  <?php if(empty($d_date_absence_eleve)) { $d_date_absence_eleve=date('d/m/Y'); } ?>
           <input size="10" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
           <br />
-          De 
+          De
           <select name="d_heure_absence_eleve">
           <?php
           $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
@@ -426,8 +426,8 @@ foreach($groups as $group) {
 
 <?php
 // Deuxième étape
-if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
-$current_groupe = get_group($classe);	
+if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) {
+$current_groupe = get_group($classe);
 ?>
 
 <div style="text-align: center; margin: auto; width: 550px;">
@@ -467,26 +467,19 @@ $current_groupe = get_group($classe);
             <?php
             $pass='0';
             $requete = "SELECT * FROM absences_eleves
-
-            WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
-
-
-	    AND
-            (( d_date_absence_eleve < '".date_sql($d_date_absence_eleve)."' and
-              a_date_absence_eleve > '".date_sql($d_date_absence_eleve)."')
-            OR
-            ( d_date_absence_eleve = '".date_sql($d_date_absence_eleve)."' and
-              a_date_absence_eleve = '".date_sql($d_date_absence_eleve)."')
-
-
-	    AND
-            ( d_heure_absence_eleve < '".$d_heure_absence_eleve."' and
-              a_heure_absence_eleve > '".$a_heure_absence_eleve."')
-            OR
-            ( d_heure_absence_eleve = '".$d_heure_absence_eleve."' and
-              a_heure_absence_eleve = '".$a_heure_absence_eleve."'))
-            AND type_absence_eleve='A'
-            ";
+			         WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
+			  	   AND type_absence_eleve = 'A'
+				   AND
+				   ( '".date_sql($d_date_absence_eleve)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+				     OR d_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+				     OR a_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+				   )
+				   AND
+				   ( '".$d_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+				     OR '".$a_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+				     OR d_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+				     OR a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+				   )";
             $query = mysql_query($requete);
             $cpt_absences = mysql_num_rows($query);
             if($cpt_absences != '0') { $pass = '1'; }
@@ -497,7 +490,20 @@ $current_groupe = get_group($classe);
             <td style="width: 100px; text-align: center;">
             <?php
            $pass='0';
-           $requete_retards = "SELECT count(*) FROM absences_eleves WHERE eleve_absence_eleve='".$data_liste_eleve['login']."' AND d_date_absence_eleve <= '".date_sql($d_date_absence_eleve)."' AND  a_date_absence_eleve >= '".date_sql($d_date_absence_eleve)."' AND d_heure_absence_eleve >= '".$d_heure_absence_eleve."' AND d_heure_absence_eleve <= '".$a_heure_absence_eleve."' AND type_absence_eleve = 'R'";
+           $requete_retards = "SELECT count(*) FROM absences_eleves
+						WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
+						AND type_absence_eleve = 'R'
+						AND
+						( '".date_sql($d_date_absence_eleve)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+					       	   OR d_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+					       	   OR a_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+						)
+						AND
+						( '".$d_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+					          OR '".$a_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+					          OR d_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+					          OR a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+				      		)";
            $cpt_retards = mysql_result(mysql_query($requete_retards),0);
            if($cpt_retards != '0') { $pass = '1'; }
            if ($pass === '0') {
