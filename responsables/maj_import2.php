@@ -3422,6 +3422,8 @@ else{
 
 			break;
 		case 14:
+			// DEBUG:
+			//echo "step=$step<br />";
 
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
@@ -3441,6 +3443,7 @@ else{
 
 				echo "<p>Parcours de la tranche <b>1</b>.</p>\n";
 
+				// On construit une barre de 100 cellules pour faire les changements de couleurs au fur et à mesure du traitement et donner une indication de progression:
 				echo "<table align='center' style='border: 1px solid black;'>\n";
 				echo "<tr>\n";
 				for($i=0;$i<100;$i++){
@@ -3480,9 +3483,12 @@ else{
 				while($lig=mysql_fetch_object($res1)){
 					//$time1=time();
 					// Est-ce une nouvelle adresse responsable?
+					$sql="SELECT 1=1 FROM resp_adr ra WHERE ra.adr_id='$lig->adr_id'";
+					$test1=mysql_query($sql);
+
 					$sql="SELECT 1=1 FROM resp_adr ra, temp_resp_adr_import t WHERE ra.adr_id=t.adr_id AND t.adr_id='$lig->adr_id'";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0){
+					$test2=mysql_query($sql);
+					if((mysql_num_rows($test1)==0)||(mysql_num_rows($test2)==0)){
 						// On ne va considérer une nouvelle adresse responsable que si la personne est associée à un élève effectivement accepté dans la table 'eleves':
 						$sql="SELECT 1=1 FROM temp_resp_adr_import tra,
 												temp_resp_pers_import trp,
@@ -3501,7 +3507,7 @@ else{
 							$cpt++;
 
 							// Peut-être mettre:
-							//$tab_adr_id_diff[]=$lig->adr_id;
+							$tab_adr_id_diff[]=$lig->adr_id;
 							// Est-ce qu'il peut arriver qu'on ne fasse pas un tour dans la boucle de formulaire...
 						}
 						/*
@@ -3511,6 +3517,9 @@ else{
 						*/
 					}
 					else{
+						// Ce n'est pas une nouvelle adresse.
+						// Il faut comparer l'entrée de temp_resp_adr_import avec ce qui se trouve dans resp_adr...
+
 						//echo "<span style='color:green;'> $lig->adr_id </span>";
 						//$tab_adr_id[]=$lig->adr_id;
 						$tab_adr_id[]=$lig->adr_id;
@@ -3536,10 +3545,12 @@ else{
 
 				flush();
 
-				if($chaine_nouveaux==1){
+				//if($chaine_nouveaux==1){
+				if($cpt==1){
 					echo "<p>L'identifiant ADR_ID d'une nouvelle adresse responsable a été trouvé: $chaine_nouveaux</p>\n";
 				}
-				elseif($chaine_nouveaux>1){
+				//elseif($chaine_nouveaux>1){
+				elseif($cpt>1){
 					echo "<p>Les identifiants ADR_ID de $cpt nouvelles adresses responsables ont été trouvés: $chaine_nouveaux</p>\n";
 				}
 
@@ -3574,18 +3585,37 @@ else{
 
 
 			// On construit la chaine des 20 adr_ID retenus pour la requête à venir:
+			$info_nouvelles_adresses="";
 			$chaine="";
 			for($i=0;$i<min(20,count($tab_adr_id));$i++){
 				if($i>0){$chaine.=" OR ";}
 				$chaine.="ra.adr_id='$tab_adr_id[$i]'";
+
+				$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$tab_adr_id[$i]';";
+				// DEBUG:
+				//echo "$sql<br />\n";
+				$res_nouvelle_adr=mysql_query($sql);
+				if(mysql_num_rows($res_nouvelle_adr)==0){
+					// Cet identifiant d'adresse n'existait pas.
+					// DEBUG:
+					//echo "<input type='text' name='tab_adr_id_diff[]' value='".$tab_adr_id[$i]."' />\n";
+					echo "<input type='hidden' name='tab_adr_id_diff[]' value='".$tab_adr_id[$i]."' />\n";
+					$tab_adr_id_diff[]=$tab_adr_id[$i];
+					if($info_nouvelles_adresses!=""){$info_nouvelles_adresses.=", ";}
+					$info_nouvelles_adresses.=$tab_adr_id[$i];
+				}
 			}
 
 			//echo "\$chaine=$chaine<br />\n";
 
 			// Liste des adr_id restant à parcourir:
+			// DEBUG:
+			//echo "<p>Liste des adr_id restant à parcourir:<br />";
 			for($i=20;$i<count($tab_adr_id);$i++){
 				//echo "$i: ";
+				// DEBUG:
 				echo "<input type='hidden' name='tab_adr_id[]' value='$tab_adr_id[$i]' />\n";
+				//echo "<input type='text' name='tab_adr_id[]' value='$tab_adr_id[$i]' />\n";
 				//echo "<br />\n";
 			}
 
@@ -3622,12 +3652,22 @@ else{
 				echo $chaine_adr;
 			}
 
+			if($info_nouvelles_adresses!=""){
+				echo "<p>Une ou des nouvelles adresses ont été trouvées.<br />\n";
+				echo "En voici le(s) adr_id: ";
+				echo $info_nouvelles_adresses;
+				echo "</p>\n";
+			}
+
 			if(!isset($parcours_diff)){$parcours_diff=1;}
 			$parcours_diff++;
 			//echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
 
+			// DEBUG:
+			//echo "count(\$tab_adr_id)=".count($tab_adr_id)."<br />\n";
+
 			if(count($tab_adr_id)>20){
-				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
+				echo "<input type='text' name='parcours_diff' value='$parcours_diff' />\n";
 				echo "<input type='hidden' name='step' value='14' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
@@ -3658,6 +3698,9 @@ else{
 					$insert=mysql_query($sql);
 				}
 				*/
+
+				// DEBUG:
+				//echo "count(\$tab_adr_id_diff)=".count($tab_adr_id_diff)."<br />\n";
 
 				for($i=0;$i<count($tab_adr_id_diff);$i++){
 					$sql="SELECT DISTINCT pers_id FROM resp_pers WHERE adr_id='$tab_adr_id_diff[$i]'";
