@@ -234,6 +234,7 @@ echo '
 				<option value="6">3 heures</option>
 				<option value="7">3.5 heures</option>
 				<option value="8">4 heures</option>
+				<option value="0.5">1/2 heure</option>
 			</select>
 		</td>
 		<td>
@@ -326,7 +327,7 @@ else {
 
 
 	// Vérification que la salle est libre à ce jour cette heure
-	$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE id_salle ='".$login_salle."' AND jour_semaine = '".$ch_jour_semaine."' AND id_definie_periode = '".$ch_heure."' AND (id_semaine = '0' OR id_semaine = ".$choix_semaine.")") or die ('Erreur dans la verif salle');
+	$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE id_salle ='".$login_salle."' AND jour_semaine = '".$ch_jour_semaine."' AND id_definie_periode = '".$ch_heure."' AND (id_semaine = '0' OR id_semaine = '".$choix_semaine."')") or die ('Erreur dans la verif salle');
 	$rep_verif_s = mysql_fetch_array($verif_salle);
 
 	$nbre_verif_s = mysql_num_rows($verif_salle);
@@ -338,7 +339,7 @@ else {
 		}
 
 	// Vérification que ce prof n'a pas déjà cours à ce moment là
-	$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$ch_jour_semaine."' AND edt_cours.id_definie_periode='".$ch_heure."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$choix_prof."' AND edt_cours.heuredeb_dec = '".$heure_debut."'") or die('erreur verif prof !');
+	$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$ch_jour_semaine."' AND edt_cours.id_definie_periode='".$ch_heure."' AND edt_cours.id_semaine = '".$choix_semaine."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$choix_prof."' AND edt_cours.heuredeb_dec = '".$heure_debut."'") or die('erreur verif prof !');
 	$rep_verif_prof = mysql_fetch_array($verif_prof);
 	$nbre_verif_prof = mysql_num_rows($verif_prof);
 		if ($nbre_verif_prof != 0) {
@@ -357,7 +358,7 @@ else {
 	if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
 		$insert_edt = mysql_query("INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt)
 					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
-	// SI ce cours commence au milieu d'un créneau (0.5) et dure 1h30 (duree = 3), il faut créer son doublon avec une durée de 0
+	/*/ SI ce cours commence au milieu d'un créneau (0.5) et dure 1h30 (duree = 3), il faut créer son doublon avec une durée de 0
 		if ($duree == 3 AND $heure_debut == "0.5") {
 
 				$cherche_creneaux = array();
@@ -366,7 +367,7 @@ else {
 				$heure_suivante = $cherche_creneaux[$ch_index+1];
 				$insert_edt = mysql_query("INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt)
 					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$heure_suivante."', '0', '0', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement n°2 !');
-		}
+		}*/
 	// et on affiche les infos sur le cours enregistré
 		$tab_infos = get_group($enseignement);
 				$contenu="";
