@@ -206,6 +206,29 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 </p>
 <p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p>
 <?php
+
+
+echo "<script type='text/javascript'>
+
+function CocheLigne(ki) {
+	for (var i=1;i<$nb_periode;i++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = true;
+		}
+	}
+}
+
+function DecocheLigne(ki) {
+	for (var i=1;i<$nb_periode;i++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = false;
+		}
+	}
+}
+
+</script>
+";
+
 $call_eleves = mysql_query("SELECT DISTINCT j.login FROM j_eleves_classes j, eleves e WHERE (j.id_classe = '$id_classe' and e.login = j.login) ORDER BY e.nom, e.prenom");
 $nombreligne = mysql_num_rows($call_eleves);
 if ($nombreligne == '0') {
@@ -220,9 +243,15 @@ if ($nombreligne == '0') {
 	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>CPE responsable</p></td>\n";
     $i="1";
     while ($i < $nb_periode) {
-        echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>\n";
+        //echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>\n";
+        echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
+
+		echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+
+		echo "</p></td>\n";
         $i++;
     }
+	echo "<td>&nbsp;</td>\n";
     echo "</tr>\n";
 	$alt=1;
     While ($k < $nombreligne) {
@@ -263,16 +292,16 @@ if ($nombreligne == '0') {
 
 		echo "<table style='border-collaspe: collapse;'>\n";
 		echo "<tr>\n";
-		echo "<td style='text-align: center;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
+		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
         if ($regime == 'i-e') {echo " checked";}
         echo " /></td>\n";
-		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
+		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
         if ($regime == 'int.') {echo " checked";}
         echo " /></td>\n";
-		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
+		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
         if ($regime == 'd/p') {echo " checked";}
         echo " /></td>\n";
-		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
+		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
         if ($regime == 'ext.') {echo " checked";}
         //echo " /></p></td><td><p><center><input type='checkbox' name='$doublant_login' value='yes'";
         echo " /></td></tr></table>\n";
@@ -334,7 +363,7 @@ if ($nombreligne == '0') {
             $nb_ligne = mysql_num_rows($call_trim);
             if ($nb_ligne != 0) {
                 //echo "<td><p><center><input type='checkbox' name='$delete_login[$i]' value='yes' /></center></p></td>";
-                echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' value='yes' /></p></td>\n";
+                echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
             } else {
                 $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
                 $nom_classe = @mysql_result($call_classe, 0, "classe");
@@ -343,12 +372,36 @@ if ($nombreligne == '0') {
             }
             $i++;
         }
+
+		echo "<td><a href=\"javascript:CocheLigne(".$k.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> <a href=\"javascript:DecocheLigne(".$k.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>";
+
         echo "</tr>\n";
         $k++;
     }
     echo "</table>\n";
     echo "<center><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></center>\n";
 	echo "<br />\n";
+
+	echo "<script type='text/javascript'>
+
+function CocheColonne(i) {
+	for (var ki=0;ki<$k;ki++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = true;
+		}
+	}
+}
+
+function DecocheColonne(i) {
+	for (var ki=0;ki<$k;ki++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = false;
+		}
+	}
+}
+
+</script>
+";
 
 }
 
