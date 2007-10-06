@@ -241,7 +241,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 echo "<p>Cochez les élèves qui suivent cet enseignement, pour chaque période : </p>\n";
 
-echo "<table border=1>\n";
+echo "<table border='1' class='boireaus'>\n";
 echo "<tr>";
 echo "<td><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=nom'>Nom/Prénom</a></td>";
 if ($multiclasses) {
@@ -336,6 +336,7 @@ $prev_classe = 0;
 $new_classe = 0;
 $empty_td = false;
 
+$alt=1;
 foreach($total_eleves as $e_login) {
 
 	//$new_classe = $eleves_list["users"][$e_login]["id_classe"];
@@ -347,7 +348,7 @@ foreach($total_eleves as $e_login) {
 	}
 
 	if ($new_classe != $prev_classe and $order_by == "classe" and $multiclasses) {
-	echo "<tr style='background-color: #CCCCCC;'>\n";
+		echo "<tr style='background-color: #CCCCCC;'>\n";
 		echo "<td colspan=3 style='padding: 5px; font-weight: bold;'>";
 		echo "Classe de : " . $eleves_list["users"][$e_login]["classe"];
 		echo "</td>\n";
@@ -359,7 +360,8 @@ foreach($total_eleves as $e_login) {
 		$prev_classe = $new_classe;
 	}
 
-	echo "<tr>";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>";
 	if (array_key_exists($e_login, $eleves_list["users"])){
 			echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
 				$eleves_list["users"][$e_login]["nom"] .
