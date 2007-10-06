@@ -285,7 +285,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
 				if ($count1 != "0") {
-					$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
+					//$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
+					$msg .= "Erreur : un élève ayant le même numéro interne Sconet (elenoet) existe déjà.<br />";
 					$ok = 'no';
 				}
 			}
@@ -569,14 +570,17 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						}
 					}
 					elseif($nb_elenoet==0){
-							$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+							//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+							$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
 					}
 					else{
-						$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
+						//$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
+						$msg.="Le numéro interne Sconet (elenoet) est commun à plusieurs élèves. C'est une anomalie.";
 					}
 				}
 				else{
-					$msg.="Le numéro GEP proposé contient des caractères non numériques.";
+					//$msg.="Le numéro GEP proposé contient des caractères non numériques.";
+					$msg.="Le numéro interne Sconet (elenoet) proposé contient des caractères non numériques.";
 				}
 			}
 		}
@@ -1060,13 +1064,14 @@ echo "<tr>\n";
 <tr>
     <td>Identifiant National : </td>
     <?php
-    echo "<td><input type=text name='reg_no_nat' size=20 ";
+    echo "<td><input type='text' name='reg_no_nat' size='20' ";
     if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
     echo " /></td>\n";
     ?>
 </tr>
 <?php
-    echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+    echo "<tr><td>Numéro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
     echo " /></td>\n";
 
@@ -1119,7 +1124,8 @@ echo "</table>\n";
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
+   //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
+   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (<i>elenoet</i>). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
@@ -1127,7 +1133,7 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 		$lig_tmp=mysql_fetch_object($test_sconet);
 		if($lig_tmp->value=='1'){
 			echo "<br />";
-			echo "<font color=red>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
+			echo "<font color='red'>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
 		}
 	}
 }

@@ -133,7 +133,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
 				if ($count1 != "0") {
-					$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
+					//$msg .= "Erreur : un élève ayant le même numéro GEP existe déjà.<br />";
+					$msg .= "Erreur : un élève ayant le même numéro interne Sconet (elenoet) existe déjà.<br />";
 					$ok = 'no';
 				}
 			}
@@ -679,15 +680,16 @@ echo "<tr>\n";
 <tr>
     <td>Identifiant National : </td>
     <?php
-    echo "<td><input type=text name='reg_no_nat' size=20 ";
+    echo "<td><input type='text' name='reg_no_nat' size='20' ";
     if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
-    echo " /></td>";
+    echo " /></td>\n";
     ?>
 </tr>
 <?php
-    echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+    echo "<tr><td>Numéro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-    echo " /></td>";
+    echo " /></td>\n";
 
 
     ?>
@@ -701,14 +703,15 @@ if(isset($reg_no_gep)){
 		echo "<td>\n";
 		$dimphoto=redimensionne_image($photo);
 		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
-		echo "</td>\n";
+		echo "\n</td>\n";
 	}
 }
 echo "</tr>\n";
 echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
+   //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
+   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (elenoet). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
