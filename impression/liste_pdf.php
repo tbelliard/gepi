@@ -174,11 +174,13 @@ if (!(is_numeric($id_periode))) {
 
 $nb_pages = 0;
 $nb_eleves = 0;
+$flag_groupe = FALSE;
 
 // DEFINIR LE NOMBRE DE BOUCLES A FAIRE
 // Impressions RAPIDES
 if ($id_groupe!=NULL) { // C'est un groupe
     $nb_pages=1;
+	$flag_groupe = true;
 }
 
 if ($id_classe!=NULL) { // C'est une classe
@@ -194,6 +196,7 @@ if ($id_liste_classes!=NULL) {
 //IMPRESSION A LA CHAINE
 if ($id_liste_groupes!=NULL) {
     $nb_pages = sizeof($id_liste_groupes);
+	$flag_groupe = true;
 //echo $nb_pages;
 }
 
@@ -279,26 +282,52 @@ if ($id_liste_groupes!=NULL) {
 			}
 
 			if (($option_affiche_pp==1)) {
-			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
-			   $pdf->SetFont($caractere_utilise,'I',8.5);
-
-			   //PP de la classe
+			   if ($id_groupe == NULL) {	  
+				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
+				   $pdf->SetFont($caractere_utilise,'I',8.5);
+               }
+			  //PP de la classe
 			  if ($id_groupe != NULL) {
-				 $id_classe=$donnees_eleves['id_classe'][0];
+			  // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
+			    $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
+				$res_per=mysql_query($sql);
+				if(mysql_num_rows($res_per)==0){
+					die("Problème avec les infos de la classe $id_classe</body></html>");
+				}
+				else{
+					$lig_tmp=mysql_fetch_object($res_per);
+					$periode=$lig_tmp->nom_periode;
+					//Affichage  de la période
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+				}
+			   } else {
+				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
+				   $call_profsuivi_eleve = mysql_query($sql);
+				   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+	
+				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			   }
-			   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
-			   $call_profsuivi_eleve = mysql_query($sql);
-			   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
-
-			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
-			} else {
-
-			  if ($id_groupe != NULL) {
-				$current_classe = $donnees_eleves['id_classe'][0]; // on suppose qu'il n'y a dans un groupe que des personnes d'une même classe ... Bof Bof
-			  }
-			  $pdf->CellFitScale($L_entete_classe,$H_entete_classe,'Classe de '.$current_classe,'LTRB',2,'C');
 			}
 
+			else {
+              // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
+			  if ($id_groupe != NULL) {	  
+                $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
+				$res_per=mysql_query($sql);
+				if(mysql_num_rows($res_per)==0){
+					die("Problème avec les infos de la classe $id_classe</body></html>");
+				}
+				else{
+					$lig_tmp=mysql_fetch_object($res_per);
+					$periode=$lig_tmp->nom_periode;
+					//Affichage  de la période
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+				}
+			  }
+			  //$pdf->CellFitScale($L_entete_classe,$H_entete_classe,' '.$current_classe,'LTRB',2,'C');
+			}
+
+			
 			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
 			$pdf->SetFont($caractere_utilise,'B',14);
 
@@ -423,7 +452,11 @@ if ($id_liste_groupes!=NULL) {
 				$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
-				$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+				if ($flag_groupe==true) {
+				$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]." (".$donnees_eleves['nom_court'][$nb_eleves_i].")");
+				} else {
+				  $texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+				}
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {
 					$y_tmp = $pdf->GetY();

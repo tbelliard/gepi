@@ -117,6 +117,7 @@ global $prefix_base ;
 		$donnees_eleves['prenom'][$cpt_i] = $eleve_prenom;
 		$donnees_eleves['naissance'][$cpt_i] = $eleve_naissance;
 		$donnees_eleves['nom_complet'][$cpt_i] =  $eleve_classe_nom_complet;
+		$donnees_eleves['nom_court'][$cpt_i] =  $eleve_classe;
 		$donnees_eleves['doublant'][$cpt_i] = $eleve_doublant;
 		$donnees_eleves['regime'][$cpt_i] = $eleve_regime;
 		$donnees_eleves['id_classe'][$cpt_i] = $eleve_id_classe; 
