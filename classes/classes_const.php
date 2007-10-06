@@ -125,7 +125,7 @@ if (isset($is_posted)) {
 
                 if (($nb_test != 0) or ($nb_test_app != 0) or ($nb_test_app_conseil != 0)) {
                     $autorisation_sup = 'no';
-                    $msg = "<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />Celui-ci a des moyennes ou appréciations pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />";
+                    $msg = "<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />Celui-ci a des moyennes ou appréciations pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />\n";
                     $reg_ok = "impossible";
                 } else {
                     $liste_cible .= $eleve_login.";";
@@ -143,11 +143,14 @@ if (isset($is_posted)) {
     }
 
     if ($reg_ok == 'yes') {
-      $message_enregistrement = "Les modifications ont été enregistrées !";
+      //$message_enregistrement = "Les modifications ont été enregistrées !";
+		if(!isset($msg)){$msg="";}
+      $msg.="Les modifications ont été enregistrées !";
     } else if ($reg_ok == "impossible") {
       $message_enregistrement = "Opération Impossible (voir message d'avertissement en rouge).";
     } else {
-      $message_enregistrement = "Il y a eu un problème lors de l'enregistrement";
+      //$message_enregistrement = "Il y a eu un problème lors de l'enregistrement";
+      $message_enregistrement="Il y a eu un problème lors de l'enregistrement";
     }
     $affiche_message = 'yes';
 }
