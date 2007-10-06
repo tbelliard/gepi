@@ -131,10 +131,30 @@ if (isset($_POST['is_posted'])) {
                     }
                 }
 
+
+				// METTRE TOUS LES ELEVES DES CLASSES CONCERNEES DANS LE GROUPE
+				$reg_eleves=array();
+				$current_group=get_group($create);
+				foreach ($current_group["periodes"] as $period) {
+					$reg_eleves[$period['num_periode']]=array();
+					foreach($reg_clazz as $tmp_id_classe){
+						$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."'";
+						$res_ele=mysql_query($sql);
+						if(mysql_num_rows($res_ele)>0){
+							while($lig_ele=mysql_fetch_object($res_ele)){
+								$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+							}
+						}
+					}
+				}
+
+
                 if (count($reg_professeurs) == 0) {
                     header("Location: ./edit_group.php?id_groupe=$create&msg=$msg&id_classe=$id_classe&mode=$mode");
                 } else {
-                    $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
+                    //$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
+                    $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+
 					//if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
 					if (count($reg_professeurs) == 1) {
 						if($res){$msg.="Affectation du professeur à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation du professeur à l'enseignement. ";}

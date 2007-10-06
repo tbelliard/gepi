@@ -361,11 +361,19 @@ foreach($total_eleves as $e_login) {
 	}
 
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>";
+	echo "<tr class='lig$alt'>\n";
 	if (array_key_exists($e_login, $eleves_list["users"])){
+			/*
 			echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
 				$eleves_list["users"][$e_login]["nom"] .
 				"</td>";
+			*/
+			echo "<td>";
+			echo $eleves_list["users"][$e_login]["nom"];
+			echo " ";
+			echo $eleves_list["users"][$e_login]["prenom"];
+			echo "</td>";
+
 			if ($multiclasses) echo "<td>" . $eleves_list["users"][$e_login]["classe"] . "</td>";
 			echo "\n";
 	} else {
