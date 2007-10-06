@@ -327,12 +327,12 @@ if(!getSettingValue('conv_new_resp_table')){
 		if(mysql_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
-			if($_SESSION['statut']=="administrateur"){
-				echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
-			}
-			else{
-				echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
-			}
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+		}
+		else{
+			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+		}
 
 			require("../lib/footer.inc.php");
 			die();
@@ -364,7 +364,7 @@ $test = mysql_num_rows($req);
 if ($test == '0') {
     echo "<p class='grand'>Attention : il n'y a aucun élève dans la base GEPI !</p>\n";
     echo "<p>Vous pouvez ajouter des élèves à la base en cliquant sur l'un des liens ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP</a></p>\n";
-    require("../lib/footer.inc.php");
+	require("../lib/footer.inc.php");
     die();
 }
 
@@ -514,16 +514,16 @@ if (!isset($quelles_classes)) {
     echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique. Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.</p>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index.php\" method=\"post\">\n";
     if (!isset($order_type)) { $order_type='nom,prenom';}
-    echo "<table border=1 cellpadding=2>\n";
+    echo "<table border='1' cellpadding='2' class='boireaus'>\n";
     echo "<tr>\n";
     echo "<td><p>Identifiant</p></td>\n";
     echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes'>Nom Prénom</a></p></td>\n";
     echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes'>Sexe</a></p></td>\n";
     echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes'>Date de naissance</a></p></td>\n";
     if ($quelles_classes == 'na') {
-        echo"<td><p>Classe</p></td>\n";
+        echo "<td><p>Classe</p></td>\n";
     } else {
-        echo"<td><p><a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes'>Classe</a></p></td>\n";
+        echo "<td><p><a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes'>Classe</a></p></td>\n";
     }
 //    echo "<td><p>Classe</p></td>";
     echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
@@ -573,6 +573,7 @@ if (!isset($quelles_classes)) {
 */
 
     $i = 0;
+	$alt=1;
     while ($i < $nombreligne){
         $eleve_login = mysql_result($calldata, $i, "login");
         $eleve_nom = mysql_result($calldata, $i, "nom");
@@ -595,7 +596,8 @@ if (!isset($quelles_classes)) {
 		}
         if ($eleve_profsuivi_nom == '') {$eleve_profsuivi_nom = "<font color='red'>N/A</font>";}
         $delete_login = 'delete_'.$eleve_login;
-        echo "<tr>\n";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt'>\n";
         echo "<td><p>" . $eleve_login . "</p></td>\n";
         echo "<td><p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type'>$eleve_nom $eleve_prenom</a></p></td>\n";
         echo "<td><p>$eleve_sexe</p></td>\n";

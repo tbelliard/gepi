@@ -212,7 +212,7 @@ if ($nombreligne == '0') {
     echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 } else {
     $k = '0';
-    echo "<table border='1' cellpadding='5'>\n";
+    echo "<table border='1' cellpadding='5' class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Nom Prénom </p></td>\n";
 	echo "<td><p>Régime</p></td>\n";
@@ -224,6 +224,7 @@ if ($nombreligne == '0') {
         $i++;
     }
     echo "</tr>\n";
+	$alt=1;
     While ($k < $nombreligne) {
         $login_eleve = mysql_result($call_eleves, $k, 'login');
         $call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
@@ -251,7 +252,8 @@ if ($nombreligne == '0') {
         $eleve_cperesp = @mysql_result($call_cperesp, '0', "cpe_login");
         $cpe_login = "cpe_".$login_eleve;
 
-        echo "<tr>\n";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt'>\n";
 		echo "<td><p>".$nom_eleve." ".$prenom_eleve ;
         echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."'>Matières suivies</a></b>";
         echo "</p></td>\n";
@@ -262,16 +264,16 @@ if ($nombreligne == '0') {
 		echo "<table style='border-collaspe: collapse;'>\n";
 		echo "<tr>\n";
 		echo "<td style='text-align: center;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
-        if ($regime == 'i-e') {echo "CHECKED";}
+        if ($regime == 'i-e') {echo " checked";}
         echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
-        if ($regime == 'int.') {echo "CHECKED";}
+        if ($regime == 'int.') {echo " checked";}
         echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
-        if ($regime == 'd/p') {echo "CHECKED";}
+        if ($regime == 'd/p') {echo " checked";}
         echo " /></td>\n";
 		echo "<td style='text-align: center; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
-        if ($regime == 'ext.') {echo "CHECKED";}
+        if ($regime == 'ext.') {echo " checked";}
         //echo " /></p></td><td><p><center><input type='checkbox' name='$doublant_login' value='yes'";
         echo " /></td></tr></table>\n";
 
@@ -280,7 +282,7 @@ if ($nombreligne == '0') {
 		echo "</td>\n";
 
 		echo "<td><p align='center'><input type='checkbox' name='$doublant_login' value='yes'";
-        if ($doublant == 'R') {echo "CHECKED";}
+        if ($doublant == 'R') {echo " checked";}
         //echo " /></center></p></td><td><p><select size='1' name='$prof_login'>";
         echo " /></p></td>\n";
 		echo "<td>\n";

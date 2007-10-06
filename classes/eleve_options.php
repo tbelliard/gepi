@@ -79,34 +79,44 @@ if (isset($is_posted)) {
 		$j++;
 	}
 	$affiche_message = 'yes';
+	$msg = "Les modifications ont été enregistrées !";
 }
-$message_enregistrement = "Les modifications ont été enregistrées !";
+//$message_enregistrement = "Les modifications ont été enregistrées !";
 
 
 
 // =================================
 // AJOUT: boireaus
-$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, eleves e
+//$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, eleves e
+$sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e
 						WHERE jec.login=e.login AND
 							jec.id_classe='$id_classe'
 						ORDER BY e.nom,e.prenom";
 //echo "$sql<br />";
 //echo "\$login_eleve=$login_eleve<br />";
 $res_ele_tmp=mysql_query($sql);
+$chaine_options_login_eleves="";
 if(mysql_num_rows($res_ele_tmp)>0){
     $login_eleve_prec=0;
     $login_eleve_suiv=0;
     $temoin_tmp=0;
     while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
         if($lig_ele_tmp->login==$login_eleve){
+			$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+
             $temoin_tmp=1;
             if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
                 $login_eleve_suiv=$lig_ele_tmp->login;
+				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
             }
             else{
                 $login_eleve_suiv=0;
             }
         }
+		else{
+			$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+		}
+
         if($temoin_tmp==0){
             $login_eleve_prec=$lig_ele_tmp->login;
         }
@@ -125,12 +135,20 @@ require_once("../lib/header.inc");
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
+echo "<form action='eleve_options.php' name='form1' method='post'>\n";
 echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if("$login_eleve_prec"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'>Elève précédent</a>";}
+
+echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
+echo $chaine_options_login_eleves;
+echo "</select>\n";
+
 if("$login_eleve_suiv"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'>Elève suivant</a>";}
 
 echo "</p>\n";
+echo "</form>\n";
 
 //debug_var();
 
@@ -161,7 +179,8 @@ $nombre_ligne = mysql_num_rows($call_group);
 //=========================
 // MODIF: boireaus
 //echo "<table border = '1' cellpadding='5' cellspacing='0'>\n<tr><td><b>Matière</b></td>";
-echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
+//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
+echo "<table border = '1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'><td><b>Matière</b></td>\n";
 //=========================
 $j = 1;
@@ -185,10 +204,13 @@ echo "</tr>\n";
 
 $nb_erreurs=0;
 $i=0;
+$alt=1;
 while ($i < $nombre_ligne) {
 	$id_groupe = mysql_result($call_group, $i, "id");
 	$nom_groupe = mysql_result($call_group, $i, "name");
-	echo "<tr><td>".$nom_groupe;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td>".$nom_groupe;
 	echo "</td>\n";
 	$j = 1;
 	while ($j < $nb_periode) {
@@ -223,7 +245,7 @@ while ($i < $nombre_ligne) {
 				}
 
 				if($temoin!=""){
-					echo "<td><center>".$temoin."<input type=hidden name=".$id_groupe."_".$j." value='checked' /></center></td>\n";
+					echo "<td><center>".$temoin."<input type='hidden' name=".$id_groupe."_".$j." value='checked' /></center></td>\n";
 				}
 				else{
 					$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
