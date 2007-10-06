@@ -99,6 +99,31 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 <p>Remarque : la classe d'appartenance de l'élève prise en compte est celle de la première période de l'année.</p>
 <p><a href="cpe_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="cpe_resp.php?disp_filter=only_undefined">Afficher les classes non-paramétrées</a></p>
 <?php
+
+	echo "<script type='text/javascript'>
+
+  function checkAll(){
+    champs_input=document.getElementsByTagName('input');
+    for(i=0;i<champs_input.length;i++){
+      type=champs_input[i].getAttribute('type');
+      if(type=='checkbox'){
+        champs_input[i].checked=true;
+      }
+    }
+  }
+  function UncheckAll(){
+    champs_input=document.getElementsByTagName('input');
+    for(i=0;i<champs_input.length;i++){
+      type=champs_input[i].getAttribute('type');
+      if(type=='checkbox'){
+        champs_input[i].checked=false;
+      }
+    }
+  }
+</script>
+";
+	echo "<p><a href='javascript:checkAll()'>Tout cocher</a> - <a href='javascript:UncheckAll()'>Tout décocher</a></p>\n";
+
 	echo "<form name='setCpeResp' action='cpe_resp.php?disp_filter=" . $disp_filter . "' method='post'>";
 
 	echo "<p><select size = 1 name='reg_cpelogin'>";
@@ -119,47 +144,48 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	$nombre_lignes = mysql_num_rows($call_data);
 
 	if ($nombre_lignes != 0) {
-	$flag = 1;
-	echo "<table style='margin-left: 50px;' cellpadding=3 cellspacing=0 border=0>";
-	$i = 0;
-	while ($i < $nombre_lignes){
-		$id_classe = mysql_result($call_data, $i, "id");
-		$classe = mysql_result($call_data, $i, "classe");
-		$nb_per = mysql_num_rows(mysql_query("select id_classe from periodes where id_classe = '$id_classe'"));
+		$flag = 1;
+		echo "<table style='margin-left: 50px;' cellpadding=3 cellspacing=0 border=0>";
+		$i = 0;
+		while ($i < $nombre_lignes){
+			$id_classe = mysql_result($call_data, $i, "id");
+			$classe = mysql_result($call_data, $i, "classe");
+			$nb_per = mysql_num_rows(mysql_query("select id_classe from periodes where id_classe = '$id_classe'"));
 
-		$test_existing = mysql_result(mysql_query("select count(*) total" .
-									" from j_eleves_cpe e, j_eleves_classes c" .
-									" where (" .
-									"e.e_login = c.login" .
-									" and " .
-									"c.id_classe = '" . $id_classe . "'" .
-									")"), "0", "total");
-		if ($disp_filter == "all" OR ($disp_filter == "only_undefined" AND $test_existing == "0")) {
+			$test_existing = mysql_result(mysql_query("select count(*) total" .
+										" from j_eleves_cpe e, j_eleves_classes c" .
+										" where (" .
+										"e.e_login = c.login" .
+										" and " .
+										"c.id_classe = '" . $id_classe . "'" .
+										")"), "0", "total");
+			if ($disp_filter == "all" OR ($disp_filter == "only_undefined" AND $test_existing == "0")) {
 
-			if ($nb_per != "0") {
-				echo "<tr";
-				if ($flag=="1") {
-					echo " class='fond_sombre'";
-					$flag = "0";
-				} else {
-					$flag=1;
+				if ($nb_per != "0") {
+					echo "<tr";
+					if ($flag=="1") {
+						echo " class='fond_sombre'";
+						$flag = "0";
+					} else {
+						$flag=1;
+					}
+
+					echo ">\n";
+					echo "<td><input type='checkbox' name='".$id_classe."' value='yes' /></td>\n";
+					echo "<td><b>$classe</b></td>\n";
 				}
-
-				echo ">";
-				echo "<td><input type='checkbox' name='".$id_classe."' value='yes' /></td>";
-				echo "<td><b>$classe</b></td>";
+				echo "</tr>\n";
 			}
-			echo "</tr>";
+			$i++;
 		}
-		$i++;
-	}
-	echo "</table>";
-	echo "<input type='hidden' name='action' value='reg_cperesp' />";
-	echo "<p><input type='submit' value='Enregistrer' /></p>";
+		echo "</table>\n";
+		echo "<input type='hidden' name='action' value='reg_cperesp' />\n";
+		echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 	} else {
-	echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>";
+		echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
 	}
 ?>
 </form>
+<p><br /></p>
 <?php require("../lib/footer.inc.php");?>
