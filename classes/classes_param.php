@@ -335,7 +335,7 @@ while ($per < $max_periode) {
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_np"; ?>" />Nom Prénom (Durand Albert)
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_pn"; ?>" />Prénom Nom (Albert Durand)
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_in"; ?>" />Initiale-Prénom Nom (A. Durand)
-        <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_ni"; ?>" />Initiale-Prénom Nom (Durand A.)
+        <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_ni"; ?>" />Nom Initiale-Prénom (Durand A.)
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cnp"; ?>" />Civilité Nom Prénom (M. Durand Albert)
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cpn"; ?>" />Civilité Prénom Nom (M. Albert Durand)
         <br /><input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" value="<?php echo "nb_".$per."_cin"; ?>" />Civ. initiale-Prénom Nom (M. A. Durand)
