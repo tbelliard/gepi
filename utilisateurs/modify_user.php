@@ -307,6 +307,36 @@ if (isset($user_login) and ($user_login!='')) {
         $user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
         $k++;
     }
+
+	// Utilisateurs précédent/suivant:
+	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' ORDER BY nom,prenom";
+	$res_liste_user=mysql_query($sql);
+	if(mysql_num_rows($res_liste_user)>0){
+		$login_user_prec="";
+		$login_user_suiv="";
+		$temoin_tmp=0;
+		$liste_options_user="";
+		while($lig_user_tmp=mysql_fetch_object($res_liste_user)){
+			if("$lig_user_tmp->login"=="$user_login"){
+				$liste_options_user.="<option value='$lig_user_tmp->login' selected='true'>$lig_user_tmp->nom $lig_user_tmp->prenom</option>\n";
+				$temoin_tmp=1;
+				if($lig_user_tmp=mysql_fetch_object($res_liste_user)){
+					$login_user_suiv=$lig_user_tmp->login;
+					$liste_options_user.="<option value='$lig_user_tmp->login'>$lig_user_tmp->nom $lig_user_tmp->prenom</option>\n";
+				}
+				else{
+					$login_user_suiv="";
+				}
+			}
+			else{
+					$liste_options_user.="<option value='$lig_user_tmp->login'>$lig_user_tmp->nom $lig_user_tmp->prenom</option>\n";
+			}
+			if($temoin_tmp==0){
+				$login_user_prec=$lig_user_tmp->login;
+			}
+		}
+	}
+
 } else {
     $nb_mat = 0;
     if (isset($_POST['reg_civilite']))
@@ -324,6 +354,11 @@ if (isset($user_login) and ($user_login!='')) {
 $titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//echo "\$login_user_prec=$login_user_prec<br />";
+//echo "\$login_user_suiv=$login_user_suiv<br />";
+
+echo "<form enctype='multipart/form-data' name='form_choix_user' action='modify_user.php' method='post'>\n";
 ?>
 <p class=bold>
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
@@ -338,9 +373,18 @@ if (isset($user_login) and ($user_login!='')) {
     echo " | <a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>";
 }
 
+if("$liste_options_user"!=""){
+	if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec'>Précedent</a>";}
+	echo " | <select name='user_login' onchange='document.form_choix_user.submit()'>\n";
+	echo $liste_options_user;
+	echo "</select>\n";
+	if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv'>Suivant</a>";}
+}
+echo "</p>\n";
+echo "</form>\n";
 ?>
-</p>
-<form enctype="multipart/form-data" action="modify_user.php" method=post>
+
+<form enctype="multipart/form-data" action="modify_user.php" method="post">
 
 <!--span class = "norme"-->
 <div class = "norme">
