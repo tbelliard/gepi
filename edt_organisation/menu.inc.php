@@ -36,7 +36,7 @@ else $page_inc_edt = 'accueil_edt.php';
 
 		<span class="refus"><?php echo ('Semaine n° '.strftime("%W")); ?></span>
 		<p>
-		<dl id="menu">
+		<dl id="menu_edt">
 <br />
 <br />
 <br />

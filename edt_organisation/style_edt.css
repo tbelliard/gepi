@@ -7,13 +7,13 @@ list-style-type: none;
 }
 
 /* CSS du menu EdT */
-#menu {
+#menu_edt {
 position: absolute;
 top: 100px;
 left: 10px;
 width: 8em;
 }
-#menu dt {
+#menu_edt dt {
 cursor: pointer;
 margin: 2px 0;;
 height: 20px;
@@ -24,14 +24,14 @@ color: white;
 border: 1px solid gray;
 background: #4a4a59;
 }
-#menu dd {
+#menu_edt dd {
 border: 1px #6d6d83;
 }
-#menu li {
+#menu_edt li {
 text-align: center;
 background: #4a4a59;
 }
-#menu li a, #menu dt a {
+#menu_edt li a, #menu_edt dt a {
 color: white;
 text-decoration: none;
 display: block;
@@ -39,7 +39,7 @@ border: 0 none;
 height: 100%;
 background: #4a4a59;
 }
-#menu li a:hover, #menu dt a:hover {
+#menu_edt li a:hover, #menu_edt dt a:hover {
 background: #6d6d83;
 }
 
