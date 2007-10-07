@@ -4621,7 +4621,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='nom_creneaux_s'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'nom_creneaux_s', '1');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4635,7 +4635,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_salle'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_salle', 'nom');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4649,7 +4649,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_matiere'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_matiere', 'long');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4663,7 +4663,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_creneaux'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (4, 'edt_aff_creneaux', 'noms');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_creneaux', 'noms');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4677,7 +4677,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (5, 'edt_aff_init_infos', 'oui');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_init_infos', 'oui');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4691,7 +4691,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_couleur'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_couleur', 'nb');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4705,7 +4705,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos2'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (7, 'edt_aff_init_infos2', 'oui');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_init_infos2', 'oui');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4719,7 +4719,7 @@ if (isset ($_POST['maj'])) {
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='aff_cherche_salle'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');");
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'aff_cherche_salle', 'tous');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
