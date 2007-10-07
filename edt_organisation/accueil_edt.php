@@ -10,7 +10,7 @@
 
 ?>
 
-<p><h1>L'emploi du temps de Gepi !</h1></p>
+<h1>L'emploi du temps de Gepi !</h1>
 
 <p>Utilisez le menu &agrave; gauche.</p>
 
