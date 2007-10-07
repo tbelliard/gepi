@@ -23,13 +23,16 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*// Sécurité
+// Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-*/
+
 unset ($_SESSION['order_by']);
+
+// CSS particulier à l'EdT
+$style_specifique = "edt_organisation/style_edt";
 
 // End standart header
 require_once("../lib/header.inc");

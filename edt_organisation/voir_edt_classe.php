@@ -4,7 +4,7 @@
 echo '
 	<form action="index_edt.php" name="liste_classe" method="post">
 		<select name="login_edt" onchange=\'document.liste_classe.submit();\'>
-			<OPTION value="rien">Choix de la classe</OPTION>
+			<option value="rien">Choix de la classe</option>
 	';
 
 $tab_select = renvoie_liste("classe");
@@ -21,7 +21,7 @@ if(isset($login_edt)){
 	else{
 		$selected="";
 	}
-	echo ("			<OPTION value='".$tab_select[$i]["id"]."'".$selected.">".$tab_select[$i]["classe"]."</OPTION>\n");
+	echo ("			<option value='".$tab_select[$i]["id"]."'".$selected.">".$tab_select[$i]["classe"]."</option>\n");
 	}
 
 

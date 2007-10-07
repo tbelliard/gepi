@@ -32,6 +32,8 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+// CSS particulier à l'EdT
+$style_specifique = "edt_organisation/style_edt";
 
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");

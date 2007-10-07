@@ -29,7 +29,6 @@ else $page_inc_edt = 'accueil_edt.php';
 
 ?>
 <!-- On affiche le menu edt -->
-<link href="style_edt.css" rel="stylesheet" type="text/css" />
 
 <script src="./script/menuderoulant.js" type="text/javascript" language="javascript"></script>
 

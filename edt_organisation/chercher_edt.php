@@ -39,17 +39,21 @@ Pour cela, veuillez choisir un cr&eacute;neau et un jour de la semaine :
 
 if ($auto_aff_1 === 1) {
 
-echo '<form action="index_edt.php" name="chercher" method="GET">';
-echo '<INPUT type=\'hidden\' name=\'salleslibres\' value=\'ok\'>';
-echo '<INPUT type=\'hidden\' name=\'cherch_salle\' value=\'ok\'>';
+echo '
+<form action="index_edt.php" name="chercher" method="get">
+	<input type="hidden" name="salleslibres" value="ok" />
+	<input type="hidden" name="cherch_salle" value="ok" />
+	';
 
 	// choix de l'horaire
 
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_fetch_array($req_heure);
 
-echo '<SELECT name="ch_heure">
-	<OPTION value=\'rien\'>Horaire</OPTION>');
+echo '
+	<select name="ch_heure">
+		<option value=\'rien\'>Horaire</option>
+	';
 	$tab_select_heure = array();
 
 	for($b=0;$b<count($rep_heure);$b++) {
@@ -58,30 +62,40 @@ echo '<SELECT name="ch_heure">
 		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
 		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
 
-		echo ('<OPTION value=\''.$tab_select_heure[$b]["id_heure"].'\'>'.$tab_select_heure[$b]["creneaux"].' : '.$tab_select_heure[$b]["heure_debut"].' - '.$tab_select_heure[$b]["heure_fin"].'</OPTION>');
+		echo '
+		<option value=\''.$tab_select_heure[$b]["id_heure"].'\'>'.$tab_select_heure[$b]["creneaux"].' : '.$tab_select_heure[$b]["heure_debut"].' - '.$tab_select_heure[$b]["heure_fin"].'</option>
+			';
 
 	}
-echo '</SELECT>
+echo '
+	</select>
 	<br />
-	<br />';
+	<br />
+	';
 
 	// choix du jour
 
 	$req_jour = mysql_query("SELECT id_horaire_etablissement, nom_horaire_etablissement FROM horaires_etablissement");
 	$rep_jour = mysql_fetch_array($req_jour);
 
-echo '<SELECT name="ch_jour_semaine">';
-echo ('<OPTION value=\'rien\'>Jour</OPTION>');
+echo '
+	<select name="ch_jour_semaine">
+		<option value="rien">Jour</option>';
 	$tab_select_jour = array();
 
-	for($a=0;$a<count($rep_jour);$a++) {
+	for($a=0; $a<count($rep_jour); $a++) {
 		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
 		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
 
-		echo ('<OPTION value=\''.$tab_select_jour[$a]["jour_sem"].'\'>'.$tab_select_jour[$a]["jour_sem"].'</OPTION>');
+		echo '
+		<option value=\''.$tab_select_jour[$a]["jour_sem"].'\'>'.$tab_select_jour[$a]["jour_sem"].'</option>
+		';
 	}
-echo '</SELECT>';
-echo '<br /><br />';
+echo '
+	</select>
+	<br />
+	<br />
+	';
 
 	/* choix de la semaine
 
@@ -101,8 +115,12 @@ echo ('<OPTION value=\'rien\'>Semaine</OPTION>');
 
 	}
 echo '</SELECT>';*/
-echo '<input type="submit" name="Valider" value="Valider" /><br /><br />';
-echo '</FORM>';
+echo '
+		<input type="submit" name="Valider" value="Valider" />
+		<br />
+		<br />
+	</form>
+	';
 
 }
 
