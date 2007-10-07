@@ -1,4 +1,17 @@
 <?php
+	// ========================================
+	// Astuce http://www.ehow.com/how_2000413_convert-em-px-sizes.html
+	// pour calculer le rapport em/px et corriger le positionnement des infobulles (taille fixée en 'em')
+	echo "<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
+
+	<script type='text/javascript'>
+		var ele=document.getElementById('EmSize');
+		var em2px=ele.offsetLeft
+		//alert('1em == '+em2px+'px');
+	</script>\n";
+	// ========================================
+
+
 
 	// On a stocké les DIV dans un tableau et on parcourt le tableau PHP en fin de page pour afficher les infobulles en dehors du coeur de la page.
 	// Les infobulles apparaissent ainsi un peu comme des notes de bas de page.

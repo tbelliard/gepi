@@ -144,7 +144,7 @@ if (!$id_classe) {
         $nom_el = mysql_result($call_eleve, $i, 'nom');
         $prenom_el = mysql_result($call_eleve, $i, 'prenom');
         echo "<option value=$eleve";
-        if ($v_eleve == $eleve) {echo " SELECTED ";}
+        if ($v_eleve == $eleve) {echo " selected ";}
         echo ">$nom_el  $prenom_el</option>\n";
     $i++;
     }
@@ -274,15 +274,78 @@ if (!$id_classe) {
         $nom_el = mysql_result($call_eleve, $i, 'nom');
         $prenom_el = mysql_result($call_eleve, $i, 'prenom');
         echo "<option value=$eleve";
-        if ($v_eleve == $eleve) {echo " SELECTED ";}
+        if ($v_eleve == $eleve) {
+			echo " selected ";
+			// On récupère des infos sur l'élève courant:
+			$v_elenoet=mysql_result($call_eleve, $i, 'elenoet');
+			$v_naissance=mysql_result($call_eleve, $i, 'naissance');
+			$tmp_tab_naissance=explode("-",$v_naissance);
+			$v_naissance=$tmp_tab_naissance[2]."/".$tmp_tab_naissance[1]."/".$tmp_tab_naissance[0];
+			$v_sexe=mysql_result($call_eleve, $i, 'sexe');
+			$v_eleve_nom_prenom="$nom_el  $prenom_el";
+		}
         echo ">$nom_el  $prenom_el</option>\n";
     $i++;
     }
     ?>
     </select>
     <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
-    </form></td></tr></table>
+    </form></td>
+
     <?php
+
+	echo "<td>\n";
+	//echo $v_eleve;
+
+	// ============================================
+	// Création de l'infobulle:
+
+	$titre=$v_eleve_nom_prenom;
+	//$texte="<table border='0'>\n";
+	$texte="<div align='center'>\n";
+	//$texte.="<tr>\n";
+	if($v_elenoet!=""){
+		if(file_exists("../photos/eleves/".$v_elenoet.".jpg")){
+			//$texte.="<td>\n";
+			$texte.="<img src='../photos/eleves/".$v_elenoet.".jpg' width='150' alt=\"$v_eleve_nom_prenom\" />";
+			//$texte.="</td>\n";
+			$texte.="<br />\n";
+		}
+		elseif(file_exists("../photos/eleves/0".$v_elenoet.".jpg")){
+			//$texte.="<td>\n";
+			$texte.="<img src='../photos/eleves/0".$v_elenoet.".jpg' width='150' alt=\"$v_eleve_nom_prenom\" />";
+			//$texte.="</td>\n";
+			$texte.="<br />\n";
+		}
+	}
+	//$texte.="<td>\n";
+	$texte.="Né";
+	if($v_sexe=="F"){
+		$texte.="e";
+	}
+	$texte.=" le $v_naissance\n";
+	//$texte.="</td>\n";
+	//$texte.="</tr>\n";
+	//$texte.="</table>\n";
+	$texte.="</div>\n";
+
+	//echo creer_div_infobulle('info_popup_eleve',$titre,"",$texte,"",30,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
+
+	// ============================================
+
+	// Insertion du lien permettant l'affichage de l'infobulle:
+	echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve','y',-100,20);\"";
+	//echo " onmouseout=\"cacher_div('info_popup_eleve');\"";
+	echo ">";
+	echo "<img src='../images/icons/buddy.png' alt='Informations élève' />";
+	echo "</a>";
+
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+
     $etiq = implode("|", $etiquette);
     $graph_title = urlencode($graph_title);
 

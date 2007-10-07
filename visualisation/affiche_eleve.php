@@ -863,6 +863,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
 
+	//echo "\$eleve1=$eleve1 et \$affiche_photo=$affiche_photo<br />";
+
 	// Affichage de la photo si elle existe:
 	if((isset($eleve1))&&($affiche_photo!="non")){
 		//$chemin_photos='/var/wwws/gepi/photos';
@@ -885,6 +887,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
 				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+			}
+			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")){
+				// Récupérer les dimensions de la photo...
+				//$dimimg=getimagesize("../photos/$eleve1.jpg");
+				$dimimg=getimagesize("../photos/eleves/0$elenoet1.jpg");
+				//echo "$dimimg[0] et $dimimg[1]";
+
+				$largimg=$largeur_imposee_photo;
+				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
+
+				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
+				echo "<img src='../photos/eleves/0$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
 		}
 	}
