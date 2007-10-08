@@ -260,8 +260,7 @@ require_once("../lib/header.inc");
 
 <script type='text/javascript' language="JavaScript">
     function verif1() {
-		//document.formulaire.quelles_classes[2].checked = true;
-		document.formulaire.quelles_classes[3].checked = true;
+		document.formulaire.quelles_classes[5].checked = true;
     }
     function verif2() {
     <?php
@@ -277,6 +276,11 @@ require_once("../lib/header.inc");
 		}
     ?>
     }
+
+	function verif3(){
+		document.getElementById('quelles_classes_recherche').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -450,6 +454,73 @@ if (!isset($quelles_classes)) {
 		echo "</tr>\n";
 	}
 
+	// =====================================================
+	// A FAIRE:
+	// Liste des élèves sans photo
+	$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
+	$test_elenoet_ok=mysql_query($sql);
+	if(mysql_num_rows($test_elenoet_ok)!=0){
+		$cpt_photo_manquante=0;
+		while($lig_tmp=mysql_fetch_object($test_elenoet_ok)){
+			if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
+				$cpt_photo_manquante++;
+			}
+		}
+		if($cpt_photo_manquante>0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' value='photo' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<span class='norme'>Parmi les élèves dont l'Elenoet est renseigné, $cpt_photo_manquante n'ont pas leur photo.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='photo' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Tous les élèves, dont l'Elenoet est renseigné, ont leur photo.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+	}
+	else{
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "&nbsp;\n";
+		echo "</td>\n";
+		echo "<td>\n";
+
+	    echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='photo' onclick='verif2()' /></span>\n";
+
+		echo "<span class='norme'>Aucun élève n'a son Elenoet renseigné.<br />L'affichage des photos n'est donc pas fonctionnel.</span><br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	// =====================================================
+	// A FAIRE:
+	// Liste des élèves dont le nom commence par/contient...
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' />\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<span class='norme'>Elève dont le nom commence par: \n";
+	echo "<input type='text' name='motif_rech' value='' onclick='verif3()' size='5' />\n";
+	echo "</span><br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	// =====================================================
+
     $classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     $nb = mysql_num_rows($classes_list);
     if ($nb !=0) {
@@ -563,7 +634,29 @@ if (!isset($quelles_classes)) {
         $calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
         ORDER BY $order_type
         ");
+    } else if ($quelles_classes == 'photo') {
+		$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
+		$test_elenoet_ok=mysql_query($sql);
+		if(mysql_num_rows($test_elenoet_ok)!=0){
+			$chaine_photo_manquante="";
+			while($lig_tmp=mysql_fetch_object($test_elenoet_ok)){
+				if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
+					if($chaine_photo_manquante!=""){$chaine_photo_manquante.=" OR ";}
+					$chaine_photo_manquante.="elenoet='$lig_tmp->elenoet'";
+				}
+			}
+			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE $chaine_photo_manquante
+			ORDER BY $order_type
+			");
+		}
+    } else if ($quelles_classes == 'recherche') {
+        $calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
+        ORDER BY $order_type
+        ");
     }
+
+
+
 
     $nombreligne = mysql_num_rows($calldata);
 
