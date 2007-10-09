@@ -54,9 +54,9 @@ for($i=0;$i<count($tab_select);$i++) {
 }
 
 echo '
+		</select>
 			<input type="hidden" name="type_edt_2" value="prof" />
 			<input type="hidden" name="visioedt" value="prof1" />
-		</select>
 	';
 
 if($indice_prof_select!=-1){

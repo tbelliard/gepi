@@ -35,14 +35,15 @@ else $page_inc_edt = 'accueil_edt.php';
 	<div id="agauche">
 
 		<span class="refus"><?php echo ('Semaine n° '.strftime("%W")); ?></span>
-		<p>
-		<dl id="menu_edt">
-<br />
-<br />
-<br />
 
-		<dt onclick="javascript:montre();"><a href="index_edt.php">Accueil EdT</a></dt>
+		<dl id="menu_edt">
+			<dd>
 <br />
+			</dd>
+		<dt onclick="javascript:montre();"><a href="index_edt.php">Accueil EdT</a></dt>
+			<dd>
+<br />
+			</dd>
 		<dt onmouseover="javascript:montre('smenu2');">Visionner</dt>
 
 			<dd id="smenu2">
@@ -55,7 +56,7 @@ else $page_inc_edt = 'accueil_edt.php';
 			</dd>
 <?php /*
 if ($_SESSION['statut'] == "administrateur") {
-echo '<br />
+echo '
 		<dt onmouseover="javascript:montre(\'smenu3\');">Modifier</dt>
 
 			<dd id="smenu3">
@@ -78,7 +79,6 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	// En fonction du résultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
-<br />
 		<dt onmouseover="javascript:montre(\'smenu4\');">Chercher</dt>
 
 			<dd id="smenu4">
@@ -86,7 +86,7 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 					<li><a href="index_edt.php?salleslibres=ok">Salles libres</a></li>
 				</ul>
 			</dd>
-<br />';
+			';
 	}
 
 if ($_SESSION['statut'] == "administrateur") {
@@ -101,12 +101,11 @@ if ($_SESSION['statut'] == "administrateur") {
 					<li><a href="edt_parametrer.php">Paramétrer</a></li>
 				</ul>
 			</dd>
-<br />
+
 		<dt onclick="javascript:montre();"><a href="edt_calendrier.php">Calendrier</a></dt>
 		';
 }
 ?>
 		</dl>
 <br />
-		</p>
 	</div>

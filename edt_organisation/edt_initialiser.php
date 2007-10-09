@@ -70,8 +70,8 @@ Pour les entr&eacute;es simples, la saisie manuelle est possible.
 Elle vous permettra de rentrer heure par heure des informations
 en v&eacute;rifiant si deux cours ne se chevauchent pas.
 	</font>
-<br /><span class=\"refus\"><h3>Attention ! seuls les enseignements
-définis dans Gepi peuvent apparaitre dans l'emploi du temps</h3></span>
+<br /><h5 class=\"red\">Attention ! seuls les enseignements
+définis dans Gepi peuvent apparaitre dans l'emploi du temps</h5>
 <br />";
 }
 else {
@@ -106,8 +106,8 @@ for($i=0;$i<count($tab_select);$i++) {
 }
 
 echo '
-			<input type="hidden" name="initialiser" value="ok" />
  		</select>
+			<input type="hidden" name="initialiser" value="ok" />
 		</form>';
 
 	// Ensuite, on propose la liste des enseignements de ce professeur associé à la matière

@@ -118,9 +118,9 @@ else {
 }
 ?>
 </center>
-<table cellpadding="5" cellspacing="0" border="0" height="150" width="100%">
-<tr><td>
 <form name="parametrer" method="post" action="edt_parametrer.php">
+<table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
+<tr><td>
 
 <fieldset id="matiere">
 	<legend>Les matières</legend>
@@ -149,7 +149,7 @@ else {
 </td></tr>
 </table>
 
-<table cellpadding="5" cellspacing="0" border="0" height="150" width="100%">
+<table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
 <tr><td>
 <fieldset id="couleurs">
 	<legend>Affichage général en couleur</legend>
@@ -176,7 +176,7 @@ else {
 </td></tr>
 </table>
 
-<table cellpadding="5" cellspacing="0" border="0" height="150" width="100%">
+<table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
 	<tr>
 		<td>
 <fieldset id="aff_cherche_salle">

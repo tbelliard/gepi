@@ -3,72 +3,81 @@
 
 $login_edt=isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL;
 
-if ($_SESSION['statut'] != "eleve") {
+if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 		// On affiche un formulaire alphabétique
-	echo "</center>\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n<tr>\n<td>\n";
-	echo "<span style='font-size: small; font-weight:normal;'>Rechercher tous les noms commençant par : </span>\n</td>\n<td>\n";
-	echo "<form action=\"index_edt.php\" name=\"liste_lettres\" method=\"POST\">\n";
-	echo "<select name=\"alphabet_eleves\" onchange='document.liste_lettres.submit();'>\n";
+	echo '
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td>
+			<span style="font-size: small; font-weight:normal;">Rechercher tous les noms commençant par : </span>
+		</td>
+		<td>
+			<form action="index_edt.php" name="liste_lettres" method="post">
+				<select name="alphabet_eleves" onchange=\'document.liste_lettres.submit();\'>
+		';
 
-	echo "<OPTION value=\"rien\">la lettre suivante</OPTION>\n";
-	echo "<OPTION value=\"A\">A</OPTION>\n";
-	echo "<OPTION value=\"B\">B</OPTION>\n";
-	echo "<OPTION value=\"C\">C</OPTION>\n";
-	echo "<OPTION value=\"D\">D</OPTION>\n";
-	echo "<OPTION value=\"E\">E</OPTION>\n";
-	echo "<OPTION value=\"F\">F</OPTION>\n";
-	echo "<OPTION value=\"G\">G</OPTION>\n";
-	echo "<OPTION value=\"H\">H</OPTION>\n";
-	echo "<OPTION value=\"I\">I</OPTION>\n";
-	echo "<OPTION value=\"J\">J</OPTION>\n";
-	echo "<OPTION value=\"K\">K</OPTION>\n";
-	echo "<OPTION value=\"L\">L</OPTION>\n";
-	echo "<OPTION value=\"M\">M</OPTION>\n";
-	echo "<OPTION value=\"N\">N</OPTION>\n";
-	echo "<OPTION value=\"O\">O</OPTION>\n";
-	echo "<OPTION value=\"P\">P</OPTION>\n";
-	echo "<OPTION value=\"Q\">Q</OPTION>\n";
-	echo "<OPTION value=\"R\">R</OPTION>\n";
-	echo "<OPTION value=\"S\">S</OPTION>\n";
-	echo "<OPTION value=\"T\">T</OPTION>\n";
-	echo "<OPTION value=\"U\">U</OPTION>\n";
-	echo "<OPTION value=\"V\">V</OPTION>\n";
-	echo "<OPTION value=\"W\">W</OPTION>\n";
-	echo "<OPTION value=\"X\">X</OPTION>\n";
-	echo "<OPTION value=\"Y\">Y</OPTION>\n";
-	echo "<OPTION value=\"Z\">Z</OPTION>\n";
+	echo "<option value=\"rien\">la lettre suivante</option>\n";
+	echo "<option value=\"A\">A</option>\n";
+	echo "<option value=\"B\">B</option>\n";
+	echo "<option value=\"C\">C</option>\n";
+	echo "<option value=\"D\">D</option>\n";
+	echo "<option value=\"E\">E</option>\n";
+	echo "<option value=\"F\">F</option>\n";
+	echo "<option value=\"G\">G</option>\n";
+	echo "<option value=\"H\">H</option>\n";
+	echo "<option value=\"I\">I</option>\n";
+	echo "<option value=\"J\">J</option>\n";
+	echo "<option value=\"K\">K</option>\n";
+	echo "<option value=\"L\">L</option>\n";
+	echo "<option value=\"M\">M</option>\n";
+	echo "<option value=\"N\">N</option>\n";
+	echo "<option value=\"O\">O</option>\n";
+	echo "<option value=\"P\">P</option>\n";
+	echo "<option value=\"Q\">Q</option>\n";
+	echo "<option value=\"R\">R</option>\n";
+	echo "<option value=\"S\">S</option>\n";
+	echo "<option value=\"T\">T</option>\n";
+	echo "<option value=\"U\">U</option>\n";
+	echo "<option value=\"V\">V</option>\n";
+	echo "<option value=\"W\">W</option>\n";
+	echo "<option value=\"X\">X</option>\n";
+	echo "<option value=\"Y\">Y</option>\n";
+	echo "<option value=\"Z\">Z</option>\n";
+	echo "</select>\n";
 	echo "<input type=\"hidden\" name=\"choix_lettre\" value=\"ok\" />\n";
 	echo "<input type=\"hidden\" name=\"type_edt_2\" value=\"eleve\" />\n";
 	echo "<input type=\"hidden\" name=\"visioedt\" value=\"eleve1\" />\n";
-	echo "</select>\n";
 	echo "</form>\n</td>\n";
 
-		/*/ On peut aussi faire un affichage par classe (à revoir)
+/*	/ On peut aussi faire un affichage par classe (à revoir)
 	echo "<td>\n ou par classe : </td>";
-	echo "<td><form action=\"index_edt.php\" name=\"liste_classe\" method=\"POST\">\n";
+	echo "<td><form action=\"index_edt.php\" name=\"liste_classe\" method=\"post\">\n";
 	echo "<select name=\"login_edt\" onchange='document.liste_classe.submit();'>\n";
-	echo "<OPTION value=\"rien\">Choix de la classe</OPTION>\n";
+	echo "<option value=\"rien\">Choix de la classe</option>\n";
 
 		$tab_select = renvoie_liste("classe");
 
 		for($i=0;$i<count($tab_select);$i++) {
 
-	echo ("<OPTION value='".$tab_select[$i]["id"]."'>".$tab_select[$i]["classe"]."</OPTION>\n");
+	echo ("<option value='".$tab_select[$i]["id"]."'>".$tab_select[$i]["classe"]."</option>\n");
 		}
+
+	echo "</select>\n";
 	echo "<input type=hidden name=\"choix_classe\" value=\"ok\" />\n";
 	echo "<input type=hidden name=\"type_edt_2\" value=\"eleve\" />\n";
 	echo "<input type=hidden name=\"visioedt\" value=\"eleve1\" />\n";
-
-	echo "</SELECT>\n</FORM>\n";*/
-	echo "</td>\n</tr>\n</table>\n<center>\n";
+	echo "</form>\n";
+	echo "</td>\n";
+*/
+	echo "</tr>\n</table>\n";
 
 		// puis un formulaire des élèves alphabétique aussi
 	if (isset($_POST["alphabet_eleves"]) OR isset($_POST["choix_classe"])) {
 
-
-		echo "<form action=\"index_edt.php\" name=\"liste_eleves\" method=\"POST\">\n";
+		echo "<center>\n";
+		echo "<form action=\"index_edt.php\" name=\"liste_eleves\" method=\"post\">\n";
 		echo "<select name='login_edt' onchange='document.liste_eleves.submit();'>\n";
-		echo "<OPTION value=\"rien\">Choix de l'élève</OPTION>\n";
+		echo "<option value=\"rien\">Choix de l'élève</option>\n";
 
 			if (isset($_POST["alphabet_eleves"])) {
 				$tab_select = renvoie_liste_a("eleve", $_POST["alphabet_eleves"]);
@@ -80,17 +89,18 @@ if ($_SESSION['statut'] != "eleve") {
 
 			for($i=0;$i<count($tab_select);$i++) {
 
-		echo ("<OPTION value='".$tab_select[$i]["login"]."'>".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"].' '.aff_nom_classe($tab_select[$i]["login"])."</OPTION>\n");
+		echo ("<option value='".$tab_select[$i]["login"]."'>".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"].' '.aff_nom_classe($tab_select[$i]["login"])."</option>\n");
 
 			}
+
+		echo "</select>\n";
 		echo "<input type=hidden name=\"type_edt_2\" value=\"eleve\" />\n";
 		echo "<input type=hidden name=\"visioedt\" value=\"eleve1\" />\n";
-
-		echo "</SELECT>\n";
-		echo "</FORM>\n";
-
+		echo "</form>\n";
+		echo "</center>\n";
 	}
 }
+
 
 if ((isset($_POST['visioedt'])) AND isset($_POST["login_edt"])) {
 
@@ -168,9 +178,10 @@ elseif ($reglages_creneaux == "heures") {
 		$c ++;
 		}
 	}*/
+	echo '</table>';
 }
-	echo '</tbody></table>';
 
-	require("../lib/footer.inc.php");
+
+	//require("../lib/footer.inc.php");
 
 ?>

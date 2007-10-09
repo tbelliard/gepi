@@ -580,7 +580,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 
 	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
-		$id_div = $rep_classe['classe'].$id_creneaux.$jour_semaine;
+		$id_div = $jour_semaine.$rep_classe['classe'].$id_creneaux;
 	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>\n".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 	}
 	// On récupère le nom et la civilite du prof en question
@@ -596,7 +596,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		if ($rep_sem["id_semaine"] == "0") {
 			$aff_sem = '';
 		}
-		else $aff_sem = ' - Sem.'.$rep_sem["id_semaine"];
+		else $aff_sem = '<font color=\"#6633FF\"> - Sem.'.$rep_sem["id_semaine"].'</font>';
 	// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
 	{
 	$req_groupe = mysql_query("SELECT description FROM groupes WHERE id ='".$enseignement."'");
@@ -629,9 +629,9 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 
 	if ($type_edt == "prof")
-		return ("".$aff_matiere." ".$effacer_cours."<br />\n".$classe_js." \n<font color=\"#6633FF\">".$aff_sem."</font><br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve."\n");
+		return ("".$aff_matiere."<br />\n".$classe_js." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve."\n");
 	elseif (($type_edt == "classe") OR ($type_edt == "eleve"))
-		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i><font color=\"#6633FF\"> ".$aff_sem."</font>");
+		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
 	elseif ($type_edt == "salle")
 		return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br />\n".$classe_js." ".$aff_sem."\n");
 }

@@ -15,7 +15,7 @@ width: 8em;
 }
 #menu_edt dt {
 cursor: pointer;
-margin: 2px 0;;
+margin: 10px 0;
 height: 20px;
 line-height: 20px;
 text-align: center;
@@ -87,7 +87,7 @@ background: #6d6d83;
 }
 
 .tab_edt td {
-	border: 1px solid white;
+	border: 1px solid silver;
 	/*border: 1px solid #E9E9E4;*/
 	font: normal normal 9pt Verdana, sans-serif;
 	text-align: center;

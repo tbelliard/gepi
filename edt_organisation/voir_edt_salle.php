@@ -29,9 +29,9 @@ for($i=0;$i<count($tab_select);$i++) {
 
 
 echo '
+		</select>
 			<input type="hidden" name="type_edt_2" value="salle" />
 			<input type="hidden" name="visioedt" value="salle1" />
-		</select>
 	</form>
 	';
 

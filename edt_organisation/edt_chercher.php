@@ -59,19 +59,26 @@ Pour cela, veuillez choisir un cr&eacute;neau et un jour de la semaine :
 
 if ($auto_aff_1 === 1) {
 
-echo "</center>\n<fieldset id=\"cherchersalle\">\n<legend>Chercher une salle libre</legend>\n";
+echo '
+	<fieldset id="cherchersalle">
+		<legend>Chercher une salle libre</legend>
 
-echo "<form action=\"index_edt.php\" name=\"chercher\" id=\"chercher\" method=\"POST\">\n";
-echo "<INPUT type='hidden' name='salleslibres' value='ok'>\n";
-echo "<INPUT type='hidden' name='cherch_salle' value='ok'>\n";
+		<form action="index_edt.php" name="chercher" id="chercher" method="post">
+	';
 
 	// choix de l'horaire
 
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_fetch_array($req_heure);
 
-echo "<SELECT name=\"ch_heure\">\n";
-echo ("<OPTION value='rien'>Horaire</OPTION>\n");
+echo '
+			<input type="hidden" name="salleslibres" value="ok" />
+			<input type="hidden" name="cherch_salle" value="ok" />
+
+			<select name="ch_heure">
+				<option value="rien">Horaire</option>
+	';
+
 	$tab_select_heure = array();
 
 	for($b=0;$b<count($rep_heure);$b++) {
@@ -90,18 +97,18 @@ echo ("<OPTION value='rien'>Horaire</OPTION>\n");
 	else{
 		$selected="";
 	}
-		echo ("<OPTION value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</OPTION>\n");
+		echo ("<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n");
 
 	}
-echo "</SELECT>\n<i> *</i>\n<br />\n";
+echo "</select>\n<i> *</i>\n<br />\n";
 
 	// choix du jour
 
 	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
 	$rep_jour = mysql_fetch_array($req_jour);
 
-echo "<SELECT name=\"ch_jour_semaine\">\n";
-echo "<OPTION value='rien'>Jour</OPTION>\n";
+echo "<select name=\"ch_jour_semaine\">\n";
+echo "<option value='rien'>Jour</option>\n";
 	$tab_select_jour = array();
 
 	for($a=0;$a<=count($rep_jour);$a++) {
@@ -119,17 +126,17 @@ echo "<OPTION value='rien'>Jour</OPTION>\n";
 	else{
 		$selected="";
 	}
-		echo ("<OPTION value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</OPTION>\n");
+		echo ("<option value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</option>\n");
 	}
-echo "</SELECT>\n<i> *</i>\n<br />\n";
+echo "</select>\n<i> *</i>\n<br />\n";
 
 	// choix de la semaine
 
 	$req_semaine = mysql_query("SELECT * FROM edt_semaines");
 	$rep_semaine = mysql_fetch_array($req_semaine);
 
-echo "<SELECT name=\"semaine\">\n";
-echo "<OPTION value='rien'>Semaine</OPTION>\n";
+echo "<select name=\"semaine\">\n";
+echo "<option value='rien'>Semaine</option>\n";
 	$tab_select_semaine = array();
 
 	for($d=0;$d<52;$d++) {
@@ -137,12 +144,12 @@ echo "<OPTION value='rien'>Semaine</OPTION>\n";
 		$tab_select_semaine[$d]["num_semaine"] = mysql_result($req_semaine, $d, "num_edt_semaine");
 		$tab_select_semaine[$d]["type_semaine"] = mysql_result($req_semaine, $d, "type_edt_semaine");
 
-		echo "<OPTION value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine n° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") </OPTION>\n";
+		echo "<option value='".$tab_select_semaine[$d]["id_semaine"]."'>Semaine n° ".$tab_select_semaine[$d]["num_semaine"]." (".$tab_select_semaine[$d]["type_semaine"].") </option>\n";
 
 	}
-echo "</SELECT>\n<br />\n<em><font size=\"2\"> * champs obligatoires  </font></em>\n";
+echo "</select>\n<br />\n<em><font size=\"2\"> * champs obligatoires  </font></em>\n";
 echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n<br />\n";
-echo "</FORM>\n</fieldset>\n";
+echo "</form>\n</fieldset>\n";
 
 }
 
@@ -159,6 +166,7 @@ if ($auto_aff_2 === 1) {
 		foreach($salles_libres as $tab_salib){
 			echo("".nom_salle($tab_salib)."<br />\n");
 		}
-}
 	echo "</fieldset>\n";
+}
+
 ?>

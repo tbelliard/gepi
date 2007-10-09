@@ -57,7 +57,7 @@ $new_name = isset($_POST["new_name"]) ? $_POST["new_name"] : NULL;
 ?>
 <!-- AJAX de formulaire -->
 
-<script language="Javascript">
+<script type="text/javascript">
 function nomSalle(ident_salle) {
 	var xmlhttp;
 
