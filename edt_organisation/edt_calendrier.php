@@ -86,7 +86,7 @@ if (isset($calendrier) AND isset($modifier)) {
 	// On affiche la période demandée dans un formulaire
 	$rep_modif = mysql_fetch_array(mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier = '".$modifier."'"));
 	echo '
-	</center>
+
 <fieldset id="modif_periode">
 	<legend>Modifier la période pour le calendrier</legend>
 		<form name="modifier_periode" action="edt_calendrier.php" method="post">
@@ -242,7 +242,7 @@ $detail_jourfin = explode("/", $jour_debut);
 	if ($req_verif_periode[0] == NULL) {
 		$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`) VALUES ('$nom_periode', '$classes_concernees_insert', '$jourdebut', '$heure_debut', '$jourfin', '$heure_fin', '$choix_periode', '$etabferme', '$vacances')") OR DIE ('Echec dans la requête de création d\'une nouvelle entrée !');
 	}
-	else echo '<p><h3 class="red">Ce nom de période existe déjà</h3></p>';
+	else echo '<h3 class="red">Ce nom de période existe déjà</h3>';
 }
 
 /* On affiche alors toutes les périodes de la table */
@@ -250,9 +250,8 @@ $detail_jourfin = explode("/", $jour_debut);
 	// Lien qui permet de saisir de nouvelles périodes
 if ($modifier == NULL) {
 	echo '
-</center>
 	<p>
-	<a href="edt_calendrier.php?calendrier=ok&new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUTER</a>
+	<a href="edt_calendrier.php?calendrier=ok&amp;new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUTER</a>
 	</p>
 	';
 
@@ -312,7 +311,7 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 				}
 				//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
 				$id_div = "periode".$rep_affcalendar[$i]["id_calendrier"];
-				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout="cacher_div('".$id_div."');">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
+				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout=\"cacher_div('".$id_div."');\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
 			} // else
 		// Afficher de deux couleurs différentes
 
@@ -334,8 +333,8 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 		<td>'.$rep_affcalendar[$i]["heurefin_calendrier"].'</td>
 		<!--<td>'.$rep_affcalendar[$i]["numero_periode"].'</td>-->
 		<td>'.$ouvert_ferme.'</td>
-		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
-		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
+		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
 	</tr>
 		';
 	}
@@ -384,8 +383,8 @@ for($i=0; $i<count($tab_select); $i++) {
 		*/
 	echo '
 		<input type="text" name="jour_debut" maxlenght="10" size="10" value="'.$date_jour.'" />
-		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&ch=jour_debut\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
-		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_debut\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 			<span class="legende">Premier jour</span>
 
 			<input type="text" name="heure_deb" maxlenght="8" size="8" value="'.$heure_etab_deb.'" />
@@ -400,8 +399,8 @@ for($i=0; $i<count($tab_select); $i++) {
 		*/
 	echo '
 		<input type="text" name="jour_fin" maxlenght="10" size="10" value="jj/mm/YYYY" />
-		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&ch=jour_fin\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
-		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fin\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 			<span class="legende">Dernier jour</span>
 
 			<input type="text" name="heure_fin" maxlenght="8" size="8" value="'.$heure_etab_fin.'" />
