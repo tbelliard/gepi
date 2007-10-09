@@ -96,6 +96,7 @@ $nb_cahier_note = mysql_num_rows($appel_cahier_notes);
 
 if ($nb_cahier_note == 0) {
    echo "<p class='grand'>Aucune données à afficher !</p>\n";
+   echo "</div>\n";
    echo "</body></html>";
    die();
 }
