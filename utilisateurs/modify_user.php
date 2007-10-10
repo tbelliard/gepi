@@ -282,9 +282,14 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
                     $msg="Les modifications ont bien été enregistrées !";
                 }
             }
-        } else {
-            $msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
-
+        } // elseif...
+		else {
+        	if (strlen($_POST['new_login']) > $longmax_login) {
+        		$msg = "L'identifiant est trop long, il ne doit pas dépasser ".$longmax_login." caractères.";
+        	}
+        	else {
+            	$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
+            }
         }
     }
 }
@@ -363,7 +368,7 @@ echo "<form enctype='multipart/form-data' name='form_choix_user' action='modify_
 <p class=bold>
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
 <?php
-// dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
+// dans le cas de LCS, existence d'utilisateurs locaux repérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
 if (isset($user_login) and ($user_login!='')) {
