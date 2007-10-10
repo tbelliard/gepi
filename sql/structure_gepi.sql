@@ -144,7 +144,7 @@ CREATE TABLE `vs_alerts_types` (`id_alert_type` int(11) NOT NULL auto_increment,
 DROP TABLE IF EXISTS `salle_cours`;
 CREATE TABLE `salle_cours` (`id_salle` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `numero_salle` VARCHAR( 10 ) NOT NULL , `nom_salle` VARCHAR( 50 ) NOT NULL);
 DROP TABLE IF EXISTS `edt_cours`;
-CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) collate latin1_general_ci NOT NULL, `id_salle` varchar(3) collate latin1_general_ci NOT NULL, `jour_semaine` varchar(10) collate latin1_general_ci NOT NULL, `id_definie_periode` varchar(3) collate latin1_general_ci NOT NULL, `duree` varchar(10) collate latin1_general_ci NOT NULL default '2', `heuredeb_dec` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_semaine` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_calendrier` varchar(3) collate latin1_general_ci NOT NULL default '0', `modif_edt` varchar(3) collate latin1_general_ci NOT NULL default '0', PRIMARY KEY  (`id_cours`));
+CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(3) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', PRIMARY KEY  (`id_cours`));
 DROP TABLE IF EXISTS `edt_setting`;
 CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL);
 DROP TABLE IF EXISTS `edt_calendrier`;
