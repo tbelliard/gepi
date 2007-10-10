@@ -136,8 +136,24 @@ if (isset($is_posted) and ($is_posted == 1)) {
 						id_classe = '$id_classe' and
 						periode = '$i')")) == 0) {
 							$call_data = mysql_query("INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0')");
-							if (!($reg_data)) $reg_ok = 'no';
+							if (!($reg_data))  {$reg_ok = 'no';}
 						}
+
+
+						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
+						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
+						$res_liste_grp_classe=mysql_query($sql);
+						if(mysql_num_rows($res_liste_grp_classe)>0){
+							while($lig_tmp=mysql_fetch_object($res_liste_grp_classe)){
+								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$login_eleve' AND id_groupe='$lig_tmp->id_groupe' AND periode='$i'";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)==0){
+									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
+									$insert_grp=mysql_query($sql);
+								}
+							}
+						}
+
 					}
 				}
 				$i++;
