@@ -4581,7 +4581,7 @@ if (isset ($_POST['maj'])) {
 		$result .= "&nbsp;->Création de la table 'edt_cours'<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_cours'"));
         if ($test1 == 0) {
-            $query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) collate latin1_general_ci NOT NULL, `id_salle` varchar(3) collate latin1_general_ci NOT NULL, `jour_semaine` varchar(10) collate latin1_general_ci NOT NULL, `id_definie_periode` varchar(3) collate latin1_general_ci NOT NULL, `duree` varchar(10) collate latin1_general_ci NOT NULL default '2', `heuredeb_dec` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_semaine` varchar(3) collate latin1_general_ci NOT NULL default '0', `id_calendrier` varchar(3) collate latin1_general_ci NOT NULL default '0', `modif_edt` varchar(3) collate latin1_general_ci NOT NULL default '0', PRIMARY KEY  (`id_cours`));");
+            $query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(3) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', PRIMARY KEY  (`id_cours`));");
             if ($query1) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4774,6 +4774,44 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
+
+
+		//===================================================
+		// AJOUT DU CHAMP id A LA TABLE eleves
+        $result .= "&nbsp;->Ajout du champ 'id' à la table 'eleves'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id'"));
+        if ($test1 == 0) {
+			$query2 = mysql_query("ALTER TABLE `eleves` ADD UNIQUE (`login`);");
+			if ($query2) {
+				$query3 = mysql_query("ALTER TABLE `eleves` DROP PRIMARY KEY;");
+				if ($query3) {
+					$query4 = mysql_query("ALTER TABLE `eleves` ADD `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ;");
+					if ($query4) {
+						$result .= "<font color=\"green\">Ok !</font><br />";
+					} else {
+						$result .= "<font color=\"red\">Erreur</font><br />";
+					}
+				} else {
+					$result .= "<font color=\"red\">Erreur</font><br />";
+				}
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		} else {
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+		//===================================================
+
+
+		//===================================================
+        $result .= "&nbsp;->Extension à 255 caractères du champ 'name' de la table 'preferences'<br />";
+		$query = mysql_query("ALTER TABLE `preferences` CHANGE `name` `name` VARCHAR( 255 ) NOT NULL;");
+        if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+		//===================================================
 
     }
 
