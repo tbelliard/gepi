@@ -129,7 +129,7 @@ echo "<h3>Liste des enseignements : </h3>\n";
 // sélection multiple avec choix de la période
 echo "<div style=\"text-align: center;\">\n";
 echo "   <fieldset>\n
-     <legend>Séléctionnez la (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
+     <legend>Séléctionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
 	//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
 	echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
 				echo "<br />\n";
