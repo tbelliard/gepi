@@ -65,6 +65,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	} else {
 		// On est en mode 'classe'
 		if ($_POST['classe'] == "all") {
+			/*
 			$quels_parents = mysql_query("SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
 					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"r.login = '' AND " .
@@ -72,8 +73,20 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"re.ele_id = e.ele_id AND " .
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id)");
+			*/
+			$sql = "SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
+					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
+					"r.login = '' AND " .
+					"r.pers_id = re.pers_id AND " .
+					"re.ele_id = e.ele_id AND " .
+					"e.login = jec.login AND " .
+					"jec.id_classe = c.id AND " .
+					"(re.resp_legal='1' OR re.resp_legal='2'))";
+			//echo "$sql<br />";
+			$quels_parents = mysql_query($sql);
 			if (!$quels_parents) $msg .= mysql_error();
 		} elseif (is_numeric($_POST['classe'])) {
+			/*
 			$quels_parents = mysql_query("SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
 					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"r.login = '' AND " .
@@ -81,10 +94,21 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"re.ele_id = e.ele_id AND " .
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."')");
+			*/
+			$sql="SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
+					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
+					"r.login = '' AND " .
+					"r.pers_id = re.pers_id AND " .
+					"re.ele_id = e.ele_id AND " .
+					"e.login = jec.login AND " .
+					"jec.id_classe = '" . $_POST['classe']."' AND " .
+					"(re.resp_legal='1' OR re.resp_legal='2'))";
+			//echo "$sql<br />";
+			$quels_parents = mysql_query($sql);
 			if (!$quels_parents) $msg .= mysql_error();
 		} else {
 			$error = true;
-			$msg .= "Vous devez sélectionner au moins une classe !<br/>";
+			$msg .= "Vous devez sélectionner au moins une classe !<br />";
 		}
 	}
 
@@ -157,43 +181,44 @@ if($nb==0){
 	echo "<p>Tous les responsables ont un login.</p>\n";
 }
 else{
-	echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>";
+	echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>\n";
 	if (getSettingValue("mode_generation_login") == null) {
-		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>";
+		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>\n";
 	}
 	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>";
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
 	}
 
-	echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.";
-	echo "<form action='create_responsable.php' method='post'>";
-	echo "<input type='hidden' name='mode' value='classe' />";
-	echo "<select name='classe' size='1'>";
-	echo "<option value='none'>Sélectionnez une classe</option>";
-	echo "<option value='all'>Toutes les classes</option>";
+	echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
+	echo "<form action='create_responsable.php' method='post'>\n";
+	echo "<input type='hidden' name='mode' value='classe' />\n";
+	echo "<select name='classe' size='1'>\n";
+	echo "<option value='none'>Sélectionnez une classe</option>\n";
+	echo "<option value='all'>Toutes les classes</option>\n";
 
 	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>";
+		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
-	echo "</select>";
-	echo "<input type='submit' name='Valider' value='Valider' />";
-	echo "</form>";
-	echo "<br/>";
-	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>";
-	echo "<table>";
+	echo "</select>\n";
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</form>\n";
+	echo "<br />\n";
+	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
+	echo "<table>\n";
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "<tr>";
 			echo "<td>";
-			echo "<form action='create_responsable.php' method='post'>";
-			echo "<input type='hidden' name='mode' value='individual'/>";
-			echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."'/>";
-			echo "<input type='submit' value='Créer'/>";
-			echo "</form>";
-			echo "<td>".$current_parent->nom." ".$current_parent->prenom."</td>";
-		echo "</tr>";
+			echo "<form action='create_responsable.php' method='post'>\n";
+			echo "<input type='hidden' name='mode' value='individual' />\n";
+			echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
+			echo "<input type='submit' value='Créer' />\n";
+			echo "</form>\n";
+			echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+		echo "</tr>\n";
 	}
-	echo "</table>";
+	echo "</table>\n";
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
