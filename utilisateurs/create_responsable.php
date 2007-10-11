@@ -176,6 +176,18 @@ require_once("../lib/header.inc");
 <?php
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 $quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
+/*
+$sql="SELECT rp.*, e.nom as ele_nom, e.prenom as ele_prenom,c.classe
+						FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec, classes c
+						WHERE rp.login='' AND
+							rp.pers_id=r.pers_id AND
+							r.ele_id=e.ele_id AND
+							(re.resp_legal='1' OR re.resp_legal='2') AND
+							jec.login=e.login AND
+							jec.id_classe=c.id
+						ORDER BY rp.nom,rp.prenom";
+$quels_parents = mysql_query($sql);
+*/
 $nb = mysql_num_rows($quels_parents);
 if($nb==0){
 	echo "<p>Tous les responsables ont un login.</p>\n";
@@ -207,15 +219,34 @@ else{
 	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
 	echo "<table>\n";
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
-		echo "<tr>";
-			echo "<td>";
-			echo "<form action='create_responsable.php' method='post'>\n";
-			echo "<input type='hidden' name='mode' value='individual' />\n";
-			echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
-			echo "<input type='submit' value='Créer' />\n";
-			echo "</form>\n";
-			echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
-		echo "</tr>\n";
+
+		$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
+				FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
+				WHERE r.pers_id='".$current_parent->pers_id."' AND
+					(r.resp_legal='1' OR r.resp_legal='2') AND
+					r.ele_id=e.ele_id AND
+					jec.login=e.login AND
+					jec.id_classe=c.id";
+		//echo "$sql<br />";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<tr>";
+				echo "<td valign='top'>";
+				echo "<form action='create_responsable.php' method='post'>\n";
+				echo "<input type='hidden' name='mode' value='individual' />\n";
+				echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
+				echo "<input type='submit' value='Créer' />\n";
+				echo "</form>\n";
+				echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+
+				//echo "<td>Responsable légal de:</td>\n";
+				echo "<td>\n";
+				while($lig_ele=mysql_fetch_object($test)){
+					echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
+				}
+				echo "</td>\n";
+			echo "</tr>\n";
+		}
 	}
 	echo "</table>\n";
 }
