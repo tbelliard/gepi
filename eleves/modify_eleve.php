@@ -1005,6 +1005,7 @@ if(isset($definir_etab)){
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
+//echo "\$eleve_login=$eleve_login<br />";
 
 echo "<table>\n";
 echo "<tr>\n";
@@ -1118,6 +1119,24 @@ if(isset($reg_no_gep)){
 	echo "</div>\n";
 	echo "</td>\n";
 }
+
+
+// Lien vers les inscriptions à des groupes:
+if(isset($eleve_login)){
+	echo "<td>\n";
+	$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
+	$res_grp1=mysql_query($sql);
+	if(mysql_num_rows($res_grp1)==0){
+		echo "L'élève n'est encore associé à aucune classe.";
+	}
+	else{
+		while($lig_classe=mysql_fetch_object($res_grp1)){
+			echo "Elève de <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe'>$lig_classe->classe</a><br />\n";
+		}
+	}
+	echo "</td>\n";
+}
+
 echo "</tr>\n";
 echo "</table>\n";
 
