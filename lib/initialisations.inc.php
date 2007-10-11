@@ -121,4 +121,10 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Session related functions
    require_once("../lib/session.inc");
 }
+
+	// Modif pour la longueur des logins par $longmax_login du global.inc
+	if(isset($grrSettings['longmax_login'])){
+		$longmax_login = $grrSettings['longmax_login'];
+	}
+
 ?>

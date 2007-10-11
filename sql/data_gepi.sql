@@ -553,3 +553,4 @@ INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');
 INSERT INTO setting VALUES ('edt_calendrier_ouvert', 'y');
 INSERT INTO setting VALUES ('active_annees_anterieures', 'n');
 INSERT INTO setting VALUES ('active_notanet', 'n');
+INSERT INTO setting VALUES ('longmax_login', '10');

@@ -230,6 +230,22 @@ if (isset($_POST['mode_generation_login'])) {
     if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
         $msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
     }
+    // On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
+    		$nbre_carac = 12;
+    	if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
+    		$nbre_carac = 8;
+    	}
+    	elseif ($_POST['mode_generation_login'] == 'fname19' OR $_POST['mode_generation_login'] == 'firstdotname19') {
+			$nbre_carac = 19;
+		}
+		elseif ($_POST['mode_generation_login'] == 'firstdotname') {
+			$nbre_carac = 30;
+		}
+		else {
+			$nbre_carac = 12;
+		}
+    $req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
+    $modif_maxlong = mysql_query($req);
 }
 
 if (isset($_POST['gepi_pmv'])) {
