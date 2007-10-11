@@ -106,7 +106,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 //
 // actions si un nouvel utilisateur a été défini
 //
-        if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
+        if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
             $_POST['new_login'] = strtoupper($_POST['new_login']);
             $reg_password_c = md5($NON_PROTECT['password1']);
             $resultat = "";
