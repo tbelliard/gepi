@@ -363,7 +363,7 @@ if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") {
           De
           <select name="d_heure_absence_eleve">
           <?php
-          $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
+          $requete_pe = ("SELECT * FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode ASC");
           $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
           ?><option value="" <?php if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
           while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
@@ -373,7 +373,7 @@ if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") {
           &nbsp;A&nbsp;
           <select name="a_heure_absence_eleve">
           <?php
-          $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
+          $requete_pe = ("SELECT * FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode ASC");
           $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
           ?><option value="" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
           while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
@@ -453,8 +453,8 @@ $current_groupe = get_group($classe);
         //if(empty($classe) and !empty($eleve_initial) and empty($eleve_absent)) {$requete_liste_eleve ="SELECT * FROM eleves WHERE eleves.nom  LIKE '".$eleve_initial."%' GROUP BY nom, prenom"; }
         //if(!empty($classe) and empty($eleve_initial) and empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
         //if(empty($classe) and empty($eleve_initial) and !empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login = '".$eleve_absent[0]."' AND eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
-		$requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom";
-        $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+		$requete_liste_eleve ="SELECT e.login, e.nom, e.prenom, e.elenoet, e.sexe FROM eleves e, groupes g, j_eleves_groupes jeg WHERE e.login = jeg.login AND jeg.id_groupe = g.id AND g.id = '".$classe."' GROUP BY nom, prenom";
+        $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL ! (requete_liste_eleve) '.$requete_liste_eleve.'<br />'.mysql_error());
         $cpt_eleve = '0';
         $ic = '1';
         while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve))
