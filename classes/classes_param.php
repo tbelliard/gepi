@@ -356,7 +356,9 @@ while ($per < $max_periode) {
     </td>
     <td>
 	<?php
-		echo "<input type='checkbox' value='y' name='display_mat_cat_".$per."' />\n";
+		//echo "<input type='checkbox' value='y' name='display_mat_cat_".$per."' />\n";
+		echo "<input type='radio' value='y' name='display_mat_cat_".$per."' />Oui\n";
+		echo "<input type='radio' value='n' name='display_mat_cat_".$per."' />Non\n";
 	?>
     </td>
 </tr>
