@@ -189,14 +189,49 @@ if (isset($is_posted) and ($is_posted == '1')) {
 $titre_page = "Gestion des classes | Modifier les paramètres";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
+
+$id_class_prec=0;
+$id_class_suiv=0;
+
+if (isset($id_classe)) {
+	// =================================
+	// AJOUT: boireaus
+	$sql="SELECT id, classe FROM classes ORDER BY classe";
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+}
+
+echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+
 </p>
 <p><b>Remarque : </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
 
 <?php
 
 if (isset($id_classe)) {
+
 	$call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_nom_class, 0, 'classe');
 	$nom_complet = mysql_result($call_nom_class, 0, 'nom_complet');
