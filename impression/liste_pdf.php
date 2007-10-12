@@ -167,7 +167,7 @@ $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
 $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"] : NULL;
-if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;} 
+if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;}
 if (!(is_numeric($id_periode))) {
 	$id_periode=1;
 }
@@ -209,7 +209,7 @@ if ($id_liste_groupes!=NULL) {
 		} elseif ($id_classe!=NULL) { // C'est une classe
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
 		} //fin c'est une classe
-			
+
 		//IMPRESSION A LA CHAINE
 		if ($id_liste_groupes!=NULL) {
 			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves);
@@ -221,7 +221,7 @@ if ($id_liste_groupes!=NULL) {
 			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
 		}
-	
+
 		// CALCUL de VARIABLES
 		//Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne
 		if ($option_tout_une_page == 1) {
@@ -282,7 +282,7 @@ if ($id_liste_groupes!=NULL) {
 			}
 
 			if (($option_affiche_pp==1)) {
-			   if ($id_groupe == NULL) {	  
+			   if ($id_groupe == NULL) {
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
 				   $pdf->SetFont($caractere_utilise,'I',8.5);
                }
@@ -304,14 +304,14 @@ if ($id_liste_groupes!=NULL) {
 				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
 				   $call_profsuivi_eleve = mysql_query($sql);
 				   $current_eleve_profsuivi_login = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
-	
+
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			   }
 			}
 
 			else {
               // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
-			  if ($id_groupe != NULL) {	  
+			  if ($id_groupe != NULL) {
                 $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
 				$res_per=mysql_query($sql);
 				if(mysql_num_rows($res_per)==0){
@@ -327,11 +327,11 @@ if ($id_liste_groupes!=NULL) {
 			  //$pdf->CellFitScale($L_entete_classe,$H_entete_classe,' '.$current_classe,'LTRB',2,'C');
 			}
 
-			
+
 			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
 			$pdf->SetFont($caractere_utilise,'B',14);
 
-			
+
 			//Si on peut connaître le nom de la matière (id_groupe existe !)
 			if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
@@ -426,7 +426,7 @@ if ($id_liste_groupes!=NULL) {
 							$pdf->Cell($l_cell_nom,$h_cell,'','R',0,'C',0);
 						  }
 					}
-					
+
 					for($i=0; $i < $nb_colonne ; $i++) {
 						$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
 						if ($i<$nb_max_col_ligne) {
@@ -446,7 +446,7 @@ if ($id_liste_groupes!=NULL) {
 
 				$nb_ligne_avant = $nb_ligne_avant_initial;
 			}
-			
+
 			// Le tableau
 			while($nb_eleves_i < $nb_eleves) {
 				$y_tmp = $pdf->GetY();
@@ -517,9 +517,10 @@ if ($id_liste_groupes!=NULL) {
 			  }
 			}
 		} // FOR
-		
+
 	// sortie PDF sur écran
 	$nom_releve=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
+	header('Content-Type: application/pdf');
 	$pdf->Output($nom_releve,'I');
 ?>
