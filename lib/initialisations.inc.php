@@ -123,6 +123,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
 }
 
 	// Modif pour la longueur des logins par $longmax_login du global.inc
+	// Si le champ de setting existe alors il faut l'utiliser car il est réglé par la page param_gen.php
 	if(isset($grrSettings['longmax_login'])){
 		$longmax_login = $grrSettings['longmax_login'];
 	}

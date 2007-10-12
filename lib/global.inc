@@ -14,6 +14,7 @@ $weekstarts = 1;
 // longueur maximale autorisée d'un identifiant (attention, ceci n'est pas valable
 // lors de l'import depuis GEP, mais seulement lors de la création manuelle d'un
 // utilisateur
+// Cette longueur est liée avec le réglage longmax_login de la table setting (voir initialisatins.inc.php)
 $longmax_login = "10";
 
 // caracteres speciaux pour les mots de passe
