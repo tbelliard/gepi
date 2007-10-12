@@ -4797,21 +4797,27 @@ if (isset ($_POST['maj'])) {
         $result .= "&nbsp;->Ajout du champ 'id' à la table 'eleves'<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id'"));
         if ($test1 == 0) {
-			$query2 = mysql_query("ALTER TABLE `eleves` ADD UNIQUE (`login`);");
-			if ($query2) {
-				$query3 = mysql_query("ALTER TABLE `eleves` DROP PRIMARY KEY;");
-				if ($query3) {
-					$query4 = mysql_query("ALTER TABLE `eleves` ADD `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ;");
-					if ($query4) {
-						$result .= "<font color=\"green\">Ok !</font><br />";
+			$test2 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id_eleve'"));
+			if ($test2 == 0) {
+				$query2 = mysql_query("ALTER TABLE `eleves` ADD UNIQUE (`login`);");
+				if ($query2) {
+					$query3 = mysql_query("ALTER TABLE `eleves` DROP PRIMARY KEY;");
+					if ($query3) {
+						$query4 = mysql_query("ALTER TABLE `eleves` ADD `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ;");
+						if ($query4) {
+							$result .= "<font color=\"green\">Ok !</font><br />";
+						} else {
+							$result .= "<font color=\"red\">Erreur</font><br />";
+						}
 					} else {
 						$result .= "<font color=\"red\">Erreur</font><br />";
 					}
 				} else {
 					$result .= "<font color=\"red\">Erreur</font><br />";
 				}
-			} else {
-				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+			else{
+				$result .= "<font color=\"blue\">Le champ a déjà été traité.</font><br />";
 			}
 		} else {
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
@@ -4828,6 +4834,35 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 		}
 		//===================================================
+
+		//===================================================
+        $result .= "&nbsp;->Modification du champ 'id' de la table 'eleves' en 'id_eleve'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id'"));
+		$test2 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id_eleve'"));
+        if ($test1 == 0) {
+			if ($test2 == 0) {
+				$result .= "<font color=\"red\">Le champ n'existe pas !!!</font><br />";
+			}
+			else{
+				$result .= "<font color=\"blue\">Le champ a déjà été traité !</font><br />";
+			}
+		}
+		else{
+			if ($test2 == 0) {
+				$query = mysql_query("ALTER TABLE `eleves` CHANGE `id` `id_eleve` INT( 11 ) NOT NULL AUTO_INCREMENT;");
+				if ($query) {
+					$result .= "<font color=\"green\">Ok !</font><br />";
+				} else {
+					$result .= "<font color=\"red\">Erreur</font><br />";
+				}
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur: Vous avez à la fois le champ 'id' et le champ 'id_eleve' !</font><br />";
+			}
+		}
+		//===================================================
+
+
 
     }
 

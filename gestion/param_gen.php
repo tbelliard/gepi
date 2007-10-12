@@ -390,7 +390,7 @@ require_once("../lib/header.inc");
     </tr>
     <tr>
         <td style="font-variant: small-caps;">
-        Longueur minimale du mot de passse :</td>
+        Longueur minimale du mot de passe :</td>
         <td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" />
         </td>
     </tr>
