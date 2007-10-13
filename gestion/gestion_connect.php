@@ -190,11 +190,11 @@ echo "<h3 class='gepi'>Activation/désactivation des connexions</h3>";
 echo "<p><b>ATTENTION : </b>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs. De plus, les utilisateurs actuellement connectés sont automatiquement déconnectés.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">";
 echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
-if (getSettingValue("disable_login")=='yes') echo " checked ";
+if (getSettingValue("disable_login")=='no') echo " checked ";
 echo " /> <label for='label_1a'>Désactiver les connexions</label>";
 
 echo "<br /><input type='radio' name='disable_login' value='no' id='label_2a'";
-if (getSettingValue("disable_login")=='no') echo " checked ";
+if (getSettingValue("disable_login")=='yes') echo " checked ";
 echo " /> <label for='label_2a'>Activer les connexions</label>";
 
 echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>";
