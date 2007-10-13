@@ -259,18 +259,43 @@ echo "<p><b>Liste des comptes responsables existants</b> :\n";
 ?>
 <table border="1">
 <tr>
-	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
+	<th>Identifiant</th>
+	<th>Nom Prénom</th>
+	<th>Responsable de</th>
+	<th>Etat</th>
+	<th>Actions</th>
 </tr>
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
 while ($current_parent = mysql_fetch_object($quels_parents)) {
-	echo "<tr>\n";
+	echo "<tr style='text-align:center;'>\n";
 		echo "<td>";
 			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."'>".$current_parent->login."</a>";
 		echo "</td>\n";
 		echo "<td>";
 			echo $current_parent->nom . " " . $current_parent->prenom;
+		echo "</td>\n";
+		echo "<td>";
+		$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM eleves e,
+												j_eleves_classes jec,
+												classes c,
+												responsables2 r
+											WHERE e.login=jec.login AND
+												jec.id_classe=c.id AND
+												r.ele_id=e.ele_id AND
+												r.pers_id='$current_parent->pers_id'
+											ORDER BY e.nom,e.prenom";
+		$res_enfants=mysql_query($sql);
+		//echo "$sql<br />";
+		if(mysql_num_rows($res_enfants)==0){
+			echo "<span style='color:red;'>Aucun élève</span>";
+		}
+		else{
+			while($current_enfant=mysql_fetch_object($res_enfants)){
+				echo ucfirst(strtolower($current_enfant->prenom))." ".strtoupper($current_enfant->nom)." (<i>".$current_enfant->classe."</i>)<br />\n";
+			}
+		}
 		echo "</td>\n";
 		echo "<td align='center'>";
 			if ($current_parent->etat == "actif") {
