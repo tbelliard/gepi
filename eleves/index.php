@@ -598,13 +598,21 @@ if (!isset($quelles_classes)) {
 	echo "<table border='1' cellpadding='2' class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Identifiant</p></td>\n";
-	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes'>Nom Prénom</a></p></td>\n";
-	echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes'>Sexe</a></p></td>\n";
-	echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes'>Date de naissance</a></p></td>\n";
+	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
+	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	echo "'>Nom Prénom</a></p></td>\n";
+	echo "<td><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
+	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	echo "'>Sexe</a></p></td>\n";
+	echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
+	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	echo "'>Date de naissance</a></p></td>\n";
 	if ($quelles_classes == 'na') {
 		echo "<td><p>Classe</p></td>\n";
 	} else {
-		echo "<td><p><a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes'>Classe</a></p></td>\n";
+		echo "<td><p><a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
+		if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+		echo "'>Classe</a></p></td>\n";
 	}
 //    echo "<td><p>Classe</p></td>";
 	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
@@ -641,9 +649,25 @@ if (!isset($quelles_classes)) {
 		ORDER BY $order_type
 		");
 	} else if ($quelles_classes == 'incomplet') {
+		/*
 		$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
 		ORDER BY $order_type
 		");
+		*/
+		if(ereg('classe',$order_type)){
+			$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+				WHERE (e.elenoet='' OR e.no_gep='') AND
+						jec.login=e.login AND
+						c.id=jec.id_classe
+				ORDER BY $order_type";
+		}
+		else{
+			$sql="SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
+											ORDER BY $order_type";
+		}
+		//echo "$sql<br />\n";
+		$calldata = mysql_query($sql);
+
 	} else if ($quelles_classes == 'photo') {
 		//$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
 		$sql="SELECT * FROM eleves WHERE elenoet!='';";
@@ -673,9 +697,24 @@ if (!isset($quelles_classes)) {
 			*/
 		}
 	} else if ($quelles_classes == 'recherche') {
+		/*
 		$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
 		ORDER BY $order_type
 		");
+		*/
+		if(ereg('classe',$order_type)){
+			$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+				WHERE nom like '".$motif_rech."%' AND
+						jec.login=e.login AND
+						c.id=jec.id_classe
+				ORDER BY $order_type";
+		}
+		else{
+			$sql="SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
+											ORDER BY $order_type";
+		}
+		//echo "$sql<br />\n";
+		$calldata = mysql_query($sql);
 	}
 
 
