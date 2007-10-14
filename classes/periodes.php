@@ -129,6 +129,35 @@ $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_clas
 $test_periode = mysql_num_rows($periode_query) ;
 include "../lib/periodes.inc.php";
 
+
+
+// =================================
+// AJOUT: boireaus
+$sql="SELECT id, classe FROM classes ORDER BY classe";
+$res_class_tmp=mysql_query($sql);
+if(mysql_num_rows($res_class_tmp)>0){
+	$id_class_prec=0;
+	$id_class_suiv=0;
+	$temoin_tmp=0;
+	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+		if($lig_class_tmp->id==$id_classe){
+			$temoin_tmp=1;
+			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$id_class_suiv=$lig_class_tmp->id;
+			}
+			else{
+				$id_class_suiv=0;
+			}
+		}
+		if($temoin_tmp==0){
+			$id_class_prec=$lig_class_tmp->id;
+		}
+	}
+}
+// =================================
+
+
+
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Gestion des périodes";
 require_once("../lib/header.inc");
@@ -138,6 +167,10 @@ require_once("../lib/header.inc");
 
 <form enctype="multipart/form-data" method="post" action="periodes.php">
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
+<?php
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+?>
 </p>
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
