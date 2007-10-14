@@ -143,6 +143,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 		$eleve_nom[$cpt_eleve] = $donnee_liste_eleve['nom'];
 		$eleve_prenom[$cpt_eleve] = $donnee_liste_eleve['prenom'];
 		$eleve_classe[$cpt_eleve] = $donnee_liste_eleve['nom_complet'];
+		$eleve_classe_court[$cpt_eleve] = $donnee_liste_eleve['classe'];
 		$eleve_elenoet[$cpt_eleve] = $donnee_liste_eleve['elenoet'];
 		$photo = "../photos/eleves/".$eleve_elenoet[$cpt_eleve].".jpg";
 		if(file_exists($photo)) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
@@ -168,7 +169,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 		    ?><tr style="<?php echo $couleur_cellule; ?>">
 		        <td style="text-align: left;"><?php echo $eleve_nom[$cpt_eleve]; ?></td>
 		        <td style="text-align: left;"><?php echo $eleve_prenom[$cpt_eleve]; ?></td>
-		        <td style="text-align: center;"><?php echo $eleve_classe[$cpt_eleve]; ?></td>
+		        <td style="text-align: center;"><?php echo $eleve_classe[$cpt_eleve].' ('.$eleve_classe_court[$cpt_eleve].')'; ?></td>
 		        <td style="text-align: center;"><?php echo $eleve_elenoet[$cpt_eleve]; ?></td>
 		      </tr><?php
 		}
@@ -182,7 +183,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 if ( $sousrub === 'vp' ) {
 
 	$cpt_personnel = '0';
-	$requete_liste_personnel = "SELECT * FROM ".$prefix_base."utilisateurs u ORDER BY nom, prenom ASC";
+	$requete_liste_personnel = "SELECT * FROM ".$prefix_base."utilisateurs u WHERE u.statut='professeur' ORDER BY nom, prenom ASC";
 	$resultat_liste_personnel = mysql_query($requete_liste_personnel) or die('Erreur SQL !'.$requete_liste_personnel.'<br />'.mysql_error());
         while ( $donnee_liste_personnel = mysql_fetch_array ($resultat_liste_personnel))
 	{
