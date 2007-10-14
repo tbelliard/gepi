@@ -302,8 +302,92 @@ Cette adresse doit être déjà associée à votre compte au sein de Gepi.
 
 <?php } ?>
 
+<script language="javascript" type="text/javascript">
+<!--
+	//function mel(destinataire){
+	//	chaine_mel = "mailto:"+destinataire+"?subject=[GEPI]";
+	function pigeon(a,b){
+		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+
+	/*
+	function pigeon2(tab){
+		chaine_tmp="";
+		for(i=0;i<tab.length;i=i+2){
+			chaine_tmp=chaine_tmp+","+tab[i]+"_CHEZ_"+tab[i+1];
+		}
+		alert("chaine_tmp="+chaine_tmp);
+		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+	*/
+
+	function pigeon2(){
+		chaine_tmp="";
+		for(i=0;i<adm_adr.length;i=i+2){
+			chaine_tmp=chaine_tmp+","+adm_adr[i]+"_CHEZ_"+adm_adr[i+1];
+		}
+		chaine_tmp=chaine_tmp.substring(1);
+		//alert("chaine_tmp="+chaine_tmp);
+		chaine_mel = "mailto:"+chaine_tmp+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+
+
+-->
+</script>
+
 <div class="center" style="margin-bottom: 32px;">
-<p>[<a href="mailto:<?php echo getSettingValue("gepiAdminAdress"); ?>">contacter l'administrateur</a>]</p>
+<?php
+	if(getSettingValue("gepiAdminAdressPageLogin")!='n'){
+		$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+		//$tmp_adr=explode("@",$gepiAdminAdress);
+		//echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> \n");
+
+		//echo "$gepiAdminAdress<br />";
+
+		$compteur=0;
+		$tab_adr=array();
+		$tmp_adr1=explode(",",$gepiAdminAdress);
+		for($i=0;$i<count($tmp_adr1);$i++){
+			//echo "\$tmp_adr1[$i]=$tmp_adr1[$i]<br />";
+			$tmp_adr2=explode("@",$tmp_adr1[$i]);
+			//echo "\$tmp_adr2[0]=$tmp_adr2[0]<br />";
+			//echo "\$tmp_adr2[1]=$tmp_adr2[1]<br />";
+			if((isset($tmp_adr2[0]))&&(isset($tmp_adr2[1]))) {
+				$tab_adr[$compteur]=$tmp_adr2[0];
+				$compteur++;
+				$tab_adr[$compteur]=$tmp_adr2[1];
+				$compteur++;
+			}
+		}
+
+		echo "<script type='text/javascript'>\n";
+		echo "adm_adr=new Array();\n";
+		for($i=0;$i<count($tab_adr);$i++){
+			echo "adm_adr[$i]='$tab_adr[$i]';\n";
+		}
+		echo "</script>\n";
+
+		if(count($tab_adr)>0){
+			//echo("<a href=\"javascript:pigeon2(adm_adr);\">[Contacter l'administrateur]</a> \n");
+			echo("<p><a href=\"javascript:pigeon2();\">[Contacter l'administrateur]</a></p>\n");
+		}
+	}
+?>
 </div>
 <div id="login_footer">
 <a href="http://gepi.mutualibre.org">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />

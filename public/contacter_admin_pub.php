@@ -40,6 +40,53 @@ require_once("./lib/header.inc");
 
 ?>
 <H1 class='gepi'>GEPI - Obtenir de l'aide de l'administrateur.</H1>
+<script language="javascript" type="text/javascript">
+<!--
+	//function mel(destinataire){
+	//	chaine_mel = "mailto:"+destinataire+"?subject=[GEPI]";
+	function pigeon(a,b){
+		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+
+	/*
+	function pigeon2(tab){
+		chaine_tmp="";
+		for(i=0;i<tab.length;i=i+2){
+			chaine_tmp=chaine_tmp+","+tab[i]+"_CHEZ_"+tab[i+1];
+		}
+		alert("chaine_tmp="+chaine_tmp);
+		chaine_mel = "mailto:"+a+"_CHEZ_"+b+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+	*/
+
+	function pigeon2(){
+		chaine_tmp="";
+		for(i=0;i<adm_adr.length;i=i+2){
+			chaine_tmp=chaine_tmp+","+adm_adr[i]+"_CHEZ_"+adm_adr[i+1];
+		}
+		chaine_tmp=chaine_tmp.substring(1);
+		//alert("chaine_tmp="+chaine_tmp);
+		chaine_mel = "mailto:"+chaine_tmp+"?subject=[GEPI]";
+		//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
+		//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
+		chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+		//chaine_mel += "&body=Bonjour";
+		location.href = chaine_mel;
+	}
+
+
+-->
+</script>
 <?php
 
 switch($action)
@@ -74,10 +121,43 @@ default://formulaire d'envoi
     echo "<tr><td>Nom et prénom de l'administrateur&nbsp;: </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
 
     echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
-    echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b> ou bien rédigez votre message ci-dessous : </td><td></tr>";
+
+    echo "<tr><td colspan=2>Cliquer <b>";
+	
+	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+	//$tmp_adr=explode("@",$gepiAdminAdress);
+	//echo("<a href=\"javascript:pigeon('$tmp_adr[0]','$tmp_adr[1]');\">[Contacter l'administrateur]</a> \n");
+
+	//echo "$gepiAdminAdress<br />";
+	$compteur=0;
+	$tab_adr=array();
+	$tmp_adr1=explode(",",$gepiAdminAdress);
+	for($i=0;$i<count($tmp_adr1);$i++){
+		//echo "\$tmp_adr1[$i]=$tmp_adr1[$i]<br />";
+		$tmp_adr2=explode("@",$tmp_adr1[$i]);
+		//echo "\$tmp_adr2[0]=$tmp_adr2[0]<br />";
+		//echo "\$tmp_adr2[1]=$tmp_adr2[1]<br />";
+		if((isset($tmp_adr2[0]))&&(isset($tmp_adr2[1]))) {
+			$tab_adr[$compteur]=$tmp_adr2[0];
+			$compteur++;
+			$tab_adr[$compteur]=$tmp_adr2[1];
+			$compteur++;
+		}
+	}
+	echo "<script type='text/javascript'>\n";
+	echo "adm_adr=new Array();\n";
+	for($i=0;$i<count($tab_adr);$i++){
+		echo "adm_adr[$i]='$tab_adr[$i]';\n";
+	}
+	echo "</script>\n";
+
+	if(count($tab_adr)>0){
+		//echo("<a href=\"javascript:pigeon2(adm_adr);\">[Contacter l'administrateur]</a> \n");
+		echo("<a href=\"javascript:pigeon2();\"> ici </a>\n");
+	}
+	echo "</b> ou bien rédigez votre message ci-dessous : </td><td></tr>";
     echo "</table>";
     ?>
-
 
     <input type="hidden" name="action" value="envoi" />
     <textarea name="message" cols="80" rows="8">Contenu du message : </textarea><br />
