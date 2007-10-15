@@ -264,7 +264,24 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
 <p class=bold>
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h3>Gérer les élèves de l'enseignement : <?php echo htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ")";?></h3>
+
+<?php
+	echo "<h3>Gérer les élèves de l'enseignement : ";
+	echo htmlentities($current_group["description"]) . " (<i>" . $current_group["classlist_string"] . "</i>)";
+	echo "</h3>\n";
+	//$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
+	if(count($current_group["profs"]["users"])>0){
+		echo "<p>Cours dispensé par ";
+		$cpt_prof=0;
+		foreach($current_group["profs"]["users"] as $tab_prof){
+			if($cpt_prof>0){echo ", ";}
+			echo ucfirst(strtolower($tab_prof['prenom']))." ".strtoupper($tab_prof['nom']);
+			$cpt_prof++;
+		}
+		echo ".</p>\n";
+	}
+?>
+
 <p>
 <b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout décocher</a></b>
 </p>
