@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier d'initialisation de l'EdT par des fichiers CSV
+ * Fichier d'initiapsation de l'EdT par des fichiers CSV
  *
  * @version $Id$
  * @copyright 2007
@@ -206,7 +206,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		}
 	} // if ($action == "upload_file_salle")
 
-	// Pour la liste de <li>, on précise les contenus des infobulles
+	// Pour la liste de <p>, on précise les contenus des infobulles
 		$forme_matiere = mysql_fetch_array(mysql_query("SELECT matiere, nom_complet FROM matieres"));
 			$aff1_forme_matiere = $forme_matiere["matiere"];
 			$aff2_forme_matiere = $forme_matiere["nom_complet"];
@@ -220,26 +220,30 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	$contenu_datedebut = "Pour les cours qui n'ont pas lieux toute l'année, précisez la date de début (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ = 0.";
 	$contenu_datefin = "Pour les cours qui n'ont pas lieux toute l'année, précisez la date de fin (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ = 0.";
 ?>
-<br />
+
 L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs &eacute;tapes:
-<br />
-<ul id="lien">
-<br />
-	<li class="refus"><h4>Premi&egrave;re &eacute;tape</h4></li>
-	Pour &eacute;viter de multiplier les r&eacute;glages, une partie de l'initialisation
-	se fait par le module absence : les diff&eacute;rents cr&eacute;neaux de la journ&eacute;e, le type de semaine (paire ou impaire) et les horaires de l'&eacute;tablissement.
-	Il faut aller dans le module absence m&ecirc;me si vous ne l'utilisez pas en cliquant sur ce <a href="../mod_absences/admin/index.php">lien</a>, dans la partie intitul&eacute;e "Configuration avanc&eacute;e".
-	 <center><span class="refus"><h3>ATTENTION !</h3></span></center>Il ne faut pas pr&eacute;ciser les temps de pause (r&eacute;cr&eacute;ation) et les types de semaine doivent &ecirc;tre 1 ou 2 (impair et pair)
-	 pour pouvoir utiliser l'emploi du temps.<br />
-<br />
-	<li class="refus"><h4>Deuxi&egrave;me &eacute;tape</h4></li>
-	Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
-	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ...
-<br />
-	<li class="refus"><h4>Troisi&egrave;me &eacute;tape</h4></li>
-	<p>Attention, cette initialisation efface toutes les donn&eacute;es d&eacute;j&agrave; pr&eacute;sentes </p>
-	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.<br />
-	<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : <ul><li>num&eacute;ro salle (5 caract&egrave;res max.)</li><li>nom salle (30 caract&egrave;res max.)</li></ul></p>
+
+<hr />
+	<h4 class='refus'>Premi&egrave;re &eacute;tape</h4>
+	<p>Pour &eacute;viter de multiplier les r&eacute;glages, une partie de l'initialisation
+	se fait par le module absences : les diff&eacute;rents cr&eacute;neaux de la journ&eacute;e, le type de semaine (paire ou impaire) et les horaires de l'&eacute;tablissement.
+	Il faut aller dans le module absence m&ecirc;me si vous ne l'utilisez pas en cliquant sur ce <a href="../mod_absences/admin/index.php">lien</a>, dans la partie intitul&eacute;e "Configuration avanc&eacute;e".</p>
+	 <center><h3 class='red'>ATTENTION !</h3></center>
+	 <p>Il ne faut pas pr&eacute;ciser les temps de pause (r&eacute;cr&eacute;ation) et les types de semaine doivent &ecirc;tre 1 ou 2 (impair et pair)
+	 pour pouvoir utiliser l'emploi du temps.</p>
+<hr />
+	<h4 class='refus'>Deuxi&egrave;me &eacute;tape</h4>
+	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
+	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ...</p>
+<hr />
+	<h4 class='refus'>Troisi&egrave;me &eacute;tape</h4>
+	<p>Attention, cette initialisation efface toutes les donn&eacute;es d&eacute;j&agrave; pr&eacute;sentes
+	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
+	<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>
+	<ol>
+		<li>num&eacute;ro salle (5 caract&egrave;res max.)</li>
+		<li>nom salle (30 caract&egrave;res max.)</li>
+	</ol>
 	<p>Veuillez préciser le nom complet du fichier <b>g_salles.csv</b>.</p>
 	<form enctype='multipart/form-data' action='edt_init_csv.php' method='post'>
 		<input type='hidden' name='action' value='upload_file_salle' />
@@ -248,13 +252,13 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 		<p><input type="file" size="80" name="csv_file" /></p>
 		<p><input type='submit' value='Valider' /></p>
 	</form>
-	</div>
-<br />
-	<li class="refus"><h4>Quatri&egrave;me &eacute;tape</h4></li>
-	<span class='red'>Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
-	<p>Pour l'emploi du temps, vous devez fournir un fichier csv dont les champs suivants
-	 doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :
-	<ul>
+
+<hr />
+	<h4 class='refus'>Quatri&egrave;me &eacute;tape</h4>
+	<p><span class='red'>Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
+	Pour l'emploi du temps, vous devez fournir un fichier csv dont les champs suivants
+	 doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>
+	<ol>
 	 	<li>nom professeur</li>
 		<li>prenom professeur</li>
 		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('matiere','Y',10,10);return false;\">matiere</a>\n".creer_div_infobulle("matiere", "La matière", "#330033", $contenu_matiere, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
@@ -266,8 +270,8 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('typesemaine','Y',10,10);return false;\">type semaine</a>\n".creer_div_infobulle("typesemaine", "Type de semaine", "#330033", $contenu_typesemaine, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
 		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('datedebut','Y',10,10);return false;\">date debut</a>\n".creer_div_infobulle("datedebut", "Date de début", "#330033", $contenu_datedebut, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
 		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('datefin','Y',10,10);return false;\">date fin</a>\n".creer_div_infobulle("datefin", "Date de fin", "#330033", $contenu_datefin, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-	</ul>
-	</p>
+	</ol>
+
 	<p>Veuillez préciser le nom complet du fichier <b>g_edt.csv</b>.</p>
 		<form enctype='multipart/form-data' action='edt_init_csv.php' method='post'>
 			<input type='hidden' name='action' value='upload_file' />
@@ -276,11 +280,9 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 			<p><input type="file" size="80" name="csv_file" /></p>
 			<p><input type='submit' value='Valider' /></p>
 		</form>
+
 	</div>
-<br />
-</ul>
-	</div>
-<br />
+
 <?php
 // inclusion du footer
 require("../lib/footer.inc.php");
