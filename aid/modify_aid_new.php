@@ -41,7 +41,8 @@ $id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : (isset($_POST["id_ele
 //+++++++++++++++++ CSS AID++++++++
 $style_specifique = "aid/style_aid";
 //+++++++++++++++++ AJAX AID ++++++
-$javascript_specifique = "aid/aid_ajax";
+	// En attente de fonctionnement
+//$javascript_specifique = "aid/aid_ajax";
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des élèves dans les AID";
@@ -54,7 +55,7 @@ require_once("../lib/header.inc");
 		// Pour l'instant on récupère son login à partir de id_eleve
 		$rep_log_eleve = mysql_fetch_array(mysql_query("SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
 		// On vérifie s'il n'est pas déjà memndre de cet aid
-
+		// Par cette méthode, on ne peut enregistrer deux fois le même
 		$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
 
 	}
