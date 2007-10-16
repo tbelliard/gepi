@@ -417,6 +417,46 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			while ( $donner = mysql_fetch_array( $call_eleve ))
 			{
 				$login[$cpt_i] = $donner['login'];
+				//====================================================
+				$sexe[$cpt_i] = $donner['sexe'];
+
+				$sql="SELECT * FROM j_eleves_regime WHERE login='".$donner['login']."';";
+				$regime_doublant_eleve = mysql_query($sql);
+				if(mysql_num_rows($regime_doublant_eleve)>0){
+					$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+					$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+				}
+				else{
+					$current_eleve_regime = "ext.";
+					$current_eleve_doublant = "-";
+				}
+
+				if ($current_eleve_regime == "d/p") {$regime[$cpt_i]="demi-pensionnaire";}
+				if ($current_eleve_regime == "ext.") {$regime[$cpt_i]="externe";}
+				if ($current_eleve_regime == "int.") {$regime[$cpt_i]="interne";}
+				if ($current_eleve_regime == "i-e"){
+					if ($donner['sexe'] == "M"){
+						$regime[$cpt_i]="interne externé";
+					}
+					else{
+						$regime[$cpt_i]="interne externée";
+					}
+				}
+
+				if ($current_eleve_doublant == 'R'){
+					$redoublant[$cpt_i]="redoublant";
+					if ($donner['sexe'] == "F"){
+						$redoublant[$cpt_i]="redoublant";
+					}
+					else{
+						$redoublant[$cpt_i]="redoublant";
+					}
+				}
+				else{
+					$redoublant[$cpt_i]="";
+				}
+				//====================================================
+
 				$ele_id_eleve[$cpt_i] = $donner['ele_id'];
 				$nom[$cpt_i] = $donner['nom'];
 				$prenom[$cpt_i] = $donner['prenom'];
@@ -701,12 +741,14 @@ $passage_i = 1;
 		if($nb_releve_par_page=='2' and $passage_i == '1') { $Y_cadre_note = '32'; $Y_cadre_eleve = '5'; $Y_entete_etab='5'; }
 		if($nb_releve_par_page=='2' and $passage_i == '2') { $Y_cadre_note = $Y_cadre_note+145; $Y_cadre_eleve = $Y_cadre_eleve+145; $Y_entete_etab=$Y_entete_etab+145; }
 
-	//BLOC IDENTITEE ELEVE
+	//BLOC IDENTITE ELEVE
 		$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 		$pdf->SetFont($caractere_utilse,'B',14);
 		$pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,'');
 		$pdf->SetFont($caractere_utilse,'',10);
-		$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
+		//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
+		if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
+		$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($naissance[$nb_eleves_i]).', '.$regime[$nb_eleves_i],0,2,'');
 		$pdf->Cell(90,5,'',0,2,'');
 		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'</B>');
 		$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
