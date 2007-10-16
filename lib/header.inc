@@ -182,7 +182,7 @@ if(isset($javascript_specifique)){
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
 	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
 		// Javascript spécifique à une page:
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
+		echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 	}
 }
 
