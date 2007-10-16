@@ -1,0 +1,52 @@
+/* Stype spécifique aux  AID de Gepi */
+
+#aid_gauche {
+	/*position: absolute;*/
+	float: left;
+	width: 200px;
+	border: 2px dashed orange;
+	text-align: center;
+}
+
+.aid_tableau td:hover {
+	background-color: grey;
+}
+
+.aid_tableau a {
+	color: black;
+}
+
+.aid_tableau tr:hover {
+	background-color: silver;
+}
+
+#aid_droite {
+	float: right;
+	width: 300px;
+	border: 2px dotted blue;
+	padding: 5px;
+}
+
+#aid_centre {
+	position: relative;
+	margin-left: 200px;
+	margin-right: 400px;
+	padding-left: 20px;
+}
+
+.lignepaire {
+	background-color: silver;
+}
+
+.lignepaire:hover {
+	background-color: grey;
+}
+
+.aid_a a {
+	background-color: silver;
+}
+
+.aid_a a:hover {
+	background-color: grey;
+	color: black;
+}

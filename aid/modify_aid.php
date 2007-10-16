@@ -79,13 +79,17 @@ $nom_aid = @mysql_result($call_data, 0, "nom");
 $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 $aid_nom = mysql_result($calldata, 0, "nom");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
+
+// Ajout d'un style spécifique pour l'AID
+$style_specifique = "aid/style_aid";
+
 //**************** EN-TETE *********************
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></p>
 
 <?php if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
@@ -101,7 +105,7 @@ require_once("../lib/header.inc");
         $nom_prof = mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
         echo "<br /><b>";
-        echo "$nom_prof $prenom_prof</b> | <a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'><font size=2>supprimer</font></a>";
+        echo "$nom_prof $prenom_prof</b> | <a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'>\n<font size=2>supprimer</font></a>\n";
     $i++;
     }
     if ($vide == 1) {
@@ -139,8 +143,11 @@ if ($flag == "eleve") { ?>
     <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
 
     <p><span class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</span>
+    <hr />
     <?php
     $vide = 1;
+    // Ajout d'un tableau
+	echo "<table class=\"aid_tableau\">";
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
     $nombre = mysql_num_rows($call_liste_data);
@@ -153,21 +160,26 @@ if ($flag == "eleve") { ?>
 
         $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
-        echo "<br /><b>";
-        echo "$nom_eleve $prenom_eleve</b>, $classe_eleve   | <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><font size=2>supprimer</font></a>";
+        echo "<tr><td>\n";
+        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
+        echo "</td></tr>\n";
     $i++;
     }
+
+    echo "</table>";
+
     if ($vide == 1) {
         echo "<br /><font color = red>Il n'y a pas actuellement d'élèves dans cette AID !</font>";
     }
     $call_eleve = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e LEFT JOIN j_aid_eleves j ON (e.login = j.login  and j.indice_aid='$indice_aid') WHERE j.login is null order by e.nom, e.prenom");
     $nombreligne = mysql_num_rows($call_eleve);
     if ($nombreligne != 0) {
-        echo "<p><span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>";
-        echo "<br /><form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=post>";
-        echo "<select size=1 name=reg_add_eleve_login>";
+        echo "<br />\n<p><span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>\n";
+        echo "<a href=\"modify_aid_new.php?id_aid=".$aid_id."&amp;indice_aid=".$indice_aid."\">Lister les élèves par classe</a>\n";
+        echo "<br /><form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
+        echo "<select size=\"1\" name=\"reg_add_eleve_login\">";
         //echo "<option value=''><p>(aucun)</p></option>";
-        echo "<option value=''>(aucun)</option>";
+        echo "<option value=''>(aucun)</option>\n";
         $i = "0" ;
         while ($i < $nombreligne) {
             $eleve = mysql_result($call_eleve, $i, 'login');

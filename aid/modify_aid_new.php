@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * Document destiné à constituer les AID (élèves) en partant d'un lot de classes.
+ *
+ * @version $Id$
+ * @copyright 2007
+ */
+
+// Initialisation
+require_once("../lib/initialisations.inc.php");
+
+// Les fonctions de Gepi
+require_once("../lib/share.inc.php");
+
+// Resume session
+
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+    die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+};
+
+/*/ En attente de la gestion des droits
+// INSERT INTO droits SET
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}*/
+
+//Initialisation des variables
+$id_aid = isset($_GET["id_aid"]) ? $_GET["id_aid"] : (isset($_POST["id_aid"]) ? $_POST["id_aid"] : NULL);
+$indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
+$aff_liste_m = isset($_GET["classe"]) ? $_GET["classe"] : (isset($_POST["classe"]) ? $_POST["classe"] : NULL);
+$choix_aid = isset($_GET["choix_aid"]) ? $_GET["choix_aid"] : (isset($_POST["choix_aid"]) ? $_POST["choix_aid"] : NULL);
+$id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : (isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : NULL);
+
+//+++++++++++++++++ CSS AID++++++++
+$style_specifique = "aid/style_aid";
+//+++++++++++++++++ AJAX AID ++++++
+$javascript_specifique = "aid/aid_ajax";
+
+//**************** EN-TETE **************************************
+$titre_page = "Gestion des élèves dans les AID";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE **********************************
+
+	//================ TRAITEMENT des entrées ===================
+	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
+		// On intègre cet élève dans la bse s'il n'y est pas déjà
+		// Pour l'instant on récupère son login à partir de id_eleve
+		$rep_log_eleve = mysql_fetch_array(mysql_query("SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
+		// On vérifie s'il n'est pas déjà memndre de cet aid
+
+		$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
+
+	}
+
+
+// Affichage du retour
+	// On récupère l'indice de l'aid en question
+	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
+
+
+//Affichage du nom et des précisions sur l'AID en question
+	$req_aid = mysql_query("SELECT nom FROM aid WHERE id = '".$id_aid."'");
+	$rep_aid = mysql_fetch_array($req_aid);
+	$aff_infos_g .= "<p class=\"bold\">Liste des classes</p>\n";
+
+// Affichage de la liste des classes par $aff_classes_g
+
+	$req_liste_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
+	$nbre_classe = mysql_num_rows($req_liste_classe);
+
+	for($a=0; $a<$nbre_classe; $a++) {
+		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
+		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
+
+		$aff_classes_g .= "<tr><td><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>";
+	}
+
+// Affichage de la liste des élèves de la classe choisie (au milieu) par $aff_classes_m
+
+if (isset($aff_liste_m)) {
+
+	$aff_nom_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$aff_liste_m."'"));
+
+	// Récupérer la liste des élèves de la classe en question
+	$req_ele = mysql_query("SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."'");
+	$nbre_ele_m = mysql_num_rows($req_ele);
+
+	$aff_classes_m .= "
+		<h2>Classe de ".$aff_nom_classe["classe"]."</h2>
+		<p><b>".$nbre_ele_m."</b> élèves dans cette classe</p>
+		<form name=\"ajouter_eleves\" action=\"modify_aid_new.php\" method=\"post\">
+	<table class=\"aid_tableau\">
+	";
+
+
+	for($b=0; $b<$nbre_ele_m; $b++) {
+		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
+		// On récupère toutes les infos sur l'élève avec son id_eleve
+		$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'");
+		$nbre_req = mysql_num_rows($req);
+		for($c=0; $c<$nbre_req; $c++) {
+			$aff_ele_m[$c]["id_eleve"] = mysql_result($req, $c, "id_eleve");
+			$aff_ele_m[$c]["nom"] = mysql_result($req, $c, "nom");
+			$aff_ele_m[$c]["prenom"] = mysql_result($req, $c, "prenom");
+			$aff_ele_m[$c]["sexe"] = mysql_result($req, $c, "sexe");
+
+
+			// Ligne paire, ligne impaire (inutile dans un premier temps)
+			$aff_tr_css = "lignepaire";
+
+			$aff_classes_m .= "
+			<tr class=\"".$aff_tr_css."\">
+			<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."</a></td></tr>
+			";
+		}// for $c...
+	}
+	$aff_classes_m .= "</table>\n</form>";
+}// if isset...
+
+// Dans le div de droite, on affiche la liste des élèves de l'AID
+		$aff_aid_d .= "<p style=\"color: blue;\">".$rep_aid["nom"]."</p>\n";
+
+	$req_ele_aid = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
+	$nbre = mysql_num_rows($req_ele_aid);
+
+		$aff_aid_d .= $nbre." élèves.<br />";
+
+	for($d=0; $d<$nbre; $d++){
+		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
+		// On récupère ses noms et prénoms
+			$recup_noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_ele_aid[$d]["login"]."'"));
+		$aff_aid_d .= "<br />".$recup_noms["nom"]." ".$recup_noms["prenom"]."\n";
+	}
+
+?>
+
+
+
+	<div id="aid_gauche">
+
+<?php // Affichage des infos sur la partie gauche
+	echo $aff_infos_g;
+?>
+
+		<table class="aid_tableau">
+<?php // Afichage de la liste des classes à gauche
+	echo $aff_classes_g;
+?>
+		</table>
+	</div>
+
+	<div id="aid_droite">
+
+<?php // Affichage à droite
+	echo $aff_aid_d;
+?>
+
+	</div>
+
+	<div id="aid_centre">
+
+<?php // Affichage au centre
+	echo $aff_classes_m;
+?>
+	</div>
+
+
+<?php
+//require_once("../lib/footer.inc.php");
+echo "</div></body></html>";
+?>
