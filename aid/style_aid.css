@@ -10,6 +10,7 @@
 
 .aid_tableau td:hover {
 	background-color: grey;
+	color: white;
 }
 
 .aid_tableau a {

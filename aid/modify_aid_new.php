@@ -94,9 +94,8 @@ if (isset($aff_liste_m)) {
 	$nbre_ele_m = mysql_num_rows($req_ele);
 
 	$aff_classes_m .= "
-		<h2>Classe de ".$aff_nom_classe["classe"]."</h2>
-		<p><b>".$nbre_ele_m."</b> élèves dans cette classe</p>
-		<form name=\"ajouter_eleves\" action=\"modify_aid_new.php\" method=\"post\">
+		<p class=\"red\">Classe de ".$aff_nom_classe["classe"]."</p>
+
 	<table class=\"aid_tableau\">
 	";
 
@@ -112,17 +111,26 @@ if (isset($aff_liste_m)) {
 			$aff_ele_m[$c]["prenom"] = mysql_result($req, $c, "prenom");
 			$aff_ele_m[$c]["sexe"] = mysql_result($req, $c, "sexe");
 
-
 			// Ligne paire, ligne impaire (inutile dans un premier temps)
 			$aff_tr_css = "lignepaire";
-
-			$aff_classes_m .= "
-			<tr class=\"".$aff_tr_css."\">
-			<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."</a></td></tr>
-			";
+			// On vérifie que cet élève n'est pas déjà membre de l'AID
+			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND id_aid = '".$id_aid."'");
+			$nbre_verif = mysql_num_rows($req_verif);
+				if ($nbre_verif >> 0) {
+					$aff_classes_m .= "
+					<tr class=\"".$aff_tr_css."\">
+					<td></td></tr>
+					";
+				}
+				else {
+					$aff_classes_m .= "
+					<tr class=\"".$aff_tr_css."\">
+					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."</a></td></tr>
+					";
+				}
 		}// for $c...
-	}
-	$aff_classes_m .= "</table>\n</form>";
+	}// for $b
+	$aff_classes_m .= "</table>\n";
 }// if isset...
 
 // Dans le div de droite, on affiche la liste des élèves de l'AID
