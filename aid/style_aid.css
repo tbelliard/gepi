@@ -43,6 +43,10 @@
 	background-color: grey;
 }
 
+.ligneimpaire {
+	background-color: rgb(192, 192, 150);
+}
+
 .aid_a a {
 	background-color: silver;
 }

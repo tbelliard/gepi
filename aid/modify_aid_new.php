@@ -114,11 +114,11 @@ if (isset($aff_liste_m)) {
 			// Ligne paire, ligne impaire (inutile dans un premier temps)
 			$aff_tr_css = "lignepaire";
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
-			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND id_aid = '".$id_aid."'");
+			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
 			$nbre_verif = mysql_num_rows($req_verif);
 				if ($nbre_verif >> 0) {
 					$aff_classes_m .= "
-					<tr class=\"".$aff_tr_css."\">
+					<tr class=\"ligneimpaire\">
 					<td></td></tr>
 					";
 				}
