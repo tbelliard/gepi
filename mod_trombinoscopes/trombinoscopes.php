@@ -212,7 +212,7 @@ mavar = mavar.split(',');
               	?><option value="">voir mes classes</option><?php } ?>
                 <optgroup label="-- Les classes --">
                         <?php while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) { ?>
-                               <option value="<?php echo $data_classe_prof['id']; ?>" <?php if(!empty($classe) and $classe == $data_classe_prof['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');"><?php echo ucwords($data_classe_prof['nom_complet']); ?></option>
+                               <option value="<?php echo $data_classe_prof['id']; ?>" <?php if(!empty($classe) and $classe == $data_classe_prof['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');"><?php echo ucwords($data_classe_prof['nom_complet']); echo ' ('.ucwords($data_classe_prof['classe']).')'; ?></option>
                         <?php } ?>
                 </optgroup>
                 </select><br /><br />
@@ -362,14 +362,14 @@ mavar = mavar.split(',');
 	// c'est un status de gepi
 	if ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi != '' ) { $action_affiche = 'statusgepi'; }
 
-       if ( $action_affiche === 'classe' ) { $requete_qui = 'SELECT c.id, c.nom_complet FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"'; }
+       if ( $action_affiche === 'classe' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"'; }
        if ( $action_affiche === 'groupe' ) { $requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"'; }
        if ( $action_affiche === 'equipepeda' ) { $requete_qui = 'SELECT c.id, c.nom_complet FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"'; }
        if ( $action_affiche === 'discipline' ) { $requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"'; }
        if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
             $execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
             $donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
-       if ( $action_affiche === 'classe' ) { echo "Classe : ".$donnees_qui['nom_complet']; }
+       if ( $action_affiche === 'classe' ) { echo "Classe : ".$donnees_qui['nom_complet']; echo ' ('.ucwords($donnees_qui['classe']).')';}
        if ( $action_affiche === 'groupe' ) { echo "Groupe : ".$donnees_qui['name']; }
        if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".$donnees_qui['nom_complet']; }
        if ( $action_affiche === 'discipline' ) { echo "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
