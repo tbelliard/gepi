@@ -422,6 +422,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 				$prenom[$cpt_i] = $donner['prenom'];
 				$naissance[$cpt_i] = $donner['naissance'];
 				$classe[$cpt_i] = $donner['nom_complet'];
+				$classe_nom_court[$cpt_i] = $donner['classe'];
 				$classe_id_eleve[$cpt_i] = $donner['id'];
 				$ident_eleve_sel1=$login[$cpt_i];
 
@@ -686,7 +687,8 @@ $passage_i = 1;
 		$pdf->SetFont($caractere_utilse,'',10);
 		$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 		$pdf->Cell(90,5,'',0,2,'');
-		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
+		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'</B>');
+		$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
 		$pdf->Cell(90,5,$classe_aff,0,2,'');
 		$pdf->SetX($X_cadre_eleve);
 		$pdf->SetFont($caractere_utilse,'',10);
