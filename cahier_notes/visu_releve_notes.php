@@ -293,8 +293,20 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	$id_classe = mysql_result($classe_eleve, 0, "id");
 
 	$regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login'");
-	$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-	$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	//$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+	//$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	$sql="SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login'";
+	//echo "$sql<br />\n";
+	$regime_doublant_eleve = mysql_query($sql);
+	if(mysql_num_rows($regime_doublant_eleve)>0){
+		$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+		$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
+	}
+	else{
+		$current_eleve_regime = "-";
+		$current_eleve_doublant = "ext.";
+	}
+
 
 	//Gestion des dates
 	$date_fin = $anneef."-".$moisf."-".$jourf." 00:00:00";
