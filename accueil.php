@@ -417,7 +417,8 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $expli[] = "Cet outil permet la saisie des avis du conseil de classe.";
 
-$call_data = mysql_query("SELECT * FROM aid_config ORDER BY nom");
+		// Modif de la requête pour ne plus afficher les AID qui ne sont pas notés et absents des bulletins
+$call_data = mysql_query("SELECT * FROM aid_config WHERE type_note != 'no' AND display_bulletin != 'n' ORDER BY nom");
 $nb_aid = mysql_num_rows($call_data);
 $i=0;
 while ($i < $nb_aid) {
@@ -854,8 +855,8 @@ if ($conditions_moyennes) $expli[] = "Tableau récapitulatif des moyennes d'une c
 if ($conditions_bulsimples)
 	$expli[] = "Bulletins simplifiés d'une classe.";
 
-
-$call_data = mysql_query("SELECT * FROM aid_config ORDER BY nom");
+		// Modif de la requête pour ne plus afficher les AID qui ne sont pas notés et absents des bulletins
+$call_data = mysql_query("SELECT * FROM aid_config WHERE type_note != 'no' AND display_bulletin != 'n' ORDER BY nom");
 $nb_aid = mysql_num_rows($call_data);
 $i=0;
 while ($i < $nb_aid) {
