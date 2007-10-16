@@ -575,7 +575,14 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					// gestion de la notation si statut est défini alors on l'affiche à la place de la note
 					if ( $donne_requete['note'] == '0.0' ) {
 						if ( $donne_requete['statut'] != '' ) {
-							$notes[$eleve_select][$nb_matiere_cpt]=$donne_requete['statut'];
+							if ( $donne_requete['statut'] != 'v' ) {
+								$notes[$eleve_select][$nb_matiere_cpt]=$donne_requete['statut'];
+							}
+							else{
+								// Si c'est vide 'v', on ne met rien...
+								// Faudrait-il indiquer 'Non Noté'?
+								$notes[$eleve_select][$nb_matiere_cpt]="";
+							}
 						}
 						else {
 							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
@@ -618,7 +625,14 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					//$notes[$eleve_select][$nb_num_matiere_passe] = $notes[$eleve_select][$nb_num_matiere_passe]." - ".$donne_requete['note']."".$nom_devoir_oui;
 					if ( $donne_requete['note'] === '0.0' ) {
 						if ( $donne_requete['statut'] != '' ) {
-							$notes_actif=$donne_requete['statut'];
+							if ( $donne_requete['statut'] != 'v' ) {
+								$notes_actif=$donne_requete['statut'];
+							}
+							else{
+								// Si c'est vide 'v', on ne met rien...
+								// Faudrait-il indiquer 'Non Noté'?
+								$notes_actif="";
+							}
 						}
 						else {
 							$notes_actif = $donne_requete['note'];
@@ -628,7 +642,14 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					else{
 						$notes_actif = $donne_requete['note'];
 					}
-					$notes[$eleve_select][$nb_num_matiere_passe]=$notes[$eleve_select][$nb_num_matiere_passe]." - ".$notes_actif."".$nom_devoir_oui;
+
+					// On n'ajoute que si il y a eu une saisie au devoir et pas un statut 'v'.
+					if($notes_actif!=""){
+						if($notes[$eleve_select][$nb_num_matiere_passe]!=""){
+							$notes[$eleve_select][$nb_num_matiere_passe].=" - ";
+						}
+						$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui;
+					}
 					// =======================================
 				}
 			}
@@ -694,7 +715,7 @@ $passage_i = 1;
 		$pdf->SetFont($caractere_utilse,'',10);
 		$pdf->Cell(90,5,'Année scolaire '.$annee_scolaire,0,2,'');
 
-	// BOLC IDENTITE DE L'ETABLISSEMENT
+	// BLOC IDENTITE DE L'ETABLISSEMENT
 		$logo = '../images/'.getSettingValue('logo_etab');
 		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 		if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
