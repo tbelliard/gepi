@@ -542,6 +542,7 @@ INSERT INTO droits VALUES ('/edt_organisation/voir_groupe.php', 'V', 'F', 'F', '
 INSERT INTO droits VALUES ('/edt_organisation/modif_edt_tempo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Modification temporaire des EdT', '');
 INSERT INTO droits VALUES ('/edt_organisation/edt_init_xml.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation EdT par xml', '');
 INSERT INTO droits VALUES ('/edt_organisation/edt_init_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'initialisation EdT par csv', '');
+INSERT INTO droits VALUES ('/edt_organisation/modifier_cours.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
 INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
 INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');
 INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
@@ -551,6 +552,7 @@ INSERT INTO edt_setting VALUES (6, 'edt_aff_couleur', 'nb');
 INSERT INTO edt_setting VALUES (7, 'edt_aff_init_infos2', 'oui');
 INSERT INTO edt_setting VALUES (8, 'aff_cherche_salle', 'tous');
 INSERT INTO setting VALUES ('edt_calendrier_ouvert', 'y');
+INSERT INTO setting VALUES ('scolarite_modif_cours', 'y');
 INSERT INTO setting VALUES ('active_annees_anterieures', 'n');
 INSERT INTO setting VALUES ('active_notanet', 'n');
 INSERT INTO setting VALUES ('longmax_login', '10');

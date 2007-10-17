@@ -506,6 +506,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/modif_edt_tempo.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Modification temporaire des EdT', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_init_xml.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation EdT par xml', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_init_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'initialisation EdT par csv', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/modifier_cours.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');";
 
 	//$tab_req[] = "";
 
@@ -4742,6 +4743,21 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
+
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'scolarite_modif_cours' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'scolarite_modif_cours'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('scolarite_modif_cours', 'y');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
 		// Fin des ajouts concernant le dispositif EDT
 		// ====================================
 
