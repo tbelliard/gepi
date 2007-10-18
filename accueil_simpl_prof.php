@@ -145,6 +145,40 @@ echo "</div>\n";
 
 echo "<center>\n";
 
+//Affichage des messages
+$today=mktime(0,0,0,date("m"),date("d"),date("Y"));
+$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
+    WHERE (
+    texte != '' and
+    date_debut <= '".$today."' and
+    date_fin >= '".$today."'
+    )
+    order by id DESC");
+$nb_messages = mysql_num_rows($appel_messages);
+$ind = 0;
+$texte_messages = '';
+$affiche_messages = 'no';
+while ($ind < $nb_messages) {
+    $destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
+    if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+        if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
+        $affiche_messages = 'yes';
+        $content = mysql_result($appel_messages, $ind, 'texte');
+        // Mise en forme du texte
+//        $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
+//        $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
+//        $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
+//        $texte_messages .= "<span class='small'>Message de </span>: ".$prenom_auteur." ".$nom_auteur;
+        $texte_messages .= $content;
+    }
+    $ind++;
+}
+if ($affiche_messages == 'yes') {
+    echo "<table id='messagerie'>\n";
+    echo "<tr><td>".$texte_messages;
+    echo "</td></tr></table>\n";
+}
+
 // Récupérer le nombre max de périodes
 $groups=get_groups_for_prof($_SESSION["login"]);
 $maxper=0;
