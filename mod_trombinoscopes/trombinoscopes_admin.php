@@ -93,9 +93,9 @@ hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" 
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_imp_trombinoscopes"); ?>" />&nbsp;
 hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />
 <br />
-<H2>Configuration du redimessionnement des photos</H2>
-<i>La désactivation du redimessionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimessionnement est désactivé, les photos transferées sur le site ne seront pas réduites en 340x240.</i>
-<br />
+<H2>Configuration du redimensionnement des photos</H2>
+<i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en 340x240.</i>
+<br /><br />
 <input type="radio" name="activer_redimensionne" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> />&nbsp;Activer le redimensionnement des photos en 120x160<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
 <input type="radio" name="activer_redimensionne" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked"; ?> />&nbsp;Désactiver le redimensionnement des photos
@@ -113,9 +113,9 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 <li>Suppression
  <ul>
   <?php if( file_exists('../photos/personnels/') ) { ?>
-  <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vidé le dossier photos des personnels</a></li>
+  <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vider le dossier photos des personnels</a></li>
   <?php } if( file_exists('../photos/eleves/') ) {?>
-  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vidé le dossier photos des élèves</a></li>
+  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vider le dossier photos des élèves</a></li>
   <?php } ?>
  </ul>
 </li>
