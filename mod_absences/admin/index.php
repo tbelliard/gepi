@@ -70,9 +70,10 @@ echo "</p>";
 <input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_absence")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la gestion des absences
 <input type="hidden" name="is_posted" value="1" />
 <br />
+<H2>Saisie des absences par les professeurs</H2>
 <i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
 Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</i>
-<H2>Saisie des absences par les professeurs</H2>
+<br />
 <input type="radio" name="activer_prof" value="y" <?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked"; ?> />&nbsp;Activer le module de la saisie des absences par les professeurs<br />
 <input type="radio" name="activer_prof" value="n" <?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la saisie des absences par les professeurs
 <input type="hidden" name="is_posted" value="1" />
