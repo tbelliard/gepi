@@ -548,11 +548,22 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	// On récupère l'id
 	$effacer_cours = "";
 	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE id_groupe = '".$enseignement."' AND jour_semaine = '".$jour_semaine."' AND id_definie_periode = '".$id_creneaux."'"));
-		// Seul l'admin peut effacer ou modifier ce cours
+
+		// Seul l'admin peut effacer ce cours
 		if ($_SESSION["statut"] == "administrateur") {
 			$effacer_cours = '<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>';
 		}
-		else $effacer_cours = "";
+		else {
+			$effacer_cours = "";
+		}
+		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
+		if (($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") OR $_SESSION["statut"] == "administrateur") {
+			$modifier_cours = '<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>';
+		}
+		else {
+			$modifier_cours = "";
+		}
+
 
 	// on récupère le nom court de la classe en question
 	{
@@ -604,7 +615,10 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	if (GetSettingEdt("edt_aff_matiere") == "long") {
 		// SI c'est l'admin, il faut réduire la taille de la police de caractères
 		if ($_SESSION["statut"] == "administrateur") {
-			$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']." ".$effacer_cours."</span>";
+			$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']." ".$effacer_cours." ".$modifier_cours."</span>";
+		}
+		elseif ($_SESSION["statut"] == "scolarite") {
+			$aff_matiere = $rep_matiere['description']." ".$modifier_cours;
 		}
 		else $aff_matiere = $rep_matiere['description'];
 	}

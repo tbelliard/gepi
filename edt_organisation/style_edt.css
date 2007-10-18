@@ -186,3 +186,13 @@ background: #6d6d83;
 	font-size: x-small;
 	color: red;
 }
+
+#edt_modif td {
+	text-align: center;
+	height: 32px;
+	width: 250px;
+}
+
+#edt_modif td:hover {
+	background-color: rgb(200, 200, 255);
+}
