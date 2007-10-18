@@ -206,7 +206,7 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 <?php
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes" and getSettingValue("disable_login")!='yes') {
-   echo "<div id='lien_cahier_texte'><a href=\"./public/index.php\"><img src='./images/icons/cahier_texte.png' alt='Cahier de texte' class='link' /> Consulter les cahiers de texte</a> (accès public)</div>";
+   echo "<div id='lien_cahier_texte'><a href=\"./public/index.php?id_classe=-1\"><img src='./images/icons/cahier_texte.png' alt='Cahier de texte' class='link' /> Consulter les cahiers de texte</a> (accès public)</div>";
 }
 echo "<div class='center'>";
 
