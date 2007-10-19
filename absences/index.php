@@ -53,6 +53,9 @@ require_once("../lib/header.inc");
 
 if (!isset($id_classe)) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet</a>\n";
+	echo "</p>\n";
+
 	if ($_SESSION['statut']=="cpe") {
 		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe");
 	} else {
@@ -60,7 +63,8 @@ if (!isset($id_classe)) {
 	}
 
 	$nombreligne = mysql_num_rows($calldata);
-	echo "</p>\n<p>Total : $nombreligne classes - ";
+
+	echo "<p>Total : $nombreligne classes - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
 	echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'un moins un élève de la classe.</p>\n";
 
@@ -91,7 +95,11 @@ if (!isset($id_classe)) {
 	echo "<br />\n";
 } else {
 	// On choisit la période :
-	echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre classe</a></p>\n";
+	echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre classe</a>";
+
+	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet</a>\n";
+
+	echo "</p>\n";
 
 	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
@@ -117,6 +125,7 @@ if (!isset($id_classe)) {
 		$i++;
 	}
 
+	/*
 	$i="1";
 	// On propose l'importation à partir d'un fichier GEP
 	while ($i < $nb_periode) {
@@ -126,6 +135,7 @@ if (!isset($id_classe)) {
 		}
 		$i++;
 	}
+	*/
 }
 require "../lib/footer.inc.php";
 ?>
