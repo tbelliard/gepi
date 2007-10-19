@@ -196,11 +196,12 @@ echo '
 
 	// On vérifie comment ce cours commence
 	// A revoir car ça ne marche pas
-	if ($rep_cours["heuredeb_dec"] == "0") {
+if (isset($rep_cours["heuredeb_dec"])) {
+		if ($rep_cours["heuredeb_dec"] === 0) {
 		$selected0 = " selected='selected'";
 		$selected5 = '';
 	}
-	else if ($rep_cours["heuredeb_dec"] == "0,5") {
+	else if ($rep_cours["heuredeb_dec"] == "0.5") {
 		$selected0 = '';
 		$selected5 = " selected='selected'";
 	}
@@ -208,6 +209,8 @@ echo '
 		$selected0 = "";
 		$selected5 = "";
 	}
+}
+
 echo '
 			<select name="heure_debut">
 				<option value="0"'.$selected0.'>Le cours commence au début d\'un créneau</option>
@@ -216,16 +219,22 @@ echo '
 
 			</td>
 			<td>
-
+	';
+	// On détermine le selected de la duree
+	$selected[1] = $selected[2] = $selected[3] = $selected[4] = $selected[5] = $selected[6] = $selected[7] = $selected[8] = '';
+	if (isset($rep_cours["duree"])) {
+		$selected[$rep_cours["duree"]] = " selected='selected'";
+	}
+echo '
 			<select name="duree">
-				<option value="2">1 heure</option>
-				<option value="3">1.5 heure</option>
-				<option value="4">2 heures</option>
-				<option value="5">2.5 heures</option>
-				<option value="6">3 heures</option>
-				<option value="7">3.5 heures</option>
-				<option value="8">4 heures</option>
-				<option value="0.5">1/2 heure</option>
+				<option value="2"'.$selected[2].'>1 heure</option>
+				<option value="3"'.$selected[3].'>1.5 heure</option>
+				<option value="4"'.$selected[4].'>2 heures</option>
+				<option value="5"'.$selected[5].'>2.5 heures</option>
+				<option value="6"'.$selected[6].'>3 heures</option>
+				<option value="7"'.$selected[7].'>3.5 heures</option>
+				<option value="8"'.$selected[8].'>4 heures</option>
+				<option value="1"'.$selected[1].'>1/2 heure</option>
 			</select>
 
 			</td>
