@@ -551,14 +551,21 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 		// Seul l'admin peut effacer ce cours
 		if ($_SESSION["statut"] == "administrateur") {
-			$effacer_cours = '<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>';
+			$effacer_cours = '
+					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')">
+					<img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>
+					';
 		}
 		else {
 			$effacer_cours = "";
 		}
 		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
+		// <a href="javascript:centrerpopup("modifier_COURS.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",610,460,"scrollbars=no,statusbar=no,resizable=yes")"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 		if (($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") OR $_SESSION["statut"] == "administrateur") {
-			$modifier_cours = '<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>';
+			$modifier_cours = '
+					<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'">
+					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
+					';
 		}
 		else {
 			$modifier_cours = "";

@@ -48,7 +48,45 @@ require_once("./menu.inc.php");
 $id_cours = isset($_GET["id_cours"]) ? $_GET["id_cours"] : (isset($_POST["id_cours"]) ? $_POST["id_cours"] : NULL);
 $type_edt = isset($_GET["type_edt"]) ? $_GET["type_edt"] : (isset($_POST["type_edt"]) ? $_POST["type_edt"] : NULL);
 $identite = isset($_GET["identite"]) ? $_GET["identite"] : (isset($_POST["identite"]) ? $_POST["identite"] : NULL);
+$modifier_cours = isset($_POST["modifier_cours"]) ? $_POST["modifier_cours"] : NULL;
+$enseignement = isset($_POST["enseignement"]) ? $_POST["enseignement"] : NULL;
+$ch_jour_semaine = isset($_POST["ch_jour_semaine"]) ? $_POST["ch_jour_semaine"] : NULL;
+$ch_heure = isset($_POST["ch_heure"]) ? $_POST["ch_heure"] : NULL;
+$heure_debut = isset($_POST["heure_debut"]) ? $_POST["heure_debut"] : NULL;
+$duree = isset($_POST["duree"]) ? $_POST["duree"] : NULL;
+$choix_semaine = isset($_POST["choix_semaine"]) ? $_POST["choix_semaine"] : NULL;
+$login_salle = isset($_POST["login_salle"]) ? $_POST["login_salle"] : NULL;
+$periode_calendrier = isset($_POST["periode_calendrier"]) ? $_POST["periode_calendrier"] : NULL;
 //$ = isset($_GET[""]) ? $_GET[""] : (isset($_POST[""]) ? $_POST[""] : NULL);
+
+// Traitement des changements
+if (isset($modifier_cours) AND $modifier_cours == "ok") {
+	// On modifie sans vérification ?
+	$req_modif = mysql_query("UPDATE edt_cours SET id_groupe = '$enseignement',
+	 id_salle = '$login_salle',
+	 jour_semaine = '$ch_jour_semaine',
+	 id_definie_periode = '$ch_heure',
+	 duree = '$duree',
+	 heuredeb_dec = '$heure_debut',
+	 id_semaine = '$choix_semaine',
+	 id_calendrier = '$periode_calendrier'
+	WHERE id_cours = '".$id_cours."'")
+	or die('Erreur dans la mofication du cours : '.mysql_error().'');
+}
+
+if ($req_modif) {
+		echo '
+		<span class="accept">Ce cours est modifié !</span>
+		<form name="retour" method="post" action="index_edt.php">
+		<input type="hidden" name="visioedt" value="'.$type_edt.'1" />
+		<input type="hidden" name="login_edt" value="'.$identite.'" />
+		<input type="hidden" name="type_edt_2" value="'.$type_edt.'" />
+		<input type="image" src="../images/icons/back.png" border="0" name="submit" alt="Revenir" title="Revenir" /> Revenir
+		</form>
+		';
+
+}
+
 ?>
 
 <!-- la page du corps de l'EdT -->
@@ -83,8 +121,8 @@ echo '
 	<fieldset>
 		<legend>Modification du cours</legend>
 		<form action="modifier_cours.php" name="choix_prof" method="post">
-			<input type="hidden" name="identite" value="'.$identite.'" />
-			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].'('.$id_cours.')</h2>
+
+			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.')</h2>
 
 	<table id="edt_modif">
 		<tr class="ligneimpaire">
@@ -306,9 +344,22 @@ echo '
 		for ($a=0; $a<$nbre_calendrier; $a++) {
 			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
 			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
+
+		if(isset($rep_cours["id_calendrier"])){
+			if($rep_cours["id_calendrier"] == $rep_calendrier[$a]["id_calendrier"]){
+				$selected=" selected='selected'";
+			}
+			else{
+				$selected="";
+			}
+		}
+		else{
+			$selected="";
+		}
+
 			echo '
-				<option value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</option>
-			'."\n";
+				<option value="'.$rep_calendrier[$a]["id_calendrier"].'"'.$selected.'>'.$rep_calendrier[$a]["nom_calendrier"].'</option>
+			';
 		}
 
 echo '
@@ -316,8 +367,11 @@ echo '
 
 			</td>
 			<td>
-
-
+		<input type="hidden" name="id_cours" value="'.$id_cours.'" />
+		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
+		<input type="hidden" name="identite" value="'.$identite.'" />
+		<input type="hidden" name="modifier_cours" value="ok" />
+		<input type="submit" name="Enregistrer" value="Enregistrer" />
 
 			</td>
 
@@ -339,8 +393,7 @@ else {
 ?>
 
 	</div>
-<br />
-<br />
+
 <?php
 // inclusion du footer
 require("../lib/footer.inc.php");
