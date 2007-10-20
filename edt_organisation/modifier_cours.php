@@ -34,15 +34,19 @@ if (!checkAccess()) {
     die();
 }
 
-// CSS particulier à l'EdT
-$style_specifique = "edt_organisation/style_edt";
+// On vérifie que le droit soit le bon pour le profil scolarité
+	$autorise = "non";
+if ($_SESSION["statut"] == "administrateur") {
+	$autorise = "oui";
+}
+elseif ($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") {
+	$autorise = "oui";
+}
+else {
+	$autorise = "non";
+	exit('Vous n\'êtes pas autorisé à modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
+}
 
-// +++++++++++++++ entête de Gepi +++++++++
-require_once("../lib/header.inc");
-// +++++++++++++++ entête de Gepi +++++++++
-
-// On ajoute le menu EdT
-require_once("./menu.inc.php");
 
 // ===== Initialisation des variables =====
 $id_cours = isset($_GET["id_cours"]) ? $_GET["id_cours"] : (isset($_POST["id_cours"]) ? $_POST["id_cours"] : NULL);
@@ -87,6 +91,18 @@ if ($req_modif) {
 
 }
 
+
+// CSS particulier à l'EdT
+$style_specifique = "edt_organisation/style_edt";
+
+// +++++++++++++++ entête de Gepi +++++++++
+require_once("../lib/header.inc");
+// +++++++++++++++ entête de Gepi +++++++++
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php");
+
+
 ?>
 
 <!-- la page du corps de l'EdT -->
@@ -94,18 +110,6 @@ if ($req_modif) {
 	<div id="lecorps">
 
 <?php
-// On vérifie que le droit soit le bon pour le profil scolarité
-	$autorise = "non";
-if ($_SESSION["statut"] == "administrateur") {
-	$autorise = "oui";
-}
-elseif ($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") {
-	$autorise = "oui";
-}
-else {
-	$autorise = "non";
-	exit('Vous n\'êtes pas autorisé à modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
-}
 
 // Si tout est ok, on affiche le cours reçu en GET ou POST
 if ($autorise == "oui") {
