@@ -1,0 +1,478 @@
+0720001K;John F. Kennedy;college;public;72700;Allonnes
+0720002L;Normandie-Maine;college;public;72490;Ancinnes
+0720004N;René Cassin;college;public;72290;Ballon
+0720007S;Guillaume Apollinaire;college;public;72440;Bouloire
+0720011W;Pierre De Ronsard;college;public;72340;La-Chartre-sur-le-Loir
+0720014Z;André Pioger;college;public;72240;Conlie
+0720015A;François Grude;college;public;72160;Connerré
+0720019E;Léo Delibes;college;public;72130;Fresnay-sur-Sarthe
+0720022H;Paul Courboulay;ecole;public;72000;Le-Mans
+0720023J;Le Petit Versailles;college;public;72200;La-Flèche
+0720024K;Bellevue;college;public;72540;Loué
+0720038A;Roger Vercel;college;public;72000;Le-Mans
+0720040C;Ambroise Paré;college;public;72000;Le-Mans
+0720043F;Jean Moulin;college;public;72260;Marolles-les-Braults
+0720046J;des Alpes Mancelles;college;public;72130;Moulins-le-Carbonnel
+0720051P;Jules Ferry;college;public;72120;Saint-Calais
+0720053S;Véron De Forbonnais;college;public;72580;Saint-Cosme-en-Vairais
+0720058X;Gabriel Goussault;college;public;72320;Vibraye
+0720062B;Le Vieux Chêne;college;public;72200;La-Flèche
+0720067G;de Bercé;college;public;72500;Château-du-Loir
+0720068H;Le Plateau;college;public;72000;Le-Mans
+0720069J;Alexandre Mauboussin;college;public;72600;Mamers
+0720070K;Pierre Reverdy;college;public;72300;Sablé-sur-Sarthe
+0720081X;Alain Fournier;college;public;72100;Le-Mans
+0720089F;Robert Deshayes;ecole;public;72310;La-Chapelle-Huon
+0720092J;-;ecole;public;72240;La-Chapelle-Saint-Fray
+0720098R;-;ecole;public;72540;Chassillé
+0720099S;du Point du Jour;ecole;public;72500;Château-du-Loir
+0720100T;Beauregard;ecole;public;72500;Château-du-Loir
+0720103W;Jules Ferry;ecole;public;72550;Chaufour-Notre-Dame
+0720107A;-;ecole;public;72210;Chemiré-le-Gaudin
+0720110D;-;ecole;public;72170;Chérancé
+0720112F;-;ecole;public;72400;Cherré
+0720113G;-;ecole;public;72400;Cherreau
+0720114H;-;ecole;public;72610;Le-Chevain
+0720120P;-;ecole;public;72120;Conflans-sur-Anille
+0720126W;Jean Rostand;ecole;public;72160;Connerré
+0720130A;1;ecole;public;72400;Cormes
+0720145S;-;ecole;public;72550;Fay
+0720146T;-;ecole;public;72470;Fatines
+0720148V;-;ecole;public;72700;Etival-lès-le-Mans
+0720150X;-;ecole;public;72120;Ecorpain
+0720154B;-;ecole;public;72220;Ecommoy
+0720155C;-;ecole;public;72160;Duneau
+0720162K;-;ecole;public;72800;Dissé-sous-le-Lude
+0720164M;-;ecole;public;72500;Dissay-sous-Courcillon
+0720167R;-;ecole;public;72550;Degré
+0720169T;-;ecole;public;72260;Dangeul
+0720170U;-;ecole;public;72240;Cures
+0720176A;-;ecole;public;72550;Coulans-sur-Gée
+0720181F;-;ecole;public;72290;Courceboeufs
+0720182G;-;ecole;public;72270;Courcelles-la-Forêt
+0720190R;-;ecole;public;72320;Courgenard
+0720191S;-;ecole;public;72300;Courtillers
+0720193U;-;ecole;public;72200;Cré
+0720199A;-;ecole;public;72510;Mansigné
+0720203E;-;ecole;public;72200;Mareil-sur-Loir
+0720204F;-;ecole;public;72170;Maresché
+0720206H;-;ecole;public;72220;Marigné-Laillé
+0720212P;Jules Ferry;ecole;public;72360;Mayet
+0720218W;-;ecole;public;72270;Mézeray
+0720220Y;-;ecole;public;72290;Mézières-sur-Ponthouin
+0720227F;-;ecole;public;72230;Moncé-en-Belin
+0720231K;-;ecole;public;72500;Montabon
+0720233M;-;ecole;public;72120;Montaillé
+0720236R;1;ecole;public;72380;Montbizot
+0720239U;-;ecole;public;72450;Montfort-le-Gesnois
+0720247C;-;ecole;public;72510;Pontvallain
+0720249E;-;ecole;public;72130;Moulins-le-Carbonnel
+0720250F;Jacques Prévert;ecole;public;72230;Mulsanne
+0720253J;-;ecole;public;72600;Neufchâtel-en-Saosnois
+0720259R;-;ecole;public;72240;Neuvy-en-Champagne
+0720263V;-;ecole;public;72500;Nogent-sur-Loir
+0720267Z;-;ecole;public;72370;Nuillé-le-Jalais
+0720270C;-;ecole;public;72330;Oizé
+0720273F;-;ecole;public;72140;Parennes
+0720275H;-;ecole;public;72330;Parigné-le-Pôlin
+0720276J;2;ecole;public;72250;Parigné-l'Evêque
+0720277K;1;ecole;public;72250;Parigné-l'Evêque
+0720279M;-;ecole;public;72300;Sablé-sur-Sarthe
+0720287W;-;ecole;public;72220;Saint-Gervais-en-Belin
+0720292B;-;ecole;public;72190;Saint-Pavace
+0720294D;-;ecole;public;72150;Montreuil-le-Henri
+0720295E;-;ecole;public;72380;Saint-Jean-d'Assé
+0720298H;-;ecole;public;72510;Saint-Jean-de-la-Motte
+0720301L;-;ecole;public;72430;Saint-Jean-du-Bois
+0720304P;-;ecole;public;72320;Saint-Maixent
+0720311X;-;ecole;public;72300;Solesmes
+0720313Z;-;ecole;public;72130;Sougé-le-Ganelon
+0720314A;-;ecole;public;72380;Souillé
+0720316C;-;ecole;public;72210;Souligné-Flacé
+0720319F;-;ecole;public;72370;Soulitré
+0720320G;-;ecole;public;72300;Souvigné-sur-Sarthe
+0720321H;-;ecole;public;72700;Spay
+0720329S;-;ecole;public;72290;Teillé
+0720331U;-;ecole;public;72220;Teloché
+0720346K;Jacques-Yves Cousteau;ecole;public;72160;Thorigné-sur-Dué
+0720349N;Les Happelières;ecole;public;72650;Trangé
+0720354U;Fernand Loriot;ecole;public;72160;Tuffé
+0720359Z;-;ecole;public;72540;Vallon-sur-Gée
+0720361B;Marcel Pagnol;ecole;public;72310;Vancé
+0720365F;-;ecole;public;72170;Vernie
+0720367H;-;ecole;public;72320;Vibraye
+0720375S;-;ecole;public;72270;Villaines-sous-Malicorne
+0720378V;-;ecole;public;72350;Viré-en-Champagne
+0720379W;-;ecole;public;72170;Vivoin
+0720383A;-;ecole;public;72440;Volnay
+0720386D;-;ecole;public;72500;Vouvray-sur-Loir
+0720389G;-;ecole;public;72330;Yvré-le-Pôlin
+0720390H;Condorcet;ecole;public;72530;Yvré-l'Evêque
+0720392K;-;ecole;public;72430;Fercé-sur-Sarthe
+0720393L;Ledru-Rollin;ecole;public;72400;La-Ferté-Bernard
+0720394M;Jean Rostand;ecole;public;72400;La-Ferté-Bernard
+0720396P;Victor Hugo;ecole;public;72400;La-Ferté-Bernard
+0720397R;Marcel Pagnol;ecole;public;72400;La-Ferté-Bernard
+0720398S;-;ecole;public;72210;Fillé
+0720401V;-;ecole;public;72330;La-Fontaine-Saint-Martin
+0720403X;-;ecole;public;72350;Fontenay-sur-Vègre
+0720406A;-;ecole;public;72130;Fresnay-sur-Sarthe
+0720409D;-;ecole;public;72490;Fyé
+0720412G;-;ecole;public;72490;Grandchamp
+0720417M;-;ecole;public;72320;Gréez-sur-Roc
+0720420R;-;ecole;public;72230;Guécélard
+0720426X;-;ecole;public;72380;Joué-l'Abbé
+0720432D;Lazare De Baif;ecole;public;72200;La-Flèche
+0720433E;René Descartes;ecole;public;72200;La-Flèche
+0720434F;Louis Pasteur;ecole;public;72200;La-Flèche
+0720439L;Jean-Baptiste Galan;ecole;public;72220;Laigné-en-Belin
+0720440M;-;ecole;public;72320;Lamnay
+0720441N;-;ecole;public;72240;Lavardin
+0720452A;-;ecole;public;72270;Ligron
+0720455D;-;ecole;public;72450;Lombron
+0720456E;-;ecole;public;72540;Longnes
+0720457F;-;ecole;public;72300;Louailles
+0720460J;-;ecole;public;72210;Louplande
+0720466R;-;ecole;public;72500;Luceau
+0720468T;-;ecole;public;72800;Luché-Pringé
+0720470V;Joachim Du Bellay;ecole;public;72800;Le-Lude
+0720471W;Georges Brassens;ecole;public;72800;Le-Lude
+0720472X;-;ecole;public;72210;Maigné
+0720474Z;-;ecole;public;72440;Maisoncelles
+0720477C;Louis Pasteur;ecole;public;72600;Mamers
+0720478D;du Fort;ecole;public;72600;Mamers
+0720481G;Garnier - Pagès;ecole;public;72000;Le-Mans
+0720486M;Roger Bouvet;ecole;public;72000;Le-Mans
+0720488P;Molière;ecole;public;72000;Le-Mans
+0720491T;Suzanne Busson;ecole;public;72000;Le-Mans
+0720492U;Roger Bazille;ecole;public;72650;Aigné
+0720495X;Louis Pasteur;ecole;public;72700;Allonnes
+0720500C;-;ecole;public;72610;Arçonnay
+0720502E;-;ecole;public;72370;Ardenay-sur-Mérize
+0720503F;Gérard Philipe;ecole;public;72230;Arnage
+0720506J;Auguste Renoir;ecole;public;72230;Arnage
+0720510N;-;ecole;public;72430;Asnières-sur-Vègre
+0720512R;-;ecole;public;72130;Assé-le-Boisne
+0720513S;-;ecole;public;72170;Assé-le-Riboul
+0720519Y;-;ecole;public;72540;Auvers-sous-Montfaucon
+0720521A;-;ecole;public;72350;Avessé
+0720523C;-;ecole;public;72400;Avezé
+0720524D;-;ecole;public;72430;Avoise
+0720525E;-;ecole;public;72200;Le-Bailleul
+0720528H;Jean Monnet;ecole;public;72650;La-Bazoge
+0720537T;-;ecole;public;72500;Beaumont-Pied-de-Boeuf
+0720539V;Victor Hugo - Paul Fort;ecole;public;72700;Allonnes
+0720542Y;-;ecole;public;72170;Beaumont-sur-Sarthe
+0720545B;-;ecole;public;72160;Beillé
+0720546C;-;ecole;public;72320;Berfay
+0720547D;-;ecole;public;72240;Bernay
+0720549F;-;ecole;public;72310;Bessé-sur-Braye
+0720555M;1;ecole;public;72400;Boësse-le-Sec
+0720557P;-;ecole;public;72110;Bonnétable
+0720562V;-;ecole;public;72440;Bouloire
+0720565Y;-;ecole;public;72270;Bousse
+0720566Z;-;ecole;public;72550;Brains-sur-Gée
+0720586W;-;ecole;public;72610;Champfleur
+0720593D;-;ecole;public;72800;La-Chapelle-aux-Choux
+0720594E;-;ecole;public;72410;La-Chapelle-d'Aligné
+0720598J;-;ecole;public;72310;La-Chapelle-Gaugain
+0720600L;A. Camus - V. Hugo;ecole;public;72190;Coulaines
+0720603P;Léo Delibes;ecole;public;72200;La-Flèche
+0720623L;-;ecole;public;72500;Saint-Germain-d'Arcé
+0720626P;-;ecole;public;72170;Piacé
+0720628S;-;ecole;public;72430;Pirmil
+0720632W;-;ecole;public;72340;Poncé-sur-le-Loir
+0720634Y;François Rabelais;ecole;public;72410;Précigné
+0720636A;Henri Matisse;ecole;public;72400;Préval
+0720643H;-;ecole;public;72110;Saint-Georges-du-Rosay
+0720647M;-;ecole;public;72350;Saint-Denis-d'Orques
+0720649P;-;ecole;public;72580;Saint-Cosme-en-Vairais
+0720651S;-;ecole;public;72460;Saint-Corneille
+0720657Y;-;ecole;public;72110;Saint-Célerin
+0720659A;Paul Bert;ecole;public;72120;Saint-Calais
+0720661C;Jean De La Fontaine;ecole;public;72220;Saint-Biez-en-Belin
+0720662D;-;ecole;public;72400;Saint-Aubin-des-Coudrais
+0720664F;-;ecole;public;72130;Saint-Aubin-de-Locquenay
+0720670M;-;ecole;public;72340;Ruillé-sur-Loir
+0720672P;-;ecole;public;72240;Ruillé-en-Champagne
+0720677V;-;ecole;public;72700;Rouillon
+0720679X;-;ecole;public;72140;Rouez
+0720682A;-;ecole;public;72490;Rouessé-Fontaine
+0720683B;-;ecole;public;72210;Roézé-sur-Sarthe
+0720691K;-;ecole;public;72550;La-Quinte
+0720692L;-;ecole;public;72590;Saint-Georges-le-Gaultier
+0720693M;René Descartes;ecole;public;72000;Le-Mans
+0720696R;Edouard De La Boussinière;ecole;public;72000;Le-Mans
+0720700V;Alfred De Musset;ecole;public;72000;Le-Mans
+0720703Y;Jules Ferry;ecole;public;72000;Le-Mans
+0720704Z;Jean Mermoz;ecole;public;72000;Le-Mans
+0720708D;Michel Gounod;ecole;public;72000;Le-Mans
+0720717N;Dulac;ecole;public;72000;Le-Mans
+0720718P;Pierre Belon;ecole;public;72000;Le-Mans
+0720719R;Pierre Philippeaux;ecole;public;72000;Le-Mans
+0720721T;Camille Claudel;ecole;public;72000;Le-Mans
+0720725X;Jean Macé;ecole;public;72000;Le-Mans
+0720730C;Michel Ange;ecole;public;72000;Le-Mans
+0720733F;Guy Moquet;ecole;public;72000;Le-Mans
+0720737K;Ferdinand Buisson;ecole;public;72000;Le-Mans
+0720743S;-;ecole;public;72220;Saint-Mars-d'Outillé
+0720744T;Claude Chappe;ecole;public;72680;Saint-Mars-la-Brière
+0720753C;-;ecole;public;72130;Saint-Ouen-de-Mimbré
+0720757G;-;ecole;public;72610;Saint-Paterne
+0720759J;-;ecole;public;72500;Saint-Pierre-de-Chevillé
+0720760K;-;ecole;public;72430;Saint-Pierre-des-Bois
+0720764P;-;ecole;public;72140;Saint-Rémy-de-Sillé
+0720766S;-;ecole;public;72600;Saint-Rémy-des-Monts
+0720771X;-;ecole;public;72380;Sainte-Sabine-sur-Longève
+0720772Y;-;ecole;public;72650;Saint-Saturnin
+0720773Z;-;ecole;public;72240;Saint-Symphorien
+0720777D;-;ecole;public;72600;Saint-Vincent-des-Prés
+0720786N;Jacques Prévert;ecole;public;72460;Savigné-l'Evêque
+0720787P;-;ecole;public;72800;Savigné-sous-le-Lude
+0720788R;-;ecole;public;72160;Sceaux-sur-Huisne
+0720789S;-;ecole;public;72170;Ségrie
+0720791U;-;ecole;public;72390;Semur-en-Vallon
+0720797A;de Vauguyon;college;public;72100;Le-Mans
+0720798B;Vieux Colombier;college;public;72000;Le-Mans
+0720799C;Jean De L'Epine;college;public;72000;Le-Mans
+0720800D;Albert Camus;college;public;72100;Le-Mans
+0720802F;Sainte-Thérèse;college;prive;72170;Beaumont-sur-Sarthe
+0720803G;Frère André;college;prive;72120;Saint-Calais
+0720804H;Saint-Jean;college;prive;72500;Château-du-Loir
+0720806K;Notre-Dame;college;prive;72400;La-Ferté-Bernard
+0720807L;Notre-Dame - Saint-Joseph;college;prive;72130;Fresnay-sur-Sarthe
+0720808M;Saint-Michel;college;prive;72540;Loué
+0720811R;Saint-Joseph - Lorraine;college;prive;72700;Pruillé-le-Chétif
+0720812S;Les Muriers;college;prive;72000;Le-Mans
+0720815V;Sacré-Coeur;college;prive;72100;Le-Mans
+0720816W;Notre-Dame;college;prive;72260;Marolles-les-Braults
+0720817X;Saint-Coeur De Marie;college;prive;72140;Sillé-le-Guillaume
+0720835S;Saint-Louis;college;prive;72000;Le-Mans
+0720836T;Psallette - Saint-Vincent;college;prive;72000;Le-Mans
+0720838V;Saint-Julien;college;prive;72000;Le-Mans
+0720847E;Louis Cordelet;college;public;72250;Parigné-l'Evêque
+0720874J;Latouche;ecole;public;72200;La-Flèche
+0720878N;La Madeleine;ecole;public;72000;Le-Mans
+0720879P;Les Ardriers;ecole;public;72000;Le-Mans
+0720880R;Gaston Bachelard;ecole;public;72000;Le-Mans
+0720881S;Gérard Philipe;ecole;public;72000;Le-Mans
+0720882T;-;ecole;public;72150;Villaines-sous-Lucé
+0720883U;Antoine De Saint-Exupéry;ecole;public;72300;Sablé-sur-Sarthe
+0720884V;Gilles Ménage;ecole;public;72300;Sablé-sur-Sarthe
+0720885W;Le Ronceray;college;public;72100;Le-Mans
+0720887Y;Jules Ferry;ecole;public;72700;Allonnes
+0720902P;Maroc;college;public;72019;Le-Mans
+0720903R;Henri Lefeuvre;college;public;72230;Arnage
+0720904S;Le Joncheray;college;public;72170;Beaumont-sur-Sarthe
+0720905T;A.J.Trouvé-Chauvel;college;public;72210;La-Suze-sur-Sarthe
+0720906U;Jean Cocteau;college;public;72190;Coulaines
+0720908W;-;ecole;public;72240;Mézières-sous-Lavardin
+0720909X;-;ecole;public;72260;Marolles-les-Braults
+0720911Z;-;ecole;public;72210;Voivres-lès-le-Mans
+0720912A;-;ecole;public;72320;Valennes
+0720915D;Marcel Pagnol;ecole;public;72000;Le-Mans
+0720919H;-;ecole;public;72340;Beaumont-sur-Dême
+0720920J;Raphaël Elize;EREA;public;72560;Changé
+0720979Y;Georges Braque;ecole;public;72190;Coulaines
+0720983C;Saint-Benoît - Maupertuis;college;prive;72000;Le-Mans
+0720984D;Saint-Joseph;college;prive;72000;Le-Mans
+0720986F;La Madeleine;college;public;72018;Le-Mans
+0720987G;du Val d'Huisne;college;public;72100;Le-Mans
+0720988H;Suzanne Bouteloup;college;public;72360;Mayet
+0720989J;d'Anjou;college;public;72300;Sablé-sur-Sarthe
+0720991L;-;ecole;public;72430;Chantenay-Villedieu
+0720992M;-;ecole;public;72650;La-Chapelle-Saint-Aubin
+0720994P;La Pléiade;ecole;public;72340;La-Chartre-sur-le-Loir
+0720996S;-;ecole;public;72150;Courdemanche
+0720997T;-;ecole;public;72380;La-Guierche
+0720999V;Clairefontaine;ecole;public;72000;Le-Mans
+0721004A;-;ecole;public;72440;Tresson
+0721011H;-;ecole;public;72290;Ballon
+0721012J;-;ecole;public;72140;Crissé
+0721013K;-;ecole;public;72300;Juigné-sur-Sarthe
+0721014L;-;ecole;public;72390;Lavaré
+0721015M;Maurice Genevoix;ecole;public;72190;Sargé-lès-Le-Mans
+0721016N;-;ecole;public;72460;Sillé-le-Philippe
+0721017P;-;ecole;public;72500;Chenu
+0721018R;-;ecole;public;72390;Dollon
+0721019S;-;ecole;public;72500;Jupilles
+0721020T;-;ecole;public;72800;Coulongé
+0721023W;Alexandre Mauboussin;ecole;public;72000;Le-Mans
+0721024X;François-Séverin Marceau;ecole;public;72000;Le-Mans
+0721026Z;-;ecole;public;72350;Poillé-sur-Vègre
+0721027A;-;ecole;public;72370;Le-Breil-sur-Mérize
+0721028B;Fernand Boutier;ecole;public;72230;Ruaudin
+0721029C;-;ecole;public;72800;Thorée-les-Pins
+0721030D;-;ecole;public;72600;La-Fresnaye-sur-Chédouet
+0721031E;Jules Verne;ecole;public;72320;Saint-Jean-des-Echelles
+0721032F;Léon Gambetta;ecole;public;72300;Sablé-sur-Sarthe
+0721034H;-;ecole;public;72160;La-Chapelle-Saint-Rémy
+0721035J;-;ecole;public;72490;Ancinnes
+0721037L;-;ecole;public;72440;Saint-Mars-de-Locquenay
+0721042S;Jean Rostand;college;public;72380;Sainte-Jamme-sur-Sarthe
+0721043T;Alfred De Musset;college;public;72220;Ecommoy
+0721044U;Paul Chevallier;college;public;72150;Le-Grand-Lucé
+0721060L;de l'Epau;ecole;public;72000;Le-Mans
+0721061M;Eluard - Sablonnière;ecole;public;72000;Le-Mans
+0721062N;Louis Hubert Lyautey;ecole;public;72700;Allonnes
+0721064R;-;ecole;public;72440;Saint-Michel-de-Chavaignes
+0721065S;-;ecole;public;72300;Parcé-sur-Sarthe
+0721068V;-;ecole;public;72250;Brette-les-Pins
+0721069W;-;ecole;public;72540;Loué
+0721070X;-;ecole;public;72360;Verneil-le-Chétif
+0721071Y;-;ecole;public;72290;Souligné-sous-Ballon
+0721072Z;-;ecole;public;72250;Challes
+0721073A;-;ecole;public;72560;Changé
+0721075C;-;ecole;public;72240;Conlie
+0721076D;-;ecole;public;72440;Coudrecieux
+0721077E;-;ecole;public;72380;Sainte-Jamme-sur-Sarthe
+0721078F;Docteur Calmette;ecole;public;72000;Le-Mans
+0721079G;-;ecole;public;72340;Marçon
+0721086P;Wilbur Wright;college;public;72470;Champagné
+0721089T;de Courtanvaux;college;public;72310;Bessé-sur-Braye
+0721090U;Villaret - Clairefontaine;college;public;72000;Le-Mans
+0721093X;La Foresterie;college;public;72110;Bonnétable
+0721095Z;Sainte-Thérèse - Saint-Joseph;ecole;prive;72220;Teloché
+0721096A;Saint-Pierre;ecole;prive;72160;Tuffé
+0721097B;Sainte-Adélaïde;ecole;prive;72450;Montfort-le-Gesnois
+0721098C;Saint-Joseph;ecole;prive;72240;Conlie
+0721099D;Notre-Dame des Victoires;ecole;prive;72240;Saint-Symphorien
+0721100E;Sainte-Thérèse;ecole;prive;72240;Tennie
+0721101F;Saint-Jean;ecole;prive;72500;Château-du-Loir
+0721102G;Sainte-Anne;ecole;prive;72340;Ruillé-sur-Loir
+0721103H;Sainte-Marie;ecole;prive;72340;La-Chartre-sur-le-Loir
+0721104J;Sacré-Coeur;ecole;prive;72110;Bonnétable
+0721105K;Notre-Dame du Sacré-Coeur;ecole;prive;72290;Ballon
+0721106L;Sainte-Jeanne D'Arc;ecole;prive;72600;La-Fresnaye-sur-Chédouet
+0721107M;Notre-Dame de Sainte-Croix;ecole;prive;72000;Le-Mans
+0721108N;Saint-Martin;ecole;prive;72000;Le-Mans
+0721110R;Sainte-Anne;ecole;prive;72000;Le-Mans
+0721112T;Saint-Benoît - Maupertuis;ecole;prive;72000;Le-Mans
+0721114V;Saint-Joseph - Lorraine;ecole;prive;72700;Pruillé-le-Chétif
+0721116X;Sacré-Coeur;ecole;prive;72000;Le-Mans
+0721117Y;Sainte-Thérèse;ecole;prive;72000;Le-Mans
+0721118Z;Saint-Aldric - Notre-Dame de Paix;ecole;prive;72000;Le-Mans
+0721119A;Psallette - Saint-Vincent;ecole;prive;72000;Le-Mans
+0721120B;Saint-Louis;ecole;prive;72000;Le-Mans
+0721121C;Saint-Lazare;ecole;prive;72000;Le-Mans
+0721122D;Saint-Joseph;ecole;prive;72000;Le-Mans
+0721123E;Saint-Julien;ecole;prive;72000;Le-Mans
+0721124F;Sainte-Scholastique;ecole;prive;72000;Le-Mans
+0721126H;Notre-Dame du Pré-Saint-Pavin;ecole;prive;72000;Le-Mans
+0721128K;Saint-Liboire;ecole;prive;72000;Le-Mans
+0721129L;Saint-Joseph;ecole;prive;72530;Yvré-l'Evêque
+0721131N;Saint-Germain;ecole;prive;72460;Savigné-l'Evêque
+0721132P;Notre-Dame;ecole;prive;72190;Sargé-lès-Le-Mans
+0721133R;Sainte-Anne;ecole;prive;72160;Connerré
+0721134S;Sainte-Jeanne D'Arc;ecole;prive;72550;Chaufour-Notre-Dame
+0721135T;Sainte-Thérèse;ecole;prive;72700;Allonnes
+0721136U;Saint-Michel des Perrais;ecole;prive;72330;Parigné-le-Pôlin
+0721137V;Sainte-Thérèse;ecole;prive;72170;Beaumont-sur-Sarthe
+0721139X;Sacré-Coeur;ecole;prive;72170;Vivoin
+0721141Z;Saint-Paul - Saint-Joseph;ecole;prive;72600;Mamers
+0721145D;Sainte-Anne - Saint-Joseph;ecole;prive;72220;Saint-Gervais-en-Belin
+0721147F;Saint-Martin;ecole;prive;72220;Ecommoy
+0721149H;Saint-Jean - Notre-Dame;ecole;prive;72400;La-Ferté-Bernard
+0721150J;Saint-Joseph;ecole;prive;72200;Bazouges-sur-le-Loir
+0721151K;Sainte-Colombe;ecole;prive;72200;La-Flèche
+0721152L;Sainte-Jeanne D'Arc;ecole;prive;72200;La-Flèche
+0721154N;Sacré-Coeur - Saint-Jacques;ecole;prive;72200;La-Flèche
+0721155P;Notre-Dame - Saint-Joseph;ecole;prive;72130;Fresnay-sur-Sarthe
+0721157S;Saint-Joseph - Sainte-Marie;ecole;prive;72540;Vallon-sur-Gée
+0721159U;Notre-Dame du Parc;ecole;prive;72350;Saint-Denis-d'Orques
+0721160V;Sainte-Anne - Notre-Dame;ecole;prive;72800;Le-Lude
+0721161W;Sacré-Coeur;ecole;prive;72540;Loué
+0721164Z;Notre-Dame;ecole;prive;72350;Brûlon
+0721165A;Notre-Dame;ecole;prive;72260;Marolles-les-Braults
+0721166B;Notre-Dame de Bonneval;ecole;prive;72360;Mayet
+0721167C;Saint-Joseph;ecole;prive;72800;Aubigné-Racan
+0721168D;Saint-Charles;ecole;prive;72300;Auvers-le-Hamon
+0721170F;Notre-Dame - Saint-Joseph;ecole;prive;72300;Parcé-sur-Sarthe
+0721173J;Saint-Joseph - Saint-Jean;ecole;prive;72410;Précigné
+0721174K;Saint-Vincent - Sainte-Anne;ecole;prive;72300;Sablé-sur-Sarthe
+0721175L;Sacré-Coeur;ecole;prive;72300;Juigné-sur-Sarthe
+0721177N;Saint-Paul;ecole;prive;72410;Notre-Dame-du-Pé
+0721178P;Sainte-Marie;ecole;prive;72120;Saint-Calais
+0721181T;Saint-Joseph - Saint-Coeur de Marie;ecole;prive;72140;Sillé-le-Guillaume
+0721183V;Saint-Charles;ecole;prive;72210;Fillé
+0721184W;Notre-Dame Saint-Martin;ecole;prive;72210;Roézé-sur-Sarthe
+0721186Y;Sacré-Coeur;ecole;prive;72210;La-Suze-sur-Sarthe
+0721187Z;Notre-Dame du Sacré-Coeur;ecole;prive;72430;Noyen-sur-Sarthe
+0721188A;Sainte-Thérèse;ecole;prive;72270;Malicorne-sur-Sarthe
+0721191D;-;ecole;public;72200;Clermont-Créans
+0721192E;Flora Tristan;ecole;public;72230;Mulsanne
+0721201P;-;ecole;public;72340;Lhomme
+0721202R;-;ecole;public;72650;La-Milesse
+0721203S;-;ecole;public;72150;Le-Grand-Lucé
+0721204T;-;ecole;public;72240;Domfront-en-Champagne
+0721205U;-;ecole;public;72390;Le-Luart
+0721207W;-;ecole;public;72400;La-Chapelle-du-Bois
+0721209Y;-;ecole;public;72500;Vaas
+0721210Z;Maurice Cantin;ecole;public;72300;Auvers-le-Hamon
+0721212B;du Professeur Arnoult;ecole;public;72800;Aubigné-Racan
+0721213C;Jacques-Yves Cousteau;ecole;public;72700;Pruillé-le-Chétif
+0721214D;-;ecole;public;72150;Saint-Pierre-du-Lorouër
+0721224P;Le Marin;college;public;72700;Allonnes
+0721225R;Louis Pasteur;college;public;72530;Yvré-l'Evêque
+0721226S;Les Quatre Vents;college;public;72800;Le-Lude
+0721228U;Jacques Prévert;ecole;public;72470;Champagné
+0721229V;Louise Michel;ecole;public;72470;Champagné
+0721231X;G. Lapierre - L. Pergaud;ecole;public;72000;Le-Mans
+0721232Y;La Renardière;ecole;public;72210;La-Suze-sur-Sarthe
+0721233Z;-;ecole;public;72220;Saint-Ouen-en-Belin
+0721234A;Louis Blériot 2;ecole;public;72000;Le-Mans
+0721235B;Villaret;ecole;public;72000;Le-Mans
+0721242J;-;ecole;public;72140;Sillé-le-Guillaume
+0721243K;-;ecole;public;72110;Torcé-en-Vallée
+0721248R;-;ecole;public;72110;Courcemont
+0721249S;1;ecole;public;72330;Cérans-Foulletourte
+0721253W;Pierre De Ronsard;ecole;public;72000;Le-Mans
+0721254X;-;ecole;public;72240;Tennie
+0721255Y;-;ecole;public;72200;Crosmières
+0721256Z;-;ecole;public;72340;Chahaignes
+0721258B;Louis Blériot 1;ecole;public;72000;Le-Mans
+0721259C;-;ecole;public;72110;Beaufay
+0721261E;Saint-Joseph;college;prive;72220;Teloché
+0721262F;Les Sources;college;public;72100;Le-Mans
+0721263G;Marcel Pagnol;college;public;72270;Malicorne-sur-Sarthe
+0721270P;-;ecole;public;72150;Saint-Vincent-du-Lorouër
+0721272S;Les P'tits Loups;ecole;public;72310;Lavenay
+0721274U;-;ecole;public;72270;Malicorne-sur-Sarthe
+0721276W;Paul Langevin;ecole;public;72700;Allonnes
+0721277X;-;ecole;public;72430;Noyen-sur-Sarthe
+0721278Y;-;ecole;public;72610;Oisseau-le-Petit
+0721279Z;Jules Verne;ecole;public;72600;Mamers
+0721281B;Amédée Bollée;college;public;72230;Mulsanne
+0721288J;-;ecole;public;72170;Saint-Marceau
+0721289K;-;ecole;public;72510;Requeil
+0721297U;-;ecole;public;72700;Saint-Georges-du-Bois
+0721304B;Jacques Prévert;college;public;72510;Pontvallain
+0721306D;-;ecole;public;72580;Nogent-le-Bernard
+0721307E;Raymond Brossard;ecole;public;72150;Pruillé-l'Eguillé
+0721308F;-;ecole;public;72140;Rouessé-Vassé
+0721309G;-;ecole;public;72590;Mont-Saint-Jean
+0721310H;-;ecole;public;72320;Melleray
+0721315N;de Montaigu;ecole;public;72000;Le-Mans
+0721363R;Berthelot;college;public;72017;Le-Mans
+0721364S;du Val d'Huisne;college;public;72400;La-Ferté-Bernard
+0721365T;Paul Scarron;college;public;72140;Sillé-le-Guillaume
+0721368W;-;ecole;public;72350;Brûlon
+0721370Y;Le Pré des Rois;ecole;public;72300;Sablé-sur-Sarthe
+0721371Z;Gazonfier;ecole;public;72000;Le-Mans
+0721372A;André Fertre;ecole;public;72200;La-Flèche
+0721376E;-;ecole;public;72130;Gesnes-le-Gandelin
+0721377F;-;ecole;public;72260;Courgains
+0721387S;Paul Cézanne;ecole;public;72230;Mulsanne
+0721388T;-;ecole;public;72190;Neuville-sur-Sarthe
+0721389U;-;ecole;public;72300;Vion
+0721393Y;-;ecole;public;72200;Bazouges-sur-le-Loir
+0721402H;Les Chataigniers;ecole;public;72210;La-Suze-sur-Sarthe
+0721405L;Notre-Dame;college;prive;72200;La-Flèche
+0721406M;Saint-Paul;college;prive;72600;Mamers
+0721407N;Saint-Michel des Perrais;college;prive;72330;Parigné-le-Pôlin
+0721408P;Sainte-Anne;college;prive;72300;Sablé-sur-Sarthe
+0721446F;Jules Ferry;ecole;public;72200;La-Flèche
+0721477P;Jacques Peletier;college;public;72560;Changé
+0721483W;Pierre Belon;college;public;72330;Cérans-Foulletourte
+0721607F;Anne Frank;college;public;72000;Le-Mans
+0721608G;Saint-Martin;college;prive;72500;La-Bruère-sur-Loir
