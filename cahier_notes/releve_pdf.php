@@ -61,6 +61,16 @@ if (!checkAccess()) {
 	die();
 }
 
+//=======================
+// AJOUT: chapel 20071019
+function date_fr_dh($var) {
+	$var = explode(" ",$var);
+	$var = explode("-",$var[0]);
+	$var = $var[2]."/".$var[1]."/".$var[0];
+	return($var);
+}
+//=======================
+
 // variable de session
 //nombre d'élève par page
 $nb_releve_par_page = $_SESSION['type'];
@@ -382,8 +392,23 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	// cadre des signature
 	$hauteur_cachet = '30'; // hauteur des signatures
-	$affiche_signature_parent='1'; // affiche le cadre signatures des parents
-	$affiche_cachet_pp='0'; // affiche la signature du professeur principal
+
+	//=======================
+	// MODIF: chapel 20071019
+	//$affiche_signature_parent='1'; // affiche le cadre signatures des parents
+	//$affiche_cachet_pp='0'; // affiche la signature du professeur principal
+	// affiche le cadre signatures des parents
+	 if(isset($_SESSION['avec_sign_parent']) and $_SESSION['avec_sign_parent'] === '1' ) {
+	   $affiche_signature_parent = '1';
+	 } else { $affiche_signature_parent = '0'; }
+	// affiche la signature du professeur principal
+	 if(isset($_SESSION['avec_sign_pp']) and $_SESSION['avec_sign_pp'] === '1' ) {
+	   $affiche_cachet_pp = '1';
+	 } else { $affiche_cachet_pp = '0'; }
+	 if(isset($_SESSION['avec_bloc_obser']) and $_SESSION['avec_bloc_obser'] === '1' ) {
+	   $affiche_bloc_observation = '1';
+	 } else { $affiche_bloc_observation = '0'; }
+	//=======================
 
 
 //recherche d'information de la sélection
@@ -609,13 +634,37 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					else {
 						$nom_devoir_oui='';
 					}
+
+					//=======================
+					// AJOUT: chapel 20071019
+					// si coef
+					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[9] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; } else { $coef_oui = ''; } }
+					}
+					else {
+						$coef_oui='';
+					}
+					// si date devoir
+					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' ) {
+						$date_devoir_oui = " (".date_fr_dh($donne_requete['date']).") ";
+					}
+					else {
+						$date_devoir_oui='';
+					}
+					//=======================
+
 					// =======================================
 					// Modif: boireaus d'après C.Chapel
 					//$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note']."".$nom_devoir_oui;
 					// gestion de la notation si statut est défini alors on l'affiche à la place de la note
+					// si le statut est égale = - alors on considère que l'élève n'a pas participé au devoir donc il ne sera pas affiché sur son relevé.
+					//=================
+					// MODIF: chapel 20071019
 					if ( $donne_requete['note'] == '0.0' ) {
 						if ( $donne_requete['statut'] != '' ) {
-							if ( $donne_requete['statut'] != 'v' ) {
+							//if ( $donne_requete['statut'] != 'v' ) {
+							if ( $donne_requete['statut'] != '-' and $donne_requete['statut'] != 'v' ) {
 								$notes[$eleve_select][$nb_matiere_cpt]=$donne_requete['statut'];
 							}
 							else{
@@ -632,7 +681,13 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					else{
 						$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
 					}
-					$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui;
+
+					//$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui;
+					// si une note est validé
+					if ( $notes[$eleve_select][$nb_matiere_cpt] != '' ) {
+						$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui;
+					}
+					//=================
 					// =======================================
 					$nom_regroupement[$eleve_select][$nb_matiere_cpt]=$donne_requete['nom_complet'];
 					if($nom_regroupement[$eleve_select][$nb_matiere_cpt]!=$regroupement_passer) {
@@ -688,7 +743,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						if($notes[$eleve_select][$nb_num_matiere_passe]!=""){
 							$notes[$eleve_select][$nb_num_matiere_passe].=" - ";
 						}
-						$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui;
+						//=========================
+						// MODIF: chapel 20071019
+						//$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui;
+						$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui;
+						//=========================
 					}
 					// =======================================
 				}
@@ -750,7 +809,7 @@ $passage_i = 1;
 		if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 		$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($naissance[$nb_eleves_i]).', '.$regime[$nb_eleves_i],0,2,'');
 		$pdf->Cell(90,5,'',0,2,'');
-		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'</B>');
+		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
 		$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
 		$pdf->Cell(90,5,$classe_aff,0,2,'');
 		$pdf->SetX($X_cadre_eleve);
@@ -995,6 +1054,10 @@ $passage_i = 1;
 		{
 			//NOTES
 			$largeur_utilise=$largeur_cadre_matiere;
+			//=======================
+			// AJOUT: chapel 20071019
+			if ( $affiche_bloc_observation === '1' ) { $largeur_cadre_note = $largeur_cadre_note; } else { $largeur_cadre_note = $largeur_cadre_note_global - $largeur_utilise; }
+			//=======================
 			$pdf->SetXY($X_cadre_note+$largeur_utilise,$Y_cadre_note+$hauteur_utilise);
 				// on affiche les nom des regroupement
 				if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
@@ -1027,17 +1090,23 @@ $passage_i = 1;
 		}
 
 	// BLOC OBSERVATION
-		$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
-		$largeur_restant=$largeur_cadre_note_global-$largeur_utilise;
-		$hauteur_utilise = $hauteur_du_titre;
-		if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+		//=======================
+		// MODIF: chapel 20071019
+		if($affiche_bloc_observation === '1')
 		{
-			$hauteur_cadre_observation=$hauteur_cadre_note_global-$hauteur_cachet;
-		} else { $hauteur_cadre_observation=$hauteur_cadre_note_global; }
-		$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
-		$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
-		$pdf->SetFont($caractere_utilse,'',11);
-		$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
+			$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
+			$largeur_restant=$largeur_cadre_note_global-$largeur_utilise;
+			$hauteur_utilise = $hauteur_du_titre;
+			if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+			{
+				$hauteur_cadre_observation=$hauteur_cadre_note_global-$hauteur_cachet;
+			} else { $hauteur_cadre_observation=$hauteur_cadre_note_global; }
+			$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
+			$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
+			$pdf->SetFont($caractere_utilse,'',11);
+			$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
+		}
+		//=======================
 
 	// BLOC SIGNATURE
 		if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')

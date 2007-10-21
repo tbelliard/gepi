@@ -626,7 +626,8 @@
 			$dx=ImageFontWidth($taille_police)+1;
 			$dy=3;
 			for($k=0;$k<strlen($matiere_nom_long[$i]);$k++){
-				$lettre_tmp=substr($matiere_nom_long[$i],$k,1);
+				//$lettre_tmp=substr($matiere_nom_long[$i],$k,1);
+				$lettre_tmp=substr(strtr($matiere_nom_long[$i],"_"," "),$k,1);
 
 				//imagestring ($img, $taille_police, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)+$k*$dx, $hauteur+$hauteurMoy+5+$k*$dy, $lettre_tmp, $axes);
 				imagestring ($img, $taille_police, $x1+$k*$dx, $hauteur+$hauteurMoy+5+$k*$dy, $lettre_tmp, $axes);
@@ -752,7 +753,8 @@
 		$xtmp=$xtmp+$espace;
 		//imagestring ($img, $taille_police, $xtmp, 5, $eleve[$k], $couleureleve[$k]);
 		//$xtmp=$xtmp+$largeur_eleve[$k];
-		imagestring ($img, $taille_police, $xtmp, 5, $chaine[$k], $couleureleve[$k]);
+		//imagestring ($img, $taille_police, $xtmp, 5, $chaine[$k], $couleureleve[$k]);
+		imagestring ($img, $taille_police, $xtmp, 5, strtr($chaine[$k],"_"," "), $couleureleve[$k]);
 		$xtmp=$xtmp+$largeur_chaine[$k];
 	}
 	//=======================================================================

@@ -78,6 +78,21 @@ function verif_date($date_fr)
 	    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
+
+	//=========================
+	// AJOUT: chapel 20071019
+    if (empty($_GET['avec_coef']) and empty($_POST['avec_coef'])) { $avec_coef = ''; }
+       else { if (isset($_GET['avec_coef'])) { $avec_coef = $_GET['avec_coef']; } if (isset($_POST['avec_coef'])) { $avec_coef = $_POST['avec_coef']; } }
+    if (empty($_GET['avec_date_devoir']) and empty($_POST['avec_date_devoir'])) { $avec_date_devoir = ''; }
+       else { if (isset($_GET['avec_date_devoir'])) { $avec_date_devoir = $_GET['avec_date_devoir']; } if (isset($_POST['avec_date_devoir'])) { $avec_date_devoir = $_POST['avec_date_devoir']; } }
+    if (empty($_GET['avec_bloc_obser']) and empty($_POST['avec_bloc_obser'])) { $avec_bloc_obser = ''; }
+       else { if (isset($_GET['avec_bloc_obser'])) { $avec_bloc_obser = $_GET['avec_bloc_obser']; } if (isset($_POST['avec_bloc_obser'])) { $avec_bloc_obser = $_POST['avec_bloc_obser']; } }
+    if (empty($_GET['avec_sign_parent']) and empty($_POST['avec_sign_parent'])) { $avec_sign_parent = ''; }
+       else { if (isset($_GET['avec_sign_parent'])) { $avec_sign_parent = $_GET['avec_sign_parent']; } if (isset($_POST['avec_sign_parent'])) { $avec_sign_parent = $_POST['avec_sign_parent']; } }
+    if (empty($_GET['avec_sign_pp']) and empty($_POST['avec_sign_pp'])) { $avec_sign_pp = ''; }
+       else { if (isset($_GET['avec_sign_pp'])) { $avec_sign_pp = $_GET['avec_sign_pp']; } if (isset($_POST['avec_sign_pp'])) { $avec_sign_pp = $_POST['avec_sign_pp']; } }
+	//=========================
+
 	if (empty($_POST['display_date_debut'])) {$date_debut="";} else {$date_debut=$_POST['display_date_debut'];}
 	if (empty($_POST['display_date_fin'])) {$date_fin="";} else {$date_fin=$_POST['display_date_fin'];}
 	if (!isset($date_debut_exp[0])) { $date_debut_exp = ''; }
@@ -90,6 +105,14 @@ function verif_date($date_fr)
 	$_SESSION['classe'] = $classe;
 	$_SESSION['eleve'] = $eleve;
 	$_SESSION['avec_nom_devoir'] = $avec_nom_devoir;
+	//=========================
+	// AJOUT: chapel 20071019
+    $_SESSION['avec_coef'] = $avec_coef;
+    $_SESSION['avec_date_devoir'] = $avec_date_devoir;
+    $_SESSION['avec_bloc_obser'] = $avec_bloc_obser;
+    $_SESSION['avec_sign_parent'] = $avec_sign_parent;
+    $_SESSION['avec_sign_pp'] = $avec_sign_pp;
+	//=========================
 	$_SESSION['type'] = $type;
 	$_SESSION['avec_adresse_responsable'] = $avec_adresse_responsable;
 	$_SESSION['date_debut_aff'] = $date_debut;
@@ -345,11 +368,21 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	if ($current_eleve_regime == "ext.") {echo ",&nbsp;externe";}
 	if ($current_eleve_regime == "int.") {echo ",&nbsp;interne";}
 	if ($current_eleve_regime == "i-e")
-	if ($current_eleve_sexe == "M") echo ",&nbsp;interne&nbsp;externé"; else echo ",&nbsp;interne&nbsp;externée";
+	if ($current_eleve_sexe == "M"){
+		echo ",&nbsp;interne&nbsp;externé";
+	}
+	else{
+		echo ",&nbsp;interne&nbsp;externée";
+	}
 	echo ", $current_eleve_classe";
-	if ($current_eleve_doublant == 'R')
-		if ($current_eleve_sexe == "M") echo "<br /><b>redoublant</b>"; else echo "<br /><b>redoublante</b>";
-
+	if ($current_eleve_doublant == 'R') {
+		if ($current_eleve_sexe == "M") {
+			echo "<br /><b>redoublant</b>";
+		}
+		else {
+			echo "<br /><b>redoublante</b>";
+		}
+	}
 	echo "</p>\n";
 
 	echo "</td><td width=40% align=\"center\">";
@@ -559,7 +592,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				}
 			}
 			if ($affiche_note != '') {
-				if ($tiret == "yes") echo " - ";
+				if ($tiret == "yes") { echo " - "; }
 				//====================================================================
 				// MODIF: boireaus
 				//echo "<b>".$affiche_note."</b> (".$eleve_nom_court.")";
@@ -664,6 +697,32 @@ require_once("../lib/header.inc");
 function active(num) {
  document.form_choix_edit.choix_edit[num].checked=true;
 }
+
+//=======================
+// AJOUT chapel 20071019
+// fonction permettant d'afficher ou cacher un div
+function affichercacher(a) {
+
+	c = a.substr(4);
+	var b = document.getElementById(a);
+
+	var f = "img_"+c+"";
+
+	if (b.style.display == "none" || b.style.display == "") {
+		b.style.display = "block";
+		document.images[f].src="../images/fleche_a.gif";
+	}
+	else
+	{
+		b.style.display = "none";
+		document.images[f].src="../images/fleche_na.gif";
+	}
+}
+
+// Inutile: et cela se déclenchait avant que le DIV soit écrit si bien qu'on avait une erreur javascript
+//affichercacher('div_1');
+//setTimeout("affichercacher('div_1')",1000);
+//=======================
 </script>
 
 <?php
@@ -801,34 +860,43 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		  </optgroup>
 		  </select>
 			<?php if ( $message_erreur != '' ) { ?><br /><span style="color: #FF0000; font-weight: bold;"><?php echo $message_erreur; ?></span><?php } ?>
-		  <?php
-		    //====================================================================
-		    // MODIF: boireaus
-		    // Pour permettre de ne pas afficher les noms des devoirs
-		    ?>
-			<br /><br /><input type="checkbox" name="avec_nom_devoir" id="avec_nom_devoir" value="oui" <?php if(isset($avec_nom_devoir) and $avec_nom_devoir === 'oui') { ?>checked="checked"<?php } ?> /> <label for="avec_nom_devoir" style="cursor: pointer;">Afficher le nom des devoirs.</label>
-	  <?php  //====================================================================
-		  ?>
-		  <input type="checkbox" name="active_entete_regroupement" id="active_entete_regroupement" value="1" <?php if(isset($active_entete_regroupement) and $active_entete_regroupement === '1') { ?>checked="checked"<?php } ?> /> <label for="active_entete_regroupement" style="cursor: pointer;">Afficher les catégories.</label>
-		  <span id='ligne_adresse_parent'><br /><input type="checkbox" name="avec_adresse_responsable" id="avec_adresse_responsable" value="1" <?php if(isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_adresse_responsable" style="cursor: pointer;">Afficher les adresses responsables.</label></span>
-		  <br />
-		  <br />Type
-		  <select tabindex="5" name="type" id="type">
-			<option value="1" <?php if(!empty($type) and $type === '1') { ?>selected="selected"<?php } ?> onClick="javascript:aff_lig_adresse_parent('afficher')">format PDF 1/1 page</option>
-		 	<option value="2" <?php if((!empty($type) and $type === '2') or empty($type)) { ?>selected="selected"<?php } ?> onClick="aff_lig_adresse_parent('cacher')">format PDF 2/1 page</option>
-		  </select>
-		  <!--br /-->
+
+
+
+
 			<?php
-				/*
-				echo "<input type='checkbox' name='avec_date_devoir' id='avec_date_devoir' value='oui' ";
-				if((isset($avec_date_devoir)) and ($avec_nom_devoir=='oui')) {
-					echo "checked='checked' ";
-				}
-				echo "/>\n";
-				echo "<label for='avec_date_devoir' style='cursor: pointer;'>Afficher les dates des devoirs.</label>\n";
-				*/
+			//=================================
+			// MODIF: chapel 20071019
 			?>
-		  <br /><br />
+          <span id='ligne_adresse_parent'><br /><input type="checkbox" name="avec_adresse_responsable" id="avec_adresse_responsable" value="1" <?php if(isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_adresse_responsable" style="cursor: pointer;">Afficher les adresses responsables.</label></span>
+          <br />
+          <br />Type
+          <select tabindex="5" name="type" id="type">
+            <option value="1" <?php if(!empty($type) and $type === '1') { ?>selected="selected"<?php } ?> onClick="javascript:aff_lig_adresse_parent('afficher')">format PDF 1/1 page</option>
+            <option value="2" <?php if((!empty($type) and $type === '2') or empty($type)) { ?>selected="selected"<?php } ?> onClick="aff_lig_adresse_parent('cacher')">format PDF 2/1 page</option>
+          </select>
+
+	<div style="text-align: left;"><a href="#ao" onclick="affichercacher('div_1')" style="cursor: pointer;"><img style="border: 0px solid ; width: 13px; height: 13px; border: none; padding:2px; margin:2px; float: left;" name="img_1" alt="" title="Information" src="../images/fleche_na.gif" align="middle" />Autres options</a></div>
+	<a name="ao"></a>
+	<div style="text-align: left;">
+		<div id="div_1" style="display: <?php if( $avec_nom_devoir != '' or $active_entete_regroupement != '' or $avec_coef != '' or $avec_date_devoir != '' or $avec_sign_parent != '' or $avec_sign_pp != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><!--a name="ao"></a-->
+		  <span style="font-family: Arial;">
+			<input type="checkbox" name="avec_nom_devoir" id="avec_nom_devoir" value="oui" <?php if(isset($avec_nom_devoir) and $avec_nom_devoir === 'oui') { ?>checked="checked"<?php } ?> /> <label for="avec_nom_devoir" style="cursor: pointer;">Afficher le nom des devoirs.</label><br />
+			<input type="checkbox" name="active_entete_regroupement" id="active_entete_regroupement" value="1" <?php if(isset($active_entete_regroupement) and $active_entete_regroupement === '1') { ?>checked="checked"<?php } ?> /> <label for="active_entete_regroupement" style="cursor: pointer;">Afficher les catégories.</label><br />
+			<input type="checkbox" name="avec_coef" id="avec_coef1" value="oui1" onclick="activedesactive('avec_ceof2','avec_coef1');"  <?php if(isset($avec_coef) and $avec_coef === 'oui1') { ?>checked="checked"<?php } ?> /> <label for="avec_coef1" style="cursor: pointer;">Afficher tous les coefficients des devoirs.</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="avec_coef" id="avec_coef2" value="oui2" onclick="activedesactive('avec_ceof1','avec_coef2');" <?php if(isset($avec_coef) and $avec_coef === 'oui2') { ?>checked="checked"<?php } ?> /> <label for="avec_coef2" style="cursor: pointer;">Afficher les coefficients des devoirs si différent de 1.</label><br />
+			<input type="checkbox" name="avec_date_devoir" id="avec_date_devoir" value="1" <?php if(isset($avec_date_devoir) and $avec_date_devoir === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_date_devoir" style="cursor: pointer;">Afficher les dates des devoirs.</label><br />
+			<input type="checkbox" name="avec_bloc_obser" id="avec_bloc_obser" value="1" <?php if(isset($avec_bloc_obser) and $avec_bloc_obser === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_bloc_obser" style="cursor: pointer;">Afficher le bloc observation.</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="avec_sign_parent" id="avec_sign_parent" value="1" <?php if(isset($avec_sign_parent) and $avec_sign_parent === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_sign_parent" style="cursor: pointer;">Afficher le bloc signature des parents.</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="avec_sign_pp" id="avec_sign_pp" value="1" <?php if(isset($avec_sign_pp) and $avec_sign_pp === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_sign_pp" style="cursor: pointer;">Afficher le bloc signature du professeur principal.</label>
+		  </span>
+		</div>
+	</div>
+			<?php
+			//=================================
+			?>
+
+			<br />
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
 		  </center>

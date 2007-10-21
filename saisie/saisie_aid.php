@@ -77,95 +77,109 @@ if (isset($_POST['is_posted'])) {
 	$j = '0';
 	while($j < $lignes) {
 		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
-		$call_classe = mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC");
-		$id_classe = mysql_result($call_classe, '0', "id_classe");
-		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
-		$nb_periode = mysql_num_rows($periode_query) ;
-		if ($type_note == 'last') {$last_periode_aid = min($nb_periode,$display_end);}
-		$k='1';
-		while ($k < $nb_periode + 1) {
-			if (($k >= $display_begin) and ($k <= $display_end)) {
-				$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
-				if ($ver_periode[$k] == "N"){
-
-					//=========================
-					// AJOUT: boireaus 20071010
-					unset($log_eleve);
-					$log_eleve=$_POST['log_eleve_'.$k];
-					unset($note_eleve);
-					$note_eleve=$_POST['note_eleve_'.$k];
-					//=========================
-
-					//=========================
-					// AJOUT: boireaus 20071010
-					// Récupération du numéro de l'élève dans les saisies:
-					$num_eleve=-1;
-					for($i=0;$i<count($log_eleve);$i++){
-						if("$reg_eleve_login"."_t".$k=="$log_eleve[$i]"){
-							$num_eleve=$i;
-							break;
-						}
-					}
-					if($num_eleve!=-1){
-						//=========================
-						// MODIF: boireaus 20071010
-						//$nom_log = $reg_eleve_login."_t".$k;
-						$nom_log = "app_eleve_".$k."_".$num_eleve;
-						//=========================
-
-						//$nom_log2 = $reg_eleve_login."_n_t".$k;
-						if (isset($NON_PROTECT[$nom_log])) {
-							$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
-						}
-						else {
-							$app = "";
-						}
-						$elev_statut = '';
+		//$call_classe = mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC");
+		$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '$reg_eleve_login' ORDER BY periode DESC";
+		$call_classe = mysql_query($sql);
+		//echo "$sql<br />";
+		// On passe en revue tous les élèves inscrits à l'AID, même si ils ne sont pas dans une classe...
+		// ... par contre, dans la partie saisie, seuls les élèves effectivement dans une classe sont proposés.
+		if(mysql_num_rows($call_classe)>0){
+			$id_classe = mysql_result($call_classe, '0', "id_classe");
+			$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
+			$nb_periode = mysql_num_rows($periode_query) ;
+			if ($type_note == 'last') {$last_periode_aid = min($nb_periode,$display_end);}
+			$k='1';
+			while ($k < $nb_periode + 1) {
+				if (($k >= $display_begin) and ($k <= $display_end)) {
+					$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
+					if ($ver_periode[$k] == "N"){
 
 						//=========================
-						// MODIF: boireaus 20071010
-						//if (isset($_POST[$nom_log2])) {
+						// AJOUT: boireaus 20071003
+						unset($log_eleve);
+						$log_eleve=$_POST['log_eleve_'.$k];
+						unset($note_eleve);
+						$note_eleve=$_POST['note_eleve_'.$k];
+						//=========================
 
-							//$note = $_POST[$nom_log2];
-							$note=$note_eleve[$num_eleve];
+						//=========================
+						// AJOUT: boireaus 20071003
+						// Récupération du numéro de l'élève dans les saisies:
+						$num_eleve=-1;
+						for($i=0;$i<count($log_eleve);$i++){
+							if("$reg_eleve_login"."_t".$k=="$log_eleve[$i]"){
+								$num_eleve=$i;
+								break;
+							}
+						}
+						if($num_eleve!=-1){
+							//=========================
+							// MODIF: boireaus 20071003
+							//$nom_log = $reg_eleve_login."_t".$k;
+							$nom_log = "app_eleve_".$k."_".$num_eleve;
+							//=========================
 
-							if (($note == 'disp')) {
-								$note = '0'; $elev_statut = 'disp';
-							} else if (($note == '-')) {
-								$note = '0'; $elev_statut = '-';
-							} else if (($note == 'abs')) {
-								$note = '0'; $elev_statut = 'abs';
-							} else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
-								$note = str_replace(",", ".", "$note");
-								if (($note < 0) or ($note > $note_max)) {
-									$note = ''; $elev_statut = '';
+							//$nom_log2 = $reg_eleve_login."_n_t".$k;
+
+							if (isset($NON_PROTECT[$nom_log])){
+								$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
+							}
+							else{
+								$app = "";
+							}
+							$elev_statut = '';
+							//=========================
+							// MODIF: boireaus 20071003
+							//if (isset($_POST[$nom_log2])) {
+								//$note = $_POST[$nom_log2];
+								$note=$note_eleve[$num_eleve];
+
+								if (($note == 'disp')) {
+									$note = '0';
+									$elev_statut = 'disp';
+								}
+								else if (($note == '-')) {
+									$note = '0';
+									$elev_statut = '-';
+								}
+								else if (($note == 'abs')) {
+									$note = '0';
+									$elev_statut = 'abs';
+								} else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+									$note = str_replace(",", ".", "$note");
+									if (($note < 0) or ($note > $note_max)) {
+										$note = '';
+										$elev_statut = '';
+									}
+								}
+								else {
+									$note = '';
+									$elev_statut = 'other';
+								}
+							//}
+							//=========================
+
+							$test_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+							$test = mysql_num_rows($test_eleve_app_query);
+							if ($test != "0") {
+								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+									$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+								} else {
+									$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
 								}
 							} else {
-								$note = ''; $elev_statut = 'other';
+								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+									$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid'");
+								} else {
+									$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid'");
+								}
 							}
-						//}
-						//=========================
-
-						$test_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
-						$test = mysql_num_rows($test_eleve_app_query);
-						if ($test != "0") {
-							if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-								$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
-							} else {
-								$register = mysql_query("UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
-							}
-						} else {
-							if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-								$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid'");
-							} else {
-								$register = mysql_query("INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid'");
-							}
+							if (!$register) {$msg = "Erreur lors de l'enregistrement des données de la période $k ";} else {$msg = "Les modifications ont été enregistrées !";$affiche_message = 'yes';}
 						}
-						if (!$register) {$msg = "Erreur lors de l'enregistrement des données de la période $k ";} else {$msg = "Les modifications ont été enregistrées !";$affiche_message = 'yes';}
 					}
 				}
+				$k++;
 			}
-			$k++;
 		}
 		$j++;
 	}
@@ -184,7 +198,7 @@ while ($i < $nombre_lignes){
 	$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 	$k = mysql_num_rows($periode_query);
 	$call_reg = mysql_query("insert into $nom_table Values('$id_classe', '$k')");
-$i++;
+	$i++;
 }
 $call_data = mysql_query("SELECT max(num) as max FROM $nom_table");
 $nb_periode_max = mysql_result($call_data, 0, "max");
@@ -217,9 +231,9 @@ if (!isset($aid_id)) {
 				$aid_display = mysql_result($call_prof_aid, $i, "nom");
 				$aid_id = mysql_result($call_prof_aid, $i, "id");
 				echo "<br /><span class='bold'>$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations pour cette rubrique</a>\n";
-			$i++;
+				$i++;
 			}
-		echo "</p>\n";
+			echo "</p>\n";
 		}
 	} else {
 		$call_prof_aid = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY nom");
@@ -233,9 +247,9 @@ if (!isset($aid_id)) {
 				$aid_display = mysql_result($call_prof_aid, $i, "nom");
 				$aid_id = mysql_result($call_prof_aid, $i, "id");
 				echo "<br /><span class='bold'>$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations.</a>\n";
-			$i++;
+				$i++;
 			}
-		echo "</p>\n";
+			echo "</p>\n";
 		}
 	}
 } else {
@@ -251,6 +265,8 @@ if (!isset($aid_id)) {
 	<?php
 	$num_id=10;
 	$num = '1';
+	// Initialisation de $num3 pour le cas où il n'y a pas de période ouverte:
+	$num3=0;
 	while ($num < $nb_periode_max + 1) {
 		if ($type_note == 'last') {$last_periode_aid = min($num,$display_end);}
 		$appel_login_eleves = mysql_query("SELECT DISTINCT a.login
@@ -266,7 +282,6 @@ if (!isset($aid_id)) {
 
 			$i = "1";
 			while ($i < $num + 1) {
-
 				$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
 				echo "<td><b>$nom_periode[$i]</b></td>\n";
 				$i++;
@@ -274,23 +289,23 @@ if (!isset($aid_id)) {
 			?>
 			</tr>
 			<?php
-			$i = "0";
-			while($i < $nombre_lignes) {
-				$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
-				$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
-				$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
-				$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
-				$appel_classe_eleve = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
-				$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
-				$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
+				$i = "0";
+				while($i < $nombre_lignes) {
+					$current_eleve_login = mysql_result($appel_login_eleves, $i, 'login');
+					$appel_donnees_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$current_eleve_login')");
+					$current_eleve_nom = mysql_result($appel_donnees_eleves, '0', "nom");
+					$current_eleve_prenom = mysql_result($appel_donnees_eleves, '0', "prenom");
+					$appel_classe_eleve = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_classes cc WHERE (cc.login = '$current_eleve_login' AND cc.id_classe = c.id) ORDER BY cc.periode DESC");
+					$current_eleve_classe = mysql_result($appel_classe_eleve, '0', "classe");
+					$current_eleve_id_classe = mysql_result($appel_classe_eleve, '0', "id");
 
-				echo "<tr><td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
-				$k = '1';
+					echo "<tr><td>$current_eleve_nom $current_eleve_prenom $current_eleve_classe</td>\n";
+					$k = '1';
 
-				$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
+					$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$current_eleve_id_classe'  ORDER BY num_periode");
 
-				while ($k < $num + 1) {
-					if (($k >= $display_begin) and ($k <= $display_end)) {
+					while ($k < $num + 1) {
+						if (($k >= $display_begin) and ($k <= $display_end)) {
 
 						$current_eleve_app_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 						$current_eleve_statut_t[$k] = @mysql_result($current_eleve_app_query, 0, "statut");
@@ -303,7 +318,7 @@ if (!isset($aid_id)) {
 						if ($ver_periode[$k] != "N") {
 							echo "<td><b>";
 							if ($current_eleve_app_t[$k] != '') {
-							echo "$current_eleve_app_t[$k]";
+								echo "$current_eleve_app_t[$k]";
 							} else {
 								echo "-";
 							}
@@ -321,15 +336,16 @@ if (!isset($aid_id)) {
 						} else {
 							//echo "<td><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
 							//echo "<td>\n<textarea id=\"n1".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
+
 							$num2=2*$num_id;
 							$num3=$num2+1;
 							//echo "<td>\n";
 							//echo "<td id=\"td_".$k.$num3."\" bgcolor=\"$couleur_fond\">\n";
+
 							echo "<td id=\"td_".$k.$num3."\">\n";
 
-
 							//=========================
-							// MODIF: boireaus 20071010
+							// MODIF: boireaus 20071003
 							//echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
 
 							echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
@@ -339,20 +355,16 @@ if (!isset($aid_id)) {
 
 							echo "$current_eleve_app_t[$k]";
 							echo "</textarea>\n";
-
-
 							if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
 								echo "<br />Note (sur $note_max) : ";
 								//echo "<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
 								//echo "<input id=\"n2".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
 								//$num2++;
-
 								//=========================
-								// MODIF: boireaus 20071010
+								// MODIF: boireaus 20071003
 								//echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
 								echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$i]\" value=";
 								//=========================
-
 								if ($current_eleve_statut_t[$k] == 'other') {
 									echo "\"\"";
 								} else if ($current_eleve_statut_t[$k] != '') {
@@ -375,16 +387,15 @@ if (!isset($aid_id)) {
 			}
 		}
 		$num++;
-
 	}
 	?>
 	</table>
 	<table>
 	<tr><td>
-	<input type='hidden' name='is_posted' value="yes" />
-	<input type='hidden' name='aid_id' value="<?php echo "$aid_id";?>" />
-	<input type='hidden' name='indice_aid' value="<?php echo "$indice_aid";?>" />
-	<center><div id="fixe"><input type='submit' value='Enregistrer' /></div></center>
+	<input type=hidden name=is_posted value="yes" />
+	<input type=hidden name=aid_id value="<?php echo "$aid_id";?>" />
+	<input type=hidden name=indice_aid value="<?php echo "$indice_aid";?>" />
+	<center><div id="fixe"><input type=submit value=Enregistrer /></div></center>
 	</td></tr>
 	</table>
 	</form>
@@ -442,7 +453,7 @@ for(i=10;i<".$k.$num3.";i++){
 ";
 //=============================================================
 
+
 }
-echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

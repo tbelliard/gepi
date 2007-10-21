@@ -122,6 +122,9 @@ tronquer_nom_court
 			else{save_params_graphe('graphe_affiche_minmax','non');}
 			if(isset($_POST['affiche_moy_annuelle'])){save_params_graphe('graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
 			else{save_params_graphe('graphe_affiche_moy_annuelle','non');}
+
+			if(isset($_POST['type_graphe'])){save_params_graphe('graphe_type_graphe',$_POST['type_graphe']);}
+
 			if(isset($_POST['largeur_graphe'])){save_params_graphe('graphe_largeur_graphe',$_POST['largeur_graphe']);}
 			if(isset($_POST['hauteur_graphe'])){save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
 			if(isset($_POST['taille_police'])){save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
@@ -541,6 +544,31 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+
+
+	if(isset($_POST['type_graphe'])){
+
+		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
+
+		if($_POST['type_graphe']=='etoile'){
+			$type_graphe='etoile';
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+	else{
+		if(getSettingValue('graphe_type_graphe')){
+			$type_graphe=getSettingValue('graphe_type_graphe');
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+
+	//echo "\$type_graphe=".$type_graphe."<br />\n";
+
+
 	if(isset($_POST['largeur_graphe'])){
 		$largeur_graphe=$_POST['largeur_graphe'];
 	}
@@ -727,10 +755,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "<hr width='150' />\n";
 
 			// Paramètres d'affichage:
-			// - dimensions de l'image
 			echo "<p><b>Graphe</b></p>\n";
 			echo "<blockquote>\n";
 			echo "<table border='0'>\n";
+
+			// Graphe en courbe ou étoile
+			echo "<tr><td>Graphe en </td>\n";
+			if($type_graphe=='courbe'){$checked=" checked='yes'";}else{$checked="";}
+			echo "<td><input type='radio' name='type_graphe' value='courbe'$checked /> courbe<br />\n";
+			if($type_graphe=='etoile'){$checked=" checked='yes'";}else{$checked="";}
+			echo "<input type='radio' name='type_graphe' value='etoile'$checked /> étoile\n";
+			echo "</td></tr>\n";
+
+			// - dimensions de l'image
 			echo "<tr><td>Largeur (<i>en pixels</i>):</td><td><input type='text' name='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
 			//echo " - \n";
 			echo "<tr><td>Hauteur (<i>en pixels</i>):</td><td><input type='text' name='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
@@ -1061,6 +1098,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<input type='hidden' name='affiche_mgen' value='$affiche_mgen' />\n";
 	echo "<input type='hidden' name='affiche_minmax' value='$affiche_minmax' />\n";
 	echo "<input type='hidden' name='affiche_moy_annuelle' value='$affiche_moy_annuelle' />\n";
+	echo "<input type='hidden' name='type_graphe' value='$type_graphe' />\n";
 	echo "<input type='hidden' name='largeur_graphe' value='$largeur_graphe' />\n";
 	echo "<input type='hidden' name='hauteur_graphe' value='$hauteur_graphe' />\n";
 	echo "<input type='hidden' name='taille_police' value='$taille_police' />\n";
@@ -1917,40 +1955,79 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//echo "<a href=\"javascript:document.getElementById('div_matiere_2').style.display=''\" onMouseover=\"document.getElementById('div_matiere_2').style.display=''\" onMouseout=\"document.getElementById('div_matiere_2').style.display='none'\">";
 
-			if(count($matiere)>0){
-				echo "<img src='draw_graphe.php?";
-				//echo "&amp;temp1=$serie[1]";
-				echo "temp1=$serie[1]";
-				echo "&amp;temp2=$serie[2]";
-				echo "&amp;etiquette=$liste_matieres";
-				echo "&amp;titre=$graph_title";
-				echo "&amp;v_legend1=$eleve1";
-				echo "&amp;v_legend2=$eleve2";
-				echo "&amp;compteur=$compteur";
-				echo "&amp;nb_series=$nb_series";
-				echo "&amp;id_classe=$id_classe";
-				echo "&amp;mgen1=$mgen[1]";
-				echo "&amp;mgen2=$mgen[2]";
-				//echo "&amp;periode=$periode";
-				echo "&amp;periode=".rawurlencode($periode);
-				echo "&amp;largeur_graphe=$largeur_graphe";
-				echo "&amp;hauteur_graphe=$hauteur_graphe";
-				echo "&amp;taille_police=$taille_police";
-				echo "&amp;epaisseur_traits=$epaisseur_traits";
-				if($affiche_minmax=="oui"){
-					echo "&amp;seriemin=$seriemin";
-					echo "&amp;seriemax=$seriemax";
-				}
-				echo "&amp;tronquer_nom_court=$tronquer_nom_court";
-				//echo "'>";
-				//echo "&amp;temoin_imageps=$temoin_imageps";
-				echo "&amp;temoin_image_escalier=$temoin_image_escalier";
-				echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
-				echo "usemap='#imagemap' ";
-				echo "/>\n";
-				//echo "</a>\n";
-			}
+			//echo "\$type_graphe=".$type_graphe."<br />\n";
 
+			if($type_graphe=='courbe'){
+				if(count($matiere)>0){
+					echo "<img src='draw_graphe.php?";
+					//echo "&amp;temp1=$serie[1]";
+					echo "temp1=$serie[1]";
+					echo "&amp;temp2=$serie[2]";
+					echo "&amp;etiquette=$liste_matieres";
+					echo "&amp;titre=$graph_title";
+					echo "&amp;v_legend1=$eleve1";
+					echo "&amp;v_legend2=$eleve2";
+					echo "&amp;compteur=$compteur";
+					echo "&amp;nb_series=$nb_series";
+					echo "&amp;id_classe=$id_classe";
+					echo "&amp;mgen1=$mgen[1]";
+					echo "&amp;mgen2=$mgen[2]";
+					//echo "&amp;periode=$periode";
+					echo "&amp;periode=".rawurlencode($periode);
+					echo "&amp;largeur_graphe=$largeur_graphe";
+					echo "&amp;hauteur_graphe=$hauteur_graphe";
+					echo "&amp;taille_police=$taille_police";
+					echo "&amp;epaisseur_traits=$epaisseur_traits";
+					if($affiche_minmax=="oui"){
+						echo "&amp;seriemin=$seriemin";
+						echo "&amp;seriemax=$seriemax";
+					}
+					echo "&amp;tronquer_nom_court=$tronquer_nom_court";
+					//echo "'>";
+					//echo "&amp;temoin_imageps=$temoin_imageps";
+					echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+					echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+					echo "usemap='#imagemap' ";
+					echo "/>\n";
+					//echo "</a>\n";
+				}
+			}
+			else{
+				if(count($matiere)>0){
+					echo "<img src='draw_graphe_star.php?";
+					//echo "&amp;temp1=$serie[1]";
+					echo "temp1=$serie[1]";
+					echo "&amp;temp2=$serie[2]";
+					echo "&amp;etiquette=$liste_matieres";
+					echo "&amp;titre=$graph_title";
+					echo "&amp;v_legend1=$eleve1";
+					echo "&amp;v_legend2=$eleve2";
+					echo "&amp;compteur=$compteur";
+					echo "&amp;nb_series=$nb_series";
+					echo "&amp;id_classe=$id_classe";
+					echo "&amp;mgen1=$mgen[1]";
+					echo "&amp;mgen2=$mgen[2]";
+					//echo "&amp;periode=$periode";
+					echo "&amp;periode=".rawurlencode($periode);
+					echo "&amp;largeur_graphe=$largeur_graphe";
+					echo "&amp;hauteur_graphe=$hauteur_graphe";
+					echo "&amp;taille_police=$taille_police";
+					echo "&amp;epaisseur_traits=$epaisseur_traits";
+					if($affiche_minmax=="oui"){
+						echo "&amp;seriemin=$seriemin";
+						echo "&amp;seriemax=$seriemax";
+					}
+					echo "&amp;tronquer_nom_court=$tronquer_nom_court";
+					//echo "'>";
+					//echo "&amp;temoin_imageps=$temoin_imageps";
+					echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+					echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+					//echo "usemap='#imagemap' ";
+					echo "/>\n";
+					//echo "</a>\n";
+				}
+			}
+			//===================================
 
 			//echo "<img src='draw_artichow_fig7.php?eleves=$eleves&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series'>";
 
@@ -2177,7 +2254,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				if(isset($info_imagemap[$i])){
 					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
 					echo "<b>".htmlentities($matiere_nom[$i]).":</b><br />";
-					echo "<table border='1' align='center'>\n";
+					//echo "<table border='1' align='center'>\n";
+					echo "<table class='boireaus' style='margin:2px;' width='99%'>\n";
 					for($j=1;$j<=count($num_periode);$j++){
 						if($tab_imagemap[$j][$i]!=""){
 							echo "<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
@@ -2195,7 +2273,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if(mysql_num_rows($res_avis)>0){
 				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
 				echo "<b>Avis du Conseil de classe:</b><br />";
-				echo "<table border='1' align='center'>\n";
+				//echo "<table border='1' align='center'>\n";
+				echo "<table class='boireaus' style='margin:2px;' width='99%'>\n";
 				while($lig_avis=mysql_fetch_object($res_avis)){
 					echo "<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
 				}
@@ -2231,36 +2310,71 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$nbp=$nb_periode+1;
 
 			echo "<a name='graph'></a>\n";
-			//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
-			//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
-			//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
-			//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
-			echo "<img src='draw_graphe.php?";
-			// $liste_temp contient les séries et les moyennes générales.
-			echo "$liste_temp";
-			echo "&amp;etiquette=$liste_matieres";
-			echo "&amp;titre=$graph_title";
-			echo "&amp;v_legend1=$eleve1";
-			//echo "&amp;v_legend2=Toutes_les_périodes";
-			echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
-			echo "&amp;compteur=$compteur";
-			echo "&amp;nb_series=$nb_series";
-			echo "&amp;id_classe=$id_classe";
-			echo "&amp;largeur_graphe=$largeur_graphe";
-			echo "&amp;hauteur_graphe=$hauteur_graphe";
-			echo "&amp;taille_police=$taille_police";
-			echo "&amp;epaisseur_traits=$epaisseur_traits";
-			if($affiche_moy_annuelle=="oui"){
-				echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
+
+			if($type_graphe=='courbe'){
+				//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
+				//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
+				//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
+				//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
+				echo "<img src='draw_graphe.php?";
+				// $liste_temp contient les séries et les moyennes générales.
+				echo "$liste_temp";
+				echo "&amp;etiquette=$liste_matieres";
+				echo "&amp;titre=$graph_title";
+				echo "&amp;v_legend1=$eleve1";
+				//echo "&amp;v_legend2=Toutes_les_périodes";
+				echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
+				echo "&amp;compteur=$compteur";
+				echo "&amp;nb_series=$nb_series";
+				echo "&amp;id_classe=$id_classe";
+				echo "&amp;largeur_graphe=$largeur_graphe";
+				echo "&amp;hauteur_graphe=$hauteur_graphe";
+				echo "&amp;taille_police=$taille_police";
+				echo "&amp;epaisseur_traits=$epaisseur_traits";
+				if($affiche_moy_annuelle=="oui"){
+					echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
+				}
+				echo "&amp;tronquer_nom_court=$tronquer_nom_court";
+				//echo "'>";
+				//echo "&amp;temoin_imageps=$temoin_imageps";
+				echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+				echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+				echo "usemap='#imagemap' ";
+				echo "/>\n";
 			}
-			echo "&amp;tronquer_nom_court=$tronquer_nom_court";
-			//echo "'>";
-			//echo "&amp;temoin_imageps=$temoin_imageps";
-			echo "&amp;temoin_image_escalier=$temoin_image_escalier";
-			echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
-			echo "usemap='#imagemap' ";
-			echo "/>\n";
+			else{
+				echo "<img src='draw_graphe_star.php?";
+				//echo "<img src='draw_graphe.php?";
+				// $liste_temp contient les séries et les moyennes générales.
+				echo "$liste_temp";
+				echo "&amp;etiquette=$liste_matieres";
+				echo "&amp;titre=$graph_title";
+				echo "&amp;v_legend1=$eleve1";
+				//echo "&amp;v_legend2=Toutes_les_périodes";
+				echo "&amp;v_legend2=".rawurlencode("Toutes_les_périodes");
+				echo "&amp;compteur=$compteur";
+				echo "&amp;nb_series=$nb_series";
+				echo "&amp;id_classe=$id_classe";
+				echo "&amp;largeur_graphe=$largeur_graphe";
+				echo "&amp;hauteur_graphe=$hauteur_graphe";
+				echo "&amp;taille_police=$taille_police";
+				echo "&amp;epaisseur_traits=$epaisseur_traits";
+				if($affiche_moy_annuelle=="oui"){
+					echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
+				}
+				echo "&amp;tronquer_nom_court=$tronquer_nom_court";
+				//echo "'>";
+				//echo "&amp;temoin_imageps=$temoin_imageps";
+				echo "&amp;temoin_image_escalier=$temoin_image_escalier";
+				echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+				//echo "usemap='#imagemap' ";
+				echo "/>\n";
+			}
+
+			//===================================
+
 		}
+
 
 	/*
 		echo "<p>\n";
