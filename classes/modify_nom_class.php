@@ -263,7 +263,8 @@ if (isset($id_classe)) {
 	$nom_complet = '';
 	$suivi_par = '';
 	$formule = '';
-	$format_nom = 'np';
+	//$format_nom = 'np';
+	$format_nom = 'cni';
 	$display_rang = 'n';
 	$display_address = 'n';
 	$display_coef = 'n';
@@ -294,14 +295,30 @@ if (isset($id_classe)) {
 <p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>" /></p>
 
 <p><b>Formatage de l'identité des professeurs pour les bulletins :</b>
-<br /><br /><input type="radio" name="reg_format" value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?>/>Nom Prénom (Durand Albert)
-<br /><input type="radio" name="reg_format" value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?>/>Prénom Nom (Albert Durand)
-<br /><input type="radio" name="reg_format" value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?>/>Initiale-Prénom Nom (A. Durand)
-<br /><input type="radio" name="reg_format" value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?>/>Initiale-Prénom Nom (Durand A.)
-<br /><input type="radio" name="reg_format" value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?>/>Civilité Nom Prénom (M. Durand Albert)
-<br /><input type="radio" name="reg_format" value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?>/>Civilité Prénom Nom (M. Albert Durand)
-<br /><input type="radio" name="reg_format" value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?>/>Civ. initiale-Prénom Nom (M. A. Durand)
-<br /><input type="radio" name="reg_format" value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?>/>Civ. Nom initiale-Prénom  (M. Durand A.)
+<br /><br />
+<input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?>/>
+<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?>/>
+<label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?>/>
+<label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?>/>
+<label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (Durand A.)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?>/>
+<label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?>/>
+<label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?>/>
+<label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?>/>
+<label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (M. Durand A.)</label>
 
 <input type=hidden name=is_posted value=1 />
 <?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>
@@ -317,9 +334,9 @@ if (isset($id_classe)) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :
+    <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> />
     </td>
 </tr>
 <tr>
@@ -380,41 +397,41 @@ if (isset($id_classe)) {
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps; width: 35%;">
-    Afficher sur le bulletin le rang de chaque élève&nbsp;:
+    <label for='display_rang' style='cursor: pointer;'>Afficher sur le bulletin le rang de chaque élève&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?> />
-    </td>
-</tr>
-<tr>
-	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">
-    Afficher le bloc adresse du responsable de l'élève :
-    </td>
-    <td><input type="checkbox" value="y" name="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?> />
     </td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :
+    <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
-    </td>
-</tr>
-<tr>
-	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">
-    Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :
-    </td>
-    <td><input type="checkbox" value="y" name="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
     </td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
-    Afficher le nombre de devoirs sur le bulletin :
+    <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
+    </td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">
+    <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :</label>
+    </td>
+    <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> />
+    </td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="font-variant: small-caps;">
+    <label for='display_nbdev' style='cursor: pointer;'>Afficher le nombre de devoirs sur le bulletin :</label>
+    </td>
+    <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
     </td>
 </tr>
 <!-- ========================================= -->
@@ -472,23 +489,27 @@ Afficher une case pour la signature du chef d'établissement
 -->
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher le nom des devoirs :</td>
-    <td><input type="checkbox" value="y" name="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_nomdev' style='cursor: pointer;'>Afficher le nom des devoirs :</label></td>
+    <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs :</td>
-    <td><input type="checkbox" value="y" name="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_toutcoefdev' style='cursor: pointer;'>Afficher tous les coefficients des devoirs :</label></td>
+    <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher les coefficients des devoirs si des coefficients différents sont présents :</td>
-    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents :</label></td>
+    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher les dates des devoirs :</td>
-    <td><input type="checkbox" value="y" name="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_datedev' style='cursor: pointer;'>Afficher les dates des devoirs :</label></td>
+    <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> /></td>
 </tr>
 
 <tr>
@@ -499,23 +520,26 @@ Afficher une case pour la signature du chef d'établissement
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher une case pour la signature du chef d'établissement :</td>
-    <td><input type="checkbox" value="y" name="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement :</label></td>
+    <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher une case pour la signature du prof principal :</td>
-    <td><input type="checkbox" value="y" name="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_sign_pp' style='cursor: pointer;'>Afficher une case pour la signature du prof principal :</label></td>
+    <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Afficher une case pour la signature des parents/responsables :</td>
-    <td><input type="checkbox" value="y" name="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?> /></td>
+    <td style="font-variant: small-caps;">
+	<label for='rn_sign_resp' style='cursor: pointer;'>Afficher une case pour la signature des parents/responsables :</label></td>
+    <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?> /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
+    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</label></td>
     <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" /></td>
 </tr>
 
