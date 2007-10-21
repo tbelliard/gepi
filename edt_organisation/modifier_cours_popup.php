@@ -89,7 +89,7 @@ require_once("../lib/header.inc");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 */
-$aff_refresh = "onunload=\"window.opener.location.reload();\"";
+$aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt=prof1&amp;login_edt=".$identite."&amp;type_edt_2=prof';\"";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html lang="fr">
