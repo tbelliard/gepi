@@ -627,10 +627,10 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	if (GetSettingEdt("edt_aff_matiere") == "long") {
 		// SI c'est l'admin, il faut réduire la taille de la police de caractères
 		if ($_SESSION["statut"] == "administrateur") {
-			$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']." ".$effacer_cours." ".$modifier_cours."</span>";
+			$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']." ".$effacer_cours."</span>";
 		}
 		elseif ($_SESSION["statut"] == "scolarite") {
-			$aff_matiere = $rep_matiere['description']." ".$modifier_cours;
+			$aff_matiere = $rep_matiere['description'];
 		}
 		else $aff_matiere = $rep_matiere['description'];
 	}
@@ -655,7 +655,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 
 	if ($type_edt == "prof")
-		return ("".$aff_matiere."<br />\n".$classe_js." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve."\n");
+		return ("".$aff_matiere." ".$modifier_cours."<br />\n".$classe_js." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve."\n");
 	elseif (($type_edt == "classe") OR ($type_edt == "eleve"))
 		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
 	elseif ($type_edt == "salle")
