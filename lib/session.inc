@@ -192,7 +192,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
 
                 }
             } else {
-            	
+
             	// Le login n'existe pas. On compte de nombre de tentatives infructueuse
                 // issues de la même adresse IP depuis temps_compte_verrouille minutes
                 // Si ce nombre n'exède pas 10, on enregistre le log
@@ -229,7 +229,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
         $row = sql_row($res_user,0);
 
         if (!$row && $_sso_login == "ldap_scribe") {
-            // On ne devrait arriver ici que si l'utilisateur n'a pas été importé lors de la synchro   
+            // On ne devrait arriver ici que si l'utilisateur n'a pas été importé lors de la synchro
             // AJOUTER ICI TOUT LE CODE POUR AJOUTER L'UTILISATEUR DANS LA BASE
             require "lib/eole_sync_functions.inc.php";
 
@@ -248,7 +248,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
 					$user_ldap_info[0]["mail"] = array();
 					$user_ldap_info[0]["mail"][0] = null;
 				}
-				
+
 				if (!array_key_exists("codecivilite", $user_ldap_info[0])) {
 					$user_ldap_info[0]["codecivilite"] = array();
 					$user_ldap_info[0]["codecivilite"][0] = 1;
@@ -277,7 +277,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
 					$user_ldap_info[0]["mail"] = array();
 					$user_ldap_info[0]["mail"][0] = null;
 				}
-				
+
 				if (!array_key_exists("codecivilite", $user_ldap_info[0])) {
 					$user_ldap_info[0]["codecivilite"] = array();
 					$user_ldap_info[0]["codecivilite"][0] = 1;
@@ -299,7 +299,8 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
     }
 
     // Partie commune à tout type de connexion
-    if ((getSettingValue("disable_login")=='yes') and ($row[4] != "administrateur")) {
+    //if ((getSettingValue("disable_login")=='yes') and ($row[4] != "administrateur")) {
+    if ((getSettingValue("disable_login")!='no') and ($row[4] != "administrateur")) {
         return "dl";
         die();
     }
