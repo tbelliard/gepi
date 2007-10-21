@@ -499,9 +499,9 @@ if (isset($nbre_ens)) {
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
 				$case_tab = "<td height=\"35\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
 			}
-			elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
-				$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
-			}
+			//elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
+			//	$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+			//}
 			else $case_tab = "<td rowspan=\"2\">-<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
 		}
 		elseif ($nbre_ens === 1) {
@@ -568,7 +568,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 					';
 			*/
 			$modifier_cours = '
-					<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no")\'>
+					<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
 					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 						';
 		}

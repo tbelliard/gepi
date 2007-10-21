@@ -78,19 +78,6 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	or die('Erreur dans la mofication du cours : '.mysql_error().'');
 }
 
-if ($req_modif) {
-		echo '
-		<span class="accept">Ce cours est modifié !</span>
-		<form name="retour" method="post" action="index_edt.php">
-		<input type="hidden" name="visioedt" value="'.$type_edt.'1" />
-		<input type="hidden" name="login_edt" value="'.$identite.'" />
-		<input type="hidden" name="type_edt_2" value="'.$type_edt.'" />
-		<input type="image" src="../images/icons/back.png" border="0" name="submit" alt="Revenir" title="Revenir" /> Revenir
-		</form>
-		';
-
-}
-
 
 // CSS particulier à l'EdT
 $style_specifique = "edt_organisation/style_edt";
@@ -104,7 +91,8 @@ require_once("./menu.inc.php");
 */
 $aff_refresh = "onunload=\"window.opener.location.reload();\"";
 ?>
-	<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<html lang="fr">
 	<head>
 	<title>Gepi - Modifier un cours</title>
 	<link rel="stylesheet" type="text/css" href="./style_edt.css" />
@@ -113,11 +101,11 @@ $aff_refresh = "onunload=\"window.opener.location.reload();\"";
 	<body <?php echo $aff_refresh; ?>>
 
 
-
+<div id="edt_popup_contain">
 
 <!-- la page du corps de l'EdT -->
 
-	<div id="lecorps_popup">
+	<div id="edt_popup_lecorps">
 
 <?php
 
@@ -409,6 +397,7 @@ else {
 	</div>
 
 <?php
+
 // inclusion du footer
 require("../lib/footer.inc.php");
 ?>

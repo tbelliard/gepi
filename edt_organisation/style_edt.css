@@ -59,9 +59,13 @@ background: #6d6d83;
 	font: normal normal 15pt Verdana, sans-serif;
 }
 
-#lecorps_popup {
+#edt_popup_lecorps {
 	background-color: #E9E9E4;
 	font: normal normal 15pt Verdana, sans-serif;
+}
+
+#edt_popup_contain {
+	background-color: #E9E9E4;
 }
 
 /* Affichage du tableau EdT */
