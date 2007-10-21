@@ -69,7 +69,6 @@ else {
 		<input type="image" src="../images/icons/back.png" border="0" name="submit" alt="Revenir" title="Revenir" /> Revenir
 		</form>
 		';
-
 }
 ?>
 
