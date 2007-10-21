@@ -7,15 +7,7 @@
  * @copyright 2007
  */
 
-	// Définir le sous-titre
-$calendrier = isset($_GET['calendrier']) ? $_GET['calendrier'] : (isset($_POST['calendrier']) ? $_POST['calendrier'] : NULL);
-	if ($calendrier == "ok") {
-		$sous_titre = " - <span class='legende'>Calendrier</span>";
-	}
-	else
-	$sous_titre = "";
-
-$titre_page = "Emploi du temps".$sous_titre;
+$titre_page = "Emploi du temps";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 

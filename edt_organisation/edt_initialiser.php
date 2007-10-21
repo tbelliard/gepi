@@ -6,7 +6,7 @@
  * @version $Id$
  * @copyright 2007
  */
-$titre_page = "Emploi du temps".$sous_titre;
+$titre_page = "Emploi du temps - Initialisation";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 

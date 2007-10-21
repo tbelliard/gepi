@@ -10,7 +10,7 @@
 	// Fichier en TRAVAIL
 Die();
 
-$titre_page = "Emploi du temps".$sous_titre;
+$titre_page = "Emploi du temps - Modifications temporaires";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
