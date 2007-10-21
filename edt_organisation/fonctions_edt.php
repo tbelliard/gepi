@@ -562,10 +562,15 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
 		// <a href="javascript:centrerpopup("modifier_COURS.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",610,460,"scrollbars=no,statusbar=no,resizable=yes")"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 		if (($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") OR $_SESSION["statut"] == "administrateur") {
-			$modifier_cours = '
+			/*$modifier_cours = '
 					<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'">
 					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 					';
+			*/
+			$modifier_cours = '
+					<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no")\'>
+					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
+						';
 		}
 		else {
 			$modifier_cours = "";
@@ -614,7 +619,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		if ($rep_sem["id_semaine"] == "0") {
 			$aff_sem = '';
 		}
-		else $aff_sem = '<font color=\"#6633FF\"> - Sem.'.$rep_sem["id_semaine"].'</font>';
+		else $aff_sem = '<font color="#6633FF"> - Sem.'.$rep_sem["id_semaine"].'</font>';
 	// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
 	{
 	$req_groupe = mysql_query("SELECT description FROM groupes WHERE id ='".$enseignement."'");

@@ -60,7 +60,7 @@ if (!$effacer_cours) {
 	echo '<span class="refus">Revenez en arrière avec la flèche de votre navigateur et recommencez.</span>';
 }
 else {
-	echo '
+	/*echo '
 		<span class="accept">Ce cours est effacé !</span>
 		<form name="retour" method="post" action="index_edt.php">
 		<input type="hidden" name="visioedt" value="'.$type_edt.'1" />
@@ -68,7 +68,8 @@ else {
 		<input type="hidden" name="type_edt_2" value="'.$type_edt.'" />
 		<input type="image" src="../images/icons/back.png" border="0" name="submit" alt="Revenir" title="Revenir" /> Revenir
 		</form>
-		';
+		';*/
+
 }
 ?>
 

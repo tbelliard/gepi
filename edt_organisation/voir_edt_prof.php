@@ -1,7 +1,7 @@
 <?php
 /* fichier pour visionner les EdT des enseignants*/
 
-$login_edt=isset($_GET['login_edt']) ? $_GET['login_edt'] : (isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL);
+$login_edt = isset($_GET['login_edt']) ? $_GET['login_edt'] : (isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL);
 
 echo '
 	<form action="index_edt.php" name="liste_prof" method="post">
