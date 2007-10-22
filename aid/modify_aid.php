@@ -163,8 +163,15 @@ if ($flag == "eleve") {
     $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
     $nombre = mysql_num_rows($call_liste_data);
     // On affiche d'abord le nombre d'élèves
+    		$s = "";
+		if ($nombre >= 2) {
+			$s = "s";
+		}
+		else {
+			$s = "";
+		}
     echo "<tr><td>\n";
-    echo $nombre." élève(s).\n</td></tr>\n";
+    echo $nombre." élève".$s.".\n</td></tr>\n";
     $i = "0";
     while ($i < $nombre) {
         $vide = 0;

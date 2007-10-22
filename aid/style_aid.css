@@ -35,15 +35,15 @@
 	padding-left: 20px;
 }
 
-.lignepaire {
+.aid_lignepaire {
 	background-color: silver;
 }
 
-.lignepaire:hover {
+.aid_lignepaire:hover {
 	background-color: grey;
 }
 
-.ligneimpaire {
+.aid_ligneimpaire {
 	background-color: rgb(192, 192, 150);
 }
 

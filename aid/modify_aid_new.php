@@ -37,6 +37,8 @@ $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["
 $aff_liste_m = isset($_GET["classe"]) ? $_GET["classe"] : (isset($_POST["classe"]) ? $_POST["classe"] : NULL);
 $choix_aid = isset($_GET["choix_aid"]) ? $_GET["choix_aid"] : (isset($_POST["choix_aid"]) ? $_POST["choix_aid"] : NULL);
 $id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : (isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : NULL);
+$eleve = isset($_GET["eleve"]) ? $_GET["eleve"] : (isset($_POST["eleve"]) ? $_POST["eleve"] : NULL);
+$action = isset($_GET["action"]) ? $_GET["action"] : (isset($_POST["action"]) ? $_POST["action"] : NULL);
 $aff_infos_g = "";
 $aff_classes_g = "";
 $aff_aid_d = "";
@@ -55,23 +57,28 @@ require_once("../lib/header.inc");
 
 	//================ TRAITEMENT des entrées ===================
 	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
-		// On intègre cet élève dans la bse s'il n'y est pas déjà
+		// On intègre cet élève dans la base s'il n'y est pas déjà
 		// Pour l'instant on récupère son login à partir de id_eleve
 		$rep_log_eleve = mysql_fetch_array(mysql_query("SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
-		// On vérifie s'il n'est pas déjà memndre de cet aid
+		// On vérifie s'il n'est pas déjà membre de cet aid
 		// Par cette méthode, on ne peut enregistrer deux fois le même
 		$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
 
 	}
 
-	/*/================= TRAITEMENT des sorties =======================
-	// Attention de penser à sorir les lignes des notes et appréciations si elles existent
-	    $test_nb[0] = "SELECT * FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $req[0] = "DELETE FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[1] = "Table des appréciations aid";
-    $test_nb[1] = "SELECT * FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $req[1] = "DELETE FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-*/
+	//================= TRAITEMENT des sorties =======================
+	// Attention de penser à sortir les lignes des notes et appréciations si elles existent
+	if (isset($action) AND $action == "del_eleve_aid") {
+		// On supprime l'élève de l'AID
+		$req_suppr = mysql_query("DELETE FROM j_aid_eleves WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
+		//On teste ensuite si cet élève avait des appréciations / notes
+		$req_test_notes = mysql_query("SELECT * FROM aid_appreciations WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
+		$test_notes = mysql_num_rows($req_test_notes);
+		if ($test_notes !== 0) {
+			$suppr_notes = mysql_query("DELETE FROM aid_appreciations WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
+		}
+	} //if isset($action...
+
 // Affichage du retour
 	// On récupère l'indice de l'aid en question
 	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
@@ -91,7 +98,7 @@ require_once("../lib/header.inc");
 		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
 		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
 
-		$aff_classes_g .= "<tr><td><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>";
+		$aff_classes_g .= "<tr><td><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
 	}
 
 // Affichage de la liste des élèves de la classe choisie (au milieu) par $aff_classes_m
@@ -114,7 +121,8 @@ if (isset($aff_liste_m)) {
 	for($b=0; $b<$nbre_ele_m; $b++) {
 		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
 		// On récupère toutes les infos sur l'élève avec son id_eleve
-		$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'");
+		$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'")
+			 or die('Erreur dans la requête {nom prenom sexe id_eleve} : '.mysql_error());
 		$nbre_req = mysql_num_rows($req);
 		for($c=0; $c<$nbre_req; $c++) {
 			$aff_ele_m[$c]["id_eleve"] = mysql_result($req, $c, "id_eleve");
@@ -123,13 +131,13 @@ if (isset($aff_liste_m)) {
 			$aff_ele_m[$c]["sexe"] = mysql_result($req, $c, "sexe");
 
 			// Ligne paire, ligne impaire (inutile dans un premier temps)
-			$aff_tr_css = "lignepaire";
+			$aff_tr_css = "aid_lignepaire";
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
 			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
 			$nbre_verif = mysql_num_rows($req_verif);
 				if ($nbre_verif >> 0) {
 					$aff_classes_m .= "
-					<tr class=\"ligneimpaire\">
+					<tr class=\"aid_ligneimpaire\">
 					<td></td></tr>
 					";
 				}
@@ -158,8 +166,14 @@ if (isset($aff_liste_m)) {
 
 	$req_ele_aid = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
 	$nbre = mysql_num_rows($req_ele_aid);
-
-		$aff_aid_d .= "\n<br />".$nbre." élèves.<br />";
+		$s = "";
+		if ($nbre >= 2) {
+			$s = "s";
+		}
+		else {
+			$s = "";
+		}
+		$aff_aid_d .= "\n<br />".$nbre." élève".$s.".<br />";
 
 	for($d=0; $d<$nbre; $d++){
 		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
@@ -167,7 +181,7 @@ if (isset($aff_liste_m)) {
 			$recup_noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_ele_aid[$d]["login"]."'"));
 			$recup_id_classe = mysql_fetch_array(mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '".$rep_ele_aid[$d]["login"]."'"));
 			$recup_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$recup_id_classe[0]."'"));
-		$aff_aid_d .= "<br /><a href='../lib/confirm_query.php?liste_cible=".$rep_ele_aid[$d]["login"]."&amp;liste_cible2=$id_aid&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>".$recup_noms["nom"]." ".$recup_noms["prenom"]." ".$recup_classe["classe"]."\n";
+		$aff_aid_d .= "<br /><a href='./modify_aid_new.php?classe=".$recup_id_classe["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>".$recup_noms["nom"]." ".$recup_noms["prenom"]." ".$recup_classe["classe"]."\n";
 	}
 
 ?>
