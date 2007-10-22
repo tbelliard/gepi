@@ -127,7 +127,7 @@ require_once("../lib/header.inc");
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
         //echo "<option value=$login_prof><p>$nom_el  $prenom_el </p></option>";
-        echo "<option value=$login_prof>$nom_el  $prenom_el</option>\n";
+        echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
     }
     ?>
@@ -139,8 +139,19 @@ require_once("../lib/header.inc");
     </form>
 <?php }
 
-if ($flag == "eleve") { ?>
-    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
+if ($flag == "eleve") {
+	// On ajoute le nom des profs et le nombre d'élèves
+	$aff_profs = "<font style=\"color: brown; font-size: 12px;\">(";
+	$req_profs = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$aid_id."'");
+	$nbre_profs = mysql_num_rows($req_profs);
+	for($a=0; $a<$nbre_profs; $a++) {
+		$rep_profs[$a]["id_utilisateur"] = mysql_result($req_profs, $a, "id_utilisateur");
+		$rep_profs_a = mysql_fetch_array(mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login = '".$rep_profs[$a]["id_utilisateur"]."'"));
+		$aff_profs .= "".$rep_profs_a["civilite"].$rep_profs_a["nom"]." ";
+	}
+		$aff_profs .= ")</font>";
+?>
+    <p class='grand'><?php echo "$nom_aid  $aid_nom. $aff_profs"; ?></p>
 
     <p><span class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</span>
     <hr />
@@ -151,6 +162,9 @@ if ($flag == "eleve") { ?>
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
     $nombre = mysql_num_rows($call_liste_data);
+    // On affiche d'abord le nombre d'élèves
+    echo "<tr><td>\n";
+    echo $nombre." élève(s).\n</td></tr>\n";
     $i = "0";
     while ($i < $nombre) {
         $vide = 0;
