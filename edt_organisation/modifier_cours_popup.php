@@ -28,7 +28,7 @@ if ($resultat_session == 'c') {
 }
 
 /*/ Sécurité
-// INSERT INTO droits VALUES ('/edt_organisation/modifier_cours.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
+// INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Modifier un cours', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
