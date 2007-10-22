@@ -82,7 +82,7 @@ if (isset($_POST['cahier_texte_acces_public'])) {
 
 if (isset($_POST['is_posted'])) $msg = "Les modifications ont été enregistrées !";
 // header
-$titre_page = "Gestion des cahiers de texte";
+$titre_page = "Gestion des cahiers de textes";
 require_once("../lib/header.inc");
 
 if (isset($_POST['delai_devoirs'])) {
@@ -91,23 +91,23 @@ if (isset($_POST['delai_devoirs'])) {
 
 ?>
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<H2>Activation des cahiers de texte</H2>
+<H2>Activation des cahiers de textes</H2>
 <form action="index.php" name="form1" method="post">
-<i>La désactivation des cahiers de texte n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation publique des cahiers de texte est impossible.</i>
+<i>La désactivation des cahiers de textes n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation publique des cahiers de textes est impossible.</i>
 <br />
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked"; ?> />
-&nbsp;Activer les cahiers de texte (consultation et édition)<br />
+&nbsp;Activer les cahiers de textes (consultation et édition)<br />
 <input type="radio" name="activer" value="n" <?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked"; ?> />
-&nbsp;Désactiver les cahiers de texte (consultation et édition)
-<H2>Début et fin des cahiers de texte</H2>
-<i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de texte sont visibles dans
+&nbsp;Désactiver les cahiers de textes (consultation et édition)
+<H2>Début et fin des cahiers de textes</H2>
+<i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans
 l'interface de consultation publique.
-<br />L'édition (modification/suppression/ajout) des cahiers de texte par les utilisateurs de GEPI n'est pas affectée par ces dates.
+<br />L'édition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI n'est pas affectée par ces dates.
 </i><br />
 <table>
      <tr>
         <td>
-        Date de début des cahiers de texte :
+        Date de début des cahiers de textes :
         </td>
         <td><?php
         $bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -118,7 +118,7 @@ l'interface de consultation publique.
     </tr>
     <tr>
         <td>
-        Date de fin des cahiers de texte :
+        Date de fin des cahiers de textes :
         </td>
         <td><?php
         $eday = strftime("%d", getSettingValue("end_bookings"));
@@ -130,17 +130,17 @@ l'interface de consultation publique.
 </table>
 <input type="hidden" name="is_posted" value="1" />
 <h2>Accès public</h2>
-<input type='radio' name='cahier_texte_acces_public' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " CHECKED";?> /> Désactiver la consultation publique des cahiers de texte (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)<br/>
-<input type='radio' name='cahier_texte_acces_public' value='yes'<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " CHECKED";?> /> Activer la consultation publique des cahiers de texte (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)<br/>
-<p>-> Accès à l'<a href='../public/index.php' target='_blank'>interface publique de consultation des cahiers de texte</a></p>
-<i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de texte est totalement libre.</i>
+<input type='radio' name='cahier_texte_acces_public' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked";?> /> Désactiver la consultation publique des cahiers de textes (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)<br/>
+<input type='radio' name='cahier_texte_acces_public' value='yes'<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked";?> /> Activer la consultation publique des cahiers de textes (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)<br/>
+<p>-> Accès à l'<a href='../public/index.php' target='_blank'>interface publique de consultation des cahiers de textes</a></p>
+<i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de textes est totalement libre.</i>
 <br />
 Identifiant :
 <input type="text" name="cahiers_texte_login_pub" value="<?php echo getSettingValue("cahiers_texte_login_pub"); ?>" size="20" />
 <br />Mot de passe :
 <input type="text" name="cahiers_texte_passwd_pub" value="<?php echo getSettingValue("cahiers_texte_passwd_pub"); ?>" size="20" />
 <H2>Délai de visualisation des devoirs</H2>
-<i>Indiquez ici le délai en jours pendant lequel les devoirs seront visibles, à compter du jour de visualisation sélectionné, dans l'interface publique de consulation des cahiers de texte.
+<i>Indiquez ici le délai en jours pendant lequel les devoirs seront visibles, à compter du jour de visualisation sélectionné, dans l'interface publique de consulation des cahiers de textes.
 <br />Mettre la valeur 0 si vous ne souhaitez pas activer le module de remplissage des devoirs.
 Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case que le contenu des séances.
 </i>
@@ -151,10 +151,12 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 </form>
 
 <hr />
-<H2>Gestion des cahiers de texte</H2>
+<H2>Gestion des cahiers de textes</H2>
 <ul>
 <li><a href='modify_limites.php'>Espace disque maximal, taille maximale d'un fichier</a></li>
 <li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
-<li><a href='admin_ct.php'>Administration des cahiers de texte</a> (recherche des incohérences, modifications, suppressions)</li>
+<li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
 </ul>
-<?php require("../lib/footer.inc.php");?>
+<?php
+	require("../lib/footer.inc.php");
+?>

@@ -88,7 +88,7 @@ $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $chemin[] = "/mod_notanet/notanet_admin.php";
 
 $titre = array(
-"Cahier de texte",
+"Cahier de textes",
 "Carnets de notes");
 if ($force_abs) $titre[] = "Absences";
 if ($force_msj) $titre[] = "Mise à jour automatisée";
@@ -107,7 +107,6 @@ $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
 $expli[] = "Pour gérer le module Années antérieures";
-
 
 $nb_ligne = count($chemin);
 //
@@ -131,4 +130,6 @@ if ($affiche=='yes') {
 
 ?>
 </center>
-<?php require("./lib/footer.inc.php");?>
+<?php
+	require("./lib/footer.inc.php");
+?>
