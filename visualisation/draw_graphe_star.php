@@ -105,6 +105,13 @@
 		$taille_police=3;
 	}
 
+	if($taille_police>1){
+		$taille_police_inf=$taille_police-1;
+	}
+	else{
+		$taille_police_inf=$taille_police;
+	}
+
 	//$epaisseur_traits=2;
 	$epaisseur_traits=isset($_GET['epaisseur_traits']) ? $_GET['epaisseur_traits'] : '2';
 	if((strlen(ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
@@ -631,6 +638,22 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$y=$y\n");
 
 		imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+
+
+
+		// Ajout des notes sous le nom de matière:
+		$ytmp=$y+2+ImageFontHeight($taille_police);
+		//**************
+		// A FAIRE:
+		// Correctif à arranger... pour positionner au mieux en fonction de l'angle
+		if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
+		//**************
+		for($k=1;$k<=$nb_series_bis;$k++){
+			imagestring ($img, $taille_police, $xtmp, $ytmp, $moyenne[$k][$i+1], $couleureleve[$k]);
+			//imagestring ($img, $taille_police, $xtmp, $ytmp, "A", $couleureleve[$k]);
+			//$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." - ")*ImageFontWidth($taille_police);
+			$xtmp=$xtmp+strlen($moyenne[$k][$i+1]." ")*ImageFontWidth($taille_police_inf);
+		}
 	}
 	//=================================
 
