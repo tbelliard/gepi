@@ -187,25 +187,42 @@ if ($res) {
 // Activation/désactivation des connexions
 //
 echo "<h3 class='gepi'>Activation/désactivation des connexions</h3>\n";
-echo "<p><b>ATTENTION : </b>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs. De plus, les utilisateurs actuellement connectés sont automatiquement déconnectés.</p>\n";
+
+
+$disable_login=getSettingValue("disable_login");
+
+if($disable_login=="yes"){
+	echo "<p>Les connexions sont actuellement <b>désactivées</b>.</p>\n";
+}
+elseif($disable_login=="no"){
+	echo "<p>Les connexions sont actuellement <b>activées</b>.</p>\n";
+}
+else{
+	echo "<p>Les connexions <b>futures</b> sont actuellement <b>désactivées</b>.<br />Aucune nouvelle connexion n'est acceptée.</p>\n";
+}
+
+echo "<p>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs.</p>\n";
+
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">\n";
 
 echo "<table border='0'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
-if (getSettingValue("disable_login")=='no') echo " checked ";
+if ($disable_login=='no'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_1a'>Désactiver les connexions</label>";
+echo "<label for='label_1a'>Désactiver les connexions</label>\n";
+echo "<br />\n";
+echo "(<i><span style='color:red;'>Attention, les utilisateurs actuellement connectés sont automatiquement déconnectés.</span></i>)\n";
 echo "</td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='soft' id='label_3a'";
-if (getSettingValue("disable_login")=='soft') echo " checked ";
+if ($disable_login=='soft'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
@@ -217,19 +234,19 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='no' id='label_2a'";
-if (getSettingValue("disable_login")=='yes') echo " checked ";
+if ($disable_login=='yes'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_2a'>Activer les connexions</label>";
+echo "<label for='label_2a'>Activer les connexions</label>\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 
-echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>";
-echo "</form>";
+echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>\n";
+echo "</form>\n";
 
-echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
+echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
 
 /*
 //
