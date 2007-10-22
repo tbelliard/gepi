@@ -129,8 +129,10 @@ function extr_valeur($lig){
 					echo "</p>\n";
 					echo "<p>Pour éviter des problèmes de taille maximale des upload, les extractions se font en deux étapes.</p>";
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-					echo "<input type='radio' name='etape' value='1' checked /> Etape 1: Elèves<br />\n";
-					echo "<input type='radio' name='etape' value='2' /> Etape 2: Responsables<br />\n";
+
+					echo "<input type='radio' name='etape' value='1' id='etape_eleves' checked /> <label for='etape_eleves'>Etape 1: Elèves</label><br />\n";
+					echo "<input type='radio' name='etape' value='2' id='etape_resp' /> <label for='etape_resp'>Etape 2: Responsables</label><br />\n";
+
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 
 					echo "<p>Les fichiers réclamés ici doivent être récupérés depuis Sconet.<br />Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers ElevesAvecAdresses.xml, Nomenclature.xml et ResponsablesAvecAdresses.xml.</p>\n";
