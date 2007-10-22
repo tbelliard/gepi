@@ -14,7 +14,7 @@
 }
 
 .aid_tableau a {
-	color: black;
+	color: blue;
 }
 
 .aid_tableau tr:hover {
@@ -23,7 +23,7 @@
 
 #aid_droite {
 	float: right;
-	width: 300px;
+	width: 350px;
 	border: 2px dotted blue;
 	padding: 5px;
 }
@@ -32,7 +32,8 @@
 	position: relative;
 	margin-left: 200px;
 	margin-right: 400px;
-	padding-left: 20px;
+	width: 350px;
+	padding-left: 40px;
 }
 
 .aid_lignepaire {

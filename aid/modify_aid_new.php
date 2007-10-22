@@ -98,7 +98,7 @@ require_once("../lib/header.inc");
 		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
 		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
 
-		$aff_classes_g .= "<tr><td><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
+		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
 	}
 
 // Affichage de la liste des élèves de la classe choisie (au milieu) par $aff_classes_m
