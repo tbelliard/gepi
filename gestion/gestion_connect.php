@@ -209,7 +209,7 @@ echo "<table border='0'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
-if ($disable_login=='no'){ echo " checked ";}
+if ($disable_login=='yes'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
@@ -234,7 +234,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='no' id='label_2a'";
-if ($disable_login=='yes'){ echo " checked ";}
+if ($disable_login=='no'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
