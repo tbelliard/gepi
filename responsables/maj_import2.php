@@ -3987,7 +3987,8 @@ else{
 					//======================================
 					echo "<td style='text-align:center;";
 					if($nouveau==0){
-						if(stripslashes($lig_pers2->civilite)!=stripslashes($civilite1)){
+						//if(stripslashes($lig_pers2->civilite)!=stripslashes($civilite1)){
+						if(ucfirst(strtolower(stripslashes($lig_pers2->civilite)))!=ucfirst(strtolower(stripslashes($civilite1)))){
 							echo " background-color:lightgreen;'>";
 							if($civilite1!=''){
 								echo stripslashes($civilite1)." <font color='red'>-&gt;</font>\n";
@@ -4000,7 +4001,8 @@ else{
 					else{
 						echo "'>";
 					}
-					echo stripslashes($lig_pers2->civilite);
+					//echo stripslashes($lig_pers2->civilite);
+					echo ucfirst(strtolower(stripslashes($lig_pers2->civilite)));
 					echo "</td>\n";
 					//======================================
 
@@ -4464,7 +4466,7 @@ else{
 							$sql="INSERT INTO resp_pers SET pers_id='$lig1->col2',
 													nom='".addslashes(strtoupper($lig->nom))."',
 													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
-													civilite='".$lig->civilite."',
+													civilite='".ucfirst(strtolower($lig->civilite))."',
 													tel_pers='".$lig->tel_pers."',
 													tel_port='".$lig->tel_port."',
 													tel_prof='".$lig->tel_prof."',
@@ -4484,7 +4486,7 @@ else{
 						else{
 							$sql="UPDATE resp_pers SET nom='".addslashes(strtoupper($lig->nom))."',
 													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
-													civilite='".$lig->civilite."',
+													civilite='".ucfirst(strtolower($lig->civilite))."',
 													tel_pers='".$lig->tel_pers."',
 													tel_port='".$lig->tel_port."',
 													tel_prof='".$lig->tel_prof."',

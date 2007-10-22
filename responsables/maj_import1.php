@@ -1392,7 +1392,8 @@ else{
 
 				//======================================
 				echo "<td style='text-align:center;";
-				if(stripslashes($lig1->civilite)!=stripslashes($personne[$pers_id]["civilite"])){
+				//if(stripslashes($lig1->civilite)!=stripslashes($personne[$pers_id]["civilite"])){
+				if(ucfirst(strtolower(stripslashes($lig1->civilite)))!=ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))) {
 					echo " background-color:lightgreen;'>";
 					if($lig1->civilite!=''){
 						echo stripslashes($lig1->civilite)." <font color='red'>-&gt;</font>\n";
@@ -1401,7 +1402,8 @@ else{
 				else{
 					echo "'>";
 				}
-				echo stripslashes($personne[$pers_id]["civilite"]);
+				//echo stripslashes($personne[$pers_id]["civilite"]);
+				echo ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])));
 				echo "<input type='hidden' name='modif_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
 				//echo "<input type='text' name='modif_".$cpt."_civilite' value=\"".stripslashes($personne[$pers_id]["civilite"])."\" />\n";
 				echo "</td>\n";
