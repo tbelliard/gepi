@@ -66,6 +66,12 @@ if (isset($_POST['is_posted'])) {
 		
 		// function add_user($_login, $_nom, $_prenom, $_civilite, $_statut, $_email) {
 		
+		// Scribe NG : ne pas modifier l'utilisateur admin
+		if ($info[$i]["uid"][0] == "admin") {
+			continue;
+		}
+		
+		
 		// Le mail et le code civilité ne sont pas systématiquement renseignés...
 		
 		if (!array_key_exists("mail", $info[$i])) {
