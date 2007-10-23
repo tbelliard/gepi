@@ -90,6 +90,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
     if (isset($_POST['desti_p'])) $destinataires .= 'p';
     if (isset($_POST['desti_c'])) $destinataires .= 'c';
     if (isset($_POST['desti_a'])) $destinataires .= 'a';
+    if (isset($_POST['desti_r'])) $destinataires .= 'r';
+    if (isset($_POST['desti_e'])) $destinataires .= 'e';
     if ($contenu_cor == '') {
         $msg = "ATTENTION : Le message est vide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
@@ -151,32 +153,32 @@ $message_suppression = "Confirmation de suppression";
 $titre_page = "Gestion des messages";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
-echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
+echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
-echo "<table width=\"98%\" cellspacing=0 align=\"center\">";
-echo "<tr>";
-echo "<td valign='top'>";
-echo "<p>Nous sommes le :&nbsp;<br />";
-echo "<script type=\"text/javascript\" language=\"javascript\">";
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
+echo "<tr>\n";
+echo "<td valign='top'>\n";
+echo "<p>Nous sommes le :&nbsp;<br />\n";
+echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 echo "<!--\n";
 echo "new LiveClock();\n";
-echo "//-->";
-echo "</SCRIPT></p>";
-echo "</td>";
+echo "//-->\n";
+echo "</SCRIPT></p>\n";
+echo "</td>\n";
 
-echo "</tr></table><hr />";
+echo "</tr></table><hr />\n";
 
-echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">";
+echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">\n";
 //
 // Affichage des messages
 //
 
-echo "<tr><td width = \"40%\" valign=\"top\">";
-echo "<span class='grand'>Tous les messages</span><br />";
+echo "<tr><td width = \"40%\" valign=\"top\">\n";
+echo "<span class='grand'>Tous les messages</span><br />\n";
 echo "<span class='small'>Classer par : ";
-echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>";
-echo "</span><br /><br />";
+echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>\n";
+echo "</span><br /><br />\n";
 
 $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, destinataires FROM messages
 WHERE (texte != '') order by ".$order_by." DESC");
@@ -205,13 +207,13 @@ while ($ind < $nb_messages) {
 
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
    - <a href='index.php?id_del=$id_message&action=sup_entry' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
-   <table border=1 width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table><br />";
+   <table border=1 width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table><br />\n";
   $ind++;
 }
 // Fin de la colonne de gauche
-echo "</td>";
+echo "</td>\n";
 // Début de la colonne de droite
-echo "<td valign=\"top\">";
+echo "<td valign=\"top\">\n";
 
 //
 // Affichage du message en modification
@@ -242,54 +244,64 @@ if (isset($id_mess)) {
     if (!isset($destinataires)) $destinataires = '_p';
 
 }
-echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>";
-echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\" name=\"formulaire\">";
-if (isset($id_mess)) echo "<input type=\"hidden\" name=\"id_mess\" value=\"$id_mess\" />";
-echo "<input type=\"hidden\" name=\"action\" value=\"message\" />";
+echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>\n";
+echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\" name=\"formulaire\">\n";
+if (isset($id_mess)) echo "<input type=\"hidden\" name=\"id_mess\" value=\"$id_mess\" />\n";
+echo "<input type=\"hidden\" name=\"action\" value=\"message\" />\n";
 
 
-echo "<table border=\"0\" width = \"100%\" cellspacing=\"1\" cellpadding=\"1\">";
+echo "<table border=\"0\" width = \"100%\" cellspacing=\"1\" cellpadding=\"1\">\n";
 
 // Titre
-echo "<tr><td colspan=\"4\"><span class='grand'>".$titre_mess."</span></td></tr>";
+echo "<tr><td colspan=\"4\"><span class='grand'>".$titre_mess."</span></td></tr>\n";
 //Enregistrer
-echo "<tr><td  colspan=\"4\" align=\"center\"><input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"ok\" />";
-if (isset($id_mess)) echo "<input type=\"submit\" value=\"Annuler\" style=\"font-variant: small-caps;\" name=\"cancel\" />";
+echo "<tr><td  colspan=\"4\" align=\"center\"><input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"ok\" />\n";
+if (isset($id_mess)) echo "<input type=\"submit\" value=\"Annuler\" style=\"font-variant: small-caps;\" name=\"cancel\" />\n";
 
 echo "</td></tr>\n";
 //Dates
-echo "<tr><td colspan=\"4\">";
+echo "<tr><td colspan=\"4\">\n";
 echo "<i>Le message sera affiché :</i><br />de la date : ";
-echo "<input type='text' name = 'display_date_debut' size='8' value = \"".$display_date_debut."\" />";
-echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>";
+echo "<input type='text' name = 'display_date_debut' size='8' value = \"".$display_date_debut."\" />\n";
+echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo "&nbsp;à la date : ";
-echo "<input type='text' name = 'display_date_fin' size='8' value = \"".$display_date_fin."\" />";
-echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>";
-echo " (Respectez le format jj/mm/aaaa)</td></tr>";
+echo "<input type='text' name = 'display_date_fin' size='8' value = \"".$display_date_fin."\" />\n";
+echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
+echo " (Respectez le format jj/mm/aaaa)</td></tr>\n";
 //Destiantaires
-echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>";
-echo "<tr>";
+echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>\n";
+echo "<tr>\n";
 echo "<td><input type=\"checkbox\" name=\"desti_p\" value=\"desti_p\"";
 if (strpos($destinataires, "p")) echo "checked";
-echo " />Professeurs</td>";
+echo " />Professeurs</td>\n";
 
 echo "<td><input type=\"checkbox\" name=\"desti_c\" value=\"desti_c\"";
 if (strpos($destinataires, "c")) echo "checked";
-echo " />C.P.E.</td>";
+echo " />C.P.E.</td>\n";
 
 echo "<td><input type=\"checkbox\" name=\"desti_s\" value=\"desti_s\"";
 if (strpos($destinataires, "s")) echo "checked";
-echo " />Scolarité</td>";
+echo " />Scolarité</td>\n";
+echo "</tr>\n";
 
-
+echo "<tr>\n";
 echo "<td><input type=\"checkbox\" name=\"desti_a\" value=\"desti_a\"";
 if (strpos($destinataires, "a")) echo "checked";
-echo " />Administrateur</td>";
-echo "</tr>";
-// Message
-echo "<tr><td  colspan=\"4\">";
+echo " />Administrateur</td>\n";
 
-echo "<i>Mise en forme du message :</i>";
+echo "<td><input type=\"checkbox\" name=\"desti_r\" value=\"desti_r\"";
+if (strpos($destinataires, "r")) echo "checked";
+echo " />Responsables</td>\n";
+
+echo "<td><input type=\"checkbox\" name=\"desti_e\" value=\"desti_e\"";
+if (strpos($destinataires, "e")) echo "checked";
+echo " />Elèves</td>\n";
+
+echo "</tr>\n";
+// Message
+echo "<tr><td  colspan=\"4\">\n";
+
+echo "<i>Mise en forme du message :</i>\n";
 
 $oFCKeditor = new FCKeditor('message') ;
 $oFCKeditor->BasePath = '../fckeditor/' ;  // '/FCKeditor/' is the default value.
@@ -298,11 +310,11 @@ $oFCKeditor->ToolbarSet = 'Basic' ;
 $oFCKeditor->Value      = $contenu ;
 $oFCKeditor->Create() ;
 
-echo "</td></tr></table>";
-echo "</form></td></tr></table>";
+echo "</td></tr></table>\n";
+echo "</form></td></tr></table>\n";
 
 // Fin de la colonne de droite
 
-echo "</td></tr></table>";
+echo "</td></tr></table>\n";
 require("../lib/footer.inc.php");
 ?>
