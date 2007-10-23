@@ -544,7 +544,7 @@ else {
 
 				// On effectue d'abord un test sur le NUMIND
 				$sql="select login from utilisateurs where (
-				numind='".$affiche[3]."' and
+				numind='P".$prof[$k]["id"]."' and
 				numind!='' and
 				statut='professeur')";
 				//echo "<tr><td>$sql</td></tr>";
