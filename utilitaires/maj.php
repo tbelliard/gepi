@@ -4880,7 +4880,21 @@ if (isset ($_POST['maj'])) {
 		}
 		//===================================================
 
-
+		//===================================================
+        $result .= "&nbsp;->Ajout d'un champ 'numind' à la table 'utilisateurs'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'numind'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `utilisateurs` ADD `numind` VARCHAR( 255 ) NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+		//===================================================
 
     }
 
