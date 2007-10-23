@@ -539,15 +539,39 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		// système de classement par ordre
 		if(!isset($active_entete_regroupement)) { $active_entete_regroupement = '0'; }
 		if(!isset($active_regroupement_cote)) { $active_regroupement_cote = '0'; }
+			/*
 			$systeme_de_classement=''.$prefix_base.'matieres.nom_complet ASC';
 			if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' '.$prefix_base.'j_matieres_categories_classes.priority ASC, '.$prefix_base.'j_groupes_classes.priorite ASC, '.$prefix_base.'matieres_categories.id ASC,'.$systeme_de_classement; }
 			if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' '.$prefix_base.'j_groupes_classes.priorite ASC, '.$systeme_de_classement; }
+			*/
+			$systeme_de_classement='m.nom_complet ASC';
+			if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' jmcc.priority ASC, jgc.priorite ASC, mc.id ASC,'.$systeme_de_classement; }
+			if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' jgc.priorite ASC, '.$systeme_de_classement; }
 
 		// requête dans la base
 		/*
 		$base_complete_information = mysql_query('SELECT * FROM '.$prefix_base.'cn_devoirs, '.$prefix_base.'cn_notes_devoirs, '.$prefix_base.'cn_cahier_notes, '.$prefix_base.'groupes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'j_groupes_classes, '.$prefix_base.'matieres, '.$prefix_base.'.j_matieres_categories_classes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_classes.id_classe="'.$classe_id_eleve[$nb_eleves_i].'" AND '.$prefix_base.'.j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.$prefix_base.'.j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'.j_matieres_categories_classes.categorie_id AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'cn_notes_devoirs.login = "'.$login[$nb_eleves_i].'" AND ('.$prefix_base.'cn_devoirs.date >=  "'.$date_debut.'" AND '.$prefix_base.'cn_devoirs.date <= "'.$date_fin.'" ) AND '.$prefix_base.'cn_notes_devoirs.id_devoir = '.$prefix_base.'cn_devoirs.id AND '.$prefix_base.'cn_devoirs.id_racine = '.$prefix_base.'cn_cahier_notes.id_cahier_notes AND '.$prefix_base.'cn_cahier_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'cn_devoirs.display_parents = "1" ORDER BY '.$systeme_de_classement.', '.$prefix_base.'matieres.nom_complet ASC , '.$prefix_base.'groupes.id ASC, '.$prefix_base.'cn_devoirs.date ASC');
 		*/
+		/*
 		$sql='SELECT * FROM '.$prefix_base.'cn_devoirs, '.$prefix_base.'cn_notes_devoirs, '.$prefix_base.'cn_cahier_notes, '.$prefix_base.'groupes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'j_groupes_classes, '.$prefix_base.'matieres, '.$prefix_base.'.j_matieres_categories_classes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_classes.id_classe="'.$classe_id_eleve[$nb_eleves_i].'" AND '.$prefix_base.'.j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.$prefix_base.'.j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'.j_matieres_categories_classes.categorie_id AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'cn_notes_devoirs.login = "'.$login[$nb_eleves_i].'" AND ('.$prefix_base.'cn_devoirs.date >=  "'.$date_debut.'" AND '.$prefix_base.'cn_devoirs.date <= "'.$date_fin.'" ) AND '.$prefix_base.'cn_notes_devoirs.id_devoir = '.$prefix_base.'cn_devoirs.id AND '.$prefix_base.'cn_devoirs.id_racine = '.$prefix_base.'cn_cahier_notes.id_cahier_notes AND '.$prefix_base.'cn_cahier_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'cn_devoirs.display_parents = "1" ORDER BY '.$systeme_de_classement.', '.$prefix_base.'matieres.nom_complet ASC , '.$prefix_base.'groupes.id ASC, '.$prefix_base.'cn_devoirs.date ASC';
+		*/
+		$sql = 'SELECT * FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
+				 WHERE jgc.id_groupe = g.id
+				   AND jgc.id_classe = "'.$classe_id_eleve[$nb_eleves_i].'"
+				   AND jmcc.classe_id = jgc.id_classe
+				   AND jmcc.categorie_id = mc.id
+				   AND m.categorie_id = jmcc.categorie_id
+				   AND jgm.id_groupe = g.id
+				   AND jgm.id_matiere = m.matiere
+				   AND cnd.login = "'.$login[$nb_eleves_i].'"
+				   AND ( cd.date >= "'.$date_debut.'"
+					AND cd.date <= "'.$date_fin.'" )
+				   AND cnd.id_devoir = cd.id
+				   AND cd.id_racine = ccn.id_cahier_notes
+				   AND ccn.id_groupe = g.id
+				   AND cd.display_parents = "1"
+				 ORDER BY '.$systeme_de_classement.', m.nom_complet ASC , g.id ASC, cd.date ASC';
+
 		/*
 		$sql='SELECT * FROM '.$prefix_base.'cn_devoirs, '.
 							$prefix_base.'cn_notes_devoirs, '.
@@ -639,8 +663,10 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					// AJOUT: chapel 20071019
 					// si coef
 					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
-						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; }
-						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[9] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; } else { $coef_oui = ''; } }
+						//if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; }
+						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[9] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; } else { $coef_oui = ''; } }
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
 					}
 					else {
 						$coef_oui='';
