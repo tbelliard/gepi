@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 10/05/2006
+ * Last modification  : 23/10/2007
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -437,11 +437,16 @@ if (isset($_POST['step'])) {
                                 substr($info[$i]["datenaissance"][0], 4, 2) . "-" .
                                 substr($info[$i]["datenaissance"][0], 6, 2);
 
+            // -----
+            // DEPRECIATION : les lignes ci-dessous ne sont plus nécessaire, Gepi a été mis à jour
+            //
             // Pour des raisons de compatibilité avec le code existant de Gepi, il n'est pas possible d'avoir
             // un point dans le login... (le point est transformé bizarrement en "_" dans les $_POST)...
 
-            $info[$i]["uid"][0] = preg_replace("/\./", "_", $info[$i]["uid"][0]);
+            //$info[$i]["uid"][0] = preg_replace("/\./", "_", $info[$i]["uid"][0]);
+			// -----
 
+            // En théorie ici chaque login est de toute façon unique.
             $add = add_eleve($info[$i]["uid"][0],
                             $info[$i]["sn"][0],
                             $info[$i]["givenname"][0],
