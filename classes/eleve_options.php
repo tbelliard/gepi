@@ -78,7 +78,7 @@ if (isset($is_posted)) {
 		}
 		$j++;
 	}
-	$affiche_message = 'yes';
+	//$affiche_message = 'yes';
 	$msg = "Les modifications ont été enregistrées !";
 }
 //$message_enregistrement = "Les modifications ont été enregistrées !";
