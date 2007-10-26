@@ -857,6 +857,10 @@ if(isset($definir_resp)){
 		$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 		$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
 
+		if($critere_recherche==""){
+			$critere_recherche=substr($eleve_nom,0,3);
+		}
+
 		echo "<form enctype='multipart/form-data' action='modify_eleve.php' method='post'>\n";
 
 		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
@@ -885,7 +889,8 @@ if(isset($definir_resp)){
 		if($critere_recherche!=""){
 			$sql.=" WHERE rp.nom like '%".$critere_recherche."%'";
 		}
-		$sql.=" ORDER BY rp.nom, rp.prenom LIMIT 20";
+		$sql.=" ORDER BY rp.nom, rp.prenom";
+		$sql.=" LIMIT 20";
 		$call_resp=mysql_query($sql);
 		$nombreligne = mysql_num_rows($call_resp);
 		// si la table des responsables est non vide :
