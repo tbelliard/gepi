@@ -181,7 +181,11 @@ if(!isset($step)) {
 	echo "</form>\n";
 
 	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=9'>Passer néanmoins à la page d'importation des responsables</a></p>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=9'>Passer néanmoins à la page d'importation des responsables</a></p>\n";
+
+	echo "<p><br /></p>\n";
+
+	echo "<p><i>NOTE:</i> Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
 }
 else{
 	if($step>0){
@@ -2600,6 +2604,8 @@ else{
 
 			echo "<p><br /></p>\n";
 
+			echo "<p><i>NOTE:</i> Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
+
 			require("../lib/footer.inc.php");
 			die();
 
@@ -3667,7 +3673,7 @@ else{
 			//echo "count(\$tab_adr_id)=".count($tab_adr_id)."<br />\n";
 
 			if(count($tab_adr_id)>20){
-				echo "<input type='text' name='parcours_diff' value='$parcours_diff' />\n";
+				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
 				echo "<input type='hidden' name='step' value='14' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
