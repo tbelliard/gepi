@@ -1137,7 +1137,8 @@ if(isset($eleve_login)){
 	}
 	else{
 		while($lig_classe=mysql_fetch_object($res_grp1)){
-			echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
+			//echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
+			echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>$lig_classe->classe</a><br />\n";
 		}
 	}
 	echo "</td>\n";

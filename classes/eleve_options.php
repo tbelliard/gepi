@@ -1,25 +1,25 @@
 <?php
 /*
- * $Id$
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
- *
- * GEPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GEPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GEPI; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* $Id$
+*
+* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -96,31 +96,36 @@ $sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves
 //echo "\$login_eleve=$login_eleve<br />";
 $res_ele_tmp=mysql_query($sql);
 $chaine_options_login_eleves="";
+$cpt_eleve=0;
+$num_eleve=-1;
 if(mysql_num_rows($res_ele_tmp)>0){
-    $login_eleve_prec=0;
-    $login_eleve_suiv=0;
-    $temoin_tmp=0;
-    while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
-        if($lig_ele_tmp->login==$login_eleve){
+	$login_eleve_prec=0;
+	$login_eleve_suiv=0;
+	$temoin_tmp=0;
+	while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+		if($lig_ele_tmp->login==$login_eleve){
 			$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 
-            $temoin_tmp=1;
-            if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
-                $login_eleve_suiv=$lig_ele_tmp->login;
+			$num_eleve=$cpt_eleve;
+
+			$temoin_tmp=1;
+			if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+				$login_eleve_suiv=$lig_ele_tmp->login;
 				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
-            }
-            else{
-                $login_eleve_suiv=0;
-            }
-        }
+			}
+			else{
+				$login_eleve_suiv=0;
+			}
+		}
 		else{
 			$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 		}
 
-        if($temoin_tmp==0){
-            $login_eleve_prec=$lig_ele_tmp->login;
-        }
-    }
+		if($temoin_tmp==0){
+			$login_eleve_prec=$lig_ele_tmp->login;
+		}
+		$cpt_eleve++;
+	}
 }
 // =================================
 
@@ -135,20 +140,79 @@ require_once("../lib/header.inc");
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
-echo "<form action='eleve_options.php' name='form1' method='post'>\n";
-echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if(!isset($quitter_la_page)){
+	echo "<form action='eleve_options.php' name='form1' method='post'>\n";
+	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
-if("$login_eleve_prec"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'>Elève précédent</a>";}
+	if("$login_eleve_prec"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève précédent</a>";}
 
-echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
-echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
-echo $chaine_options_login_eleves;
-echo "</select>\n";
 
-if("$login_eleve_suiv"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'>Elève suivant</a>";}
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
 
-echo "</p>\n";
-echo "</form>\n";
+	function confirm_changement_eleve(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('login_eleve').selectedIndex=$num_eleve;
+			}
+		}
+	}
+</script>\n";
+
+
+	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+	//echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
+	echo " | <select name='login_eleve' id='login_eleve' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+	echo $chaine_options_login_eleves;
+	echo "</select>\n";
+
+	if("$login_eleve_suiv"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève suivant</a>";}
+
+	echo "</p>\n";
+	echo "</form>\n";
+}
+else{
+	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+	// Après modification éventuelle, il faut quitter cette page.
+	//echo "<p class=bold><a href=\"#\" onclick=\"return confirm_abandon (this, change, '$themessage');\">Refermer la page</a></p>\n";
+	//echo "<p class=bold><a href=\"#\" onclick=\"if(return confirm_abandon (this, change, '$themessage')){self.close()};\">Refermer la page</a></p>\n";
+	echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_close(theLink, thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			self.close();
+			return false;
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				self.close();
+				return false;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+</script>\n";
+
+}
 
 //debug_var();
 
@@ -157,6 +221,12 @@ echo "</form>\n";
 ?>
 <form action="eleve_options.php" name='form2' method=post>
 <?php
+
+if(isset($quitter_la_page)){
+	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+	// Après modification éventuelle, il faut quitter cette page.
+	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
+}
 
 $call_nom_class = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_nom_class, 0, 'classe');
@@ -321,9 +391,9 @@ if($nb_erreurs>0){
 //============================================
 ?>
 <p align='center'><input type='submit' value='Enregistrer les modifications' /></p>
-<input type=hidden name=id_classe value=<?php echo $id_classe;?> />
-<input type=hidden name=login_eleve value=<?php echo $login_eleve;?> />
-<input type=hidden name=is_posted value=1 />
+<input type='hidden' name='id_classe' value='<?php echo $id_classe;?>' />
+<input type='hidden' name='login_eleve' value='<?php echo $login_eleve;?>' />
+<input type='hidden' name='is_posted' value='1' />
 <br />
 </form>
 <?php require("../lib/footer.inc.php");?>
