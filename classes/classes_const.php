@@ -64,6 +64,7 @@ if (isset($is_posted)) {
 	While ($k < $nombreligne) {
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 
+		//echo "<p>\$login_eleve=$login_eleve<br />\n";
 		//=========================
 		// AJOUT: boireaus 20071003
 		// Récupération du numéro de l'élève dans les saisies:
@@ -75,6 +76,8 @@ if (isset($is_posted)) {
 			}
 		}
 		if($num_eleve!=-1){
+			//echo "Elève n°$num_eleve<br />\n";
+
 			//=========================
 			// MODIF: boireaus 20071010
 			//$regime_login = 'regime_'.$login_eleve;
@@ -105,45 +108,80 @@ if (isset($is_posted)) {
 			//$reg_prof = isset($_POST[$prof_login])?$_POST[$prof_login]:NULL;
 			$reg_prof="(vide)";
 			if(isset($prof_principal[$num_eleve])){$reg_prof=$prof_principal[$num_eleve];}
+			//echo "\$reg_prof=$reg_prof<br />\n";
+
 			//echo "$login_eleve - \$reg_prof=\$prof_principal[$num_eleve]=".$prof_principal[$num_eleve]."<br />";
 			//=========================
 
 			$call_profsuivi_eleve = mysql_query("SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')");
 			$eleve_profsuivi = @mysql_result($call_profsuivi_eleve, '0', 'professeur');
+			//echo "\$eleve_profsuivi=$eleve_profsuivi<br />\n";
 			if (($reg_prof == '(vide)') and ($eleve_profsuivi != '')) {
-				$reg_data = mysql_query("DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')");
-				if (!($reg_data)) $reg_ok = 'no';
+				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
 			if  (($reg_prof != '(vide)') and ($eleve_profsuivi != '') and ($reg_prof != $eleve_profsuivi)) {
-				$reg_data = mysql_query("UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')");
-				if (!($reg_data)) $reg_ok = 'no';
+				$sql="UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
 			if  (($reg_prof != '(vide)') and ($eleve_profsuivi == '')) {
-				$reg_data = mysql_query("INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')");
-				if (!($reg_data)) $reg_ok = 'no';
+				$sql="INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
 
 			//=========================
 			// MODIF: boireaus 20071010
 			//$cpe_login = "cpe_".$login_eleve;
 			//$reg_cperesp = isset($_POST[$cpe_login])?$_POST[$cpe_login]:NULL;
+			//$reg_cperesp="(vide)";
 			$reg_cperesp="(vide)";
 			if(isset($cpe_resp[$num_eleve])){$reg_cperesp=$cpe_resp[$num_eleve];}
+			//echo "\$reg_cperesp=$reg_cperesp<br />\n";
 			//=========================
 
 			$call_cperesp_eleve = mysql_query("SELECT cpe_login FROM j_eleves_cpe WHERE e_login = '$login_eleve'");
 			$eleve_cperesp = @mysql_result($call_cperesp_eleve, '0', 'cpe_login');
-			if (($reg_cperesp == 'vide') and ($eleve_cperesp != '')) {
-				$reg_data = mysql_query("DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve'");
-				if (!($reg_data)) $reg_ok = 'no';
+			if (($reg_cperesp == '(vide)') and ($eleve_cperesp != '')) {
+				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve'";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
-			if  (($reg_cperesp != 'vide') and ($eleve_cperesp != '') and ($reg_cperesp != $eleve_cperesp)) {
-				$reg_data = mysql_query("UPDATE j_eleves_cpe SET cpe_login ='$reg_cperesp' WHERE e_login='$login_eleve'");
-				if (!($reg_data)) $reg_ok = 'no';
+			if  (($reg_cperesp != '(vide)') and ($eleve_cperesp != '') and ($reg_cperesp != $eleve_cperesp)) {
+				$sql="UPDATE j_eleves_cpe SET cpe_login ='$reg_cperesp' WHERE e_login='$login_eleve'";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
-			if  (($reg_cperesp != 'vide') and ($eleve_cperesp == '')) {
-				$reg_data = mysql_query("INSERT INTO j_eleves_cpe VALUES ('$login_eleve', '$reg_cperesp')");
-				if (!($reg_data)) $reg_ok = 'no';
+			if  (($reg_cperesp != '(vide)') and ($eleve_cperesp == '')) {
+				$sql="INSERT INTO j_eleves_cpe VALUES ('$login_eleve', '$reg_cperesp')";
+				//echo "$sql<br />";
+				$reg_data = mysql_query($sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+				}
 			}
 		}
 		$k++;
@@ -214,12 +252,14 @@ if (isset($is_posted)) {
 		if(!isset($msg)){$msg="";}
 	$msg.="Les modifications ont été enregistrées !";
 	} else if ($reg_ok == "impossible") {
-	$message_enregistrement = "Opération Impossible (voir message d'avertissement en rouge).";
+		$message_enregistrement = "Opération Impossible (voir message d'avertissement en rouge).";
+		$affiche_message = 'yes';
 	} else {
 	//$message_enregistrement = "Il y a eu un problème lors de l'enregistrement";
-	$message_enregistrement="Il y a eu un problème lors de l'enregistrement";
+		$message_enregistrement="Il y a eu un problème lors de l'enregistrement";
+		$affiche_message = 'yes';
 	}
-	$affiche_message = 'yes';
+	//$affiche_message = 'yes';
 }
 
 
@@ -446,7 +486,7 @@ if ($nombreligne == '0') {
 		//echo "<p><select size='1' name='$cpe_login'>\n";
 		echo "<p><select size='1' name='cpe_resp[$k]'>\n";
 		//=========================
-			$cperesp = "vide";
+			$cperesp = "(vide)";
 			echo "<option value='$cperesp'>(vide)</option>\n";
 			$call_cpe = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
 			$nb = mysql_num_rows($call_cpe);
