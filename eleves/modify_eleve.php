@@ -845,13 +845,29 @@ if(!getSettingValue('conv_new_resp_table')){
 
 
 ?>
-<form enctype="multipart/form-data" action="modify_eleve.php" method=post>
+<!--form enctype="multipart/form-data" action="modify_eleve.php" method=post-->
 <?php
 
 //eleve_login=$eleve_login&amp;definir_resp=1
 if(isset($definir_resp)){
 	if(!isset($valider_choix_resp)){
+
 		echo "<p>Choix du responsable lÈgal <b>$definir_resp</b> pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
+
+		$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+		$critere_recherche=ereg_replace("[^a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ -]", "", $critere_recherche);
+
+		echo "<form enctype='multipart/form-data' action='modify_eleve.php' method='post'>\n";
+
+		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
+		echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
+		echo "<p align='center'><input type='submit' name='filtrage' value='Afficher' /> les responsables dont le <b>nom</b> contient: ";
+		echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+		echo "</p>\n";
+		echo "</form>\n";
+
+
+		echo "<form enctype='multipart/form-data' action='modify_eleve.php' method='post'>\n";
 
 		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 		echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
@@ -864,12 +880,17 @@ if(isset($definir_resp)){
 		}
 
 		//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
-		$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp ORDER BY rp.nom, rp.prenom";
+		//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp ORDER BY rp.nom, rp.prenom";
+		$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp";
+		if($critere_recherche!=""){
+			$sql.=" WHERE rp.nom like '%".$critere_recherche."%'";
+		}
+		$sql.=" ORDER BY rp.nom, rp.prenom LIMIT 20";
 		$call_resp=mysql_query($sql);
 		$nombreligne = mysql_num_rows($call_resp);
 		// si la table des responsables est non vide :
 		if ($nombreligne != 0) {
-			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Valider' /></p>\n";
+			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
 			echo "<table align='center' border='1'>\n";
 			echo "<tr>\n";
 			echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' /></td>\n";
@@ -915,7 +936,7 @@ if(isset($definir_resp)){
 			}
 
 			echo "</table>\n";
-			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Valider' /></p>\n";
+			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
 		}
 		else{
 			echo "<p>Aucun responsable n'est dÈfini.</p>\n";
