@@ -23,6 +23,7 @@
 
 $niveau_arbo = 2;
 // Initialisations files
+//require_once("../../lib/initialisations.inc.php");
 require_once("../../lib/initialisations.inc.php");
 include("../lib/functions.php");
 
@@ -104,7 +105,6 @@ if (empty($_GET['id_lettre_suivi']) and empty($_POST['id_lettre_suivi'])) { $id_
     else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
 	if(isset($du) and !empty($du)) { $date_ce_jour = date_sql($du); }
 // fin de gestion des dates
-
 
 function age($date_de_naissance_fr)
           {
@@ -434,7 +434,7 @@ function DecocheCheckbox() {
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
          {
-            if ($classe_choix != "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(DISTINCT(ae.id_absence_eleve)) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec WHERE e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = ''".$type."'' AND ec.login = e.login AND ec.id_classe = '".$classe_choix."' GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
+            if ($classe_choix != "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(DISTINCT(ae.id_absence_eleve)) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec WHERE e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = '".$type."' AND ec.login = e.login AND ec.id_classe = '".$classe_choix."' GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
             if ($classe_choix == "") { $requete_top10 = "SELECT e.login, e.elenoet, e.nom, e.prenom, e.sexe, COUNT(ae.id_absence_eleve) AS count FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."eleves e WHERE ( e.login = ae.eleve_absence_eleve AND ae.type_absence_eleve = '".$type."' ) GROUP BY e.login ORDER BY count DESC LIMIT 0, 10"; }
          }
 
@@ -568,7 +568,7 @@ function DecocheCheckbox() {
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="2">Téléphone responsable :
-                  <?php
+                  <?php 
 			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -685,7 +685,7 @@ function DecocheCheckbox() {
 // ABSENCES SANS MOTIF
 //
 
-if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
+if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") { 
 
        $i = 0;
        if ($type == "A" or $type == "I" or $type == "R" or $type == "D")
@@ -721,7 +721,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
              </tr>
              <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php
+                  <?php 
 			$info_responsable = tel_responsable($data_sans_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -773,8 +773,8 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
                                       $id_eleve = $data_sans_motif['id_absence_eleve'];
                                       $id_eleve_photo = $data_sans_motif['elenoet'];
-                                      $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                                      $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";            
+                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; } 
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
             <?php } ?>
@@ -876,7 +876,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
               </tr>
               <tr class="texte_fondjaune_calque_information">
                 <td colspan="3">Téléphone responsable :
-                  <?php
+                  <?php     
 			$info_responsable = tel_responsable($data_avec_motif['ele_id']);
 				if ( $info_responsable[0]['tel_pers'] != '' or $info_responsable[0]['tel_prof'] != '' ) { echo 'pers. '.$info_responsable[0]['tel_pers'].' / prof.'.$info_responsable[0]['tel_prof']; }
 				if ( $info_responsable[0]['tel_pers'] === '' and $info_responsable[0]['tel_prof'] === ''  ) { echo 'portable : '.$info_responsable[0]['tel_pers'].' ! surtaxe'; }
@@ -1028,7 +1028,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
               $ele_id_eleve = $data_liste_fiche['ele_id'];
               $nom_eleve = strtoupper($data_liste_fiche['nom']);
               $prenom_eleve = ucfirst($data_liste_fiche['prenom']);
-              $naissance_eleve = date_frl(date_sql(affiche_date_naissance($data_liste_fiche['naissance'])));
+              $naissance_eleve = date_fr(date_sql(affiche_date_naissance($data_liste_fiche['naissance'])));
               $date_de_naissance = $data_liste_fiche['naissance'];
               $sexe_eleve = $data_liste_fiche['sexe'];
 		$responsable_eleve = tel_responsable($ele_id_eleve);
@@ -1069,7 +1069,7 @@ else { ?> à <?php } ?> <?php echo heure($data_avec_motif['a_heure_absence_eleve'
 						if ( !empty($responsable_eleve[$cpt_responsable]['tel_pers']) ) { $telephone = $telephone.'Tél. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_pers']).'</strong> '; }
 						if ( !empty($responsable_eleve[$cpt_responsable]['tel_prof']) ) { $telephone = $telephone.'Prof. <strong>'.present_tel($responsable_eleve[$cpt_responsable]['tel_prof']).'</strong> '; }
 						if ( !empty($responsable_eleve[$cpt_responsable]['tel_port']) ) { $telephone = $telephone.'<br />Port.<img src="../images/attention.png" alt="Attention numéro surtaxé" title="Attention numéro surtaxé" border="0" height="14" width="14" /> '.present_tel($responsable_eleve[$cpt_responsable]['tel_port']); }
-					echo '<div style="margin-left: 15px;">'.$telephone.'</div>';
+					echo '<div style="margin-left: 0px; font-size: 13px;">'.$telephone.'</div>';
 					$cpt_responsable = $cpt_responsable + 1;
 				}
 			?>
@@ -1142,21 +1142,21 @@ Pour éviter un centrage bizarre:
 		                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
 		                              <?php } ?>
 					</select><br />
-					Informé par:
+					Informé par: 
 						<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '1') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
+						<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '2') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
 						<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '3') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label>
 						<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '5') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
 						<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
+						<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '4') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>						 
 						<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" <?php if(!empty($data_modif_fiche['support_suivi_eleve_cpe']) and $data_modif_fiche['support_suivi_eleve_cpe'] === '6') { ?>checked="checked"<?php } ?> onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
 
      <?php /* désactivé dans l'imédia peut servir par la suite
 	<input name="support_suivi_eleve_cpe" id="ppar1" value="1" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar1" style="cursor: pointer;">Oralement</label>
-	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label>
+	<input name="support_suivi_eleve_cpe" id="ppar2" value="2" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar2" style="cursor: pointer;">Tél.</label> 
 	<input name="support_suivi_eleve_cpe" id="ppar3" value="3" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar3" style="cursor: pointer;">Fax</label><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<input name="support_suivi_eleve_cpe" id="ppar4" value="4" type="radio" onClick="javascript:aff_lig_type_courrier('afficher')" /><label for="ppar4" style="cursor: pointer;">Courrier</label>
-	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label>
+	<input name="support_suivi_eleve_cpe" id="ppar5" value="5" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar5" style="cursor: pointer;">Mel</label> 
 	<input name="support_suivi_eleve_cpe" id="ppar6" value="6" type="radio" onClick="javascript:aff_lig_type_courrier('cacher')" /><label for="ppar6" style="cursor: pointer;">Document de liaison</label>
 		*/ ?>
 					<div id='ligne_type_courrier'>
@@ -1215,12 +1215,12 @@ Pour éviter un centrage bizarre:
                     <div class="info_eleve" style="background: <?php echo $couleur; ?>;"><b><?php echo date_frl($data_komenti['date_suivi_eleve_cpe']).' - '.$data_komenti['heure_suivi_eleve_cpe'].' <span style="font-weight: bold; color: '.$couleur2.';">'.$drapeau.'</span>'; ?></b><br /><?php echo $data_komenti['komenti_suivi_eleve_cpe'].$action_pour_eleve; ?><br /><br /><span class="dimi_texte">écrit par: <?php echo qui($data_komenti['parqui_suivi_eleve_cpe']); ?><br />
 			<?php
 				// vérifie si on n'a le droit de supprimer la fiche on ne peut pas s'il y a un courrier attaché
-				$autorise_supprimer = 'non';
+				$autorise_supprimer = 'non'; 
 			        $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'suivi_eleve_cpe' AND partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."'"),0);
 			          if( $cpt_lettre_recus === '0' ) { $autorise_supprimer = 'oui'; }
 			?>
 				[ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action=modifier#formulaire">modifier</a> <?php if ( $autorise_supprimer === 'oui' ) { ?>|<a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=supprimer">supprimer</a><?php } ?> ] <?php /* [ <a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>">action</a> ] */ ?></span></div>
-		<?php // courrier attaché
+		<?php // courrier attaché 
 	        $courrier_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."' AND partde_lettre_suivi = 'suivi_eleve_cpe'"),0);
 	        if ($courrier_existance != '0') { ?>
 			<?php
@@ -1249,7 +1249,7 @@ Pour éviter un centrage bizarre:
 	</div>
 	<?php } ?>
 <?php /* fin du DIV du suivi de l'élève */ ?>
-
+	   
 
 <?php /* DIV de l'absentéisme de l'élève */ ?>
 	<?php if ( $aff_fiche === 'abseleve' ) { ?>
@@ -1350,6 +1350,7 @@ Pour éviter un centrage bizarre:
 					// largeur du graphique au maximum
 					$l_graphique = '536';
 // temporaire
+
 $du = '01/09/2007';
 $au = '30/06/2008';
 $du_explose = explode('/',$du);
@@ -1365,7 +1366,7 @@ $du_explose = explode('/',$du);
 		$au_sql = $annee_au.'-'.$mois_au.'-'.$au_explose[0];
 
 	if ( $mois === '' ) { $mois = tableau_mois($mois_du, $annee_du, $mois_au, $annee_au); }
-
+			
 
 $info_absence = repartire_jour($login_eleve, 'A', $du_sql, $au_sql);
 $info_retard = repartire_jour($login_eleve, 'R', $du_sql, $au_sql);
@@ -1393,7 +1394,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		$i = '0';
 		while ( !empty($mois[$i]) )
 		{
-			$valeur_x[$i] = $mois[$i]['mois_court'];
+			$valeur_x[$i] = $mois[$i]['mois_court']; 
 		$i = $i + 1;
 		}
 		$_SESSION['axe_x'] = $valeur_x;
@@ -1410,12 +1411,12 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 					$total_abs = $info_absence[$annee_p.'-'.$mois_p]['nb'];
 				}
 				$total_ret = '0';
-				if ( isset($info_retard[$annee_p.'-'.$mois_p]) and ($info_absence[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_absence[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
+				if ( isset($info_retard[$annee_p.'-'.$mois_p]) and ($info_retard[$annee_p.'-'.$mois_p]['nb_nj'] != '0' or $info_retard[$annee_p.'-'.$mois_p]['nb_j'] != '0') ) {
 					// $total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb_j'] + $info_absence[$annee_p.'-'.$mois_p]['nb_nj'];
 					$total_ret = $info_retard[$annee_p.'-'.$mois_p]['nb'];
 				}
 			$valeur_y_abs[$i] = $total_abs;
-			$valeur_y_ret[$i] = $total_ret;
+			$valeur_y_ret[$i] = $total_ret; 
 		$i = $i + 1;
 		}
 		$_SESSION['axe_y_abs'] = $valeur_y_abs;
@@ -1429,10 +1430,12 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 
 	// tableau des nombre d'absences par jour et par heure (période)
    $i = '0';
+
+//	     $requete_comptage = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A'"),0);
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $donnee_base = mysql_fetch_array($execution_komenti))
-                {
+                { 
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['classe'] = '';
@@ -1441,9 +1444,12 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
-		}
+		} 
 
+	// si aucune absences alors on initialise le tab à vide
+	if ( $i > 0 ) {
 	$tab = crer_tableau_jaj($tableau);
+	} else { $tab = ''; }
 
 	$i = '0';
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
@@ -1479,19 +1485,26 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 		</tr>
 	<?php
 	$i = '0';
-	$maxHor = '11';
+
+		// calcul du nombre de période à affiché dans la semaine
+		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux
+							WHERE suivi_definie_periode = '1'"),0);
+
+		// si il est égale à 0 alors on l'initialise à 11
+		if ( $maxHor === '0' or $maxHor > '11' ) { $maxHor = '11'; }
+
 	$icouleur = '1';
-	$aff_chiffre = '0';
+	$aff_chiffre = '0'; 
 	while ($i < $maxHor) {
-		if($icouleur === '1') { $couleur_cellule = '#FAFFEF'; } else { $couleur_cellule = '#F0FFCF'; }
+		if($icouleur === '1') { $couleur_cellule = '#FAFFEF'; } else { $couleur_cellule = '#F0FFCF'; } 
 	 ?><tr>
 		<td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php echo $Horaire[$i]; ?></td>
-	 	<?php if ( isset($semaine['lundi']['ouverture']) and $semaine['lundi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Mon", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
-		<?php if ( isset($semaine['mardi']['ouverture']) and $semaine['mardi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Tue", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
-		<?php if ( isset($semaine['mercredi']['ouverture']) and $semaine['mercredi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Wed", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
-		<?php if ( isset($semaine['jeudi']['ouverture']) and $semaine['jeudi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Thu", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
-		<?php if ( isset($semaine['vendredi']['ouverture']) and $semaine['vendredi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Fri", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
-		<?php if ( isset($semaine['samedi']['ouverture']) and $semaine['samedi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php $aff_chiffre = Absence("Sat", $HorDeb[$i], $HorFin[$i], $tab); if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } ?>
+	 	<?php if ( isset($semaine['lundi']['ouverture']) and $semaine['lundi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Mon", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
+		<?php if ( isset($semaine['mardi']['ouverture']) and $semaine['mardi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Tue", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
+		<?php if ( isset($semaine['mercredi']['ouverture']) and $semaine['mercredi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Wed", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
+		<?php if ( isset($semaine['jeudi']['ouverture']) and $semaine['jeudi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Thu", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
+		<?php if ( isset($semaine['vendredi']['ouverture']) and $semaine['vendredi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Fri", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } else { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"></td><?php } ?>
+		<?php if ( isset($semaine['samedi']['ouverture']) and $semaine['samedi']['fermeture'] > $HorDeb[$i] ) { ?><td class="td_semaine_jour" style="background-color: <?php echo $couleur_cellule ?>;"><?php if ( $tab  != '' ) { $aff_chiffre = Absence("Sat", $HorDeb[$i], $HorFin[$i], $tab); } else { $aff_chiffre = '0'; } if($aff_chiffre != '0') { echo $aff_chiffre; } $aff_chiffre = '0'; ?></td><?php } ?>
 	   </tr><?php
 	if($icouleur==='2') { $icouleur = '1'; } else { $icouleur = '2'; }
 	$i = $i +1;
@@ -1587,7 +1600,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."' AND niveau_message_suivi_eleve_cpe='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
-                {
+                { 
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
@@ -1601,7 +1614,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."'  AND niveau_message_suivi_eleve_cpe!='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
-                {
+                { 
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='1') { $couleur='#FFFFFF'; $couleur2='#280FFF'; $drapeau='[information]'; }
 				if( $data_komenti['niveau_message_suivi_eleve_cpe']==='2') { $couleur='#FFF3DF'; $couleur2='#FF782F'; $drapeau='[important]'; }
@@ -1687,7 +1700,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
                 du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
             </div>
       </fieldset>
-    </form>
+    </form>	   
 
 
 </td>
@@ -1704,7 +1717,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = 'baba'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $donnee_base = mysql_fetch_array($execution_komenti))
-                {
+                { 
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
 			$tableau[$i]['date_debut'] = $donnee_base['d_date_absence_eleve'];
@@ -1712,7 +1725,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			$tableau[$i]['heure_debut'] = $donnee_base['d_heure_absence_eleve'];
 			$tableau[$i]['heure_fin'] = $donnee_base['a_heure_absence_eleve'];
 			$i = $i + 1;
-		}
+		} 
 
 		$tab1 = crer_tableau_jaj($tableau);
 		$tab2 = rech_tableau_heurepresent($tab1, '08:00:00', '09:00:00');*/
@@ -1724,7 +1737,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 //$timestamps = timestamps_encode('13/12/2006', '08:00:00');
 //echo $timestamps;
 //echo $timestamps.'<br />';
-//$time = timestamps_decode($timestamps);
+//$time = timestamps_decode($timestamps, 'sql');
 //echo $timestamps.' '.$time['date'].' '.$time['heure'];
 
 //echo etabouvert('27/09/2006', '08:00:00', '09:00:00', '');

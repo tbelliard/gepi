@@ -52,7 +52,14 @@ require_once "../../artichow/LinePlot.class.php";
 //	include("functions.php");
 
 // Variable prédéfinit
-	date_default_timezone_set('Europe/Paris');
+date_default_timezone_set ('Europe/Paris');
+//	date_default_timezone_set('Europe/Paris');
+/*		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}*/
 	$date_act = date('Y-m-d');
 
 // Variable non définit
@@ -104,7 +111,7 @@ $graph = new Graph(388, 200);
    // les absences
    $plot = new LinePlot($values_absences);
    $plot->setColor($rouge);
-   $plot->setYAxis(Plot::LEFT);
+   $plot->setYAxis(PLOT_LEFT); //Plot::LEFT
 	// épaisseur du trait
 	$plot->setThickness(2);
 
@@ -123,9 +130,9 @@ $graph = new Graph(388, 200);
    $plot = new LinePlot($values_retards);
 	$plot->xAxis->setLabelText($x);
    $plot->setColor($bleu);
-   $plot->setYAxis(Plot::RIGHT);
+   $plot->setYAxis(PLOT_RIGHT); //Plot::RIGHT
 	// type de trait
-	$plot->setStyle(Line::DOTTED);
+	$plot->setStyle(LINE_DOTTED); //Line::DOTTED
 		// Change le style de ligne (Line::SOLID, Line::DOTTED ou Line::DASHED).
 
 	// point noir sur le graphique
@@ -176,4 +183,6 @@ $graph = new Graph(388, 200);
    $graph->add($group);
 
 $graph->draw();
+
+$graph->deleteAllCache();
 ?>

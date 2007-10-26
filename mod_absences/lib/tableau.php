@@ -512,7 +512,7 @@ if ($recherche == "afficher")
                                  $ic=1;
                               }
     ?>
-    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, '<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
+    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>
@@ -576,7 +576,7 @@ if ($recherche == "afficher")
                                  $ic=1;
                               }
     ?>
-    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, '<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
+    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?><br /></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['a_date_absence_eleve']); ?></td>
@@ -638,7 +638,7 @@ if ($recherche == "afficher")
                                  $ic=1;
                               }
     ?>
-    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, '<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
+    <tr class="<?php echo $couleur_cellule; ?>" onmouseover="window.status='Voir cette entrée'; show(event, 'd<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;" onmouseout="hide('d<?php echo $data_recherche['id_absence_eleve']; ?>'); return true;">
       <td class="norme_absence"><?php echo "<b>".strtoupper($data_recherche['nom'])."</b><br />".ucfirst($data_recherche['prenom']); ?></td>
       <td class="norme_absence centre"><?php echo date_frc($data_recherche['d_date_absence_eleve']); ?></td>
       <td class="norme_absence centre"><?php echo heure($data_recherche['d_heure_absence_eleve']); ?></td>

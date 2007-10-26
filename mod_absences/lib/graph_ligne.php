@@ -106,6 +106,10 @@ $y = array_values($_SESSION['donnee_e']);
 		$y2 = $y;
 	}
 
+	if ( $echelle_y === 'D' ) {
+		$y2 = $y;
+	}
+
 		// titre de l'axe X
 		if($echelle_x === 'M') { $titre_axe_x = "Mois"; }
 		if($echelle_x === 'J') { $titre_axe_x = "Jour"; }
@@ -116,6 +120,7 @@ $y = array_values($_SESSION['donnee_e']);
 		//titre de l'axe Y
 		if($echelle_y === 'H') { $titre_axe_y = "Total de minute"; }
 		if($echelle_y === 'E') { $titre_axe_y = "Total"; }
+		if($echelle_y === 'D') { $titre_axe_y = "Demi-journée"; }
 
 // donnée de l'axe Y
 //$y = array('60','135','30','60','15','60','135','30','60','15','60','15');

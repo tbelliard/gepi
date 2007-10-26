@@ -28,6 +28,8 @@ include("../lib/functions.php");
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 
+header('Content-Type: application/pdf');
+
 // Global configuration file
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
@@ -107,7 +109,7 @@ $etiquette_agencement = '3';
 	$i = '0';
 	if($classe === 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
 	if($classe != 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE c.id = '".$classe."' AND ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
-
+        
         $execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
         while ( $donne_persone = mysql_fetch_array($execution_persone))
 	 {
@@ -252,7 +254,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 
 
 						if( $cpt_ligne_aff != '1') { $ycote_passe = $ycote_passe + $hauteur_select; }
-
+	
 						$pdf->SetXY($xcote_passe, $ycote_passe);
 						// gestion des encadrements
 						$code_cadre = '0';
@@ -265,13 +267,13 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 						// calcule de la taille du texte des appréciation
 			 			$hauteur_caractere = '11';
 						if($etiquette_type === '5' and $cpt_ligne_aff == '2') { $hauteur_caractere = '6'; }
-
+	
 					 	$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($ligne[$cpt_eleve][$cpt_ligne_aff]);
 					 	$taille_texte = $largeur-2;
 					 	$grandeur_texte='test';
 					 	while($grandeur_texte!='ok') {
-						 if($taille_texte<$val)
+						 if($taille_texte<$val) 
 						  {
 						     $hauteur_caractere = $hauteur_caractere-0.3;
 						     $pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
@@ -292,7 +294,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 				$xcote_passe = $xcote_passe + $largeur + $espacementx;
 
 				// placement de X et Y leur nouveau point
-				$ycote_passe = $ycote_passeh;
+				$ycote_passe = $ycote_passeh; 
 				if($cpt_i_l == $nbl) { $ycote_passe = $ycote_passe + $hauteur + $espacementy; $ycote_passeh = $ycote_passe; $xcote_passe = $xcote; }
 
 				}

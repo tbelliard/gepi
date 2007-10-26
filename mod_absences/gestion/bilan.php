@@ -46,6 +46,13 @@ if (!checkAccess()) {
 die();
 }
 
+header('Content-Type: application/pdf');
+
+// Global configuration file
+// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
+//Le problème peut être résolu en ajoutant la ligne suivante :
+Header('Pragma: public');
+
 // fonction de redimensionnement d'image
 function redimensionne_logo($photo, $L_max, $H_max)
  {
@@ -376,7 +383,7 @@ $pdf->SetY(90);
             $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
             $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
             $pdf->Cell(22, 5, 'Motif', 1, 0, 'C', '');
-            $pdf->Cell(54, 5, 'le motif spécifiée', 1, 1, 'C', '');
+            $pdf->Cell(54, 5, 'le motif spécifié', 1, 1, 'C', '');
 $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 $execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
 while ( $data_1 = mysql_fetch_array($execution_1))
@@ -402,7 +409,7 @@ while ( $data_1 = mysql_fetch_array($execution_1))
             $pdf->Cell(54, 5, '', 0, 1, 'C', '');
             $pdf->Cell(55, 5, 'Les Retards', 0, 1, '', '');
             $pdf->Cell(55, 5, 'Le', 1, 0, '', '');
-            $pdf->Cell(131, 5, 'le motif spécifiée', 1, 1, 'C', '');
+            $pdf->Cell(131, 5, 'le motif spécifié', 1, 1, 'C', '');
 $requete_2 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 $execution_2 = mysql_query($requete_2) or die('Erreur SQL !'.$requete_2.'<br />'.mysql_error());
 while ( $data_2 = mysql_fetch_array($execution_2))
@@ -428,7 +435,7 @@ while ( $data_2 = mysql_fetch_array($execution_2))
             $pdf->Cell(55, 5, 'Les Dispenses', 0, 1, '', '');
             $pdf->Cell(55, 5, 'Du', 1, 0, '', '');
             $pdf->Cell(55, 5, 'Au', 1, 0, '', '');
-            $pdf->Cell(76, 5, 'le motif spécifiée', 1, 1, 'C', '');
+            $pdf->Cell(76, 5, 'le motif spécifié', 1, 1, 'C', '');
 $requete_3 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'D' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
 $execution_3 = mysql_query($requete_3) or die('Erreur SQL !'.$requete_3.'<br />'.mysql_error());
 while ( $data_3 = mysql_fetch_array($execution_3))

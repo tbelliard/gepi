@@ -43,7 +43,7 @@ function present_tel($tel)
 {
 	$compt_nb_chiffre = strlen ($tel);
 	if ( $compt_nb_chiffre > 10 ) { $tel = $tel; }
-	elseif ( $compt_nb_chiffre === 10 ) {
+	elseif ( $compt_nb_chiffre === 10 ) { 
 			//$tel1 = substr($tel, 0, 1);
 			//$tel2 = substr($tel, 2, 3);
 			//$tel3 = substr($tel, 4, 5);
@@ -96,22 +96,15 @@ function dategl($jour, $mois, $annee)
   echo "$date";
   }
 
+// renvoie en format text la lecture de l'heure au format 00h00 ou 00h si les minutes sont égale à 00
 function heure($heure)
   {
   $tab_heure = explode(':', $heure);
-  if ($tab_heure[0]==0)
-  {
-      $heure = "";
-  }
-  elseif ($tab_heure[1]==0)
-  {
-      $heure = ($tab_heure[0]."h");
-  }
-  else
-  {
-      $heure = ($tab_heure[0]."h".$tab_heure[1]."min");
-  }
-  return($heure);
+
+	  if ( $tab_heure[1] === '00' ) { $heure = $tab_heure[0]."h"; }
+	  else { $heure = $tab_heure[0]."h".$tab_heure[1]."min"; }
+
+	  return($heure);
   }
 
 function heure_texte_court($heure)
@@ -464,7 +457,7 @@ function mois_suivant($date_select)
 	$prochain_mois = ''; $mois = '';
 
     $date_select_exp = explode('/', $date_select);
-    $mois = $date_select_exp[1];
+    $mois = $date_select_exp[1]; 
     $annee = $date_select_exp[2];
 
   //Mois
@@ -529,7 +522,7 @@ function tableau_mois($mois_de, $annee_de, $mois_au, $annee_au)
 	  {
 		$mois_suivant = explode('/',mois_suivant('01/'.$mois_passe.'/'.$annee_passe));
 		$mois_passe = $mois_suivant[1];
-		$annee_passe = $mois_suivant[2];
+		$annee_passe = $mois_suivant[2]; 
 	  }
 
 	$i = $i + 1;
@@ -777,7 +770,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 		  echo '<td class="td_calendrier_mois" style="background-color: #F0FFCF;">Mois</td>';
 		  // boucle des jours
 		  while($nb_jour_aff<=$nb_jour) {
-			if($icouleur==='1') { $couleur_cellule='#FAFFEF'; $icouleur='2'; } else { $couleur_cellule='#F0FFCF'; $icouleur='1'; }
+			if($icouleur==='1') { $couleur_cellule='#FAFFEF'; $icouleur='2'; } else { $couleur_cellule='#F0FFCF'; $icouleur='1'; } 
 			echo '<td class="td_calendrier_jour" style="background-color: '.$couleur_cellule.'">'.$nb_jour_aff.'</td>';
 			$nb_jour_aff++;
 		  }
@@ -792,12 +785,12 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 	while($nb_mois_aff<=$nb_mois)
 	{
 		// gestion du numéro du mois
-		if($num_mois==='0')
+		if($num_mois==='0') 
 		{ $num_mois = $mois_debut; } else {
 				if($num_mois!='12') { $num_mois = $num_mois + '1'; } else { $num_mois = '1'; $annee_select++; }
 				}
 		$mois_selectionne = $num_mois;
-		if($icouleur==='1') { $couleur_cellule='#FAFFEF'; } else { $couleur_cellule='#F0FFCF'; }
+		if($icouleur==='1') { $couleur_cellule='#FAFFEF'; } else { $couleur_cellule='#F0FFCF'; } 
 
 		echo '<tr>';
 	 	  echo '<td class="td_calendrier_mois" style="background-color: '.$couleur_cellule.'">'.aff_mois($mois_selectionne).' <span style="font-size : 0.6em;">'.$annee_select.'</span></td>';
@@ -810,7 +803,7 @@ function tableau_annuel($id_eleve, $mois_debut, $nb_mois, $annee_select, $tablea
 			if(checkdate($num_mois, $jour_selectionne, $annee_select)) {
 				if(aff_jour($jour_selectionne, $num_mois, $annee_select)!='Dimanche') { if($icouleur==='1') { $couleur_cellule='#FAFFEF'; } else { $couleur_cellule='#F0FFCF'; } } else { $couleur_cellule='#C3EF59'; }
 			 } else { $couleur_cellule='#5F5F5F'; }
-
+	
 			echo '<td class="td_calendrier_jour" style="background-color: '.$couleur_cellule.'" title="'.date_long_format($jour_selectionne, $num_mois, $annee_select).'">';
 
 			$passage = $jour_selectionne.'/'.$num_mois.'/'.$annee_select;
@@ -858,7 +851,7 @@ function jour_concerne($tableau_selection_eleve, $type)
 		if (!empty($tableau_selection_eleve[0])) {
 	 	$o=0; $prepa_requete = "";
 	        while(!empty($tableau_selection_eleve[$o]))
-		     {
+		     { 
 			if($o == "0") { $prepa_requete = 'eleve_absence_eleve = "'.$tableau_selection_eleve[$o].'"'; }
 			if($o != "0") { $prepa_requete = $prepa_requete.' OR eleve_absence_eleve = "'.$tableau_selection_eleve[$o].'" '; }
 			$o = $o + 1;
@@ -872,13 +865,13 @@ function jour_concerne($tableau_selection_eleve, $type)
 	{
 		// on attribue les variables
 		$login = $donner['eleve_absence_eleve'];
-		$date_debut = date_fr($donner['d_date_absence_eleve']);
+		$date_debut = date_fr($donner['d_date_absence_eleve']); 
 		$date_fin = date_fr($donner['a_date_absence_eleve']);
 		$heure_debut = $donner['d_heure_absence_eleve'];
 		$heure_fin = $donner['a_heure_absence_eleve'];
 	    // on vas faire une boucle tant que l'élève est absent si la date de début et de fin ne sont pas égale
 	      if($date_debut!=$date_fin)
-	      {
+	      {	
  		     $date_debut_tableau = $date_debut;
 		     $passage='oui';
 		     while($passage==='oui') {
@@ -945,14 +938,14 @@ function periode_heure($periode)
 //fonction pour connaitre le jour de la semaine par rapport à une date
 function jour_semaine($date_parametre)
 {
-   //on explose la date en jour mois annee
+   //on explose la date en jour mois annee 
    $date_selection = explode('/', $date_parametre);
 	if(!empty($date_selection[1])) { $jour = $date_selection[0]; $mois = $date_selection[1]; $annee = $date_selection[2]; }
 	else { $date_selection = explode('-', $date_parametre); $jour = $date_selection[2]; $mois = $date_selection[1]; $annee = $date_selection[0]; }
 
-   if(!empty($date_selection[1])) {
+   if(!empty($date_selection[1])) { 
     $tab_jour = array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi");
-	//0=Dimanche, 1=Lundi ...
+	//0=Dimanche, 1=Lundi ... 
     $num_jour_semaine = date("w", mktime(0, 0, 0, $mois, $jour, $annee));
     $jour_semaine = $tab_jour[$num_jour_semaine];
     return array('text'=>$jour_semaine, 'chiffre'=>$num_jour_semaine);
@@ -963,7 +956,7 @@ function jour_semaine($date_parametre)
 // ex: date_explose(date)
 function date_explose($date_parametre)
 {
-   //on explose la date en jour mois annee
+   //on explose la date en jour mois annee 
    $date_selection = explode('/', $date_parametre);
 	if(!empty($date_selection[1])) { $jour = $date_selection[0]; $mois = $date_selection[1]; $annee = $date_selection[2]; }
 	else { $date_selection = explode('-', $date_parametre); $jour = $date_selection[2]; $mois = $date_selection[1]; $annee = $date_selection[0]; }
@@ -1032,7 +1025,7 @@ function crer_tableau_jaj($tableau)
 	$tableau_de_donnees = '';
 	$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
 	while(!empty($tableau[$i]['login']))
-	 {
+	 { 
 		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
 		if($tableau[$i]['date_debut'] === $tableau[$i]['date_fin'])
 		 {
@@ -1047,7 +1040,7 @@ function crer_tableau_jaj($tableau)
 		 }
 		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
 		if($tableau[$i]['date_debut'] != $tableau[$i]['date_fin'])
-		 {
+		 { 
 			$jour_select = $tableau[$i]['date_debut'];
 			// calcule le nombre de jour entre deux date
 			$date1 = str_replace("-", "", $tableau[$i]['date_debut']);
@@ -1176,7 +1169,7 @@ function convert_heures_minutes($heures)
 	if ( isset($tab_heure[1]) ) {
 		$total_minute = $total_minute + $tab_heure[1];
 	} else { $total_minute = $total_minute; }
-
+       
   return($total_minute);
 }
 
@@ -1235,7 +1228,7 @@ function repartire($login, $type, $du, $au)
 				  ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
               $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
               while ( $donnee = mysql_fetch_array($execution))
-                {
+                { 
 		$i = '0'; $i2 = '0'; $heure_de_debut = '07:00:00'; $heure_de_fin = '19:00:00';
 		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
 		if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
@@ -1250,7 +1243,7 @@ function repartire($login, $type, $du, $au)
 		 }
 		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
 		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
-		 {
+		 { 
 			$jour_select = $donnee['d_date_absence_eleve'];
 			// calcule le nombre de jour entre deux date
 			$date1 = str_replace("-", "", $donnee['d_date_absence_eleve']);
@@ -1279,7 +1272,7 @@ function repartire($login, $type, $du, $au)
 		 }
 		$i = $i + 1;
 
-		}
+		} 
 return $tableau_de_donnees;
 }
 
@@ -1302,7 +1295,7 @@ function repartire_jour($login, $type, $du, $au)
              $requete = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$login."'  AND type_absence_eleve = '".$type."' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
              $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
               while ( $donnee = mysql_fetch_array($execution))
-                {
+                { 
 		$i = '0'; $i2 = '0';
 		$horraire = ouverture();
 		// si la date de debut et de fin son identique on peut saisir les donnes tout de suite
@@ -1383,13 +1376,13 @@ $date_tt = $date_select.'-'.$nb_passage_horraire;
 				{
 					$tableau_de_donnees['global']['nb'] = 1;
 	 				      if ( $donnee['type_absence_eleve'] === 'A' ) {
-						// en heure
+						// en heure				
 						$tableau_de_donnees['global']['nb_min'] = $temp_total_min;
 					      }
-				} else {
+				} else { 
 						$tableau_de_donnees['global']['nb'] = $tableau_de_donnees['global']['nb'] + 1;
 	 				      if ( $donnee['type_absence_eleve'] === 'A' ) {
-						// en heure
+						// en heure				
 						$tableau_de_donnees['global']['nb_min'] = $tableau_de_donnees['global']['nb_min'] + $temp_total_min;
 					      }
 					}
@@ -1398,7 +1391,7 @@ $date_tt = $date_select.'-'.$nb_passage_horraire;
 		 }
 		// si la date de debut et de fin ne son pas identique alors on doit faire jour par jour pour la saisi des données
 		if($donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'])
-		 {
+		 { 
 			$jour_select = $donnee['d_date_absence_eleve'];
 
 			// calcule le nombre de jour entre deux date
@@ -1476,13 +1469,13 @@ $jour_passe_tt = $jour_passe.'-'.$nb_passage_horraire;
 					{
 						$tableau_de_donnees['global']['nb'] = 1;
  						      if ( $donnee['type_absence_eleve'] === 'A' ) {
-							// en heure
+							// en heure				
 							$tableau_de_donnees['global']['nb_min'] = $temp_total_min;
 						      }
-					} else {
+					} else { 
 						$tableau_de_donnees['global']['nb'] = $tableau_de_donnees['global']['nb'] + 1;
 		  				      if ( $donnee['type_absence_eleve'] === 'A' ) {
-							// en heure
+							// en heure				
 							$tableau_de_donnees['global']['nb_min'] = $tableau_de_donnees['global']['nb_min'] + $temp_total_min;
 						      }
 						}
@@ -1494,7 +1487,7 @@ $jour_passe_tt = $jour_passe.'-'.$nb_passage_horraire;
 		 }
 		$i = $i + 1;
 
-		}
+		} 
 return $tableau_de_donnees;
 }
 
@@ -1577,7 +1570,7 @@ function tel_responsable($ele_id)
 			{
 				$tel_responsable[$cpt_parents]['civilite'] = $donner_parents['civilite']; // nom du responsable suite
 				$tel_responsable[$cpt_parents]['nom'] = $donner_parents['nom']; // nom du responsable suite
-				$tel_responsable[$cpt_parents]['prenom'] = $donner_parents['prenom']; // prénom du responsable suite
+				$tel_responsable[$cpt_parents]['prenom'] = $donner_parents['prenom']; // prénom du responsable suite				
 				$tel_responsable[$cpt_parents]['tel_pers'] = $donner_parents['tel_pers']; // adresse du responsable suite
 				$tel_responsable[$cpt_parents]['tel_port'] = $donner_parents['tel_port']; // ville du responsable
 				$tel_responsable[$cpt_parents]['tel_prof'] = $donner_parents['tel_prof']; // code postal du responsable
@@ -1600,7 +1593,7 @@ function get_id($champ, $table)
         if($i != $id) { return $i; }
     }
     return count($ids) + 1;
-}
+} 
 
 // fonction permettant de connaitre les initiales des 4 environement Absence, Infirmerie, Dispense, Retard
 // ex: initial_mode('absence') > A5
@@ -1618,5 +1611,417 @@ function initial_mode($initial_choix)
     return($initial_donnee);
 
   }
+
+
+// fonction pour vérifier l'existance d'une table
+function mysql_table_exists($table , $db) {
+
+	$requete = 'SHOW TABLES FROM '.$db.' LIKE \''.$table.'\'';
+	$exec = mysql_query($requete);
+	return mysql_num_rows($exec);
+}
+
+// fonction qui transforme un date et une heure en timestamps
+function timestamps_encode($date_select, $heure_select)
+{
+
+	$jour = ''; $mois = ''; $annee = ''; $heure = ''; $minute = ''; $seconde = '';
+
+	// décortication de la date au format SQL ou FR
+	$date_decompose = explode('/',$date_select);
+		if ( isset($date_decompose['0']) ) { $jour = $date_decompose['0']; }
+		if ( isset($date_decompose['1']) ) { $mois = $date_decompose['1']; }
+		if ( isset($date_decompose['2']) ) { $annee = $date_decompose['2']; }
+	if ( empty($mois) or $mois === '' ) {
+		$date_decompose = explode('-',$date_select);
+		if ( isset($date_decompose['0']) ) { $annee = $date_decompose['0']; }
+		if ( isset($date_decompose['1']) ) { $mois = $date_decompose['1']; }
+		if ( isset($date_decompose['2']) ) { $jour = $date_decompose['2']; }
+	}
+
+	// décortication des heure, minute, seconde
+	$heure_decompose = explode(':',$heure_select);
+		if ( isset($date_decompose['0']) ) { $heure = $heure_decompose['0']; } else { $heure = '00'; }
+		if ( isset($date_decompose['1']) ) { $minute = $heure_decompose['1']; } else { $minute = '00'; }
+		if ( isset($date_decompose['2']) ) { $seconde = $heure_decompose['2']; } else { $seconde = '00'; }
+
+	if ( $heure != '' and $minute != '' and $seconde != '' and $annee != '' and $mois != '' and $jour != '' )
+	{
+		// int  gmmktime ( int   hour  , int   minute  , int   second  , int   month  , int   day  , int   year  , int   is_dst  )
+		$timestamps = gmmktime($heure, $minute, $seconde, $mois, $jour, $annee);
+	} else { $timestamps = ''; }
+	return ($timestamps);
+}
+
+// fonction qui décode un timestamps en date et heure
+// retourne $donnee['date'] = 12/12/2006 $donnee['heure'] = 15:10:00
+function timestamps_decode($timestamps, $type)
+{
+
+	if ( $timestamps != '' )
+	{
+		// string  gmdate ( string   format  , int   timestamp  )
+		$donnees = gmdate("m d Y H:i:s", $timestamps);
+
+	// décortication de la date au format SQL ou FR
+		$donnees_decompose = explode(' ',$donnees);
+		if ( isset($donnees_decompose['0']) ) { $jour = $donnees_decompose['1']; }
+		if ( isset($donnees_decompose['1']) ) { $mois = $donnees_decompose['0']; }
+		if ( isset($donnees_decompose['2']) ) { $annee = $donnees_decompose['2']; }
+		if ( isset($donnees_decompose['3']) ) { $heure = $donnees_decompose['3']; }
+
+		if ( $type === '' or $type === 'fr' ) { $date = $jour.'/'.$mois.'/'.$annee; }
+		if ( $type === 'sql' ) { $date = $annee.'-'.$mois.'-'.$jour; }
+
+	} else { $donnee['date'] = ''; $donnee['heure'] = '';}
+	return array('date'=>$date, 'heure'=>$heure);
+}
+
+//une fonction qui vérifie que l'établissement était ouvert
+function etabouvert($date_a_verifier, $de_heure, $a_heure, $classe_select)
+{
+
+    global $prefix_base;
+    global $dbDb;
+
+	// a l'état initial l'établissement est considérer comme fermer
+	$ouvert = 'non';
+
+	// on explose la date soit sql soit fr
+	$date_selection = explode('/', $date_a_verifier);
+	if(!empty($date_selection[1])) { $jour = $date_selection[0]; $mois = $date_selection[1]; $annee = $date_selection[2]; }
+	else { $date_selection = explode('-', $date_a_verifier); $jour = $date_selection[2]; $mois = $date_selection[1]; $annee = $date_selection[0]; }
+
+	// date au format SQL
+	$date_sql = $annee.'-'.$mois.'-'.$jour;
+
+	// pour connaitre le jour lundi, mardi, ...
+	$joursem =  aff_jour($jour, $mois, $annee);
+
+	// on compte le nombre de jour trouvé qui soit ouvert
+		$requete_nb = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+							WHERE jour_horaire_etablissement = '".$joursem."'
+							AND ouvert_horaire_etablissement = '1'
+							AND
+							( '".$de_heure."' BETWEEN ouverture_horaire_etablissement AND fermeture_horaire_etablissement
+						          OR '".$a_heure."' BETWEEN ouverture_horaire_etablissement AND fermeture_horaire_etablissement
+						          OR ouverture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
+						          OR fermeture_horaire_etablissement BETWEEN '".$de_heure."' AND '".$a_heure."'
+					      		)"),0);
+
+	// ensuit on vérifie qu'une table edt_calendrier existe
+	$table_edt_calendrier = 'non';
+	$table= '';
+	$table = $prefix_base.'edt_calendrier';
+	$exist_table = mysql_table_exists($table, $dbDb);
+	if ( $exist_table === 1 ) { $table_edt_calendrier = 'oui'; }
+
+	// si la table existe est qu'elle n'est pas vide alors on vérifie que le jour ne soit pas férier ou dans une période de vacances
+	$requete_nb_calendrier_1 = '0';
+	$requete_nb_calendrier_2 = '0';
+
+		// définition des dates en timestamps
+		$debut_calendrier_ts_gmt = timestamps_encode($date_sql, $de_heure);
+		$fin_calendrier_ts_gmt = timestamps_encode($date_sql, $a_heure);
+
+	if ( $table_edt_calendrier === 'oui' )
+	{
+		$requete_nb_calendrier_1 = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier
+							WHERE etabferme_calendrier = '0'
+							AND classe_concerne_calendrier = ''
+							AND
+							( '".$debut_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
+							  OR '".$fin_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
+						       	  OR debut_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$debut_calendrier_ts_gmt."'
+						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
+							)"),0);
+	}
+	// on fait de même si c'est pour une classe est précisé
+	if ( $table_edt_calendrier === 'oui' and $classe_select != '' )
+	{
+		$requete_nb_calendrier_2 = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier
+							WHERE etabferme_calendrier = '0'
+							AND
+							( classe_concerne_calendrier LIKE '".$classe_select.";%;'
+							  OR classe_concerne_calendrier LIKE '%;".$classe_select.";%'
+							  OR classe_concerne_calendrier LIKE '%;".$classe_select."'
+							  OR classe_concerne_calendrier = '".$classe_select."'
+							)
+							AND
+							( '".$debut_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
+							  OR '".$fin_calendrier_ts_gmt."' BETWEEN debut_calendrier_ts AND fin_calendrier_ts
+						       	  OR debut_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
+						       	  OR fin_calendrier_ts BETWEEN '".$debut_calendrier_ts_gmt."' AND '".$fin_calendrier_ts_gmt."'
+							)"),0);
+	}
+
+	if ( $requete_nb != '0' and $requete_nb_calendrier_1 === '0' and $requete_nb_calendrier_2 === '0' ) { $ouvert = 'oui'; } else { $ouvert = 'non'; }
+	return($ouvert);
+}
+
+//Nb. absences non justifiées
+function nb_absences_nj($identifiant, $du_date, $au_date, $classe_select)
+{
+
+    global $prefix_base;
+
+	$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+			     WHERE eleve_absence_eleve = '".$identifiant."'
+			       AND type_absence_eleve = 'A'
+			       AND justify_absence_eleve != 'O'
+			       AND
+				( '".date_sql($du_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+		       		OR '".date_sql($au_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+			       	OR d_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+			       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+				)";
+
+	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
+        $execution =mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$nb = '0';
+        while ( $donnee = mysql_fetch_array($execution))
+	{
+			// la date du et au sont identique
+			if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
+		 	{
+				$date_selection = $donnee['d_date_absence_eleve'];
+
+				$heure_de_select = $donnee['d_heure_absence_eleve'];
+				$heure_a_select = $donnee['a_heure_absence_eleve'];
+
+				if ( etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb = $nb + 1; }
+			}
+
+			// la date du et au ne sont pas identique
+			$date_selection = ''; $date_suivante = ''; 
+			if ( $donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'] )
+		 	{
+
+				$date_de_debut = $donnee['d_date_absence_eleve'];
+				if ( $donnee['a_date_absence_eleve'] > $au_date ) { $date_de_fin = date_sql($au_date); }
+				else { $date_de_fin = $donnee['a_date_absence_eleve']; }
+
+				$date_de_fin_de_base = $donnee['a_date_absence_eleve'];
+
+				// calcule du nombre de jour entre la date de début et celle de fin
+				$date1 = str_replace("-", "", $date_de_debut);
+				$date2 = str_replace("-", "", $date_de_fin);
+				// $nbjours = le nombre de jour entre les deux dates
+				$nbjours = floor((strtotime($date2) - strtotime($date1))/(60*60*24));
+
+				// boucle des jours
+				$nb_jour_passe = '0'; $jour_passe = $date_de_debut;
+				$boucle = 'oui';
+				while ( $boucle === 'oui' )
+			 	{
+					$date_selection = $jour_passe;
+
+					// connaitre à l'avance la date suivant
+					$tab_date = explode('-', $jour_passe);
+					// ensuite on incrémente de 1 la date actif
+					$jour_qui_suivera = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+	
+					// si le jour qui suit n'est pas = au jour de fin alors toutjournee = 1
+					if ( $date_selection != $date_de_fin_de_base ) { $toutjournee = 'oui'; }
+					// si le jour qui suit est = au jour de fin alors toutjournee = 2
+					if ( $date_selection === $date_de_fin_de_base ) { $toutjournee = 'non'; }
+
+					// si le jour suivant et plus grand que la date de fin de la sélection alors on n'arret la boucle
+					if ( $jour_qui_suivera > date_sql($au_date) ) { $boucle = 'fin'; }
+					// si le jour suivant et plus grand que la date de fin de la base alors on n'arret la boucle
+					if ( $jour_qui_suivera > $date_de_fin_de_base ) { $boucle = 'fin'; }
+
+					/* définition des horaires */
+
+					// si la date de selection est égale à la date de début de la base alors on prend l'heure de début saisi
+					if ( $date_selection === $date_de_debut ) { 
+						$heure_de_select = $donnee['d_heure_absence_eleve'];
+						$heure_a_select = '23:59:59';
+					}
+					// si la date de selection est égale à la date de fin de la base et que la journée n'est pas la journée complète alors on prend l'heure de fin saisi
+					if ( $date_selection === $date_de_fin and $toutjournee === 'non' ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = $donnee['a_heure_absence_eleve'];
+					}
+					// si la date de selection est égale à la date de fin de la base et que la journée est complète alors on prend l'heure de fin 23:59:59
+					if ( $date_selection === $date_de_fin and $toutjournee === 'oui' ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = '23:59:59';
+					}
+					// si la date de selection ne correspond ni à la date de début ni à la date fin alors on initialise au début journée et fin journée
+					if ( $date_selection != $date_de_debut and $date_selection != $date_de_fin ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = '23:59:59';
+					}
+
+					if ( etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb = $nb + 1; }
+
+					// on incrémente de 1 la date actif
+					$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+					// on compte + 1 pour le nombre de jour passe
+					$nb_jour_passe = $nb_jour_passe + 1;
+				}				
+
+				// on met nb = 1 si une ou plusieurs absence corresponde
+				if ( $nb != '' or $nb != '0' ) { $nb = '1'; }
+			}
+		
+	}
+
+	return($nb);
+}
+
+//Nb. de retard
+function nb_retard($identifiant, $du_date, $au_date, $classe_select)
+{
+
+    global $prefix_base;
+
+	$nb = '0';
+	$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+				    WHERE eleve_absence_eleve = '".$identifiant."'
+				      AND type_absence_eleve = 'R'
+				      AND
+					( '".date_sql($du_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+			       		OR '".date_sql($au_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+				       	OR d_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+				       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+					)";
+	// on fait une boucle pour savoir si cela tombe pendant que l'établissement est ouvert
+        $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$nb = '0';
+        while ( $donnee = mysql_fetch_array($execution))
+	{
+		if ( etabouvert($donnee['d_date_absence_eleve'], $donnee['d_heure_absence_eleve'], $donnee['d_heure_absence_eleve'], $classe_select) === 'oui' ) { $nb = $nb + 1; }
+	}
+
+	return($nb);
+}
+
+// Nb. total de 1/2 journées d'absence
+function nb_total_demijournee_absence($identifiant, $du_date, $au_date, $classe_select)
+{
+
+    global $prefix_base;
+
+	$tableau_base = '';
+	$heure_de_coupure = '13:00:00'; // heure de milieu de journée - CAS N°1
+	$nb_heure_demi_journee = '04:00:00'; // nombre d'heure que fait une demi-jounrée - CAS N°2
+	$type = 'A'; // type absences
+	$nb_demi_journee = '0';
+
+
+		$requete = "SELECT * FROM ".$prefix_base."absences_eleves
+			    WHERE eleve_absence_eleve = '".$identifiant."'
+			      AND type_absence_eleve = '".$type."'
+			       AND
+				( '".date_sql($du_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+			       	OR '".date_sql($au_date)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+			       	OR d_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+			       	OR a_date_absence_eleve BETWEEN '".date_sql($du_date)."' AND '".date_sql($au_date)."'
+				)
+			    ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve ASC";
+                $execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+                while ( $donnee = mysql_fetch_array($execution))
+		{
+
+			// la date du et au sont identique
+			if($donnee['d_date_absence_eleve'] === $donnee['a_date_absence_eleve'])
+		 	{
+				$date_selection = $donnee['d_date_absence_eleve'];
+
+				$heure_de_select = $donnee['d_heure_absence_eleve'];
+				$heure_a_select = $donnee['a_heure_absence_eleve'];
+
+				if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
+				if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+
+				if ( $heure_de_select < $heure_de_coupure and $heure_a_select <= $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['matin'] = 'oui'; }
+				elseif ( $heure_de_select < $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 2; $tableau_base[$date_selection]['matin'] = 'oui'; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
+				elseif ( $heure_de_select >= $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
+			}
+
+			// la date du et au ne sont pas identique
+			$date_selection = ''; $date_suivante = ''; 
+			if ( $donnee['d_date_absence_eleve'] != $donnee['a_date_absence_eleve'] )
+		 	{
+
+				$date_de_debut = $donnee['d_date_absence_eleve'];
+				if ( $donnee['a_date_absence_eleve'] > $au_date ) { $date_de_fin = date_sql($au_date); }
+				else { $date_de_fin = $donnee['a_date_absence_eleve']; }
+
+				$date_de_fin_de_base = $donnee['a_date_absence_eleve'];
+
+				// calcule du nombre de jour entre la date de début et celle de fin
+				$date1 = str_replace("-", "", $date_de_debut);
+				$date2 = str_replace("-", "", $date_de_fin);
+				// $nbjours = le nombre de jour entre les deux dates
+				$nbjours = floor((strtotime($date2) - strtotime($date1))/(60*60*24));
+
+				// boucle des jours
+				$nb_jour_passe = '0'; $jour_passe = $date_de_debut;
+				$boucle = 'oui';
+				while ( $boucle === 'oui' )
+			 	{
+					$date_selection = $jour_passe;
+
+					if ( !isset($tableau_base[$date_selection]['matin']) ) { $tableau_base[$date_selection]['matin'] = 'non'; }
+					if ( !isset($tableau_base[$date_selection]['apresmidi']) ) { $tableau_base[$date_selection]['apresmidi'] = 'non'; }
+
+					// connaitre à l'avance la date suivant
+					$tab_date = explode('-', $jour_passe);
+					// ensuite on incrémente de 1 la date actif
+					$jour_qui_suivera = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+	
+					// si le jour qui suit n'est pas = au jour de fin alors toutjournee = 1
+					if ( $date_selection != $date_de_fin_de_base ) { $toutjournee = 'oui'; }
+					// si le jour qui suit est = au jour de fin alors toutjournee = 2
+					if ( $date_selection === $date_de_fin_de_base ) { $toutjournee = 'non'; }
+
+					// si le jour suivant et plus grand que la date de fin de la sélection alors on n'arret la boucle
+					if ( $jour_qui_suivera > date_sql($au_date) ) { $boucle = 'fin'; }
+					// si le jour suivant et plus grand que la date de fin de la base alors on n'arret la boucle
+					if ( $jour_qui_suivera > $date_de_fin_de_base ) { $boucle = 'fin'; }
+
+					/* définition des horaires */
+
+					// si la date de selection est égale à la date de début de la base alors on prend l'heure de début saisi
+					if ( $date_selection === $date_de_debut ) { 
+						$heure_de_select = $donnee['d_heure_absence_eleve'];
+						$heure_a_select = '23:59:59';
+					}
+					// si la date de selection est égale à la date de fin de la base et que la journée n'est pas la journée complète alors on prend l'heure de fin saisi
+					if ( $date_selection === $date_de_fin and $toutjournee === 'non' ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = $donnee['a_heure_absence_eleve'];
+					}
+					// si la date de selection est égale à la date de fin de la base et que la journée est complète alors on prend l'heure de fin 23:59:59
+					if ( $date_selection === $date_de_fin and $toutjournee === 'oui' ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = '23:59:59';
+					}
+					// si la date de selection ne correspond ni à la date de début ni à la date fin alors on initialise au début journée et fin journée
+					if ( $date_selection != $date_de_debut and $date_selection != $date_de_fin ) { 
+						$heure_de_select = '00:00:00';
+						$heure_a_select = '23:59:59';
+					}
+
+					if ( $heure_de_select < $heure_de_coupure and $heure_a_select <= $heure_de_coupure and $tableau_base[$date_selection]['matin'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['matin'] = 'oui'; }
+					elseif ( $heure_de_select < $heure_de_coupure and $heure_a_select > $heure_de_coupure  and $tableau_base[$date_selection]['matin'] != 'oui' and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 2; $tableau_base[$date_selection]['matin'] = 'oui'; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
+					elseif ( $heure_de_select >= $heure_de_coupure and $heure_a_select > $heure_de_coupure and $tableau_base[$date_selection]['apresmidi'] != 'oui' and etabouvert($date_selection, $heure_de_select, $heure_a_select, $classe_select) === 'oui' ) { $nb_demi_journee = $nb_demi_journee + 1; $tableau_base[$date_selection]['apresmidi'] = 'oui'; }
+
+					// on incrémente de 1 la date actif
+					$jour_passe = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2]+1,  $tab_date[0]));
+					// on compte + 1 pour le nombre de jour passe
+					$nb_jour_passe = $nb_jour_passe + 1;
+				}				
+			}
+
+		}
+
+	return($nb_demi_journee);
+
+}
+
 
 ?>

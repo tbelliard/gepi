@@ -146,6 +146,11 @@ $cal_6 = new Calendrier("form5", "au");
    if (empty($_GET['action_lettre']) and empty($_POST['action_lettre'])) { $action_lettre = ''; }
     else { if (isset($_GET['action_lettre'])) { $action_lettre = $_GET['action_lettre']; } if (isset($_POST['action_lettre'])) { $action_lettre = $_POST['action_lettre']; } }
 
+	if (empty($_GET['absencenj']) and empty($_POST['absencenj'])) { $absencenj = ''; }
+	   else { if (isset($_GET['absencenj'])) { $absencenj = $_GET['absencenj']; } if (isset($_POST['absencenj'])) { $absencenj = $_POST['absencenj']; } }
+	if (empty($_GET['retardnj']) and empty($_POST['retardnj'])) { $retardnj = ''; }
+	   else { if (isset($_GET['retardnj'])) { $retardnj = $_GET['retardnj']; } if (isset($_POST['retardnj'])) { $retardnj = $_POST['retardnj']; } }
+
 //lettre
    if (empty($_GET['lettre_type']) and empty($_POST['lettre_type'])) {$lettre_type="";}
     else { if (isset($_GET['lettre_type'])) {$lettre_type=$_GET['lettre_type'];} if (isset($_POST['lettre_type'])) {$lettre_type=$_POST['lettre_type'];} }
@@ -505,6 +510,47 @@ function DecocheCheckbox() {
     }
 }
 
+function affichercacher(a) {
+
+   c = a.substr(4);
+   var b = document.getElementById(a);
+
+	var f = "img_"+c+"";
+
+       if (b.style.display == "none" || b.style.display == "") {
+         b.style.display = "block";
+	 document.images[f].src="../../images/fleche_a.gif";	
+       }
+       else
+       {
+         b.style.display = "none";
+	 document.images[f].src="../../images/fleche_na.gif";
+       }
+ }
+
+function activedesactive(mavar,devar)
+{
+
+mavar = mavar.split('-');
+
+	for (var i in mavar)
+	{
+		if (document.getElementById(devar).checked == false)
+		{ 
+			//document.getElementById(mavar[i]).disabled=false;
+			if (document.getElementById(mavar[i]).checked) { document.getElementById(mavar[i]).checked=false; }
+		} else {
+			  //document.getElementById(mavar[i]).disabled=true;
+			  if (document.getElementById(mavar[i]).checked) { document.getElementById(mavar[i]).checked=false; }
+		       }
+	}
+}
+
+
+affichercacher('div_1');
+// si JavaScript est disponible, cache le contenu dès le
+// chargement de la page. Sans JavaScript, le contenu sera
+// affiché.
 </script>
 
 <p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
@@ -730,7 +776,15 @@ function DecocheCheckbox() {
                     ?>
                 </select>
                 <br />
-                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form3')" /><a href="#calend" onClick="<?php  echo $cal_4->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>&nbsp;<input type="submit" name="Submit2" value="&gt;&gt;" />
+                du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a> au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form3')" /><a href="#calend" onClick="<?php  echo $cal_4->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+		<br /><a href="#ao" onclick="affichercacher('div_1')" style="cursor: pointer;"><img style="border: 0px solid ; width: 13px; height: 13px; border: none; padding:2px; margin:2px; float: left;" name="img_1" alt="" title="Information" src="../../images/fleche_na.gif" align="middle" />Autres options</a>
+		<div id="div_1" style="display: <?php if( $absencenj != '' or $retardnj != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><a name="ao"></a>
+		  <span style="font-family: Arial;">
+			<input name="absencenj" id="absencenj" value="1" type="checkbox" onclick="activedesactive('retardnj','absencenj');" <?php if ( $absencenj === '1' ) { ?>checked="checked"<?php } ?> /><label for="absencenj" style="cursor: pointer;">Lister seulement les absences non justifi&eacute;es</label>
+		  	<br /><input name="retardnj" id="retardnj" value="1" type="checkbox" onclick="activedesactive('absencenj','retardnj');" <?php if ( $retardnj === '1' ) { ?>checked="checked"<?php } ?> /><label for="retardnj" style="cursor: pointer;">Lister seulement les retards non justifi&eacute;s</label>
+		  </span>
+		</div>
+		<br /><div style="text-align: right;"><input type="submit" name="Submit2" value="Valider la sélection" /></div>
             </div>
       </fieldset>
     </form>
@@ -742,6 +796,8 @@ function DecocheCheckbox() {
                 <input type="hidden" name="eleve" value="<?php echo $eleve; ?>" />
                 <input type="hidden" name="du" value="<?php echo $du; ?>" />
                 <input type="hidden" name="au" value="<?php echo $au; ?>" />
+                <input type="hidden" name="absencenj" value="<?php echo $absencenj; ?>" />
+                <input type="hidden" name="retardnj" value="<?php echo $retardnj; ?>" />
                 <input type="submit" name="Submit32" value="Composer" />
         </fieldset>
      </form>

@@ -31,6 +31,8 @@ include("../lib/functions.php");
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 
+header('Content-Type: application/pdf');
+
 // Global configuration file
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
@@ -98,6 +100,8 @@ function redimensionne_logo($photo, $L_max, $H_max)
     else { if (isset($_GET['du'])) {$du=$_GET['du'];} if (isset($_POST['du'])) {$du=$_POST['du'];} }
     if (empty($_GET['au']) and empty($_POST['au'])) {$au="$du";}
     else { if (isset($_GET['au'])) {$au=$_GET['au'];} if (isset($_POST['au'])) {$au=$_POST['au'];} }
+	if (empty($_GET['absencenj']) and empty($_POST['absencenj'])) { $absencenj = ''; }
+	   else { if (isset($_GET['absencenj'])) { $absencenj = $_GET['absencenj']; } if (isset($_POST['absencenj'])) { $absencenj = $_POST['absencenj']; } }
 
     if ($au == "" or $au == "JJ/MM/AAAA") { $au = $du; }
 
@@ -225,18 +229,21 @@ class bilan_PDF extends FPDF
   //contage des pages
       if ($classe != "tous" and $eleve == "tous")
         {
-//          $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+		if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+		if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+		if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
         }
       if ($classe == "tous" and $eleve == "tous")
         {
-//          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
-            $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+            if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+            if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+            if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
         }
       if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
         {
-//          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
-          $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0);
+          if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+          if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
+          if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
         }
 
         //je compte le nombre de page
@@ -268,6 +275,9 @@ $pdf->SetY(20);
 $pdf->SetX(65);
 $pdf->SetFont('Arial','B',18);
 $pdf->Cell(0, 6, 'RELEVE DES ABSENCES', 0, 1, 'C', '');
+$pdf->SetFont('Arial','',10);
+if ( $absencenj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option absence sans justification', 0, 1, 'C', ''); }
+if ( $retardnj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option retard sans justification', 0, 1, 'C', ''); }
 $pdf->SetFont('Arial','',14);
 $duu = "du ".date_frl(date_sql($du));
 $auu = "au ".date_frl(date_sql($au));
@@ -290,18 +300,21 @@ $pdf->SetY(52);
 
 if ($classe != "tous" and $eleve == "tous")
     {
-//      $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
-	$requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+	if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
+	if ( $absencenj === '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
+	if ( $retardnj === '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve = 'N' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
     }
 if ($classe == "tous" and $eleve == "tous")
     {
-//      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
-        $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page";
+        if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
+        if ( $absencenj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
+        if ( $retardnj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
     }
 if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
     {
-//      $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
-        $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC";
+        if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
+        if ( $absencenj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
+        if ( $retardnj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
     }
 
 $execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
