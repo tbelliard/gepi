@@ -1007,6 +1007,7 @@ if(isset($definir_etab)){
 
 //echo "\$eleve_login=$eleve_login<br />";
 
+//echo "<table border='1'>\n";
 echo "<table>\n";
 echo "<tr>\n";
 echo "<td>\n";
@@ -1093,22 +1094,27 @@ if(isset($reg_no_gep)){
 		//echo "<td>\n";
 		echo "<div align='center'>\n";
 		$dimphoto=redimensionne_image($photo);
-		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+		//echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border: 3px solid #FFFFFF;" alt="" />';
 		//echo "</td>\n";
 		//echo "<br />\n";
 		echo "</div>\n";
 		echo "<div style='clear:both;'></div>\n";
 	}
 	echo "<div align='center'>\n";
-	echo "<span style='font-size:xx-small;'>";
-	echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+	//echo "<span id='lien_photo' style='font-size:xx-small;'>";
+	echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
+	echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';document.getElementById('lien_photo').style.display='none';return false;\">";
 	if($temoin_photo=="oui"){
+		//echo "Modifier le fichier photo</a>\n";
 		echo "Modifier le fichier photo</a>\n";
 	}
 	else{
-		echo "Envoyer un fichier photo</a>\n";
+		//echo "Envoyer un fichier photo</a>\n";
+		echo "Envoyer<br />un fichier<br />photo</a>\n";
 	}
-	echo "</span>\n";
+	//echo "</span>\n";
+	echo "</div>\n";
 	echo "<div id='div_upload_photo' style='display:none;'>";
 	echo "<input type='file' name='filephoto' />\n";
 	if(file_exists($photo)){
@@ -1131,7 +1137,7 @@ if(isset($eleve_login)){
 	}
 	else{
 		while($lig_classe=mysql_fetch_object($res_grp1)){
-			echo "Elève de <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe'>$lig_classe->classe</a><br />\n";
+			echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
 		}
 	}
 	echo "</td>\n";
