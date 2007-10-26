@@ -800,13 +800,13 @@ $titre_page = "Gestion des ÈlËves | Ajouter/Modifier une fiche ÈlËve";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-
+/*
 if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 } else {
     echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
-
+*/
 
 /*
 // DÈsactivÈ pour permettre de renseigner un ELENOET manquant pour une conversion avec sconet
@@ -852,22 +852,29 @@ if(!getSettingValue('conv_new_resp_table')){
 if(isset($definir_resp)){
 	if(!isset($valider_choix_resp)){
 
+		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
 		echo "<p>Choix du responsable lÈgal <b>$definir_resp</b> pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
 		$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+		$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 		$critere_recherche=ereg_replace("[^a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ -]", "", $critere_recherche);
 
 		if($critere_recherche==""){
 			$critere_recherche=substr($eleve_nom,0,3);
 		}
 
-		echo "<form enctype='multipart/form-data' action='modify_eleve.php' method='post'>\n";
+		echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 
 		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 		echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
 		echo "<p align='center'><input type='submit' name='filtrage' value='Afficher' /> les responsables dont le <b>nom</b> contient: ";
 		echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 		echo "</p>\n";
+
+
+		echo "<input type='hidden' name='afficher_tous_les_resp' id='afficher_tous_les_resp' value='n' />\n";
+		echo "<p align='center'><input type='button' name='afficher_tous' value='Afficher tous les responsables' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" /></p>\n";
 		echo "</form>\n";
 
 
@@ -886,11 +893,15 @@ if(isset($definir_resp)){
 		//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,ra.* FROM responsables2 r, resp_adr ra, resp_pers rp WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id ORDER BY rp.nom, rp.prenom";
 		//$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp ORDER BY rp.nom, rp.prenom";
 		$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp";
-		if($critere_recherche!=""){
-			$sql.=" WHERE rp.nom like '%".$critere_recherche."%'";
+		if($afficher_tous_les_resp!='y'){
+			if($critere_recherche!=""){
+				$sql.=" WHERE rp.nom like '%".$critere_recherche."%'";
+			}
 		}
 		$sql.=" ORDER BY rp.nom, rp.prenom";
-		$sql.=" LIMIT 20";
+		if($afficher_tous_les_resp!='y'){
+			$sql.=" LIMIT 20";
+		}
 		$call_resp=mysql_query($sql);
 		$nombreligne = mysql_num_rows($call_resp);
 		// si la table des responsables est non vide :
@@ -968,6 +979,8 @@ if(isset($definir_resp)){
 
 if(isset($definir_etab)){
 	if(!isset($valider_choix_etab)){
+		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
 		echo "<p>Choix de l'Ètablissement d'origine pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
 		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
@@ -1027,6 +1040,15 @@ if(isset($definir_etab)){
 	require("../lib/footer.inc.php");
 	die();
 }
+
+
+
+if ((isset($order_type)) and (isset($quelles_classes))) {
+    echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+} else {
+    echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+}
+
 
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
