@@ -1,0 +1,555 @@
+0141816Y;Jacques Monod;college;public;14000;Caen
+0141160K;Saint Joseph;college;prive;14000;Caen
+0140025B;Hastings;college;public;14000;Caen
+0141212S;Sacre Coeur;college;prive;14000;Caen
+0141810S;Saint Pierre;college;prive;14000;Caen
+0141253L;Albert Jacquard;college;public;14000;Caen
+0141554N;Dunois;college;public;14000;Caen
+0140015R;Pasteur;college;public;14000;Caen
+0140028E;René Lemière;college;public;14010;Caen
+0141313B;Henri Brunet;college;public;14017;Caen
+0140026C;Claude Monet;college;public;14020;Caen
+0141268C;Guillaume De Normandie;college;public;14020;Caen
+0141553M;Marcel Pagnol;college;public;14062;Caen
+0141163N;Saint Paul;college;prive;14066;Caen
+0141596J;Jean Moulin;college;public;14066;Caen
+0141159J;Institut Saint Pierre;college;prive;14067;Caen
+0141597K;Fernand Lechanteur;college;public;14070;Caen
+0140024A;Villey Desmeserets;college;public;14089;Caen
+0141219Z;St J.b De La Salle;college;prive;14100;Lisieux
+0141861X;Institution Fremont;college;prive;14100;Lisieux
+0141862Y;Notre Dame;college;prive;14100;Lisieux
+0141315D;Pierre Simon De Laplace;college;public;14104;Lisieux
+0141135H;Michelet;college;public;14107;Lisieux
+0141766U;Marcel Gambier;college;public;14107;Lisieux
+0141258S;Dumont D'urville;college;public;14110;Condé-Sur-Noireau
+0141214U;Sacre Coeur;college;prive;14110;Condé-Sur-Noireau
+0142271T;Léopold Sédar Senghor;college;public;14123;Ifs
+0141256P;Guy Liard;college;public;14125;Mondeville
+0141225F;Sacre Coeur;college;prive;14130;Pont-L'évêque
+0140075F;Gustave Flaubert;college;public;14130;Pont-L'évêque
+0140067X;Fernand Léger;college;public;14140;Livarot
+0141271F;Jean Monnet;college;public;14150;Ouistreham
+0141270E;Paul Eluard;college;public;14160;Dives-Sur-Mer
+0141272G;Jacques Prévert;college;public;14170;Saint-Pierre-Sur-Dives
+0141226G;Sainte Thérèse;college;prive;14170;Saint-Pierre-Sur-Dives
+0141136J;Pierre Varignon;college;public;14200;Hérouville-Saint-Clair
+0141363F;Pierre Daniel Huet;college;public;14200;Hérouville-Saint-Clair
+0141255N;François De Boisrobert;college;public;14200;Hérouville-Saint-Clair
+0141166S;Saint-Michel;college;prive;14201;Hérouville-Saint-Clair
+0140051E;Paul Verlaine;college;public;14210;Evrecy
+0141228J;Notre Dame;college;prive;14220;Thury-Harcourt
+0141641H;Roger Bellair;college;public;14220;Thury-Harcourt
+0141257R;Du Val D'aure;college;public;14230;Isigny-Sur-Mer
+0140038R;Les Sources D'aure;college;public;14240;Caumont-L'éventé
+0140081M;Du Bois D'orceau;college;public;14250;Tilly-Sur-Seulles
+0141662F;Charles Lemaître;college;public;14260;Aunay-Sur-Odon
+0140070A;Boris Vian;college;public;14270;Mezidon-Canon
+0141171X;Notre Dame;college;prive;14290;Orbec
+0140073D;Lottin De Laval;college;public;14290;Orbec
+0140088V;-;college;public;14310;Villers-Bocage
+0140068Y;Guy De Maupassant;college;public;14320;Saint-Martin-De-Fontenay
+0141642J;De La Mine;college;public;14330;Le Molay-Littry
+0140008H;Val De Souleuvre;college;public;14350;Le Beny-Bocage
+0141863Z;Marie-Joseph;college;prive;14360;Trouville-Sur-Mer
+0141273H;Charles Mozin;college;public;14360;Trouville-Sur-Mer
+0140072C;Jean Castel;college;public;14370;Argences
+0140079K;Jean Vilar;college;public;14380;Saint-Sever-Calvados
+0140012M;Marcel Proust;college;public;14390;Cabourg
+0141762P;Alain Chartier;college;public;14403;Bayeux
+0140006F;Charles Letot;college;public;14403;Bayeux
+0141860W;Institution Jeanne D Arc;college;prive;14403;Bayeux
+0140086T;Anne Frank;college;public;14410;Vassy
+0140077H;Pierre Et Marie Curie;college;public;14420;Potigny
+0140050D;Louis Pergaud;college;public;14430;Dozule
+0141216W;Maitrise Notre-Dame;college;prive;14440;Douvres-La-Délivrande
+0140049C;Clément Marot;college;public;14440;Douvres-La-Délivrande
+0141137K;Henri Sellier;college;public;14460;Colombelles
+0140041U;Quintefeuille;college;public;14470;Courseulles-Sur-Mer
+0140042V;Jean De La Varende;college;public;14480;Creully
+0141767V;Maupas;college;public;14500;Vire
+0142145F;Le Val De Vire;college;public;14500;Vire
+0141864A;Institut Saint-Jean-Eudes;college;prive;14503;Vire
+0140076G;Ernest Hemingway;college;public;14520;Port-En-Bessin-Huppain
+0141940H;Langevin Wallon;college;public;14550;Blainville-Sur-Orne
+0141765T;Alphonse Allais;college;public;14600;Honfleur
+0141168U;Notre Dame Saint Joseph;college;prive;14601;Honfleur
+0141684E;Montgomeri;college;public;14670;Troarn
+0141312A;Cingal;college;public;14680;Bretteville-Sur-Laize
+0141167T;Sainte Trinite;college;prive;14700;Falaise
+0141764S;Des Douits;college;public;14700;Falaise
+0140082N;Octave Mirbeau;college;public;14710;Trévières
+0141964J;Emile Zola;college;public;14730;Giberville
+0142213E;Sainte Catherine De Sienne;college;prive;14740;Saint-Manvieu-Norrey
+0140087U;Jacques Prévert;college;public;14790;Verson
+0141812U;Saint Joseph;college;prive;14800;Deauville
+0141763R;André Maurois;college;public;14800;Deauville
+0140069Z;Alfred Kastler;college;public;14810;Merville-Franceville-Plage
+0140414Z;Robert Desnos;ecole;public;14000;Caen
+0142093Z;Les Millepertuis;ecole;public;14000;Caen
+0140417C;Maladrerie;ecole;public;14000;Caen
+0141473A;Cours Sacre Coeur;ecole;prive;14000;Caen
+0140435X;Victor Lesage;ecole;public;14000;Caen
+0141475C;La Providence;ecole;prive;14000;Caen
+0141482K;Sainte Bernadette;ecole;prive;14000;Caen
+0142148J;Cinq Continents;ecole;public;14000;Caen
+0141965K;Paul Gernez;ecole;public;14000;Caen
+0142069Y;Louis Lechatellier;ecole;public;14000;Caen
+0141460L;Saint Joseph;ecole;prive;14000;Caen
+0140388W;Les Cormorans;ecole;public;14000;Caen
+0140384S;Fernand Léger;ecole;public;14000;Caen
+0141923P;Authie Sud;ecole;public;14000;Caen
+0142113W;A. Camus;ecole;public;14000;Caen
+0141700X;Gpe Sco.lyautey;ecole;public;14000;Caen
+0141590C;Pigacière;ecole;public;14000;Caen
+0141539X;Eustache Restout;ecole;public;14000;Caen
+0140401K;Rene Lemière;ecole;public;14000;Caen
+0141476D;Saint Pierre;ecole;prive;14000;Caen
+0141480H;Cours Prieur;ecole;prive;14000;Caen
+0141459K;Sainte Marie;ecole;prive;14000;Caen
+0142118B;Reine Mathilde;ecole;public;14000;Caen
+0141140N;Fosses St Julien Ens. Musical;ecole;public;14000;Caen
+0141850K;Le Clos Herbert;ecole;public;14000;Caen
+0140427N;Jean Guéhénno;ecole;public;14000;Caen
+0141543B;Bosnières;ecole;public;14000;Caen
+0141986H;Saint François;ecole;prive;14000;Caen
+0141477E;Notre Dame;ecole;prive;14000;Caen
+0141602R;Nicolas Copernic;ecole;public;14000;Caen
+0141376V;Groupe Henri-Brunet;ecole;public;14000;Caen
+0141838X;M Trégore;ecole;public;14000;Caen
+0141653W;Françoise Dolto;ecole;public;14000;Caen
+0142089V;Authie Nord;ecole;public;14000;Caen
+0140425L;Puits Picard;ecole;public;14000;Caen
+0141486P;Saint Jean;ecole;prive;14020;Caen
+0141478F;Saint Paul;ecole;prive;14066;Caen
+0140501U;-;ecole;public;14100;Beuvillers
+0140504X;-;ecole;public;14100;Courtonne-La-Meurdrac
+0140505Y;-;ecole;public;14100;Firfol
+0140507A;-;ecole;public;14100;Glos
+0140509C;-;ecole;public;14100;Hermival-Les-Vaux
+0141108D;-;ecole;public;14100;Le Mesnil-Guillaume
+0141261V;Jean Moulin;ecole;public;14100;Lisieux
+0140512F;Paul Doumer;ecole;public;14100;Lisieux
+0141120S;Jean De La Fontaine;ecole;public;14100;Lisieux
+0140819P;Jean Macé;ecole;public;14100;Lisieux
+0141503H;Bon Pasteur;ecole;prive;14100;Lisieux
+0140511E;Marie Curie;ecole;public;14100;Lisieux
+0141435J;Sainte Thérèse;ecole;prive;14100;Lisieux
+0141393N;Saint Exupery 3;ecole;public;14100;Lisieux
+0141704B;Jules Verne;ecole;public;14100;Lisieux
+0141394P;Reginald Trevett;ecole;public;14100;Lisieux
+0140820R;François Guizot;ecole;public;14100;Lisieux
+0141504J;St Jean-Baptiste De La Salle;ecole;prive;14100;Lisieux
+0140824V;-;ecole;public;14100;Marolles
+0140828Z;-;ecole;public;14100;Ouilly-Le-Vicomte
+0141400W;Charles Pierre;ecole;public;14100;Saint-Désir
+0140841N;-;ecole;public;14100;Saint-Germain-De-Livet
+0140843R;-;ecole;public;14100;Saint-Martin-De-La-Lieue
+0140906J;-;ecole;public;14100;Saint-Martin-De-Mailloc
+0141377W;La Varende;ecole;public;14110;Condé-Sur-Noireau
+0141023L;Madame De Sévigné;ecole;public;14110;Condé-Sur-Noireau
+0141484M;Sacre Coeur;ecole;prive;14110;Condé-Sur-Noireau
+0141019G;Albert Camus;ecole;public;14110;Condé-Sur-Noireau
+0141030U;-;ecole;public;14110;Pontecoulant
+0141399V;-;ecole;public;14110;Saint-Denis-De-Mère
+0141032W;-;ecole;public;14110;Saint-Germain-Du-Crioult
+0141587Z;-;ecole;public;14111;Louvigny
+0141367K;-;ecole;public;14112;Bieville-Beuville
+0140599A;-;ecole;public;14112;Periers-Sur-Le-Dan
+0140969C;-;ecole;public;14113;Villerville
+0141947R;St Exupery;ecole;public;14114;Ver-Sur-Mer
+0140363U;Paul Langevin;ecole;public;14120;Mondeville
+0141988K;Centre;ecole;public;14120;Mondeville
+0142071A;Les Tilleuls;ecole;public;14120;Mondeville
+0141545D;La Vallee;ecole;public;14123;Cormelles-Le-Royal
+0142149K;Les Drakkars;ecole;public;14123;Cormelles-Le-Royal
+0142070Z;Jean Goueslard;ecole;public;14123;Fleury-Sur-Orne
+0142253Y;Jean Vilar;ecole;public;14123;Ifs
+0141771Z;Unité A Jacques Prévert;ecole;public;14123;Ifs
+0141389J;Jules Verne;ecole;public;14123;Ifs
+0141390K;Marie Curie;ecole;public;14123;Ifs
+0140531B;Les Sept Collines;ecole;public;14130;Blangy-Le-Chateau
+0140533D;-;ecole;public;14130;Bonneville-La-Louvet
+0140911P;-;ecole;public;14130;Clarbec
+0140537H;-;ecole;public;14130;Coquainvilliers
+0140535F;-;ecole;public;14130;Le Breuil-En-Auge
+0141321K;Bon Pasteur;ecole;prive;14130;Pont-L'évêque
+0142114X;-;ecole;public;14130;Pont-L'évêque
+0140493K;Jean Macé;ecole;public;14130;Quetteville
+0140919Y;-;ecole;public;14130;Saint-Benoît-D'hébertot
+0140496N;-;ecole;public;14130;Saint-Gatien-Des-Bois
+0141443T;Sainte Marie;ecole;prive;14130;Saint-Gatien-Des-Bois
+0140921A;-;ecole;public;14130;Saint-Hymer
+0140543P;-;ecole;public;14130;Saint-Philbert-Des-Champs
+0140846U;-;ecole;public;14140;Auquainville
+0140849X;-;ecole;public;14140;Fervaques
+0141324N;Saint Joseph;ecole;prive;14140;Livarot
+0141948S;-;ecole;public;14140;Livarot
+0140859H;-;ecole;public;14140;Notre-Dame-De-Courson
+0140838K;-;ecole;public;14140;Prêtreville
+0140886M;-;ecole;public;14140;Saint-Julien-Le-Faucon
+0140941X;-;ecole;public;14140;Sainte-Marguerite-De-Viette
+0141322L;Sacre Coeur;ecole;prive;14150;Ouistreham
+0140596X;Jean Charcot Unite B;ecole;public;14150;Ouistreham
+0140597Y;Aristide Briand Unite A;ecole;public;14150;Ouistreham
+0142085R;Colleville;ecole;public;14160;Dives-Sur-Mer
+0140682R;-;ecole;public;14170;Bernières-D'ailly
+0140930K;-;ecole;public;14170;Bretteville-Sur-Dives
+0140685U;-;ecole;public;14170;Epaney
+0140691A;-;ecole;public;14170;Jort
+0140928H;Berville;ecole;public;14170;L' Oudon
+0140927G;Ammeville;ecole;public;14170;L' Oudon
+0140698H;-;ecole;public;14170;Olendon
+0141320J;Sainte Thérèse;ecole;prive;14170;Saint-Pierre-Sur-Dives
+0140944A;Marie Curie Unité A;ecole;public;14170;Saint-Pierre-Sur-Dives
+0140943Z;Aristide Bisson Unité B;ecole;public;14170;Saint-Pierre-Sur-Dives
+0140701L;-;ecole;public;14170;Sassy
+0140688X;Escures Sur Favières;ecole;public;14170;Vendeuvre
+0140702M;-;ecole;public;14170;Vendeuvre
+0140322Z;-;ecole;public;14190;Cauvicourt
+0140594V;-;ecole;public;14190;Fierville-Bray
+0141382B;-;ecole;public;14190;Grainville-Langannerie
+0140337R;-;ecole;public;14190;Maizières
+0140341V;-;ecole;public;14190;Ouilly-Le-Tesson
+0140342W;-;ecole;public;14190;Rouvres
+0140343X;Jean Moulin;ecole;public;14190;Saint-Germain-Le-Vasson
+0140346A;-;ecole;public;14190;Saint-Sylvain
+0141449Z;Notre Dame;ecole;prive;14190;Urville
+0140348C;-;ecole;public;14190;Urville
+0141849J;Le Bois;ecole;public;14200;Hérouville-Saint-Clair
+0141772A;C Freinet;ecole;public;14200;Hérouville-Saint-Clair
+0141464R;Saint Michel;ecole;prive;14200;Hérouville-Saint-Clair
+0142137X;Malfilatre;ecole;public;14200;Hérouville-Saint-Clair
+0141387G;Daniel Auber;ecole;public;14200;Hérouville-Saint-Clair
+0141589B;Jean De La Varende;ecole;public;14200;Hérouville-Saint-Clair
+0141604T;Jean Boisard;ecole;public;14200;Hérouville-Saint-Clair
+0141702Z;Le Val;ecole;public;14200;Hérouville-Saint-Clair
+0141385E;Eugène Quesnel;ecole;public;14200;Hérouville-Saint-Clair
+0140111V;Camille Blaisot;ecole;public;14200;Hérouville-Saint-Clair
+0141386F;Pierre Gringoire;ecole;public;14200;Hérouville-Saint-Clair
+0141678Y;Charles Péguy;ecole;prive;14200;Hérouville-Saint-Clair
+0141116M;Montmorency;ecole;public;14200;Hérouville-Saint-Clair
+0140604F;-;ecole;public;14210;Amaye-Sur-Orne
+0140605G;-;ecole;public;14210;Avenay
+0140606H;-;ecole;public;14210;Baron-Sur-Odon
+0140607J;-;ecole;public;14210;Bougy
+0140736Z;-;ecole;public;14210;Cheux
+0140610M;-;ecole;public;14210;Esquay-Notre-Dame
+0140612P;-;ecole;public;14210;Evrecy
+0142258D;Saint Jean Eudes;ecole;prive;14210;Gavrus
+0141496A;Saint Pie X;ecole;prive;14210;Grainville-Sur-Odon
+0141905V;-;ecole;public;14210;Grainville-Sur-Odon
+0140814J;-;ecole;public;14210;Le Locheur
+0140516K;-;ecole;public;14210;Missy
+0140744H;-;ecole;public;14210;Mondrainville
+0141552L;-;ecole;public;14210;Noyers-Bocage
+0140626E;-;ecole;public;14210;Sainte-Honorine-Du-Fay
+0140629H;-;ecole;public;14210;Tourville-Sur-Odon
+0140630J;-;ecole;public;14210;Trois-Monts
+0140623B;-;ecole;public;14210;Vacognes-Neuilly
+0140316T;-;ecole;public;14220;Barbery
+0140317U;-;ecole;public;14220;Boulon
+0140707T;Maurice Mailly;ecole;public;14220;Cesny-Bois-Halbout
+0140712Y;-;ecole;public;14220;Croisilles
+0140714A;-;ecole;public;14220;Donnay
+0140716C;-;ecole;public;14220;Esson
+0140334M;-;ecole;public;14220;Grimbosq
+0140339T;-;ecole;public;14220;Les Moutiers-En-Cinglais
+0140340U;-;ecole;public;14220;Mutrecy
+0140345Z;-;ecole;public;14220;Saint-Laurent-De-Condel
+0141318G;Notre Dame;ecole;prive;14220;Thury-Harcourt
+0141403Z;Paul Héroult;ecole;public;14220;Thury-Harcourt
+0141499D;Sacre Coeur;ecole;prive;14230;Isigny-Sur-Mer
+0141970R;Groupe Scolaire J.Prévert;ecole;public;14230;Isigny-Sur-Mer
+0140193J;-;ecole;public;14230;La Cambe
+0140218L;-;ecole;public;14230;Osmanville
+0140174N;-;ecole;public;14240;Anctoville
+0140976K;-;ecole;public;14240;Cahagnes
+0141375U;-;ecole;public;14240;Caumont-L'éventé
+0141105A;-;ecole;public;14240;Cormolain
+0142229X;-;ecole;public;14240;Cormolain
+0141106B;-;ecole;public;14240;Cormolain
+0140180V;-;ecole;public;14240;Livry
+0140188D;-;ecole;public;14240;Sept-Vents
+0140190F;-;ecole;public;14240;Torteval-Quesnay
+0140731U;-;ecole;public;14250;Audrieu
+0140131S;-;ecole;public;14250;Ellon
+0140740D;-;ecole;public;14250;Fontenay-Le-Pesnel
+0140132T;-;ecole;public;14250;Juaye-Mondaye
+0140134V;-;ecole;public;14250;Lingevres
+0141445V;Sacre Coeur;ecole;prive;14250;Tilly-Sur-Seulles
+0140757X;-;ecole;public;14250;Tilly-Sur-Seulles
+0140970D;Jules Verne;ecole;public;14260;Aunay-Sur-Odon
+0142228W;-;ecole;public;14260;Aunay-Sur-Odon
+0140971E;Georges Sand Unité A;ecole;public;14260;Aunay-Sur-Odon
+0140808C;-;ecole;public;14260;Banneville-Sur-Ajon
+0140982S;-;ecole;public;14260;Jurques
+0140974H;-;ecole;public;14260;La Bigne
+0140990A;-;ecole;public;14260;Saint-Georges-D'aunay
+0140288M;-;ecole;public;14270;Cesny-Aux-Vignes-Ouezy
+0140324B;Le Grand Frene;ecole;public;14270;Conde-Sur-Ifs
+0140686V;-;ecole;public;14270;Ernes
+0140876B;André Haglon;ecole;public;14270;Le Mesnil-Mauger
+0140335N;-;ecole;public;14270;Magny-La-Campagne
+0141588A;Albert Camus;ecole;public;14270;Mezidon-Canon
+0142091X;Pierre Et Marie Curie;ecole;public;14270;Mezidon-Canon
+0140349D;-;ecole;public;14270;Vieux-Fume
+0140437Z;-;ecole;public;14280;Authie
+0141649S;-;ecole;public;14280;Saint-Contest
+0141583V;-;ecole;public;14280;Saint-Germain-La-Blanche-Herbe
+0140892U;-;ecole;public;14290;Cernay
+0141532P;-;ecole;public;14290;La Chapelle-Yvon
+0140895X;-;ecole;public;14290;Meulles
+0141323M;Notre Dame;ecole;prive;14290;Orbec
+0142065U;-;ecole;public;14290;Orbec
+0140901D;-;ecole;public;14290;Saint-Cyr-Du-Ronceray
+0140903F;-;ecole;public;14290;Saint-Julien-De-Mailloc
+0140905H;-;ecole;public;14290;St-Martin-De-Bienfaite-La-Cresso
+0140908L;-;ecole;public;14290;Tordouet
+0140812G;-;ecole;public;14310;Epinay-Sur-Odon
+0140813H;-;ecole;public;14310;Landes-Sur-Ajon
+0140526W;-;ecole;public;14310;Villers-Bocage
+0140528Y;-;ecole;public;14310;Villy-Bocage
+0141544C;-;ecole;public;14320;Clinchamps-Sur-Orne
+0140608K;Bully;ecole;public;14320;Feuguerolles-Bully
+0140615T;Feuguerolles;ecole;public;14320;Feuguerolles-Bully
+0140294U;-;ecole;public;14320;Fontenay-Le-Marmion
+0142087T;-;ecole;public;14320;May-Sur-Orne
+0141438M;Sainte Thérèse;ecole;prive;14320;May-Sur-Orne
+0141581T;René Goscinny;ecole;public;14320;Saint-André-Sur-Orne
+0141926T;Charles Huard;ecole;public;14320;Saint-Martin-De-Fontenay
+0140199R;-;ecole;public;14330;Castilly
+0142174M;-;ecole;public;14330;Le Molay-Littry
+0140226V;Groupe Intercommunal;ecole;public;14330;Sainte-Marguerite-D'elle
+0140224T;-;ecole;public;14330;Sainte-Marguerite-D'elle
+0140547U;Jean Schlumberger;ecole;public;14340;Bonnebosq
+0140550X;Victor Hugo;ecole;public;14340;Cambremer
+0140868T;-;ecole;public;14340;Crevecoeur-En-Auge
+0140832D;Vincent Auriol;ecole;public;14340;La Boissière
+0141067J;-;ecole;public;14340;Manerbe
+0140556D;Guizot;ecole;public;14340;Saint-Ouen-Le-Pin
+0141946P;-;ecole;public;14350;Campeaux
+0141380Z;-;ecole;public;14350;La Ferrière-Harang
+0141003P;-;ecole;public;14350;La Graverie
+0140995F;-;ecole;public;14350;Le Beny-Bocage
+0141404A;-;ecole;public;14350;Le Tourneur
+0141072P;Henri Morel;ecole;public;14350;Montchamp
+0141582U;-;ecole;public;14350;Saint-Martin-Des-Besaces
+0141015C;-;ecole;public;14350;Saint-Pierre-Tarentaine
+0140960T;Unité A Guillaume Le Conquerant;ecole;public;14360;Trouville-Sur-Mer
+0140961U;Unité B René Coty;ecole;public;14360;Trouville-Sur-Mer
+0140964X;Hennequeville;ecole;public;14360;Trouville-Sur-Mer
+0141448Y;Jeanne D'arc;ecole;prive;14360;Trouville-Sur-Mer
+0140284H;-;ecole;public;14370;Airan
+0141467U;Ste Marie;ecole;prive;14370;Argences
+0140762C;Groupe Docteur Dérrien;ecole;public;14370;Argences
+0140285J;-;ecole;public;14370;Bellengreville
+0140286K;-;ecole;public;14370;Billy
+0141483L;St Jean Baptiste;ecole;prive;14370;Canteloup
+0140289N;-;ecole;public;14370;Chicheboville
+0140870V;Ernest Louis;ecole;public;14370;Croissanville
+0141925S;-;ecole;public;14370;Mery-Corbon
+0140302C;Groupe Lucien Cingal;ecole;public;14370;Moult
+0140803X;-;ecole;public;14370;Vimont
+0141533R;-;ecole;public;14380;Courson
+0141579R;-;ecole;public;14380;Landelles-Et-Coupigny
+0141051S;-;ecole;public;14380;Mesnil-Clinchamps
+0141397T;-;ecole;public;14380;Pont-Farcy
+0141058Z;-;ecole;public;14380;Saint-Aubin-Des-Bois
+0141059A;-;ecole;public;14380;Saint-Manvieu-Bocage
+0141402Y;-;ecole;public;14380;Saint-Sever-Calvados
+0141064F;-;ecole;public;14380;Sept-Freres
+0140768J;J. Guillou;ecole;public;14390;Cabourg
+0141472Z;Saint Louis;ecole;prive;14390;Cabourg
+0140791J;Guy De Maupassant;ecole;public;14390;Petiville
+0141470X;Saint Patrice;ecole;prive;14400;Bayeux
+0141537V;Reine Mathilde;ecole;public;14400;Bayeux
+0140155T;Letot  La Poterie;ecole;public;14400;Bayeux
+0142240J;-;ecole;prive;14400;Bayeux
+0142147H;Bellevue;ecole;public;14400;Bayeux
+0141699W;Argouges;ecole;public;14400;Bayeux
+0141966L;Louise Laurent;ecole;public;14400;Bayeux
+0141128A;Alain Chartier;ecole;public;14400;Bayeux
+0141457H;Saint Joseph;ecole;prive;14400;Bayeux
+0141469W;Sacre Coeur;ecole;prive;14400;Bayeux
+0140267P;-;ecole;public;14400;Crouay
+0140269S;-;ecole;public;14400;Etreham
+0140240K;-;ecole;public;14400;Longues-Sur-Mer
+0140271U;-;ecole;public;14400;Maisons
+0140166E;-;ecole;public;14400;Nonant
+0140247T;Les Pelouses;ecole;public;14400;Ryes
+0140170J;-;ecole;public;14400;Saint-Vigor-Le-Grand
+0140251X;-;ecole;public;14400;Sommervieu
+0140171K;Groupe Scolaire André Lefevre;ecole;public;14400;Subles
+0140280D;Albert Louis;ecole;public;14400;Tour-En-Bessin
+0140569T;-;ecole;public;14400;Vaux-Sur-Seulles
+0140256C;-;ecole;public;14400;Vienne-En-Bessin
+0141068K;-;ecole;public;14410;Burcy
+0141071N;-;ecole;public;14410;Estry
+0141079X;-;ecole;public;14410;Le Theil-Bocage
+0142237F;-;ecole;public;14410;Pierres
+0141081Z;-;ecole;public;14410;Vassy
+0141082A;-;ecole;public;14410;Viessoix
+0140637S;-;ecole;public;14420;Bons-Tassilly
+0142140A;Paul Langevin;ecole;public;14420;Potigny
+0141551K;-;ecole;public;14420;Ussy
+0140468H;-;ecole;public;14430;Dozule
+0141493X;St Joseph;ecole;prive;14430;Dozule
+0140581F;Jacques Prévert;ecole;public;14440;Cresserons
+0142208Z;Jacques Prévert;ecole;public;14440;Douvres-La-Délivrande
+0140582G;Marie Curie;ecole;public;14440;Douvres-La-Délivrande
+0141463P;Cours Notre Dame;ecole;prive;14440;Douvres-La-Délivrande
+0140204W;-;ecole;public;14450;Grandcamp-Maisy
+0140775S;Victor Hugo;ecole;public;14460;Colombelles
+0140774R;Henri Sellier;ecole;public;14460;Colombelles
+0140454T;-;ecole;public;14470;Courseulles-Sur-Mer
+0140238H;-;ecole;public;14470;Graye-Sur-Mer
+0140452R;-;ecole;public;14480;Coulombs
+0140455U;-;ecole;public;14480;Creully
+0140457W;-;ecole;public;14480;Cully
+0140461A;-;ecole;public;14480;Lantheuil
+0140459Y;-;ecole;public;14480;Le Fresne-Camilly
+0140466F;-;ecole;public;14480;Saint-Gabriel-Brecy
+0140257D;-;ecole;public;14480;Villiers-Le-Sec
+0142088U;-;ecole;public;14490;Balleroy
+0141468V;Saint Martin;ecole;prive;14490;Balleroy
+0140128N;-;ecole;public;14490;Castillon
+0140148K;-;ecole;public;14490;Le Tronquay
+0140136X;-;ecole;public;14490;Litteau
+0142130P;-;ecole;public;14490;Saint-Paul-Du-Vernay
+0142129N;-;ecole;public;14490;Vaubadon
+0141040E;-;ecole;public;14500;Campagnolles
+0141084C;-;ecole;public;14500;Coulonces
+0141086E;-;ecole;public;14500;Maisoncelles-La-Jourdan
+0141087F;Hugues Aufray;ecole;public;14500;Roullours
+0141968N;-;ecole;public;14500;St-Germain-De-Tallevende-La-Land
+0141094N;Jacques Prévert;ecole;public;14500;Truttemer-Le-Grand
+0141317F;Sainte Thérèse;ecole;prive;14500;Vaudry
+0141454E;Saint Joseph;ecole;prive;14500;Vire
+0141099U;Le Colombier;ecole;public;14500;Vire
+0141097S;Groupe Castel;ecole;public;14500;Vire
+0141806M;Pierre Mendes France;ecole;public;14500;Vire
+0141102X;Jean Moulin;ecole;public;14500;Vire
+0141127Z;Paul Nicolle;ecole;public;14500;Vire
+0141651U;André Malraux;ecole;public;14500;Vire
+0141092L;St Exupéry;ecole;public;14500;Vire
+0142152N;-;ecole;public;14510;Houlgate
+0142066V;Paul Emile Victor;ecole;public;14520;Port-En-Bessin-Huppain
+0141580S;Eric Tabarly;ecole;public;14530;Luc-Sur-Mer
+0141437L;Sainte Marie;ecole;prive;14530;Luc-Sur-Mer
+0140287L;Groupe Scol. Madeleine Lallier;ecole;public;14540;Bourguebus
+0140297X;-;ecole;public;14540;Garcelles-Secqueville
+0140306G;Unité B;ecole;public;14540;Rocquancourt
+0140307H;Unité A;ecole;public;14540;Rocquancourt
+0142256B;Vent De Plaine;ecole;public;14540;Rocquancourt
+0140313P;-;ecole;public;14540;Soliers
+0140577B;Joliot Curie;ecole;public;14550;Blainville-Sur-Orne
+0140576A;Colbert;ecole;public;14550;Blainville-Sur-Orne
+0140708U;-;ecole;public;14570;Clecy
+0140724L;-;ecole;public;14570;Saint-Remy
+0140830B;-;ecole;public;14590;Le Pin
+0140826X;Madame Rene Coty;ecole;public;14590;Moyaux
+0140477T;-;ecole;public;14600;Ablon
+0140480W;-;ecole;public;14600;Equemauville
+0140481X;-;ecole;public;14600;Fourneville
+0140483Z;-;ecole;public;14600;Genneville
+0140484A;-;ecole;public;14600;Gonneville-Sur-Honfleur
+0141851L;Samuel De Champlain;ecole;public;14600;Honfleur
+0141703A;Raymond Devos;ecole;public;14600;Honfleur
+0141497B;Saint-Joseph;ecole;prive;14600;Honfleur
+0141967M;H. Caubriere;ecole;public;14600;Honfleur
+0140486C;Homme De Bois;ecole;public;14600;Honfleur
+0141650T;-;ecole;public;14600;La Riviere-Saint-Sauveur
+0140446J;-;ecole;public;14610;Anguerny
+0140447K;Jean De Coutard;ecole;public;14610;Anisy
+0140448L;-;ecole;public;14610;Basly
+0140450N;-;ecole;public;14610;Cairon
+0140451P;Hélène Moulin;ecole;public;14610;Cambes-En-Plaine
+0140352G;F  Langlois;ecole;public;14610;Epron
+0140458X;A.b.f.r.;ecole;public;14610;Fontaine-Henry
+0141606V;-;ecole;public;14610;Thaon
+0140684T;-;ecole;public;14620;Crocy
+0140693C;-;ecole;public;14620;Morteaux-Couliboeuf
+0140697G;-;ecole;public;14620;Norrey-En-Auge
+0140771M;-;ecole;public;14630;Cagny
+0140780X;-;ecole;public;14630;Emieville
+0140295V;Docteur Dérrien;ecole;public;14630;Frenouville
+0141405B;Victor Duprez;ecole;public;14640;Villers-Sur-Mer
+0141534S;Jacques Cartier;ecole;public;14650;Carpiquet
+0140476S;-;ecole;public;14670;Saint-Samson
+0140767H;Bures Sur Dives;ecole;public;14670;Troarn
+0140799T;-;ecole;public;14670;Troarn
+0141371P;Les 4 Vents;ecole;public;14680;Bretteville-Sur-Laize
+0140328F;-;ecole;public;14680;Fresney-Le-Puceux
+0142150L;-;ecole;public;14680;Gouvix
+0140649E;-;ecole;public;14690;Le Mesnil-Villement
+0140652H;-;ecole;public;14690;Pierrefitte-En-Cinglais
+0140654K;-;ecole;public;14690;Pont-D'ouilly
+0140638T;-;ecole;public;14700;Cordey
+0140674G;-;ecole;public;14700;Eraines
+0141456G;Sainte Trinité;ecole;prive;14700;Falaise
+0142090W;André Bodereau;ecole;public;14700;Falaise
+0141654X;De La Crosse;ecole;public;14700;Falaise
+0140675H;-;ecole;public;14700;Fresne-La-Mere
+0140676J;Les Roches-Feuilles;ecole;public;14700;La Hoguette
+0140647C;-;ecole;public;14700;Les Loges-Saulces
+0140648D;-;ecole;public;14700;Martigny-Sur-L'ante
+0142143D;-;ecole;public;14700;Noron-L'abbaye
+0140677K;Roches-Feuilles;ecole;public;14700;Pertheville-Ners
+0140661T;-;ecole;public;14700;Saint-Germain-Langot
+0140662U;-;ecole;public;14700;Saint-Martin-De-Mieux
+0140663V;-;ecole;public;14700;Saint-Pierre-Canivet
+0140664W;-;ecole;public;14700;Saint-Pierre-Du-B
+0140665X;-;ecole;public;14700;Soulangy
+0140678L;-;ecole;public;14700;Versainville
+0140679M;-;ecole;public;14700;Villy-Lez-Falaise
+0140281E;-;ecole;public;14710;Trévières
+0141447X;Notre Dame;ecole;prive;14710;Trévières
+0141381A;Louis Aragon;ecole;public;14730;Giberville
+0140732V;-;ecole;public;14740;Bretteville-L'orgueilleuse
+0142221N;Cours Ste Catherine De Sienne;ecole;prive;14740;Saint-Manvieu-Norrey
+0141952W;-;ecole;public;14740;Saint-Manvieu-Norrey
+0140751R;-;ecole;public;14740;Sainte-Croix-Grand-Tonne
+0142156T;-;ecole;public;14740;Secqueville-En-Bessin
+0140602D;-;ecole;public;14750;Saint-Aubin-Sur-Mer
+0140440C;-;ecole;public;14760;Bretteville-Sur-Odon
+0140988Y;-;ecole;public;14770;Le Plessis-Grimoult
+0141035Z;-;ecole;public;14770;Saint-Jean-Le-Blanc
+0141036A;-;ecole;public;14770;Saint-Pierre-La-Vieille
+0141550J;-;ecole;public;14780;Lion-Sur-Mer
+0141502G;Sacre Coeur;ecole;prive;14780;Lion-Sur-Mer
+0140616U;Jean De La Fontaine;ecole;public;14790;Fontaine-Etoupefour
+0140745J;Groupe Scolaire Pierre Herbet;ecole;public;14790;Mouen
+0140632L;Victor Hugo;ecole;public;14790;Verson
+0141652V;Gustave Flaubert;ecole;public;14800;Deauville
+0142255A;Centre;ecole;public;14800;Deauville
+0140954L;Unité A;ecole;public;14800;Deauville
+0140953K;Unité B;ecole;public;14800;Deauville
+0140955M;-;ecole;public;14800;Saint-Arnoult
+0140956N;André Malraux;ecole;public;14800;Touques
+0140959S;-;ecole;public;14800;Tourgeville
+0140785C;-;ecole;public;14810;Gonneville-En-Auge
+0141396S;-;ecole;public;14810;Merville-Franceville-Plage
+0141391L;Groupe Scolaire Silas;ecole;public;14830;Langrune-Sur-Mer
+0140777U;Pierre Mendes France;ecole;public;14840;Cuverville
+0141586Y;-;ecole;public;14840;Demouville
+0140781Y;Groupe Scolaire Jules Verne;ecole;public;14850;Escoville
+0140786D;-;ecole;public;14850;Herouvillette
+0140760A;-;ecole;public;14860;Amfreville
+0140764E;Henri Baptiste Grégoire;ecole;public;14860;Bavent
+0140766G;-;ecole;public;14860;Breville-Les-Monts
+0141605U;Pierre Hily;ecole;public;14860;Ranville
+0140580E;-;ecole;public;14880;Colleville-Montgomery
+0141578P;-;ecole;public;14880;Hermanville-Sur-Mer
+0140951H;-;ecole;public;14910;Blonville-Sur-Mer
+0141591D;Pierre Rasse;ecole;public;14920;Mathieu
+0140611N;-;ecole;public;14930;Eterville
+0140634N;-;ecole;public;14930;Vieux
+0140797R;-;ecole;public;14940;Sannerville
+0141531N;-;ecole;public;14950;Beaumont-En-Auge
+0140920Z;-;ecole;public;14950;Saint-Etienne-La-Thillaye
+0140231A;-;ecole;public;14960;Asnelles
+0140571V;-;ecole;public;14970;Benouville
+0140601C;Clément Désiré Ferard;ecole;public;14970;Saint-Aubin-D'arquenay
+0140749N;-;ecole;public;14980;Rots
+0140572W;-;ecole;public;14990;Bernières-Sur-Mer
