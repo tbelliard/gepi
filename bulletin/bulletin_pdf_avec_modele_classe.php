@@ -188,7 +188,6 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 
 class bul_PDF extends FPDF_MULTICELLTAG
 {
-
 /**
 * Draws text within a box defined by width = w, height = h, and aligns
 * the text vertically within the box ($valign = M/B/T for middle, bottom, or top)
@@ -916,10 +915,11 @@ if(!empty($model_bulletin)) {
 		if($donner['regime']==='int.') { $dp[$cpt_i]='interne'; }
 		if($donner['regime']==='i-e') { if($sexe[$cpt_i]==='M') { $dp[$cpt_i]='interne externé'; } else { $dp[$cpt_i]='interne externée'; } }
 		if($donner['regime']!='ext.' and $donner['regime']!='d/p' and $donner['regime']==='int.' and $donner['regime']==='i-e') { $dp[$cpt_i]='inconnu'; }
-
+		
+//modif Eric
 		// etablissement d'origine
 		// on vérifie si l'élève a un établissement d'origine
-		$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id"),0);
+/*		$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id"),0);
 		if($cpt_etab_origine != 0) {
 			$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id";
 			$execution_etablissement_origine = mysql_query($requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.mysql_error());
@@ -928,6 +928,33 @@ if(!empty($model_bulletin)) {
 				$etablissement_origine[$cpt_i] = $donnee_etablissement_origine['nom'].' ('.$donnee_etablissement_origine['id'].')';
 			}
 		}
+*/
+		$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$ident_eleve_sel1."' AND e.id = j.id_etablissement) ");
+		$current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
+		$current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
+		$current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");
+		$current_eleve_etab_type = @mysql_result($data_etab, 0, "type");
+		$current_eleve_etab_cp = @mysql_result($data_etab, 0, "cp");
+		$current_eleve_etab_ville = @mysql_result($data_etab, 0, "ville");
+
+		if ($current_eleve_etab_niveau!='') {
+		foreach ($type_etablissement as $type_etab => $nom_etablissement) {
+			if ($current_eleve_etab_niveau == $type_etab) {$current_eleve_etab_niveau_nom = $nom_etablissement;}
+		}
+		if ($current_eleve_etab_cp == 0) {$current_eleve_etab_cp = '';}
+		if ($current_eleve_etab_type == 'aucun')
+			$current_eleve_etab_type = '';
+		else
+			$current_eleve_etab_type = $type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau];
+		}
+		if ($current_eleve_etab_nom != '') {
+			if ($current_eleve_etab_id != '990') {
+				$etablissement_origine[$cpt_i] .= "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)";
+			} else {
+				$etablissement_origine[$cpt_i] .=  "hors de France";
+			}
+		}
+// fin modif Eric
 
 		//connaitre le professeur responsable de l'élève
 		$requete_pp = mysql_query('SELECT professeur FROM '.$prefix_base.'j_eleves_professeurs WHERE (login="'.$ident_eleve[$cpt_i].'" AND id_classe="'.$classe_tableau_id[$cpt_i].'")');
@@ -1717,7 +1744,9 @@ $ident_eleve_aff = $ident_eleve[$nb_eleve_aff];
 	}
 	if($affiche_etab_origine[$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
 	$pdf->SetX($X_eleve_2);
-	$pdf->Cell(90,4, 'Etab. origine : '.$etablissement_origine[$i],0,2,'');
+	$pdf->SetFont($caractere_utilse[$classe_id],'',6.5);
+	$pdf->Cell(90,4, 'Etab. Origine : '.$etablissement_origine[$i],0,2);
+	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
 	}
 	}
 
@@ -1738,7 +1767,7 @@ $ident_eleve_aff = $ident_eleve[$nb_eleve_aff];
 		$requete_periode = mysql_query('SELECT * FROM '.$prefix_base.'periodes WHERE id_classe="'.$id_classe_selection.'" AND num_periode="'.$id_periode.'"');
 		$nom_periode[$id_classe_selection][$id_periode] = @mysql_result($requete_periode, '0', 'nom_periode');
 		}
-	$pdf->Cell(90,5, "Bulletin du ".unhtmlentities($nom_periode[$id_classe_selection][$id_periode]),0,2,'C');
+	$pdf->Cell(90,5, "Bulletin du ".unhtmlentities($nom_periode[$id_classe_selection][$id_periode]),'',2,'C');
 	$pdf->SetFont($caractere_utilse[$classe_id],'',8);
 	$pdf->Cell(95,7, $date_bulletin,0,2,'R');
 	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
