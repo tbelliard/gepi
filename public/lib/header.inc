@@ -102,7 +102,7 @@ if(isset($style_screen_ajout)){
 
 		echo "<td id='td_headerBottomRight' style='padding-bottom: 5px;'>\n";
 		echo "<span class='grey'>";
-		    echo "<a href=\"index.php\">Accueil</a> - ";
+		    echo "<a href=\"index.php?id_classe=-1\">Accueil</a> - ";
 		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
 		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
 		echo "</span>\n";
