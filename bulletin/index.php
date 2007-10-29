@@ -53,6 +53,12 @@ if (!checkAccess()) {
 	    else { if (isset($_GET['creer_pdf'])) {$creer_pdf=$_GET['creer_pdf'];} if (isset($_POST['creer_pdf'])) {$creer_pdf=$_POST['creer_pdf'];} }
 	if (empty($_GET['type_bulletin']) and empty($_POST['type_bulletin'])) {$type_bulletin="";}
 	    else { if (isset($_GET['type_bulletin'])) {$type_bulletin=$_GET['type_bulletin'];} if (isset($_POST['type_bulletin'])) {$type_bulletin=$_POST['type_bulletin'];} }
+	
+	//ajout Eric pour impression triée par Etab d'origine
+	if (empty($_GET['tri_par_etab_origine']) and empty($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine="non";}
+	    else { if (isset($_GET['tri_par_etab_origine'])) {$tri_par_etab_origine=$_GET['tri_par_etab_origine'];} if (isset($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine=$_POST['tri_par_etab_origine'];} }
+
+	
 	// ERIC on n'imprime plus que les periodes fermées
 	/*
 	   if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
@@ -72,6 +78,9 @@ if (!checkAccess()) {
 	$_SESSION['periode'] = $periode;
 	$_SESSION['periode_ferme'] = $periode_ferme;
 	$_SESSION['type_bulletin'] = $type_bulletin;
+	
+	$_SESSION['tri_par_etab_origine'] = $tri_par_etab_origine;
+	
 
 //ERIC
 	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
@@ -231,6 +240,10 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 ?>
 
 		  <br /><br />
+		  
+<?PHP
+		  echo "<input type=\"checkbox\" name=\"tri_par_etab_origine\" value=\"oui\" />Impression triée par établissement d'origine des élèves.<BR /><BR />";
+?>
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
 		  </center>
