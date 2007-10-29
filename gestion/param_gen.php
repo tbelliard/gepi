@@ -108,6 +108,11 @@ if (isset($_POST['sessionMaxLength'])) {
         $msg .= "Erreur lors de l'enregistrement da durée max d'inactivité !";
     }
 }
+if (isset($_POST['gepiSchoolRne'])) {
+    if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
+        $msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
+    }
+}
 if (isset($_POST['gepiYear'])) {
     if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
         $msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
@@ -290,6 +295,14 @@ require_once("../lib/header.inc");
         <td><input type="text" name="gepiYear" size="20" value="<?php echo(getSettingValue("gepiYear")); ?>" />
         </td>
     </tr>
+	<tr>
+        <td style="font-variant: small-caps;">
+        Numéro RNE de l'établissement :
+        </td>
+        <td><input type="text" name="gepiSchoolRne" size="8" value="<?php echo(getSettingValue("gepiSchoolRne")); ?>" />
+        </td>
+    </tr>
+
     <tr>
         <td style="font-variant: small-caps;">
         Nom de l'établissement :

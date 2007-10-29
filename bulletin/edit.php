@@ -63,6 +63,9 @@ if(getSettingValue("min_max_moyclas")){
 		$min_max_moyclas = 0;
 }
 
+
+$RneEtablissement=getSettingValue("gepiSchoolRne");
+
 /*
 if (isset($_GET['id_classe'])) {
     settype($_GET['id_classe'],"integer");
@@ -1429,10 +1432,14 @@ echo "'>\n";
 			}
 			if ($current_eleve_etab_nom != '') {
 				echo "<br />\n";
-				echo "Etablissement d'origine : ";
 				if ($current_eleve_etab_id != '990') {
-					echo "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)\n";
+				    //echo "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)\n";
+					if ($RneEtablissement != $current_eleve_etab_id) {
+				      echo "Etablissement d'origine : ";					
+					  echo "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)\n";
+					}
 				} else {
+				    echo "Etablissement d'origine : ";
 					echo "hors de France\n";
 				}
 			}

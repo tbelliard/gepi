@@ -90,6 +90,8 @@ $model_bulletin = $_SESSION['type_bulletin'];
 
 $type_bulletin = $model_bulletin; // le modèle sélectionné dans le menu deroulant
 
+$RneEtablissement=getSettingValue("gepiSchoolRne");
+
 	/*
 	if(getSettingValue('bull_pdf_INE_eleve')=='y') {
 		$bull_pdf_INE_eleve="y";
@@ -949,7 +951,10 @@ if(!empty($model_bulletin)) {
 		}
 		if ($current_eleve_etab_nom != '') {
 			if ($current_eleve_etab_id != '990') {
-				$etablissement_origine[$cpt_i] .= "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)";
+			    //$etablissement_origine[$cpt_i] .= "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)";
+				if ($RneEtablissement != $current_eleve_etab_id) {
+				   $etablissement_origine[$cpt_i] .= "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)";
+			    }
 			} else {
 				$etablissement_origine[$cpt_i] .=  "hors de France";
 			}
