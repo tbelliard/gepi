@@ -392,7 +392,11 @@ else{
 											if(strstr($ligne,"<".$tab_champs_struct[$loop].">")){
 												$tmpmin=strtolower($tab_champs_struct[$loop]);
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-												$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
+
+												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
+												// Suppression des guillemets éventuels
+												$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 												//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
 												break;
 											}
@@ -616,7 +620,11 @@ else{
 									if(strstr($ligne,"<".$tab_champs_eleve[$loop].">")){
 										$tmpmin=strtolower($tab_champs_eleve[$loop]);
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
+
+										// Suppression des guillemets éventuels
+										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
+										$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 										affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 										break;
 									}
@@ -661,7 +669,9 @@ else{
 										//echo "$i - ";
 										$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
+										// Suppression des guillemets éventuels
+										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
+										$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
 										affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 										break;
 									}
@@ -706,7 +716,14 @@ else{
 						$tab_prenom = explode(" ",$eleves[$i]['prenom']);
 						$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
 
-						$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+						//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+						if(isset($eleves[$i]["code_sexe"])) {
+							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+						}
+						else {
+							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
+							$sql.="elesexe='M', ";
+						}
 						$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
 						$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
 						if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
@@ -870,7 +887,11 @@ else{
 									if(strstr($ligne,"<".$tab_champs_opt[$loop].">")){
 										$tmpmin=strtolower($tab_champs_opt[$loop]);
 										//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
+
+										// Suppression des guillemets éventuels
+										//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
+										$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 										//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 										break;
 									}
@@ -1133,6 +1154,7 @@ else{
 									AND ($chaine)
 									";
 			*/
+
 			$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
@@ -1147,11 +1169,12 @@ else{
 									";
 			//echo "$sql<br />\n";
 			$test=mysql_query($sql);
+			$cpt=0;
 			if(mysql_num_rows($test)>0){
 				echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 				echo "<br />\n";
 				echo "En voici le(s) ELE_ID: ";
-				$cpt=0;
+				//$cpt=0;
 				$chaine_ele_id="";
 				while($lig=mysql_fetch_object($test)){
 					if($cpt>0){$chaine_ele_id.=", ";}
@@ -1160,9 +1183,44 @@ else{
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_ele_id_diff[]=$lig->ele_id;
+					$cpt++;
 				}
 				echo $chaine_ele_id;
 			}
+
+			for($i=0;$i<min(20,count($tab_ele_id));$i++){
+
+				$temoin_test_regime='n';
+
+				if(!isset($tab_ele_id_diff)){
+					$temoin_test_regime='y';
+				}
+				elseif(!in_array($tab_ele_id[$i],$tab_ele_id_diff)){
+					$temoin_test_regime='y';
+				}
+
+				if($temoin_test_regime=='y'){
+					$sql="SELECT jer.regime, t.elereg FROM j_eleves_regime jer, eleves e, temp_gep_import2 t
+							WHERE e.ele_id='$tab_ele_id[$i]' AND
+									jer.login=e.login AND
+									t.ele_id=e.ele_id";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0){
+						$lig=mysql_fetch_object($test);
+						$tmp_reg=traite_regime_sconet($lig->elereg);
+						if("$tmp_reg"!="$lig->regime"){
+							if($cpt>0){echo ", ";}
+							echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+							//echo "<br />\n";
+							// Pour le cas où on est dans la dernière tranche:
+							$tab_ele_id_diff[]=$tab_ele_id[$i];
+						}
+					}
+				}
+			}
+
+
+
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
 			$parcours_diff++;
@@ -1181,6 +1239,7 @@ else{
 			stop='y';
 		}
 	}
+	//stop='y'
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",1000);
 	}
@@ -1409,7 +1468,12 @@ else{
 								if(mysql_num_rows($res2)>0){
 									$tmp_regime="";
 									$lig2=mysql_fetch_object($res2);
-									switch($affiche[8]){
+									//=========================
+									// MODIF: boireaus 20071024
+									$tmp_new_regime=traite_regime_sconet($affiche[8]);
+									//switch($affiche[8]){
+									/*
+									switch($tmp_new_regime){
 										case 0:
 											$tmp_regime="ext.";
 											break;
@@ -1423,6 +1487,18 @@ else{
 											$tmp_regime="i-e";
 											break;
 									}
+									*/
+									$temoin_pb_regime_inhabituel="n";
+									if("$tmp_new_regime"=="ERR"){
+										$tmp_regime="d/p";
+										$temoin_pb_regime_inhabituel="y";
+									}
+									else{
+										$tmp_regime=$tmp_new_regime;
+									}
+									//=========================
+
+
 									if($tmp_regime!=$lig2->regime){
 										$temoin_modif='y';
 										$cpt_modif++;
@@ -1597,8 +1673,14 @@ else{
 									echo "'>";
 								}
 								//echo "$affiche[8]";
-								echo "$tmp_regime";
-								echo "<input type='hidden' name='modif_".$cpt."_regime' value='$tmp_regime' />\n";
+								if($temoin_pb_regime_inhabituel=="y"){
+									echo "<span style='color:red'>$tmp_regime</span>";
+								}
+								else{
+									echo "$tmp_regime";
+								}
+								//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
+								echo "<input type='hidden' name='modif_".$cpt."_regime' value=\"$tmp_regime\" />\n";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center; background-color: white;'>";
@@ -1681,7 +1763,12 @@ else{
 
 
 								$tmp_regime="";
-								switch($affiche[8]){
+								//=========================
+								// MODIF: boireaus 20071024
+								$tmp_new_regime=traite_regime_sconet($affiche[8]);
+								//switch($affiche[8]){
+								/*
+								switch($tmp_new_regime){
 									case 0:
 										$tmp_regime="ext.";
 										break;
@@ -1695,10 +1782,25 @@ else{
 										$tmp_regime="i-e";
 										break;
 								}
+								*/
+								if("$tmp_new_regime"=="ERR"){
+									$tmp_regime="d/p";
 
-								echo "<td style='text-align: center;'>";
-								echo "$tmp_regime";
-								echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+									echo "<td style='text-align: center;'>\n";
+									echo "<span style='color:red'>$tmp_regime</span>";
+									//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
+									echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+								}
+								else{
+									$tmp_regime=$tmp_new_regime;
+
+									echo "<td style='text-align: center;'>\n";
+									echo "$tmp_regime";
+									//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
+									echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+								}
+								//=========================
+
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
@@ -1785,6 +1887,7 @@ else{
 
 					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
 
+					/*
 					switch($lig->ELEREG){
 						case 0:
 							$regime="ext.";
@@ -1799,6 +1902,13 @@ else{
 							$regime="i-e";
 							break;
 					}
+					*/
+					$regime=traite_regime_sconet($lig->ELEREG);
+					/*
+					if("$regime"=="ERR"){
+						$regime="d/p";
+					}
+					*/
 
 					switch($lig->ELEDOUBL){
 						case "O":
@@ -1839,9 +1949,11 @@ else{
 					echo "$lig->ELEPRE $lig->ELENOM";
 					echo "</span>";
 
-					$sql="UPDATE j_eleves_regime SET doublant='$doublant',
-								regime='$regime'
-								WHERE (login='$login_eleve');";
+					$sql="UPDATE j_eleves_regime SET doublant='$doublant'";
+					if("$regime"!="ERR"){
+						$sql.=", regime='$regime'";
+					}
+					$sql.=" WHERE (login='$login_eleve');";
 					$res2=mysql_query($sql);
 					if(!$res2){
 						echo " <span style='color:red;'>(*)</span>";
@@ -1881,6 +1993,7 @@ else{
 
 						$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
 
+						/*
 						switch($lig->ELEREG){
 							case 0:
 								$regime="ext.";
@@ -1894,6 +2007,12 @@ else{
 							case 4:
 								$regime="i-e";
 								break;
+						}
+						*/
+						$regime=traite_regime_sconet($lig->ELEREG);
+						// Si le régime est en erreur, on impose 'd/p' comme le moins mauvais choix dans ce cas
+						if("$regime"=="ERR"){
+							$regime="d/p";
 						}
 
 						switch($lig->ELEDOUBL){
@@ -2757,7 +2876,11 @@ else{
 											$tmpmin=strtolower($tab_champs_personne[$loop]);
 											//$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+											// Suppression des guillemets éventuels
+											//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+											$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 											affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -2959,7 +3082,11 @@ else{
 									$tmpmin=strtolower($tab_champs_responsable[$loop]);
 									//$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+									// Suppression des guillemets éventuels (il ne devrait pas y en avoir là)
+									//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+									$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 									affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
 									break;
 								}
@@ -3131,7 +3258,11 @@ else{
 									$tmpmin=strtolower($tab_champs_adresse[$loop]);
 									//$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-									$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+									// Suppression des guillemets éventuels
+									//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+									$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 									//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
 									break;
 								}
