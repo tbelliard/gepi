@@ -180,7 +180,11 @@ else{
 						$temoin_modif="";
 						$temoin_nouveau="";
 						if(!feof($fp)){
-							$ligne = fgets($fp, 4096);
+							//=========================
+							// MODIF: boireaus 20071024
+							//$ligne = fgets($fp, 4096);
+							$ligne = ereg_replace('"','',fgets($fp, 4096));
+							//=========================
 							if(trim($ligne)!=""){
 								$tabligne=explode(";",$ligne);
 								$affiche=array();
@@ -218,6 +222,10 @@ else{
 									($lig_ele->sexe!=$affiche[2])||
 									($lig_ele->naissance!=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2))){
 									*/
+
+									// On ne retient que le premier prénom:
+									$tab_prenom = explode(" ",$affiche[1]);
+									$affiche[1] = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
 
 									$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
 
@@ -258,7 +266,12 @@ else{
 									if(mysql_num_rows($res2)>0){
 										$tmp_regime="";
 										$lig2=mysql_fetch_object($res2);
-										switch($affiche[8]){
+										//=========================
+										// MODIF: boireaus 20071024
+										$tmp_new_regime=traite_regime_sconet($affiche[8]);
+										//switch($affiche[8]){
+										/*
+										switch($tmp_new_regime){
 											case 0:
 												$tmp_regime="ext.";
 												break;
@@ -272,10 +285,23 @@ else{
 												$tmp_regime="i-e";
 												break;
 										}
+										*/
+										$temoin_pb_regime_inhabituel="n";
+										if("$tmp_new_regime"=="ERR"){
+											$tmp_regime="d/p";
+											$temoin_pb_regime_inhabituel="y";
+										}
+										else{
+											$tmp_regime=$tmp_new_regime;
+										}
+										//=========================
+
+
 										if($tmp_regime!=$lig2->regime){
 											$temoin_modif='y';
 											$cpt_modif++;
 										}
+
 
 										$tmp_doublant="";
 										switch($affiche[6]){
@@ -467,7 +493,13 @@ else{
 										echo "'>";
 									}
 									//echo "$affiche[8]";
-									echo "$tmp_regime";
+									if($temoin_pb_regime_inhabituel=="y"){
+										echo "<span style='color:red'>$tmp_regime</span>";
+									}
+									else{
+										echo "$tmp_regime";
+									}
+									//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
 									echo "<input type='hidden' name='modif_".$cpt."_regime' value='$tmp_regime' />\n";
 									echo "</td>\n";
 
@@ -561,8 +593,14 @@ else{
 									echo "</td>\n";
 
 
+
 									$tmp_regime="";
-									switch($affiche[8]){
+									//=========================
+									// MODIF: boireaus 20071024
+									$tmp_new_regime=traite_regime_sconet($affiche[8]);
+									//switch($affiche[8]){
+									/*
+									switch($tmp_new_regime){
 										case 0:
 											$tmp_regime="ext.";
 											break;
@@ -576,10 +614,25 @@ else{
 											$tmp_regime="i-e";
 											break;
 									}
+									*/
+									if("$tmp_new_regime"=="ERR"){
+										$tmp_regime="d/p";
 
-									echo "<td style='text-align: center;'>";
-									echo "$tmp_regime";
-									echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+										echo "<td style='text-align: center;'>";
+										echo "<span style='color:red'>$tmp_regime</span>";
+										//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
+										echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+									}
+									else{
+										$tmp_regime=$tmp_new_regime;
+
+										echo "<td style='text-align: center;'>";
+										echo "$tmp_regime";
+										//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
+										echo "<input type='hidden' name='new_".$cpt."_regime' value='$tmp_regime' />\n";
+									}
+									//=========================
+
 									echo "</td>\n";
 
 									echo "<td style='text-align: center;'>";
@@ -912,7 +965,11 @@ else{
 					for($k = 1; ($k < $nblignes+1); $k++){
 						//$ligne = dbase_get_record($fp,$k);
 						if(!feof($fp)){
-							$ligne = fgets($fp, 4096);
+							//=========================
+							// MODIF: boireaus 20071024
+							//$ligne = fgets($fp, 4096);
+							$ligne = ereg_replace('"','',fgets($fp, 4096));
+							//=========================
 							if(trim($ligne)!=""){
 
 								//=========================
@@ -1109,7 +1166,11 @@ else{
 					for($k = 1; ($k < $nblignes+1); $k++){
 						//$ligne = dbase_get_record($fp,$k);
 						if(!feof($fp)){
-							$ligne = fgets($fp, 4096);
+							//=========================
+							// MODIF: boireaus 20071024
+							//$ligne = fgets($fp, 4096);
+							$ligne = ereg_replace('"','',fgets($fp, 4096));
+							//=========================
 							if(trim($ligne)!=""){
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
@@ -1138,12 +1199,12 @@ else{
 
 								// Stockage des données:
 								$personne[$affiche[0]]=array();
-								echo "<p>\n";
+								//echo "<p>\n";
 								for($i=1;$i<count($tabchamps);$i++) {
 									$personne[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
 									//echo "\$personne[$affiche[0]][\"$tabchamps[$i]\"]=\$affiche[$i]=".$affiche[$i]."<br />\n";
 								}
-								echo "</p>\n";
+								//echo "</p>\n";
 
 								$sql="SELECT * FROM resp_pers WHERE (pers_id='$affiche[0]')";
 								$res1=mysql_query($sql);
@@ -1237,6 +1298,13 @@ else{
 			}
 			*/
 
+			/*
+			// DEBUG:
+			echo "count(\$adr_modif)=".count($adr_modif)."<br />";
+			echo "count(\$adr_new)=".count($adr_new)."<br />";
+			echo "count(\$pers_modif)=".count($pers_modif)."<br />";
+			echo "count(\$pers_new)=".count($pers_new)."<br />";
+			*/
 
 			// Recherche des personnes sans modif dans personnes.csv,
 			// mais avec modif de l'adresse pour l'ajouter au tableau $pers_modif
@@ -1410,7 +1478,7 @@ else{
 				//======================================
 
 
-				echo "<td style='text-align:center;'>";
+				echo "<td style='text-align:center;'>\n";
 					echo "<table border='1' width='100%'>\n";
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
@@ -1604,13 +1672,13 @@ else{
 				echo "</td>\n";
 
 				/*
-				echo "<td style='text-align:center;'>";
+				echo "<td style='text-align:center;'>\n";
 				echo "</td>\n";
 
-				echo "<td style='text-align:center;'>";
+				echo "<td style='text-align:center;'>\n";
 				echo "</td>\n";
 
-				echo "<td style='text-align:center;'>";
+				echo "<td style='text-align:center;'>\n";
 				echo "</td>\n";
 				*/
 
@@ -1657,43 +1725,44 @@ else{
 				echo "</td>\n";
 
 				//======================================
-				echo "<td style='text-align:center;'>";
-				echo stripslashes($personne[$pers_id]["civilite"]);
+				echo "<td style='text-align:center;'>\n";
+				//echo stripslashes($personne[$pers_id]["civilite"]);
+				echo ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])));
 				echo "<input type='hidden' name='new_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
 				echo "</td>\n";
 				//======================================
 
-				echo "<td style='text-align:center;'>";
+				echo "<td style='text-align:center;'>\n";
 					echo "<table border='1' width='100%'>\n";
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
 					echo "<td style='text-align:center;'>";
 					echo $personne[$pers_id]["tel_pers"];
-					echo "<input type='hidden' name='new_".$cpt."_tel_pers' value='".$personne[$pers_id]["tel_pers"]."' />\n";
+					echo "<input type='hidden' name='new_".$cpt."_tel_pers' value=\"".$personne[$pers_id]["tel_pers"]."\" />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold;'>TPo</td>\n";
-					echo "<td style='text-align:center;'>";
+					echo "<td style='text-align:center;'>\n";
 					echo $personne[$pers_id]["tel_port"];
-					echo "<input type='hidden' name='new_".$cpt."_tel_port' value='".$personne[$pers_id]["tel_port"]."' />\n";
+					echo "<input type='hidden' name='new_".$cpt."_tel_port' value=\"".$personne[$pers_id]["tel_port"]."\" />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold;'>TPr</td>\n";
-					echo "<td style='text-align:center;'>";
+					echo "<td style='text-align:center;'>\n";
 					echo $personne[$pers_id]["tel_prof"];
-					echo "<input type='hidden' name='new_".$cpt."_tel_prof' value='".$personne[$pers_id]["tel_prof"]."' />\n";
+					echo "<input type='hidden' name='new_".$cpt."_tel_prof' value=\"".$personne[$pers_id]["tel_prof"]."\" />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 
 					echo "<tr>\n";
 					echo "<td style='text-align:center; font-weight:bold;'>mel</td>\n";
-					echo "<td style='text-align:center;'>";
+					echo "<td style='text-align:center;'>\n";
 					echo $personne[$pers_id]["mel"];
-					echo "<input type='hidden' name='new_".$cpt."_mel' value='".$personne[$pers_id]["mel"]."' />\n";
+					echo "<input type='hidden' name='new_".$cpt."_mel' value=\"".$personne[$pers_id]["mel"]."\" />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 					echo "</table>\n";
