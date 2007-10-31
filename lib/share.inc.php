@@ -2028,6 +2028,63 @@ function formate_date($date){
 	return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 }
 
+function traite_regime_sconet($code_regime){
+	$premier_caractere_code_regime=substr($code_regime,0,1);
+	switch($premier_caractere_code_regime){
+		case "0":
+			// 0       EXTERN  EXTERNE LIBRE
+			return "ext.";
+			break;
+		case "1":
+			// 1       EX.SUR  EXTERNE SURVEILLE
+			return "ext.";
+			break;
+		case "2":
+			/*
+			2       DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT
+			21      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 1
+			22      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 2
+			23      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 3
+			24      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 4
+			25      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 5
+			26      DP DAN  DEMI-PENSIONNAIRE DANS L'ETABLISSEMENT 6
+			29      AU TIC  DEMI-PENSIONNAIRE AU TICKET
+			*/
+			return "d/p";
+			break;
+		case "3":
+			/*
+			3       INTERN  INTERNE DANS L'ETABLISSEMENT
+			31      INT 1J  INTERNE 1 JOUR
+			32      INT 2J  INTERNE 2 JOURS
+			33      INT 3J  INTERNE 3 JOURS
+			34      INT 4J  INTERNE 4 JOURS
+			35      INT 5J  INTERNE 5 JOURS
+			36      INT 6J  INTERNE 6 JOURS
+			38      1/2 IN  DEMI INTERNE
+			39      INT WE  INTERNE WEEK END
+			*/
+			return "int.";
+			break;
+		case "4":
+			// 4       IN.EX.  INTERNE EXTERNE
+			return "i-e";
+			break;
+		case "5":
+			// 5       IN.HEB  INTERNE HEBERGE
+			return "int.";
+			break;
+		case "6":
+			// 6       DP HOR  DEMI-PENSIONNAIRE HORS L'ETABLISSEMENT
+			return "d/p";
+			break;
+		default:
+			return "ERR";
+			//return "d/p";
+			break;
+	}
+}
+
 function getPref($login,$item,$default){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
 	$res_prefs=mysql_query($sql);
