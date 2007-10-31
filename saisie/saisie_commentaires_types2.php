@@ -71,7 +71,8 @@
 		$resultat_commentaire=mysql_query($sql);
 		if(mysql_num_rows($resultat_commentaire)>0){
 
-			echo "<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,-150);return false;\">Commentaire-type</a></p>\n";
+			//echo "<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,-150);return false;\">Commentaire-type</a></p>\n";
+			echo "<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);return false;\">Commentaire-type</a></p>\n";
 
 			echo "<input type='hidden' name='textarea_courant' id='textarea_courant' value='no_anti_inject_current_eleve_login_ap' />\n";
 
