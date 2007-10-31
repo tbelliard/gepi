@@ -171,11 +171,40 @@ $titre_page = "Créer des comptes d'accès responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<p class=bold><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
+
+$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
+$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
-$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
+//$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
+$sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
+
+// Effectif total sans login:
+$nb = mysql_num_rows(mysql_query($sql));
+
+if($afficher_tous_les_resp!='y'){
+	if($critere_recherche!=""){
+		$sql.=" AND rp.nom like '%".$critere_recherche."%'";
+	}
+}
+$sql.=" ORDER BY rp.nom, rp.prenom";
+
+// Effectif sans login avec filtrage sur le nom:
+$nb1 = mysql_num_rows(mysql_query($sql));
+
+if($afficher_tous_les_resp!='y'){
+	if($critere_recherche==""){
+		$sql.=" LIMIT 20";
+	}
+}
+//echo "$sql<br />\n";
+$quels_parents = mysql_query($sql);
+
+
 /*
 $sql="SELECT rp.*, e.nom as ele_nom, e.prenom as ele_prenom,c.classe
 						FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec, classes c
@@ -188,12 +217,19 @@ $sql="SELECT rp.*, e.nom as ele_nom, e.prenom as ele_prenom,c.classe
 						ORDER BY rp.nom,rp.prenom";
 $quels_parents = mysql_query($sql);
 */
-$nb = mysql_num_rows($quels_parents);
+
+//$nb = mysql_num_rows($quels_parents);
+
+// Effectif sans login avec filtrage sur le nom et limitation à un max de 20:
+$nb2 = mysql_num_rows($quels_parents);
+
 if($nb==0){
 	echo "<p>Tous les responsables ont un login.</p>\n";
 }
 else{
-	echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>\n";
+	//echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>\n";
+	echo "<p>$nb responsables n'ont pas encore de compte utilisateur.</p>\n";
+
 	if (getSettingValue("mode_generation_login") == null) {
 		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>\n";
 	}
@@ -201,7 +237,9 @@ else{
 		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
 	}
 
-	echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
+	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
+	echo "<blockquote>\n";
+	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 	echo "<form action='create_responsable.php' method='post'>\n";
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	echo "<select name='classe' size='1'>\n";
@@ -215,9 +253,54 @@ else{
 	echo "</select>\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
+	echo "</blockquote>\n";
+
+	//echo "<br />\n";
+	echo "<p><b>Créer des comptes individuellement</b> :</p>\n";
+	echo "<blockquote>\n";
+
+	echo "<p>";
+	if(($afficher_tous_les_resp!='y')&&($critere_recherche=="")){
+		echo "Au plus $nb2 responsables sont affichés ci-dessous (<i>pour limiter le temps de chargement de la page</i>).<br />\n";
+	}
+	echo "Utilisez le formulaire de recherche pour adapter la recherche.";
+	echo "</p>\n";
+
+	//===================================
+	//echo "<div style='border:1px solid black;'>\n";
+	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<table style='border:1px solid black;'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top' rowspan='3'>\n";
+	echo "Filtrage:";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables sans login dont le <b>nom</b> contient: ";
+	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "ou";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='button' name='afficher_tous' value='Afficher tous les responsables sans login' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<input type='hidden' name='afficher_tous_les_resp' id='afficher_tous_les_resp' value='n' />\n";
+	echo "</form>\n";
+	//echo "</div>\n";
+	//===================================
 	echo "<br />\n";
-	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
-	echo "<table>\n";
+
+	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
+
+	echo "<table class='boireaus'>\n";
+	$alt=1;
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
 
 		$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
@@ -230,8 +313,10 @@ else{
 		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<tr>";
-				echo "<td valign='top'>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+				//echo "<td valign='top'>\n";
+				echo "<td>\n";
 				echo "<form action='create_responsable.php' method='post'>\n";
 				echo "<input type='hidden' name='mode' value='individual' />\n";
 				echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
@@ -249,6 +334,7 @@ else{
 		}
 	}
 	echo "</table>\n";
+	echo "</blockquote>\n";
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

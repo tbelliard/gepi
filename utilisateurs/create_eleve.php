@@ -55,7 +55,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		$test = mysql_query("SELECT count(e.login) FROM eleves e WHERE (e.login = '" . $_POST['eleve_login'] ."')");
 		if (mysql_result($test, 0) == "0") {
 			$error = true;
-			$msg .= "Erreur lors de la création de l'utilisateur : aucun élève avec ce login n'a été trouvé !<br/>";
+			$msg .= "Erreur lors de la création de l'utilisateur : aucun élève avec ce login n'a été trouvé !<br />";
 		} else {
 			$quels_eleves = mysql_query("SELECT e.* FROM eleves e WHERE (" .
 				"e.login = '" . $_POST['eleve_login'] ."')");
@@ -76,7 +76,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			if (!$quels_eleves) $msg .= mysql_error();
 		} else {
 			$error = true;
-			$msg .= "Vous devez sélectionner au moins une classe !<br/>";
+			$msg .= "Vous devez sélectionner au moins une classe !<br />";
 		}
 	}
 
@@ -103,36 +103,36 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"change_mdp = 'n'");
 
 			if (!$reg) {
-				$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br/>";
+				$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
 			} else {
 				$nb_comptes++;
 			}
 		}
 		if ($nb_comptes == 1) {
-			$msg .= "Un compte a été créé avec succès.<br/>";
+			$msg .= "Un compte a été créé avec succès.<br />";
 		} elseif ($nb_comptes > 1) {
-			$msg .= $nb_comptes." comptes ont été créés avec succès.<br/>";
+			$msg .= $nb_comptes." comptes ont été créés avec succès.<br />";
 		}
 		if ($nb_comptes > 0) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-				//$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>";
-				//$msg .= "<br/><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>Imprimer la fiche de bienvenue</a>";
+				//$msg .= "<br /><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>";
+				//$msg .= "<br /><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>Imprimer la fiche de bienvenue</a>";
 				$msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				if ($_POST['classe'] == "all") {
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-					$msg .= "<br/><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				}
 			}
-			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
+			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
 		}
 	}
 }
@@ -154,41 +154,115 @@ if($nb==0){
 	echo "<p>Tous les élèves ont un compte utilisateur.</p>\n";
 }
 else{
-	echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte d'accès à Gepi.</p>";
+	//echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte d'accès à Gepi.</p>\n";
+	echo "<p>$nb élèves n'ont pas encore de compte d'accès à Gepi.</p>\n";
 
 	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Pour le moment, les logins élèves de Gepi sont générés selon une méthode interne à Gepi. Il est donc peu probable que le SSO fonctionne pour les comptes élèves.</p>";
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Pour le moment, les logins élèves de Gepi sont générés selon une méthode interne à Gepi. Il est donc peu probable que le SSO fonctionne pour les comptes élèves.</p>\n";
 	}
 
-	echo "<p><b>Créer des comptes par lot</b> : sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.";
-	echo "<form action='create_eleve.php' method='post'>";
-	echo "<input type='hidden' name='mode' value='classe' />";
-	echo "<select name='classe' size='1'>";
-	echo "<option value='none'>Sélectionnez une classe</option>";
-	echo "<option value='all'>Toutes les classes</option>";
+	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
+	echo "<blockquote>\n";
+	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
+
+	echo "<form action='create_eleve.php' method='post'>\n";
+	echo "<input type='hidden' name='mode' value='classe' />\n";
+	echo "<select name='classe' size='1'>\n";
+	echo "<option value='none'>Sélectionnez une classe</option>\n";
+	echo "<option value='all'>Toutes les classes</option>\n";
 
 	$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>";
+		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
-	echo "</select>";
-	echo "<input type='submit' name='Valider' value='Valider' />";
-	echo "</form>";
-	echo "<br/>";
-	echo "<p><b>Créer des comptes individuellement</b> : cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>";
-	echo "<table>";
+	echo "</select>\n";
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</form>\n";
+	echo "</blockquote>\n";
+
+	echo "<br />\n";
+
+
+
+	echo "<p><b>Créer des comptes individuellement</b> :</p>\n";
+	echo "<blockquote>\n";
+
+	$afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
+	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+	$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+
+
+	$sql="SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (u.login IS NULL";
+	if($afficher_tous_les_eleves!='y'){
+		if($critere_recherche!=""){
+			$sql.=" AND e.nom like '%".$critere_recherche."%'";
+		}
+	}
+	$sql.=") ORDER BY e.nom,e.prenom";
+	if($afficher_tous_les_eleves!='y'){
+		if($critere_recherche==""){
+			$sql.=" LIMIT 20";
+		}
+	}
+	//echo "$sql<br />";
+	$quels_eleves = mysql_query($sql);
+	$nb2=mysql_num_rows($quels_eleves);
+
+
+	echo "<p>";
+	if(($afficher_tous_les_eleves!='y')&&($critere_recherche=="")){
+		echo "Au plus $nb2 élèves sont affichés ci-dessous (<i>pour limiter le temps de chargement de la page</i>).<br />\n";
+	}
+	echo "Utilisez le formulaire de recherche pour adapter la recherche.";
+	echo "</p>\n";
+
+	//====================================
+	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<table style='border:1px solid black;'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top' rowspan='3'>\n";
+	echo "Filtrage:";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves sans login dont le <b>nom</b> contient: ";
+	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "ou";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='button' name='afficher_tous' value='Afficher tous les élèves sans login' onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<input type='hidden' name='afficher_tous_les_eleves' id='afficher_tous_les_eleves' value='n' />\n";
+	echo "</form>\n";
+	//====================================
+	echo "<br />\n";
+
+
+	echo "<p>Cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>\n";
+	echo "<table class='boireaus'>\n";
+	$alt=1;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-		echo "<tr>";
-			echo "<td>";
-			echo "<form action='create_eleve.php' method='post'>";
-			echo "<input type='hidden' name='mode' value='individual'/>";
-			echo "<input type='hidden' name='eleve_login' value='".$current_eleve->login."'/>";
-			echo "<input type='submit' value='Créer'/>";
-			echo "</form>";
-			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>";
-		echo "</tr>";
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<form action='create_eleve.php' method='post'>\n";
+			echo "<input type='hidden' name='mode' value='individual' />\n";
+			echo "<input type='hidden' name='eleve_login' value='".$current_eleve->login."' />\n";
+			echo "<input type='submit' value='Créer' />\n";
+			echo "</form>\n";
+			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>\n";
+		echo "</tr>\n";
 	}
-	echo "</table>";
+	echo "</table>\n";
+	echo "</blockquote>\n";
 }
 require("../lib/footer.inc.php");
 ?>
