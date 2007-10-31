@@ -161,57 +161,59 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 	$nb_photos_proposees=0;
 	$cpt_photo = 0;
 	while($cpt_photo < $total_photo) {
-		if($_FILES['photo']['type'][$cpt_photo] != "") {
-			$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
+		if(isset($_FILES['photo']['type'][$cpt_photo])){
+			if($_FILES['photo']['type'][$cpt_photo] != "") {
+				$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
 
-			$nb_photos_proposees++;
+				$nb_photos_proposees++;
 
-			/*
-			echo "\$sav_photo['name'][$cpt_photo]=".$sav_photo['name'][$cpt_photo]."<br />\n";
-			echo "preg_match('/jpg$/',\$sav_photo['name'][$cpt_photo])=".preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])."<br />\n";
-			echo "\$sav_photo['type'][$cpt_photo]=".$sav_photo['type'][$cpt_photo]."<br />\n";
-			*/
+				/*
+				echo "\$sav_photo['name'][$cpt_photo]=".$sav_photo['name'][$cpt_photo]."<br />\n";
+				echo "preg_match('/jpg$/',\$sav_photo['name'][$cpt_photo])=".preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])."<br />\n";
+				echo "\$sav_photo['type'][$cpt_photo]=".$sav_photo['type'][$cpt_photo]."<br />\n";
+				*/
 
-			if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
-				//$msg = "Erreur de téléchargement niveau 1.";
-				$msg .= "Erreur de téléchargement niveau 1 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
-			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
-				//$msg = "Erreur de téléchargement niveau 2.";
-				$msg .= "Erreur de téléchargement niveau 2 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
-			//} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
-			} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) || $sav_photo['type'][$cpt_photo] != "image/jpeg"){
-				//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
-				$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
-			} else {
-				$dest = "../photos/personnels/";
-				$n = 0;
-				//$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/personnels/".$quiestce[$cpt_photo].".jpg")) {
-					//$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/personnels/";
-					$msg = "Problème de transfert : le fichier '".$sav_photo['name'][$cpt_photo]."' n'a pas pu être transféré sur le répertoire photos/personnels/<br />\n";
+				if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
+					//$msg = "Erreur de téléchargement niveau 1.";
+					$msg .= "Erreur de téléchargement niveau 1 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
+				} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
+					//$msg = "Erreur de téléchargement niveau 2.";
+					$msg .= "Erreur de téléchargement niveau 2 pour la photo $cpt_photo: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
+				//} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
+				} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) || $sav_photo['type'][$cpt_photo] != "image/jpeg"){
+					//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
+					$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
 				} else {
-					//$msg = "Téléchargement réussi.";
-					$nb_succes_photos++;
-					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-						// si le redimensionnement des photos est activé on redimenssionne
-						$source = imagecreatefromjpeg("../photos/personnels/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
-						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
-						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
+					$dest = "../photos/personnels/";
+					$n = 0;
+					//$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
+					if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/personnels/".$quiestce[$cpt_photo].".jpg")) {
+						//$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/personnels/";
+						$msg = "Problème de transfert : le fichier '".$sav_photo['name'][$cpt_photo]."' n'a pas pu être transféré sur le répertoire photos/personnels/<br />\n";
+					} else {
+						//$msg = "Téléchargement réussi.";
+						$nb_succes_photos++;
+						if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+							// si le redimensionnement des photos est activé on redimenssionne
+							$source = imagecreatefromjpeg("../photos/personnels/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
+							if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
+							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
 
-						//rotation de l'image si choix différent de rien
-						//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+							//rotation de l'image si choix différent de rien
+							//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 
-						// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-						$largeur_source = imagesx($source);
-						$hauteur_source = imagesy($source);
-						$largeur_destination = imagesx($destination);
-						$hauteur_destination = imagesy($destination);
+							// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+							$largeur_source = imagesx($source);
+							$hauteur_source = imagesy($source);
+							$largeur_destination = imagesx($destination);
+							$hauteur_destination = imagesy($destination);
 
-						// On crée la miniature
-						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-						imagejpeg($destination, "../photos/personnels/".$quiestce[$cpt_photo].".jpg",100);
+							// On crée la miniature
+							imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+							// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+							imagejpeg($destination, "../photos/personnels/".$quiestce[$cpt_photo].".jpg",100);
+						}
 					}
 				}
 			}
@@ -286,30 +288,31 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
 <table border=0>
 <tr>
 <td><p>Afficher : </p></td>
-<td><p>tous les utilisateurs <INPUT TYPE="radio" NAME="display" value='tous' <?php if ($display=='tous') {echo " CHECKED";} ?> /></p></td>
+<td><p><label for='display_tous' style='cursor: pointer;'>tous les utilisateurs</label> <input type="radio" name="display" id='display_tous' value='tous' <?php if ($display=='tous') {echo " checked";} ?> /></p></td>
 <td><p>
- &nbsp;&nbsp;les utilisateurs actifs<INPUT TYPE="radio" NAME="display" value='actifs' <?php if ($display=='actifs') {echo " CHECKED";} ?> /></p></td>
+ &nbsp;&nbsp;<label for='display_actifs' style='cursor: pointer;'>les utilisateurs actifs</label> <input type="radio" id='display_actifs' name="display" value='actifs' <?php if ($display=='actifs') {echo " checked";} ?> /></p></td>
  <td><p>
- &nbsp;&nbsp;les utilisateurs inactifs<INPUT TYPE="radio" NAME="display" value='inactifs' <?php if ($display=='inactifs') {echo " CHECKED";} ?> /></p></td>
- <td><p><input type=submit value=Valider /></p></td>
+ &nbsp;&nbsp;<label for='display_inactifs' style='cursor: pointer;'>les utilisateurs inactifs</label> <input type="radio" name="display" id='display_inactifs' value='inactifs' <?php if ($display=='inactifs') {echo " checked";} ?> /></p></td>
+ <td><p><input type='submit' value='Valider' /></p></td>
  </tr>
  </table>
-<input type=hidden name='mode' value='<?php echo $mode; ?>' />
-<input type=hidden name=order_by value=<?php echo $order_by; ?> />
+<input type='hidden' name='mode' value='<?php echo $mode; ?>' />
+<input type='hidden' name='order_by' value='<?php echo $order_by; ?>' />
 
 <?php
 // Affichage du tableau
-echo "<table border=1 cellpadding=3>\n";
-echo "<tr><td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></td>\n";
-echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></td>\n";
-echo "<td><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></td>\n";
-echo "<td><p class=small><b>matière(s) si professeur</b></p></td>\n";
-echo "<td><p class=small><b>classe(s)</b></p></td>\n";
-echo "<td><p class=small><b>suivi</b></p></td>\n";
-echo "<td><p class=small><b>supprimer</b></p></td>\n";
-echo "<td><p class=small><b>imprimer fiche bienvenue</b></p></td>\n";
+//echo "<table border=1 cellpadding=3>\n";
+echo "<table class='boireaus' cellpadding=3>\n";
+echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></th>\n";
+echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></th>\n";
+echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></th>\n";
+echo "<th><p class=small><b>matière(s) si professeur</b></p></th>\n";
+echo "<th><p class=small><b>classe(s)</b></p></th>\n";
+echo "<th><p class=small><b>suivi</b></p></th>\n";
+echo "<th><p class=small><b>supprimer</b></p></th>\n";
+echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
-    	echo "<td><p><input type='submit' value='Télécharger les photos' name='bouton1' /></td>\n";
+    	echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
     }
 echo "</tr>\n";
 $calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
@@ -321,7 +324,7 @@ $calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 		"ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
 $i = 0;
-
+$alt=1;
 while ($i < $nombreligne){
     $user_nom = mysql_result($calldata, $i, "nom");
     $user_prenom = mysql_result($calldata, $i, "prenom");
@@ -372,7 +375,8 @@ while ($i < $nombreligne){
             $col[$i][3] .= '<br />(utilisateur local)';
         else
             $col[$i][3] .= '<br />(utilisateur LCS)';
-    if (($display == 'tous') and ($user_etat[$i]=='inactif')) $col[$i][3] .= '<br />(inactif)';
+    //if (($display == 'tous') and ($user_etat[$i]=='inactif')) $col[$i][3] .= '<br />(inactif)';
+    if (($display == 'tous') and ($user_etat[$i]=='inactif')) $col[$i][3] .= '<br />(<span style="color:red;">inactif</span>)';
 
     // Affichage des enseignements
     $k = 0;
@@ -422,6 +426,7 @@ while ($i < $nombreligne){
     }
     if ($col[$i][6]=='') {$col[$i][6] = "&nbsp;";}
 
+	/*
     if ($user_etat[$i] == 'actif') {
         $bgcolor = '#E9E9E4';
     } else {
@@ -429,7 +434,6 @@ while ($i < $nombreligne){
         //$bgcolor = 'darkgray';
         $bgcolor = '#A9A9A9';
     }
-
     echo "<tr><td bgcolor='$bgcolor'><p class=small><span class=bold>{$col[$i][1]}</span></p></td>\n";
 	if ($col[$i][7] == "professeur") {
 		echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
@@ -447,6 +451,34 @@ while ($i < $nombreligne){
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
     // Affichage du lien pour l'impression des paramètres
     echo "<td bgcolor='$bgcolor'><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
+	*/
+
+	$alt=$alt*(-1);
+	if($user_etat[$i] == 'actif'){
+	    echo "<tr class='lig$alt'>\n";
+	}
+	else{
+	    echo "<tr class='lig$alt' style='background-color: slategray'>\n";
+	}
+
+	echo "<td><p class=small><span class=bold>{$col[$i][1]}</span></p></td>\n";
+	if ($col[$i][7] == "professeur") {
+		echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
+		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
+		echo "</td>\n";
+	} else {
+	  echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
+	}
+    echo "<td><p class=small><span class=bold>{$col[$i][3]}</span></p></td>\n";
+    echo "<td><p class=small><span class=bold>{$col[$i][4]}</span></p></td>\n";
+    echo "<td><p class=small><span class=bold>{$col[$i][5]}</span></p></td>\n";
+    // Affichage de la classe suivie
+    echo "<td><p class=small><span class=bold>{$col[$i][6]}</span></p></td>\n";
+    // Affichage du lien 'supprimer'
+    echo "<td><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
+    // Affichage du lien pour l'impression des paramètres
+    echo "<td><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
+
     // Affichage du téléchargement pour la photo si le module trombi est activé
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
         	?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php $codephoto = md5($col[$i][1].''.$col[$i][2]); echo $codephoto; ?>" /><?php $photo = '../photos/personnels/'.$codephoto.'.jpg'; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
@@ -468,5 +500,6 @@ echo  "</form>\n";
 // fin module trombinoscope
 
 } // Fin : si $mode == personnels
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
