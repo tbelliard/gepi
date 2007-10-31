@@ -91,11 +91,19 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'");
         if (!$reg_eleve) echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.";
 
+		//=========================
+		// MODIF: boireaus 20071024
+		/*
         if ($reg_regime == "0") {$regime = "ext.";}
         if ($reg_regime == "2") {$regime = "d/p";}
         if ($reg_regime == "3") {$regime = "int.";}
         if ($reg_regime == "4") {$regime = "i-e";}
         if (($reg_regime != "0") and ($reg_regime != "4") and ($reg_regime != "2") and ($reg_regime != "3")) {$regime = "d/p";}
+		*/
+		$regime=traite_regime_sconet($reg_regime);
+		if("$regime"=="ERR"){$regime="d/p";}
+		//=========================
+
         if ($reg_doublant == "O") {$doublant = 'R';}
         if ($reg_doublant != "O") {$doublant = '-';}
 
@@ -273,6 +281,9 @@ else {
             $naissance = 'non définie';
         }
 
+		//=========================
+		// MODIF: boireaus 20071024
+		/*
         if ($reg_regime == "0") {
             $reg_regime_aff = "ext.";
         } else if ($reg_regime == "4") {
@@ -285,6 +296,14 @@ else {
             $reg_regime_aff = "<font color = 'red'>ND</font>";
             $ligne_pb = 'yes';
         }
+		*/
+		$reg_regime_aff=traite_regime_sconet($reg_regime);
+		if($reg_regime_aff=="ERR"){
+			$reg_regime_aff="<font color = 'red'>ND</font>";
+            $ligne_pb = 'yes';
+		}
+		//=========================
+
 
         if ($reg_doublant == "N") {
             $reg_doublant_aff = "N";
