@@ -124,8 +124,8 @@ function createRandomPassword() {
                     echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\" />\n";
                     echo "<input type='hidden' name='is_posted' value='yes' />\n";
                     echo "</p>\n";
-                    echo "<p><input type=\"radio\" name=\"mdp\" value=\"alea\" checked /> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
-                    echo "<input type=\"radio\" name=\"mdp\" value=\"date\" /> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
+                    echo "<p><input type=\"radio\" name=\"mdp\" id='mdp_alea' value=\"alea\" checked /> <label for='mdp_alea' style='cursor: pointer;'>Générer un mot de passe aléatoire pour chaque professeur.</label><br />\n";
+                    echo "<input type=\"radio\" name=\"mdp\" id='mdp_date' value=\"date\" /> <label for='mdp_alea' style='cursor: pointer;'>Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</label></p>\n";
                     echo "<input type='hidden' name='is_posted' value='yes' />\n";
                     //echo "</p>\n";
                     echo "<p><input type='submit' value='Valider' /></p>\n";
