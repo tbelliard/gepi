@@ -196,18 +196,18 @@ require_once("../lib/header.inc");
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |
 <a href="create_responsable.php"> Ajouter de nouveaux comptes</a>
 <?php
-if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-  // Eric Faut-il garder la ligne ?
-  //  echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm(' tes-vous s˚r de vouloir effectuer cette opÈration ?\\n Celle-ci est irrÈversible, et rÈinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marquÈs actifs, avec un mot de passe alpha-numÈrique gÈnÈrÈ alÈatoirement.\\n En cliquant sur OK, vous lancerez la procÈdure, qui gÈnËrera une page contenant les fiches-bienvenue ‡ imprimer immÈdiatement pour distribution aux utilisateurs concernÈs.')\">RÈinitialiser mots de passe</a>";
-}
+	if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
+	// Eric Faut-il garder la ligne ?
+	//  echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm(' tes-vous s˚r de vouloir effectuer cette opÈration ?\\n Celle-ci est irrÈversible, et rÈinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marquÈs actifs, avec un mot de passe alpha-numÈrique gÈnÈrÈ alÈatoirement.\\n En cliquant sur OK, vous lancerez la procÈdure, qui gÈnËrera une page contenant les fiches-bienvenue ‡ imprimer immÈdiatement pour distribution aux utilisateurs concernÈs.')\">RÈinitialiser mots de passe</a>";
+	}
 
-$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
-if(mysql_num_rows($quels_parents)==0){
-	echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables ‡ l'aide du lien ci-dessus.</p>\n";
-	require("../lib/footer.inc.php");
-	die;
-}
-echo "</p>\n";
+	$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
+	if(mysql_num_rows($quels_parents)==0){
+		echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables ‡ l'aide du lien ci-dessus.</p>\n";
+		require("../lib/footer.inc.php");
+		die;
+	}
+	echo "</p>\n";
 
 	//echo "<p><b>Actions par lot</b> :";
 
@@ -255,9 +255,45 @@ echo "</p>\n";
 
 	echo "<p><br /></p>\n";
 
-echo "<p><b>Liste des comptes responsables existants</b> :\n";
+	echo "<p><b>Liste des comptes responsables existants</b> :</p>\n";
+	echo "<blockquote>\n";
+
+	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
+	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+	$critere_recherche=ereg_replace("[^a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ -]", "", $critere_recherche);
+
+	//====================================
+	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<table style='border:1px solid black;'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top' rowspan='3'>\n";
+	echo "Filtrage:";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables ayant un login dont le <b>nom</b> contient: ";
+	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "ou";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='button' name='afficher_tous' value='Afficher tous les responsables ayant un login' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<input type='hidden' name='afficher_tous_les_resp' id='afficher_tous_les_resp' value='n' />\n";
+	echo "</form>\n";
+	//====================================
+	echo "<br />\n";
+
 ?>
-<table border="1">
+<!--table border="1"-->
+<table class='boireaus'>
 <tr>
 	<th>Identifiant</th>
 	<th>Nom PrÈnom</th>
@@ -268,8 +304,29 @@ echo "<p><b>Liste des comptes responsables existants</b> :\n";
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
+$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+
+if($afficher_tous_les_resp!='y'){
+	if($critere_recherche!=""){
+		$sql.=" AND u.nom like '%".$critere_recherche."%'";
+	}
+}
+$sql.=") ORDER BY u.nom,u.prenom";
+
+// Effectif sans login avec filtrage sur le nom:
+$nb1 = mysql_num_rows(mysql_query($sql));
+
+if($afficher_tous_les_resp!='y'){
+	if($critere_recherche==""){
+		$sql.=" LIMIT 20";
+	}
+}
+
+$quels_parents = mysql_query($sql);
+$alt=1;
 while ($current_parent = mysql_fetch_object($quels_parents)) {
-	echo "<tr style='text-align:center;'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt' style='text-align:center;'>\n";
 		echo "<td>";
 			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."'>".$current_parent->login."</a>";
 		echo "</td>\n";
@@ -320,8 +377,11 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "</td>\n";
 	echo "</tr>\n";
 }
+echo "</table>\n";
+echo "</blockquote>\n";
+
 ?>
-</table>
+
 <?php
 if (mysql_num_rows($quels_parents) == "0") {
 	echo "<p>Pour crÈer de nouveaux comptes d'accËs associÈs aux responsables d'ÈlËves dÈfinis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";

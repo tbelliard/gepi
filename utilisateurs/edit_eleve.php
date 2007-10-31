@@ -195,7 +195,8 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     //echo " | <a href=\"reset_passwords.php?user_status=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'eleve\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe (impression HTML)</a>";
 }
 
-$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
+//$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
+$quels_eleves = mysql_query("SELECT 1=1 FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
 if(mysql_num_rows($quels_eleves)==0){
 	echo "<p>Aucun compte élève n'existe encore.<br />Vous pouvez ajouter des comptes élèves à l'aide du lien ci-dessus.</p>\n";
 	require("../lib/footer.inc.php");
@@ -203,90 +204,148 @@ if(mysql_num_rows($quels_eleves)==0){
 }
 echo "</p>\n";
 
-	//echo "<p><b>Actions par lot</b> :";
-	echo "<form action='edit_eleve.php' method='post'>\n";
-	echo "<p style='font-weight:bold;'>Actions par lot pour les comptes élèves existants : </p>\n";
-	echo "<blockquote>\n";
-	echo "<p>\n";
+//echo "<p><b>Actions par lot</b> :";
+echo "<form action='edit_eleve.php' method='post'>\n";
+echo "<p style='font-weight:bold;'>Actions par lot pour les comptes élèves existants : </p>\n";
+echo "<blockquote>\n";
+echo "<p>\n";
 
-	echo "<select name='classe' size='1'>\n";
-	echo "<option value='none'>Sélectionnez une classe</option>\n";
-	echo "<option value='all'>Toutes les classes</option>\n";
+echo "<select name='classe' size='1'>\n";
+echo "<option value='none'>Sélectionnez une classe</option>\n";
+echo "<option value='all'>Toutes les classes</option>\n";
 
-	//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
-	$quelles_classes = mysql_query("SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, utilisateurs u
-										WHERE jec.login=u.login AND
-												jec.id_classe=c.id
-										ORDER BY classe");
+//$quelles_classes = mysql_query("SELECT id,classe FROM classes ORDER BY classe");
+$quelles_classes = mysql_query("SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec, utilisateurs u
+									WHERE jec.login=u.login AND
+											jec.id_classe=c.id
+									ORDER BY classe");
 
-	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
-	}
-	echo "</select>\n";
-	echo "<br />\n";
+while ($current_classe = mysql_fetch_object($quelles_classes)) {
+	echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
+}
+echo "</select>\n";
+echo "<br />\n";
 
-	echo "<input type='hidden' name='mode' value='classe' />\n";
-	echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
-	echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
-	echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
-	echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
-	//echo "<br />\n";
-	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
-	echo "</p>\n";
-	echo "</blockquote>\n";
-	echo "</form>\n";
+echo "<input type='hidden' name='mode' value='classe' />\n";
+echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
+echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
+echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
+echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
+//echo "<br />\n";
+echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
+echo "</p>\n";
+echo "</blockquote>\n";
+echo "</form>\n";
 
 
-	echo "<p><br /></p>\n";
+echo "<p><br /></p>\n";
 
-echo "<p><b>Liste des comptes élèves existants</b> :\n";
+echo "<p><b>Liste des comptes élèves existants</b> :</p>\n";
+echo "<blockquote>\n";
+
+$afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
+$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+
+//====================================
+echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo "<table style='border:1px solid black;'>\n";
+echo "<tr>\n";
+echo "<td valign='top' rowspan='3'>\n";
+echo "Filtrage:";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves ayant un login dont le <b>nom</b> contient: ";
+echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "<tr>\n";
+echo "<td>\n";
+echo "ou";
+echo "</td>\n";
+echo "</tr>\n";
+echo "<tr>\n";
+echo "<td>\n";
+echo "<input type='button' name='afficher_tous' value='Afficher tous les élèves ayant un login' onClick=\"document.getElementById('afficher_tous_les_eleves').value='y'; document.form_rech.submit();\" />\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+
+echo "<input type='hidden' name='afficher_tous_les_eleves' id='afficher_tous_les_eleves' value='n' />\n";
+echo "</form>\n";
+//====================================
+echo "<br />\n";
+
 ?>
-<table border="1">
+<!--table border="1"-->
+<table class='boireaus'>
 <tr>
 	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
 </tr>
 <?php
 //$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
 
+$sql="SELECT * FROM utilisateurs u WHERE u.statut='eleve'";
+
+if($afficher_tous_les_eleves!='y'){
+	if($critere_recherche!=""){
+		$sql.=" AND u.nom like '%".$critere_recherche."%'";
+	}
+}
+$sql.=" ORDER BY u.nom,u.prenom";
+
+// Effectif sans login avec filtrage sur le nom:
+$nb1 = mysql_num_rows(mysql_query($sql));
+
+if($afficher_tous_les_eleves!='y'){
+	if($critere_recherche==""){
+		$sql.=" LIMIT 20";
+	}
+}
+$quels_eleves = mysql_query($sql);
+
+$alt=1;
 while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-	echo "<tr>";
-		echo "<td>";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+		echo "<td>\n";
 			echo "<a href='../eleves/modify_eleve.php?eleve_login=".$current_eleve->login."'>".$current_eleve->login."</a>";
-		echo "</td>";
-		echo "<td>";
+		echo "</td>\n";
+		echo "<td>\n";
 			echo $current_eleve->nom . " " . $current_eleve->prenom;
-		echo "</td>";
-		echo "<td align='center'>";
+		echo "</td>\n";
+		echo "<td align='center'>\n";
 			//echo $current_eleve->etat;
 			//echo "<br/>";
 			if ($current_eleve->etat == "actif") {
 				echo "<font color='green'>".$current_eleve->etat."</font>";
-				echo "<br />";
+				echo "<br />\n";
 				echo "<a href='edit_eleve.php?action=rendre_inactif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Désactiver";
 			} else {
 				echo "<font color='red'>".$current_eleve->etat."</font>";
-				echo "<br />";
+				echo "<br />\n";
 				echo "<a href='edit_eleve.php?action=rendre_actif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Activer";
 			}
-			echo "</a>";
-		echo "</td>";
-		echo "<td>";
-		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
+			echo "</a>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
 
 		if($current_eleve->etat == "actif"){
-			echo "<br/>";
+			echo "<br />\n";
 			//echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
-			echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>\n";
 		}
 		echo "</td>\n";
-	echo "</tr>";
+	echo "</tr>\n";
 }
 ?>
 </table>
 <?php
+echo "</blockquote>\n";
 
 if (mysql_num_rows($quels_eleves) == "0") {
-	echo "<p>Pour créer de nouveaux comptes d'accès associés aux élèves définis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>";
+	echo "<p>Pour créer de nouveaux comptes d'accès associés aux élèves définis dans Gepi, vous devez cliquer sur le lien 'Ajouter de nouveaux comptes' ci-dessus.</p>\n";
 }
 
 require("../lib/footer.inc.php");?>
