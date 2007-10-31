@@ -360,7 +360,11 @@
 												if(strstr($ligne,"<".$tab_champs_struct[$loop].">")){
 													$tmpmin=strtolower($tab_champs_struct[$loop]);
 													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-													$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
+
+													// Suppression des guillemets éventuels
+													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
+													$eleves[$i]["structures"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 													//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
 													break;
 												}
@@ -590,7 +594,11 @@
 										if(strstr($ligne,"<".$tab_champs_eleve[$loop].">")){
 											$tmpmin=strtolower($tab_champs_eleve[$loop]);
 											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-											$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
+
+											// Suppression des guillemets éventuels
+											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
+											$eleves[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 											affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -635,7 +643,11 @@
 											//echo "$i - ";
 											$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
 											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
+
+											// Suppression des guillemets éventuels
+											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
+											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 											affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -794,11 +806,17 @@
 
 										// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
 										//              Ca y est, il a été ajouté.
+										// ***************************************
+										// ERREUR: code_commune_insee!=code_postal
+										// ***************************************
 										// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
 										if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
 											if($cpt_debut_requete>0){
 												$sql.=", ";
 											}
+											// *****************************************
+											// PROBLEME: code_commune_insee!=code_postal
+											// *****************************************
 											$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
 											$cpt_debut_requete++;
 										}
@@ -979,7 +997,11 @@
 										if(strstr($ligne,"<".$tab_champs_opt[$loop].">")){
 											$tmpmin=strtolower($tab_champs_opt[$loop]);
 											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-											$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
+
+											// Suppression des guillemets éventuels
+											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
+											$eleves[$i]["options"][$j]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 											//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
 											break;
 										}
@@ -1176,7 +1198,11 @@
 									unset($tabtmp);
 									//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
 									$tabtmp=explode('"',strstr($ligne," CODE_MATIERE="));
-									$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
+
+									// Suppression des guillemets éventuels
+									//$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
+									$matieres[$i]["code_matiere"]=ereg_replace('"','',trim($tabtmp[1]));
+
 									//affiche_debug("\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n");
 									affiche_debug("\$matieres[$i][\"code_matiere\"]=".$matieres[$i]["code_matiere"]."<br />\n");
 									$temoin_mat=1;
@@ -1191,7 +1217,11 @@
 										if(strstr($ligne,"<".$tab_champs_matiere[$loop].">")){
 											$tmpmin=strtolower($tab_champs_matiere[$loop]);
 											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-											$matieres[$i]["$tmpmin"]=extr_valeur($ligne);
+
+											// Suppression des guillemets éventuels
+											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne);
+											$matieres[$i]["$tmpmin"]=ereg_replace('"','',extr_valeur($ligne));
+
 											affiche_debug("\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n");
 											break;
 										}
@@ -1276,7 +1306,14 @@
 						echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=5'>Suite</a></p>\n";
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
+
+						// PROBLEME AVEC LE code_commune_insee != code_postal
+						// On saute l'étape de remplissage de l'établissment précédent...
+						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
+						// NON... traité autrement sans modifier la table 'etablissements'
+						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
+						// SI: L'association élève/rne est faite en step3.php
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -1395,8 +1432,12 @@
 							echo "$lig->type\n";
 							echo "</td>\n";
 
+							// *****************************************
+							// PROBLEME: code_commune_insee!=code_postal
+							// *****************************************
 							echo "<td>\n";
-							echo "$lig->cp\n";
+							//echo "$lig->cp\n";
+							echo "&nbsp;\n";
 							echo "</td>\n";
 
 							echo "<td>\n";
@@ -1449,11 +1490,17 @@
 							echo "</td>\n";
 
 							echo "<td>\n";
+							// *****************************************
+							// PROBLEME: code_commune_insee!=code_postal
+							// *****************************************
+							echo "<span style='color:red'>$lig2->cp</span>";
+							/*
 							if($lig->cp!=$lig2->cp){
 								echo "$lig2->cp";
 								echo " <span style='color:red'>-&gt;</span> ";
 							}
 							echo "$lig->cp\n";
+							*/
 							echo "</td>\n";
 
 							echo "<td>\n";
@@ -1474,6 +1521,10 @@
 					echo "<input type='hidden' name='is_posted' value='yes' />\n";
 					echo "<p><input type='submit' value='Valider' /></p>\n";
 					echo "</form>\n";
+
+					echo "<p><i>NOTE:</i> Les fichiers de SCONET contiennent le code_commune_insee, mais pas le code_postal (<i>les valeurs diffèrent</i>).<br />\n";
+					echo "Les établissements ne sont donc pas importés (<i>pour éviter des insertions erronées</i>).<br />\n";
+					echo "Seules les associations élève/RNE sont importées.</p>\n";
 
 
 					echo "<script type='text/javascript' language='javascript'>
