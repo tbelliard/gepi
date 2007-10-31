@@ -224,6 +224,68 @@ div#lien_cahier_texte {
     text-align: center;
     top: 40px;
 }
+
+
+/*==================================*/
+/* Nouvelle page de login */
+
+#div_login {
+	width: 25em;
+	border: 1px solid black;
+}
+
+#div_login_entete {
+	/*
+	background: #4a4a59;
+	background-image: url("./images/background/darkfade_small.png");
+	background-repeat: repeat-x;
+	color: white;
+	*/
+	color: black;
+	text-align: center;
+	padding:0;
+	margin:0;
+	width: 25em;
+}
+
+#div_login_entete h2 {
+	/*color: white;*/
+	margin:0;
+	padding: 0;
+	font-size: 11pt;
+	font-family: Verdana;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
+
+#div_login_entete p.annee {
+	position: relative;
+	top: -5px;
+	margin: 0;
+	padding: 0;
+	/*color: white;*/
+	text-align: center;
+	font-size: x-small;
+}
+
+#div_login table {
+	width: 25em;
+	margin:0;
+	padding-top: 10px;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-left: auto;
+}
+
+#new_login_footer{
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	font-size: x-small;
+}
+/*==================================*/
+
 /*
     Début - header
 */
@@ -656,5 +718,6 @@ img.link {
 	background-color: #4a4a59;
 }
 .infobulle_corps {
-	background-color: #EAEAEA;
+	/*background-color: #EAEAEA;*/
+	background-color: #DFDFDF;
 }
