@@ -187,7 +187,11 @@ if (!isset($is_posted)) {
 				$enregistre = "yes";
 				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					$ligne = fgets($fp, 4096);
+					//=========================
+					// MODIF: boireaus 20071024
+					//$ligne = fgets($fp, 4096);
+					$ligne = ereg_replace('"','',fgets($fp, 4096));
+					//=========================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						//$query = "INSERT INTO temp_gep_import2 VALUES ('$k',''";
