@@ -133,7 +133,7 @@ require_once("../lib/header.inc");
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
-echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>";
+echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>\n";
 
 if (!isset($step1)) {
 	$j=0;
@@ -152,19 +152,19 @@ if (!isset($step1)) {
 	if ($test != 0) {$flag=1;}
 
 	if ($flag != 0){
-		echo "<p><b>ATTENTION ...</b><br />";
-		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>";
-		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>";
-		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
-		echo "</ul>";
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
-		echo "<input type=hidden name='step1' value='y' />";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
-		echo "</form>";
-		echo "</div>";
-		echo "</body>";
-		echo "</html>";
+		echo "<p><b>ATTENTION ...</b><br />\n";
+		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>\n";
+		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>\n";
+		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>\n";
+		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>\n";
+		echo "</ul>\n";
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo "<input type=hidden name='step1' value='y' />\n";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+		echo "</form>\n";
+		echo "</div>\n";
+		echo "</body>\n";
+		echo "</html>\n";
 		die();
 	}
 }
@@ -182,30 +182,30 @@ if (!isset($is_posted)) {
 	}
 	$del = @mysql_query("DELETE FROM tempo2");
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	//echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les données relatives aux professeurs.";
 
-	echo "<p>Importation du fichier <b>sts.xml</b> contenant les données relatives aux professeurs.";
+	echo "<p>Importation du fichier <b>sts.xml</b> contenant les données relatives aux professeurs.\n";
 	//echo "<p>Veuillez préciser le nom complet du fichier <b>F_wind.csv</b>.";
-	echo "<input type=hidden name='is_posted' value='yes' />";
-	echo "<input type=hidden name='step1' value='y' />";
+	echo "<input type=hidden name='is_posted' value='yes' />\n";
+	echo "<input type=hidden name='step1' value='y' />\n";
 	//echo "<p><input type='file' size='80' name='dbf_file' />";
-	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>";
+	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
-	echo "<input type='radio' name='login_gen_type' value='name' checked /> nom";
-	echo "<br /><input type='radio' name='login_gen_type' value='name8' /> nom (tronqué à 8 caractères)";
-	echo "<br /><input type='radio' name='login_gen_type' value='fname8' /> pnom (tronqué à 8 caractères)";
-	echo "<br /><input type='radio' name='login_gen_type' value='fname19' /> pnom (tronqué à 19 caractères)";
-	echo "<br /><input type='radio' name='login_gen_type' value='firstdotname' /> prenom.nom";
-	echo "<br /><input type='radio' name='login_gen_type' value='firstdotname19' /> prenom.nom (tronqué à 19 caractères)";
-	echo "<br /><input type='radio' name='login_gen_type' value='namef8' /> nomp (tronqué à 8 caractères)";
-	echo "<br /><input type='radio' name='login_gen_type' value='lcs' /> pnom (façon LCS)";
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' checked /> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_name8' value='name8' /> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (tronqué à 8 caractères)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' /> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (tronqué à 8 caractères)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' /> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (tronqué à 19 caractères)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' /> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' /> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' /> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' /> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
-	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>";
-	echo "<input type='radio' name='sso' value='no' checked /> Non";
-	echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera généré)";
+	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>\n";
+	echo "<input type='radio' name='sso' value='no' checked /> Non\n";
+	echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera généré)\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -215,8 +215,8 @@ if (!isset($is_posted)) {
 	echo "<input type=\"radio\" name=\"mode_mdp\" value=\"date\" /> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
 	echo "<br />\n";
 
-	echo "<p><input type='submit' value='Valider' /></p>";
-	echo "</form>";
+	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "</form>\n";
 	echo "<p><br /></p>\n";
 
 }
@@ -345,14 +345,20 @@ else {
 					unset($tabtmp);
 					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-					$prof[$i]["grade"]=trim($tabtmp[2]);
+
+					// Suppression des guillemets éventuels
+					//$prof[$i]["grade"]=trim($tabtmp[2]);
+					$prof[$i]["grade"]=ereg_replace('"','',trim($tabtmp[2]));
 				}
 				//if(strstr($ligne[$cpt],"<FONCTION>")){
 				if(strstr($ligne,"<FONCTION>")){
 					unset($tabtmp);
 					//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 					$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-					$prof[$i]["fonction"]=trim($tabtmp[2]);
+
+					// Suppression des guillemets éventuels
+					//$prof[$i]["fonction"]=trim($tabtmp[2]);
+					$prof[$i]["fonction"]=ereg_replace('"','',trim($tabtmp[2]));
 				}
 
 
@@ -387,7 +393,11 @@ else {
 							unset($tabtmp);
 							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-							$prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
+
+							// Suppression des guillemets éventuels
+							//$prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
+							$prof[$i]["prof_princ"][$j]["code_structure"]=ereg_replace('"','',trim($tabtmp[2]));
+
 							$temoin_au_moins_un_prof_princ="oui";
 						}
 
@@ -431,7 +441,10 @@ else {
 						unset($tabtmp);
 						//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
 						$tabtmp=explode('"',strstr($ligne," CODE="));
-						$prof[$i]["disciplines"][$j]["code"]=trim($tabtmp[1]);
+
+						// Suppression des guillemets éventuels
+						//$prof[$i]["disciplines"][$j]["code"]=trim($tabtmp[1]);
+						$prof[$i]["disciplines"][$j]["code"]=ereg_replace('"','',trim($tabtmp[1]));
 					}
 					//if(strstr($ligne[$cpt],"</DISCIPLINE>")){
 					if(strstr($ligne,"</DISCIPLINE>")){
@@ -445,14 +458,20 @@ else {
 							unset($tabtmp);
 							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-							$prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
+
+							// Suppression des guillemets éventuels
+							//$prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
+							$prof[$i]["disciplines"][$j]["libelle_court"]=ereg_replace('"','',trim($tabtmp[2]));
 						}
 						//if(strstr($ligne[$cpt],"<NB_HEURES>")){
 						if(strstr($ligne,"<NB_HEURES>")){
 							unset($tabtmp);
 							//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 							$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-							$prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
+
+							// Suppression des guillemets éventuels
+							//$prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
+							$prof[$i]["disciplines"][$j]["nb_heures"]=ereg_replace('"','',trim($tabtmp[2]));
 						}
 					}
 				}

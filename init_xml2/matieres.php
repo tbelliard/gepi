@@ -186,18 +186,18 @@
 					$j++;
 				}
 				if ($flag != 0){
-					echo "<p><b>ATTENTION ...</b><br />";
-					echo "Des données concernant les matières sont actuellement présentes dans la base GEPI<br /></p>";
-					echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-					echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>";
+					echo "<p><b>ATTENTION ...</b><br />\n";
+					echo "Des données concernant les matières sont actuellement présentes dans la base GEPI<br /></p>\n";
+					echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>\n";
+					echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>\n";
 
-					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
-					echo "<input type=hidden name='verif_tables_non_vides' value='y' />";
-					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
-					echo "</form>";
-					echo "</div>";
-					echo "</body>";
-					echo "</html>";
+					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
+					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+					echo "</form>\n";
+					echo "</div>\n";
+					echo "</body>\n";
+					echo "</html>\n";
 					die();
 				}
 			}
@@ -395,7 +395,10 @@
 											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 											//$matiere[$i]["libelle_long"]=trim($tabtmp[2]);
-											$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+
+											// Suppression des guillemets éventuels
+											//$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+											$matiere[$i]["libelle_long"]=traitement_magic_quotes(corriger_caracteres(trim(ereg_replace('"','',$tabtmp[2]))));
 										}
 										//if(strstr($ligne[$cpt],"<LIBELLE_EDITION>")){
 										if(strstr($ligne,"<LIBELLE_EDITION>")){
@@ -403,7 +406,10 @@
 											//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 											$tabtmp=explode(">",ereg_replace("<",">",$ligne));
 											//$matiere[$i]["libelle_edition"]=trim($tabtmp[2]);
-											$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+
+											// Suppression des guillemets éventuels
+											//$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[2])));
+											$matiere[$i]["libelle_edition"]=traitement_magic_quotes(corriger_caracteres(trim(ereg_replace('"','',$tabtmp[2]))));
 										}
 									}
 								}

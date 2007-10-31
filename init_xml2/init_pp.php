@@ -207,7 +207,11 @@ if (!isset($is_posted)) {
 			for($k = 1; ($k < $nblignes+1); $k++){
 				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					$ligne = fgets($fp, 4096);
+					//====================
+					// Suppression des guillemets éventuels
+					//$ligne = fgets($fp, 4096);
+					$ligne = ereg_replace('"','',fgets($fp, 4096));
+					//====================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						$temoin_erreur="non";

@@ -395,7 +395,11 @@
 												$tmpmin=strtolower($tab_champs_personne[$loop]);
 												//$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 												//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-												$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+												// Suppression des guillemets éventuels
+												//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+												$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 												affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
 												break;
 											}
@@ -579,7 +583,11 @@
 										$tmpmin=strtolower($tab_champs_responsable[$loop]);
 										//$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-										$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+										// Suppression des guillemets éventuels (il ne devrait pas y en avoir là)
+										//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+										$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 										affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
 										break;
 									}
@@ -746,7 +754,11 @@
 										$tmpmin=strtolower($tab_champs_adresse[$loop]);
 										//$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-										$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+
+										// Suppression des guillemets éventuels
+										//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
+										$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(ereg_replace('"','',extr_valeur($ligne))));
+
 										//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
 										break;
 									}

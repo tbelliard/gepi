@@ -338,10 +338,17 @@ if (!isset($suite)) {
 				if($temoin_grp==1){
 					//if(strstr($ligne[$cpt],"<LIBELLE_LONG>")){
 					if(strstr($ligne,"<LIBELLE_LONG>")){
+						// IL ARRIVE QUE L'ON AIT <LIBELLE_LONG/>... faut-il alors remplir le libelle_long avec $groupes[$i]["code"] ??
 						unset($tabtmp);
 						//$tabtmp=explode(">",ereg_replace("<",">",$ligne[$cpt]));
 						$tabtmp=explode(">",ereg_replace("<",">",$ligne));
-						$groupes[$i]["libelle_long"]=trim($tabtmp[2]);
+
+						// Suppression des guillemets éventuels
+						//$groupes[$i]["libelle_long"]=trim($tabtmp[2]);
+						$groupes[$i]["libelle_long"]=ereg_replace('"','',trim($tabtmp[2]));
+					}
+					elseif(strstr($ligne,"<LIBELLE_LONG/>")){
+						$groupes[$i]["libelle_long"]=$groupes[$i]["code"];
 					}
 
 					//if(strstr($ligne[$cpt],"<DIVISIONS_APPARTENANCE>")){
