@@ -61,8 +61,8 @@ require_once("../lib/header.inc");
 ?>" name="form1" method="post">
 
 <p>
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_annees_anterieures")=='y') echo " checked"; ?> />&nbsp;Activer le module Années antérieures<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_annees_anterieures")=='n') echo " checked"; ?> />&nbsp;Désactiver le module Années antérieures
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_annees_anterieures")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Années antérieures</label><br />
+<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_annees_anterieures")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Années antérieures</label>
 </p>
 
 <input type="hidden" name="is_posted" value="1" />

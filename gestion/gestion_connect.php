@@ -213,7 +213,7 @@ if ($disable_login=='yes'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_1a'>Désactiver les connexions</label>\n";
+echo "<label for='label_1a' style='cursor: pointer;'>Désactiver les connexions</label>\n";
 echo "<br />\n";
 echo "(<i><span style='color:red;'>Attention, les utilisateurs actuellement connectés sont automatiquement déconnectés.</span></i>)\n";
 echo "</td>\n";
@@ -226,7 +226,7 @@ if ($disable_login=='soft'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_3a'>Désactiver les futures connexions</label>\n";
+echo "<label for='label_3a' style='cursor: pointer;'>Désactiver les futures connexions</label>\n";
 echo "<br />(<i>et attendre la fin des connexions actuelles pour pouvoir désactiver les connexions et procéder à une opération de maintenance, par exemple</i>)\n";
 echo "</td>\n";
 echo "</tr>\n";
@@ -238,7 +238,7 @@ if ($disable_login=='no'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_2a'>Activer les connexions</label>\n";
+echo "<label for='label_2a' style='cursor: pointer;'>Activer les connexions</label>\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";

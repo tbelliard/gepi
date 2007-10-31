@@ -70,19 +70,19 @@ require_once("../lib/header.inc");
 <form action="index.php" name="form1" method="post">
 
 <p>
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_carnets_notes")=='y') echo " checked"; ?> />&nbsp;Activer les carnets de notes<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_carnets_notes")=='n') echo " checked"; ?> />&nbsp;Désactiver les carnets de notes
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_carnets_notes")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer les carnets de notes</label><br />
+<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_carnets_notes")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver les carnets de notes</label>
 </p>
 
 <?php
 	echo "<p>\n";
 	if(file_exists("../lib/ss_zip.class.php")){
-		echo "<input type='checkbox' name='export_cn_ods' value='y'";
+		echo "<input type='checkbox' name='export_cn_ods' id='export_cn_ods' value='y'";
 		if(getSettingValue('export_cn_ods')=='y'){
 			echo ' checked';
 		}
 		echo " /> \n";
-		echo "Permettre l'export des carnets de notes au format ODS.<br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)\n";
+		echo "<label for='export_cn_ods' style='cursor: pointer;'>Permettre l'export des carnets de notes au format ODS.</label><br />(<i>si les professeurs ne font pas le ménage après génération des exports,<br />ces fichiers peuvent prendre de la place sur le serveur</i>)\n";
 	}
 	else{
 		echo "En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...<br />Voir <a href='http://smiledsoft.com/demos/phpzip/' target='_blank'>http://smiledsoft.com/demos/phpzip/</a><br />Une version limitée est disponible gratuitement.<br />Emplacement alternatif: <a href='http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip'>http://stephane.boireau.free.fr/informatique/gepi/ss_zip.class.php.zip</a>\n";
