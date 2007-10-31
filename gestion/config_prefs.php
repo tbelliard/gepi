@@ -396,7 +396,12 @@ else{
 		// 1ère ligne
 		//$lignes_entete="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
-		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		}
+		else{
+			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
 		$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
@@ -414,16 +419,17 @@ else{
 		$lignes_entete.="</tr>\n";
 
 		// 3ème ligne
-		//$lignes_entete.="<tr style='background-color: white;'>\n";
-		$lignes_entete.="<tr class='entete'>\n";
-		for($i=0;$i<count($tabchamps);$i++){
-			$lignes_entete.="<th>";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-			$lignes_entete.="</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			//$lignes_entete.="<tr style='background-color: white;'>\n";
+			$lignes_entete.="<tr class='entete'>\n";
+			for($i=0;$i<count($tabchamps);$i++){
+				$lignes_entete.="<th>";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				$lignes_entete.="</th>\n";
+			}
+			$lignes_entete.="</tr>\n";
 		}
-		$lignes_entete.="</tr>\n";
-
 
 		//$i=0;
 		//while($lig_prof=mysql_fetch_object($res_prof)){
@@ -486,7 +492,12 @@ else{
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
-		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		}
+		else{
+			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th colspan='6'>Afficher les champs</th>\n";
 		$lignes_entete.="</tr>\n";
@@ -503,16 +514,17 @@ else{
 		$lignes_entete.="</tr>\n";
 
 		// 3ème ligne
-		//$lignes_entete.="<tr style='background-color: white;'>\n";
-		$lignes_entete.="<tr class='entete'>\n";
-		for($i=0;$i<count($tabchamps);$i++){
-			$lignes_entete.="<th>";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-			$lignes_entete.="</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			//$lignes_entete.="<tr style='background-color: white;'>\n";
+			$lignes_entete.="<tr class='entete'>\n";
+			for($i=0;$i<count($tabchamps);$i++){
+				$lignes_entete.="<th>";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				$lignes_entete.="</th>\n";
+			}
+			$lignes_entete.="</tr>\n";
 		}
-		$lignes_entete.="</tr>\n";
-
 
 		//$i=0;
 		//while($lig_prof=mysql_fetch_object($res_prof)){
@@ -563,7 +575,12 @@ else{
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
 		$lignes_entete="<tr class='entete'>\n";
-		$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			$lignes_entete.="<th rowspan='3'>Professeur</th>\n";
+		}
+		else{
+			$lignes_entete.="<th rowspan='2'>Professeur</th>\n";
+		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
 		$lignes_entete.="</tr>\n";
@@ -581,16 +598,17 @@ else{
 		$lignes_entete.="</tr>\n";
 
 		// 3ème ligne
-		//$lignes_entete.="<tr style='background-color: white;'>\n";
-		$lignes_entete.="<tr class='entete'>\n";
-		for($i=0;$i<count($tabchamps);$i++){
-			$lignes_entete.="<th>";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-			$lignes_entete.="</th>\n";
+		if($_SESSION['statut']!='professeur'){
+			//$lignes_entete.="<tr style='background-color: white;'>\n";
+			$lignes_entete.="<tr class='entete'>\n";
+			for($i=0;$i<count($tabchamps);$i++){
+				$lignes_entete.="<th>";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				$lignes_entete.="<a href='javascript:modif_coche(\"$tabchamps[$i]\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				$lignes_entete.="</th>\n";
+			}
+			$lignes_entete.="</tr>\n";
 		}
-		$lignes_entete.="</tr>\n";
-
 
 		//$i=0;
 		//while($lig_prof=mysql_fetch_object($res_prof)){

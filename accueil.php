@@ -227,7 +227,8 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||
 
 if($_SESSION['statut']=="professeur"){
 	echo "<p class='bold'>\n";
-	echo "<a href='accueil_simpl_prof.php'>Interface simplifiée</a>";
+	//echo "<a href='accueil_simpl_prof.php'>Interface simplifiée</a>";
+	echo "<a href='accueil_simpl_prof.php'>Interface graphique</a>";
 	//echo " | \n";
 	echo "</p>\n";
 }
@@ -245,11 +246,18 @@ $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, auteur, d
     )
     order by id DESC");
 $nb_messages = mysql_num_rows($appel_messages);
+//echo "\$nb_messages=$nb_messages<br />";
 $ind = 0;
 $texte_messages = '';
 $affiche_messages = 'no';
 while ($ind < $nb_messages) {
     $destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
+	/*
+	echo "\$destinataires1=$destinataires1<br />";
+	echo "\$_SESSION['statut']=".$_SESSION['statut']."<br />";
+	echo "\substr(\$_SESSION['statut'], 0, 1)=".substr($_SESSION['statut'], 0, 1)."<br />";
+	echo "strpos($destinataires1, substr(\$_SESSION['statut'], 0, 1))=".strpos($destinataires1, substr($_SESSION['statut'], 0, 1))."<br />";
+	*/
     if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
         if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
         $affiche_messages = 'yes';
