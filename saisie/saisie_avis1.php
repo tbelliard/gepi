@@ -203,6 +203,20 @@ function focus_suivant(num){
 </script>\n";
 
 
+	$k=1;
+	$commentaires_type_classe_periode=array();
+	while ($k < $nb_periode) {
+		// Existe-t-il des commentaires-types pour cette classe et cette période?
+		$sql="select 1=1 from commentaires_types WHERE num_periode='$k' AND id_classe='$id_classe'";
+		$res_test=mysql_query($sql);
+		if(mysql_num_rows($res_test)!=0){
+			$commentaires_type_classe_periode[$k]="y";
+		}
+		else{
+			$commentaires_type_classe_periode[$k]="n";
+		}
+		$k++;
+	}
 
 
 	$i = "0";
@@ -258,7 +272,10 @@ function focus_suivant(num){
 					if((file_exists('saisie_commentaires_types.php'))
 						&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
 						||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
-						echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='n".$k.$num_id."';afficher_div('commentaire_type','y',30,-50);return false;\">Ajouter un commentaire-type</a>\n";
+
+						if($commentaires_type_classe_periode[$k]=="y"){
+							echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='n".$k.$num_id."';afficher_div('commentaire_type','y',30,-50);return false;\">Ajouter un commentaire-type</a>\n";
+						}
 					}
 					echo "</td>\n";
 				} else {
