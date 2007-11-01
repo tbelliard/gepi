@@ -46,19 +46,19 @@ $message = "";
 
 	// Modification du setting autorise_edt_tous
 	if (isset($autorise_acces_tous)) {
-		$requete = "UPDATE setting SET value = '".$autorise_acces_tous."' WHERE name = 'autorise_acces_tous'";
+		$requete = "UPDATE setting SET value = '".$autorise_acces_tous."' WHERE name = 'autorise_edt_tous'";
 		$modif_setting = "ok";
 	}
 
 	// Modification du setting autorise_edt_admin
 	if (isset($autorise_acces_admin)) {
-		$requete = "UPDATE setting SET value = '".$autorise_acces_admin."' WHERE name = 'autorise_acces_admin'";
+		$requete = "UPDATE setting SET value = '".$autorise_acces_admin."' WHERE name = 'autorise_edt_admin'";
 		$modif_setting = "ok";
 	}
 
 	// Modification du setting autorise_edt_eleve
 	if (isset($autorise_acces_eleve)) {
-		$requete = "UPDATE setting SET value = '".$autorise_acces_eleve."' WHERE name = 'autorise_acces_eleve'";
+		$requete = "UPDATE setting SET value = '".$autorise_acces_eleve."' WHERE name = 'autorise_edt_eleve'";
 		$modif_setting = "ok";
 	}
 
