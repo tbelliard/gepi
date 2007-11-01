@@ -269,9 +269,9 @@ div#lien_cahier_texte {
 }
 
 #div_login table {
-	width: 25em;
+	/*width: 25em;*/
 	margin:0;
-	padding-top: 10px;
+	/*padding-top: 10px;*/
 	padding-right: 15px;
 	padding-left: 15px;
 	margin-left: auto;

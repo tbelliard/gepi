@@ -250,7 +250,9 @@ echo "<div id='new_div_login' class='center'>\n";
 				echo "<p style='margin:0; padding:0;'>Afin d'utiliser Gepi, vous devez vous identifier.</p>";
 			}
 
+			echo "<div>&nbsp;</div>\n";
 			//echo "<table style='width: 25em; margin:0; padding-top: 10px; padding-right: 15px; padding-left: 15px; margin-left: auto;' cellpadding='3' cellspacing='0'>\n";
+			//border='1'
 			echo "<table cellpadding='3' cellspacing='0'>\n";
 
 			echo "<tr>
@@ -268,6 +270,9 @@ echo "<div id='new_div_login' class='center'>\n";
 					</table>
 				</td>
 			</tr>
+			</table>\n";
+
+			echo "<table cellpadding='3' cellspacing='0'>
 			<tr>
 				<td style='text-align: center; padding-top: 10px;'>\n";
 
