@@ -272,9 +272,12 @@ echo "<div id='new_div_login' class='center'>\n";
 			</tr>
 			</table>\n";
 
-			echo "<table cellpadding='3' cellspacing='0'>
+			//border='1'
+			echo "<table width='100%' cellpadding='3' cellspacing='0'>
 			<tr>
-				<td style='text-align: center; padding-top: 10px;'>\n";
+				<!--td style='text-align: center; padding-top: 10px;'-->\n";
+				// padding-left: 15px
+				echo "<td style='text-align: left; padding-top: 10px; padding-left: 10px;'>\n";
 
 				if (getSettingValue("enable_password_recovery") == "yes") {
 					echo "<a class='small' href='recover_password.php'>Mot de passe oublié ?</a>";
