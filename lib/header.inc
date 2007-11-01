@@ -177,6 +177,15 @@ if(isset($style_specifique)){
 	}
 }
 
+// Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
+$prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
+	if ($prototype == "ok") {
+		// On affiche alors le lien qui ouvre prototype à la page en question
+    	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
+} else {
+    echo '';
+}
+
 if(isset($javascript_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
