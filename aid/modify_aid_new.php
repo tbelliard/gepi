@@ -57,13 +57,30 @@ require_once("../lib/header.inc");
 
 	//================ TRAITEMENT des entrées ===================
 	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
+		// Cas de la classe entière
+		if ($id_eleve == "tous") {
+			// On récupère tous les login de cette classe
+			$req_login = mysql_query("SELECT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."' ORDER BY login");
+			$nbre_login = mysql_num_rows($req_login);
+			for($i=0; $i<$nbre_login; $i++){
+				$rep_log_eleve[$i]["login"] = mysql_result($req_login, $i, "login");
+				// On teste si cet élève n'est pas déjà membre de l'AID
+				$req_verif = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysql_error().'.');
+				$verif = mysql_num_rows($req_verif);
+				if ($verif === 0) {
+					$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
+				}else {
+					// on ne fait rien
+				}
+			}
+		}else {
 		// On intègre cet élève dans la base s'il n'y est pas déjà
 		// Pour l'instant on récupère son login à partir de id_eleve
 		$rep_log_eleve = mysql_fetch_array(mysql_query("SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
 		// On vérifie s'il n'est pas déjà membre de cet aid
 		// Par cette méthode, on ne peut enregistrer deux fois le même
 		$req_ajout = mysql_query("INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
-
+		}// fin du else
 	}
 
 	//================= TRAITEMENT des sorties =======================
@@ -144,18 +161,28 @@ if (isset($aff_liste_m)) {
 				else {
 					$aff_classes_m .= "
 					<tr class=\"".$aff_tr_css."\">
-					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\"><img src=\"../images/icons/add_user.png\" /> ".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."</a></td></tr>
+					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+							<img src=\"../images/icons/add_user.png\" /> ".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."
+							</a></td></tr>
 					";
 				}
 		}// for $c...
 	}// for $b
+
+		// On ajoute un lien qui permet d'intégrer toute la classe d'un coup
+		$aff_classes_m .= "
+	<tr class=\"".$aff_tr_css."\">
+					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=tous&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+							<img src=\"../images/icons/add_user.png\" /> Toute la classe
+							</a></td></tr>
+							";
 	$aff_classes_m .= "</table>\n";
 }// if isset...
 
 // Dans le div de droite, on affiche la liste des élèves de l'AID
 		$aff_aid_d .= "<p style=\"color: brown; border: 1px solid brown; padding: 2px;\">".$rep_aid["nom"]." :</p>\n";
 		// mais aussi le nom des profs de l'AID
-		$req_prof = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$id_aid."'");
+		$req_prof = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$id_aid."' ORDER BY id_utilisateur");
 		$nbre_prof = mysql_num_rows($req_prof);
 		for($p=0; $p<$nbre_prof; $p++) {
 			$prof[$p]["id_utilisateur"] = mysql_result($req_prof, $p, "id_utilisateur");
@@ -164,7 +191,7 @@ if (isset($aff_liste_m)) {
 			$aff_aid_d .= "".$rep_nom["civilite"].$rep_nom["nom"]." ";
 		}
 
-	$req_ele_aid = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
+	$req_ele_aid = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."' ORDER BY login");
 	$nbre = mysql_num_rows($req_ele_aid);
 		$s = "";
 		if ($nbre >= 2) {
