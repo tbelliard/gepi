@@ -185,26 +185,28 @@ if ($action == "modifier")
 
 
 
-echo "<p class=bold>";
+echo "<p class=\"bold\">\n";
 if ($action=="modifier" or $action=="ajouter") {
-	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">";
+	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">\n";
 } else {
 	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "edt") {
-		$retour = "<a href='../../edt_organisation/index_edt.php'>";
+		$retour = "	<a href='../../edt_organisation/index_edt.php'>\n";
 	}
 	else
-		$retour = "<a href='index.php'>";
+		$retour = "	<a href='index.php'>\n";
 echo $retour;
 }
-echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo "</p>";
+echo "	<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "</p>\n";
 ?>
 <?php if ($action == "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
 <h2>Définition des créneaux horaires</h2>
-<a href="admin_periodes_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un créneau horaire</a>
-<br/><br/>
+	<a href="admin_periodes_absences.php?action=ajouter">
+		<img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un créneau horaire
+	</a>
+<br /><br />
     <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr>
         <th class="tab_th" style="width: 80px;">code</th>
@@ -218,12 +220,24 @@ echo "</p>";
     $requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
     $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
     $i=1;
-    while ( $data_periode = mysql_fetch_array( $execution_periode ) ) {
-       if ($i === '1') { $i = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
+	while ( $data_periode = mysql_fetch_array( $execution_periode ) ) {
+		if ($i === '1') {
+			$i = '2';
+			$couleur_cellule = 'couleur_ligne_1';
+		} else {
+			$couleur_cellule = 'couleur_ligne_2';
+			$i = '1';
+		}
+		// Pour l'affichage, on enlève les secondes qui ne servent à rien.
+		$expl_heuredebut = explode(":", $data_periode['heuredebut_definie_periode']);
+		$heuredebut_creneau = $expl_heuredebut[0].":".$expl_heuredebut[1];
+		$expl_heurefin = explode(":", $data_periode['heurefin_definie_periode']);
+		$heurefin_creneau = $expl_heurefin[0].":".$expl_heurefin[1];
+	?>
         <tr class="<?php echo $couleur_cellule; ?>">
           <td><?php echo $data_periode['nom_definie_periode']; ?></td>
-          <td><?php echo $data_periode['heuredebut_definie_periode']; ?></td>
-          <td><?php echo $data_periode['heurefin_definie_periode']; ?></td>
+          <td><?php echo $heuredebut_creneau; ?></td>
+          <td><?php echo $heurefin_creneau; ?></td>
           <td><?php echo $data_periode['type_creneaux']; ?></td>
           <td><a href="admin_periodes_absences.php?action=modifier&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
           <td><a href="admin_periodes_absences.php?action=visualiser&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
@@ -248,7 +262,33 @@ echo "</p>";
           <th class="tab_th">Nombre de créneaux horaires à ajouter</th>
         </tr>
         <tr>
-          <td class="couleur_ligne_1" style="text-align: right;"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre à jour" /></td>
+			<td class="couleur_ligne_1" style="text-align: right;">
+			<select name="nb_ajout" onchange='document.form1.submit();'>
+<?php
+	// On propose le nombre de créneaux à ajouter
+for($a=1; $a<=15; $a++) {
+	if (isset($nb_ajout)) {
+		if ($a == $nb_ajout) {
+			$selected = " selected='selected'";
+		} else {
+			$selected = "";
+		}
+	} else {
+		$selected = "";
+	}
+
+	echo '<option value="'.$a.'"'.$selected.'>'.$a.'</option>
+	';
+}
+echo '			</select>
+	';
+
+/*
+<input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="Submit2" value="Mettre à jour" />
+*/
+?>
+			</td>
         </tr>
       </table>
     </form>

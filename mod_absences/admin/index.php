@@ -82,7 +82,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <blockquote>
   <a href="admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
   <a href="admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
-  <a href="admin_config_calendrier.php?action=visualiser">Définir périodes de vacances et jour férier</a><br />
+  <!--<a href="admin_config_calendrier.php?action=visualiser">Définir périodes de vacances et jours fériés</a><br />-->
   <a href="admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
   <a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
   <a href="admin_actions_absences.php?action=visualiser">Définir les actions sur le suivi des élèves</a>
