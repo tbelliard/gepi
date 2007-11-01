@@ -495,6 +495,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d élèves', '');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Graphique de la fiche élève', '1');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/admin/admin_config_calendrier.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définir les différentes périodes', '');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/index_edt.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion des emplois du temps', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_initialiser.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation des emplois du temps', '');";
@@ -4759,6 +4760,49 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
+
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'autorise_edt_tous' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_tous', 'y');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'autorise_edt_admin' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_admin', 'y');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'autorise_edt_eleve' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_eleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
 
 		// Fin des ajouts concernant le dispositif EDT
 		// ====================================
