@@ -129,11 +129,11 @@ echo "<h3 class='gepi'>Mots de passe perdus</h3>";
 echo "<form action=\"options_connect.php\" method=\"post\">";
 echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
 if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
-echo " /> <label for='label_1b'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_1b' style='cursor: pointer;'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
 
 echo "<br /><input type='radio' name='enable_password_recovery' value='yes' id='label_2b'";
 if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
-echo " /> <label for='label_2b'>Activer la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_2b' style='cursor: pointer;'>Activer la procédure automatisée de récupération de mot de passe</label>";
 
 echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
 echo "</form>";
@@ -163,23 +163,23 @@ echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">";
 
 echo "<input type='radio' name='use_sso' value='no' id='label_1'";
 if (getSettingValue("use_sso")=='no' OR !getSettingValue("use_sso")) echo " checked ";
-echo " /> <label for='label_1'>Authentification autonome (sur la base de données de Gepi) [défaut]</label>";
+echo " /> <label for='label_1' style='cursor: pointer;'>Authentification autonome (sur la base de données de Gepi) [défaut]</label>";
 
 echo "<br/><input type='radio' name='use_sso' value='lcs' id='lcs'";
 if (getSettingValue("use_sso")=='lcs') echo " checked ";
-echo " /> <label for='lcs'>Authentification sur serveur LCS</label>";
+echo " /> <label for='lcs' style='cursor: pointer;'>Authentification sur serveur LCS</label>";
 
 echo "<br/><input type='radio' name='use_sso' value='ldap_scribe' id='label_ldap_scribe'";
 if (getSettingValue("use_sso")=='ldap_scribe') echo " checked ";
-echo " /> <label for='label_ldap_scribe'>Authentification sur serveur Eole SCRIBE (LDAP)</label>";
+echo " /> <label for='label_ldap_scribe' style='cursor: pointer;'>Authentification sur serveur Eole SCRIBE (LDAP)</label>";
 
 echo "<br /><input type='radio' name='use_sso' value='cas' id='label_2'";
 if (getSettingValue("use_sso")=='cas') echo " checked ";
-echo " /> <label for='label_2'>Authentification SSO par un serveur CAS</label>";
+echo " /> <label for='label_2' style='cursor: pointer;'>Authentification SSO par un serveur CAS</label>";
 
 echo "<br /><input type='radio' name='use_sso' value='lemon' id='label_3'";
 if (getSettingValue("use_sso")=='lemon') echo " checked ";
-echo " /> <label for='label_3'>Authentification SSO par LemonLDAP</label>";
+echo " /> <label for='label_3' style='cursor: pointer;'>Authentification SSO par LemonLDAP</label>";
 
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
