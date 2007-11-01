@@ -24,8 +24,8 @@ if($indice_prof_select!=-1){
 	if($indice_prof_select!=0){
 		$precedent=$indice_prof_select-1;
 		echo "
-		<span style='font-size: xx-small; font-weight:normal;'>
-			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=prof'>Professeur précédent</a>
+		<span class=\"edt_suivant\">
+			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=prof'>Prof. précédent</a>
 		</span>
 			";
 	}
@@ -35,17 +35,17 @@ echo '
 		<select name="login_edt" onchange=\'document.liste_prof.submit();\'>
 			<option value="rien">Choix du professeur</option>
 	';
-for($i=0;$i<count($tab_select);$i++) {
+for($i=0; $i<count($tab_select); $i++) {
 	if(isset($login_edt)){
-		if($login_edt==$tab_select[$i]["login"]){
-			$selected=" selected='selected'";
+		if($login_edt == $tab_select[$i]["login"]){
+			$selected = " selected='selected'";
 		}
 		else{
-			$selected="";
+			$selected = "";
 		}
 	}
 	else{
-		$selected="";
+		$selected = "";
 	}
 	echo "
 			<option value='".$tab_select[$i]["login"]."'".$selected.">".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"]."</option>
@@ -64,8 +64,8 @@ if($indice_prof_select!=-1){
 	if($suivant<count($tab_select)){
 		//$suivant=$indice_prof_select+1;
 		echo "
-		<span style='font-size: xx-small; font-weight:normal;'>
-			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=prof'>Professeur suivant</a>
+		<span class=\"edt_suivant\">
+			<a href='index_edt.php?visioedt=prof1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=prof'>Prof. suivant</a>
 		</span>
 			";
 	}

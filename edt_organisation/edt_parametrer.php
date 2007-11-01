@@ -73,7 +73,7 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_aff_cre = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
-		echo "<span class=\"refus\"> Modification de l'affichage des creneaux enregistrée</span>\n<br />\n";
+		echo "<span class=\"refus\"> Modification de l'affichage des créneaux enregistrée</span>\n<br />\n";
 	}
 
 	// Le réglage de l'affichage des couleurs
@@ -110,7 +110,7 @@ if (isset($parametrer_ok)) {
 	}
 	else {
 		$modif_cherch_salle = mysql_query("UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
-		echo "<span class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrés</span>\n<br />\n";
+		echo "<span class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</span>\n<br />\n";
 	}
 } //if (isset($parametrer_ok))
 else {
@@ -142,7 +142,7 @@ else {
 			Afficher le nom des cr&eacute;neaux (M1, M2,...)
 <br />
 			<input type="radio" name="edt_aff_creneaux" value="heures" <?php echo (aff_checked("edt_aff_creneaux", "heures")); ?>/>
-			Afficher les heures de d&eacute;but et de fin du cr&eacute;neaux
+			Afficher les heures de d&eacute;but et de fin du cr&eacute;neau
 		</span>
 </fieldset>
 

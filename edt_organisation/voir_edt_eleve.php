@@ -1,7 +1,12 @@
 <?php
 /* fichier pour visionner l'EdT d'un élève */
 
-$login_edt=isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL;
+$login_edt = isset($_POST["login_edt"]) ? $_POST["login_edt"] : (isset($_GET["login_edt"]) ? $_GET["login_edt"] : NULL);
+$choix_classe = isset($_POST["choix_classe"]) ? $_POST["choix_classe"] : (isset($_GET["choix_classe"]) ? $_GET["choix_classe"] : NULL);
+$choix_classe1 = isset($_POST["choix_classe1"]) ? $_POST["choix_classe1"] : (isset($_GET["choix_classe1"]) ? $_GET["choix_classe1"] : NULL);
+$alphabet_eleves = isset($_POST["alphabet_eleves"]) ? $_POST["alphabet_eleves"] : (isset($_GET["alphabet_eleves"]) ? $_GET["alphabet_eleves"] : NULL);
+$choix_lettre = isset($_POST["choix_lettre"]) ? $_POST["choix_lettre"] : (isset($_GET["choix_lettre"]) ? $_GET["choix_lettre"] : NULL);
+$login_edt = isset($_POST["login_edt"]) ? $_POST["login_edt"] : (isset($_GET["login_edt"]) ? $_GET["login_edt"] : NULL);
 
 if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 		// On affiche un formulaire alphabétique
@@ -49,11 +54,11 @@ if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 	echo "<input type=\"hidden\" name=\"visioedt\" value=\"eleve1\" />\n";
 	echo "</form>\n</td>\n";
 
-/*	/ On peut aussi faire un affichage par classe (à revoir)
-	echo "<td>\n ou par classe : </td>";
+	// On peut aussi faire un affichage par classe (à revoir)
+	echo "<td>\n ou la liste des élèves de </td>";
 	echo "<td><form action=\"index_edt.php\" name=\"liste_classe\" method=\"post\">\n";
-	echo "<select name=\"login_edt\" onchange='document.liste_classe.submit();'>\n";
-	echo "<option value=\"rien\">Choix de la classe</option>\n";
+	echo "<select name=\"choix_classe1\" onchange='document.liste_classe.submit();'>\n";
+	echo "<option value=\"rien\">cette classe</option>\n";
 
 		$tab_select = renvoie_liste("classe");
 
@@ -63,53 +68,133 @@ if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 		}
 
 	echo "</select>\n";
-	echo "<input type=hidden name=\"choix_classe\" value=\"ok\" />\n";
-	echo "<input type=hidden name=\"type_edt_2\" value=\"eleve\" />\n";
-	echo "<input type=hidden name=\"visioedt\" value=\"eleve1\" />\n";
+	echo "<input type=\"hidden\" name=\"choix_classe\" value=\"ok\" />\n";
+	echo "<input type=\"hidden\" name=\"type_edt_2\" value=\"eleve\" />\n";
+	echo "<input type=\"hidden\" name=\"visioedt\" value=\"eleve1\" />\n";
 	echo "</form>\n";
 	echo "</td>\n";
-*/
+
 	echo "</tr>\n</table>\n";
 
 		// puis un formulaire des élèves alphabétique aussi
-	if (isset($_POST["alphabet_eleves"]) OR isset($_POST["choix_classe"])) {
+	if (isset($alphabet_eleves) OR isset($choix_classe)) {
 
-		echo "<center>\n";
-		echo "<form action=\"index_edt.php\" name=\"liste_eleves\" method=\"post\">\n";
-		echo "<select name='login_edt' onchange='document.liste_eleves.submit();'>\n";
-		echo "<option value=\"rien\">Choix de l'élève</option>\n";
-
-			if (isset($_POST["alphabet_eleves"])) {
-				$tab_select = renvoie_liste_a("eleve", $_POST["alphabet_eleves"]);
+			if (isset($alphabet_eleves) AND $alphabet_eleves != "rien") {
+				$tab_select = renvoie_liste_a("eleve", $alphabet_eleves);
 			}
-			elseif (isset($_POST["choix_classe"])) {
-				$tab_select = renvoie_liste_classe($_POST["choix_classe"]);
+			elseif (isset($choix_classe) AND $choix_classe == "ok") {
+				$tab_select = renvoie_liste_classe($choix_classe1);
 			}
 			else $tab_select = NULL;
 
-			for($i=0;$i<count($tab_select);$i++) {
+		echo "<form action=\"index_edt.php\" name=\"liste_eleves\" method=\"post\">\n";
 
-		echo ("<option value='".$tab_select[$i]["login"]."'>".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"].' '.aff_nom_classe($tab_select[$i]["login"])."</option>\n");
+// Eleve suivant
+$indice_eleve_select = -1;
+if(isset($login_edt)){
+	for($i=0; $i<count($tab_select); $i++) {
+		if($login_edt == $tab_select[$i]["login"]){
+			$indice_eleve_select=$i;
+			break;
+		}
+	}
+}
 
+//if(isset($login_edt)){
+if($indice_eleve_select != -1){
+	if($indice_eleve_select != 0){
+		$precedent = $indice_eleve_select-1;
+		echo "
+		<span class=\"edt_suivant\">
+		";
+			if ($choix_classe == "ok") {
+				echo "<a href='index_edt.php?choix_classe=ok&amp;choix_classe1=".$choix_classe1."&amp;visioedt=eleve1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=eleve'>Eleve précédent</a>";
 			}
+			else if ($choix_lettre == "ok") {
+				echo "<a href='index_edt.php?choix_lettre=ok&amp;alphabet_eleves=".$alphabet_eleves."&amp;visioedt=eleve1&amp;login_edt=".$tab_select[$precedent]["login"]."&amp;type_edt_2=eleve'>Eleve précédent</a>";
+			}
+			else {
+				echo "";
+			}
+		echo "
+		</span>
+			";
+	}
+}
+
+		echo "<select name='login_edt' onchange='document.liste_eleves.submit();'>\n";
+		echo "<option value=\"rien\">Choix de l'élève</option>\n";
+
+			for($i=0; $i<count($tab_select); $i++) {
+
+				$req_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$tab_select[$i]["login"]."'"));
+
+				// On conserve à l'affichage le nom de l'élève
+				if(isset($login_edt)){
+					if($login_edt == $tab_select[$i]["login"]){
+						$selected = " selected='selected'";
+					}
+					else{
+						$selected = "";
+					}
+				}
+				else{
+					$selected = "";
+				}
+
+		echo ("<option value='".$tab_select[$i]["login"]."'".$selected.">".$req_nom["nom"].' '.$req_nom["prenom"].' '.aff_nom_classe($tab_select[$i]["login"])."</option>\n");
+
+			} //for$i=0...
 
 		echo "</select>\n";
 		echo "<input type=hidden name=\"type_edt_2\" value=\"eleve\" />\n";
 		echo "<input type=hidden name=\"visioedt\" value=\"eleve1\" />\n";
-		echo "</form>\n";
-		echo "</center>\n";
+
+		// On garde en mémoire la lettre ou la classe
+		if ($choix_classe == "ok") {
+			echo "<input type=\"hidden\" name=\"choix_classe\" value=\"ok\" />\n";
+			echo "<input type=\"hidden\" name=\"choix_classe1\" value=\"".$choix_classe1."\" />\n";
+		}
+		else if ($choix_lettre == "ok") {
+			echo "<input type=\"hidden\" name=\"alphabet_eleves\" value=\"".$alphabet_eleves."\" />\n";
+			echo "<input type=\"hidden\" name=\"choix_lettre\" value=\"ok\" />\n";
+		}
+
+if($indice_eleve_select != -1){
+	$suivant = $indice_eleve_select+1;
+	if($suivant<count($tab_select)){
+
+		echo "
+		<span class=\"edt_suivant\">
+		";
+			if ($choix_classe == "ok") {
+				echo "<a href='index_edt.php?choix_classe=ok&amp;choix_classe1=".$choix_classe1."&amp;visioedt=eleve1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=eleve'>Eleve suivant</a>";
+			}
+			else if ($choix_lettre == "ok") {
+				echo "<a href='index_edt.php?choix_lettre=ok&amp;alphabet_eleves=".$alphabet_eleves."&amp;visioedt=eleve1&amp;login_edt=".$tab_select[$suivant]["login"]."&amp;type_edt_2=eleve'>Eleve suivant</a>";
+			}
+			else {
+				echo "";
+			}
+
+		echo "
+		</span>
+			";
 	}
 }
 
+		echo "</form>\n";
 
-if ((isset($_POST['visioedt'])) AND isset($_POST["login_edt"])) {
+	} //if (isset($alphabet_eleves) OR isset($choix_classe))
+} //if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable")
 
-	$aff_nom_edt = renvoie_nom_long(($_POST["login_edt"]), "eleve");
-	echo "<span style='font-size: small; font-weight:normal;'>L'emploi du temps de ".$aff_nom_edt."</span>\n";
-}
-	echo "<br /><br />\n";
+//===============================================================
+//=============== AFFICHAGE du tableau EdT ======================
+//===============================================================
 
-$req_type_login=(isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL) OR (isset($_SESSION["login"]) ? $_SESSION["login"] : NULL);
+	echo "<br />\n";
+
+$req_type_login = (isset($_POST['login_edt']) ? $_POST['login_edt'] : NULL) OR (isset($_SESSION["login"]) ? $_SESSION["login"] : NULL);
 
 if ($_SESSION["statut"] == "eleve") {
 	$req_type_login = $_SESSION["login"];
@@ -117,14 +202,13 @@ if ($_SESSION["statut"] == "eleve") {
 else $req_type_login = $login_edt;
 
 
-if (isset($_POST["login_edt"])) {
+if (isset($login_edt)) {
 
 
-	$type_edt = $_POST["type_edt_2"];
+	$type_edt = isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL;
 		premiere_ligne_tab_edt();
 
-//Cas où le nom des créneaux sont inscrits à gauche
-// La gestion des edt_settings est à revoir
+// On récupère le choix de l'admin sur l'affichage à gauche
 $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
 
 	// affichage par nom de creneaux
@@ -133,8 +217,9 @@ if ($reglages_creneaux == "noms") {
 		$i=0;
 	while($i<count($tab_creneaux)){
 
-	$tab_id_creneaux = retourne_id_creneaux();
+		$tab_id_creneaux = retourne_id_creneaux();
 		$c=0;
+
 		while($c<count($tab_id_creneaux)){
 
 		echo("<tr><th rowspan=\"2\"><br />".$tab_creneaux[$i]."<br /><br /></th>".(construction_tab_edt($tab_id_creneaux[$c], "0"))."\n");
@@ -145,14 +230,15 @@ if ($reglages_creneaux == "noms") {
 	}
 }
 
-// Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+	// Affichage par les heures des créneaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
 
 	for($i=0; $i<count($tab_horaire); ) {
 
-	$tab_id_creneaux = retourne_id_creneaux();
+		$tab_id_creneaux = retourne_id_creneaux();
 		$c=0;
+
 		while($c<count($tab_id_creneaux)){
 
 		echo("<tr><th rowspan=\"2\"><br />".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."<br /><br /></th>".(construction_tab_edt($tab_id_creneaux[$c], "0"))."\n");
@@ -162,26 +248,8 @@ elseif ($reglages_creneaux == "heures") {
 		}
 	}
 }
-
-
-/*
-	$tab_creneaux = retourne_creneaux();
-		$i=0;
-	while($i<count($tab_creneaux)){
-
-	$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-
-		print('<tr><th><br />'.$tab_creneaux[$i].'<br /><br /></th>'.(construction_tab_edt($tab_id_creneaux[$c])));
-		$i ++;
-		$c ++;
-		}
-	}*/
 	echo '</table>';
-}
 
-
-	//require("../lib/footer.inc.php");
+} //if (isset($login_edt)) {
 
 ?>

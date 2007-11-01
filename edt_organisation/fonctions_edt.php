@@ -50,8 +50,12 @@ function retourne_horaire(){
 
 	$horaire = array();
 	for($i=0; $i<$num_nom_horaire; $i++) {
-		$horaire[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
-		$horaire[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
+		$horaire1[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
+		$exp_hor = explode(":", $horaire1[$i]["heure_debut"]);
+		$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlève les secondes
+		$horaire1[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
+		$exp_hor = explode(":", $horaire1[$i]["heure_fin"]);
+		$horaire[$i]["heure_fin"] = $exp_hor[0].":".$exp_hor[1];
 	}
 	return $horaire;
 }
@@ -808,14 +812,13 @@ function renvoie_liste_a($type, $alpha){
 // Fonction qui renvoie la liste des élèves d'une classe
 
 function renvoie_liste_classe($id_classe_post){
-	$req_liste_login = mysql_query("SELECT * FROM eleves, j_eleves_classes WHERE eleves.login = j_eleves_classes.login AND j_eleves_classes.id_classe = '".$id_classe_post."' AND j_eleves_classes.id_periode=1") OR die ('Erreur : renvoie_liste_classe() !');
+	$req_liste_login = mysql_query("SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysql_error().'.');
 	$nb_eleves = mysql_num_rows($req_liste_login);
 
 	$rep_liste_eleves = array();
 
-		for($i=0; $i<$nb_liste; $i++) {
-			$rep_liste_eleves[$i]["nom"] = mysql_result($req_liste_login, $i, "nom");
-			$rep_liste_eleves[$i]["prenom"] = mysql_result($req_liste_login, $i, "prenom");
+		for($i=0; $i<$nb_eleves; $i++) {
+
 			$rep_liste_eleves[$i]["login"] = mysql_result($req_liste_login, $i, "login");
 		}
 	return $rep_liste_eleves;

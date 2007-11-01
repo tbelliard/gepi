@@ -282,7 +282,7 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 	<!--choix de la salle-->
 	<form action="ajouter_salle.php" name="effacer_salle" method="post">
 		<select name="del_salle">
-			<option value="rien">Salles</option>
+			<option value="rien">Choix de la salle</option>
 <?php
 	$tab_select = renvoie_liste("salle");
 

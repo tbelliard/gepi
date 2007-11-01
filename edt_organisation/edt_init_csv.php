@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Fichier d'initiapsation de l'EdT par des fichiers CSV
+ * Fichier d'initialisation de l'EdT par des fichiers CSV
  *
- * @version $Id$
+ * @version Intégration de ce module en 1.5.1
  * @copyright 2007
  */
-/* A REFAIRE COMME LES AUTRES ET AJOUTER LES DOIRTS DANS SQL ET MAJ.php */
 
 $titre_page = "Emploi du temps - Initialisation";
 $affiche_connexion = 'yes';
@@ -237,7 +236,7 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ...</p>
 <hr />
 	<h4 class='refus'>Troisi&egrave;me &eacute;tape</h4>
-	<p>Attention, cette initialisation efface toutes les donn&eacute;es d&eacute;j&agrave; pr&eacute;sentes
+	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes.
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
 	<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>
 	<ol>

@@ -413,7 +413,7 @@ if ($aff_reglages2 == "oui") {
 	<a href="./edt_initialiser.php?init=ko">Cliquer ici pour fermer l\'initialisation</a></span>';
 	echo "<br />\nPour l'initialisation du d&eacute;but d'ann&eacute;e, les diff&eacute;rents logiciels de conception des emplois
  du temps ne permettent pas d'avoir une seule proc&eacute;dure. Il convient donc de bien d&eacute;terminer ce
- qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d'avoir param&eacute;trer
+ qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d'avoir param&eacute;tr&eacute;
  l'ensemble des informations relatives aux horaires de l'&eacute;tablissement. En suivant les instructions suivantes
  tout devrait bien se passer.<br />
 
