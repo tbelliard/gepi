@@ -144,7 +144,6 @@ if ($mode==1) {
 
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['notes'])) {
-
 	//=======================================================
 	// MODIF: boireaus
 	// J'ai déplacé vers le bas l'alert Javascript qui lors d'un import des notes était inscrit avant même la balise <html>
@@ -979,23 +978,35 @@ while($i < $nombre_lignes) {
 					while ($m < $nb_dev_s_cont[$k]) {
 						$temp = $id_s_dev[$k][$m];
 						$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
-						$eleve_statut = @mysql_result($note_query, 0, "statut");
-						$eleve_note = @mysql_result($note_query, 0, "note");
-						if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-							$tmp = $eleve_statut;
-							$data_pdf[$pointer][] = $eleve_statut;
-						} else if ($eleve_statut == 'v') {
-							$tmp = "&nbsp;";
-							$data_pdf[$pointer][] = "";
-						} else {
-							if ($eleve_note != '') {
-								$tmp = number_format($eleve_note,1, ',', ' ');
-								$data_pdf[$pointer][] = number_format($eleve_note,1, ',', ' ');
-							} else {
+						// ===================================
+						// AJOUT: boireaus 20071101
+						// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
+						if($note_query){
+							$eleve_statut = @mysql_result($note_query, 0, "statut");
+							$eleve_note = @mysql_result($note_query, 0, "note");
+							if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+								$tmp = $eleve_statut;
+								$data_pdf[$pointer][] = $eleve_statut;
+							} else if ($eleve_statut == 'v') {
 								$tmp = "&nbsp;";
 								$data_pdf[$pointer][] = "";
+							} else {
+								if ($eleve_note != '') {
+									$tmp = number_format($eleve_note,1, ',', ' ');
+									$data_pdf[$pointer][] = number_format($eleve_note,1, ',', ' ');
+								} else {
+									$tmp = "&nbsp;";
+									$data_pdf[$pointer][] = "";
+								}
 							}
 						}
+						else{
+							$eleve_statut = "";
+							$eleve_note = "";
+							$tmp = "&nbsp;";
+							$data_pdf[$pointer][] = "";
+						}
+						// ===================================
 						echo "<td class='cn' bgcolor='$couleur_devoirs'><center><b>$tmp</b></center></td>\n";
 
 						$m++;
@@ -1003,15 +1014,26 @@ while($i < $nombre_lignes) {
 				}
 
 				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
-				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
-				if ($statut_moy == 'y') {
-					$moy = @mysql_result($moyenne_query, 0, "note");
-					$moy = number_format($moy,1, ',', ' ');
-					$data_pdf[$pointer][] = $moy;
-				} else {
+				// ===================================
+				// AJOUT: boireaus 20071101
+				// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
+				if($moyenne_query){
+					$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+					if ($statut_moy == 'y') {
+						$moy = @mysql_result($moyenne_query, 0, "note");
+						$moy = number_format($moy,1, ',', ' ');
+						$data_pdf[$pointer][] = $moy;
+					} else {
+						$moy = '&nbsp;';
+						$data_pdf[$pointer][] = "";
+					}
+				}
+				else{
+					$statut_moy = "";
 					$moy = '&nbsp;';
 					$data_pdf[$pointer][] = "";
 				}
+				// ===================================
 				echo "<td class='cn' bgcolor='$couleur_moy_sous_cont'><center>$moy</center></td>\n";
 				$k++;
 			}
@@ -1022,15 +1044,26 @@ while($i < $nombre_lignes) {
 		// En mode saisie, on n'affiche que le devoir à saisir
 		if ($id_devoir==0)  {
 			$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
-			$statut_moy = @mysql_result($moyenne_query, 0, "statut");
-			if ($statut_moy == 'y') {
-			$moy = @mysql_result($moyenne_query, 0, "note");
-			$moy = number_format($moy,1, ',', ' ');
-			$data_pdf[$pointer][] = $moy;
-			} else {
+			// ===================================
+			// AJOUT: boireaus 20071101
+			// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
+			if($moyenne_query){
+				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+				if ($statut_moy == 'y') {
+				$moy = @mysql_result($moyenne_query, 0, "note");
+				$moy = number_format($moy,1, ',', ' ');
+				$data_pdf[$pointer][] = $moy;
+				} else {
+					$moy = '&nbsp;';
+					$data_pdf[$pointer][] = "";
+				}
+			}
+			else{
+				$statut_moy = "";
 				$moy = '&nbsp;';
 				$data_pdf[$pointer][] = "";
 			}
+			// ===================================
 			echo "<td class='cn' bgcolor='$couleur_moy_cont'><center><b>$moy</b></center></td>\n";
 		}
 		echo "</tr>\n";
