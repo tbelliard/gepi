@@ -295,6 +295,17 @@ fieldset#login_box div#header {
 	margin: 0;
 	padding: 0;
 }
+
+#div_login_entete {
+	background: #$degrade_bas;
+	background-image: url(\"./images/background/degrade1.png\");
+	background-repeat: repeat-x;
+	color: white;
+	text-align: center;
+	padding:0;
+	margin:0;
+	width: 25em;
+}
 ");
 				fclose($fich);
 			}
