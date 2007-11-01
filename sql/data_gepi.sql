@@ -556,4 +556,8 @@ INSERT INTO setting VALUES ('scolarite_modif_cours', 'y');
 INSERT INTO setting VALUES ('active_annees_anterieures', 'n');
 INSERT INTO setting VALUES ('active_notanet', 'n');
 INSERT INTO setting VALUES ('longmax_login', '10');
+INSERT INTO setting VALUES ('autorise_edt_tous', 'y');
+INSERT INTO setting VALUES ('autorise_edt_admin', 'y');
+INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');
 INSERT INTO droits VALUES ('/absences/import_absences_sconet.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');
+INSERT INTO droits VALUES ('/mod_absences/admin/admin_config_calendrier.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définir les différentes périodes', '');
