@@ -67,6 +67,17 @@ $message = "";
 		$modif = mysql_query($requete) OR DIE('Erreur dans la requête : '.mysql_error());
 		$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
 	}
+
+	// Petite fonction pour déterminer le checked="checked"
+	function eval_checked($grrSettings, $yn){
+		if ($grrSettings == $yn) {
+			$aff_check = ' checked="checked"';
+		}else {
+			$aff_check = '';
+		}
+		return $aff_check;
+	}
+
 ?>
 	<div>
 
@@ -84,9 +95,9 @@ $message = "";
  Lorsque le module est désactivé, personne n'a accès au module et
  la consultation des emplois du temps est impossible.</i><br />
 <br />
-		<input name="activ_tous" value="y" type="radio" onclick='document.autorise_edt.submit();' />
+		<input name="activ_tous" value="y" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_tous"], "y"); ?> onclick='document.autorise_edt.submit();' />
 &nbsp;Activer les emplois du temps pour tous les utilisateurs<br />
-		<input name="activ_tous" value="n" type="radio" onclick='document.autorise_edt.submit();' />
+		<input name="activ_tous" value="n" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_tous"], "n"); ?> onclick='document.autorise_edt.submit();' />
 &nbsp;Désactiver les emplois du temps pour tous les utilisateurs<br />
 
 	</form>
@@ -98,9 +109,9 @@ $message = "";
 <i>Si vous avez d&eacute;sactiver l'acc&egrave;s g&eacute;n&eacute;ral aux emplois du temps,
  vous pouvez autoriser les comptes administrateurs &agrave; y avoir acc&egrave;s.</i><br />
 <br />
-		<input name="activ_ad" value="y" type="radio" onclick='document.autorise_admin.submit();' />
+		<input name="activ_ad" value="y" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_admin"], "y"); ?> onclick='document.autorise_admin.submit();' />
 &nbsp;Activer les emplois du temps pour les administrateurs<br />
-		<input name="activ_ad" value="n" type="radio" onclick='document.autorise_admin.submit();' />
+		<input name="activ_ad" value="n" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_admin"], "n"); ?> onclick='document.autorise_admin.submit();' />
 &nbsp;D&eacute;sactiver les emplois du temps pour les administrateurs<br />
 
 	</form>
@@ -113,9 +124,9 @@ $message = "";
 <i>Si vous souhaitez rendre accessible leur emploi du temps aux &eacute;l&egrave;ves et
 &agrave; leurs responsables, il faut imp&eacute;rativement l'autoriser ici.</i><br />
 <br />
-		<input name="activ_ele" value="y" type="radio" onclick='document.autorise_ele.submit();' />
+		<input name="activ_ele" value="y" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_eleve"], "y"); ?> onclick='document.autorise_ele.submit();' />
 &nbsp;Activer les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables<br />
-		<input name="activ_ele" value="n" type="radio" onclick='document.autorise_ele.submit();' />
+		<input name="activ_ele" value="n" type="radio"<?php echo eval_checked($grrSettings["autorise_edt_eleve"], "n"); ?> onclick='document.autorise_ele.submit();' />
 &nbsp;D&eacute;sactiver les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables<br />
 	</form>
 <br /><br />
