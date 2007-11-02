@@ -494,7 +494,6 @@ if ($modulo !== 0) {
 		<td>
 		';
 	for($i=($ligne*3); $i<count($tab_select); $i++) {
-		$aff_checked = "";
 		echo
 		$tab_select[$i]["classe"].'
 			<label>
