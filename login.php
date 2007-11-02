@@ -220,7 +220,8 @@ echo "<div id='new_div_login' class='center'>\n";
 	}
 	else{
 		// Ajout d'un espace vertical
-		echo "<div style='margin-top:6em;'>&nbsp;</div>\n";
+		//echo "<div style='margin-top:6em;'>&nbsp;</div>\n";
+		echo "<div style='margin-top:5em;'>&nbsp;</div>\n";
 	}
 	//==================================
 
@@ -228,7 +229,8 @@ echo "<div id='new_div_login' class='center'>\n";
 	//==================================
 	//if ((getSettingValue("disable_login"))=='yes') echo "<br /><br /><font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />";
 	if ((getSettingValue("disable_login"))!='no'){
-		echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
+		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
+		echo "<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
 	}
 	//==================================
 

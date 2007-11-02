@@ -154,14 +154,15 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				if ($_POST['classe'] == "all") {
-				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 				}
 			}
-			$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
+			//$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
+			$msg .= "<br/>Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 		}
 	}
 }
@@ -242,6 +243,10 @@ else{
 	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 	echo "<form action='create_responsable.php' method='post'>\n";
 	echo "<input type='hidden' name='mode' value='classe' />\n";
+	//===========================
+	// AJOUT: boireaus 20071102
+	echo "<input type='hidden' name='creation_comptes_classe' value='y' />\n";
+	//===========================
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";

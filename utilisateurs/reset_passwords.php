@@ -290,6 +290,12 @@ echo "\$cas_traite=$cas_traite<br />";
 */
 //$cas_traite=1;
 
+// =====================
+// AJOUT: boireaus 20071102
+unset($tab_password);
+$tab_password=array();
+// =====================
+
 $p = 0;
 $saut = 1;
 while ($p < $nb_users) {
@@ -300,6 +306,8 @@ while ($p < $nb_users) {
 	$user_password = mysql_result($call_user_info, $p, "password");
 	$user_statut = mysql_result($call_user_info, $p, "statut");
 	$user_email = mysql_result($call_user_info, $p, "email");
+
+	//echo "$user_login<br />";
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
@@ -376,9 +384,41 @@ while ($p < $nb_users) {
 
 
 	// On réinitialise le mot de passe
-	$new_password = pass_gen();
-	$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
 
+	// =====================
+	// MODIF: boireaus 20071102
+	//if(in_array(,$tab_password)){
+	if(isset($creation_comptes_classe)) {
+
+		if(array_key_exists($user_login,$tab_password)){
+			$new_password = $tab_password[$user_login];
+		}
+		else{
+			$sql="SELECT 1=1 FROM utilisateurs WHERE login='$user_login' AND password!='';";
+			$test_pass_non_vide=mysql_query($sql);
+			if(mysql_num_rows($test_pass_non_vide)>0){
+				$new_password="<span style='color:red;'>Non modifié</span>";
+			}
+			else{
+				$new_password = pass_gen();
+				$tab_password[$user_login]=$new_password;
+
+				$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+			}
+		}
+	}
+	else{
+		if(array_key_exists($user_login,$tab_password)){
+			$new_password = $tab_password[$user_login];
+		}
+		else{
+			$new_password = pass_gen();
+			$tab_password[$user_login]=$new_password;
+
+			$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+		}
+	}
+	// =====================
 
 	$call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
 	$nb_mat = mysql_num_rows($call_matieres);
