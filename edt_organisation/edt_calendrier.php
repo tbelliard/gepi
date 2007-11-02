@@ -30,9 +30,12 @@ if (!checkAccess()) {
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
 }
-// CSS particulier à l'EdT
+// CSS et js particulier à l'EdT
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
-
+//==============PROTOTYPE===============
+$utilisation_prototype = "ok";
+//============fin PROTOTYPE=============
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
 
@@ -84,6 +87,21 @@ $heure_etab_fin = $req_heures["fermeture_horaire_etablissement"];
 if (isset($calendrier) AND isset($supprimer)) {
 	$req_supp = mysql_query("DELETE FROM edt_calendrier WHERE id_calendrier = '".$supprimer."'") or Die ('Suppression impossible !');
 }
+
+//+++++++++++ AIDE pour le calendrier ++++++++
+?>
+<a href="#" onMouseOver="javascript:changerDisplayDiv('aide_calendar');" onMouseOut="javascript:changerDisplayDiv('aide_calendar');">
+	<img src="../images/info.png" alt="Plus d'infos..." Title="Plus d'infos..." />
+</a>
+	<div style="display: none;" id="aide_calendar">
+	<hr />
+	<p><span class="red">Attention</span>, ces p&eacute;riodes ne sont pas les m&ecirc;mes que celles d&eacute;finies pour les notes. Si vous voulez faire une
+	 lien entre les p&eacute;riodes de notes et celles du calendrier, vous devez pr&eacute;ciser lors de la cr&eacute;ation de ces derni&egrave;res
+	 &agrave; quelle p&eacute;riode de notes elles sont rattach&eacute;es en choisissant celle-ci dans le menu <i>P&eacute;riode de notes ?</i></p>
+	 <hr />
+	</div>
+<?php
+//+++++++++++ fin de l'aide ++++++++++++++++++
 
 /* On modifie quand c'est demandé */
 if (isset($calendrier) AND isset($modifier)) {
@@ -329,7 +347,8 @@ if ($modifier == NULL) {
 
 }
 
-
+/*+++++++++++++++++++++AFFICHAGE DES PERIODES DEJA DEFINIES +++++++++++++++++++++*/
+//================================================================================
 	// Toutes les périodes sont visibles par défaut
 echo '
 <fieldset id="aff_calendar">
@@ -386,6 +405,13 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 				$id_div = "periode".$rep_affcalendar[$i]["id_calendrier"];
 				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout=\"cacher_div('".$id_div."');\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
 			} // else
+
+			// On enlève les secondes à l'affichage
+			$explode_deb = explode(":", $rep_affcalendar[$i]["heuredebut_calendrier"]);
+			$rep_affcalendar[$i]["heuredebut_calendrier"] = $explode_deb[0].":".$explode_deb[1];
+			$explode_fin = explode(":", $rep_affcalendar[$i]["heurefin_calendrier"]);
+			$rep_affcalendar[$i]["heurefin_calendrier"] = $explode_fin[0].":".$explode_fin[1];
+
 		// Afficher de deux couleurs différentes
 
 		if ($a == 1) {
@@ -534,7 +560,7 @@ if ($modulo !== 0) {
 		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 			<span class="legende">Dernier jour</span>
 
-			<input type="text" name="heure_fin" maxlenght="5" size="5" value="24:00" />
+			<input type="text" name="heure_fin" maxlenght="5" size="5" value="23:59" />
 			<span class="legende">Heure de fin</span>
 		</p>
 		<p>
