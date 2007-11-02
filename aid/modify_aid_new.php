@@ -48,7 +48,8 @@ $aff_classes_m = "";
 $style_specifique = "aid/style_aid";
 //+++++++++++++++++ AJAX AID ++++++
 	// En attente de fonctionnement
-//$javascript_specifique = "aid/aid_ajax";
+$utilisation_prototype = "ok";
+$javascript_specifique = "aid/aid_ajax";
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des élèves dans les AID";
@@ -131,9 +132,24 @@ if (isset($aff_liste_m)) {
 	$aff_classes_m .= "
 		<p class=\"red\">Classe de ".$aff_nom_classe["classe"]." : </p>
 
-	<table class=\"aid_tableau\">
+	<table class=\"aid_tableau\" summary=\"Liste des &eacute;l&egrave;ves\">
 	";
-
+		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire ladifférence avec une ligne vide.
+			$aff_tr_css = "aid_lignepaire";
+		// On ajoute un lien qui permet d'intégrer toute la classe d'un coup
+		$aff_classes_m .= "
+		<tr class=\"".$aff_tr_css."\">
+			<td>
+				<a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=tous&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+				<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Toute la classe
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>Liste des élèves
+			</td>
+		</tr>
+						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
 		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
@@ -147,8 +163,6 @@ if (isset($aff_liste_m)) {
 			$aff_ele_m[$c]["prenom"] = mysql_result($req, $c, "prenom");
 			$aff_ele_m[$c]["sexe"] = mysql_result($req, $c, "sexe");
 
-			// Ligne paire, ligne impaire (inutile dans un premier temps)
-			$aff_tr_css = "aid_lignepaire";
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
 			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
 			$nbre_verif = mysql_num_rows($req_verif);
@@ -162,20 +176,14 @@ if (isset($aff_liste_m)) {
 					$aff_classes_m .= "
 					<tr class=\"".$aff_tr_css."\">
 					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
-							<img src=\"../images/icons/add_user.png\" /> ".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."
 							</a></td></tr>
 					";
 				}
 		}// for $c...
 	}// for $b
 
-		// On ajoute un lien qui permet d'intégrer toute la classe d'un coup
-		$aff_classes_m .= "
-	<tr class=\"".$aff_tr_css."\">
-					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=tous&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
-							<img src=\"../images/icons/add_user.png\" /> Toute la classe
-							</a></td></tr>
-							";
+
 	$aff_classes_m .= "</table>\n";
 }// if isset...
 
@@ -212,8 +220,15 @@ if (isset($aff_liste_m)) {
 	}
 
 ?>
-
-
+<a href="#" onMouseOver="javascript:changerDisplayDiv('aid_aide');" onMouseOut="javascript:changerDisplayDiv('aid_aide');">
+	<img src="../images/info.png" alt="Plus d'infos..." Title="Plus d'infos..." />
+</a>
+	<div id="aid_aide" style="display: none;">
+	Pour acc&eacute;l&eacute;rer la proc&eacute;dure, en cliquant sur une classe,
+	vous avez acc&egrave;s &agrave; la liste de ses &eacute;l&egrave;ves.<br />
+	Vous pouvez int&eacute;grer tous ces &eacute;l&egrave;ves en cliquant sur [Toute la classe].<br />
+	<hr />
+	</div>
 
 	<div id="aid_gauche">
 
@@ -221,7 +236,7 @@ if (isset($aff_liste_m)) {
 	echo $aff_infos_g;
 ?>
 
-		<table class="aid_tableau">
+		<table class="aid_tableau" summary="Liste des classes">
 <?php // Afichage de la liste des classes à gauche
 	echo $aff_classes_g;
 ?>

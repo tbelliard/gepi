@@ -56,3 +56,9 @@
 	background-color: grey;
 	color: black;
 }
+
+#aid_aide {
+	background-color: lightgrey;
+	text-align: justify;
+	width: 600px;
+}
