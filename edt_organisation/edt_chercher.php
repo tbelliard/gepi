@@ -1,6 +1,11 @@
 <?php
 /* Fichier qui permet de faire des recherches dans l'EdT*/
 
+// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+if (param_edt($_SESSION["statut"]) != "yes") {
+	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+}
+
 // Sécurité, on vérifie le paramétrage de cette fonctionnalité
 $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	if ($aff_cherche_salle == "tous") {

@@ -32,6 +32,11 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+
+// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+if (param_edt($_SESSION["statut"]) != "yes") {
+	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+}
 // CSS particulier à l'EdT
 $style_specifique = "edt_organisation/style_edt";
 
