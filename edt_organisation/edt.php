@@ -92,8 +92,8 @@ $message = "";
 <hr />
 	<form action="edt.php" method="post" name="autorise_edt">
 
-<i>La désactivation des emplois du temps n'entraîne aucune suppression des données.
- Lorsque le module est désactivé, personne n'a accès au module et
+<i>La d&eacute;sactivation des emplois du temps n'entra&icirc;ne aucune suppression des donn&eacute;es.
+ Lorsque le module est d&eacute;sactiv&eacute;, personne n'a acc&egrave;s au module et
  la consultation des emplois du temps est impossible.</i><br />
 <br />
 		<input name="activ_tous" value="y" type="radio"<?php echo eval_checked("autorise_edt_tous", "y"); ?> onclick='document.autorise_edt.submit();' />
@@ -107,8 +107,9 @@ $message = "";
 
 	<form action="edt.php" method="post" name="autorise_admin">
 
-<i>Si vous avez d&eacute;sactiver l'acc&egrave;s g&eacute;n&eacute;ral aux emplois du temps,
- vous pouvez autoriser les comptes administrateurs &agrave; y avoir acc&egrave;s.</i><br />
+<i>Les comptes </i>administrateur<i> ont acc&egrave;s aux emplois du temps si celui-ci est activ&eacute; pour eux. Si vous
+avez d&eacute;sactiv&eacute; l'acc&egrave;s pour tous,
+ vous pouvez quand m&ecirc;me autoriser les comptes </i>administrateur<i> &agrave; y avoir acc&egrave;s.</i><br />
 <br />
 		<input name="activ_ad" value="y" type="radio"<?php echo eval_checked("autorise_edt_admin", "y"); ?> onclick='document.autorise_admin.submit();' />
 &nbsp;Activer les emplois du temps pour les administrateurs<br />

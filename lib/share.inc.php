@@ -2243,4 +2243,24 @@ function debug_var(){
 	echo "</blockquote>\n";
 	echo "</div>\n";
 }
+
+function param_edt($statut){
+	// Fonction qui permet de vérifier si tel statut peut avoir accès à l'EdT en fonction des settin de l'admin
+	$verif = "";
+	if ($statut == "administrateur") {
+		$verif = getSettingValue("autorise_edt_admin");
+	} elseif ($statut == "professeur" OR $statut == "scolarite" OR $statut == "cpe" OR $statut == "secours") {
+		$verif = getSettingValue("autorise_edt_tous");
+	} elseif ($statut = "eleve" OR $statut = "responsable") {
+		$verif = getSettingValue("autorise_edt_eleve");
+	} else {
+		$verif = "";
+	}
+	// On vérifie $verif et on renvoie le return
+	if ($verif == "y") {
+		return "yes";
+	} else {
+		return "no";
+	}
+}
 ?>

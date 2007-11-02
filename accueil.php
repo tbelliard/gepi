@@ -1111,7 +1111,8 @@ $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
-if ($affiche=='yes') {
+	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
+if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
