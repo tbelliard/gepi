@@ -338,26 +338,40 @@ while ($p < $nb_users) {
 
 		//init du tableau elv_resp
 		//for ($i=0;$i<7;$i++) {
+		// =====================
+		// MODIF: boireaus 20071102
+		/*
 		for ($i=0;$i<$nb_elv_resp;$i++) {
 			$elv_resp['nom'][$i] = '';
 			$elv_resp['prenom'][$i] = '';
 			$elv_resp['classe'][$i] = '';
 			$elv_resp['nom_complet_classe'][$i] = '';
 		}
+		*/
+		// Réinitialisation du tableau des enfants à la charge du responsable courant:
+		unset($elv_resp);
+		$elv_resp=array();
+		// =====================
 
 		$liste_elv_resp="";
 
 		$i = 0;
 		while ($i < $nb_elv_resp){
-		
-		for ($j=$i;$j<7;$j++) {
-			$elv_resp['nom'][$j] = '';
-			$elv_resp['prenom'][$j] = '';
-			$elv_resp['classe'][$j] = '';
-			$elv_resp['nom_complet_classe'][$j] = '';
-		}
+			/*
+			// =====================
+			// MODIF: boireaus 20071102
+			// A quoi cela sert-il?
+			// A la réinitialisation du tableau $elv_resp?
+			// Mais si on dépasse 7 enfants?
+			for ($j=$i;$j<7;$j++) {
+				$elv_resp['nom'][$j] = '';
+				$elv_resp['prenom'][$j] = '';
+				$elv_resp['classe'][$j] = '';
+				$elv_resp['nom_complet_classe'][$j] = '';
+			}
+			// =====================
+			*/
 
-		
 			$elv_resp['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
 			$elv_resp['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
 			$elv_resp['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
@@ -397,16 +411,18 @@ while ($p < $nb_users) {
 	// =====================
 	// MODIF: boireaus 20071102
 	//if(in_array(,$tab_password)){
+	$temoin_user_deja_traite="n";
 	if(isset($creation_comptes_classe)) {
-
 		if(array_key_exists($user_login,$tab_password)){
 			$new_password = $tab_password[$user_login];
+			$temoin_user_deja_traite="y";
 		}
 		else{
 			$sql="SELECT 1=1 FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			$test_pass_non_vide=mysql_query($sql);
 			if(mysql_num_rows($test_pass_non_vide)>0){
 				$new_password="<span style='color:red;'>Non modifié</span>";
+				$temoin_user_deja_traite="y";
 			}
 			else{
 				$new_password = pass_gen();
@@ -419,6 +435,7 @@ while ($p < $nb_users) {
 	else{
 		if(array_key_exists($user_login,$tab_password)){
 			$new_password = $tab_password[$user_login];
+			$temoin_user_deja_traite="y";
 		}
 		else{
 			$new_password = pass_gen();
@@ -516,71 +533,78 @@ while ($p < $nb_users) {
 		break;
 
 	case 'csv' :
-		// création d'un tableau contenant toutes les informations à exporter
-		$donnees_personne_csv['login'][$p] = $user_login;
-		$donnees_personne_csv['nom'][$p] = $user_nom;
-		$donnees_personne_csv['prenom'][$p] = $user_prenom;
-		$donnees_personne_csv['new_password'][$p] = $new_password ;
-		$donnees_personne_csv['user_email'][$p] = $user_email;
+		//===========================
+		// MODIF: boireaus 20071102
+		// Dans le cas du CSV, on ne génère pas plusieurs fois la ligne correspondant à un même parent
+		// Dans le cas du HTML et PDF par contre, on affiche autant de fois qu'il y a d'élève à qui distribuer l'info, mais sans générer plusieurs fois le mot de passe pour le parent (le même mot de passe pour le parent sur les fiches distribuées à ses différents enfants).
+		if($temoin_user_deja_traite!="y"){
+
+			// création d'un tableau contenant toutes les informations à exporter
+			$donnees_personne_csv['login'][$p] = $user_login;
+			$donnees_personne_csv['nom'][$p] = $user_nom;
+			$donnees_personne_csv['prenom'][$p] = $user_prenom;
+			$donnees_personne_csv['new_password'][$p] = $new_password ;
+			$donnees_personne_csv['user_email'][$p] = $user_email;
 
 
-		if ($user_status) {
+			if ($user_status) {
 
-			//recherche de la classe de l'élève si mode
-			if ($user_status == 'eleve') {
-				$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
-				$data_user_classe = mysql_query($sql_classe);
-				$classe_eleve = mysql_result($data_user_classe, 0, "classe");
-				$donnees_personne_csv['classe'][$p] = $classe_eleve;
-			}
-
-			//on poursuit le tableau $donnees_personne_csv avec l'adresse pour un mailling et des élèves associées
-			if ($user_status =='responsable') {
-
-				$donnees_personne_csv['classe'][$p] = $classe_resp;
-
-				$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-				$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-				$resp_adr2=mysql_result($call_user_info, $p, "adr2");
-				$resp_adr3=mysql_result($call_user_info, $p, "adr3");
-				$resp_adr4=mysql_result($call_user_info, $p, "adr4");
-				$resp_cp=mysql_result($call_user_info, $p, "cp");
-				$resp_commune=mysql_result($call_user_info, $p, "commune");
-				$resp_pays=mysql_result($call_user_info, $p, "pays");
-
-				//on met les données dans le tableau
-				$donnees_personne_csv['adr1'][$p] = $resp_adr1;
-				$donnees_personne_csv['adr2'][$p] = $resp_adr2;
-				$donnees_personne_csv['adr3'][$p] = $resp_adr3;
-				$donnees_personne_csv['adr4'][$p] = $resp_adr4;
-				$donnees_personne_csv['cp'][$p] = $resp_cp;
-				$donnees_personne_csv['commune'][$p] = $resp_commune;
-				$donnees_personne_csv['pays'][$p] = $resp_pays;
-
-				// On crée une chaine de carctères par élèves (Prénom, Nom, classe nom long et classe nom court)
-				$nb_elv=sizeof($elv_resp['nom']);
-				$i=0;
-				while ($i < $nb_elv){
-				$chaine_elv = "";
-				$chaine_elv.=$elv_resp['prenom'][$i];
-				$chaine_elv.=" ".$elv_resp['nom'][$i];
-				$chaine_elv.=" ".$elv_resp['nom_complet_classe'][$i];
-				if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
-
-				switch ($i) {
-				case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
-				case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
-				case 2 : $donnees_personne_csv['elv3'][$p] = $chaine_elv; Break;
-				case 3 : $donnees_personne_csv['elv4'][$p] = $chaine_elv; Break;
-				case 4 : $donnees_personne_csv['elv5'][$p] = $chaine_elv; Break;
-				case 5 : $donnees_personne_csv['elv6'][$p] = $chaine_elv; Break;
-				case 6 : $donnees_personne_csv['elv7'][$p] = $chaine_elv; Break;
+				//recherche de la classe de l'élève si mode
+				if ($user_status == 'eleve') {
+					$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
+					$data_user_classe = mysql_query($sql_classe);
+					$classe_eleve = mysql_result($data_user_classe, 0, "classe");
+					$donnees_personne_csv['classe'][$p] = $classe_eleve;
 				}
-				$i++;
+
+				//on poursuit le tableau $donnees_personne_csv avec l'adresse pour un mailling et des élèves associées
+				if ($user_status =='responsable') {
+
+					$donnees_personne_csv['classe'][$p] = $classe_resp;
+
+					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
+					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
+					$resp_adr2=mysql_result($call_user_info, $p, "adr2");
+					$resp_adr3=mysql_result($call_user_info, $p, "adr3");
+					$resp_adr4=mysql_result($call_user_info, $p, "adr4");
+					$resp_cp=mysql_result($call_user_info, $p, "cp");
+					$resp_commune=mysql_result($call_user_info, $p, "commune");
+					$resp_pays=mysql_result($call_user_info, $p, "pays");
+
+					//on met les données dans le tableau
+					$donnees_personne_csv['adr1'][$p] = $resp_adr1;
+					$donnees_personne_csv['adr2'][$p] = $resp_adr2;
+					$donnees_personne_csv['adr3'][$p] = $resp_adr3;
+					$donnees_personne_csv['adr4'][$p] = $resp_adr4;
+					$donnees_personne_csv['cp'][$p] = $resp_cp;
+					$donnees_personne_csv['commune'][$p] = $resp_commune;
+					$donnees_personne_csv['pays'][$p] = $resp_pays;
+
+					// On crée une chaine de carctères par élèves (Prénom, Nom, classe nom long et classe nom court)
+					$nb_elv=sizeof($elv_resp['nom']);
+					$i=0;
+					while ($i < $nb_elv){
+					$chaine_elv = "";
+					$chaine_elv.=$elv_resp['prenom'][$i];
+					$chaine_elv.=" ".$elv_resp['nom'][$i];
+					$chaine_elv.=" ".$elv_resp['nom_complet_classe'][$i];
+					if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
+
+					switch ($i) {
+					case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
+					case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
+					case 2 : $donnees_personne_csv['elv3'][$p] = $chaine_elv; Break;
+					case 3 : $donnees_personne_csv['elv4'][$p] = $chaine_elv; Break;
+					case 4 : $donnees_personne_csv['elv5'][$p] = $chaine_elv; Break;
+					case 5 : $donnees_personne_csv['elv6'][$p] = $chaine_elv; Break;
+					case 6 : $donnees_personne_csv['elv7'][$p] = $chaine_elv; Break;
+					}
+					$i++;
+					}
 				}
 			}
 		}
-
+		//===========================
 
 		break;
 
