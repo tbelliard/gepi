@@ -82,10 +82,11 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 }
 
 
-// CSS particulier à l'EdT
+/*/ CSS et js particulier à l'EdT
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
-/*/ +++++++++++++++ entête de Gepi +++++++++
+// +++++++++++++++ entête de Gepi +++++++++
 require_once("../lib/header.inc");
 // +++++++++++++++ entête de Gepi +++++++++
 
@@ -99,6 +100,7 @@ $aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt
 	<head>
 	<title>Gepi - Modifier un cours</title>
 	<link rel="stylesheet" type="text/css" href="./style_edt.css" />
+	<script type='text/javascript' src='./script/fonctions_edt.js'></script>
 
 	</head>
 	<body <?php echo $aff_refresh; ?>>

@@ -23,9 +23,11 @@ font-weight: bold;
 color: white;
 border: 1px solid gray;
 background: #4a4a59;
+padding: 5px;
 }
 #menu_edt dd {
 border: 1px #6d6d83;
+
 }
 #menu_edt li {
 text-align: center;
@@ -50,72 +52,24 @@ background: #6d6d83;
 	height: 1000px;
 	font: normal normal 11pt Verdana, sans-serif;
 }
-/*
-#edt_dl a{
-	color: blue;
-}
 
-#edt_dl a:hover {
-	color: black;
-}
-
-.edt_dt a span {
-	display: none;
-}
-
-.edt_dt a:hover span {
-	display: block;
-	position: absolute;
-	top: 50px;
-	left: 200px;
-	border: 1px solid grey;
-	width: 300px;
-	height: 100px;
-}
-
-#edt_dl dt {
-	background-color: #6d6d83;
-	color: white;
-	padding: 2px;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	border: 2px solid black;
-	text-align: center;
-}
-
-#edt_dl dd {
-	background-color: lightblue;
-	padding: 2px;
-	margin-top: 1px;
-	margin-bottom: 1px;
-	margin-left: 24px;
-	width: 110px;
-	border: 1px solid black;
-	text-align: left;
-}
-
-#edt_dl dd:hover {
-	background-color: silver;
-	border: 1px dashed orange;
-}
-
-.edt_aide {
-	display: none;
-}
-
-.edt_aide1 {
-	width: 800px;
-	height: 400px;
-	background-color: lightblue;
-	display: block;
-}
-*/
 /* CSS du corps de page EdT */
 #lecorps {
 	position: relative;
 	/*background-color: #E9E9E4;*/
 	margin-left: 140px;
 	font: normal normal 15pt Verdana, sans-serif;
+}
+
+fieldset {
+	border: 1px solid grey;
+}
+
+legend {
+	background-color: silver;
+	border: 1px solid grey;
+	color: white;
+	font-weight: bold;
 }
 
 #edt_popup_lecorps {
@@ -201,18 +155,18 @@ background: #6d6d83;
 }
 
 .premiere_ligne td {
-	background-color: rgb(180, 180, 255);
-	font-size: 10px;
+	background-color: rgb(200, 200, 200);
+	font-size: 11px;
 	font-weight: bold;
-	color: grey;
+	color: white;
 }
 
 .lignepaire {
-	background-color: rgb(240, 240, 255);
+	background-color: white;/*rgb(240, 240, 255);*/
 }
 
 .ligneimpaire {
-	background-color: rgb(220, 220, 255);
+	background-color: rgb(230, 230, 230);
 }
 
 .bonnelargeur {
@@ -230,6 +184,12 @@ background: #6d6d83;
 	/*float: right;*/
 	margin-right: 150px;
 	margin-left: 400px;
+}
+
+#aide_calendar {
+	width: 500px;
+	padding: 10px;
+	background-color: silver;
 }
 
 /* Couleurs des champs de formulaire */

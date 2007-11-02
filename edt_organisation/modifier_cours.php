@@ -95,7 +95,8 @@ if ($req_modif) {
 }
 
 
-// CSS particulier à l'EdT
+// CSS et js particulier à l'EdT
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
 // +++++++++++++++ entête de Gepi +++++++++

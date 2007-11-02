@@ -30,8 +30,6 @@ else $page_inc_edt = 'accueil_edt.php';
 ?>
 <!-- On affiche le menu edt -->
 
-<script src="./script/menuderoulant.js" type="text/javascript" language="javascript"></script>
-
 	<div id="agauche">
 
 		<span class="refus"><?php echo ('Semaine n° '.strftime("%W")); ?></span>
@@ -40,13 +38,13 @@ else $page_inc_edt = 'accueil_edt.php';
 			<dd>
 <br />
 			</dd>
-		<dt onclick="javascript:montre();"><a href="index_edt.php">Accueil EdT</a></dt>
+		<dt><a href="index_edt.php">Accueil EdT</a></dt>
 			<dd>
 <br />
 			</dd>
-		<dt onmouseover="javascript:montre('smenu2');">Visionner</dt>
+		<dt onmouseover="javascript:montre('sEdTmenu1');">Visionner</dt>
 
-			<dd id="smenu2">
+			<dd id="sEdTmenu1">
 				<ul>
 					<li><a href="index_edt.php?visioedt=prof1">Professeur</a></li>
 					<li><a href="index_edt.php?visioedt=classe1">Classe</a></li>
@@ -57,9 +55,9 @@ else $page_inc_edt = 'accueil_edt.php';
 <?php /*
 if ($_SESSION['statut'] == "administrateur") {
 echo '
-		<dt onmouseover="javascript:montre(\'smenu3\');">Modifier</dt>
+		<dt onmouseover="javascript:montre(\'sEdTmenu2\');">Modifier</dt>
 
-			<dd id="smenu3">
+			<dd id="sEdTmenu2">
 				<ul>
 					<li><a href="modif_edt_tempo.php">temporairement</a></li>
 				</ul>
@@ -79,9 +77,9 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	// En fonction du résultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
-		<dt onmouseover="javascript:montre(\'smenu4\');">Chercher</dt>
+		<dt onmouseover="javascript:montre(\'sEdTmenu3\');">Chercher</dt>
 
-			<dd id="smenu4">
+			<dd id="sEdTmenu3">
 				<ul>
 					<li><a href="index_edt.php?salleslibres=ok">Salles libres</a></li>
 				</ul>
@@ -91,9 +89,9 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 
 if ($_SESSION['statut'] == "administrateur") {
 	echo '
-		<dt onmouseover="javascript:montre(\'smenu5\');">Admin</dt>
+		<dt onmouseover="javascript:montre(\'sEdTmenu4\');">Admin</dt>
 
-			<dd id="smenu5">
+			<dd id="sEdTmenu4">
 				<ul>
 					<li><a href="voir_groupe.php">Les groupes</a></li>
 					<li><a href="ajouter_salle.php">Gérer les Salles</a></li>

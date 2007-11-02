@@ -36,7 +36,8 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 
 unset ($_SESSION['order_by']);
 
-// CSS particulier à l'EdT
+// CSS et js particulier à l'EdT
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
 // End standart header
