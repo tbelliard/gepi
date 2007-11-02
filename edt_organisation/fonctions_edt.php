@@ -720,6 +720,7 @@ else $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POS
 
 function renvoie_liste($type) {
 
+	$rep_liste = "";
 	if ($type == "prof") {
 		$req_liste = mysql_query("SELECT nom, prenom, login FROM utilisateurs WHERE etat ='actif' AND statut='professeur' ORDER BY nom");
 
