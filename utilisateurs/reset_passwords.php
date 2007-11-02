@@ -349,6 +349,15 @@ while ($p < $nb_users) {
 
 		$i = 0;
 		while ($i < $nb_elv_resp){
+		
+		for ($j=$i;$j<7;$j++) {
+			$elv_resp['nom'][$j] = '';
+			$elv_resp['prenom'][$j] = '';
+			$elv_resp['classe'][$j] = '';
+			$elv_resp['nom_complet_classe'][$j] = '';
+		}
+
+		
 			$elv_resp['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
 			$elv_resp['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
 			$elv_resp['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
