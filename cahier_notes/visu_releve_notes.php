@@ -1360,7 +1360,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     echo " (Veillez à respectez le format jj/mm/aaaa)";
 
 
-	echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
+	
 
     //====================================================================
     // MODIF: boireaus
@@ -1376,24 +1376,54 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		$rn_sign_nblig=0;
 		$rn_formule="";
 
-		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
-		if($avec_nom_devoir=="y"){echo "checked ";}
-		echo "/> Afficher le nom des devoirs.\n";
+		//Modif Eric pour masquage des options sur le relevé de notes pour un responsable ou un élève)
+		if (($_SESSION['statut']=='eleve') AND (getSettingValue("GepiAccesOptionsReleveEleve") == "yes")) 
+		{		
+			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
+		
+			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+			if($avec_nom_devoir=="y"){echo "checked ";}
+			echo "/> Afficher le nom des devoirs.\n";
 
-		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
-		if($avec_tous_coef_devoir=="y"){echo "checked ";}
-		echo "/> Afficher tous les coefficients des devoirs.\n";
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+			if($avec_tous_coef_devoir=="y"){echo "checked ";}
+			echo "/> Afficher tous les coefficients des devoirs.\n";
 
-		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
-		if($avec_coef_devoir=="y"){echo "checked ";}
-		echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+			if($avec_coef_devoir=="y"){echo "checked ";}
+			echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
 
-		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
-		if($avec_date_devoir=="y"){echo "checked ";}
-		echo "/> Afficher les dates des devoirs.\n";
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+			if($avec_date_devoir=="y"){echo "checked ";}
+			echo "/> Afficher les dates des devoirs.\n";
+		}
+		
+		if (($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") == "yes")) 
+		{	
+			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
+			
+			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+			if($avec_nom_devoir=="y"){echo "checked ";}
+			echo "/> Afficher le nom des devoirs.\n";
+
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+			if($avec_tous_coef_devoir=="y"){echo "checked ";}
+			echo "/> Afficher tous les coefficients des devoirs.\n";
+
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+			if($avec_coef_devoir=="y"){echo "checked ";}
+			echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+
+			echo "<br />\n";
+			echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+			if($avec_date_devoir=="y"){echo "checked ";}
+			echo "/> Afficher les dates des devoirs.\n";
+		}
 
 		echo "<br />\n";
 
@@ -1405,6 +1435,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	}
 	else{
 		// Pour permettre de ne pas afficher les noms des devoirs
+		echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
+		
 		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
 		if($avec_nom_devoir=="y"){echo "checked ";}
 		echo "/> Afficher le nom des devoirs.\n";

@@ -199,6 +199,15 @@ if (isset($_POST['OK'])) {
 	if (!saveSetting("GepiAccesReleveEleve", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesReleveEleve !";
 	}
+	
+if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesOptionsReleveEleve", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesOptionsReleveEleve !";
+	}
 
 	if (isset($_POST['GepiAccesCahierTexteEleve'])) {
 		$temp = "yes";
@@ -216,6 +225,15 @@ if (isset($_POST['OK'])) {
 	}
 	if (!saveSetting("GepiAccesReleveParent", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesReleveParent !";
+	}
+	
+	if (isset($_POST['GepiAccesOptionsReleveParent'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesOptionsReleveParent", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesOptionsReleveParent !";
 	}
 
 	if (isset($_POST['GepiAccesCahierTexteParent'])) {
@@ -511,7 +529,7 @@ if (isset($_POST['OK'])) {
 	}
 	if (!saveSetting("AAEleve", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de AAEleve !";
-	}
+	}	
 }
 
 // Load settings
@@ -750,6 +768,11 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesReleveEleve")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès à ses relevés de notes</td>
 			</tr>
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesOptionsReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesOptionsReleveEleve")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux options du relevés de notes (nom court, coef, date des devoirs, ...)</td>
+			</tr>
+
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCahierTexteEleve" value="yes" <?php if (getSettingValue("GepiAccesCahierTexteEleve")=='yes') echo "checked"; ?> /></td>
@@ -801,6 +824,11 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'> a accès aux relevés de notes des élèves dont il est responsable</td>
+			</tr>
+			
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesOptionsReleveParent" value="yes" <?php if (getSettingValue("GepiAccesOptionsReleveParent")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'> a accès aux options du relevés de notes (nom court, coef, date des devoirs, ...)</td>
 			</tr>
 
 			<tr valign='top'>
