@@ -681,18 +681,28 @@ while ($p < $nb_users) {
 // redirection à la fin de la génération des mots de passe
 switch ($mode_impression) {
 	case 'csv' :
-		//sauvegarde des données dans la session Admin
-		$_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
+		if(isset($donnees_personne_csv)){
+			//sauvegarde des données dans la session Admin
+			$_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
 
-		//redirection vers password_csv.php
-		header("Location: ./password_csv.php"); die();
+			//redirection vers password_csv.php
+			header("Location: ./password_csv.php"); die();
+		}
+		else{
+			echo "<p>Tous les comptes sont déjà initialisés.<br />On ne modifie pas les mots de passe.</p>\n";
+		}
 		break;
 	case 'pdf' :
-		//sauvegarde des données dans la session Admin
-		$_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
+		if(isset($donnees_personne_csv)){
+			//sauvegarde des données dans la session Admin
+			$_SESSION['donnees_export_csv_password']=$donnees_personne_csv;
 
-		//redirection vers password_csv.php
-		header("Location: ../impression/password_pdf.php"); die();
+			//redirection vers password_csv.php
+			header("Location: ../impression/password_pdf.php"); die();
+		}
+		else{
+			echo "<p>Tous les comptes sont déjà initialisés.<br />On ne modifie pas les mots de passe.</p>\n";
+		}
 		break;
 }
 require("../lib/footer.inc.php");
