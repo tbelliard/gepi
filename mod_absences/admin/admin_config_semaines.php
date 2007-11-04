@@ -101,7 +101,7 @@ echo "<p class=bold><a href='index.php'><img src='../../images/icons/back.png' a
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
-<h2>Définition des type de semaines</h2>
+<h2>Définition des types de semaines</h2>
 <form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
 <input type="submit" name="submit" value="Enregistrer" />
 <br/><br/>
@@ -131,7 +131,7 @@ echo "<p class=bold><a href='index.php'><img src='../../images/icons/back.png' a
 
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); } 
+<?php mysql_close(); }
 
 require("../../lib/footer.inc.php");
 
