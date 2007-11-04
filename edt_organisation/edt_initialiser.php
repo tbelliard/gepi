@@ -84,9 +84,10 @@ else {
 }
 	// Saisie manuelle de l'emploi du temps
 echo '
-	<fieldset>
-		<legend>Saisie manuelle</legend>
 		<form action="edt_initialiser.php" name="choix_prof" method="post">
+	<fieldset id="init_edt1">
+		<legend>Saisie manuelle</legend>
+
 		<select name="prof" onchange=\'document.choix_prof.submit();\'>
 			<option value="rien">Choix du professeur</option>
 	';
@@ -113,15 +114,20 @@ for($i=0;$i<count($tab_select);$i++) {
 echo '
  		</select>
 			<input type="hidden" name="initialiser" value="ok" />
+	</fieldset>
 		</form>';
 
 	// Ensuite, on propose la liste des enseignements de ce professeur associé à la matière
 if (isset($choix_prof)) {
 	echo '
+			<form action="edt_initialiser.php" name="choix_enseignement" method="post">
+	<fieldset id="init_edt2">
+		<legend>Choix du cours</legend>
+
 <table border="0" cellspacing="4" cellpadding="0">
 	<tr>
 		<td>
-			<form action="edt_initialiser.php" name="choix_enseignement" method="post">
+
 			<select name="enseignement">';
 echo "\n";
 
@@ -147,9 +153,10 @@ echo "
 		}
 echo '
 			</select>
-		</td>
+
 			<input type="hidden" name="initialiser" value="ok" />
 			<input type="hidden" name="prof" value="'.$choix_prof.'" />
+		</td>
 		<td>
 			<select name="ch_jour_semaine">
 				<option value="rien">Jour</option>';
@@ -182,8 +189,7 @@ echo "\n";
 echo '
 			</select>
 		</td>
-	<br />
-	<br />
+
 		<td>
 			<select name="ch_heure">
 				<option value="rien">Horaire</option>';
@@ -320,13 +326,14 @@ echo '
 		</td>
 	</tr>
 	</table>
+	</fieldset>
 	</form>';
 
 	// Traitement et enregistrement des entrées manuelles de l'EdT
 
 if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
 	echo '
-<span class="refus">Vous devez renseigner tous les champs !</span><br />';
+<p class="refus">Vous devez renseigner tous les champs !</p><br />';
 }
 else {
 	if (isset($choix_prof) AND $enseignement != NULL) {
@@ -342,7 +349,7 @@ else {
 			$req_present_s = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
 			$rep_present_s = mysql_fetch_array($req_present_s);
 			$tab_present_s = get_group($rep_present_s["id_groupe"]);
-			echo "<span class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</span><br />";
+			echo "<p class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
 		}
 
 	// Vérification que ce prof n'a pas déjà cours à ce moment là
@@ -351,7 +358,7 @@ else {
 	$nbre_verif_prof = mysql_num_rows($verif_prof);
 		if ($nbre_verif_prof != 0) {
 			$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-			echo "<span class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</span><br />";
+			echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
 		}
 
 	// Vérification que le groupe est bien libre à ce moment là
@@ -384,20 +391,16 @@ else {
 		$titre_listeleve = "Liste des élèves";
 
 	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>\n".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
-		echo "Ce cours est enregistré :<font color=\"green\" size=\"1\">Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font>";
+		echo "<p>Ce cours est enregistré :<font color=\"green\" size=\"1\">Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
 	}
 
 }
 }
-
-	// Fin du fieldset du nouvel enregistrement
-echo '
-	</fieldset>';
 }
-else
-echo '
-		</fieldset>';
-
+else {
+//echo '
+//		</fieldset>';
+}
 
 
 
