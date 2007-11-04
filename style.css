@@ -625,7 +625,7 @@ img.link {
 
 /*=================================*/
 
-#table_header {
+#table_header{
 	color: white;
 	/*
 	Ca ne fonctionne pas! Pas pris en compte???
@@ -649,7 +649,7 @@ img.link {
 
 
 #td_headerLeft{
-	vertical-align: center;
+	vertical-align: middle;
 	font-size: 10pt;
 
 	/* Ajout pour que les dernières connexions apparaissent aussi en blanc et ressortent bien sur le bandeau sombre de l'entête */
