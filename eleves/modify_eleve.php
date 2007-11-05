@@ -961,12 +961,13 @@ if(isset($definir_resp)){
 		echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 		echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
 		echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
+
+		echo "</form>\n";
 	}
 	else{
 		// On valide l'enregistrement...
 		// ... il faut le faire plus haut avant le header...
 	}
-	echo "</form>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -980,6 +981,8 @@ if(isset($definir_resp)){
 if(isset($definir_etab)){
 	if(!isset($valider_choix_etab)){
 		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
+		echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 
 		echo "<p>Choix de l'établissement d'origine pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
@@ -1031,12 +1034,13 @@ if(isset($definir_etab)){
 
 		echo "<p>Si un établissement ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 		echo "en vous rendant dans [Gestion des bases-><a href='../etablissements/index.php'>Gestion des établissements</a>]</p>\n";
+
+		echo "</form>\n";
 	}
 	else{
 		// On valide l'enregistrement...
 		// ... il faut le faire plus haut avant le header...
 	}
-	echo "</form>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -1050,6 +1054,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 }
 
 
+echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
@@ -1134,7 +1139,12 @@ echo "<tr>\n";
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 if(isset($reg_no_gep)){
+
 	$photo="../photos/eleves/".$reg_no_gep.".jpg";
+	if(!file_exists($photo)){
+		$photo="../photos/eleves/".sprintf("%05d",$reg_no_gep).".jpg";
+	}
+
 	echo "<td align='center'>\n";
 	$temoin_photo="non";
 	if(file_exists($photo)){
