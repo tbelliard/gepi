@@ -513,6 +513,8 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_sconet.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');";
 
+	$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/export_modele_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'exportation en csv des modeles de bulletin pdf', '');";
+
 	//$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -4940,6 +4942,188 @@ if (isset ($_POST['maj'])) {
 		else{
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
+		//===================================================
+
+
+		//===================================================
+        $result .= "&nbsp;->Ajout d'un champ 'nom_etab_gras' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'nom_etab_gras'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `nom_etab_gras` TINYINT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_texte_date_edition' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_date_edition'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_date_edition` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_texte_matiere' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_matiere'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_matiere` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'active_moyenne_general' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'active_moyenne_general'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `active_moyenne_general` TINYINT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'titre_bloc_avis_conseil' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'titre_bloc_avis_conseil'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `titre_bloc_avis_conseil` VARCHAR( 50 ) NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_titre_bloc_avis_conseil' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_titre_bloc_avis_conseil'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_titre_bloc_avis_conseil` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_profprincipal_bloc_avis_conseil' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_profprincipal_bloc_avis_conseil'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_profprincipal_bloc_avis_conseil` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'affiche_fonction_chef' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_fonction_chef'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `affiche_fonction_chef` TINYINT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_texte_fonction_chef' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_fonction_chef'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_fonction_chef` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+        $result .= "&nbsp;->Ajout d'un champ 'taille_texte_identitee_chef' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_identitee_chef'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_identitee_chef` FLOAT NOT NULL ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+
+        $result .= "&nbsp;->Ajout des champs 'tel_texte', 'fax_image',... à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'tel_texte'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `model_bulletin` ADD `tel_image` VARCHAR( 20 ) NOT NULL ,
+ADD `tel_texte` VARCHAR( 20 ) NOT NULL ,
+ADD `fax_image` VARCHAR( 20 ) NOT NULL ,
+ADD `fax_texte` VARCHAR( 20 ) NOT NULL ,
+ADD `courrier_image` VARCHAR( 20 ) NOT NULL ,
+ADD `courrier_texte` VARCHAR( 20 ) NOT NULL ,
+ADD `largeur_bloc_eleve` FLOAT NOT NULL ,
+ADD `hauteur_bloc_eleve` FLOAT NOT NULL ,
+ADD `largeur_bloc_adresse` FLOAT NOT NULL ,
+ADD `hauteur_bloc_adresse` FLOAT NOT NULL ,
+ADD `largeur_bloc_datation` FLOAT NOT NULL ,
+ADD `hauteur_bloc_datation` FLOAT NOT NULL ,
+ADD `taille_texte_classe` FLOAT NOT NULL ,
+ADD `type_texte_classe` VARCHAR( 1 ) NOT NULL ,
+ADD `taille_texte_annee` FLOAT NOT NULL ,
+ADD `type_texte_annee` VARCHAR( 1 ) NOT NULL ,
+ADD `taille_texte_periode` FLOAT NOT NULL ,
+ADD `type_texte_periode` VARCHAR( 1 ) NOT NULL ,
+ADD `taille_texte_categorie_cote` FLOAT NOT NULL ,
+ADD `taille_texte_categorie` FLOAT NOT NULL ,
+ADD `type_texte_date_datation` VARCHAR( 1 ) NOT NULL ,
+ADD `cadre_adresse` TINYINT NOT NULL ;";
+			//echo "<br />$sql<br />";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
 		//===================================================
 
     }
