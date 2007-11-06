@@ -88,22 +88,38 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
      					} // for $c
     				echo '</span> ';
     // On considère qu'il n'y a aucun problème dans la ligne
-    	$probleme = "non";
+    	$probleme = "";
     // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
     	// On récupère le login du prof
     	$nom = strtoupper(strtr($tab[0], "éèêë", "eeee"));
     	$prenom = strtoupper(strtr($tab[1], "éèêë", "eeee"));
     $req_prof = mysql_query("SELECT login FROM utilisateurs WHERE nom = '".$nom."' AND prenom = '".$prenom."'");
     $rep_prof = mysql_fetch_array($req_prof);
+    	if ($rep_prof == "") {
+    		$probleme .="<p>Le professeur n'est pas reconnu.</p>";
+    	}
 
 		// On récupère l'id de la matière et l'id de la classe
 		$matiere = strtoupper(strtr($tab[2], "éèêë", "eeee"));
+		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
+		$rep_matiere = mysql_fetch_array($sql_matiere);
+			if ($rep_matiere == "") {
+				$probleme .= "<p>Gepi ne retrouve pas la bonne matière.</p>";
+			}
 		$classe = strtoupper(strtr($tab[3], "éèêë", "eeee"));
-	$rep_classe = mysql_fetch_array(mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'"));
+	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
+	$rep_classe = mysql_fetch_array($sql_classe);
+		if ($rep_classe == "") {
+			$probleme .= "<p>La classe n'a pas été trouvée.</p>";
+		}
 
 		// On récupère l'id de la salle
-	$req_salle = mysql_fetch_array(mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[4]."'"));
+	$sql_salle = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[4]."'");
+	$req_salle = mysql_fetch_array($sql_salle);
 	$rep_salle = $req_salle["id_salle"];
+		if ($rep_salle == "") {
+			$probleme .= "<p>La salle n'a pas été trouvée.</p>";
+		}
 
 		// Le jour et le créneau de début du cours
 	$rep_jour = $tab[5];
@@ -114,7 +130,11 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 			// On détermine dans quel créneau on est
 			$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode < '".$tab[6]."' AND heurefin_definie_periode > '".$tab[6]."'");
 			$rep_creneau = mysql_fetch_array($req_creneau);
-			$rep_heuredebut = $rep_creneau["id_definie_periode"];
+				if ($rep_creneau == "") {
+					$probleme .= "<p>Le créneau n'a pas été trouvé.</p>";
+				} else {
+					$rep_heuredebut = $rep_creneau["id_definie_periode"];
+				}
 		}
 		else {
 		$rep_heuredebut = $req_heuredebut["id_definie_periode"];
@@ -146,31 +166,40 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		else {
 			$req_calendar = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE jourdebut_calendrier = '".$tab[9]."' AND jourfin_calendrier = '".$tab[10]."'");
 			$req_tab_calendar = mysql_fetch_array($req_calendar);
-			$rep_calendar = $req_tab_calendar[0];
+				if ($req_tab_calendar == "") {
+					$probleme .= "<p>La période du calendrier n'a pas été trouvée.</p>\n";
+				} else {
+					$rep_calendar = $req_tab_calendar[0];
+				}
 		}
 
 		// On retrouve l'id_groupe et on vérifie qu'il est unique
 	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$rep_prof["login"]."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
-    $rep_groupe = mysql_fetch_array($req_groupe);
-    	if (count($req_groupe) > 1) {
-    		echo "Cette combinaison renvoie plusieurs groupes : ";
-    		for ($a=0; $a<count($rep_groupe); $a++) {
-				// Il faut trouver un truc pour que l'admin choisisse le bon groupe
-				// Il faut donc afficher les infos sur les groupes en question
-				// (liste d'élève, classe, matière en question) avec une infobulle.
-				echo $rep_groupe[$a]." - ";
-			}
-    	}
+    		$rep_groupe = mysql_fetch_array($req_groupe);
+    		if ($rep_groupe == "") {
+				$probleme .= "<p>Gepi ne retrouve pas le bon enseignement.</p>";
+			} else {
+    			if (count($req_groupe) > 1) {
+    				echo "Cette combinaison renvoie plusieurs groupes : ";
+    				for ($a=0; $a<count($rep_groupe); $a++) {
+						// Il faut trouver un truc pour que l'admin choisisse le bon groupe
+						// Il faut donc afficher les infos sur les groupes en question
+						// (liste d'élève, classe, matière en question) avec une infobulle.
+						echo $rep_groupe[$a]." - ";
+					}
+    			}
+    		} // fin du else
+
 		// Si tout est ok, on rentre la ligne dans la table sinon, on affiche le problème
 		$insert_csv = "INSERT INTO edt_cours (`id_groupe`, `id_salle`, `jour_semaine`, `id_definie_periode`, `duree`, `heuredeb_dec`, `id_semaine`, `id_calendrier`, `modif_edt`) VALUES ('$rep_groupe[0]', '$rep_salle', '$rep_jour', '$rep_heuredebut', '$rep_duree', '$rep_heuredeb_dec', '$rep_typesemaine', '$rep_calendar', '0')";
 			// On vérifie que les items existent
-		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "") {
+		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);
 			echo "<br /><span class=\"accept\">Cours enregistré</span>";
 		}
 		else {
 			$req_insert_csv = "";
-			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi.</span>";
+			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi.</span>\n".$probleme;
 		}
     	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
 				} // while
