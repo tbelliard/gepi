@@ -442,7 +442,10 @@ function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data
 		// calcul de la somme total des informations
 		$total_des_valeur = array_sum($data);
 
-		$espace_entre=$H_diagramme_affiche/$total_des_valeur;
+		if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
+		  $espace_entre = $H_diagramme_affiche / $total_des_valeur;
+		} else { $espace_entre = $H_diagramme_affiche; }
+
 		for($o=0;$o<$total_des_valeur;$o++)
 		{
 		$Y_echelle=$Y_placement_diagramme+($espace_entre*$o);
@@ -456,7 +459,9 @@ function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data
 			//Barre
 			if($place===$i) { $this->SetFillColor(5); } else { $this->SetFillColor(240); }
 			$this->SetDrawColor(0, 0, 0);
+			if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
 			$H_barre = ($H_diagramme_affiche*$val)/$total_des_valeur;
+			} else { $H_barre = ($H_diagramme_affiche*$val); }
 			$Y_barre = ($Y_placement_diagramme+$H_diagramme_affiche) - $H_barre;
 			$X_barre = $X_placement_diagramme+($L_barre*$i);
 			$this->Rect($X_barre, $Y_barre, $L_barre, $H_barre, 'DF');
@@ -1323,12 +1328,14 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					   AND aa.login = jae.login
  	   				   AND aa.periode = '".$id_periode."'
 					   AND ac.order_display1 = 'b'
+					   AND a.id = aa.id_aid
 					 ORDER BY ac.order_display2 ASC";
 		$resultat_aid = mysql_query($requete_aid);
 
 		while ($donner_aid = mysql_fetch_array($resultat_aid))
 		{
 			$id_groupe_aff = $donner_aid['indice_aid'];
+			$nom_aid_select = $donner_aid[1];
 
 			// information AID
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['matiere'] = $donner_aid['nom']; // nom court de l'AID
@@ -1337,8 +1344,12 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
 			// calcule du nombre d'élève fesant partie de ce groupe
-			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'"'),0); }
+			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'" AND jae.login = aa.login'),0); }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = $nb_eleve_groupe[$id_groupe_aff];
+
+			// désactiver pour l'instant - 20071106
+			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = '-';
+			// fin
 
 			//calcule des moyennes du groupe
 			$groupe_matiere = $donner_aid['indice_aid']; // id du groupe de la matière sélectionné
@@ -1356,9 +1367,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
-			$call_profs = mysql_query('SELECT * FROM '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
-							 	  WHERE ( jau.id_utilisateur = u.login
-								    AND jau.indice_aid = "'.$id_groupe_aff.'")');
+			$call_profs = mysql_query('SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
+							 	  WHERE ( jau.indice_aid = "'.$id_groupe_aff.'"
+							            AND jau.id_utilisateur = u.login
+								    AND a.id = jau.id_aid
+								    AND a.indice_aid = jau.indice_aid
+								    AND a.nom = "'.$nom_aid_select.'"
+								    )');
 			$nombre_profs = mysql_num_rows($call_profs);
 			$k = 0;
 			while ($k < $nombre_profs) {
@@ -1481,11 +1496,6 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$k++;
 			}
 
-			//$res_note_rang = mysql_query("SELECT note, rang " .
-			//		"FROM matieres_notes WHERE (" .
-			//		"login='".$login_eleve_select."' AND " .
-			//		"id_groupe='".$groupe_matiere."' AND " .
-			//		"periode='".$id_periode."')");
 			$res_note_rang = mysql_query("SELECT note, statut, rang " .
 					"FROM matieres_notes WHERE (" .
 					"login='".$login_eleve_select."' AND " .
@@ -1632,12 +1642,14 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					   AND aa.login = jae.login
  	   				   AND aa.periode = '".$id_periode."'
 					   AND ac.order_display1 = 'e'
+					   AND a.id = aa.id_aid
 					 ORDER BY ac.order_display2 ASC";
 		$resultat_aid = mysql_query($requete_aid);
 
 		while ($donner_aid = mysql_fetch_array($resultat_aid))
 		{
 			$id_groupe_aff = $donner_aid['indice_aid'];
+			$nom_aid_select =  $donner_aid[1];
 
 			// information AID
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['matiere'] = $donner_aid['nom']; // nom court de l'AID
@@ -1646,8 +1658,12 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
 			// calcule du nombre d'élève fesant partie de ce groupe
-			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'"'),0); }
+			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'" AND jae.login = aa.login'),0); }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = $nb_eleve_groupe[$id_groupe_aff];
+
+			// désactiver pour l'instant - 20071106
+			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = '-';
+			// fin
 
 			//calcule des moyennes du groupe
 			$groupe_matiere = $donner_aid['indice_aid']; // id du groupe de la matière sélectionné
@@ -1665,9 +1681,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
-			$call_profs = mysql_query('SELECT * FROM '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
-							 	  WHERE ( jau.id_utilisateur = u.login
-								    AND jau.indice_aid = "'.$id_groupe_aff.'")');
+			$call_profs = mysql_query('SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
+							 	  WHERE ( jau.indice_aid = "'.$id_groupe_aff.'"
+							            AND jau.id_utilisateur = u.login
+								    AND a.id = jau.id_aid
+								    AND a.indice_aid = jau.indice_aid
+								    AND a.nom = "'.$nom_aid_select.'"
+								    )');
 			$nombre_profs = mysql_num_rows($call_profs);
 			$k = 0;
 			while ($k < $nombre_profs) {
