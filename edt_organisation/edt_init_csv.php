@@ -39,7 +39,9 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
-
+//==============PROTOTYPE===============
+$utilisation_prototype = "ok";
+//============fin PROTOTYPE=============
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
 
@@ -55,8 +57,9 @@ require_once("./menu.inc.php"); ?>
 <?php
 
  // Initialisation des variables
- $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+$aff_depart = ""; // pour ne plus afficher le html après une initialisation
 
 	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
         // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -66,7 +69,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
         if(strtolower($csv_file['name']) == "g_edt.csv") {
 
             // Le nom est ok. On ouvre le fichier
-            $fp=fopen($csv_file['tmp_name'],"r");
+            $fp = fopen($csv_file['tmp_name'],"r");
 
             if(!$fp) {
                 // Prob sur l'ouverture du fichier
@@ -80,15 +83,15 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
             	$nbre = 1;
 				while($tab = fgetcsv($fp, 1000, ";")) {
 					$num = count($tab);
-    				echo "<p> $num champs pour la ligne $nbre: <br /></p>\n";
+    				echo "<p> ".$num." champs pour la ligne ".$nbre.": <br /></p>\n";
     				$nbre++;
     				echo '<span class="legende">';
     					for ($c=0; $c < $num; $c++) {
         					echo $tab[$c] . " - \n";
-     					} // for $c
+     					}
     				echo '</span> ';
-    // On considère qu'il n'y a aucun problème dans la ligne
-    	$probleme = "";
+    	// On considère qu'il n'y a aucun problème dans la ligne
+    		$probleme = "";
     // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
     	// On récupère le login du prof
     	$nom = strtoupper(strtr($tab[0], "éèêë", "eeee"));
@@ -96,7 +99,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
     $req_prof = mysql_query("SELECT login FROM utilisateurs WHERE nom = '".$nom."' AND prenom = '".$prenom."'");
     $rep_prof = mysql_fetch_array($req_prof);
     	if ($rep_prof == "") {
-    		$probleme .="<p>Le professeur n'est pas reconnu.</p>";
+    		$probleme .="<p>Le professeur n'est pas reconnu.</p>\n";
     	}
 
 		// On récupère l'id de la matière et l'id de la classe
@@ -104,13 +107,13 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
 		$rep_matiere = mysql_fetch_array($sql_matiere);
 			if ($rep_matiere == "") {
-				$probleme .= "<p>Gepi ne retrouve pas la bonne matière.</p>";
+				$probleme .= "<p>Gepi ne retrouve pas la bonne mati&egrave;re.</p>\n";
 			}
 		$classe = strtoupper(strtr($tab[3], "éèêë", "eeee"));
 	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
 	$rep_classe = mysql_fetch_array($sql_classe);
 		if ($rep_classe == "") {
-			$probleme .= "<p>La classe n'a pas été trouvée.</p>";
+			$probleme .= "<p>La classe n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 		}
 
 		// On récupère l'id de la salle
@@ -118,7 +121,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	$req_salle = mysql_fetch_array($sql_salle);
 	$rep_salle = $req_salle["id_salle"];
 		if ($rep_salle == "") {
-			$probleme .= "<p>La salle n'a pas été trouvée.</p>";
+			$probleme .= "<p>La salle n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 		}
 
 		// Le jour et le créneau de début du cours
@@ -131,7 +134,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 			$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode < '".$tab[6]."' AND heurefin_definie_periode > '".$tab[6]."'");
 			$rep_creneau = mysql_fetch_array($req_creneau);
 				if ($rep_creneau == "") {
-					$probleme .= "<p>Le créneau n'a pas été trouvé.</p>";
+					$probleme .= "<p>Le cr&eacute;neau n'a pas &eacute;t&eacute; trouv&eacute;.</p>\n";
 				} else {
 					$rep_heuredebut = $rep_creneau["id_definie_periode"];
 				}
@@ -167,7 +170,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 			$req_calendar = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE jourdebut_calendrier = '".$tab[9]."' AND jourfin_calendrier = '".$tab[10]."'");
 			$req_tab_calendar = mysql_fetch_array($req_calendar);
 				if ($req_tab_calendar == "") {
-					$probleme .= "<p>La période du calendrier n'a pas été trouvée.</p>\n";
+					$probleme .= "<p>La p&eacute;riode du calendrier n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 				} else {
 					$rep_calendar = $req_tab_calendar[0];
 				}
@@ -177,7 +180,7 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$rep_prof["login"]."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
     		$rep_groupe = mysql_fetch_array($req_groupe);
     		if ($rep_groupe == "") {
-				$probleme .= "<p>Gepi ne retrouve pas le bon enseignement.</p>";
+				$probleme .= "<p>Gepi ne retrouve pas le bon enseignement.</p>\n";
 			} else {
     			if (count($req_groupe) > 1) {
     				echo "Cette combinaison renvoie plusieurs groupes : ";
@@ -195,16 +198,19 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 			// On vérifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);
-			echo "<br /><span class=\"accept\">Cours enregistré</span>";
+			echo "<br /><span class=\"accept\">Cours enregistr&eacute;</span><br />\n";
 		}
 		else {
 			$req_insert_csv = "";
-			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi.</span>\n".$probleme;
+			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi.</span>\n".$probleme."<br />";
 		}
     	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
 				} // while
 			} // else du début
 		fclose($fp);
+		// on n'affiche plus le reste de la page
+		$aff_depart = "non";
+		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
 	} // if ... == "g_edt.csv")
 	else
 	echo 'Ce n\'est pas le bon nom de fichier, revenez en arrière en <a href="edt_init_csv.php">cliquant ici</a> !';
@@ -222,57 +228,85 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
                 // Prob sur l'ouverture du fichier
                 echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
                 echo "<p><a href=\"./edt_init_csv.php\">Cliquer ici </a> pour recommencer !</center></p>";
-            } //!$fp
+            } // if (!$fp)...
             else {
+
             	// On affiche alors toutes les lignes de tous les champs
 				while($tab_salle = fgetcsv($fp, 1000, ";")) {
 					$numero = htmlentities($tab_salle[0]);
-					$nom_salle = htmlentities($tab_salle[1]);
+					$nom_brut_salle = htmlentities($tab_salle[1]);
+				// On ne garde que les 30 premiers caractères du nom de la salle
+				$nom_salle = substr($nom_brut_salle, 0, 30);
+					if ($nom_salle == "") {
+						$nom_salle = "Salle ".$numero;
+					}
 				// On lance la requête pour insérer les nouvelles salles
 				$req_insert_salle = mysql_query("INSERT INTO salle_cours (`numero_salle`, `nom_salle`) VALUES ('$numero', '$nom_salle')");
+					if (!$req_insert_salle) {
+						echo "La salle : ".$nom_salle." portant le num&eacute;ro : ".$numero." n'a pas &eacute;t&eacute; enregistr&eacute;e.<br />";
+					} else {
+						echo "La salle : ".$numero." est enregistr&eacute;e(<i> ".$nom_salle."</i>).<br />";
+					}
 				} // while
-			}
-		}
+			} // else
+		fclose($fp);
+			// on n'affiche plus le reste de la page
+		$aff_depart = "non";
+		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
+
+		} //if(strtolower($csv_file['name']) =....
 		else {
 			echo '<h3>Ce n\'est pas le bon nom de fichier !</h3>';
 			echo "<p><a href=\"./edt_init_csv.php\">Cliquer ici </a> pour recommencer !</center></p>";
 		}
 	} // if ($action == "upload_file_salle")
 
+	// On précise l'état du display du div aff_init_csv en fonction de $aff_depart
+	if ($aff_depart == "oui") {
+		$aff_div_csv = "block";
+	} elseif ($aff_depart == "non") {
+		$aff_div_csv = "none";
+	} else {
+		$aff_div_csv = "block";
+	}
+
 	// Pour la liste de <p>, on précise les contenus des infobulles
 		$forme_matiere = mysql_fetch_array(mysql_query("SELECT matiere, nom_complet FROM matieres"));
 			$aff1_forme_matiere = $forme_matiere["matiere"];
 			$aff2_forme_matiere = $forme_matiere["nom_complet"];
-	$contenu_matiere = "Attention de bien respecter le nom court utilisé dans Gepi. Il est de la forme $aff1_forme_matiere pour $aff2_forme_matiere.";
+	$contenu_matiere = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff1_forme_matiere pour $aff2_forme_matiere.";
 		$forme_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '1'"));
 		$aff_forme_classe = $forme_classe["classe"];
-	$contenu_classe = "Attention de bien respecter le nom court utilisé dans Gepi. Il est de la forme $aff_forme_classe.";
-	$contenu_heuredebut = "Attention de bien respecter la forme <span class='red'>HH:MM:SS</span>. Quand un cours commence au début d'un créneau, ce qui est le cas le plus courant, l'heure doit correspondre à ce qui a été indiqué dans le paramétrage !";
-	$contenu_duree = "La durée s'exprime en nombre de créneaux occupés. Pour les cours qui durent un créneau et demi, il faut utiliser la forme 1.5 -";
-	$contenu_typesemaine = "Par défaut, ce champ est égal à 0 pour les cours se déroulant toutes les semaines. Pour les semaines par quinzaine, précisez les mêmes types que dans le paramétrage du module absences.";
-	$contenu_datedebut = "Pour les cours qui n'ont pas lieux toute l'année, précisez la date de début (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ = 0.";
-	$contenu_datefin = "Pour les cours qui n'ont pas lieux toute l'année, précisez la date de fin (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ = 0.";
+	$contenu_classe = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff_forme_classe.";
+	$contenu_heuredebut = "Attention de bien respecter la forme <span class='red'>HH:MM:SS</span>. Quand un cours commence au d&eacute;but d'un cr&eacute;neau, ce qui est le cas le plus courant, l'heure doit correspondre à ce qui a &eacute;t&eacute; indiqu&eacute; dans le param&eacute;trage !";
+	$contenu_duree = "La durée s'exprime en nombre de cr&eacute;neaux occup&eacute;és. Pour les cours qui durent un cr&eacute;neau et demi, il faut utiliser la forme 1.5 -";
+	$contenu_typesemaine = "Par défaut, ce champ est égal à 0 pour les cours se déroulant toutes les semaines. Pour les semaines par quinzaine, pr&eacute;cisez les mêmes types que dans le param&eacute;trage du module absences.";
+	$contenu_datedebut = "Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de d&eacute;but (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ doit être = 0.";
+	$contenu_datefin = "Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de fin (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ doit être = 0.";
 ?>
-
+<div id="aff_init_csv" style="display: <?php echo $aff_div_csv; ?>;">
 L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs &eacute;tapes:
 
 <hr />
 	<h4 class='refus'>Premi&egrave;re &eacute;tape</h4>
 	<p>Pour &eacute;viter de multiplier les r&eacute;glages, une partie de l'initialisation
-	se fait par le module absences : les diff&eacute;rents cr&eacute;neaux de la journ&eacute;e, le type de semaine (paire ou impaire) et les horaires de l'&eacute;tablissement.
-	Il faut aller dans le module absence m&ecirc;me si vous ne l'utilisez pas en cliquant sur ce <a href="../mod_absences/admin/index.php">lien</a>, dans la partie intitul&eacute;e "Configuration avanc&eacute;e".</p>
-	 <center><h3 class='red'>ATTENTION !</h3></center>
-	 <p>Il ne faut pas pr&eacute;ciser les temps de pause (r&eacute;cr&eacute;ation) et les types de semaine doivent &ecirc;tre 1 ou 2 (impair et pair)
-	 pour pouvoir utiliser l'emploi du temps.</p>
+	se fait par le module absences : les diff&eacute;rents cr&eacute;neaux de la journ&eacute;e,
+	 le type de semaine (paire/impaire, A/B/C, 1/2,...) et les horaires de l'&eacute;tablissement.
+	Il faut aller dans le module absences m&ecirc;me si vous ne l'utilisez pas en cliquant
+	 sur ce <a href="../mod_absences/admin/index.php">lien</a>, dans la partie intitul&eacute;e
+	  "Configuration avanc&eacute;e".</p>
+
+
 <hr />
 	<h4 class='refus'>Deuxi&egrave;me &eacute;tape</h4>
 	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
-	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ...</p>
+	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ... Si tous vos
+	cours durent le temps de l'ann&eacute;e scolaire, vous pouvez vous passer de cette &eacute;tape.</p>
 <hr />
 	<h4 class='refus'>Troisi&egrave;me &eacute;tape</h4>
 	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes.
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
-	<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>
+	<p>Les champs suivants doivent être présents, dans l'ordre, <b>séparés par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 	<ol>
 		<li>num&eacute;ro salle (5 caract&egrave;res max.)</li>
 		<li>nom salle (30 caract&egrave;res max.)</li>
@@ -290,19 +324,46 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	<h4 class='refus'>Quatri&egrave;me &eacute;tape</h4>
 	<p><span class='red'>Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
 	Pour l'emploi du temps, vous devez fournir un fichier csv dont les champs suivants
-	 doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>
+	 doivent être présents, dans l'ordre, <b>séparés par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
+<!-- AIDE init csv -->
+
+<a href="#" onClick="javascript:changerDisplayDiv('aide_initcsv');">
+	<img src="../images/info.png" alt="Plus d'infos..." Title="Cliquez pour plus d'infos..." />
+</a>
+	<div style="display: none;" id="aide_initcsv">
+	<hr />
+	<span class="red">Attention</span>, ces champs ont des r&egrave;gles &agrave; suivre : il faut respecter la forme retenue par Gepi
+	<br />
+	<p>Pour la mati&egrave;re, il faut utiliser le nom court qui est de la forme <?php echo "\"".$aff1_forme_matiere."\" pour ".$aff2_forme_matiere; ?>.</p>
+	<p>Pour la classe, le nom court est de la forme "<?php echo $aff_forme_classe; ?>".</p>
+	<p>Le num&eacute;ro de la salle et le jour doivent correspondre &agrave; des informations existantes d&eacute;j&agrave;
+	dans Gepi.</p>
+	<p>Pour l'heure de d&eacute;but, la forme <span class='red'>"HH:MM:SS"</span> est imp&eacute;rative. Quand un cours commence au d&eacute;but
+	d'un cr&eacute;neau, ce qui est le cas le plus courant, l'heure doit correspondre &agrave; ce qui a &eacute;t&eacute; indiqu&eacute;
+	dans le param&eacute;trage !</p>
+	<p>La dur&eacute;e s'exprime en nombre de cr&eacute;neaux occup&eacute;s. Pour les cours qui durent un cr&eacute;neau et demi,
+	il faut utiliser la forme "1.5" -</p>
+	<p>Le type de semaine est égal à "0" pour les cours se déroulant toutes les semaines. Pour les semaines par quinzaine,
+	pr&eacute;cisez les m&ecirc;mes types que dans le param&eacute;trage du module absences.</p>
+	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de d&eacute;but (incluse) du cours sous
+	la forme <span class='red'>"AAAA-MM-JJ"</span>. Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
+	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de fin (incluse) du cours sous la forme
+	<span class='red'>"AAAA-MM-JJ"</span>. Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
+	<hr />
+	</div>
+<!-- Fin aide init csv -->
 	<ol>
 	 	<li>nom professeur</li>
 		<li>prenom professeur</li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('matiere','Y',10,10);return false;\">matiere</a>\n".creer_div_infobulle("matiere", "La matière", "#330033", $contenu_matiere, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('classe','Y',10,10);return false;\">classe</a>\n".creer_div_infobulle("classe", "La classe", "#330033", $contenu_classe, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
+		<li>matiere</li>
+		<li>classe</li>
 		<li>numero salle</li>
 		<li>jour</li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('heuredebut','Y',10,10);return false;\">heure debut</a>\n".creer_div_infobulle("heuredebut", "Heure de début de cours", "#330033", $contenu_heuredebut, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('duree','Y',10,10);return false;\">duree</a>\n".creer_div_infobulle("duree", "La durée", "#330033", $contenu_duree, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('typesemaine','Y',10,10);return false;\">type semaine</a>\n".creer_div_infobulle("typesemaine", "Type de semaine", "#330033", $contenu_typesemaine, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('datedebut','Y',10,10);return false;\">date debut</a>\n".creer_div_infobulle("datedebut", "Date de début", "#330033", $contenu_datedebut, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
-		<li><?php echo "<a href=\"#\" onmouseover=\"afficher_div('datefin','Y',10,10);return false;\">date fin</a>\n".creer_div_infobulle("datefin", "Date de fin", "#330033", $contenu_datefin, "#FFFFFF", 15,0,"n","n","y","n"); ?></li>
+		<li>heure debut</li>
+		<li>duree</li>
+		<li>type semaine</li>
+		<li>date debut</li>
+		<li>date fin</li>
 	</ol>
 
 	<p>Veuillez préciser le nom complet du fichier <b>g_edt.csv</b>.</p>
@@ -313,8 +374,8 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 			<p><input type="file" size="80" name="csv_file" /></p>
 			<p><input type='submit' value='Valider' /></p>
 		</form>
-
-	</div>
+</div><!-- fin du div aff_init_csv -->
+	</div><!-- fin du div lecorps -->
 
 <?php
 // inclusion du footer

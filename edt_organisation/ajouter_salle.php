@@ -112,11 +112,8 @@ G&eacute;rer les salles de Gepi
 
 	<tr>
     	<td>Num&eacute;ro de la salle : </td>
-    	<script type='text/javascript'>
-		document.getElementById('numerosalle').focus();
-		</script>
     	<td><input type="text" name="numerosalle" value="" size="5" maxlength="5" title="Vous pouvez utiliser le tabulateur pour changer de champ" onfocus="this.className='focus';" onblur="this.className='normal';" />
-		<img src="../images/icons/ico_ampoule.png" title="Si vous ne pr&eacute;cisez pas le nom de la salle, son num&eacute;ro sera son nom." /></td>
+			<img src="../images/icons/ico_ampoule.png" title="Si vous ne pr&eacute;cisez pas le nom de la salle, son num&eacute;ro sera son nom." /></td>
     	<td>Nom de la salle : </td>
     	<td><input type="text" name="nomsalle" value="" size="30" maxlength="30" onfocus="this.className='focus';" onblur="this.className='normal';" /></td>
 	</tr>
@@ -180,6 +177,8 @@ if (isset($add_new_numero) AND isset($add_new_salle)) {
 </fieldset>
 <br />
 
+	<form action="ajouter_salle.php" method="post" name="modifier_nom_salle1">
+
 <fieldset id="modifier_nom">
 	<legend>Modifier le nom d'une salle</legend>
 		<table border="0" cellpading="0" cellspacing="0">
@@ -195,9 +194,8 @@ if(isset($modif_salle)) {
 			<tr>
 				<td>
 
-	<form action="ajouter_salle.php" method="post" name="modifier_nom_salle1">
 		<input type="hidden" name="ajoutsalle" value="ok" />
-		<select name="modif_salle" onchange='document.modifier_nom_salle1.submit();'>>
+		<select name="modif_salle" onchange='document.modifier_nom_salle1.submit();'>
 		<option value="rien">Choix de la salle</option>
 <?php
 	$tab_select = renvoie_liste("salle");
@@ -220,11 +218,11 @@ if(isset($modif_salle)) {
 
 ?>
 		</select>
-	</form>
+
 				</td>
 				<td>
 <?php
-	// On affiche alors un text qui donne le nom actuel de la salle
+	// On affiche alors un texte qui donne le nom actuel de la salle
 if (isset($modif_salle)) {
 	$req_modif_nom = mysql_query("SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = $modif_salle");
 	$rep_modif_nom = mysql_fetch_array($req_modif_nom);
@@ -244,7 +242,8 @@ if (isset($modif_salle)) {
 
 	// Traitement du nouveau nom de la salle
 if (isset($new_name) AND $new_name != "" ) {
-	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name' WHERE id_salle = '$modif_salle'") OR DIE ('Echec dans le changement de nom');
+	$new_name_propre = substr($new_name, 0, 30);
+	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'") OR DIE ('Echec dans le changement de nom');
 	$req_numero = mysql_query("SELECT numero_salle FROM salle_cours WHERE id_salle = '$modif_salle'") OR DIE ('Echec dans le changement du nom');
 	$rep_numero = mysql_fetch_array($req_numero);
 		$num_salle = $rep_numero["numero_salle"];
@@ -253,7 +252,7 @@ if (isset($new_name) AND $new_name != "" ) {
 			<tr>
 				<td></td>
 				<td>
-	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.$new_name.'.</span>
+	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.$new_name_propre.'.</span>
 	';
 }
 ?>
@@ -262,8 +261,11 @@ if (isset($new_name) AND $new_name != "" ) {
 		</table>
 <br />
 </fieldset>
-
+	</form>
 <br />
+
+	<form action="ajouter_salle.php" name="effacer_salle" method="post">
+
 <fieldset id="enlever">
 	<legend>Effacer une salle de la base de donn&eacute;es</legend>
 		<table border="0" cellpading="0" cellspacing="0">
@@ -285,7 +287,7 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 			</td><td>
 
 	<!--choix de la salle-->
-	<form action="ajouter_salle.php" name="effacer_salle" method="post">
+
 		<select name="del_salle">
 			<option value="rien">Choix de la salle</option>
 <?php
@@ -301,11 +303,10 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 		<br /><br />
 		<input type="submit" name="Valider" value="Effacer" />
 		<br />
-	</form>
-
 			</td></tr>
 		</table>
 </fieldset>
+	</form>
 	</div>
 <br />
 <br />

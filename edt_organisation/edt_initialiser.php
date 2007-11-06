@@ -426,6 +426,7 @@ if ($aff_reglages2 == "oui") {
 	 qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d\'avoir param&eacute;tr&eacute;
  	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement. En suivant les instructions suivantes
  	tout devrait bien se passer.</h5>
+ 	<h4 class="red">Toutes les proc&eacute;dures d\'initialisation par csv ou xml effacent l\'emploi du temps déjà créé.</h4>
 
  	<div id="lien"><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></div>
  		';
@@ -440,7 +441,7 @@ else if ($aff_reglages2 == "non") {
 }
 else {
 	echo '
-	Il y a un problème de réglage dans votre base de données, il faut peut-être la mettre à jour.
+	Il y a un probl&egrave;me de r&eacute;glage dans votre base de donn&eacute;es, il faut peut-&ecirc;tre la mettre &agrave; jour.
 		';
 
 }

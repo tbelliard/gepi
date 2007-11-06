@@ -186,8 +186,8 @@ legend {
 	margin-left: 400px;
 }
 
-#aide_calendar {
-	width: 500px;
+#aide_calendar, #aide_initcsv {
+	width: 750px;
 	padding: 10px;
 	background-color: silver;
 }
