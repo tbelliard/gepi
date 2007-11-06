@@ -107,7 +107,7 @@ if (isset($_POST['option_modele_bulletin'])) {
 	$bt_select_periode = isset($_POST["bt_select_periode"]) ? $_POST["bt_select_periode"] :NULL;
 	$valide_modif_model = isset($_POST["valide_modif_model"]) ? $_POST["valide_modif_model"] :NULL;
 
-
+	if (empty($_FILES['fichier'])) { $fichier = ""; } else { $fichier = $_FILES['fichier']; }
 	if (empty($_GET['format']) and empty($_POST['format'])) {$format="";}
 	    else { if (isset($_GET['format'])) {$format=$_GET['format'];} if (isset($_POST['format'])) {$format=$_POST['format'];} }
 	if (empty($_GET['modele']) and empty($_POST['modele'])) {$modele="";}
@@ -116,6 +116,9 @@ if (isset($_POST['option_modele_bulletin'])) {
 	    else { if (isset($_GET['action_model'])) {$action_model=$_GET['action_model'];} if (isset($_POST['action_model'])) {$action_model=$_POST['action_model'];} }
 	if (empty($_GET['modele_action']) and empty($_POST['modele_action'])) {$modele_action='';}
 	    else { if (isset($_GET['modele_action'])) {$modele_action=$_GET['modele_action'];} if (isset($_POST['modele_action'])) {$modele_action=$_POST['modele_action'];} }
+	if (empty($_GET['action']) and empty($_POST['action'])) {$action="";}
+	    else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
+
 
 	if (empty($_GET['id_model_bulletin']) and empty($_POST['id_model_bulletin'])) {$id_model_bulletin="";}
 	    else { if (isset($_GET['id_model_bulletin'])) {$id_model_bulletin=$_GET['id_model_bulletin'];} if (isset($_POST['id_model_bulletin'])) {$id_model_bulletin=$_POST['id_model_bulletin'];} }
@@ -274,6 +277,8 @@ if (isset($_POST['option_modele_bulletin'])) {
 	   else { if (isset($_GET['texte_filigrame'])) { $texte_filigrame = $_GET['texte_filigrame']; } if (isset($_POST['texte_filigrame'])) { $texte_filigrame = $_POST['texte_filigrame']; } }
 	if (empty($_GET['affiche_logo_etab']) and empty($_POST['affiche_logo_etab'])) { $affiche_logo_etab = ''; }
 	   else { if (isset($_GET['affiche_logo_etab'])) { $affiche_logo_etab = $_GET['affiche_logo_etab']; } if (isset($_POST['affiche_logo_etab'])) { $affiche_logo_etab = $_POST['affiche_logo_etab']; } }
+	if (empty($_GET['nom_etab_gras']) and empty($_POST['nom_etab_gras'])) { $nom_etab_gras = ''; }
+	   else { if (isset($_GET['nom_etab_gras'])) { $nom_etab_gras = $_GET['nom_etab_gras']; } if (isset($_POST['nom_etab_gras'])) { $nom_etab_gras = $_POST['nom_etab_gras']; } }
 	if (empty($_GET['entente_mel']) and empty($_POST['entente_mel'])) { $entente_mel = ''; }
 	   else { if (isset($_GET['entente_mel'])) { $entente_mel = $_GET['entente_mel']; } if (isset($_POST['entente_mel'])) { $entente_mel = $_POST['entente_mel']; } }
 	if (empty($_GET['entente_tel']) and empty($_POST['entente_tel'])) { $entente_tel = ''; }
@@ -310,32 +315,83 @@ if (isset($_POST['option_modele_bulletin'])) {
 	   else { if (isset($_GET['copie_model'])) { $copie_model = $_GET['copie_model']; } if (isset($_POST['copie_model'])) { $copie_model = $_POST['copie_model']; } }
 	if (empty($_GET['largeur_matiere']) and empty($_POST['largeur_matiere'])) { $largeur_matiere = ''; }
 	   else { if (isset($_GET['largeur_matiere'])) { $largeur_matiere = $_GET['largeur_matiere']; } if (isset($_POST['largeur_matiere'])) { $largeur_matiere = $_POST['largeur_matiere']; } }
+	if (empty($_GET['taille_texte_date_edition']) and empty($_POST['taille_texte_date_edition'])) { $taille_texte_date_edition = ''; }
+	   else { if (isset($_GET['taille_texte_date_edition'])) { $taille_texte_date_edition = $_GET['taille_texte_date_edition']; } if (isset($_POST['taille_texte_date_edition'])) { $taille_texte_date_edition = $_POST['taille_texte_date_edition']; } }
+	if (empty($_GET['taille_texte_matiere']) and empty($_POST['taille_texte_matiere'])) { $taille_texte_matiere = ''; }
+	   else { if (isset($_GET['taille_texte_matiere'])) { $taille_texte_matiere = $_GET['taille_texte_matiere']; } if (isset($_POST['taille_texte_matiere'])) { $taille_texte_matiere = $_POST['taille_texte_matiere']; } }
+	if (empty($_GET['active_moyenne_general']) and empty($_POST['active_moyenne_general'])) { $active_moyenne_general = ''; }
+	   else { if (isset($_GET['active_moyenne_general'])) { $active_moyenne_general = $_GET['active_moyenne_general']; } if (isset($_POST['active_moyenne_general'])) { $active_moyenne_general = $_POST['active_moyenne_general']; } }
+	if (empty($_GET['titre_bloc_avis_conseil']) and empty($_POST['titre_bloc_avis_conseil'])) { $titre_bloc_avis_conseil = ''; }
+	   else { if (isset($_GET['titre_bloc_avis_conseil'])) { $titre_bloc_avis_conseil = $_GET['titre_bloc_avis_conseil']; } if (isset($_POST['titre_bloc_avis_conseil'])) { $titre_bloc_avis_conseil = $_POST['titre_bloc_avis_conseil']; } }
+	if (empty($_GET['taille_titre_bloc_avis_conseil']) and empty($_POST['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = ''; }
+	   else { if (isset($_GET['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_GET['taille_titre_bloc_avis_conseil']; } if (isset($_POST['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_POST['taille_titre_bloc_avis_conseil']; } }
+	if (empty($_GET['taille_profprincipal_bloc_avis_conseil']) and empty($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = ''; }
+	   else { if (isset($_GET['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_GET['taille_profprincipal_bloc_avis_conseil']; } if (isset($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_POST['taille_profprincipal_bloc_avis_conseil']; } }
+	if (empty($_GET['affiche_fonction_chef']) and empty($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = ''; }
+	   else { if (isset($_GET['affiche_fonction_chef'])) { $affiche_fonction_chef = $_GET['affiche_fonction_chef']; } if (isset($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = $_POST['affiche_fonction_chef']; } }
+	if (empty($_GET['taille_texte_fonction_chef']) and empty($_POST['taille_texte_fonction_chef'])) { $taille_texte_fonction_chef = ''; }
+	   else { if (isset($_GET['taille_texte_fonction_chef'])) { $taille_texte_fonction_chef = $_GET['taille_texte_fonction_chef']; } if (isset($_POST['taille_texte_fonction_chef'])) { $taille_texte_fonction_chef = $_POST['taille_texte_fonction_chef']; } }
+	if (empty($_GET['taille_texte_identitee_chef']) and empty($_POST['taille_texte_identitee_chef'])) { $taille_texte_identitee_chef = ''; }
+	   else { if (isset($_GET['taille_texte_identitee_chef'])) { $taille_texte_identitee_chef = $_GET['taille_texte_identitee_chef']; } if (isset($_POST['taille_texte_identitee_chef'])) { $taille_texte_identitee_chef = $_POST['taille_texte_identitee_chef']; } }
+	if (empty($_GET['tel_image']) and empty($_POST['tel_image'])) { $tel_image = ''; }
+	   else { if (isset($_GET['tel_image'])) { $tel_image = $_GET['tel_image']; } if (isset($_POST['tel_image'])) { $tel_image = $_POST['tel_image']; } }
+	if (empty($_GET['tel_texte']) and empty($_POST['tel_texte'])) { $tel_texte = ''; }
+	   else { if (isset($_GET['tel_texte'])) { $tel_texte = $_GET['tel_texte']; } if (isset($_POST['tel_texte'])) { $tel_texte = $_POST['tel_texte']; } }
+	if (empty($_GET['fax_image']) and empty($_POST['fax_image'])) { $fax_image = ''; }
+	   else { if (isset($_GET['fax_image'])) { $fax_image = $_GET['fax_image']; } if (isset($_POST['fax_image'])) { $fax_image = $_POST['fax_image']; } }
+	if (empty($_GET['fax_texte']) and empty($_POST['fax_texte'])) { $fax_texte = ''; }
+	   else { if (isset($_GET['fax_texte'])) { $fax_texte = $_GET['fax_texte']; } if (isset($_POST['fax_texte'])) { $fax_texte = $_POST['fax_texte']; } }
+	if (empty($_GET['courrier_image']) and empty($_POST['courrier_image'])) { $courrier_image = ''; }
+	   else { if (isset($_GET['courrier_image'])) { $courrier_image = $_GET['courrier_image']; } if (isset($_POST['courrier_image'])) { $courrier_image = $_POST['courrier_image']; } }
+	if (empty($_GET['courrier_texte']) and empty($_POST['courrier_texte'])) { $courrier_texte = ''; }
+	   else { if (isset($_GET['courrier_texte'])) { $courrier_texte = $_GET['courrier_texte']; } if (isset($_POST['courrier_texte'])) { $courrier_texte = $_POST['courrier_texte']; } }
+	if (empty($_GET['largeur_bloc_eleve']) and empty($_POST['largeur_bloc_eleve'])) { $largeur_bloc_eleve = ''; }
+	   else { if (isset($_GET['largeur_bloc_eleve'])) { $largeur_bloc_eleve = $_GET['largeur_bloc_eleve']; } if (isset($_POST['largeur_bloc_eleve'])) { $largeur_bloc_eleve = $_POST['largeur_bloc_eleve']; } }
+	if (empty($_GET['hauteur_bloc_eleve']) and empty($_POST['hauteur_bloc_eleve'])) { $hauteur_bloc_eleve = ''; }
+	   else { if (isset($_GET['hauteur_bloc_eleve'])) { $hauteur_bloc_eleve = $_GET['hauteur_bloc_eleve']; } if (isset($_POST['hauteur_bloc_eleve'])) { $hauteur_bloc_eleve = $_POST['hauteur_bloc_eleve']; } }
+	if (empty($_GET['largeur_bloc_adresse']) and empty($_POST['largeur_bloc_adresse'])) { $largeur_bloc_adresse = ''; }
+	   else { if (isset($_GET['largeur_bloc_adresse'])) { $largeur_bloc_adresse = $_GET['largeur_bloc_adresse']; } if (isset($_POST['largeur_bloc_adresse'])) { $largeur_bloc_adresse = $_POST['largeur_bloc_adresse']; } }
+	if (empty($_GET['hauteur_bloc_adresse']) and empty($_POST['hauteur_bloc_adresse'])) { $hauteur_bloc_adresse = ''; }
+	   else { if (isset($_GET['hauteur_bloc_adresse'])) { $hauteur_bloc_adresse = $_GET['hauteur_bloc_adresse']; } if (isset($_POST['hauteur_bloc_adresse'])) { $hauteur_bloc_adresse = $_POST['hauteur_bloc_adresse']; } }
+	if (empty($_GET['largeur_bloc_datation']) and empty($_POST['largeur_bloc_datation'])) { $largeur_bloc_datation = ''; }
+	   else { if (isset($_GET['largeur_bloc_datation'])) { $largeur_bloc_datation = $_GET['largeur_bloc_datation']; } if (isset($_POST['largeur_bloc_datation'])) { $largeur_bloc_datation = $_POST['largeur_bloc_datation']; } }
+	if (empty($_GET['hauteur_bloc_datation']) and empty($_POST['hauteur_bloc_datation'])) { $hauteur_bloc_datation = ''; }
+	   else { if (isset($_GET['hauteur_bloc_datation'])) { $hauteur_bloc_datation = $_GET['hauteur_bloc_datation']; } if (isset($_POST['hauteur_bloc_datation'])) { $hauteur_bloc_datation = $_POST['hauteur_bloc_datation']; } }
+	if (empty($_GET['taille_texte_classe']) and empty($_POST['taille_texte_classe'])) { $taille_texte_classe = ''; }
+	   else { if (isset($_GET['taille_texte_classe'])) { $taille_texte_classe = $_GET['taille_texte_classe']; } if (isset($_POST['taille_texte_classe'])) { $taille_texte_classe = $_POST['taille_texte_classe']; } }
+	if (empty($_GET['type_texte_classe']) and empty($_POST['type_texte_classe'])) { $type_texte_classe = ''; }
+	   else { if (isset($_GET['type_texte_classe'])) { $type_texte_classe = $_GET['type_texte_classe']; } if (isset($_POST['type_texte_classe'])) { $type_texte_classe = $_POST['type_texte_classe']; } }
+	if (empty($_GET['taille_texte_annee']) and empty($_POST['taille_texte_annee'])) { $taille_texte_annee = ''; }
+	   else { if (isset($_GET['taille_texte_annee'])) { $taille_texte_annee = $_GET['taille_texte_annee']; } if (isset($_POST['taille_texte_annee'])) { $taille_texte_annee = $_POST['taille_texte_annee']; } }
+	if (empty($_GET['type_texte_annee']) and empty($_POST['type_texte_annee'])) { $type_texte_annee = ''; }
+	   else { if (isset($_GET['type_texte_annee'])) { $type_texte_annee = $_GET['type_texte_annee']; } if (isset($_POST['type_texte_annee'])) { $type_texte_annee = $_POST['type_texte_annee']; } }
+	if (empty($_GET['taille_texte_periode']) and empty($_POST['taille_texte_periode'])) { $taille_texte_periode = ''; }
+	   else { if (isset($_GET['taille_texte_periode'])) { $taille_texte_periode = $_GET['taille_texte_periode']; } if (isset($_POST['taille_texte_periode'])) { $taille_texte_periode = $_POST['taille_texte_periode']; } }
+	if (empty($_GET['type_texte_periode']) and empty($_POST['type_texte_periode'])) { $type_texte_periode = ''; }
+	   else { if (isset($_GET['type_texte_periode'])) { $type_texte_periode = $_GET['type_texte_periode']; } if (isset($_POST['type_texte_periode'])) { $type_texte_periode = $_POST['type_texte_periode']; } }
+	if (empty($_GET['taille_texte_categorie_cote']) and empty($_POST['taille_texte_categorie_cote'])) { $taille_texte_categorie_cote = ''; }
+	   else { if (isset($_GET['taille_texte_categorie_cote'])) { $taille_texte_categorie_cote = $_GET['taille_texte_categorie_cote']; } if (isset($_POST['taille_texte_categorie_cote'])) { $taille_texte_categorie_cote = $_POST['taille_texte_categorie_cote']; } }
+	if (empty($_GET['taille_texte_categorie']) and empty($_POST['taille_texte_categorie'])) { $taille_texte_categorie = ''; }
+	   else { if (isset($_GET['taille_texte_categorie'])) { $taille_texte_categorie = $_GET['taille_texte_categorie']; } if (isset($_POST['taille_texte_categorie'])) { $taille_texte_categorie = $_POST['taille_texte_categorie']; } }
+	if (empty($_GET['type_texte_date_datation']) and empty($_POST['type_texte_date_datation'])) { $type_texte_date_datation = ''; }
+	   else { if (isset($_GET['type_texte_date_datation'])) { $type_texte_date_datation = $_GET['type_texte_date_datation']; } if (isset($_POST['type_texte_date_datation'])) { $type_texte_date_datation = $_POST['type_texte_date_datation']; } }
+	if (empty($_GET['cadre_adresse']) and empty($_POST['cadre_adresse'])) { $cadre_adresse = ''; }
+	   else { if (isset($_GET['cadre_adresse'])) { $cadre_adresse = $_GET['cadre_adresse']; } if (isset($_POST['cadre_adresse'])) { $cadre_adresse = $_POST['cadre_adresse']; } }
 
 // fin Christian
 
 // début ajouter/modifier/supprimer des modèles
 if(!empty($valide_modif_model))
  {
-	/*
-	// Il ne faut pas mettre là une variable destinée à arriver dans 'setting' pour toutes les classes et tous les modèles PDF.
-	if(isset($_POST['bull_pdf_INE_eleve'])){
-		if (!saveSetting("bull_pdf_INE_eleve", $_POST['bull_pdf_INE_eleve'])) {
-			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
-			$reg_ok = 'no';
-		}
-	}
-	else{
-		if (!saveSetting("bull_pdf_INE_eleve", "n")) {
-			$msg .= "Erreur lors de l'enregistrement de bull_pdf_INE_eleve !";
-			$reg_ok = 'no';
-		}
-	}
-	*/
-
-	if($action_model==='ajouter') { $requete_model='INSERT INTO '.$prefix_base.'model_bulletin (nom_model_bulletin,active_bloc_datation,active_bloc_eleve,active_bloc_adresse_parent,active_bloc_absence,active_bloc_note_appreciation,active_bloc_avis_conseil,active_bloc_chef,active_photo,active_coef_moyenne,active_nombre_note,active_nombre_note_case,active_moyenne,active_moyenne_eleve,active_moyenne_classe,active_moyenne_min,active_moyenne_max,active_regroupement_cote,active_entete_regroupement,active_moyenne_regroupement,active_rang,active_graphique_niveau,active_appreciation,affiche_doublement,affiche_date_naissance,affiche_dp,affiche_nom_court,affiche_effectif_classe,affiche_numero_impression,caractere_utilse,X_parent,Y_parent,X_eleve,Y_eleve,cadre_eleve,X_datation_bul,Y_datation_bul,cadre_datation_bul,hauteur_info_categorie,X_note_app,Y_note_app,longeur_note_app,hauteur_note_app,largeur_coef_moyenne,largeur_nombre_note,largeur_d_une_moyenne,largeur_niveau,largeur_rang,X_absence,Y_absence,hauteur_entete_moyenne_general,X_avis_cons,Y_avis_cons,longeur_avis_cons,hauteur_avis_cons,cadre_avis_cons,X_sign_chef,Y_sign_chef,longeur_sign_chef,hauteur_sign_chef,cadre_sign_chef,affiche_filigrame,texte_filigrame,affiche_logo_etab,entente_mel,entente_tel,entente_fax,L_max_logo,H_max_logo, toute_moyenne_meme_col,active_reperage_eleve,couleur_reperage_eleve1,couleur_reperage_eleve2,couleur_reperage_eleve3,couleur_categorie_entete,couleur_categorie_entete1,couleur_categorie_entete2,couleur_categorie_entete3,couleur_categorie_cote,couleur_categorie_cote1,couleur_categorie_cote2,couleur_categorie_cote3,couleur_moy_general,couleur_moy_general1,couleur_moy_general2,couleur_moy_general3,titre_entete_matiere,titre_entete_coef,titre_entete_nbnote,titre_entete_rang,titre_entete_appreciation,active_coef_sousmoyene,arrondie_choix,nb_chiffre_virgule,chiffre_avec_zero,autorise_sous_matiere,affichage_haut_responsable,entete_model_bulletin,ordre_entete_model_bulletin,affiche_etab_origine,imprime_pour,largeur_matiere)
-					VALUES ("'.$nom_model_bulletin.'", "'.$active_bloc_datation.'", "'.$active_bloc_eleve.'", "'.$active_bloc_adresse_parent.'", "'.$active_bloc_absence.'", "'.$active_bloc_note_appreciation.'", "'.$active_bloc_avis_conseil.'", "'.$active_bloc_chef.'", "'.$active_photo.'", "'.$active_coef_moyenne.'", "'.$active_nombre_note.'", "'.$active_nombre_note_case.'", "'.$active_moyenne.'", "'.$active_moyenne_eleve.'", "'.$active_moyenne_classe.'", "'.$active_moyenne_min.'", "'.$active_moyenne_max.'", "'.$active_regroupement_cote.'", "'.$active_entete_regroupement.'", "'.$active_moyenne_regroupement.'", "'.$active_rang.'", "'.$active_graphique_niveau.'", "'.$active_appreciation.'", "'.$affiche_doublement.'", "'.$affiche_date_naissance.'", "'.$affiche_dp.'", "'.$affiche_nom_court.'", "'.$affiche_effectif_classe.'", "'.$affiche_numero_impression.'", "'.$caractere_utilse.'", "'.$X_parent.'", "'.$Y_parent.'", "'.$X_eleve.'", "'.$Y_eleve.'", "'.$cadre_eleve.'", "'.$X_datation_bul.'", "'.$Y_datation_bul.'", "'.$cadre_datation_bul.'", "'.$hauteur_info_categorie.'", "'.$X_note_app.'", "'.$Y_note_app.'", "'.$longeur_note_app.'", "'.$hauteur_note_app.'", "'.$largeur_coef_moyenne.'", "'.$largeur_nombre_note.'", "'.$largeur_d_une_moyenne.'", "'.$largeur_niveau.'", "'.$largeur_rang.'", "'.$X_absence.'", "'.$Y_absence.'", "'.$hauteur_entete_moyenne_general.'", "'.$X_avis_cons.'", "'.$Y_avis_cons.'", "'.$longeur_avis_cons.'", "'.$hauteur_avis_cons.'", "'.$cadre_avis_cons.'", "'.$X_sign_chef.'", "'.$Y_sign_chef.'", "'.$longeur_sign_chef.'", "'.$hauteur_sign_chef.'", "'.$cadre_sign_chef.'", "'.$affiche_filigrame.'","'.$texte_filigrame.'","'.$affiche_logo_etab.'","'.$entente_mel.'","'.$entente_tel.'","'.$entente_fax.'","'.$L_max_logo.'","'.$H_max_logo.'","'.$toute_moyenne_meme_col.'","'.$active_reperage_eleve.'", "'.$couleur_reperage_eleve1.'", "'.$couleur_reperage_eleve2.'", "'.$couleur_reperage_eleve3.'", "'.$couleur_categorie_entete.'", "'.$couleur_categorie_entete1.'", "'.$couleur_categorie_entete2.'", "'.$couleur_categorie_entete3.'", "'.$couleur_categorie_cote.'", "'.$couleur_categorie_cote1.'", "'.$couleur_categorie_cote2.'", "'.$couleur_categorie_cote3.'", "'.$couleur_moy_general.'", "'.$couleur_moy_general1.'", "'.$couleur_moy_general2.'", "'.$couleur_moy_general3.'", "'.$titre_entete_matiere.'", "'.$titre_entete_coef.'", "'.$titre_entete_nbnote.'", "'.$titre_entete_rang.'", "'.$titre_entete_appreciation.'", "'.$active_coef_sousmoyene.'", "'.$arrondie_choix.'", "'.$nb_chiffre_virgule.'", "'.$chiffre_avec_zero.'", "'.$autorise_sous_matiere.'", "'.$affichage_haut_responsable.'", "'.$entete_model_bulletin.'", "'.$ordre_entete_model_bulletin.'", "'.$affiche_etab_origine.'", "'.$imprime_pour.'", "'.$largeur_matiere.'")'; }
+	if($action_model==='ajouter') { $requete_model='INSERT INTO '.$prefix_base.'model_bulletin (nom_model_bulletin,active_bloc_datation,active_bloc_eleve,active_bloc_adresse_parent,active_bloc_absence,active_bloc_note_appreciation,active_bloc_avis_conseil,active_bloc_chef,active_photo,active_coef_moyenne,active_nombre_note,active_nombre_note_case,active_moyenne,active_moyenne_eleve,active_moyenne_classe,active_moyenne_min,active_moyenne_max,active_regroupement_cote,active_entete_regroupement,active_moyenne_regroupement,active_rang,active_graphique_niveau,active_appreciation,affiche_doublement,affiche_date_naissance,affiche_dp,affiche_nom_court,affiche_effectif_classe,affiche_numero_impression,caractere_utilse,X_parent,Y_parent,X_eleve,Y_eleve,cadre_eleve,X_datation_bul,Y_datation_bul,cadre_datation_bul,hauteur_info_categorie,X_note_app,Y_note_app,longeur_note_app,hauteur_note_app,largeur_coef_moyenne,largeur_nombre_note,largeur_d_une_moyenne,largeur_niveau,largeur_rang,X_absence,Y_absence,hauteur_entete_moyenne_general,X_avis_cons,Y_avis_cons,longeur_avis_cons,hauteur_avis_cons,cadre_avis_cons,X_sign_chef,Y_sign_chef,longeur_sign_chef,hauteur_sign_chef,cadre_sign_chef,affiche_filigrame,texte_filigrame,affiche_logo_etab,entente_mel,entente_tel,entente_fax,L_max_logo,H_max_logo, toute_moyenne_meme_col,active_reperage_eleve,couleur_reperage_eleve1,couleur_reperage_eleve2,couleur_reperage_eleve3,couleur_categorie_entete,couleur_categorie_entete1,couleur_categorie_entete2,couleur_categorie_entete3,couleur_categorie_cote,couleur_categorie_cote1,couleur_categorie_cote2,couleur_categorie_cote3,couleur_moy_general,couleur_moy_general1,couleur_moy_general2,couleur_moy_general3,titre_entete_matiere,titre_entete_coef,titre_entete_nbnote,titre_entete_rang,titre_entete_appreciation,active_coef_sousmoyene,arrondie_choix,nb_chiffre_virgule,chiffre_avec_zero,autorise_sous_matiere,affichage_haut_responsable,entete_model_bulletin,ordre_entete_model_bulletin,affiche_etab_origine,imprime_pour,largeur_matiere, nom_etab_gras, taille_texte_date_edition, taille_texte_matiere, active_moyenne_general, titre_bloc_avis_conseil, taille_titre_bloc_avis_conseil, taille_profprincipal_bloc_avis_conseil, affiche_fonction_chef, taille_texte_fonction_chef, taille_texte_identitee_chef, tel_image, tel_texte, fax_image, fax_texte, courrier_image, courrier_texte, largeur_bloc_eleve, hauteur_bloc_eleve, largeur_bloc_adresse, hauteur_bloc_adresse, largeur_bloc_datation, hauteur_bloc_datation, taille_texte_classe, type_texte_classe, taille_texte_annee, type_texte_annee, taille_texte_periode, type_texte_periode, taille_texte_categorie_cote, taille_texte_categorie, type_texte_date_datation, cadre_adresse)
+					VALUES ("'.$nom_model_bulletin.'", "'.$active_bloc_datation.'", "'.$active_bloc_eleve.'", "'.$active_bloc_adresse_parent.'", "'.$active_bloc_absence.'", "'.$active_bloc_note_appreciation.'", "'.$active_bloc_avis_conseil.'", "'.$active_bloc_chef.'", "'.$active_photo.'", "'.$active_coef_moyenne.'", "'.$active_nombre_note.'", "'.$active_nombre_note_case.'", "'.$active_moyenne.'", "'.$active_moyenne_eleve.'", "'.$active_moyenne_classe.'", "'.$active_moyenne_min.'", "'.$active_moyenne_max.'", "'.$active_regroupement_cote.'", "'.$active_entete_regroupement.'", "'.$active_moyenne_regroupement.'", "'.$active_rang.'", "'.$active_graphique_niveau.'", "'.$active_appreciation.'", "'.$affiche_doublement.'", "'.$affiche_date_naissance.'", "'.$affiche_dp.'", "'.$affiche_nom_court.'", "'.$affiche_effectif_classe.'", "'.$affiche_numero_impression.'", "'.$caractere_utilse.'", "'.$X_parent.'", "'.$Y_parent.'", "'.$X_eleve.'", "'.$Y_eleve.'", "'.$cadre_eleve.'", "'.$X_datation_bul.'", "'.$Y_datation_bul.'", "'.$cadre_datation_bul.'", "'.$hauteur_info_categorie.'", "'.$X_note_app.'", "'.$Y_note_app.'", "'.$longeur_note_app.'", "'.$hauteur_note_app.'", "'.$largeur_coef_moyenne.'", "'.$largeur_nombre_note.'", "'.$largeur_d_une_moyenne.'", "'.$largeur_niveau.'", "'.$largeur_rang.'", "'.$X_absence.'", "'.$Y_absence.'", "'.$hauteur_entete_moyenne_general.'", "'.$X_avis_cons.'", "'.$Y_avis_cons.'", "'.$longeur_avis_cons.'", "'.$hauteur_avis_cons.'", "'.$cadre_avis_cons.'", "'.$X_sign_chef.'", "'.$Y_sign_chef.'", "'.$longeur_sign_chef.'", "'.$hauteur_sign_chef.'", "'.$cadre_sign_chef.'", "'.$affiche_filigrame.'","'.$texte_filigrame.'","'.$affiche_logo_etab.'","'.$entente_mel.'","'.$entente_tel.'","'.$entente_fax.'","'.$L_max_logo.'","'.$H_max_logo.'","'.$toute_moyenne_meme_col.'","'.$active_reperage_eleve.'", "'.$couleur_reperage_eleve1.'", "'.$couleur_reperage_eleve2.'", "'.$couleur_reperage_eleve3.'", "'.$couleur_categorie_entete.'", "'.$couleur_categorie_entete1.'", "'.$couleur_categorie_entete2.'", "'.$couleur_categorie_entete3.'", "'.$couleur_categorie_cote.'", "'.$couleur_categorie_cote1.'", "'.$couleur_categorie_cote2.'", "'.$couleur_categorie_cote3.'", "'.$couleur_moy_general.'", "'.$couleur_moy_general1.'", "'.$couleur_moy_general2.'", "'.$couleur_moy_general3.'", "'.$titre_entete_matiere.'", "'.$titre_entete_coef.'", "'.$titre_entete_nbnote.'", "'.$titre_entete_rang.'", "'.$titre_entete_appreciation.'", "'.$active_coef_sousmoyene.'", "'.$arrondie_choix.'", "'.$nb_chiffre_virgule.'", "'.$chiffre_avec_zero.'", "'.$autorise_sous_matiere.'", "'.$affichage_haut_responsable.'", "'.$entete_model_bulletin.'", "'.$ordre_entete_model_bulletin.'", "'.$affiche_etab_origine.'", "'.$imprime_pour.'", "'.$largeur_matiere.'", "'.$nom_etab_gras.'", "'.$taille_texte_date_edition.'", "'.$taille_texte_matiere.'", "'.$active_moyenne_general.'", "'.$titre_bloc_avis_conseil.'", "'.$taille_titre_bloc_avis_conseil.'", "'.$taille_profprincipal_bloc_avis_conseil.'", "'.$affiche_fonction_chef.'", "'.$taille_texte_fonction_chef.'", "'.$taille_texte_identitee_chef.'", "'.$tel_image.'", "'.$tel_texte.'", "'.$fax_image.'", "'.$fax_texte.'", "'.$courrier_image.'", "'.$courrier_texte.'", "'.$largeur_bloc_eleve.'", "'.$hauteur_bloc_eleve.'", "'.$largeur_bloc_adresse.'", "'.$hauteur_bloc_adresse.'", "'.$largeur_bloc_datation.'", "'.$hauteur_bloc_datation.'", "'.$taille_texte_classe.'", "'.$type_texte_classe.'", "'.$taille_texte_annee.'", "'.$type_texte_annee.'", "'.$taille_texte_periode.'", "'.$type_texte_periode.'", "'.$taille_texte_categorie_cote.'", "'.$taille_texte_categorie.'", "'.$type_texte_date_datation.'", "'.$cadre_adresse.'")'; }
 	if($action_model==='modifier') { $requete_model='UPDATE '.$prefix_base.'model_bulletin SET nom_model_bulletin="'.$nom_model_bulletin.'", active_bloc_datation="'.$active_bloc_datation.'", active_bloc_eleve="'.$active_bloc_eleve.'", active_bloc_adresse_parent="'.$active_bloc_adresse_parent.'", active_bloc_absence="'.$active_bloc_absence.'", active_bloc_note_appreciation="'.$active_bloc_note_appreciation.'", active_bloc_avis_conseil="'.$active_bloc_avis_conseil.'", active_bloc_chef="'.$active_bloc_chef.'", active_photo="'.$active_photo.'", active_coef_moyenne="'.$active_coef_moyenne.'", active_nombre_note="'.$active_nombre_note.'", active_nombre_note_case="'.$active_nombre_note_case.'", active_moyenne="'.$active_moyenne.'", active_moyenne_eleve="'.$active_moyenne_eleve.'", active_moyenne_classe="'.$active_moyenne_classe.'", active_moyenne_min="'.$active_moyenne_min.'", active_moyenne_max="'.$active_moyenne_max.'", active_regroupement_cote="'.$active_regroupement_cote.'", active_entete_regroupement="'.$active_entete_regroupement.'", active_moyenne_regroupement="'.$active_moyenne_regroupement.'", active_rang="'.$active_rang.'", active_graphique_niveau="'.$active_graphique_niveau.'", active_appreciation="'.$active_appreciation.'", affiche_doublement="'.$affiche_doublement.'", affiche_date_naissance="'.$affiche_date_naissance.'", affiche_dp="'.$affiche_dp.'", affiche_nom_court="'.$affiche_nom_court.'", affiche_effectif_classe="'.$affiche_effectif_classe.'", affiche_numero_impression="'.$affiche_numero_impression.'", caractere_utilse="'.$caractere_utilse.'", X_parent="'.$X_parent.'", Y_parent="'.$Y_parent.'", X_eleve="'.$X_eleve.'", Y_eleve="'.$Y_eleve.'", cadre_eleve="'.$cadre_eleve.'", X_datation_bul="'.$X_datation_bul.'", Y_datation_bul="'.$Y_datation_bul.'", cadre_datation_bul="'.$cadre_datation_bul.'", hauteur_info_categorie="'.$hauteur_info_categorie.'", X_note_app="'.$X_note_app.'", Y_note_app="'.$Y_note_app.'", longeur_note_app="'.$longeur_note_app.'", hauteur_note_app="'.$hauteur_note_app.'", largeur_coef_moyenne="'.$largeur_coef_moyenne.'", largeur_nombre_note="'.$largeur_nombre_note.'", largeur_d_une_moyenne="'.$largeur_d_une_moyenne.'", largeur_niveau="'.$largeur_niveau.'", largeur_rang="'.$largeur_rang.'", X_absence="'.$X_absence.'", Y_absence="'.$Y_absence.'", hauteur_entete_moyenne_general="'.$hauteur_entete_moyenne_general.'", X_avis_cons="'.$X_avis_cons.'", Y_avis_cons="'.$Y_avis_cons.'", longeur_avis_cons="'.$longeur_avis_cons.'", hauteur_avis_cons="'.$hauteur_avis_cons.'", cadre_avis_cons="'.$cadre_avis_cons.'",
-					 X_sign_chef="'.$X_sign_chef.'", Y_sign_chef="'.$Y_sign_chef.'", longeur_sign_chef="'.$longeur_sign_chef.'", hauteur_sign_chef="'.$hauteur_sign_chef.'", cadre_sign_chef="'.$cadre_sign_chef.'", affiche_filigrame="'.$affiche_filigrame.'", texte_filigrame="'.$texte_filigrame.'", affiche_logo_etab="'.$affiche_logo_etab.'", entente_mel="'.$entente_mel.'", entente_tel="'.$entente_tel.'", entente_fax="'.$entente_fax.'", L_max_logo="'.$L_max_logo.'", H_max_logo="'.$H_max_logo.'", toute_moyenne_meme_col="'.$toute_moyenne_meme_col.'", active_reperage_eleve="'.$active_reperage_eleve.'", couleur_reperage_eleve1="'.$couleur_reperage_eleve1.'", couleur_reperage_eleve2="'.$couleur_reperage_eleve2.'", couleur_reperage_eleve3="'.$couleur_reperage_eleve3.'", couleur_categorie_entete="'.$couleur_categorie_entete.'", couleur_categorie_entete1="'.$couleur_categorie_entete1.'", couleur_categorie_entete2="'.$couleur_categorie_entete2.'", couleur_categorie_entete3="'.$couleur_categorie_entete3.'", couleur_categorie_cote="'.$couleur_categorie_cote.'", couleur_categorie_cote1="'.$couleur_categorie_cote1.'", couleur_categorie_cote2="'.$couleur_categorie_cote2.'", couleur_categorie_cote3="'.$couleur_categorie_cote3.'", couleur_moy_general="'.$couleur_moy_general.'", couleur_moy_general1="'.$couleur_moy_general1.'", couleur_moy_general2="'.$couleur_moy_general2.'", couleur_moy_general3="'.$couleur_moy_general3.'", titre_entete_matiere="'.$titre_entete_matiere.'", titre_entete_coef="'.$titre_entete_coef.'", titre_entete_nbnote="'.$titre_entete_nbnote.'", titre_entete_rang="'.$titre_entete_rang.'", titre_entete_appreciation="'.$titre_entete_appreciation.'", active_coef_sousmoyene="'.$active_coef_sousmoyene.'", arrondie_choix="'.$arrondie_choix.'", nb_chiffre_virgule="'.$nb_chiffre_virgule.'", chiffre_avec_zero="'.$chiffre_avec_zero.'", autorise_sous_matiere="'.$autorise_sous_matiere.'", affichage_haut_responsable="'.$affichage_haut_responsable.'", entete_model_bulletin="'.$entete_model_bulletin.'", ordre_entete_model_bulletin="'.$ordre_entete_model_bulletin.'", affiche_etab_origine="'.$affiche_etab_origine.'", imprime_pour = "'.$imprime_pour.'", largeur_matiere = "'.$largeur_matiere.'" WHERE id_model_bulletin="'.$id_model_bulletin.'" LIMIT 1'; }
+					 X_sign_chef="'.$X_sign_chef.'", Y_sign_chef="'.$Y_sign_chef.'", longeur_sign_chef="'.$longeur_sign_chef.'", hauteur_sign_chef="'.$hauteur_sign_chef.'", cadre_sign_chef="'.$cadre_sign_chef.'", affiche_filigrame="'.$affiche_filigrame.'", texte_filigrame="'.$texte_filigrame.'", affiche_logo_etab="'.$affiche_logo_etab.'", entente_mel="'.$entente_mel.'", entente_tel="'.$entente_tel.'", entente_fax="'.$entente_fax.'", L_max_logo="'.$L_max_logo.'", H_max_logo="'.$H_max_logo.'", toute_moyenne_meme_col="'.$toute_moyenne_meme_col.'", active_reperage_eleve="'.$active_reperage_eleve.'", couleur_reperage_eleve1="'.$couleur_reperage_eleve1.'", couleur_reperage_eleve2="'.$couleur_reperage_eleve2.'", couleur_reperage_eleve3="'.$couleur_reperage_eleve3.'", couleur_categorie_entete="'.$couleur_categorie_entete.'",
+					 couleur_categorie_entete1="'.$couleur_categorie_entete1.'", couleur_categorie_entete2="'.$couleur_categorie_entete2.'", couleur_categorie_entete3="'.$couleur_categorie_entete3.'", couleur_categorie_cote="'.$couleur_categorie_cote.'", couleur_categorie_cote1="'.$couleur_categorie_cote1.'", couleur_categorie_cote2="'.$couleur_categorie_cote2.'", couleur_categorie_cote3="'.$couleur_categorie_cote3.'", couleur_moy_general="'.$couleur_moy_general.'", couleur_moy_general1="'.$couleur_moy_general1.'", couleur_moy_general2="'.$couleur_moy_general2.'", couleur_moy_general3="'.$couleur_moy_general3.'", titre_entete_matiere="'.$titre_entete_matiere.'", titre_entete_coef="'.$titre_entete_coef.'", titre_entete_nbnote="'.$titre_entete_nbnote.'", titre_entete_rang="'.$titre_entete_rang.'", titre_entete_appreciation="'.$titre_entete_appreciation.'",
+					 active_coef_sousmoyene="'.$active_coef_sousmoyene.'", arrondie_choix="'.$arrondie_choix.'", nb_chiffre_virgule="'.$nb_chiffre_virgule.'", chiffre_avec_zero="'.$chiffre_avec_zero.'", autorise_sous_matiere="'.$autorise_sous_matiere.'", affichage_haut_responsable="'.$affichage_haut_responsable.'", entete_model_bulletin="'.$entete_model_bulletin.'", ordre_entete_model_bulletin="'.$ordre_entete_model_bulletin.'", affiche_etab_origine="'.$affiche_etab_origine.'", imprime_pour = "'.$imprime_pour.'", largeur_matiere = "'.$largeur_matiere.'", nom_etab_gras = "'.$nom_etab_gras.'", taille_texte_date_edition = "'.$taille_texte_date_edition.'", taille_texte_matiere = "'.$taille_texte_matiere.'", active_moyenne_general = "'.$active_moyenne_general.'", titre_bloc_avis_conseil = "'.$titre_bloc_avis_conseil.'", taille_titre_bloc_avis_conseil = "'.$taille_titre_bloc_avis_conseil.'",
+					 taille_profprincipal_bloc_avis_conseil = "'.$taille_profprincipal_bloc_avis_conseil.'", affiche_fonction_chef = "'.$affiche_fonction_chef.'", taille_texte_fonction_chef = "'.$taille_texte_fonction_chef.'", taille_texte_identitee_chef = "'.$taille_texte_identitee_chef.'", tel_image = "'.$tel_image.'", tel_texte = "'.$tel_texte.'", fax_image = "'.$fax_image.'", fax_texte = "'.$fax_texte.'", courrier_image = "'.$courrier_image.'", courrier_texte = "'.$courrier_texte.'", largeur_bloc_eleve = "'.$largeur_bloc_eleve.'", hauteur_bloc_eleve = "'.$hauteur_bloc_eleve.'", largeur_bloc_adresse = "'.$largeur_bloc_adresse.'", hauteur_bloc_adresse = "'.$hauteur_bloc_adresse.'", largeur_bloc_datation = "'.$largeur_bloc_datation.'", hauteur_bloc_datation = "'.$hauteur_bloc_datation.'", taille_texte_classe = "'.$taille_texte_classe.'", type_texte_classe = "'.$type_texte_classe.'",
+					 taille_texte_annee = "'.$taille_texte_annee.'", type_texte_annee = "'.$type_texte_annee.'", taille_texte_periode = "'.$taille_texte_periode.'", type_texte_periode = "'.$type_texte_periode.'", taille_texte_categorie_cote = "'.$taille_texte_categorie_cote.'", taille_texte_categorie = "'.$taille_texte_categorie.'", type_texte_date_datation = "'.$type_texte_date_datation.'", cadre_adresse = "'.$cadre_adresse.'"
+					 WHERE id_model_bulletin="'.$id_model_bulletin.'" LIMIT 1'; }
 	if($id_model_bulletin!='1') {
 	    if($action_model==='supprimer') {
     	    $requete_model='DELETE FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin ="'.$id_model_bulletin.'"  LIMIT 1';
@@ -349,6 +405,101 @@ if(!empty($valide_modif_model))
  }
 // fin ajouter/modifier/supprimer des modèles
 
+// DEBUT import de modèle de bulletin pdf par fichier csv
+if ( isset($action) and $action === 'importmodelcsv' )  {
+
+	if($_FILES['fichier']['type'] != "")
+	{
+    		$fichiercsv = isset($_FILES["fichier"]) ? $_FILES["fichier"] : NULL;
+		if (!isset($fichiercsv['tmp_name']) or ($fichiercsv['tmp_name'] === '')) {
+			$msg = "Erreur de téléchargement niveau 1.";
+		} else if (!file_exists($fichiercsv['tmp_name'])) {
+        		$msg = "Erreur de téléchargement niveau 2.";
+		} else if ((!preg_match('/csv$/',$fichiercsv['name'])) and $fichiercsv['type'] === "application/x-csv"){
+		        $msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
+		} else {
+
+				// décortication du fichier csv
+				// ouverture du fichier en lecture
+				$fp = fopen($fichiercsv['tmp_name'],"r");
+	
+				$nb = 0; $nb_champs = ''; $tableau_donnee_csv = '';
+				// On importe ligne par ligne dans un tableau
+			 	while (!feof($fp)) //Jusqu'a la fin du fichier
+				{
+              
+					$ligne = fgets($fp,4096);      // je lit la ligne
+					$liste = explode(";",$ligne);  // je transforme la ligne en liste tout les sepration avec un ;
+						// on compte le nombre de champs
+						$nb_champs2 = 0;
+       						if ( $nb === 0 ) { $nb_champs = count($liste); $nb_champs = $nb_champs - 1; }
+						// on compte le nombre de champs pour savoir s'il y a en à importer
+       						$nb_champs2 = count($liste); $nb_champs2 = $nb_champs2 - 1;
+
+				    if ($nb_champs2 > '1') {
+	       
+					// on distribue les variable
+					$o = 0;
+					while ( $nb_champs > $o ) {
+						$tableau_donnee_csv[$nb][$o] = $liste[$o];
+					$o = $o + 1;
+					}
+
+	        			// on compte le nombre de ligne
+					$nb = $nb + 1;
+				   }
+				}
+
+				// si il y a des informations à inserer 
+				$cpt_ligne = 1; $nom_champs = ''; $texte_champs = '';
+				while ( !empty($tableau_donnee_csv[$cpt_ligne]) )
+				{
+
+						// si la première ligne alors on fabrique les nom des champs à insérer
+						if ( $cpt_ligne === 1 )
+						{
+							$nb_champs1 = count($tableau_donnee_csv['0']);
+							$o = 0;
+							while ( $nb_champs > $o ) {
+							if ( $o === 0 ) { $nom_champs = '('.$tableau_donnee_csv['0'][$o]; }
+							if ( $o != 0 ) { $nom_champs = $nom_champs.', '.$tableau_donnee_csv['0'][$o]; }
+							if ( $o === $nb_champs - 1 ) { $nom_champs = $nom_champs.')'; }
+							$o = $o + 1;
+							}
+						}
+
+						// on insère les données
+       						$nb_champs2 = count($tableau_donnee_csv[$cpt_ligne]);
+
+						$o = 0;
+						while ( $nb_champs2 > $o ) {
+							if ( $o === 0 ) { $texte_champs[$cpt_ligne] = '(\''.$tableau_donnee_csv[$cpt_ligne][$o].'\''; }
+							if ( $o != 0 ) { $texte_champs[$cpt_ligne] = $texte_champs[$cpt_ligne].', \''.$tableau_donnee_csv[$cpt_ligne][$o].'\''; }
+							if ( $o === $nb_champs2 - 1 ) { $texte_champs[$cpt_ligne] = $texte_champs[$cpt_ligne].')'; }
+						$o = $o + 1;
+						}
+				$cpt_ligne = $cpt_ligne + 1;
+				}
+
+				// on insère les donnée dans la base s'il y a des donné à saisir
+				// = 1 pour ne par prendre l'entête
+				$command = 'INSERT INTO model_bulletin '.$nom_champs.' VALUES ';
+				$cpt_ligne = 1; $prepa_requete = $command;
+				while ( !empty($tableau_donnee_csv[$cpt_ligne]) )
+				{
+					if ( $cpt_ligne === 1 ) { $prepa_requete = $prepa_requete.''.$texte_champs[$cpt_ligne]; }
+					if ( $cpt_ligne > 1 ) { $prepa_requete = $prepa_requete.', '.$texte_champs[$cpt_ligne]; }
+				$cpt_ligne = $cpt_ligne + 1;
+				}
+
+				// s'il y a des donnée on exécute l'action SQL
+				if ( $cpt_ligne > 1 ) { mysql_query($prepa_requete) or die('Erreur SQL !'.$prepa_requete.'<br>'.mysql_error()); }
+			}
+       }
+}
+// FIN import de modèle de bulletin pdf par fichier csv
+
+
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
    $msg = "Enregistrement réussi !";
 }
@@ -357,6 +508,39 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
 $titre_page = "Paramètres de configuration des bulletins scolaires PDF";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+?><script type="text/javascript" language="javascript">
+<!--
+function CocheCheckbox() {
+
+    nbParams = CocheCheckbox.arguments.length;
+
+    for (var i=0;i<nbParams-1;i++) {
+
+        theElement = CocheCheckbox.arguments[i];
+        formulaire = CocheCheckbox.arguments[nbParams-1];
+
+        if (document.forms[formulaire].elements[theElement])
+            document.forms[formulaire].elements[theElement].checked = true;
+    }
+}
+
+function DecocheCheckbox() {
+
+    nbParams = DecocheCheckbox.arguments.length;
+
+    for (var i=0;i<nbParams-1;i++) {
+
+        theElement = DecocheCheckbox.arguments[i];
+        formulaire = DecocheCheckbox.arguments[nbParams-1];
+
+        if (document.forms[formulaire].elements[theElement])
+            document.forms[formulaire].elements[theElement].checked = false;
+    }
+}
+//-->
+</script><?php
+
 
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
@@ -371,32 +555,50 @@ echo "</p><br/><br/>";
 		 {
 		     ?>
 		     <center>
+		    <form name ="form3" method="post" action="export_modele_pdf.php">
 		     <table style="text-align: left; width: 400px; border: 1px solid #74748F;" border="0" cellpadding="1" cellspacing="1">
 		      <tbody>
 		       <tr>
-		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%;" colspan="3" rowspan="1"><a href="param_bull_pdf.php?modele=aff&amp;action_model=ajouter">Ajouter un nouveau modèle</a></td>
+		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%;" colspan="4" rowspan="1"><a href="param_bull_pdf.php?modele=aff&amp;action_model=ajouter">Ajouter un nouveau modèle</a></td>
 		       </tr>
 		       <tr>
+		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 12px; background: #333333; font: normal 10pt Arial; color: #E0EDF1;"></td>
 		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 50%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;">Modèle</td>
 		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;">Modifier</td>
 		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: #333333; font: normal 10pt Arial; color: #E0EDF1;">Supprimer</td>
 		       </tr>
 		       <?php
 			$i = '1';
+			$nb_modele = '0'; $varcoche = '';
 			$requete_model = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin');
     			while($data_model = mysql_fetch_array($requete_model)) {
 		       		if ($i === '1') { $i = '2'; $couleur_cellule = '#CCCCCC'; } else { $couleur_cellule = '#DEDEDE'; $i = '1'; } ?>
 		       <tr>
+		         <td style="vertical-align: top; white-space: nowrap; text-align: left; width: 12px; background: <?php echo $couleur_cellule; ?>;"><input name="selection[<?php echo $nb_modele; ?>]" id="sel<?php echo $nb_modele; ?>" value="1" type="checkbox" /><input name="id_model_bulletin[<?php echo $nb_modele; ?>]" value="<?php echo $data_model['id_model_bulletin']; ?>" type="hidden" /><?php $varcoche = $varcoche."'sel".$nb_modele."',"; ?>
 		         <td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%; background: <?php echo $couleur_cellule; ?>;"><?php echo ucfirst($data_model['nom_model_bulletin']); ?></td>
 		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: <?php echo $couleur_cellule; ?>;">[<a href="param_bull_pdf.php?modele=aff&amp;action_model=modifier&amp;modele_action=<?php echo $data_model['id_model_bulletin']; ?>">Modifier</a>]</td>
 		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 25%; background: <?php echo $couleur_cellule; ?>;"><?php if($data_model['id_model_bulletin']!='1') { ?>[<a href="param_bull_pdf.php?modele=aff&amp;action_model=supprimer&amp;modele_action=<?php echo $data_model['id_model_bulletin']; ?>">Supprimer</a>]<?php } ?></td>
 		       </tr>
-		       <?php } ?>
+		       <?php $nb_modele = $nb_modele + 1; } ?>
 		       <tr>
-		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%;" colspan="3" rowspan="1"><a href="param_bull_pdf.php?modele=aff&amp;action_model=ajouter">Ajouter un nouveau modèle</a></td>
+		         <td style="vertical-align: center; white-space: nowrap; text-align: center; width: 100%;" colspan="4" rowspan="1"><a href="param_bull_pdf.php?modele=aff&amp;action_model=ajouter">Ajouter un nouveau modèle</a><br /></td>
 		       </tr>
 		      </tbody>
 		     </table>
+			<?php $varcoche = $varcoche."'form3'"; ?>
+			<a href="javascript:CocheCheckbox(<?php echo $varcoche; ?>)">Cocher</a> | <a href="javascript:DecocheCheckbox(<?php echo $varcoche; ?>)">Décocher</a>
+			<input type="submit" value="Exporter" style="border: 0px; color: #0000AA; text-decoration: none;" />
+			<span style="background : #FFFFF1; padding-left: 2px;"><a href="param_bull_pdf.php?action=import" class="submit">Importer</a></span>
+		    </form>
+
+			<?php if ( $action === 'import' ) { ?>
+			<form enctype="multipart/form-data" action="param_bull_pdf.php" method="post" name="importfichier">
+				<input name="fichier" type="file" />
+				<input type="hidden" name="MAX_FILE_SIZE" value="150000" />
+				<input type="hidden" name="action" value="importmodelcsv" />
+				<input type="submit" value="Importer" />
+			</form>
+			<?php } ?>
 		     </center>
 			 <br />
 			 <br />
@@ -481,6 +683,7 @@ echo "</p><br/><br/>";
 				if ( $action_model==='modifier' and $copie_model != '' ) { $id_model_bulletin = $modele_action; } // id du modèle
 				if ( $action_model==='modifier' and $copie_model != '' ) { $nom_model_bulletin = $nom_model_bulletin; } // nom du modèle
 				$active_bloc_datation = $donner_model['active_bloc_datation']; // afficher le cadre les informations datation du bulletin
+				$taille_texte_date_edition = $donner_model['taille_texte_date_edition']; // taille du texte de la date d'édition
 				$active_bloc_eleve = $donner_model['active_bloc_eleve']; // afficher le cadre sur les informations élève
 				$active_bloc_adresse_parent = $donner_model['active_bloc_adresse_parent']; // afficher le cadre adresse des parents
 				$active_bloc_absence = $donner_model['active_bloc_absence']; // afficher le cadre absences de l'élève
@@ -488,12 +691,14 @@ echo "</p><br/><br/>";
 				$active_bloc_avis_conseil = $donner_model['active_bloc_avis_conseil']; // afficher les avis du conseil de classe
 				$active_bloc_chef = $donner_model['active_bloc_chef']; // fait - afficher la signature du chef
 				$active_photo = $donner_model['active_photo']; // fait - afficher la photo de l'élève
+				$taille_texte_matiere = $donner_model['taille_texte_matiere']; // taille du texte des matière
 				$active_coef_moyenne = $donner_model['active_coef_moyenne']; // fait - afficher le coéficient des moyenne par matière
 				$active_nombre_note = $donner_model['active_nombre_note']; // fait - afficher le nombre de note par matière sous la moyenne de l'élève
 				$active_nombre_note_case = $donner_model['active_nombre_note_case']; // fait - afficher le nombre de note par matière
 				$active_moyenne = $donner_model['active_moyenne']; // fait - afficher les moyennes
 				$active_moyenne_eleve = $donner_model['active_moyenne_eleve']; // fait - afficher la moyenne de l'élève
 				$active_moyenne_classe = $donner_model['active_moyenne_classe']; // fait - afficher les moyennes de la classe
+				$active_moyenne_general = $donner_model['active_moyenne_general']; // fait - afficher la moyennes général de l'élève
 				$active_moyenne_min = $donner_model['active_moyenne_min']; // fait - afficher les moyennes minimum
 				$active_moyenne_max = $donner_model['active_moyenne_max']; // fait - afficher les moyennes maximum
 				$active_regroupement_cote = $donner_model['active_regroupement_cote']; // fait - afficher le nom des regroupement sur le coté
@@ -570,6 +775,7 @@ echo "</p><br/><br/>";
 				$affiche_filigrame=$donner_model['affiche_filigrame'];
 				$texte_filigrame=$donner_model['texte_filigrame'];
 				$affiche_logo_etab=$donner_model['affiche_logo_etab'];
+				$nom_etab_gras = $donner_model['nom_etab_gras'];
 				$entente_mel=$donner_model['entente_mel'];
 				$entente_tel=$donner_model['entente_tel'];
 				$entente_fax=$donner_model['entente_fax'];
@@ -583,6 +789,34 @@ echo "</p><br/><br/>";
 				$autorise_sous_matiere=$donner_model['autorise_sous_matiere'];
 				$affichage_haut_responsable=$donner_model['affichage_haut_responsable'];
 				$largeur_matiere=$donner_model['largeur_matiere'];
+				$titre_bloc_avis_conseil = $donner_model['titre_bloc_avis_conseil'];
+				$taille_titre_bloc_avis_conseil = $donner_model['taille_titre_bloc_avis_conseil'];
+				$taille_profprincipal_bloc_avis_conseil = $donner_model['taille_profprincipal_bloc_avis_conseil'];
+				$affiche_fonction_chef = $donner_model['affiche_fonction_chef'];
+				$taille_texte_fonction_chef = $donner_model['taille_texte_fonction_chef'];
+				$taille_texte_identitee_chef = $donner_model['taille_texte_identitee_chef'];
+				$tel_image = $donner_model['tel_image'];
+				$tel_texte = $donner_model['tel_texte'];
+				$fax_image = $donner_model['fax_image'];
+				$fax_texte = $donner_model['fax_texte'];
+				$courrier_image = $donner_model['courrier_image'];
+				$courrier_texte = $donner_model['courrier_texte'];
+				$largeur_bloc_eleve = $donner_model['largeur_bloc_eleve'];
+				$hauteur_bloc_eleve = $donner_model['hauteur_bloc_eleve'];
+				$largeur_bloc_adresse = $donner_model['largeur_bloc_adresse'];
+				$hauteur_bloc_adresse = $donner_model['hauteur_bloc_adresse'];
+				$largeur_bloc_datation = $donner_model['largeur_bloc_datation'];
+				$hauteur_bloc_datation = $donner_model['hauteur_bloc_datation'];
+				$taille_texte_classe = $donner_model['taille_texte_classe'];
+				$type_texte_classe = $donner_model['type_texte_classe'];
+				$taille_texte_annee = $donner_model['taille_texte_annee'];
+				$type_texte_annee = $donner_model['type_texte_annee'];
+				$taille_texte_periode = $donner_model['taille_texte_periode'];
+				$type_texte_periode = $donner_model['type_texte_periode'];
+				$taille_texte_categorie_cote = $donner_model['taille_texte_categorie_cote'];
+				$taille_texte_categorie = $donner_model['taille_texte_categorie'];
+				$type_texte_date_datation = $donner_model['type_texte_date_datation'];
+				$cadre_adresse = $donner_model['cadre_adresse'];
 			}
 		?>
 		<form method="post" action="param_bull_pdf.php?modele=aff" name="action_modele_copie_form">
@@ -622,17 +856,37 @@ echo "</p><br/><br/>";
 		    <tr>
 		      <td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 	        	<div style="font-weight: bold; background: #CFCFCF;">Cadre information établissement</div>
+			<input name="nom_etab_gras" id="nom_etab_gras" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($nom_etab_gras) and $nom_etab_gras==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="nom_etab_gras" style="cursor: pointer;">Nom de l'établissement en gras</label><br />
 			<input name="affiche_filigrame" id="filigrame" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_filigrame) and $affiche_filigrame==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="filigrame" style="cursor: pointer;">Filigramme</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;<label for="text_fili" style="cursor: pointer;">texte du filigrame</label>&nbsp;<input name="texte_filigrame" id="text_fili" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($texte_filigrame)) { ?>value="<?php echo $texte_filigrame; ?>" <?php } ?> /><br />
 			<input name="entente_tel" id="telephone" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_tel) and $entente_tel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="telephone" style="cursor: pointer;">Téléphone</label><br />
+			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="tel_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($tel_texte)) { ?>value="<?php echo $tel_texte; ?>" <?php } ?> /> ou 
+			<input name="tel_image" id="tel_image_1" value="tel1" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel1') { ?>checked="checked"<?php } ?> /><label for="tel_image_1" style="cursor: pointer;"><img src="../images/imabulle/tel1.jpg" style="width: 6.5px; height: 15.5px; border: 0px" alt="" title="" /></label>
+			<input name="tel_image" id="tel_image_2" value="tel2" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel2') { ?>checked="checked"<?php } ?> /><label for="tel_image_2" style="cursor: pointer;"><img src="../images/imabulle/tel2.jpg" style="width: 18.5px; height: 15px; border: 0px" alt="" title="" /></label>
+			<input name="tel_image" id="tel_image_3" value="tel3" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel3') { ?>checked="checked"<?php } ?> /><label for="tel_image_3" style="cursor: pointer;"><img src="../images/imabulle/tel3.jpg" style="width: 18px; height: 15px; border: 0px" alt="" title="" /></label>
+			<input name="tel_image" id="tel_image_4" value="tel4" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel4') { ?>checked="checked"<?php } ?> /><label for="tel_image_4" style="cursor: pointer;"><img src="../images/imabulle/tel4.jpg" style="width: 16px; height: 16px; border: 0px" alt="" title="" /></label>
+			<input name="tel_image" id="tel_image_5" value="" type="radio" <?php if(empty($tel_image) and $tel_image==='') { ?>checked="checked"<?php } ?> /><label for="tel_image_5" style="cursor: pointer;">aucune</label>
+			<br />
 			<input name="entente_fax" id="fax" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_fax) and $entente_fax==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="fax" style="cursor: pointer;">Fax</label><br />
+			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="fax_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($fax_texte)) { ?>value="<?php echo $fax_texte; ?>" <?php } ?> /> ou 
+			<input name="fax_image" id="fax_image_1" value="fax" type="radio" <?php if(!empty($fax_image) and $fax_image==='fax') { ?>checked="checked"<?php } ?> /><label for="fax_image_1" style="cursor: pointer;"><img src="../images/imabulle/fax.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
+			<input name="fax_image" id="fax_image_2" value="" type="radio" <?php if(empty($fax_image) and $fax_image==='') { ?>checked="checked"<?php } ?> /><label for="fax_image_2" style="cursor: pointer;">aucune</label>
+			<br />
 			<input name="entente_mel" id="courrier" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_mel) and $entente_mel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="courrier" style="cursor: pointer;">Courriel</label><br />
+			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="courrier_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($courrier_texte)) { ?>value="<?php echo $courrier_texte; ?>" <?php } ?> /> ou
+			<input name="courrier_image" id="courrier_image_1" value="courrier" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='courrier') { ?>checked="checked"<?php } ?> /><label for="courrier_image_1" style="cursor: pointer;"><img src="../images/imabulle/courrier.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
+			<input name="courrier_image" id="courrier_image_2" value="courrier2" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='courrier2') { ?>checked="checked"<?php } ?> /><label for="courrier_image_2" style="cursor: pointer;"><img src="../images/imabulle/courrier2.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
+			<input name="courrier_image" id="courrier_image_3" value="sourismel" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='sourismel') { ?>checked="checked"<?php } ?> /><label for="courrier_image_3" style="cursor: pointer;"><img src="../images/imabulle/sourismel.jpg" style="width: 28px; height: 20px; border: 0px" alt="" title="" /></label>
+			<input name="courrier_image" id="courrier_image_4" value="" type="radio" <?php if(empty($courrier_image) and $courrier_image==='') { ?>checked="checked"<?php } ?> /><label for="courrier_image_4" style="cursor: pointer;">aucune</label>
+			<br /><br />
 			Logo de l'établissement<br />
 			<input name="affiche_logo_etab" id="aff_logo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_logo_etab) and $affiche_logo_etab==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="aff_logo" style="cursor: pointer;">Affiche le logo</label><br />
-			<label for="larg_logo" style="cursor: pointer;">Largeur</label>&nbsp;<input name="L_max_logo" id="larg_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($L_max_logo)) { ?>value="<?php echo $L_max_logo; ?>" <?php } ?> />mm&nbsp;/&nbsp;<label for="haut_logo" style="cursor: pointer;">Hauteur</label>&nbsp;<input name="H_max_logo" id="haut_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($H_max_logo)) { ?>value="<?php echo $H_max_logo; ?>" <?php } ?> />mm&nbsp;<br /><br />
+			<label for="larg_logo" style="cursor: pointer;">Largeur</label>&nbsp;<input name="L_max_logo" id="larg_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($L_max_logo)) { ?>value="<?php echo $L_max_logo; ?>" <?php } ?> />mm&nbsp;/&nbsp;<label for="haut_logo" style="cursor: pointer;">Hauteur</label>&nbsp;<input name="H_max_logo" id="haut_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($H_max_logo)) { ?>value="<?php echo $H_max_logo; ?>" <?php } ?> />mm&nbsp;<br /><br /><br />
+
 	        	<div style="font-weight: bold; background: #CFCFCF;">Cadre information identité élève</div>
 			<input name="active_bloc_eleve" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_eleve" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_eleve)) { ?>value="<?php echo $X_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_eleve)) { ?>value="<?php echo $Y_eleve; ?>" <?php } ?> />mm&nbsp;<br />
+			Largeur du bloc&nbsp;<input name="largeur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_eleve)) { ?>value="<?php echo $largeur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_eleve)) { ?>value="<?php echo $hauteur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;<br />
 			<input name="cadre_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_eleve) and $cadre_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br />
 			<input name="active_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_photo) and $active_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;la photo<br />
 			<input name="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> />&nbsp;si doublement<br />
@@ -660,12 +914,57 @@ echo "</p><br/><br/>";
 	        	<div style="font-weight: bold; background: #CFCFCF;">Cadre datation du bulletin</div>
 			<input name="active_bloc_datation" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_datation" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_datation_bul)) { ?>value="<?php echo $X_datation_bul; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_datation_bul)) { ?>value="<?php echo $Y_datation_bul; ?>" <?php } ?> />mm&nbsp;<br />
-			<input name="cadre_datation_bul" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_datation_bul) and $cadre_datation_bul==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br /><br /><br /><br /><br /><br /><br />
+			Largeur du bloc&nbsp;<input name="largeur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_datation)) { ?>value="<?php echo $largeur_bloc_datation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_datation)) { ?>value="<?php echo $hauteur_bloc_datation; ?>" <?php } ?> />mm&nbsp;<br />
+			<input name="cadre_datation_bul" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_datation_bul) and $cadre_datation_bul==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
+
+			Taille du texte "classe"&nbsp;<input name="taille_texte_classe" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_classe)) { ?>value="<?php echo $taille_texte_classe; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;format
+			    <select name="type_texte_classe">
+                		<option value="" <?php if ( isset($type_texte_classe) and $type_texte_classe === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+                		<option value="N" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
+		                <option value="B" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
+		                <option value="I" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
+		                <option value="U" <?php if ( isset($type_texte_classe) and $type_texte_classe === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+		            </select><br />
+
+				Taille du texte "année scolaire"&nbsp;<input name="taille_texte_annee" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_annee)) { ?>value="<?php echo $taille_texte_annee; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;format
+			    <select name="type_texte_annee">
+                		<option value="" <?php if ( isset($type_texte_annee) and $type_texte_annee === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+                		<option value="N" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
+		                <option value="B" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
+		                <option value="I" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
+		                <option value="U" <?php if ( isset($type_texte_annee) and $type_texte_annee === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+		            </select><br />
+
+			Taille du texte "période"&nbsp;<input name="taille_texte_periode" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_periode)) { ?>value="<?php echo $taille_texte_periode; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;format
+			    <select name="type_texte_periode">
+                		<option value="" <?php if ( isset($type_texte_periode) and $type_texte_periode === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+                		<option value="N" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
+		                <option value="B" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
+		                <option value="I" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
+		                <option value="U" <?php if ( isset($type_texte_periode) and $type_texte_periode === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+		            </select><br />
+
+			Taille du texte "date d'edition"&nbsp;<input name="taille_texte_date_edition" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_date_edition)) { ?>value="<?php echo $taille_texte_date_edition; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;format
+			    <select name="type_texte_date_datation">
+                		<option value="" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === '' ) { ?>selected="selected"<?php } ?>>défaut</option>
+                		<option value="N" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'N' ) { ?>selected="selected"<?php } ?>>normal</option>
+		                <option value="B" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'B' ) { ?>selected="selected"<?php } ?> style="font-weight: bold;">gras</option>
+		                <option value="I" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'I' ) { ?>selected="selected"<?php } ?> style="font-style: italic;">italique</option>
+		                <option value="U" <?php if ( isset($type_texte_date_datation) and $type_texte_date_datation === 'U' ) { ?>selected="selected"<?php } ?> style="text-decoration: underline;">soulignée</option>
+		            </select><br /><br />
+
+
 	        	<div style="font-weight: bold; background: #CFCFCF;">Cadre adresse des parents</div>
 			<input name="active_bloc_adresse_parent" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_adresse_parent" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_parent)) { ?>value="<?php echo $X_parent; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_parent)) { ?>value="<?php echo $Y_parent; ?>" <?php } ?> />mm&nbsp;<br />
+			Largeur du bloc&nbsp;<input name="largeur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_adresse)) { ?>value="<?php echo $largeur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_adresse)) { ?>value="<?php echo $hauteur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;<br />
+			<input name="cadre_adresse" id="cadre_adresse" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_adresse) and $cadre_adresse==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="cadre_adresse" style="cursor: pointer;">Ajouter un encadrement</label><br /><br />
 			Imprimer les bulletins pour :<br />
-			<input name="imprime_pour" value="1" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='1') { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
+			<input name="imprime_pour" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
 			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse<br />
 			<input name="imprime_pour" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> />&nbsp;forcer pour le 1er et 2ème responsable<br /><br />
 		      </td>
@@ -679,6 +978,7 @@ echo "</p><br/><br/>";
 			Entête<br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne matière : <input name="titre_entete_matiere" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_matiere)) { ?>value="<?php echo $titre_entete_matiere; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur du bloc matière&nbsp;<input name="largeur_matiere" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_matiere)) { ?>value="<?php echo $largeur_matiere; ?>" <?php } ?> />mm<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte "matière"&nbsp;<input name="taille_texte_matiere" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_matiere)) { ?>value="<?php echo $taille_texte_matiere; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne coefficient : <input name="titre_entete_coef" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_coef)) { ?>value="<?php echo $titre_entete_coef; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne nombre de note : <input name="titre_entete_nbnote" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_nbnote)) { ?>value="<?php echo $titre_entete_nbnote; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne rang : <input name="titre_entete_rang" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_rang)) { ?>value="<?php echo $titre_entete_rang; ?>" <?php } ?> /><br />
@@ -712,6 +1012,7 @@ echo "</p><br/><br/>";
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_classe) and $active_moyenne_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de la classe<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_min" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_min) and $active_moyenne_min==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus basse<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_max" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_max) and $active_moyenne_max==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus haute<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyenne général<br />
 			&nbsp;Arrondir les moyennes à : <input name="arrondie_choix" value="0.01" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.01') { ?>checked="checked"<?php } ?> />0,01 <input name="arrondie_choix" value="0.1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.1') { ?>checked="checked"<?php } ?> />0,1 <input name="arrondie_choix" value="0.25" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.25') { ?>checked="checked"<?php } ?> />0,25 <input name="arrondie_choix" value="0.5" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.5') { ?>checked="checked"<?php } ?> />0,5<br />
 			&nbsp;Nombre de zéros après la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /> ne pas afficher le "0" après la virgule<br />
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
@@ -724,7 +1025,9 @@ echo "</p><br/><br/>";
 			Hauteur de la moyenne générale&nbsp;<input name="hauteur_entete_moyenne_general" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_entete_moyenne_general)) { ?>value="<?php echo $hauteur_entete_moyenne_general; ?>" <?php } ?> />mm<br />
 			<div style="background: #EFEFEF; font-style:italic;">Catégories de matières :</div>
 			&nbsp;&nbsp;&nbsp;<input name="active_regroupement_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_regroupement_cote) and $active_regroupement_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières sur le coté&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_cote) and $couleur_categorie_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_cote1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote1)) { ?>value="<?php echo $couleur_categorie_cote1; ?>" <?php } ?> /> G:<input name="couleur_categorie_cote2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote2)) { ?>value="<?php echo $couleur_categorie_cote2; ?>" <?php } ?> /> B:<input name="couleur_categorie_cote3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote3)) { ?>value="<?php echo $couleur_categorie_cote3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie_cote" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie_cote)) { ?>value="<?php echo $taille_texte_categorie_cote; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_entete_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_entete_regroupement) and $active_entete_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières en entête&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_entete" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_entete) and $couleur_categorie_entete==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_entete1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete1)) { ?>value="<?php echo $couleur_categorie_entete1; ?>" <?php } ?> /> G:<input name="couleur_categorie_entete2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete2)) { ?>value="<?php echo $couleur_categorie_entete2; ?>" <?php } ?> /> B:<input name="couleur_categorie_entete3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete3)) { ?>value="<?php echo $couleur_categorie_entete3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie)) { ?>value="<?php echo $taille_texte_categorie; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Hauteur entête des catégories&nbsp;<input name="hauteur_info_categorie" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_info_categorie)) { ?>value="<?php echo $hauteur_info_categorie; ?>" <?php } ?> />mm<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_regroupement) and $active_moyenne_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne des catégories de matières<br />
 			<div style="background: #EFEFEF; font-style:italic;">Moyenne générale</div>
@@ -740,6 +1043,9 @@ echo "</p><br/><br/>";
 			<input name="active_bloc_avis_conseil" value="1" type="radio" <?php if(!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_avis_conseil" value="0" type="radio" <?php if(empty($active_bloc_avis_conseil) or (!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_avis_cons)) { ?>value="<?php echo $X_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_avis_cons)) { ?>value="<?php echo $Y_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_avis_cons)) { ?>value="<?php echo $longeur_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_avis_cons)) { ?>value="<?php echo $hauteur_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
+			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
 			<input name="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
 		      </td>
 	              <td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
@@ -748,6 +1054,9 @@ echo "</p><br/><br/>";
 			Positionnement X&nbsp;<input name="X_sign_chef" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_sign_chef)) { ?>value="<?php echo $X_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_sign_chef)) { ?>value="<?php echo $Y_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($longeur_sign_chef)) { ?>value="<?php echo $longeur_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($hauteur_sign_chef)) { ?>value="<?php echo $hauteur_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
 			<input name="affichage_haut_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affichage_haut_responsable) and $affichage_haut_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher l'identité du responsable de direction<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_identitee_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_identitee_chef)) { ?>value="<?php echo $taille_texte_identitee_chef; ?>" <?php } ?> />pixel<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_fonction_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_fonction_chef) and $affiche_fonction_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher sa fonction<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_fonction_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_fonction_chef)) { ?>value="<?php echo $taille_texte_fonction_chef; ?>" <?php } ?> />pixel<br />
 			<input name="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
 		      </td>
 		   </tr>

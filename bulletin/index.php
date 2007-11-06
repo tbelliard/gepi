@@ -247,9 +247,8 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 
 		  <br /><br />
 
-<?PHP
-		  echo "<input type=\"checkbox\" name=\"tri_par_etab_origine\" value=\"oui\" />Impression triée par établissement d'origine des élèves.<BR /><BR />";
-?>
+		  <input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" /><label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br /><br />
+
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
 		  </center>
