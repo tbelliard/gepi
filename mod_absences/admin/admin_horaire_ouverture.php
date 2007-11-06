@@ -133,7 +133,14 @@ if ( $action === 'visualiser' )
         }
 }
 
-echo "<p class=bold><a href='index.php'><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+// Gestion propre des retours vers absences ou EdT
+	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] !== "") {
+		$retour = "<a href=\"../../edt_organisation/".$_SESSION["retour"].".php\">";
+	}else{
+		$retour = "<a href=\"./index.php\">";
+	}
+
+echo "<p class=\"bold\">".$retour."<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 ?>
 
 <?php if ($action === "visualiser") { ?>
