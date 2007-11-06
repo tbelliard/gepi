@@ -410,6 +410,14 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	 } else { $affiche_bloc_observation = '0'; }
 	//=======================
 
+	//=======================
+	// AJOUT: chapel 20071026
+	// cadre eleve
+		// affichage de la classe
+		if(isset($_SESSION['aff_classe_nom']) and !empty($_SESSION['aff_classe_nom']) ) {
+		  $aff_classe_nom = $_SESSION['aff_classe_nom'];
+		} else { $aff_classe_nom = '1'; }
+	//=======================
 
 //recherche d'information de la sélection
 	$cpt_i='1';
@@ -642,8 +650,13 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		$regroupement_passer='';
 		while($donne_requete = mysql_fetch_array($base_complete_information))
 		{
-			$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
-			$test_eleve_grp=mysql_query($sql);
+			//===========================
+			// MODIF: chapel 20071026 ???
+			//$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
+			//$test_eleve_grp=mysql_query($sql);
+			$sql_groupe = "SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
+			$test_eleve_grp=mysql_query($sql_groupe);
+			//===========================
 			if(mysql_num_rows($test_eleve_grp)>0){
 				if($donne_requete['login']!=$login_passe) { $nb_matiere_cpt='1'; }
 				//on vérifie si c'est le même id de groupe pour mettre toutes les notes d'un groupe en même temps puis compter le nombre de groupe
@@ -662,6 +675,10 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					//=======================
 					// AJOUT: chapel 20071019
 					// si coef
+						//=======================
+						// AJOUT: chapel 20071026
+						$coef_oui = '';
+						//=======================
 					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
 						//if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; }
 						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[9] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; } else { $coef_oui = ''; } }
@@ -741,6 +758,25 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					if($_SESSION['avec_nom_devoir'] == 'oui') {
 						$nom_devoir_oui = " (".$donne_requete[3].")";
 					}
+					//=======================
+					// AJOUT: chapel 20071024
+					// si coef
+					$coef_oui = '';
+					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+					}
+					else {
+						$coef_oui = '';
+					}
+					// si date devoir
+					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' ) {
+						$date_devoir_oui = " (".date_fr_dh($donne_requete['date']).") ";
+					}
+					else {
+						$date_devoir_oui='';
+					}
+					//=======================
 					// =======================================
 					// Modif: boireaus d'après C.Chapel
 					//$notes[$eleve_select][$nb_num_matiere_passe] = $notes[$eleve_select][$nb_num_matiere_passe]." - ".$donne_requete['note']."".$nom_devoir_oui;
@@ -835,8 +871,20 @@ $passage_i = 1;
 		if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 		$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($naissance[$nb_eleves_i]).', '.$regime[$nb_eleves_i],0,2,'');
 		$pdf->Cell(90,5,'',0,2,'');
-		$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
-		$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
+		//==================
+		// MODIF: chapel 20071026
+		//$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
+		//$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
+		if ( $aff_classe_nom === '1' or $aff_classe_nom === '3' ) {
+			$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
+		}
+		if ( $aff_classe_nom === '2' ) {
+			$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe_nom_court[$nb_eleves_i]).'<B>');
+		}
+		if ( $aff_classe_nom === '3' ) {
+			$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
+		}
+		//==================
 		$pdf->Cell(90,5,$classe_aff,0,2,'');
 		$pdf->SetX($X_cadre_eleve);
 		$pdf->SetFont($caractere_utilse,'',10);

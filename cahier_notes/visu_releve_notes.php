@@ -78,6 +78,11 @@ function verif_date($date_fr)
 	    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
+	//=========================
+	// AJOUT: chapel 20071026
+	if (empty($_GET['aff_classe_nom']) and empty($_POST['aff_classe_nom'])) { $aff_classe_nom = ''; }
+	   else { if (isset($_GET['aff_classe_nom'])) { $aff_classe_nom = $_GET['aff_classe_nom']; } if (isset($_POST['aff_classe_nom'])) { $aff_classe_nom = $_POST['aff_classe_nom']; } }
+	//=========================
 
 	//=========================
 	// AJOUT: chapel 20071019
@@ -112,6 +117,9 @@ function verif_date($date_fr)
     $_SESSION['avec_bloc_obser'] = $avec_bloc_obser;
     $_SESSION['avec_sign_parent'] = $avec_sign_parent;
     $_SESSION['avec_sign_pp'] = $avec_sign_pp;
+	//=========================
+	//AJOUT: chapel 20071026
+    $_SESSION['aff_classe_nom'] = $aff_classe_nom;
 	//=========================
 	$_SESSION['type'] = $type;
 	$_SESSION['avec_adresse_responsable'] = $avec_adresse_responsable;
@@ -881,6 +889,14 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	<div style="text-align: left;">
 		<div id="div_1" style="display: <?php if( $avec_nom_devoir != '' or $active_entete_regroupement != '' or $avec_coef != '' or $avec_date_devoir != '' or $avec_sign_parent != '' or $avec_sign_pp != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><!--a name="ao"></a-->
 		  <span style="font-family: Arial;">
+
+			<!-- DEBUT AJOUT chapel 20071026-->
+			Affichage du nom de la classe
+				<input name="aff_classe_nom" id="aff_classe_nom1" value="1" type="radio" <?php if(isset($aff_classe_nom) and ( $aff_classe_nom === '1' or $aff_classe_nom == '' ) ) { ?>checked="checked"<?php } ?> /><label for="aff_classe_nom1" style="cursor: pointer;">Nom long</label>
+				<input name="aff_classe_nom" id="aff_classe_nom2" value="2" type="radio" <?php if(isset($aff_classe_nom) and $aff_classe_nom === '2') { ?>checked="checked"<?php } ?> /><label for="aff_classe_nom2" style="cursor: pointer;">Nom court</label>
+				<input name="aff_classe_nom" id="aff_classe_nom3" value="3" type="radio" <?php if(isset($aff_classe_nom) and $aff_classe_nom === '3') { ?>checked="checked"<?php } ?> /><label for="aff_classe_nom3" style="cursor: pointer;">Nom long (Nom court)</label><br />
+			<!-- FIN AJOUT chapel 20071026-->
+
 			<input type="checkbox" name="avec_nom_devoir" id="avec_nom_devoir" value="oui" <?php if(isset($avec_nom_devoir) and $avec_nom_devoir === 'oui') { ?>checked="checked"<?php } ?> /> <label for="avec_nom_devoir" style="cursor: pointer;">Afficher le nom des devoirs.</label><br />
 			<input type="checkbox" name="active_entete_regroupement" id="active_entete_regroupement" value="1" <?php if(isset($active_entete_regroupement) and $active_entete_regroupement === '1') { ?>checked="checked"<?php } ?> /> <label for="active_entete_regroupement" style="cursor: pointer;">Afficher les catégories.</label><br />
 			<input type="checkbox" name="avec_coef" id="avec_coef1" value="oui1" onclick="activedesactive('avec_ceof2','avec_coef1');"  <?php if(isset($avec_coef) and $avec_coef === 'oui1') { ?>checked="checked"<?php } ?> /> <label for="avec_coef1" style="cursor: pointer;">Afficher tous les coefficients des devoirs.</label><br />
@@ -1360,7 +1376,6 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     echo " (Veillez à respectez le format jj/mm/aaaa)";
 
 
-	
 
     //====================================================================
     // MODIF: boireaus
@@ -1377,10 +1392,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		$rn_formule="";
 
 		//Modif Eric pour masquage des options sur le relevé de notes pour un responsable ou un élève)
-		if (($_SESSION['statut']=='eleve') AND (getSettingValue("GepiAccesOptionsReleveEleve") == "yes")) 
-		{		
+		if (($_SESSION['statut']=='eleve') AND (getSettingValue("GepiAccesOptionsReleveEleve") == "yes"))
+		{
 			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
-		
+
 			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
 			echo "/> Afficher le nom des devoirs.\n";
@@ -1400,11 +1415,11 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			if($avec_date_devoir=="y"){echo "checked ";}
 			echo "/> Afficher les dates des devoirs.\n";
 		}
-		
-		if (($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") == "yes")) 
-		{	
+
+		if (($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") == "yes"))
+		{
 			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
-			
+
 			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
 			echo "/> Afficher le nom des devoirs.\n";
@@ -1436,7 +1451,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	else{
 		// Pour permettre de ne pas afficher les noms des devoirs
 		echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
-		
+
 		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
 		if($avec_nom_devoir=="y"){echo "checked ";}
 		echo "/> Afficher le nom des devoirs.\n";
