@@ -656,11 +656,11 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 
 	if ($type_edt == "prof")
-		return ("".$aff_matiere." ".$effacer_cours." ".$modifier_cours."<br />\n".$classe_js." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve."\n");
+		return ("".$aff_matiere."<br />\n".$classe_js." ".$effacer_cours." ".$modifier_cours." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve." él.\n");
 	elseif (($type_edt == "classe") OR ($type_edt == "eleve"))
 		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
 	elseif ($type_edt == "salle")
-		return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br />\n".$classe_js." ".$aff_sem."\n");
+		return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js." - ".$aff_nbre_eleve." él.\n");
 }
 
 
