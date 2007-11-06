@@ -4737,6 +4737,20 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'param_menu_edt' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='param_menu_edt'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'param_menu_edt', 'mouseover');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_calendrier_ouvert' à la table 'setting'<br/>";
         $req_test = mysql_query("SELECT value FROM setting WHERE name='edt_calendrier_ouvert'");
         $res_test = mysql_num_rows($req_test);
