@@ -30,16 +30,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 };
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $liste_tables_del = array(
@@ -51,7 +51,7 @@ $liste_tables_del = array(
 //aid
 //aid_appreciations
 //aid_config
- //avis_conseil_classe
+//avis_conseil_classe
 //classes
 //cn_cahier_notes
 //cn_conteneurs
@@ -106,229 +106,233 @@ echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Importation
 
 
 if (!isset($_POST["action"])) {
-    //
-    // On sélectionne le fichier à importer
-    //
+	//
+	// On sélectionne le fichier à importer
+	//
 
-    echo "<p>Vous allez effectuer la troisième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
-    echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
-    echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
-            "<li>Identifiant court de la classe (ex: 1S2)</li>\n" .
-            "</ul>\n";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
-    echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
-    echo "<input type='hidden' name='action' value='upload_file' />\n";
-    echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-    echo "<p><input type='submit' value='Valider' />\n";
-    echo "</form>\n";
+	echo "<p>Vous allez effectuer la troisième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
+	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
+	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
+			"<li>Identifiant court de la classe (ex: 1S2)</li>\n" .
+			"</ul>\n";
+	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
+	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
+	echo "<input type='hidden' name='action' value='upload_file' />\n";
+	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+	echo "<p><input type='submit' value='Valider' />\n";
+	echo "</form>\n";
 
 } else {
-    //
-    // Quelque chose a été posté
-    //
-    if ($_POST['action'] == "save_data") {
-        //
-        // On enregistre les données dans la base.
-        // Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
-        //
+	//
+	// Quelque chose a été posté
+	//
+	if ($_POST['action'] == "save_data") {
+		//
+		// On enregistre les données dans la base.
+		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+		//
 
-        $j=0;
-        while ($j < count($liste_tables_del)) {
-            if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-                $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-            }
-            $j++;
-        }
-
-
-        $go = true;
-        $i = 0;
-        // Compteur d'erreurs
-        $error = 0;
-        // Compteur d'enregistrement
-        $total = 0;
-        while ($go) {
-
-            $reg_id_int = $_POST["ligne".$i."_id_int"];
-            $reg_classe = $_POST["ligne".$i."_classe"];
-
-            // On nettoie et on vérifie :
-            $reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
-            if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
-            $reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
-            if (strlen($reg_classe) > 100) $reg_classe = substr($reg_classe, 0, 100);
+		$j=0;
+		while ($j < count($liste_tables_del)) {
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
+			$j++;
+		}
 
 
-            // Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
-            $test = mysql_query("SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'");
-            if (mysql_num_rows($test) == 1) {
-                $login_eleve = mysql_result($test, 0, "login");
+		$go = true;
+		$i = 0;
+		// Compteur d'erreurs
+		$error = 0;
+		// Compteur d'enregistrement
+		$total = 0;
+		while ($go) {
 
-                // Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
+			$reg_id_int = $_POST["ligne".$i."_id_int"];
+			$reg_classe = $_POST["ligne".$i."_classe"];
 
-                $test = mysql_query("SELECT id FROM classes WHERE classe = '" . $reg_classe . "'");
-
-                if (mysql_num_rows($test) == 0) {
-                    // Test négatif : aucune classe avec ce nom court... on créé !
-
-                    $insert1 = mysql_query("INSERT INTO classes SET " .
-                            "classe = '" . $reg_classe . "', " .
-                            "nom_complet = '" . $reg_classe . "', " .
-                            "format_nom = 'np', " .
-                            "display_rang = 'n', " .
-                            "display_address = 'n', " .
-                            "display_coef = 'y'");
-                    // On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
-                    $classe_id = mysql_insert_id();
-
-                    for ($p=1;$p<4;$p++) {
-                        if ($p == 1) $v = "O";
-                            else $v = "N";
-                        $insert2 = mysql_query("INSERT INTO periodes SET " .
-                                "nom_periode = 'Période ".$p . "', " .
-                                "num_periode = '" . $p . "', " .
-                                "verouiller = '" . $v . "', " .
-                                "id_classe = '" . $classe_id . "'");
-                    }
-                    $num_periods = 3;
-
-                } else {
-                    // La classe existe
-                    // On récupère son ID
-                    $classe_id = mysql_result($test, 0, "id");
-                    $num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
-                }
-
-                // Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association
-
-                for ($p=1;$p<=$num_periods;$p++) {
-                    $insert = mysql_query("INSERT INTO j_eleves_classes SET login = '" . $login_eleve . "', " .
-                                                                "id_classe = '" . $classe_id . "', " .
-                                                                "periode = '" . $p . "'");
-                }
-
-                if (!$insert) {
-                    $error++;
-                    echo mysql_error();
-                } else {
-                    $total++;
-                }
-
-            }
-
-            $i++;
-            if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
-        }
-
-        if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
-        if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont été enregistrés.</p>\n";
-
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
+			// On nettoie et on vérifie :
+			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
+			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
+			$reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
+			if (strlen($reg_classe) > 100) $reg_classe = substr($reg_classe, 0, 100);
 
 
-    } else if ($_POST['action'] == "upload_file") {
-        //
-        // Le fichier vient d'être envoyé et doit être traité
-        // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-        // en proposant des champs de saisie pour modifier les données si on le souhaite
-        //
+			if(($reg_id_int!='')&&($reg_classe!='')){
+				// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
+				$test = mysql_query("SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'");
+				if (mysql_num_rows($test) == 1) {
+					$login_eleve = mysql_result($test, 0, "login");
 
-        $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
-        // On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-        // autant forcer l'utilisateur à être rigoureux
-        if(strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+					$test = mysql_query("SELECT id FROM classes WHERE classe = '" . $reg_classe . "'");
 
-            // Le nom est ok. On ouvre le fichier
-            $fp=fopen($csv_file['tmp_name'],"r");
+					if (mysql_num_rows($test) == 0) {
+						// Test négatif : aucune classe avec ce nom court... on créé !
 
-            if(!$fp) {
-                // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
-                echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
-                echo "<p><a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
-            } else {
+						$insert1 = mysql_query("INSERT INTO classes SET " .
+								"classe = '" . $reg_classe . "', " .
+								"nom_complet = '" . $reg_classe . "', " .
+								"format_nom = 'np', " .
+								"display_rang = 'n', " .
+								"display_address = 'n', " .
+								"display_coef = 'y'");
+						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
+						$classe_id = mysql_insert_id();
 
-                // Fichier ouvert ! On attaque le traitement
+						for ($p=1;$p<4;$p++) {
+							if ($p == 1) $v = "O";
+								else $v = "N";
+							$insert2 = mysql_query("INSERT INTO periodes SET " .
+									"nom_periode = 'Période ".$p . "', " .
+									"num_periode = '" . $p . "', " .
+									"verouiller = '" . $v . "', " .
+									"id_classe = '" . $classe_id . "'");
+						}
+						$num_periods = 3;
 
-                // On va stocker toutes les infos dans un tableau
-                // Une ligne du CSV pour une entrée du tableau
-                $data_tab = array();
+					} else {
+						// La classe existe
+						// On récupère son ID
+						$classe_id = mysql_result($test, 0, "id");
+						$num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
+					}
 
-                //=========================
-                // On lit une ligne pour passer la ligne d'entête:
-                $ligne = fgets($fp, 4096);
-                //=========================
+					// Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association
 
-                    $k = 0;
-                    while (!feof($fp)) {
-                        $ligne = fgets($fp, 4096);
-                        if(trim($ligne)!="") {
+					for ($p=1;$p<=$num_periods;$p++) {
+						$insert = mysql_query("INSERT INTO j_eleves_classes SET login = '" . $login_eleve . "', " .
+																	"id_classe = '" . $classe_id . "', " .
+																	"periode = '" . $p . "'");
+					}
 
-                            $tabligne=explode(";",$ligne);
+					if (!$insert) {
+						$error++;
+						echo mysql_error();
+					} else {
+						$total++;
+					}
 
-                            // 0 : ID interne de l'élève
-                            // 1 : nom court de la classe
+				}
+			}
+
+			$i++;
+			if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
+		}
+
+		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
+		if ($total > 0) echo "<p>" . $total . " associations eleves-classes ont été enregistrés.</p>\n";
+
+		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
 
-                            // On nettoie et on vérifie :
-                            $tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
-                            if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-                            $tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
-                            if (strlen($tabligne[1]) > 100) $tabligne[1] = substr($tabligne[1], 0, 100);
+	} else if ($_POST['action'] == "upload_file") {
+		//
+		// Le fichier vient d'être envoyé et doit être traité
+		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
+		// en proposant des champs de saisie pour modifier les données si on le souhaite
+		//
+
+		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+		// autant forcer l'utilisateur à être rigoureux
+		if(strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+
+			// Le nom est ok. On ouvre le fichier
+			$fp=fopen($csv_file['tmp_name'],"r");
+
+			if(!$fp) {
+				// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+				echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
+				echo "<p><a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
+			} else {
+
+				// Fichier ouvert ! On attaque le traitement
+
+				// On va stocker toutes les infos dans un tableau
+				// Une ligne du CSV pour une entrée du tableau
+				$data_tab = array();
+
+				//=========================
+				// On lit une ligne pour passer la ligne d'entête:
+				$ligne = fgets($fp, 4096);
+				//=========================
+
+				$k = 0;
+				while (!feof($fp)) {
+					$ligne = fgets($fp, 4096);
+					if(trim($ligne)!="") {
+
+						$tabligne=explode(";",$ligne);
+
+						// 0 : ID interne de l'élève
+						// 1 : nom court de la classe
 
 
-                            $data_tab[$k] = array();
+						// On nettoie et on vérifie :
+						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
+						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
+						if (strlen($tabligne[1]) > 100) $tabligne[1] = substr($tabligne[1], 0, 100);
+
+
+						$data_tab[$k] = array();
 
 
 
-                            $data_tab[$k]["id_int"] = $tabligne[0];
-                            $data_tab[$k]["classe"] = $tabligne[1];
+						$data_tab[$k]["id_int"] = $tabligne[0];
+						$data_tab[$k]["classe"] = $tabligne[1];
 
-                        }
-                    $k++;
-                    }
+						$k++;
 
-                fclose($fp);
+					}
+					//$k++;
+				}
 
-                // Fin de l'analyse du fichier.
-                // Maintenant on va afficher tout ça.
+				fclose($fp);
 
-                echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
-                echo "<input type='hidden' name='action' value='save_data' />\n";
-                echo "<table border='1'>\n";
-                echo "<tr><th>ID interne de l'élève</th><th>Classe</th></tr>\n";
+				// Fin de l'analyse du fichier.
+				// Maintenant on va afficher tout ça.
 
-                for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>\n";
-                    echo "<td>\n";
-                    echo $data_tab[$i]["id_int"];
-                    echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
-                    echo "</td>\n";
-                    echo "<td>\n";
-                    echo $data_tab[$i]["classe"];
-                    echo "<input type='hidden' name='ligne".$i."_classe' value='" . $data_tab[$i]["classe"] . "' />\n";
-                    echo "</td>\n";
-                    echo "</tr>\n";
-                }
+				echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
+				echo "<input type='hidden' name='action' value='save_data' />\n";
+				echo "<table border='1'>\n";
+				echo "<tr><th>ID interne de l'élève</th><th>Classe</th></tr>\n";
 
-                echo "</table>\n";
+				for ($i=0;$i<$k-1;$i++) {
+					echo "<tr>\n";
+					echo "<td>\n";
+					echo $data_tab[$i]["id_int"];
+					echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
+					echo "</td>\n";
+					echo "<td>\n";
+					echo $data_tab[$i]["classe"];
+					echo "<input type='hidden' name='ligne".$i."_classe' value='" . $data_tab[$i]["classe"] . "' />\n";
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
 
-                echo "<input type='submit' value='Enregistrer' />\n";
+				echo "</table>\n";
 
-                echo "</form>\n";
-            }
+				echo "<input type='submit' value='Enregistrer' />\n";
 
-        } else if (trim($csv_file['name'])=='') {
+				echo "</form>\n";
+			}
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
-            echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
+		} else if (trim($csv_file['name'])=='') {
 
-        } else {
-            echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
-            echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
-        }
-    }
+			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+			echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
+
+		} else {
+			echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+			echo "<a href='eleves_classes.php'>Cliquer ici </a> pour recommencer !</p>\n";
+		}
+	}
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
