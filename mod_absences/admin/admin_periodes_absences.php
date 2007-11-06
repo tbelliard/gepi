@@ -189,6 +189,7 @@ echo "<p class=\"bold\">\n";
 if ($action=="modifier" or $action=="ajouter") {
 	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">\n";
 } else {
+	// On veut distinguer le retour vers EdT ou Absences en fonction de la $_SESSION["retour"]
 	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "edt") {
 		$retour = "	<a href='../../edt_organisation/index_edt.php'>\n";
 	}
