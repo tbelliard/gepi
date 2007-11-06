@@ -68,15 +68,15 @@ $aff_reglages = GetSettingEdt("edt_aff_init_infos");
 
 if ($aff_reglages == "oui") {
 	echo "
-	<font size=\"2\">
+	<p>
 	Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
-<br />
+	<br />
 Pour les entr&eacute;es simples, la saisie manuelle est possible.
 Elle vous permettra de rentrer heure par heure des informations
-en v&eacute;rifiant si deux cours ne se chevauchent pas.
-	</font>
-<br /><h5 class=\"red\">Attention ! seuls les enseignements
-définis dans Gepi peuvent apparaitre dans l'emploi du temps</h5>
+en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
+
+	<h5 class=\"red\">Attention ! seuls les enseignements
+d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps.</h5>
 <br />";
 }
 else {
@@ -417,25 +417,33 @@ else if (isset($init) AND $init == "ko") {
 $aff_reglages2 = GetSettingEdt("edt_aff_init_infos2");
 
 if ($aff_reglages2 == "oui") {
-	echo '<span class="refus">Le module EdT n\'est pas initialisé.
-	<a href="./edt_initialiser.php?init=ko">Cliquer ici pour fermer l\'initialisation</a></span>';
-	echo "<br />\nPour l'initialisation du d&eacute;but d'ann&eacute;e, les diff&eacute;rents logiciels de conception des emplois
- du temps ne permettent pas d'avoir une seule proc&eacute;dure. Il convient donc de bien d&eacute;terminer ce
- qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d'avoir param&eacute;tr&eacute;
- l'ensemble des informations relatives aux horaires de l'&eacute;tablissement. En suivant les instructions suivantes
- tout devrait bien se passer.<br />
+	echo '
+	<span class="refus">Le module EdT n\'est pas initialis&eacute;.
+	<a href="./edt_initialiser.php?init=ko">Cliquer ici quand vous avez termin&eacute; l\'initialisation</a></span>
 
- <div id=\"lien\"><a href=\"./edt_init_csv.php\">Cliquer ici pour une initialisation par fichiers csv</a></div>
- ";
+	<h5>Pour l\'initialisation du d&eacute;but d\'ann&eacute;e, les diff&eacute;rents logiciels de conception des emplois
+ 	du temps ne permettent pas d\'avoir une seule proc&eacute;dure. Il convient donc de bien d&eacute;terminer ce
+	 qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d\'avoir param&eacute;tr&eacute;
+ 	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement. En suivant les instructions suivantes
+ 	tout devrait bien se passer.</h5>
+
+ 	<div id="lien"><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></div>
+ 		';
+
  //<div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>
-
- }
-else if ($aff_reglages2 == "non") {
-	echo '<span class="accept">Le module EdT est initialisé.
-	<a href="./edt_initialiser.php?init=ok">Cliquer ici pour reprendre cette initialisation</a></span>';
 }
-else
-echo 'Il y a un problème de réglage dans votre base de données, il faut peut-être la mettre à jour.';
+else if ($aff_reglages2 == "non") {
+	echo '
+	<span class="accept">Le module EdT est initialis&eacute;.
+	<a href="./edt_initialiser.php?init=ok">Cliquer ici pour reprendre cette initialisation</a></span>
+		';
+}
+else {
+	echo '
+	Il y a un problème de réglage dans votre base de données, il faut peut-être la mettre à jour.
+		';
+
+}
 
 	/* A enlever après vérification de la fonction
 
