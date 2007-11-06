@@ -1,6 +1,6 @@
 // javascript pour les menus deroulants
 
-window.onload=montre;
+window.onload = montre;
 function montre(id) {
 var d = document.getElementById(id);
 	for (var i = 1; i<=4; i++) {

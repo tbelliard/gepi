@@ -27,6 +27,29 @@ elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'sal
 else $page_inc_edt = 'accueil_edt.php';
 //===========================
 
+// Fonction qui gère le fonctionnement du menu
+function menuEdtJs($numero){
+	$aff_menu_edt = "";
+	// On récupère la valeur du réglage "param_menu_edt"
+	$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
+	if ($reglage["valeur"] == "mouseover") {
+		$aff_menu_edt = " onmouseover=\"javascript:montre('sEdTmenu".$numero."');\"";
+	} elseif ($reglage["valeur"] == "click") {
+		$aff_menu_edt = " onclick=\"javascript:montre('sEdTmenu".$numero."');\"";
+	} else {
+		$aff_menu_edt = "";
+	}
+	return $aff_menu_edt;
+}
+function displaydd($numero){
+		// On récupère la valeur du réglage "param_menu_edt"
+	$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
+	if ($reglage["valeur"] == "rien") {
+		return " style=\"display: block;\"";
+	}else {
+		return "style=\"display: none;\"";
+	}
+}
 ?>
 <!-- On affiche le menu edt -->
 
@@ -42,9 +65,9 @@ else $page_inc_edt = 'accueil_edt.php';
 			<dd>
 <br />
 			</dd>
-		<dt onmouseover="javascript:montre('sEdTmenu1');">Visionner</dt>
+		<dt<?php echo menuEdtJs("1"); ?>>Visionner</dt>
 
-			<dd id="sEdTmenu1">
+			<dd id="sEdTmenu1"<?php echo displaydd("1"); ?>>
 				<ul>
 					<li><a href="index_edt.php?visioedt=prof1">Professeur</a></li>
 					<li><a href="index_edt.php?visioedt=classe1">Classe</a></li>
@@ -55,9 +78,9 @@ else $page_inc_edt = 'accueil_edt.php';
 <?php /*
 if ($_SESSION['statut'] == "administrateur") {
 echo '
-		<dt onmouseover="javascript:montre(\'sEdTmenu2\');">Modifier</dt>
+		<dt'.menuEdtJs("2").'>Modifier</dt>
 
-			<dd id="sEdTmenu2">
+			<dd id="sEdTmenu2"'.displaydd("2").'>
 				<ul>
 					<li><a href="modif_edt_tempo.php">temporairement</a></li>
 				</ul>
@@ -77,9 +100,9 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 	// En fonction du résultat, on propose l'affichage ou non
 	if ($aff_ok == "oui" OR $_SESSION["statut"] == $aff_ok) {
 		echo '
-		<dt onmouseover="javascript:montre(\'sEdTmenu3\');">Chercher</dt>
+		<dt'.menuEdtJs("3").'>Chercher</dt>
 
-			<dd id="sEdTmenu3">
+			<dd id="sEdTmenu3"'.displaydd("3").'>
 				<ul>
 					<li><a href="index_edt.php?salleslibres=ok">Salles libres</a></li>
 				</ul>
@@ -89,9 +112,9 @@ $aff_cherche_salle = GetSettingEdt("aff_cherche_salle");
 
 if ($_SESSION['statut'] == "administrateur") {
 	echo '
-		<dt onmouseover="javascript:montre(\'sEdTmenu4\');">Admin</dt>
+		<dt'.menuEdtJs("4").'>Admin</dt>
 
-			<dd id="sEdTmenu4">
+			<dd id="sEdTmenu4"'.displaydd("4").'>
 				<ul>
 					<li><a href="voir_groupe.php">Les groupes</a></li>
 					<li><a href="ajouter_salle.php">Gérer les Salles</a></li>

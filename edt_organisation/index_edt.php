@@ -48,7 +48,7 @@ require_once("../lib/header.inc");
 require_once("./menu.inc.php");
 
 // Pour revenir proprement, on crée le $_SESSION["retour"]
-$_SESSION["retour"] = "edt";
+$_SESSION["retour"] = "index_edt";
 ?>
 
 

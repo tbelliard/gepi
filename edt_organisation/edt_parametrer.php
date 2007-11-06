@@ -53,6 +53,8 @@ $edt_aff_salle=isset($_POST['edt_aff_salle']) ? $_POST['edt_aff_salle'] : NULL;
 $aff_cherche_salle = isset($_POST["aff_cherche_salle"]) ? $_POST["aff_cherche_salle"] : NULL;
 $parametrer=isset($_POST['parametrer']) ? $_POST['parametrer'] : NULL;
 $parametrer_ok=isset($_POST['parametrer1']) ? $_POST['parametrer1'] : NULL;
+$param_menu_edt = isset($_POST["param_menu_edt"]) ? $_POST["param_menu_edt"] : NULL;
+
 
 // Récupérer les paramètres tels qu'ils sont déjà définis
 if (isset($parametrer_ok)) {
@@ -62,11 +64,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_mat = mysql_fetch_array($req_reg_mat);
 
 	if ($edt_aff_matiere === $tab_reg_mat['valeur']) {
-		echo "<span class=\"accept\">Aucune modification de l'affichage des matières</span><br />\n";
+		echo "<p class=\"accept\">Aucune modification de l'affichage des matières</p>\n";
 	}
 	else {
 		$modif_aff_mat = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_matiere' WHERE reglage = 'edt_aff_matiere'");
-		echo "<span class=\"refus\"> Modification de l'affichage des matières enregistrée</span>\n<br />\n";
+		echo "<p class=\"refus\"> Modification de l'affichage des matières enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage du type d'heure
@@ -74,11 +76,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_cre = mysql_fetch_array($req_reg_cre);
 
 	if ($edt_aff_creneaux === $tab_reg_cre['valeur']) {
-		echo "<span class=\"accept\">Aucune modification de l'affichage des créneaux</span><br />\n";
+		echo "<p class=\"accept\">Aucune modification de l'affichage des créneaux</p>\n";
 	}
 	else {
 		$modif_aff_cre = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
-		echo "<span class=\"refus\"> Modification de l'affichage des créneaux enregistrée</span>\n<br />\n";
+		echo "<p class=\"refus\"> Modification de l'affichage des créneaux enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage des couleurs
@@ -86,11 +88,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
 
 	if ($edt_aff_couleur === $tab_reg_coul['valeur']) {
-		echo "<span class=\"accept\">Aucune modification des couleurs</span><br />\n";
+		echo "<p class=\"accept\">Aucune modification des couleurs</p>\n";
 	}
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
-		echo "<span class=\"refus\"> Modification de l'affichage des couleurs enregistrée</span>\n<br />\n";
+		echo "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
 	}
 
 	//Le réglage de l'affichage des salles
@@ -98,11 +100,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_salle = mysql_fetch_array($req_reg_salle);
 
 	if ($edt_aff_salle === $tab_reg_salle['valeur']) {
-		echo "<span class=\"accept\">Aucune modification de l'affichage des salles</span><br />\n";
+		echo "<p class=\"accept\">Aucune modification de l'affichage des salles</p>\n";
 	}
 	else {
 		$modif_aff_salle = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_salle' WHERE reglage = 'edt_aff_salle'");
-		echo "<span class=\"refus\"> Modification de l'affichage des salle enregistrée</span>\n<br />\n";
+		echo "<p class=\"refus\"> Modification de l'affichage des salle enregistrée</p>\n";
 
 	}
 
@@ -111,12 +113,24 @@ if (isset($parametrer_ok)) {
 	$rep_cherche_salle = mysql_fetch_array($req_cherche_salle);
 
 	if ($aff_cherche_salle === $rep_cherche_salle["valeur"]) {
-		echo "<span class=\"accept\">Aucune modification de l'affichage du menu CHERCHER</span>\n<br />\n";
+		echo "<p class=\"accept\">Aucune modification de l'affichage du menu CHERCHER</p>\n";
 	}
 	else {
 		$modif_cherch_salle = mysql_query("UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
-		echo "<span class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</span>\n<br />\n";
+		echo "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</p>\n";
 	}
+
+	// Le réglage du fonctionnement du menu (param_menu_edt)
+	$req_param_menu = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
+	$rep_param_menu = mysql_fetch_array($req_param_menu);
+
+	if ($param_menu_edt === $rep_param_menu["valeur"]) {
+		echo "<p class=\"accept\">Aucune modification du fonctionnement du menu.</p>\n";
+	} else {
+		$modif_param_menu = mysql_query("UPDATE edt_setting SET valeur = '$param_menu_edt' WHERE reglage = 'param_menu_edt'");
+		echo "<p class=\"refus\">Modification du fonctionnement du menu enregistrée.</p>\n";
+	}
+
 } //if (isset($parametrer_ok))
 else {
 	echo "Dans cette page, vous pouvez paramétrer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
@@ -199,6 +213,23 @@ else {
 	</tr>
 </table>
 
+<fieldset id="param_edtmenu">
+	<legend>Le fonctionnement du menu</legend>
+	<p>
+		<input type="radio" id="edtMenuOver" name="param_menu_edt" value="mouseover" <?php echo (aff_checked("param_menu_edt", "mouseover")); ?>/>
+		<label for="edtMenuOver">Les liens s'affichent quand la souris passe sur le titre.</label>
+	</p>
+
+	<p>
+		<input type="radio" id="edtMenuClick" name="param_menu_edt" value="click" <?php echo (aff_checked("param_menu_edt", "click")); ?>/>
+		<label for="EdTMenuClick">Les liens s'affichent quand l'utilisateur clique sur le titre.</label>
+	</p>
+
+	<p>
+		<input type="radio" id="edtMenuRien" name="param_menu_edt" value="rien" <?php echo (aff_checked("param_menu_edt", "rien")); ?>/>
+		<label for="EdtMenuRien">Tous les liens sont visibles tout le temps.</label>
+	</p>
+</fieldset>
 	<input type="hidden" name="parametrer" value="ok" />
 	<input type="hidden" name="parametrer1" value="ok" />
 	<input type="submit" name="Valider" value="Valider" />

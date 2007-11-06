@@ -46,7 +46,13 @@ $utilisation_prototype = "ok";
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
-require_once("./menu.inc.php"); ?>
+require_once("./menu.inc.php");
+
+//+++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
+$_SESSION["retour"] = "edt_init_csv";
+//+++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
+
+?>
 
 
 <br />
@@ -290,11 +296,9 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 <hr />
 	<h4 class='refus'>Premi&egrave;re &eacute;tape</h4>
 	<p>Pour &eacute;viter de multiplier les r&eacute;glages, une partie de l'initialisation
-	se fait par le module absences : les diff&eacute;rents cr&eacute;neaux de la journ&eacute;e,
-	 le type de semaine (paire/impaire, A/B/C, 1/2,...) et les horaires de l'&eacute;tablissement.
-	Il faut aller dans le module absences m&ecirc;me si vous ne l'utilisez pas en cliquant
-	 sur ce <a href="../mod_absences/admin/index.php">lien</a>, dans la partie intitul&eacute;e
-	  "Configuration avanc&eacute;e".</p>
+	se fait par le module absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=visualiser">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
+	 <a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...) et
+	 <a href="../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser">les horaires de l'&eacute;tablissement</a>.</p>
 
 
 <hr />
@@ -306,12 +310,12 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	<h4 class='refus'>Troisi&egrave;me &eacute;tape</h4>
 	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes.
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
-	<p>Les champs suivants doivent être présents, dans l'ordre, <b>séparés par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
+	<p>Les champs suivants doivent être pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 	<ol>
 		<li>num&eacute;ro salle (5 caract&egrave;res max.)</li>
 		<li>nom salle (30 caract&egrave;res max.)</li>
 	</ol>
-	<p>Veuillez préciser le nom complet du fichier <b>g_salles.csv</b>.</p>
+	<p>Veuillez pr&eacute;ciser le nom complet du fichier <b>g_salles.csv</b>.</p>
 	<form enctype='multipart/form-data' action='edt_init_csv.php' method='post'>
 		<input type='hidden' name='action' value='upload_file_salle' />
 		<input type='hidden' name='initialiser' value='ok' />
@@ -324,7 +328,7 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	<h4 class='refus'>Quatri&egrave;me &eacute;tape</h4>
 	<p><span class='red'>Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
 	Pour l'emploi du temps, vous devez fournir un fichier csv dont les champs suivants
-	 doivent être présents, dans l'ordre, <b>séparés par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
+	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 <!-- AIDE init csv -->
 
 <a href="#" onClick="javascript:changerDisplayDiv('aide_initcsv');">
@@ -343,7 +347,7 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 	dans le param&eacute;trage !</p>
 	<p>La dur&eacute;e s'exprime en nombre de cr&eacute;neaux occup&eacute;s. Pour les cours qui durent un cr&eacute;neau et demi,
 	il faut utiliser la forme "1.5" -</p>
-	<p>Le type de semaine est égal à "0" pour les cours se déroulant toutes les semaines. Pour les semaines par quinzaine,
+	<p>Le type de semaine est &eacute;gal à "0" pour les cours se d&eacute;roulant toutes les semaines. Pour les semaines par quinzaine,
 	pr&eacute;cisez les m&ecirc;mes types que dans le param&eacute;trage du module absences.</p>
 	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de d&eacute;but (incluse) du cours sous
 	la forme <span class='red'>"AAAA-MM-JJ"</span>. Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
