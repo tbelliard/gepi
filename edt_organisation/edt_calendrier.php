@@ -33,6 +33,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
+$utilisation_jsdivdrag = "";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
