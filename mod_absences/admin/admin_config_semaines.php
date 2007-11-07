@@ -57,6 +57,9 @@ require_once("../../lib/header.inc");
 	   else { if (isset($_GET['num_semaine'])) { $num_semaine = $_GET['num_semaine']; } if (isset($_POST['num_semaine'])) { $num_semaine = $_POST['num_semaine']; } }
 	if (empty($_GET['type_semaine']) and empty($_POST['type_semaine'])) { $type_semaine = ''; }
 	   else { if (isset($_GET['type_semaine'])) { $type_semaine = $_GET['type_semaine']; } if (isset($_POST['type_semaine'])) { $type_semaine = $_POST['type_semaine']; } }
+// ajout du champ num_semaines_etab
+$num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POST["num_interne"]) ? $_POST["num_interne"] : NULL);
+
 
 // ajout et mise à jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
@@ -71,7 +74,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 			$type_edt_semaine = $type_semaine[$i];
 
 			if ( $test_num_semaine === '0' ) { $requete = "INSERT INTO ".$prefix_base."edt_semaines (num_edt_semaine, type_edt_semaine) VALUES ('".$num_edt_semaine."', '".$type_edt_semaine."')"; }
-			if ( $test_num_semaine != '0' ) { $requete = "UPDATE ".$prefix_base."edt_semaines SET type_edt_semaine = '".$type_edt_semaine."' WHERE num_edt_semaine = '".$num_edt_semaine."'"; }
+			if ( $test_num_semaine != '0' ) { $requete = "UPDATE ".$prefix_base."edt_semaines SET type_edt_semaine = '".$type_edt_semaine."', num_semaines_etab = '".$num_interne[$i]."' WHERE num_edt_semaine = '".$num_edt_semaine."'"; }
 	                mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 		}
 
@@ -90,6 +93,7 @@ if ( $action === 'visualiser' )
         while ( $donnee = mysql_fetch_array ($resultat))
 	{
 		$num_semaine[$i] = $donnee['num_edt_semaine'];
+		$num_interne[$i] = $donnee['num_semaines_etab'];
 		$type_semaine[$i] = $donnee['type_edt_semaine'];
 		$i = $i + 1;
         }
@@ -103,10 +107,10 @@ if ( $action === 'visualiser' )
 	}
 
 echo "<p class=bold>".$retour."<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-?>
 
-<?php if ($action === "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
+// On traite l'affichage du tableau récapitulatif
+if ($action === "visualiser") {
+/* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
 <h2>Définition des types de semaines</h2>
@@ -116,7 +120,7 @@ echo "<p class=bold>".$retour."<img src='../../images/icons/back.png' alt='Retou
 
 <br /><br />
 
-<?php /* gestion des horaire d'ouverture */
+<?php /* gestion des jours de chaque semaine */
 // On considère que la 32e semaine commence le 6 août 2007
 // En timestamp Unix GMT, cette date vaut 1186358400 secondes
 // RAPPEL : une journée a 86400 secondes et une semaine en a 604800
@@ -142,12 +146,14 @@ function trouverDates($numero_semaine){
 	<table cellpadding="0" cellspacing="1" class="tab_table">
 	<tbody>
 		<tr>
-			<th class="tab_th" style="width: 100px;">Semaine n° (officiel)</th>
+			<th class="tab_th" style="width: 100px;">Semaine n°<br /> (officiel)</th>
+			<th class="tab_th" style="width: 100px;">Num&eacute;ro<br />interne</th>
 			<th class="tab_th" style="width: 100px;">Type</th>
 			<th class="tab_th" style="width: 200px;">Du</th>
 			<th class="tab_th" style="width: 200px;">au</th>
 		</tr>
     <?php
+    	// On permet l'affichage en commençant par la 32ème semaine et en terminant par la 31 ème de l'année suivante
 		$i = '31';
 		$ic = '1';
 		$fin = '52';
@@ -162,9 +168,11 @@ function trouverDates($numero_semaine){
 	?>
 		<tr class="<?php echo $couleur_cellule; ?>">
 			<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
+			<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 			<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 			<td> lundi <?php echo gmdate("d-m-Y", trouverDates($i+1)); ?> </td>
 			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 6*86400)); ?> </td>
+
 
 		</tr>
 	<?php
@@ -183,11 +191,16 @@ function trouverDates($numero_semaine){
 			<input type="submit" name="submit" value="Enregistrer" />
 	</form>
 <br /><br />
-<?php /* fin de gestion des horaire d'ouverture */ ?>
 
-<? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-<?php mysql_close(); }
+
+<?php
+/* fin de gestion des horaire d'ouverture */
+/* fin du div de centrage du tableau pour ie5 */
+
+mysql_close();
+
+} // if ($action === "visualiser")
 
 require("../../lib/footer.inc.php");
 
