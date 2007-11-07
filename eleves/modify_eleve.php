@@ -45,6 +45,19 @@ $birth_month = isset($_POST["birth_month"]) ? $_POST["birth_month"] : NULL;
 unset($birth_day);
 $birth_day = isset($_POST["birth_day"]) ? $_POST["birth_day"] : NULL;
 
+//=========================
+// AJOUT: boireaus 20071107
+unset($reg_regime);
+$reg_regime = isset($_POST["reg_regime"]) ? $_POST["reg_regime"] : NULL;
+unset($reg_doublant);
+$reg_doublant = isset($_POST["reg_doublant"]) ? $_POST["reg_doublant"] : NULL;
+
+//echo "\$reg_regime=$reg_regime<br />";
+//echo "\$reg_doublant=$reg_doublant<br />";
+
+//=========================
+
+
 unset($reg_resp1);
 $reg_resp1 = isset($_POST["reg_resp1"]) ? $_POST["reg_resp1"] : NULL;
 unset($reg_resp2);
@@ -61,7 +74,7 @@ unset($quelles_classes);
 $quelles_classes = isset($_POST["quelles_classes"]) ? $_POST["quelles_classes"] : (isset($_GET["quelles_classes"]) ? $_GET["quelles_classes"] : NULL);
 unset($eleve_login);
 $eleve_login = isset($_POST["eleve_login"]) ? $_POST["eleve_login"] : (isset($_GET["eleve_login"]) ? $_GET["eleve_login"] : NULL);
-
+//echo "\$eleve_login=$eleve_login<br />";
 
 $definir_resp = isset($_POST["definir_resp"]) ? $_POST["definir_resp"] : (isset($_GET["definir_resp"]) ? $_GET["definir_resp"] : NULL);
 if(($definir_resp!=1)&&($definir_resp!=2)){$definir_resp=NULL;}
@@ -501,6 +514,42 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 			}
 		}
 
+
+
+
+		if(isset($reg_doublant)){
+			if ($reg_doublant!='R') {$reg_doublant = '-';}
+
+			$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$eleve_login'");
+			$nb_test_regime = mysql_num_rows($call_regime);
+			if ($nb_test_regime == 0) {
+				// On va se retrouver éventuellement avec un régime vide... cela peut-il poser pb?
+				$reg_data = mysql_query("INSERT INTO j_eleves_regime SET login='$eleve_login', doublant='$reg_doublant';");
+				if (!($reg_data)) {$reg_ok = 'no';}
+			} else {
+				$reg_data = mysql_query("UPDATE j_eleves_regime SET doublant = '$reg_doublant' WHERE login='$eleve_login';");
+				if (!($reg_data)) {$reg_ok = 'no';}
+			}
+		}
+
+		if(isset($reg_regime)){
+			if (($reg_regime!='i-e')&&($reg_regime!='int.')&&($reg_regime!='ext.')&&($reg_regime!='d/p')) {
+				$reg_regime='d/p';
+			}
+
+			$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$eleve_login'");
+			$nb_test_regime = mysql_num_rows($call_regime);
+			if ($nb_test_regime == 0) {
+				$reg_data = mysql_query("INSERT INTO j_eleves_regime SET login='$eleve_login', regime='$reg_regime'");
+				if (!($reg_data)) {$reg_ok = 'no';}
+			} else {
+				$reg_data = mysql_query("UPDATE j_eleves_regime SET regime = '$reg_regime'  WHERE login='$eleve_login'");
+				if (!($reg_data)) {$reg_ok = 'no';}
+			}
+		}
+
+
+
 		/*
 		$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
 		$count = mysql_num_rows($call_test);
@@ -750,6 +799,23 @@ if (isset($eleve_login)) {
 
 	//echo "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)<br />";
 
+	//=========================
+	// AJOUT: boireaus 20071107
+	$sql="SELECT * FROM j_eleves_regime WHERE login='$eleve_login';";
+	//echo "$sql<br />\n";
+	$res_regime=mysql_query($sql);
+	if(mysql_num_rows($res_regime)>0){
+		$lig_tmp=mysql_fetch_object($res_regime);
+		$reg_regime=$lig_tmp->regime;
+		$reg_doublant=$lig_tmp->doublant;
+	}
+	else{
+		$reg_regime="d/p";
+		$reg_doublant="-";
+	}
+	//=========================
+
+
 	if(!isset($ele_id)){
 		$ele_id=mysql_result($call_eleve_info, "0", "ele_id");
 	}
@@ -792,6 +858,14 @@ if (isset($eleve_login)) {
     $eleve_no_resp1 = 0;
     $eleve_no_resp2 = 0;
     $id_etab = 0;
+
+	//=========================
+	// AJOUT: boireaus 20071107
+	// On ne devrait pas passer par là.
+	// Quand on arrive sur modify_elve.php, le login de l'élève doit exister.
+	$reg_regime="d/p";
+	$reg_doublant="-";
+	//=========================
 }
 
 
@@ -1188,6 +1262,48 @@ if(isset($reg_no_gep)){
 // Lien vers les inscriptions à des groupes:
 if(isset($eleve_login)){
 	echo "<td>\n";
+	// style='border: 1px solid black; text-align:center;'
+
+	//echo "\$reg_regime=$reg_regime<br />";
+	//echo "\$reg_doublant=$reg_doublant<br />";
+
+	//=========================
+	// AJOUT: boireaus 20071107
+	echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'>\n";
+	echo "<tr>\n";
+	echo "<th>Régime: </th>\n";
+	echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='reg_regime' value='i-e' ";
+	if ($reg_regime == 'i-e') {echo " checked";}
+	echo " /></td>\n";
+	echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='reg_regime' value='int.' ";
+	if ($reg_regime == 'int.') {echo " checked";}
+	echo " /></td>\n";
+	echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='reg_regime' value='d/p' ";
+	if ($reg_regime == 'd/p') {echo " checked";}
+	echo " /></td>\n";
+	echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='reg_regime' value='ext.' ";
+	if ($reg_regime == 'ext.') {echo " checked";}
+	echo " /></td></tr>\n";
+	echo "</table>\n";
+
+	echo "<br />\n";
+	//echo "<tr><td>&nbsp;</td></tr>\n";
+
+	echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'>\n";
+	echo "<tr>\n";
+	echo "<th>Redoublant: </th>\n";
+	echo "<td style='text-align: center; border: 0px;'>O<br /><input type='radio' name='reg_doublant' value='R' ";
+	if ($reg_doublant == 'R') {echo " checked";}
+	echo " /></td>\n";
+	echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>N<br /><input type='radio' name='reg_doublant' value='-' ";
+	if ($reg_doublant == '-') {echo " checked";}
+	echo " /></td></tr>\n";
+	echo "</table>\n";
+
+	echo "<br />\n";
+	//=========================
+
+	echo "<div style='border: 1px solid black;'>\n";
 	$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
 	$res_grp1=mysql_query($sql);
 	if(mysql_num_rows($res_grp1)==0){
@@ -1198,10 +1314,12 @@ if(isset($eleve_login)){
 			//echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
 			echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en $lig_classe->classe\n";
 			echo "<br />\n";
-			echo "Définir/consulter <a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>le régime, le professeur principal, le CPE responsable</a> de l'élève.\n";
-			echo "<br />\n";
+
+			//echo "Définir/consulter <a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>le régime, le professeur principal, le CPE responsable</a> de l'élève.\n";
+			//echo "<br />\n";
 		}
 	}
+	echo "</div>\n";
 	echo "</td>\n";
 }
 
@@ -1227,7 +1345,9 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 ?>
-<center><table border = '1' CELLPADDING = '5'>
+<center>
+<!--table border = '1' CELLPADDING = '5'-->
+<table class='boireaus' cellpadding='5'>
 <tr><td><div class='norme'>Sexe : <br />
 <?php
 if (!(isset($eleve_sexe))) $eleve_sexe="M";
