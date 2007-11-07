@@ -154,6 +154,7 @@ function trouverDates($numero_semaine){
 		</tr>
     <?php
     	// On permet l'affichage en commençant par la 32ème semaine et en terminant par la 31 ème de l'année suivante
+    	// attention, on part du lundi à 00:00:00, le samedi matin à la même heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
 		$i = '31';
 		$ic = '1';
 		$fin = '52';
@@ -171,7 +172,7 @@ function trouverDates($numero_semaine){
 			<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 			<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 			<td> lundi <?php echo gmdate("d-m-Y", trouverDates($i+1)); ?> </td>
-			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 6*86400)); ?> </td>
+			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
 
 
 		</tr>
