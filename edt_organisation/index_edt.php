@@ -57,7 +57,11 @@ $_SESSION["retour"] = "index_edt";
 
 	<div id="lecorps">
 
-<?php include($page_inc_edt); ?>
+<?php
+if (isset($page_inc_edt) AND $page_inc_edt !== "") {
+	include($page_inc_edt);
+}
+?>
 
 	</div>
 <br />

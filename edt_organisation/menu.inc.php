@@ -24,7 +24,7 @@ $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_PO
 if ($salleslibres == "ok") $page_inc_edt = 'edt_chercher.php';
 elseif ($visioedt == 'eleve1') $page_inc_edt = 'voir_edt_eleve.php';
 elseif (($visioedt == 'prof1') OR ($visioedt == 'classe1') OR ($visioedt == 'salle1')) $page_inc_edt = 'voir_edt.php';
-else $page_inc_edt = 'accueil_edt.php';
+else $page_inc_edt = '';
 //===========================
 
 // Fonction qui gère le fonctionnement du menu
@@ -61,10 +61,7 @@ function displaydd($numero){
 			<dd>
 <br />
 			</dd>
-		<dt><a href="index_edt.php">Accueil EdT</a></dt>
-			<dd>
-<br />
-			</dd>
+
 		<dt<?php echo menuEdtJs("1"); ?>>Visionner</dt>
 
 			<dd id="sEdTmenu1"<?php echo displaydd("1"); ?>>
@@ -123,7 +120,13 @@ if ($_SESSION['statut'] == "administrateur") {
 				</ul>
 			</dd>
 
-		<dt onclick="javascript:montre();"><a href="edt_calendrier.php">Calendrier</a></dt>
+		<dt'.menuEdtJs("5").'>Calendrier</dt>
+
+			<dd id="sEdTmenu5"'.displaydd("5").'>
+				<ul>
+					<li><a href="edt_calendrier.php">Créer, voir et modifier</a></li>
+				</ul>
+			</dd>
 		';
 }
 ?>

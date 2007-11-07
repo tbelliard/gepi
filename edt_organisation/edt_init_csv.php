@@ -85,17 +85,23 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
             else {
             	// A partir de là, on vide la table edt_cours
             $vider_table = mysql_query("TRUNCATE TABLE edt_cours");
-            	// On affiche alors toutes les lignes de tous les champs
+            	// On ouvre alors toutes les lignes de tous les champs
             	$nbre = 1;
-				while($tab = fgetcsv($fp, 1000, ";")) {
-					$num = count($tab);
-    				echo "<p> ".$num." champs pour la ligne ".$nbre.": <br /></p>\n";
+	while($tab = fgetcsv($fp, 1000, ";")) {
+			// On met le commentaire dans les variables et on l'affiche que s'il y a un problème
+				$message = "";
+				$message1 = "";
+				$message2 = "";
+				$num = count($tab);
+    			$message .= "<p> ".$num." champs pour la ligne ".$nbre.": </p>\n";
+    			$message2 .= "La ligne ".$nbre." : ";
     				$nbre++;
-    				echo '<span class="legende">';
+    			$message1 .= '<span class="legende">';
     					for ($c=0; $c < $num; $c++) {
-        					echo $tab[$c] . " - \n";
+        					$message1 .= $tab[$c] . " - \n";
      					}
-    				echo '</span> ';
+    			$message1 .= '</span> ';
+			$req_insert_csv = "";
     	// On considère qu'il n'y a aucun problème dans la ligne
     		$probleme = "";
     // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
@@ -204,14 +210,13 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 			// On vérifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);
-			echo "<br /><span class=\"accept\">Cours enregistr&eacute;</span><br />\n";
+			echo "<br /><span class=\"accept\">".$message2."Cours enregistr&eacute;</span>\n";
 		}
 		else {
-			$req_insert_csv = "";
-			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi.</span>\n".$probleme."<br />";
+			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi :</span>\n".$message."(".$message1.")".$probleme.".";
 		}
     	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
-				} // while
+	} // while
 			} // else du début
 		fclose($fp);
 		// on n'affiche plus le reste de la page

@@ -1,49 +1,54 @@
 /* Feuille de style pour les pages Edt de Gepi */
 
 #menu_edt dl, dt, dd, ul, li {
-margin: 0;
-padding: 0;
-list-style-type: none;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
 }
 
 /* CSS du menu EdT */
 #menu_edt {
-position: absolute;
-top: 100px;
-left: 10px;
-width: 8em;
+	position: absolute;
+	top: 100px;
+	left: 10px;
+	width: 8em;
 }
 #menu_edt dt {
-cursor: pointer;
-margin: 10px 0;
-height: 20px;
-line-height: 20px;
-text-align: center;
-font-weight: bold;
-color: white;
-border: 2px solid gray;
-background: #4a4a59;
-padding: 5px;
+	/*cursor: pointer;*/
+	margin: 10px 0;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	font-weight: bold;
+	color: grey;
+	border: 2px solid gray;
+	background: silver;
+	padding: 5px;
 }
 #menu_edt dd {
-border: 1px #6d6d83;
-margin-left: 1px;
-margin-right: 1px;
+	border: 1px #6d6d83;
+	margin-right: 7px;
 }
 #menu_edt li {
-text-align: center;
-background: #4a4a59;
+	text-align: center;
+	border: 1px solid grey;
+	margin-top: 1px;
+	background: #E9E9E9;
+}
+#menu_edt li:hover {
+	border: 2px solid white;
 }
 #menu_edt li a, #menu_edt dt a {
-color: white;
-text-decoration: none;
-display: block;
-border: 0 none;
-height: 100%;
-background: #4a4a59;
+	color: black;
+	text-decoration: none;
+	display: block;
+	border: 0 none;
+	height: 100%;
+	background: #E9E9E4;
 }
 #menu_edt li a:hover, #menu_edt dt a:hover {
-background: #6d6d83;
+	background: silver;
+	color: white;
 }
 
 #agauche {
