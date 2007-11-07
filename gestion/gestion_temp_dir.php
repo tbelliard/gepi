@@ -267,10 +267,13 @@ else{
 	$handle=opendir($chemin_temp);
 	$cpt=0;
 	$bizarre=0;
+	$alt=1;
 	while ($file=readdir($handle)) {
 		if(($file!=".")&&($file!="..")) {
-			$num=$cpt%2;
-			echo "<tr class='lig".$num."'>\n";
+			//$num=$cpt%2;
+			//echo "<tr class='lig".$num."'>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig".$alt."'>\n";
 
 			// Test:
 			//if(strlen(ereg_replace("[A-Za-z0-9_.]","",$file))!=0) {
