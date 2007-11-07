@@ -114,7 +114,7 @@ CREATE TABLE `model_bulletin` ( `id_model_bulletin` int(11) NOT NULL auto_increm
 DROP TABLE IF EXISTS `edt_dates_special`;
 CREATE TABLE `edt_dates_special` (`id_edt_date_special` int(11) NOT NULL auto_increment, `nom_edt_date_special` varchar(200) NOT NULL, `debut_edt_date_special` date NOT NULL, `fin_edt_date_special` date NOT NULL, PRIMARY KEY  (`id_edt_date_special`));
 DROP TABLE IF EXISTS `edt_semaines`;
-CREATE TABLE `edt_semaines` (`id_edt_semaine` int(11) NOT NULL auto_increment,`num_edt_semaine` int(11) NOT NULL default '0',`type_edt_semaine` varchar(10) NOT NULL default '', PRIMARY KEY  (`id_edt_semaine`));
+CREATE TABLE `edt_semaines` (`id_edt_semaine` int(11) NOT NULL auto_increment,`num_edt_semaine` int(11) NOT NULL default '0',`type_edt_semaine` varchar(10) NOT NULL default '', `num_semaines_etab` int(11) NOT NULL default '0', PRIMARY KEY  (`id_edt_semaine`));
 DROP TABLE IF EXISTS `responsables2`;
 CREATE TABLE IF NOT EXISTS `responsables2` (	`ele_id` varchar(10) NOT NULL,	`pers_id` varchar(10) NOT NULL,	`resp_legal` varchar(1) NOT NULL,	`pers_contact` varchar(1) NOT NULL	);
 DROP TABLE IF EXISTS `resp_adr`;

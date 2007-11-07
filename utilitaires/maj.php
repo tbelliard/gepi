@@ -3039,6 +3039,24 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
 
+		// Ajout d'un champ num_semaines_etab pour la gestion des semaines propre à chaque établissement
+		$result .= "&nbsp;->Ajout du champ num_semaines_etab à la table edt_semaines<br />";
+		$test1 = mysql_query("SHOW COLUMNS FROM edt_semaines LIKE 'num_semaines_etab'");
+		if (mysql_num_rows($test1) == 0) {
+			$query = mysql_query("ALTER TABLE `edt_semaines` ADD `num_semaines_etab` INT( 11 ) NOT NULL DEFAULT '0';");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			}
+			else{
+				$result .= "<font color=\"red\">Erreur !</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+
+
 		$result .= "&nbsp;->Ajout du champ support_suivi_eleve_cpe à la table suivi_eleve_cpe<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM suivi_eleve_cpe LIKE 'support_suivi_eleve_cpe'"));
 		if ($test1 == 0) {
