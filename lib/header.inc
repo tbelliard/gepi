@@ -153,16 +153,33 @@ function show_message_deconnexion(){
     }
 </script>
 
-<?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
-   echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
-} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
-   echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
+<?php
+// On affiche le functions.js sauf si on demande qu'il ne le soit pas
+$utilisation_jsbase = isset($utilisation_jsbase) ? $utilisation_jsbase : NULL;
+if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
+	echo "<!-- Pas de functions.js -->\n";
 } else {
-   echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
+	if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
+		echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+		echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
+	} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
+		echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+		echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
+	} else {
+		echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+		echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
+	}
 }
+
+// Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
+$prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
+	if ($prototype == "ok") {
+		// On affiche alors le lien qui ouvre prototype à la page en question
+    	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
+} else {
+    echo '';
+}
+
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
@@ -175,15 +192,6 @@ if(isset($style_specifique)){
 		// Styles spécifiques à une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 	}
-}
-
-// Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
-$prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
-	if ($prototype == "ok") {
-		// On affiche alors le lien qui ouvre prototype à la page en question
-    	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
-} else {
-    echo '';
 }
 
 if(isset($javascript_specifique)){
@@ -206,30 +214,33 @@ if(isset($style_screen_ajout)){
 	}
 }
 
+// On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
+if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
+	echo "<!-- Pas de brainjar-->\n";
+} else {
+	//===================================
+	// Pour aérer les infobulles si jamais Javascript n'est pas actif.
+	// Sinon, avec le position:absolute, les div se superposent.
+	$posDiv_infobulle=0;
+	// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
 
-//===================================
-// Pour aérer les infobulles si jamais Javascript n'est pas actif.
-// Sinon, avec le position:absolute, les div se superposent.
-$posDiv_infobulle=0;
-// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
+	$tabdiv_infobulle=array();
+	$tabid_infobulle=array();
 
-$tabdiv_infobulle=array();
-$tabid_infobulle=array();
+	// Choix de l'unité pour les dimensions des DIV: em, px,...
+	$unite_div_infobulle="em";
+	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
 
-// Choix de l'unité pour les dimensions des DIV: em, px,...
-$unite_div_infobulle="em";
-// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
+	echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
+	echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
 
-echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
-echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
+	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+	echo "<script type='text/javascript'>
+		temporisation_chargement='n';
+	</script>\n";
 
-// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
-echo "<script type='text/javascript'>
-	temporisation_chargement='n';
-</script>\n";
-
-//===================================
-
+	//===================================
+} // if(isset($utilisation_jsbase...
 
 ?>
 </head>
