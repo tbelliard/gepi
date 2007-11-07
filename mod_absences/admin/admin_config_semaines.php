@@ -108,32 +108,81 @@ echo "<p class=bold>".$retour."<img src='../../images/icons/back.png' alt='Retou
 <?php if ($action === "visualiser") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
+
 <h2>Définition des types de semaines</h2>
-<form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
-<input type="submit" name="submit" value="Enregistrer" />
-<br/><br/>
-<?php /* gestion des horaire d'ouverture */ ?>
+
+	<form method="post" action="admin_config_semaines.php?action=<?php echo $action; ?>" name="form1">
+		<input type="submit" name="submit" value="Enregistrer" />
+
+<br /><br />
+
+<?php /* gestion des horaire d'ouverture */
+// On considère que la 32e semaine commence le 6 août 2007
+// En timestamp Unix GMT, cette date vaut 1186358400 secondes
+// RAPPEL : une journée a 86400 secondes et une semaine en a 604800
+
+function trouverDates($numero_semaine){
+	// fonction qui permet de déterminer la date de début de la semaine (lundi)
+	$ts_depart = 1186358400;
+	if ($numero_semaine == 32) {
+		$ts = $ts_depart;
+	}elseif ($numero_semaine > 32 AND $numero_semaine <= 52) {
+		$coef_multi = $numero_semaine - 32;
+		$ts = $ts_depart + ($coef_multi * 604800);
+	}elseif ($numero_semaine < 32 AND $numero_semaine >= 1) {
+		$coef_multi = (52 - 32) + $numero_semaine;
+		$ts = $ts_depart + ($coef_multi * 604800);
+	}else {
+		$ts = "";
+	}
+	return $ts;
+}
+
+?>
 	<table cellpadding="0" cellspacing="1" class="tab_table">
-	  <tbody>
-	    <tr>
-	      <th class="tab_th" style="width: 100px;">Semaine n°</th>
-	      <th class="tab_th" style="width: 100px;">Type</th>
-	    </tr>
-            <?php $i = '0'; $ic = '1';
-	    while ( $i < '52' ) {
-		       if ($ic === '1') { $ic = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $ic = '1'; } ?>
-	    <tr class="<?php echo $couleur_cellule; ?>">
-	      <td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
-	      <td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
-	    </tr>
-	    <?php $i = $i + 1; } ?>
-	  </tbody>
+	<tbody>
+		<tr>
+			<th class="tab_th" style="width: 100px;">Semaine n° (officiel)</th>
+			<th class="tab_th" style="width: 100px;">Type</th>
+			<th class="tab_th" style="width: 200px;">Du</th>
+			<th class="tab_th" style="width: 200px;">au</th>
+		</tr>
+    <?php
+		$i = '31';
+		$ic = '1';
+		$fin = '52';
+	    while ( $i < $fin ) {
+			if ($ic === '1') {
+				$ic = '2';
+				$couleur_cellule = 'couleur_ligne_1';
+			} else {
+				$couleur_cellule = 'couleur_ligne_2';
+				$ic = '1';
+			}
+	?>
+		<tr class="<?php echo $couleur_cellule; ?>">
+			<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
+			<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
+			<td> lundi <?php echo gmdate("d-m-Y", trouverDates($i+1)); ?> </td>
+			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 6*86400)); ?> </td>
+
+		</tr>
+	<?php
+			if ($i == '51') {
+				$i = '0';
+				$fin = '31';
+			} else {
+				$i = $i + 1;
+			}
+		} // fin du while ( $i < '52'...
+	?>
+	</tbody>
 	</table>
-	<br/>
+<br />
 			<input type="hidden" name="action_sql" value="modifier" />
 			<input type="submit" name="submit" value="Enregistrer" />
-  </form>
-  <br/><br/>
+	</form>
+<br /><br />
 <?php /* fin de gestion des horaire d'ouverture */ ?>
 
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
