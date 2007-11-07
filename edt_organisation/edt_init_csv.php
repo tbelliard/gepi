@@ -295,8 +295,8 @@ L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs 
 
 <hr />
 	<h4 class='refus'>Premi&egrave;re &eacute;tape</h4>
-	<p>Pour &eacute;viter de multiplier les r&eacute;glages, une partie de l'initialisation
-	se fait par le module absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=visualiser">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
+	<p>Une partie de l'initialisation est commune avec le module
+absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=visualiser">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
 	 <a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...) et
 	 <a href="../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser">les horaires de l'&eacute;tablissement</a>.</p>
 

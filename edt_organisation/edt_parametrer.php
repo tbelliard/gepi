@@ -30,7 +30,10 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
-
+//=========Utilisation de prototype et des js de base ===========
+$utilisation_prototype = "";
+$utilisation_jsbase = "";
+//=========Fin des Prototype et autres js =======================
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
 

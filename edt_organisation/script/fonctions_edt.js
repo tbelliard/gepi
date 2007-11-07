@@ -13,3 +13,10 @@ if (d) {d.style.display='block';}
 function changerDisplayDiv(nomDiv) {
 	Element.toggle(nomDiv);
 }
+
+// Dans le cas où on n'utilise pas le /ilb/functions.js, on a besoin de cette fonction :
+function centrerpopup(page,largeur,hauteur,options) {
+	var top=(screen.height-hauteur)/2;
+	var left=(screen.width-largeur)/2;
+	window.open(page,"","top="+top+",left="+left+",width="+largeur+",height="+hauteur+",directories=no,toolbar=no,menubar=no,location=no,"+options);
+}
