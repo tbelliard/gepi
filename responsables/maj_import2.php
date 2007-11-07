@@ -150,6 +150,36 @@ if(isset($step)){
 	temporisation_chargement='ok';
 	cacher_div('div_stop');
 </script>\n";
+
+
+							echo "<script type='text/javascript'>
+function test_stop(num){
+	stop='n';
+	if(document.getElementById('stop')){
+		if(document.getElementById('stop').checked==true){
+			stop='y';
+		}
+	}
+	if(stop=='n'){
+		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num);
+	}
+}
+
+function test_stop2(){
+	stop='n';
+	if(document.getElementById('stop')){
+		if(document.getElementById('stop').checked==true){
+			stop='y';
+		}
+	}
+	if(stop=='n'){
+		//setTimeout(\"document.forms['formulaire'].submit();\",1000);
+		document.forms['formulaire'].submit();
+	}
+}
+</script>\n";
+
 	}
 }
 
@@ -446,6 +476,7 @@ else{
 							echo "<p>La première phase s'est passée sans erreur.</p>\n";
 
 							echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -455,6 +486,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('1')\",3000);
 </script>\n";
 						}
 						elseif($nb_err==1) {
@@ -747,6 +780,7 @@ else{
 					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
 
 					echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -757,6 +791,8 @@ else{
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=2')\",2000);
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=3')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('3')\",3000);
 </script>\n";
 				}
 				elseif($nb_err==1) {
@@ -932,6 +968,7 @@ else{
 					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
 
 					echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -941,6 +978,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=3')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('3')\",3000);
 </script>\n";
 				}
 				elseif($nb_err==1) {
@@ -1234,6 +1273,7 @@ else{
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -1244,6 +1284,9 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",1000);
 	}
+	*/
+	//test_stop2();
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 			}
 			else{
@@ -2962,6 +3005,7 @@ else{
 							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
 
 							echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -2971,6 +3015,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=11')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('11')\",3000);
 </script>\n";
 						}
 
@@ -3133,6 +3179,7 @@ else{
 					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
 
 					echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -3142,6 +3189,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=12')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('12')\",3000);
 </script>\n";
 				}
 
@@ -3329,6 +3378,7 @@ else{
 					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
 
 					echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -3338,6 +3388,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=13')\",2000);
 	}
+	*/
+	setTimeout(\"test_stop('13')\",3000);
 </script>\n";
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
@@ -3516,6 +3568,7 @@ else{
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -3525,6 +3578,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",1000);
 	}
+	*/
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 			}
 			else{
@@ -3544,6 +3599,7 @@ else{
 				echo "<p><input type='submit' value=\"Parcourir les différences d'adresses\" /></p>\n";
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -3553,6 +3609,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",5000);
 	}
+	*/
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 			}
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -3811,6 +3869,7 @@ else{
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -3820,6 +3879,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",1000);
 	}
+	*/
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 
 			}
@@ -4911,6 +4972,7 @@ else{
 
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -4920,6 +4982,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",1000);
 	}
+	*/
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 
 
@@ -4937,6 +5001,7 @@ else{
 				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 
 				echo "<script type='text/javascript'>
+	/*
 	stop='n';
 	if(document.getElementById('stop')){
 		if(document.getElementById('stop').checked==true){
@@ -4946,6 +5011,8 @@ else{
 	if(stop=='n'){
 		setTimeout(\"document.forms['formulaire'].submit();\",5000);
 	}
+	*/
+	setTimeout(\"test_stop2()\",3000);
 </script>\n";
 
 			}
