@@ -1265,14 +1265,34 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	} else {
 		// Sélection de l'élève dans le cas d'un responsable d'élève ou d'un élève
 		if ($_SESSION['statut'] == "responsable") {
-		    $sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom " .
+			// MODIFICATION POUR ALLEGER LA REQUETE
+			/*
+			$sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom " .
 								"FROM j_eleves_classes jec, eleves e, responsables2 re, resp_pers r WHERE (" .
 								"e.ele_id = re.ele_id AND " .
 								"re.pers_id = r.pers_id AND " .
 								"r.login = '" . $_SESSION['login'] .
 								"' AND jec.login = e.login )";
+			*/
 
-			$quels_eleves = mysql_query($sql_quels_eleves);
+			$sql="SELECT pers_id FROM resp_pers WHERE login='".$_SESSION['login']."';";
+			$res_pers_id=mysql_query($sql);
+			if(mysql_num_rows($res_pers_id)==0){
+				echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
+				echo "<p>Erreur : vous semblez ne pas avoir d'identifiant 'pers_id'. Veuillez contacter l'administrateur.</p>";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			$lig_tmp=mysql_fetch_object($res_pers_id);
+
+			$sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom " .
+								"FROM j_eleves_classes jec, eleves e, responsables2 re WHERE (" .
+								"e.ele_id = re.ele_id AND " .
+								"re.pers_id = '$lig_tmp->pers_id' AND " .
+								"jec.login = e.login )";
+			//echo "$sql_quels_eleves<br />";
+			$quels_eleves=mysql_query($sql_quels_eleves);
 
 		} elseif ($_SESSION['statut'] == "eleve") {
 		    $sql_quels_eleves = "SELECT DISTINCT jec.id_classe, e.login, e.nom, e.prenom
