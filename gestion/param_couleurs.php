@@ -307,6 +307,19 @@ fieldset#login_box div#header {
 	width: 25em;
 }
 ");
+
+/*
+//Pour old-style... problème: Si on le met cela s'applique même en new-style.
+
+#td_headerTopRight {
+	background-color: #$degrade_haut;
+}
+
+#td_headerBottomRight{
+	background-color: #$degrade_haut;
+}
+*/
+
 				fclose($fich);
 			}
 		}
@@ -391,6 +404,79 @@ fieldset#login_box div#header {
 
 
 
+
+		//=========================================
+		if(isset($_POST['utiliser_couleurs_perso_lig_tab_alt'])){
+			if(!saveSetting('utiliser_couleurs_perso_lig_tab_alt','y')) {
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_lig_tab_alt'. ";
+				$nb_err++;
+			}
+
+			if(isset($_POST['couleur_lig_alt1'])){
+				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
+					$couleur_lig_alt1="ffefd5";
+				}
+				else{
+					$couleur_lig_alt1=$_POST['couleur_lig_alt1'];
+				}
+
+				if(saveSetting('couleur_lig_alt1',$couleur_lig_alt1)) {
+					//$msg.="Enregistrement effectué. ";
+					$temoin_modif++;
+				}
+				else{
+					$msg.="Erreur lors de la sauvegarde de 'couleur_lig_alt1'. ";
+					$nb_err++;
+				}
+			}
+
+			if(isset($_POST['couleur_lig_alt_1'])){
+				if((strlen(ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
+					$couleur_lig_alt_1="F0FFF0";
+				}
+				else{
+					$couleur_lig_alt_1=$_POST['couleur_lig_alt_1'];
+				}
+
+				if(saveSetting('couleur_lig_alt_1',$couleur_lig_alt_1)) {
+					//$msg.="Enregistrement effectué. ";
+					$temoin_modif++;
+				}
+				else{
+					$msg.="Erreur lors de la sauvegarde de 'couleur_lig_alt_1'. ";
+					$nb_err++;
+				}
+			}
+
+			if($nb_err==0){
+				$fich=fopen("../style_screen_ajout.css","a+");
+				fwrite($fich,"
+.gestion_temp_dir .lig-1 {
+	background-color: #$couleur_lig_alt_1;
+}
+.gestion_temp_dir .lig1 {
+	background-color: #$couleur_lig_alt1;
+}
+
+.boireaus .lig-1 {
+	background-color: #$couleur_lig_alt_1;
+}
+.boireaus .lig1 {
+	background-color: #$couleur_lig_alt1;
+}
+");
+				fclose($fich);
+			}
+
+		}
+		else{
+			if(!saveSetting('utiliser_couleurs_perso_lig_tab_alt','n')) {
+				$msg.="Erreur lors de la sauvegarde de 'utiliser_couleurs_perso_lig_tab_alt'. ";
+				$nb_err++;
+			}
+		}
+
+		//=========================================
 
 /*
 //$temoin_fichier_regenere
@@ -482,7 +568,7 @@ foreach($_POST as $post => $val){
 
 
 	//var liste=new Array('style_body_backgroundcolor');
-	var liste=new Array('style_body_backgroundcolor','degrade_haut','degrade_bas','couleur_infobulle_fond_corps','couleur_infobulle_fond_entete');
+	var liste=new Array('style_body_backgroundcolor','degrade_haut','degrade_bas','couleur_infobulle_fond_corps','couleur_infobulle_fond_entete','couleur_lig_alt1','couleur_lig_alt_1');
 
 	function init(){
 		for(i=0;i<liste.length;i++){
@@ -521,6 +607,17 @@ foreach($_POST as $post => $val){
 	tabmotif['degrade_bas_R']="74";
 	tabmotif['degrade_bas_V']="74";
 	tabmotif['degrade_bas_B']="89";
+
+	// papayawhip #FFEFD5
+	tabmotif['couleur_lig_alt1_R']=255;
+	tabmotif['couleur_lig_alt1_V']=239;
+	tabmotif['couleur_lig_alt1_B']=213;
+
+	// honeydew #F0FFF0
+	tabmotif['couleur_lig_alt_1_R']=240;
+	tabmotif['couleur_lig_alt_1_V']=255;
+	tabmotif['couleur_lig_alt_1_B']=240;
+
 
 	function reinit_couleurs(motif){
 		comp_motif=motif+"_R";
@@ -912,7 +1009,123 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 
 
 
+	//=========================================
 
+	$tabcouleurs['couleur_lig_alt1']=array();
+	$couleur_lig_alt1=getSettingValue('couleur_lig_alt1');
+	if($couleur_lig_alt1!=""){
+		$tabcouleurs['couleur_lig_alt1']=tab_rvb($couleur_lig_alt1);
+	}
+	else{
+		// papayawhip #FFEFD5
+		$tabcouleurs['couleur_lig_alt1']['R']=255;
+		$tabcouleurs['couleur_lig_alt1']['V']=239;
+		$tabcouleurs['couleur_lig_alt1']['B']=213;
+	}
+
+	$tabcouleurs['couleur_lig_alt_1']=array();
+	$couleur_lig_alt_1=getSettingValue('couleur_lig_alt_1');
+	if($couleur_lig_alt_1!=""){
+		$tabcouleurs['couleur_lig_alt_1']=tab_rvb($couleur_lig_alt_1);
+	}
+	else{
+		// honeydew #F0FFF0
+		$tabcouleurs['couleur_lig_alt_1']['R']=240;
+		$tabcouleurs['couleur_lig_alt_1']['V']=255;
+		$tabcouleurs['couleur_lig_alt_1']['B']=240;
+	}
+
+	echo "<p><b>Couleurs des lignes alternées dans les tableaux:</b></p>\n";
+	echo "<blockquote>\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
+	if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y'){
+		echo "checked ";
+	}
+	echo "/> ";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "Utiliser des couleurs personnalisées pour les lignes alternées dans les tableaux.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "&nbsp;";
+	echo "</td>\n";
+	echo "<td>\n";
+		echo "<table style='border: 1px solid black; border-collapse:collapse;'>\n";
+
+		echo "<tr style='background-color:white;'>\n";
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Motif</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>$comp[$j]</td>\n";
+		}
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Aperçu</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; border: 1px solid black;'>Réinitialisation</td>\n";
+
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de ligne 1";
+		echo "</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			/*
+			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+			$res_couleur=mysql_query($sql);
+			if(mysql_num_rows($res_couleur)>0){
+				$tmp=mysql_fetch_object($res_couleur);
+				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+			}
+			*/
+
+			echo "<td style='text-align:center; border: 1px solid black;'>\n";
+			echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt1\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "</td>\n";
+		}
+		echo "<td id='couleur_lig_alt1' style='text-align:center; border: 1px solid black;'>\n";
+		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+		echo "<input type='hidden' name='couleur_lig_alt1' value='couleur_lig_alt1' />\n";
+		echo "&nbsp;&nbsp;&nbsp;</td>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>\n";
+		echo "<a href='#' onClick='reinit_couleurs(\"couleur_lig_alt1\");return false;'>Réinitialiser</a>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>Couleur de ligne -1";
+		echo "</td>\n";
+		for($j=0;$j<count($comp);$j++){
+			/*
+			$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
+			$res_couleur=mysql_query($sql);
+			if(mysql_num_rows($res_couleur)>0){
+				$tmp=mysql_fetch_object($res_couleur);
+				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
+			}
+			*/
+
+			echo "<td style='text-align:center; border: 1px solid black;'>\n";
+			echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt_1\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "</td>\n";
+		}
+		echo "<td id='couleur_lig_alt_1' style='text-align:center; border: 1px solid black;'>\n";
+		// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+		echo "<input type='hidden' name='couleur_lig_alt_1' value='couleur_lig_alt_1' />\n";
+		echo "&nbsp;&nbsp;&nbsp;</td>\n";
+		echo "<td style='text-align:center; border: 1px solid black;'>\n";
+		echo "<a href='#' onClick='reinit_couleurs(\"couleur_lig_alt_1\");return false;'>Réinitialiser</a>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "</table>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</blockquote>\n";
+	//=========================================
 
 
 
