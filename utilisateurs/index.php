@@ -308,7 +308,7 @@ echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,preno
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></th>\n";
 echo "<th><p class=small><b>matière(s) si professeur</b></p></th>\n";
 echo "<th><p class=small><b>classe(s)</b></p></th>\n";
-echo "<th><p class=small><b>suivi</b></p></th>\n";
+echo "<th><p class=small><b>".getSettingValue('gepi_prof_suivi')."</b></p></th>\n";
 echo "<th><p class=small><b>supprimer</b></p></th>\n";
 echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
     if (getSettingValue("active_module_trombinoscopes")=='y') {
@@ -464,7 +464,8 @@ while ($i < $nombreligne){
 	echo "<td><p class=small><span class=bold>{$col[$i][1]}</span></p></td>\n";
 	if ($col[$i][7] == "professeur") {
 		echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
-		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
+		//echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
+		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' /></a>";
 		echo "</td>\n";
 	} else {
 	  echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
