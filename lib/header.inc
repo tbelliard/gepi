@@ -145,31 +145,21 @@ function show_message_deconnexion(){
     }
 </script>
 
-<!-- christian référencement de GEPI -->
-<script type='text/javascript' language='JavaScript'>
-    function ouvre_popup_reference(url){
-        eval("window.open(url,'fen','width=500,height=600,menubar=no,scrollbars=yes')");
-        fen.focus();
-    }
-</script>
-
 <?php
-// On affiche le functions.js sauf si on demande qu'il ne le soit pas
-$utilisation_jsbase = isset($utilisation_jsbase) ? $utilisation_jsbase : NULL;
-if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
-	echo "<!-- Pas de functions.js -->\n";
-} else {
+
 	if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
 		echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-		echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
 	} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
 		echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-		echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
 	} else {
 		echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-		echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
 	}
-}
+
+
+// Affichage du favicon
+echo '
+	<LINK REL="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
+	';
 
 // Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
 $prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
@@ -215,6 +205,7 @@ if(isset($style_screen_ajout)){
 }
 
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
+$utilisation_jsbase = isset($utilisation_jsbase) ? $utilisation_jsbase : NULL;
 if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	echo "<!-- Pas de brainjar-->\n";
 } else {
@@ -387,11 +378,11 @@ if (isset($titre_page)) {
 		if ($_SESSION['statut'] == 'administrateur') {
 			echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
 		} else {
-			echo("<a href=\"javascript:centrerpopup('".$prefix."gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+			echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
 		//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
 		}
-		echo " - <a href=\"javascript:centrerpopup('".$prefix."gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
-		- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
+		echo " - <a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
+		- <a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
 		//- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a></b>";
 		echo "</span>\n";
 
