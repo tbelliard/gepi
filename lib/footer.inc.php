@@ -1,4 +1,9 @@
 <?php
+	// SI on ne souhaite pas utiliser les js de base, on enlève tout ce qui suit :
+if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
+	echo "<!-- Pas de js en pied -->\n";
+} else {
+	echo "<!-- Début du pied -->\n";
 	// ========================================
 	// Astuce http://www.ehow.com/how_2000413_convert-em-px-sizes.html
 	// pour calculer le rapport em/px et corriger le positionnement des infobulles (taille fixée en 'em')
@@ -56,6 +61,7 @@
 			*/
 		}
 	}
+} // fin du if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non")
 
 	if(getSettingValue("gepi_pmv")!="n"){
 		if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");
