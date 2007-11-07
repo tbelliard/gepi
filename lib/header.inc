@@ -205,8 +205,8 @@ if(isset($style_screen_ajout)){
 }
 
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
-$utilisation_jsbase = isset($utilisation_jsbase) ? $utilisation_jsbase : NULL;
-if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
+$$utilisation_jsdivdrag = isset($utilisation_jsdivdrag) ? $utilisation_jsdivdrag : NULL;
+if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 	echo "<!-- Pas de brainjar-->\n";
 } else {
 	//===================================
