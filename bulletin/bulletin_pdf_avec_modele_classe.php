@@ -967,28 +967,28 @@ if(!empty($model_bulletin)) {
 	}
 
 	//tableau des données élèves
-// Modif Eric pour option tri par etab origine	
+// Modif Eric pour option tri par etab origine
 //On n'affiche pas les élèves qui correspondent au N° RNE de l'établissement
     switch ($tri_par_etab_origine) {
 	case "oui" :
-		if (isset($id_classe[0])) { 
+		if (isset($id_classe[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
-		if (isset($id_eleve[0])) { 
+		if (isset($id_eleve[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
 		break;
 	case "non" :
-		if (isset($id_classe[0])) { 
+		if (isset($id_classe[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
-		if (isset($id_eleve[0])) { 
+		if (isset($id_eleve[0])) {
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
@@ -996,13 +996,13 @@ if(!empty($model_bulletin)) {
 		break;
 	default:
 	    echo "defaut";
-		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }	
+		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
 		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
     break;
 	}
 // Fin modif Eric  pour option tri par etab origine
-	
-	
+
+
 	//on compte les élèves sélectionnés
 	$nb_eleves = mysql_num_rows($call_eleve);
 	$cpt_i = 1;
@@ -1028,7 +1028,16 @@ if(!empty($model_bulletin)) {
 		$classe_tableau_id[$cpt_i] = $donner['id'];
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 		$classe_nomcour[$cpt_i] = $donner['classe'];
-		$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
+
+		//$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
+		$tmp_photo=nom_photo(strtolower($donner['elenoet']));
+		if("$tmp_photo"!=""){
+			$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
+		}
+		else{
+			$photo[$cpt_i] = "";
+		}
+
 		$doublement[$cpt_i]='';
 		if($donner['doublant']==='R') {  if($sexe[$cpt_i]==='M') { $doublement[$cpt_i]='doublant'; } else { $doublement[$cpt_i]='doublante'; } }
 		if($donner['regime']==='d/p') { $dp[$cpt_i]='demi-pensionnaire'; }
@@ -1036,7 +1045,7 @@ if(!empty($model_bulletin)) {
 		if($donner['regime']==='int.') { $dp[$cpt_i]='interne'; }
 		if($donner['regime']==='i-e') { if($sexe[$cpt_i]==='M') { $dp[$cpt_i]='interne externé'; } else { $dp[$cpt_i]='interne externée'; } }
 		if($donner['regime']!='ext.' and $donner['regime']!='d/p' and $donner['regime']==='int.' and $donner['regime']==='i-e') { $dp[$cpt_i]='inconnu'; }
-		
+
 //modif Eric
 		// etablissement d'origine
 		// on vérifie si l'élève a un établissement d'origine
@@ -1072,7 +1081,7 @@ if(!empty($model_bulletin)) {
 
 		if ($current_eleve_etab_type == 'aucun')
 			$current_eleve_etab_type = '';
-		else 
+		else
 			$current_eleve_etab_type = ''; /* $type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau]; */
 		}
 
@@ -1757,7 +1766,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
 		}
 		// FIN information AID en fin de bulletin
-		
+
 
 		// attribue le nombre de matière pour un élève donner et une période
 		$info_bulletin[$login_eleve_select][$id_periode]['nb_matiere']=$nombre_de_matiere;
@@ -2036,7 +2045,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage de l'adresse des parents
 	if($active_bloc_adresse_parent[$classe_id]==='1') {
 	$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
-		// définition des Lageur - hauteur	
+		// définition des Lageur - hauteur
 		if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) { $longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id]; } else { $longeur_cadre_adresse = '90'; }
 		if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) { $hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id]; } else { $hauteur_cadre_adresse = '1'; }
 
@@ -2110,7 +2119,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage information sur l'élèves
 	if($active_bloc_eleve[$classe_id]==='1') {
 	$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
-		// définition des Lageur - hauteur	
+		// définition des Lageur - hauteur
 		if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) { $longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id]; } else { $longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$i]." ".$prenom_eleve[$i]); $rajout_cadre_eleve = 100-$longeur_cadre_eleve; $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve; }
 		if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) { $hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id]; } else { $nb_ligne = 5; $hauteur_ligne = 6; $hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne; }
 
@@ -2228,7 +2237,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage datation du bulletin
 	if($active_bloc_datation[$classe_id]==='1') {
 	$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
-		// définition des Lageur - hauteur	
+		// définition des Lageur - hauteur
 		if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) { $longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id]; } else { $longeur_cadre_datation_bul = '95'; }
 		if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) { $hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id]; } else { $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6; $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul; }
 
@@ -2540,10 +2549,10 @@ $cpt_ordre = $cpt_ordre + 1;
 
 		$X_bloc_matiere=$X_note_app[$classe_id]; $Y_bloc_matiere=$Y_note_app[$classe_id]+$hauteur_entete; $longeur_bloc_matiere=$longeur_note_app[$classe_id];
 		// calcule de la hauteur total que peut prendre le cadre matière dans sa globalité
-		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' ) 
-		{ 
+		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' )
+		{
 			// si les moyennes et la moyenne général sont activé alors on les ajoute à ceux qui vaudras soustraire au cadre global matiere
-			$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id]; 
+			$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id];
 		} else { $hauteur_toute_entete = $hauteur_entete; }
 
 		$hauteur_bloc_matiere=$hauteur_note_app[$classe_id]-$hauteur_toute_entete;

@@ -1333,16 +1333,23 @@ echo "'>\n";
 			$n++;
 		}
 
+		//echo "DEBUG<br />";
+		//echo 'getSettingValue("active_module_trombinoscopes")='.getSettingValue("active_module_trombinoscopes")."<br />";
+		//echo 'getSettingValue("activer_photo_bulletin")='.getSettingValue("activer_photo_bulletin")."<br />";
 
 		//echo "getSettingValue(\"activer_photo_bulletin\")=".getSettingValue("activer_photo_bulletin")."<br />";
 		//echo "getSettingValue(\"active_module_trombinoscopes\")=".getSettingValue("active_module_trombinoscopes")."<br />";
 		if (getSettingValue("activer_photo_bulletin")=='y' and getSettingValue("active_module_trombinoscopes")=='y') {
 			$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
-			$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
+			//$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
+			$photo=nom_photo($current_eleve_idphoto);
 			//echo "$photo";
-			if(file_exists($photo)){
-				$dimphoto=redimensionne_image($photo);
-				echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+			if("$photo"!=""){
+				$photo="../photos/eleves/".$photo;
+				if(file_exists($photo)){
+					$dimphoto=redimensionne_image($photo);
+					echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
+				}
 			}
 		}
 
@@ -1435,7 +1442,7 @@ echo "'>\n";
 				if ($current_eleve_etab_id != '990') {
 				    //echo "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)\n";
 					if ($RneEtablissement != $current_eleve_etab_id) {
-				      echo "Etablissement d'origine : ";					
+				      echo "Etablissement d'origine : ";
 					  echo "$current_eleve_etab_niveau_nom $current_eleve_etab_type $current_eleve_etab_nom ($current_eleve_etab_cp $current_eleve_etab_ville)\n";
 					}
 				} else {
@@ -1489,10 +1496,14 @@ echo "'>\n";
 		//echo "getSettingValue(\"active_module_trombinoscopes\")=".getSettingValue("active_module_trombinoscopes")."<br />";
 		if (getSettingValue("activer_photo_bulletin")=='y' and getSettingValue("active_module_trombinoscopes")=='y') {
 			$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
-			$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
+			//$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
+			$photo=nom_photo($current_eleve_idphoto);
 			//echo "$photo";
-			if(file_exists($photo)){
-				echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+			if("$photo"!=""){
+				$photo="../photos/eleves/".$photo;
+				if(file_exists($photo)){
+					echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
+				}
 			}
 		}
 

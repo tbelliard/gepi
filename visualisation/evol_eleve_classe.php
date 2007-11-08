@@ -308,6 +308,7 @@ if (!isset($id_classe)) {
 	$texte="<div align='center'>\n";
 	//$texte.="<tr>\n";
 	if($v_elenoet!=""){
+		/*
 		if(file_exists("../photos/eleves/".$v_elenoet.".jpg")){
 			//$texte.="<td>\n";
 			$texte.="<img src='../photos/eleves/".$v_elenoet.".jpg' width='150' alt=\"$v_eleve_nom_prenom\" />";
@@ -318,6 +319,12 @@ if (!isset($id_classe)) {
 			//$texte.="<td>\n";
 			$texte.="<img src='../photos/eleves/0".$v_elenoet.".jpg' width='150' alt=\"$v_eleve_nom_prenom\" />";
 			//$texte.="</td>\n";
+			$texte.="<br />\n";
+		}
+		*/
+		$photo=nom_photo($v_elenoet);
+		if("$photo"!=""){
+			$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
 			$texte.="<br />\n";
 		}
 	}

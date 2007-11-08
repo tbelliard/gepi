@@ -912,6 +912,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$lig_elenoet=mysql_fetch_object($res_elenoet);
 			$elenoet1=$lig_elenoet->elenoet;
 
+			/*
 			//if(file_exists("$chemin_photos/$eleve1.jpg")){
 			if(file_exists("../photos/eleves/$elenoet1.jpg")){
 				// Récupérer les dimensions de la photo...
@@ -937,6 +938,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
 				echo "<img src='../photos/eleves/0$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
+			*/
+			$photo=nom_photo($elenoet1);
+			if("$photo"!=""){
+				if(file_exists("../photos/eleves/$photo")){
+					$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
+
+					$largimg=$largeur_imposee_photo;
+					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
+
+					echo "<img src='../photos/eleves/$photo' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+				}
+			}
+
 		}
 	}
 
