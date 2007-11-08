@@ -310,7 +310,7 @@ $classe = mysql_result($call_classe, "0", "classe");
 
 if(!isset($quitter_la_page)){
 	echo "<p class='bold'>";
-	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 	echo "</p>\n";
@@ -319,7 +319,7 @@ else{
 	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
 	// Après modification éventuelle, il faut quitter cette page.
 	echo "<p class='bold'>";
-	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y'>Classe précédente</a>";}
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y'>Classe suivante</a>";}
 	echo "</p>\n";
