@@ -61,15 +61,15 @@ if (getSettingValue("active_module_absence")!='y') {
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécuritée
 
-if (empty($_POST['d_heure_absence_eleve'])) {$d_heure_absence_eleve = ''; } else {$d_heure_absence_eleve=$_POST['d_heure_absence_eleve']; }
-if (empty($_POST['a_heure_absence_eleve'])) {$a_heure_absence_eleve = ''; } else {$a_heure_absence_eleve=$_POST['a_heure_absence_eleve']; }
-if (empty($_POST['d_heure_absence_eleve_ins'])) {$d_heure_absence_eleve_ins = ''; } else {$d_heure_absence_eleve_ins=$_POST['d_heure_absence_eleve_ins']; }
-if (empty($_POST['a_heure_absence_eleve_ins'])) {$a_heure_absence_eleve_ins = ''; } else {$a_heure_absence_eleve_ins=$_POST['a_heure_absence_eleve_ins']; }
+if (empty($_POST['d_heure_absence_eleve'])) { $d_heure_absence_eleve = ''; } else {$d_heure_absence_eleve = $_POST['d_heure_absence_eleve']; }
+if (empty($_POST['a_heure_absence_eleve'])) { $a_heure_absence_eleve = ''; } else {$a_heure_absence_eleve = $_POST['a_heure_absence_eleve']; }
+if (empty($_POST['d_heure_absence_eleve_ins'])) { $d_heure_absence_eleve_ins = ''; } else { $d_heure_absence_eleve_ins = $_POST['d_heure_absence_eleve_ins']; }
+if (empty($_POST['a_heure_absence_eleve_ins'])) { $a_heure_absence_eleve_ins = ''; } else { $a_heure_absence_eleve_ins = $_POST['a_heure_absence_eleve_ins']; }
 
 if (empty($_POST['heuredebut_definie_periode'])) {$heuredebut_definie_periode = ''; } else {$heuredebut_definie_periode=$_POST['heuredebut_definie_periode']; }
 if (empty($_POST['heurefin_definie_periode'])) {$heurefin_definie_periode = ''; } else {$heurefin_definie_periode=$_POST['heurefin_definie_periode']; }
 
-if(empty($etape)) { $etape=''; }
+if(empty($etape)) { $etape = ''; }
 
 if (empty($_POST['d_date_absence_eleve'])) { $d_date_absence_eleve = date('d/m/Y'); } else {$d_date_absence_eleve=$_POST['d_date_absence_eleve']; }
 if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) { $d_date_absence_eleve = date_fr($d_date_absence_eleve); }
@@ -120,8 +120,10 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
     $a_date_absence_eleve_format_sql = $d_date_absence_eleve_format_sql;
     $justify_absence_eleve = "N";
     $motif_absence_eleve = "A";
+
     $nb_i = isset($_POST["nb_i"]) ? $_POST["nb_i"] :1;
     $total = '0';
+
     while ($total < $nb_i) {
 	if(!empty($heure_retard_eleve[$total])) { $type_absence_eleve = "R"; $heure_retard_eleve_ins = $_POST['heure_retard_eleve'][$total]; } else { $type_absence_eleve = "A"; }
         // Identifiant de l'élève
@@ -129,6 +131,7 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
         $eleve_absent_ins = $_POST['eleve_absent'][$total];
 	$active_absence_eleve_ins = $_POST['active_absence_eleve'][$total];
         if($active_absence_eleve_ins == "1" or !empty($heure_retard_eleve[$total])) {
+
         // on vérifie si une absences est déja définie
         //requete dans la base absence eleve
         if ( $action_sql == "ajouter" ) {
@@ -218,7 +221,7 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 	if(!empty($heure_retard_eleve[$total])) {
 		 $d_heure_absence_eleve_ins = $heure_retard_eleve[$total];
 		 $a_heure_absence_eleve_ins = '';
-	 } else { 
+	 } else {
 		 $d_heure_absence_eleve_ins = $d_heure_absence_eleve;
 		 $a_heure_absence_eleve_ins = $a_heure_absence_eleve;
 		}
@@ -248,9 +251,17 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 }
 // Fin de l'action ajouter
 
+// gestion des erreurs de saisi d'entre du formulaire de demande
+$msg_erreur = '';
+if ( $etape == '2' ) {
+	if ( $a_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de fin'; $$etape = ''; }
+	if ( $d_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de debut'; $$etape = ''; }
+	if ( $d_date_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir une date'; $$etape = ''; }
+}
+
 
   // si l'utilisateur demande l'enregistrement dans l'emploi du temps
-	if($edt_enregistrement==='1') 
+	if($edt_enregistrement==='1')
 	{
 			//connaitre le jour de la date sélectionné
 			$jour_semaine = jour_semaine($d_date_absence_eleve);
@@ -269,7 +280,7 @@ if(!isset($active_retard_eleve[$total])) { $active_retard_eleve[$total]='0'; }
 		}
 	}
 
- $datej = date('Y-m-d'); 
+ $datej = date('Y-m-d');
  $annee_en_cours_t=annee_en_cours_t($datej);
  $datejour = date('d/m/Y');
  $type_de_semaine = semaine_type($datejour);
@@ -323,7 +334,7 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
 
 <?php
 echo "<p class=bold><a href=\"../../accueil.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a> | ";
-if($etape=="2" OR $etape=="3") { echo "<a href='prof_ajout_abs.php?passage_form=manuel'>Retour étape 1/2</a> |";  }
+if($etape=="2" or $etape=="3") { echo "<a href='prof_ajout_abs.php?passage_form=manuel'>Retour étape 1/2</a> |";  }
 echo "<a href=\"../lib/tableau.php?type=A&amp;pagedarriver=prof_ajout_abs\">Visualiser les absences</a>";
 echo "</p>";
 ?>
@@ -340,9 +351,9 @@ echo "</p>";
 	// on vérifie si un emploi du temps pour ce prof n'est pas disponible
 //	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND datedebut_edt_classe <= "'.$datej.'" AND datefin_edt_classe >= "'.$datej.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
 	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
 	// on fait une boucle qui va faire un tour pour chaque enregistrement
-	while($data = mysql_fetch_array($req)) 
+	while($data = mysql_fetch_array($req))
 	{
 		$d_heure_absence_eleve = $data['heuredebut_edt_classe'];
 		$a_heure_absence_eleve = $data['heurefin_edt_classe'];
@@ -352,15 +363,16 @@ echo "</p>";
 	}
   }
 
-if($classe=="toutes"  or ($classe=="" and $eleve_initial=="") and $etape!="3") { ?>
+if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) { ?>
  <div style="text-align: center; margin: auto; width: 550px;">
 	<h2>Saisie des absences : choix du cours</h2>
+	<?php if ( $msg_erreur != '' ) { echo '<span style="color: #FF0000; font-weight: bold;">'.$msg_erreur.'</span>'; } ?>
        <form method="post" action="prof_ajout_abs.php" name="absence">
           Date
 	  <?php if(empty($d_date_absence_eleve)) { $d_date_absence_eleve=date('d/m/Y'); } ?>
           <input size="10" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
           <br />
-          De 
+          De
           <select name="d_heure_absence_eleve">
           <?php
           $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
@@ -402,7 +414,8 @@ foreach($groups as $group) {
 	<?php } ?>
 	</select>
 <br />
-          <?php if($etape=="2" AND $classe=="" AND $eleve_initial=="") { ?><span class="erreur_rouge_jaune">Erreur de selection, n'oubliez pas de sélectionner une classe ou un élève</span><br /><?php } ?>
+          <?php
+	  if ( $etape == '2' and $classe == '' and $eleve_initial == '' ) { ?><span class="erreur_rouge_jaune">Erreur de selection, n'oubliez pas de sélectionner une classe ou un élève</span><br /><?php } ?>
           <br />
           <?php
           if (getSettingValue("active_module_trombinoscopes")=='y')
@@ -426,8 +439,8 @@ foreach($groups as $group) {
 
 <?php
 // Deuxième étape
-if($etape=="2" and $classe!="toutes" and ($classe!="" or $eleve_initial!="")) { 
-$current_groupe = get_group($classe);	
+if ( $etape === '2' and $classe != 'toutes' and ( $classe != '' or $eleve_initial != '' ) and $msg_erreur === '') {
+$current_groupe = get_group($classe);
 ?>
 
 <div style="text-align: center; margin: auto; width: 550px;">
