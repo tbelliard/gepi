@@ -118,7 +118,7 @@ $total_diff=isset($_POST['total_diff']) ? $_POST['total_diff'] : NULL;
 $liste_assoc=isset($_POST['liste_assoc']) ? $_POST['liste_assoc'] : NULL;
 
 
-$style_specifique="responsables/maj_import2";
+//$style_specifique="responsables/maj_import2";
 
 
 //**************** EN-TETE *****************
@@ -1387,8 +1387,10 @@ else{
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 
 				//echo "<table border='1'>\n";
-				echo "<table class='majimport'>\n";
-				echo "<tr style='background-color: rgb(150, 200, 240);'>\n";
+				//echo "<table class='majimport'>\n";
+				echo "<table class='boireaus'>\n";
+				//echo "<tr style='background-color: rgb(150, 200, 240);'>\n";
+				echo "<tr>\n";
 				echo "<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
 
 				echo "<a href=\"javascript:modifcase('coche')\">";
@@ -1587,6 +1589,7 @@ else{
 								//echo "<tr style='background-color:green;'>\n";
 								//echo "<tr>\n";
 								$alt=$alt*(-1);
+								/*
 								echo "<tr style='background-color:";
 								if($alt==1){
 									echo "silver";
@@ -1595,7 +1598,8 @@ else{
 									echo "white";
 								}
 								echo ";'>\n";
-
+								*/
+								echo "<tr class='lig$alt'>\n";
 
 								echo "<td style='text-align: center;'>";
 								//echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
@@ -1603,7 +1607,8 @@ else{
 								echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$affiche[5]' />";
 								echo "</td>\n";
 
-								echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
+								//echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
+								echo "<td class='modif'>Modif</td>\n";
 
 								// ELENOET:
 								echo "<td style='text-align: center;'>";
@@ -1617,73 +1622,88 @@ else{
 								echo "<input type='hidden' name='modif_".$cpt."_login' value='$lig_ele->login' />\n";
 								echo "</td>\n";
 
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if(stripslashes($lig_ele->nom)!=stripslashes($affiche[0])){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig_ele->nom!=''){
 										echo stripslashes($lig_ele->nom)." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								echo stripslashes($affiche[0]);
 								echo "<input type='hidden' name='modif_".$cpt."_nom' value=\"$affiche[0]\" />\n";
 								echo "</td>\n";
 
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1])){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig_ele->prenom!=''){
 										echo stripslashes($lig_ele->prenom)." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								echo stripslashes($affiche[1]);
 								echo "<input type='hidden' name='modif_".$cpt."_prenom' value=\"$affiche[1]\" />\n";
 								echo "</td>\n";
 
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if($lig_ele->sexe!=$affiche[2]){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig_ele->sexe!=''){
 										echo "$lig_ele->sexe <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								echo "$affiche[2]";
 								echo "<input type='hidden' name='modif_".$cpt."_sexe' value='$affiche[2]' />\n";
 								echo "</td>\n";
 
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if($lig_ele->naissance!=$new_date){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig_ele->naissance!=''){
 										echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								echo "$new_date";
 								echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;'>$affiche[6]</td>\n";
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								//if($tmp_doublant!=$affiche[6]){
 								if($tmp_doublant!=$lig2->doublant){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig2->doublant!=''){
 										echo "$lig2->doublant <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								//echo "$affiche[6]";
 								echo "$tmp_doublant";
@@ -1691,30 +1711,36 @@ else{
 								echo "</td>\n";
 
 
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if($lig_ele->no_gep!=$affiche[7]){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig_ele->no_gep!=''){
 										echo "$lig_ele->no_gep <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								echo "$affiche[7]";
 								echo "<input type='hidden' name='modif_".$cpt."_nonat' value='$affiche[7]' />\n";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;'>$affiche[8]</td>\n";
-								echo "<td style='text-align: center;";
+								//echo "<td style='text-align: center;";
+								echo "<td";
 								if($tmp_regime!=$lig2->regime){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($lig2->regime!=''){
 										echo "$lig2->regime <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 								//echo "$affiche[8]";
 								if($temoin_pb_regime_inhabituel=="y"){
@@ -1738,6 +1764,7 @@ else{
 								//echo "<tr style='background-color:yellow;'>\n";
 								//echo "<tr>\n";
 								$alt=$alt*(-1);
+								/*
 								echo "<tr style='background-color:";
 								if($alt==1){
 									echo "silver";
@@ -1746,11 +1773,14 @@ else{
 									echo "white";
 								}
 								echo ";'>\n";
+								*/
+								echo "<tr class='lig$alt'>\n";
 
 								//echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' /></td>\n";
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+								//echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+								echo "<td class='nouveau'>Nouveau</td>\n";
 
 
 								echo "<td style='text-align: center;'>";
@@ -2216,7 +2246,8 @@ else{
 					$max_per=$lig_per->num_periode;
 					echo "<input type='hidden' name='maxper' value='$max_per' />\n";
 
-					echo "<table class='majimport'>\n";
+					//echo "<table class='majimport'>\n";
+					echo "<table class='boireaus'>\n";
 					echo "<tr>\n";
 					echo "<th rowspan='2'>Elève</th>\n";
 					echo "<th rowspan='2'>Classe</th>\n";
@@ -2239,6 +2270,7 @@ else{
 					$alt=-1;
 					while($lig_ele=mysql_fetch_object($res_ele)){
 						$alt=$alt*(-1);
+						/*
 						echo "<tr style='background-color:";
 						if($alt==1){
 							echo "silver";
@@ -2247,6 +2279,8 @@ else{
 							echo "white";
 						}
 						echo ";'>\n";
+						*/
+						echo "<tr class='lig$alt'>\n";
 
 						echo "<td>";
 						echo "$lig_ele->nom $lig_ele->prenom";
@@ -2608,7 +2642,8 @@ else{
 					$nombre_ligne=mysql_num_rows($call_group);
 
 					//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
-					echo "<table class='majimport' cellpadding='5' cellspacing='0'>\n";
+					//echo "<table class='majimport' cellpadding='5' cellspacing='0'>\n";
+					echo "<table class='boireaus' cellpadding='5' cellspacing='0'>\n";
 					//echo "<tr align='center'><td><b>Matière</b></td>";
 					echo "<tr align='center'><th><b>Matière</b></th>\n";
 
@@ -2634,6 +2669,7 @@ else{
 						$nom_groupe = mysql_result($call_group, $i, "name");
 
 						$alt=$alt*(-1);
+						/*
 						echo "<tr style='background-color:";
 						if($alt==1){
 							echo "silver";
@@ -2642,6 +2678,8 @@ else{
 							echo "white";
 						}
 						echo ";'>\n";
+						*/
+						echo "<tr class='lig$alt'>\n";
 						echo "<td>".$nom_groupe;
 						echo "</td>\n";
 						$j = 1;
@@ -3555,6 +3593,7 @@ else{
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_pers_id_diff[]=$lig->pers_id;
+					$cpt++;
 				}
 			}
 
@@ -3845,6 +3884,7 @@ else{
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_adr_id_diff[]=$lig->adr_id;
+					$cpt++;
 				}
 				echo $chaine_adr;
 			}
@@ -4012,7 +4052,8 @@ else{
 
 				// Affichage du tableau
 				//echo "<table border='1'>\n";
-				echo "<table class='majimport'>\n";
+				//echo "<table class='majimport'>\n";
+				echo "<table class='boireaus'>\n";
 
 				/*
 				echo "<tr>\n";
@@ -4114,6 +4155,7 @@ else{
 
 					//echo "<tr>\n";
 					$alt=$alt*(-1);
+					/*
 					echo "<tr style='background-color:";
 					if($alt==1){
 						echo "silver";
@@ -4122,6 +4164,8 @@ else{
 						echo "white";
 					}
 					echo ";'>\n";
+					*/
+					echo "<tr class='lig$alt'>\n";
 
 					//echo "<td style='text-align:center;'>";
 					//echo "</td>\n";
@@ -4131,10 +4175,12 @@ else{
 					echo "</td>\n";
 
 					if($nouveau==0){
-						echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
+						//echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
+						echo "<td class='modif'>Modif</td>\n";
 					}
 					else{
-						echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+						//echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+						echo "<td class='nouveau'>Nouveau</td>\n";
 					}
 
 					echo "<td style='text-align:center;'>$pers_id";
@@ -4147,59 +4193,71 @@ else{
 					$res_pers2=mysql_query($sql);
 					$lig_pers2=mysql_fetch_object($res_pers2);
 
-					echo "<td style='text-align:center;";
+					//echo "<td style='text-align:center;";
+					echo "<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->nom)!=stripslashes($nom1)){
-							echo " background-color:lightgreen;'>";
+							//echo " background-color:lightgreen;'>";
+							echo " class='modif'>";
 							if($nom1!=''){
 								echo stripslashes($nom1)." <font color='red'>-&gt;</font>\n";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 					}
 					else{
-						echo "'>";
+						//echo "'>";
+						echo ">";
 					}
 					echo stripslashes($lig_pers2->nom);
 					echo "</td>\n";
 
-					echo "<td style='text-align:center;";
+					//echo "<td style='text-align:center;";
+					echo "<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->prenom)!=stripslashes($prenom1)){
-							echo " background-color:lightgreen;'>";
+							//echo " background-color:lightgreen;'>";
+							echo " class='modif'>";
 							if($prenom1!=''){
 								echo stripslashes($prenom1)." <font color='red'>-&gt;</font>\n";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 					}
 					else{
-						echo "'>";
+						//echo "'>";
+						echo ">";
 					}
 					echo stripslashes($lig_pers2->prenom);
 					echo "</td>\n";
 
 
 					//======================================
-					echo "<td style='text-align:center;";
+					//echo "<td style='text-align:center;";
+					echo "<td";
 					if($nouveau==0){
 						//if(stripslashes($lig_pers2->civilite)!=stripslashes($civilite1)){
 						if(ucfirst(strtolower(stripslashes($lig_pers2->civilite)))!=ucfirst(strtolower(stripslashes($civilite1)))){
-							echo " background-color:lightgreen;'>";
+							//echo " background-color:lightgreen;'>";
+							echo " class='modif'>";
 							if($civilite1!=''){
 								echo stripslashes($civilite1)." <font color='red'>-&gt;</font>\n";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 					}
 					else{
-						echo "'>";
+						//echo "'>";
+						echo ">";
 					}
 					//echo stripslashes($lig_pers2->civilite);
 					echo ucfirst(strtolower(stripslashes($lig_pers2->civilite)));
@@ -4212,25 +4270,30 @@ else{
 						echo "<table class='majimport' width='100%'>\n";
 						echo "<tr>\n";
 						echo "<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
-						echo "<td style='text-align:center;";
+						//echo "<td style='text-align:center;";
+						echo "<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_pers!=$tel_pers1) {
 								if(($lig_pers2->tel_pers!='')||($tel_pers1!='')){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($tel_pers1!=''){
 										echo $tel_pers1." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 							}
 							else{
-								echo "'>";
+								//echo "'>";
+								echo ">";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 						echo $lig_pers2->tel_pers;
 						echo "</td>\n";
@@ -4238,25 +4301,30 @@ else{
 
 						echo "<tr>\n";
 						echo "<td style='text-align:center; font-weight:bold;'>TPo</td>\n";
-						echo "<td style='text-align:center;";
+						//echo "<td style='text-align:center;";
+						echo "<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_port!=$tel_port1) {
 								if(($lig_pers2->tel_port!='')||($tel_port1!='')){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($tel_port1!=''){
 										echo $tel_port1." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 							}
 							else{
-								echo "'>";
+								//echo "'>";
+								echo ">";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 						echo $lig_pers2->tel_port;
 						echo "</td>\n";
@@ -4264,25 +4332,30 @@ else{
 
 						echo "<tr>\n";
 						echo "<td style='text-align:center; font-weight:bold;'>TPr</td>\n";
-						echo "<td style='text-align:center;";
+						//echo "<td style='text-align:center;";
+						echo "<td";
 						if($nouveau==0){
 							if($lig_pers2->tel_prof!=$tel_prof1) {
 								if(($lig_pers2->tel_prof!='')||($tel_prof1!='')){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($tel_prof1!=''){
 										echo $tel_prof1." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 							}
 							else{
-								echo "'>";
+								//echo "'>";
+								echo ">";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 						echo $lig_pers2->tel_prof;
 						echo "</td>\n";
@@ -4290,25 +4363,30 @@ else{
 
 						echo "<tr>\n";
 						echo "<td style='text-align:center; font-weight:bold;'>mel</td>\n";
-						echo "<td style='text-align:center;";
+						//echo "<td style='text-align:center;";
+						echo "<td";
 						if($nouveau==0){
 							if($lig_pers2->mel!=$mel1) {
 								if(($lig_pers2->mel!='')||($mel1!='')){
-									echo " background-color:lightgreen;'>";
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
 									if($mel1!=''){
 										echo $mel1." <font color='red'>-&gt;</font>\n";
 									}
 								}
 								else{
-									echo "'>";
+									//echo "'>";
+									echo ">";
 								}
 							}
 							else{
-								echo "'>";
+								//echo "'>";
+								echo ">";
 							}
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 						echo $lig_pers2->mel;
 						echo "</td>\n";
@@ -4321,7 +4399,8 @@ else{
 
 
 					// Adresse
-					echo "<td style='text-align:center;";
+					//echo "<td style='text-align:center;";
+					echo "<td";
 
 					if($lig_pers2->adr_id!=""){
 						$sql="SELECT * FROM temp_resp_adr_import WHERE (adr_id='".$lig_pers2->adr_id."')";
@@ -4444,12 +4523,14 @@ else{
 						}
 
 						if($chaine_adr1!=$chaine_adr2){
-							echo " background-color:lightgreen;'>";
+							//echo " background-color:lightgreen;'>";
+							echo " class='modif'>";
 							echo $chaine_adr1;
 							echo " <font color='red'>-&gt;</font><br />\n";
 						}
 						else{
-							echo "'>";
+							//echo "'>";
+							echo ">";
 						}
 						echo $chaine_adr2;
 
@@ -4557,7 +4638,8 @@ else{
 
 					}
 					else{
-						echo "'>";
+						//echo "'>";
+						echo ">";
 						// Indiquer l'adresse pour cette nouvelle personne responsable
 
 						if(($adr1_2!="")||($adr2_2!="")||($adr3_2!="")||($adr4_2!="")||($cp2!="")||($commune2!="")||($pays2!="")){
@@ -4956,6 +5038,7 @@ else{
 					//echo "<br />\n";
 					// Pour le cas où on est dans la dernière tranche:
 					$tab_resp_diff[]="t_".$lig->ele_id."_".$lig->pers_id;
+					$cpt++;
 				}
 				echo $chaine_ele_resp;
 			}
@@ -5247,7 +5330,8 @@ else{
 				// Affichage du tableau
 
 				//echo "<table border='1'>\n";
-				echo "<table class='majimport'>\n";
+				//echo "<table class='majimport'>\n";
+				echo "<table class='boireaus'>\n";
 				echo "<tr>\n";
 
 				echo "<td style='text-align: center; font-weight: bold;' rowspan='2'>Enregistrer<br />\n";
@@ -5317,6 +5401,7 @@ else{
 
 
 						$alt=$alt*(-1);
+						/*
 						echo "<tr style='background-color:";
 						if($alt==1){
 							echo "silver";
@@ -5325,6 +5410,8 @@ else{
 							echo "white";
 						}
 						echo ";'>\n";
+						*/
+						echo "<tr class='lig$alt'>\n";
 
 						$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 						$res2=mysql_query($sql);
@@ -5346,7 +5433,8 @@ else{
 							echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
 							echo "</td>\n";
 
-							echo "<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+							//echo "<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
+							echo "<td class='nouveau'>Nouveau</td>\n";
 
 							echo "<td style='text-align:center;'>\n";
 							echo "$pers_id";
@@ -5366,15 +5454,18 @@ else{
 							// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
 							// Il peut y avoir en revanche plus d'un resp_legal=0
 
-							echo "<td style='text-align:center;";
+							//echo "<td style='text-align:center;";
+							echo "<td";
 							//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 							$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)==0){
-								echo "'>\n";
+								//echo "'>\n";
+								echo ">\n";
 							}
 							else{
-								echo " background-color: lightgreen;'>\n";
+								//echo " background-color: lightgreen;'>\n";
+								echo " class='modif'>\n";
 							}
 							echo "$resp_legal";
 							//echo "<input type='hidden' name='new_".$cpt."_resp_legal' value='$resp_legal' />\n";
@@ -5426,6 +5517,7 @@ else{
 
 
 							$alt=$alt*(-1);
+							/*
 							echo "<tr style='background-color:";
 							if($alt==1){
 								echo "silver";
@@ -5434,6 +5526,8 @@ else{
 								echo "white";
 							}
 							echo ";'>\n";
+							*/
+							echo "<tr class='lig$alt'>\n";
 
 							$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
 							$res2=mysql_query($sql);
@@ -5454,7 +5548,8 @@ else{
 								echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
 								echo "</td>\n";
 
-								echo "<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
+								//echo "<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
+								echo "<td class='modif'>Modif</td>\n";
 
 								echo "<td style='text-align:center;'>\n";
 								echo "$pers_id";
@@ -5475,15 +5570,18 @@ else{
 
 								// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
 
-								echo "<td style='text-align:center;";
+								//echo "<td style='text-align:center;";
+								echo "<td";
 								//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
 								$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
 								$res3=mysql_query($sql);
 								if(mysql_num_rows($res3)==0){
-									echo "'>\n";
+									//echo "'>\n";
+									echo ">\n";
 								}
 								else{
-									echo " background-color: lightgreen;'>\n";
+									//echo " background-color: lightgreen;'>\n";
+									echo " class='modif'>\n";
 								}
 								echo "$resp_legal";
 								//echo "<input type='hidden' name='modif_".$cpt."_resp_legal' value='$resp_legal' />\n";
