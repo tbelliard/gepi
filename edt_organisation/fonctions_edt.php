@@ -534,8 +534,11 @@ if (isset($nbre_ens)) {
 				for($z=0; $z<$nbre_ens; $z++) {
 					$contenu .= "<p>".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[$z])."</p>";
 				}
-			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\">".aff_popup("Voir plus ", "edt", "Liste des enseignements", $contenu)."</td>\n";
+				$id_div = "ens_".$id_creneaux."_".$jour_semaine;
+			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
 			//$case_tab = ('Il y a plus de 3 enseignements, mais la fonction n\'existe pas encore, soyez patient !');
+			//"<a href='#' onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>
+			//".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 		}
 		else {
 		// AJOUT: boireaus
@@ -608,7 +611,8 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 		$id_div = $jour_semaine.$rep_classe['classe'].$id_creneaux;
-	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>\n".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
+	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
+			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 	}
 	// On récupère le nom et la civilite du prof en question
 	{
