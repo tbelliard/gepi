@@ -65,6 +65,7 @@ $_SESSION["retour"] = "edt_init_csv";
  // Initialisation des variables
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+$truncate_cours = isset($_POST["truncate_cours"]) ? $_POST["truncate_cours"] : NULL;
 $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 
 	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
@@ -84,7 +85,10 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
             } //!$fp
             else {
             	// A partir de là, on vide la table edt_cours
-            $vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+            if ($truncate_cours == "oui") {
+            	$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+            }
+
             	// On ouvre alors toutes les lignes de tous les champs
             	$nbre = 1;
 	while($tab = fgetcsv($fp, 1000, ";")) {
@@ -106,22 +110,21 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
     		$probleme = "";
     // Pour chaque entrée, on cherche l'id_groupe qui correspond à l'association prof-matière-classe
     	// On récupère le login du prof
-    	$nom = strtoupper(strtr($tab[0], "éèêë", "eeee"));
-    	$prenom = strtoupper(strtr($tab[1], "éèêë", "eeee"));
-    $req_prof = mysql_query("SELECT login FROM utilisateurs WHERE nom = '".$nom."' AND prenom = '".$prenom."'");
+    	$prof_login = strtoupper(strtr($tab[0], "éèêë", "eeee"));
+    $req_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$prof_login."'");
     $rep_prof = mysql_fetch_array($req_prof);
-    	if ($rep_prof == "") {
+    	if ($rep_prof["nom"] == "") {
     		$probleme .="<p>Le professeur n'est pas reconnu.</p>\n";
     	}
 
 		// On récupère l'id de la matière et l'id de la classe
-		$matiere = strtoupper(strtr($tab[2], "éèêë", "eeee"));
+		$matiere = strtoupper(strtr($tab[1], "éèêë", "eeee"));
 		$sql_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
 		$rep_matiere = mysql_fetch_array($sql_matiere);
-			if ($rep_matiere == "") {
+			if ($rep_matiere["nom_complet"] == "") {
 				$probleme .= "<p>Gepi ne retrouve pas la bonne mati&egrave;re.</p>\n";
 			}
-		$classe = strtoupper(strtr($tab[3], "éèêë", "eeee"));
+		$classe = strtoupper(strtr($tab[2], "éèêë", "eeee"));
 	$sql_classe = mysql_query("SELECT id FROM classes WHERE classe = '".$classe."'");
 	$rep_classe = mysql_fetch_array($sql_classe);
 		if ($rep_classe == "") {
@@ -129,67 +132,58 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 		}
 
 		// On récupère l'id de la salle
-	$sql_salle = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[4]."'");
+	$sql_salle = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$tab[3]."'");
 	$req_salle = mysql_fetch_array($sql_salle);
 	$rep_salle = $req_salle["id_salle"];
 		if ($rep_salle == "") {
 			$probleme .= "<p>La salle n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 		}
 
-		// Le jour et le créneau de début du cours
-	$rep_jour = $tab[5];
-		$req_heuredebut = mysql_fetch_array(mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode = '".$tab[6]."'"));
-			// le champ heuredeb_dec = 0 par défaut mais = 0.5 si le cours commence au milieu du créneau
-		if ($req_heuredebut["id_definie_periode"] == "") {
-			$rep_heuredeb_dec = '0.5';
-			// On détermine dans quel créneau on est
-			$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode < '".$tab[6]."' AND heurefin_definie_periode > '".$tab[6]."'");
-			$rep_creneau = mysql_fetch_array($req_creneau);
-				if ($rep_creneau == "") {
-					$probleme .= "<p>Le cr&eacute;neau n'a pas &eacute;t&eacute; trouv&eacute;.</p>\n";
-				} else {
-					$rep_heuredebut = $rep_creneau["id_definie_periode"];
-				}
-		}
-		else {
-		$rep_heuredebut = $req_heuredebut["id_definie_periode"];
-		$rep_heuredeb_dec = '0';
-		}
-		// et la durée du cours et le type de semaine
-	$rep_duree = $tab[7] * 2;
-	$rep_typesemaine = $tab[8];
-	/*$req_type_sem = mysql_query("SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 5");
-	$rep_type_sem = mysql_fetch_array($req_type_sem);
-	$nbre_type_sem = mysql_num_rows($req_type_sem);
+		// Le jour
+	$rep_jour = $tab[4];
 
-		if ($tab[8] == "0" OR $tab[8] == "1" OR $tab[8] == "2") {
-			$rep_typesemaine = $tab[8];
+		// Le créneau de début du cours
+	$creneau_csv = $tab[5];
+	$verif_dec = explode("_", $creneau_csv);
+		if ($verif_dec[0] == "d") {
+			$rep_heuredeb_dec = '0.5';
+			$verif_creneau = $verif_dec[1];
+		} else {
+			$rep_heuredeb_dec = '0';
+			$verif_creneau = $verif_dec[0];
 		}
-		for($a=0; $a<$nbre_type_sem; $a++) {
-			if ($rep_type_sem[$a] == $tab[8]) {
-				$rep_typesemaine == $tab[8];
+	// On cherche l'id du créneau en question
+	$req_creneau = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE nom_definie_periode = '".$verif_creneau."'");
+	$rep_creneau = mysql_fetch_array($req_creneau);
+			if ($rep_creneau == "") {
+				$probleme .= "<p>Le cr&eacute;neau n'a pas &eacute;t&eacute; trouv&eacute;.</p>\n";
+			} else {
+				$rep_heuredebut = $rep_creneau["id_definie_periode"];
 			}
-			else $rep_typesemaine = "0";
-		}*/
+
+		// et la durée du cours et le type de semaine
+		// Il faudrait vérifier si la durée est valide ainsi que le type de semaine
+	$rep_duree = $tab[6] * 2;
+	$rep_typesemaine = $tab[7];
 
 		// le champ modif_edt = 0 pour toutes les entrées
 		$rep_modifedt = '0';
 		// Vérifier si ce cours dure toute l'année ou seulement durant une période
-		if ($tab[9] == "0" OR $tab[10] == "0") {
+		if ($tab[8] == "0") {
 			$rep_calendar = '0';
 		}
 		else {
-			$req_calendar = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE jourdebut_calendrier = '".$tab[9]."' AND jourfin_calendrier = '".$tab[10]."'");
+			$req_calendar = mysql_query("SELECT id_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$tab[8]."'");
 			$req_tab_calendar = mysql_fetch_array($req_calendar);
 				if ($req_tab_calendar == "") {
 					$probleme .= "<p>La p&eacute;riode du calendrier n'a pas &eacute;t&eacute; trouv&eacute;e.</p>\n";
 				} else {
-					$rep_calendar = $req_tab_calendar[0];
+					$rep_calendar = $req_tab_calendar["id_calendrier"];
 				}
 		}
 
 		// On retrouve l'id_groupe et on vérifie qu'il est unique
-	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$rep_prof["login"]."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
+	$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = '".$prof_login."' AND jgc.id_classe = '".$rep_classe["id"]."' AND jgm.id_matiere = '".$matiere."' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe");
     		$rep_groupe = mysql_fetch_array($req_groupe);
     		if ($rep_groupe == "") {
 				$probleme .= "<p>Gepi ne retrouve pas le bon enseignement.</p>\n";
@@ -281,19 +275,45 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 		$aff_div_csv = "block";
 	}
 
-	// Pour la liste de <p>, on précise les contenus des infobulles
+	// Pour la liste de <p> de l'aide id="aide_initcsv", on précise les contenus
 		$forme_matiere = mysql_fetch_array(mysql_query("SELECT matiere, nom_complet FROM matieres"));
 			$aff1_forme_matiere = $forme_matiere["matiere"];
 			$aff2_forme_matiere = $forme_matiere["nom_complet"];
 	$contenu_matiere = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff1_forme_matiere pour $aff2_forme_matiere.";
 		$forme_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '1'"));
 		$aff_forme_classe = $forme_classe["classe"];
-	$contenu_classe = "Attention de bien respecter le nom court utilis&eacute; dans Gepi. Il est de la forme $aff_forme_classe.";
-	$contenu_heuredebut = "Attention de bien respecter la forme <span class='red'>HH:MM:SS</span>. Quand un cours commence au d&eacute;but d'un cr&eacute;neau, ce qui est le cas le plus courant, l'heure doit correspondre à ce qui a &eacute;t&eacute; indiqu&eacute; dans le param&eacute;trage !";
-	$contenu_duree = "La durée s'exprime en nombre de cr&eacute;neaux occup&eacute;és. Pour les cours qui durent un cr&eacute;neau et demi, il faut utiliser la forme 1.5 -";
-	$contenu_typesemaine = "Par défaut, ce champ est égal à 0 pour les cours se déroulant toutes les semaines. Pour les semaines par quinzaine, pr&eacute;cisez les mêmes types que dans le param&eacute;trage du module absences.";
-	$contenu_datedebut = "Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de d&eacute;but (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ doit être = 0.";
-	$contenu_datefin = "Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de fin (incluse) du cours sous la forme <span class='red'>AAAA-MM-JJ</span>. Pour les autres cours, ce champ doit être = 0.";
+		// La liste des créneaux
+				$aff_liste_creneaux = "";
+		$sql_creneaux = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause'");
+		$nbre_creneaux = mysql_num_rows($sql_creneaux);
+			for ($a=0; $a < $nbre_creneaux; $a++) {
+				$liste_creneaux[$a] = mysql_result($sql_creneaux, $a, "nom_definie_periode");
+				$aff_liste_creneaux .= $liste_creneaux[$a]." - ";
+			}
+		// Afficher les différents types de semaine : $aff_type_semaines
+		$aff_type_semaines = "";
+		$sql_semaines = mysql_query("SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.mysql_error());
+		$nbre_types = mysql_num_rows($sql_semaines);
+			for($b=0; $b < $nbre_types; $b++) {
+				$liste_types[$b] = mysql_result($sql_semaines, $b, "type_edt_semaine");
+				if ($nbre_types === 1) {
+					$aff_type_semaines = "Seul le type ".$liste_types[$b]." est d&eacute;fini";
+				}
+				$aff_type_semaines .= $liste_types[$b]." - ";
+			}
+		// Afficher le nom des différentes périodes du calendrier
+		$aff_calendrier = "";
+		$sql_calendar = mysql_query("SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.mysql_error());
+		$nbre_calendar = mysql_num_rows($sql_calendar);
+			if ($nbre_calendar === 0) {
+				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de périodes de cours.</span>";
+			} else {
+				for ($c=0; $c < $nbre_calendar; $c++) {
+					$liste_calendar[$c] = mysql_result($sql_calendar, $c, "nom_calendrier");
+					$aff_calendrier .= $liste_calendar[$c]." - ";
+				}
+			}
+
 ?>
 <div id="aff_init_csv" style="display: <?php echo $aff_div_csv; ?>;">
 L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs &eacute;tapes:
@@ -336,43 +356,41 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 <!-- AIDE init csv -->
 
-<a href="#" onClick="javascript:changerDisplayDiv('aide_initcsv');">
+<a href="#ancre1" onClick="javascript:changerDisplayDiv('aide_initcsv');" name="ancre1">
 	<img src="../images/info.png" alt="Plus d'infos..." Title="Cliquez pour plus d'infos..." />
 </a>
 	<div style="display: none;" id="aide_initcsv">
 	<hr />
 	<span class="red">Attention</span>, ces champs ont des r&egrave;gles &agrave; suivre : il faut respecter la forme retenue par Gepi
 	<br />
+	<p>"login_prof";"mati&egrave;re";"classe";num&eacute;ro_salle;"jour";"nom_cr&eacute;neau";duree;"type_semaine";
+	"nom_periode_cours"</p>
+	<p>Pour le login des professeurs, vous pouvez les r&eacute;cup&eacute;rer par ce <a href="<?php echo $gepiPath; ?>/utilisateurs/import_prof_csv.php">LIEN</a>.</p>
 	<p>Pour la mati&egrave;re, il faut utiliser le nom court qui est de la forme <?php echo "\"".$aff1_forme_matiere."\" pour ".$aff2_forme_matiere; ?>.</p>
 	<p>Pour la classe, le nom court est de la forme "<?php echo $aff_forme_classe; ?>".</p>
 	<p>Le num&eacute;ro de la salle et le jour doivent correspondre &agrave; des informations existantes d&eacute;j&agrave;
 	dans Gepi.</p>
-	<p>Pour l'heure de d&eacute;but, la forme <span class='red'>"HH:MM:SS"</span> est imp&eacute;rative. Quand un cours commence au d&eacute;but
-	d'un cr&eacute;neau, ce qui est le cas le plus courant, l'heure doit correspondre &agrave; ce qui a &eacute;t&eacute; indiqu&eacute;
-	dans le param&eacute;trage !</p>
+	<p>Pour le nom du cr&eacute;neau : <?php echo $aff_liste_creneaux; ?>Si un cours commence au milieu d'un cours,
+	 il faut pr&eacute;c&eacute;der le nom du cr&eacute;neau par le pr&eacute;fixe d_ (ex : d_M1 pour M1).</p>
 	<p>La dur&eacute;e s'exprime en nombre de cr&eacute;neaux occup&eacute;s. Pour les cours qui durent un cr&eacute;neau et demi,
 	il faut utiliser la forme "1.5" -</p>
-	<p>Le type de semaine est &eacute;gal à "0" pour les cours se d&eacute;roulant toutes les semaines. Pour les semaines par quinzaine,
-	pr&eacute;cisez les m&ecirc;mes types que dans le param&eacute;trage du module absences.</p>
-	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de d&eacute;but (incluse) du cours sous
-	la forme <span class='red'>"AAAA-MM-JJ"</span>. Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
-	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez la date de fin (incluse) du cours sous la forme
-	<span class='red'>"AAAA-MM-JJ"</span>. Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
+	<p>Le type de semaine est &eacute;gal à "0" pour les cours se d&eacute;roulant toutes les semaines. Pour les autres cours,
+	pr&eacute;cisez entre ces types : <?php echo $aff_type_semaines; ?>.</p>
+	<p>Pour les cours qui n'ont pas lieu toute l'ann&eacute;e, pr&eacute;cisez le nom de la p&eacute;riode de cours.
+	(<?php echo $aff_calendrier; ?>)<br /> Pour les autres cours, ce champ doit &ecirc;tre &eacute;gal &agrave; "0".</p>
 	<hr />
 	</div>
 <!-- Fin aide init csv -->
 	<ol>
-	 	<li>nom professeur</li>
-		<li>prenom professeur</li>
-		<li>matiere</li>
+	 	<li>login professeur</li>
+		<li>mati&egrave;re</li>
 		<li>classe</li>
-		<li>numero salle</li>
+		<li>num&eacute;ro de la salle</li>
 		<li>jour</li>
-		<li>heure debut</li>
-		<li>duree</li>
-		<li>type semaine</li>
-		<li>date debut</li>
-		<li>date fin</li>
+		<li>nom du cr&eacute;neau</li>
+		<li>dur&eacute;e du cours</li>
+		<li>type de semaine</li>
+		<li>Nom de la p&eacute;riode de cours</li>
 	</ol>
 
 	<p>Veuillez préciser le nom complet du fichier <b>g_edt.csv</b>.</p>
@@ -380,6 +398,8 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 			<input type='hidden' name='action' value='upload_file' />
 			<input type='hidden' name='initialiser' value='ok' />
 			<input type='hidden' name='csv' value='ok' />
+			<p><label for="truncateCours">D&eacute;cocher pour ne pas effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
+			<input type='checkbox' id="truncateCours" name='truncate_cours' value='oui' checked="checked" /></p>
 			<p><input type="file" size="80" name="csv_file" /></p>
 			<p><input type='submit' value='Valider' /></p>
 		</form>
