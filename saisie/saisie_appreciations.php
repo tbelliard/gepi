@@ -213,6 +213,12 @@ echo " | <a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
+
+//=========================
+// AJOUT: boireaus 20071108
+echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
+//=========================
+
 echo " | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
