@@ -2263,4 +2263,30 @@ function param_edt($statut){
 		return "no";
 	}
 }
+
+function nom_photo($elenoet){
+	$photo="";
+	if(file_exists("../photos/eleves/$elenoet.jpg")){
+		$photo="$elenoet.jpg";
+	}
+	else{
+		if(file_exists("../photos/eleves/".sprintf("%05d",$elenoet).".jpg")){
+			$photo=sprintf("%05d",$elenoet).".jpg";
+		}
+		else{
+			for($i=0;$i<5;$i++){
+				if(substr($elenoet,$i,1)=="0"){
+					$test_photo=substr($elenoet,$i+1);
+
+					if(file_exists("../photos/eleves/".$test_photo.".jpg")){
+						$photo=$test_photo.".jpg";
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	return $photo;
+}
 ?>

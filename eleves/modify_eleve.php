@@ -581,11 +581,20 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
 					if(isset($_POST['suppr_filephoto'])){
 						if($_POST['suppr_filephoto']=='y'){
-							if(unlink("../photos/eleves/$reg_no_gep.jpg")){
-								$msg.="La photo ../photos/eleves/$reg_no_gep.jpg a été supprimée. ";
+
+							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
+							$photo=nom_photo($reg_no_gep);
+
+							if("$photo"!=""){
+								if(unlink("../photos/eleves/$photo")){
+									$msg.="La photo ../photos/eleves/$photo a été supprimée. ";
+								}
+								else{
+									$msg.="Echec de la suppression de la photo ../photos/eleves/$photo ";
+								}
 							}
 							else{
-								$msg.="Echec de la suppression de la photo ../photos/eleves/$reg_no_gep.jpg ";
+								$msg.="Echec de la suppression de la photo correspondant à $reg_no_gep (<i>non trouvée</i>) ";
 							}
 						}
 					}
@@ -1213,25 +1222,31 @@ echo "<tr>\n";
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
 if(isset($reg_no_gep)){
-
+	/*
 	$photo="../photos/eleves/".$reg_no_gep.".jpg";
 	if(!file_exists($photo)){
 		$photo="../photos/eleves/".sprintf("%05d",$reg_no_gep).".jpg";
 	}
+	*/
+	// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
+	$photo=nom_photo($reg_no_gep);
 
 	echo "<td align='center'>\n";
 	$temoin_photo="non";
-	if(file_exists($photo)){
-		$temoin_photo="oui";
-		//echo "<td>\n";
-		echo "<div align='center'>\n";
-		$dimphoto=redimensionne_image($photo);
-		//echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
-		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border: 3px solid #FFFFFF;" alt="" />';
-		//echo "</td>\n";
-		//echo "<br />\n";
-		echo "</div>\n";
-		echo "<div style='clear:both;'></div>\n";
+	if("$photo"!=""){
+		$photo="../photos/eleves/".$photo;
+		if(file_exists($photo)){
+			$temoin_photo="oui";
+			//echo "<td>\n";
+			echo "<div align='center'>\n";
+			$dimphoto=redimensionne_image($photo);
+			//echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+			echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border: 3px solid #FFFFFF;" alt="" />';
+			//echo "</td>\n";
+			//echo "<br />\n";
+			echo "</div>\n";
+			echo "<div style='clear:both;'></div>\n";
+		}
 	}
 	echo "<div align='center'>\n";
 	//echo "<span id='lien_photo' style='font-size:xx-small;'>";
@@ -1249,9 +1264,11 @@ if(isset($reg_no_gep)){
 	echo "</div>\n";
 	echo "<div id='div_upload_photo' style='display:none;'>";
 	echo "<input type='file' name='filephoto' />\n";
-	if(file_exists($photo)){
-		echo "<br />\n";
-		echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
+	if("$photo"!=""){
+		if(file_exists($photo)){
+			echo "<br />\n";
+			echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
+		}
 	}
 	echo "</div>\n";
 	echo "</div>\n";
