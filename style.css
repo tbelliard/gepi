@@ -760,7 +760,8 @@ table.boireaus {
 	border-width: 1px;
 	border-color: black;
 	/*background-color: #fafabe;*/
-	background-color: #F5F59A;
+	/*background-color: #F5F59A;*/
+	background-color: khaki;
 	font-weight:bold;
 	text-align:center;
 	vertical-align: middle;
@@ -786,6 +787,8 @@ table.boireaus {
 	background-color: #96c8f0;
 }
 .boireaus .modif {
-	background-color: #aae6aa;
+	/*background-color: #aae6aa;*/
+	/*background-color: plum;*/
+	background-color: #eeaaff;
 }
 /* ===================== */
