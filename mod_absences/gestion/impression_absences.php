@@ -264,7 +264,7 @@ if($type_impr === 'eti') {
 // fin de la fonction de sécuritée
 
 function titre_lettre_type($id)
- { 
+ {
 	global $prefix_base;
  	$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types WHERE id_lettre_type = '".$id."' LIMIT 0, 1";
 	$execution_lettre = mysql_query($requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysql_error());
@@ -313,8 +313,8 @@ if($action_lettre === 'ajout_cadre' and $valide_form === 'yes')
 
 //si action_lettre = supprimer_cadre
 if($action_lettre === 'supprimer_cadre' and $valide_form === 'yes')
- { 
-	if(!empty($id) and !empty($cadre_selection)) 
+ {
+	if(!empty($id) and !empty($cadre_selection))
 	{
        		$req_delete = "DELETE FROM ".$prefix_base."lettres_tcs WHERE id_lettre_tc = '".$id."' AND cadre_lettre_tc = '".$cadre_selection."'";
        		$req_sql2 = mysql_query($req_delete);
@@ -324,7 +324,7 @@ if($action_lettre === 'supprimer_cadre' and $valide_form === 'yes')
 //si action_lettre = modifier_cadre
 if($action_lettre === 'modifier_cadre' and $valide_form === 'yes')
  {
-	if(!empty($id) and !empty($cadre_selection)) 
+	if(!empty($id) and !empty($cadre_selection))
 	{
 		$requete="UPDATE ".$prefix_base."lettres_tcs SET x_lettre_tc = '".$x_lettre_tc."', y_lettre_tc = '".$y_lettre_tc."', l_lettre_tc = '".$l_lettre_tc."', h_lettre_tc = '".$h_lettre_tc."', encadre_lettre_tc = '".$encadre_lettre_tc."' WHERE  id_lettre_tc = '".$id."' AND cadre_lettre_tc = '".$cadre_selection."'";
 	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -340,8 +340,8 @@ if($action_cadre === 'ajout_cadre' and $valide_form === 'yes')
 
 //si action_cadre = supprimer_cadre
 if($action_cadre === 'supprimer_cadre' and $valide_form === 'yes')
- { 
-	if(!empty($id)) 
+ {
+	if(!empty($id))
 	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_tcs WHERE cadre_lettre_tc = '".$id."'"),0);
@@ -356,8 +356,8 @@ if($action_cadre === 'supprimer_cadre' and $valide_form === 'yes')
 //si action_cadre = modifier_cadre
 if($action_cadre === 'modifier_cadre' and $valide_form === 'yes')
  {
-	if(!empty($id)) 
-	{   
+	if(!empty($id))
+	{
 		$texte_lettre_cadre = ereg_replace('\[','<',$texte_lettre_cadre);
 		$texte_lettre_cadre = ereg_replace('\]','>',$texte_lettre_cadre);
 		$couleurdefond_lettre_cadre = $r_couleurdefond_lettre_cadre.'|'.$v_couleurdefond_lettre_cadre.'|'.$b_couleurdefond_lettre_cadre;
@@ -369,8 +369,8 @@ if($action_cadre === 'modifier_cadre' and $valide_form === 'yes')
 //si $action_choix_lettre = supprimer alors on supprime le type de lettre
 if($action_choix_lettre === 'supprimer' and $valide_form === 'yes')
  {
-	if(!empty($lettre_type)) 
-	{   
+	if(!empty($lettre_type))
+	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE type_lettre_suivi = '".$lettre_type."'"),0);
                 if ($test_existance === '0')
@@ -386,15 +386,15 @@ if($action_choix_lettre === 'supprimer' and $valide_form === 'yes')
 //si $action_choix_lettre = renommer
 if($action_choix_lettre === 'renommer' and $lettre_type_nouv != '' and $valide_form === 'yes')
  {
-	if(!empty($lettre_type_nouv)) 
-	{   
+	if(!empty($lettre_type_nouv))
+	{
 		// on vérifie s'il y a des lettres de ce type qui on était envoyé si oui on ne peut pas supprimer ce type de lettre
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_types WHERE titre_lettre_type = '".$lettre_type_nouv."' AND id_lettre_type != '".$lettre_type."'"),0);
                 if ($test_existance === '0')
 		{
 			if(empty($reponse_lettre_type)) { $reponse_lettre_type = 'non'; }
 			$requete="UPDATE ".$prefix_base."lettres_types SET titre_lettre_type = '".$lettre_type_nouv."', reponse_lettre_type = '".$reponse_lettre_type."' WHERE id_lettre_type = '".$lettre_type."'";
-		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());		
+		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 			$action_choix_lettre = '';
 		} else { $erreur = 'Il existe déjas un type de lettre de même nom'; }
 	}
@@ -421,14 +421,14 @@ if(!empty($nom_lettre_cadre) and empty($id) and $valide_form === 'yes')
 // pour réinitialiser la date d'envoie d'un docuement
 if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
  {
-	if(!empty($id)) 
-	{   
+	if(!empty($id))
+	{
 		// on vérifie s'il n'y a pas eu de réponse pour cette envio si oui on ne peut pas réinitialiser
                 $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE id_lettre_suivi = '".$id."' AND (reponse_date_lettre_suivi = '' OR reponse_date_lettre_suivi != '0000-00-00') AND statu_lettre_suivi = 'recus'"),0);
                 if ($test_existance === '0')
 		{
 			$requete="UPDATE ".$prefix_base."lettres_suivis SET envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE id_lettre_suivi = '".$id."'";
-		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());		
+		        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 		} else { $erreur = 'Il existe une réponse pour ce courrier donc vous ne pouvez pas réinitialiser l\'envoi'; }
 	}
  }
@@ -436,12 +436,12 @@ if($action_laf === 'reinit_envoi' and $valide_form === 'yes')
 // pour modifier le status d'un courrier
 if($action_laf === 'modif_status' and $valide_form === 'yes')
  {
-	if(!empty($id)) 
+	if(!empty($id))
 	{
         	if( $statu_lettre[0] === 'recus' ) { $date_fiche = date('Y-m-d'); } else { $date_fiche = ''; }
 
 		$requete="UPDATE ".$prefix_base."lettres_suivis SET quireception_lettre_suivi = '".$_SESSION['login']."', reponse_date_lettre_suivi = '".$date_fiche."', reponse_remarque_lettre_suivi = '".$remarque_lettre_suivi[0]."', statu_lettre_suivi = '".$statu_lettre[0]."' WHERE id_lettre_suivi = '".$id."'";
-	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());		
+	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	}
  }
 
@@ -457,7 +457,7 @@ if(!empty($nom_etiquette_format) and empty($id) and $valide_form === 'yes')
 //si action_lettre = modifier_cadre
 if($action_etiquette === 'modifier_etiquette_format' and $valide_form === 'yes')
  {
-	if(!empty($id)) 
+	if(!empty($id))
 	{
 		$requete="UPDATE ".$prefix_base."etiquettes_formats SET nom_etiquette_format = '".$nom_etiquette_format."', xcote_etiquette_format = '".$xcote_etiquette_format."', ycote_etiquette_format = '".$ycote_etiquette_format."', espacementx_etiquette_format = '".$espacementx_etiquette_format."', espacementy_etiquette_format = '".$espacementy_etiquette_format."', largeur_etiquette_format = '".$largeur_etiquette_format."', hauteur_etiquette_format = '".$hauteur_etiquette_format."', nbl_etiquette_format = '".$nbl_etiquette_format."', nbh_etiquette_format = '".$nbh_etiquette_format."' WHERE  id_etiquette_format = '".$id."'";
 	        $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -467,8 +467,8 @@ if($action_etiquette === 'modifier_etiquette_format' and $valide_form === 'yes')
 
 //si action_etiquette = supprimer_etiquette_format
 if($action_etiquette === 'supprimer_etiquette_format' and $valide_form === 'yes')
- { 
-	if(!empty($id)) 
+ {
+	if(!empty($id))
 	{
      		$req_delete = "DELETE FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$id."'";
        		$req_sql2 = mysql_query($req_delete);
@@ -519,7 +519,7 @@ function affichercacher(a) {
 
        if (b.style.display == "none" || b.style.display == "") {
          b.style.display = "block";
-	 document.images[f].src="../../images/fleche_a.gif";	
+	 document.images[f].src="../../images/fleche_a.gif";
        }
        else
        {
@@ -536,7 +536,7 @@ mavar = mavar.split('-');
 	for (var i in mavar)
 	{
 		if (document.getElementById(devar).checked == false)
-		{ 
+		{
 			//document.getElementById(mavar[i]).disabled=false;
 			if (document.getElementById(mavar[i]).checked) { document.getElementById(mavar[i]).checked=false; }
 		} else {
@@ -554,9 +554,9 @@ affichercacher('div_1');
 </script>
 
 <p class=bold><a href='gestion_absences.php?type=<?php echo $type; ?>&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>|
-<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> | 
-<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> | 
-<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> | 
+<a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
+<a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
+<a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 <div class="norme_absence centre">[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> | <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> | <a href="impression_absences.php?type_impr=bpc">Bilan pour les conseils</a> | <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> | <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
@@ -572,10 +572,10 @@ affichercacher('div_1');
 
 <?php
 		$crearequete = '';
-		if($lettre_type != '') {  
+		if($lettre_type != '') {
 			if($choix != 'tous') { $crearequete = 'AND type_lettre_suivi = \''.$lettre_type.'\''; }
 		}
-		if($choix != '') {  
+		if($choix != '') {
 			if($choix === '2') { $crearequete = $crearequete.' AND envoye_date_lettre_suivi <> "0000-00-00"'; }
 			if($choix === '3') { $crearequete = $crearequete.' AND envoye_date_lettre_suivi = "0000-00-00"'; }
 			if($choix === '4') { $crearequete = $crearequete.' AND reponse_date_lettre_suivi = "0000-00-00"'; }
@@ -625,7 +625,7 @@ affichercacher('div_1');
 </select>
 
 <input name="du" type="text" size="9" maxlength="10" style="width: 80px; border: 1px solid #000000;" value="<?php if(isset($du)) { echo $du; } ?>" /><a href="#calend" onClick="<?php echo $cal->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
-<input type="submit" name="Submit" value="Listée la sélection" style="cursor: pointer;" /></td>
+<input type="submit" name="Submit" value="Lister la sélection" style="cursor: pointer;" /></td>
 </tr>
 </table>
 
@@ -1002,7 +1002,7 @@ affichercacher('div_1');
 	    <tr class="fond_vert">
 	     <td class="titre_tableau_gestion" colspan="3">Bibliothèque des formats d'étiquettes</td>
 	    </tr>
-            <tr class="fond_vert">          
+            <tr class="fond_vert">
 	      <td style="width: 17px;"></td>
 	      <td style="width: 17px;"></td>
               <td class="norme_absence_blanc"><strong>Etiquettes</strong> - Nouveau <input name="nom_etiquette_format" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="<?php echo $type_impr; ?>" /><input type="hidden" name="etiquette_aff" value="<?php echo $etiquette_aff; ?>" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit10" value="Créer" /></td>
@@ -1038,7 +1038,7 @@ affichercacher('div_1');
                   </tr>
          <?php $i = $i + 1; } ?>
 	</table>
-	</form>	
+	</form>
 
 	<?php } ?>
 
@@ -1086,10 +1086,10 @@ affichercacher('div_1');
       </fieldset>
    </form>
 
-   <?php // afficher les informations sur la lettre 
+   <?php // afficher les informations sur la lettre
 	if($type_impr === 'crea_lettre' and !empty($lettre_type) and $action_choix_lettre != 'supprimer' and $action_choix_lettre != 'modifier') { ?>
      <br />
-[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenu de la lettre sélectionnée</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothèque des cadres</a> ] 
+[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>'>Contenu de la lettre sélectionnée</a> | <a href='../gestion/impression_absences.php?type_impr=crea_lettre&amp;lettre_type=<?php echo $lettre_type; ?>&amp;sous_rubrique=gb'>Gestion de la bibliothèque des cadres</a> ]
 <br />
 <br />
 <?php if(empty($sous_rubrique)) { ?>
@@ -1121,7 +1121,7 @@ affichercacher('div_1');
 	  <tr class="fond_vert">
 	   <td class="titre_tableau_gestion" colspan="8">Contenu de la lettre - <?php echo titre_lettre_type($lettre_type) ?></td>
 	  </tr>
-          <tr class="fond_vert">          
+          <tr class="fond_vert">
 	    <td style="width: 17px;"></td>
 	    <td style="width: 17px;"></td>
             <td class="norme_absence_blanc"><strong>Nom du cadre</strong></td>
@@ -1169,7 +1169,7 @@ if($sous_rubrique === 'gb') { ?>
 	  <tr class="fond_vert">
 	   <td class="titre_tableau_gestion" colspan="3">Bibliothèque des cadres</td>
 	  </tr>
-          <tr class="fond_vert">          
+          <tr class="fond_vert">
 	    <td style="width: 17px;"></td>
 	    <td style="width: 17px;"></td>
             <td class="norme_absence_blanc"><strong>Nom du cadre</strong> - Nouveau <input name="nom_lettre_cadre" value="" style="border: 1px solid #B3BFB8;" /><input type="hidden" name="type_impr" value="crea_lettre" /><input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" name="Submit6" value="Créer" /></td>
@@ -1251,8 +1251,8 @@ if($sous_rubrique === 'gb') { ?>
 		 <?php /* <input type="submit" name="Submit6" value="<< Ajouter la sélection" /> */ ?>
 	</div>
 
-		<textarea name="texte_lettre_cadre" id="texte_lettre_cadre" cols="42" rows="10"><?php 
-		// modifie les < en [ et inversement	
+		<textarea name="texte_lettre_cadre" id="texte_lettre_cadre" cols="42" rows="10"><?php
+		// modifie les < en [ et inversement
 		$texte_lettre_cadre = ereg_replace('<','[',$data_1['texte_lettre_cadre']);
 		$texte_lettre_cadre = ereg_replace('>',']',$texte_lettre_cadre);
 		echo $texte_lettre_cadre; ?></textarea>
@@ -1293,7 +1293,7 @@ if($sous_rubrique === 'gb') { ?>
 	if ( !empty($test['2005-02-22']) ) { echo 'rrrr'; }
 	echo '<pre>';
 	print_r($test);
-	echo '</pre>'; 
+	echo '</pre>';
 */
 require("../../lib/footer.inc.php");
 ?>
