@@ -278,7 +278,8 @@ else{
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
 	echo "<div id='div_ad_existante'>\n";
-	echo "<table border='1'>\n";
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<td style='text-align:center; font-weight:bold;'>&nbsp;</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Identifiant</td>\n";
@@ -428,12 +429,13 @@ else{
 		}
 	}
 
-
+	$alt=1;
 	for($i=0;$i<count($tab_adr);$i++){
 		if(($tab_adr[$i]["adr1"]!="")||($tab_adr[$i]["adr2"]!="")||($tab_adr[$i]["adr3"]!="")||($tab_adr[$i]["adr4"]!="")||($tab_adr[$i]["commune"]!="")){
 			//echo "<tr>\n";
 			//echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
-			if($i%2==0){$couleur="silver";}else{$couleur="white";}
+			$alt=$alt*(-1);
+			//if($i%2==0){$couleur="silver";}else{$couleur="white";}
 			if((isset($adr_id_actuel))&&($temoin_adr_actuelle_dans_la_page=="oui")) {
 				if($tab_adr[$i]["adr_id"]==$adr_id_actuel){
 					echo "<tr style='background-color:orange;'>\n";
@@ -442,13 +444,15 @@ else{
 					echo "/></td>\n";
 				}
 				else{
-					echo "<tr style='background-color:$couleur;'>\n";
+					//echo "<tr style='background-color:$couleur;'>\n";
+					echo "<tr class='lig$alt'>\n";
 					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 					echo "/></td>\n";
 				}
 			}
 			else{
-				echo "<tr style='background-color:$couleur;'>\n";
+				//echo "<tr style='background-color:$couleur;'>\n";
+				echo "<tr class='lig$alt'>\n";
 				echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 				echo "/></td>\n";
 			}

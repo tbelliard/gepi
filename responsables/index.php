@@ -204,14 +204,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysql_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
-
-		if($_SESSION['statut']=="administrateur"){
-			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-		}
-		else{
-			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
-		}
-
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -220,14 +213,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-
-		if($_SESSION['statut']=="administrateur"){
-			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-		}
-		else{
-			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
-		}
-
+		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -243,14 +229,7 @@ if(!getSettingValue('conv_new_resp_table')){
 			}
 
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
-
-			if($_SESSION['statut']=="administrateur"){
-				echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
-			}
-			else{
-				echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
-			}
-
+			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -507,7 +486,8 @@ echo "</div>\n";
 
 //echo "<center><input type='submit' value='Valider' /></center>\n";
 
-echo "<table border='1' align='center'>\n";
+//echo "<table border='1' align='center'>\n";
+echo "<table class='boireaus' align='center'>\n";
 
 $cpt_suppr=0;
 
@@ -525,8 +505,9 @@ if("$num_resp"=="0"){
 	$ligne_titre.="</tr>\n";
 
 	$cpt=0;
-	$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id FROM resp_pers";
+	$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
 	$res1=mysql_query($sql);
+	$alt=1;
 	if(mysql_num_rows($res1)>0){
 		while($lig1=mysql_fetch_object($res1)){
 			$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
@@ -537,14 +518,19 @@ if("$num_resp"=="0"){
 					echo $ligne_titre;
 				}
 
+				/*
 				if($cpt%2==0){
 					$alt='silver';
 				}
 				else{
 					$alt='white';
 				}
+				*/
+				$alt=$alt*(-1);
 
-				echo "<tr style='background-color:".$alt.";'>\n";
+
+				//echo "<tr style='background-color:".$alt.";'>\n";
+				echo "<tr class='lig$alt'>\n";
 				echo "<td style='text-align:center;'>\n";
 				//echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig1->nom $lig1->prenom</a>\n";
 				echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>";
@@ -651,6 +637,7 @@ else{
 		$res1=mysql_query($sql);
 
 		if(mysql_num_rows($res1)){
+			$alt=1;
 			$cpt=0;
 			while($lig1=mysql_fetch_object($res1)){
 
@@ -658,12 +645,16 @@ else{
 					echo $ligne_titre;
 				}
 
+				/*
 				if($cpt%2==0){
 					$alt='silver';
 				}
 				else{
 					$alt='white';
 				}
+				*/
+				$alt=$alt*(-1);
+
 
 				if($num_resp==1){$autre_resp=2;}else{$autre_resp=1;}
 
@@ -677,7 +668,8 @@ else{
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
 						$res3=mysql_query($sql);
 						//if(mysql_num_rows($res3)>0){
-							echo "<tr style='background-color:".$alt.";'>\n";
+							//echo "<tr style='background-color:".$alt.";'>\n";
+							echo "<tr class='lig$alt'>\n";
 							echo "<td style='text-align:center;'";
 							if(mysql_num_rows($res3)>1){
 								echo " rowspan='".mysql_num_rows($res3)."'";
@@ -800,18 +792,22 @@ else{
 
 		if(mysql_num_rows($res1)){
 			$cpt=0;
+			$alt=1;
 			while($lig1=mysql_fetch_object($res1)){
 
 				if($cpt%10==0){
 					echo $ligne_titre;
 				}
 
+				/*
 				if($cpt%2==0){
 					$alt='silver';
 				}
 				else{
 					$alt='white';
 				}
+				*/
+				$alt=$alt*(-1);
 
 				if($num_resp==1){$autre_resp=2;}else{$autre_resp=1;}
 
@@ -825,7 +821,8 @@ else{
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
 						$res3=mysql_query($sql);
 						//if(mysql_num_rows($res3)>0){
-							echo "<tr style='background-color:".$alt.";'>\n";
+							//echo "<tr style='background-color:".$alt.";'>\n";
+							echo "<tr class='lig$alt'>\n";
 
 
 
@@ -833,7 +830,8 @@ else{
 								$cpt_temoin=0;
 								while($lig3=mysql_fetch_object($res3)){
 									if($cpt_temoin>0){
-										echo "<tr style='background-color:".$alt.";'>\n";
+										//echo "<tr style='background-color:".$alt.";'>\n";
+										echo "<tr class='lig$alt'>\n";
 									}
 
 
@@ -1003,18 +1001,22 @@ else{
 		//echo "<tr><td colspan='5'>AAA</td></tr>\n";
 		if(mysql_num_rows($res1)>0){
 			$cpt=0;
+			$alt=1;
 			while($lig1=mysql_fetch_object($res1)){
 
 				if($cpt%10==0){
 					echo $ligne_titre;
 				}
 
+				/*
 				if($cpt%2==0){
 					$alt='silver';
 				}
 				else{
 					$alt='white';
 				}
+				*/
+				$alt=$alt*(-1);
 
 				$sql="SELECT rp.nom,rp.prenom,rp.civilite,rp.pers_id,ra.* FROM resp_pers rp, resp_adr ra, responsables2 r WHERE
 						r.pers_id=rp.pers_id AND
@@ -1024,7 +1026,8 @@ else{
 				$res2=mysql_query($sql);
 
 				//echo "<tr>\n";
-				echo "<tr style='background-color:".$alt.";'>\n";
+				//echo "<tr style='background-color:".$alt.";'>\n";
+				echo "<tr class='lig$alt'>\n";
 
 				if(mysql_num_rows($res2)>0){
 					//while($lig2=mysql_fetch_object($res2)){

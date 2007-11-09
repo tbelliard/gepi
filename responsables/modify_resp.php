@@ -608,7 +608,8 @@ if(isset($pers_id)){
 	}
 	else{
 		echo "<p><b>Elève:</b></p>\n";
-		echo "<table border='1'>\n";
+		//echo "<table border='1'>\n";
+		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Elève</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable legal</td>\n";

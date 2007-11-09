@@ -118,6 +118,8 @@ $total_diff=isset($_POST['total_diff']) ? $_POST['total_diff'] : NULL;
 $liste_assoc=isset($_POST['liste_assoc']) ? $_POST['liste_assoc'] : NULL;
 
 
+$stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
+
 //$style_specifique="responsables/maj_import2";
 
 
@@ -140,7 +142,12 @@ if(isset($step)){
 		) {
 		echo "<div style='float: right; border: 1px solid black; width: 4em;'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
-<input type='checkbox' name='stop' id='stop' value='y' /> <a href='#' onmouseover=\"afficher_div('div_stop','y',-200,20);\">Stop</a>
+<input type='checkbox' name='stop' id='stop' value='y' onchange='stop_change()' ";
+//if(isset($stop)){
+if($stop=='y'){
+	echo "checked ";
+}
+echo "/> <a href='#' onmouseover=\"afficher_div('div_stop','y',-200,20);\">Stop</a>
 </form>\n";
 		echo "</div>\n";
 
@@ -153,6 +160,18 @@ if(isset($step)){
 
 
 							echo "<script type='text/javascript'>
+function stop_change(){
+	stop='n';
+	if(document.getElementById('stop')){
+		if(document.getElementById('stop').checked==true){
+			stop='y';
+		}
+	}
+	if(document.getElementById('id_form_stop')){
+		document.getElementById('id_form_stop').value=stop;
+	}
+}
+
 function test_stop(num){
 	stop='n';
 	if(document.getElementById('stop')){
@@ -160,9 +179,15 @@ function test_stop(num){
 			stop='y';
 		}
 	}
+	//document.getElementById('id_form_stop').value=stop;
 	if(stop=='n'){
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
-		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num);
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
+
+// AJOUT A FAIRE VALEUR STOP
+echo "+'&amp;stop='+stop";
+
+echo ");
 	}
 }
 
@@ -173,6 +198,7 @@ function test_stop2(){
 			stop='y';
 		}
 	}
+	document.getElementById('id_form_stop').value=stop;
 	if(stop=='n'){
 		//setTimeout(\"document.forms['formulaire'].submit();\",1000);
 		document.forms['formulaire'].submit();
@@ -202,6 +228,12 @@ if(!isset($step)) {
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+	//==============================
+	// AJOUT pour tenir compte de l'automatisation ou non:
+	echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+	//==============================
+
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
@@ -1050,6 +1082,10 @@ else{
 			flush();
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			/*
 			$cpt=0;
@@ -1375,6 +1411,10 @@ else{
 
 
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+				//==============================
+				// AJOUT pour tenir compte de l'automatisation ou non:
+    echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+				//==============================
 
 				for($i=$eff_tranche;$i<count($tab_ele_id_diff);$i++){
 					//echo "$i: ";
@@ -2219,6 +2259,10 @@ else{
 			echo "<p>Affectation des nouveaux élèves dans leurs classes:</p>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			// DISTINCT parce qu'on peut avoir plusieurs enregistrements d'un même élève dans 'temp_ele_classe' si on a joué avec F5.
 			// ERREUR: Il faut régler le problème plus haut parce que si on insère plusieurs fois l'élève, il est plusieurs fois dans 'eleves' avec des logins différents.
@@ -2246,13 +2290,27 @@ else{
 					$max_per=$lig_per->num_periode;
 					echo "<input type='hidden' name='maxper' value='$max_per' />\n";
 
+					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+
 					//echo "<table class='majimport'>\n";
 					echo "<table class='boireaus'>\n";
 					echo "<tr>\n";
 					echo "<th rowspan='2'>Elève</th>\n";
 					echo "<th rowspan='2'>Classe</th>\n";
 					echo "<th colspan='$max_per'>Périodes</th>\n";
-					echo "<th rowspan='2'>&nbsp;</th>\n";
+
+					$chaine_coche="";
+					$chaine_decoche="";
+					for($i=1;$i<=$max_per;$i++){
+						$chaine_coche.="modif_case($i,\"col\",true);";
+						$chaine_decoche.="modif_case($i,\"col\",false);";
+					}
+
+					//echo "<th rowspan='2'>&nbsp;</th>\n";
+					echo "<th rowspan='2'>\n";
+					echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+					echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+					echo "</th>\n";
 					echo "</tr>\n";
 
 					echo "<tr>\n";
@@ -2263,8 +2321,15 @@ else{
 						echo "<a href='javascript:modif_case($i,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 						echo "<a href='javascript:modif_case($i,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 						echo "</th>\n";
+
+						$chaine_coche.="modif_case($i,\"col\",true);";
+						$chaine_decoche.="modif_case($i,\"col\",false);";
 					}
 					echo "</tr>\n";
+
+
+
+
 
 					$cpt=0;
 					$alt=-1;
@@ -2376,7 +2441,7 @@ else{
 
 			//echo "<input type='hidden' name='step' value='6_1' />\n";
 			echo "<input type='hidden' name='step' value='7' />\n";
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 			echo "</form>\n";
 			break;
@@ -2480,6 +2545,10 @@ else{
 			$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : NULL;
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			if(!isset($opt_eleve)){
 				$sql="SELECT e.* FROM eleves e, temp_ele_classe t WHERE t.ele_id=e.ele_id ORDER BY e.nom,e.prenom";
@@ -2628,6 +2697,7 @@ else{
 
 
 					echo "<p>Affectation dans les groupes de l'élève $prenom_eleve $nom_eleve (<i>$lig_classe->classe</i>)</p>\n";
+					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 					echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 					echo "<input type='hidden' name='login_eleve' value='$login_eleve' />\n";
@@ -2648,6 +2718,8 @@ else{
 					echo "<tr align='center'><th><b>Matière</b></th>\n";
 
 					$j = 1;
+					$chaine_coche="";
+					$chaine_decoche="";
 					while ($j < $nb_periode) {
 						//echo "<td><b>".$nom_periode[$j]."</b><br />\n";
 						echo "<th><b>".$nom_periode[$j]."</b><br />\n";
@@ -2655,10 +2727,20 @@ else{
 						echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 						//echo "</td>";
 						echo "</th>\n";
+
+						$chaine_coche.="modif_case($j,\"col\",true);";
+						$chaine_decoche.="modif_case($j,\"col\",false);";
+
 						$j++;
 					}
 					//echo "<td>&nbsp;</td>\n";
-					echo "<th>&nbsp;</th>\n";
+					//echo "<th>&nbsp;</th>\n";
+					echo "<th>\n";
+
+					echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+					echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+
+					echo "</th>\n";
 					echo "</tr>\n";
 
 					$nb_erreurs=0;
@@ -2783,7 +2865,7 @@ else{
 </script>\n";
 
 					echo "<input type='hidden' name='step' value='8' />\n";
-					echo "<p><input type='submit' value='Valider' /></p>\n";
+					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 					echo "</form>\n";
 				}
 
@@ -2796,6 +2878,10 @@ else{
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
@@ -3462,6 +3548,10 @@ else{
 			echo "<h3>Section PERSONNES</h3>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			if(!isset($parcours_diff)){
 				echo "<p>On va commencer les comparaisons...</p>\n";
@@ -3666,6 +3756,10 @@ else{
 			echo "<h3>Section ADRESSES</h3>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			if(!isset($parcours_diff)){
 				echo "<p>On va commencer les comparaisons...</p>\n";
@@ -3992,6 +4086,10 @@ else{
 
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			if(!isset($parcours_diff)){
 				$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
@@ -4894,6 +4992,10 @@ else{
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			$eff_tranche=20;
 
@@ -5108,6 +5210,10 @@ else{
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//==============================
 
 			if(!isset($parcours_diff)){
 				$sql="SELECT 1=1 FROM tempo2 WHERE col1='t_diff';";

@@ -132,7 +132,8 @@ if(mysql_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
 
 	echo "<div id='div_ad_existante'>\n";
-	echo "<table border='1'>\n";
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus'>\n";
 
 	$ligne_titre="<tr>\n";
 	//$ligne_titre.="<td style='text-align:center; font-weight:bold;'>&nbsp;</td>\n";
@@ -153,6 +154,7 @@ if(mysql_num_rows($res_adr)>0){
 	*/
 
 	$cpt=0;
+	$alt=1;
 	while($lig_adr=mysql_fetch_object($res_adr)){
 		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
 
@@ -160,14 +162,18 @@ if(mysql_num_rows($res_adr)>0){
 				echo $ligne_titre;
 			}
 
+			/*
 			if($cpt%2==0){
 				$alt='silver';
 			}
 			else{
 				$alt='white';
 			}
+			*/
+			$alt=$alt*(-1);
 
-			echo "<tr style='background-color:".$alt.";'>\n";
+			//echo "<tr style='background-color:".$alt.";'>\n";
+			echo "<tr class='lig$alt'>\n";
 
 			//echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr->adr_id\" /></td>\n";
 			echo "<td style='text-align:center;'>$lig_adr->adr_id</td>\n";
