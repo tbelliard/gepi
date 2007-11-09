@@ -535,7 +535,7 @@ if (isset($nbre_ens)) {
 					$contenu .= "<p>".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[$z])."</p>";
 				}
 				$id_div = "ens_".$id_creneaux."_".$jour_semaine;
-			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
+			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
 			//$case_tab = ('Il y a plus de 3 enseignements, mais la fonction n\'existe pas encore, soyez patient !');
 			//"<a href='#' onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>
 			//".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
@@ -568,7 +568,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		}
 		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
 		// <a href="javascript:centrerpopup("modifier_COURS.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",610,460,"scrollbars=no,statusbar=no,resizable=yes")"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
-		if (($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") OR $_SESSION["statut"] == "administrateur") {
+		if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
 			/*$modifier_cours = '
 					<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'">
 					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
@@ -611,7 +611,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 		$id_div = $jour_semaine.$rep_classe['classe'].$id_creneaux;
-	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
+	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 	}
 	// On récupère le nom et la civilite du prof en question
