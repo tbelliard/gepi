@@ -465,7 +465,7 @@ while ($i < $nombreligne){
 	if ($col[$i][7] == "professeur") {
 		echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
 		//echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
-		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' /></a>";
+		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' title='Créer un remplaçant' /></a>";
 		echo "</td>\n";
 	} else {
 	  echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
