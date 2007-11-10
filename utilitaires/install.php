@@ -134,7 +134,12 @@ if ($etape == 4) {
     $fd = fopen("../sql/structure_gepi.sql", "r");
     $result_ok = 'yes';
     while (!feof($fd)) {
-       $query = fgets($fd, 5000);
+		//=============================================
+		// MODIF: boireaus d'après P.Chadefaux 20071110
+       //$query = fgets($fd, 5000);
+		// Ligne 113 du structure_gepi.sql, le CREATE TABLE `model_bulletin` comporte 6799 caractères.
+       $query = fgets($fd, 8000);
+		//=============================================
        $query = trim($query);
        if (substr($query,-1)==";") {
             $reg = mysql_query($query);
