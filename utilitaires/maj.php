@@ -5155,6 +5155,24 @@ ADD `cadre_adresse` TINYINT NOT NULL ;";
 		else{
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
+		
+		$result .= "&nbsp;->Ajout des champs 'centrage_logo', 'ajout_cadre_blanc_photo',... à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'centrage_logo'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `model_bulletin` ADD `centrage_logo` TINYINT NOT NULL DEFAULT '0',
+ADD `Y_centre_logo` FLOAT NOT NULL DEFAULT '18',
+ADD `ajout_cadre_blanc_photo` TINYINT NOT NULL DEFAULT '0';";
+			//echo "<br />$sql<br />";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
 
 		//===================================================
 

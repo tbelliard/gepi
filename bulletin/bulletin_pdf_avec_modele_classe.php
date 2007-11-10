@@ -706,6 +706,9 @@ if(!empty($model_bulletin)) {
 			$taille_texte_categorie[$classe_id] = $donner_model['taille_texte_categorie']; // taille du texte du nom des catégorie en entête
 			$type_texte_date_datation[$classe_id] = $donner_model['type_texte_date_datation'];
 			$cadre_adresse[$classe_id] = $donner_model['cadre_adresse']; // cadre sur l'adresse
+			$centrage_logo[$classe_id] = $donner_model['centrage_logo']; // centrer le logo de l'établissement
+			$Y_centre_logo[$classe_id] = $donner_model['Y_centre_logo']; // centre du logo sur la page
+			$ajout_cadre_blanc_photo[$classe_id] = $donner_model['ajout_cadre_blanc_photo']; // ajouter un cadre blanc pour la photo de l'élève.
 
 		} //FOR ???
 	}
@@ -839,6 +842,10 @@ if(!empty($model_bulletin)) {
 	$taille_texte_identitee_chef[$classe_id] = '10'; // taille du texte du nom du chef
 
 	$cadre_adresse[$classe_id] = ''; // cadre sur l'adresse
+
+	$centrage_logo[$classe_id] = '0'; // centrer le logo de l'établissement
+	$Y_centre_logo[$classe_id] = '18'; // centre du logo sur la page
+	$ajout_cadre_blanc_photo[$classe_id] = '0'; // ajouter un cadre blanc pour la photo de l'élève.
 	}
 
 
@@ -967,28 +974,28 @@ if(!empty($model_bulletin)) {
 	}
 
 	//tableau des données élèves
-// Modif Eric pour option tri par etab origine
+// Modif Eric pour option tri par etab origine	
 //On n'affiche pas les élèves qui correspondent au N° RNE de l'établissement
     switch ($tri_par_etab_origine) {
 	case "oui" :
-		if (isset($id_classe[0])) {
+		if (isset($id_classe[0])) { 
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
-		if (isset($id_eleve[0])) {
+		if (isset($id_eleve[0])) { 
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
 		break;
 	case "non" :
-		if (isset($id_classe[0])) {
+		if (isset($id_classe[0])) { 
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
-		if (isset($id_eleve[0])) {
+		if (isset($id_eleve[0])) { 
 			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
@@ -996,13 +1003,13 @@ if(!empty($model_bulletin)) {
 		break;
 	default:
 	    echo "defaut";
-		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
+		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }	
 		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
     break;
 	}
 // Fin modif Eric  pour option tri par etab origine
-
-
+	
+	
 	//on compte les élèves sélectionnés
 	$nb_eleves = mysql_num_rows($call_eleve);
 	$cpt_i = 1;
@@ -1028,7 +1035,7 @@ if(!empty($model_bulletin)) {
 		$classe_tableau_id[$cpt_i] = $donner['id'];
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 		$classe_nomcour[$cpt_i] = $donner['classe'];
-
+		
 		//$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
 		$tmp_photo=nom_photo(strtolower($donner['elenoet']));
 		if("$tmp_photo"!=""){
@@ -1045,7 +1052,7 @@ if(!empty($model_bulletin)) {
 		if($donner['regime']==='int.') { $dp[$cpt_i]='interne'; }
 		if($donner['regime']==='i-e') { if($sexe[$cpt_i]==='M') { $dp[$cpt_i]='interne externé'; } else { $dp[$cpt_i]='interne externée'; } }
 		if($donner['regime']!='ext.' and $donner['regime']!='d/p' and $donner['regime']==='int.' and $donner['regime']==='i-e') { $dp[$cpt_i]='inconnu'; }
-
+		
 //modif Eric
 		// etablissement d'origine
 		// on vérifie si l'élève a un établissement d'origine
@@ -1077,12 +1084,12 @@ if(!empty($model_bulletin)) {
 		foreach ($type_etablissement as $type_etab => $nom_etablissement) {
 			if ($current_eleve_etab_niveau == $type_etab) {$current_eleve_etab_niveau_nom = $nom_etablissement;}
 		}
-		if ($current_eleve_etab_cp == 0) {$current_eleve_etab_cp = '';}
+		if ($current_eleve_etab_cp == 0) { $current_eleve_etab_cp = ''; }
 
-		if ($current_eleve_etab_type == 'aucun')
-			$current_eleve_etab_type = '';
-		else
-			$current_eleve_etab_type = ''; /* $type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau]; */
+		if ( $current_eleve_etab_type == 'aucun' ) { $current_eleve_etab_type = ''; }
+		else {
+			if ( isset($type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau]) ) { $current_eleve_etab_type = $type_etablissement2[$current_eleve_etab_type][$current_eleve_etab_niveau]; } else { $current_eleve_etab_type = ''; }
+		     }
 		}
 
 		if ($current_eleve_etab_nom != '') {
@@ -1766,7 +1773,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
 		}
 		// FIN information AID en fin de bulletin
-
+		
 
 		// attribue le nombre de matière pour un élève donner et une période
 		$info_bulletin[$login_eleve_select][$id_periode]['nb_matiere']=$nombre_de_matiere;
@@ -1920,9 +1927,20 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	if($affiche_logo_etab[$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 	$valeur=redimensionne_image($logo, $L_max_logo[$classe_id], $H_max_logo[$classe_id]);
-	//$X_logo et $Y_logo; placement du bloc identite de l'établissement
-	$X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
-	$X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
+	$X_logo = 5;
+	$Y_logo = 5;
+	$L_logo = $valeur[0];
+	$H_logo = $valeur[1];
+	$X_etab = $X_logo + $L_logo + 1;
+	$Y_etab = $Y_logo;
+
+	if ( !isset($centrage_logo[$classe_id]) or empty($centrage_logo[$classe_id]) ) { $centrage_logo[$classe_id] = '0'; }
+	if ( $centrage_logo[$classe_id] === '1' ) {
+		// centrage du logo
+		$centre_du_logo = ( $H_logo / 2 );
+		$Y_logo = $Y_centre_logo[$classe_id] - $centre_du_logo;
+	}
+
 	//logo
 		$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
 	}
@@ -2045,7 +2063,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage de l'adresse des parents
 	if($active_bloc_adresse_parent[$classe_id]==='1') {
 	$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
-		// définition des Lageur - hauteur
+		// définition des Lageur - hauteur	
 		if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) { $longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id]; } else { $longeur_cadre_adresse = '90'; }
 		if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) { $hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id]; } else { $hauteur_cadre_adresse = '1'; }
 
@@ -2119,7 +2137,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage information sur l'élèves
 	if($active_bloc_eleve[$classe_id]==='1') {
 	$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
-		// définition des Lageur - hauteur
+		// définition des Lageur - hauteur	
 		if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) { $longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id]; } else { $longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$i]." ".$prenom_eleve[$i]); $rajout_cadre_eleve = 100-$longeur_cadre_eleve; $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve; }
 		if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) { $hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id]; } else { $nb_ligne = 5; $hauteur_ligne = 6; $hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne; }
 
@@ -2129,13 +2147,19 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	$X_eleve_2=$X_eleve[$classe_id]; $Y_eleve_2=$Y_eleve[$classe_id];
 
 		//photo de l'élève
+		if ( !isset($ajout_cadre_blanc_photo[$classe_id]) or empty($ajout_cadre_blanc_photo[$classe_id]) ) { $ajout_cadre_blanc_photo[$classe_id] = '0'; }
+		if ( $ajout_cadre_blanc_photo[$classe_id] === '1' ) { $ajouter = '1'; } else { $ajouter = '0'; }
 		if($active_photo[$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
-		$L_photo_max=$hauteur_cadre_eleve*2.8; $H_photo_max=$hauteur_cadre_eleve*2.8;
+		$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
+		$H_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
 		$valeur=redimensionne_image($photo[$i], $L_photo_max, $H_photo_max);
-		$X_photo=$X_eleve[$classe_id]+0.20; $Y_photo=$Y_eleve[$classe_id]+0.25; $L_photo=$valeur[0]; $H_photo=$valeur[1];
-		$X_eleve_2=$X_eleve[$classe_id]+$L_photo; $Y_eleve_2=$Y_photo;
+		$X_photo = $X_eleve[$classe_id]+ 0.20 + $ajouter;
+		$Y_photo = $Y_eleve[$classe_id]+ 0.25 + $ajouter;
+		$L_photo = $valeur[0]; $H_photo = $valeur[1];
+		$X_eleve_2 = $X_eleve[$classe_id] + $L_photo + $ajouter + 1;
+		$Y_eleve_2 = $Y_photo;
 			$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
-			$longeur_cadre_eleve = $longeur_cadre_eleve - $valeur[0];
+			$longeur_cadre_eleve = $longeur_cadre_eleve - ( $valeur[0] + $ajouter );
 		}
 
 	$pdf->SetXY($X_eleve_2,$Y_eleve_2);
@@ -2237,7 +2261,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// bloc affichage datation du bulletin
 	if($active_bloc_datation[$classe_id]==='1') {
 	$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
-		// définition des Lageur - hauteur
+		// définition des Lageur - hauteur	
 		if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) { $longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id]; } else { $longeur_cadre_datation_bul = '95'; }
 		if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) { $hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id]; } else { $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6; $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul; }
 
@@ -2549,10 +2573,10 @@ $cpt_ordre = $cpt_ordre + 1;
 
 		$X_bloc_matiere=$X_note_app[$classe_id]; $Y_bloc_matiere=$Y_note_app[$classe_id]+$hauteur_entete; $longeur_bloc_matiere=$longeur_note_app[$classe_id];
 		// calcule de la hauteur total que peut prendre le cadre matière dans sa globalité
-		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' )
-		{
+		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' ) 
+		{ 
 			// si les moyennes et la moyenne général sont activé alors on les ajoute à ceux qui vaudras soustraire au cadre global matiere
-			$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id];
+			$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id]; 
 		} else { $hauteur_toute_entete = $hauteur_entete; }
 
 		$hauteur_bloc_matiere=$hauteur_note_app[$classe_id]-$hauteur_toute_entete;
