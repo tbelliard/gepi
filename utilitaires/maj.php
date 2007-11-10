@@ -3135,7 +3135,7 @@ if (isset ($_POST['maj'])) {
 			//echo "<p>$sql</p>";
 			$test1 = mysql_num_rows(mysql_query($sql));
 			if ($test1 == 0) {
-				$sql="INSERT INTO `edt_semaines` VALUES ('', $cpt, 'A');";
+				$sql="INSERT INTO `edt_semaines` VALUES ('', $cpt, 'A', '0');";
 				$query1 = mysql_query($sql);
 				if ($query1) {
 					$result .= "<font color=\"green\"> $cpt </font>";
