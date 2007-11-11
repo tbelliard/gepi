@@ -308,7 +308,8 @@ $i = 0;
  //Configuration du calendrier
    include("../../lib/calendrier/calendrier.class.php");
    $cal_1 = new Calendrier("absence", "d_date_absence_eleve");
-
+// Style spécifique
+$style_specifique = "mod_absences/styles/saisie_absences";
 
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";

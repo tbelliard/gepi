@@ -120,9 +120,9 @@ if (empty($_POST['eleve_initial'])) {$eleve_initial = ''; } else {$eleve_initial
 if (empty($_GET['id'])) {$id = ''; } else {$id=$_GET['id']; }
 if (empty($_POST['valider'])) {$valider = ''; } else {$valider=$_POST['valider']; }
 
-?>
-<?php
-//**************** EN-TETE *****************
+// =========== Style spécifique ================
+$style_specifique = "mod_trombinoscopes/styles/styles";
+//**************** EN-TETE *********************
 $titre_page = "Visualisation des trombinoscopes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************

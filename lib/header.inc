@@ -65,28 +65,6 @@ function last_connection() {
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
-<?php $style = getSettingValue("gepi_stylesheet");
-if (empty($style)) $style = "style";
-?>
-<link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/<?php echo $style;?>.css" />
-<!-- ======================================== -->
-<!-- AJOUT pour les trombinoscopes et absences-->
-<?php
-    // vérifie si on est dans le module trombinoscope si oui on ajoute ce css
-    if(basename($_SERVER['PHP_SELF'],".php")==="trombinoscopes"){
-        ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_trombinoscopes/styles/styles.css" /><?php
-    }
-
-   // vérifie si on est dans le modules absences
-   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
-    if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
-        ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css" /><?php
-    }
-    if(basename($_SERVER['PHP_SELF'],".php")==="prof_ajout_abs"){
-        ?><link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/mod_absences/styles/saisie_absences.css" /><?php
-    }
-?>
-<!-- ======================================== -->
 
 <script type="text/javascript" language="javascript">
 <?php if (isset($affiche_message) and ($affiche_message == 'yes')) { ?>
@@ -147,43 +125,31 @@ function show_message_deconnexion(){
 
 <?php
 
-	if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
-		echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-	} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
-		echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-	} else {
-		echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-	}
 
-
-// Affichage du favicon
+// ====================== Affichage du favicon ========================
 echo '
-	<LINK REL="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
-	';
+<LINK REL="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
+	'."\n";
+// ====================== Fin affichage favicon =======================
+
+// ====================== Affichage des javascripts ===================
+echo '	<!-- Début des fichiers en javascript -->'."\n";
+echo '<script type="text/javascript" src="'.$gepiPath.'/lib/functions.js"></script>'."\n";
 
 // Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
 $prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
 	if ($prototype == "ok") {
-		// On affiche alors le lien qui ouvre prototype à la page en question
+		// On affiche alors le lien qui charge Prototype
     	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
-} else {
-    echo '';
-}
-
-// Couleur de fond des pages
-if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
-
-
-if(isset($style_specifique)){
-	// Il faudrait filtrer le contenu de la variable...
-	// ne doit contenir que certains types de caractères et se terminer par .css
-	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
-		// Styles spécifiques à une page:
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 	}
-}
-
+// Ajout de la librairie Scriptaculous.js conditionné à la variable $utilisation_scriptaculous="ok"
+$scriptaculous = isset($utilisation_scriptaculous) ? $utilisation_scriptaculous : NULL;
+$script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
+	 if ($scriptaculous == "ok") {
+	 	// On affiche le lien qui charge scriptaculous
+	 	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/scriptaculous.js?load='.$script_effet.'"></script>'."\n";
+	 }
+// js spécifique
 if(isset($javascript_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
@@ -192,18 +158,6 @@ if(isset($javascript_specifique)){
 		echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 	}
 }
-
-
-
-if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
-	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
-	}
-}
-
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
 $utilisation_jsdivdrag = isset($utilisation_jsdivdrag) ? $utilisation_jsdivdrag : NULL;
 if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
@@ -230,9 +184,45 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 		temporisation_chargement='n';
 	</script>\n";
 
-	//===================================
-} // if(isset($utilisation_jsbase...
+} // if(isset($utilisation_jsdivdrag...
+echo "\n".'	<!-- fin des fichiers en javascript -->'."\n\n";
+// ======================= fin de l'affichage des javascripts ========================
+// ======================= Début de l'affichage des feuilles de style ================
+echo '	<!-- Début des styles -->'."\n";
+$style = getSettingValue("gepi_stylesheet");
+if (empty($style)) $style = "style";
 
+echo '<link rel="stylesheet" type="text/css" href="'.$gepiPath.'/'.$style.'.css" />'."\n";
+// Couleur de fond des pages
+if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
+
+
+if(isset($style_specifique)){
+	// Il faudrait filtrer le contenu de la variable...
+	// ne doit contenir que certains types de caractères et se terminer par .css
+	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+	if(strlen(ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
+		// Styles spécifiques à une page:
+		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+	}
+}
+
+   // vérifie si on est dans le modules absences
+   $files = array("gestion_absences", "select", "ajout_abs", "ajout_ret", "ajout_dip", "ajout_inf", "tableau", "impression_absences", "prof_ajout_abs", "statistiques", "alert_suivi", "admin_config_semaines", "admin_motifs_absences", "admin_horaire_ouverture", "admin_actions_absences", "admin_periodes_absences");
+    if(in_array(basename($_SERVER['PHP_SELF'],".php"), $files)) {
+        ?><link rel='stylesheet' type='text/css' href='<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css' /><?php
+    }
+
+if(isset($style_screen_ajout)){
+	// Styles paramétrables depuis l'interface:
+	if($style_screen_ajout=='y'){
+		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+	}
+}
+echo '	<!-- Fin des styles -->'."\n\n";
+// ============================== FIN des feuilles de style =======================
 ?>
 </head>
 <!-- ************************* -->
