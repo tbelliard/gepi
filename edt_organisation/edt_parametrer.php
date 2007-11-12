@@ -34,19 +34,6 @@ $style_specifique = "edt_organisation/style_edt";
 $utilisation_prototype = "";
 $utilisation_jsbase = "";
 //=========Fin des Prototype et autres js =======================
-// On insère l'entête de Gepi
-require_once("../lib/header.inc");
-
-// On ajoute le menu EdT
-require_once("./menu.inc.php"); ?>
-
-
-<br />
-<!-- la page du corps de l'EdT -->
-
-	<div id="lecorps">
-<center>
-<?php
 
 // Initialiser les variables
 $edt_aff_matiere=isset($_POST['edt_aff_matiere']) ? $_POST['edt_aff_matiere'] : NULL;
@@ -61,17 +48,17 @@ $param_menu_edt = isset($_POST["param_menu_edt"]) ? $_POST["param_menu_edt"] : N
 
 // Récupérer les paramètres tels qu'ils sont déjà définis
 if (isset($parametrer_ok)) {
-
+	$aff_message = "";
 	// Le réglage de l'affichage des matières
 	$req_reg_mat = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
 	$tab_reg_mat = mysql_fetch_array($req_reg_mat);
 
 	if ($edt_aff_matiere === $tab_reg_mat['valeur']) {
-		echo "<p class=\"accept\">Aucune modification de l'affichage des matières</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des matières</p>\n";
 	}
 	else {
 		$modif_aff_mat = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_matiere' WHERE reglage = 'edt_aff_matiere'");
-		echo "<p class=\"refus\"> Modification de l'affichage des matières enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des matières enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage du type d'heure
@@ -79,11 +66,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_cre = mysql_fetch_array($req_reg_cre);
 
 	if ($edt_aff_creneaux === $tab_reg_cre['valeur']) {
-		echo "<p class=\"accept\">Aucune modification de l'affichage des créneaux</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des créneaux</p>\n";
 	}
 	else {
 		$modif_aff_cre = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_creneaux' WHERE reglage = 'edt_aff_creneaux'");
-		echo "<p class=\"refus\"> Modification de l'affichage des créneaux enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des créneaux enregistrée</p>\n";
 	}
 
 	// Le réglage de l'affichage des couleurs
@@ -91,11 +78,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
 
 	if ($edt_aff_couleur === $tab_reg_coul['valeur']) {
-		echo "<p class=\"accept\">Aucune modification des couleurs</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
 	}
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
-		echo "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
 	}
 
 	//Le réglage de l'affichage des salles
@@ -103,11 +90,11 @@ if (isset($parametrer_ok)) {
 	$tab_reg_salle = mysql_fetch_array($req_reg_salle);
 
 	if ($edt_aff_salle === $tab_reg_salle['valeur']) {
-		echo "<p class=\"accept\">Aucune modification de l'affichage des salles</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage des salles</p>\n";
 	}
 	else {
 		$modif_aff_salle = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_salle' WHERE reglage = 'edt_aff_salle'");
-		echo "<p class=\"refus\"> Modification de l'affichage des salle enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des salle enregistrée</p>\n";
 
 	}
 
@@ -116,11 +103,11 @@ if (isset($parametrer_ok)) {
 	$rep_cherche_salle = mysql_fetch_array($req_cherche_salle);
 
 	if ($aff_cherche_salle === $rep_cherche_salle["valeur"]) {
-		echo "<p class=\"accept\">Aucune modification de l'affichage du menu CHERCHER</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification de l'affichage du menu CHERCHER</p>\n";
 	}
 	else {
 		$modif_cherch_salle = mysql_query("UPDATE edt_setting SET valeur = '$aff_cherche_salle' WHERE reglage = 'aff_cherche_salle'");
-		echo "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</p>\n";
+		$aff_message .= "<p class=\"refus\">Modification de l'affichage du menu CHERCHER enregistrée</p>\n";
 	}
 
 	// Le réglage du fonctionnement du menu (param_menu_edt)
@@ -128,44 +115,58 @@ if (isset($parametrer_ok)) {
 	$rep_param_menu = mysql_fetch_array($req_param_menu);
 
 	if ($param_menu_edt === $rep_param_menu["valeur"]) {
-		echo "<p class=\"accept\">Aucune modification du fonctionnement du menu.</p>\n";
+		$aff_message .= "<p class=\"accept\">Aucune modification du fonctionnement du menu.</p>\n";
 	} else {
 		$modif_param_menu = mysql_query("UPDATE edt_setting SET valeur = '$param_menu_edt' WHERE reglage = 'param_menu_edt'");
-		echo "<p class=\"refus\">Modification du fonctionnement du menu enregistrée.</p>\n";
+		$aff_message .= "<p class=\"refus\">Modification du fonctionnement du menu enregistrée.</p>\n";
 	}
 
 } //if (isset($parametrer_ok))
 else {
 	echo "Dans cette page, vous pouvez paramétrer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
 }
+
+// On insère l'entête de Gepi
+require_once("../lib/header.inc");
+
+// On ajoute le menu EdT
+require_once("./menu.inc.php");
 ?>
-</center>
+
+<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+<?php
+if (isset($aff_message)) {
+	echo $aff_message;
+}
+?>
 <form name="parametrer" method="post" action="edt_parametrer.php">
 <table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
 <tr><td>
 
 <fieldset id="matiere">
 	<legend>Les matières</legend>
-		<span class="parametres">
-			<input type="radio" name="edt_aff_matiere" value="court" <?php echo (aff_checked("edt_aff_matiere", "court")); ?>/>
-			Noms courts (du type HG,...)
+		<p>
+			<input type="radio" id="edtMatiereCourt" name="edt_aff_matiere" value="court" <?php echo (aff_checked("edt_aff_matiere", "court")); ?>/>
+			<label for="edtMatiereCourt">Noms courts (du type HG,...).</label>
 <br />
-			<input type="radio" name="edt_aff_matiere" value="long" <?php echo (aff_checked("edt_aff_matiere", "long")); ?>/>
-			Noms longs (Histoire Géographie,...)
+			<input type="radio" id="edtMatiereLong" name="edt_aff_matiere" value="long" <?php echo (aff_checked("edt_aff_matiere", "long")); ?>/>
+			<label for="edtMatiereLong">Noms longs (Histoire Géographie,...).</label>
 
-		</span>
+		</p>
 </fieldset>
 
 </td><td>
 <fieldset id="horaires">
 	<legend>Affichage des horaires</legend>
-		<span class="parametres">
-			<input type="radio" name="edt_aff_creneaux" value="noms" <?php echo (aff_checked("edt_aff_creneaux", "noms")); ?>/>
-			Afficher le nom des cr&eacute;neaux (M1, M2,...)
+		<p>
+			<input type="radio" id="edtCreneauxNoms" name="edt_aff_creneaux" value="noms" <?php echo (aff_checked("edt_aff_creneaux", "noms")); ?>/>
+			<label for="edtCreneauxNoms">Afficher le nom des cr&eacute;neaux (M1, M2,...).</label>
 <br />
-			<input type="radio" name="edt_aff_creneaux" value="heures" <?php echo (aff_checked("edt_aff_creneaux", "heures")); ?>/>
-			Afficher les heures de d&eacute;but et de fin du cr&eacute;neau
-		</span>
+			<input type="radio" id="edtCreneauxHeures" name="edt_aff_creneaux" value="heures" <?php echo (aff_checked("edt_aff_creneaux", "heures")); ?>/>
+			<label for="edtCreneauxHeures">Afficher les heures de d&eacute;but et de fin du cr&eacute;neau.</label>
+		</p>
 </fieldset>
 
 </td></tr>
@@ -175,25 +176,25 @@ else {
 <tr><td>
 <fieldset id="couleurs">
 	<legend>Affichage général en couleur</legend>
-		<span class="parametres">
-			<input type="radio" name="edt_aff_couleur" value="coul" <?php echo (aff_checked("edt_aff_couleur", "coul")); ?>/>
-			Couleurs
+		<p>
+			<input type="radio" id="edtAffCouleur" name="edt_aff_couleur" value="coul" <?php echo (aff_checked("edt_aff_couleur", "coul")); ?>/>
+			<label for="edtAffCouleur">Couleurs</label>
 <br />
-			<input type="radio" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
-			Sans couleurs
-		</span>
+			<input type="radio" id="edtAffNb" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
+			<label for="edtAffNb">Sans couleurs</label>
+		</p>
 </fieldset>
 
 </td><td>
 <fieldset id="salles">
 	<legend>Affichage des salles</legend>
-		<span class="parametres">
-			<input type="radio" name="edt_aff_salle" value="nom" <?php echo (aff_checked("edt_aff_salle", "nom")); ?>/>
-			Par le nom de la salle (salle 2, salle de r&eacute;union,...)
+		<p>
+			<input type="radio" id="affSalleNom" name="edt_aff_salle" value="nom" <?php echo (aff_checked("edt_aff_salle", "nom")); ?>/>
+			<label for="affSalleNom">Par le nom de la salle (salle 2, salle de r&eacute;union,...).</label>
 <br />
-			<input type="radio" name="edt_aff_salle" value="numero" <?php echo (aff_checked("edt_aff_salle", "numero")); ?>/>
-			Par le num&eacute;ro de la salle uniquement
-		</span>
+			<input type="radio" id="affSalleNumero" name="edt_aff_salle" value="numero" <?php echo (aff_checked("edt_aff_salle", "numero")); ?>/>
+			<label for="affSalleNumero">Par le num&eacute;ro de la salle uniquement.</label>
+		</p>
 </fieldset>
 </td></tr>
 </table>
@@ -203,13 +204,13 @@ else {
 		<td>
 <fieldset id="aff_cherche_salle">
 	<legend>Fonction chercher les salles vides</legend>
-		<span class="parametres">
-			<input type="radio" name="aff_cherche_salle" value="admin" <?php echo (aff_checked("aff_cherche_salle", "admin")); ?>/>
-			Seul l'administrateur a acc&egrave;s &agrave; cette fonctionnalit&eacute;.
+		<p>
+			<input type="radio" id="affSalleAdmin" name="aff_cherche_salle" value="admin" <?php echo (aff_checked("aff_cherche_salle", "admin")); ?>/>
+			<label for="affSalleAdmin"> l'administrateur a acc&egrave;s &agrave; cette fonctionnalit&eacute;.</label>
 <br />
-			<input type="radio" name="aff_cherche_salle" value="tous" <?php echo (aff_checked("aff_cherche_salle", "tous")); ?>/>
-			Tous les utilisateurs ont acc&egrave;s &agrave; cette fonctionnalit&eacute; sauf les &eacute;l&egrave;ves et les responsables d'&eacute;l&egrave;ves.
-		</span>
+			<input type="radio" id="affSalleTous" name="aff_cherche_salle" value="tous" <?php echo (aff_checked("aff_cherche_salle", "tous")); ?>/>
+			<label for="affSalleTous"> Tous les utilisateurs ont acc&egrave;s &agrave; cette fonctionnalit&eacute; sauf les &eacute;l&egrave;ves et les responsables d'&eacute;l&egrave;ves.</label>
+		</p>
 </fieldset>
 		</td>
 		<td></td>
