@@ -115,7 +115,7 @@ if ($_SESSION['statut'] == "administrateur") {
 			<dd id="sEdTmenu4"'.displaydd("4").'>
 				<ul>
 					<li><a href="voir_groupe.php">Les groupes</a></li>
-					<li><a href="ajouter_salle.php">Gérer les Salles</a></li>
+					<li><a href="ajouter_salle.php">Les Salles</a></li>
 					<li><a href="edt_initialiser.php">Initialiser</a></li>
 					<li><a href="edt_parametrer.php">Paramétrer</a></li>
 				</ul>
