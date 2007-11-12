@@ -125,23 +125,23 @@ require_once("../lib/header.inc");
 
 <?php if ($action == "add_aid") { ?>
 
-    <form enctype="multipart/form-data" action="add_aid.php" method=post>
+    <form enctype="multipart/form-data" action="add_aid.php" method="post">
 
     <div class='norme'>
 
-    Nom : <input type=text name=reg_nom size=20 <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> />
+    <p><label for="aidRegNom">Nom : <input type="text" id="aidRegNom" name="reg_nom" size="100" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> /></label></p>
 
-    <br />Numéro (fac.) : <input type=text name=reg_num size=4 <?php if (isset($reg_num)) { echo "value=\"".$reg_num."\"";}?> />
+    <p><label for="aidRegNum">Numéro (fac.) : <input type="text" id="aidRegNom" name="reg_num" size="4" <?php if (isset($reg_num)) { echo "value=\"".$reg_num."\"";}?> /></label></p>
 
     </div>
 
-    <input type=hidden name=is_posted value=1 />
+    <input type="hidden" name="is_posted" value="1" />
 
-    <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
+    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
 
-    <input type=hidden name=mode value=<?php echo $mode;?> />
+    <input type="hidden" name="mode" value="<?php echo $mode;?>" />
 
-    <input type=submit value=Enregistrer />
+    <input type="submit" value="Enregistrer" />
 
     </form>
 
@@ -153,7 +153,7 @@ if ($action == "modif_aid") { ?>
 
     <p>Entrez le nouveau nom à la place de l'ancien : </p>
 
-    <form enctype="multipart/form-data" action="add_aid.php" method=post>
+    <form enctype="multipart/form-data" action="add_aid.php" method="post">
 
     <?php $calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 
@@ -163,17 +163,17 @@ if ($action == "modif_aid") { ?>
 
 
 
-    <p>Nom : <input type=text name=reg_nom size=20 <?php echo "value=\"".$aid_nom."\"";?> />
+    <p><label for="aidRegNom">Nom : <input type="text" id="aidRegNom" name="reg_nom" size="100" <?php echo "value=\"".$aid_nom."\"";?> /></label></p>
 
-    <br />Numéro (fac.) : <input type=text name=reg_num size=4 <?php echo "value=\"".$aid_num."\"";?> />
+    <p><label for="aidRegNum">Numéro (fac.) : <input type="text" id="aidRegNum" name="reg_num" size="4" <?php echo "value=\"".$aid_num."\"";?> /></label></p>
 
-    <input type=hidden name=is_posted value=2 />
+    <input type="hidden" name="is_posted" value="2" />
 
-    <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
+    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
 
-    <input type=hidden name=aid_id value="<?php echo $aid_id; ?>" />
+    <input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
 
-    <input type=submit value='Enregistrer' />
+    <input type="submit" value="Enregistrer" />
 
     </form>
 
