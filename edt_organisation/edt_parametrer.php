@@ -142,7 +142,7 @@ if (isset($aff_message)) {
 }
 ?>
 <form name="parametrer" method="post" action="edt_parametrer.php">
-<table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
+<table cellpadding="5" cellspacing="0" border="0" summary="Parametres" style="height: 150px; width: 100%;">
 <tr><td>
 
 <fieldset id="matiere">
@@ -213,10 +213,7 @@ if (isset($aff_message)) {
 		</p>
 </fieldset>
 		</td>
-		<td></td>
-	</tr>
-</table>
-
+		<td>
 <fieldset id="param_edtmenu">
 	<legend>Le fonctionnement du menu</legend>
 	<p>
@@ -226,14 +223,19 @@ if (isset($aff_message)) {
 
 	<p>
 		<input type="radio" id="edtMenuClick" name="param_menu_edt" value="click" <?php echo (aff_checked("param_menu_edt", "click")); ?>/>
-		<label for="EdTMenuClick">Les liens s'affichent quand l'utilisateur clique sur le titre.</label>
+		<label for="edtMenuClick">Les liens s'affichent quand l'utilisateur clique sur le titre.</label>
 	</p>
 
 	<p>
 		<input type="radio" id="edtMenuRien" name="param_menu_edt" value="rien" <?php echo (aff_checked("param_menu_edt", "rien")); ?>/>
-		<label for="EdtMenuRien">Tous les liens sont visibles tout le temps.</label>
+		<label for="edtMenuRien">Tous les liens sont visibles tout le temps.</label>
 	</p>
 </fieldset>
+		</td>
+	</tr>
+
+
+</table>
 	<input type="hidden" name="parametrer" value="ok" />
 	<input type="hidden" name="parametrer1" value="ok" />
 	<input type="submit" name="Valider" value="Valider" />
