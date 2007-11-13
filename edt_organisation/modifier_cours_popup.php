@@ -64,10 +64,12 @@ $duree = isset($_POST["duree"]) ? $_POST["duree"] : NULL;
 $choix_semaine = isset($_POST["choix_semaine"]) ? $_POST["choix_semaine"] : NULL;
 $login_salle = isset($_POST["login_salle"]) ? $_POST["login_salle"] : NULL;
 $periode_calendrier = isset($_POST["periode_calendrier"]) ? $_POST["periode_calendrier"] : NULL;
+$aid = isset($_POST["aid"]) ? $_POST["aid"] : NULL;
 //$ = isset($_GET[""]) ? $_GET[""] : (isset($_POST[""]) ? $_POST[""] : NULL);
 
 // Traitement des changements
 if (isset($modifier_cours) AND $modifier_cours == "ok") {
+
 	// On modifie sans vérification ?
 	$req_modif = mysql_query("UPDATE edt_cours SET id_groupe = '$enseignement',
 	 id_salle = '$login_salle',
@@ -137,8 +139,16 @@ echo '
 			<select name="enseignement">';
 
 		$tab_enseignements = get_groups_for_prof($identite);
+		// Si c'est un AID, on inscrit son nom
+		$explode = explode("|", $rep_cours["id_groupe"]);
+		if ($explode[0] == "AID") {
+			$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$explode[1]."'"));
+			$aff_intro = $nom_aid["nom"];
+		}else {
+			$aff_intro = 'Choix de l\'enseignement';
+		}
 echo '
-				<option value="rien">Choix de l\'enseignement</option>
+				<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>
 	';
 
 
@@ -343,7 +353,7 @@ echo '
 			<td>
 
 			<select name="periode_calendrier">
-				<option value="rien">Année entière</option>
+				<option value="0">Année entière</option>
 	';
 	// Choix de la période définie dans le calendrier
 	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
@@ -377,6 +387,7 @@ echo '
 		<input type="hidden" name="id_cours" value="'.$id_cours.'" />
 		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
 		<input type="hidden" name="identite" value="'.$identite.'" />
+		<input type="hidden" name="aid" value="'.$rep_cours["id_groupe"].'" />
 		<input type="hidden" name="modifier_cours" value="ok" />
 		<input type="submit" name="Enregistrer" value="Enregistrer" onClick=\'javascript:window.close();\' />
 

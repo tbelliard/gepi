@@ -132,8 +132,21 @@ function enseignements_prof($login_prof, $rep){
 // Fonction générale qui renvoie un tableau des enseignements à un horaire donné (heure et jour)
 
 function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt, $heuredeb_dec){
+		$tab_ens = array();
 	if ($type_edt == "prof") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(prof) !');
+		// On cherche les AID du créneau
+		$req_aid_horaire = mysql_query("SELECT * FROM edt_cours WHERE jour_semaine = '".$jour_semaine."' AND id_definie_periode='".$id_creneaux."' AND heuredeb_dec = '".$heuredeb_dec."' AND id_groupe LIKE 'AID%'");
+		$nbre_reponse = mysql_num_rows($req_aid_horaire);
+		for($i=0; $i<$nbre_reponse; $i++) {
+			$rep[$i]["id_groupe"] = mysql_result($req_aid_horaire, $i, "id_groupe");
+			$test = explode("|", $rep[$i]["id_groupe"]);
+			// On vérifie si le prof fait partie de l'AID ou pas
+			$req_prof = mysql_num_rows(mysql_query("SELECT indice_aid FROM j_aid_utilisateurs WHERE id_utilisateur = '".$login_general."' AND id_aid = '".$test[1]."'"));
+			if ($req_prof == "1") {
+				$tab_ens[] = $rep[$i]["id_groupe"];
+			}
+		}
 	}
 	elseif ($type_edt == "classe") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_classes.id_groupe AND id_classe='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(classe) !');
@@ -143,11 +156,12 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 	}
 	elseif ($type_edt == "salle") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_salle='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(salle) !');
+	} else {
+		$req_ens_horaire = "";
 	}
 
-		$tab_ens = array();
 	while($data_rep_ens = mysql_fetch_array($req_ens_horaire)) {
-		$tab_ens[]=$data_rep_ens["id_groupe"];
+		$tab_ens[] = $data_rep_ens["id_groupe"];
 	}
 	return $tab_ens;
 }
@@ -505,6 +519,37 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 			$modifier_cours = "";
 		}
 
+	// On vérifie si $enseignement est ou pas pas un AID
+	$analyse = explode("|", $enseignement);
+if ($analyse[0] == "AID") {
+	//echo "c'est un AID";
+	$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$analyse[1]."'");
+	$rep_nom_aid = mysql_fetch_array($req_nom_aid);
+
+	// On récupère le nom de l'aid
+	$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_nom_aid["indice_aid"]."'");
+	$rep_nom_complet = mysql_fetch_array($req_nom_complet);
+	$aff_matiere = $rep_nom_complet["nom"];
+
+		$contenu="";
+
+	// On compte les élèves de l'aid $aff_nbre_eleve
+	$req_nbre_eleves = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$analyse[1]."' ORDER BY login");
+	$aff_nbre_eleve = mysql_num_rows($req_nbre_eleves);
+		for($a=0; $a < $aff_nbre_eleve; $a++) {
+			$rep_eleves[$a]["login"] = mysql_result($req_nbre_eleves, $a, "login");
+			$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_eleves[$a]["login"]."'"));
+			$contenu .= $noms["nom"]." ".$noms["prenom"]."<br />";
+		}
+		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+		$id_div = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux;
+	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
+			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
+	// On dresse la liste des noms de prof
+	$rep_nom_prof['civilite'] = "";
+	$rep_nom_prof['nom'] = "Cours en groupe";
+
+}else {
 
 	// on récupère le nom court de la classe en question
 	{
@@ -522,7 +567,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	// On récupère la liste des élèves de l'enseignement
 
 	if (($type_edt == "prof") OR ($type_edt == "salle")) {
-	$current_group=get_group($enseignement);
+	$current_group = get_group($enseignement);
 
 		$contenu="";
 			// 1 étant le numéro de la période
@@ -534,7 +579,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 		$id_div = $jour_semaine.$rep_classe['classe'].$id_creneaux;
 	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
-			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
+			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 	}
 	// On récupère le nom et la civilite du prof en question
 	{
@@ -543,23 +588,17 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login']."'");
 	$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 	}
-	// On récupère le type de semaine si besoin
-	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
-	$rep_sem = mysql_fetch_array($req_sem);
-		if ($rep_sem["id_semaine"] == "0") {
-			$aff_sem = '';
-		}
-		else $aff_sem = '<font color="#6633FF"> - Sem.'.$rep_sem["id_semaine"].'</font>';
 	// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
 	{
 	$req_groupe = mysql_query("SELECT description FROM groupes WHERE id ='".$enseignement."'");
 	$rep_matiere = mysql_fetch_array($req_groupe);
 	if (GetSettingEdt("edt_aff_matiere") == "long") {
 		// SI c'est l'admin, il faut réduire la taille de la police de caractères
-		if ($_SESSION["statut"] == "administrateur") {
-			$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']."</span>";
-		}
-		else $aff_matiere = $rep_matiere['description'];
+		//if ($_SESSION["statut"] == "administrateur") {
+			//$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']."</span>";
+		//}
+		//else
+		$aff_matiere = $rep_matiere['description'];
 	}
 	else {
 		$req_2_matiere = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."'");
@@ -567,6 +606,17 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$aff_matiere = $rep_2_matiere['id_matiere'];
 	}
 	}
+
+} // fin du else après les aid
+
+	// On récupère le type de semaine si besoin
+	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
+	$rep_sem = mysql_fetch_array($req_sem);
+		if ($rep_sem["id_semaine"] == "0") {
+			$aff_sem = '';
+		}
+		else $aff_sem = '<font color="#663333"> - Sem.'.$rep_sem["id_semaine"].'</font>';
+
 	// On récupère le nom complet de la salle en question
 	{
 	if (GetSettingEdt("edt_aff_salle") == "nom") {
