@@ -145,73 +145,13 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_salle='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(salle) !');
 	}
 
-	$tab_ens=array();
-	while($data_rep_ens = mysql_fetch_array($req_ens_horaire))
-	{
-	$tab_ens[]=$data_rep_ens["id_groupe"];
+		$tab_ens = array();
+	while($data_rep_ens = mysql_fetch_array($req_ens_horaire)) {
+		$tab_ens[]=$data_rep_ens["id_groupe"];
 	}
 	return $tab_ens;
 }
 
-// Fonction qui renvoie un tableau des enseignements d'un prof à un horaire donné (heure et jour)
-
-function cree_tab_prof_bis($login_prof, $id_creneaux, $jour_semaine, $heuredeb_dec){
-
-	$req_ens_horaire_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$login_prof."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_prof_bis !');
-
-	$tab_ens=array();
-	while($data_rep_ens = mysql_fetch_array($req_ens_horaire_prof))
-	{
-	$tab_ens[]=$data_rep_ens["id_groupe"];
-	}
-	return $tab_ens;
-}
-
-
-// Fonction qui renvoie un tableau des enseignements d'un élève à un horaire donné (heure et jour)
-
-function cree_tab_classe($login_classe, $id_creneaux, $jour_semaine, $heuredeb_dec) {
-
-	$req_ens_horaire_classe = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_classes.id_groupe AND id_classe='".$login_classe."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_classe !');
-
-	$tab_ens=array();
-	while($data_rep_ens = mysql_fetch_array($req_ens_horaire_classe))
-	{
-	$tab_ens[]=$data_rep_ens["id_groupe"];
-	}
-	return $tab_ens;
-}
-
-
-// Fonction qui renvoie un tableau des enseignements d'un élève à un horaire donné (heure et jour)
-
-function cree_tab_eleve($login_eleve, $id_creneaux, $jour_semaine, $heuredeb_dec){
-
-
-	$req_ens_horaire_eleve = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_eleves_groupes.id_groupe AND login='".$login_eleve."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_eleve !');
-
-	$tab_ens=array();
-	while($data_rep_ens = mysql_fetch_array($req_ens_horaire_eleve))
-	{
-	$tab_ens[]=$data_rep_ens["id_groupe"];
-	}
-	return $tab_ens;
-}
-
-
-// fonction qui renvoie un tableau des enseignements d'un élèves à un horaire donné (heure et jour)
-
-function cree_tab_salle($id_salle, $id_creneaux, $jour_semaine, $heuredeb_dec) {
-
-	$req_ens_horaire_salle = mysql_query("SELECT * FROM edt_cours WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_salle='".$id_salle."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_salle !');
-
-	$tab_ens=array();
-	while($data_rep_ens = mysql_fetch_array($req_ens_horaire_salle))
-	{
-	$tab_ens[]=$data_rep_ens["id_groupe"];
-	}
-	return $tab_ens;
-}
 
 // Fonction qui renvoie la duree d'un enseignement à un créneau et un jour donné pour renseigner le rollspan
 
@@ -434,29 +374,19 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 	else $ens_tab_0 = NULL;
 
 	// Chercher l'enseignement à afficher
-if ($type_edt == "prof") {
-	$ens_tab = cree_tab_prof_bis($req_type_login, $id_creneaux, $jour_semaine, $heuredeb_dec);
-	$nbre_ens = count($ens_tab);
-}
-elseif ($type_edt == "classe") {
-	$ens_tab = cree_tab_classe($req_type_login, $id_creneaux, $jour_semaine, $heuredeb_dec);
-	$nbre_ens = count($ens_tab);
-}
-elseif ($type_edt == "salle") {
-	$ens_tab = cree_tab_salle($req_type_login, $id_creneaux, $jour_semaine, $heuredeb_dec);
-	$nbre_ens = count($ens_tab);
-}
-elseif ($type_edt == "eleve") {
-	$ens_tab=cree_tab_eleve($req_type_login, $id_creneaux, $jour_semaine, $heuredeb_dec);
+	$ens_tab = cree_tab_general($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $heuredeb_dec);
+		if ($type_edt == "eleve") {
+				$nbre_ens_1 = count($ens_tab);
+			if ($nbre_ens_1 === 0) {
+				$nbre_ens = 0;
+			} // 3 étant le nombre de périodes (il faudra changer cela)
+			else {
+				$nbre_ens = ($nbre_ens_1/3);
+			}
+		} else {
+			$nbre_ens = count($ens_tab);
+		}
 
-		// Il faudra trouver un moyen d'intégrer la notion de période
-		// et le calendrier
-	$nbre_ens_1 = count($ens_tab);
-		if ($nbre_ens_1 === 0) {
-			$nbre_ens = 0;
-		} // 3 étant le nombre de périodes (il faudra changer cela)
-		else $nbre_ens = ($nbre_ens_1/3);
-}
 
 //debuggage intensif (à enlever en prod)
 if (isset($ens_tab_cheval[0])) {
@@ -530,15 +460,13 @@ if (isset($nbre_ens)) {
 			$case_tab = $case_1_tab.$case_2_tab.$case_3_tab;
 		}
 		elseif ($nbre_ens > 3) {
-			$contenu = "";
+				// On met la liste des enseignements dans $contenu de l'infobulle
+				$contenu = "";
 				for($z=0; $z<$nbre_ens; $z++) {
 					$contenu .= "<p>".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[$z])."</p>";
 				}
-				$id_div = "ens_".$id_creneaux."_".$jour_semaine;
+			$id_div = "ens_".$id_creneaux."_".$jour_semaine;
 			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
-			//$case_tab = ('Il y a plus de 3 enseignements, mais la fonction n\'existe pas encore, soyez patient !');
-			//"<a href='#' onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>
-			//".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"n","n","y","n");
 		}
 		else {
 		// AJOUT: boireaus
@@ -567,13 +495,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 			$effacer_cours = "";
 		}
 		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
-		// <a href="javascript:centrerpopup("modifier_COURS.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",610,460,"scrollbars=no,statusbar=no,resizable=yes")"><img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 		if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
-			/*$modifier_cours = '
-					<a href="./modifier_cours.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'">
-					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
-					';
-			*/
 			$modifier_cours = '
 					<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
 					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
