@@ -94,8 +94,12 @@ if (!$current_group) {
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe");
 	}
+	elseif($_SESSION['statut']=='secours'){
+		$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c ORDER BY classe");
+	}
 
 	$lignes = mysql_num_rows($appel_donnees);
+	//echo "\$lignes=$lignes<br />";
 
 	if($lignes==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
@@ -120,10 +124,13 @@ if (!$current_group) {
 			$id_classe = mysql_result($appel_donnees, $i, "id");
 			$aff_class = 'no';
 			$groups = get_groups_for_class($id_classe);
+			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
 
 			foreach($groups as $group){
 				$flag2 = "no";
-				if ($_SESSION['statut']!='scolarite') {
+				//if ($_SESSION['statut']!='scolarite') {
+				// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
+				if ($_SESSION['statut']=='professeur') {
 					$test = mysql_query("SELECT count(*) FROM j_groupes_professeurs
 					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
 					if (mysql_result($test, 0) == 1) $flag2 = 'yes';
@@ -133,7 +140,7 @@ if (!$current_group) {
 
 				if ($flag2 == "yes") {
 					$display_class = mysql_result($appel_donnees, $i, "classe");
-				echo "<span class='norme'>";
+					echo "<span class='norme'>";
 					//if ($aff_class == 'no') {echo "<span class='norme'><b>$display_class</b> : ";$aff_class = 'yes';}
 					if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
 					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
@@ -161,6 +168,7 @@ if (!$current_group) {
 						echo ")";
 					}
 
+					echo "</span>\n";
 					echo "<br />\n";
 				}
 			}
@@ -189,16 +197,16 @@ if (!$current_group) {
     $i="1";
     while ($i < $nb_periode) {
         $name = "visu_note_".$i;
-        echo "<p><INPUT TYPE='CHECKBOX' NAME='$name' VALUE='yes' />".ucfirst($nom_periode[$i])." - Extraire les moyennes</p>\n";
+        echo "<p><input type='checkbox' name='$name' id='$name' value='yes' /><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les moyennes</label></p>\n";
     $i++;
     }
     $i="1";
     while ($i < $nb_periode) {
             $name = "visu_app_".$i;
-            echo "<p><INPUT TYPE='CHECKBOX' NAME='$name' VALUE='yes' />".ucfirst($nom_periode[$i])." - Extraire les appréciations</p>\n";
+            echo "<p><input type='checkbox' name='$name' id='$name' value='yes' /><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les appréciations</label></p>\n";
     $i++;
     }
-    echo "<p><INPUT TYPE='CHECKBOX' NAME='stat' VALUE='yes' />Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</p>\n";
+    echo "<p><input type='checkbox' name='stat' id='stat' value='yes' /><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
     if ($multiclasses) {
         echo "<p><input type='radio' name='order_by' value='nom' checked /> Classer les élèves par ordre alphabétique ";
         echo "<br/><input type='radio' name='order_by' value='classe' /> Classer les élèves par classe</p>";
