@@ -166,7 +166,10 @@ if ($_SESSION['statut'] == "administrateur") {
 	else{
 		$_SESSION['user_temp_directory']='y';
 	}
-
+    if ((getSettingValue("disable_login"))!='no'){
+		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
+		echo "<font color=\"red\"><center>Attention : le site est en cours de maintenance et temporairement inaccessible.</center></font>\n";
+	}
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
     $sql = "select LOGIN from log where END > now()";
