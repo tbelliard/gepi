@@ -130,42 +130,50 @@ function get_nom_class_from_id($id){
 
 					echo "<p>Choisissez la période à importer:</p>\n";
 					//echo "<ul>\n";
+					echo "<table class='boireaus'>\n";
+					$alt=1;
 					for($i=0;$i<count($tab_max_per);$i++){
 						//echo "<li>\n";
 
-						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-						echo "<table border='0'>\n";
-						echo "<tr><td valign='top'>Classes à $tab_max_per[$i] périodes:</td>\n";
-						echo "<td>\n";
-						for($j=1;$j<=$tab_max_per[$i];$j++){
-							if($j==1){$checked=" checked";}else{$checked="";}
-							echo "<input type='radio' name='num_periode' id='num_periode_$j' value='$j'$checked /><label for='num_periode_$j' style='cursor: pointer;'> Période $j</label><br />\n";
-						}
-						echo "</td>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'><td>\n";
 
-						/*
-						$sql="SELECT DISTINCT num_periode FROM periodes WHERE MAX(num_periode)='$tab_max_per[$i]' ORDER BY num_periode;";
-						echo "$sql<br />\n";
-						$res_per=mysql_query($sql);
-						while($lig_tmp=mysql_fetch_object($res_per)){
-							// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-							echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
-						}
-						*/
+							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+							echo "<table border='0'>\n";
+							echo "<tr><td valign='top' style='border:0px;'>Classes à $tab_max_per[$i] périodes:</td>\n";
+							echo "<td style='border:0px;'>\n";
+							for($j=1;$j<=$tab_max_per[$i];$j++){
+								if($j==1){$checked=" checked";}else{$checked="";}
+								echo "<input type='radio' name='num_periode' id='num_periode_".$j."_".$tab_max_per[$i]."' value='$j'$checked /><label for='num_periode_".$j."_".$tab_max_per[$i]."' style='cursor: pointer;'> Période $j</label><br />\n";
+							}
+							echo "</td>\n";
 
-						echo "<td valign='top'>\n";
-						echo "<input type='hidden' name='max_per' value='$tab_max_per[$i]' />\n";
-						echo "<p><input type='submit' value='Valider' /></p>\n";
-						echo "</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
-						echo "</form>\n";
+							/*
+							$sql="SELECT DISTINCT num_periode FROM periodes WHERE MAX(num_periode)='$tab_max_per[$i]' ORDER BY num_periode;";
+							echo "$sql<br />\n";
+							$res_per=mysql_query($sql);
+							while($lig_tmp=mysql_fetch_object($res_per)){
+								// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
+								echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
+							}
+							*/
+
+							echo "<td valign='top' style='border:0px;'>\n";
+							echo "<input type='hidden' name='max_per' value='$tab_max_per[$i]' />\n";
+							echo "<p><input type='submit' value='Valider' /></p>\n";
+							echo "</td>\n";
+							echo "</tr>\n";
+							echo "</table>\n";
+							echo "</form>\n";
 
 						//echo "</li>\n";
+						echo "</td></tr>\n";
 
 					}
 					//echo "</ul>\n";
+					echo "</table>\n";
 
+					echo "<p><i>NOTE:</i> Il n'est pas possible d'importer simultanément des absences de classes dont le nombre de périodes diffère.</p>\n";
 				}
 			}
 			else{
