@@ -146,7 +146,7 @@ change = 'no';
 <form enctype="multipart/form-data" action="saisie_absences.php" method="post">
 <p class=bold>
 <a href="index.php?id_classe=<?php echo $id_classe; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
-<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choisir une autre classe</a> | <input type="submit" value="Enregistrer"></p>
+<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choisir une autre classe</a> | <input type="submit" value="Enregistrer" /></p>
 
 
 <?php
@@ -155,13 +155,14 @@ $classe = mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 <br />
-<table border=1 cellspacing=2 cellpadding=5>
+<!--table border=1 cellspacing=2 cellpadding=5-->
+<table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>
-	<td align='center'><b>Nom Prénom</b></td>
-	<td align='center'><b>Nb. total de 1/2 journées d'absence</b></td>
-	<td align='center'><b>Nb. absences non justifiées</b></td>
-	<td align='center'><b>Nb. de retard</b></td>
-	<td align='center'><b>Observations</b></td>
+	<th align='center'><b>Nom Prénom</b></th>
+	<th align='center'><b>Nb. total de 1/2 journées d'absence</b></th>
+	<th align='center'><b>Nb. absences non justifiées</b></th>
+	<th align='center'><b>Nb. de retard</b></th>
+	<th align='center'><b>Observations</b></th>
 </tr>
 <?php
 if ($_SESSION['statut'] == "cpe") {
@@ -173,6 +174,7 @@ if ($_SESSION['statut'] == "cpe") {
 $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 $i = '0';
 $num_id=10;
+$alt=1;
 while($i < $nombre_lignes) {
 	$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 	$current_eleve_absences_query = mysql_query("SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
@@ -186,7 +188,9 @@ while($i < $nombre_lignes) {
 	$current_eleve_login_nj = $current_eleve_login."_nb_nj";
 	$current_eleve_login_retard = $current_eleve_login."_nb_retard";
 	$current_eleve_login_ap = $current_eleve_login."_ap";
-	echo "<tr><td align='center'>".strtoupper($current_eleve_nom)." $current_eleve_prenom\n";
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'><td align='center'>".strtoupper($current_eleve_nom)." $current_eleve_prenom\n";
 	//=========================
 	// MODIF: boireaus 20071010
 	echo "<input type='hidden' name='log_eleve[$i]' value='$current_eleve_login' />\n";

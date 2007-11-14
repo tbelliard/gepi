@@ -604,116 +604,124 @@ function get_nom_class_from_id($id){
 									$alt=-1;
 									for($i=0;$i<count($eleves);$i++){
 
-										//******************************
-										// A FAIRE
-										// CONTRÔLER SI L'ELEVE EST DANS UNE DES CLASSES IMPORTEES
-										//******************************
-
 										if(isset($eleves[$i]['elenoet'])){
-
-											// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
-											//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
-											$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
+											// Le CPE a-t-il bien cet élève:
+											$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
 											$test=mysql_query($sql);
 
+											/*
+											if(mysql_num_rows($test)==0){
+												echo "<tr>\n";
+												echo "<td>$sql</td>\n";
+												echo "</tr>\n";
+											}
+											else{
+											*/
 											if(mysql_num_rows($test)>0){
-												$alt=$alt*(-1);
-												echo "<tr class='lig$alt'>\n";
-												echo "<td>$i</td>\n";
+												// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
+												//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
+												$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
+												$test=mysql_query($sql);
+
+												if(mysql_num_rows($test)>0){
+													$alt=$alt*(-1);
+													echo "<tr class='lig$alt'>\n";
+													echo "<td>$i</td>\n";
 
 
-												/*
-												$sql="SELECT DISTINCT e.login,e.nom,e.prenom,c.classe
-															FROM eleves e,
-																j_eleves_classes jec,
-																classes c
-															WHERE (e.no_gep='".$eleves[$i]['elenoet']."' OR e.no_gep='0".$eleves[$i]['elenoet']."') AND
-																e.login=jec.login AND
-																jec.id_classe=c.id";
-												*/
-												$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
-															FROM eleves e
-															WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
-												$res1=mysql_query($sql);
-												if(mysql_num_rows($res1)==0){
-													echo "<td>".$eleves[$i]['elenoet']."</td>\n";
-													echo "<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
-													$nb_err++;
-												}
-												elseif(mysql_num_rows($res1)==1){
-													$lig1=mysql_fetch_object($res1);
-													echo "<td>$lig1->elenoet\n";
-													echo "<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
-													echo "</td>\n";
-													echo "<td>$lig1->nom</td>\n";
-													echo "<td>$lig1->prenom</td>\n";
+													/*
+													$sql="SELECT DISTINCT e.login,e.nom,e.prenom,c.classe
+																FROM eleves e,
+																	j_eleves_classes jec,
+																	classes c
+																WHERE (e.no_gep='".$eleves[$i]['elenoet']."' OR e.no_gep='0".$eleves[$i]['elenoet']."') AND
+																	e.login=jec.login AND
+																	jec.id_classe=c.id";
+													*/
+													$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
+																FROM eleves e
+																WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
+													$res1=mysql_query($sql);
+													if(mysql_num_rows($res1)==0){
+														echo "<td>".$eleves[$i]['elenoet']."</td>\n";
+														echo "<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
+														$nb_err++;
+													}
+													elseif(mysql_num_rows($res1)==1){
+														$lig1=mysql_fetch_object($res1);
+														echo "<td>$lig1->elenoet\n";
+														echo "<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
+														echo "</td>\n";
+														echo "<td>$lig1->nom</td>\n";
+														echo "<td>$lig1->prenom</td>\n";
+
+														echo "<td>\n";
+														$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
+																WHERE jec.login='$lig1->login' AND
+																	jec.id_classe=c.id AND periode='$num_periode'";
+														$res2=mysql_query($sql);
+														if(mysql_num_rows($res2)==0){
+															echo "<span style='color:red;'>NA</span>\n";
+														}
+														else {
+															$cpt=0;
+															while($lig2=mysql_fetch_object($res2)){
+																if($cpt>0){
+																	echo ", ";
+																}
+																echo $lig2->classe;
+															}
+														}
+														echo "</td>\n";
+													}
+													else{
+														echo "<td>".$eleves[$i]['elenoet']."</td>\n";
+														echo "<td style='color:red;' colspan='3'>Plus d'un élève correspond à cet ELENOET ???</td>\n";
+														$nb_err++;
+													}
 
 													echo "<td>\n";
-													$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
-															WHERE jec.login='$lig1->login' AND
-																jec.id_classe=c.id AND periode='$num_periode'";
-													$res2=mysql_query($sql);
-													if(mysql_num_rows($res2)==0){
-														echo "<span style='color:red;'>NA</span>\n";
+													if(isset($eleves[$i]['nbAbs'])){
+														echo $eleves[$i]['nbAbs'];
+														echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
 													}
-													else {
-														$cpt=0;
-														while($lig2=mysql_fetch_object($res2)){
-															if($cpt>0){
-																echo ", ";
-															}
-															echo $lig2->classe;
-														}
+													else{
+														//echo "&nbsp;";
+														echo "<span style='color:red;'>ERR</span>\n";
+														//echo "<input type='hidden' name='nbabs_eleve[$i]' value='0' />\n";
+														$nb_err++;
 													}
 													echo "</td>\n";
-												}
-												else{
-													echo "<td>".$eleves[$i]['elenoet']."</td>\n";
-													echo "<td style='color:red;' colspan='3'>Plus d'un élève correspond à cet ELENOET ???</td>\n";
-													$nb_err++;
-												}
 
-												echo "<td>\n";
-												if(isset($eleves[$i]['nbAbs'])){
-													echo $eleves[$i]['nbAbs'];
-													echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
-												}
-												else{
-													//echo "&nbsp;";
-													echo "<span style='color:red;'>ERR</span>\n";
-													//echo "<input type='hidden' name='nbabs_eleve[$i]' value='0' />\n";
-													$nb_err++;
-												}
-												echo "</td>\n";
+													echo "<td>\n";
+													if(isset($eleves[$i]['nbNonJustif'])){
+														echo $eleves[$i]['nbNonJustif'];
+														echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
+													}
+													else{
+														//echo "&nbsp;";
+														echo "<span style='color:red;'>ERR</span>\n";
+														//echo "<input type='hidden' name='nbnj_eleve[$i]' value='0' />\n";
+														$nb_err++;
+													}
+													echo "</td>\n";
 
-												echo "<td>\n";
-												if(isset($eleves[$i]['nbNonJustif'])){
-													echo $eleves[$i]['nbNonJustif'];
-													echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
-												}
-												else{
-													//echo "&nbsp;";
-													echo "<span style='color:red;'>ERR</span>\n";
-													//echo "<input type='hidden' name='nbnj_eleve[$i]' value='0' />\n";
-													$nb_err++;
-												}
-												echo "</td>\n";
+													echo "<td>\n";
+													if(isset($eleves[$i]['nbRet'])){
+														echo $eleves[$i]['nbRet'];
+														//echo " -&gt; <input type='text' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+														echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+													}
+													else{
+														//echo "&nbsp;";
+														echo "<span style='color:red;'>ERR</span>\n";
+														//echo "<input type='hidden' name='nbret_eleve[$i]' value='0' />\n";
+														$nb_err++;
+													}
+													echo "</td>\n";
 
-												echo "<td>\n";
-												if(isset($eleves[$i]['nbRet'])){
-													echo $eleves[$i]['nbRet'];
-													//echo " -&gt; <input type='text' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
-													echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+													echo "</tr>\n";
 												}
-												else{
-													//echo "&nbsp;";
-													echo "<span style='color:red;'>ERR</span>\n";
-													//echo "<input type='hidden' name='nbret_eleve[$i]' value='0' />\n";
-													$nb_err++;
-												}
-												echo "</td>\n";
-
-												echo "</tr>\n";
 											}
 										}
 									}
