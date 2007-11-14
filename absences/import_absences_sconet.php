@@ -117,7 +117,9 @@ function get_nom_class_from_id($id){
 
 					$i=0;
 					for($j=1;$j<=$tab_max_per[$i];$j++){
-						echo "<input type='radio' name='num_periode' value='$j' /> Période $j<br />\n";
+						//echo "<input type='radio' name='num_periode' value='$j' /> Période $j<br />\n";
+						if($j==1){$checked=" checked";}else{$checked="";}
+						echo "<input type='radio' name='num_periode' id='num_periode_$j' value='$j'$checked /><label for='num_periode_$j' style='cursor: pointer;'> Période $j</label><br />\n";
 					}
 					echo "<input type='hidden' name='max_per' value='$tab_max_per[$i]' />\n";
 
@@ -136,7 +138,8 @@ function get_nom_class_from_id($id){
 						echo "<tr><td valign='top'>Classes à $tab_max_per[$i] périodes:</td>\n";
 						echo "<td>\n";
 						for($j=1;$j<=$tab_max_per[$i];$j++){
-							echo "<input type='radio' name='num_periode' value='$j' /> Période $j<br />\n";
+							if($j==1){$checked=" checked";}else{$checked="";}
+							echo "<input type='radio' name='num_periode' id='num_periode_$j' value='$j'$checked /><label for='num_periode_$j' style='cursor: pointer;'> Période $j</label><br />\n";
 						}
 						echo "</td>\n";
 
@@ -174,7 +177,13 @@ function get_nom_class_from_id($id){
 					echo "</p>\n";
 
 					// Il faudra pouvoir gérer les cpe responsables seulement dans certaines classes...
-					$sql="SELECT * FROM classes ORDER BY classe";
+					//$sql="SELECT * FROM classes ORDER BY classe";
+					if ($_SESSION['statut']=="cpe") {
+						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe";
+					} else {
+						$sql="SELECT * FROM classes ORDER BY classe";
+					}
+
 					$res_classe=mysql_query($sql);
 
 					$nb_classes = mysql_num_rows($res_classe);
@@ -232,7 +241,7 @@ function get_nom_class_from_id($id){
 										echo "<input type='checkbox' name='id_classe[]' id='case_".$i."' value='$id_classe' />";
 										echo "</td>\n";
 										echo "<td>\n";
-										echo "Classe : $classe<br />\n";
+										echo "<label for='case_".$i."' style='cursor: pointer;'>Classe : $classe</label><br />\n";
 									}
 								}
 							}
@@ -252,6 +261,10 @@ function get_nom_class_from_id($id){
 						echo "<p><a href='#' onClick='Coche_ou_pas(true); return false;'>Tout cocher</a> / <a href='#' onClick='Coche_ou_pas(false); return false;'>Tout décocher</a></p>\n";
 
 						echo "</form>\n";
+
+
+						echo "<p><i>NOTE:</i> Seules les absences des classes cochées seront importées (<i>même si l'ExportSconet contient les absences de toutes les classes</i>).</p>\n";
+
 
 						echo "<script type='text/javascript' language='javascript'>
 
@@ -379,7 +392,7 @@ function get_nom_class_from_id($id){
 							}
 
 							echo "<p>Veuillez fournir le fichier exportAbsence.xml:<br />\n";
-							echo "<input type=\"file\" size=\"80\" name=\"absences_xml_file\" /><br />\n";
+							echo "<input type=\"file\" size=\"60\" name=\"absences_xml_file\" /><br />\n";
 							echo "<input type='hidden' name='etape' value='$etape' />\n";
 							echo "<input type='hidden' name='is_posted' value='yes' />\n";
 							echo "</p>\n";

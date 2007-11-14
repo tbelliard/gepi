@@ -64,7 +64,9 @@ if (!isset($id_classe)) {
 
 	$nombreligne = mysql_num_rows($calldata);
 
-	echo "<p>Total : $nombreligne classes - ";
+	echo "<p>Total : $nombreligne classe";
+	if($nombreligne>1){echo "s";}
+	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
 	echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'un moins un élève de la classe.</p>\n";
 
