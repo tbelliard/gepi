@@ -1,6 +1,7 @@
 <?php
 /*
 * Last modification  : 11/05/2006
+* $Id
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
@@ -225,11 +226,60 @@ function focus_suivant(num){
 		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 		$current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
 		$current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+
+		//========================
+		// AJOUT boireaus 20071115
+		$sql="SELECT elenoet FROM eleves WHERE login='$current_eleve_login';";
+		$res_ele=mysql_query($sql);
+		$lig_ele=mysql_fetch_object($res_ele);
+		$current_eleve_elenoet=$lig_ele->elenoet;
+
+		// Photo...
+		$photo=nom_photo($current_eleve_elenoet);
+		$temoin_photo="";
+		if("$photo"!=""){
+			$titre="$current_eleve_nom $current_eleve_prenom";
+
+			$texte="<div align='center'>\n";
+			$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$current_eleve_nom $current_eleve_prenom\" />";
+			$texte.="<br />\n";
+			$texte.="</div>\n";
+
+			$temoin_photo="y";
+
+			$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$current_eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
+		}
+		//========================
+
+
+		//========================
+		// AJOUT boireaus 20071115
+		/*
 		echo "<table width=\"750\" border=1 cellspacing=2 cellpadding=5>\n";
 		echo "<tr>\n";
 		echo "<td width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></td>\n";
 		echo "<td><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b></div></td>\n";
 		echo "</tr>\n";
+		*/
+		echo "<table width=\"750\" class='boireaus' cellspacing=2 cellpadding=5>\n";
+		echo "<tr>\n";
+		echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
+		echo "<th><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b>\n";
+
+		//==========================
+		// AJOUT: boireaus 20071115
+		// Lien photo...
+		if($temoin_photo=="y"){
+			echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+			echo ">";
+			echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
+			echo "</a>";
+		}
+		//==========================
+
+		echo "</div></th>\n";
+		echo "</tr>\n";
+		//========================
 
 		$k='1';
 		while ($k < $nb_periode) {
@@ -240,11 +290,13 @@ function focus_suivant(num){
 		}
 
 		$k='1';
+		$alt=1;
 		while ($k < $nb_periode) {
+			$alt=$alt*(-1);
 			if ($ver_periode[$k] != "N") {
-				echo "<tr>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+				echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
 			} else {
-				echo "<tr>\n<td>$nom_periode[$k]</td>\n";
+				echo "<tr class='lig$alt'>\n<td>$nom_periode[$k]</td>\n";
 			}
 			if ($ver_periode[$k] != "O") {
 				$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
