@@ -232,7 +232,8 @@ if (!isset($aid_id)) {
 				$aid_id = mysql_result($call_prof_aid, $i, "id");
 				$aid_numero = mysql_result($call_prof_aid, $i, "numero")." : ";
 				if ($aid_numero == " : ") {$aff_numero_aid = "";} else {$aff_numero_aid = $aid_numero;}
-				echo "<br /><span class='bold'>$aff_numero_aid$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations pour cette rubrique</a>\n";
+				echo "<br /><span class='bold'>".$aff_numero_aid.$aid_display."</span>
+				 --- <a href='saisie_aid.php?aid_id=".$aid_id."&amp;indice_aid=".$indice_aid."'>Saisir les appréciations pour cette rubrique</a>\n";
 				$i++;
 			}
 			echo "</p>\n";
