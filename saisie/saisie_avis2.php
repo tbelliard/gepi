@@ -240,6 +240,41 @@ if (isset($fiche)) {
 	echo "</textarea>\n";
 	echo "</td>\n";
 
+
+	//==========================
+	// AJOUT boireaus 20071115
+	$sql="SELECT elenoet, nom, prenom FROM eleves WHERE login='$current_eleve_login';";
+	$res_ele=mysql_query($sql);
+	$lig_ele=mysql_fetch_object($res_ele);
+	$current_eleve_elenoet=$lig_ele->elenoet;
+	$current_eleve_nom=$lig_ele->nom;
+	$current_eleve_prenom=$lig_ele->prenom;
+
+	// Photo...
+	$photo=nom_photo($current_eleve_elenoet);
+	$temoin_photo="";
+	if("$photo"!=""){
+		$titre="$current_eleve_nom $current_eleve_prenom";
+
+		$texte="<div align='center'>\n";
+		$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$current_eleve_nom $current_eleve_prenom\" title=\"$current_eleve_nom $current_eleve_prenom\" />";
+		$texte.="<br />\n";
+		$texte.="</div>\n";
+
+		$temoin_photo="y";
+
+		$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$current_eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
+
+		echo "<td valign='top'>\n";
+		echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+		echo ">";
+		echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
+		echo "</a>";
+		echo "</td>\n";
+	}
+	//==========================
+
+
 	//============================
 	// Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
 	// Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
