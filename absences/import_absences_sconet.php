@@ -408,8 +408,14 @@ function get_nom_class_from_id($id){
 							echo "<p><input type='submit' value='Valider' /></p>\n";
 							echo "</form>\n";
 
-							echo "<p><b>ATTENTION</b>: Fournir un export d'une seule période.<br />Si plusieurs périodes sont cochées lors de votre export, les informations importées risquent d'être erronées.</p>\n";
-
+							echo "<p><b>ATTENTION</b>:</p>\n";
+							echo "<ul>\n";
+							echo "<li><p>Fournir un export d'une seule période.<br />Si plusieurs périodes sont cochées lors de votre export, les informations importées risquent d'être erronées.</p></li>\n";
+							echo "<li><p>Pour récupérer l'export de Sconet:<br />\n";
+							echo "Sur le menu de gauche :<br />\n";
+							echo "IMPORT/EXPORT -> Export Absences et Retard -> Sélectionner la période (T1, T2, T3)<br />\n";
+							echo "Puis cliquer sur le bouton 'Exporter les périodes sélectionnées'.</p>\n";
+							echo "</ul>\n";
 						}
 						else{
 							$post_max_size=ini_get('post_max_size');
