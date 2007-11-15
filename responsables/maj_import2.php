@@ -229,16 +229,18 @@ if(!isset($step)) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
-	//==============================
-	// AJOUT pour tenir compte de l'automatisation ou non:
-	echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
-	//==============================
-
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
-	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /></p>\n";
+	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
+
+	//==============================
+	// AJOUT pour tenir compte de l'automatisation ou non:
+	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+	//==============================
+
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -533,7 +535,7 @@ else{
 						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -761,6 +763,12 @@ else{
 
 				affiche_debug("count(\$eleves)=".count($eleves)."<br />\n");
 				affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
+
+				//===========================
+				// A FAIRE: boireaus 20071115
+				// Insérer ici un tableau comme dans la partie ADRESSES pour simuler une barre de progression
+				//===========================
+
 				$stat=0;
 				$nb_err=0;
 				for($i=0;$i<count($eleves);$i++){
@@ -841,7 +849,7 @@ else{
 
 			// ON SAUTE L'ETAPE 2 QUI CORRESPOND AUX OPTIONS DES ELEVES... NON PRISES EN CHARGE POUR LE MOMENT.
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3'>Suite</a></p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y'>Suite</a></p>\n";
 
 			require("../lib/footer.inc.php");
 			die();
@@ -1024,7 +1032,7 @@ else{
 				echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1231,6 +1239,10 @@ else{
 									";
 			*/
 
+
+
+
+			/*
 			$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
@@ -1243,8 +1255,15 @@ else{
 									)
 									AND ($chaine)
 									";
-			//echo "$sql<br />\n";
+
+			echo "$sql<br />\n";
+			echo strftime("%H:%M:%S")."<br />\n";
+			flush();
+
 			$test=mysql_query($sql);
+			echo strftime("%H:%M:%S")."<br />\n";
+			flush();
+
 			$cpt=0;
 			if(mysql_num_rows($test)>0){
 				echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
@@ -1263,7 +1282,81 @@ else{
 				}
 				echo $chaine_ele_id;
 			}
+			*/
 
+			$cpt=0;
+			for($i=0;$i<min(20,count($tab_ele_id));$i++){
+				$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
+							WHERE e.ele_id=t.ELE_ID AND
+									e.ele_id=t2.col1 AND
+									(
+										e.nom!=t.ELENOM OR
+										e.prenom!=t.ELEPRE OR
+										e.sexe!=t.ELESEXE OR
+										e.naissance!=t2.col2 OR
+										e.no_gep!=t.ELENONAT
+									)
+									AND e.ele_id='$tab_ele_id[$i]';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					if($cpt==0){
+						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+						echo "<br />\n";
+						echo "En voici le(s) ELE_ID: ";
+					}
+					else{
+						echo ", ";
+					}
+					$lig=mysql_fetch_object($test);
+					echo "<input type='hidden' name='tab_ele_id_diff[]' value='$lig->ele_id' />\n";
+					echo $lig->ele_id;
+					flush();
+					$cpt++;
+				}
+				else{
+					// Inutile de tester les différences sur le régime si des différences ont déjà été repérées et que l'ELE_ID est déjà en tab_ele_id_diff[]
+
+					$temoin_test_regime='n';
+
+					if(!isset($tab_ele_id_diff)){
+						$temoin_test_regime='y';
+					}
+					elseif(!in_array($tab_ele_id[$i],$tab_ele_id_diff)){
+						$temoin_test_regime='y';
+					}
+
+					if($temoin_test_regime=='y'){
+						$sql="SELECT jer.regime, t.elereg FROM j_eleves_regime jer, eleves e, temp_gep_import2 t
+								WHERE e.ele_id='$tab_ele_id[$i]' AND
+										jer.login=e.login AND
+										t.ele_id=e.ele_id";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)>0){
+							$lig=mysql_fetch_object($test);
+							$tmp_reg=traite_regime_sconet($lig->elereg);
+							if("$tmp_reg"!="$lig->regime"){
+								// BIZARRE CE $cpt... on n'écrit rien après la virgule...
+								if($cpt==0){
+									echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+									echo "<br />\n";
+									echo "En voici le(s) ELE_ID: ";
+								}
+								else{
+									echo ", ";
+								}
+								echo $tab_ele_id[$i];
+								echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+								//echo "<br />\n";
+								// Pour le cas où on est dans la dernière tranche:
+								$tab_ele_id_diff[]=$tab_ele_id[$i];
+								$cpt++;
+							}
+						}
+					}
+				}
+			}
+
+			/*
 			for($i=0;$i<min(20,count($tab_ele_id));$i++){
 
 				$temoin_test_regime='n';
@@ -1285,16 +1378,26 @@ else{
 						$lig=mysql_fetch_object($test);
 						$tmp_reg=traite_regime_sconet($lig->elereg);
 						if("$tmp_reg"!="$lig->regime"){
-							if($cpt>0){echo ", ";}
+							// BIZARRE CE $cpt... on n'écrit rien après la virgule...
+							if($cpt==0){
+								echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+								echo "<br />\n";
+								echo "En voici le(s) ELE_ID: ";
+							}
+							else{
+								echo ", ";
+							}
+							echo $tab_ele_id[$i];
 							echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 							//echo "<br />\n";
 							// Pour le cas où on est dans la dernière tranche:
 							$tab_ele_id_diff[]=$tab_ele_id[$i];
+							$cpt++;
 						}
 					}
 				}
 			}
-
+			*/
 
 
 
@@ -1413,12 +1516,16 @@ else{
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 				//==============================
 				// AJOUT pour tenir compte de l'automatisation ou non:
-    echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 				//==============================
 
 				for($i=$eff_tranche;$i<count($tab_ele_id_diff);$i++){
 					//echo "$i: ";
-					echo "<input type='hidden' name='tab_ele_id_diff[]' value='$tab_ele_id_diff[$i]' />\n";
+					// BIZARRE: Il semble que certains indices puissent ne pas être affectés???
+					// Peut-être à cause du array_unique() -> certains élèves qui ont des modifs de nom, date, INE,... et de régime peuvent être comptés deux fois...
+					if(isset($tab_ele_id_diff[$i])){
+						echo "<input type='hidden' name='tab_ele_id_diff[]' value='$tab_ele_id_diff[$i]' />\n";
+					}
 					//echo "<br />\n";
 				}
 
@@ -2217,30 +2324,30 @@ else{
 				// Pas de nouveau:
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 				}
 			}
 			else{
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 				}
 			}
@@ -2261,7 +2368,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			// DISTINCT parce qu'on peut avoir plusieurs enregistrements d'un même élève dans 'temp_ele_classe' si on a joué avec F5.
@@ -2533,7 +2640,7 @@ else{
 				echo "</p>\n";
 			}
 
-			echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=8'>inscription des nouveaux élèves dans les groupes</a>.</p>\n";
+			echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=8&amp;stop=y'>inscription des nouveaux élèves dans les groupes</a>.</p>\n";
 
 			break;
 
@@ -2547,7 +2654,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			if(!isset($opt_eleve)){
@@ -2880,12 +2987,21 @@ else{
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
+
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' ";
+			if("$stop"=="y"){echo "checked ";}
+			echo "/><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+			//==============================
+
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
@@ -3147,7 +3263,7 @@ else{
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=y'>Suite</a></p>\n";
 
 
 						require("../lib/footer.inc.php");
@@ -3320,7 +3436,7 @@ else{
 
 				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=12'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=12&amp;stop=y'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -3518,7 +3634,7 @@ else{
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=y'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -3550,7 +3666,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			if(!isset($parcours_diff)){
@@ -3639,12 +3755,14 @@ else{
 			echo "<input type='hidden' name='nb_parcours' value='$nb_parcours' />\n";
 
 
+			/*
 			// On construit la chaine des 20 PERS_ID retenus pour la requête à venir:
 			$chaine="";
 			for($i=0;$i<min(20,count($tab_pers_id));$i++){
 				if($i>0){$chaine.=" OR ";}
 				$chaine.="rp.pers_id='$tab_pers_id[$i]'";
 			}
+			*/
 
 			//echo "\$chaine=$chaine<br />\n";
 
@@ -3655,7 +3773,7 @@ else{
 				//echo "<br />\n";
 			}
 
-
+			/*
 			$sql="SELECT rp.pers_id FROM resp_pers rp, temp_resp_pers_import t
 							WHERE rp.pers_id=t.pers_id AND
 									(
@@ -3678,6 +3796,43 @@ else{
 				$cpt=0;
 				while($lig=mysql_fetch_object($test)){
 					if($cpt>0){echo ", ";}
+					echo $lig->pers_id;
+					echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
+					//echo "<br />\n";
+					// Pour le cas où on est dans la dernière tranche:
+					$tab_pers_id_diff[]=$lig->pers_id;
+					$cpt++;
+				}
+			}
+			*/
+
+
+			$cpt=0;
+			for($i=0;$i<min(20,count($tab_pers_id));$i++){
+				$sql="SELECT rp.pers_id FROM resp_pers rp, temp_resp_pers_import t
+								WHERE rp.pers_id=t.pers_id AND
+										(
+											rp.nom!=t.nom OR
+											rp.prenom!=t.prenom OR
+											rp.civilite!=t.civilite OR
+											rp.tel_pers!=t.tel_pers OR
+											rp.tel_port!=t.tel_port OR
+											rp.tel_prof!=t.tel_prof OR
+											rp.adr_id!=t.adr_id
+										)
+										AND rp.pers_id='$tab_pers_id[$i]';";
+				//echo "$sql<br />\n";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					if($cpt==0){
+						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+						echo "<br />\n";
+						echo "En voici le(s) pers_id: ";
+					}
+					else{
+						echo ", ";
+					}
+					$lig=mysql_fetch_object($test);
 					echo $lig->pers_id;
 					echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
 					//echo "<br />\n";
@@ -3758,7 +3913,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			if(!isset($parcours_diff)){
@@ -3914,6 +4069,8 @@ else{
 			echo "<input type='hidden' name='nb_parcours' value='$nb_parcours' />\n";
 
 
+
+			/*
 			// On construit la chaine des 20 adr_ID retenus pour la requête à venir:
 			$info_nouvelles_adresses="";
 			$chaine="";
@@ -3935,6 +4092,8 @@ else{
 					$info_nouvelles_adresses.=$tab_adr_id[$i];
 				}
 			}
+			*/
+
 
 			//echo "\$chaine=$chaine<br />\n";
 
@@ -3949,7 +4108,7 @@ else{
 				//echo "<br />\n";
 			}
 
-
+			/*
 			$sql="SELECT ra.adr_id FROM resp_adr ra, temp_resp_adr_import t
 							WHERE ra.adr_id=t.adr_id AND
 									(
@@ -3982,6 +4141,62 @@ else{
 				}
 				echo $chaine_adr;
 			}
+			*/
+
+
+			$cpt=0;
+			$info_nouvelles_adresses="";
+			for($i=0;$i<min(20,count($tab_adr_id));$i++){
+				$sql="SELECT 1=1 FROM resp_adr WHERE adr_id='$tab_adr_id[$i]';";
+				// DEBUG:
+				//echo "$sql<br />\n";
+				$res_nouvelle_adr=mysql_query($sql);
+				if(mysql_num_rows($res_nouvelle_adr)==0){
+					// Cet identifiant d'adresse n'existait pas.
+					// DEBUG:
+					//echo "<input type='text' name='tab_adr_id_diff[]' value='".$tab_adr_id[$i]."' />\n";
+					echo "<input type='hidden' name='tab_adr_id_diff[]' value='".$tab_adr_id[$i]."' />\n";
+					$tab_adr_id_diff[]=$tab_adr_id[$i];
+
+					if($info_nouvelles_adresses!=""){$info_nouvelles_adresses.=", ";}
+					$info_nouvelles_adresses.=$tab_adr_id[$i];
+				}
+				else{
+
+					$sql="SELECT ra.adr_id FROM resp_adr ra, temp_resp_adr_import t
+									WHERE ra.adr_id=t.adr_id AND
+											(
+												ra.adr1!=t.adr1 OR
+												ra.adr2!=t.adr2 OR
+												ra.adr3!=t.adr3 OR
+												ra.adr4!=t.adr4 OR
+												ra.cp!=t.cp OR
+												ra.commune!=t.commune OR
+												ra.pays!=t.pays
+											)
+											AND ra.adr_id='$tab_adr_id[$i]';";
+					//echo "$sql<br />\n";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0){
+						if($cpt==0){
+							echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+							echo "<br />\n";
+							echo "En voici le(s) adr_id: ";
+						}
+						else{
+							echo ", ";
+						}
+						$lig=mysql_fetch_object($test);
+						echo $lig->adr_id;
+						echo "<input type='hidden' name='tab_adr_id_diff[]' value='$lig->adr_id' />\n";
+						//echo "<br />\n";
+						// Pour le cas où on est dans la dernière tranche:
+						$tab_adr_id_diff[]=$lig->adr_id;
+						$cpt++;
+						flush();
+					}
+				}
+			}
 
 			if($info_nouvelles_adresses!=""){
 				echo "<p>Une ou des nouvelles adresses ont été trouvées.<br />\n";
@@ -3989,6 +4204,8 @@ else{
 				echo $info_nouvelles_adresses;
 				echo "</p>\n";
 			}
+
+
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
 			$parcours_diff++;
@@ -4088,7 +4305,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			if(!isset($parcours_diff)){
@@ -4820,7 +5037,7 @@ else{
 				echo "<p>Aucune modification n'a été confirmée/demandée.</p>\n";
 
 				// IL RESTE... les responsabilités
-				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
+				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 
 			}
 			else{
@@ -4973,14 +5190,14 @@ else{
 
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 				}
 			}
@@ -4994,7 +5211,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			$eff_tranche=20;
@@ -5081,13 +5298,14 @@ else{
 			//echo "count(\$tab_resp)=".count($tab_resp)."<br />";
 
 			// On construit la chaine des $eff_tranche couples retenus pour la requête à venir:
-			$chaine="";
+			//$chaine="";
+			$cpt=0;
 			for($i=0;$i<min($eff_tranche,count($tab_resp));$i++){
-				if($i>0){$chaine.=" OR ";}
+				//if($i>0){$chaine.=" OR ";}
 
 				$tab_tmp=explode("_",$tab_resp[$i]);
 
-				$chaine.="(t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')";
+				//$chaine.="(t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')";
 
 				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$tab_tmp[1]' AND pers_id='$tab_tmp[2]';";
 				//echo "$sql<br />";
@@ -5105,6 +5323,38 @@ else{
 					// FAIRE UN echo POUR INDIQUER CES NOUVEAUX RESPONSABLES REPéRéS
 					// REMPLIR UNE CHAINE ET L'AJOUTER A LA FIN DE LA LISTE AFFICHéE PLUS BAS
 				}
+				else{
+
+					$sql="SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
+									WHERE r.pers_id=t.pers_id AND
+											r.ele_id=t.ele_id AND
+											(
+												r.resp_legal!=t.resp_legal OR
+												r.pers_contact!=t.pers_contact
+											)
+											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')
+											";
+					//echo "$sql<br />\n";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0){
+						if($cpt==0){
+							echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+							echo "<br />\n";
+							echo "En voici le(s) couple(s) ELE_ID/PERS_ID: ";
+						}
+						else{
+							echo ", ";
+						}
+						$lig=mysql_fetch_object($test);
+
+						echo $lig->ele_id."/".$lig->pers_id;
+						echo "<input type='hidden' name='tab_resp_diff[]' value='t_".$lig->ele_id."_".$lig->pers_id."' />\n";
+						//echo "<br />\n";
+						// Pour le cas où on est dans la dernière tranche:
+						$tab_resp_diff[]="t_".$lig->ele_id."_".$lig->pers_id;
+						$cpt++;
+					}
+				}
 			}
 
 			//echo "\$chaine=$chaine<br />\n";
@@ -5116,6 +5366,8 @@ else{
 				//echo "<br />\n";
 			}
 
+
+			/*
 			$sql="SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
 							WHERE r.pers_id=t.pers_id AND
 									r.ele_id=t.ele_id AND
@@ -5144,6 +5396,7 @@ else{
 				}
 				echo $chaine_ele_resp;
 			}
+			*/
 
 			if(!isset($parcours_diff)){$parcours_diff=1;}
 			$parcours_diff++;
