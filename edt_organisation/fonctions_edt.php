@@ -725,7 +725,7 @@ function renvoie_liste($type) {
 	return $rep_liste;
 	}
 	if ($type == "salle") {
-		$req_liste = mysql_query("SELECT id_salle, numero_salle, nom_salle FROM salle_cours ORDER BY nom_salle");
+		$req_liste = mysql_query("SELECT id_salle, numero_salle, nom_salle FROM salle_cours ORDER BY numero_salle");
 
 		$nb_liste = mysql_num_rows($req_liste);
 

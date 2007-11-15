@@ -213,7 +213,7 @@ if(isset($modif_salle)) {
 		$selected="";
 	}
 
-		echo ("		<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["nom_salle"]."</option>\n");
+		echo ("		<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." (".$tab_select[$i]["nom_salle"].")</option>\n");
 	}
 
 ?>
@@ -295,7 +295,7 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 
 	for($i=0;$i<count($tab_select);$i++) {
 
-		echo ("			<OPTION value='".$tab_select[$i]["id_salle"]."'>".$tab_select[$i]["nom_salle"]."</OPTION>\n");
+		echo ("			<OPTION value='".$tab_select[$i]["id_salle"]."'>".$tab_select[$i]["numero_salle"]." (".$tab_select[$i]["nom_salle"].")</OPTION>\n");
 	}
 ?>
 		</select>

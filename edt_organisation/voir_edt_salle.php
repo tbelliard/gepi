@@ -50,7 +50,7 @@ for($i=0; $i<count($tab_select); $i++) {
 		$selected="";
 	}
 	echo "
-			<option value='".$tab_select[$i]["id_salle"]."'".$selected.">Salle ".$tab_select[$i]["numero_salle"]." / ".$tab_select[$i]["nom_salle"]."</option>
+			<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." / ".$tab_select[$i]["nom_salle"]."</option>
 		";
 	}
 
