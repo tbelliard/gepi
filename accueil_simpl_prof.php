@@ -1184,5 +1184,6 @@ if(document.getElementById('h_liste_pdf_'+$i)){
 }
 
 //require("../lib/footer.inc.php");
+echo "<p><br /></p>\n";
 require("lib/footer.inc.php");
 ?>
