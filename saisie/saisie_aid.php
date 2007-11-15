@@ -219,7 +219,7 @@ change = 'no';
 if (!isset($aid_id)) {
 	?></p><?php
 	if ($_SESSION['statut'] != "secours") {
-		$call_prof_aid = mysql_query("SELECT a.nom, a.id FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.nom");
+		$call_prof_aid = mysql_query("SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.numero, a.nom");
 		$nombre_aid = mysql_num_rows($call_prof_aid);
 		if ($nombre_aid == "0") {
 			echo "<p>$nom_aid : Vous n'êtes pas professeur responsable. Vous n'avez donc pas à entrer d'appréciations.</p></html></body>\n";
@@ -230,7 +230,9 @@ if (!isset($aid_id)) {
 			while ($i < $nombre_aid) {
 				$aid_display = mysql_result($call_prof_aid, $i, "nom");
 				$aid_id = mysql_result($call_prof_aid, $i, "id");
-				echo "<br /><span class='bold'>$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations pour cette rubrique</a>\n";
+				$aid_numero = mysql_result($call_prof_aid, $i, "numero")." : ";
+				if ($aid_numero == " : ") {$aff_numero_aid = "";} else {$aff_numero_aid = $aid_numero;}
+				echo "<br /><span class='bold'>$aff_numero_aid$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations pour cette rubrique</a>\n";
 				$i++;
 			}
 			echo "</p>\n";
@@ -246,7 +248,7 @@ if (!isset($aid_id)) {
 			while ($i < $nombre_aid) {
 				$aid_display = mysql_result($call_prof_aid, $i, "nom");
 				$aid_id = mysql_result($call_prof_aid, $i, "id");
-				echo "<br /><span class='bold'>$aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations.</a>\n";
+				echo "<br /><span class='bold'>$aid_numero : $aid_display</span> --- <a href='saisie_aid.php?aid_id=$aid_id&amp;indice_aid=$indice_aid'>Saisir les appréciations.</a>\n";
 				$i++;
 			}
 			echo "</p>\n";
