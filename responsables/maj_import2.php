@@ -2245,14 +2245,16 @@ else{
 								break;
 						}
 
-						$tmp_nom=$lig->ELENOM;
-						$tmp_prenom=$lig->ELEPRE;
+						$tmp_nom=strtr($lig->ELENOM,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+						$tmp_prenom=strtr($lig->ELEPRE,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
 
 						// Générer un login...
 						$temp1 = strtoupper($tmp_nom);
+						$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
 						$temp1 = strtr($temp1, " '-", "___");
 						$temp1 = substr($temp1,0,7);
 						$temp2 = strtoupper($tmp_prenom);
+						$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
 						$temp2 = strtr($temp2, " '-", "___");
 						$temp2 = substr($temp2,0,1);
 						$login_eleve = $temp1.'_'.$temp2;
