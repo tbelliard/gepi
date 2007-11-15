@@ -306,6 +306,32 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_classe = $current_group["classes"]["classes"][$current_group["eleves"]["all"]["users"][$eleve_login]["classe"]]["classe"];
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$eleve_login]["classe"]]["id"];
 
+			//========================
+			// AJOUT boireaus 20071115
+			if($k==1){
+				$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
+				$res_ele=mysql_query($sql);
+				$lig_ele=mysql_fetch_object($res_ele);
+				$eleve_elenoet=$lig_ele->elenoet;
+
+				// Photo...
+				$photo=nom_photo($eleve_elenoet);
+				$temoin_photo="";
+				if("$photo"!=""){
+					$titre="$eleve_nom $eleve_prenom";
+
+					$texte="<div align='center'>\n";
+					$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+					$texte.="<br />\n";
+					$texte.="</div>\n";
+
+					$temoin_photo="y";
+
+					$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
+				}
+			}
+			//========================
+
 			$suit_option[$k] = 'yes';
 			//
 			// si l'élève suit la matière
@@ -420,20 +446,59 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		$prev_classe = $eleve_classe;
 		//echo "<table width=\"750px\" border=\"1\" cellspacing=\"2\" cellpadding=\"5\">\n";
+		/*
 		echo "<table width=\"750\" border=\"1\" cellspacing=\"2\" cellpadding=\"5\">\n";
 		echo "<tr>\n";
 		echo "<td width=\"200\"><div align=\"center\">&nbsp;</div></td>\n";
 		echo "<td width=\"30\"><div align=\"center\"><b>Moy.</b></div></td>\n";
 		echo "<td><div align=\"center\"><b>$eleve_nom $eleve_prenom</b></div></td>\n";
 		echo "</tr>\n";
+		*/
+
+		echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\">\n";
+		echo "<tr>\n";
+		echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
+		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
+		echo "<th><div align=\"center\"><b>$eleve_nom $eleve_prenom</b>\n";
+
+		//==========================
+		// AJOUT: boireaus 20071115
+		// Lien photo...
+		if($temoin_photo=="y"){
+			echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
+			echo ">";
+			echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+			echo "</a>";
+		}
+		//==========================
+
+		/*
+
+			$titre=$v_eleve_nom_prenom1;
+			$texte="<div align='center'>\n";
+			$photo=nom_photo($v_elenoet1);
+			if("$photo"!=""){
+				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
+				$texte.="<br />\n";
+			}
+			$texte.="</div>\n";
+
+			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve1',$titre,"",$texte,"",14,0,'y','y','n','n')
+		*/
+
+		echo "</div></th>\n";
+		echo "</tr>\n";
+
 
 		$num_id++;
 		$k=1;
+		$alt=1;
 		while ($k < $nb_periode) {
+			$alt=$alt*(-1);
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
-				echo "<tr><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+				echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
 			} else {
-				echo "<tr><td>$nom_periode[$k]</td>\n";
+				echo "<tr class='lig$alt'><td>$nom_periode[$k]</td>\n";
 			}
 			echo $mess[$k];
 			$k++;
