@@ -5603,6 +5603,10 @@ else{
 							}
 						}
 					}
+					//===========================
+					// A FAIRE: boireaus 20071115
+					// Indiquer combien d'enregistrements viennent d'être effectués.
+					//===========================
 				}
 
 				if(isset($new)){
@@ -5657,6 +5661,10 @@ else{
 							}
 						}
 					}
+					//===========================
+					// A FAIRE: boireaus 20071115
+					// Indiquer combien d'enregistrements viennent d'être effectués.
+					//===========================
 				}
 
 
@@ -5790,7 +5798,13 @@ else{
 							$lig2=mysql_fetch_object($res2);
 							echo "<td style='text-align:center;'>\n";
 							//echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' />";
-							echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
+
+							// Elève(s) associé(s)
+							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+							$res4=mysql_query($sql);
+							if(mysql_num_rows($res4)==0){
+								echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
+							}
 							echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
 							echo "</td>\n";
 
@@ -5838,8 +5852,10 @@ else{
 							echo "</td>\n";
 
 							// Elève(s) associé(s)
+							/*
 							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 							$res4=mysql_query($sql);
+							*/
 							if(mysql_num_rows($res4)==0){
 								echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 								echo "Aucun élève pour ele_id=$ele_id ???";
@@ -5905,7 +5921,13 @@ else{
 								$lig2=mysql_fetch_object($res2);
 								echo "<td style='text-align:center;'>\n";
 								//echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
-								echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
+
+								// Elève(s) associé(s)
+								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+								$res4=mysql_query($sql);
+								if(mysql_num_rows($res4)==0){
+									echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
+								}
 								echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
 								echo "</td>\n";
 
@@ -5954,8 +5976,8 @@ else{
 								echo "</td>\n";
 
 								// Elève(s) associé(s)
-								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
-								$res4=mysql_query($sql);
+								//$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+								//$res4=mysql_query($sql);
 								if(mysql_num_rows($res4)==0){
 									echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 									echo "Aucun élève pour ele_id=$ele_id ???";
