@@ -5802,7 +5802,7 @@ else{
 							// Elève(s) associé(s)
 							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 							$res4=mysql_query($sql);
-							if(mysql_num_rows($res4)==0){
+							if(mysql_num_rows($res4)>0){
 								echo "<input type='checkbox' id='check_".$cpt."' name='new[]' value='$lig0->col2' />\n";
 							}
 							echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
@@ -5925,7 +5925,7 @@ else{
 								// Elève(s) associé(s)
 								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
 								$res4=mysql_query($sql);
-								if(mysql_num_rows($res4)==0){
+								if(mysql_num_rows($res4)>0){
 									echo "<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$lig0->col2' />\n";
 								}
 								echo "<input type='hidden' name='liste_assoc[]' value='$lig0->col2' />\n";
