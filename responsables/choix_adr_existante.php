@@ -273,7 +273,7 @@ else{
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
@@ -431,7 +431,7 @@ else{
 
 	$alt=1;
 	for($i=0;$i<count($tab_adr);$i++){
-		if(($tab_adr[$i]["adr1"]!="")||($tab_adr[$i]["adr2"]!="")||($tab_adr[$i]["adr3"]!="")||($tab_adr[$i]["adr4"]!="")||($tab_adr[$i]["commune"]!="")){
+		//if(($tab_adr[$i]["adr1"]!="")||($tab_adr[$i]["adr2"]!="")||($tab_adr[$i]["adr3"]!="")||($tab_adr[$i]["adr4"]!="")||($tab_adr[$i]["commune"]!="")){
 			//echo "<tr>\n";
 			//echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 			$alt=$alt*(-1);
@@ -495,7 +495,7 @@ else{
 			}
 			echo "</td>\n";
 			echo "</tr>\n";
-		}
+		//}
 	}
 
 	/*
@@ -571,7 +571,7 @@ else{
 	echo "</table>\n";
 	//echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 	//echo "<center><input type='button' value='Valider' onClick='reporter_valeur()' /></center>\n";
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	echo "</div>\n";
 
 	echo "<input type='hidden' name='is_posted' value='choix_adr_existante' />\n";

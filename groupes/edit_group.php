@@ -264,6 +264,7 @@ echo "</pre>";
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //echo "\$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."<br />\n";
 ?>
@@ -273,10 +274,10 @@ require_once("../lib/header.inc");
 // MODIF: boireaus
 //if(isset($_GET['chemin_retour'])){
 if(isset($chemin_retour)){
-	echo "<a href=\"".$_GET['chemin_retour']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
+	echo "<a href=\"".$_GET['chemin_retour']."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
 }
 else{
-	echo "<a href=\"edit_class.php?id_classe=$id_classe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
+	echo "<a href=\"edit_class.php?id_classe=$id_classe\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |";
 }
 //============================
 ?>
@@ -302,7 +303,9 @@ if ($mode == "groupe") {
 
 if ($mode == "groupe") {
     echo "<p>Sélectionnez la classe à laquelle appartient le groupe :\n";
-    echo "<select name='id_classe' size='1'>\n";
+    echo "<select name='id_classe' size='1'";
+	echo " onchange='changement();'";
+	echo ">\n";
 
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysql_num_rows($call_data);
@@ -348,12 +351,13 @@ if ($mode == "groupe") {
 			$classe = mysql_result($call_data, $i, "classe");
 			if (get_period_number($id_classe_temp) == get_period_number($id_classe)) {
 				//echo "<br /><input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
-				echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' value='yes'";
+				echo "<input type='checkbox' name='classe_" . $id_classe_temp . "' id='classe_" . $id_classe_temp . "' value='yes'";
 				if (in_array($id_classe_temp, $reg_clazz)){
-					echo " CHECKED";
+					echo " checked";
 				}
 				//echo " />$classe</option>";
-				echo " />$classe\n";
+				echo "onchange='changement();'";
+				echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
 				if (in_array($id_classe_temp, $reg_clazz)){
 					// Pour contrôler les suppressions de classes.
 					// On conserve la liste des classes précédemment cochées:
@@ -410,7 +414,9 @@ echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1'>\n";
+echo "<select name='matiere' size='1'";
+echo " onchange='changement();'";
+echo ">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
@@ -450,21 +456,22 @@ if (count($prof_list["list"]) == "0") {
 	$p = 0;
 	foreach($total_profs as $prof_login) {
 	    echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-	    echo "<input type='checkbox' name='prof_".$p."' ";
+	    echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
+		echo "onchange='changement();'";
 	    if (in_array($prof_login, $reg_professeurs)) {
 	        if (array_key_exists($prof_login, $current_group["profs"]["users"])){
-	            echo " CHECKED />". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
+	            echo " checked /><label for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
 	                $current_group["profs"]["users"][$prof_login]["prenom"] . " " .
-	                $current_group["profs"]["users"][$prof_login]["nom"] . "<br />\n";
+	                $current_group["profs"]["users"][$prof_login]["nom"] . "</label><br />\n";
 	        } else {
-	            echo " CHECKED />". $prof_list["users"][$prof_login]["civilite"] . " " .
+	            echo " checked /><label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
 	                $prof_list["users"][$prof_login]["prenom"] . " " .
-	                $prof_list["users"][$prof_login]["nom"] . "<br />\n";
+	                $prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
 	        }
 	    } else {
-	        echo " />". $prof_list["users"][$prof_login]["civilite"] . " " .
+	        echo " /><label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
 	                $prof_list["users"][$prof_login]["prenom"] . " " .
-	                $prof_list["users"][$prof_login]["nom"] . "<br />\n";
+	                $prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
 	    }
 	    $p++;
 	}

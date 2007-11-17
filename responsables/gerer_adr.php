@@ -120,7 +120,7 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
 echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
@@ -131,7 +131,22 @@ $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
 
+
 	echo "<div id='div_ad_existante'>\n";
+
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+
+	echo "<p align='center'><a href=\"javascript:modif_suppr_adr_id_non_assoc('coche')\">Cocher</a>\n";
+	echo " / ";
+	echo "<a href=\"javascript:modif_suppr_adr_id_non_assoc('decoche')\">décocher</a>\n";
+	echo " les adresses non associées.</p>";
+
+
+	// Ajouter un lien pour cocher les adresses non associées.
+	unset($tab_adr_id_non_assoc);
+	$tab_adr_id_non_assoc=array();
+
+
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus'>\n";
 
@@ -152,6 +167,7 @@ if(mysql_num_rows($res_adr)>0){
 	echo "<td style='text-align:center; background-color:#FAFABE;' colspan='7'>Ne pas utiliser une adresse existante</td>\n";
 	echo "</tr>\n";
 	*/
+
 
 	$cpt=0;
 	$alt=1;
@@ -243,18 +259,45 @@ if(mysql_num_rows($res_adr)>0){
 				}
 				echo "$chaine";
 			}
+			else{
+				$tab_adr_id_non_assoc[]=$cpt;
+			}
 			echo "</td>\n";
 
-			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ad[]' value='$lig_adr->adr_id' /></td>\n";
+			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ad[]' id='suppr_$cpt' value='$lig_adr->adr_id' /></td>\n";
 			echo "</tr>\n";
 			$cpt++;
 		}
 	}
 
 	echo "</table>\n";
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	//echo "<center><input type='button' value='Valider' onClick='reporter_valeur()' /></center>\n";
 	echo "</div>\n";
+
+
+		echo "<script type='text/javascript'>
+	tab_non_assoc=new Array();\n";
+
+		for($i=0;$i<count($tab_adr_id_non_assoc);$i++){
+			echo "tab_non_assoc[$i]=".$tab_adr_id_non_assoc[$i]."\n";
+		}
+
+		echo "	function modif_suppr_adr_id_non_assoc(mode){
+		for(i=0;i<tab_non_assoc.length;i++){
+			if(document.getElementById('suppr_'+tab_non_assoc[i])){
+				if(mode=='coche'){
+					document.getElementById('suppr_'+tab_non_assoc[i]).checked=true;
+				}
+				else{
+					document.getElementById('suppr_'+tab_non_assoc[i]).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
+
+
 
 /*
 	echo "<script type='text/javascript'>
@@ -334,10 +377,16 @@ if(mysql_num_rows($res_adr)>0){
 </script>\n";
 */
 }
+else{
+	echo "<p>Aucune adresse dans la table 'resp_adr'.</p>\n";
+}
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 ?>
 </form>
 
 <!--font color='red'>A FAIRE: SUPPRESSION d'adresse.</font-->
-<?php require("../lib/footer.inc.php");?>
+<?php
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
+?>

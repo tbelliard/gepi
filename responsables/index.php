@@ -236,6 +236,10 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
+
+$num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
+
+
 echo "<p class=bold>";
 if ($_SESSION['statut'] == 'administrateur'){
 	echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -243,7 +247,14 @@ if ($_SESSION['statut'] == 'administrateur'){
 	if(getSettingValue("import_maj_xml_sconet")==1){
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
-	echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\">Personnes non associées</a>\n";
+
+	if($num_resp!=0){
+		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\">Personnes non associées</a>\n";
+	}
+	else{
+		echo " | <a href=\"index.php?num_resp=1&amp;order_by=nom,prenom\">Personnes associées</a>\n";
+	}
+
 	echo " | <a href=\"gerer_adr.php\">Gérer les adresses</a>\n";
 }
 else{
@@ -256,7 +267,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 //if (!isset($order_by)) {$order_by = "nom1,prenom1";}
 if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
 
-$num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
+//$num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
 
 
 unset($chaine_recherche);
@@ -487,7 +498,7 @@ echo "</div>\n";
 //echo "<center><input type='submit' value='Valider' /></center>\n";
 
 //echo "<table border='1' align='center'>\n";
-echo "<table class='boireaus' align='center'>\n";
+//echo "<table class='boireaus' align='center'>\n";
 
 $cpt_suppr=0;
 
@@ -497,18 +508,55 @@ if("$num_resp"=="0"){
 
 	//echo "<tr><td colspan='3'>TEMOIN: $num_resp</td></tr>";
 
+	/*
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prénom</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
 	$ligne_titre.="</tr>\n";
+	*/
 
 	$cpt=0;
 	$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
 	$res1=mysql_query($sql);
 	$alt=1;
 	if(mysql_num_rows($res1)>0){
+
+
+		$ligne_titre="";
+		$ligne_titre.="<tr>\n";
+		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prénom</td>\n";
+		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
+		$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer";
+		$ligne_titre.="<br />\n";
+
+		$ligne_titre.="<a href=\"javascript:modifcase('coche')\">\n";
+		$ligne_titre.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>\n";
+		$ligne_titre.=" / ";
+		$ligne_titre.="<a href=\"javascript:modifcase('decoche')\">";
+		$ligne_titre.="<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+
+		$ligne_titre.="</td>\n";
+		$ligne_titre.="</tr>\n";
+
+		echo "<script type='text/javascript'>
+	function modifcase(mode){
+		for(i=0;i<".mysql_num_rows($res1).";i++){
+			if(document.getElementById('suppr_'+i)){
+				if(mode=='coche'){
+					document.getElementById('suppr_'+i).checked=true;
+				}
+				else{
+					document.getElementById('suppr_'+i).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
+
+		echo "<table class='boireaus' align='center'>\n";
+
 		while($lig1=mysql_fetch_object($res1)){
 			$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
 			$test=mysql_query($sql);
@@ -596,10 +644,18 @@ if("$num_resp"=="0"){
 
 			}
 		}
+
+		echo "</table>\n";
+
+	}
+	else{
+		echo "<p>Aucun responsable n'a été trouvé dans la table 'resp_pers'.</p>\n";
 	}
 
 }
 else{
+	echo "<table class='boireaus' align='center'>\n";
+
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
 	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable légal 1</td>\n";
@@ -1103,8 +1159,9 @@ else{
 			}
 		}
 	}
+
+	echo "</table>\n";
 }
-echo "</table>\n";
 
 echo "<script type='text/javascript'>
 	function decoche_suppr_et_valide(){

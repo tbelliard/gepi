@@ -148,8 +148,8 @@ echo "<table border='0'><tr>";
 echo "<td width='40%' align='left'>";
 echo "<p class='bold'>";
 echo "<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 echo "</p>\n";
 
 echo "<h3>Gestion des enseignements pour la classe :" . $classe["classe"]."</h3>\n";
@@ -194,8 +194,8 @@ echo "<option value='regroupement'>plusieurs classes</option>";
 echo "</select>";
 */
 echo "<td>";
-echo "<input type='radio' name='mode' value='groupe' checked /> cette classe seulement (" . $classe["classe"] .")<br />\n";
-echo "<input type='radio' name='mode' value='regroupement' /> plusieurs classes\n";
+echo "<input type='radio' name='mode' id='mode_groupe' value='groupe' checked /><label for='mode_groupe' style='cursor: pointer;'> cette classe seulement (" . $classe["classe"] .")</label><br />\n";
+echo "<input type='radio' name='mode' id='mode_regroupement' value='regroupement' /><label for='mode_regroupement' style='cursor: pointer;'> plusieurs classes</label>\n";
 echo "</td>";
 echo "</tr></table>\n";
 //==============================
@@ -230,16 +230,16 @@ if(count($groups)==0){
 <li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
 <li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
 </ul-->
-<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /> égales aux valeurs définies par défaut,<br />
-<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /> suivant l'ordre alphabétique des matières.
+<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> égales aux valeurs définies par défaut,</label><br />
+<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières.</label>
 </fieldset>
 </td>
 <td><input type='submit' value='Enregistrer' /></td>
 <td width='40%'>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
-<input type='button' value='Mettre tous les coefficients à' onClick='coeff();' />
-<select name='coefficient_recop' id='coefficient_recopie'>
+<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' />
+<select name='coefficient_recop' id='coefficient_recopie' >
 <?php
 for($i=0;$i<10;$i++){
     echo "<option value='$i'>$i</option>\n";

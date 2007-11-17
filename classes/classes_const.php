@@ -298,6 +298,7 @@ require_once("../lib/header.inc");
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 
 ?>
@@ -310,18 +311,18 @@ $classe = mysql_result($call_classe, "0", "classe");
 
 if(!isset($quitter_la_page)){
 	echo "<p class='bold'>";
-	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 	echo "</p>\n";
 }
 else{
 	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
 	// Après modification éventuelle, il faut quitter cette page.
 	echo "<p class='bold'>";
-	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe'>".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y'>Classe précédente</a>";}
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y'>Classe suivante</a>";}
+	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 	echo "</p>\n";
 
 	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
@@ -338,7 +339,10 @@ else{
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <center><input type="submit" value="Enregistrer" /></center>
 <p>
-<img src='../images/icons/add_user.png' alt='' /> <a href="classes_ajout.php?id_classe=<?php echo $id_classe;?>">Ajouter des élèves à la classe</a>
+
+<?php
+echo "<img src='../images/icons/add_user.png' alt='' /> <a href='classes_ajout.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter des élèves à la classe</a>";
+?>
 </p>
 <p class='small'><b>Remarque :</b> lors du retrait d'un élève de la classe pour une période donnée, celui-ci sera retiré de tous les enseignements auxquels il était inscrit pour la période en question.</p>
 <?php
@@ -382,7 +386,7 @@ if ($nombreligne == '0') {
 		//echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>\n";
 		echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
 
-		echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+		echo "<a href=\"javascript:CocheColonne(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
 		echo "</p></td>\n";
 		$i++;
@@ -424,7 +428,7 @@ if ($nombreligne == '0') {
 		// AJOUT: boireaus 20071010
 		echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";
 		//=========================
-		echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."'>Matières suivies</a></b>";
+		echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Matières suivies</a></b>";
 		echo "</p></td>\n";
 		echo "<td style='padding: 0;'>\n";
 
@@ -451,17 +455,20 @@ if ($nombreligne == '0') {
 
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='regime_eleve[$k]' value='i-e' ";
 		if ($regime == 'i-e') {echo " checked";}
+		echo " onchange='changement()'";
 		echo " /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='regime_eleve[$k]' value='int.' ";
 		if ($regime == 'int.') {echo " checked";}
+		echo " onchange='changement()'";
 		echo " /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='regime_eleve[$k]' value='d/p' ";
 		if ($regime == 'd/p') {echo " checked";}
+		echo " onchange='changement()'";
 		echo " /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='regime_eleve[$k]' value='ext.' ";
 		if ($regime == 'ext.') {echo " checked";}
 		//=========================
-
+		echo " onchange='changement()'";
 		echo " /></td></tr></table>\n";
 
 		echo "";
@@ -475,13 +482,16 @@ if ($nombreligne == '0') {
 		//=========================
 		if ($doublant == 'R') {echo " checked";}
 		//echo " /></center></p></td><td><p><select size='1' name='$prof_login'>";
+		echo " onchange='changement()'";
 		echo " /></p></td>\n";
 
 		echo "<td>\n";
 		//=========================
 		// MODIF: boireaus 20071010
 		//echo "<p><select size='1' name='$prof_login'>\n";
-		echo "<p><select size='1' name='prof_principal[$k]'>\n";
+		echo "<p><select size='1' name='prof_principal[$k]'";
+		echo " onchange='changement()'";
+		echo ">\n";
 		//=========================
 		$profsuivi = '(vide)';
 		echo "<option value='$profsuivi'>(vide)</option>\n";
@@ -510,7 +520,9 @@ if ($nombreligne == '0') {
 		//=========================
 		// MODIF: boireaus 20071010
 		//echo "<p><select size='1' name='$cpe_login'>\n";
-		echo "<p><select size='1' name='cpe_resp[$k]'>\n";
+		echo "<p><select size='1' name='cpe_resp[$k]'";
+		echo " onchange='changement()'";
+		echo ">\n";
 		//=========================
 			$cperesp = "(vide)";
 			echo "<option value='$cperesp'>(vide)</option>\n";
@@ -537,7 +549,9 @@ if ($nombreligne == '0') {
 				//=========================
 				// MODIF: boireaus 20071010
 				//echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
-				echo "<td><p align='center'><input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
+				echo "<td><p align='center'><input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes'";
+				echo " onchange='changement()'";
+				echo " /></p></td>\n";
 				//=========================
 			} else {
 				$call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
@@ -548,7 +562,7 @@ if ($nombreligne == '0') {
 			$i++;
 		}
 
-		echo "<td><a href=\"javascript:CocheLigne(".$k.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> <a href=\"javascript:DecocheLigne(".$k.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>";
+		echo "<td><a href=\"javascript:CocheLigne(".$k.");changement()\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> <a href=\"javascript:DecocheLigne(".$k.");changement()\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>";
 
 		echo "</tr>\n";
 		$k++;

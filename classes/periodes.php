@@ -162,28 +162,33 @@ if(mysql_num_rows($res_class_tmp)>0){
 $titre_page = "Gestion des classes - Gestion des périodes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 ?>
 
 
 <form enctype="multipart/form-data" method="post" action="periodes.php">
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 <?php
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
+
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>\n";}
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>\n";}
 ?>
 </p>
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
 
-<?php echo "<p>Nombre de périodes : "; ?>
-<select size=1 name='nombre_periode'>
 <?php
+echo "<p>Nombre de périodes : ";
+echo "<select size=1 name='nombre_periode'";
+echo " onchange='changement()'";
+echo ">\n";
+
 $temp = $nb_periode - 1;
 $i = "0" ;
 while ($i < '7') {
 
-   echo "<option value=$i "; if ($i == $temp) {echo " SELECTED";} echo ">$i</option>";
+   echo "<option value=$i "; if ($i == $temp) {echo " selected";} echo ">$i</option>\n";
 
    $i++;
 }
@@ -198,26 +203,30 @@ if ($test_periode == 0) {
 
 } else {
 ?>
-    <center>
+    <!--center-->
     <!--table width=100% border=2 cellspacing=1 bordercolor=#330033 cellpadding=3-->
-    <table width='100%' class='bordercolor'>
+    <table class='boireaus'>
     <tr>
-    <td>&nbsp;</td>
-    <td><p >Nom de la période</p></td>
+    <th>&nbsp;</th>
+    <th style='padding: 5px;'>Nom de la période</th>
     </tr>
     <?php
     $k = '1';
+	$alt=1;
     while ($k < $nb_periode) {
-        if ($nom_periode[$k] == '') $nom_periode[$k] = "période ".$k;
-        echo "<tr>";
-        echo "<td><p>Période $k</p></td>";
-        echo "<td><input type='text' name='nom_period[$k]' value=\"".$nom_periode[$k]."\" size='30' /></td>";
-        echo"</tr>";
+        if ($nom_periode[$k] == '') {$nom_periode[$k] = "période ".$k;}
+        $alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+        echo "<td style='padding: 5px;'>Période $k</td>\n";
+        echo "<td style='padding: 5px;'><input type='text' name='nom_period[$k]'";
+		echo " onchange='changement()'";
+		echo " value=\"".$nom_periode[$k]."\" size='30' /></td>\n";
+        echo "</tr>\n";
         $k++;
     }
     ?>
     </table>
-    </center>
+    <!--/center-->
 <?php } ?>
 <center><input type='submit' value='Enregistrer' style='margin: 30px 0 30px 0;'/></center>
 <input type='hidden' name='is_posted' value="yes" />

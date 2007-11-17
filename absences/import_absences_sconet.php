@@ -191,6 +191,7 @@ function get_nom_class_from_id($id){
 					} else {
 						$sql="SELECT * FROM classes ORDER BY classe";
 					}
+					//echo "$sql<br />\n";
 
 					$res_classe=mysql_query($sql);
 
@@ -618,123 +619,127 @@ function get_nom_class_from_id($id){
 									$alt=-1;
 									for($i=0;$i<count($eleves);$i++){
 
+										$ligne_tableau="";
+										$affiche_ligne="n";
+
 										if(isset($eleves[$i]['elenoet'])){
-											// Le CPE a-t-il bien cet élève:
-											$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
+											// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
+											//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
+											$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
+											//echo "<!--\n$sql\n-->\n";
 											$test=mysql_query($sql);
 
-											/*
-											if(mysql_num_rows($test)==0){
-												echo "<tr>\n";
-												echo "<td>$sql</td>\n";
-												echo "</tr>\n";
-											}
-											else{
-											*/
 											if(mysql_num_rows($test)>0){
-												// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
-												//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
-												$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
-												$test=mysql_query($sql);
 
-												if(mysql_num_rows($test)>0){
-													$alt=$alt*(-1);
-													echo "<tr class='lig$alt'>\n";
-													echo "<td>$i</td>\n";
+												$alt=$alt*(-1);
+												$ligne_tableau.="<tr class='lig$alt'>\n";
+												$ligne_tableau.="<td>$i</td>\n";
+												$ligne_tableau.="<td>".$eleves[$i]['elenoet']."</td>\n";
 
+												// Récupération des infos sur l'élève (on a au moins besoin du login pour tester si le CPE a cet élève.
+												$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
+															FROM eleves e
+															WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
+												//echo "<!--\n$sql\n-->\n";
+												$res1=mysql_query($sql);
+												if(mysql_num_rows($res1)==0){
+													$ligne_tableau.="<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
+													$nb_err++;
+												}
+												elseif(mysql_num_rows($res1)>1){
+													$ligne_tableau.="<td style='color:red;' colspan='3'>Plus d'un élève correspond à cet ELENOET ???</td>\n";
+													$nb_err++;
+												}
+												else{
 
-													/*
-													$sql="SELECT DISTINCT e.login,e.nom,e.prenom,c.classe
-																FROM eleves e,
-																	j_eleves_classes jec,
-																	classes c
-																WHERE (e.no_gep='".$eleves[$i]['elenoet']."' OR e.no_gep='0".$eleves[$i]['elenoet']."') AND
-																	e.login=jec.login AND
-																	jec.id_classe=c.id";
-													*/
-													$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
-																FROM eleves e
-																WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
-													$res1=mysql_query($sql);
-													if(mysql_num_rows($res1)==0){
-														echo "<td>".$eleves[$i]['elenoet']."</td>\n";
-														echo "<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
-														$nb_err++;
-													}
-													elseif(mysql_num_rows($res1)==1){
-														$lig1=mysql_fetch_object($res1);
-														echo "<td>$lig1->elenoet\n";
-														echo "<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
-														echo "</td>\n";
-														echo "<td>$lig1->nom</td>\n";
-														echo "<td>$lig1->prenom</td>\n";
+													$lig1=mysql_fetch_object($res1);
 
-														echo "<td>\n";
+													// Le CPE a-t-il bien cet élève:
+													//$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
+													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
+													//echo "<!--\n$sql\n-->\n";
+													$test=mysql_query($sql);
+
+													//if(mysql_num_rows($test)>0){
+													if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+														$affiche_ligne="y";
+
+														//$lig1=mysql_fetch_object($res1);
+														//$ligne_tableau.="<td>$lig1->elenoet\n";
+
+														//$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
+														//$ligne_tableau.="</td>\n";
+														$ligne_tableau.="<td>";
+														$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
+														$ligne_tableau.="$lig1->nom</td>\n";
+														$ligne_tableau.="<td>$lig1->prenom</td>\n";
+
+														$ligne_tableau.="<td>\n";
 														$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
 																WHERE jec.login='$lig1->login' AND
 																	jec.id_classe=c.id AND periode='$num_periode'";
 														$res2=mysql_query($sql);
 														if(mysql_num_rows($res2)==0){
-															echo "<span style='color:red;'>NA</span>\n";
+															$ligne_tableau.="<span style='color:red;'>NA</span>\n";
 														}
 														else {
 															$cpt=0;
 															while($lig2=mysql_fetch_object($res2)){
 																if($cpt>0){
-																	echo ", ";
+																	$ligne_tableau.=", ";
 																}
-																echo $lig2->classe;
+																$ligne_tableau.=$lig2->classe;
 															}
 														}
+														$ligne_tableau.="</td>\n";
+													}
+
+
+													if("$affiche_ligne"=="y"){
+														echo $ligne_tableau;
+														echo "<td>\n";
+														if(isset($eleves[$i]['nbAbs'])){
+															echo $eleves[$i]['nbAbs'];
+															echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
+														}
+														else{
+															//echo "&nbsp;";
+															echo "<span style='color:red;'>ERR</span>\n";
+															//echo "<input type='hidden' name='nbabs_eleve[$i]' value='0' />\n";
+															$nb_err++;
+														}
 														echo "</td>\n";
-													}
-													else{
-														echo "<td>".$eleves[$i]['elenoet']."</td>\n";
-														echo "<td style='color:red;' colspan='3'>Plus d'un élève correspond à cet ELENOET ???</td>\n";
-														$nb_err++;
+
+														echo "<td>\n";
+														if(isset($eleves[$i]['nbNonJustif'])){
+															echo $eleves[$i]['nbNonJustif'];
+															echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
+														}
+														else{
+															//echo "&nbsp;";
+															echo "<span style='color:red;'>ERR</span>\n";
+															//echo "<input type='hidden' name='nbnj_eleve[$i]' value='0' />\n";
+															$nb_err++;
+														}
+														echo "</td>\n";
+
+														echo "<td>\n";
+														if(isset($eleves[$i]['nbRet'])){
+															echo $eleves[$i]['nbRet'];
+															//echo " -&gt; <input type='text' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+															echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+														}
+														else{
+															//echo "&nbsp;";
+															echo "<span style='color:red;'>ERR</span>\n";
+															//echo "<input type='hidden' name='nbret_eleve[$i]' value='0' />\n";
+															$nb_err++;
+														}
+														echo "</td>\n";
+
+														echo "</tr>\n";
 													}
 
-													echo "<td>\n";
-													if(isset($eleves[$i]['nbAbs'])){
-														echo $eleves[$i]['nbAbs'];
-														echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
-													}
-													else{
-														//echo "&nbsp;";
-														echo "<span style='color:red;'>ERR</span>\n";
-														//echo "<input type='hidden' name='nbabs_eleve[$i]' value='0' />\n";
-														$nb_err++;
-													}
-													echo "</td>\n";
-
-													echo "<td>\n";
-													if(isset($eleves[$i]['nbNonJustif'])){
-														echo $eleves[$i]['nbNonJustif'];
-														echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
-													}
-													else{
-														//echo "&nbsp;";
-														echo "<span style='color:red;'>ERR</span>\n";
-														//echo "<input type='hidden' name='nbnj_eleve[$i]' value='0' />\n";
-														$nb_err++;
-													}
-													echo "</td>\n";
-
-													echo "<td>\n";
-													if(isset($eleves[$i]['nbRet'])){
-														echo $eleves[$i]['nbRet'];
-														//echo " -&gt; <input type='text' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
-														echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
-													}
-													else{
-														//echo "&nbsp;";
-														echo "<span style='color:red;'>ERR</span>\n";
-														//echo "<input type='hidden' name='nbret_eleve[$i]' value='0' />\n";
-														$nb_err++;
-													}
-													echo "</td>\n";
-
-													echo "</tr>\n";
 												}
 											}
 										}
@@ -770,7 +775,15 @@ function get_nom_class_from_id($id){
 								// On initialise à zéro les absences, retards,... pour tous les élèves des classes importées et les valeurs extraites du XML de Sconet écraseront ces initialisations.
 								// Si on ne fait pas cette initialisation, les élèves qui n'ont aucune absence ni retard apparaissent avec un '?' au lieu d'un Zéro/Aucune.
 								for($i=0;$i<count($id_classe);$i++){
-									$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND periode='$num_periode';";
+
+									if($_SESSION['statut']=='secours'){
+										$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND periode='$num_periode';";
+									}
+									else{
+										// Pour ne réinitialiser que les absences des élèves associés au CPE:
+										$sql="SELECT jecl.login FROM j_eleves_classes jecl, j_eleves_cpe jec WHERE jecl.id_classe='$id_classe[$i]' AND jecl.periode='$num_periode' AND jecl.login=jec.e_login AND jec.cpe_login='".$_SESSION['login']."';";
+									}
+
 									$res_ele=mysql_query($sql);
 									if(mysql_num_rows($res_ele)>0){
 										while($lig_tmp=mysql_fetch_object($res_ele)){
@@ -794,40 +807,59 @@ function get_nom_class_from_id($id){
 										(isset($nbnj_eleve[$i]))&&
 										(isset($nbret_eleve[$i]))
 									) {
-										if(($nb_ok>0)||($nb_err>0)){echo ", ";}
 
-										$sql="SELECT 1=1 FROM absences WHERE periode='$num_periode' AND login='".$log_eleve[$i]."';";
-										$test1=mysql_query($sql);
-										if(mysql_num_rows($test1)==0){
-											$sql="INSERT INTO absences SET periode='$num_periode',
-																			login='".$log_eleve[$i]."',
-																			nb_absences='".$nbabs_eleve[$i]."',
-																			nb_retards='".$nbret_eleve[$i]."',
-																			non_justifie='".$nbnj_eleve[$i]."';";
-											$insert=mysql_query($sql);
-											if($insert){
-												$nb_ok++;
-												echo "<span style='color:green;'>".$log_eleve[$i]."</span>";
-											}
-											else{
-												$nb_err++;
-												echo "<span style='color:red;'>".$log_eleve[$i]."</span>";
-											}
+										if($_SESSION['statut']=='secours'){
+											$test0=true;
 										}
 										else{
-											$sql="UPDATE absences SET nb_absences='".$nbabs_eleve[$i]."',
-																		nb_retards='".$nbret_eleve[$i]."',
-																		non_justifie='".$nbnj_eleve[$i]."'
-																	WHERE periode='$num_periode' AND
-																			login='".$log_eleve[$i]."';";
-											$update=mysql_query($sql);
-											if($update){
-												$nb_ok++;
-												echo "<span style='color:green;'>".$log_eleve[$i]."</span>";
+											// L'élève est-il associé au CPE:
+											// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
+											$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
+											$res_test0=mysql_query($sql);
+											if(mysql_num_rows($res_test0)!=0){
+												$test0=true;
 											}
 											else{
-												$nb_err++;
-												echo "<span style='color:red;'>".$log_eleve[$i]."</span>";
+												$test0=false;
+											}
+										}
+
+										if($test0==true){
+											if(($nb_ok>0)||($nb_err>0)){echo ", ";}
+
+											$sql="SELECT 1=1 FROM absences WHERE periode='$num_periode' AND login='".$log_eleve[$i]."';";
+											$test1=mysql_query($sql);
+											if(mysql_num_rows($test1)==0){
+												$sql="INSERT INTO absences SET periode='$num_periode',
+																				login='".$log_eleve[$i]."',
+																				nb_absences='".$nbabs_eleve[$i]."',
+																				nb_retards='".$nbret_eleve[$i]."',
+																				non_justifie='".$nbnj_eleve[$i]."';";
+												$insert=mysql_query($sql);
+												if($insert){
+													$nb_ok++;
+													echo "<span style='color:green;'>".$log_eleve[$i]."</span>";
+												}
+												else{
+													$nb_err++;
+													echo "<span style='color:red;'>".$log_eleve[$i]."</span>";
+												}
+											}
+											else{
+												$sql="UPDATE absences SET nb_absences='".$nbabs_eleve[$i]."',
+																			nb_retards='".$nbret_eleve[$i]."',
+																			non_justifie='".$nbnj_eleve[$i]."'
+																		WHERE periode='$num_periode' AND
+																				login='".$log_eleve[$i]."';";
+												$update=mysql_query($sql);
+												if($update){
+													$nb_ok++;
+													echo "<span style='color:green;'>".$log_eleve[$i]."</span>";
+												}
+												else{
+													$nb_err++;
+													echo "<span style='color:red;'>".$log_eleve[$i]."</span>";
+												}
 											}
 										}
 									}
