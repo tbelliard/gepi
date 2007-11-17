@@ -134,6 +134,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		// actions si un nouvel utilisateur a été défini
 		//
 
+		$temoin_ajout_ou_modif_ok="n";
+
 		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
 			$_POST['new_login'] = strtoupper($_POST['new_login']);
 			$reg_password_c = md5($NON_PROTECT['password1']);
@@ -174,11 +176,16 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						}
 					}
 
+
+
+
 					$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
 					//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
 					$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
 					$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
 					$user_login = $_POST['new_login'];
+
+					$temoin_ajout_ou_modif_ok="y";
 				}
 			}
 
@@ -247,7 +254,10 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			}
 
 			if ($change == "yes") {
+				// Variable utilisée pour la partie photo:
+				$temoin_ajout_ou_modif_ok="y";
 
+				/*
 				// pour le module trombinoscope
 				// Envoi de la photo
 				// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
@@ -311,6 +321,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					// si suppression de la fiche il faut supprimer la photo
 
 				// fin pour le module trombinoscope
+				*/
 
 				$reg_data = mysql_query("UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."' WHERE login='".$user_login."'");
 				$del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
@@ -341,6 +352,73 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			else {
 				$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
 			}
+		}
+
+
+		if($temoin_ajout_ou_modif_ok=="y"){
+			// pour le module trombinoscope
+			// Envoi de la photo
+			// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
+			$i_photo = 0;
+			$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
+			$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
+			$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
+
+			$repertoire = '../photos/personnels/';
+			$ancien_code_photo = md5($user_login.''.$ancien_nom.' '.$ancien_prenom);
+			$nouveau_code_photo = md5($user_login.''.$_POST['reg_nom'].' '.$_POST['reg_prenom']);
+
+			// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
+			if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
+				$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
+				$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
+
+				@rename($ancien_nom_fichier, $nouveau_nom_fichier);
+			}
+
+			if(isset($ancien_code_photo)) {
+				if($ancien_code_photo != ""){
+					if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
+						if($_POST['suppr_filephoto']=='y'){
+							if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
+								$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
+							}
+							else{
+								$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
+							}
+						}
+					}
+
+					// filephoto
+					if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
+						$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+						if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
+							$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+							$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+							// Tester la taille max de la photo?
+
+							if(is_uploaded_file($filephoto_tmp)){
+								$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
+								$source_file = stripslashes("$filephoto_tmp");
+								$res_copy=copy("$source_file" , "$dest_file");
+								if($res_copy){
+									$msg = "Mise en place de la photo effectuée.";
+								}
+								else{
+									$msg = "Erreur lors de la mise en place de la photo.";
+								}
+							}
+							else{
+								$msg = "Erreur lors de l'upload de la photo.";
+							}
+						}
+					}
+				}
+			}
+
+				// si suppression de la fiche il faut supprimer la photo
+
+			// fin pour le module trombinoscope
 		}
 	}
 }
@@ -506,22 +584,37 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 		else{
 			echo "Envoyer un fichier photo</a>\n";
 		}
-		?></span>
-		<div id="div_upload_photo" style="display: none;">
-			<input type="file" name="filephoto" size="12" />
-			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-		<?php
+	}
+	else{
+		echo "<table style='text-align: center;'>\n";
+		echo "<tr>\n";
+		echo "<td style='text-align: center;'>\n";
+		$temoin_photo="non";
+		echo "<div align='center'>\n";
+		echo "<span style='font-size:xx-small;'>";
+		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+		echo "Envoyer un fichier photo</a>\n";
+	}
+
+	?></span>
+
+	<div id="div_upload_photo" style="display: none;">
+		<input type="file" name="filephoto" size="12" />
+		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+	<?php
+	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
 		if(file_exists($photo)){
 			?><br /><input type="checkbox" name="suppr_filephoto" id="suppr_filephoto" value="y" />
 			&nbsp;<label for="suppr_filephoto" style="cursor: pointer; cursor: hand;">Supprimer la photo existante</label><?php
-		} ?>
-			<br /><input type="submit" value="Enregistrer" />
-		</div>
-		</div>
-		</td>
-		</tr>
-		</table><?php
+		}
 	}
+	?>
+		<br /><input type="submit" value="Enregistrer" />
+	</div>
+	</div>
+	</td>
+	</tr>
+	</table><?php
 }
 echo "</td>";
 echo "</tr>\n";
