@@ -214,6 +214,9 @@ label {
 	background-color: silver;
 }
 
+#saisie_new_periode, #modif_periode {
+	height: 300px; /* à agrandir pour des établissements avec beaucoup de classes*/
+}
 /* Couleurs des champs de formulaire */
 #lecorps .focus {
 	background: #E9E9E4;

@@ -290,6 +290,8 @@ if ($modulo !== 0) {
 			<input type="submit" name="valider" value="enregistrer" />
 		</form>
 </fieldset>
+
+<br />
 	';
 }
 	// On construit les classes consernées
@@ -312,7 +314,7 @@ if (isset($modif_ok) AND isset($nom_periode)) {
 /* On traite les nouvelles entrées dans la table */
 if (isset($new_periode) AND isset($nom_periode)) {
 $detail_jourdeb = explode("/", $jour_debut);
-$detail_jourfin = explode("/", $jour_debut);
+$detail_jourfin = explode("/", $jour_fin);
 
 	$jourdebut = $detail_jourdeb[2]."-".$detail_jourdeb[1]."-".$detail_jourdeb[0];
 	$jourfin = $detail_jourfin[2]."-".$detail_jourfin[1]."-".$detail_jourfin[0];
@@ -336,7 +338,7 @@ $detail_jourfin = explode("/", $jour_debut);
 	else echo '<h3 class="red">Ce nom de période existe déjà</h3>';
 }
 
-/* On affiche alors toutes les périodes de la table */
+/* ============ On affiche alors toutes les périodes de la table ==============*/
 
 	// Lien qui permet de saisir de nouvelles périodes
 if ($modifier == NULL) {
@@ -443,15 +445,17 @@ echo '
 </fieldset>
 <br />
 ';
-/* fin de l'affichage des périodes déjà présentes dans Gepi
-  Début de l'affichage pour enregistrer de nouvelles périodes */
+/* ============= fin de l'affichage des périodes déjà présentes dans Gepi
+  Début de l'affichage pour enregistrer de nouvelles périodes ================*/
+
 if ($new_periode == "ok") {
 	// On affiche le formulaire pour entrer les "new_periode"
 	echo '
+		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
+
 <fieldset id="saisie_new_periode">
 	<legend>Saisir une nouvelle période pour le calendrier</legend>
 
-		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
 			<input type="hidden" name="calendrier" value="ok" />
 			<input type="hidden" name="new_periode" value="ok" />
 
@@ -597,8 +601,9 @@ if ($modulo !== 0) {
 			<span class="legende">Vacances / Cours</span>
 		</p>
 			<input type="submit" name="valider" value="enregistrer" />
-		</form>
+
 </fieldset>
+		</form>
 
 	';
 } // if ($new_periode == "ok")
