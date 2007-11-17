@@ -3023,7 +3023,11 @@ while (!empty($ordre_moyenne[$cpt_ordre]) ) {
 						$espace_pour_nb_note = $espace_pour_nb_note / 2;
 					$valeur1 = ''; $valeur2 = '';
 					if ( $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] != 0 ) {
-						$valeur1 = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'].' note(s)';
+					    if ( $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] == 1 ) {
+						$valeur1 = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'].' note';
+						} else {
+						  $valeur1 = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'].' notes';
+						}
 						$valeur2 = 'sur '.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_total_notes_matiere'];
 					}
 					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_pour_nb_note, $valeur1, 'LR',2,'C',$active_reperage_eleve[$classe_id]);
