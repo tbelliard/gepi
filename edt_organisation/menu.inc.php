@@ -125,7 +125,8 @@ if ($_SESSION['statut'] == "administrateur") {
 
 			<dd id="sEdTmenu5"'.displaydd("5").'>
 				<ul>
-					<li><a href="edt_calendrier.php">Créer, voir et modifier</a></li>
+					<li><a href="edt_calendrier.php">Périodes</a></li>
+					<li><a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">Semaines</a></li>
 				</ul>
 			</dd>
 		';
