@@ -429,12 +429,14 @@ if (isset($user_login) and ($user_login!='')) {
 	echo " | <a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>";
 }
 
-if("$liste_options_user"!=""){
-	if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec'>Précedent</a>";}
-	echo " | <select name='user_login' onchange='document.form_choix_user.submit()'>\n";
-	echo $liste_options_user;
-	echo "</select>\n";
-	if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv'>Suivant</a>";}
+if(isset($liste_options_user)){
+	if("$liste_options_user"!=""){
+		if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec'>Précedent</a>";}
+		echo " | <select name='user_login' onchange='document.form_choix_user.submit()'>\n";
+		echo $liste_options_user;
+		echo "</select>\n";
+		if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv'>Suivant</a>";}
+	}
 }
 echo "</p>\n";
 echo "</form>\n";
@@ -477,47 +479,49 @@ if (isset($user_login) and ($user_login!='')) {
 // trombinoscope
 
 if(getSettingValue("active_module_trombinoscopes")=='y'){
-	$code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
-	$photo="../photos/personnels/".$code_photo.".jpg";
-	echo "<table style='text-align: center;'>\n";
-	echo "<tr>\n";
-	echo "<td style='text-align: center;'>\n";
-	$temoin_photo="non";
-	if(file_exists($photo)){
-		$temoin_photo="oui";
-		//echo "<td>\n";
+	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
+		$code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
+		$photo="../photos/personnels/".$code_photo.".jpg";
+		echo "<table style='text-align: center;'>\n";
+		echo "<tr>\n";
+		echo "<td style='text-align: center;'>\n";
+		$temoin_photo="non";
+		if(file_exists($photo)){
+			$temoin_photo="oui";
+			//echo "<td>\n";
+			echo "<div align='center'>\n";
+			$dimphoto=redimensionne_image($photo);
+			echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+			//echo "</td>\n";
+			//echo "<br />\n";
+			echo "</div>\n";
+			echo "<div style='clear:both;'></div>\n";
+		}
 		echo "<div align='center'>\n";
-		$dimphoto=redimensionne_image($photo);
-		echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
-		//echo "</td>\n";
-		//echo "<br />\n";
-		echo "</div>\n";
-		echo "<div style='clear:both;'></div>\n";
+		echo "<span style='font-size:xx-small;'>";
+		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+		if($temoin_photo=="oui"){
+			echo "Modifier le fichier photo</a>\n";
+		}
+		else{
+			echo "Envoyer un fichier photo</a>\n";
+		}
+		?></span>
+		<div id="div_upload_photo" style="display: none;">
+			<input type="file" name="filephoto" size="12" />
+			<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		<?php
+		if(file_exists($photo)){
+			?><br /><input type="checkbox" name="suppr_filephoto" id="suppr_filephoto" value="y" />
+			&nbsp;<label for="suppr_filephoto" style="cursor: pointer; cursor: hand;">Supprimer la photo existante</label><?php
+		} ?>
+			<br /><input type="submit" value="Enregistrer" />
+		</div>
+		</div>
+		</td>
+		</tr>
+		</table><?php
 	}
-	echo "<div align='center'>\n";
-	echo "<span style='font-size:xx-small;'>";
-	echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
-	if($temoin_photo=="oui"){
-		echo "Modifier le fichier photo</a>\n";
-	}
-	else{
-		echo "Envoyer un fichier photo</a>\n";
-	}
-	?></span>
-	<div id="div_upload_photo" style="display: none;">
-		<input type="file" name="filephoto" size="12" />
-		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-	<?php
-	if(file_exists($photo)){
-		?><br /><input type="checkbox" name="suppr_filephoto" id="suppr_filephoto" value="y" />
-		&nbsp;<label for="suppr_filephoto" style="cursor: pointer; cursor: hand;">Supprimer la photo existante</label><?php
-	} ?>
-		<br /><input type="submit" value="Enregistrer" />
-	</div>
-	</div>
-	</td>
-	</tr>
-	</table><?php
 }
 echo "</td>";
 echo "</tr>\n";
