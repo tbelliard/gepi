@@ -376,8 +376,8 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 
 	echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
 
-	//echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus'>\n";
-	echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
+	echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus'>\n";
+	//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
 	echo "<tr>\n";
 	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom'>Nom Prénom</a></b></td>\n";
 
@@ -471,7 +471,9 @@ $prev_classe = null;
 // Compteur pour les élèves
 $i=0;
 //=========================
+$alt=1;
 foreach ($liste_eleves as $eleve_login) {
+	$alt=$alt*(-1);
 
 	$k=1;
 	while ($k < $nb_periode) {
@@ -683,12 +685,14 @@ foreach ($liste_eleves as $eleve_login) {
 	if ($display_eleve=='yes') {
 		$num_id++;
 		if ($order_by == "nom" OR $prev_classe == $eleve_classe OR $prev_classe == null) {
-			echo "<tr><td>$eleve_nom $eleve_prenom</td>";
+			//echo "<tr><td>$eleve_nom $eleve_prenom</td>";
+			echo "<tr class='lig$alt'><td style='text-align:left;'>$eleve_nom $eleve_prenom</td>";
 			if ($multiclasses) echo "<td style='text-align:center;'>$eleve_classe</td>";
 			echo "\n";
 			$prev_classe = $eleve_classe;
 		} else {
-			echo "<tr><td style='border-top: 2px solid blue;'>$eleve_nom $eleve_prenom</td>";
+			//echo "<tr><td style='border-top: 2px solid blue;'>$eleve_nom $eleve_prenom</td>";
+			echo "<tr class='lig$alt'><td style='border-top: 2px solid blue; text-align:left;'>$eleve_nom $eleve_prenom</td>";
 			if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe</td>";
 			echo "\n";
 			$prev_classe = $eleve_classe;
@@ -698,13 +702,13 @@ foreach ($liste_eleves as $eleve_login) {
 			echo $mess[$k];
 			$k++;
 		}
-		echo "</tr>";
+		echo "</tr>\n";
 	}
 
 	$i++;
 }
 
-echo "<tr>";
+echo "<tr>\n";
 if ($multiclasses) {
 	echo "<td colspan='2'>";
 } else {
