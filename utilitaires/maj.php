@@ -4634,7 +4634,19 @@ if (isset ($_POST['maj'])) {
 		$result .= "&nbsp;->Création de la table 'edt_calendrier'<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_calendrier'"));
         if ($test1 == 0) {
-            $query1 = mysql_query("CREATE TABLE `edt_calendrier` (`id_calendrier` int(11) NOT NULL auto_increment,`classe_concerne_calendrier` text NOT NULL,`nom_calendrier` varchar(100) NOT NULL default '',`jourdebut_calendrier` date NOT NULL default '0000-00-00',`heuredebut_calendrier` time NOT NULL default '00:00:00',`jourfin_calendrier` date NOT NULL default '0000-00-00',`heurefin_calendrier` time NOT NULL default '00:00:00',`numero_periode` tinyint(4) NOT NULL default '0',`etabferme_calendrier` tinyint(4) NOT NULL,`etabvacances_calendrier` tinyint(4) NOT NULL,PRIMARY KEY (`id_calendrier`));");
+            $query1 = mysql_query("CREATE TABLE `edt_calendrier` (`id_calendrier` int(11) NOT NULL auto_increment,
+			`classe_concerne_calendrier` text NOT NULL,
+			`nom_calendrier` varchar(100) NOT NULL default '',
+			`debut_calendrier_ts` varchar(11) NOT NULL,
+			`fin_calendrier_ts` varchar(11) NOT NULL,
+			`jourdebut_calendrier` date NOT NULL default '0000-00-00',
+			`heuredebut_calendrier` time NOT NULL default '00:00:00',
+			`jourfin_calendrier` date NOT NULL default '0000-00-00',
+			`heurefin_calendrier` time NOT NULL default '00:00:00',
+			`numero_periode` tinyint(4) NOT NULL default '0',
+			`etabferme_calendrier` tinyint(4) NOT NULL,
+			`etabvacances_calendrier` tinyint(4) NOT NULL,
+			PRIMARY KEY (`id_calendrier`));");
             if ($query1) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
@@ -4643,6 +4655,20 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
         }
+
+        $result .= "&nbsp;->Ajout des champs 'debut_calendrier_ts' et 'fin_calendrier_ts' à la table 'edt_calendrier'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_calendrier LIKE 'fin_calendrier_ts'"));
+        if ($test1 == 0) {
+			$query = mysql_query("ALTER TABLE `edt_calendrier` ADD `debut_calendrier_ts` VARCHAR( 11 ) NOT NULL AFTER `nom_calendrier` ,ADD `fin_calendrier_ts` VARCHAR( 11 ) NOT NULL AFTER `debut_calendrier_ts` ;");
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
+		}
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'nom_creneaux_s' à la table 'edt_setting'<br/>";
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='nom_creneaux_s'");
