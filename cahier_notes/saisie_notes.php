@@ -654,7 +654,8 @@ foreach ($liste_eleves as $eleve) {
 //
 // Affichage du tableau
 //
-echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
+//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
+echo "<table class='boireaus' cellspacing='2' cellpadding='1'>\n";
 //
 // Première ligne
 //
@@ -932,6 +933,7 @@ echo "</tr>\n";
 //
 // Affichage des lignes "elèves"
 //
+$alt=1;
 $i = 0;
 $pointer = 0;
 $tot_data_pdf = 1;
@@ -941,13 +943,17 @@ while($i < $nombre_lignes) {
 		$tot_data_pdf++;
 		$data_pdf[$pointer][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
 		if ($multiclasses) $data_pdf[$pointer][] = $eleve_classe[$i];
-		echo "<tr>";
+		$alt=$alt*(-1);
+		//echo "<tr>";
+		echo "<tr class='lig$alt'>\n";
 		if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
-			echo "<td class=cn style='border-top: 2px solid blue;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+			//echo "<td class=cn style='border-top: 2px solid blue;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+			echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
 			if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
 			echo "\n";
 		} else {
-			echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+			//echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+			echo "<td class=cn style='text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
 			if ($multiclasses) echo "<td>$eleve_classe[$i]</td>";
 			echo "\n";
 		}
