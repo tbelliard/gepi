@@ -34,26 +34,29 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
 }
 
-unset ($_SESSION['order_by']);
+//unset ($_SESSION['order_by']);
 
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
-// End standart header
+// ============== Le header ==========
 require_once("../lib/header.inc");
+// ===================================
 
-
-	echo '<br />';
-	echo '<p class="bold"><a href="../accueil.php"><img src=\'../images/icons/back.png\' alt=\'Retour\' class=\'back_link\'/> Retour accueil</a>';
-	echo '<center>';
+	echo '
+<br />
+	<p class="bold">
+		<a href="../accueil.php"><img src=\'../images/icons/back.png\' alt=\'Retour\' class=\'back_link\'/> Retour accueil</a>
+<center>
+		';
 
 if (isset($_SESSION["login"])) {
 
 	$aff_nom_edt = renvoie_nom_long(($_SESSION["login"]), "eleve");
-	echo 'L\'emploi du temps de '.$aff_nom_edt;
+	echo 'L\'emploi du temps de '.$aff_nom_edt."\n";
 }
-	echo '<br /><br />';
+	echo '<br /><br />'."\n";
 
 
 		premiere_ligne_tab_edt();
@@ -67,13 +70,21 @@ if (isset($_SESSION["login"])) {
 		$c=0;
 		while($c<count($tab_id_creneaux)){
 
-		echo("<tr><th rowspan=\"2\"><br />".$tab_creneaux[$i]."<br /><br /></th>".(construction_tab_edt($tab_id_creneaux[$c], "0"))."\n");
-		echo("<tr>".(construction_tab_edt($tab_id_creneaux[$c], "0.5"))."\n");
+		echo'
+		<tr>
+			<th rowspan="2">
+				<br />'.$tab_creneaux[$i].'<br /><br />
+			</th>'.(construction_tab_edt($tab_id_creneaux[$c], "0")).'
+		<tr>
+			'.(construction_tab_edt($tab_id_creneaux[$c], "0.5"));
 		$i ++;
 		$c ++;
 		}
 	}
 
-	echo '</tbody></table>';
-	echo '</center>';
+	echo '
+	</tbody>
+	</table>
+</center>
+		';
 ?>
