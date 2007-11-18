@@ -74,6 +74,8 @@ if ($_SESSION['statut'] != "secours") {
 
 if (isset($_POST['is_posted'])) {
 
+	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
+
 	$k=1;
 	while ($k < $nb_periode) {
 		//=========================
@@ -83,16 +85,19 @@ if (isset($_POST['is_posted'])) {
 		//=========================
 
 		if(isset($log_eleve)){
-			for($i=0;$i<count($log_eleve);$i++){
+			//for($i=0;$i<count($log_eleve);$i++){
+			for($i=0;$i<$indice_max_log_eleve;$i++){
 
-				// On supprime le suffixe indiquant la période:
-				$reg_eleve_login=ereg_replace("_t".$k."$","",$log_eleve[$i]);
+				//echo "\$log_eleve[$i]=$log_eleve[$i]<br />\n";
+				if(isset($log_eleve[$i])) {
+					// On supprime le suffixe indiquant la période:
+					$reg_eleve_login=ereg_replace("_t".$k."$","",$log_eleve[$i]);
 
-				//echo "\$i=$i<br />";
-				//echo "\$reg_eleve_login=$reg_eleve_login<br />";
+					//echo "\$i=$i<br />";
+					//echo "\$reg_eleve_login=$reg_eleve_login<br />";
 
-				// La période est-elle ouverte?
-				if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
+					// La période est-elle ouverte?
+					if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
 						$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
 						if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
 
@@ -129,6 +134,7 @@ if (isset($_POST['is_posted'])) {
 								}
 							}
 						}
+					}
 				}
 			}
 		}
@@ -514,6 +520,8 @@ foreach ($liste_eleves as $eleve_login) {
 	$i++;
 
 }
+
+echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n"
 
 ?>
 
