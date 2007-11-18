@@ -106,47 +106,47 @@ if ($step == 0) {
     <ul>
     <li>Soit continuez l'importation et vous choisissez de remplir ultérieurement à la main les rubriques absences pour ces élèves,</li>
     <li>soit vous devez, avant de procéder à l'importation des absences, renseigner le numéro GEP de ces élèves en modifiant leur fiche (voir l'administrateur de GEPI).</li>
-    </ul>";
+    </ul>\n";
     echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">
-    <tr><td><b>Identifiant</b></td><td><b>Nom</b></td><td><b>Prénom</b></td></tr>";
+    <tr><td><b>Identifiant</b></td><td><b>Nom</b></td><td><b>Prénom</b></td></tr>\n";
     $i = 0;
     while ($i < $nb_test) {
         $login_eleve = mysql_result($test,$i,'e.login');
         $nom_eleve = mysql_result($test,$i,'e.nom');
         $prenom_eleve = mysql_result($test,$i,'e.prenom');
-        echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>";
+        echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
         $i++;
     }
-    echo "</table>";
+    echo "</table>\n";
 
-    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
-    echo "<input type=hidden name='step' value='$step_suivant' />";
-    echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-    echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-    echo "<p align=\"center\"><input type=submit value=\"Continuer l'importation\" /></p>";
-    echo "</form>";
+    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+    echo "<input type=hidden name='step' value='$step_suivant' />\n";
+    echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+    echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+    echo "<p align=\"center\"><input type=submit value=\"Continuer l'importation\" /></p>\n";
+    echo "</form>\n";
 } else if ($step==1) {
     // On demande le fichier F_NOMA.DBF
-    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
+    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
     echo "<p class='bold'>Phase d'importation des séquences liées à la matinée et des séquences liées à l'après-midi</p>
     <p>Veuillez préciser le nom complet du fichier <b>F_NOMA.DBF</b> :";
-    echo "<input type='file' size='80' name='dbf_file' /></p>";
-    echo "<p>(En général, le fichier F_NOMA.DBF se trouve dans le répertoire parent du répertoire contenant le fichier F_EABS.DBF.)</p>";
-    echo "<p align=\"center\"><input type=submit value='Valider' /></p>";
-    echo "<input type=hidden name='step' value='2' />";
-    echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-    echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-    echo "</form>";
+    echo "<input type='file' size='80' name='dbf_file' /></p>\n";
+    echo "<p>(En général, le fichier F_NOMA.DBF se trouve dans le répertoire parent du répertoire contenant le fichier F_EABS.DBF.)</p>\n";
+    echo "<p align=\"center\"><input type=submit value='Valider' /></p>\n";
+    echo "<input type=hidden name='step' value='2' />\n";
+    echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+    echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+    echo "</form>\n";
 
     // On verifie que la table absences_gep est remplie
     $test_abs_gep = mysql_query("select id_seq from absences_gep");
     if (mysql_num_rows($test_abs_gep) != 0) {
-        echo "<hr /><form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
-        echo "<p align=\"center\"><input type=submit value=\"Continuer sans procéder à l'importation\" /></p>";
-        echo "<input type=hidden name='step' value='3' />";
-        echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-        echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-        echo "</form>";
+        echo "<hr /><form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+        echo "<p align=\"center\"><input type=submit value=\"Continuer sans procéder à l'importation\" /></p>\n";
+        echo "<input type=hidden name='step' value='3' />\n";
+        echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+        echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+        echo "</form>\n";
     }
 
 } else if ($step==2) {
@@ -157,8 +157,8 @@ if ($step == 0) {
     		if (is_uploaded_file($dbf_file['tmp_name'])) {
 	        $fp = dbase_open($dbf_file['tmp_name'], 0);
 	        if(!$fp) {
-	            echo "<p>Impossible d'ouvrir le fichier dbf</p>";
-	            echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>";
+	            echo "<p>Impossible d'ouvrir le fichier dbf</p>\n";
+	            echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	        } else {
 	            // on constitue le tableau des champs à extraire
 	            $tabchamps = array("TYPE","CODE","CHOIX");
@@ -172,8 +172,8 @@ if ($step == 0) {
 	            if (@dbase_get_record_with_names($fp,1)) {
 	                $temp = @dbase_get_record_with_names($fp,1);
 	            } else {
-	                echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-	                echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>";
+	                echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+	                echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	                die();
 	            }
 
@@ -208,76 +208,100 @@ if ($step == 0) {
 	                }
 	            }
 	            dbase_close($fp);
-	            echo "<p class='bold'>Phase d'importation des séquences liées à la matinée et des séquences liées à l'après-midi</p>";
+	            echo "<p class='bold'>Phase d'importation des séquences liées à la matinée et des séquences liées à l'après-midi</p>\n";
 	            if ($erreur == 'no') {
 	                echo "Les données du fichiers F_NOMA.DBF ont été enregistrées.
-	                <br /><b><a href=\"javascript:centrerpopup('seq_gep_absences.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Visualiser les correspondances entre séquences et types de demi-journées</a></b>";
-	                echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
-	                echo "<p align=\"center\"><input type=submit value=\"Continuer l'importation\" /></p>";
-	                echo "<input type=hidden name='step' value='3' />";
-	                echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-	                echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-	                echo "</form>";
+	                <br /><b><a href=\"javascript:centrerpopup('seq_gep_absences.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Visualiser les correspondances entre séquences et types de demi-journées</a></b>\n";
+	                echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+	                echo "<p align=\"center\"><input type=submit value=\"Continuer l'importation\" /></p>\n";
+	                echo "<input type=hidden name='step' value='3' />\n";
+	                echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+	                echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+	                echo "</form>\n";
 	            } else {
 	                echo "<b>ATTENTION</b> : Il y a eu une ou plusieurs erreurs lors de l'enregistrement des données du fichier F_NOMA.DBF.";
 	            }
 	        }
     		}
 	} else if (trim($dbf_file['name'])=='') {
-        echo "<p>Aucun fichier n'a été sélectionné !<br />";
-        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>\n";
     } else {
-        echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>Cliquer ici </a> pour recommencer !</center></p>\n";
     }
 
 } else if ($step==3) {
-    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
-    echo "<p><b>ATTENTION !</b> VEUILLEZ LIRE CE QUI SUIT</p>";
+    echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+    echo "<p><b>ATTENTION !</b> VEUILLEZ LIRE CE QUI SUIT</p>\n";
     echo "<p>L'importation des données relatives aux absences depuis GEP est une manipulation délicate. En effet, les fichiers de GEP sont au format DBF, mais GEP ne respecte pas ce standard à la lettre.";
-    echo "<p>Mise en garde : vous DEVEZ suivre à la lettre la procédure décrite ci-dessous afin d'obtenir une importation fiable.</p>";
-    echo "<p class='bold'>Si vous omettez une étape, aucun message d'erreur ne vous signalera une mauvaise valeur importée.</p>";
-    echo "<p class='bold'>PROCEDURE</p>";
-    echo "<ul type='1'><li>Récupérez le fichier F_EABS.DBF depuis le répertoire de GEP et le copier dans un répertoire séparé.</li>";
-    echo "<li>Ouvrez le fichier ainsi copié dans un tableur (de préférence OpenOffice.org, mais Excel fonctionne également).</li>";
-    echo "<li>Sélectionnez l'ensemble des données (Edition->Sélectionner tout), puis effectuez un tri (Données->Trier) sur les colonnes B (ELENOET) et C (ABSDATD) dans l'ordre croissant. N'oubliez pas de mentionner dans les options de tri que la première ligne correspond aux étiquettes de colonnes.</li>";
-    echo "<li>Enregistrer le fichier, en gardant le format d'origine (Fichier->Enregistrer).</li>";
-    echo "<li>Chargez le fichier ainsi modifié (seulement dans sa structure, vous n'avez à changer aucune donnée) dans le champs ci-dessous</li>";
-    echo "<li>Indiquez les limites temporelles prises en compte à l'importation, dans les deux champs dates prévus ci-dessous. Attention à bien utiliser le signe / comme délimiteur entre les jours, mois, et année, comme l'illustrent les dates déjà visibles dans les champs de saisie.</li>";
-    echo "<li>Si la classe pour laquelle vous effectuez l'importation a cours le samedi matin, cochez la case permettant la prise en compte du samedi matin.</li>";
-    echo "</ul>";
+    echo "<p>Mise en garde : vous DEVEZ suivre à la lettre la procédure décrite ci-dessous afin d'obtenir une importation fiable.</p>\n";
+    echo "<p class='bold'>Si vous omettez une étape, aucun message d'erreur ne vous signalera une mauvaise valeur importée.</p>\n";
+    echo "<p class='bold'>PROCEDURE</p>\n";
+    echo "<ul type='1'><li>Récupérez le fichier F_EABS.DBF depuis le répertoire de GEP et le copier dans un répertoire séparé.</li>\n";
+    echo "<li>Ouvrez le fichier ainsi copié dans un tableur (de préférence OpenOffice.org, mais Excel fonctionne également).</li>\n";
+    echo "<li>Sélectionnez l'ensemble des données (Edition->Sélectionner tout), puis effectuez un tri (Données->Trier) sur les colonnes B (ELENOET) et C (ABSDATD) dans l'ordre croissant. N'oubliez pas de mentionner dans les options de tri que la première ligne correspond aux étiquettes de colonnes.</li>\n";
+    echo "<li>Enregistrer le fichier, en gardant le format d'origine (Fichier->Enregistrer).</li>\n";
+    echo "<li>Chargez le fichier ainsi modifié (seulement dans sa structure, vous n'avez à changer aucune donnée) dans le champs ci-dessous</li>\n";
+    echo "<li>Indiquez les limites temporelles prises en compte à l'importation, dans les deux champs dates prévus ci-dessous. Attention à bien utiliser le signe / comme délimiteur entre les jours, mois, et année, comme l'illustrent les dates déjà visibles dans les champs de saisie.</li>\n";
+    echo "<li>Si la classe pour laquelle vous effectuez l'importation a cours le samedi matin, cochez la case permettant la prise en compte du samedi matin.</li>\n";
+    echo "</ul>\n";
     echo "<p><b>ATTENTION !</b> Le fichier DBF que vous avez utilisé pour cette importation n'est plus compatible GEP. Une fois les importations effectuez, détruisez donc ce fichier, et continuer à utiliser l'original avec GEP.";
-    echo "<p><b>Note :</b> les étapes 1 à 4 ne sont à effectuer que lorsque vous repartez du fichier GEP original. Si vous effectuez les opérations d'importation à la chaîne pour toutes les classes, vous n'avez à effectuer ces opérations qu'une seule fois.</p>";
-    echo "<p class='bold'>EFFECTUER L'IMPORTATION</p>";
+    echo "<p><b>Note :</b> les étapes 1 à 4 ne sont à effectuer que lorsque vous repartez du fichier GEP original. Si vous effectuez les opérations d'importation à la chaîne pour toutes les classes, vous n'avez à effectuer ces opérations qu'une seule fois.</p>\n";
+    echo "<p class='bold'>EFFECTUER L'IMPORTATION</p>\n";
     echo "<ul><li>Importation du fichier <b>F_EABS.DBF</b> contenant les données relatives aux absences : <br />
     veuillez préciser le chemin complet du fichier <b>F_EABS.DBF</b> : ";
-    echo "<input type='file'  size='80' name='dbf_file' /><br /><br /></li>";
-    echo "<li><b>Choisissez la période (format jj/mm/aaaa) : </b>";
+    echo "<input type='file'  size='80' name='dbf_file' /><br /><br /></li>\n";
+    echo "<li><b>Choisissez la période (format jj/mm/aaaa) : </b>\n";
     $annee = strftime("%Y");
     $mois = strftime("%m");
     $jour = strftime("%d");
-    if (!isset($_POST['display_date_debut'])) $display_date_debut = $jour."/".$mois."/".$annee;
+
+	//=========================
+	// MODIF: boireaus 20071118
+	// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+    /*
+	if (!isset($_POST['display_date_debut'])) $display_date_debut = $jour."/".$mois."/".$annee;
     if (!isset($_POST['display_date_fin'])) $display_date_fin = $jour."/".$mois."/".$annee;
+	*/
+	$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
+	$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_SESSION['display_date_fin']) ? $_SESSION['display_date_fin'] : $jour."/".$mois."/".$annee);
+	//=========================
+
     echo "<a name=\"calend\"></a>de la date : ";
-    echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
-    echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>";
+    echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />\n";
+    echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
     echo "&nbsp;à la date : ";
-    echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />";
-    echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>";
-    echo "<li>Inclure le samedi matin dans le décompte des demi-journées d'absence <input type=checkbox name='samedi_compte' value='yes' /></li>";
-    //echo "</li></ul>";
-    echo "</ul>";
-    echo "<input type=hidden name='step' value='4' />";
-    echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-    echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-    echo "<p align=\"center\"><input type=submit value='Valider' /></p>";
-    echo "</form>";
+    echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />\n";
+    echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
+    echo "<li>Inclure le samedi matin dans le décompte des demi-journées d'absence <input type=checkbox name='samedi_compte' value='yes' /></li>\n";
+    //echo "</li></ul>\n";
+    echo "</ul>\n";
+    echo "<input type=hidden name='step' value='4' />\n";
+    echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+    echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+    echo "<p align=\"center\"><input type=submit value='Valider' /></p>\n";
+    echo "</form>\n";
     echo "<hr /><b>Remarque</b><br /><br />Des données, issues du fichier \"F_NOMA.DBF\" (base GEP), concernant les
     <b><a href=\"javascript:centrerpopup('seq_gep_absences.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">correspondances entres séquences et type de demi-journées</a></b>
      sont présentes dans la base GEPI. Si ces données ne sont plus exactes, vous pouvez procéder à une <b><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=1'>nouvelle importation</a></b>.";
 
 
 } else if ($step==4) {
+
+	//=========================
+	// AJOUT: boireaus 20071118
+	$_SESSION['display_date_debut']=$_POST['display_date_debut'];
+	$_SESSION['display_date_fin']=$_POST['display_date_fin'];
+	// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+	/*
+	echo "\$_SESSION['display_date_debut']=".$_SESSION['display_date_debut']."<br />";
+	echo "\$_SESSION['display_date_fin']=".$_SESSION['display_date_fin']."<br />";
+	require("../lib/footer.inc.php");
+	die();
+	*/
+	//=========================
+
 
     // On fait quelques tests quand même, histoire de voir si les dates saisies sont cohérentes
 
@@ -299,8 +323,8 @@ if ($step == 0) {
     $datefin = strftime("%Y%m%d", $date_f_timestamp);
 
     if ($date_f_timestamp < $date_d_timestamp) {
-        echo "<p>La date de fin de la période d'importation précède la date de début ! Veuillez recommencer la saisie des dates.</p>";
-        echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<p>La date de fin de la période d'importation précède la date de début ! Veuillez recommencer la saisie des dates.</p>\n";
+        echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
         die();
     }
 
@@ -345,8 +369,8 @@ if ($step == 0) {
     if(strtoupper($dbf_file['name']) == "F_EABS.DBF") {
         $fp = dbase_open($dbf_file['tmp_name'], 0);
         if(!$fp) {
-            echo "<p>Impossible d'ouvrir le fichier dbf</p>";
-            echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>";
+            echo "<p>Impossible d'ouvrir le fichier dbf</p>\n";
+            echo "<p><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
         } else {
             $tab_date = array();
             // on constitue le tableau des champs à extraire
@@ -368,8 +392,8 @@ if ($step == 0) {
             if (@dbase_get_record_with_names($fp,1)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
-                echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-                echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>";
+                echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+                echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
                 die();
             }
 
@@ -387,14 +411,14 @@ if ($step == 0) {
                     }
                 }
             }
-//            echo "<table border=\"1\">";
-//            echo "<tr><td>Num.</td><td>ABSTYPE</td><td>ELENOET</td><td>ABSDATD</td><td>ABSDATF</td><td>ABSSEQD</td><td>ABSSEQF</td><td>ABSHEUR</td><td>ABSJUST</td><td>ABSMOTI</td><td>ABSACTI</td></tr>";
+//            echo "<table border=\"1\">\n";
+//            echo "<tr><td>Num.</td><td>ABSTYPE</td><td>ELENOET</td><td>ABSDATD</td><td>ABSDATF</td><td>ABSSEQD</td><td>ABSSEQF</td><td>ABSHEUR</td><td>ABSJUST</td><td>ABSMOTI</td><td>ABSACTI</td></tr>\n";
 
             $nb_reg_no = 0;
             $nb_record = 0;
             for($k = 1; ($k < $nblignes+1); $k++){
 
-//                echo "<tr><td>$k</td>";
+//                echo "<tr><td>$k</td>\n";
                 $ligne = dbase_get_record($fp,$k);
                 for($i = 0; $i < count($tabchamps); $i++) {
                     $affiche[$i] = dbase_filter(trim($ligne[$tabindice[$i]]));
@@ -428,7 +452,7 @@ if ($step == 0) {
 
 //                            $nb_demi_jour = (($fin_a - $debut_a)/(60*60*24)+1)*2; // Sans prise en compte du changement d'heure
                             $nb_demi_jour = (($fin_a - $debut_a + $modifier)/(60*60*24)+1)*2; // Avec prise en compte du changement d'heure
-//                          echo "<p>Test : " . $affiche[1] . " " . $debut_a . ":" . $fin_a . ":" . $nb_demi_jour ."</p>"; // Quelques tests de débuggage
+//                          echo "<p>Test : " . $affiche[1] . " " . $debut_a . ":" . $fin_a . ":" . $nb_demi_jour ."</p>\n"; // Quelques tests de débuggage
                             if ($tab_seq[$affiche[4]] == "S") $nb_demi_jour--;
                             if ($tab_seq[$affiche[5]] == "M") $nb_demi_jour--;
 
@@ -448,7 +472,7 @@ if ($step == 0) {
                                     $nb_demi_jour -= 4;
 //                                  $temp_test = 4;
                                 }
-//                              echo "<p>WEEK-END : " . $temp_test . " demi-journées retirées du calcul (début : $jour_debut ; fin : $jour_fin)</p>";
+//                              echo "<p>WEEK-END : " . $temp_test . " demi-journées retirées du calcul (début : $jour_debut ; fin : $jour_fin)</p>\n";
                                 $w += 7;
                             }
 
@@ -462,8 +486,8 @@ if ($step == 0) {
 
                             $current_d_date = $affiche[2] . $tab_seq[$affiche[4]];
                             $current_f_date = $affiche[3] . $tab_seq[$affiche[5]];
-//                          echo "<p>" . $affiche[1] . " : $current_d_date :: $current_f_date</p>";
-//                          echo "<p>$tab_date[$current_d_date]</p>";
+//                          echo "<p>" . $affiche[1] . " : $current_d_date :: $current_f_date</p>\n";
+//                          echo "<p>$tab_date[$current_d_date]</p>\n";
                             if ($tab_date[$current_d_date] == "yes") {
                                 $nb_demi_jour--;
                             } else {
@@ -479,23 +503,23 @@ if ($step == 0) {
 
                         }
 /*                    for($i = 0; $i < count($tabchamps); $i++) {
-                            echo "<td bgcolor=\"#FF0000\">".$affiche[$i]."</td>";
+                            echo "<td bgcolor=\"#FF0000\">".$affiche[$i]."</td>\n";
                         }
                     } else {
                         for($i = 0; $i < count($tabchamps); $i++) {
-                            echo "<td bgcolor=\"#00FF80\">".$affiche[$i]."</td>";
+                            echo "<td bgcolor=\"#00FF80\">".$affiche[$i]."</td>\n";
                         }*/
                     }
 /*                } else {
                     for($i = 0; $i < count($tabchamps); $i++) {
-                        echo "<td>".$affiche[$i]."</td>";
+                        echo "<td>".$affiche[$i]."</td>\n";
                     }*/
                 }
 
-//                echo "</tr>";
+//                echo "</tr>\n";
             }
             dbase_close($fp);
-//            echo "</table>";
+//            echo "</table>\n";
             // On affiche le tableau de la classe :
 
             $tab_session=serialize($tab);
@@ -507,32 +531,32 @@ if ($step == 0) {
             $_SESSION['abs_session']=$abs_session;
             $_SESSION['abs_nj_session']=$abs_nj_session;
 
-            echo "<p>Tableau récapitulatif des absences pour la période du <b>".$jourd."/".$moisd."/".$anneed."</b> au <b>".$jourf."/".$moisf."/".$anneef."</b></p>";
-            echo "<p><b>Attention </b>: les données ne sont pas encore enregistrées dans la base GEPI.</p>";
-            echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">";
-            echo "<p align=\"center\"><input type=submit value=\"Enregistrer les données dans la base GEPI\" /></p>";
-            echo "<input type=hidden name='step' value='5' />";
-            echo "<input type=hidden name='id_classe' value='".$id_classe."' />";
-            echo "<input type=hidden name='periode_num' value='".$periode_num."' />";
-            echo "</form>";
-            echo "<table border=\"1\" cellpadding=\"3\"><tr><td><b>Nom prénom</b></td><td><b>Nb. de retards</b></td><td><b>Nb. de 1/2 journées d'absence</b></td><td><b>1/2 j. non justifiées</b></td></tr>";
+            echo "<p>Tableau récapitulatif des absences pour la période du <b>".$jourd."/".$moisd."/".$anneed."</b> au <b>".$jourf."/".$moisf."/".$anneef."</b></p>\n";
+            echo "<p><b>Attention </b>: les données ne sont pas encore enregistrées dans la base GEPI.</p>\n";
+            echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+            echo "<p align=\"center\"><input type=submit value=\"Enregistrer les données dans la base GEPI\" /></p>\n";
+            echo "<input type=hidden name='step' value='5' />\n";
+            echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
+            echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
+            echo "</form>\n";
+            echo "<table border=\"1\" cellpadding=\"3\"><tr><td><b>Nom prénom</b></td><td><b>Nb. de retards</b></td><td><b>Nb. de 1/2 journées d'absence</b></td><td><b>1/2 j. non justifiées</b></td></tr>\n";
             foreach ($tab as $key => $value) {
                 $nom_eleve = sql_query1("select nom from eleves where login = '".$key."'");
                 $prenom_eleve = sql_query1("select prenom from eleves where login = '".$key."'");
 //              $num_gep = sql_query1("select elenoet from eleves WHERE login ='".$key."'");
-                echo "<tr><td>$nom_eleve $prenom_eleve</td><td>$retard[$key]</td><td>$abs[$key]</td><td>$abs_nj[$key]</td></tr>";
+                echo "<tr><td>$nom_eleve $prenom_eleve</td><td>$retard[$key]</td><td>$abs[$key]</td><td>$abs_nj[$key]</td></tr>\n";
             }
-            echo "</table>";
+            echo "</table>\n";
 
 
         }
     } else if (trim($dbf_file['name'])=='') {
-        echo "<p>Aucun fichier n'a été sélectionné !<br />";
-        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
     } else {
-        echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>";
+        echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+        echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
     }
 } else if ($step = 5) {
     $tab=unserialize($_SESSION['tab_session']);
@@ -540,7 +564,7 @@ if ($step == 0) {
     $abs=unserialize($_SESSION['abs_session']);
     $abs_nj=unserialize($_SESSION['abs_nj_session']);
     echo "L'importation des absences est terminée.<br />Accéder à la <a href='./saisie_absences.php?id_classe=$id_classe&amp;periode_num=$periode_num'>page de saisie des absences</a> pour vérification.";
-    echo "<ul>";
+    echo "<ul>\n";
     foreach ($tab as $key => $value) {
         $nom_eleve = sql_query1("select nom from eleves where login = '".$key."'");
         $prenom_eleve = sql_query1("select prenom from eleves where login = '".$key."'");
@@ -562,12 +586,12 @@ if ($step == 0) {
             appreciation=''");
         }
         if (!$register) {
-            echo "<li><font color=\"#FF0000\">Erreur lors de l'enregistrement des données de l'élève $prenom_eleve $nom_eleve</font></li>";
+            echo "<li><font color=\"#FF0000\">Erreur lors de l'enregistrement des données de l'élève $prenom_eleve $nom_eleve</font></li>\n";
         } else {
-            echo "<li>Les données concernant l'élève $prenom_eleve $nom_eleve ont été correctement enregistrées.</li>";
+            echo "<li>Les données concernant l'élève $prenom_eleve $nom_eleve ont été correctement enregistrées.</li>\n";
         }
     }
-    echo "</ul>";
+    echo "</ul>\n";
 
 }
 
