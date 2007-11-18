@@ -193,48 +193,53 @@ if (isset($_POST['is_posted'])) {
 	$comment_eleve=$_POST['comment_eleve'];
 	//=========================
 
-	for($i=0;$i<count($log_eleve);$i++){
-		// La période est-elle ouverte?
-		$reg_eleve_login=$log_eleve[$i];
-		if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
-			$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
-			if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
-				$note=$note_eleve[$i];
-				$elev_statut='';
-				$comment=$comment_eleve[$i];
+	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-				if (($note == 'disp')) {
-					$note = '0';
-					$elev_statut = 'disp';
-				}
-				else if (($note == 'abs')) {
-					$note = '0';
-					$elev_statut = 'abs';
-				}
-				else if (($note == '-')) {
-					$note = '0';
-					$elev_statut = '-';
-				}
-				else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
-					$note = str_replace(",", ".", "$note");
-					if (($note < 0) or ($note > 20)) {
-						$note = '';
-						$elev_statut = '';
+	//for($i=0;$i<count($log_eleve);$i++){
+	for($i=0;$i<$indice_max_log_eleve;$i++){
+		if(isset($log_eleve[$i])) {
+			// La période est-elle ouverte?
+			$reg_eleve_login=$log_eleve[$i];
+			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
+				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
+				if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
+					$note=$note_eleve[$i];
+					$elev_statut='';
+					$comment=$comment_eleve[$i];
+
+					if (($note == 'disp')) {
+						$note = '0';
+						$elev_statut = 'disp';
 					}
-				}
-				else {
-					$note = '';
-					$elev_statut = 'v';
-				}
+					else if (($note == 'abs')) {
+						$note = '0';
+						$elev_statut = 'abs';
+					}
+					else if (($note == '-')) {
+						$note = '0';
+						$elev_statut = '-';
+					}
+					else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+						$note = str_replace(",", ".", "$note");
+						if (($note < 0) or ($note > 20)) {
+							$note = '';
+							$elev_statut = '';
+						}
+					}
+					else {
+						$note = '';
+						$elev_statut = 'v';
+					}
 
-				$test_eleve_note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
-				$test = mysql_num_rows($test_eleve_note_query);
-				if ($test != "0") {
-					$register = mysql_query("UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."')");
-				} else {
-					$register = mysql_query("INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'");
-				}
+					$test_eleve_note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
+					$test = mysql_num_rows($test_eleve_note_query);
+					if ($test != "0") {
+						$register = mysql_query("UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."')");
+					} else {
+						$register = mysql_query("INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'");
+					}
 
+				}
 			}
 		}
 	}
@@ -1087,6 +1092,9 @@ if ($multiclasses) {
 } else {
 	echo "<td class=cn>";
 }
+
+echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+
 echo "<b>Moyennes :</b></td>\n";
 $w_pdf[] = $w2;
 $data_pdf[$tot_data_pdf][] = "Moyennes";
