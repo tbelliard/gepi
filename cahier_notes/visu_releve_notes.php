@@ -830,8 +830,19 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		    $annee = strftime("%Y");
 		    $mois = strftime("%m");
 		    $jour = strftime("%d");
+
+			//=========================
+			// MODIF: boireaus 20071118
+			// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+			/*
 		    if (!isset($_POST['display_date_debut'])) { $display_date_debut = $jour."/".$mois."/".$annee; } else { $display_date_debut = $_POST['display_date_debut']; }
 		    if (!isset($_POST['display_date_fin'])) { $display_date_fin = $jour."/".$mois."/".$annee; } else { $display_date_fin = $_POST['display_date_fin']; }
+			*/
+			$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
+			$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_SESSION['display_date_fin']) ? $_SESSION['display_date_fin'] : $jour."/".$mois."/".$annee);
+			//=========================
+
+
 		?>
 		  <a name="calend"></a>Du : <input type="text" name="display_date_debut" size="10" value="<?php echo $display_date_debut; ?>" /><a href="#calend" onClick="<?php echo $cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a>&nbsp;au : <input type="text" name = "display_date_fin" size="10" value="<?php echo $display_date_fin; ?>" /><a href="#calend" onClick="<?php echo $cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" alt="Calendrier" border="0" /></a><br /><span style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 0.8em;">(Veillez à respecter le format jj/mm/aaaa)</span>
 		  <br /><br />
@@ -1382,8 +1393,17 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     $annee = strftime("%Y");
     $mois = strftime("%m");
     $jour = strftime("%d");
+	//=========================
+	// MODIF: boireaus 20071118
+	// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+    /*
     if (!isset($_POST['display_date_debut'])) $display_date_debut = $jour."/".$mois."/".$annee;
     if (!isset($_POST['display_date_fin'])) $display_date_fin = $jour."/".$mois."/".$annee;
+	*/
+	$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_SESSION['display_date_debut']) ? $_SESSION['display_date_debut'] : $jour."/".$mois."/".$annee);
+	$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_SESSION['display_date_fin']) ? $_SESSION['display_date_fin'] : $jour."/".$mois."/".$annee);
+	//=========================
+
     echo "<a name=\"calend\"></a>";
 	echo "<input type=\"radio\" name=\"choix_periode\" value=\"0\" checked /> \nDe la date : ";
     echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
@@ -1641,6 +1661,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         $anneed = substr($_POST['display_date_debut'],6,4);
         $moisd = substr($_POST['display_date_debut'],3,2);
         $jourd = substr($_POST['display_date_debut'],0,2);
+
+		//=========================
+		// AJOUT: boireaus 20071118
+		$_SESSION['display_date_debut']=$_POST['display_date_debut'];
+		// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+		//=========================
     } else {
         $anneed = strftime("%Y");
         $moisd = strftime("%m");
@@ -1651,11 +1677,18 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         $anneef= substr($_POST['display_date_fin'],6,4);
         $moisf= substr($_POST['display_date_fin'],3,2);
         $jourf = substr($_POST['display_date_fin'],0,2);
+
+		//=========================
+		// AJOUT: boireaus 20071118
+		$_SESSION['display_date_fin']=$_POST['display_date_fin'];
+		// Pour éviter de refaire le choix des dates en changeant de classe, on utilise la SESSION...
+		//=========================
     } else {
         $anneef = strftime("%Y");
         $moisf = strftime("%m");
         $jourf = strftime("%d");
     }
+
 
     if ($choix_edit == '2') {
         releve_notes($login_eleve,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf);
