@@ -84,53 +84,59 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	$note_eleve=$_POST['note_eleve_'.$k];
 	//=========================
 
-	for($i=0;$i<count($log_eleve);$i++){
-		// La période est-elle ouverte?
-		$reg_eleve_login=$log_eleve[$i];
+	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-		if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
-			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
-			if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
+	//for($i=0;$i<count($log_eleve);$i++){
+	for($i=0;$i<$indice_max_log_eleve;$i++){
 
-				$note=$note_eleve[$i];
+		if(isset($log_eleve[$i])) {
+			// La période est-elle ouverte?
+			$reg_eleve_login=$log_eleve[$i];
 
-				$elev_statut = '';
-				if (($note == 'disp')) {
-					$note = '0';
-					$elev_statut = 'disp';
-				}
-				else if (($note == 'abs')) {
-					$note = '0';
-					$elev_statut = 'abs';
-				}
-				else if (($note == '-')) {
-					$note = '0';
-					$elev_statut = '-';
-				}
-				else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
-					$note = str_replace(",", ".", "$note");
-					if (($note < 0) or ($note > 20)) {
+			if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
+				$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
+				if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
+
+					$note=$note_eleve[$i];
+
+					$elev_statut = '';
+					if (($note == 'disp')) {
+						$note = '0';
+						$elev_statut = 'disp';
+					}
+					else if (($note == 'abs')) {
+						$note = '0';
+						$elev_statut = 'abs';
+					}
+					else if (($note == '-')) {
+						$note = '0';
+						$elev_statut = '-';
+					}
+					else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+						$note = str_replace(",", ".", "$note");
+						if (($note < 0) or ($note > 20)) {
+							$note = '';
+							$elev_statut = '';
+						}
+					}
+					else {
 						$note = '';
 						$elev_statut = '';
 					}
-				}
-				else {
-					$note = '';
-					$elev_statut = '';
-				}
-				if (($note != '') or ($elev_statut != '')) {
-					$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-					$test = mysql_num_rows($test_eleve_note_query);
-					if ($test != "0") {
-						$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-						$modif[$k] = 'yes';
+					if (($note != '') or ($elev_statut != '')) {
+						$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+						$test = mysql_num_rows($test_eleve_note_query);
+						if ($test != "0") {
+							$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+							$modif[$k] = 'yes';
+						} else {
+							$register = mysql_query("INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
+							$modif[$k] = 'yes';
+						}
 					} else {
-						$register = mysql_query("INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
+						$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
 						$modif[$k] = 'yes';
 					}
-				} else {
-					$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
-					$modif[$k] = 'yes';
 				}
 			}
 		}
@@ -714,6 +720,9 @@ if ($multiclasses) {
 } else {
 	echo "<td>";
 }
+
+echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+
 echo "Moyennes :</td>\n";
 
 $k='1';

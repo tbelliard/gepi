@@ -521,7 +521,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 }
 
-echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n"
+echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 ?>
 
