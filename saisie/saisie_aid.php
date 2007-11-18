@@ -72,6 +72,9 @@ $couleur_moy_cn = '#96C8F0';
 $nom_table = "class_temp".SESSION_ID();
 
 if (isset($_POST['is_posted'])) {
+
+	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
+
 	$quels_eleves = mysql_query("SELECT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login = j.login and j.indice_aid='$indice_aid')");
 	$lignes = mysql_num_rows($quels_eleves);
 	$j = '0';
@@ -106,10 +109,13 @@ if (isset($_POST['is_posted'])) {
 						// AJOUT: boireaus 20071003
 						// Récupération du numéro de l'élève dans les saisies:
 						$num_eleve=-1;
-						for($i=0;$i<count($log_eleve);$i++){
-							if("$reg_eleve_login"."_t".$k=="$log_eleve[$i]"){
-								$num_eleve=$i;
-								break;
+						//for($i=0;$i<count($log_eleve);$i++){
+						for($i=0;$i<$indice_max_log_eleve;$i++){
+							if(isset($log_eleve[$i])){
+								if("$reg_eleve_login"."_t".$k=="$log_eleve[$i]"){
+									$num_eleve=$i;
+									break;
+								}
 							}
 						}
 						if($num_eleve!=-1){
@@ -397,6 +403,9 @@ if (!isset($aid_id)) {
 	</table>
 	<table>
 	<tr><td>
+	<?php
+		echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+	?>
 	<input type=hidden name=is_posted value="yes" />
 	<input type=hidden name=aid_id value="<?php echo "$aid_id";?>" />
 	<input type=hidden name=indice_aid value="<?php echo "$indice_aid";?>" />
