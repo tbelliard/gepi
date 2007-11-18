@@ -102,7 +102,7 @@ $delai = getSettingValue("delai_devoirs");
 // $info  : si $info est défini, la notice en cours de modification est la notice d'information générale
 // $doc_name : tableau contenant les noms des documents joints
 // $doc_name_modif : nouveau nom d'un document
-// $id_document : tableau des identifiant des docuemnts joinst
+// $id_document : tableau des identifiants des documents joints
 
 if (is_numeric($id_groupe)) {
     $current_group = get_group($id_groupe);
@@ -164,8 +164,17 @@ while (!checkdate($month, $day, $year)) $day--;
 $message_suppression = "Confirmation de suppression";
 
 // $today : date courante
-$today=mktime(0,0,0,$month,$day,$year);
+$today = mktime(0,0,0,$month,$day,$year);
 $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
+// On donne toutes les informations pour le jour de demain
+if (isset($today)) {
+	$lendemain = $today + 86400;
+} else {
+	$lendemain = $aujourdhui + 86400;
+}
+$jour_lendemain = date("d", $lendemain);
+$mois_lendemain = date("m", $lendemain);
+$annee_lendemain = date("Y", $lendemain);
 
 // Suppression de plusieurs notices
 if ((isset($_POST['action'])) and ($_POST['action'] == 'sup_serie') and $valide_form=='yes') {
@@ -499,6 +508,7 @@ echo "<center>\n";
 echo "<p class='grand'>".strftime("%A %d %B %Y", $today)."</p>";
 if ($delai > 0) {
     if (isset($edit_devoir)) {
+    	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
         echo "<b>>> Travaux personnels à effectuer<<</b> - \n";
         echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">Compte-rendus de séance</a>\n";
     } else {
@@ -637,7 +647,7 @@ while (true) {
         $num_notice++;
         echo " <b><i>(notice N° ".$num_notice.")</i></b>";
     } else {
-        // on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+        // on affiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
         $nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
         if ($nb_notices > 1)
             echo " <b><i>(notice N° 1)</i></b>";
@@ -729,7 +739,13 @@ echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: aut
 if (isset($edit_devoir)) {
     echo "<legend style=\"font-variant: small-caps;\"> Travaux personnels";
     $test_appel_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
-    if (isset($id_ct)) echo " - <b><font color=\"red\">Modification de la notice</font></b>"; else echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
+    if (isset($id_ct)) {
+		echo " - <b><font color=\"red\">Modification de la notice</font></b>";
+		// Pour permettre d'ajouter directement une nouvelle notice sur le travail à effectuer, on ajoute un jour à la date précédente ($today)
+		echo " - <a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveau travail</a>";
+	} else {
+		echo " - <b><font color=\"red\">Nouvelle notice</font></b>\n";
+	}
     echo "</legend>\n";
 } else {
     if (isset($info))
