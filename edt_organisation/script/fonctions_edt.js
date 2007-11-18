@@ -13,3 +13,12 @@ if (d) {d.style.display='block';}
 function changerDisplayDiv(nomDiv) {
 	Element.toggle(nomDiv);
 }
+
+function CocheCase(boul) {
+
+	nbelements = document.nouvelle_periode.elements.length;
+		for (i = 0 ; i < nbelements ; i++) {
+			if (document.nouvelle_periode.elements[i].type =='checkbox')
+			document.nouvelle_periode.elements[i].checked = boul ;
+		}
+}

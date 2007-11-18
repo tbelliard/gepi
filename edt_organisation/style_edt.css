@@ -203,7 +203,6 @@ label {
 	position: absolute;
 	width: 400px;
 	height: 50px;
-	/*float: right;*/
 	margin-right: 150px;
 	margin-left: 400px;
 }
@@ -217,6 +216,25 @@ label {
 #saisie_new_periode, #modif_periode {
 	height: 300px; /* à agrandir pour des établissements avec beaucoup de classes*/
 }
+
+#saisie_new_periode label {
+	font-size: x-small;
+	font-weight: normal;
+	font-style: italic;
+}
+
+#modif_periode label {
+	font-size: x-small;
+	font-weight: normal;
+	font-style: italic;
+}
+
+#div_classes_concernees label {
+	font-size: medium;
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* Couleurs des champs de formulaire */
 #lecorps .focus {
 	background: #E9E9E4;

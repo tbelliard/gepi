@@ -108,18 +108,25 @@ if (isset($calendrier) AND isset($supprimer)) {
 if (isset($calendrier) AND isset($modifier)) {
 	// On affiche la période demandée dans un formulaire
 	$rep_modif = mysql_fetch_array(mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier = '".$modifier."'"));
+			// On garde le name de la nouvelle période pour ne pas complexifier le javascript
 	echo '
-
+		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
 <fieldset id="modif_periode">
 	<legend>Modifier la période pour le calendrier</legend>
-		<form name="modifier_periode" action="edt_calendrier.php" method="post">
+
 			<input type="hidden" name="calendrier" value="ok" />
 			<input type="hidden" name="modif_ok" value="'.$rep_modif["id_calendrier"].'" />
 		<p>
-			<input type="text" name="nom_periode" maxlenght="100" size="30" value="'.$rep_modif["nom_calendrier"].'" />
-			<span class="legende">Nom de la période</span>
+			<input type="text" id="nomPer" name="nom_periode" maxlenght="100" size="30" value="'.$rep_modif["nom_calendrier"].'" />
+			<label for="nomPer">Nom de la période</label>
 		</p>
 	<div id="div_classes_concernees">
+		<p>
+			<b>
+				<a href="javascript:CocheCase(true)">Tout cocher</a> -
+				<a href="javascript:CocheCase(false)">Tout décocher</a>
+			</b>
+		</p>
 		';
 
 	// On affiche la liste des classes
@@ -156,11 +163,10 @@ $aff_checked = ""; // par défaut, le checkbox n'est pas coché
 	// On affiche la première colonne
 for($i=0; $i<$ligne; $i++) {
 	$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]);
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+			<br />
 		';
 }
 
@@ -171,11 +177,10 @@ echo '
 for($i=$ligne; $i<($ligne*2); $i++) {
 	$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]);
 	// On affiche la deuxième colonne
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 }
 
@@ -185,11 +190,10 @@ echo '
 for($i=($ligne*2); $i<($ligne*3); $i++) {
 	$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]);
 	// On affiche la troisième colonne
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 }
 echo '
@@ -202,11 +206,10 @@ if ($modulo !== 0) {
 		';
 	for($i=($ligne*3); $i<count($tab_select); $i++) {
 	$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]);
-		echo
-		$tab_select[$i]["classe"].'
-			<label>
+		echo '
+			<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 	}
 	echo '</td>';
@@ -219,24 +222,36 @@ if ($modulo !== 0) {
 	</div>
 		';
 // Fin du div pour le choix des classes
+	// On retravaille les jours pour utiliser le calendrier
+	$exp_jourdeb = explode("-", $rep_modif["jourdebut_calendrier"]);
+	$aff_jourdeb = $exp_jourdeb[2]."/".$exp_jourdeb[1]."/".$exp_jourdeb[0];
+	$exp_jourfin = explode("-", $rep_modif["jourfin_calendrier"]);
+	$aff_jourfin = $exp_jourfin[2]."/".$exp_jourfin[1]."/".$exp_jourfin[0];
+		// On enlève les secondes à l'affichage des heures
+	$aff_heuredeb = substr($rep_modif["heuredebut_calendrier"], 0, -3);
+	$aff_heurefin = substr($rep_modif["heurefin_calendrier"], 0, -3);
 
 	echo '
 		<p>
-			<input type="text" name="jour_dperiode" maxlenght="10" size="10" value="'.$rep_modif["jourdebut_calendrier"].'" />
-			<span class="legende">Premier jour</span>
+			<input type="text" id="jourDebPer" name="jour_dperiode" maxlenght="10" size="10" value="'.$aff_jourdeb.'" />
+				<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_dperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+				<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+			<label for="jourDebPer">Premier jour</label>
 
-			<input type="text" name="heure_deb" maxlenght="8" size="8" value="'.$rep_modif["heuredebut_calendrier"].'" />
-			<span class="legende">Heure de début</span>
+			<input type="text" id="heureDeb" name="heure_deb" maxlenght="5" size="5" value="'.$aff_heuredeb.'" />
+			<label for="heureDeb">Heure de début</label>
 		</p>
 		<p>
-			<input type="text" name="jour_fperiode" maxlenght="10" size="10" value="'.$rep_modif["jourfin_calendrier"].'" />
-			<span class="legende">Dernier jour</span>
+			<input type="text" id="jourFinPer" name="jour_fperiode" maxlenght="10" size="10" value="'.$aff_jourfin.'" />
+				<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+				<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+			<label for="jourFinPer">Dernier jour</label>
 
-			<input type="text" name="heure_fin" maxlenght="8" size="8" value="'.$rep_modif["heurefin_calendrier"].'" />
-			<span class="legende">Heure de fin</span>
+			<input type="text" id="heureFin" name="heure_fin" maxlenght="5" size="5" value="'.$aff_heurefin.'" />
+			<label for="heureFin">Heure de fin</label>
 		</p>
 		<p>
-			<select name="choix_periode">
+			<select id="choixPer" name="choix_periode">
 				<option value="rien">Non</option>'."\n";
 	// Proposition de définition des périodes déjà existantes de la table periodes
 	$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
@@ -253,10 +268,10 @@ if ($modulo !== 0) {
 		}
 	echo '
 			</select>
-			<span class="legende">Périodes de notes ?</span>
+			<label for="choixPer">Périodes de notes ?</label>
 		</p>
 		<p>
-			<select name="etabferme" />
+			<select id="etabFerm" name="etabferme">
 		';
 		// On vérifie le ouvert - fermé
 		if ($rep_modif["etabferme_calendrier"] == "1") {
@@ -269,10 +284,10 @@ if ($modulo !== 0) {
 				<option value="1"'.$selected1.'>Ouvert</option>
 				<option value="2"'.$selected2.'>Fermé</option>
 			</select>
-			<span class="legende">Etablissement</span>
+			<label for="etabFerm">Etablissement</label>
 		</p>
 		<p>
-			<select name="vacances">
+			<select id="selectVac" name="vacances">
 		';
 		// On vérifie le vacances - cours
 		if ($rep_modif["etabvacances_calendrier"] == "0") {
@@ -285,12 +300,11 @@ if ($modulo !== 0) {
 				<option value="0"'.$selected1v.'>Cours</option>
 				<option value="1"'.$selected2v.'>Vacances</option>
 			</select>
-			<span class="legende">Vacances / Cours</span>
+			<label for="selectVac">Vacances / Cours</label>
 		</p>
 			<input type="submit" name="valider" value="enregistrer" />
-		</form>
 </fieldset>
-
+		</form>
 <br />
 	';
 }
@@ -304,14 +318,37 @@ if ($modulo !== 0) {
 				$classes_concernees_insert .= $classes_concernees[$c].";";
 			}
 		} // else
-	// Puis on modifie la période
+
+	// =========== TRAITEMENT de la modification de la période =============
 if (isset($modif_ok) AND isset($nom_periode)) {
 	$jourdebut = $jour_dperiode;
 	$jourfin = $jour_fperiode;
-	$modif_periode = mysql_query("UPDATE edt_calendrier SET nom_calendrier = '".$nom_periode."', classe_concerne_calendrier = '".$classes_concernees_insert."', jourdebut_calendrier = '".$jourdebut."', heuredebut_calendrier = '".$heure_debut."', jourfin_calendrier = '".$jourfin."', heurefin_calendrier = '".$heure_fin."', numero_periode = '".$choix_periode."', etabferme_calendrier = '".$etabferme."', etabvacances_calendrier = '".$vacances."' WHERE id_calendrier = '".$modif_ok."'") OR DIE ('Erreur dans la modification');
+	// traitement du timestamp Unix GMT ainsi que des dates et heures MySql
+	$exp_jourdeb = explode("/", $jourdebut);
+	$exp_jourfin = explode("/", $jourfin);
+	$exp_heuredeb = explode(":", $heure_debut);
+	$exp_heurefin = explode(":", $heure_fin);
+	$deb_ts = gmmktime($exp_heuredeb[0], $exp_heuredeb[1], 0, $exp_jourdeb[1], $exp_jourdeb[0], $exp_jourdeb[2]);
+	$jourdebut = $exp_jourdeb[2]."-".$exp_jourdeb[1]."-".$exp_jourdeb[0];
+	$fin_ts = gmmktime($exp_heurefin[0], $exp_heurefin[1], 0, $exp_jourfin[1], $exp_jourfin[0], $exp_jourfin[2]);
+	$jourfin = $exp_jourfin[2]."-".$exp_jourfin[1]."-".$exp_jourfin[0];
+	$modif_periode = mysql_query("UPDATE edt_calendrier
+				SET nom_calendrier = '".$nom_periode."',
+				classe_concerne_calendrier = '".$classes_concernees_insert."',
+				debut_calendrier_ts = '".$deb_ts."',
+				fin_calendrier_ts = '".$fin_ts."',
+				jourdebut_calendrier = '".$jourdebut."',
+				heuredebut_calendrier = '".$heure_debut."',
+				jourfin_calendrier = '".$jourfin."',
+				heurefin_calendrier = '".$heure_fin."',
+				numero_periode = '".$choix_periode."',
+				etabferme_calendrier = '".$etabferme."',
+				etabvacances_calendrier = '".$vacances."'
+				WHERE id_calendrier = '".$modif_ok."'")
+				OR DIE ('Erreur dans la modification');
 }
 
-/* On traite les nouvelles entrées dans la table */
+/* ==================== On traite les nouvelles entrées dans la table ================ */
 if (isset($new_periode) AND isset($nom_periode)) {
 $detail_jourdeb = explode("/", $jour_debut);
 $detail_jourfin = explode("/", $jour_fin);
@@ -331,9 +368,16 @@ $detail_jourfin = explode("/", $jour_fin);
 	// On vérifie que ce nom de période n'existe pas encore
 	$req_verif_periode = mysql_fetch_array(mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$nom_periode."'"));
 	if ($req_verif_periode[0] == NULL) {
-	$heure_debut = $heure_debut.":00";
-	$heure_fin = $heure_fin.":00";
-		$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`) VALUES ('$nom_periode', '$classes_concernees_insert', '$jourdebut', '$heure_debut', '$jourfin', '$heure_fin', '$choix_periode', '$etabferme', '$vacances')") OR DIE ('Echec dans la requête de création d\'une nouvelle entrée !');
+		$heure_debut = $heure_debut.":00";
+			$expdeb = explode(":", $heure_debut);
+		$heure_fin = $heure_fin.":00";
+			$expfin = explode(":", $heure_fin);
+			// On insére ces dates en timestamp Unix GMT
+		$heuredeb_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2]);
+		$heurefin_ts = gmmktime($expfin[0], $expfin[1], 0, $detail_jourfin[1], $detail_jourfin[0], $detail_jourfin[2]);
+		$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
+							VALUES ('$nom_periode', '$classes_concernees_insert', '$heuredeb_ts', '$heurefin_ts', '$jourdebut', '$heure_debut', '$jourfin', '$heure_fin', '$choix_periode', '$etabferme', '$vacances')")
+							OR DIE ('Echec dans la requête de création d\'une nouvelle entrée !');
 	}
 	else echo '<h3 class="red">Ce nom de période existe déjà</h3>';
 }
@@ -414,6 +458,11 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 			$rep_affcalendar[$i]["heuredebut_calendrier"] = $explode_deb[0].":".$explode_deb[1];
 			$explode_fin = explode(":", $rep_affcalendar[$i]["heurefin_calendrier"]);
 			$rep_affcalendar[$i]["heurefin_calendrier"] = $explode_fin[0].":".$explode_fin[1];
+			// On affiche les dates au format français
+			$exp_jourdeb = explode("-", $rep_affcalendar[$i]["jourdebut_calendrier"]);
+			$aff_jourdeb = $exp_jourdeb[2]."/".$exp_jourdeb[1]."/".$exp_jourdeb[0];
+			$exp_jourfin = explode("-", $rep_affcalendar[$i]["jourfin_calendrier"]);
+			$aff_jourfin = $exp_jourfin[2]."/".$exp_jourfin[1]."/".$exp_jourfin[0];
 
 		// Afficher de deux couleurs différentes
 
@@ -429,9 +478,9 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 	<tr class="'.$class_tr.'">
 		<td>'.$rep_affcalendar[$i]["nom_calendrier"].'</td>
 		<td>'.$aff_classe_concerne.'</td>
-		<td>'.$rep_affcalendar[$i]["jourdebut_calendrier"].'</td>
+		<td>'.$aff_jourdeb.'</td>
 		<td>'.$rep_affcalendar[$i]["heuredebut_calendrier"].'</td>
-		<td>'.$rep_affcalendar[$i]["jourfin_calendrier"].'</td>
+		<td>'.$aff_jourfin.'</td>
 		<td>'.$rep_affcalendar[$i]["heurefin_calendrier"].'</td>
 		<!--<td>'.$rep_affcalendar[$i]["numero_periode"].'</td>-->
 		<td>'.$ouvert_ferme.'</td>
@@ -460,7 +509,12 @@ if ($new_periode == "ok") {
 			<input type="hidden" name="new_periode" value="ok" />
 
 	<div id="div_classes_concernees">
-
+		<p>
+			<b>
+				<a href="javascript:CocheCase(true)">Tout cocher</a> -
+				<a href="javascript:CocheCase(false)">Tout décocher</a>
+			</b>
+		</p>
 		';
 	// On affiche la liste des classes
 	$tab_select = renvoie_liste("classe");
@@ -486,11 +540,10 @@ if ($new_periode == "ok") {
 	// On affiche la première colonne
 for($i=0; $i<$ligne; $i++) {
 
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
-				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
+			<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
+		<br />
 		';
 }
 
@@ -500,11 +553,10 @@ echo '
 
 for($i=$ligne; $i<($ligne*2); $i++) {
 	// On affiche la deuxième colonne
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 }
 
@@ -513,11 +565,10 @@ echo '
 	';
 for($i=($ligne*2); $i<($ligne*3); $i++) {
 	// On affiche la troisième colonne
-	echo
-		$tab_select[$i]["classe"].'
-			<label>
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 }
 echo '
@@ -529,11 +580,10 @@ if ($modulo !== 0) {
 		<td>
 		';
 	for($i=($ligne*3); $i<count($tab_select); $i++) {
-		echo
-		$tab_select[$i]["classe"].'
-			<label>
+		echo '
+			<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
 				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
-			</label><br />
+		<br />
 		';
 	}
 	echo '</td>';
@@ -587,11 +637,11 @@ if ($modulo !== 0) {
 			<span class="legende">Période de notes ?</span>
 		</p>
 		<p>
-			<select name="etabferme" />
+			<select id="etabFerm" name="etabferme">
 				<option value="1">Ouvert</option>
 				<option value="2">Fermé</option>
 			</select>
-			<span class="legende">Etablissement</span>
+			<label for="etabFerm">Etablissement</label>
 		</p>
 		<p>
 			<select name="vacances">
