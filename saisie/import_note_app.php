@@ -117,8 +117,9 @@ if (isset($is_posted )) {
             echo "Impossible d'ouvrir le fichier CSV";
         } else {
             $row = 0;
-            echo "<table border=1>\n<tr>\n<td><p class='bold'>IDENTIFIANT</p></td>\n<td><p class='bold'>Nom</p></td>\n<td><p class='bold'>Prénom</p></td>\n<td><p class='bold'>Note</p></td>\n<td><p class='bold'>Appréciation</p></td>\n</tr>\n";
+            echo "<table class='boireaus'>\n<tr>\n<th><p class='bold'>IDENTIFIANT</p></th>\n<th><p class='bold'>Nom</p></th>\n<th><p class='bold'>Prénom</p></th>\n<th><p class='bold'>Note</p></th>\n<th><p class='bold'>Appréciation</p></th>\n</tr>\n";
             $valid = 1;
+			$alt=1;
             while(!feof($fp)) {
                 if (isset($en_tete)) {
                     $data = fgetcsv ($fp, $long_max, ";");
@@ -137,8 +138,9 @@ if (isset($is_posted )) {
                 }
                 // On ne retient que les lignes qui comportent 2 ou 3 champs dont au moins un est non vide
                 if ((($num == 3) or ($num == 2)) and ($champs_vides == 'no')) {
-                    $row++;
-                    echo "<tr>\n";
+                    $alt=$alt*(-1);
+					$row++;
+                    echo "<tr class='lig$alt'>\n";
                     for ($c=0; $c<$num; $c++) {
                         $col3 = '';
                         $reg_app = '';
