@@ -52,3 +52,11 @@ require_once("./menu.inc.php");
 
 	<div id="lecorps">
 
+Ce fichier est encore en chantier.
+
+
+
+<?php
+// inclusion du footer
+require("../lib/footer.inc.php");
+?>
