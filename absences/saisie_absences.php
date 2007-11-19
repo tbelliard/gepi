@@ -103,6 +103,8 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			$nb_nj=$nb_nj_ele[$num_eleve];
 			$nb_retard=$nb_retard_ele[$num_eleve];
 			$ap=$app_ele[$num_eleve];
+
+			$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode_all_version($ap)));
 			//=========================
 
 			if (!(ereg ("^[0-9]{1,}$", $nb_absences))) {
