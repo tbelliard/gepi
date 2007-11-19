@@ -76,12 +76,12 @@ if (isset($_POST['is_posted'])) {
 
     if (empty($reg_nom_groupe)) {
         $error = true;
-        $msg .= "Vous devez donner un nom court au groupe.<br/>";
+        $msg .= "Vous devez donner un nom court au groupe.<br/>\n";
     }
 
     if (empty($reg_nom_groupe)) {
         $error = true;
-        $msg .= "Vous devez donner un nom complet au groupe.<br/>";
+        $msg .= "Vous devez donner un nom complet au groupe.<br/>\n";
     }
 
     $clazz = array();
@@ -105,7 +105,7 @@ if (isset($_POST['is_posted'])) {
 
     if (empty($reg_clazz)) {
         $error = true;
-        $msg .= "Vous devez sélectionner au moins une classe.<br/>";
+        $msg .= "Vous devez sélectionner au moins une classe.<br/>\n";
     }
 
     if (!is_numeric($reg_categorie)) {
@@ -183,7 +183,7 @@ require_once("../lib/header.inc");
 if ($mode == "groupe") {
     echo "<h3>Ajouter un groupe à une classe</h3>\n";
 } elseif ($mode == "regroupement") {
-    echo "<h3>Ajouter un regroupement d'élèves de différentes classes</h3>";
+    echo "<h3>Ajouter un regroupement d'élèves de différentes classes</h3>\n";
 }
 
 ?>
@@ -200,7 +200,7 @@ if ($mode == "groupe") {
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1'>";
+echo "<select name='matiere' size='1'>\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
@@ -238,26 +238,44 @@ if ($mode == "groupe") {
     echo "</p>\n";
 
 } else if ($mode == "regroupement") {
-    echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
-    echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement :<br />";
-    echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le même nombre de périodes.</span>";
+    echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+    echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement :<br />\n";
+    echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le même nombre de périodes.</span>\n";
     $current_classe_period_num = get_period_number($id_classe);
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysql_num_rows($call_data);
     if ($nombre_lignes != 0) {
+
+
         $i = 0;
+        echo "<table width='100%'>\n";
+        echo "<tr valign='top' align='left'>\n";
+        echo "<td>\n";
+        $nb_class_par_colonne=round($nombre_lignes/3);
         while ($i < $nombre_lignes){
+            if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+                echo "</td>\n";
+                echo "<td>\n";
+            }
+
             $_id_classe = mysql_result($call_data, $i, "id");
             $classe = mysql_result($call_data, $i, "classe");
             if (get_period_number($_id_classe) == $current_classe_period_num) {
-                echo "<br/><input type='checkbox' name='classe_" . $_id_classe . "' value='yes'";
-                if (in_array($_id_classe, $reg_clazz) OR $_id_classe == $id_classe) echo " CHECKED";
-                echo " />$classe\n";
-                //echo ">$classe</option>";
+                echo "<input type='checkbox' name='classe_" . $_id_classe . "' id='classe_" . $_id_classe . "' value='yes'";
+
+                if (in_array($_id_classe, $reg_clazz) OR $_id_classe == $id_classe) {echo " checked";}
+
+                echo " /><label for='classe_".$_id_classe."' style='cursor: pointer;'>$classe</label>\n";
+                //echo ">$classe</option>\n";
+
+				echo "<br />\n";
             }
-        $i++;
+	        $i++;
         }
-        echo "</p>\n";
+        //echo "</p>\n";
+        echo "</td>\n";
+        echo "</tr>\n";
+        echo "</table>\n";
     } else {
         echo "<p>Aucune classe définie !</p>\n";
     }
@@ -270,15 +288,15 @@ $test = mysql_num_rows($get_cat);
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     echo "<option value='".$row["id"]."'";
     if ($matiere_categorie == $row["id"]) echo " SELECTED";
-    echo ">".html_entity_decode_all_version($row["nom_court"])."</option>";
+    echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
 }
-echo "</select>";
+echo "</select>\n";
 
-echo "</div>";
+echo "</div>\n";
 // On affiche une sélection des profs si la matière a été choisie
 
 if ($reg_matiere != null) {
-    echo "<div style='width: 45%; float: right;'>";
+    echo "<div style='width: 45%; float: right;'>\n";
     echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
 
     $calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom");
@@ -295,27 +313,30 @@ if ($reg_matiere != null) {
     }
 
     if (count($prof_list["list"]) == "0") {
-        echo "<p><font color=red>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>";
+        echo "<p><font color=red>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
     } else {
         $total_profs = array_unique($prof_list["list"]);
         $p = 0;
         foreach($total_profs as $prof_login) {
             echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-            echo "<input type='checkbox' name='prof_".$p."' />";
-            echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"]. "<br/>";
+            echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' />\n";
+			echo "<label for='prof_".$p."' style='cursor: pointer;'>\n";
+            echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+			echo "</label>\n";
+			echo "<br />\n";
             $p++;
         }
     }
-    echo "</div>";
+    echo "</div>\n";
 }
 // Fin : professeurs
 
-echo "<div style='float: left; width: 100%'>";
+echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";
 echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
-echo "</div>";
-echo "</div>";
+echo "</div>\n";
+echo "</div>\n";
 
 
 
