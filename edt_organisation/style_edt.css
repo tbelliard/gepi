@@ -214,7 +214,7 @@ label {
 }
 
 #saisie_new_periode, #modif_periode {
-	height: 300px; /* à agrandir pour des établissements avec beaucoup de classes*/
+	height: 400px; /* à agrandir pour des établissements avec beaucoup de classes*/
 }
 
 #saisie_new_periode label {
