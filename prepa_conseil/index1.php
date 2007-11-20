@@ -208,8 +208,8 @@ if (!$current_group) {
     }
     echo "<p><input type='checkbox' name='stat' id='stat' value='yes' /><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
     if ($multiclasses) {
-        echo "<p><input type='radio' name='order_by' value='nom' checked /> Classer les élèves par ordre alphabétique ";
-        echo "<br/><input type='radio' name='order_by' value='classe' /> Classer les élèves par classe</p>";
+        echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les élèves par ordre alphabétique </label>";
+        echo "<br/><input type='radio' name='order_by' id='order_by_classe' value='classe' /><label for='order_by_classe' style='cursor: pointer;'> Classer les élèves par classe</label></p>";
     }
     echo "<input type='submit' value='Valider' />\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
@@ -511,6 +511,11 @@ if (!$current_group) {
     echo "<input type='hidden' name='en_tete' value='no' />\n";
     echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
     echo "<input type='hidden' name='bord' value='$bord' />\n";
+
+	if(isset($order_by)){
+		echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
+	}
+
     echo "</form>\n";
 
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire2\">\n";
