@@ -72,7 +72,7 @@ if (isset($_POST['ok'])) {
          }
       }
    }
-   
+
    // Déverrouillage de la période suivante si le bouton radio est à Oui.
    if ((($action_apres == 'retour') OR ($action_apres == 'imprime_html') OR ($action_apres == 'imprime_pdf') OR ($action_apres == 'rien')) AND isset($_POST['deverouillage_auto_periode_suivante'])) {
 		if (($_POST['deverouillage_auto_periode_suivante'])=='y') {
@@ -80,7 +80,7 @@ if (isset($_POST['ok'])) {
 		  $sql_periode = "SELECT * FROM periodes WHERE id_classe=$classe";
 		  $result_periode = mysql_query($sql_periode);
 		  $nb_periodes_classe = mysql_num_rows($result_periode);
-          //echo $nb_periodes_classe;		
+          //echo $nb_periodes_classe;
           $periode_en_cours = $periode;
 		  $periode_suivante = $periode+1;
 		  //Pour la période modifiée on récupère son état
@@ -92,32 +92,32 @@ if (isset($_POST['ok'])) {
 		  if (($etat_periode=='P') OR $etat_periode=='O') {
 		    if ($periode_en_cours  < $nb_periodes_classe) {
 			  //echo "<br/>On déverrouille $periode_suivante";
-			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')"; 
+			  $sql_maj_periode_suivante = "UPDATE periodes SET verouiller='N' WHERE (num_periode='".$periode_suivante."' and id_classe='".$classe."')";
 			  //echo "<br/>".$sql_maj_periode_suivante;
 			  $result_maj_periode_suivante = mysql_query($sql_maj_periode_suivante);
 			  if (!$result_maj_periode_suivante) {$pb_reg_ver = 'yes';}
 		    }
 		  }
-      	} 
+      	}
    }
-    
+
    if ($pb_reg_ver == 'no') {
       $msg = "Les modifications ont été enregistrées.";
    } else {
       $msg = "Il y a eu un problème lors de l'enregistrement des données.";
    }
-   
+
    if ($action_apres == 'retour') {
      header("Location: ./verif_bulletins.php");
    }
-   
+
    if ($action_apres == 'imprime_html') {
-   
+
      header("Location: ./index.php?id_classe=$classe");
    }
-   
+
    if ($action_apres == 'imprime_pdf') {
-   
+
      header("Location: ./index.php?format=pdf");
    }
 }
@@ -171,10 +171,10 @@ if (!(($classe != 0) AND ($periode !=0))) {
    echo "</ul>\n";
    echo "<br /><br />\n";
 
-   
+
 // si la classe et la période sont définies (on vient de verif_bulletiin.php)
 if (($classe != 0) AND ($periode !=0)) {
-	  
+
 	  echo "<form action=\"verrouillage.php?classe=$classe&periode=$periode&action=$action_apres\" name=\"formulaire\" method=\"post\">";
 
       echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
@@ -197,7 +197,7 @@ if (($classe != 0) AND ($periode !=0)) {
 	  $periode_query = sql_query($sql_periode);
 	  $nb_periode = sql_count($periode_query) + 1 ;
 	  $j = 0;
-	  
+
 	  //ajustement de l'indice periode 1, 2 , 3 dans la base en réalité : 0, 1, 2
 	  $indice_periode = $periode-1;
 	  if ($periode_query) for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
@@ -217,65 +217,69 @@ if (($classe != 0) AND ($periode !=0)) {
 		 echo " /></td>\n";
 		 $j++;
 	  }
-	  
+
 	  echo "</table><br />\n";
-	  
+
 	  // Option de déverrouillage automatique
 	  echo "<br />\n<table align='center'>\n";
 	  echo "<tr>\n";
 	  echo "<td>\nProcéder également au déverrouillage automatique de la période suivante <br />lors du verrouillage partiel ou total de la période ci-dessus : ";
       echo "\n</td>\n<td>\n";
-        
+
         echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"y\" ";
         if (getSettingValue("deverouillage_auto_periode_suivante") == 'y') echo " checked";
         echo " />&nbsp;Oui";
         echo "<input type=\"radio\" name=\"deverouillage_auto_periode_suivante\" value=\"n\" ";
         if (getSettingValue("deverouillage_auto_periode_suivante") != 'y') echo " checked";
         echo " />&nbsp;Non";
-	  
+
 	  echo "\n</td>\n</tr>\n</table>\n<br />\n";
-	  
+
 	 if ($action_apres == 'rien') {
-     
+
 	   echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
-	 
+
     } elseif ($action_apres == 'imprime_html') {
-	
+
 	  echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression HTML\" /></center>\n";
-   
+
     } elseif ($action_apres == 'imprime_pdf') {
-	
+
 	  echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis aller à la page impression PDF\" /></center>\n";
-	
+
     } elseif ($action_apres == 'retour') {
-	
+
       echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer puis retour à la page vérification\" /></center>\n";
-	  
+
     }
-	  
+
       echo "</form>\n";
 
 } else {
    if ($nombreligne != 0) {
       echo "<form action=\"verrouillage.php\" name=\"formulaire\" method=\"post\">";
 
-      echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
-      echo "<tr class='fond_sombre'><td>&nbsp;</td>";
-      for ($i = 0; $i < $max_per; $i++) echo "<td>
+      echo "<p align='center'><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></p>\n";
+      //echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
+      echo "<table class='boireaus' cellpadding='3' cellspacing='0' align='center'>";
+      echo "<tr class='fond_sombre'><th>&nbsp;</th>";
+      for ($i = 0; $i < $max_per; $i++) echo "<th>
         <a href=\"javascript:CocheCase(1,".$i.")\">Tout déverrouiller</a><br />
         <a href=\"javascript:CocheCase(2,".$i.")\">Tout verrouiller partiellement</a><br />
         <a href=\"javascript:CocheCase(3,".$i.")\">Tout verrouiller  totalement</a>
-        </td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></td>
-        <td><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></td>";
+        </th>
+        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Déverrouiller\" /></th>
+        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller partiellement\" /></th>
+        <th><IMG SRC=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" WIDTH=\"22\" BORDER=0 alt=\"Verrouiller totalement\" /></th>\n";
       echo "</tr>\n";
-      $flag = 0;
+      //$flag = 0;
+		$alt=1;
       if ($calldata) for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
           $id_classe = $row[0];
           $classe = $row[1];
-          echo "<tr";
-          if ($flag==1) { echo " class='fond_sombre'"; $flag = 0;} else {$flag=1;};
+          $alt=$alt*(-1);
+			echo "<tr class='lig$alt'";
+          //if ($flag==1) { echo " class='fond_sombre'"; $flag = 0;} else {$flag=1;};
           echo "><td><b>$classe</b> ";
           echo "</td>";
 
@@ -310,5 +314,6 @@ if (($classe != 0) AND ($periode !=0)) {
       echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
    }
 } //else
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
