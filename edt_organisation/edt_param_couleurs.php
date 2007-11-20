@@ -27,17 +27,17 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+/*/ Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
-}
+}*/
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 $utilisation_jsdivdrag = "";
 //==============PROTOTYPE===============
-$utilisation_prototype = "";
+$utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
 // On insère l'entête de Gepi
 require_once("../lib/header.inc");
@@ -52,10 +52,49 @@ require_once("./menu.inc.php");
 
 	<div id="lecorps">
 
-Ce fichier est encore en chantier.
+<h3 class="gepi">Cliquez sur la couleur pour la modifier.</h3>
+<p>Pour voir ces couleurs dans les emplois du temps, il faut modifier les param&egrave;tres.</p>
 
+<table id="edt_table_couleurs">
+	<thead>
+	<tr><th>Mati&egrave;re</th><th>nom court</th><th>Couleur</th></tr>
+	</thead>
 
+	<tbody>
 
+<?php
+// On affiche la liste des matières
+$req_sql = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
+$nbre_matieres = mysql_num_rows($req_sql);
+
+	for($i=0; $i < $nbre_matieres; $i++){
+	$aff_matiere[$i]["court"] = mysql_result($req_sql, $i, "matiere");
+	$aff_matiere[$i]["long"] = mysql_result($req_sql, $i, "nom_complet");
+	// On détermine la couleur choisie
+	$recher_couleur = "M_".$aff_matiere[$i]["court"];
+	$color = GetSettingEdt($recher_couleur);
+		if ($color == "") {
+			$color = "none";
+		}
+		// On construit le tableau
+		echo '
+		<tr id="M_'.$aff_matiere[$i]["court"].'">
+			<td>'.$aff_matiere[$i]["long"].'</td>
+			<td>'.$aff_matiere[$i]["court"].'</td>
+			<td style="background-color: '.$color.';">
+				<p onclick="couleursEdtAjax(\'M_'.$aff_matiere[$i]["court"].'\', \'non\');">Modifier</p>
+			</td>
+		</tr>
+		';
+
+	}
+?>
+
+	</tbody>
+
+</table>
+
+	</div>
 <?php
 // inclusion du footer
 require("../lib/footer.inc.php");

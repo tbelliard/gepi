@@ -281,3 +281,21 @@ label {
 #edt_modif td:hover {
 	background-color: rgb(200, 200, 255);
 }
+
+/* Le tableau des paramètres couleurs des matières */
+#edt_table_couleurs {
+	border: 1px solid grey;
+}
+
+#edt_table_couleurs th {
+	background-color: silver;
+	color: black;
+	font-weight: normal;
+	text-align: center;
+	width: 200px;
+}
+
+#edt_table_couleurs td {
+	height: 40px;
+	border: 1px solid grey;
+}

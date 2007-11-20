@@ -457,7 +457,7 @@ if (isset($nbre_ens)) {
 			if (renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0]) == "n") {
 				$case_tab = "<!--rien3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
-			else $case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n";
+			else $case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\" style=\"background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n";
 		}
 		elseif ($nbre_ens == 2) {
 			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
@@ -897,5 +897,35 @@ function nom_salle($id_salle_r){
 	return $nom_salle_r;
 }
 
+// Fonction qui renvoie la couleur de fond de cellule pour une matière
+function couleurCellule($enseignement){
+	// On vérifie si on a affaire à une aid ou pas
+	$verif_aid = explode("|", $enseignement);
+	if ($verif_aid[0] == "AID") {
+		return "none";
+	} else {
+		// Ce n'est pas une aid, on cherche donc la matière rattachée à cet enseignement
+		$sql = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe = '".$enseignement."'");
+		$req_matiere = mysql_fetch_array($sql);
+		$matiere = "M_".$req_matiere["id_matiere"];
+
+		// on cherche s'il existe un réglage pour cette matière
+		$sql = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = '".$matiere."'");
+		$nbre_reponse = mysql_num_rows($sql);
+		// On construit la réponse en fonction de l'existence ou non de ce réglage
+		if ($nbre_reponse == 0) {
+			return "none";
+		} else {
+			// On vérifie que le réglage soit sur coul
+			if (GetSettingEdt("edt_aff_couleur") == "coul") {
+				$couleur = mysql_fetch_array($sql);
+				return $couleur["valeur"];
+			} else {
+				return "none";
+			}
+
+		}
+	}
+}
 
 ?>

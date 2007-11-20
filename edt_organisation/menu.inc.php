@@ -43,13 +43,13 @@ function menuEdtJs($numero){
 }
 function displaydd($numero){
 		// On récupère la valeur du réglage "param_menu_edt"
-	//$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
-	//if ($reglage["valeur"] == "rien") {
-	//	return " style=\"display: block;\"";
-	//}else {
-		//return "style=\"display: none;\"";
-		return "";
-	//}
+	$reglage = mysql_fetch_array(mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'"));
+	if ($reglage["valeur"] == "rien") {
+		return " style=\"display: block;\"";
+	}else {
+		return "style=\"display: none;\"";
+		//return "";
+	}
 }
 ?>
 <!-- On affiche le menu edt -->
@@ -118,6 +118,7 @@ if ($_SESSION['statut'] == "administrateur") {
 					<li><a href="ajouter_salle.php">Les Salles</a></li>
 					<li><a href="edt_initialiser.php">Initialiser</a></li>
 					<li><a href="edt_parametrer.php">Paramétrer</a></li>
+					<li><a href="edt_param_couleurs.php">Couleurs</a></li>
 				</ul>
 			</dd>
 

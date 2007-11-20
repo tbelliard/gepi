@@ -123,7 +123,7 @@ if (isset($parametrer_ok)) {
 
 } //if (isset($parametrer_ok))
 else {
-	echo "Dans cette page, vous pouvez paramétrer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
+	$message = "Dans cette page, vous pouvez paramétrer l'affichage des emplois du temps pour tous les utilisateurs de Gepi.";
 }
 
 // On insère l'entête de Gepi
@@ -181,7 +181,7 @@ if (isset($aff_message)) {
 			<label for="edtAffCouleur">Couleurs</label>
 <br />
 			<input type="radio" id="edtAffNb" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
-			<label for="edtAffNb">Sans couleurs</label>
+			<label for="edtAffNb">Sans couleur</label>
 		</p>
 </fieldset>
 
