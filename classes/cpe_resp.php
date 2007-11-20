@@ -171,8 +171,8 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 					}
 
 					echo ">\n";
-					echo "<td><input type='checkbox' name='".$id_classe."' id='".$id_classe."' value='yes' /></td>\n";
-					echo "<td><label for='$id_classe' style='cursor: pointer;'><b>$classe</b></label></td>\n";
+					echo "<td><input type='checkbox' name='".$id_classe."' id='id".$id_classe."' value='yes' /></td>\n";
+					echo "<td><label for='id".$id_classe."' style='cursor: pointer;'><b>$classe</b></label></td>\n";
 				}
 				echo "</tr>\n";
 			}
