@@ -103,7 +103,7 @@ require_once("../lib/header.inc");
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
-<p class=bold><a href="classes_const.php?id_classe=<?echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="help.php"> Aide </a></p>
+<p class='bold'><a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="help.php"> Aide </a></p>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <?php
 if (!isset($nb_prof) or ($nb_prof == '')) {
@@ -113,7 +113,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 ?>
 
 	<p><?php echo getSettingValue("gepi_prof_suivi"); ?> : précisez le nombre dans la classe :</p>
-	<form enctype="multipart/form-data" action="prof_suivi.php" method=post>
+	<form enctype="multipart/form-data" action="prof_suivi.php" method="post">
 	<select size = '1' name='nb_prof'>
 	<?php for ($i=1;$i<6;$i++) {
 		echo "<option value='$i'";
