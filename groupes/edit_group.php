@@ -87,12 +87,12 @@ if (isset($_POST['is_posted'])) {
 
     if (empty($reg_nom_groupe)) {
         $error = true;
-        $msg .= "Vous devez donner un nom court au groupe.<br />";
+        $msg .= "Vous devez donner un nom court au groupe.<br />\n";
     }
 
     if (empty($reg_nom_groupe)) {
         $error = true;
-        $msg .= "Vous devez donner un nom complet au groupe.<br />";
+        $msg .= "Vous devez donner un nom complet au groupe.<br />\n";
     }
 
     $clazz = array();
@@ -131,18 +131,18 @@ if (isset($_POST['is_posted'])) {
 			$res_tmp=mysql_query($sql);
 			while($lig_tmp=mysql_fetch_object($res_tmp)){
 				$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
-				//echo "$sql<br />";
+				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0){
-					//echo "$lig_tmp->login<br />";
+					//echo "$lig_tmp->login<br />\n";
 					if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
 					$test++;
 				}
 				$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND login='$lig_tmp->login'";
-				//echo "$sql<br />";
+				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0){
-					//echo "$lig_tmp->login<br />";
+					//echo "$lig_tmp->login<br />\n";
 					if(!in_array($lig_tmp->login,$tabtmp)){$tabtmp[]=$lig_tmp->login;}
 					$test2++;
 				}
@@ -221,7 +221,7 @@ if (isset($_POST['is_posted'])) {
 
     if (empty($reg_clazz)) {
         $error = true;
-        $msg .= "Vous devez sélectionner au moins une classe.<br />";
+        $msg .= "Vous devez sélectionner au moins une classe.<br />\n";
     }
 
     if (!$error) {
@@ -247,18 +247,18 @@ if (isset($_POST['is_posted'])) {
     }
 }
 /* DEBUG
-echo "<pre>";
+echo "<pre>\n";
 print_r($_POST);
-echo "</pre>";
+echo "</pre>\n";
 echo html_entity_decode_all_version("prof_ERIC_ALARY");
 
-echo "<pre>";
+echo "<pre>\n";
 print_r($current_group);
-echo "</pre>";
+echo "</pre>\n";
 
-echo "<pre>";
+echo "<pre>\n";
 print_r($reg_professeurs);
-echo "</pre>";
+echo "</pre>\n";
 */
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
@@ -267,6 +267,12 @@ require_once("../lib/header.inc");
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //echo "\$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."<br />\n";
+
+/*
+foreach ($reg_clazz as $tmp_classe) {
+	echo "\$tmp_classe=$tmp_classe<br />\n";
+}
+*/
 ?>
 <p class=bold>
 <?php
@@ -324,11 +330,11 @@ if ($mode == "groupe") {
     } else {
         echo "<option value='false'>Aucune classe définie !</option>\n";
     }
-    echo "</select>";
-    //echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."&mode=regroupement'>sélectionner plusieurs classes</a>]</p>";
-    echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sélectionner plusieurs classes</a>]</p>";
+    echo "</select>\n";
+    //echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."&mode=regroupement'>sélectionner plusieurs classes</a>]</p>\n";
+    echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sélectionner plusieurs classes</a>]</p>\n";
 } else if ($mode == "regroupement") {
-    echo "<input type='hidden' name='id_classe' value='".$id_classe."' />";
+    echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
     echo "<p>Sélectionnez les classes auxquelles appartient le regroupement :";
 
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -355,8 +361,8 @@ if ($mode == "groupe") {
 				if (in_array($id_classe_temp, $reg_clazz)){
 					echo " checked";
 				}
-				//echo " />$classe</option>";
-				echo "onchange='changement();'";
+				//echo " />$classe</option>\n";
+				echo " onchange='changement();'";
 				echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
 				if (in_array($id_classe_temp, $reg_clazz)){
 					// Pour contrôler les suppressions de classes.
@@ -404,9 +410,9 @@ for ($i=0;$i<$nb_mat;$i++) {
 echo "</select>\n";
 //echo "</p>\n";
 */
-echo "</div>";
+echo "</div>\n";
 // Edition des professeurs
-echo "<div style='width: 45%; float: right;'>";
+echo "<div style='width: 45%; float: right;'>\n";
 
 //=================================================
 echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
@@ -448,7 +454,7 @@ for ($i=0;$i<$nb;$i++) {
 }
 
 if (count($prof_list["list"]) == "0") {
-	echo "<p><font color='red'>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>";
+	echo "<p><font color='red'>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
 } else {
 	$total_profs = array_merge($prof_list["list"], $reg_professeurs);
 	$total_profs = array_unique($total_profs);
@@ -477,8 +483,8 @@ if (count($prof_list["list"]) == "0") {
 	}
 }
 
-echo "</div>";
-echo "<div style='float: left; width: 100%'>";
+echo "</div>\n";
+echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";
 echo "<input type='hidden' name='id_groupe' value='" . $id_groupe . "' />\n";
@@ -488,8 +494,8 @@ if(isset($chemin_retour)){
 	echo "<input type='hidden' name='chemin_retour' value='$chemin_retour' />\n";
 }
 echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
-echo "</div>";
-echo "</div>";
+echo "</div>\n";
+echo "</div>\n";
 ?>
 </form>
 </div>
