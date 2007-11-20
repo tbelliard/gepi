@@ -539,7 +539,7 @@ Afficher une case pour la signature du chef d'établissement
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</label></td>
+    <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
     <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" /></td>
 </tr>
 
