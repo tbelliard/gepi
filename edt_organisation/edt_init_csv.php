@@ -66,6 +66,8 @@ $_SESSION["retour"] = "edt_init_csv";
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 $truncate_cours = isset($_POST["truncate_cours"]) ? $_POST["truncate_cours"] : NULL;
+$truncate_salles = isset($_POST["truncate_salles"]) ? $_POST["truncate_salles"] : NULL;
+
 $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 
 	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
@@ -227,7 +229,12 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
         if(strtolower($csv_file['name']) == "g_salles.csv") {
 
             // Le nom est ok. On ouvre le fichier
-            $fp=fopen($csv_file['tmp_name'],"r");
+            $fp = fopen($csv_file['tmp_name'],"r");
+
+            // A partir de là, on vide la table salle_cours
+            if ($truncate_cours == "oui") {
+            	$vider_table = mysql_query("TRUNCATE TABLE salle_cours");
+            }
 
             if(!$fp) {
                 // Prob sur l'ouverture du fichier
@@ -243,14 +250,16 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 				// On ne garde que les 30 premiers caractères du nom de la salle
 				$nom_salle = substr($nom_brut_salle, 0, 30);
 					if ($nom_salle == "") {
-						$nom_salle = "Salle ".$numero;
+						$affnom_salle = 'Sans nom';
+					} else {
+						$affnom_salle = $nom_salle;
 					}
 				// On lance la requête pour insérer les nouvelles salles
 				$req_insert_salle = mysql_query("INSERT INTO salle_cours (`numero_salle`, `nom_salle`) VALUES ('$numero', '$nom_salle')");
 					if (!$req_insert_salle) {
 						echo "La salle : ".$nom_salle." portant le num&eacute;ro : ".$numero." n'a pas &eacute;t&eacute; enregistr&eacute;e.<br />";
 					} else {
-						echo "La salle : ".$numero." est enregistr&eacute;e(<i> ".$nom_salle."</i>).<br />";
+						echo "La salle : ".$numero." est enregistr&eacute;e (<i>".$affnom_salle."</i>).<br />";
 					}
 				} // while
 			} // else
@@ -261,8 +270,10 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 
 		} //if(strtolower($csv_file['name']) =....
 		else {
-			echo '<h3>Ce n\'est pas le bon nom de fichier !</h3>';
-			echo "<p><a href=\"./edt_init_csv.php\">Cliquer ici </a> pour recommencer !</center></p>";
+			echo '
+			<h3>Ce n\'est pas le bon nom de fichier !</h3>
+			<p><a href="./edt_init_csv.php">Cliquer ici </a> pour recommencer !</center></p>
+				';
 		}
 	} // if ($action == "upload_file_salle")
 
@@ -319,7 +330,7 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 L'initialisation &agrave; partir de fichiers csv se d&eacute;roule en plusieurs &eacute;tapes:
 
 <hr />
-	<h4 class='refus'>Premi&egrave;re &eacute;tape</h4>
+	<h4 class="refus">Premi&egrave;re &eacute;tape</h4>
 	<p>Une partie de l'initialisation est commune avec le module
 absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=visualiser">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
 	 <a href="../mod_absences/admin/admin_config_semaines.php?action=visualiser">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...) et
@@ -327,13 +338,13 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 
 
 <hr />
-	<h4 class='refus'>Deuxi&egrave;me &eacute;tape</h4>
+	<h4 class="refus">Deuxi&egrave;me &eacute;tape</h4>
 	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
 	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ... Si tous vos
 	cours durent le temps de l'ann&eacute;e scolaire, vous pouvez vous passer de cette &eacute;tape.</p>
 <hr />
-	<h4 class='refus'>Troisi&egrave;me &eacute;tape</h4>
-	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes.
+	<h4 class="refus">Troisi&egrave;me &eacute;tape</h4>
+	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les salles d&eacute;j&agrave; pr&eacute;sentes sauf si vous d&eacute;cochez le bouton.
 	Pour les salles de votre &eacute;tablissement, vous devez fournir un fichier csv. Vous pourrez ensuite en ajouter, en supprimer ou modifier leur nom dans le menu Gestion des salles.</p>
 	<p>Les champs suivants doivent être pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 	<ol>
@@ -341,17 +352,20 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 		<li>nom salle (30 caract&egrave;res max.)</li>
 	</ol>
 	<p>Veuillez pr&eacute;ciser le nom complet du fichier <b>g_salles.csv</b>.</p>
-	<form enctype='multipart/form-data' action='edt_init_csv.php' method='post'>
-		<input type='hidden' name='action' value='upload_file_salle' />
-		<input type='hidden' name='initialiser' value='ok' />
-		<input type='hidden' name='csv' value='ok' />
+	<form enctype="multipart/form-data" action="edt_init_csv.php" method="post">
+		<input type="hidden" name="action" value="upload_file_salle" />
+		<input type="hidden" name="initialiser" value="ok" />
+		<input type="hidden" name="csv" value="ok" />
+		<p><label for="truncateSalles">Effacer les salles d&eacute;j&agrave; cr&eacute;&eacute;es </label>
+		<input type="checkbox" id="truncateSalles" name="truncate_salles" value="oui" checked="checked" /></p>
 		<p><input type="file" size="80" name="csv_file" /></p>
-		<p><input type='submit' value='Valider' /></p>
+		<p><input type="submit" value="Valider" /></p>
 	</form>
 
 <hr />
-	<h4 class='refus'>Quatri&egrave;me &eacute;tape</h4>
-	<p><span class='red'>Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
+	<h4 class="refus">Quatri&egrave;me &eacute;tape</h4>
+	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les cours d&eacute;j&agrave; pr&eacute;sents sauf si vous d&eacute;cochez le bouton.</p>
+	<p><span class="red">Attention</span> de bien respecter les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
 	Pour l'emploi du temps, vous devez fournir un fichier csv dont les champs suivants
 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 <!-- AIDE init csv -->
@@ -394,14 +408,14 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 	</ol>
 
 	<p>Veuillez préciser le nom complet du fichier <b>g_edt.csv</b>.</p>
-		<form enctype='multipart/form-data' action='edt_init_csv.php' method='post'>
-			<input type='hidden' name='action' value='upload_file' />
-			<input type='hidden' name='initialiser' value='ok' />
-			<input type='hidden' name='csv' value='ok' />
-			<p><label for="truncateCours">D&eacute;cocher pour ne pas effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
-			<input type='checkbox' id="truncateCours" name='truncate_cours' value='oui' checked="checked" /></p>
+		<form enctype="multipart/form-data" action="edt_init_csv.php" method="post">
+			<input type="hidden" name="action" value="upload_file" />
+			<input type="hidden" name="initialiser" value="ok" />
+			<input type="hidden" name="csv" value="ok" />
+			<p><label for="truncateCours">Effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
+			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui" checked="checked" /></p>
 			<p><input type="file" size="80" name="csv_file" /></p>
-			<p><input type='submit' value='Valider' /></p>
+			<p><input type="submit" value="Valider" /></p>
 		</form>
 </div><!-- fin du div aff_init_csv -->
 	</div><!-- fin du div lecorps -->
