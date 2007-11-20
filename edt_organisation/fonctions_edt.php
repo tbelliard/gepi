@@ -220,6 +220,7 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 	// CHercher la durée de l'enseignement qui précède celui qu'on veut afficher
 			// Nouvel essai de technique
 			$aff_rien = "non";
+			$cours_precedent = "non";
 	$cherche_creneaux = array();
 	$cherche_creneaux = retourne_id_creneaux();
 	$ch_index = array_search($id_creneaux, $cherche_creneaux);
@@ -230,6 +231,10 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				$nbre_ens_precedent = count($ens_precedent);
 				if ($aff_precedent > 2) {
 					$aff_rien = "oui";
+				}
+				// Cas où un cours se termine au milieu d'un créneau
+				if ($aff_precedent == 2 AND $heuredeb_dec == "0.5") {
+					$cours_precedent = "1heure";
 				}
 			}
 			else $aff_precedent = NULL;
@@ -244,6 +249,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				if ($aff_precedent > 4) {
 					$aff_rien = "oui";
 				}
+				if ($aff_precedent == 4 AND $heuredeb_dec == "0.5") {
+					$cours_precedent = "2heures";
+				}
 			}
 			else $aff_precedent = NULL;
 		}
@@ -257,6 +265,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				if ($aff_precedent > 6) {
 					$aff_rien = "oui";
 				}
+				if ($aff_precedent == 6 AND $heuredeb_dec == "0.5") {
+					$cours_precedent = "3heures";
+				}
 			}
 			else $aff_precedent = NULL;
 		}
@@ -269,6 +280,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				$nbre_ens_precedent = count($ens_precedent);
 				if ($aff_precedent > 8) {
 					$aff_rien = "oui";
+				}
+				if ($aff_precedent == 8 AND $heuredeb_dec == "0.5") {
+					$cours_precedent = "4heures";
 				}
 			}
 			else $aff_precedent = NULL;
@@ -295,6 +309,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				else if ($heuredeb_cherch == "0" AND $aff_precedent_dec > 3) {
 					$aff_rien_dec = "oui";
 				}
+				elseif ($heuredeb_cherch == "0" AND $aff_precedent_dec == 3) {
+					$cours_precedent = "1heuredemi";
+				}
 			}
 			else $aff_precedent_dec = NULL;
 		}
@@ -310,6 +327,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				else if ($heuredeb_cherch == "0" AND $aff_precedent_dec > 5) {
 					$aff_rien_dec = "oui";
 				}
+				elseif ($heuredeb_cherch == "0" AND $aff_precedent_dec == 5) {
+					$cours_precedent = "2heuresdemi";
+				}
 			}
 			else $aff_precedent_dec = NULL;
 		}
@@ -324,6 +344,9 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				}
 				else if ($heuredeb_cherch == "0" AND $aff_precedent_dec > 7) {
 					$aff_rien_dec = "oui";
+				}
+				elseif ($heuredeb_cherch == "0" AND $aff_precedent_dec == 7) {
+					$cours_precedent = "3heuresdemi";
 				}
 			}
 			else $aff_precedent_dec = NULL;
@@ -428,7 +451,13 @@ if (isset($nbre_ens)) {
 	 // La solution pour le cas où il y a plus de trois réponses est au point.
 
 		if ($nbre_ens === 0) {
-			if ($heuredeb_dec == "0.5" AND isset($duree_tab_pre_dec) AND $duree_tab_pre_dec == 3) {
+			if ($cours_precedent == "1heure" OR $cours_precedent == "2heures" OR $cours_precedent == "3heures" OR $cours_precedent == "4heures") {
+				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+			}
+			elseif ($cours_precedent == "1heuredemi" OR $cours_precedent == "2heuresdemi" OR $cours_precedent == "3heuresdemi") {
+				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+			}
+			elseif ($heuredeb_dec == "0.5" AND isset($duree_tab_pre_dec) AND $duree_tab_pre_dec == 3) {
 				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5") {
