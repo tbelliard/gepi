@@ -107,14 +107,19 @@ if ($step == 0) {
     <li>Soit continuez l'importation et vous choisissez de remplir ultérieurement à la main les rubriques absences pour ces élèves,</li>
     <li>soit vous devez, avant de procéder à l'importation des absences, renseigner le numéro GEP de ces élèves en modifiant leur fiche (voir l'administrateur de GEPI).</li>
     </ul>\n";
-    echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">
-    <tr><td><b>Identifiant</b></td><td><b>Nom</b></td><td><b>Prénom</b></td></tr>\n";
+    //echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">
+    //<tr><td><b>Identifiant</b></td><td><b>Nom</b></td><td><b>Prénom</b></td></tr>\n";
+    echo "<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">
+    <tr><th><b>Identifiant</b></th><th><b>Nom</b></th><th><b>Prénom</b></th></tr>\n";
     $i = 0;
+	$alt=1;
     while ($i < $nb_test) {
+		$alt=$alt*(-1);
         $login_eleve = mysql_result($test,$i,'e.login');
         $nom_eleve = mysql_result($test,$i,'e.nom');
         $prenom_eleve = mysql_result($test,$i,'e.prenom');
-        echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
+        //echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
+        echo "<tr class='lig$alt'><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
         $i++;
     }
     echo "</table>\n";
@@ -539,12 +544,16 @@ if ($step == 0) {
             echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
             echo "<input type=hidden name='periode_num' value='".$periode_num."' />\n";
             echo "</form>\n";
-            echo "<table border=\"1\" cellpadding=\"3\"><tr><td><b>Nom prénom</b></td><td><b>Nb. de retards</b></td><td><b>Nb. de 1/2 journées d'absence</b></td><td><b>1/2 j. non justifiées</b></td></tr>\n";
+            //echo "<table border=\"1\" cellpadding=\"3\"><tr><td><b>Nom prénom</b></td><td><b>Nb. de retards</b></td><td><b>Nb. de 1/2 journées d'absence</b></td><td><b>1/2 j. non justifiées</b></td></tr>\n";
+            echo "<table class='boireaus' cellpadding=\"3\"><tr><th><b>Nom prénom</b></th><th><b>Nb. de retards</b></th><th><b>Nb. de 1/2 journées d'absence</b></th><th><b>1/2 j. non justifiées</b></th></tr>\n";
+			$alt=1;
             foreach ($tab as $key => $value) {
+				$alt=$alt*(-1);
                 $nom_eleve = sql_query1("select nom from eleves where login = '".$key."'");
                 $prenom_eleve = sql_query1("select prenom from eleves where login = '".$key."'");
 //              $num_gep = sql_query1("select elenoet from eleves WHERE login ='".$key."'");
-                echo "<tr><td>$nom_eleve $prenom_eleve</td><td>$retard[$key]</td><td>$abs[$key]</td><td>$abs_nj[$key]</td></tr>\n";
+                //echo "<tr><td>$nom_eleve $prenom_eleve</td><td>$retard[$key]</td><td>$abs[$key]</td><td>$abs_nj[$key]</td></tr>\n";
+                echo "<tr class='lig$alt'><td>$nom_eleve $prenom_eleve</td><td>$retard[$key]</td><td>$abs[$key]</td><td>$abs_nj[$key]</td></tr>\n";
             }
             echo "</table>\n";
 
