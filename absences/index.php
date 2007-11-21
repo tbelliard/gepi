@@ -116,11 +116,11 @@ if (!isset($id_classe)) {
 		echo "<tr class='lig$alt'>\n";
 		echo "<th>".ucfirst($nom_periode[$i])."</th>\n";
 		if ($ver_periode[$i] == "N") {
-			echo "<td><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'>Saisir</a></td>\n";
+			echo "<td><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir les absences, retards,...' title='Saisir les absences, retards,...' /></a></td>\n";
 		} else {
 			echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
 		}
-		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'>Consulter</a></td>\n";
+		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/chercher.png' width='16' height='16' alt='Saisir les absences, retards,...' title='Consulter les absences, retards,...' /></a></td>\n";
 
 		if ($ver_periode[$i] == "N") {
 			echo "<td><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>Import GEP</a></td>\n";
