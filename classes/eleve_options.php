@@ -243,7 +243,8 @@ echo "<p align='center'><input type='submit' value='Enregistrer les modification
 
 // J'appelle les différents groupes existants pour la classe de l'élève
 
-$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+//$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+$call_group = mysql_query("SELECT DISTINCT g.id, g.name,g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
 $nombre_ligne = mysql_num_rows($call_group);
 
 //=========================
@@ -254,6 +255,8 @@ echo "<table border = '1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'><td><b>Matière</b></td>\n";
 //=========================
 $j = 1;
+$chaine_coche="";
+$chaine_decoche="";
 while ($j < $nb_periode) {
 	//=========================
 	// MODIF: boireaus
@@ -266,10 +269,20 @@ while ($j < $nb_periode) {
 	echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</td>\n";
+
+	$chaine_coche.="modif_case($j,\"col\",true);";
+	$chaine_decoche.="modif_case($j,\"col\",false);";
+
 	//=========================
 	$j++;
 }
-echo "<td>&nbsp;</td>\n";
+//echo "<td>&nbsp;</td>\n";
+
+echo "<td>\n";
+echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+echo "</td>\n";
+
 echo "</tr>\n";
 
 $nb_erreurs=0;
@@ -278,9 +291,11 @@ $alt=1;
 while ($i < $nombre_ligne) {
 	$id_groupe = mysql_result($call_group, $i, "id");
 	$nom_groupe = mysql_result($call_group, $i, "name");
+	$description_groupe = mysql_result($call_group, $i, "description");
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td>".$nom_groupe;
+	echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
 	echo "</td>\n";
 	$j = 1;
 	while ($j < $nb_periode) {
