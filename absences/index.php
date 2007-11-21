@@ -68,7 +68,7 @@ if (!isset($id_classe)) {
 	if($nombreligne>1){echo "s";}
 	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
-	echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'un moins un élève de la classe.</p>\n";
+	echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un élève de la classe.</p>\n";
 
 	/*
 	$i = 0;
@@ -88,7 +88,6 @@ if (!isset($id_classe)) {
 		$tab_lien[$i] = "index.php?id_classe=".mysql_result($calldata, $i, "id");
 		$tab_txt[$i] = mysql_result($calldata, $i, "classe");
 		$i++;
-
 	}
 	tab_liste($tab_txt,$tab_lien,3);
 
@@ -106,17 +105,39 @@ if (!isset($id_classe)) {
 	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
 	echo "<h2>Classe de ".$classe."</h2>\n";
-	echo "<p><b>Saisie manuelle - Choisissez la période : </b></p>\n<ul>\n";
+	echo "<p><b>Saisie manuelle - Choisissez la période : </b></p>\n";
+	//echo "<ul>\n";
 	$i="1";
+	echo "<table class='boireaus' cellpadding='3'>\n";
+	echo "<tr><th>Période</th><th>Saisir</th><th>Consulter</th><th>Importer les absences de GEP</th></tr>\n";
+	$alt=1;
 	while ($i < $nb_periode) {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<th>".ucfirst($nom_periode[$i])."</th>\n";
 		if ($ver_periode[$i] == "N") {
-			echo "<li><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'>".ucfirst($nom_periode[$i])."</a></li>\n";
+			echo "<td><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'>Saisir</a></td>\n";
 		} else {
-			echo "<li>".ucfirst($nom_periode[$i])." (".$gepiClosedPeriodLabel.")</li>\n";
+			echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
 		}
-	$i++;
+		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'>Consulter</a></td>\n";
+
+		if ($ver_periode[$i] == "N") {
+			echo "<td><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>Import GEP</a></td>\n";
+		} else {
+			echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
+		}
+
+		$i++;
 	}
-	echo "</ul>\n";
+	echo "</table>\n";
+	//echo "</ul>\n";
+
+	echo "<p><br /></p>\n";
+
+	echo "<p><i>NOTE:</i> Pour l'importation des absences depuis GEP, les fichiers F_EABS.DBF et F_NOMA.DBF de la base GEP sont requis.</p>\n";
+
+	/*
 	$i="1";
 	// On propose l'importation à partir d'un fichier GEP
 	while ($i < $nb_periode) {
@@ -126,6 +147,8 @@ if (!isset($id_classe)) {
 		}
 		$i++;
 	}
+	*/
+
 
 	/*
 	$i="1";

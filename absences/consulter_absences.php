@@ -1,7 +1,7 @@
 <?php
 
 /*
-* $Id$
+* $Id: consulter_absences.php 423 2007-05-14 15:25:48Z tbelliard $
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -41,13 +41,16 @@ if ($resultat_session == 'c') {
 	die();
 };
 
+
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
 
+
 include "../lib/periodes.inc.php";
 
+/*
 if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	if ($_SESSION['statut'] == "cpe") {
 		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')");
@@ -83,21 +86,6 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 		if($num_eleve!=-1){
 			//=========================
 
-			//=========================
-			// MODIF: boireaus 20071007
-			/*
-			$nom_log_nb_abs = $reg_eleve_login."_nb_abs";
-			$nb_absences = $_POST[$nom_log_nb_abs];
-
-			$nom_log_nb_nj = $reg_eleve_login."_nb_nj";
-			$nb_nj = $_POST[$nom_log_nb_nj];
-
-			$nom_log_nb_retard = $reg_eleve_login."_nb_retard";
-			$nb_retard = $_POST[$nom_log_nb_retard];
-
-			$nom_log_ap = $reg_eleve_login."_ap";
-			$ap = $_POST[$nom_log_ap];
-			*/
 
 			$nb_absences=$nb_abs_ele[$num_eleve];
 			$nb_nj=$nb_nj_ele[$num_eleve];
@@ -136,8 +124,10 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 $themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //$message_enregistrement = 'Les modifications ont été enregistrées !';
 
+*/
+
 //**************** EN-TETE *****************
-$titre_page = "Saisie des absences";
+$titre_page = "Consultation des absences";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -145,17 +135,16 @@ require_once("../lib/header.inc");
 change = 'no';
 </script>
 
-<form enctype="multipart/form-data" action="saisie_absences.php" method="post">
 <p class=bold>
-<a href="index.php?id_classe=<?php echo $id_classe; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
-<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choisir une autre classe</a> | <input type="submit" value="Enregistrer" /> | <a href="<?php echo "consulter_absences.php?id_classe=$id_classe&amp;periode_num=$periode_num";?>">Consulter les absences de la classe</a></p>
+<a href="index.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
+<a href="index.php">Choisir une autre classe</a></p>
 
 
 <?php
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
+<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 <br />
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
@@ -193,20 +182,11 @@ while($i < $nombre_lignes) {
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'><td align='center'>".strtoupper($current_eleve_nom)." $current_eleve_prenom\n";
-	//=========================
-	// MODIF: boireaus 20071010
-	echo "<input type='hidden' name='log_eleve[$i]' value='$current_eleve_login' />\n";
 	echo "</td>\n";
-	/*
-	echo "<td><input id=\"".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_nb value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><input id=\"1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_nj value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><input id=\"2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_retard value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><textarea id=\"3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name=$current_eleve_login_ap rows=2 cols=50  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
-	*/
-	echo "<td align='center'><input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
-	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
-	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
+	echo "<td align='center'>$current_eleve_nb_absences</td>\n";
+	echo "<td align='center'>$current_eleve_nb_nj</td>\n";
+	echo "<td align='center'>$current_eleve_nb_retards</td>\n";
+	echo "<td>".nl2br($current_eleve_ap_absences)."</td></tr>\n";
 	//=========================
 	$i++;
 	$num_id++;
@@ -214,11 +194,5 @@ while($i < $nombre_lignes) {
 
 ?>
 </table>
-<input type="hidden" name="is_posted" value="yes" />
-<input type="hidden" name="id_classe" value=<?php echo "$id_classe";?> />
-<input type="hidden" name="periode_num" value=<?php echo "$periode_num";?> />
-<center><div id="fixe"><input type="submit" value="Enregistrer" /></div></center>
-</form>
-
 <p><br /></p>
 <?php require "../lib/footer.inc.php";?>
