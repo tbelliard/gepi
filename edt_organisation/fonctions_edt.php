@@ -490,14 +490,14 @@ if (isset($nbre_ens)) {
 		}
 		elseif ($nbre_ens == 2) {
 			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
-			$case_2_tab = ("<tr>\n<td style=\"font-size: 10px;\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 10px;\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n</tr>\n");
+			$case_2_tab = ("<tr>\n<td style=\"font-size: 10px; background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 10px; background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n</tr>\n");
 			$case_3_tab = "</tbody>\n</table>\n</td>";
 
 			$case_tab = $case_1_tab.$case_2_tab.$case_3_tab;
 		}
 		elseif ($nbre_ens == 3) {
 			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
-			$case_2_tab = ("<tr>\n<td style=\"font-size: 8px;\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 8px;\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n<td style=\"font-size: 8px;\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[2])."</td>\n</tr>\n");
+			$case_2_tab = ("<tr>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[2]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[2])."</td>\n</tr>\n");
 			$case_3_tab = "</tbody>\n</table>\n</td>";
 
 			$case_tab = $case_1_tab.$case_2_tab.$case_3_tab;
