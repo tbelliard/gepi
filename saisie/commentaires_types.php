@@ -156,6 +156,7 @@ else{
 				exit();
 			}
 
+			/*
 			$cpt=0;
 			while($ligne_classe=mysql_fetch_object($resultat_classes)){
 				if($cpt==0){
@@ -164,9 +165,47 @@ else{
 				else{
 					$checked="";
 				}
-				echo "<input type='radio' name='id_classe' value='$ligne_classe->id' $checked/> $ligne_classe->classe<br />\n";
+				//echo "<input type='radio' name='id_classe' value='$ligne_classe->id' $checked/> $ligne_classe->classe<br />\n";
+				echo "<input type='radio' name='id_classe' id='id_classe".$ligne_classe->id."' value='$ligne_classe->id' $checked/><label for='id_classe".$ligne_classe->id."' style='cursor: pointer;'> $ligne_classe->classe</label><br />\n";
 				$cpt++;
 			}
+			*/
+
+			$nb_classes=mysql_num_rows($resultat_classes);
+			$nb_class_par_colonne=round($nb_classes/3);
+			echo "<table width='100%'>\n";
+			echo "<tr valign='top' align='center'>\n";
+			$cpt=0;
+			//echo "<td style='padding: 0 10px 0 10px'>\n";
+			echo "<td align='left'>\n";
+			while($ligne_classe=mysql_fetch_object($resultat_classes)){
+				if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
+					echo "</td>\n";
+					//echo "<td style='padding: 0 10px 0 10px'>\n";
+					echo "<td align='left'>\n";
+				}
+
+				if($cpt==0){
+					$checked="checked ";
+				}
+				else{
+					$checked="";
+				}
+
+				//echo "<input type='radio' name='id_classe' value='$ligne_classe->id' /> $ligne_classe->classe<br />\n";
+				echo "<input type='radio' name='id_classe' id='id_classe".$ligne_classe->id."' value='$ligne_classe->id' $checked/><label for='id_classe".$ligne_classe->id."' style='cursor: pointer;'> $ligne_classe->classe</label><br />\n";
+				$cpt++;
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
+
+
+
+
+
+
 			echo "</blockquote>\n";
 			echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 		}
@@ -254,7 +293,7 @@ else{
 					$resultat_periode=mysql_query($sql);
 					$ligne_periode=mysql_fetch_object($resultat_periode);
 					//echo "<input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
-					echo "<input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode' /> $ligne_periode->nom_periode\n";
+					echo "<input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 
 					while($ligne_num_periode=mysql_fetch_object($resultat_num_periode)){
 						//$cpt++;
@@ -262,7 +301,7 @@ else{
 						$resultat_periode=mysql_query($sql);
 						$ligne_periode=mysql_fetch_object($resultat_periode);
 						//echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
-						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode' /> $ligne_periode->nom_periode\n";
+						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 					}
 					echo "<br />\n";
 				}
@@ -302,7 +341,12 @@ else{
 						if((!isset($suppr[$i]))&&($commentaire[$i]!="")){
 							for($j=0;$j<count($num_periode);$j++){
 								//$sql="insert into commentaires_types values('','$commentaire[$i]','$num_periode[$j]','$id_classe')";
-								$sql="insert into commentaires_types values('','".html_entity_decode($commentaire[$i])."','$num_periode[$j]','$id_classe')";
+								//=========================
+								// MODIF: boireaus 20071121
+								//$sql="insert into commentaires_types values('','".html_entity_decode($commentaire[$i])."','$num_periode[$j]','$id_classe')";
+								$tmp_commentaire=ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
+								$sql="insert into commentaires_types values('','".addslashes($tmp_commentaire)."','$num_periode[$j]','$id_classe')";
+								//=========================
 								//echo "sql=$sql<br />";
 								$resultat_insertion_commentaire=mysql_query($sql);
 							}
@@ -408,9 +452,28 @@ else{
 				exit();
 			}
 
+			$nb_classes=mysql_num_rows($resultat_classes);
+			$nb_class_par_colonne=round($nb_classes/3);
+			echo "<table width='100%'>\n";
+			echo "<tr valign='top' align='center'>\n";
+			$cpt=0;
+			//echo "<td style='padding: 0 10px 0 10px'>\n";
+			echo "<td align='left'>\n";
 			while($ligne_classe=mysql_fetch_object($resultat_classes)){
-				echo "<input type='radio' name='id_classe' value='$ligne_classe->id' /> $ligne_classe->classe<br />\n";
+				if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
+					echo "</td>\n";
+					//echo "<td style='padding: 0 10px 0 10px'>\n";
+					echo "<td align='left'>\n";
+				}
+
+				//echo "<input type='radio' name='id_classe' value='$ligne_classe->id' /> $ligne_classe->classe<br />\n";
+				echo "<input type='radio' name='id_classe' id='id_classe".$ligne_classe->id."' value='$ligne_classe->id' /><label for='id_classe".$ligne_classe->id."' style='cursor: pointer;'> $ligne_classe->classe</label><br />\n";
+				$cpt++;
 			}
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
 			echo "</blockquote>\n";
 			echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 		}
@@ -544,7 +607,7 @@ else{
 					$resultat_periode=mysql_query($sql);
 					$ligne_periode=mysql_fetch_object($resultat_periode);
 					//echo "<input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
-					echo "<input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode' /> $ligne_periode->nom_periode\n";
+					echo "<input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 
 					while($ligne_num_periode=mysql_fetch_object($resultat_num_periode)){
 						//$cpt++;
@@ -552,7 +615,7 @@ else{
 						$resultat_periode=mysql_query($sql);
 						$ligne_periode=mysql_fetch_object($resultat_periode);
 						//echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
-						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode' /> $ligne_periode->nom_periode\n";
+						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 					}
 					echo "<br />\n";
 					echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
@@ -787,6 +850,7 @@ function tout_decocher(){
 	}
 ?>
 </form>
+<p><br /></p>
 </div>
 </body>
 </html>
