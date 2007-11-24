@@ -66,13 +66,72 @@ if ($current_group) {
     echo " | <a href='index.php'>Mes enseignements</a></p>\n";
     //echo "<p class='grand'> Groupe : " . $current_group["description"] . " ($classes) | Matière : $matiere_nom</p>";
     echo "<p class='grand'> Groupe : " . htmlentities($current_group["description"]) . " ($classes) | Matière : ".htmlentities($matiere_nom)."</p>\n";
-    echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
+    //echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
+
+	/*
+    echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n";
+	echo "<ul>\n";
 
     //echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes manuellement</a></li>\n";
     //echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes</a> (<i>avec importation éventuelle à partir du carnet de notes</i>)</li>\n";
     echo "<li><a href='saisie_notes.php?id_groupe=$id_groupe'>Saisir les moyennes</a></li>\n";
+
     //echo "<li><a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations manuellement</a></li>\n</ul>\n";
     echo "<li><a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a></li>\n</ul>\n";
+	*/
+
+    echo "<p class='bold'>Saisie manuelle :</p>\n";
+	echo "<blockquote>\n";
+	//echo "<ul>\n";
+    //echo "<li>\n";
+		$i=1;
+		echo "<table class='boireaus'>\n";
+		echo "<tr>\n";
+		echo "<th></th>\n";
+		while ($i < $nb_periode) {
+			echo "<th>Période $i</th>\n";
+			$i++;
+		}
+		echo "</tr>\n";
+
+		$i=1;
+		echo "<tr class='lig-1'>\n";
+		echo "<th>Moyennes</th>\n";
+		$liste_periodes_ouvertes="";
+		while ($i < $nb_periode) {
+			echo "<td>\n";
+			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+				if($liste_periodes_ouvertes!=""){$liste_periodes_ouvertes.=", ";}
+				$liste_periodes_ouvertes.=$current_group["periodes"][$i]["nom_periode"];
+
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir les moyennes' title='Saisir les moyennes' /></a>\n";
+			}
+			else{
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'><img src='../images/chercher.png' width='16' height='16' alt='Saisir les moyennes' title='Consulter les moyennes' /></a>\n";
+			}
+			echo "</td>\n";
+			$i++;
+		}
+		echo "</tr>\n";
+		echo "</table>\n";
+	//echo "</li>\n";
+
+	echo "<p><br /></p>\n";
+	//echo "<li>\n";
+	echo "<p>";
+	if($liste_periodes_ouvertes!=""){
+		echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a>";
+		echo " (<i>$liste_periodes_ouvertes</i>)\n";
+	}
+	else{
+		echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Consulter les appréciations</a>";
+	}
+	echo "</p>\n";
+	//echo "</li>\n";
+	//echo "</ul>\n";
+	echo "</blockquote>\n";
+
+
 	/*
 	// Ce n'est plus utile... c'est à la première période ouverte que l'on accède avec la saisie manuelle.
     $i="1";

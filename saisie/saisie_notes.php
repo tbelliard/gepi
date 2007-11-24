@@ -401,10 +401,22 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 		}
 		*/
 
+		$statut_verrouillage=$current_group["classe"]["ver_periode"]["all"][$i];
+
 		echo "<th ";
 		if ($periode_cn == $i) {
 			echo "bgcolor=\"$couleur_fond\" ";
+			//echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i])."<br />";
+			echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i]);
+			echo "</b>\n";
+			if($statut_verrouillage!=0){echo "<br />\n"."en saisie";}
 		}
+		else{
+			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i";
+			if(isset($retour_cn)){echo "&amp;retour_cn=yes";}
+			echo "'>".ucfirst($nom_periode[$i])."</a></b>";
+		}
+		/*
 		//echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i])."</b></th>\n";
 		if(isset($retour_cn)){
 			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i&amp;retour_cn=yes'>".ucfirst($nom_periode[$i])."</a></b>";
@@ -412,7 +424,8 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 		else{
 			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'>".ucfirst($nom_periode[$i])."</a></b>";
 		}
-		//$statut_verrouillage=$current_group["classe"]["ver_periode"]["all"][$i];
+		*/
+
 		//echo "<br />\$statut_verrouillage=$statut_verrouillage";
 		echo "</th>\n";
 
