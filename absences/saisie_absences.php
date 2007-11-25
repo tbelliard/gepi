@@ -22,6 +22,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -61,7 +64,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	$nb_abs_ele=$_POST['nb_abs_ele'];
 	$nb_nj_ele=$_POST['nb_nj_ele'];
 	$nb_retard_ele=$_POST['nb_retard_ele'];
-	$app_ele=$_POST['app_ele'];
+	//$app_ele=$_POST['app_ele'];
 	//=========================
 
 	$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND e.login = c.login AND c.periode='$periode_num')");
@@ -102,9 +105,20 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			$nb_absences=$nb_abs_ele[$num_eleve];
 			$nb_nj=$nb_nj_ele[$num_eleve];
 			$nb_retard=$nb_retard_ele[$num_eleve];
-			$ap=$app_ele[$num_eleve];
+			//$ap=$app_ele[$num_eleve];
+			//$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode_all_version($ap)));
 
-			$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode_all_version($ap)));
+
+			$app_ele_courant="app_eleve_".$num_eleve;
+			if (isset($NON_PROTECT[$app_ele_courant])){
+				$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$app_ele_courant]));
+			}
+			else{
+				$ap = "";
+			}
+
+			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+			$ap=ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
 			//=========================
 
 			if (!(ereg ("^[0-9]{1,}$", $nb_absences))) {
@@ -206,7 +220,8 @@ while($i < $nombre_lignes) {
 	echo "<td align='center'><input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
+	//echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
+	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name=''no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
 	//=========================
 	$i++;
 	$num_id++;
