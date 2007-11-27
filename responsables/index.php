@@ -269,6 +269,7 @@ if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
 
 //$num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
 
+$cpt=0;
 
 unset($chaine_recherche);
 if(!isset($val_rech)) {$val_rech="";}
@@ -1174,7 +1175,15 @@ echo "<script type='text/javascript'>
 	}
 </script>\n";
 //echo "<input type='hidden' name='cpt' value='$cpt' />\n";
-echo "<center><input type='submit' value='Valider' /></center>\n";
+
+if($cpt>0){
+	echo "<center><input type='submit' value='Valider' /></center>\n";
+}
+else{
+	echo "<p align='center'>Aucun responsable n'a été trouvé.</p>\n";
+}
+echo "<p><br /></p>\n";
+
 echo "</form>\n";
 require("../lib/footer.inc.php");
 ?>
