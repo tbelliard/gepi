@@ -124,6 +124,15 @@ $un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un
 
 
 $coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";
+
+// Marge de gauche pour le bulletin
+if(getSettingValue("bull_body_marginleft")){
+	$bull_body_marginleft=getSettingValue("bull_body_marginleft");
+}
+else{
+	$bull_body_marginleft=1;
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -135,6 +144,10 @@ $coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1']
     <title><?php echo getSettingValue("gepiSchoolName"); ?> : Bulletin | Edition des bulletins</title>
     <link rel=stylesheet type="text/css" href="../style.css" />
     <style type="text/css">
+		body {
+			margin-left: <?php echo $bull_body_marginleft;?>px;
+		}
+
         .bgrand {
             color: #000000;
             font-size: <?php echo getSettingValue("titlesize");?>pt;
@@ -1639,18 +1652,27 @@ echo "'>\n";
             $n++;
         }
 
+        //=============================================
 
-// Eric
-    include ($fichier_bulletin);
-// Eric
+		// Tableau des matières/notes/appréciations
 
+		// Eric
+		include ($fichier_bulletin);
+		// Eric
+
+        //=============================================
+
+		// Absences
 
         // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
         if ($bull_affiche_absences == 'y') {
             //
             // Tableau des absences
             //
-            echo "<table style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            //echo "<table style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			// style='margin-left:5px; margin-right:5px;'
+			// class='uneligne'
+            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
             echo "<tr>\n<td style=\"vertical-align: top;\"><p class='bulletin'>";
             if ($current_eleve_absences == '0') {
                 echo "<i>Aucune demi-journée d'absence</i>.";
@@ -1685,11 +1707,16 @@ echo "'>\n";
 
 
         //=============================================
+
+		// Avis du conseil de classe
+
         // MODIF: boireaus
         // Si la variable 'bull_affiche_avis' est à 'n',  mais que 'bull_affiche_signature' est à 'y', il faut quand même le tableau
         if (($bull_affiche_avis == 'y')||($bull_affiche_signature == 'y')) {
             // Tableau de l'avis des conseil de classe
-            echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            //echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			// style='margin-left:5px; margin-right:5px;'
+            echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
             echo "<tr>\n";
         }
         //=============================================

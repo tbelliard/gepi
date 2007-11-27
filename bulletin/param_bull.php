@@ -74,6 +74,17 @@ if (isset($_POST['p_bulletin_margin'])) {
     }
 }
 
+if (isset($_POST['bull_body_marginleft'])) {
+
+    if (!(ereg ("^[0-9]{1,}$", $_POST['bull_body_marginleft']))) {
+        $_POST['bull_body_marginleft'] = 1;
+    }
+    if (!saveSetting("bull_body_marginleft", $_POST['bull_body_marginleft'])) {
+        $msg .= "Erreur lors de l'enregistrement de bull_body_marginleft !";
+        $reg_ok = 'no';
+    }
+}
+
 
 //==================================
 
@@ -696,6 +707,20 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
     </tr>
 
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Marge gauche de la page (en pixels) :
+        </td>
+        <td><input type="text" name="bull_body_marginleft" size="20" value="<?php
+			if(getSettingValue("bull_body_marginleft")) {
+				echo getSettingValue("bull_body_marginleft");
+			}
+			else{
+				echo 1;
+			}
+		?>" />
+        </td>
+    </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Taille en points des gros titres :
