@@ -509,7 +509,13 @@ if ($affiche_categories == "y") {
     $affiche_categories = false;
 }
 
-$affiche_coef = sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."'");
+//Afficher les coefficients des matières (uniquement si au moins un coef différent de 0)
+if($test_coef>0){
+	$affiche_coef = sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."'");
+}
+else{
+	$affiche_coef = "n";
+}
 
 // Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
 if ($affiche_rang == 'y'){include "../lib/calcul_rang.inc.php";}
