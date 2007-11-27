@@ -103,6 +103,8 @@ if (isset($_POST['is_posted'])) {
         $update = update_group_class_options($key, $id_classe, $value);
     }
 
+	$msg="Enregistrement effectué.";
+
 }
 
 if (isset($_GET['action'])) {
