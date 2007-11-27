@@ -200,10 +200,34 @@ while ($ind < $nb_messages) {
 //  echo "<b><i>Message de </i></b>: ".$prenom_auteur." ".$nom_auteur.";
    echo "<b><i>Affichage </i></b>: du <b>".strftime("%a %d %b %Y", $date_debut1)."</b> au <b>".strftime("%a %d %b %Y", $date_fin1)."</b>
    <br /><b><i>Destinataire(s) </i></b> : ";
-   if (strpos($destinataires1, "p")) echo "professeurs - ";
-   if (strpos($destinataires1, "c")) echo "c.p.e. - ";
-   if (strpos($destinataires1, "s")) echo "scolarité - ";
-   if (strpos($destinataires1, "a")) echo "administrateurs - ";
+	/*
+	if (strpos($destinataires1, "p")) echo "professeurs - ";
+	if (strpos($destinataires1, "c")) echo "c.p.e. - ";
+	if (strpos($destinataires1, "s")) echo "scolarité - ";
+	if (strpos($destinataires1, "a")) echo "administrateurs - ";
+	if (strpos($destinataires1, "e")) echo "élèves - ";
+	*/
+	$chaine_destinataires="";
+	if (strpos($destinataires1, "p")) {
+		$chaine_destinataires.="professeurs";
+	}
+	if (strpos($destinataires1, "c")){
+		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
+		$chaine_destinataires.="c.p.e.";
+	}
+	if (strpos($destinataires1, "s")) {
+		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
+		$chaine_destinataires.="scolarité";
+	}
+	if (strpos($destinataires1, "a")) {
+		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
+		$chaine_destinataires.="administrateurs";
+	}
+	if (strpos($destinataires1, "e")) {
+		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
+		$chaine_destinataires.="élèves";
+	}
+	echo $chaine_destinataires;
 
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
    - <a href='index.php?id_del=$id_message&action=sup_entry' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
@@ -271,31 +295,31 @@ echo " (Respectez le format jj/mm/aaaa)</td></tr>\n";
 //Destiantaires
 echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" name=\"desti_p\" value=\"desti_p\"";
+echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
 if (strpos($destinataires, "p")) echo "checked";
-echo " />Professeurs</td>\n";
+echo " /><label for='desti_p' style='cursor: pointer;'>Professeurs</label></td>\n";
 
-echo "<td><input type=\"checkbox\" name=\"desti_c\" value=\"desti_c\"";
+echo "<td><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
 if (strpos($destinataires, "c")) echo "checked";
-echo " />C.P.E.</td>\n";
+echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
 
-echo "<td><input type=\"checkbox\" name=\"desti_s\" value=\"desti_s\"";
+echo "<td><input type=\"checkbox\" id=\"desti_s\" name=\"desti_s\" value=\"desti_s\"";
 if (strpos($destinataires, "s")) echo "checked";
-echo " />Scolarité</td>\n";
+echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" name=\"desti_a\" value=\"desti_a\"";
+echo "<td><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
 if (strpos($destinataires, "a")) echo "checked";
-echo " />Administrateur</td>\n";
+echo " /><label for='desti_a' style='cursor: pointer;'>Administrateur</label></td>\n";
 
-echo "<td><input type=\"checkbox\" name=\"desti_r\" value=\"desti_r\"";
+echo "<td><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
 if (strpos($destinataires, "r")) echo "checked";
-echo " />Responsables</td>\n";
+echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>\n";
 
-echo "<td><input type=\"checkbox\" name=\"desti_e\" value=\"desti_e\"";
+echo "<td><input type=\"checkbox\" id=\"desti_e\" name=\"desti_e\" value=\"desti_e\"";
 if (strpos($destinataires, "e")) echo "checked";
-echo " />Elèves</td>\n";
+echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
 
 echo "</tr>\n";
 // Message
