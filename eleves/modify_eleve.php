@@ -58,6 +58,12 @@ $reg_doublant = isset($_POST["reg_doublant"]) ? $_POST["reg_doublant"] : NULL;
 //=========================
 
 
+//=========================
+$modif_adr_pers_id=isset($_GET["modif_adr_pers_id"]) ? $_GET["modif_adr_pers_id"] : NULL;
+$adr_id=isset($_GET["adr_id"]) ? $_GET["adr_id"] : NULL;
+//=========================
+
+
 unset($reg_resp1);
 $reg_resp1 = isset($_POST["reg_resp1"]) ? $_POST["reg_resp1"] : NULL;
 unset($reg_resp2);
@@ -96,6 +102,15 @@ if (!checkAccess()) {
     die();
 }
 
+
+// Le deuxième responsable prend l'adresse du premier
+if((isset($modif_adr_pers_id))&&(isset($adr_id))){
+	$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$modif_adr_pers_id';";
+	$update=mysql_query($sql);
+	if(!$update){
+		$msg="Echec de la modification de l'adresse du deuxième responsable.";
+	}
+}
 
 
 /*
@@ -1380,7 +1395,6 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 </table></center>
 
 <p><b>Remarques</b> :
-<br />- la modification du régime de l'élève (demi-pensionnaire, interne, ...) s'effectue dans le module de gestion des classes !
 <br />- Les champs * sont obligatoires.</p>
 <?php
 
@@ -1525,6 +1539,7 @@ if(isset($eleve_login)){
 					$lig_adr=mysql_fetch_object($res_adr);
 
 					if(($lig_adr->adr_id!="")&&($lig_adr->adr_id!=$adr_id_1er_resp)){
+						$adr_id_2eme_resp=$lig_adr->adr_id;
 						if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
 						if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
 						if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
@@ -1546,6 +1561,12 @@ if(isset($eleve_login)){
 					echo "</td>\n";
 					echo "<td>\n";
 					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Modifier l'adresse du responsable</a>\n";
+					if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
+						if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
+							echo "<br />";
+							echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;modif_adr_pers_id=$eleve_no_resp2&amp;adr_id=$adr_id_1er_resp'>Prendre l'adresse de l'autre responsable</a>";
+						}
+					}
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
@@ -1562,7 +1583,8 @@ if(isset($eleve_login)){
 					echo "<p><b>Les adresses des deux responsables légaux ne sont pas identiques. Par conséquent, le bulletin sera envoyé aux deux responsables légaux.</b></p>\n";
 				}
 				else{
-					echo "<p><b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b></p>\n";
+					echo "<p><b>Les adresses des deux responsables légaux sont identiques. Par conséquent, le bulletin ne sera envoyé qu'à la première adresse.</b>";
+					echo "</p>\n";
 				}
 			}
 			else{
