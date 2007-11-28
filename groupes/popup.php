@@ -263,7 +263,7 @@ if($gepi_prof_suivi==""){
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){
 			echo "<table border='0'>\n";
-			echo "<tr><td><a href='".$_SERVER['PHP_self']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></td><td><a href='".$_SERVER['PHP_self']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></td></tr>\n";
+			echo "<tr><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></td><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></td></tr>\n";
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
 				echo "<tr><td>$lig_eleve->nom $lig_eleve->prenom</td><td>$lig_eleve->classe</td></tr>\n";
 			}
