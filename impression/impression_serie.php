@@ -75,7 +75,7 @@ echo "<div style=\"text-align: center;\">\n
 	   $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
        echo "<br />\n";
 	   While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
-	       echo "Période ".$data_periode['num_periode']." : <input type='radio' name='id_choix_periode' value='".$data_periode['num_periode']."' /> <br />\n";
+	       echo "<label for='id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' /> <br />\n";
 	   }
 	   echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
               <br />\n";
