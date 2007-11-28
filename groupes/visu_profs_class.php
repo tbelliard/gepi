@@ -133,7 +133,8 @@ if(isset($id_classe)){
             }
         }
 
-        if($_SESSION['statut']=='professeur'){
+        //if($_SESSION['statut']=='professeur'){
+        if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf")!="yes")){
             $test_prof_classe = sql_count(sql_query("SELECT login FROM j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$id_classe'"));
             if($test_prof_classe==0){
                 echo "<p>ERREUR: Vous n'avez pas accès à cette classe.</p>\n";
@@ -355,5 +356,6 @@ else{
     echo "</form>\n";
     */
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
