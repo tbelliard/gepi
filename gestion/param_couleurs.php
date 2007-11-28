@@ -763,7 +763,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 
 				//echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onChange='delai_affichecouleur(\"".$tab[$i]."\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
 
-				echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab[$i]."\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+				echo "<input type='text' name='".$tab[$i]."_".$comp[$j]."' id='id_".$tab[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab[$i]."\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 				echo "</td>\n";
 			}
 			echo "<td id='".$tab[$i]."' style='text-align:center; border: 1px solid black;'>\n";
@@ -859,7 +859,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 				}
 				*/
 				echo "<td style='text-align:center; border: 1px solid black;'>\n";
-				echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab_degrade[$i]."\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+				echo "<input type='text' name='".$tab_degrade[$i]."_".$comp[$j]."' id='id_".$tab_degrade[$i]."_".$comp[$j]."' value='".$tabcouleurs[$tab_degrade[$i]][$comp[$j]]."' size='3' onBlur='affichecouleur(\"".$tab_degrade[$i]."\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 
 				echo "</td>\n";
 			}
@@ -962,7 +962,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			*/
 
 			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_entete\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_entete\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 			echo "</td>\n";
 		}
 		echo "<td id='couleur_infobulle_fond_entete' style='text-align:center; border: 1px solid black;'>\n";
@@ -988,7 +988,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			*/
 
 			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_corps\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "<input type='text' name='couleur_infobulle_fond_corps_".$comp[$j]."' id='id_couleur_infobulle_fond_corps_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_corps'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_infobulle_fond_corps\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 			echo "</td>\n";
 		}
 		echo "<td id='couleur_infobulle_fond_corps' style='text-align:center; border: 1px solid black;'>\n";
@@ -1082,7 +1082,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			*/
 
 			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt1\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt1\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 			echo "</td>\n";
 		}
 		echo "<td id='couleur_lig_alt1' style='text-align:center; border: 1px solid black;'>\n";
@@ -1108,7 +1108,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 			*/
 
 			echo "<td style='text-align:center; border: 1px solid black;'>\n";
-			echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt_1\")' onKeyDown=\"clavier_2(this.id,event);\" />\n";
+			echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onBlur='affichecouleur(\"couleur_lig_alt_1\")' onKeyDown=\"clavier_2(this.id,event,0,255);\" />\n";
 			echo "</td>\n";
 		}
 		echo "<td id='couleur_lig_alt_1' style='text-align:center; border: 1px solid black;'>\n";

@@ -1358,7 +1358,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		//echo $requete_periode;
 		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
 		while ($data_periode = mysql_fetch_array ($resultat_periode)) {
-		   echo "<input type=\"radio\" name=\"choix_periode\" value='".$data_periode['num_periode']."'  /> ".$data_periode['nom_periode']." <br />\n";
+		   echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_".$data_periode['num_periode']."' value='".$data_periode['num_periode']."'  /><label for='choix_periode_".$data_periode['num_periode']."' style='cursor: pointer;'> ".$data_periode['nom_periode']." </label><br />\n";
 		}
     }
     if ($_SESSION['statut'] == "responsable" AND mysql_num_rows($quels_eleves) > 1) {
@@ -1386,7 +1386,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     		// On prend les informations de la première classe...
     		$resultat_periode = current($classe_periodes);
     		while ($data_periode = mysql_fetch_array($resultat_periode)) {
-		   		echo "<input type=\"radio\" name=\"choix_periode\" value='".$data_periode['num_periode']."'  /> ".$data_periode['nom_periode']." <br />\n";
+		   		echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_".$data_periode['num_periode']."' value='".$data_periode['num_periode']."'  /><label for='choix_periode_".$data_periode['num_periode']."' style='cursor: pointer;'> ".$data_periode['nom_periode']." </label><br />\n";
 			}
     	}
     }
@@ -1405,7 +1405,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	//=========================
 
     echo "<a name=\"calend\"></a>";
-	echo "<input type=\"radio\" name=\"choix_periode\" value=\"0\" checked /> \nDe la date : ";
+	echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"0\" checked /><label for='choix_periode_dates' style='cursor: pointer;'> \nDe la date : ";
     echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
     echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
@@ -1413,7 +1413,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />";
     echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
-    echo " (Veillez à respectez le format jj/mm/aaaa)";
+    echo " (Veillez à respectez le format jj/mm/aaaa)</label>";
 
 
 
@@ -1436,48 +1436,48 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		{
 			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
 
-			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
-			echo "/> Afficher le nom des devoirs.\n";
+			echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
 			if($avec_tous_coef_devoir=="y"){echo "checked ";}
-			echo "/> Afficher tous les coefficients des devoirs.\n";
+			echo "/><label for='avec_tous_coef_devoir' style='cursor: pointer;'> Afficher tous les coefficients des devoirs.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_coef_devoir' id='avec_coef_devoir' value='oui' ";
 			if($avec_coef_devoir=="y"){echo "checked ";}
-			echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+			echo "/><label for='avec_coef_devoir' style='cursor: pointer;'> Afficher les coefficients des devoirs si des coefficients différents sont présents.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_date_devoir' id='avec_date_devoir' value='oui' ";
 			if($avec_date_devoir=="y"){echo "checked ";}
-			echo "/> Afficher les dates des devoirs.\n";
+			echo "/><label for='avec_date_devoir' style='cursor: pointer;'> Afficher les dates des devoirs.</label>\n";
 		}
 
 		if (($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") == "yes"))
 		{
 			echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
 
-			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
-			echo "/> Afficher le nom des devoirs.\n";
+			echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
 			if($avec_tous_coef_devoir=="y"){echo "checked ";}
-			echo "/> Afficher tous les coefficients des devoirs.\n";
+			echo "/><label for='avec_tous_coef_devoir' style='cursor: pointer;'> Afficher tous les coefficients des devoirs.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_coef_devoir' id='avec_coef_devoir' value='oui' ";
 			if($avec_coef_devoir=="y"){echo "checked ";}
-			echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+			echo "/><label for='avec_coef_devoir' style='cursor: pointer;'> Afficher les coefficients des devoirs si des coefficients différents sont présents.</label>\n";
 
 			echo "<br />\n";
-			echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+			echo "<input type='checkbox' name='avec_date_devoir' id='avec_date_devoir' value='oui' ";
 			if($avec_date_devoir=="y"){echo "checked ";}
-			echo "/> Afficher les dates des devoirs.\n";
+			echo "/><label for='avec_date_devoir' style='cursor: pointer;'> Afficher les dates des devoirs.</label>\n";
 		}
 
 		echo "<br />\n";
@@ -1492,45 +1492,45 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		// Pour permettre de ne pas afficher les noms des devoirs
 		echo "<br /><br /><br /><p><b>Options d'affichage : </b></p>\n";
 
-		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' value='oui' ";
+		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 		if($avec_nom_devoir=="y"){echo "checked ";}
-		echo "/> Afficher le nom des devoirs.\n";
+		echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_tous_coef_devoir' value='oui' ";
+		echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
 		if($avec_tous_coef_devoir=="y"){echo "checked ";}
-		echo "/> Afficher tous les coefficients des devoirs.\n";
+		echo "/><label for='avec_tous_coef_devoir' style='cursor: pointer;'> Afficher tous les coefficients des devoirs.</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_coef_devoir' value='oui' ";
+		echo "<input type='checkbox' name='avec_coef_devoir' id='avec_coef_devoir' value='oui' ";
 		if($avec_coef_devoir=="y"){echo "checked ";}
-		echo "/> Afficher les coefficients des devoirs si des coefficients différents sont présents.\n";
+		echo "/><label for='avec_coef_devoir' style='cursor: pointer;'> Afficher les coefficients des devoirs si des coefficients différents sont présents.</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='avec_date_devoir' value='oui' ";
+		echo "<input type='checkbox' name='avec_date_devoir' id='avec_date_devoir' value='oui' ";
 		if($avec_date_devoir=="y"){echo "checked ";}
-		echo "/> Afficher les dates des devoirs.\n";
+		echo "/><label for='avec_date_devoir' style='cursor: pointer;'> Afficher les dates des devoirs.</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='rn_sign_chefetab' value='y' ";
+		echo "<input type='checkbox' name='rn_sign_chefetab' id='rn_sign_chefetab' value='y' ";
 		if($rn_sign_chefetab=="y"){echo "checked ";}
-		echo "/> Afficher une case pour la signature du chef d'établissement.\n";
+		echo "/><label for='rn_sign_chefetab' style='cursor: pointer;'> Afficher une case pour la signature du chef d'établissement.</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='rn_sign_pp' value='y' ";
+		echo "<input type='checkbox' name='rn_sign_pp' id='rn_sign_pp' value='y' ";
 		if($rn_sign_pp=="y"){echo "checked ";}
-		echo "/> Afficher une case pour la signature du ".getSettingValue("gepi_prof_suivi").".\n";
+		echo "/><label for='rn_sign_pp' style='cursor: pointer;'> Afficher une case pour la signature du ".getSettingValue("gepi_prof_suivi").".</label>\n";
 
 		echo "<br />\n";
-		echo "<input type='checkbox' name='rn_sign_resp' value='y' ";
+		echo "<input type='checkbox' name='rn_sign_resp' id='rn_sign_resp' value='y' ";
 		if($rn_sign_resp=="y"){echo "checked ";}
-		echo "/> Afficher une case pour la signature des parents/responsables.\n";
+		echo "/><label for='rn_sign_resp' style='cursor: pointer;'> Afficher une case pour la signature des parents/responsables.</label>\n";
 
 		echo "<br />\n";
-		echo "Nombre de lignes pour la signature si une case est affichée: <input type='text' name='rn_sign_nblig' value='$rn_sign_nblig' size='2' />\n";
+		echo "<label for='rn_sign_nblig' style='cursor: pointer;'>Nombre de lignes pour la signature si une case est affichée: </label><input type='text' name='rn_sign_nblig' id='rn_sign_nblig' value='$rn_sign_nblig' size='2' onKeyDown=\"clavier_2(this.id,event,0,100);\" />\n";
 
 		echo "<br />\n";
-		echo "Formule à afficher en bas de page:<br /><input type='text' name='rn_formule' value=\"$rn_formule\" size='40' />\n";
+		echo "<label for='rn_formule' style='cursor: pointer;'>Formule à afficher en bas de page:</label><br /><input type='text' name='rn_formule' id='rn_formule' value=\"$rn_formule\" size='40' />\n";
 	}
     //====================================================================
 
