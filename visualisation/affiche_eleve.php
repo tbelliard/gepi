@@ -942,7 +942,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$photo=nom_photo($elenoet1);
 			if("$photo"!=""){
 				if(file_exists("../photos/eleves/$photo")){
-					$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
+					$dimimg=getimagesize("../photos/eleves/$photo");
 
 					$largimg=$largeur_imposee_photo;
 					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
