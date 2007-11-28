@@ -709,112 +709,112 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Marge gauche de la page (en pixels) :
+        <label for='bull_body_marginleft' style='cursor: pointer;'>Marge gauche de la page (en pixels) :</label>
         </td>
-        <td><input type="text" name="bull_body_marginleft" size="20" value="<?php
+        <td><input type="text" name="bull_body_marginleft" id="bull_body_marginleft" size="20" value="<?php
 			if(getSettingValue("bull_body_marginleft")) {
 				echo getSettingValue("bull_body_marginleft");
 			}
 			else{
 				echo 1;
 			}
-		?>" />
+		?>" onKeyDown="clavier_2(this.id,event,0,1000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Taille en points des gros titres :
+        <label for='titlesize' style='cursor: pointer;'>Taille en points des gros titres :</label>
         </td>
-        <td><input type="text" name="titlesize" size="20" value="<?php echo(getSettingValue("titlesize")); ?>" />
+        <td><input type="text" name="titlesize" id="titlesize" size="20" value="<?php echo(getSettingValue("titlesize")); ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Taille en points du texte (hormis les titres) :
+        <label for='textsize' style='cursor: pointer;'>Taille en points du texte (hormis les titres) :</label>
         </td>
-        <td><input type="text" name="textsize" size="20" value="<?php echo(getSettingValue("textsize")); ?>" />
+        <td><input type="text" name="textsize" id="textsize" size="20" value="<?php echo(getSettingValue("textsize")); ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
     <!-- Début AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Marges hautes et basses des paragraphes en points du texte (hormis les titres) :
+        <label for='p_bulletin_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres) :</label>
         </td>
-        <td><input type="text" name="p_bulletin_margin" size="20" value="<?php
+        <td><input type="text" name="p_bulletin_margin" id="p_bulletin_margin" size="20" value="<?php
 		if(getSettingValue("p_bulletin_margin")!=""){
 			echo(getSettingValue("p_bulletin_margin"));
 		}
 		else{
 			echo "5";
-		}?>" />
+		}?>" onKeyDown="clavier_2(this.id,event,0,40);" />
         </td>
     </tr>
     <!-- Fin AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Largeur du tableau en pixels :
+        <label for='largeurtableau' style='cursor: pointer;'>Largeur du tableau en pixels :</label>
         </td>
-        <td><input type="text" name="largeurtableau" size="20" value="<?php echo(getSettingValue("largeurtableau")); ?>" />
+        <td><input type="text" name="largeurtableau" id="largeurtableau" size="20" value="<?php echo(getSettingValue("largeurtableau")); ?>" onKeyDown="clavier_2(this.id,event,0,5000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Largeur de la première colonne (matières) en pixels :<br />
+        <label for='col_matiere_largeur' style='cursor: pointer;'>Largeur de la première colonne (matières) en pixels :</label><br />
         <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prévue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnée par le navigateur lui-même.)</span>
         </td>
-        <td><input type="text" name="col_matiere_largeur" size="20" value="<?php echo(getSettingValue("col_matiere_largeur")); ?>" />
+        <td><input type="text" name="col_matiere_largeur" id="col_matiere_largeur" size="20" value="<?php echo(getSettingValue("col_matiere_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Largeur des colonnes min, max, classe et élève en pixels :<br />
+        <label for='col_note_largeur' style='cursor: pointer;'>Largeur des colonnes min, max, classe et élève en pixels :</label><br />
         <span class="small">(Même remarque que ci-dessus)</span>
         </td>
-        <td><input type="text" name="col_note_largeur" size="20" value="<?php echo(getSettingValue("col_note_largeur")); ?>" />
+        <td><input type="text" name="col_note_largeur" id="col_note_largeur" size="20" value="<?php echo(getSettingValue("col_note_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Largeur des cellules contenant les notes des carnets de notes à afficher sur les bulletins :<br />
+        <label for='col_boite_largeur' style='cursor: pointer;'>Largeur des cellules contenant les notes des carnets de notes à afficher sur les bulletins :</label><br />
         <span class="small">(Même remarque que ci-dessus)</span>
         </td>
-        <td><input type="text" name="col_boite_largeur" size="20" value="<?php echo(getSettingValue("col_boite_largeur")); ?>" />
+        <td><input type="text" name="col_boite_largeur" id="col_boite_largeur" size="20" value="<?php echo(getSettingValue("col_boite_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Hauteur minimale des lignes en pixels ("0" si automatique) :<br />
+        <label for='col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique) :</label><br />
         <span class="small">(Si le contenu d'une cellule est telle que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
         </td>
-        <td><input type="text" name="col_hauteur" size="20" value="<?php echo(getSettingValue("col_hauteur")); ?>" />
+        <td><input type="text" name="col_hauteur" id="col_hauteur" size="20" value="<?php echo(getSettingValue("col_hauteur")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Espace en pixels entre le bord d'une cellule du tableau et le contenu de la cellule :
+        <label for='cellpadding' style='cursor: pointer;'>Espace en pixels entre le bord d'une cellule du tableau et le contenu de la cellule :</label>
         </td>
-        <td><input type="text" name="cellpadding" size="20" value="<?php echo(getSettingValue("cellpadding")); ?>" />
-        </td>
-    </tr>
-    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">
-        Espace en pixels entre les cellules du tableau :
-        </td>
-        <td><input type="text" name="cellspacing" size="20" value="<?php echo(getSettingValue("cellspacing")); ?>" />
+        <td><input type="text" name="cellpadding" id="cellpadding" size="20" value="<?php echo(getSettingValue("cellpadding")); ?>" onKeyDown="clavier_2(this.id,event,0,50);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Espace (nombre de lignes vides) entre l'en-tête du bulletin et le tableau des notes et appréciations :
+        <label for='cellspacing' style='cursor: pointer;'>Espace en pixels entre les cellules du tableau :</label>
         </td>
-        <td><input type="text" name="bull_ecart_entete" size="20" value="<?php echo(getSettingValue("bull_ecart_entete")); ?>" />
+        <td><input type="text" name="cellspacing" id="cellspacing" size="20" value="<?php echo(getSettingValue("cellspacing")); ?>" onKeyDown="clavier_2(this.id,event,0,50);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Espace (nombre de lignes vides) pour une saisie à la main de l'avis du Conseil de classe, si celui-ci n'a pas été saisi dans GEPI :
+        <label for='bull_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tête du bulletin et le tableau des notes et appréciations :</label>
         </td>
-        <td><input type="text" name="bull_espace_avis" size="20" value="<?php echo(getSettingValue("bull_espace_avis")); ?>" />
+        <td><input type="text" name="bull_ecart_entete" id="bull_ecart_entete" size="20" value="<?php echo(getSettingValue("bull_ecart_entete")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
+        </td>
+    </tr>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        <label for='bull_espace_avis' style='cursor: pointer;'>Espace (nombre de lignes vides) pour une saisie à la main de l'avis du Conseil de classe, si celui-ci n'a pas été saisi dans GEPI :</label>
+        </td>
+        <td><input type="text" name="bull_espace_avis" id="bull_espace_avis" size="20" value="<?php echo(getSettingValue("bull_espace_avis")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -830,18 +830,18 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 				$bull_bordure_classique="y";
 			}
 
-			echo "<input type=\"radio\" name=\"bull_bordure_classique\" value=\"y\" ";
+			echo "<input type=\"radio\" name=\"bull_bordure_classique\" id='bull_bordure_classiquey' value=\"y\" ";
 			if ($bull_bordure_classique=='y') echo " checked";
-			echo " />&nbsp;classique&nbsp;HTML<br />\n";
-			echo "<input type=\"radio\" name=\"bull_bordure_classique\" value=\"n\" ";
+			echo " /><label for='bull_bordure_classiquey' style='cursor: pointer;'>&nbsp;classique&nbsp;HTML</label><br />\n";
+			echo "<input type=\"radio\" name=\"bull_bordure_classique\" id='bull_bordure_classiquen' value=\"n\" ";
 			if ($bull_bordure_classique=='n') echo " checked";
-			echo " />&nbsp;trait&nbsp;noir\n";
+			echo " /><label for='bull_bordure_classiquen' style='cursor: pointer;'>&nbsp;trait&nbsp;noir</label>\n";
 		?>
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>) :
+        <label for='bull_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_categ_font_size")){
@@ -851,12 +851,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 			$bull_categ_font_size=10;
 		}
 	?>
-        <td><input type="text" name="bull_categ_font_size" size="20" value="<?php echo $bull_categ_font_size; ?>" />
+        <td><input type="text" name="bull_categ_font_size" id="bull_categ_font_size" size="20" value="<?php echo $bull_categ_font_size; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>) :
+        <label for='bull_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_categ_bgcolor")){
@@ -869,7 +869,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         <td>
 	<?php
 		//<input type="text" name="bull_categ_bgcolor" size="20" value="echo $bull_categ_bgcolor;" />
-		echo "<select name='bull_categ_bgcolor'>\n";
+		echo "<select name='bull_categ_bgcolor' id='bull_categ_bgcolor'>\n";
 		echo "<option value=''>Aucune</option>\n";
 		for($i=0;$i<count($tabcouleur);$i++){
 			if($tabcouleur[$i]=="$bull_categ_bgcolor"){
@@ -887,7 +887,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Taille en points du texte de l'avis du conseil de classe :
+        <label for='bull_categ_font_size_avis' style='cursor: pointer;'>Taille en points du texte de l'avis du conseil de classe :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_categ_font_size_avis")){
@@ -897,13 +897,13 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 			$bull_categ_font_size_avis=10;
 		}
 	?>
-        <td><input type="text" name="bull_categ_font_size_avis" size="20" value="<?php echo $bull_categ_font_size_avis; ?>" />
+        <td><input type="text" name="bull_categ_font_size_avis" id="bull_categ_font_size_avis" size="20" value="<?php echo $bull_categ_font_size_avis; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Police de caractères pour l'avis du conseil de classe :
+        <label for='bull_police_avis' style='cursor: pointer;'>Police de caractères pour l'avis du conseil de classe :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_police_avis")){
@@ -915,7 +915,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 	?>
         <td>
 	<?php
-		echo "<select name='bull_police_avis'>\n";
+		echo "<select name='bull_police_avis' id='bull_police_avis'>\n";
 		echo "<option value=''>Aucune</option>\n";
 		for($i=0;$i<count($tab_polices_avis);$i++){
 			if($tab_polices_avis[$i]=="$bull_police_avis"){
@@ -933,7 +933,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Style de caractères pour l'avis du conseil de classe :
+        <label for='bull_font_style_avis' style='cursor: pointer;'>Style de caractères pour l'avis du conseil de classe :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_font_style_avis")){
@@ -945,7 +945,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 	?>
         <td>
 	<?php
-		echo "<select name='bull_font_style_avis'>\n";
+		echo "<select name='bull_font_style_avis' id='bull_font_style_avis'>\n";
 		for($i=0;$i<count($tab_styles_avis);$i++){
 			if($tab_styles_avis[$i]=="$bull_font_style_avis"){
 				$selected=" selected='true'";
@@ -980,12 +980,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         <!--td style='width:8em; text-align:right;'-->
         <td style='width:8em;'>
         <?php
-        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" value=\"yes\" ";
+        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" id=\"bull_mention_nom_courty\" value=\"yes\" ";
         if (getSettingValue("bull_mention_nom_court") == 'yes') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" value=\"no\" ";
+        echo " /><label for='bull_mention_nom_courty' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_mention_nom_court\" id=\"bull_mention_nom_courtn\" value=\"no\" ";
         if (getSettingValue("bull_mention_nom_court") == 'no') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_mention_nom_courtn' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -995,12 +995,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_mention_doublant\" value=\"yes\" ";
+        echo "<input type=\"radio\" name=\"bull_mention_doublant\" id=\"bull_mention_doublanty\" value=\"yes\" ";
         if (getSettingValue("bull_mention_doublant") == 'yes') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_mention_doublant\" value=\"no\" ";
+        echo " /><label for='bull_mention_doublanty' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_mention_doublant\" id=\"bull_mention_doublantn\" value=\"no\" ";
         if (getSettingValue("bull_mention_doublant") == 'no') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_mention_doublantn' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -1010,12 +1010,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" value=\"yes\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" id=\"bull_affiche_eleve_une_ligney\" value=\"yes\" ";
         if (getSettingValue("bull_affiche_eleve_une_ligne") == 'yes') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" value=\"no\" ";
+        echo " /><label for='bull_affiche_eleve_une_ligney' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_eleve_une_ligne\" id=\"bull_affiche_eleve_une_lignen\" value=\"no\" ";
         if (getSettingValue("bull_affiche_eleve_une_ligne") == 'no') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_eleve_une_lignen' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -1025,12 +1025,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_appreciations\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_appreciations\" id=\"bull_affiche_appreciationsy\" value=\"y\" ";
         if (getSettingValue("bull_affiche_appreciations") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_appreciations\" value=\"n\" ";
+        echo " /><label for='bull_affiche_appreciationsy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_appreciations\" id=\"bull_affiche_appreciationsn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_appreciations") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_appreciationsn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1041,12 +1041,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_absences\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_absences\" id=\"bull_affiche_absencesy\" value=\"y\" ";
         if (getSettingValue("bull_affiche_absences") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_absences\" value=\"n\" ";
+        echo " /><label for='bull_affiche_absencesy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_absences\" id=\"bull_affiche_absencesn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_absences") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_absencesn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1057,12 +1057,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_avis\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_avis\" id=\"bull_affiche_avisy\" value=\"y\" ";
         if (getSettingValue("bull_affiche_avis") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_avis\" value=\"n\" ";
+        echo " /><label for='bull_affiche_avisy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_avis\" id=\"bull_affiche_avisn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_avis") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_avisn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1074,12 +1074,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_aid\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidy\" value=\"y\" ";
         if (getSettingValue("bull_affiche_aid") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_aid\" value=\"n\" ";
+        echo " /><label for='bull_affiche_aidy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_aid") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_aidn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1090,12 +1090,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_numero\" value=\"yes\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_numero\" id=\"bull_affiche_numeroy\" value=\"yes\" ";
         if (getSettingValue("bull_affiche_numero") == 'yes') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_numero\" value=\"no\" ";
+        echo " /><label for='bull_affiche_numeroy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_numero\" id=\"bull_affiche_numeron\" value=\"no\" ";
         if (getSettingValue("bull_affiche_numero") == 'no') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_numeron' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1106,12 +1106,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_graphiques\" value=\"yes\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_graphiques\" id=\"bull_affiche_graphiquesy\" value=\"yes\" ";
         if (getSettingValue("bull_affiche_graphiques") == 'yes') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_graphiques\" value=\"no\" ";
+        echo " /><label for='bull_affiche_graphiquesy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_graphiques\" id=\"bull_affiche_graphiquesn\" value=\"no\" ";
         if (getSettingValue("bull_affiche_graphiques") != 'yes') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_graphiquesn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1122,12 +1122,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_signature\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_signature\" id=\"bull_affiche_signaturey\" value=\"y\" ";
         if (getSettingValue("bull_affiche_signature") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_signature\" value=\"n\" ";
+        echo " /><label for='bull_affiche_signaturey' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_signature\" id=\"bull_affiche_signaturen\" value=\"n\" ";
         if (getSettingValue("bull_affiche_signature") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_signaturen' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -1138,12 +1138,12 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_etab\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_etab\" id=\"bull_affiche_etaby\" value=\"y\" ";
         if (getSettingValue("bull_affiche_etab") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_etab\" value=\"n\" ";
+        echo " /><label for='bull_affiche_etaby' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_etab\" id=\"bull_affiche_etabn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_etab") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_etabn' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -1163,10 +1163,10 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 <?php
 	echo "<input type='radio' name='activer_photo_bulletin' id='activer_photo_bulletiny' value='y'";
 	if (getSettingValue("activer_photo_bulletin")=='y'){echo "checked";}
-	echo " onchange=\"aff_lig_photo('afficher')\" />&nbsp;Oui\n";
-	echo "<input type='radio' name='activer_photo_bulletin' value='n'";
+	echo " onchange=\"aff_lig_photo('afficher')\" /><label for='activer_photo_bulletiny' style='cursor: pointer;'>&nbsp;Oui</label>\n";
+	echo "<input type='radio' name='activer_photo_bulletin' id='activer_photo_bulletinn' value='n'";
 	if (getSettingValue("activer_photo_bulletin")!='y'){echo "checked";}
-	echo " onchange=\"aff_lig_photo('cacher')\" />&nbsp;Non\n";
+	echo " onchange=\"aff_lig_photo('cacher')\" /><label for='activer_photo_bulletinn' style='cursor: pointer;'>&nbsp;Non</label>\n";
 ?>
         </td>
     </tr>
@@ -1186,12 +1186,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	}
 ?>
     <tr id='ligne_bull_photo_hauteur_max'>
-	<td style="font-variant: small-caps;">Hauteur maximale de la photo en pixels :</td>
-	<td><input type="text" name="bull_photo_hauteur_max" size='4' value="<?php echo $bull_photo_hauteur_max;?>" /></td>
+	<td style="font-variant: small-caps;"><label for='bull_photo_hauteur_max' style='cursor: pointer;'>Hauteur maximale de la photo en pixels :</label></td>
+	<td><input type="text" name="bull_photo_hauteur_max" id="bull_photo_hauteur_max" size='4' value="<?php echo $bull_photo_hauteur_max;?>" /></td>
     </tr>
     <tr id='ligne_bull_photo_largeur_max'>
-	<td style="font-variant: small-caps;">Largeur maximale de la photo en pixels :</td>
-	<td><input type="text" name="bull_photo_largeur_max" size='4' value="<?php echo $bull_photo_largeur_max;?>" />
+	<td style="font-variant: small-caps;"><label for='bull_photo_largeur_max' style='cursor: pointer;'>Largeur maximale de la photo en pixels :</label></td>
+	<td><input type="text" name="bull_photo_largeur_max" id="bull_photo_largeur_max" size='4' value="<?php echo $bull_photo_largeur_max;?>" />
 
 	<script type='text/javascript'>
 		function aff_lig_photo(mode){
@@ -1224,12 +1224,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_tel\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_tel\" id=\"bull_affiche_tely\" value=\"y\" ";
         if (getSettingValue("bull_affiche_tel") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_tel\" value=\"n\" ";
+        echo " /><label for='bull_affiche_tely' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_tel\" id=\"bull_affiche_teln\" value=\"n\" ";
         if (getSettingValue("bull_affiche_tel") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_teln' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1241,12 +1241,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_fax\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_fax\" id=\"bull_affiche_faxy\" value=\"y\" ";
         if (getSettingValue("bull_affiche_fax") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_fax\" value=\"n\" ";
+        echo " /><label for='bull_affiche_faxy' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_fax\" id=\"bull_affiche_faxn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_fax") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_faxn' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1254,9 +1254,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan='2'>
-        Intitulé de la colonne Appréciations :
+        <label for='bull_intitule_app' style='cursor: pointer;'>Intitulé de la colonne Appréciations :</label>
         <?php
-		echo "<input type=\"text\" name=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
+		echo "<input type=\"text\" name=\"bull_intitule_app\" id=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
         ?>
         </td>
     </tr>
@@ -1267,12 +1267,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" id=\"bull_affiche_INE_elevey\" value=\"y\" ";
         if (getSettingValue("bull_affiche_INE_eleve") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" value=\"n\" ";
+        echo " /><label for='bull_affiche_INE_elevey' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_INE_eleve\" id=\"bull_affiche_INE_eleven\" value=\"n\" ";
         if (getSettingValue("bull_affiche_INE_eleve") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_INE_eleven' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1284,12 +1284,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
         <td>
         <?php
-        echo "<input type=\"radio\" name=\"bull_affiche_formule\" value=\"y\" ";
+        echo "<input type=\"radio\" name=\"bull_affiche_formule\" id=\"bull_affiche_formuley\" value=\"y\" ";
         if (getSettingValue("bull_affiche_formule") == 'y') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"bull_affiche_formule\" value=\"n\" ";
+        echo " /><label for='bull_affiche_formuley' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_formule\" id=\"bull_affiche_formulen\" value=\"n\" ";
         if (getSettingValue("bull_affiche_formule") != 'y') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='bull_affiche_formulen' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
@@ -1297,8 +1297,8 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan="2">
-        Formule figurant en bas de chaque bulletin :
-        <input type="text" name="no_anti_inject_bull_formule_bas" size="100" value="<?php echo(getSettingValue("bull_formule_bas")); ?>" />
+        <label for='no_anti_inject_bull_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque bulletin :</label>
+        <input type="text" name="no_anti_inject_bull_formule_bas" id="no_anti_inject_bull_formule_bas" size="100" value="<?php echo(getSettingValue("bull_formule_bas")); ?>" />
         </td>
     </tr>
 
@@ -1306,20 +1306,20 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
-		<li><i>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</i><br />
-		<li><i>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</i><br />
-		<li><i>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</i><br />
+		<li><i><label for='choix_bulletin1' style='cursor: pointer;'>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
+		<li><i><label for='choix_bulletin2' style='cursor: pointer;'>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</label></i><br />
+		<li><i><label for='choix_bulletin3' style='cursor: pointer;'>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
         </ul>
 		</td>
         <td> <br />
         <?php
-		echo "<input type='radio' name='choix_bulletin' value='1'";
+		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin1' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
 		echo " /> Choix 1<br />";
-		echo "<input type='radio' name='choix_bulletin' value='2'";
+		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin2' value='2'";
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
 		echo " /> Choix 2<br />";
-		echo "<input type='radio' name='choix_bulletin' value='3'";
+		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin3' value='3'";
 		//echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '3') echo " checked";
 		echo " /> Choix 3<br />";
@@ -1331,12 +1331,12 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation : </td>
         <td>
 	    <?php
-        echo "<input type=\"radio\" name=\"min_max_moyclas\" value='1' ";
+        echo "<input type=\"radio\" name=\"min_max_moyclas\" id=\"min_max_moyclas1\" value='1' ";
         if (getSettingValue("min_max_moyclas") == '1') echo " checked";
-        echo " />&nbsp;Oui";
-        echo "<input type=\"radio\" name=\"min_max_moyclas\" value='0' ";
+        echo " /><label for='min_max_moyclas1' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"min_max_moyclas\" id=\"min_max_moyclas0\" value='0' ";
         if (getSettingValue("min_max_moyclas") != '1') echo " checked";
-        echo " />&nbsp;Non";
+        echo " /><label for='min_max_moyclas0' style='cursor: pointer;'>&nbsp;Non</label>";
         ?>
         </td>
     </tr>
@@ -1368,9 +1368,9 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor; ?>>
         <td style="font-variant: small-caps;">
-        Espace en mm entre la marge droite de la feuille et le bloc "adresse" :
+        <label for='addressblock_padding_right' style='cursor: pointer;'>Espace en mm entre la marge droite de la feuille et le bloc "adresse" :</label>
         </td>
-        <td><input type="text" name="addressblock_padding_right" size="20" value="<?php echo(getSettingValue("addressblock_padding_right")); ?>" />
+        <td><input type="text" name="addressblock_padding_right" id="addressblock_padding_right" size="20" value="<?php echo(getSettingValue("addressblock_padding_right")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
      </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1378,9 +1378,9 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
      </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;?>>
         <td style="font-variant: small-caps;">
-        Espace en mm entre la marge haute de la feuille et le bloc "adresse" :
+        <label for='addressblock_padding_top' style='cursor: pointer;'>Espace en mm entre la marge haute de la feuille et le bloc "adresse" :</label>
         </td>
-        <td><input type="text" name="addressblock_padding_top" size="20" value="<?php echo(getSettingValue("addressblock_padding_top")); ?>" />
+        <td><input type="text" name="addressblock_padding_top" id="addressblock_padding_top" size="20" value="<?php echo(getSettingValue("addressblock_padding_top")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1388,21 +1388,21 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Espace en mm entre le bloc "adresse" et le bloc des résultats :
+        <label for='addressblock_padding_text' style='cursor: pointer;'>Espace en mm entre le bloc "adresse" et le bloc des résultats :</label>
         </td>
-        <td><input type="text" name="addressblock_padding_text" size="20" value="<?php echo(getSettingValue("addressblock_padding_text")); ?>" />
-        </td>
-    </tr>
-    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">
-        Longueur en mm du bloc "adresse" :
-        </td>
-        <td><input type="text" name="addressblock_length" size="20" value="<?php echo(getSettingValue("addressblock_length")); ?>" />
+        <td><input type="text" name="addressblock_padding_text" id="addressblock_padding_text" size="20" value="<?php echo(getSettingValue("addressblock_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Taille en points des textes du bloc "adresse" :
+        <label for='addressblock_length' style='cursor: pointer;'>Longueur en mm du bloc "adresse" :</label>
+        </td>
+        <td><input type="text" name="addressblock_length" id="addressblock_length" size="20" value="<?php echo(getSettingValue("addressblock_length")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
+        </td>
+    </tr>
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        <label for='addressblock_font_size' style='cursor: pointer;'>Taille en points des textes du bloc "adresse" :</label>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_font_size")){
@@ -1412,12 +1412,12 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$addressblock_font_size=getSettingValue("addressblock_font_size");
 		}
 	?>
-        <td><input type="text" name="addressblock_font_size" size="20" value="<?php echo $addressblock_font_size; ?>" />
+        <td><input type="text" name="addressblock_font_size" id="addressblock_font_size" size="20" value="<?php echo $addressblock_font_size; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :
+        <label for='addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :</label>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_logo_etab_prop")){
@@ -1427,12 +1427,12 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$addressblock_logo_etab_prop=getSettingValue("addressblock_logo_etab_prop");
 		}
 	?>
-        <td><input type="text" name="addressblock_logo_etab_prop" size="20" value="<?php echo $addressblock_logo_etab_prop; ?>" />
+        <td><input type="text" name="addressblock_logo_etab_prop" id="addressblock_logo_etab_prop" size="20" value="<?php echo $addressblock_logo_etab_prop; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période" :
+        <label for='addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période" :</label>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_classe_annee")){
@@ -1442,13 +1442,13 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee");
 		}
 	?>
-        <td><input type="text" name="addressblock_classe_annee" size="20" value="<?php echo $addressblock_classe_annee; ?>" />
+        <td><input type="text" name="addressblock_classe_annee" id="addressblock_classe_annee" size="20" value="<?php echo $addressblock_classe_annee; ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève :
+        <label for='bull_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève :</label>
         </td>
 	<?php
 		if(!getSettingValue("bull_ecart_bloc_nom")){
@@ -1458,7 +1458,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$bull_ecart_bloc_nom=getSettingValue("bull_ecart_bloc_nom");
 		}
 	?>
-        <td><input type="text" name="bull_ecart_bloc_nom" size="20" value="<?php echo $bull_ecart_bloc_nom; ?>" />
+        <td><input type="text" name="bull_ecart_bloc_nom" id="bull_ecart_bloc_nom" size="20" value="<?php echo $bull_ecart_bloc_nom; ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1473,7 +1473,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$addressblock_debug=getSettingValue("addressblock_debug");
 		}
 	?>
-        <td><input type="radio" id="addressblock_debugy" name="addressblock_debug" value="y" <?php if($addressblock_debug=="y"){echo "checked";}?> /> Oui <input type="radio" id="addressblock_debugn" name="addressblock_debug" value="n" <?php if($addressblock_debug=="n"){echo "checked";}?> /> Non
+        <td><input type="radio" id="addressblock_debugy" name="addressblock_debug" value="y" <?php if($addressblock_debug=="y"){echo "checked";}?> /><label for='addressblock_debugy' style='cursor: pointer;'> Oui</label> <input type="radio" id="addressblock_debugn" name="addressblock_debug" value="n" <?php if($addressblock_debug=="n"){echo "checked";}?> /><label for='addressblock_debugn' style='cursor: pointer;'> Non</label>
         </td>
     </tr>
 </table>
@@ -1499,15 +1499,15 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
 </td></tr></table></center>
 <table cellpadding="8" cellspacing="0" width="100%" border="0">
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">Imprimer les pages de garde : </td>
-        <td><input type="checkbox" name="page_garde_imprime" value="yes" <?php if (getSettingValue("page_garde_imprime")=='yes') echo "checked"; ?>/>
+        <td style="font-variant: small-caps;"><label for='page_garde_imprime' style='cursor: pointer;'>Imprimer les pages de garde : </label></td>
+        <td><input type="checkbox" name="page_garde_imprime" id="page_garde_imprime" value="yes" <?php if (getSettingValue("page_garde_imprime")=='yes') echo "checked"; ?>/>
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;?>>
         <td style="font-variant: small-caps;">
-        Espace en cm entre la marge gauche de la feuille et le bloc "adresse" :
+        <label for='page_garde_padding_left' style='cursor: pointer;'>Espace en cm entre la marge gauche de la feuille et le bloc "adresse" :</label>
         </td>
-        <td><input type="text" name="page_garde_padding_left" size="20" value="<?php echo(getSettingValue("page_garde_padding_left")); ?>" />
+        <td><input type="text" name="page_garde_padding_left" id="page_garde_padding_left" size="20" value="<?php echo(getSettingValue("page_garde_padding_left")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
      </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1515,9 +1515,9 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
      </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;?>>
         <td style="font-variant: small-caps;">
-        Espace en cm entre la marge haute de la feuille et le bloc "adresse" :
+        <label for='page_garde_padding_top' style='cursor: pointer;'>Espace en cm entre la marge haute de la feuille et le bloc "adresse" :</label>
         </td>
-        <td><input type="text" name="page_garde_padding_top" size="20" value="<?php echo(getSettingValue("page_garde_padding_top")); ?>" />
+        <td><input type="text" name="page_garde_padding_top" id="page_garde_padding_top" size="20" value="<?php echo(getSettingValue("page_garde_padding_top")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1525,9 +1525,9 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Espace en cm entre le bloc "adresse" et le bloc "texte" :
+        <label for='page_garde_padding_text' style='cursor: pointer;'>Espace en cm entre le bloc "adresse" et le bloc "texte" :</label>
         </td>
-        <td><input type="text" name="page_garde_padding_text" size="20" value="<?php echo(getSettingValue("page_garde_padding_text")); ?>" />
+        <td><input type="text" name="page_garde_padding_text" id="page_garde_padding_text" size="20" value="<?php echo(getSettingValue("page_garde_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
 
