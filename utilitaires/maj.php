@@ -386,7 +386,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions absences', '');";
     // Pour un module non présent ni actif par défaut:
     $tab_req[] = "INSERT INTO droits VALUES ('/saisie/commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Saisie de commentaires-types', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/releve_pdf.php', 'V', 'V', 'F', 'V', 'F', 'F', 'V', 'Relevé de note au format PDF', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/releve_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Relevé de note au format PDF', '');";
 
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/parametres_impression_pdf.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Impression des listes PDF; réglage des paramètres', '');";
