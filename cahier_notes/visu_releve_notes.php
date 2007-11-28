@@ -1194,7 +1194,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	        $classe_eleve = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
 	        $nom_classe = mysql_result($classe_eleve, 0, "classe");
 
-	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir une autre classe</a></p>";
+	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir une autre classe</a></p>\n";
 	        echo "<p class='grand'>Classe de $nom_classe</p>\n";
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	        echo "<table><tr>\n";
@@ -1242,9 +1242,9 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	    }
 
 
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>";
-	    echo "<td>Uniquement le relevé de notes de l'élève sélectionné ci-contre : ";
-	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">";
+	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>\n";
+	    echo "<td>Uniquement le relevé de notes de l'élève sélectionné ci-contre : \n";
+	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 	    if (!$current_group) {
 	        $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
@@ -1254,7 +1254,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	            $eleve = mysql_result($call_eleve, $i, 'login');
 	            $nom_el = mysql_result($call_eleve, $i, 'nom');
 	            $prenom_el = mysql_result($call_eleve, $i, 'prenom');
-	            echo "<option value=$eleve>$nom_el  $prenom_el </option>";
+	            echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
 	            $i++;
 	        }
 	    } else {
@@ -1263,7 +1263,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	            $p=1;
 	            while ($flag) {
 	                if (in_array($eleve_login, $current_group["eleves"][$p]["list"])) {
-	                    echo "<option value=" . $eleve_login . ">" . $current_group["eleves"][$p]["users"][$eleve_login]["nom"] . " " . $current_group["eleves"][$p]["users"][$eleve_login]["prenom"] . "</option>";
+	                    echo "<option value=" . $eleve_login . ">" . $current_group["eleves"][$p]["users"][$eleve_login]["nom"] . " " . $current_group["eleves"][$p]["users"][$eleve_login]["prenom"] . "</option>\n";
 	                    $flag = false;
 	                } else {
 	                    $p++;
@@ -1315,35 +1315,35 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		}
 		if (mysql_num_rows($quels_eleves) == 0) {
 	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
-			echo "<p>Erreur : vous ne semblez être associé à aucun élève. Veuillez contacter l'administrateur.</p>";
+			echo "<p>Erreur : vous ne semblez être associé à aucun élève. Veuillez contacter l'administrateur.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		} elseif (mysql_num_rows($quels_eleves) == 1) {
 		    echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>\n";
 			$current_eleve = mysql_fetch_object($quels_eleves);
 			$id_classe =  $current_eleve->id_classe;
-			echo "<br/><br/>";
+			echo "<br /><br />\n";
 			echo "<p class='bold'>Elève : ".$current_eleve->prenom . " " . $current_eleve->nom."</p>\n";
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-			echo "<input type='hidden' name='login_eleve' value='".$current_eleve->login . "'/>";
-			echo "<input type='hidden' name='choix_edit' value='2'/>";
+			echo "<input type='hidden' name='login_eleve' value='".$current_eleve->login . "'/>\n";
+			echo "<input type='hidden' name='choix_edit' value='2' />\n";
 		} else {
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 			echo "<p class='bold'>Elève : ";
-			echo "<input type='hidden' name='choix_edit' value='2'/>";
-	    	echo "<select size=\"1\" name=\"login_eleve\">";
+			echo "<input type='hidden' name='choix_edit' value='2'/>\n";
+	    	echo "<select size=\"1\" name=\"login_eleve\">\n";
 	    	// On initialise un tableau pour stocker les différentes classes impliquées (ceci pour récupérer ensuite les périodes)
 	    	$eleves_classes = array();
 	    	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-	        	echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
+	        	echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>\n";
 	        	$eleves_classes[] = $current_eleve->id_classe;
 	    	}
-	    	echo "</select>";
+	    	echo "</select>\n";
 		}
 	}
 
     //Modif Eric
-    echo "<br /><br /><p><b>Choisissez la période d'affichage : </b></p><br />\n";
+    echo "<br /><br />\n<p><b>Choisissez la période d'affichage : </b></p>\n<br />\n";
 
 	if ($id_groupe != NULL) { // on recherche la classe à partir de id_groupe
 	  $requete_classe = "SELECT * FROM `j_groupes_classes` WHERE `id_groupe`='".$id_groupe."'";
