@@ -1394,7 +1394,7 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 </div></td></tr>
 </table></center>
 
-<p><b>Remarques</b> :
+<p><b>Remarque</b> :
 <br />- Les champs * sont obligatoires.</p>
 <?php
 
