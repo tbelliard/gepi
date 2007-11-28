@@ -1249,6 +1249,12 @@ if ($id_devoir) {
 
 	echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
 	echo "<input type='hidden' name='id_devoir' value='$id_devoir' />\n";
+
+	//=========================
+	// AJOUT: boireaus 20071128
+	echo "<input type='hidden' name='order_by' value='$order_by' />\n";
+	//=========================
+
 	echo "<center><input type='submit' value='Importer'  onclick=\"return confirm_abandon (this, change, '$themessage')\" /></center>\n";
 	echo "<p><b>Remarque importante :</b> l'importation ne prend en compte que les élèves dont le nom est affiché ci-dessus !<br />Soyez donc vigilant à ne coller que les notes de ces élèves, dans le bon ordre.</p>\n";
 	echo "</form></fieldset>\n";
