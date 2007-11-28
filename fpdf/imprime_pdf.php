@@ -131,6 +131,11 @@ $data1 = unserialize($_SESSION['data_pdf']);
 $pdf->SetFont('Arial','',8);
 $pdf->FancyTable($w1,$header1,$data1,"v");
 
+//===============================================
+// AJOUT d'après les indications de Jacques Marot
+header('Content-Type: application/pdf');
+//===============================================
+
 if((!isset($_GET['id_groupe']))||(!isset($_GET['nom_pdf_en_detail']))){
 	$pdf->Output();
 }
