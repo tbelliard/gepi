@@ -147,7 +147,7 @@ if(isset($step)){
 if($stop=='y'){
 	echo "checked ";
 }
-echo "/> <a href='#' onmouseover=\"afficher_div('div_stop','y',-200,20);\">Stop</a>
+echo "/> <a href='#' onmouseover=\"afficher_div('div_stop','y',10,20);\">Stop</a>
 </form>\n";
 		echo "</div>\n";
 
@@ -1451,7 +1451,6 @@ else{
 			if(!isset($tab_ele_id_diff)){
 				echo "<p>Aucune différence n'a été trouvée.</p>\n";
 
-				// A FAIRE: PERMETTRE DE PASSER AUX RESPONSABLES...
 				echo "<p>Voulez-vous <a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=9'>passer à la page d'importation/mise à jour des responsables</a></p>\n";
 			}
 			else{
@@ -1532,13 +1531,15 @@ else{
 
 
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				//echo "<table border='1'>\n";
 				//echo "<table class='majimport'>\n";
 				echo "<table class='boireaus'>\n";
 				//echo "<tr style='background-color: rgb(150, 200, 240);'>\n";
 				echo "<tr>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
+				//echo "<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
+				echo "<td style='text-align: center; font-weight: bold;'>Modifier<br />\n";
 
 				echo "<a href=\"javascript:modifcase('coche')\">";
 				echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
@@ -2063,6 +2064,7 @@ else{
 				}
 
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 				echo "</form>\n";
 			}
 
@@ -2692,6 +2694,36 @@ else{
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
 				$res_per=mysql_query($sql);
 				$nb_periode=mysql_num_rows($res_per)+1;
+
+				$cpe_resp=isset($_POST['cpe_resp']) ? $_POST['cpe_resp'] : NULL;
+
+				if(isset($cpe_resp)){
+					if("$cpe_resp"!=""){
+						// Par précaution:
+						$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve' AND cpe_login='$cpe_resp'";
+						$nettoyage_cpe=mysql_query($sql);
+
+						$sql="INSERT INTO j_eleves_cpe SET e_login='$login_eleve', cpe_login='$cpe_resp'";
+						$insert_cpe=mysql_query($sql);
+					}
+				}
+
+				$pp_resp=isset($_POST['pp_resp']) ? $_POST['pp_resp'] : NULL;
+
+				if(isset($pp_resp)){
+					if("$pp_resp"!=""){
+						// Par précaution:
+						$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve' AND professeur='$pp_resp' AND id_classe='$id_classe';";
+						// DEBUG:
+						//echo "$sql<br />\n";
+						$nettoyage_pp=mysql_query($sql);
+
+						$sql="INSERT INTO j_eleves_professeurs SET login='$login_eleve', professeur='$pp_resp', id_classe='$id_classe';";
+						// DEBUG:
+						//echo "$sql<br />\n";
+						$insert_pp=mysql_query($sql);
+					}
+				}
 				/*
 				$cpt=1;
 				while($lig_per=mysql_fetch_object($res_per)){
@@ -2795,6 +2827,46 @@ else{
 					echo "</form>\n";
 				}
 				else{
+
+					echo "<p><b>$prenom_eleve $nom_eleve</b> (<i>$lig_classe->classe</i>)</p>\n";
+
+					//===========================
+					// A FAIRE: boireaus 20071129
+					//          Ajouter l'association avec le PP et le CPE
+					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' ORDER BY nom, prenom;";
+					$res_cpe=mysql_query($sql);
+
+					echo "<table border='0'>\n";
+					if(mysql_num_rows($res_cpe)>0){
+						echo "<tr><td>CPE responsable: </td><td><select name='cpe_resp'>\n";
+						echo "<option value=''>---</option>\n";
+						while($lig_cpe=mysql_fetch_object($res_cpe)){
+							echo "<option value='$lig_cpe->login'>$lig_cpe->nom $lig_cpe->prenom</option>\n";
+						}
+						echo "</select>\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+
+					$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs jep
+										WHERE jep.id_classe='$id_classe' AND
+												jep.professeur=u.login
+										ORDER BY u.nom, u.prenom;";
+					$res_pp=mysql_query($sql);
+					if(mysql_num_rows($res_cpe)>0){
+						echo "<tr><td>".ucfirst(getSettingValue('gepi_prof_suivi')).": </td><td><select name='pp_resp'>\n";
+						echo "<option value=''>---</option>\n";
+						while($lig_pp=mysql_fetch_object($res_pp)){
+							echo "<option value='$lig_pp->login'>$lig_pp->nom $lig_pp->prenom</option>\n";
+						}
+						echo "</select>\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+					echo "<p>&nbsp;</p>\n";
+
+					//===========================
 
 					$nb_periode=mysql_num_rows($res_per)+1;
 
@@ -3009,7 +3081,12 @@ else{
 
 			echo "<p><br /></p>\n";
 
-			echo "<p><i>NOTE:</i> Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
+			echo "<p><i>NOTE:</i></p>\n";
+			echo "<blockquote>\n";
+			echo "<p>Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
+			echo "<p>Les différences concernant les personnes, puis les adresses sont recherchées.<br />Ensuite seulement, il vous est proposé de valider les modifications concernant les personnes et adresses.</p>\n";
+			echo "<p>Un troisième parcours des différences est ensuite effectué pour rechercher les changements dans les associations responsables/élèves.</p>\n";
+			echo "</blockquote>\n";
 
 			require("../lib/footer.inc.php");
 			die();
@@ -4315,7 +4392,19 @@ else{
 				$test=mysql_query($sql);
 
 				//echo "<p>".count($tab_pers_id_diff)." personnes...</p>\n";
-				echo "<p>".mysql_num_rows($test)." personnes/adresses modifiées requièrent votre attention.</p>\n";
+
+				//echo "<p>".mysql_num_rows($test)." personnes/adresses modifiées requièrent votre attention.</p>\n";
+				$nb_tmp_modif=mysql_num_rows($test);
+				if($nb_tmp_modif==0){
+					echo "<p>Aucune modification ne requiert votre attention (<i>personnes/adresses</i>).</p>\n";
+				}
+				elseif($nb_tmp_modif==1){
+					echo "<p>Une personne/adresse modifiée requiert votre attention.</p>\n";
+				}
+				else{
+					echo "<p>$nb_tmp_modif personnes/adresses modifiées requièrent votre attention.</p>\n";
+				}
+
 				//echo "<input type='hidden' name='total_pers_diff' value='".count($tab_pers_id_diff)."' />\n";
 				echo "<input type='hidden' name='total_pers_diff' value='".mysql_num_rows($test)."' />\n";
 			}
@@ -4365,7 +4454,8 @@ else{
 
 			if(mysql_num_rows($res1)>0){
 
-				echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
+				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 				// Affichage du tableau
 				//echo "<table border='1'>\n";
@@ -4402,7 +4492,8 @@ else{
 				*/
 
 				$ligne_entete_tableau="<tr>\n";
-				$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
+				//$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
+				$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Modifier<br />\n";
 				//$ligne_entete_tableau.="<th style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
 				$ligne_entete_tableau.="<a href=\"javascript:modifcase('coche')\">";
 				$ligne_entete_tableau.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
@@ -4497,7 +4588,21 @@ else{
 					}
 					else{
 						//echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
-						echo "<td class='nouveau'>Nouveau</td>\n";
+						//echo "<td class='nouveau'>Nouveau</td>\n";
+
+						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
+												temp_responsables2_import tr,
+												eleves e
+										WHERE trp.pers_id='$pers_id' AND
+												trp.pers_id=tr.pers_id AND
+												tr.ele_id=e.ele_id";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)>0){
+							echo "<td class='nouveau'>Nouveau</td>\n";
+						}
+						else{
+							echo "<td style='background-color:orange;'>Nouveau</td>\n";
+						}
 					}
 
 					echo "<td style='text-align:center;'>$pers_id";
@@ -5014,7 +5119,8 @@ else{
 </script>\n";
 
 				echo "<input type='hidden' name='step' value='15' />\n";
-				echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
+				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			}
 			else{
 				// On est à la fin on peut passer à step=12 et effectuer les changements confirmés.
@@ -5186,7 +5292,7 @@ else{
 
 				echo "<p><br /></p>\n";
 
-				echo "<p><b>Indication:</b> En <span style='color:blue;'>bleu</span>, les personnes ajoutées et en <span style='color:darkgreen;'>vert</span> les personnes/adresses mises à jour.<br />Les <span style='color:red;'>(*)</span> éventuellement présents signalent un soucis concernant l'adresse.</p>\n";
+				echo "<p><b>Indication:</b> En <span style='color:blue;'>bleu</span>, les personnes ajoutées et en <span style='color:darkgreen;'>vert</span> les personnes/adresses mises à jour.<br />Les <span style='color:red;'>(*)</span> éventuellement présents signalent un souci concernant l'adresse.</p>\n";
 
 				echo "<p><br /></p>\n";
 
@@ -5552,6 +5658,7 @@ else{
 
 				// FAIRE LES ENREGISTREMENTS A CE NIVEAU!!!
 				if(isset($modif)){
+					$compteur_modifs=0;
 					for($i=0;$i<count($modif);$i++){
 						$tab_tmp=explode("_",$modif[$i]);
 						$ele_id=$tab_tmp[1];
@@ -5693,8 +5800,8 @@ else{
 
 			if(mysql_num_rows($res0)>0){
 
-				echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
-				//echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
+				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 
 				// Affichage du tableau
 
@@ -5703,7 +5810,8 @@ else{
 				echo "<table class='boireaus'>\n";
 				echo "<tr>\n";
 
-				echo "<td style='text-align: center; font-weight: bold;' rowspan='2'>Enregistrer<br />\n";
+				//echo "<td style='text-align: center; font-weight: bold;' rowspan='2'>Enregistrer<br />\n";
+				echo "<td style='text-align: center; font-weight: bold;' rowspan='2'>Modifier<br />\n";
 				echo "<a href=\"javascript:modifcase('coche')\">";
 				echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				echo " / ";
@@ -5717,6 +5825,11 @@ else{
 
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;' colspan='3'>Elève</td>\n";
 
+				//=========================
+				// AJOUT: boireaus 20071129
+				echo "<td style='text-align:center; font-weight:bold; background-color: red;' rowspan='2'>Suppression<br />du responsable</td>\n";
+				//=========================
+
 				echo "</tr>\n";
 
 				echo "<tr>\n";
@@ -5729,6 +5842,7 @@ else{
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Nom</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Prénom</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>ele_id</td>\n";
+
 				echo "</tr>\n";
 
 
@@ -5793,6 +5907,13 @@ else{
 							echo "<td style='background-color:red;'>&nbsp;</td>\n";
 							//echo "<td colspan='5'>Aucune personne associée???</td>\n";
 							echo "<td colspan='7'>Aucune personne associée???</td>\n";
+
+							//=========================
+							// AJOUT: boireaus 20071129
+							//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+							//=========================
+
 						}
 						else{
 							$lig2=mysql_fetch_object($res2);
@@ -5860,6 +5981,11 @@ else{
 								echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 								echo "Aucun élève pour ele_id=$ele_id ???";
 								echo "</td>\n";
+
+								//=========================
+								// AJOUT: boireaus 20071129
+								//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								//=========================
 							}
 							else{
 								$lig4=mysql_fetch_object($res4);
@@ -5877,9 +6003,37 @@ else{
 								echo "$ele_id";
 								//echo "<input type='hidden' name='new_".$cpt."_ele_id' value='$ele_id' />\n";
 								echo "</td>\n";
-							}
 
+								//=========================
+								// AJOUT: boireaus 20071129
+								//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+								//=========================
+							}
 						}
+
+
+						//=========================
+						// AJOUT: boireaus 20071129
+
+						// TESTER SI LE RESPONSABLE EST ASSOCIé AVEC UN ELEVE EXISTANT AU MOINS
+						$sql="SELECT e.ele_id FROM eleves e, resp_pers rp, temp_responsables2_import r
+										WHERE e.ele_id=r.ele_id AND
+												r.pers_id=rp.pers_id AND
+												rp.pers_id='$pers_id'";
+						$test=mysql_query($sql);
+						if(mysql_num_rows($test)>0) {
+							//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+							echo "<td style='text-align:center;'>";
+							//while($lig_tmp_test=mysql_fetch_object($test)){echo "$lig_tmp_test->ele_id - ";}
+							echo "&nbsp;\n";
+							echo "</td>\n";
+						}
+						else{
+							echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+						}
+						//=========================
+
+
 						echo "</tr>\n";
 					}
 					else{
@@ -5916,6 +6070,11 @@ else{
 
 								echo "<td style='background-color:red;'>&nbsp;</td>\n";
 								echo "<td colspan='5'>Aucune personne associée???</td>\n";
+
+								//=========================
+								// AJOUT: boireaus 20071129
+								//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+								//=========================
 							}
 							else{
 								$lig2=mysql_fetch_object($res2);
@@ -5982,6 +6141,11 @@ else{
 									echo "<td style='text-align:center; background-color:red;' colspan='3'>\n";
 									echo "Aucun élève pour ele_id=$ele_id ???";
 									echo "</td>\n";
+
+									//=========================
+									// AJOUT: boireaus 20071129
+									//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+									//=========================
 								}
 								else{
 									$lig4=mysql_fetch_object($res4);
@@ -6001,9 +6165,36 @@ else{
 									echo "$ele_id";
 									//echo "<input type='hidden' name='modif_".$cpt."_ele_id' value='$ele_id' />\n";
 									echo "</td>\n";
+
+									//=========================
+									// AJOUT: boireaus 20071129
+									//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+									//=========================
 								}
 
 							}
+
+							//=========================
+							// AJOUT: boireaus 20071129
+
+							// TESTER SI LE RESPONSABLE EST ASSOCIé AVEC UN ELEVE EXISTANT AU MOINS
+							$sql="SELECT e.ele_id FROM eleves e, resp_pers rp, temp_responsables2_import r
+											WHERE e.ele_id=r.ele_id AND
+													r.pers_id=rp.pers_id AND
+													rp.pers_id='$pers_id'";
+							$test=mysql_query($sql);
+							if(mysql_num_rows($test)>0) {
+								//echo "<td style='text-align:center;'>&nbsp;</td>\n";
+								echo "<td style='text-align:center;'>";
+								//while($lig_tmp_test=mysql_fetch_object($test)){echo "$lig_tmp_test->ele_id - ";}
+								echo "&nbsp;\n";
+								echo "</td>\n";
+							}
+							else{
+								echo "<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							}
+							//=========================
+
 							echo "</tr>\n";
 						}
 						// Sinon, il n'est pas nécessaire de refaire l'inscription déjà présente.
@@ -6032,6 +6223,14 @@ else{
 
 				echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+
+				echo "<p><br /></p>\n";
+				echo "<p><i>NOTES:</i></p>\n";
+				echo "<ul>\n";
+				echo "<li>La case de suppression d'un responsable n'est proposée que s'il n'est associé à aucun élève effectivement présent dans votre table 'eleves'.</li>\n";
+				echo "<li>Le message 'Aucun élève pour ele_id=...' signifie que l'import fait référence à un identifiant d'élève qui n'est plus dans l'établissement ou qui était proposé à l'import des élèves et que vous n'avez pas coché.<br />Cela ne signifie pas que le responsable n'est pas associé à autre élève qui lui est bien présent dans votre table 'eleves'.</li>\n";
+				echo "</ul>\n";
+
 			}
 			else{
 				echo "<input type='hidden' name='step' value='19' />\n";
