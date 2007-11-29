@@ -767,7 +767,8 @@ else{
 								$cpt_temoin=0;
 								while($lig3=mysql_fetch_object($res3)){
 									if($cpt_temoin>0){
-										echo "<tr style='background-color:".$alt.";'>\n";
+										//echo "<tr style='background-color:".$alt.";'>\n";
+										echo "<tr class='lig$alt'>\n";
 									}
 									echo "<td style='text-align:center;'><a href='../eleves/modify_eleve.php?eleve_login=$lig3->login&amp;quelles_classes=toutes&amp;order_type=nom,prenom'>$lig3->nom $lig3->prenom</a>";
 									echo "<br />".liens_class_from_ele_login($lig3->login);
