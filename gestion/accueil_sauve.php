@@ -830,10 +830,14 @@ arsort($tab_file);
 if ($n > 0) {
     echo "<h3>Fichiers de restauration</h3>\n";
     echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
-    echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
+    //echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
+    echo "<center>\n<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><b>Nom du fichier de sauvegarde</b></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
     $m = 0;
+	$alt=1;
     foreach($tab_file as $value) {
-        echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
+        //echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
+        $alt=$alt*(-1);
+		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>\n";
         echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
@@ -872,10 +876,11 @@ echo "<p style='margin-left: 20px;'>Selon la configuration du serveur et la tail
 (<i>par exemple si la taille du fichier dépasse la <b>taille maximale autorisée lors des téléchargements</b></i>).
 <br />Si c'est le cas, signalez le problème à l'administrateur du serveur.</p>\n";
 
-echo "<table border='1' align='center'>\n";
-echo "<tr><td style='font-weight: bold; text-align: center;'>Variable</td><td style='font-weight: bold; text-align: center;'>Valeur</td></tr>\n";
-echo "<tr><td style='font-weight: bold; text-align: center;'>post_max_size</td><td style='text-align: center;'>$post_max_size</td></tr>\n";
-echo "<tr><td style='font-weight: bold; text-align: center;'>upload_max_filesize</td><td style='text-align: center;'>$upload_max_filesize</td></tr>\n";
+//echo "<table border='1' align='center'>\n";
+echo "<table class='boireaus' align='center'>\n";
+echo "<tr><th style='font-weight: bold; text-align: center;'>Variable</th><th style='font-weight: bold; text-align: center;'>Valeur</th></tr>\n";
+echo "<tr class='lig1'><td style='font-weight: bold; text-align: center;'>post_max_size</td><td style='text-align: center;'>$post_max_size</td></tr>\n";
+echo "<tr class='lig-1'><td style='font-weight: bold; text-align: center;'>upload_max_filesize</td><td style='text-align: center;'>$upload_max_filesize</td></tr>\n";
 echo "</table>\n";
 
 require("../lib/footer.inc.php");
