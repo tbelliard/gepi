@@ -418,7 +418,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut responsable', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/edit_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Edition des utilisateurs au statut élève', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/consultation.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";
-	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'Consultation des cahiers de texte', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/droits_acces.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Paramétrage des droits d accès', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/groupes/visu_profs_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Consultation équipe pédagogique', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/saisie/impression_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis trimestrielles des conseils de classe.', '');";
@@ -518,6 +518,10 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/export_modele_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'exportation en csv des modeles de bulletin pdf', '');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/absences/consulter_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Consulter les absences', '');";
+	$tab_req[] = "";
+	$tab_req[] = "";
+	$tab_req[] = "";
+	$tab_req[] = "";
 
 	//$tab_req[] = "";
 
@@ -5255,6 +5259,32 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
 		//===================================================
+
+		// Création de la table absences_rb
+		$result .= "&nbsp;->Ajout de la table absences_rb. <br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_rb'"));
+		if ($test1 == 0) {
+			$sql = "CREATE TABLE `absences_archives` (`id` int(5) NOT NULL auto_increment,
+			`eleve_id` varchar(30) NOT NULL,
+			`retard_absence` varchar(1) NOT NULL default 'A',
+			`groupe_id` varchar(8) NOT NULL,
+			`edt_id` int(5) NOT NULL default '0',
+			`jour_semaine` varchar(10) NOT NULL,
+			`creneau_id` int(5) NOT NULL,
+			`debut_ts` int(11) NOT NULL,
+			`fin_ts` int(11) NOT NULL,
+			`date_saisie` int(20) NOT NULL,
+			`login_saisie` varchar(30) NOT NULL, PRIMARY KEY  (`id`));";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+		}
 
     }
 
