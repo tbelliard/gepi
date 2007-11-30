@@ -408,6 +408,8 @@ if ($id_groupe != null) {
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
 	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n";
+	} else {
+		echo "<a href='./see_all.php'>Visualiser les cahiers de textes (accès restreint)</a>\n";
 	}
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))

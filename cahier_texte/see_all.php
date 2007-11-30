@@ -167,12 +167,20 @@ if ($current_group) {
 echo "</p></td>";
 echo "</tr></table>";
 if ($current_group) {
-    if ($current_imprime=='n')
+    if ($current_imprime=='n') {
+    if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe") {
+    	echo "<a href='see_all.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> - ";
+    	if ($_SESSION["statut"] == "professeur") {
+    		echo "<a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes cahiers de textes</a> - ";
+    	}
+
+    } else {
     echo "<a href='consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> - ";
+    }
     if ($current_imprime=='n')
     echo "<a href=see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe&amp;ordre=$ordre&amp;imprime=$current_imprime>Trier dans l'ordre inverse</a> - ";
     echo "<a href=see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe&amp;ordre=$current_ordre&amp;imprime=$imprime>$text_imprime</a>";
-
+}
 }
 echo "<hr />";
 $test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
