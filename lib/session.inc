@@ -252,7 +252,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
                     $u_statut = "administrateur";
                 } else if (strstr($user_ldap_info[0]["dn"],"eleves")) {
                     	$u_statut = "eleve";
-                } else {
+                } else if (strstr($user_ldap_info[0]["dn"],"personnels")){
                 	$u_statut = "professeur";
                 }
 
