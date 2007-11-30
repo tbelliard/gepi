@@ -233,16 +233,10 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
             // AJOUTER ICI TOUT LE CODE POUR AJOUTER L'UTILISATEUR DANS LA BASE
             require "lib/eole_sync_functions.inc.php";
 
-            if (strstr($user_ldap_info[0]["dn"],"eleves")) {
-                // La personne qui s'authentifie est un élève.
-                // Gepi ne prend pas encore en compte le login élève : on refuse donc la connexion
-                return "0";
-                exit();
-            } elseif (strstr($user_ldap_info[0]["dn"],"personnels")) {
+            if (strstr($user_ldap_info[0]["dn"],"eleves") OR strstr($user_ldap_info[0]["dn"],"personnels")) {
                 // La personne qui s'authentifie fait partie du personnel de l'établissement
-                // donc on l'enregistre dans la base.
-
-                //  function add_user($_login, $_nom, $_prenom, $_civilite, $_statut)
+                // ou bien est un élève.
+                // On l'enregistre dans la base.
 
 				if (!array_key_exists("mail", $user_ldap_info[0])) {
 					$user_ldap_info[0]["mail"] = array();
@@ -256,8 +250,10 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
 
                 if ($user_ldap_info[0]["uid"][0] == "administrateur" OR $user_ldap_info[0]["uid"][0] == "admin") {
                     $u_statut = "administrateur";
+                } else if (strstr($user_ldap_info[0]["dn"],"eleves")) {
+                    	$u_statut = "eleve";
                 } else {
-                    $u_statut = "professeur";
+                	$u_statut = "professeur";
                 }
 
                 $add = add_user($user_ldap_info[0]["uid"][0],
@@ -267,8 +263,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
                                 $u_statut,
                                 $user_ldap_info[0]["mail"][0]
                                 );
-
-                $sql = "select upper(login) login, password, prenom, nom, statut, now() start, change_mdp from utilisateurs where login = '" . $user_ldap_info[0]["uid"][0] . "' and password = '' and etat != 'inactif'";
+                $sql = "select login, password, prenom, nom, statut, now() start, change_mdp from utilisateurs where login = '" . $user_ldap_info[0]["uid"][0] . "' and password = '' and etat != 'inactif'";
                 $res_user = sql_query($sql);
                 $row = sql_row($res_user,0);
             } elseif ($user_ldap_info[0]["uid"][0] == "administrateur") {
@@ -289,7 +284,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
                                 "administrateur",
                                 $user_ldap_info[0]["mail"][0]);
 
-                $sql = "select upper(login) login, password, prenom, nom, statut, now() start, change_mdp from utilisateurs where login = '" . $user_ldap_info[0]["uid"][0] . "' and password = '' and etat != 'inactif'";
+                $sql = "select login, password, prenom, nom, statut, now() start, change_mdp from utilisateurs where login = '" . $user_ldap_info[0]["uid"][0] . "' and password = '' and etat != 'inactif'";
                 $res_user = sql_query($sql);
                 $row = sql_row($res_user,0);
             }
