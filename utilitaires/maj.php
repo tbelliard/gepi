@@ -5204,6 +5204,56 @@ ADD `ajout_cadre_blanc_photo` TINYINT NOT NULL DEFAULT '0';";
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
 
+
+		// 20071130
+		$result .= "&nbsp;->Ajout des champs 'affiche_moyenne_mini_general' et 'affiche_moyenne_maxi_general' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_moyenne_mini_general'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `model_bulletin` ADD `affiche_moyenne_mini_general` TINYINT NOT NULL DEFAULT '1',
+ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
+			//echo "<br />$sql<br />";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du champ 'affiche_date_edition' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_date_edition'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `model_bulletin` ADD `affiche_date_edition` TINYINT NOT NULL DEFAULT '1';";
+			//echo "<br />$sql<br />";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
+		$result .= "&nbsp;->Ajout du champ 'active_moyenne_general' à la table 'model_bulletin'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'active_moyenne_general'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `model_bulletin` ADD `active_moyenne_general` TINYINT NOT NULL DEFAULT '1';";
+			//echo "<br />$sql<br />";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
 		//===================================================
 
     }
