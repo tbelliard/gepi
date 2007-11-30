@@ -2918,7 +2918,10 @@ $cpt_ordre = $cpt_ordre + 1;
 			// nom des professeurs
 			$nb_prof_matiere = count($matiere[$ident_eleve_aff][$id_periode][$m]['prof']);
 			$espace_matiere_prof = $espace_entre_matier/2;
-			$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+			//$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+			if($nb_prof_matiere>0){
+				$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+			}
 			$nb_pass_count = '0';
 			$text_prof = '';
 			while ($nb_prof_matiere > $nb_pass_count)
