@@ -89,7 +89,8 @@ if ($current_group) {
 		echo "<tr>\n";
 		echo "<th></th>\n";
 		while ($i < $nb_periode) {
-			echo "<th>Période $i</th>\n";
+			//echo "<th>Période $i</th>\n";
+			echo "<th>".$current_group["periodes"][$i]["nom_periode"]."</th>\n";
 			$i++;
 		}
 		echo "</tr>\n";
