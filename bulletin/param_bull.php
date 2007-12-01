@@ -625,6 +625,14 @@ if(isset($_POST['bull_categ_font_size_avis'])) {
 }
 
 
+if (isset($_POST['genre_periode'])) {
+	if (!saveSetting("genre_periode", $_POST['genre_periode'])) {
+		$msg .= "Erreur lors de l'enregistrement de genre_periode !";
+		$reg_ok = 'no';
+	}
+}
+
+
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
    $msg = "Enregistrement réussi !";
 }
@@ -956,6 +964,33 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 			echo "<option value=\"$tab_styles_avis[$i]\" $selected>$tab_styles_avis[$i]</option>\n";
 		}
 		echo "</select>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Genre des périodes :<br />(<i>'trimestre' ou 'semestre' est masculin; 'période' est féminin</i>)
+        </td>
+	<?php
+		if(getSettingValue("genre_periode")){
+			$genre_periode=getSettingValue("genre_periode");
+		}
+		else{
+			$genre_periode="M";
+		}
+	?>
+        <td>
+	<?php
+        echo "<label for='genre_periodeM' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"genre_periode\" id=\"genre_periodeM\" value=\"M\" ";
+        if ($genre_periode == 'M') {echo " checked";}
+        echo " />&nbsp;Masculin</label>\n";
+		echo "<br />\n";
+        echo "<label for='genre_periodeF' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"genre_periode\" id=\"genre_periodeF\" value=\"F\" ";
+        if ($genre_periode == 'F') {echo " checked";}
+        echo " />&nbsp;Féminin</label>\n";
         ?>
 	</td>
     </tr>

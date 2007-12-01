@@ -428,6 +428,13 @@ echo "}\n";
 	}
 
 
+	if(getSettingValue("genre_periode")){
+		$genre_periode=getSettingValue("genre_periode");
+	}
+	else{
+		$genre_periode="M";
+	}
+
 
 	function redimensionne_image($photo){
 		global $bull_photo_largeur_max, $bull_photo_hauteur_max;
@@ -1489,7 +1496,14 @@ echo "'>\n";
 		echo "<td style='width:".$addressblock_classe_annee2."%;'>\n";
 		echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />\n";
 		$temp = strtolower($nom_periode[$periode_num]);
-		echo "Bulletin&nbsp;du $temp</p>";
+		echo "Bulletin&nbsp;";
+		if($genre_periode=="M"){
+			echo "du ";
+		}
+		else{
+			echo "de la ";
+		}
+		echo "$temp</p>";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -1619,11 +1633,18 @@ echo "'>\n";
 		echo "</p></td>\n<td style=\"width: 40%;text-align: center;\">\n";
 
 		if ($affiche_adresse != "y") {
-		echo "<p class='bulletin'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />";
-		$temp = strtolower($nom_periode[$periode_num]);
-		echo "Bulletin&nbsp;du $temp</p>";
+			echo "<p class='bulletin'><span class=\"bgrand\">Classe de $current_classe_nom_complet<br />Année scolaire ".$gepiYear."</span><br />";
+			$temp = strtolower($nom_periode[$periode_num]);
+			echo "Bulletin&nbsp;";
+			if($genre_periode=="M"){
+				echo "du ";
+			}
+			else{
+				echo "de la ";
+			}
+			echo "$temp</p>";
 		} else {
-		echo "&nbsp;";
+			echo "&nbsp;";
 		}
 
 		$nom_fic_logo = $logo_etab;
