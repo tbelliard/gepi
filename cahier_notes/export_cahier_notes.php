@@ -177,10 +177,10 @@ if(!isset($type_export)){
 	echo "<p>Vous pouvez effectuer un export:<br />\n";
 	echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
 	//echo "<input type='hidden' name='is_posted' value='yes' />\n";
-	echo "<input type='radio' name='type_export' value='CSV' checked /> fichier CSV<br />\n";
+	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' checked /><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
 
 	if(getSettingValue("export_cn_ods")=='y') {
-		echo "<input type='radio' name='type_export' value='ODS' /> feuille de tableur ODS<br />\n";
+		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' /><label for='type_export_ods' style='cursor: pointer;'> feuille de tableur ODS</label><br />\n";
 	}
 	echo "<input type='submit' name='envoyer' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -364,7 +364,11 @@ if($type_export=="CSV"){
 			// Problème avec les 17.5 qui sont convertis en dates -> 17/05/07
 			$eleve_note=strtr($eleve_note,".",",");
 
-			if($eleve_statut!=''){
+			if($eleve_statut=='v'){
+				// Pas de note saisie -> statut = v pour vide
+				$eleve_note="-";
+			}
+			elseif($eleve_statut!=''){
 				$eleve_note=$eleve_statut;
 			}
 
@@ -681,7 +685,13 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')){
 
 			//$eleve_login_note=$eleve_login[$i]."_note";
 
-			if($eleve_statut!=''){
+			if($eleve_statut=='v'){
+				// Pas de note saisie -> statut = v pour vide
+				$eleve_note="-";
+
+				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_note.'</text:p></table:table-cell>');
+			}
+			elseif($eleve_statut!=''){
 				$eleve_note=$eleve_statut;
 
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_note.'</text:p></table:table-cell>');
