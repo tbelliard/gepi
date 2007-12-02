@@ -105,10 +105,18 @@ if ($current_group) {
 				if($liste_periodes_ouvertes!=""){$liste_periodes_ouvertes.=", ";}
 				$liste_periodes_ouvertes.=$current_group["periodes"][$i]["nom_periode"];
 
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir les moyennes' title='Saisir les moyennes' /></a>\n";
+				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Saisir les moyennes</center>","",10,0,"n","n","y","n");
+
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/edit16.png' width='16' height='16' ";
+				//echo "alt='Saisir les moyennes' title='Saisir les moyennes' ";
+				echo "/></a>\n";
 			}
 			else{
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i'><img src='../images/chercher.png' width='16' height='16' alt='Saisir les moyennes' title='Consulter les moyennes' /></a>\n";
+				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Consulter les moyennes</center>","",12,0,"n","n","y","n");
+
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/chercher.png' width='16' height='16' ";
+				//echo "alt='Saisir les moyennes' title='Consulter les moyennes' ";
+				echo "/></a>\n";
 			}
 			echo "</td>\n";
 			$i++;
