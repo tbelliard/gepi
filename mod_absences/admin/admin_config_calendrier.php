@@ -28,6 +28,9 @@ require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
 
+// gestion du style
+$style_specifique = "mod_absences/styles/mod_absences";
+
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {

@@ -104,6 +104,7 @@ if (isset($calendrier) AND isset($supprimer)) {
 <?php
 //+++++++++++ fin de l'aide ++++++++++++++++++
 
+
 /* On modifie quand c'est demandé */
 if (isset($calendrier) AND isset($modifier)) {
 	// On affiche la période demandée dans un formulaire
@@ -662,6 +663,11 @@ if (isset($message_new)) {
 	echo $message_new;
 }
 
+
+// On vérifie le retour en session pour savoir si il faut l'afficher
+if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "../mod_absences/admin/index.php") {
+	echo '<p class=bold><a href="'.$_SESSION["retour"].'"><img src="../images/icons/back.png" alt="Retour" class="back_link"/> Retour vers le module absences</a>';
+}
 ?>
 
 	</div>
