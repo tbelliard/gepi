@@ -109,7 +109,14 @@ if (!isset($id_classe)) {
 	//echo "<ul>\n";
 	$i="1";
 	echo "<table class='boireaus' cellpadding='3'>\n";
-	echo "<tr><th>Période</th><th>Saisir</th><th>Consulter</th><th>Importer les absences de GEP</th></tr>\n";
+
+	// si le module de gestion des absences est activé alors on ajout un colspan de 2 pour l'entêt d'importation
+	$colspan = '1';
+	if ( getSettingValue("active_module_absence") === 'y' ) {
+		$colspan = '2';
+	}
+
+	echo "<tr><th>Période</th><th>Saisir</th><th>Consulter</th><th colspan='$colspan'>Importer les absences</th></tr>\n";
 	$alt=1;
 	while ($i < $nb_periode) {
 		$alt=$alt*(-1);
@@ -123,10 +130,19 @@ if (!isset($id_classe)) {
 		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/chercher.png' width='16' height='16' alt='Saisir les absences, retards,...' title='Consulter les absences, retards,...' /></a></td>\n";
 
 		if ($ver_periode[$i] == "N") {
-			echo "<td><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>Import GEP</a></td>\n";
+			echo "<td><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>de GEP</a></td>\n";
 		} else {
 			echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
 		}
+
+	    // si le module de gestion des absences de gepi est activé alors on propose l'importation des absences de ce module
+	    if ( getSettingValue("active_module_absence") === 'y' ) {
+			if ($ver_periode[$i] == "N") {
+				echo "<td><a href='import_absences_gepi.php?id_classe=$id_classe&amp;periode_num=$i'>de GEPI</a></td>\n";
+			} else {
+				echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
+			}
+	    }
 
 		$i++;
 	}
