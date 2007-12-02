@@ -127,7 +127,7 @@ if (!isset($id_classe)) {
 		} else {
 			echo "<td style='color:red;'>".$gepiClosedPeriodLabel."</td>\n";
 		}
-		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/chercher.png' width='16' height='16' alt='Saisir les absences, retards,...' title='Consulter les absences, retards,...' /></a></td>\n";
+		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/icons/chercher.png' width='16' height='16' alt='Saisir les absences, retards,...' title='Consulter les absences, retards,...' /></a></td>\n";
 
 		if ($ver_periode[$i] == "N") {
 			echo "<td><a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$i'>de GEP</a></td>\n";
