@@ -114,7 +114,7 @@ if ($current_group) {
 			else{
 				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Consulter les moyennes</center>","",12,0,"n","n","y","n");
 
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/chercher.png' width='16' height='16' ";
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/icons/chercher.png' width='16' height='16' ";
 				//echo "alt='Saisir les moyennes' title='Consulter les moyennes' ";
 				echo "/></a>\n";
 			}
