@@ -409,8 +409,8 @@ echo '
 		<td class="bonnelargeur">à</td>
 		<td class="bonnelargeur">Dernier jour</td>
 		<td class="bonnelargeur">à</td>
-		<!--<td>Trimestre</td>-->
 		<td class="bonnelargeur">Etablissement</td>
+		<td>Cours<br />Vacances</td>
 		<td></td>
 		<td></td>
 	</tr>
@@ -454,6 +454,13 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 				$aff_classe_concerne = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout=\"cacher_div('".$id_div."');\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n");
 			} // else
 
+			// On détermine si c'est une période pédagogique ou une période de vacances
+			if ($rep_affcalendar[$i]["etabvacances_calendrier"] == 0) {
+				$aff_cours = "Cours";
+			} else {
+				$aff_cours = "Vac.";
+			}
+
 			// On enlève les secondes à l'affichage
 			$explode_deb = explode(":", $rep_affcalendar[$i]["heuredebut_calendrier"]);
 			$rep_affcalendar[$i]["heuredebut_calendrier"] = $explode_deb[0].":".$explode_deb[1];
@@ -485,6 +492,7 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 		<td>'.$rep_affcalendar[$i]["heurefin_calendrier"].'</td>
 		<!--<td>'.$rep_affcalendar[$i]["numero_periode"].'</td>-->
 		<td>'.$ouvert_ferme.'</td>
+		<td>'.$aff_cours.'</td>
 		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;modifier='.$rep_affcalendar[$i]["id_calendrier"].'"><img src="../images/icons/configure.png" title="Modifier" alt="Modifier" /></a></td>
 		<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;supprimer='.$rep_affcalendar[$i]["id_calendrier"].'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../images/icons/delete.png" title="Supprimer" alt="Supprimer" /></a></td>
 	</tr>
