@@ -1643,9 +1643,20 @@ if(isset($eleve_login)){
 				echo "</p>\n";
 			}
 			else{
-				echo "<p>L'établissement d'origine de l'élève est:<br />\n";
+				echo "<p>L'établissement d'origine de l'élève est&nbsp;:<br />\n";
 				$lig_etab2=mysql_fetch_object($res_etab2);
-				echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
+				//echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
+				echo "&nbsp;&nbsp;&nbsp;";
+				if($lig_etab2->niveau=="college"){
+					echo "Collège";
+				}
+				elseif($lig_etab2->niveau=="lycee"){
+					echo "Lycée";
+				}
+				else{
+					echo ucfirst(strtolower($lig_etab2->niveau));
+				}
+				echo " ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
 				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
 				echo "</p>\n";
 			}
