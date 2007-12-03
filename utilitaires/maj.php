@@ -5266,7 +5266,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		$result .= "&nbsp;->Ajout de la table absences_rb. <br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_rb'"));
 		if ($test1 == 0) {
-			$sql = "CREATE TABLE `absences_archives` (`id` int(5) NOT NULL auto_increment,
+			$sql = "CREATE TABLE `absences_rb` (`id` int(5) NOT NULL auto_increment,
 			`eleve_id` varchar(30) NOT NULL,
 			`retard_absence` varchar(1) NOT NULL default 'A',
 			`groupe_id` varchar(8) NOT NULL,
