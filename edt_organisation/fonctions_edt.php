@@ -149,7 +149,7 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 		}
 	}
 	elseif ($type_edt == "classe") {
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_classes.id_groupe AND id_classe='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(classe) !');
+		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_classes.id_groupe AND id_classe='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_groupe") or die('Erreur : cree_tab_general(classe) : '.mysql_error());
 	}
 	elseif ($type_edt == "eleve"){
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_eleves_groupes.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(eleve) !');
