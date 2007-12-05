@@ -110,12 +110,14 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 
 
 			$app_ele_courant="app_eleve_".$num_eleve;
+			//echo "\$app_ele_courant=$app_ele_courant<br />";
 			if (isset($NON_PROTECT[$app_ele_courant])){
 				$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$app_ele_courant]));
 			}
 			else{
 				$ap = "";
 			}
+			//echo "\$ap=$ap<br />";
 
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 			$ap=ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
@@ -221,7 +223,7 @@ while($i < $nombre_lignes) {
 	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
 	//echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
-	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name=''no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
+	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
 	//=========================
 	$i++;
 	$num_id++;
