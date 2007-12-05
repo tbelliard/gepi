@@ -456,7 +456,7 @@ while($i < $lignes_groupes){
 			// Coefficient du groupe:
 			$coef_eleve = $current_coef;
 		}
-		$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+		//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
 
 
       if ($referent == "une_periode") {
@@ -493,7 +493,7 @@ while($i < $lignes_groupes){
 							// Coefficient du groupe:
 							$coef_eleve = $current_coef;
 						}
-						$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+						//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
 
                         //$total_coef[$j+$ligne_supl] += $current_coef;
                         $total_coef_eleve[$j+$ligne_supl] += $coef_eleve;
