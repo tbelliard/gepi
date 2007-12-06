@@ -993,11 +993,20 @@ while ($i < $nombre_eleves2) {
 					WHERE r.ele_id='$ele_id' AND
 						rp.adr_id=ra.adr_id AND
 						r.pers_id=rp.pers_id");
-		*/
+
 		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
 					WHERE r.ele_id='$ele_id' AND
 						rp.adr_id=ra.adr_id AND
 						r.pers_id=rp.pers_id");
+		*/
+		$sql="SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
+					WHERE r.ele_id='$ele_id' AND
+						rp.adr_id=ra.adr_id AND
+						r.pers_id=rp.pers_id AND
+						(r.resp_legal='1' OR r.resp_legal='2')
+					ORDER BY r.resp_legal";
+		echo "$sql<br />";
+		$call_resp=@mysql_query($sql);
 
 		// VIDER LES TABLEAUX AVANT ?
 
