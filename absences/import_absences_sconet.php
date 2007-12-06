@@ -561,7 +561,8 @@ function get_nom_class_from_id($id){
 													$tab_tmp2=explode("=",ereg_replace('"','',$tab_tmp[$j]));
 													//echo "\$tab_tmp2[0]=".$tab_tmp[0]."<br />";
 													//echo "\$tab_tmp2[1]=".$tab_tmp[1]."<br />";
-													$eleves[$i][trim($tab_tmp2[0])]=trim($tab_tmp2[1]);
+													//$eleves[$i][trim($tab_tmp2[0])]=trim($tab_tmp2[1]);
+													$eleves[$i][trim($tab_tmp2[0])]=trim(ereg_replace("/>$","",$tab_tmp2[1]));
 												}
 											}
 										}
