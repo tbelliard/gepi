@@ -1005,7 +1005,7 @@ while ($i < $nombre_eleves2) {
 						r.pers_id=rp.pers_id AND
 						(r.resp_legal='1' OR r.resp_legal='2')
 					ORDER BY r.resp_legal";
-		echo "$sql<br />";
+		//echo "$sql<br />";
 		$call_resp=@mysql_query($sql);
 
 		// VIDER LES TABLEAUX AVANT ?
