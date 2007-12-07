@@ -171,20 +171,22 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
     </tr>
     <?php
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-        $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+        $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
         WHERE (c.id_classe='$id_classe' AND
            c.login = e.login AND
            c.periode = '".$periode_num."'
-           ) ORDER BY 'nom'");
+           ) ORDER BY nom";
     } else {
-        $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+        $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
         WHERE (c.id_classe='$id_classe' AND
            c.login = e.login AND
            p.login = c.login AND
            p.professeur = '".$_SESSION['login']."' AND
            c.periode = '".$periode_num."'
-           ) ORDER BY 'nom'");
+           ) ORDER BY nom";
     }
+	//echo "<tr><td colspan='2'>$sql</td></tr>";
+	$appel_donnees_eleves = mysql_query($sql);
     $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
     $i = "0";
     while($i < $nombre_lignes) {
