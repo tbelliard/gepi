@@ -137,22 +137,29 @@ if (
 
 
 if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
+	// Le choix de la classe n'est pas encore fait et l'on n'est ni responsable, ni élève
+
     //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+
 	if($_SESSION['statut'] == 'scolarite'){
-		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes"){
-		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" n'est pas donné
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes") {
-		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
+		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" est donné
+		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
 	elseif($_SESSION['statut'] == 'cpe'){
-		$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 	}
+	//echo "$sql<br />\n";
+	$calldata = mysql_query($sql);
     $nombreligne = mysql_num_rows($calldata);
     echo " | Total : $nombreligne classes </p>\n";
 
@@ -197,8 +204,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<p><a href='index3.php?login_eleve=".$current_eleve->login."'>".$current_eleve->prenom." ".$current_eleve->nom."</a></p>";
 	}
 } else if (!isset($choix_edit)) {
+	// ====================
+	// boireaus 20071207
+	// Je ne saisis pas bien comment $choix_edit peut être affecté sans register_globals=on
+	// Nulle part la variable n'a l'air récupérée en POST ou autre...
+	// ====================
+
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-	    echo " | <a href = \"index3.php\">Choisir une autre classe</a>";
+	    echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
 
 		// Ajout lien classe précédente / classe suivante
 		if($_SESSION['statut']=='scolarite'){
@@ -216,6 +229,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				jecpe.cpe_login='".$_SESSION['login']."'
 				ORDER BY classe";
 		}
+		//echo "$sql<br />\n";
 		$res_class_tmp=mysql_query($sql);
 		if(mysql_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
@@ -286,7 +300,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		    $call_eleve = mysql_query("SELECT DISTINCT e.* " .
+		    $sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -294,10 +308,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"jeg.login = jec.login AND " .
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom");
+				"ORDER BY e.nom,e.prenom";
 	    } else {
-		    $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
+		    $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom";
 	    }
+		//echo "$sql<br />\n";
+		$call_eleve = mysql_query($sql);
 	    $nombreligne = mysql_num_rows($call_eleve);
 	    $i = "0" ;
 	    while ($i < $nombreligne) {
