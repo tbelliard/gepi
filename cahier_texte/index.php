@@ -689,7 +689,7 @@ $content = @mysql_result($appel_info_cahier_texte, 0,'contenu');
 $id_ctexte = @mysql_result($appel_info_cahier_texte, 0,'id_ct');
 include "../lib/transform.php";
   $architecture= "/documents/cl".$current_group["id"];
-  $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='".$id_ctexte."' AND emplacement LIKE '%".$architecture."%' ORDER BY 'titre'";
+  $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='".$id_ctexte."' AND emplacement LIKE '%".$architecture."%' ORDER BY titre";
   $res = sql_query($sql);
   if (($res) and (sql_count($res)!=0)) {
      $html .= "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>\n";
@@ -827,7 +827,7 @@ else
     $architecture= "/documents/cl".$current_group["id"];
 if (isset($id_ct)) {
     // Recherche de documents joints
-    $sql = "SELECT id, titre, taille, emplacement FROM ct_documents WHERE id_ct='".$id_ct."' AND emplacement LIKE '%".$architecture."%' ORDER BY 'titre'";
+    $sql = "SELECT id, titre, taille, emplacement FROM ct_documents WHERE id_ct='".$id_ct."' AND emplacement LIKE '%".$architecture."%' ORDER BY titre";
     $res = sql_query($sql);
     if (($res) and (sql_count($res)!=0)) {
         // Affichage des documents joints

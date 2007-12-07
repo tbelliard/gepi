@@ -52,14 +52,14 @@ if (isset($_POST['is_posted'])) {
 		$quels_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login
-		) ORDER BY 'nom'");
+		) ORDER BY nom");
 	} else {
 		$quels_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login AND
 		p.login = c.login AND
 		p.professeur = '".$_SESSION['login']."'
-		) ORDER BY 'nom'");
+		) ORDER BY nom");
 	}
 	$lignes = mysql_num_rows($quels_eleves);
 	$j = '0';
@@ -160,14 +160,14 @@ if ($id_classe) {
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login
-		) ORDER BY 'nom'");
+		) ORDER BY nom");
 	} else {
 		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login AND
 		p.login = c.login AND
 		p.professeur = '".$_SESSION['login']."'
-		) ORDER BY 'nom'");
+		) ORDER BY nom");
 	}
 	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
