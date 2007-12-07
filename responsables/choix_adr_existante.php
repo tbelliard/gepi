@@ -239,18 +239,38 @@ else{
 	echo "<td>les adresses dont \n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='radio' name='crit_rech' value='adr' checked /> une ligne 'adrX'\n";
+	echo "<label for='crit_rech_adr' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_adr' value='adr' checked /> une ligne 'adrX'\n";
+	echo "</label>\n";
 	echo "<br />\n";
-	echo "<input type='radio' name='crit_rech' value='cp' /> le code postal\n";
+	echo "<label for='crit_rech_cp' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_cp' value='cp' /> le code postal\n";
+	echo "</label>\n";
 	echo "<br />\n";
-	echo "<input type='radio' name='crit_rech' value='commune' /> le nom de commune\n";
+	echo "<label for='crit_rech_commune' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_commune' value='commune' /> le nom de commune\n";
+	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
+
+	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
+	echo "</label>\n";
+	/*
 	echo "<input type='radio' name='mode_rech' value='contient' checked /> contient \n";
 	echo "<br />\n";
 	echo "<input type='radio' name='mode_rech' value='commence par' /> commence par \n";
 	echo "<br />\n";
 	echo "<input type='radio' name='mode_rech' value='se termine par' /> se termine par \n";
+	*/
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<input type='text' name='val_rech' value='' />\n";
