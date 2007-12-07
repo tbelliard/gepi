@@ -111,7 +111,7 @@ if (isset($_POST['is_posted'])) {
             c.login = e.login AND
             c.periode = '".$periode_num."'
 
-            ) ORDER BY 'nom'");
+            ) ORDER BY nom");
         } else {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
             WHERE (c.id_classe='$id_classe' AND
@@ -119,7 +119,7 @@ if (isset($_POST['is_posted'])) {
             p.login = c.login AND
             p.professeur = '".$_SESSION['login']."' AND
             c.periode = '".$periode_num."'
-            ) ORDER BY 'nom'");
+            ) ORDER BY nom");
         }
         $nb_eleve = mysql_num_rows($appel_donnees_eleves);
         $current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
