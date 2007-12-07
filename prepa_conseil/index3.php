@@ -87,7 +87,12 @@ if (isset($id_classe)) {
 		die();
 	}
 	// On teste si un professeur a le droit d'accéder à cette classe
-	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+
+	//echo "\$_SESSION['statut']=".$_SESSION['statut']."<br />";
+	//echo "\getSettingValue(\"GepiAccesBulletinSimpleProfToutesClasses\")=".getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")."<br />";
+
+	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
 			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
@@ -299,7 +304,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    echo "<td>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : \n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
-	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	    //if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 		    $sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .

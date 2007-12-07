@@ -92,7 +92,8 @@ if (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND
 	die();
 }
 
-if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 	$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
@@ -102,7 +103,12 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 	}
 }
 
-if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" and $choix_edit == "2") {
+//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" and $choix_edit == "2") {
+if ($_SESSION['statut'] == "professeur" AND
+getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
+getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND
+$choix_edit == "2") {
+
 	$test = mysql_num_rows(mysql_query("SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
@@ -151,7 +157,11 @@ if ($choix_edit == '2') {
 }
 
 if ($choix_edit != '2') {
-	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+	if ($_SESSION['statut'] == "professeur" AND
+	getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
+	getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes") {
+
 		// On ne sélectionne que les élèves que le professeur a en cours
 	    if ($choix_edit == '1') {
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
@@ -196,7 +206,7 @@ if ($choix_edit != '2') {
 	        		") ORDER BY e.nom,e.prenom");
 		}
 	}
-    
+
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
     $i=0;
     $k=0;
