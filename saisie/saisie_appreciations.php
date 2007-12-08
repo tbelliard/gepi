@@ -189,6 +189,8 @@ if (!isset($periode_cn)) $periode_cn = 0;
 
 $themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
+$utilisation_prototype = "ok";
+$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des appréciations";
 require_once("../lib/header.inc");
@@ -199,6 +201,7 @@ $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
+
 </script>
 <?php
 
@@ -419,7 +422,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ".$liste_notes."<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
-				$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\">".$eleve_app."</textarea></td>\n";
+				$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\">".$eleve_app."</textarea></td>\n";
 
 				//=========================
 
