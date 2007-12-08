@@ -274,12 +274,23 @@ $cpt=0;
 unset($chaine_recherche);
 if(!isset($val_rech)) {$val_rech="";}
 //if(isset($val_rech)){
+$chaine_info_recherche="";
 if($val_rech!=""){
 	//echo "\$val_rech=$val_rech<br />";
 	//$order_by=="nom,prenom";
 	$limit="TOUS";
 	if($val_rech!=""){
 		// FILTRER LES CARACTERES DE $val_rech?
+
+		switch($crit_rech){
+			case "prenom":
+					$crit_rech="prenom";
+				break;
+			default:
+					$crit_rech="nom";
+				break;
+		}
+
 		switch($mode_rech){
 			case "contient":
 					$valeur_cherchee="%$val_rech%";
@@ -292,27 +303,24 @@ if($val_rech!=""){
 				break;
 		}
 
-		switch($crit_rech){
-			case "prenom":
-					$crit_rech="prenom";
-				break;
-			default:
-					$crit_rech="nom";
-				break;
-		}
-
 		switch($champ_rech){
 			case "resp1":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=1;
+
+					$chaine_info_recherche.="le $crit_rech du responsable légal 1 $mode_rech $val_rech";
 				break;
 			case "resp2":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=2;
+
+					$chaine_info_recherche.="le $crit_rech du responsable légal 2 $mode_rech $val_rech";
 				break;
 			case "eleves":
 					$chaine_recherche="e.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp="ele";
+
+					$chaine_info_recherche.="le $crit_rech de l'élève $mode_rech $val_rech";
 				break;
 		}
 	}
@@ -368,6 +376,26 @@ else{
 //echo "cpt=$cpt<br />";
 
 //echo "<p>\$chaine_recherche=$chaine_recherche et \$num_resp=$num_resp</p>";
+
+echo "<p style='font-weight:bold; text-align:center;'>";
+if("$num_resp"=="0"){
+	echo "Responsables sans élève associé";
+}
+elseif(($order_by=="nom,prenom")&&("$num_resp"=="1")) {
+	echo "Responsables triés par nom du responsable légal 1";
+}
+elseif(($order_by=="nom,prenom")&&("$num_resp"=="2")) {
+	echo "Responsables triés par nom du responsable légal 2";
+}
+elseif(($order_by=="nom,prenom")&&("$num_resp"=="ele")) {
+	echo "Responsables triés par nom d'élève";
+}
+
+if($chaine_info_recherche!=""){
+	echo "<br />dont ".$chaine_info_recherche;
+}
+echo ".</p>\n";
+
 
 echo "<form enctype='multipart/form-data' name='liste_resp' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
