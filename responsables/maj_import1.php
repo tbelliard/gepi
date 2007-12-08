@@ -2755,6 +2755,7 @@ else{
 
 }
 
+echo "<p><br /></p>\n";
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>\n";
 echo "<li>\n";
@@ -2765,6 +2766,7 @@ echo "<li>";
 echo "<p>Il reste aussi à assurer l'import de l'établissement d'origine avec les fichiers etablissements.csv et eleves_etablissements.csv<br />\n";
 echo "Par ailleurs, l'inscription des élèves dans telle ou telle classe, avec telle et telle option n'est pas encore assurée par cette page d'importation/mise à jour.<br />\n";
 echo "(<i>il faut donc par la suite affecter les nouveaux élèves dans les classes et les inscrire dans les groupes/options/matières</i>)<br />\n";
+echo "Il faut également, pour les nouveaux élèves inscrits (<i>s'il y en a</i>), faire l'association avec le CPE responsable et le ".getSettingValue('gepi_prof_suivi').".";
 echo "</p>\n";
 echo "</li>\n";
 echo "</ul>\n";
