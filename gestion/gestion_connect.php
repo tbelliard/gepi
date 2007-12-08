@@ -493,7 +493,7 @@ echo "</form>";
 <?php
 $requete = '';
 $requete1 = '';
-if ($duree2 != 'all') $requete = "where l.START > now() - interval " . $duree2 . " day";
+if ($duree2 != 'all') {$requete = "where l.START > now() - interval " . $duree2 . " day";}
 if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='';}
 $sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
  l.AUTOCLOSE, l.END, u.email
@@ -518,8 +518,7 @@ $minute_now = date("i");
 $now = mktime($hour_now, $minute_now, 0, $month_now, $day_now, $year_now);
 $res = sql_query($sql);
 if ($res) {
-    for ($i = 0; ($row = sql_row($res, $i)); $i++)
-    {
+    for ($i = 0; ($row = sql_row($res, $i)); $i++) {
         $annee_f = substr($row[8],0,4);
         $mois_f =  substr($row[8],5,2);
         $jour_f =  substr($row[8],8,2);
@@ -541,32 +540,46 @@ if ($res) {
             $temp1 = "<font color=green>";
             $temp2 = "</font>";
         }
-        if ($row[1] == '') $row[1] = "<font color=red><b>Utilisateur inconnu</b></font>";
-        echo("<tr>\n");
+        if ($row[1] == '') {$row[1] = "<font color=red><b>Utilisateur inconnu</b></font>";}
+
+        echo "<tr>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br /><a href=\"mailto:" .$row[9]. "\">".$row[1] . "</a>".$temp2."</span></td>\n";
-        echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>";
+        echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>\n";
         if ($row[7] == 4) {
-           echo "<td class=\"col\" style=\"color: red;\"><span class='small'><b>Tentative de connexion<br />avec mot de passe erroné.</b></span></td>";
+           echo "<td class=\"col\" style=\"color: red;\"><span class='small'><b>Tentative de connexion<br />avec mot de passe erroné.</b></span></td>\n";
         } else if ($end_time > $now) {
-            echo "<td class=\"col\" style=\"color: green;\"><span class='small'>" .$date_fin_f. "</span></td>";
+            echo "<td class=\"col\" style=\"color: green;\"><span class='small'>" .$date_fin_f. "</span></td>\n";
         } else if (($row[7] == 1) or ($row[7] == 2) or ($row[7] == 3)) {
-            echo "<td class=\"col\" style=\"color: orange;\"><span class='small'>" .$date_fin_f. "</span></td>";
+            echo "<td class=\"col\" style=\"color: orange;\"><span class='small'>" .$date_fin_f. "</span></td>\n";
         } else {
             echo "<td class=\"col\"><span class='small'>" .$date_fin_f. "</span></td>";
         }
-        if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all"))
+        if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
             $result_hostbyaddr = " - ".@gethostbyaddr($row[4]);
-        else if ($active_hostbyaddr == "no_local")
-            if ((substr($row[4],0,3) == 127) or (substr($row[4],0,3) == 10.) or (substr($row[4],0,7) == 192.168))
+		}
+        else if($active_hostbyaddr == "no_local") {
+            if ((substr($row[4],0,3) == 127) or (substr($row[4],0,3) == 10.) or (substr($row[4],0,7) == 192.168)) {
                 $result_hostbyaddr = "";
-            else
-                $result_hostbyaddr = " - ".@gethostbyaddr($row[4]);
-        else
+            }
+			else{
+				$tabip=explode(".",$row[4]);
+				if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+					$result_hostbyaddr = "";
+				}
+				else{
+	                $result_hostbyaddr = " - ".@gethostbyaddr($row[4]);
+				}
+			}
+		}
+		else{
             $result_hostbyaddr = "";
+		}
+        echo "<td class=\"col\"><span class='small'>".$temp1.$row[4].$result_hostbyaddr.$temp2. "</span></td>\n";
+        echo "<td class=\"col\"><span class='small'>".$temp1. detect_browser($row[5]) .$temp2. "</span></td>\n";
+        echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>\n";
 
-        echo "<td class=\"col\"><span class='small'>".$temp1.$row[4].$result_hostbyaddr.$temp2. "</span></td>";
-        echo "<td class=\"col\"><span class='small'>".$temp1. detect_browser($row[5]) .$temp2. "</span></td>";
-        echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>";
+        echo "</tr>\n";
+		flush();
     }
 }
 
