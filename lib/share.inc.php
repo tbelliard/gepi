@@ -2289,4 +2289,21 @@ function nom_photo($elenoet){
 
 	return $photo;
 }
+
+function insert_confirm_abandon(){
+	global $themessage;
+
+	if(isset($themessage)) {
+		if($themessage!="") {
+			return " onclick=\"return confirm_abandon(this, change, '$themessage')\" ";
+		}
+		else{
+			return "";
+		}
+	}
+	else{
+		return "";
+	}
+}
+
 ?>

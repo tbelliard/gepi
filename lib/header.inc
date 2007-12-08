@@ -35,7 +35,7 @@ function last_connection() {
       $secondes_b = substr($row[0],17,2);
       if ($row[0]  != '') {
           if ($row[1]  == "4") {
-              $r = "<font color = 'red'><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></font> (<a href='utilisateurs/mon_compte.php#connexion'>journal des connexions</a>)";
+              $r = "<font color = 'red'><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></font> (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
               // On compte le nombre de tentatives infructueuses successives
               $nb_tentative = 0;
               $flag = 0;
@@ -48,7 +48,7 @@ function last_connection() {
               }
               if ($nb_tentative > 1) $r .= "<br><b>Nombre de tentatives de connexion successives : ".$nb_tentative.".</b></font>";
           } else
-              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='utilisateurs/mon_compte.php#connexion'>journal des connexions</a>)";
+              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
       }
     }
     return $r;
@@ -353,9 +353,9 @@ if (isset($titre_page)) {
 
 		echo "<td  id='td_headerBottomRight'>\n";
 		echo "<span class='grey'>";
-		echo "<a href='$gepiPath/accueil.php'><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' />&nbsp;Accueil</a>\n";
-		echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' />&nbsp;Gérer mon compte</a>\n";
-		echo " - <a href='$gepiPath/logout.php?auto=0'><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' />&nbsp;Déconnexion</a>\n";
+		echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' />&nbsp;Accueil</a>\n";
+		echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' />&nbsp;Gérer mon compte</a>\n";
+		echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' />&nbsp;Déconnexion</a>\n";
 		echo "</span>\n";
 
 		echo "<br />\n";
