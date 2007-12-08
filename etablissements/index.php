@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/01/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -69,32 +69,35 @@ if (($nombre_lignes == 0) or ($res=='999')) {
     <br /><br />Avant de procéder à l'importation des fichiers GEP ou à l'ajout manuel d'élèves dans la base, il est conseillé
     de constituer la base des établissements d'où proviennent en majorité vos élèves.
     <br />Vous pouvez pour cela <a href=\"import_etab_csv.php\">importer directement le fichier d'établissements</a> de votre académie.
-    <hr /><br />";
+    <hr /><br />\n";
 }
 
 if ($nombre_lignes == 0) {
-    echo "</body></html>";
+	require("../lib/footer.inc.php");
     die();
 }
 
 ?>
-<table width = '100%' border= '1' cellpadding = '5'>
+<table width = '100%' class='boireaus' cellpadding = '5'>
 <tr>
     <?php
-    echo "<td><p class='bold'><a href='index.php?order_by=id'>Identifiant</a></p></td>";
-    echo "<td><p class='bold'><a href='index.php?order_by=nom'>Nom</a></p></td>";
-    echo "<td><p class='bold'><a href='index.php?order_by=niveau'>Niveau</a></p></td>";
-    echo "<td><p class='bold'><a href='index.php?order_by=type'>type</a></p></td>";
-    echo "<td><p class='bold'><a href='index.php?order_by=cp'>Code postal</a></p></td>";
-    echo "<td><p class='bold'><a href='index.php?order_by=ville'>Ville</a></p></td>";
-    echo "<td><p class='bold'>Supprimer</p></td>";
+    echo "<th><p class='bold'><a href='index.php?order_by=id'>Identifiant</a></p></th>\n";
+    echo "<th><p class='bold'><a href='index.php?order_by=nom'>Nom</a></p></th>\n";
+    echo "<th><p class='bold'><a href='index.php?order_by=niveau'>Niveau</a></p></th>\n";
+    echo "<th><p class='bold'><a href='index.php?order_by=type'>type</a></p></th>\n";
+    echo "<th><p class='bold'><a href='index.php?order_by=cp'>Code postal</a></p></th>\n";
+    echo "<th><p class='bold'><a href='index.php?order_by=ville'>Ville</a></p></th>\n";
+    echo "<th><p class='bold'>Supprimer</p></th>\n";
     ?>
 </tr>
 <?php
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
+$alt=1;
 while ($i < $nombre_lignes){
+	$alt=$alt*(-1);
+
     $current_id = mysql_result($call_data, $i, "id");
     $current_nom = mysql_result($call_data, $i, "nom");
     $current_niveau = mysql_result($call_data, $i, "niveau");
@@ -115,15 +118,17 @@ while ($i < $nombre_lignes){
     }
 	$current_cp = mysql_result($call_data, $i, "cp");
     $current_ville = mysql_result($call_data, $i, "ville");
-    echo "<tr><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>";
-    echo "<td>$current_nom</td>";
-    echo "<td>$current_niveau_nom</td>";
-    echo "<td>$current_type</td>";
-    echo "<td>$current_cp</td>";
-    echo "<td>$current_ville</td>";
-    echo "<td><a href='../lib/confirm_query.php?liste_cible=$current_id&amp;action=del_etab'>Supprimer</a></td></tr>";
-$i++;
+    echo "<tr class='lig$alt'><td><a href='modify_etab.php?id=$current_id'>$current_id</a></td>\n";
+    echo "<td>$current_nom</td>\n";
+    echo "<td>$current_niveau_nom</td>\n";
+    echo "<td>$current_type</td>\n";
+    echo "<td>$current_cp</td>\n";
+    echo "<td>$current_ville</td>\n";
+    echo "<td><a href='../lib/confirm_query.php?liste_cible=$current_id&amp;action=del_etab'>Supprimer</a></td></tr>\n";
+	$i++;
 }
+echo "</table>\n";
+echo "<p><br /></p>\n";
+require("../lib/footer.inc.php");
+
 ?>
-</table>
-<?php require("../lib/footer.inc.php");?>

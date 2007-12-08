@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -86,8 +86,8 @@ if (!isset($is_posted)) {
 	echo "<input type='file' name=\"csv_file\" />\n";
 	echo "<input type='submit' value='Valider' />\n";
 	?>
-	<p>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, cocher la case ci-contre&nbsp;
-	<input type='checkbox' NAME="en_tete" VALUE="yes" /></p>
+	<p><label for='en_tete' style='cursor: pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<i>non vide</i>) à ignorer, cocher la case ci-contre&nbsp;
+	<input type='checkbox' name="en_tete" id="en_tete" value="yes" /></label></p>
 	<input type='hidden' name='is_posted' value='1' />
 	<input type='hidden' name='choix' value="autre" />
 
@@ -101,7 +101,7 @@ if (!isset($is_posted)) {
 	foreach ($type_etablissement as $type_etab => $nom_etablissement) {
 		if ($nom_etablissement != "") echo "<li>\"<b>".$type_etab."</b>\" (pour les établissements de type \"".$nom_etablissement."\")</li>\n";
 	}
-	echo "</ul>\nSeules ces possibilités sont autorisées (attention à respecter la casse).<br /><br>\n";";
+	echo "</ul>\nSeules ces possibilités sont autorisées (attention à respecter la casse).<br /><br />\n";
 	echo "--> <B>Le type  \"public\" ou \"prive\". Seules ces deux possibilités sont autorisées.</B><br />\n";
 	echo "--> <B>Le code postal de la ville.</B><br />\n";
 	echo "--> <B>La ville.</B>\n";
@@ -114,7 +114,8 @@ if (!isset($is_posted)) {
 	} else {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	if($csv_file['tmp_name'] == "") {
-		echo "<p>Aucun fichier n'a été sélectionné !</p></body></html>\n";
+		echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 	$fp = @fopen($csv_file['tmp_name'], "r");
@@ -129,17 +130,21 @@ if (!isset($is_posted)) {
 		$row = 0;
 		// Nombre total de lignes insérées dans la base
 		$ind = 0;
-		echo "<table border=1><tr>
-		<td><p class='bold'>N° RNE</p></td>
-		<td><p class='bold'>Nom de l'établissement</p></td>
-		<td><p class='bold'>Type lycée/collège/école/...</p></td>
-		<td><p class='bold'>Type public/privé</p></td>
-		<td><p class='bold'>Code postal</p></td>
-		<td><p class='bold'>Ville</p></td></tr>\n";
+		echo "<table class='boireaus'><tr>
+		<th><p class='bold'>N° RNE</p></th>
+		<th><p class='bold'>Nom de l'établissement</p></th>
+		<th><p class='bold'>Type lycée/collège/école/...</p></th>
+		<th><p class='bold'>Type public/privé</p></th>
+		<th><p class='bold'>Code postal</p></th>
+		<th><p class='bold'>Ville</p></th></tr>\n";
+		$alt=1;
 		while(!feof($fp)) {
 			if (isset($en_tete)) {
 				$data = fgetcsv ($fp, $long_max, ";");
 				unset($en_tete);
+			}
+			else{
+				$alt=$alt*(-1);
 			}
 			$data = fgetcsv ($fp, $long_max, ";");
 			$num = count ($data);
@@ -151,7 +156,7 @@ if (!isset($is_posted)) {
 				$reg_cp = '';
 				$reg_ville = '';
 				$row++;
-				echo "<tr>\n";
+				echo "<tr class='lig$alt'>\n";
 				for ($c=0; $c<$num; $c++) {
 					switch ($c) {
 					case 0:
@@ -315,9 +320,17 @@ if (!isset($is_posted)) {
 		echo "<p class='bold'>".count ($table_etab)." établissements ont été insérés avec succès dans la base.</p>\n";
 	}
 
-	echo "<table border=\"1\" cellpadding=\"2\" cellspacing=\"2\">\n";
+	echo "<table class='boireaus' cellpadding=\"2\" cellspacing=\"2\">\n";
+	$alt=1;
 	for ($c=0; $c<count ($table_etab); $c++) {
-		echo "<tr bgColor=\"".$couleur[$c]."\">\n";
+		$alt=$alt*(-1);
+		if($couleur[$c]!=''){
+			echo "<tr bgColor=\"".$couleur[$c]."\">\n";
+		}
+		else{
+			echo "<tr class='lig$alt'>\n";
+		}
+
 		for ($j=0; $j<count($table_etab[$c]); $j++) {
 			// Pour l'affichage final, on enlève les caractère \ qu'on a rajouté avec traitement_magic_quotes plus haut
 			echo "<td>".StripSlashes($table_etab[$c][$j])."</td>\n";
@@ -328,5 +341,6 @@ if (!isset($is_posted)) {
 	unset($_SESSION['table_etab']);
 
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
