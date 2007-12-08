@@ -107,13 +107,15 @@ if (isset($_POST['isposted'])) {
     die();
 
 }
+
+$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des matières | Modifier une matière";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
 ?>
 <form enctype="multipart/form-data" action="modify_matiere.php" method=post>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=submit value=Enregistrer></input>
+<p class=bold><a href="index.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=submit value=Enregistrer></input>
 </p>
 <?php
 // On va chercher les infos de la matière que l'on souhaite modifier
@@ -137,7 +139,7 @@ if (isset($_GET['current_matiere'])) {
 <td>
 <?php
 if (!isset($_GET['current_matiere'])) {
-    echo "<input type=text size=15 name=reg_current_matiere />";
+    echo "<input type=text size='15' name='reg_current_matiere' onchange='changement()' />";
 } else {
     echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;
 }
@@ -145,13 +147,13 @@ if (!isset($_GET['current_matiere'])) {
 </td></tr>
 <tr>
 <td>Nom complet : </td>
-<td><input type=text name=matiere_nom_complet value="<?php echo $matiere_nom_complet;?>" /></td>
+<td><input type='text' name='matiere_nom_complet' value="<?php echo $matiere_nom_complet;?>" onchange='changement()' /></td>
 </tr>
 <tr>
 <td>Priorité d'affichage par défaut</td>
 <td>
 <?php
-echo "<select size=1 name=matiere_priorite>\n";
+echo "<select size='1' name='matiere_priorite' onchange='changement()' >\n";
 $k = '0';
 echo "<option value=0>0</option>\n";
 $k='11';
@@ -167,7 +169,7 @@ echo "</select></td>";
 <td>Catégorie par défaut</td>
 <td>
 <?php
-echo "<select size=1 name=matiere_categorie>\n";
+echo "<select size='1' name='matiere_categorie' onchange='changement()' >\n";
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
 
@@ -186,12 +188,12 @@ echo "</select>";
 </td>
 </table>
 <p>
-<b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b>
-<input type="checkbox" name="force_defaut" checked />
+<label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b>
+<input type="checkbox" name="force_defaut" id="force_defaut" onchange="changement()" checked /></label>
 </p>
 <p>
-<b>Pour toutes les classes, forcer la valeur de la catégorie de matière à la valeur par défaut ci-dessus :</b>
-<input type="checkbox" name="force_defaut_categorie" checked />
+<label for='force_defaut_categorie' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la catégorie de matière à la valeur par défaut ci-dessus :</b>
+<input type="checkbox" name="force_defaut_categorie" id="force_defaut_categorie" onchange="changement()" checked /></label>
 </p>
 <input type="hidden" name="isposted" value="yes" />
 </form>

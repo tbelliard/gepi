@@ -103,31 +103,31 @@ if (isset($_POST['is_posted'])) {
     }
 }
 
-
+$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des matières";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold><a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
- | <a href="modify_matiere.php">Ajouter matière</a>
- | <a href='matieres_param.php'>Paramétrage de plusieurs matières par lots</a>
- | <a href='matieres_categories.php'>Editer les catégories de matières</a>
- | <a href='matieres_csv.php'>Importer un CSV de la liste des matières</a>
+<p class=bold><a href="../accueil_admin.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="modify_matiere.php"<?php echo insert_confirm_abandon();?>>Ajouter matière</a>
+ | <a href='matieres_param.php'<?php echo insert_confirm_abandon();?>>Paramétrage de plusieurs matières par lots</a>
+ | <a href='matieres_categories.php'<?php echo insert_confirm_abandon();?>>Editer les catégories de matières</a>
+ | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matières</a>
 </p>
 <form enctype="multipart/form-data" action="index.php" method=post>
 <input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
-<p>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' value='yes' />
+<p><label for='forcer_defauts' style='cursor: pointer;'>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' id='forcer_defauts' value='yes' /></label>
 <br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la priorité et la catégorie de chaque matière dans les différentes classes !</p>
 <input type='hidden' name='is_posted' value='1' />
-<table width = '100%' border= '1' cellpadding = '5'>
+<table class='boireaus' width = '100%' cellpadding = '5'>
 <tr>
-    <td><p class='bold'><a href='./index.php?orderby=m.matiere'>Identifiant matière</a></p></td>
-    <td><p class='bold'><a href='./index.php?orderby=m.nom_complet'>Nom complet</a></p></td>
-    <td><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'>Ordre d'affichage<br />par défaut</a></p></td>
-    <td><p class='bold'>Catégorie par défaut</p></td>
-    <td><p class='bold'>Supprimer</p></td>
+    <th><p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matière</a></p></th>
+    <th><p class='bold'><a href='./index.php?orderby=m.nom_complet'<?php echo insert_confirm_abandon();?>>Nom complet</a></p></th>
+    <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par défaut</a></p></th>
+    <th><p class='bold'>Catégorie par défaut</p></th>
+    <th><p class='bold'>Supprimer</p></th>
 </tr>
 <?php
 $orderby = isset($_GET['orderby']) ? $_GET['orderby'] : (isset($_POST['orderby']) ? $_POST["orderby"] : 'm.priority,m.nom_complet');
@@ -145,45 +145,50 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 
 $nombre_lignes = mysql_num_rows($call_data);
 $i = 0;
+$alt=1;
 while ($i < $nombre_lignes){
-    $current_matiere = mysql_result($call_data, $i, "matiere");
+    $alt=$alt*(-1);
+
+	$current_matiere = mysql_result($call_data, $i, "matiere");
     $current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
     $current_matiere_priorite = mysql_result($call_data, $i, "priority");
     $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
 
     if ($current_matiere_priorite > 1) $current_matiere_priorite -= 10;
-    echo "<tr><td><a href='modify_matiere.php?current_matiere=$current_matiere'>$current_matiere</a></td>";
+    echo "<tr class='lig$alt'><td><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
-    echo "<td>".htmlentities($current_matiere_nom)."</td>";
+    echo "<td>".htmlentities($current_matiere_nom)."</td>\n";
     // La priorité par défaut
-    echo "<td>";
-    echo "<select size=1 name='" . strtolower($current_matiere)."_priorite'>\n";
+    echo "<td>\n";
+    echo "<select size=1 name='" . strtolower($current_matiere)."_priorite' onchange='changement()'>\n";
     $k = '0';
     echo "<option value=0>0</option>\n";
     $k='11';
     $j = '1';
-    while ($k < '51'){
+    //while ($k < '51'){
+    while ($k < '61'){
         echo "<option value=$k"; if ($current_matiere_priorite == $j) {echo " SELECTED";} echo ">$j</option>\n";
         $k++;
         $j = $k - 10;
     }
-    echo "</select></td>";
+    //echo "</select></td>\n";
+    echo "</select>\n";
 
-    "</td>";
+    "</td>\n";
 
-    echo "<td>";
-    echo "<select size=1 name='" . strtolower($current_matiere)."_categorie'>\n";
+    echo "<td>\n";
+    echo "<select size=1 name='" . strtolower($current_matiere)."_categorie' onchange='changement()'>\n";
 
     foreach ($categories as $row) {
         echo "<option value='".$row["id"]."'";
         if ($current_matiere_categorie_id == $row["id"]) echo " SELECTED";
-        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>";
+        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
     }
-    echo "</select>";
-    echo "</td>";
-    echo "<td><a href=../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere  onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>";
-$i++;
+    echo "</select>\n";
+    echo "</td>\n";
+    echo "<td><a href=../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere  onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
+	$i++;
 }
 ?>
 </table>
