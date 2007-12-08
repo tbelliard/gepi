@@ -103,6 +103,164 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 	}
 
+	//======================================
+	// pour le module trombinoscope
+	if(($_SESSION['statut']=='administrateur')||
+	($_SESSION['statut']=='scolarite')||
+	($_SESSION['statut']=='cpe')||
+	($_SESSION['statut']=='professeur')) {
+		// Envoi de la photo
+		// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
+		$i_photo = 0;
+		$user_login=$_SESSION['login'];
+		$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
+		$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
+		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
+
+		$repertoire = '../photos/personnels/';
+		$ancien_code_photo = md5($user_login.''.$ancien_nom.' '.$ancien_prenom);
+		//echo "DEBUG: md5($user_login.''.$ancien_nom.' '.$ancien_prenom)=".md5($user_login.''.$ancien_nom.' '.$ancien_prenom)."<br />";
+		//$nouveau_code_photo = md5($user_login.''.$_POST['reg_nom'].' '.$_POST['reg_prenom']);
+		$nouveau_code_photo = $ancien_code_photo;
+
+		/*
+		// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
+		if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
+			$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
+			$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
+
+			@rename($ancien_nom_fichier, $nouveau_nom_fichier);
+		}
+		*/
+
+		if(isset($ancien_code_photo)) {
+			if($ancien_code_photo != ""){
+				//if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
+				if(isset($_POST['suppr_filephoto'])) {
+					if($_POST['suppr_filephoto']=='y'){
+						if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
+							$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
+							$no_modif="no";
+						}
+						else{
+							$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
+						}
+					}
+				}
+
+				// filephoto
+				if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
+					$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+					//if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
+					if ($filephoto_tmp!=''){
+						$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+						// Tester la taille max de la photo?
+
+						if(is_uploaded_file($filephoto_tmp)){
+							$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
+							$source_file = stripslashes("$filephoto_tmp");
+							$res_copy=copy("$source_file" , "$dest_file");
+							//echo "DEBUG: Copie de $source_file vers $dest_file<br />";
+							if($res_copy){
+								$msg = "Mise en place de la photo effectuée.";
+								$no_modif="no";
+							}
+							else{
+								$msg = "Erreur lors de la mise en place de la photo.";
+							}
+						}
+						else{
+							$msg = "Erreur lors de l'upload de la photo.";
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='eleve'){
+		$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
+		$res_elenoet=mysql_query($sql);
+		if(mysql_num_rows($res_elenoet)>0){
+			$lig_tmp_elenoet=mysql_fetch_object($res_elenoet);
+			$reg_no_gep=$lig_tmp_elenoet->elenoet;
+
+			// Envoi de la photo
+			if(isset($reg_no_gep)){
+				if($reg_no_gep!=""){
+					if(strlen(ereg_replace("[0-9]","",$reg_no_gep))==0){
+						if(isset($_POST['suppr_filephoto'])){
+							if($_POST['suppr_filephoto']=='y'){
+
+								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
+								$photo=nom_photo($reg_no_gep);
+
+								if("$photo"!=""){
+									if(unlink("../photos/eleves/$photo")){
+										$msg.="La photo ../photos/eleves/$photo a été supprimée. ";
+										$no_modif="no";
+									}
+									else{
+										$msg.="Echec de la suppression de la photo ../photos/eleves/$photo ";
+									}
+								}
+								else{
+									$msg.="Echec de la suppression de la photo correspondant à $reg_no_gep (<i>non trouvée</i>) ";
+								}
+							}
+						}
+
+						// Contrôler qu'un seul élève a bien cet elenoet???
+						$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
+						$test=mysql_query($sql);
+						$nb_elenoet=mysql_num_rows($test);
+						if($nb_elenoet==1){
+							// filephoto
+							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							if($filephoto_tmp!=""){
+								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+								// Tester la taille max de la photo?
+
+								if(is_uploaded_file($filephoto_tmp)){
+									$dest_file="../photos/eleves/$reg_no_gep.jpg";
+									$source_file=stripslashes("$filephoto_tmp");
+									$res_copy=copy("$source_file" , "$dest_file");
+									if($res_copy){
+										$msg.="Mise en place de la photo effectuée.";
+										$no_modif="no";
+									}
+									else{
+										$msg.="Erreur lors de la mise en place de la photo.";
+									}
+								}
+								else{
+									$msg.="Erreur lors de l'upload de la photo.";
+								}
+							}
+						}
+						elseif($nb_elenoet==0){
+								//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+								$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
+						}
+						else{
+							//$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
+							$msg.="Le numéro interne Sconet (elenoet) est commun à plusieurs élèves. C'est une anomalie.";
+						}
+					}
+					else{
+						//$msg.="Le numéro GEP proposé contient des caractères non numériques.";
+						$msg.="Le numéro interne Sconet (elenoet) proposé contient des caractères non numériques.";
+					}
+				}
+			}
+		}
+	}
+
+	//======================================
+
+
+
 	if ($no_modif == "yes") {
 		$msg = $msg."<br />Aucune modification n'a été apportée !";
 	}
@@ -129,30 +287,187 @@ if ($testpassword == -1) $testpassword = '';
 // Test SSO
 $test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
 
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 if ($test_sso)
 	echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
-echo "<h2>Informations personnelles *</h2>";
-echo "<table>";
-echo "<tr><td>Identifiant GEPI : </td><td>" . $_SESSION['login']."</td></tr>";
-echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>";
-echo "<tr><td>Nom : </td><td>".$user_nom."</td></tr>";
-echo "<tr><td>Prénom : </td><td>".$user_prenom."</td></tr>";
-if ($test_sso) {
-	echo "<tr><td>Email : </td><td><input type=text name=reg_email size=30";
-	if ($user_email) { echo " value=\"".$user_email."\"";}
-	echo " /></td></tr>\n";
-} else {
-	echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
+echo "<h2>Informations personnelles *</h2>\n";
+
+echo "<table>\n";
+echo "<tr><td>\n";
+	echo "<table>\n";
+	echo "<tr><td>Identifiant GEPI : </td><td>" . $_SESSION['login']."</td></tr>\n";
+	echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>\n";
+	echo "<tr><td>Nom : </td><td>".$user_nom."</td></tr>\n";
+	echo "<tr><td>Prénom : </td><td>".$user_prenom."</td></tr>\n";
+	if ($test_sso) {
+		echo "<tr><td>Email : </td><td><input type=text name=reg_email size=30";
+		if ($user_email) { echo " value=\"".$user_email."\"";}
+		echo " /></td></tr>\n";
+	} else {
+		echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
+	}
+	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
+	echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
+	if ($user_show_email == "yes") echo " CHECKED";
+	echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
+	}
+	//echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>\n";
+	echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>\n";
+	echo "</table>\n";
+echo "</td>\n";
+
+// PHOTO
+echo "<td valign='top'>\n";
+if(($_SESSION['statut']=='administrateur')||
+($_SESSION['statut']=='scolarite')||
+($_SESSION['statut']=='cpe')||
+($_SESSION['statut']=='professeur')||
+($_SESSION['statut']=='eleve')
+) {
+	$user_login=$_SESSION['login'];
+	if(getSettingValue("active_module_trombinoscopes")=='y'){
+
+		// pour module trombinoscope
+		$photo_largeur_max=150;
+		$photo_hauteur_max=150;
+
+		$GepiAccesModifMaPhoto='GepiAccesModifMaPhoto'.ucfirst(strtolower($_SESSION['statut']));
+
+		if($_SESSION['statut']=='eleve') {
+			$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
+			$res_elenoet=mysql_query($sql);
+			if(mysql_num_rows($res_elenoet)==0){
+				echo "</td>/tr></table>\n";
+				echo "<p><b>ERREUR !</b> Votre statut d'élève ne semble pas être confirmé dans la table 'eleves'.</p>\n";
+				// A FAIRE
+				// AJOUTER UNE ALERTE INTRUSION
+				require("../lib/footer.inc.php");
+				die();
+			}
+			$lig_tmp_elenoet=mysql_fetch_object($res_elenoet);
+			$reg_no_gep=$lig_tmp_elenoet->elenoet;
+
+			if($reg_no_gep!=""){
+				// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
+				$photo=nom_photo($reg_no_gep);
+
+				//echo "<td align='center'>\n";
+				$temoin_photo="non";
+				if("$photo"!=""){
+					$photo="../photos/eleves/".$photo;
+					if(file_exists($photo)){
+						$temoin_photo="oui";
+						//echo "<td>\n";
+						echo "<div align='center'>\n";
+						$dimphoto=redimensionne_image2($photo);
+						//echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border: 3px solid #FFFFFF;" alt="Ma photo" />';
+						//echo "</td>\n";
+						//echo "<br />\n";
+						echo "</div>\n";
+						echo "<div style='clear:both;'></div>\n";
+					}
+				}
+
+				if(getSettingValue($GepiAccesModifMaPhoto)=='yes') {
+					echo "<div align='center'>\n";
+					//echo "<span id='lien_photo' style='font-size:xx-small;'>";
+					echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
+					echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';document.getElementById('lien_photo').style.display='none';return false;\">";
+					if($temoin_photo=="oui"){
+						//echo "Modifier le fichier photo</a>\n";
+						echo "Modifier le fichier photo</a>\n";
+					}
+					else{
+						//echo "Envoyer un fichier photo</a>\n";
+						echo "Envoyer<br />un fichier<br />photo</a>\n";
+					}
+					//echo "</span>\n";
+					echo "</div>\n";
+					echo "<div id='div_upload_photo' style='display:none;'>";
+					echo "<input type='file' name='filephoto' />\n";
+					if("$photo"!=""){
+						if(file_exists($photo)){
+							echo "<br />\n";
+							echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
+						}
+					}
+					echo "</div>\n";
+					echo "</div>\n";
+				}
+				//echo "</td>\n";
+			}
+
+		}
+		else{
+			echo "<table style='text-align: center;'>\n";
+			echo "<tr>\n";
+			echo "<td style='text-align: center;'>\n";
+
+			if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
+				$code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
+				//echo "DEBUG: md5($user_login.''.$user_nom.' '.$user_prenom)=".md5($user_login.''.$user_nom.' '.$user_prenom)."<br />";
+
+				$photo="../photos/personnels/".$code_photo.".jpg";
+				$temoin_photo="non";
+				if(file_exists($photo)){
+					$temoin_photo="oui";
+					//echo "<td>\n";
+					echo "<div align='center'>\n";
+					$dimphoto=redimensionne_image2($photo);
+					echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
+					//echo "</td>\n";
+					//echo "<br />\n";
+					echo "</div>\n";
+					echo "<div style='clear:both;'></div>\n";
+				}
+
+				if(getSettingValue($GepiAccesModifMaPhoto)=='yes') {
+					echo "<div align='center'>\n";
+					echo "<span style='font-size:xx-small;'>\n";
+					echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">\n";
+					if($temoin_photo=="oui"){
+						echo "Modifier le fichier photo</a>\n";
+					}
+					else{
+						echo "Envoyer un fichier photo</a>\n";
+					}
+					echo "</span>\n";
+
+					echo "<div id='div_upload_photo' style='display: none;'>\n";
+					echo "<input type='file' name='filephoto' size='12' />\n";
+
+					echo "<br />\n";
+					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";
+					echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand;'>Supprimer la photo existante</label>\n";
+					echo "</div>\n";
+					echo "</div>\n";
+				}
+			}
+			elseif(getSettingValue($GepiAccesModifMaPhoto)=='yes') {
+				$temoin_photo="non";
+				echo "<div align='center'>\n";
+				echo "<span style='font-size:xx-small;'>\n";
+				echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">\n";
+				echo "Envoyer un fichier photo</a>\n";
+				echo "</span>\n";
+
+				echo "<div id='div_upload_photo' style='display: none;'>\n";
+				echo "<input type='file' name='filephoto' size='12' />\n";
+				echo "</div>\n";
+				echo "</div>\n";
+			}
+
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+		}
+
+	}
 }
-if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
-echo "<tr><td></td><td><input type='checkbox' name='reg_show_email' value='yes'";
-if ($user_show_email == "yes") echo " CHECKED";
-echo "/> Autoriser l'affichage de mon adresse email pour les utilisateurs non personnels de l'établissement **</td></tr>";
-}
-//echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>";
-echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>";
-echo "</table>";
+echo "</td>\n";
+echo "</table>\n";
+echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 /*
 //Supp ERIC
@@ -174,31 +489,32 @@ if (count($tab_class_mat)!=0) {
 //$groups = get_groups_for_prof($_SESSION["login"]);
 $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 if (empty($groups)) {
-	echo "<br /><br />";
+	echo "<br /><br />\n";
 } else {
 	echo "<br /><br />Vous êtes professeur dans les classes et matières suivantes :";
-	echo "<ul>";
+	echo "<ul>\n";
 	foreach($groups as $group) {
-	echo "<p><li><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-	echo "" . htmlentities($group["description"]) . "</li>";
-	echo "</span></p>\n";
+		echo "<li><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+		echo "" . htmlentities($group["description"]);
+		echo "</span>";
+		echo "</li>\n";
 	}
-	echo "</ul>";
+	echo "</ul>\n";
 }
 
 $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
 $nombre_classe = mysql_num_rows($call_prof_classe);
 if ($nombre_classe != "0") {
 	$j = "0";
-	echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
-	echo "<ul>";
+	echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>\n";
+	echo "<ul>\n";
 	while ($j < $nombre_classe) {
 		$id_classe = mysql_result($call_prof_classe, $j, "id");
 		$classe_suivi = mysql_result($call_prof_classe, $j, "classe");
-		echo "<li><b>$classe_suivi</b></li>";
+		echo "<li><b>$classe_suivi</b></li>\n";
 		$j++;
 	}
-	echo "</ul>";
+	echo "</ul>\n";
 }
 
 
@@ -212,11 +528,11 @@ la rectification de ces données.
 Les rectifications sont effectuées dans les 48 heures hors week-end et jours fériés qui suivent la demande.";
 if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
 	echo "<p class='small'>** Votre email sera affichée sur certaines pages seulement si leur affichage a été activé de manière globale par l'administrateur et si vous avez autorisé l'affichage de votre email en cochant la case appropriée. ";
-	echo "Dans l'hypothèse où vous autorisez l'affichage de votre email, celle-ci ne sera accessible que par les élèves que vous avez en classe et/ou leurs responsables légaux disposant d'un identifiant pour se connecter à Gepi.</p>";
+	echo "Dans l'hypothèse où vous autorisez l'affichage de votre email, celle-ci ne sera accessible que par les élèves que vous avez en classe et/ou leurs responsables légaux disposant d'un identifiant pour se connecter à Gepi.</p>\n";
 }
 // Changement du mot de passe
 if ($test_sso) {
-	echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>";
+	echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>\n";
 	echo "<p><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
 	if ($flag == 1)
 		echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlentities($char_spec);
@@ -225,7 +541,7 @@ if ($test_sso) {
 
 
 	echo "<br />Il est fortement conseillé de ne pas choisir un mot de passe trop simple</b>.
-	<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser, il garantit la sécurité de votre travail.</b></p>";
+	<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser, il garantit la sécurité de votre travail.</b></p>\n";
 
 	echo "<table><tr>\n";
 	echo "<td>Ancien mot de passe : </td><td><input type=password name=no_anti_inject_password_a size=20 /></td>\n";
@@ -236,14 +552,14 @@ if ($test_sso) {
 	echo "</tr></table>\n";
 	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
 	if ((isset($_GET['retour'])) or (isset($_POST['retour'])))
-		echo "<input type=\"hidden\" name=\"retour\" value=\"accueil\" />";
+		echo "<input type=\"hidden\" name=\"retour\" value=\"accueil\" />\n";
 	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
 	//echo "</span></form>\n";
 	echo "</form>\n";
 }
 echo "  <hr />\n";
 // Journal des connexions
-echo "<a name=\"connexion\"></a>";
+echo "<a name=\"connexion\"></a>\n";
 if (isset($_POST['duree'])) {
 $duree = $_POST['duree'];
 } else {
@@ -329,7 +645,7 @@ if ($res) {
 			$temp1 = "<font color='green'>";
 			$temp2 = "</font>";
 		} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
-			//$temp1 = "<font color=orange>";
+			//$temp1 = "<font color=orange>\n";
 			$temp1 = "<font color='#FFA500'>";
 			$temp2 = "</font>";
 		} else if ($row[4] == 4) {

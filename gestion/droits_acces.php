@@ -530,6 +530,53 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 	if (!saveSetting("AAEleve", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de AAEleve !";
 	}
+
+
+	if (isset($_POST['GepiAccesModifMaPhotoProfesseur'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesModifMaPhotoProfesseur", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoProfesseur !";
+	}
+
+	if (isset($_POST['GepiAccesModifMaPhotoAdministrateur'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesModifMaPhotoAdministrateur", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoAdministrateur !";
+	}
+
+	if (isset($_POST['GepiAccesModifMaPhotoScolarite'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesModifMaPhotoScolarite", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoScolarite !";
+	}
+
+	if (isset($_POST['GepiAccesModifMaPhotoCpe'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesModifMaPhotoCpe", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoCpe !";
+	}
+
+	if (isset($_POST['GepiAccesModifMaPhotoEleve'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesModifMaPhotoEleve", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoEleve !";
+	}
+
 }
 
 // Load settings
@@ -626,6 +673,12 @@ require_once("../lib/header.inc");
 				</label></td>
 			</tr>
 
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoProfesseur" id="GepiAccesModifMaPhotoProfesseur" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoProfesseur")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoProfesseur' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				</label></td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>
@@ -710,6 +763,13 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="AAScolResp" id="AAScolResp" value="yes" <?php if (getSettingValue("AAScolResp")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='AAScolResp' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves des classes dont il est responsable</label></td>
 			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoScolarite" id="GepiAccesModifMaPhotoScolarite" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoScolarite")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoScolarite' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				</label></td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>
@@ -741,6 +801,13 @@ require_once("../lib/header.inc");
 				<td style='border: 0px;'><input type="checkbox" name="AACpeResp" id="AACpeResp" value="yes" <?php if (getSettingValue("AACpeResp")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='AACpeResp' style='cursor: pointer;'> a accès aux données d'années antérieures des élèves dont il est responsable</label></td>
 			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoCpe" id="GepiAccesModifMaPhotoCpe" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoCpe")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoCpe' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				</label></td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>
@@ -756,6 +823,12 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitAdmin" id="GepiPasswordReinitAdmin" value="yes" <?php if (getSettingValue("GepiPasswordReinitAdmin")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiPasswordReinitAdmin' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoAdministrateur" id="GepiAccesModifMaPhotoAdministrateur" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoAdministrateur")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoAdministrateur' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				</label></td>
 			</tr>
 			</table>
 		</td>
@@ -813,6 +886,12 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="AAEleve" id="AAEleve" value="yes" <?php if (getSettingValue("AAEleve")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='AAEleve' style='cursor: pointer;'> a accès à ses données d'années antérieures</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoEleve" id="GepiAccesModifMaPhotoEleve" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoEleve' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				</label></td>
 			</tr>
 			</table>
 		</td>
