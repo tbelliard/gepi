@@ -67,8 +67,11 @@ $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 $truncate_cours = isset($_POST["truncate_cours"]) ? $_POST["truncate_cours"] : NULL;
 $truncate_salles = isset($_POST["truncate_salles"]) ? $_POST["truncate_salles"] : NULL;
+$aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
 
 $aff_depart = ""; // pour ne plus afficher le html après une initialisation
+$compter_echecs = "";
+$c = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enregistrés.
 
 	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
         // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -206,10 +209,16 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 			// On vérifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);
-			echo "<br /><span class=\"accept\">".$message2."Cours enregistr&eacute;</span>\n";
+			// Si l'utilisateur décide de ne pas voir le suivi de ses entrées, on n'affiche rien
+			if ($aff_infos == "oui") {
+				echo "<br /><span class=\"accept\">".$message2."Cours enregistr&eacute;</span>\n";
+			} else {
+				// on n'affiche rien
+			}
 		}
 		else {
 			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi :</span>\n".$message."(".$message1.")".$probleme.".";
+			$compter_echecs = $c++;
 		}
     	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
 	} // while
@@ -223,6 +232,16 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
 	echo 'Ce n\'est pas le bon nom de fichier, revenez en arrière en <a href="edt_init_csv.php">cliquant ici</a> !';
 } // if ($action == "upload_file")
 
+// Si tous les cours ont été enregistrés, on affiche que tant de cours ont été enregistrés.
+if ($aff_infos != "oui") {
+	// On vérifie $compter_echec
+	if ($compter_echecs == 2) {
+		echo "<br />Les ".$nbre." cours ont bien été enregistrés.";
+	}
+}
+
+
+
 	// On s'occupe maintenant du fichier des salles
 	if ($action == "upload_file_salle") {
         // On vérifie le nom du fichier...
@@ -232,7 +251,7 @@ $aff_depart = ""; // pour ne plus afficher le html après une initialisation
             $fp = fopen($csv_file['tmp_name'],"r");
 
             // A partir de là, on vide la table salle_cours
-            if ($truncate_cours == "oui") {
+            if ($truncate_salles == "oui") {
             	$vider_table = mysql_query("TRUNCATE TABLE salle_cours");
             }
 
@@ -413,7 +432,9 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 			<input type="hidden" name="initialiser" value="ok" />
 			<input type="hidden" name="csv" value="ok" />
 			<p><label for="truncateCours">Effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
-			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui" checked="checked" /></p>
+			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui" checked="checked" />
+			<label for="affInfosEdt">Afficher l'enregistrement de tous les cours</label>
+			<input type="checkbox" id="affInfosEdT" name="aff_infos" value="oui" checked="checked" /></p>
 			<p><input type="file" size="80" name="csv_file" /></p>
 			<p><input type="submit" value="Valider" /></p>
 		</form>
