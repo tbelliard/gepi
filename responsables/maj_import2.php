@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
