@@ -323,6 +323,26 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				// fin pour le module trombinoscope
 				*/
 
+				$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
+				$res_statut_user=mysql_query($sql);
+				$lig_tmp=mysql_fetch_object($res_statut_user);
+
+				// Si l'utilisateur était CPE, il faut supprimer les associations dans la table j_eleves_cpe
+				if($lig_tmp->statut=="cpe"){
+					if($_POST['reg_statut']!="cpe"){
+						$sql="DELETE FROM j_eleves_cpe WHERE cpe_login='$user_login';";
+						$nettoyage=mysql_query($sql);
+					}
+				}
+
+				// Si l'utilisateur était SCOLARITE, il faut supprimer les associations dans la table j_scol_classes
+				if($lig_tmp->statut=="scolarite"){
+					if($_POST['reg_statut']!="scolarite"){
+						$sql="DELETE FROM j_scol_classes WHERE login='$user_login';";
+						$nettoyage=mysql_query($sql);
+					}
+				}
+
 				$reg_data = mysql_query("UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."' WHERE login='".$user_login."'");
 				$del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
 				$m = 0;
@@ -502,18 +522,18 @@ $testpassword = sql_query1("select password from utilisateurs where login = '".$
 if ($testpassword == -1) $testpassword = '';
 if (isset($user_login) and ($user_login!='')) {
 	if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
-		echo " | <a href=\"change_pwd.php?user_login=".$user_login."\">Changer le mot de passe</a>";
+		echo " | <a href=\"change_pwd.php?user_login=".$user_login."\">Changer le mot de passe</a>\n";
 	}
-	echo " | <a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>";
+	echo " | <a href=\"modify_user.php\">Ajouter un nouvel utilisateur</a>\n";
 }
 
 if(isset($liste_options_user)){
 	if("$liste_options_user"!=""){
-		if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec'>Précedent</a>";}
+		if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec'>Précedent</a>\n";}
 		echo " | <select name='user_login' onchange='document.form_choix_user.submit()'>\n";
 		echo $liste_options_user;
 		echo "</select>\n";
-		if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv'>Suivant</a>";}
+		if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv'>Suivant</a>\n";}
 	}
 }
 echo "</p>\n";
@@ -528,12 +548,12 @@ echo "</form>\n";
 if (!isset($user_login)) echo "(" . $longmax_login . " caractères maximum) ";?>:</b>
 <?php
 if (isset($user_login) and ($user_login!='')) {
-	echo "<b>".$user_login."</b>";
-	echo "<input type=hidden name=reg_login value=\"".$user_login."\" />";
+	echo "<b>".$user_login."</b>\n";
+	echo "<input type=hidden name=reg_login value=\"".$user_login."\" />\n";
 } else {
 	echo "<input type=text name=new_login size=20 value=\"";
 	if (isset($user_login)) echo $user_login;
-	echo "\" />";
+	echo "\" />\n";
 }
 ?>
 <table>
@@ -576,8 +596,8 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 			echo "<div style='clear:both;'></div>\n";
 		}
 		echo "<div align='center'>\n";
-		echo "<span style='font-size:xx-small;'>";
-		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+		echo "<span style='font-size:xx-small;'>\n";
+		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">\n";
 		if($temoin_photo=="oui"){
 			echo "Modifier le fichier photo</a>\n";
 		}
@@ -591,8 +611,8 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 		echo "<td style='text-align: center;'>\n";
 		$temoin_photo="non";
 		echo "<div align='center'>\n";
-		echo "<span style='font-size:xx-small;'>";
-		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">";
+		echo "<span style='font-size:xx-small;'>\n";
+		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';return false;\">\n";
 		echo "Envoyer un fichier photo</a>\n";
 	}
 
@@ -616,7 +636,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 	</tr>
 	</table><?php
 }
-echo "</td>";
+echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 // fin trombinoscope
@@ -628,37 +648,37 @@ echo "</table>\n";
 <?php
 if (!(isset($user_login)) or ($user_login=='')) {
 	if (getSettingValue("use_sso") == "lcs") {
-		echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td>";
+		echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td>\n";
 		echo "<input type=\"radio\" name=\"is_lcs\" value=\"y\" checked /> Utilisateur LCS";
-		echo "<br /><i>Un utilisateur LCS est un utilisateur authentifié par LCS : dans ce cas, ne pas remplir les champs \"mot de passe\" ci-dessous.</i>";
-		echo "</td></tr><tr><td>";
+		echo "<br /><i>Un utilisateur LCS est un utilisateur authentifié par LCS : dans ce cas, ne pas remplir les champs \"mot de passe\" ci-dessous.</i>\n";
+		echo "</td></tr><tr><td>\n";
 		echo "<input type=\"radio\" name=\"is_lcs\" value=\"n\" /> Utilisateur local";
-		echo "<br /><i>Un utilisateur local doit systématiquement s'identifier sur GEPI avec le mot de passe ci-dessous, même s'il est un utilisateur authentifié par LCS.</i>";
-		echo "<br /><i><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</i>";
-		echo "<br /><br />";
+		echo "<br /><i>Un utilisateur local doit systématiquement s'identifier sur GEPI avec le mot de passe ci-dessous, même s'il est un utilisateur authentifié par LCS.</i>\n";
+		echo "<br /><i><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</i>\n";
+		echo "<br /><br />\n";
 	}
-	echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 /></td></tr>";
-	echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td></tr></table>";
-	echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>";
-	echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />";
-	if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>";
+	echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 /></td></tr>\n";
+	echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td></tr></table>\n";
+	echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>\n";
+	echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />\n";
+	if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>\n";
 
 }
 ?>
 <br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name=reg_statut size=1>
 <?php if (!isset($user_statut)) $user_statut = "professeur"; ?>
-<option value=professeur <?php if ($user_statut == "professeur") { echo "SELECTED";}?>>Professeur
-<option value=administrateur <?php if ($user_statut == "administrateur") { echo "SELECTED";}?>>Administrateur
-<option value=cpe <?php if ($user_statut == "cpe") { echo "SELECTED";}?>>C.P.E.
-<option value=scolarite <?php if ($user_statut == "scolarite") { echo "SELECTED";}?>>Scolarité
-<option value=secours <?php if ($user_statut == "secours") { echo "SELECTED";}?>>Secours
+<option value=professeur <?php if ($user_statut == "professeur") { echo "selected";}?>>Professeur
+<option value=administrateur <?php if ($user_statut == "administrateur") { echo "selected";}?>>Administrateur
+<option value=cpe <?php if ($user_statut == "cpe") { echo "selected";}?>>C.P.E.
+<option value=scolarite <?php if ($user_statut == "scolarite") { echo "selected";}?>>Scolarité
+<option value=secours <?php if ($user_statut == "secours") { echo "selected";}?>>Secours
 </select>
 <br />
 
 <br />Etat :<select name=reg_etat size=1>
 <?php if (!isset($user_etat)) $user_etat = "actif"; ?>
-<option value=actif <?php if ($user_etat == "actif") { echo "SELECTED";}?>>Actif
-<option value=inactif <?php if ($user_etat == "inactif") { echo "SELECTED";}?>>Inactif
+<option value=actif <?php if ($user_etat == "actif") { echo "selected";}?>>Actif
+<option value=inactif <?php if ($user_etat == "inactif") { echo "selected";}?>>Inactif
 </select>
 <br />
 
@@ -671,13 +691,13 @@ while ($k < $nb_mat+1) {
 	echo "<select size=1 name='$temp'>\n";
 	$calldata = mysql_query("SELECT * FROM matieres ORDER BY matiere");
 	$nombreligne = mysql_num_rows($calldata);
-	echo "<option value='' "; if (!(isset($user_matiere[$k]))) {echo " SELECTED";} echo ">(vide)</option>";
+	echo "<option value='' "; if (!(isset($user_matiere[$k]))) {echo " selected";} echo ">(vide)</option>\n";
 	$i = 0;
 	while ($i < $nombreligne){
 		$matiere_list = mysql_result($calldata, $i, "matiere");
 		$matiere_complet_list = mysql_result($calldata, $i, "nom_complet");
-		//echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " SELECTED";} echo ">$matiere_list | $matiere_complet_list</option>";
-		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " SELECTED";} echo ">$matiere_list | ".htmlentities($matiere_complet_list)."</option>\n";
+		//echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | $matiere_complet_list</option>\n";
+		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlentities($matiere_complet_list)."</option>\n";
 		$i++;
 	}
 	echo "</select><br />\n";
@@ -703,8 +723,8 @@ if (isset($user_login) and ($user_login!='')) {
 	$secondes_verrouillage = substr($date_verrouillage,17,2);
 	$date_verrouillage = mktime($heures_verrouillage, $minutes_verrouillage, $secondes_verrouillage, $mois_verrouillage, $jour_verrouillage, $annee_verrouillage);
 	if ($date_verrouillage  > ($now- getSettingValue("temps_compte_verrouille")*60)) {
-		echo "<br /><center><table border=\"1\" cellpadding=\"5\" width = \"90%\" bgcolor=\"#FFB0B8\"><tr><td>";
-		echo "<H2>Verrouillage/Déverrouillage du compte</h2>";
+		echo "<br /><center><table border=\"1\" cellpadding=\"5\" width = \"90%\" bgcolor=\"#FFB0B8\"><tr><td>\n";
+		echo "<h2>Verrouillage/Déverrouillage du compte</h2>\n";
 		echo "Suite à un trop grand nombre de tentatives de connexions infructueuses, le compte est actuellement verrouillé.";
 		echo "<br /><input type=\"checkbox\" name=\"deverrouillage\" value=\"yes\" /> Cochez la case pour deverrouiller le compte";
 		echo "</td></tr></table></center>\n";

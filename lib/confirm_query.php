@@ -137,6 +137,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     $nombre_req = 4;
 
+    $mess[] = "Table de définition cpe/élève :";
+    $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE cpe_login='$cible1'";
+    $req[] = "DELETE FROM j_eleves_cpe WHERE cpe_login='$cible1';";
+	$nombre_req++;
+
+    $mess[] = "Table de définition scolarité/classe :";
+    $test_nb[] = "SELECT * FROM j_scol_classes WHERE login='$cible1'";
+    $req[] = "DELETE FROM j_scol_classes WHERE login='$cible1';";
+	$nombre_req++;
+
 	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_config';");
 	if(mysql_num_rows($test_existence)>0){
 		$mess[] = "Table des responsables de l'observatoire :";
