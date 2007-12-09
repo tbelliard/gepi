@@ -26,11 +26,11 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*/ Sécurité
+// Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
-}*/
+}
 
 // Initialisation des variables
 $var1 = isset($_POST["var1"]) ? $_POST["var1"] : (isset($_GET["var1"]) ? $_GET["var1"] : NULL);
