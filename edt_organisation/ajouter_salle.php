@@ -212,8 +212,13 @@ if(isset($modif_salle)) {
 	else{
 		$selected="";
 	}
+		if ($tab_select[$i]["nom_salle"] != "") {
+			$aff_nom_salle = "(".$tab_select[$i]["nom_salle"].")";
+		} else {
+			$aff_nom_salle = "";
+		}
 
-		echo ("		<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." (".$tab_select[$i]["nom_salle"].")</option>\n");
+		echo ("		<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." ".$aff_nom_salle."</option>\n");
 	}
 
 ?>
@@ -294,8 +299,12 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 	$tab_select = renvoie_liste("salle");
 
 	for($i=0;$i<count($tab_select);$i++) {
-
-		echo ("			<OPTION value='".$tab_select[$i]["id_salle"]."'>".$tab_select[$i]["numero_salle"]." (".$tab_select[$i]["nom_salle"].")</OPTION>\n");
+		if ($tab_select[$i]["nom_salle"] != "") {
+			$aff_nom_salle = "(".$tab_select[$i]["nom_salle"].")";
+		} else {
+			$aff_nom_salle = "";
+		}
+		echo ("			<OPTION value='".$tab_select[$i]["id_salle"]."'>".$tab_select[$i]["numero_salle"]." ".$aff_nom_salle."</OPTION>\n");
 	}
 ?>
 		</select>

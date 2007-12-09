@@ -49,8 +49,14 @@ for($i=0; $i<count($tab_select); $i++) {
 	else{
 		$selected="";
 	}
+	// On affiche ou non le nom de la salle
+	if ($tab_select[$i]["nom_salle"] != "") {
+		$aff_nom_salle = "(".$tab_select[$i]["nom_salle"].")";
+	} else {
+		$aff_nom_salle = "";
+	}
 	echo "
-			<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." (".$tab_select[$i]["nom_salle"].")</option>
+			<option value='".$tab_select[$i]["id_salle"]."'".$selected.">".$tab_select[$i]["numero_salle"]." ".$aff_nom_salle."</option>
 		";
 	}
 

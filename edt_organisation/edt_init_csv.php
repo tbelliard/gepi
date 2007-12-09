@@ -70,8 +70,7 @@ $truncate_salles = isset($_POST["truncate_salles"]) ? $_POST["truncate_salles"] 
 $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
 
 $aff_depart = ""; // pour ne plus afficher le html après une initialisation
-$compter_echecs = "";
-$c = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enregistrés.
+$compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enregistrés.
 
 	// Initialisation de l'EdT (fichier g_edt.csv). Librement copié du fichier init_csv/eleves.php
         // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -218,12 +217,22 @@ $c = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enreg
 		}
 		else {
 			echo "<br /><span class=\"refus\">Ce cours n'est pas reconnu par Gepi :</span>\n".$message."(".$message1.")".$probleme.".";
-			$compter_echecs = $c++;
+			$compter_echecs = $compter_echecs++;
 		}
     	//echo $rep_groupe[0]." salle n°".$tab[4]."(id n° ".$rep_salle["id_salle"]." ) le ".$rep_jour." dans le créneau dont l'id est ".$rep_heuredebut." et pour une durée de ".$rep_duree." demis-créneaux et le calend =".$rep_calendar.".";
 	} // while
 			} // else du début
 		fclose($fp);
+
+		// Si tous les cours ont été enregistrés, on affiche que tant de cours ont été enregistrés.
+if ($aff_infos != "oui") {
+	// On vérifie $compter_echec
+	if ($compter_echecs == 2) {
+		$aff_nbr = $nbre - 1;
+		echo "<br /><p class=\"accept\">Les ".$aff_nbr." cours ont bien été enregistrés.</p>";
+	}
+}
+
 		// on n'affiche plus le reste de la page
 		$aff_depart = "non";
 		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
@@ -231,15 +240,6 @@ $c = 2; // pour afficher à la fin le message : Tous ces cours ont bien été enreg
 	else
 	echo 'Ce n\'est pas le bon nom de fichier, revenez en arrière en <a href="edt_init_csv.php">cliquant ici</a> !';
 } // if ($action == "upload_file")
-
-// Si tous les cours ont été enregistrés, on affiche que tant de cours ont été enregistrés.
-if ($aff_infos != "oui") {
-	// On vérifie $compter_echec
-	if ($compter_echecs == 2) {
-		echo "<br />Les ".$nbre." cours ont bien été enregistrés.";
-	}
-}
-
 
 
 	// On s'occupe maintenant du fichier des salles
