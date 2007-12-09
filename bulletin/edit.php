@@ -323,6 +323,12 @@ echo "}\n";
 	$gepiSchoolZipCode=getSettingValue("gepiSchoolZipCode");
 	$gepiSchoolCity=getSettingValue("gepiSchoolCity");
 
+	// Affichage ou non du nom et de l'adresse de l'établissement
+	$bull_affich_nom_etab=getSettingValue("bull_affich_nom_etab");
+	$bull_affich_adr_etab=getSettingValue("bull_affich_adr_etab");
+	if(($bull_affich_nom_etab!="n")&&($bull_affich_nom_etab!="y")) {$bull_affich_nom_etab="y";}
+	if(($bull_affich_adr_etab!="n")&&($bull_affich_adr_etab!="y")) {$bull_affich_adr_etab="y";}
+
 	$bull_ecart_entete=getSettingValue("bull_ecart_entete");
 
 	$page_garde_imprime=getSettingValue("page_garde_imprime");
@@ -1349,9 +1355,16 @@ echo "'>\n";
 		echo "<td style='text-align: center;'>";
 
 		//echo "<p class='bulletin'><span class=\"bgrand\">".getSettingValue("gepiSchoolName")."</span><br />\n".getSettingValue("gepiSchoolAdress1")."<br />\n".getSettingValue("gepiSchoolAdress2")."<br />\n".getSettingValue("gepiSchoolZipCode")." ".getSettingValue("gepiSchoolCity")."</p>\n";
-		echo "<p class='bulletin'><span class=\"bgrand\">".$gepiSchoolName."</span><br />\n".$gepiSchoolAdress1."<br />\n".$gepiSchoolAdress2."<br />\n".$gepiSchoolZipCode." ".$gepiSchoolCity;
-		if($bull_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
-		if($bull_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
+
+		echo "<p class='bulletin'>";
+		if($bull_affich_nom_etab=="y"){
+			echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
+		}
+		if($bull_affich_adr_etab=="y"){
+			echo "<br />\n".$gepiSchoolAdress1."<br />\n".$gepiSchoolAdress2."<br />\n".$gepiSchoolZipCode." ".$gepiSchoolCity;
+			if($bull_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
+			if($bull_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
+		}
 		echo "</p>\n";
 
 		echo "</td>\n";
@@ -1665,15 +1678,22 @@ echo "'>\n";
 		}
 	echo "</td>\n";
 	echo "<td style=\"width: 20%;text-align: center;\">";
-	echo "<p class='bulletin'><span class=\"bgrand\">".$gepiSchoolName."</span><br />\n";
-	echo $gepiSchoolAdress1."<br />\n";
-	echo $gepiSchoolAdress2."<br />\n";
-	echo $gepiSchoolZipCode." ".$gepiSchoolCity;
+	echo "<p class='bulletin'>";
+	if($bull_affich_nom_etab=="y"){
+		echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
+	}
+	if($bull_affich_adr_etab=="y"){
+		echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
+		echo "<br />\n";
+		echo $gepiSchoolAdress1."<br />\n";
+		echo $gepiSchoolAdress2."<br />\n";
+		echo $gepiSchoolZipCode." ".$gepiSchoolCity;
 
-	if($bull_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
-	if($bull_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
-
+		if($bull_affiche_tel=="y"){echo "<br />\nTel: ".$gepiSchoolTel;}
+		if($bull_affiche_fax=="y"){echo "<br />\nFax: ".$gepiSchoolFax;}
+	}
 	echo "</p>";
+
 	echo "</td>\n</tr>\n</table>\n";
 		//-------------------------------
 		// Fin de l'en-tête

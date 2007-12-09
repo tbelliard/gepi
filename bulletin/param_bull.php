@@ -633,6 +633,34 @@ if (isset($_POST['genre_periode'])) {
 }
 
 
+
+if (isset($_POST['bull_affich_nom_etab'])) {
+	if($_POST['bull_affich_nom_etab']=="n") {
+		$bull_affich_nom_etab="n";
+	}
+	else{
+		$bull_affich_nom_etab="y";
+	}
+	if (!saveSetting("bull_affich_nom_etab", $bull_affich_nom_etab)) {
+		$msg .= "Erreur lors de l'enregistrement de bull_affich_nom_etab !";
+		$reg_ok = 'no';
+	}
+}
+
+if (isset($_POST['bull_affich_adr_etab'])) {
+	if($_POST['bull_affich_adr_etab']=="n") {
+		$bull_affich_adr_etab="n";
+	}
+	else{
+		$bull_affich_adr_etab="y";
+	}
+	if (!saveSetting("bull_affich_adr_etab", $bull_affich_adr_etab)) {
+		$msg .= "Erreur lors de l'enregistrement de bull_affich_adr_etab !";
+		$reg_ok = 'no';
+	}
+}
+
+
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
    $msg = "Enregistrement réussi !";
 }
@@ -991,6 +1019,60 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 		echo "<input type=\"radio\" name=\"genre_periode\" id=\"genre_periodeF\" value=\"F\" ";
         if ($genre_periode == 'F') {echo " checked";}
         echo " />&nbsp;Féminin</label>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Faire apparaitre le nom de l'établissement sur le bulletin :<br />(<i>certains établissements ont le nom dans le Logo</i>)
+        </td>
+	<?php
+		if(getSettingValue("bull_affich_nom_etab")){
+			$bull_affich_nom_etab=getSettingValue("bull_affich_nom_etab");
+		}
+		else{
+			$bull_affich_nom_etab="y";
+		}
+	?>
+        <td>
+	<?php
+        echo "<label for='bull_affich_nom_etab_y' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_nom_etab\" id=\"bull_affich_nom_etab_y\" value=\"y\" ";
+        if ($bull_affich_nom_etab == 'y') {echo " checked";}
+        echo " />&nbsp;Oui</label>\n";
+		echo "<br />\n";
+        echo "<label for='bull_affich_nom_etab_n' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_nom_etab\" id=\"bull_affich_nom_etab_n\" value=\"n\" ";
+        if ($bull_affich_nom_etab == 'n') {echo " checked";}
+        echo " />&nbsp;Non</label>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Faire apparaitre l'adresse de l'établissement sur le bulletin :<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
+        </td>
+	<?php
+		if(getSettingValue("bull_affich_adr_etab")){
+			$bull_affich_adr_etab=getSettingValue("bull_affich_adr_etab");
+		}
+		else{
+			$bull_affich_adr_etab="y";
+		}
+	?>
+        <td>
+	<?php
+        echo "<label for='bull_affich_adr_etab_y' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_adr_etab\" id=\"bull_affich_adr_etab_y\" value=\"y\" ";
+        if ($bull_affich_adr_etab == 'y') {echo " checked";}
+        echo " />&nbsp;Oui</label>\n";
+		echo "<br />\n";
+        echo "<label for='bull_affich_adr_etab_n' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_adr_etab\" id=\"bull_affich_adr_etab_n\" value=\"n\" ";
+        if ($bull_affich_adr_etab == 'n') {echo " checked";}
+        echo " />&nbsp;Non</label>\n";
         ?>
 	</td>
     </tr>
