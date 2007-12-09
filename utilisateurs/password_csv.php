@@ -91,15 +91,17 @@ if (($donnees_personne_csv)) {
 	break;
 	case 'responsable':
 			//pour un responsable
-			$fd.="CLASSE;IDENTIFIANT;NOM;PRENOM;MOT_DE_PASSE;COURRIEL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
+			$fd.="CLASSE;IDENTIFIANT;NUM_LEGAL;CIVILITE;NOM;PRENOM;MOT_DE_PASSE;COURRIEL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				if(isset($donnees_personne_csv['login'][$i])){
 					$classe = $donnees_personne_csv['classe'][$i];
 					$login = $donnees_personne_csv['login'][$i];
+					$num_legal = $donnees_personne_csv['resp_legal'][$i];
 					$nom = $donnees_personne_csv['nom'][$i];
 					$prenom = $donnees_personne_csv['prenom'][$i];
 					$password = $donnees_personne_csv['new_password'][$i];
 					$email = $donnees_personne_csv['user_email'][$i];
+					$civilite = $donnees_personne_csv['civilite'][$i];
 					$adr1 = $donnees_personne_csv['adr1'][$i];
 					$adr2 = $donnees_personne_csv['adr2'][$i];
 					$adr3 = $donnees_personne_csv['adr3'][$i];
@@ -114,7 +116,7 @@ if (($donnees_personne_csv)) {
 					$elv5 = isset($donnees_personne_csv['elv5'][$i]) ? $donnees_personne_csv['elv5'][$i] : "";
 					$elv6 = isset($donnees_personne_csv['elv6'][$i]) ? $donnees_personne_csv['elv6'][$i] : "";
 					$elv7 = isset($donnees_personne_csv['elv7'][$i]) ? $donnees_personne_csv['elv7'][$i] : "";
-					$fd.="$classe;$login;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
+					$fd.="$classe;$login;$num_legal;$civilite;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
 				}
 			}
 	break;

@@ -145,7 +145,7 @@ if ($user_login) {
 						u.login = '$user_login')";
 		*/
 
-		$sql_user_info="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, ra.*
+		$sql_user_info="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, re.resp_legal, r.civilite, ra.*
 						FROM utilisateurs u,
 							resp_pers r,
 							responsables2 re,
@@ -202,7 +202,7 @@ else {
 						"e.login = jec.login AND " .
 						"jec.id_classe = '".$user_classe."')");
 				*/
-				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, jec.id_classe, ra.*
+				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, re.resp_legal, r.civilite, jec.id_classe, ra.*
 								FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e, resp_adr ra
 								WHERE ( u.login = r.login AND
 								u.statut = 'responsable' AND
@@ -236,7 +236,7 @@ else {
 					"login != '" . $_SESSION['login'] . "' AND " .
 					"etat = 'actif' AND " .
 					"statut = '" . $user_status . "')");*/
-				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, rp.login, rp.nom, rp.prenom, rp.pers_id, ra.* , r2.ele_id, e.login, jec.id_classe
+				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
 									FROM utilisateurs u, resp_pers rp, resp_adr ra, responsables2 r2, eleves e, j_eleves_classes jec
 									WHERE (
 									u.login != 'ADMIN'
@@ -311,7 +311,8 @@ while ($p < $nb_users) {
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
-
+	    $resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
+        $resp_civilite= mysql_result($call_user_info, $p, "civilite");
 		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 		$resp_adr2=mysql_result($call_user_info, $p, "adr2");
@@ -561,7 +562,9 @@ while ($p < $nb_users) {
 				if ($user_status =='responsable') {
 
 					$donnees_personne_csv['classe'][$p] = $classe_resp;
-
+					
+					$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
+                    $resp_civilite= mysql_result($call_user_info, $p, "civilite");
 					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 					$resp_adr2=mysql_result($call_user_info, $p, "adr2");
@@ -572,6 +575,8 @@ while ($p < $nb_users) {
 					$resp_pays=mysql_result($call_user_info, $p, "pays");
 
 					//on met les données dans le tableau
+					$donnees_personne_csv['resp_legal'][$p] = $resp_num_legal;
+					$donnees_personne_csv['civilite'][$p] = $resp_civilite;
 					$donnees_personne_csv['adr1'][$p] = $resp_adr1;
 					$donnees_personne_csv['adr2'][$p] = $resp_adr2;
 					$donnees_personne_csv['adr3'][$p] = $resp_adr3;
