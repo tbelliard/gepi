@@ -64,8 +64,11 @@ $verif_var1 = explode("_t", $var1);
 		if (mysql_num_rows($verif_appreciation) == 1) {
 			$miseajour = mysql_query("UPDATE matieres_appreciations SET appreciation = '".utf8_decode($appreciation)."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 		} else {
-			//sinon on crée une nouvelle appréciation
-			$sauvegarde = mysql_query("INSERT INTO matieres_appreciations SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'");
+			//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
+			if ($appreciation != "") {
+				$sauvegarde = mysql_query("INSERT INTO matieres_appreciations SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'");
+			}
+
 		}
 	}
 

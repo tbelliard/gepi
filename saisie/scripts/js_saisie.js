@@ -12,6 +12,6 @@ function ajaxAppreciations(eleveperiode, enseignement, textId){
 	// On construit la requête ajax
 	var laRequete = new Ajax.Request(url,o_options);
 	// Il faudra envisager d'utiliser Ajax.Updater pour renvoyer une phrase de confirmation
-	//  ou alors résupérer un retour par Ajax.Request avec onSuccess
+	//  ou alors résupérer un retour par Ajax.Request avec onSuccess ou onFailure
 	//alert(enseignement+' \n'+eleveperiode+' \n'+textId+' \n Essai = ' +essai+' \nContenu = '+contenu);
 }
