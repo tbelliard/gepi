@@ -620,25 +620,27 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 					$nb_elenoet=mysql_num_rows($test);
 					if($nb_elenoet==1){
 						// filephoto
-						$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
-						if($filephoto_tmp!=""){
-							$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-							$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
-							// Tester la taille max de la photo?
+						if(isset($HTTP_POST_FILES['filephoto'])){
+							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							if($filephoto_tmp!=""){
+								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+								// Tester la taille max de la photo?
 
-							if(is_uploaded_file($filephoto_tmp)){
-								$dest_file="../photos/eleves/$reg_no_gep.jpg";
-								$source_file=stripslashes("$filephoto_tmp");
-								$res_copy=copy("$source_file" , "$dest_file");
-								if($res_copy){
-									$msg.="Mise en place de la photo effectuée.";
+								if(is_uploaded_file($filephoto_tmp)){
+									$dest_file="../photos/eleves/$reg_no_gep.jpg";
+									$source_file=stripslashes("$filephoto_tmp");
+									$res_copy=copy("$source_file" , "$dest_file");
+									if($res_copy){
+										$msg.="Mise en place de la photo effectuée.";
+									}
+									else{
+										$msg.="Erreur lors de la mise en place de la photo.";
+									}
 								}
 								else{
-									$msg.="Erreur lors de la mise en place de la photo.";
+									$msg.="Erreur lors de l'upload de la photo.";
 								}
-							}
-							else{
-								$msg.="Erreur lors de l'upload de la photo.";
 							}
 						}
 					}
