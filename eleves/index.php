@@ -391,10 +391,12 @@ if (!isset($quelles_classes)) {
 
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='radio' name='quelles_classes' value='toutes' onclick='verif2()' checked />\n";
+	echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' checked />\n";
 	echo "</td>\n";
 	echo "<td>\n";
+	echo "<label for='quelles_classes_toutes' style='cursor: pointer;'>\n";
 	echo "<span class='norme'>Tous les élèves.</span><br />";
+	echo "</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -428,10 +430,12 @@ if (!isset($quelles_classes)) {
 	else{
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' value='na' onclick='verif2()' />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_na' value='na' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
+		echo "<label for='quelles_classes_na' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Les élèves non affectés à une classe (<i>".mysql_num_rows($test_na)."</i>).</span><br />\n";
+		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -454,10 +458,12 @@ if (!isset($quelles_classes)) {
 	else{
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' value='incomplet' onclick='verif2()' />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_incomplet' value='incomplet' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
+		echo "<label for='quelles_classes_incomplet' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Les élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
+		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -479,10 +485,12 @@ if (!isset($quelles_classes)) {
 			if($cpt_photo_manquante>0){
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='radio' name='quelles_classes' value='photo' onclick='verif2()' />\n";
+				echo "<input type='radio' name='quelles_classes' id='quelles_classes_photo' value='photo' onclick='verif2()' />\n";
 				echo "</td>\n";
 				echo "<td>\n";
+				echo "<label for='quelles_classes_photo' style='cursor: pointer;'>\n";
 				echo "<span class='norme'>Parmi les élèves dont l'Elenoet est renseigné, $cpt_photo_manquante n'ont pas leur photo.</span><br />\n";
+				echo "</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
@@ -507,9 +515,11 @@ if (!isset($quelles_classes)) {
 			echo "</td>\n";
 			echo "<td>\n";
 
-			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='photo' onclick='verif2()' /></span>\n";
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' id='quelles_classes_photo' value='photo' onclick='verif2()' /></span>\n";
 
+			echo "<label for='quelles_classes_photo' style='cursor: pointer;'>\n";
 			echo "<span class='norme'>Aucun élève n'a son Elenoet renseigné.<br />L'affichage des photos n'est donc pas fonctionnel.</span><br />\n";
+			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -523,9 +533,11 @@ if (!isset($quelles_classes)) {
 	echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' />\n";
 	echo "</td>\n";
 	echo "<td>\n";
+	echo "<label for='' style='cursor: pointer;'>\n";
 	echo "<span class='norme'>Elève dont le nom commence par: \n";
 	echo "<input type='text' name='motif_rech' value='' onclick='verif3()' size='5' />\n";
 	echo "</span><br />\n";
+	echo "</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -537,12 +549,15 @@ if (!isset($quelles_classes)) {
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
 
-		echo "<input type=\"radio\" name=\"quelles_classes\" value=\"certaines\" />";
+		echo "<input type=\"radio\" name=\"quelles_classes\" id=\"quelles_classes_certaines\" value=\"certaines\" />";
 
 		echo "</td>\n";
 		echo "<td valign='top'>\n";
 
-		echo "<span class = \"norme\">Seulement les élèves des classes sélectionnées ci-dessous : </span><br />\n";
+		echo "<label for='quelles_classes_certaines' style='cursor: pointer;'>\n";
+		echo "<span class = \"norme\">Seulement les élèves des classes sélectionnées ci-dessous : </span>";
+		echo "</label>\n";
+		echo "<br />\n";
 
 			$nb_class_par_colonne=round($nb/3);
 			//echo "<table width='100%' border='1'>\n";
@@ -567,8 +582,9 @@ if (!isset($quelles_classes)) {
 
 			//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
 			//echo "Classe : $classe </span><br />\n";
-			echo "<input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
-			echo "Classe : $classe<br />\n";
+			echo "<label for='$temp' style='cursor: pointer;'>";
+			echo "<input type='checkbox' name='$temp' id='$temp' value='yes' onclick=\"verif1()\" />";
+			echo "Classe : $classe</label><br />\n";
 			$i++;
 			}
 			echo "</td>\n";
@@ -778,8 +794,52 @@ if (!isset($quelles_classes)) {
 		echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
 
 		if (getSettingValue("active_module_trombinoscopes")=='y') {
-			?><td style="white-space: nowrap;"><input name="photo[<?php echo $i; ?>]" type="file" /><input type="hidden" name="quiestce[<?php echo $i; ?>]" value="<?php echo $elenoet; ?>" /><?php $photo = "../photos/eleves/".$elenoet.".jpg"; if(file_exists($photo)) { ?><a href="<?php echo $photo; ?>" target="_blank"><img src="../mod_trombinoscopes/images/<?php if($eleve_sexe=="F") { ?>photo_f.png<?php } else { ?>photo_g.png<?php } ?>" width="32" height="32"  align="middle" border="0" alt="photo présente" title="photo présente" /></a><?php } ?></td>
-		<?php
+			echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
+			echo "<input type='hidden' name='quiestce[$i]' value=\"$elenoet\" />\n";
+
+			$photo=nom_photo($elenoet);
+			$temoin_photo="";
+			if("$photo"!=""){
+				$titre="$eleve_nom $eleve_prenom";
+
+				$texte="<div align='center'>\n";
+				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+				$texte.="<br />\n";
+				$texte.="</div>\n";
+
+				$temoin_photo="y";
+
+				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
+
+				echo "<a href='$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
+				echo "<img src='../mod_trombinoscopes/images/";
+				if($eleve_sexe=="F") {
+					echo "photo_f.png";
+				}
+				else{
+					echo "photo_g.png";
+				}
+				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
+				echo "</a>";
+			}
+
+			/*
+			$photo = "../photos/eleves/".$elenoet.".jpg";
+			if(file_exists($photo)) {
+				echo "<a href='$photo' target='_blank'>";
+				echo "<img src='../mod_trombinoscopes/images/";
+				if($eleve_sexe=="F") {
+					echo "photo_f.png";
+				}
+				else{
+					echo "photo_g.png";
+				}
+				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
+				echo "</a>";
+			}
+			*/
+
+			echo "</td>\n";
 		}
 
 		echo "</tr>\n";
