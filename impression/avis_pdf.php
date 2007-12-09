@@ -306,14 +306,14 @@ if ($id_liste_groupes!=NULL) {
 				}
 				//$avis = $sql_current_eleve_avis;
 				
-				$pdf->SetFont($caractere_utilise,'',9);
+				$pdf->SetFont($caractere_utilise,'',7.5);
 				//$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 
 				$taille_texte_total = $pdf->GetStringWidth($avis);
 
 				$largeur_appreciation2 = $l_cell_avis ;
 
-				$nb_ligne_app = '2.8';
+				$nb_ligne_app = '4.8';
 				$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
@@ -328,7 +328,7 @@ if ($id_liste_groupes!=NULL) {
 				
 				$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
 				
-				$pdf->SetFont($caractere_utilise,'',9);
+				$pdf->SetFont($caractere_utilise,'',7.5);
 
 				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
 				$nb_eleves_i = $nb_eleves_i + 1;
