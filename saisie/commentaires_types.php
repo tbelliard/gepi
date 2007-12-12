@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 31/12/2006
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -22,8 +22,7 @@
  */
 
 // On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
-//$variables_non_protegees = 'yes';
-// A QUOI CELA SERT-IL EXACTEMENT?
+$variables_non_protegees = 'yes';
 
 // Begin standart header
 $titre_page = "Saisie de commentaires-types";
@@ -255,7 +254,7 @@ else{
 							echo "</ul>\n";
 						}
 						else{
-							echo "<p>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
+							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
 						}
 						echo "</li>\n";
 					}
@@ -319,9 +318,27 @@ else{
 				$num_periode=$_POST['num_periode'];
 				$suppr=isset($_POST['suppr']) ? $_POST['suppr'] : "";
 
-				if(isset($_POST['commentaire'])){
+
+				/*
+				$nom_log = "app_eleve_".$k."_".$i;
+
+				//echo "\$nom_log=$nom_log<br />";
+
+				if (isset($NON_PROTECT[$nom_log])){
+					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
+				}
+				else{
+					$app = "";
+				}
+				*/
+
+				$compteur_nb_commentaires=isset($_POST['compteur_nb_commentaires']) ? $_POST['compteur_nb_commentaires'] : NULL;
+
+				//if(isset($_POST['commentaire_1'])){
+				if(isset($compteur_nb_commentaires)){
+				//if(isset($_POST['commentaire'])){
 					// Récupération des variables:
-					$commentaire=$_POST['commentaire'];
+					//$commentaire=$_POST['commentaire'];
 					//$commentaire=html_entity_decode($_POST['commentaire']);
 
 					// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
@@ -335,20 +352,32 @@ else{
 					$resultat_nettoyage=mysql_query($sql);
 
 					// Validation des saisies/modifs...
-					for($i=1;$i<=count($commentaire);$i++){
+					//for($i=1;$i<=count($commentaire);$i++){
+					for($i=1;$i<=$compteur_nb_commentaires;$i++){
 						//echo "\$suppr[$i]=$suppr[$i]<br />";
 						//if(($suppr[$i]=="")&&($commentaire[$i]!="")){
-						if((!isset($suppr[$i]))&&($commentaire[$i]!="")){
-							for($j=0;$j<count($num_periode);$j++){
-								//$sql="insert into commentaires_types values('','$commentaire[$i]','$num_periode[$j]','$id_classe')";
-								//=========================
-								// MODIF: boireaus 20071121
-								//$sql="insert into commentaires_types values('','".html_entity_decode($commentaire[$i])."','$num_periode[$j]','$id_classe')";
-								$tmp_commentaire=ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
-								$sql="insert into commentaires_types values('','".addslashes($tmp_commentaire)."','$num_periode[$j]','$id_classe')";
-								//=========================
-								//echo "sql=$sql<br />";
-								$resultat_insertion_commentaire=mysql_query($sql);
+
+						//if((!isset($suppr[$i]))&&($commentaire[$i]!="")){
+						if(!isset($suppr[$i])) {
+							$nom_log = "commentaire_".$i;
+							if (isset($NON_PROTECT[$nom_log])){
+								$commentaire_courant = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
+
+									if($commentaire_courant!=""){
+									for($j=0;$j<count($num_periode);$j++){
+										//$sql="insert into commentaires_types values('','$commentaire[$i]','$num_periode[$j]','$id_classe')";
+										//=========================
+										// MODIF: boireaus 20071121
+										//$sql="insert into commentaires_types values('','".html_entity_decode($commentaire[$i])."','$num_periode[$j]','$id_classe')";
+										//$tmp_commentaire=ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
+										//$sql="insert into commentaires_types values('','".addslashes($tmp_commentaire)."','$num_periode[$j]','$id_classe')";
+										//$sql="insert into commentaires_types values('','".addslashes($commentaire_courant)."','$num_periode[$j]','$id_classe')";
+										$sql="insert into commentaires_types values('','".$commentaire_courant."','$num_periode[$j]','$id_classe')";
+										//=========================
+										//echo "sql=$sql<br />";
+										$resultat_insertion_commentaire=mysql_query($sql);
+									}
+								}
 							}
 						}
 					}
@@ -407,7 +436,12 @@ else{
 					while($ligne_commentaire=mysql_fetch_object($resultat_commentaires)){
 						if("$ligne_commentaire->commentaire"!="$precedent_commentaire"){
 							echo "<tr style='text-align:center;'>\n";
-							echo "<td><textarea name='commentaire[$cpt]' cols='60'>".stripslashes($ligne_commentaire->commentaire)."</textarea></td>\n";
+
+							echo "<td>";
+							//echo "<textarea name='commentaire[$cpt]' cols='60'>".stripslashes($ligne_commentaire->commentaire)."</textarea>";
+							echo "<textarea name='no_anti_inject_commentaire_".$cpt."' cols='60' onchange='changement()'>".stripslashes($ligne_commentaire->commentaire)."</textarea>";
+							echo "</td>\n";
+
 							echo "<td><input type='checkbox' name='suppr[$cpt]' value='$ligne_commentaire->id' /></td>\n";
 							echo "</tr>\n";
 							$cpt++;
@@ -420,7 +454,10 @@ else{
 
 				echo "<p>Saisie d'un nouveau commentaire:</p>";
 				echo "<blockquote>\n";
-				echo "<textarea name='commentaire[$cpt]' cols='60'></textarea><br />\n";
+				//echo "<textarea name='commentaire[$cpt]' cols='60'></textarea><br />\n";
+				echo "<textarea name='no_anti_inject_commentaire_".$cpt."' cols='60' onchange='changement()'></textarea><br />\n";
+
+				echo "<input type='hidden' name='compteur_nb_commentaires' value='$cpt' />\n";
 
 				echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 				echo "</blockquote>\n";
@@ -571,7 +608,7 @@ else{
 							echo "</ul>\n";
 						}
 						else{
-							echo "<p>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
+							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
 							//echo "</body>\n</html>\n";
 							//exit();
 						}
@@ -715,7 +752,7 @@ else{
 					$cpt=0;
 					while($ligne_classe=mysql_fetch_object($resultat_classes)){
 						if("$ligne_classe->id"!="$id_classe"){
-							echo "<input type='checkbox' name='id_dest_classe[]' id='id_dest_classe$cpt' value='$ligne_classe->id' /> $ligne_classe->classe<br />\n";
+							echo "<label for='id_dest_classe$cpt' style='cursor: pointer;'><input type='checkbox' name='id_dest_classe[]' id='id_dest_classe$cpt' value='$ligne_classe->id' /> $ligne_classe->classe</label><br />\n";
 							$cpt++;
 						}
 					}
@@ -811,7 +848,13 @@ function tout_decocher(){
 
 									//echo "<b>Insertion pour $ligne_classe_dest->classe:</b><br /> ".stripslashes(nl2br(trim($ligne_commentaires_source->commentaire)))."<br />\n";
 									echo "<tr valign=\"top\"><td><b>Insertion pour $ligne_classe_dest->classe:</b></td><td> ".stripslashes(nl2br(trim($ligne_commentaires_source->commentaire)))."</td></tr>\n";
-									$sql="insert into commentaires_types values('','$ligne_commentaires_source->commentaire','$num_periode[$i]','$id_dest_classe[$j]')";
+
+									//$sql="insert into commentaires_types values('','$ligne_commentaires_source->commentaire','$num_periode[$i]','$id_dest_classe[$j]')";
+
+									$commentaire_courant=traitement_magic_quotes(corriger_caracteres($ligne_commentaires_source->commentaire));
+
+									$sql="insert into commentaires_types values('','$commentaire_courant','$num_periode[$i]','$id_dest_classe[$j]')";
+
 									//echo "sql=$sql<br />";
 									$resultat_insertion_commentaire=mysql_query($sql);
 								}
