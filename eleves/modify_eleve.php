@@ -1472,14 +1472,22 @@ if(isset($eleve_login)){
 		//if($eleve_no_resp1==0){
 		if("$eleve_no_resp1"=="0"){
 			// Le responsable 1 n'est pas défini:
-			echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Définir le responsable légal 1</a></p>\n";
+			echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1";
+			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+			echo "'>Définir le responsable légal 1</a></p>\n";
 		}
 		else{
 			$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$eleve_no_resp1'";
 			$res_resp=mysql_query($sql);
 			if(mysql_num_rows($res_resp)==0){
 				// Bizarre: Le responsable 1 n'est pas défini:
-				echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Définir le responsable légal 1</a></p>\n";
+				echo "<p>Le responsable légal 1 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1";
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				echo "'>Définir le responsable légal 1</a></p>\n";
 			}
 			else{
 				$temoin_tableau="oui";
@@ -1489,7 +1497,11 @@ if(isset($eleve_login)){
 				echo "<td rowspan='2'>Le responsable légal 1 est: </td>\n";
 				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 				//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier l'association</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1'>Modifier le responsable</a></td>\n";
+				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=1";
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				echo "'>Modifier le responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
@@ -1536,7 +1548,11 @@ if(isset($eleve_login)){
 			// Le responsable 2 n'est pas défini:
 			if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
 
-			echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Définir le responsable légal 2</a></p>\n";
+			echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
+			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+			echo "'>Définir le responsable légal 2</a></p>\n";
 		}
 		else{
 			$sql="SELECT nom,prenom FROM resp_pers WHERE pers_id='$eleve_no_resp2'";
@@ -1545,7 +1561,11 @@ if(isset($eleve_login)){
 				// Bizarre: Le responsable 2 n'est pas défini:
 				if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
 
-				echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Définir le responsable légal 2</a></p>\n";
+				echo "<p>Le responsable légal 2 n'est pas défini: <a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				echo "'>Définir le responsable légal 2</a></p>\n";
 			}
 			else{
 				$lig_resp=mysql_fetch_object($res_resp);
@@ -1558,7 +1578,11 @@ if(isset($eleve_login)){
 				echo "<td rowspan='2'>Le responsable légal 2 est: </td>\n";
 				echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 				//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
-				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier le responsable</a></td>\n";
+				echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				echo "'>Modifier le responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
@@ -1602,7 +1626,11 @@ if(isset($eleve_login)){
 					if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
 						if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
 							echo "<br />";
-							echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;modif_adr_pers_id=$eleve_no_resp2&amp;adr_id=$adr_id_1er_resp'>Prendre l'adresse de l'autre responsable</a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;modif_adr_pers_id=$eleve_no_resp2&amp;adr_id=$adr_id_1er_resp";
+							if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+							if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+							if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+							echo "'>Prendre l'adresse de l'autre responsable</a>";
 						}
 					}
 					echo "</td>\n";
@@ -1661,14 +1689,22 @@ if(isset($eleve_login)){
 	$res_etab=mysql_query($sql);
 	if(mysql_num_rows($res_etab)==0) {
 		echo "<p>L'établissement d'origine de l'élève n'est pas renseigné.<br />\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Renseigner l'établissement d'origine</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+		if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+		if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+		if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+		echo "'>Renseigner l'établissement d'origine</a>";
 		echo "</p>\n";
 	}
 	else{
 		$lig_etab=mysql_fetch_object($res_etab);
 
 		if("$lig_etab->id_etablissement"==""){
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Définir l'établissement d'origine</a>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+			echo "'>Définir l'établissement d'origine</a>";
 			echo "</p>\n";
 		}
 		else{
@@ -1677,7 +1713,13 @@ if(isset($eleve_login)){
 			if(mysql_num_rows($res_etab2)==0) {
 				echo "<p>L'association avec l'identifiant d'établissement existe (<i>$lig_etab->id_etablissement</i>), mais les informations correspondantes n'existent pas dans la table 'etablissement'.<br />\n";
 
-				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+
+				echo "'>Modifier l'établissement d'origine</a>";
 				echo "</p>\n";
 			}
 			else{
@@ -1695,7 +1737,11 @@ if(isset($eleve_login)){
 					echo ucfirst(strtolower($lig_etab2->niveau));
 				}
 				echo " ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
-				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y'>Modifier l'établissement d'origine</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+				echo "'>Modifier l'établissement d'origine</a>";
 				echo "</p>\n";
 			}
 		}
