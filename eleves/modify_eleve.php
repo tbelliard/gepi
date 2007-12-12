@@ -87,6 +87,15 @@ if(($definir_resp!=1)&&($definir_resp!=2)){$definir_resp=NULL;}
 
 $definir_etab = isset($_POST["definir_etab"]) ? $_POST["definir_etab"] : (isset($_GET["definir_etab"]) ? $_GET["definir_etab"] : NULL);
 
+
+
+//=========================
+// AJOUT: boireaus 20071212
+// Pour l'arrivée depuis la page index.php suite à une recherche
+$motif_rech=isset($_POST['motif_rech']) ? $_POST['motif_rech'] : (isset($_GET['motif_rech']) ? $_GET['motif_rech'] : NULL);
+//=========================
+
+
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -952,7 +961,7 @@ if(!getSettingValue('conv_new_resp_table')){
 if(isset($definir_resp)){
 	if(!isset($valider_choix_resp)){
 
-		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 		echo "<p>Choix du responsable légal <b>$definir_resp</b> pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
@@ -971,6 +980,11 @@ if(isset($definir_resp)){
 		echo "<p align='center'><input type='submit' name='filtrage' value='Afficher' /> les responsables dont le <b>nom</b> contient: ";
 		echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 		echo "</p>\n";
+
+
+		if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+		if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+		if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
 
 
 		echo "<input type='hidden' name='afficher_tous_les_resp' id='afficher_tous_les_resp' value='n' />\n";
@@ -1062,6 +1076,12 @@ if(isset($definir_resp)){
 		echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
 		echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
 
+
+		if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+		if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+		if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+
+
 		echo "</form>\n";
 	}
 	else{
@@ -1135,6 +1155,12 @@ if(isset($definir_etab)){
 		echo "<p>Si un établissement ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 		echo "en vous rendant dans [Gestion des bases-><a href='../etablissements/index.php'>Gestion des établissements</a>]</p>\n";
 
+
+		if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+		if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+		if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+
+
 		echo "</form>\n";
 	}
 	else{
@@ -1147,11 +1173,20 @@ if(isset($definir_etab)){
 
 
 
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 if ((isset($order_type)) and (isset($quelles_classes))) {
-    echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
-} else {
-    echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+    //echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
+    echo " | <a href=\"index.php?quelles_classes=$quelles_classes";
+	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	echo "&amp;order_type=$order_type\">Retour à votre recherche</a>\n";
 }
+/*
+else {
+    echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+}
+*/
+echo "</p>\n";
 
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
@@ -1403,6 +1438,7 @@ Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissa
 echo "<input type=hidden name=is_posted value=\"1\" />\n";
 if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
 if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$eleve_login\" />\n";
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 echo "<center><input type=submit value=Enregistrer /></center>\n";
