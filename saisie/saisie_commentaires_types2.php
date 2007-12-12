@@ -96,38 +96,39 @@
 			$cpt=0;
 			//echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
+				echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
+
+				if(eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					echo " onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\"";
+				}
+				echo ">\n";
+
+				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+
+				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
+					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
+					echo "<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
+				}
+
 				// Pour conserver le code HTML saisi dans les commentaires-type...
 				if((ereg("<",$ligne_commentaire->commentaire))&&(ereg(">",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					//echo "<option>".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."</option>\n";
-
-					//echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;' onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap').value+document.getElementById('commentaire_type_'+$cpt).value; document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap').focus();\">\n";
-
-					echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;' onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value; document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\">\n";
-
-					echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
-
 					echo htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
-
-					echo "</div>\n";
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					//echo "<option>".htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))))."</option>\n";
-
-					//echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;' onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap').value+document.getElementById('commentaire_type_'+$cpt).value; document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap').focus();\">\n";
-
-					echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;' onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value; document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\">\n";
-
-					echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
-
 					echo htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
-
-					echo "</div>\n";
 				}
+
+				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+					echo "</a>";
+				}
+
+				echo "</div>\n";
 				$cpt++;
 			}
 			echo "</div>\n";
@@ -137,6 +138,36 @@
 
 			echo "<script type='text/javascript'>
 	document.getElementById('commentaire_type').style.display='none';
+</script>\n";
+
+
+echo "<script type='text/javascript'>
+// Pour konqueror...
+function complete_textarea_courant(num){
+	// Récupération de l'identifiant du TEXTAREA à remplir
+	id_textarea_courant=document.getElementById('textarea_courant').value;
+	//alert('id_textarea_courant='+id_textarea_courant);
+
+	// Contenu initial du TEXTAREA
+	contenu_courant_textarea_courant=eval(\"document.getElementById('\"+id_textarea_courant+\"').value\");
+	//alert('contenu_courant_textarea_courant='+contenu_courant_textarea_courant);
+
+	// Commentaire à ajouter
+	commentaire_a_ajouter=eval(\"document.getElementById('commentaire_type_\"+num+\"').value\");
+	//alert('commentaire_a_ajouter='+commentaire_a_ajouter);
+
+	// Ajout
+	textarea_courant=eval(\"document.getElementById('\"+id_textarea_courant+\"')\")
+	textarea_courant.value=contenu_courant_textarea_courant+commentaire_a_ajouter;
+
+	// On cache la liste des commentaires-types
+	document.getElementById('commentaire_type').style.display='none';
+
+	// On redonne le focus au TEXTAREA
+	document.getElementById(id_textarea_courant).focus();
+
+	changement();
+}
 </script>\n";
 
 			echo "<script type='text/javascript' src='../lib/brainjar_drag.js'></script>\n";

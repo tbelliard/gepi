@@ -2241,6 +2241,14 @@ function debug_var(){
 		echo "\$_SESSION['".$variable."']=".$val."<br />\n";
 	}
 	echo "</blockquote>\n";
+
+	echo "<p>Variables envoyées en SERVER:</p>\n";
+	echo "<blockquote>\n";
+	foreach($_SERVER as $variable => $valeur){
+		echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
+	}
+	echo "</blockquote>\n";
+
 	echo "</div>\n";
 }
 
@@ -2306,4 +2314,24 @@ function insert_confirm_abandon(){
 	}
 }
 
+function redimensionne_image2($photo){
+	global $photo_largeur_max, $photo_hauteur_max;
+
+	// prendre les informations sur l'image
+	$info_image=getimagesize($photo);
+	// largeur et hauteur de l'image d'origine
+	$largeur=$info_image[0];
+	$hauteur=$info_image[1];
+
+	// calcule le ratio de redimensionnement
+	$ratio_l=$largeur/$photo_largeur_max;
+	$ratio_h=$hauteur/$photo_hauteur_max;
+	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+
+	// définit largeur et hauteur pour la nouvelle image
+	$nouvelle_largeur=round($largeur/$ratio);
+	$nouvelle_hauteur=round($hauteur/$ratio);
+
+	return array($nouvelle_largeur, $nouvelle_hauteur);
+}
 ?>

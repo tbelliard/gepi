@@ -136,6 +136,12 @@ $themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Saisie des avis | Saisie";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+?>
+<script type="text/javascript" language="javascript">
+change = 'no';
+
+</script>
+<?php
 
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
