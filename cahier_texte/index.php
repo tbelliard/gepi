@@ -331,6 +331,8 @@ if ($test_cahier_texte != 0) {
     $contenu = '';
 }
 
+// On met le header en petit par défaut
+$_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
@@ -351,7 +353,7 @@ echo "<script type=\"text/javascript\">";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->";
-echo "</SCRIPT></p>";
+echo "</SCRIPT></p>\n";
 
 // **********************************************
 // Affichage des différents groupes du professeur
@@ -363,27 +365,35 @@ if (empty($groups)) {
     echo "<b>Aucun cahier de textes n'est disponible.</b>";
     echo "<br/><br/>";
 }
+	$a = 1;
 foreach($groups as $group) {
-        echo "<b>";
+        //echo "<b>";
         if ($group["id"] == $current_group["id"]) {
-           echo ">" . $group["description"] . "&nbsp;-&nbsp;(";
+           echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
             $str = null;
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
             $str = substr($str, 0, -2);
-            echo $str . ")&nbsp;";
+            echo $str . ")&nbsp;</p>\n";
         } else {
+        	echo "<span style=\"font-weight: bold;\">";
            echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
-           echo $group["description"] . "&nbsp;-&nbsp;(";
+           echo $group["name"] . "&nbsp;-&nbsp;(";
             $str = null;
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
             $str = substr($str, 0, -2);
-            echo $str . ")</a>&nbsp;";
+            echo $str . ")</a>&nbsp;</span>\n";
         }
-        echo "</b><br />\n";
+        //echo "</b>\n";
+        if ($a == 2) {
+        	echo "<br />";
+        	$a = 1;
+        } else {
+			$a = 2;
+		}
 }
 // Fin Affichage des différents groupes du professeur
 // **********************************************
@@ -392,19 +402,10 @@ foreach($groups as $group) {
 echo "</td>";
 
 // Deuxième cellule de la première ligne du tableau
-echo "<td align=\"center\">\n";
-echo "<p><span class='grand'>Cahier de textes</span>";
+echo "<td style=\"text-align: center; vertical-align: top;\">\n";
+echo "<p><span class='grand'>Cahier de textes</span><br />";
+
 if ($id_groupe != null) {
-    echo "<span class='grand'><br />" . $current_group["description"] . " (" . $current_group["classlist_string"] . ")";
-    echo "</span>\n";
-    // Test si le cahier de textes est partagé
-    echo "<br />(";
-    $str = null;
-    foreach ($current_group["profs"]["users"] as $prof) {
-        $str .= $prof["prenom"] . " " . $prof["nom"] . ", ";
-    }
-    $str = substr($str, 0, -2);
-    echo $str . ")</p>";
 
 	if(getSettingValue('cahier_texte_acces_public')!='no'){
 	    echo "<a href='../public/index.php?id_groupe=" . $current_group["id"] ."' target='_blank'>Visualiser le cahier de textes en accès public</a>\n";
@@ -414,8 +415,46 @@ if ($id_groupe != null) {
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
        echo "<br />(Identifiant : ".getSettingValue("cahiers_texte_login_pub")." - Mot de passe : ".getSettingValue("cahiers_texte_passwd_pub").")\n";
-    echo "</td>\n";
-    // Fin deuxième cellule de la première ligne du tableau
+
+echo "<p class='grand'>".strftime("%A %d %B %Y", $today)."</p>";
+if ($delai > 0) {
+    if (isset($edit_devoir)) {
+    	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
+        //echo "<b>>> Travaux personnels à effectuer<<</b> <br /> \n";
+        echo "<p style=\"border: 1px solid grey; background-color: #c7ff99; font-weight: bold;\"><a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">Compte-rendus de séance</a></p>\n";
+    } else {
+        echo "<p style=\"border: 1px solid grey; background-color: #ffcccf; font-weight: bold;\"><a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a></p> \n";
+        //echo "<br /><b>>> Compte-rendus de séance <<</b><br />\n";
+    }
+}
+echo "<br />";
+// Ajout des différentes notices
+$nb_total_notices = sql_query1("select count(id_ct) from ct_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
+$nb_total_notices += sql_query1("select count(id_ct) from ct_devoirs_entry where contenu != '' and id_groupe = '" . $current_group["id"] ."'");
+if ($nb_total_notices > 1)
+    $legend = "Actuellement : ".$nb_total_notices." notices.<br />";
+else if ($nb_total_notices == 1)
+    $legend = "Actuellement : 1 notice.<br />";
+else
+    $legend = "";
+if ($nb_total_notices > 15) {
+  echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
+  echo "<legend style=\"font-variant: small-caps; border: 1px solid grey;\">".$legend."</legend>";
+  if ($_SESSION['type_display_notices'] == "all")  {
+    echo "<b>>>&nbsp;&nbsp;Afficher&nbsp;toutes&nbsp;les&nbsp;notices<<</b><br />\n";
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=".$current_group["id"]."&amp;type_display_notices=15\">Afficher&nbsp;15&nbsp;notices&nbsp;max.</a>\n";
+  } else {
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=".$current_group["id"]."&amp;type_display_notices=all\">Afficher&nbsp;toutes&nbsp;les&nbsp;notices</a><br />\n";
+    echo "<b>>>&nbsp;Afficher&nbsp;15&nbsp;notices&nbsp;max.<<</b>\n";
+  }
+ echo "</fieldset>";
+} else {
+  $_SESSION['type_display_notices'] = "all";
+  echo $legend;
+}
+
+//echo "</center>\n";
+echo "</td>\n";
 
     // Troisième cellule de la première ligne du tableau
     echo "<td align=\"right\">\n";
@@ -473,7 +512,7 @@ if (($id_groupe == null)) {
     die();
 }
 
-// Deuxième tableau
+/*/ Deuxième tableau
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 // Première colonne du tableau
@@ -526,7 +565,7 @@ echo "</td>\n";
 echo "</tr></table>\n";
 
 echo "<hr />";
-
+*/ // ============================== fin modif
 // Début tableau d'affichage des notices
 echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">\n";
 echo "<tr>\n";
@@ -928,7 +967,7 @@ if ($last_date != "-1") {
     echo "</form>";
     echo "</td></tr></table></fieldset>";
 }
-
+$_SESSION['cacher_header'] = "n";
 // Fin de la colonne de droite
 echo "</td></tr></table>";
 require("../lib/footer.inc.php");

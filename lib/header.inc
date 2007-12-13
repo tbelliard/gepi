@@ -263,9 +263,9 @@ if (isset($titre_page)) {
 	echo "<td  style='text-align:right; color:white;'>\n";
 
 	echo "<span class='grey'>";
-	echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' /></a>\n";
-	echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' /></a>\n";
-	echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' /></a>\n";
+	echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' title='Accueil' style='bottom: -1px;' /></a>\n";
+	echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' title='Mon compte' /></a>\n";
+	echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' /></a>\n";
 	echo "</span>\n";
 
 	//echo "</td>\n";
