@@ -107,14 +107,14 @@ if ($current_group) {
 
 				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Saisir les moyennes</center>","",10,0,"n","n","y","n");
 
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/edit16.png' width='16' height='16' ";
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/edit16.png' width='32' height='32' ";
 				//echo "alt='Saisir les moyennes' title='Saisir les moyennes' ";
 				echo "/></a>\n";
 			}
 			else{
 				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Consulter les moyennes</center>","",12,0,"n","n","y","n");
 
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/icons/chercher.png' width='16' height='16' ";
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/icons/chercher.png' width='32' height='32' ";
 				//echo "alt='Saisir les moyennes' title='Consulter les moyennes' ";
 				echo "/></a>\n";
 			}
@@ -122,11 +122,53 @@ if ($current_group) {
 			$i++;
 		}
 		echo "</tr>\n";
+
+
+
+		$i=1;
+		echo "<tr class='lig1'>\n";
+		echo "<th>Appréciations</th>\n";
+		echo "<td colspan='$nb_periode'>\n";
+		if($liste_periodes_ouvertes!=""){
+			echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a>";
+			echo "<br />(<i>$liste_periodes_ouvertes</i>)\n";
+		}
+		else{
+			echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Consulter les appréciations</a>";
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+
+
+
+		echo "<tr class='lig-1'>\n";
+		echo "<th>Importation d'un fichier CSV</th>\n";
+		while ($i < $nb_periode) {
+			echo "<td>\n";
+			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>Import CSV</center>","",10,0,"n","n","y","n");
+
+				echo "<a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\"><img src='../images/import4.png' width='32' height='32' ";
+				echo "/></a>\n";
+			}
+			else{
+				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",12,0,"n","n","y","n");
+
+				echo "<img src='../images/disabled.png' width='20' height='20'";
+				//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
+				echo " onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\" />\n";
+			}
+			echo "</td>\n";
+			$i++;
+		}
+		echo "</tr>\n";
+
 		echo "</table>\n";
 	//echo "</li>\n";
 
 	echo "<p><br /></p>\n";
 	//echo "<li>\n";
+	/*
 	echo "<p>";
 	if($liste_periodes_ouvertes!=""){
 		echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a>";
@@ -136,6 +178,8 @@ if ($current_group) {
 		echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Consulter les appréciations</a>";
 	}
 	echo "</p>\n";
+	*/
+
 	//echo "</li>\n";
 	//echo "</ul>\n";
 	echo "</blockquote>\n";
@@ -158,9 +202,11 @@ if ($current_group) {
     // importation par csv
     while ($i < $nb_periode) {
         if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
-            echo "<p class='bold'>".ucfirst($nom_periode[$i])." - Importation d'un fichier de moyennes/appréciations (format csv) :</p>\n";
-            echo "<ul>\n<li><a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i'>Procéder à l'importation</a> et consulter l'aide.</li>\n";
+            //echo "<p class='bold'>".ucfirst($nom_periode[$i])." - Importation d'un fichier de moyennes/appréciations (format csv) :</p>\n";
+            echo "<p class='bold'>".ucfirst($nom_periode[$i])." - Préparation de l'importation d'un fichier de moyennes/appréciations (format csv) :</p>\n";
+            //echo "<ul>\n<li><a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i'>Procéder à l'importation</a> et consulter l'aide.</li>\n";
 
+            echo "<ul>\n";
             /*echo "<li>Préparation du fichier d'importation :
             <br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=3'>Télécharger le fichier des noms, prénoms et identifiants GEPI de cette classe</a>, ou bien,";
             */
