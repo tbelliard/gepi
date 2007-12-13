@@ -243,6 +243,47 @@ if (isset($titre_page)) {
 
 	echo "<!-- Header start -->\n";
 	echo "<div id='header'>\n";
+
+	if(!isset($_SESSION['cacher_header'])){
+		$_SESSION['cacher_header']="n";
+	}
+
+	// Début du conteneur de Header
+	echo "<div id='c_header1'";
+	if($_SESSION['cacher_header']=="n"){echo " style='display:none;'";}
+	echo ">\n";
+	echo "<table border='0' width='100%'>\n";
+	echo "<tr>\n";
+	echo "<td align='left'>\n";
+	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';return false;\">Afficher Header</a>";
+	echo "</td>\n";
+	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
+	echo "$titre_page";
+	echo "</td>\n";
+	echo "<td  style='text-align:right; color:white;'>\n";
+
+	echo "<span class='grey'>";
+	echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' /></a>\n";
+	echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' /></a>\n";
+	echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' /></a>\n";
+	echo "</span>\n";
+
+	//echo "</td>\n";
+	//echo "<td>\n";
+	echo " \n";
+
+	echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "\n");
+
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</div>\n";
+
+
+	echo "<div id='c_header2'";
+	if($_SESSION['cacher_header']=="y"){echo " style='display:none;'";}
+	echo ">\n";
+
 	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
 	if(getSettingValue('gepi_stylesheet')=='style'){
 		//echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
@@ -265,10 +306,13 @@ if (isset($titre_page)) {
 	echo "<tr>\n";
 		//echo "<td rowspan='3' style='margin:0;padding:0;'><img src='$gepiPath/images/background/darkfade.png' alt='Bricolage pas chouette pour fixer la hauteur du tableau'  style='margin:0;padding:0;' /></td>\n";
 		//echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:100px; margin:0;padding:0;'></div></td>\n";
-		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div></td>\n";
+		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div>";
+		echo "</td>\n";
 
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
+
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';return false;\">Cacher Header</a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
@@ -381,6 +425,10 @@ if (isset($titre_page)) {
 
 	echo "</table>\n";
 	echo "\n";
+
+	// Fin du conteneur de Header
+	echo "</div>";
+
 	echo "</div>\n";
 	echo "<!-- Header end -->\n";
 	echo "\n";
