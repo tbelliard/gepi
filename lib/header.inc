@@ -232,21 +232,25 @@ echo '	<!-- Fin des styles -->'."\n\n";
 
 <?php
 if (isset($titre_page)) {
+	if(!isset($_SESSION['cacher_header'])){
+		$_SESSION['cacher_header']="n";
+	}
+
 	if ($_SESSION['statut'] == "administrateur") {
 		$rc = null;
 		$beta = null;
 		if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
 		if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
-		echo "<div id='version_gepi'>v".$gepiVersion.$rc.$beta."</div>";
+		echo "<div id='version_gepi'";
+		//if($_SESSION['cacher_header']=="y"){
+			echo " style='margin-left:22px;'";
+		//}
+		echo ">v".$gepiVersion.$rc.$beta."</div>";
 	}
 
 
 	echo "<!-- Header start -->\n";
 	echo "<div id='header'>\n";
-
-	if(!isset($_SESSION['cacher_header'])){
-		$_SESSION['cacher_header']="n";
-	}
 
 	// Début du conteneur de Header
 	echo "<div id='c_header1'";
@@ -255,7 +259,7 @@ if (isset($titre_page)) {
 	echo "<table border='0' width='100%'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';return false;\">Afficher Header</a>";
+	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
 	echo "$titre_page";
@@ -312,7 +316,7 @@ if (isset($titre_page)) {
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';return false;\">Cacher Header</a></div>\n";
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
