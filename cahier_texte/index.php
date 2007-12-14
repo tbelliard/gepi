@@ -361,9 +361,9 @@ echo "</SCRIPT></p>\n";
 //$groups = get_groups_for_prof($_SESSION["login"]);
 $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 if (empty($groups)) {
-    echo "<br/><br/>";
+    echo "<br /><br />";
     echo "<b>Aucun cahier de textes n'est disponible.</b>";
-    echo "<br/><br/>";
+    echo "<br /><br />";
 }
 	$a = 1;
 foreach($groups as $group) {
@@ -421,9 +421,9 @@ if ($delai > 0) {
     if (isset($edit_devoir)) {
     	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
         //echo "<b>>> Travaux personnels à effectuer<<</b> <br /> \n";
-        echo "<p style=\"border: 1px solid grey; background-color: #c7ff99; font-weight: bold;\"><a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">Compte-rendus de séance</a></p>\n";
+        echo "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["c"]."; font-weight: bold;\"><a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">Compte-rendus de séance</a></p>\n";
     } else {
-        echo "<p style=\"border: 1px solid grey; background-color: #ffcccf; font-weight: bold;\"><a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a></p> \n";
+        echo "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["t"]."; font-weight: bold;\"><a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a></p> \n";
         //echo "<br /><b>>> Compte-rendus de séance <<</b><br />\n";
     }
 }
@@ -776,9 +776,9 @@ if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
         $cpt_compte_rendu_liste++;
     }
 }
-echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
+echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
 if (isset($edit_devoir)) {
-    echo "<legend style=\"font-variant: small-caps;\"> Travaux personnels";
+    echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux personnels";
     $test_appel_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
     if (isset($id_ct)) {
 		echo " - <b><font color=\"red\">Modification de la notice</font></b>";
@@ -790,9 +790,9 @@ if (isset($edit_devoir)) {
     echo "</legend>\n";
 } else {
     if (isset($info))
-        echo "<legend style=\"font-variant: small-caps;\"> Informations générales ";
+        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Informations générales ";
     else
-        echo "<legend style=\"font-variant: small-caps;\"> Compte-rendu ";
+        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte-rendu ";
     if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
 //    echo "de la séance du " . strftime("%A %d %B %Y", $today);
     if (isset($id_ct)) {
@@ -950,8 +950,9 @@ if ($last_date != "-1") {
     $smonth = strftime("%m", $last_date);
     $syear = strftime("%Y", $last_date);
 
-    echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-    echo "<legend style=\"font-variant: small-caps;\">Suppression de notices</legend>";
+	echo "<br />";
+    echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
+    echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Suppression de notices</legend>";
     echo "<table border=0 width = 100%>";
     echo "<tr><td>";
     echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">";
