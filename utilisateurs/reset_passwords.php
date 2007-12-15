@@ -154,7 +154,13 @@ if ($user_login) {
 								u.statut='responsable' AND
 								r.adr_id=ra.adr_id AND
 								re.pers_id=r.pers_id AND
-								u.login='$user_login')";
+								u.login='$user_login'
+						)";
+
+		/*
+								 AND
+								(re.resp_legal='1' OR re.resp_legal='2')
+		*/
 
 		//echo "\$sql_user_info=$sql_user_info<br />";
 		$call_user_info = mysql_query($sql_user_info);
@@ -210,6 +216,7 @@ else {
 								re.ele_id = e.ele_id AND
 								e.login = jec.login AND
 								r.adr_id = ra.adr_id AND
+								(re.resp_legal='1' OR re.resp_legal='2') AND
 								jec.id_classe = '$user_classe')";
 				$call_user_info = mysql_query($sql_user_resp);
 				//echo $sql_user_resp."<br />\n";
@@ -246,7 +253,9 @@ else {
 									AND rp.adr_id = ra.adr_id
 									AND rp.pers_id = r2.pers_id
 									AND r2.ele_id = e.ele_id
-									AND jec.login = e.login )
+									AND jec.login = e.login
+									AND (r2.resp_legal='1' OR r2.resp_legal='2')
+									)
 									ORDER BY jec.id_classe";
 				//echo $sql_user_info;
 				$call_user_info = mysql_query($sql_user_info);
@@ -522,7 +531,7 @@ while ($p < $nb_users) {
 
 
 		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
-		echo "</table>";
+		echo "</table>\n";
 		echo $impression;
 		if ($saut == $nb_fiches) {
 			echo "<p class='saut'>&nbsp;</p>\n";
@@ -562,7 +571,7 @@ while ($p < $nb_users) {
 				if ($user_status =='responsable') {
 
 					$donnees_personne_csv['classe'][$p] = $classe_resp;
-					
+
 					$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
                     $resp_civilite= mysql_result($call_user_info, $p, "civilite");
 					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
@@ -585,26 +594,26 @@ while ($p < $nb_users) {
 					$donnees_personne_csv['commune'][$p] = $resp_commune;
 					$donnees_personne_csv['pays'][$p] = $resp_pays;
 
-					// On crée une chaine de carctères par élèves (Prénom, Nom, classe nom long et classe nom court)
+					// On crée une chaine de caractères par élèves (Prénom, Nom, classe nom long et classe nom court)
 					$nb_elv=sizeof($elv_resp['nom']);
 					$i=0;
 					while ($i < $nb_elv){
-					$chaine_elv = "";
-					$chaine_elv.=$elv_resp['prenom'][$i];
-					$chaine_elv.=" ".$elv_resp['nom'][$i];
-					$chaine_elv.=" ".$elv_resp['nom_complet_classe'][$i];
-					if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
+						$chaine_elv = "";
+						$chaine_elv.=$elv_resp['prenom'][$i];
+						$chaine_elv.=" ".$elv_resp['nom'][$i];
+						$chaine_elv.=" ".$elv_resp['nom_complet_classe'][$i];
+						if ($elv_resp['nom'][$i]!='') {$chaine_elv.=" (".$elv_resp['classe'][$i].")";}
 
-					switch ($i) {
-					case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
-					case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
-					case 2 : $donnees_personne_csv['elv3'][$p] = $chaine_elv; Break;
-					case 3 : $donnees_personne_csv['elv4'][$p] = $chaine_elv; Break;
-					case 4 : $donnees_personne_csv['elv5'][$p] = $chaine_elv; Break;
-					case 5 : $donnees_personne_csv['elv6'][$p] = $chaine_elv; Break;
-					case 6 : $donnees_personne_csv['elv7'][$p] = $chaine_elv; Break;
-					}
-					$i++;
+						switch ($i) {
+							case 0 : $donnees_personne_csv['elv1'][$p] = $chaine_elv; Break;
+							case 1 : $donnees_personne_csv['elv2'][$p] = $chaine_elv; Break;
+							case 2 : $donnees_personne_csv['elv3'][$p] = $chaine_elv; Break;
+							case 3 : $donnees_personne_csv['elv4'][$p] = $chaine_elv; Break;
+							case 4 : $donnees_personne_csv['elv5'][$p] = $chaine_elv; Break;
+							case 5 : $donnees_personne_csv['elv6'][$p] = $chaine_elv; Break;
+							case 6 : $donnees_personne_csv['elv7'][$p] = $chaine_elv; Break;
+						}
+						$i++;
 					}
 				}
 			}
