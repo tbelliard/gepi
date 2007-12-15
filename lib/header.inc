@@ -230,30 +230,6 @@ echo '	<!-- Fin des styles -->'."\n\n";
 <!-- ************************* -->
 <body onLoad="show_message_deconnexion()">
 
-<script type="text/javascript" language="JavaScript">
-	function change_mode_header(mode) {
-		if(mode!='y'){
-			mode='n';
-		}
-
-<?php
-	echo 'var url = "'.$gepiPath.'/lib/change_mode_header.php";';
-?>
-	// Comme les options sont multiples (voir TRAC à ce sujet), on précise que c'est un Object()
-	o_options = new Object();
-	// Par défaut, la méthode Ajax.Request est en post et ses paramètres dans postbody
-	o_options = {postBody: 'cacher_header='+mode};
-		// Et c'est prototype qui s'occupe de tester le navigateur, le type de requête et même le 'send' d'envoi...
-		var laRequete = new Ajax.Request(url,o_options);
-	}
-
-	// Tant qu'on y est, la même utilisation de prototype pour le changement du display
-	function changementDisplay(id1, id2){
-		Element.toggle(id1);
-		Element.toggle(id2);
-	}
-</script>
-
 <?php
 
 //$cacher_header=isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
@@ -289,7 +265,7 @@ if (isset($titre_page)) {
 	echo "<table border='0' width='100%'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
+	echo "<a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n', '".$gepiPath."');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
 	echo "$titre_page";
@@ -346,7 +322,7 @@ if (isset($titre_page)) {
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y', '".$gepiPath."');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
