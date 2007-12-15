@@ -230,11 +230,48 @@ echo '	<!-- Fin des styles -->'."\n\n";
 <!-- ************************* -->
 <body onLoad="show_message_deconnexion()">
 
+<script type="text/javascript" language="JavaScript">
+	function change_mode_header(mode) {
+		if(mode!='y'){
+			mode='n';
+		}
+
+		var xhr_object = null;
+
+		if(window.XMLHttpRequest) // Firefox
+			xhr_object = new XMLHttpRequest();
+		else if(window.ActiveXObject) // Internet Explorer
+			xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+		else { // XMLHttpRequest non supporté par le navigateur
+			alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+			return;
+		}
 <?php
+	echo "xhr_object.open(\"POST\", \"$gepiPath/lib/change_mode_header.php\", true);";
+?>
+
+		xhr_object.onreadystatechange = function() {
+			if(xhr_object.readyState == 4)
+				eval(xhr_object.responseText);
+		}
+
+		xhr_object.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		var data = "cacher_header="+mode;
+		xhr_object.send(data);
+	}
+</script>
+
+<?php
+
+//$cacher_header=isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
+//if(($cacher_header!="y")&&($cacher_header!="n")){$cacher_header="n";}
+
 if (isset($titre_page)) {
 	if(!isset($_SESSION['cacher_header'])){
 		$_SESSION['cacher_header']="n";
 	}
+
+	//echo "\$_SESSION['cacher_header']=".$_SESSION['cacher_header']."<br />";
 
 	if ($_SESSION['statut'] == "administrateur") {
 		$rc = null;
@@ -259,7 +296,7 @@ if (isset($titre_page)) {
 	echo "<table border='0' width='100%'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
+	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';change_mode_header('n');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
 	echo "$titre_page";
@@ -316,7 +353,7 @@ if (isset($titre_page)) {
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';change_mode_header('y');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
