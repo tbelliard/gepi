@@ -137,7 +137,7 @@ echo '	<!-- Début des fichiers en javascript -->'."\n";
 echo '<script type="text/javascript" src="'.$gepiPath.'/lib/functions.js"></script>'."\n";
 
 // Ajout du framework prototype 1.5.1.1 conditionné à la variable $utilisation_prototype="ok"
-$prototype = isset($utilisation_prototype) ? $utilisation_prototype : NULL;
+$prototype = "ok"; //isset($utilisation_prototype) ? $utilisation_prototype : NULL;
 	if ($prototype == "ok") {
 		// On affiche alors le lien qui charge Prototype
     	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
@@ -236,28 +236,21 @@ echo '	<!-- Fin des styles -->'."\n\n";
 			mode='n';
 		}
 
-		var xhr_object = null;
-
-		if(window.XMLHttpRequest) // Firefox
-			xhr_object = new XMLHttpRequest();
-		else if(window.ActiveXObject) // Internet Explorer
-			xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-		else { // XMLHttpRequest non supporté par le navigateur
-			alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-			return;
-		}
 <?php
-	echo "xhr_object.open(\"POST\", \"$gepiPath/lib/change_mode_header.php\", true);";
+	echo 'var url = "'.$gepiPath.'/lib/change_mode_header.php";';
 ?>
+	// Comme les options sont multiples (voir TRAC à ce sujet), on précise que c'est un Object()
+	o_options = new Object();
+	// Par défaut, la méthode Ajax.Request est en post et ses paramètres dans postbody
+	o_options = {postBody: 'cacher_header='+mode};
+		// Et c'est prototype qui s'occupe de tester le navigateur, le type de requête et même le 'send' d'envoi...
+		var laRequete = new Ajax.Request(url,o_options);
+	}
 
-		xhr_object.onreadystatechange = function() {
-			if(xhr_object.readyState == 4)
-				eval(xhr_object.responseText);
-		}
-
-		xhr_object.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		var data = "cacher_header="+mode;
-		xhr_object.send(data);
+	// Tant qu'on y est, la même utilisation de prototype pour le changement du display
+	function changementDisplay(id1, id2){
+		Element.toggle(id1);
+		Element.toggle(id2);
 	}
 </script>
 
@@ -296,7 +289,7 @@ if (isset($titre_page)) {
 	echo "<table border='0' width='100%'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onClick=\"document.getElementById('c_header2').style.display='block';document.getElementById('c_header1').style.display='none';change_mode_header('n');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
+	echo "<a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
 	echo "$titre_page";
@@ -353,7 +346,7 @@ if (isset($titre_page)) {
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"document.getElementById('c_header1').style.display='block';document.getElementById('c_header2').style.display='none';change_mode_header('y');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
