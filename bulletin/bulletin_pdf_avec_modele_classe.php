@@ -192,19 +192,22 @@ function calcul_toute_moyenne_aid ($indice_aid, $periode_select)
 
 //permet de transformer les caractère html
 function unhtmlentities($chaineHtml) {
-//		$tmp = get_html_translation_table(HTML_ENTITIES);
-//		$tmp = array_flip ($tmp);
-//		$chaineTmp = strtr ($chaineHtml, $tmp);
 
-   // Remplace les entités numériques
-   $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-   $string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
-   // Remplace les entités litérales
-   $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-   $trans_tbl = array_flip ($trans_tbl);
-   $chaineTmp = strtr ($string, $trans_tbl);
-
-		return $chaineTmp;
+	$tmp = get_html_translation_table(HTML_ENTITIES);
+	$tmp = array_flip ($tmp);
+	$chaineTmp = strtr ($chaineHtml, $tmp);
+	/*
+	// La deuxième solution ci-dessous pose des problèmes
+	$string=$chaineHtml;
+	// Remplace les entités numériques
+	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
+	$string = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $string);
+	// Remplace les entités littérales
+	$trans_tbl = get_html_translation_table (HTML_ENTITIES);
+	$trans_tbl = array_flip ($trans_tbl);
+	$chaineTmp = strtr ($string, $trans_tbl);
+	*/
+	return $chaineTmp;
 }
 
 
@@ -1149,6 +1152,8 @@ if(!empty($model_bulletin)) {
 				$prenom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['prenom'];
 				$adresse1_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr1'];
 				$adresse2_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr2'];
+				$adresse3_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr3'];
+				$adresse4_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr4'];
 				$ville_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['commune'];
 				$cp_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['cp'];
 				$cpt_parents = $cpt_parents + 1;
@@ -1159,6 +1164,8 @@ if(!empty($model_bulletin)) {
 			$prenom_parents[$ident_eleve_sel1][0] = '';
 			$adresse1_parents[$ident_eleve_sel1][0] = '';
 			$adresse2_parents[$ident_eleve_sel1][0] = '';
+			$adresse3_parents[$ident_eleve_sel1][0] = '';
+			$adresse4_parents[$ident_eleve_sel1][0] = '';
 			$ville_parents[$ident_eleve_sel1][0] = '';
 			$cp_parents[$ident_eleve_sel1][0] = '';
 
@@ -1167,6 +1174,8 @@ if(!empty($model_bulletin)) {
 			$prenom_parents[$ident_eleve_sel1][1] = '';
 			$adresse1_parents[$ident_eleve_sel1][1] = '';
 			$adresse2_parents[$ident_eleve_sel1][1] = '';
+			$adresse3_parents[$ident_eleve_sel1][1] = '';
+			$adresse4_parents[$ident_eleve_sel1][1] = '';
 			$ville_parents[$ident_eleve_sel1][1] = '';
 			$cp_parents[$ident_eleve_sel1][1] = '';
 		}
@@ -1177,10 +1186,35 @@ if(!empty($model_bulletin)) {
 		{
 			if ( $imprime_pour[$classe_id] === '1' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
 			if ( $imprime_pour[$classe_id] === '2' ) {
-				if ( $adresse1_parents[$ident_eleve_sel1][0] != $adresse1_parents[$ident_eleve_sel1][1] and $adresse1_parents[$ident_eleve_sel1][1] != '' )
+				/*
+				if ( ($adresse1_parents[$ident_eleve_sel1][0] != $adresse1_parents[$ident_eleve_sel1][1]) and
+					($adresse1_parents[$ident_eleve_sel1][1] != '') ) {
+				*/
+
+				// Test des différences sur tous les champs de l'adresse
+				if ( ($adresse1_parents[$ident_eleve_sel1][0] != $adresse1_parents[$ident_eleve_sel1][1]) or
+					($adresse2_parents[$ident_eleve_sel1][0] != $adresse2_parents[$ident_eleve_sel1][1]) or
+					($adresse3_parents[$ident_eleve_sel1][0] != $adresse3_parents[$ident_eleve_sel1][1]) or
+					($adresse4_parents[$ident_eleve_sel1][0] != $adresse4_parents[$ident_eleve_sel1][1]) or
+					($ville_parents[$ident_eleve_sel1][0] != $ville_parents[$ident_eleve_sel1][1]) or
+					($cp_parents[$ident_eleve_sel1][0] != $cp_parents[$ident_eleve_sel1][1])
+					)
 				{
 					$nb_bulletin_parent[$ident_eleve_sel1] = 2;
-				} else { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
+				}
+				else {
+					$nb_bulletin_parent[$ident_eleve_sel1] = 1;
+				}
+
+				// Si aucune des lignes adresse du deuxième parent n'est remplie, on n'imprime que pour le 1er responsable
+				if (($adresse1_parents[$ident_eleve_sel1][1] == '') and
+					($adresse2_parents[$ident_eleve_sel1][1] == '') and
+					($adresse3_parents[$ident_eleve_sel1][1] == '') and
+					($adresse4_parents[$ident_eleve_sel1][1] == '')) {
+					$nb_bulletin_parent[$ident_eleve_sel1] = 1;
+				}
+
+				// Si le nom du deuxième parent n'est pas rempli, on n'imprime que pour le 1er responsable
 				if ( $nom_parents[$ident_eleve_sel1][0] === '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
 			}
 			if ( $imprime_pour[$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] != '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 2; }
@@ -2100,6 +2134,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		} else { $grandeur_texte='ok'; }
 			}
 	$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
+
 	$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 		$hauteur_caractere=10;
 		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
@@ -2115,6 +2150,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		} else { $grandeur_texte='ok'; }
 			}
 	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+
 	$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
 		$hauteur_caractere=10;
 		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
@@ -2130,7 +2166,26 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		} else { $grandeur_texte='ok'; }
 			}
 	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
-	$pdf->Cell(90,5, '',0,2,'');
+
+	// Suppression du saut de ligne pour mettre la ligne 3 de l'adresse
+	//$pdf->Cell(90,5, '',0,2,'');
+
+	$texte_1_responsable = $adresse3_parents[$ident_eleve_aff][$responsable_place];
+		$hauteur_caractere=10;
+		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+		$val = $pdf->GetStringWidth($texte_1_responsable);
+		$taille_texte = $longeur_cadre_adresse;
+		$grandeur_texte='test';
+		while($grandeur_texte!='ok') {
+		if($taille_texte<$val)
+		{
+			$hauteur_caractere = $hauteur_caractere-0.3;
+			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$val = $pdf->GetStringWidth($texte_1_responsable);
+		} else { $grandeur_texte='ok'; }
+			}
+	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+
 	$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 		$hauteur_caractere=10;
 		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
@@ -2146,6 +2201,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		} else { $grandeur_texte='ok'; }
 			}
 	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+
 	$texte_1_responsable = '';
 	if ( $cadre_adresse[$classe_id] != 0 ) { $pdf->Rect($X_parent[$classe_id], $Y_parent[$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D'); }
 	}
