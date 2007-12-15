@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 15/03/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -143,16 +143,18 @@ if ($current_group) {
 
 		echo "<tr class='lig-1'>\n";
 		echo "<th>Importation d'un fichier CSV</th>\n";
+		$i=1;
 		while ($i < $nb_periode) {
 			echo "<td>\n";
 			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
-				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>Import CSV</center>","",10,0,"n","n","y","n");
+				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>Import CSV<br />(<i>les champs vides ne sont pas importés</i>)</center>","",15,0,"n","n","y","n");
 
-				echo "<a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\"><img src='../images/import4.png' width='32' height='32' ";
+				//echo "<a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\"><img src='../images/import4.png' width='32' height='32' ";
+				echo "<a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_import_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_import_csv_periode_$i')\"><img src='../images/import_notes_app.png' width='30' height='30' ";
 				echo "/></a>\n";
 			}
 			else{
-				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",12,0,"n","n","y","n");
+				$tabdiv_infobulle[]=creer_div_infobulle("info_import_csv_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
 
 				echo "<img src='../images/disabled.png' width='20' height='20'";
 				//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
@@ -197,8 +199,91 @@ if ($current_group) {
         $i++;
     }
 	*/
-    $i="1";
 
+
+
+	echo "<p class='bold'>Préparation de l'importation d'un fichier de moyennes/appréciations :</p>\n";
+	echo "<blockquote>\n";
+
+	echo "<table class='boireaus'>\n";
+	echo "<tr>\n";
+	echo "<th>Export / Période</th>\n";
+	$i=1;
+	while ($i < $nb_periode) {
+		//echo "<th>Période $i</th>\n";
+		echo "<th>".$current_group["periodes"][$i]["nom_periode"]."</th>\n";
+		$i++;
+	}
+	echo "</tr>\n";
+
+	$i=1;
+	echo "<tr class='lig-1'>\n";
+	echo "<th>CSV</th>\n";
+	while ($i < $nb_periode) {
+		echo "<td>\n";
+		if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+			$tabdiv_infobulle[]=creer_div_infobulle("info_export_csv_periode_$i","","","<center>Export CSV des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
+
+			echo "<a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$i&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App' onmouseover=\"afficher_div('info_export_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_csv_periode_$i')\"><img src='../images/notes_app_csv.png' width='30' height='30' ";
+			echo "/></a>\n";
+		}
+		else{
+			$tabdiv_infobulle[]=creer_div_infobulle("info_export_csv_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
+
+			echo "<img src='../images/disabled.png' width='20' height='20'";
+			//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
+			echo " onmouseover=\"afficher_div('info_export_csv_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_csv_periode_$i')\" />\n";
+		}
+		echo "</td>\n";
+		$i++;
+	}
+	echo "</tr>\n";
+
+
+
+	if(getSettingValue("export_cn_ods")=='y') {
+		echo "<tr class='lig1'>\n";
+		echo "<th>ODS</th>\n";
+		if($_SESSION['user_temp_directory']=='y'){
+
+			$i="1";
+			// importation par csv
+			while ($i < $nb_periode) {
+				echo "<td>\n";
+				if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+
+					//echo "-> <a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i'>Télécharger un fichier tableur OpenOffice (<i>ODS</i>) avec les identifiants GEPI, les colonnes Moyennes et Appréciations de cette classe.</a>\n";
+
+					$tabdiv_infobulle[]=creer_div_infobulle("info_export_ods_periode_$i","","","<center>Export tableur OpenOffice.org (<i>ODS</i>) des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
+
+					echo "<a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_export_ods_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_ods_periode_$i')\"><img src='../images/notes_app_ods.png' width='30' height='30' ";
+					echo "/></a>\n";
+
+				}
+				else{
+					$tabdiv_infobulle[]=creer_div_infobulle("info_export_ods_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
+
+					echo "<img src='../images/disabled.png' width='20' height='20'";
+					//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
+					echo " onmouseover=\"afficher_div('info_export_ods_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_ods_periode_$i')\" />\n";
+				}
+				echo "</td>\n";
+				$i++;
+			}
+		}
+		else{
+			echo "<td colspan='$nb_periode'><font color='red'>L'export tableur ODS n'est pas possible.</font></td>\n";
+		}
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+	echo "</blockquote>\n";
+
+
+
+
+/*
+    $i="1";
     // importation par csv
     while ($i < $nb_periode) {
         if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
@@ -207,9 +292,8 @@ if ($current_group) {
             //echo "<ul>\n<li><a href='import_note_app.php?id_groupe=$id_groupe&amp;periode_num=$i'>Procéder à l'importation</a> et consulter l'aide.</li>\n";
 
             echo "<ul>\n";
-            /*echo "<li>Préparation du fichier d'importation :
-            <br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=3'>Télécharger le fichier des noms, prénoms et identifiants GEPI de cette classe</a>, ou bien,";
-            */
+            echo "<li>Préparation du fichier d'importation :<br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=3'>Télécharger le fichier des noms, prénoms et identifiants GEPI de cette classe</a>, ou bien,";
+
             echo "<li>Préparation du fichier d'importation :";
             //echo "<br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=1'>Télécharger le fichier des identifiants GEPI seuls de cette classe.</a></ul>";
             //echo "<br />-> <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=".$i."&amp;champs=1'>Télécharger le fichier des identifiants GEPI seuls de cette classe</a>, ou encore";
@@ -230,7 +314,7 @@ if ($current_group) {
         }
         $i++;
     }
-
+	*/
 
 } else {
 
@@ -284,5 +368,6 @@ if ($current_group) {
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
