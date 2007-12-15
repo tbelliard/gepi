@@ -28,7 +28,7 @@ function CocheCase(boul) {
 // Fonctions Ajax se basant sur Prototype
 function couleursEdtAjax(id, reglage){
 
-		elementHTML = document.getElementById(id);
+		elementHTML = $(id);
 	var url = "ajax_edtcouleurs.php";
 	o_options = new Object();
 	o_options = {method: 'get', parameters: 'var1='+id+'&var2='+reglage};
