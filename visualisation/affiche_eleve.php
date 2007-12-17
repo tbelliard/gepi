@@ -740,14 +740,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			if($affiche_mgen=='oui'){$checked=" checked='yes'";}else{$checked="";}
 			echo "<table border='0'>\n";
-			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
 
 			if($affiche_minmax=='oui'){$checked=" checked='yes'";}else{$checked="";}
-			echo "<tr valign='top'><td>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</td><td><input type='checkbox' name='affiche_minmax' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td><label for='affiche_minmax' style='cursor: pointer;'>Afficher les bandes moyenne minimale/maximale:<br />(<i>cet affichage n'est pas appliqué en mode 'Toutes_les_periodes'</i>)</label></td><td><input type='checkbox' name='affiche_minmax' id='affiche_minmax' value='oui'$checked /></td></tr>\n";
 
 			//$affiche_moy_annuelle
 			if($affiche_moy_annuelle=='oui'){$checked=" checked='yes'";}else{$checked="";}
-			echo "<tr valign='top'><td>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td><input type='checkbox' name='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
+			echo "<tr valign='top'><td><label for='affiche_moy_annuelle' style='cursor: pointer;'>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</label></td><td><input type='checkbox' name='affiche_moy_annuelle' id='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
 
 			echo "</table>\n";
 			echo "</blockquote>\n";
@@ -762,18 +762,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// Graphe en courbe ou étoile
 			echo "<tr><td>Graphe en </td>\n";
 			if($type_graphe=='courbe'){$checked=" checked='yes'";}else{$checked="";}
-			echo "<td><input type='radio' name='type_graphe' value='courbe'$checked /> courbe<br />\n";
+			echo "<td><label for='type_graphe_courbe' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_courbe' value='courbe'$checked /> courbe</label><br />\n";
 			if($type_graphe=='etoile'){$checked=" checked='yes'";}else{$checked="";}
-			echo "<input type='radio' name='type_graphe' value='etoile'$checked /> étoile\n";
+			echo "<label for='type_graphe_etoile' style='cursor: pointer;'><input type='radio' name='type_graphe' id='type_graphe_etoile' value='etoile'$checked /> étoile</label>\n";
 			echo "</td></tr>\n";
 
 			// - dimensions de l'image
-			echo "<tr><td>Largeur (<i>en pixels</i>):</td><td><input type='text' name='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='largeur_graphe' style='cursor: pointer;'>Largeur (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_graphe' id='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
 			//echo " - \n";
-			echo "<tr><td>Hauteur (<i>en pixels</i>):</td><td><input type='text' name='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='hauteur_graphe' style='cursor: pointer;'>Hauteur (<i>en pixels</i>):</label></td><td><input type='text' name='hauteur_graphe' id='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
 
 			// - taille des polices
-			echo "<tr><td>Taille des polices:</td><td><select name='taille_police'>\n";
+			echo "<tr><td><label for='taille_police' style='cursor: pointer;'>Taille des polices:</label></td><td><select name='taille_police' id='taille_police'>\n";
 			for($i=1;$i<=6;$i++){
 				if($taille_police==$i){$selected=" selected='yes'";}else{$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
@@ -781,7 +781,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</select></td></tr>\n";
 
 			// - epaisseur des traits
-			echo "<tr><td>Epaisseur des courbes:</td><td><select name='epaisseur_traits'>\n";
+			echo "<tr><td><label for='epaisseur_traits' style='cursor: pointer;'>Epaisseur des courbes:</label></td><td><select name='epaisseur_traits' id='epaisseur_traits'>\n";
 			for($i=1;$i<=6;$i++){
 				if($epaisseur_traits==$i){$selected=" selected='yes'";}else{$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
@@ -793,10 +793,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
 			if($temoin_image_escalier=='oui'){$checked=" checked='yes'";}else{$checked="";}
 			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
-			echo "<tr><td>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
+			echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
 
 			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-			echo "<tr><td>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</td><td><select name='tronquer_nom_court'>\n";
+			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
 			for($i=0;$i<=10;$i++){
 				if($tronquer_nom_court==$i){$selected=" selected='yes'";}else{$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
@@ -812,12 +812,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<blockquote>\n";
 			echo "<table border='0'>\n";
 			if(($affiche_photo=='')||($affiche_photo=='oui')){$checked=" checked='yes'";}else{$checked="";}
-			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><input type='radio' name='affiche_photo' value='oui'$checked />Oui / \n";
+			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><label for='affiche_photo_oui' style='cursor: pointer;'><input type='radio' name='affiche_photo' id='affiche_photo_oui' value='oui'$checked />Oui</label> / \n";
 			if($affiche_photo=='non'){$checked=" checked='yes'";}else{$checked="";}
-			echo "Non<input type='radio' name='affiche_photo' value='non'$checked /></td></tr>\n";
+			echo "<label for='affiche_photo_non' style='cursor: pointer;'>Non<input type='radio' name='affiche_photo' id='affiche_photo_non' value='non'$checked /></label></td></tr>\n";
 
 			// - Largeur imposée pour la photo
-			echo "<tr><td>Largeur de la photo (<i>en pixels</i>):</td><td><input type='text' name='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='largeur_imposee_photo' style='cursor: pointer;'>Largeur de la photo (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_imposee_photo' id='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' /></td></tr>\n";
 			//echo "</p>\n";
 			echo "</table>\n";
 			echo "</blockquote>\n";
@@ -1097,7 +1097,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "</select>\n";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes'){$checked=" checked='yes'";}else{$checked="";}
-	echo "<input type='radio' name='choix_periode' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes\n";
+	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes</label>\n";
 
 	echo "<hr width='150' />\n";
 
