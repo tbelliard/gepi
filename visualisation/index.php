@@ -118,12 +118,13 @@ Vous pouvez choisir ci-dessous différents moyens de visualisation :
 </tr>
 <tr>
     <td width=200><a href="classe_classe.php">Classe par rapport à autre classe</a></td>
-    <td>Permet de comparer les résultats d'une classe vis à vis d'une autre classe, matière par matière, pérode par période.</td>
+    <td>Permet de comparer les résultats d'une classe vis à vis d'une autre classe, matière par matière, période par période.</td>
 </tr>
 <tr>
     <td width=200><a href="affiche_eleve.php">Elève par rapport à un élève ou une moyenne</a></td>
-    <td>Graphique en courbe: Permet de comparer les résultats d'un élève, par rapport aux moyennes min/max/classe et par rapport à un autre élève, matière par matière, pérode par période.<br />Alternativement, ce choix permet d'obtenir les courbes des 3 trimestres.</td>
+    <td>Graphique en courbe: Permet de comparer les résultats d'un élève, par rapport aux moyennes min/max/classe et par rapport à un autre élève, matière par matière, période par période.<br />Alternativement, ce choix permet d'obtenir les courbes des 3 trimestres.</td>
 </tr>
 </table>
+<p><br /></p>
 </center>
 <?php require("../lib/footer.inc.php");?>
