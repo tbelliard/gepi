@@ -308,7 +308,10 @@ while ($j < $nombre_groupes) {
 				// Coefficient du groupe:
 				$coef_eleve = $current_coef;
 			}
-            $coef_eleve=number_format($coef_eleve,1, ',', ' ');
+			//=========================
+			// MODIF: boireaus 20071217 On arrondira seulement à l'affichage
+            //$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+			//=========================
         } else {
             $current_eleve_note[$nb] = '';
             $current_eleve_statut[$nb] = 'Non suivie';
@@ -354,6 +357,7 @@ while ($j < $nombre_groupes) {
 				if ($affiche_rang == 'y')  $nb_total_cols++;
 
                 // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
+
                 $affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
                 if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
                 	$affiche_cat_moyenne = false;
@@ -385,7 +389,8 @@ while ($j < $nombre_groupes) {
 		if($affiche_coef=='y'){
 			if ($test_coef != 0) {
 				//if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
-				if ($coef_eleve > 0) $print_coef= $coef_eleve; else $print_coef='-';
+				//if ($coef_eleve > 0) $print_coef= $coef_eleve; else $print_coef='-';
+				if ($coef_eleve > 0) $print_coef= number_format($coef_eleve,1, ',', ' '); else $print_coef='-';
 				echo "<td width=\"$larg_col2\"";
 				if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 				echo " align=\"center\"><p class='bull_simpl'>".$print_coef."</p></td>\n";
@@ -599,6 +604,7 @@ if ($test_coef != 0) {
                 } else {
                 	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
                 }
+
 				if($affiche_cat_moyenne){
 					//if ($total_cat_coef[$nb][$cat_id] != "0") {
 					if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
