@@ -212,19 +212,19 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			echo "<center><input type='submit' value='Enregistrer' /></center><br />\n";
 			$k = '0';
 			echo "<table border='1' cellpadding='5' class='boireaus'>\n";
-			echo "<tr><td><p>Nom Prénom</p></td>\n";
+			echo "<tr><th>Nom Prénom</th>\n";
 			for ($i=1; $i < $nb_prof_suivi+1; $i++) {
 				$call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
 				$prof_nom = mysql_result($call_prof, 0, "nom");
 				$prof_prenom = mysql_result($call_prof, 0, "prenom");
-				echo "<td><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom<br />\n";
+				echo "<th><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom<br />\n";
 				echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				//echo " / <a href=\"javascript:DecocheColonne(".$i.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
-				echo "</p></td>\n";
+				echo "</p></th>\n";
 			}
-			echo "<td><p class='small'>Pas de ".getSettingValue("gepi_prof_suivi")."<br />\n";
+			echo "<th><p class='small'>Pas de ".getSettingValue("gepi_prof_suivi")."<br />\n";
 			echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
-			echo "</p></td>\n";
+			echo "</p></th>\n";
 			echo "</tr>\n";
 
 			$alt=1;
