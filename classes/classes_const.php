@@ -377,21 +377,21 @@ if ($nombreligne == '0') {
 	$k = '0';
 	echo "<table border='1' cellpadding='5' class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<td><p>Nom Prénom </p></td>\n";
-	echo "<td><p>Régime</p></td>\n";
-	echo "<td><p>Redoublant</p></td>\n";
-	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td><td><p>CPE responsable</p></td>\n";
+	echo "<th>Nom Prénom </th>\n";
+	echo "<th>Régime</th>\n";
+	echo "<th>Redoublant</th>\n";
+	echo "<th>".ucfirst(getSettingValue("gepi_prof_suivi"))."</th><th>CPE responsable</th>\n";
 	$i="1";
 	while ($i < $nb_periode) {
-		//echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></td>\n";
-		echo "<td><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
+		//echo "<th><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></th>\n";
+		echo "<th><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]<br />\n";
 
 		echo "<a href=\"javascript:CocheColonne(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
-		echo "</p></td>\n";
+		echo "</p></th>\n";
 		$i++;
 	}
-	echo "<td>&nbsp;</td>\n";
+	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 	$alt=1;
 	While ($k < $nombreligne) {
