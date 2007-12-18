@@ -342,6 +342,7 @@ if ($current_group) {
             $id_classe = mysql_result($appel_donnees, $i, "id");
             $nom_classe = mysql_result($appel_donnees, $i, "classe");
             echo "<p><span class='norme'><b>$nom_classe</b> : ";
+			echo "<a href='recopie_moyennes.php?id_classe=$id_classe&amp;retour=saisie_index'><b>Recopie des moyennes</b></a> - ";
             $groups = get_groups_for_class($id_classe);
             foreach ($groups as $group) {
 

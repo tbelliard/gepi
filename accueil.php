@@ -210,7 +210,7 @@ if ($force_ref) {
 
     echo "</div>\n";
 }
-elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")){
+elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")||($_SESSION['statut']=="secours")){
     if (!check_user_temp_directory()) {
         echo "<div>\n";
 		echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
