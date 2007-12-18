@@ -568,7 +568,7 @@ if ($nombreligne == '0') {
 		$k++;
 	}
 	echo "</table>\n";
-	echo "<center><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></center>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></p>\n";
 	echo "<br />\n";
 
 	echo "<script type='text/javascript'>

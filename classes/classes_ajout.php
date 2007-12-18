@@ -262,15 +262,17 @@ if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>\n";
 } else {
 	$eleves_non_affectes = 'no';
-	echo "<table border='1' cellpadding='5'>\n<tr>\n<td><p><b>Nom Prénom </b></p></td>\n<td><p><b>Régime</b></p></td>\n<td><p><b>Redoublant</b></p></td>\n";
+	echo "<table class='boireaus' cellpadding='5'>\n";
+	echo "<tr>\n";
+	echo "<th><p><b>Nom Prénom </b></p></th>\n<th><p><b>Régime</b></p></th>\n<th><p><b>Redoublant</b></p></th>\n";
 	$i="1";
 	while ($i < $nb_periode) {
-		echo "<td><p><b>Ajouter per. $i</b></p></td>\n";
+		echo "<th><p><b>Ajouter per. $i</b></p></th>\n";
 		$i++;
 	}
 
-	//echo "<td><b><center>cocher / décocher <br/>toutes périodes</center></b></p></td>\n";
-	echo "<td><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></td>\n";
+	//echo "<th><b><center>cocher / décocher <br/>toutes périodes</center></b></p></th>\n";
+	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>\n";
 	echo "</tr>";
 	$k = '0';
 	//=========================
@@ -278,6 +280,7 @@ if ($nombreligne == '0') {
 	// Compteur des élèves effectivement non affectés:
 	$ki=0;
 	//=========================
+	$alt=1;
 	While ($k < $nombreligne) {
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 		$nom_eleve = mysql_result($call_eleves, $k, 'nom');
@@ -335,7 +338,8 @@ if ($nombreligne == '0') {
 			}
 		}
 		if ($inserer_ligne == 'yes') {
-			echo "<tr><td>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><td>\n";
 			//=========================
 			// MODIF: boireaus 20071010
 			/*
@@ -418,7 +422,7 @@ if ($nombreligne == '0') {
 	if ($eleves_non_affectes == 'no') {
 		echo "<p>Il n'y a aucun élève de disponible à ajouter !";
 	} else {
-		echo "<input type='submit' value='Enregistrer' /><br />\n";
+		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	}
 }
 ?>
