@@ -93,6 +93,7 @@ if ($current_group) {
 			echo "<th>".$current_group["periodes"][$i]["nom_periode"]."</th>\n";
 			$i++;
 		}
+		echo "<th>Impression</th>\n";
 		echo "</tr>\n";
 
 		$i=1;
@@ -107,7 +108,9 @@ if ($current_group) {
 
 				$tabdiv_infobulle[]=creer_div_infobulle("info_periode_$i","","","<center>Saisir les moyennes</center>","",10,0,"n","n","y","n");
 
-				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\"><img src='../images/edit16.png' width='32' height='32' ";
+				echo "<a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i' onmouseover=\"afficher_div('info_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_periode_$i')\">";
+				//echo "<img src='../images/edit16.png' width='32' height='32' ";
+				echo "<img src='../images/icons/bulletin_edit.png' width='34' height='34' ";
 				//echo "alt='Saisir les moyennes' title='Saisir les moyennes' ";
 				echo "/></a>\n";
 			}
@@ -121,15 +124,20 @@ if ($current_group) {
 			echo "</td>\n";
 			$i++;
 		}
+
+		$tabdiv_infobulle[]=creer_div_infobulle("info_visu","","","<center>Visualisation des moyennes et appréciations</center>","",12,0,"n","n","y","n");
+
+		echo "<td rowspan='2'><a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onmouseover=\"afficher_div('info_visu','y',10,10)\" onmouseout=\"cacher_div('info_visu')\"><img src='../images/icons/print.png' width='32' height='32' /></a></td>\n";
 		echo "</tr>\n";
 
 
-
+		/*
 		$i=1;
 		echo "<tr class='lig1'>\n";
 		echo "<th>Appréciations</th>\n";
 		echo "<td colspan='$nb_periode'>\n";
 		if($liste_periodes_ouvertes!=""){
+
 			echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Saisir les appréciations</a>";
 			echo "<br />(<i>$liste_periodes_ouvertes</i>)\n";
 		}
@@ -137,6 +145,31 @@ if ($current_group) {
 			echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe'>Consulter les appréciations</a>";
 		}
 		echo "</td>\n";
+		echo "</tr>\n";
+		*/
+
+		$i=1;
+		echo "<tr class='lig1'>\n";
+		echo "<th>Appréciations</th>\n";
+		while ($i < $nb_periode) {
+			echo "<td>\n";
+			if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
+
+				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>Saisir les appréciations</center>","",12,0,"n","n","y","n");
+
+				echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe' onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\"><img src='../images/icons/bulletin_edit.png' width='34' height='34' /></a>";
+
+			}
+			else{
+				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
+
+				echo "<img src='../images/disabled.png' width='20' height='20'";
+				//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
+				echo " onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\" />\n";
+			}
+			echo "</td>\n";
+			$i++;
+		}
 		echo "</tr>\n";
 
 
@@ -163,6 +196,7 @@ if ($current_group) {
 			echo "</td>\n";
 			$i++;
 		}
+		echo "<td>&nbsp;</td>\n";
 		echo "</tr>\n";
 
 		echo "</table>\n";
