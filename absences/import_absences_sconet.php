@@ -396,8 +396,13 @@ function get_nom_class_from_id($id){
 
 							echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
-							for($i=0;$i<count($id_classe);$i++){
-								echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+							if(is_array($id_classe)){
+								for($i=0;$i<count($id_classe);$i++){
+									echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+								}
+							}
+							else{
+								echo "<input type='hidden' name='id_classe[]' value='$id_classe' />\n";
 							}
 
 							echo "<p>Veuillez fournir le fichier exportAbsence.xml:<br />\n";
