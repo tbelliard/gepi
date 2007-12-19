@@ -1075,7 +1075,8 @@ $chemin = array();
 $chemin[] = "/messagerie/index.php";
 
 $titre = array();
-$titre[] = "Messagerie interne";
+//$titre[] = "Messagerie interne";
+$titre[] = "Panneau d'affichage";
 
 $expli = array();
 $expli[] = "Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.";
@@ -1089,7 +1090,8 @@ if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
     echo "<table class='menu'>\n";
     echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Messagerie</th>\n";
+    //echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Messagerie</th>\n";
+    echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Panneau d'affichage</th>\n";
     echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
