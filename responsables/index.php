@@ -706,16 +706,55 @@ else{
 	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable légal 1</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable légal 1</td>\n";
 	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;tri=ele'>Elève(s)</a></td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;num_resp=ele&amp;debut=$debut&amp;limit=$limit'>Elève(s)</a></td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;num_resp=ele&amp;debut=$debut&amp;limit=$limit";
+	if(isset($val_rech)) {
+		$ligne_titre.="&amp;val_rech=$val_rech";
+	}
+	if(isset($crit_rech)) {
+		$ligne_titre.="&amp;crit_rech=$crit_rech";
+	}
+	if(isset($mode_rech)) {
+		$ligne_titre.="&amp;mode_rech=$mode_rech";
+	}
+	if(isset($champ_rech)) {
+		$ligne_titre.="&amp;champ_rech=$champ_rech";
+	}
+	$ligne_titre.="'>Elève(s)</a></td>\n";
 	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='2'>Responsable légal 2</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='3'>Responsable légal 2</td>\n";
 	$ligne_titre.="</tr>\n";
 	$ligne_titre.="<tr>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><a href='index.php?order_by=nom,prenom&amp;num_resp=1&amp;debut=$debut&amp;limit=$limit'>Nom prénom</a></td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><a href='index.php?order_by=nom,prenom&amp;num_resp=1&amp;debut=$debut&amp;limit=$limit";
+	if(isset($val_rech)) {
+		$ligne_titre.="&amp;val_rech=$val_rech";
+	}
+	if(isset($crit_rech)) {
+		$ligne_titre.="&amp;crit_rech=$crit_rech";
+	}
+	if(isset($mode_rech)) {
+		$ligne_titre.="&amp;mode_rech=$mode_rech";
+	}
+	if(isset($champ_rech)) {
+		$ligne_titre.="&amp;champ_rech=$champ_rech";
+	}
+	$ligne_titre.="'>Nom prénom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
 	//$ligne_titre.="<td>Elève</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><a href='index.php?order_by=nom,prenom&amp;num_resp=2&amp;debut=$debut&amp;limit=$limit'>Nom prénom</a></td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><a href='index.php?order_by=nom,prenom&amp;num_resp=2&amp;debut=$debut&amp;limit=$limit";
+	if(isset($val_rech)) {
+		$ligne_titre.="&amp;val_rech=$val_rech";
+	}
+	if(isset($crit_rech)) {
+		$ligne_titre.="&amp;crit_rech=$crit_rech";
+	}
+	if(isset($mode_rech)) {
+		$ligne_titre.="&amp;mode_rech=$mode_rech";
+	}
+	if(isset($champ_rech)) {
+		$ligne_titre.="&amp;champ_rech=$champ_rech";
+	}
+	$ligne_titre.="'>Nom prénom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Supprimer</td>\n";
 	$ligne_titre.="</tr>\n";
