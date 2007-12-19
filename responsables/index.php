@@ -198,6 +198,8 @@ $titre_page = "Gestion des responsables élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//echo "\$num_resp=$num_resp<br />";
+
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -236,8 +238,10 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
+//echo "\$num_resp=$num_resp<br />";
 
 $num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
+//echo "\$num_resp=$num_resp<br />";
 
 
 echo "<p class=bold>";
@@ -265,7 +269,10 @@ echo "</p>\n";
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 //if (!isset($order_by)) {$order_by = "nom1,prenom1";}
+//echo "\$num_resp=$num_resp<br />";
+
 if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
+//echo "\$num_resp=$num_resp<br />";
 
 //$num_resp=isset($_POST['num_resp']) ? $_POST['num_resp'] : (isset($_GET['num_resp']) ? $_GET['num_resp'] : 1);
 
@@ -699,6 +706,12 @@ if("$num_resp"=="0"){
 
 }
 else{
+	//echo "\$num_resp=$num_resp<br />";
+
+	// Pour pouvoir faire la recherche en suivant les liens <a href...
+	$champ_rech=ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));
+	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le même selon que la chaine_recherche est vide ou non)
+
 	echo "<table class='boireaus' align='center'>\n";
 
 	$ligne_titre="";
@@ -768,12 +781,14 @@ else{
 				r.resp_legal='$num_resp'";
 		if(isset($chaine_recherche)){
 			$sql.=" AND $chaine_recherche";
-			echo "<!--$sql-->\n";
+			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
+		echo "<!--$sql-->\n";
+		//echo "<tr><td colspan='7'>$sql</td></tr>\n";
 		$res1=mysql_query($sql);
 
 		if(mysql_num_rows($res1)){
@@ -923,12 +938,14 @@ else{
 		//	ORDER BY $order_by";
 		if(isset($chaine_recherche)){
 			$sql.=" AND $chaine_recherche";
-			echo "<!--$sql-->\n";
+			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
+		echo "<!--$sql-->\n";
+		//echo "<tr><td colspan='7'>$sql</td></tr>\n";
 		$res1=mysql_query($sql);
 
 		if(mysql_num_rows($res1)){
