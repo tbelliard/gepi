@@ -1501,7 +1501,8 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-				echo "'>Modifier le responsable</a></td>\n";
+				//echo "'>Modifier le responsable</a></td>\n";
+				echo "'>Changer de responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
@@ -1582,7 +1583,8 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-				echo "'>Modifier le responsable</a></td>\n";
+				//echo "'>Modifier le responsable</a></td>\n";
+				echo "'>Changer de responsable</a></td>\n";
 				echo "</tr>\n";
 
 				echo "<tr valign='top'>\n";
