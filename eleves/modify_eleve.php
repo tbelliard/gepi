@@ -973,12 +973,25 @@ if(isset($definir_resp)){
 			$critere_recherche=substr($eleve_nom,0,3);
 		}
 
+		$nb_resp=isset($_POST['nb_resp']) ? $_POST['nb_resp'] : 20;
+		if(strlen(ereg_replace("[0-9]","",$nb_resp))!=0) {
+			$nb_resp=20;
+		}
+		$num_premier_resp_rech=isset($_POST['num_premier_resp_rech']) ? $_POST['num_premier_resp_rech'] : 0;
+		if(strlen(ereg_replace("[0-9]","",$num_premier_resp_rech))!=0) {
+			$num_premier_resp_rech=0;
+		}
+
 		echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 
 		echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 		echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
-		echo "<p align='center'><input type='submit' name='filtrage' value='Afficher' /> les responsables dont le <b>nom</b> contient: ";
+		echo "<p align='center'><input type='submit' name='filtrage' value='Afficher' /> les ";
+		echo "<input type='text' name='nb_resp' value='$nb_resp' size='3' />\n";
+		echo " responsables dont le <b>nom</b> contient: ";
 		echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+		echo " à partir de l'enregistrement ";
+		echo "<input type='text' name='num_premier_resp_rech' value='$num_premier_resp_rech' size='4' />\n";
 		echo "</p>\n";
 
 
@@ -1014,14 +1027,14 @@ if(isset($definir_resp)){
 		}
 		$sql.=" ORDER BY rp.nom, rp.prenom";
 		if($afficher_tous_les_resp!='y'){
-			$sql.=" LIMIT 20";
+			$sql.=" LIMIT $num_premier_resp_rech, $nb_resp";
 		}
 		$call_resp=mysql_query($sql);
 		$nombreligne = mysql_num_rows($call_resp);
 		// si la table des responsables est non vide :
 		if ($nombreligne != 0) {
 			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
-			echo "<table align='center' border='1'>\n";
+			echo "<table align='center' class='boireaus'>\n";
 			echo "<tr>\n";
 			echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' /></td>\n";
 			echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Responsable légal $definir_resp</b></td>\n";
@@ -1029,16 +1042,18 @@ if(isset($definir_resp)){
 			echo "</tr>\n";
 
 			$cpt=1;
+			$alt=1;
 			while($lig_resp=mysql_fetch_object($call_resp)){
-				if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
-				echo "<tr>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'><input type='radio' name='reg_resp".$definir_resp."' value='$lig_resp->pers_id' ";
+				$alt=$alt*(-1);
+				//if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
+				echo "<tr class='lig$alt'>\n";
+				echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='$lig_resp->pers_id' ";
 				if($lig_resp->pers_id==$pers_id){
 					echo "checked ";
 				}
 				echo "/></td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
-				echo "<td style='text-align:center; background-color:$couleur;'>";
+				echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
+				echo "<td>";
 
 				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$lig_resp->pers_id' AND rp.adr_id=ra.adr_id";
 				$res_adr=mysql_query($sql);
@@ -1069,7 +1084,7 @@ if(isset($definir_resp)){
 			echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
 		}
 		else{
-			echo "<p>Aucun responsable n'est défini.</p>\n";
+			echo "<p>Aucun responsable n'est défini, ou aucun responsable correspond à la recherche.</p>\n";
 		}
 
 		echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";

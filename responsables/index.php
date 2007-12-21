@@ -709,7 +709,7 @@ else{
 	//echo "\$num_resp=$num_resp<br />";
 
 	// Pour pouvoir faire la recherche en suivant les liens <a href...
-	$champ_rech=ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));
+	if(isset($champ_rech)){$champ_rech=ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));}
 	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le même selon que la chaine_recherche est vide ou non)
 
 	echo "<table class='boireaus' align='center'>\n";
