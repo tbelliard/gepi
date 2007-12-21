@@ -610,7 +610,7 @@ if ($analyse[0] == "AID") {
 			$contenu .= $noms["nom"]." ".$noms["prenom"]."<br />";
 		}
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
-		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux;
+		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
 		$id_div = strtr($id_div_p, " ", "_");
 	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
