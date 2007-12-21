@@ -226,10 +226,15 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 	$ch_index = array_search($id_creneaux, $cherche_creneaux);
 		if (isset($cherche_creneaux[$ch_index-1])) {
 			$ens_precedent = cree_tab_general($req_type_login, $cherche_creneaux[$ch_index-1], $jour_semaine, $type_edt, $heuredeb_dec);
-			if (isset($ens_precedent[0])) {
+			if (isset($ens_precedent[0]) OR isset($ens_precedent[1])) {
 				$aff_precedent = renvoie_duree($cherche_creneaux[$ch_index-1], $jour_semaine, $ens_precedent[0]);
+				// cas où le cours précédent a deux cours, on vérifie le deuxième aussi
+				if (isset($ens_precedent[1])) {
+					$aff_precedent1 = renvoie_duree($cherche_creneaux[$ch_index-1], $jour_semaine, $ens_precedent[1]);
+				} else {$aff_precedent1 = 0;}
+
 				$nbre_ens_precedent = count($ens_precedent);
-				if ($aff_precedent > 2) {
+				if ($aff_precedent > 2 OR $aff_precedent1 > 2) {
 					$aff_rien = "oui";
 				}
 				// Cas où un cours se termine au milieu d'un créneau
@@ -481,6 +486,7 @@ if (isset($nbre_ens)) {
 			//}
 			else $case_tab = "<td rowspan=\"2\">-<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
 		}
+	// Cas où il y a qu'un seul enseignement
 		elseif ($nbre_ens === 1) {
 			//enseignement = $ens_tab[0]
 			if (renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0]) == "n") {
@@ -488,13 +494,45 @@ if (isset($nbre_ens)) {
 			}
 			else $case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\" style=\"background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n";
 		}
+	// Cas avec deux enseignements
 		elseif ($nbre_ens == 2) {
-			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
-			$case_2_tab = ("<tr>\n<td style=\"font-size: 10px; background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 10px; background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n</tr>\n");
-			$case_3_tab = "</tbody>\n</table>\n</td>";
-
-			$case_tab = $case_1_tab.$case_2_tab.$case_3_tab;
+			$duree0 = renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0]);
+			$duree1 = renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[1]);
+			if ($duree0 == $duree1) {
+				// si les deux durées sont équivalentes alors le rowspan est égal à cette durée
+				$rowspan = $duree0;
+				$complement = "";
+				$rowleft = $rowright = "2";
+				$style_l = $style_r = "";
+				// Sinon, on choisit la durée la plus longue
+			}else if ($duree0 > $duree1) {
+					// à gauche le plus long
+				$rowspan = $duree0;
+				$complement = "\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n<tr><!--<td>-</td><td></td>--></tr>\n";
+				$rowleft = "4";
+				$rowright = "2";
+				$style_l = "";
+				$style_r = " height: 70px;";
+			}else {
+					// à droite le plus long
+				$rowspan = $duree1;
+				$complement = "\n<tr><!--<td>-</td><td></td>--></tr>\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n";
+				$rowleft = "2";
+				$rowright = "4";
+				$style_r = "";
+				$style_l = " height: 70px;";
+			}
+			$case_tab = "	<td rowspan=\"".$rowspan."\">
+							<table class=\"tab_edt_1\"><tbody>
+						<tr>
+							<td rowspan=\"".$rowleft."\" style=\"font-size: 10px;".$style_l." background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>
+							<td rowspan=\"".$rowright."\" style=\"font-size: 10px;".$style_r." background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>
+						</tr>
+						".$complement."
+						<tr><!--<td></td><td></td>--></tr>
+					</tbody>\n</table>\n</td>";
 		}
+	// Cas avec 3 enseignements
 		elseif ($nbre_ens == 3) {
 			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
 			$case_2_tab = ("<tr>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>\n<td style=\"font-size: 8px; background-color: ".couleurCellule($ens_tab[2]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[2])."</td>\n</tr>\n");
@@ -502,6 +540,7 @@ if (isset($nbre_ens)) {
 
 			$case_tab = $case_1_tab.$case_2_tab.$case_3_tab;
 		}
+	// Cas avec plus de trois enseignements
 		elseif ($nbre_ens > 3) {
 				// On met la liste des enseignements dans $contenu de l'infobulle
 				$contenu = "";
