@@ -58,6 +58,8 @@ DROP TABLE IF EXISTS `matieres`;
 CREATE TABLE `matieres` ( `matiere` varchar(255) NOT NULL default '', `nom_complet` varchar(200) NOT NULL default '', `priority` smallint(6) NOT NULL default '0', `categorie_id` INT NOT NULL default '1', PRIMARY KEY  (`matiere`));
 DROP TABLE IF EXISTS `matieres_appreciations`;
 CREATE TABLE `matieres_appreciations` ( `login` varchar(50) NOT NULL default '', `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`));
+DROP TABLE IF EXISTS `matieres_appreciations_tempo`;
+CREATE TABLE `matieres_appreciations_tempo` ( `login` varchar(50) NOT NULL default '', `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`));
 DROP TABLE IF EXISTS `matieres_notes`;
 CREATE TABLE `matieres_notes` ( `login` varchar(50) NOT NULL default '', `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `note` float(10,1) default NULL, `statut` varchar(10) NOT NULL default '', `rang` smallint(6) NOT NULL default '0', PRIMARY KEY  (`login`,`id_groupe`,`periode`));
 DROP TABLE IF EXISTS `matieres_categories`;

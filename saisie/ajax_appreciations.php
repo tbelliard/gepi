@@ -59,14 +59,14 @@ $verif_var1 = explode("_t", $var1);
 
 	if (mysql_num_rows($verif_eleve) !== 0 AND mysql_num_rows($verif_prof) !== 0) {
 		// On vérifie si cette appréciation existe déjà ou non
-		$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
+		$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 		// Si elle existe, on la met à jour
 		if (mysql_num_rows($verif_appreciation) == 1) {
-			$miseajour = mysql_query("UPDATE matieres_appreciations SET appreciation = '".utf8_decode($appreciation)."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
+			$miseajour = mysql_query("UPDATE matieres_appreciations_tempo SET appreciation = '".utf8_decode($appreciation)."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 		} else {
 			//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
 			if ($appreciation != "") {
-				$sauvegarde = mysql_query("INSERT INTO matieres_appreciations SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'");
+				$sauvegarde = mysql_query("INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'");
 			}
 
 		}

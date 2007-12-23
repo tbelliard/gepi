@@ -139,7 +139,9 @@ if (isset($_POST['is_posted'])) {
 		}
 		$k++;
 	}
-
+// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
+$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+OR DIE('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
 
 
 	/*
@@ -208,7 +210,7 @@ change = 'no';
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
-echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=post>\n";
+echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
 
 echo "<p class=bold>";
 if ($periode_cn != 0) {
@@ -231,9 +233,8 @@ echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"re
 echo " | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
-echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";?>
+echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
 
-<?php
 if ($multiclasses) {
 	echo "<p>Affichage :";
 	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&order_by=classe'>Regrouper les élèves par classe</a>";
@@ -289,8 +290,21 @@ function focus_suivant(num){
 
 </script>\n";
 
-
-
+	// ====================== Modif pour la sauvegarde en ajax =================
+$restauration = isset($_GET["restauration"]) ? $_GET["restauration"] : NULL;
+	// On teste s'il existe des données dans la table matieres_appreciations_tempo
+	$sql_test = mysql_query("SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
+	$test = mysql_num_rows($sql_test);
+		if ($test !== 0 AND $restauration == NULL) {
+			// On envoie un message à l'utilisateur
+			echo "
+			<p class=\"red\">Voulez-vous restaurer les appréciations qui n'avaient pas été enregistrées ?
+			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a> -
+			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non\">NON</a>
+			</p>
+			";
+		}
+	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
 
 
 $prev_classe = null;
@@ -345,8 +359,17 @@ foreach ($liste_eleves as $eleve_login) {
 			//
 			// si l'élève suit la matière
 			//
-			// Appel des appréciations
-			$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+			// Appel des appréciations (en vérifiant si une restauration est demandée ou non)
+			if ($restauration == "oui") {
+				$app_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				// Si la sauvegarde ne donne rien pour cet élève, on va quand même voir dans la table définitive
+				$verif = mysql_num_rows($app_query);
+				if ($verif == 0){
+					$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				}
+			} else {
+				$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+			}
 			$eleve_app = @mysql_result($app_query, 0, "appreciation");
 			// Appel des notes
 			$note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
@@ -541,6 +564,12 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 </form>
 
 <?php
+// ====================== SYSTEME  DE SAUVEGARDE ========================
+// Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
+if ($restauration == "oui" OR $restauration == "non") {
+	$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.mysql_error());
+}
 // Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
 
 echo "<script type='text/javascript'>
@@ -565,7 +594,7 @@ decompte(cpt);
 
 ";
 
-// Après validation, on donne le focus au champ qui suivait celui qui vien d'être rempli
+// Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
 if(isset($_POST['champ_info_focus'])){
 	if($_POST['champ_info_focus']!=""){
 		echo "// On positionne le focus...

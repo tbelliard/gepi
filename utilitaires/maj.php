@@ -5294,6 +5294,25 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
 		}
 
+		// Création de la table matieres_appreciations_tempo
+		$result .= "&nbsp;->Ajout de la table matieres_appreciations_tempo. <br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_tempo'"));
+		if ($test1 == 0) {
+			$sql = "CREATE TABLE `matieres_appreciations_tempo` ( `login` varchar(50) NOT NULL default '',
+			`id_groupe` int(11) NOT NULL default '0',
+			`periode` int(11) NOT NULL default '0',
+			`appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`));";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+		}
+
     }
 
 
