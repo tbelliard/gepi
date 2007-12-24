@@ -453,17 +453,20 @@ if (isset($nbre_ens)) {
 	$aff6 = $nbre_ens."ne ";
 }else $aff6 = "Nne ";
 
-	 // La solution pour le cas où il y a plus de trois réponses est au point.
+	// On ajoute la possibilité de créer un cours juste en cliquant sur le "-"
+	// <a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours=aucun&amp;horaire='.$jour_semaine|$id_creneaux.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
+		$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
+	// La solution pour le cas où il y a plus de trois réponses est au point.
 
 		if ($nbre_ens === 0) {
 			if ($cours_precedent == "1heure" OR $cours_precedent == "2heures" OR $cours_precedent == "3heures" OR $cours_precedent == "4heures") {
-				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($cours_precedent == "1heuredemi" OR $cours_precedent == "2heuresdemi" OR $cours_precedent == "3heuresdemi") {
-				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5" AND isset($duree_tab_pre_dec) AND $duree_tab_pre_dec == 3) {
-				$case_tab = "<td height=\"35\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5") {
 				$case_tab = "<!--rien1 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
@@ -479,12 +482,12 @@ if (isset($nbre_ens)) {
 				$case_tab = "<!--rien2c ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
-				$case_tab = "<td height=\"35\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
 			}
 			//elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
 			//	$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			//}
-			else $case_tab = "<td rowspan=\"2\">-<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
+			else $case_tab = "<td rowspan=\"2\">".$creer_cours."<!--raf3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>\n";
 		}
 	// Cas où il y a qu'un seul enseignement
 		elseif ($nbre_ens === 1) {
@@ -503,7 +506,7 @@ if (isset($nbre_ens)) {
 				$rowspan = $duree0;
 				$complement = "";
 				$rowleft = $rowright = "2";
-				$style_l = $style_r = "";
+				$style_l = $style_r = $style_tab = " height: 70px;";
 				// Sinon, on choisit la durée la plus longue
 			}else if ($duree0 > $duree1) {
 					// à gauche le plus long
@@ -511,27 +514,32 @@ if (isset($nbre_ens)) {
 				$complement = "\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n<tr><!--<td>-</td><td></td>--></tr>\n";
 				$rowleft = "4";
 				$rowright = "2";
-				$style_l = "";
-				$style_r = " height: 70px;";
+				$style_l = "height: 100%;";
+				$style_r = "height: 70px;";
+				$style_tab = "height: 140px;";
 			}else {
 					// à droite le plus long
 				$rowspan = $duree1;
 				$complement = "\n<tr><!--<td>-</td><td></td>--></tr>\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n";
 				$rowleft = "2";
 				$rowright = "4";
-				$style_r = "";
-				$style_l = " height: 70px;";
+				$style_r = "height: 100%;";
+				$style_l = "height: 70px;";
+				$style_tab = "height: 140px;";
 			}
-			$case_tab = "	<td rowspan=\"".$rowspan."\">
-							<table class=\"tab_edt_1\"><tbody>
+			$case_tab = "
+				<td rowspan=\"".$rowspan."\" style=\"height: 35px;\">
+					<table class=\"tab_edt_1\" style=\"".$style_tab."\"><tbody>
 						<tr>
-							<td rowspan=\"".$rowleft."\" style=\"font-size: 10px;".$style_l." background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>
-							<td rowspan=\"".$rowright."\" style=\"font-size: 10px;".$style_r." background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>
+							<td rowspan=\"".$rowleft."\" style=\"font-size: 10px; ".$style_l." background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>
+							<td rowspan=\"".$rowright."\" style=\"font-size: 10px; ".$style_r." background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>
 						</tr>
 						".$complement."
 						<tr><!--<td></td><td></td>--></tr>
-					</tbody>\n</table>\n</td>";
+					</tbody></table>
+				</td>";
 		}
+
 	// Cas avec 3 enseignements
 		elseif ($nbre_ens == 3) {
 			$case_1_tab = "<td rowspan=\"2\"><table class=\"tab_edt_1\" BORDER=\"0\" CELLSPACING=\"0\"><tbody>\n";
@@ -552,7 +560,7 @@ if (isset($nbre_ens)) {
 		}
 		else {
 		// AJOUT: boireaus
-		$case_tab=NULL;
+		$case_tab = NULL;
 		}
 
 	return $case_tab;

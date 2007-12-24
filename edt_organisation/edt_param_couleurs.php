@@ -93,7 +93,7 @@ $nbre_matieres = mysql_num_rows($req_sql);
 	</tbody>
 
 </table>
-
+<br /><br />
 	</div>
 <?php
 // inclusion du footer

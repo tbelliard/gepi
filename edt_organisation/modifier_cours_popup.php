@@ -65,7 +65,8 @@ $choix_semaine = isset($_POST["choix_semaine"]) ? $_POST["choix_semaine"] : NULL
 $login_salle = isset($_POST["login_salle"]) ? $_POST["login_salle"] : NULL;
 $periode_calendrier = isset($_POST["periode_calendrier"]) ? $_POST["periode_calendrier"] : NULL;
 $aid = isset($_POST["aid"]) ? $_POST["aid"] : NULL;
-//$ = isset($_GET[""]) ? $_GET[""] : (isset($_POST[""]) ? $_POST[""] : NULL);
+$horaire = isset($_GET["horaire"]) ? $_GET["horaire"] : (isset($_POST["horaire"]) ? $_POST["horaire"] : NULL);
+$cours = isset($_GET["cours"]) ? $_GET["cours"] : (isset($_POST["cours"]) ? $_POST["cours"] : NULL);
 
 // Traitement des changements
 if (isset($modifier_cours) AND $modifier_cours == "ok") {
@@ -81,6 +82,22 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	 id_calendrier = '$periode_calendrier'
 	WHERE id_cours = '".$id_cours."'")
 	or die('Erreur dans la mofication du cours : '.mysql_error().'');
+
+}elseif (isset($modifier_cours) AND $modifier_cours == "non") {
+
+	// On crée le cours sans vérification ?
+	$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
+	 id_salle = '$login_salle',
+	 jour_semaine = '$ch_jour_semaine',
+	 id_definie_periode = '$ch_heure',
+	 duree = '$duree',
+	 heuredeb_dec = '$heure_debut',
+	 id_semaine = '$choix_semaine',
+	 id_calendrier = '$periode_calendrier'")
+	OR DIE('Erreur dans la création du cours : '.mysql_error());
+
+} else {
+	// On ne fait rien
 }
 
 
@@ -129,7 +146,7 @@ if ($autorise == "oui") {
 echo '
 	<fieldset>
 		<legend>Modification du cours</legend>
-		<form action="modifier_cours.php" name="choix_prof" method="post">
+		<form action="modifier_cours_popup.php" name="choix_prof" method="post">
 
 			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.')</h2>
 
@@ -178,6 +195,17 @@ echo '
 				<select name="ch_jour_semaine">
 	';
 
+	// Dans le cas de la création d'un cours, on propose le bon jour
+	if ($cours == "aucun" AND isset($horaire)) {
+		// On récupère le jour et le créneau
+		$jour_creneau = explode("|", $horaire);
+		$jour_creer = $jour_creneau[0];
+		$id_creneau_creer = $jour_creneau[1];
+	} else {
+		$jour_creer = NULL;
+		$id_creneau_creer = NULL;
+	}
+
 	// On propose aussi le choix du jour
 
 	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
@@ -189,8 +217,8 @@ echo '
 		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
 		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
 
-		if(isset($rep_cours["jour_semaine"])){
-			if($rep_cours["jour_semaine"] == $tab_select_jour[$a]["jour_sem"]){
+		if(isset($rep_cours["jour_semaine"]) OR isset($jour_creer)){
+			if(($rep_cours["jour_semaine"] == $tab_select_jour[$a]["jour_sem"]) OR ($jour_creer == $tab_select_jour[$a]["jour_sem"])){
 				$selected=" selected='selected'";
 			}
 			else{
@@ -223,8 +251,8 @@ echo '
 		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
 		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
 
-		if(isset($rep_cours["id_definie_periode"])){
-			if($rep_cours["id_definie_periode"] == $tab_select_heure[$b]["id_heure"]){
+		if(isset($rep_cours["id_definie_periode"]) OR isset($id_creneau_creer)){
+			if(($rep_cours["id_definie_periode"] == $tab_select_heure[$b]["id_heure"]) OR ($id_creneau_creer == $tab_select_heure[$b]["id_heure"])){
 				$selected=" selected='selected'";
 			}
 			else{
@@ -264,6 +292,9 @@ if (isset($rep_cours["heuredeb_dec"])) {
 		$selected0 = "";
 		$selected5 = "";
 	}
+}else {
+	$selected0 = "";
+	$selected5 = "";
 }
 
 echo '
@@ -388,7 +419,14 @@ echo '
 		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
 		<input type="hidden" name="identite" value="'.$identite.'" />
 		<input type="hidden" name="aid" value="'.$rep_cours["id_groupe"].'" />
-		<input type="hidden" name="modifier_cours" value="ok" />
+	';
+	// Cas où il s'agit de la création d'un cours
+	if ($cours == "aucun") {
+		echo '		<input type="hidden" name="modifier_cours" value="non" />';
+	} else {
+		echo '		<input type="hidden" name="modifier_cours" value="ok" />';
+	}
+		echo '
 		<input type="submit" name="Enregistrer" value="Enregistrer" onClick=\'javascript:window.close();\' />
 
 			</td>
