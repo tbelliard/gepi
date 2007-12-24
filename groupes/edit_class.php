@@ -140,12 +140,12 @@ if (isset($_GET['action'])) {
     }
 }
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Gestion des enseignements";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 echo "<table border='0'><tr>";
 echo "<td width='40%' align='left'>";
 echo "<p class='bold'>";
