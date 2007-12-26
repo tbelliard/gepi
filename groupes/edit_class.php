@@ -343,7 +343,7 @@ for($i=0;$i<10;$i++){
 
         $inscrits = substr($inscrits, 0, -1);
 
-        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits (" . $inscrits . ")</a>";
+        echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits (" . $inscrits . ")</a>";
         echo "</b></td>";
         echo "<td width='20%'>Priorité d'affichage";
         //=================================
