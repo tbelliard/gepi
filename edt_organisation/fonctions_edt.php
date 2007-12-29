@@ -452,21 +452,28 @@ if (isset($duree_tab_pre_dec)) {
 if (isset($nbre_ens)) {
 	$aff6 = $nbre_ens."ne ";
 }else $aff6 = "Nne ";
-
+$aff_debug = $aff1.$aff2.$aff3.$aff4.$aff5.$aff6;
 	// On ajoute la possibilité de créer un cours juste en cliquant sur le "-"
-	// <a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours=aucun&amp;horaire='.$jour_semaine|$id_creneaux.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
-		$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
+
+		// On précise si le cours débute au milieu ou au début du créneau
+		if ($heuredeb_dec == "0.5") {
+			$deb = "milieu";
+		}else {
+			$deb = "debut";
+		}
+
+		$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
 	// La solution pour le cas où il y a plus de trois réponses est au point.
 
 		if ($nbre_ens === 0) {
 			if ($cours_precedent == "1heure" OR $cours_precedent == "2heures" OR $cours_precedent == "3heures" OR $cours_precedent == "4heures") {
-				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($cours_precedent == "1heuredemi" OR $cours_precedent == "2heuresdemi" OR $cours_precedent == "3heuresdemi") {
-				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5" AND isset($duree_tab_pre_dec) AND $duree_tab_pre_dec == 3) {
-				$case_tab = "<td style=\"height: 35px;\">-<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5") {
 				$case_tab = "<!--rien1 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
@@ -482,7 +489,8 @@ if (isset($nbre_ens)) {
 				$case_tab = "<!--rien2c ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
-				$case_tab = "<td style=\"height: 35px;\">-<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
+				//$case_tab = "<!-- rien2d ".$aff_debug." -->";
 			}
 			//elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
 			//	$case_tab = "<!--rien2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";

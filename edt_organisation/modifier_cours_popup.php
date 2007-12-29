@@ -136,8 +136,17 @@ $aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt
 // Si tout est ok, on affiche le cours reçu en GET ou POST
 if ($autorise == "oui") {
 	// On récupère les infos sur le cours
-	$req_cours = mysql_query("SELECT * FROM edt_cours WHERE id_cours = '".$id_cours."'");
-	$rep_cours = mysql_fetch_array($req_cours);
+	if (isset($id_cours)) {
+		$req_cours = mysql_query("SELECT * FROM edt_cours WHERE id_cours = '".$id_cours."'");
+		$rep_cours = mysql_fetch_array($req_cours);
+	} else {
+		$rep_cours["jour_semaine"] = NULL;
+		$rep_cours["id_definie_periode"] = NULL;
+		$rep_cours["id_groupe"] = NULL;
+		$rep_cours["id_semaine"] = NULL;
+		$rep_cours["id_salle"] = NULL;
+		$rep_cours["id_calendrier"] = NULL;
+	}
 
 	// On récupère les infos sur le professeur
 	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$identite."'"));
@@ -201,9 +210,11 @@ echo '
 		$jour_creneau = explode("|", $horaire);
 		$jour_creer = $jour_creneau[0];
 		$id_creneau_creer = $jour_creneau[1];
+		$deb_creer = $jour_creneau[2];
 	} else {
 		$jour_creer = NULL;
 		$id_creneau_creer = NULL;
+		$deb_creer = NULL;
 	}
 
 	// On propose aussi le choix du jour
@@ -279,6 +290,18 @@ echo '
 
 	// On vérifie comment ce cours commence
 	// A revoir car ça ne marche pas
+	if (isset($deb_creer)) {
+		// On vérifie comment ce nouveau cours commence
+		if ($deb_creer == "debut") {
+			$rep_cours["heuredeb_dec"] = 0;
+		}
+		elseif($deb_creer == "milieu"){
+			$rep_cours["heuredeb_dec"] = "0.5";
+		} else {
+			$rep_cours["heuredeb_dec"] = NULL;
+		}
+	}
+
 if (isset($rep_cours["heuredeb_dec"])) {
 		if ($rep_cours["heuredeb_dec"] === 0) {
 		$selected0 = " selected='selected'";
@@ -374,6 +397,10 @@ echo '
 		else{
 			$selected="";
 		}
+			// On vérifie si le nom de l asalle existe vraiment
+			if ($tab_select_salle[$c]["nom_salle"] == "") {
+				$tab_select_salle[$c]["nom_salle"] = $tab_select_salle[$c]["numero_salle"];
+			}
 		echo "
 				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 	}
