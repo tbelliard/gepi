@@ -578,3 +578,4 @@ INSERT INTO droits VALUES ('/absences/import_absences_gepi.php', 'F', 'F', 'V', 
 INSERT INTO droits VALUES ('/lib/change_mode_header.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'Page AJAX pour changer la variable cacher_header', '1');
 INSERT INTO droits VALUES ('/saisie/recopie_moyennes.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'Recopie des moyennes', '');
 INSERT INTO droits VALUES ('/groupes/fusion_group.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Fusionner des groupes', '');
+INSERT INTO droits VALUES ('/gestion/security_panel_archives.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'page archive du panneau de sécurité', '');
