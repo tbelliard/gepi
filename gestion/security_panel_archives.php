@@ -42,11 +42,50 @@ if (!checkAccess()) {
 }
 
 
+if (isset($_POST['duree2'])) {
+   $duree2 = $_POST['duree2'];
+} else {
+   $duree2 = '20dernieres';
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Sécurité Gepi - Archives -";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | <a href='security_panel.php'>Panneau de sécurité</a></p>";
+echo "<br>";
+echo "<form action=\"security_panel_archives.php\" name=\"form_affiche_alerte\" method=\"post\">";
+echo "Afficher l'historique des alertes : <select name=\"duree2\" size=\"1\">";
+echo "<option ";
+if ($duree2 == '20dernieres') echo "selected";
+echo " value='20dernieres'>les 20 dernières</option>";
+echo "<option ";
+if ($duree2 == 2) echo "selected";
+echo " value=2>depuis Deux jours</option>";
+echo "<option ";
+if ($duree2 == 7) echo "selected";
+echo " value=7>depuis Une semaine</option>";
+echo "<option ";
+if ($duree2 == 15) echo "selected";
+echo " value=15 >depuis Quinze jours</option>";
+echo "<option ";
+if ($duree2 == 30) echo "selected";
+echo " value=30>depuis Un mois</option>";
+echo "<option ";
+if ($duree2 == 60) echo "selected";
+echo " value=60>depuis Deux mois</option>";
+echo "<option ";
+if ($duree2 == 183) echo "selected";
+echo " value=183>depuis Six mois</option>";
+echo "<option ";
+if ($duree2 == 365) echo "selected";
+echo " value=365>depuis Un an</option>";
+echo "<option ";
+if ($duree2 == 'all') echo "selected";
+echo " value='all'>depuis Le début</option>";
+echo "</select>";
+echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />";
+echo "</form>";
 
 echo "<table class='menu' style='width: 90%;'>\n";
 echo "<tr>\n";
@@ -61,7 +100,17 @@ echo "<td>Description</td>";
 echo "<td style='width: 20%;'>Actions</td>\n";
 echo "</tr>";
 
-$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut != 'new') ORDER BY t.date DESC");
+$requete = '';
+$requete1 = '';
+if ($duree2 != 'all') {$requete = "(t.date > now() - interval " . $duree2 . " day) ";}
+if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='1';}
+if ($duree2 == 'all') {$requete='1';}
+
+$sql ="SELECT t.* FROM tentatives_intrusion t WHERE ((t.statut != 'new') AND ".$requete.") ORDER BY t.date DESC ".$requete1;
+
+//echo $sql;
+
+$req = mysql_query($sql);
 if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
 	$user = null;
