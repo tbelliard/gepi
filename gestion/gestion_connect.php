@@ -143,6 +143,40 @@ if (isset($_POST['enable_password_recovery'])) {
     }
 }
 
+
+//EXPORT CSV
+if(isset($_GET['mode'])){
+	if($_GET['mode']=="csv"){	
+	
+	if (!isset($_SESSION['donnees_export_csv_log'])) { $ligne_csv = false ; } else {$ligne_csv =  $_SESSION['donnees_export_csv_log'];}
+	
+		$chaine_titre="Export_log_Annee_scolaire_".getSettingValue("gepiYear");
+		$now = gmdate('D, d M Y H:i:s') . ' GMT';
+		$nom_fic=$chaine_titre."_".$now.".csv";
+
+		header('Content-Type: text/x-csv');
+		header('Expires: ' . $now);
+		// lem9 & loic1: IE need specific headers
+		if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Pragma: public');
+		} else {
+			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+			header('Pragma: no-cache');
+		}
+		
+		$nb_ligne = count($ligne_csv);
+		
+		for ($i=0;$i<$nb_ligne;$i++) {
+		  echo $ligne_csv[$i];
+		}	
+		die();
+	}
+}
+//FIN EXPORT CSV
+
+
 // End standart header
 require_once("../lib/header.inc");
 isset($mode_navig);
@@ -401,6 +435,7 @@ if (isset($_POST['duree2'])) {
 } else {
    $duree2 = '20dernieres';
 }
+
 switch( $duree2 ) {
    case '20dernieres' :
    $display_duree="les 20 dernières";
@@ -474,16 +509,21 @@ echo "<option ";
 if ($duree2 == 'all') echo "selected";
 echo " value='all'>depuis Le début</option>";
 echo "</select>";
-echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />";
+echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 echo "</form>";
 
-?>
+echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center;'>";
+echo "<a href='".$_SERVER['PHP_SELF']."?mode=csv";
+echo "'>CSV</a>";
+echo "</div>\n";
 
+?>
 
 <table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0">
     <tr>
-        <th class="col">Identifiant</th>
+        <th class="col">Statut</th>
+		<th class="col">Identifiant</th>
         <th class="col">Début session</th>
         <th class="col">Fin session</th>
         <th class="col">Adresse IP et nom de la machine cliente</th>
@@ -496,7 +536,7 @@ $requete1 = '';
 if ($duree2 != 'all') {$requete = "where l.START > now() - interval " . $duree2 . " day";}
 if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='';}
 $sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
- l.AUTOCLOSE, l.END, u.email
+ l.AUTOCLOSE, l.END, u.email, u.statut
 from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by START desc ".$requete1;
 
 // $row[0] : log.LOGIN
@@ -509,6 +549,7 @@ from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by S
 // $row[7] : AUTOCLOSE
 // $row[8] : END
 // $row[9] : EMAIL
+// $row[9] : STATUT
 
 $day_now   = date("d");
 $month_now = date("m");
@@ -517,6 +558,10 @@ $hour_now  = date("H");
 $minute_now = date("i");
 $now = mktime($hour_now, $minute_now, 0, $month_now, $day_now, $year_now);
 $res = sql_query($sql);
+
+$ligne_csv[0] = "statut;login;debut_session;fin_session;adresse_ip;navigateur;provenance\n";
+$nb_ligne = 1;
+
 if ($res) {
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
         $annee_f = substr($row[8],0,4);
@@ -543,8 +588,12 @@ if ($res) {
         if ($row[1] == '') {$row[1] = "<font color=red><b>Utilisateur inconnu</b></font>";}
 
         echo "<tr>\n";
+		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10]."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br /><a href=\"mailto:" .$row[9]. "\">".$row[1] . "</a>".$temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>\n";
+		
+		$ligne_csv[$nb_ligne] = "$row[10];$row[0];$date_debut;";
+		
         if ($row[7] == 4) {
            echo "<td class=\"col\" style=\"color: red;\"><span class='small'><b>Tentative de connexion<br />avec mot de passe erroné.</b></span></td>\n";
         } else if ($end_time > $now) {
@@ -578,10 +627,17 @@ if ($res) {
         echo "<td class=\"col\"><span class='small'>".$temp1. detect_browser($row[5]) .$temp2. "</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>\n";
 
+		$ligne_csv[$nb_ligne] .= "$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n";
+		
         echo "</tr>\n";
+		
+		$nb_ligne++;
+		
 		flush();
     }
 }
+
+$_SESSION['donnees_export_csv_log']=$ligne_csv;
 
 ?>
 </table>
