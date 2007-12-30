@@ -485,7 +485,7 @@ $aff_debug = $aff1.$aff2.$aff3.$aff4.$aff5.$aff6;
 			elseif (isset($aff_rien) AND $aff_rien == "oui") {
 				$case_tab = "<!--rien2b ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
-			else if (isset($aff_rien_dec) AND $aff_rien_dec == "oui") {
+			elseif (isset($aff_rien_dec) AND $aff_rien_dec == "oui") {
 				$case_tab = "<!--rien2c ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
@@ -627,7 +627,8 @@ if ($analyse[0] == "AID") {
 		}
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
-		$id_div = strtr($id_div_p, " ", "_");
+		$id_div_p = strtr($id_div_p, " ", "/");
+		$id_div = strtr($id_div_p, "-", "/");
 	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 	// On dresse la liste des noms de prof
@@ -1014,4 +1015,34 @@ function couleurCellule($enseignement){
 	}
 }
 
+
+// Fonction qui renvoie les AID en fonction du statut du demandeur (prof, classe, élève)
+function renvoieAid($statut, $nom){
+	$sql = "";
+	if ($statut == "prof") {
+		$sql = "SELECT id_aid, indice_aid FROM j_aid_utilisateurs WHERE id_utilisateur = '".$nom."' ORDER BY indice_aid";
+	}elseif ($statut == "classe"){
+		$sql = "";
+	}elseif ($statut == "eleve"){
+		$sql = "SELECT id_aid, indice_aid FROM j_aid_eleves WHERE login = '".$nom."' ORDER BY indice_aid";
+	} else{
+		return NULL;
+	}
+	// On envoie la requête
+	if ($sql) {
+		$requete = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+		$nbre = mysql_num_rows($requete);
+		// Et on retourne le tableau
+			$resultat = array();
+		for($i = 0; $i < $nbre; $i++) {
+			$resultat[$i]["id_aid"] = mysql_result($requete, $i, "id_aid");
+			$resultat[$i]["indice_aid"] = mysql_result($requete, $i, "indice_aid");
+		}
+		return $resultat;
+
+	} else{
+		return NULL;
+	}
+
+}
 ?>

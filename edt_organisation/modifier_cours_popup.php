@@ -178,22 +178,32 @@ echo '
 	';
 
 
-		for($i=0; $i<count($tab_enseignements); $i++) {
-	if(isset($rep_cours["id_groupe"])){
-		if($rep_cours["id_groupe"] == $tab_enseignements[$i]["id"]){
-			$selected=" selected='selected'";
+	for($i=0; $i<count($tab_enseignements); $i++) {
+		if(isset($rep_cours["id_groupe"])){
+			if($rep_cours["id_groupe"] == $tab_enseignements[$i]["id"]){
+				$selected = " selected='selected'";
+			}
+			else{
+				$selected = "";
+			}
 		}
 		else{
-			$selected="";
+			$selected = "";
 		}
-	}
-	else{
-		$selected="";
-	}
-			echo '
+	echo '
 				<option value="'.$tab_enseignements[$i]["id"].'"'.$selected.'>'.$tab_enseignements[$i]["classlist_string"].' : '.$tab_enseignements[$i]["description"].'</option>
-				';
-		}
+		';
+	}
+
+	// On ajoute les AID s'il y en a
+	$tab_aid = renvoieAid("prof", $identite);
+	for($i = 0; $i < count($tab_aid); $i++) {
+		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		echo '
+				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$nom_aid["nom"].'</option>
+		';
+	}
+
 echo '
 			</select>
 
