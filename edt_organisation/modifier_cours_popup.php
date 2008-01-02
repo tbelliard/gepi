@@ -16,6 +16,7 @@ require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
 require_once("./fonctions_edt.php");
+require_once("./fonctions_cours.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -85,16 +86,21 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 
 }elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 
-	// On crée le cours sans vérification ?
-	$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
-	 id_salle = '$login_salle',
-	 jour_semaine = '$ch_jour_semaine',
-	 id_definie_periode = '$ch_heure',
-	 duree = '$duree',
-	 heuredeb_dec = '$heure_debut',
-	 id_semaine = '$choix_semaine',
-	 id_calendrier = '$periode_calendrier'")
-	OR DIE('Erreur dans la création du cours : '.mysql_error());
+	// On crée le cours après quelques vérifications
+	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut) == "non") {
+		// puisqu'il n'y a pas de cours pour ce prof, on peut passer à la vérif suivante
+		$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
+			 id_salle = '$login_salle',
+			 jour_semaine = '$ch_jour_semaine',
+			 id_definie_periode = '$ch_heure',
+			 duree = '$duree',
+			 heuredeb_dec = '$heure_debut',
+			 id_semaine = '$choix_semaine',
+			 id_calendrier = '$periode_calendrier'")
+		OR DIE('Erreur dans la création du cours : '.mysql_error());
+	}else{
+		// On ne fait rien
+	}
 
 } else {
 	// On ne fait rien
@@ -464,7 +470,8 @@ echo '
 		echo '		<input type="hidden" name="modifier_cours" value="ok" />';
 	}
 		echo '
-		<input type="submit" name="Enregistrer" value="Enregistrer" onClick=\'javascript:window.close();\' />
+		<input type="submit" name="Enregistre" value="Enregistrer" />
+		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" onClick=\'javascript:window.close();\' />
 
 			</td>
 

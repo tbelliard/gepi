@@ -174,7 +174,10 @@ function renvoie_duree($id_creneaux, $jour_semaine, $enseignement){
 	$rep_duree = mysql_fetch_array($req_duree);
 	$reponse_duree = $rep_duree["duree"];
 
-	if ($reponse_duree == 2) {
+	if ($reponse_duree == 1) {
+		$duree = "1";
+	}
+	elseif ($reponse_duree == 2) {
 		$duree = "2";
 	}
 	elseif ($reponse_duree == 3) {
@@ -357,6 +360,7 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 			else $aff_precedent_dec = NULL;
 		}
 		else $aff_precedent_dec = NULL;
+
 		if (isset($cherche_creneaux[$ch_index-4])) {
 			$ens_precedent_dec = cree_tab_general($req_type_login, $cherche_creneaux[$ch_index-4], $jour_semaine, $type_edt, $heuredeb_cherch);
 			if (isset($ens_precedent_dec[0])) {
@@ -374,25 +378,29 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 
 	// alors on vérifie le cours en heuredeb_dec = 0.5
 	// Normalement ces lignes ne servent plus à rien
+		$ens_tab_cheval = NULL;
+		$duree_tab_cheval = NULL;
 	if ($heuredeb_dec == "0") {
 		$ens_tab_cheval = cree_tab_general($req_type_login, $id_creneaux, $jour_semaine, $type_edt, "0.5");
 			$nbre_tab_cheval = count($ens_tab_cheval);
 		if (isset($ens_tab_cheval[0]) AND $nbre_tab_cheval != 0) {
 			$duree_tab_cheval = renvoie_duree($id_creneaux, $jour_semaine, $ens_tab_cheval[0]);
+		}else{
+			$duree_tab_cheval = NULL;
 		}
-		else $duree_tab_cheval = NULL;
 		if (isset($cherche_creneaux[$ch_index-1]) AND isset($ens_tab_cheval[0])) {
 			$duree_tab_pre_dec = renvoie_duree($cherche_creneaux[$ch_index-1], $jour_semaine, $ens_tab_cheval[0]);
 			if ($duree_tab_pre_dec > 2) {
 				$aff_rien = "oui";
-			} else $aff_rien = "non";
+			}
 		}
 	}
 	else $ens_tab_cheval = NULL;
 
 	// On vérifie les cours en heuredeb_dec = 0
 	// Normalement ces lignes ne servent plus à rien aussi
-
+			$ens_tab_0 = NULL;
+			$duree_tab_0 = NULL;
 	if ($heuredeb_dec == "0.5") {
 		$ens_tab_0 = cree_tab_general($req_type_login, $id_creneaux, $jour_semaine, $type_edt, "0");
 			$nbre_tab_0 = count($ens_tab_0);
@@ -453,43 +461,53 @@ if (isset($nbre_ens)) {
 	$aff6 = $nbre_ens."ne ";
 }else $aff6 = "Nne ";
 $aff_debug = $aff1.$aff2.$aff3.$aff4.$aff5.$aff6;
+// A ENLEVER APRES DEBBUG
+//$debg = $cherche_creneaux[$ch_index-3]."|".$ens_precedent[0]."|".$aff_precedent."|".$heuredeb_dec."|".$aff_rien."|".$cours_precedent;
+$debg = NULL;
 	// On ajoute la possibilité de créer un cours juste en cliquant sur le "-"
-
 		// On précise si le cours débute au milieu ou au début du créneau
 		if ($heuredeb_dec == "0.5") {
 			$deb = "milieu";
 		}else {
 			$deb = "debut";
 		}
+		// On envoie le lien si et seulement si c'est un administrateur ou un scolarite
+		if ($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") {
+			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
+		}else{
+			$creer_cours = "-";
+		}
 
-		$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
-	// La solution pour le cas où il y a plus de trois réponses est au point.
+	// On envoie l'affichage en fonction du nombre de réponses à la requête du nombre de cours
 
 		if ($nbre_ens === 0) {
 			if ($cours_precedent == "1heure" OR $cours_precedent == "2heures" OR $cours_precedent == "3heures" OR $cours_precedent == "4heures") {
-				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff_debug."--></td>";
 			}
 			elseif ($cours_precedent == "1heuredemi" OR $cours_precedent == "2heuresdemi" OR $cours_precedent == "3heuresdemi") {
-				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff_debug."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5" AND isset($duree_tab_pre_dec) AND $duree_tab_pre_dec == 3) {
-				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff1.$aff2.$aff3.$aff4.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf1 ".$aff_debug."--></td>";
+			}
+			elseif ($aff_rien == "non" AND $aff_rien_dec == "non" AND ($duree_tab_cheval == 1 OR $duree_tab_0 == 1)) {
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--raf2a ".$aff_debug."--></td>";
 			}
 			elseif ($heuredeb_dec == "0.5") {
-				$case_tab = "<!--rien1 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+				$case_tab = "<!--rien1 ".$aff_debug."-->";
 			}
 				// Cas d'un demi creneau en heuredeb_dec = 0 qui est vide
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND isset($aff_precedent) AND $aff_precedent != 3) {
-				$case_tab = "<!--raf2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+				$case_tab = "<!--raf2 ".$aff_debug."-->";
 			}
 			elseif (isset($aff_rien) AND $aff_rien == "oui") {
-				$case_tab = "<!--rien2b ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+				$case_tab = "<!--rien2b ".$aff_debug."-->";
 			}
 			elseif (isset($aff_rien_dec) AND $aff_rien_dec == "oui") {
-				$case_tab = "<!--rien2c ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
+				$case_tab = "<!--rien2c ".$aff_debug."-->";
 			}
 			elseif ($heuredeb_dec == "0" AND isset($ens_tab_cheval[0]) AND $duree_tab_cheval != "n" AND (!$aff_precedent OR (isset($aff_precedent) AND $aff_precedent != 3))) {
-				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--AFF2 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."--></td>";
+				$case_tab = "<td style=\"height: 35px;\">".$creer_cours."<!--AFF2 ".$aff_debug."+".$debg."--></td>";
 				//$case_tab = "<!-- rien2d ".$aff_debug." -->";
 			}
 			//elseif ((isset($aff_precedent)) AND ($aff_precedent == 3 OR $aff_precedent == 4 OR $aff_precedent == 5 OR $aff_precedent == 6)) {
@@ -627,8 +645,7 @@ if ($analyse[0] == "AID") {
 		}
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
-		$id_div_p = strtr($id_div_p, " ", "/");
-		$id_div = strtr($id_div_p, "-", "/");
+		$id_div = strtr($id_div_p, " -|/", "www");
 	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 	// On dresse la liste des noms de prof
