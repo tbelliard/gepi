@@ -140,6 +140,7 @@ tronquer_nom_court
 	}
 }
 
+
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation";
 //echo "<div class='noprint'>\n";
@@ -295,11 +296,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	$nombre_lignes = mysql_num_rows($call_data);
 
+	$type_graphe=(isset($_GET['type_graphe'])) ? $_GET['type_graphe'] : NULL;
+	$chaine_type_graphe=isset($type_graphe) ? "&amp;type_graphe=$type_graphe" : "";
+
 	unset($lien_classe);
 	unset($txt_classe);
 	$i = 0;
 	while ($i < $nombre_lignes){
-		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id");
+		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
 		$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
 		$i++;
 	}
@@ -342,7 +346,44 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	// Capture des mouvements de la souris et affichage des cadres d'info
 	// Remonté pour éviter/limiter des erreurs JavaScript lors du chargement...
-	echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
+	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
+	// On utilise maintenant /lib/position.js
+
+
+
+	if(isset($_POST['type_graphe'])){
+
+		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
+
+		if($_POST['type_graphe']=='etoile'){
+			$type_graphe='etoile';
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+	elseif(isset($_GET['type_graphe'])){
+
+		//echo "\$_GET['type_graphe']=".$_GET['type_graphe']."<br />\n";
+
+		if($_GET['type_graphe']=='etoile'){
+			$type_graphe='etoile';
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+	else{
+		if(getSettingValue('graphe_type_graphe')){
+			$type_graphe=getSettingValue('graphe_type_graphe');
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+
+	//echo "\$type_graphe=".$type_graphe."<br />\n";
+
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		/*
@@ -357,7 +398,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// On ajoute l'accès/retour à une autre classe:
 		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
 		//echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
-		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a>";
+		echo " | <a href=\"".$_SERVER['PHP_SELF'];
+		echo "?type_graphe=$type_graphe";
+		echo "\">Choisir une autre classe</a>";
 
 		// =================================
 		// AJOUT: boireaus
@@ -402,10 +445,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// =================================
 
 		if(isset($id_class_prec)){
-			if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+			if($id_class_prec!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+				echo "&amp;type_graphe=$type_graphe";
+				echo "'>Classe précédente</a>";
+			}
 		}
 		if(isset($id_class_suiv)){
-			if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+			if($id_class_suiv!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+				echo "&amp;type_graphe=$type_graphe";
+				echo "'>Classe suivante</a>";
+				}
 		}
 		echo "</p>\n";
 		echo "</div>\n";
@@ -545,12 +596,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
-
+	/*
 	if(isset($_POST['type_graphe'])){
 
 		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
 
 		if($_POST['type_graphe']=='etoile'){
+			$type_graphe='etoile';
+		}
+		else{
+			$type_graphe='courbe';
+		}
+	}
+	elseif(isset($_GET['type_graphe'])){
+
+		//echo "\$_GET['type_graphe']=".$_GET['type_graphe']."<br />\n";
+
+		if($_GET['type_graphe']=='etoile'){
 			$type_graphe='etoile';
 		}
 		else{
@@ -567,7 +629,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 	//echo "\$type_graphe=".$type_graphe."<br />\n";
-
+	*/
 
 	if(isset($_POST['largeur_graphe'])){
 		$largeur_graphe=$_POST['largeur_graphe'];
@@ -857,7 +919,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 	// Nom de la classe:
-	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
+	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe';");
 	$classe = mysql_result($call_classe, "0", "classe");
 
 
@@ -1532,6 +1594,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
 					affiche_debug("$sql<br />");
 					$app_eleve_query=mysql_query($sql);
+
+					/*
 					echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 					if(mysql_num_rows($app_eleve_query)>0){
 						$ligtmp=mysql_fetch_object($app_eleve_query);
@@ -1545,7 +1609,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 						//$tab_imagemap[]=$cpt;
 					}
 					echo "</div>\n";
+					*/
 
+					if(mysql_num_rows($app_eleve_query)>0){
+						$ligtmp=mysql_fetch_object($app_eleve_query);
+
+						$titre_bulle=htmlentities($current_matiere_nom)." (<i>$periode</i>)";
+						$texte_bulle="<div align='center'>\n";
+						$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
+						$texte_bulle.="</div>\n";
+						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+
+						if($type_graphe=='etoile'){
+							$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
+						}
+						else{
+							$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+						}
+
+						$tab_imagemap_commentaire_present[]=$cpt;
+					}
+
+					$tab_nom_matiere[]=$current_matiere_nom;
 					// On stocke dans un tableau, les numéros $cpt correspondant aux matières que l'élève a.
 					$tab_imagemap[]=$cpt;
 				}
@@ -1560,9 +1645,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "\$cpt2=$cpt2<br />";
 
 
-
 			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
 			$res_avis=mysql_query($sql);
+			/*
 			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 			if(mysql_num_rows($res_avis)>0){
 				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
@@ -1572,8 +1657,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "</div>\n";
 			}
 			echo "</div>\n";
+			*/
 
+			$temoin_avis_present="n";
+			if(mysql_num_rows($res_avis)>0){
+				$titre_bulle="Avis du Conseil de classe";
 
+				$lig_avis=mysql_fetch_object($res_avis);
+				//echo htmlentities($lig_avis->avis)."\n";
+
+				$texte_bulle="<div align='center'>\n";
+				$texte_bulle.=htmlentities($lig_avis->avis)."\n";
+				$texte_bulle.="</div>\n";
+				//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+
+				$temoin_avis_present="y";
+			}
 
 			# Image Map
 			//$chaine_map="<map name='imagemap'>\n";
@@ -1596,14 +1696,229 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					$x0=$largeurGrad+$i*$largeurMat;
 					$x1=$x0+$largeurMat;
 					//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-					echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">\n";
+					}
 				}
 
 				$x0=$largeurGrad+$i*$largeurMat;
 				$x1=$largeur_graphe;
-				echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				if($temoin_avis_present=="y"){
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				}
 
 				echo "</map>\n";
+
+
+
+
+				//***********************************************************
+				// Image Map pour le graphe en étoile
+				// J'ai repris une portion du code de draw_graphe_star.php
+				// pour juste récupérer les coordonnées des textes de matières
+				echo "<map name='imagemap_star'>\n";
+
+				$largeurTotale=$largeur_graphe;
+				$hauteurTotale=$hauteur_graphe;
+				$legendy[2]=$choix_periode;
+				$x0=round($largeurTotale/2);
+				if($legendy[2]=='Toutes_les_périodes'){
+					$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
+					//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
+					$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
+				}
+				else{
+					$L=round(($hauteurTotale-4*(ImageFontHeight($taille_police)+5))/2);
+					$y0=round(2*(ImageFontHeight($taille_police))+5)+$L;
+				}
+
+				$pi=pi();
+
+				function coordcirc($note,$angle) {
+					// $note sur 20 (s'assurer qu'il y a le point pour séparateur et non la virgule)
+					// $angle en degrés
+					global $pi;
+					global $L;
+					global $x0;
+					global $y0;
+
+					$x=round($note*$L*cos($angle*$pi/180)/20)+$x0;
+					$y=round($note*$L*sin($angle*$pi/180)/20)+$y0;
+
+					return array($x,$y);
+				}
+
+				//=================================
+				// Polygone 20/20
+				unset($tab20);
+				$tab20=array();
+				for($i=0;$i<$nbMat;$i++){
+					$angle=round($i*360/$nbMat);
+					$tab=coordcirc(20,$angle);
+
+					$tab20[]=$tab[0];
+					$tab20[]=$tab[1];
+				}
+				//ImageFilledPolygon($img,$tab20,count($tab20)/2,$bande2);
+				//=================================
+
+				//=================================
+				// Légendes Matières: -> Coordonnées des textes de matières
+				for($i=0;$i<count($tab20)/2;$i++){
+					$angle=round($i*360/$nbMat);
+
+					//$texte=$matiere[$i+1];
+					//$texte=$matiere_nom_long[$i+1];
+					$texte=$tab_nom_matiere[$i];
+
+					$tmp_taille_police=$taille_police;
+
+					if($angle==0){
+						$x=$tab20[2*$i]+5;
+
+						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+						if($x_verif>$largeurTotale){
+							for($j=$taille_police;$j>1;$j--){
+								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								if($x_verif<=$largeurTotale){
+									break;
+								}
+							}
+							if($x_verif>$largeurTotale){
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
+					}
+					elseif(($angle>0)&&($angle<90)){
+						$x=$tab20[2*$i]+5;
+						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+						if($x_verif>$largeurTotale){
+							for($j=$taille_police;$j>1;$j--){
+								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								if($x_verif<=$largeurTotale){
+									break;
+								}
+							}
+							if($x_verif>$largeurTotale){
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
+					}
+					elseif($angle==90){
+						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+						$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
+					}
+					elseif(($angle>90)&&($angle<180)){
+						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+
+						if($x<0){
+							for($j=$taille_police;$j>1;$j--){
+								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+								if($x>=0){
+									break;
+								}
+							}
+							if($x<0){
+								$x=1;
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
+					}
+					elseif($angle==180){
+						$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
+
+						if($x<0){
+							for($j=$taille_police;$j>1;$j--){
+								$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
+								if($x>=0){
+									break;
+								}
+							}
+							if($x<0){
+								$x=1;
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
+					}
+					elseif(($angle>180)&&($angle<270)){
+						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+
+						if($x<0){
+							for($j=$taille_police;$j>1;$j--){
+								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+								if($x>=0){
+									break;
+								}
+							}
+							if($x<0){
+								$x=1;
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
+					}
+					elseif($angle==270){
+						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+						//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
+						$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
+					}
+					else{
+						$x=$tab20[2*$i]+5;
+						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+						if($x_verif>$largeurTotale){
+							for($j=$taille_police;$j>1;$j--){
+								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								if($x_verif<=$largeurTotale){
+									break;
+								}
+							}
+							if($x_verif>$largeurTotale){
+								$j=1;
+							}
+							$tmp_taille_police=$j;
+						}
+
+						$y=round($tab20[2*$i+1]-(90-($angle-270))*(ImageFontHeight($taille_police)-2)/90);
+					}
+
+
+					//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
+					//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+
+					$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
+					$y2=$y+20;
+
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					}
+
+				}
+				//=================================
+				echo "</map>\n";
+				//***********************************************************
+
 			}
 
 
@@ -2036,7 +2351,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					//echo "&amp;temoin_imageps=$temoin_imageps";
 					echo "&amp;temoin_image_escalier=$temoin_image_escalier";
 					echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
-					//echo "usemap='#imagemap' ";
+					echo "usemap='#imagemap_star' ";
 					echo "/>\n";
 					//echo "</a>\n";
 				}
@@ -2264,6 +2579,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 			for($i=1;$i<=count($matiere);$i++){
+
+				/*
 				echo "<div id='div_matiere_$i' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 				if(isset($info_imagemap[$i])){
 					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
@@ -2279,10 +2596,38 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					echo "</div>\n";
 				}
 				echo "</div>\n";
+				*/
+
+
+				if(isset($info_imagemap[$i])){
+					$titre_bulle=htmlentities($matiere_nom[$i]);
+
+					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%'>\n";
+					for($j=1;$j<=count($num_periode);$j++){
+						if($tab_imagemap[$j][$i]!=""){
+							$texte_bulle.="<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
+						}
+					}
+					$texte_bulle.="</table>\n";
+
+					//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+
+					if($type_graphe=='etoile'){
+						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'y','n','y','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
+					}
+					else{
+						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+					}
+					//$tab_imagemap_commentaire_present[]=$i;
+				}
+
+
 			}
 
-			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode";
+			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode;";
 			$res_avis=mysql_query($sql);
+			/*
 			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
 			if(mysql_num_rows($res_avis)>0){
 				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
@@ -2296,6 +2641,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "</div>\n";
 			}
 			echo "</div>\n";
+			*/
+
+			$temoin_avis_present="n";
+			if(mysql_num_rows($res_avis)>0){
+				$titre_bulle="Avis du Conseil de classe";
+
+				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%'>\n";
+				while($lig_avis=mysql_fetch_object($res_avis)){
+					$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
+				}
+				$texte_bulle.="</table>\n";
+
+				//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+
+				$temoin_avis_present="y";
+			}
 
 			//if(count($tab_imagemap)>0){
 				$largeurGrad=50;
@@ -2309,15 +2671,237 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				for($i=1;$i<=count($matiere);$i++){
 					$x0=$largeurGrad+($i-1)*$largeurMat;
 					$x1=$x0+$largeurMat;
-					echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$i,'affiche');\" onMouseout=\"div_info('div_matiere_',$i,'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+
+					if(isset($info_imagemap[$i])){
+						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$i,'affiche');\" onMouseout=\"div_info('div_matiere_',$i,'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$i."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					}
 				}
 
 				$x0=$largeurGrad+($i-1)*$largeurMat;
 				$x1=$largeur_graphe;
-				echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-
+				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				if($temoin_avis_present=="y"){
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+				}
 				echo "</map>\n";
 			//}
+
+
+
+			//***********************************************************
+			// Image Map pour le graphe en étoile
+			// J'ai repris une portion du code de draw_graphe_star.php
+			// pour juste récupérer les coordonnées des textes de matières
+			echo "<map name='imagemap_star'>\n";
+
+			$largeurTotale=$largeur_graphe;
+			$hauteurTotale=$hauteur_graphe;
+			$legendy[2]=$choix_periode;
+			$x0=round($largeurTotale/2);
+			if($legendy[2]=='Toutes_les_périodes'){
+				$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
+				//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
+				$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
+			}
+			else{
+				$L=round(($hauteurTotale-4*(ImageFontHeight($taille_police)+5))/2);
+				$y0=round(2*(ImageFontHeight($taille_police))+5)+$L;
+			}
+
+			$pi=pi();
+
+			function coordcirc($note,$angle) {
+				// $note sur 20 (s'assurer qu'il y a le point pour séparateur et non la virgule)
+				// $angle en degrés
+				global $pi;
+				global $L;
+				global $x0;
+				global $y0;
+
+				$x=round($note*$L*cos($angle*$pi/180)/20)+$x0;
+				$y=round($note*$L*sin($angle*$pi/180)/20)+$y0;
+
+				return array($x,$y);
+			}
+
+			//=================================
+			// Polygone 20/20
+			unset($tab20);
+			$tab20=array();
+			for($i=0;$i<$nbMat;$i++){
+				$angle=round($i*360/$nbMat);
+				$tab=coordcirc(20,$angle);
+
+				$tab20[]=$tab[0];
+				$tab20[]=$tab[1];
+			}
+			//ImageFilledPolygon($img,$tab20,count($tab20)/2,$bande2);
+			//=================================
+
+			//=================================
+			// Légendes Matières: -> Coordonnées des textes de matières
+			for($i=0;$i<count($tab20)/2;$i++){
+				$angle=round($i*360/$nbMat);
+
+				//$texte=$matiere[$i+1];
+				//$texte=$matiere_nom_long[$i+1];
+				//$texte=$tab_nom_matiere[$i];
+				//$texte=$matiere_nom[$i];
+				$k=$i+1;
+				$texte=$matiere_nom[$k];
+
+				$tmp_taille_police=$taille_police;
+
+				if($angle==0){
+					$x=$tab20[2*$i]+5;
+
+					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+					if($x_verif>$largeurTotale){
+						for($j=$taille_police;$j>1;$j--){
+							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							if($x_verif<=$largeurTotale){
+								break;
+							}
+						}
+						if($x_verif>$largeurTotale){
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
+				}
+				elseif(($angle>0)&&($angle<90)){
+					$x=$tab20[2*$i]+5;
+					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+					if($x_verif>$largeurTotale){
+						for($j=$taille_police;$j>1;$j--){
+							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							if($x_verif<=$largeurTotale){
+								break;
+							}
+						}
+						if($x_verif>$largeurTotale){
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
+				}
+				elseif($angle==90){
+					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+					$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
+				}
+				elseif(($angle>90)&&($angle<180)){
+					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+
+					if($x<0){
+						for($j=$taille_police;$j>1;$j--){
+							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+							if($x>=0){
+								break;
+							}
+						}
+						if($x<0){
+							$x=1;
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
+				}
+				elseif($angle==180){
+					$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
+
+					if($x<0){
+						for($j=$taille_police;$j>1;$j--){
+							$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
+							if($x>=0){
+								break;
+							}
+						}
+						if($x<0){
+							$x=1;
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
+				}
+				elseif(($angle>180)&&($angle<270)){
+					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+
+					if($x<0){
+						for($j=$taille_police;$j>1;$j--){
+							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+							if($x>=0){
+								break;
+							}
+						}
+						if($x<0){
+							$x=1;
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
+				}
+				elseif($angle==270){
+					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+					//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
+					$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
+				}
+				else{
+					$x=$tab20[2*$i]+5;
+					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+
+					if($x_verif>$largeurTotale){
+						for($j=$taille_police;$j>1;$j--){
+							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							if($x_verif<=$largeurTotale){
+								break;
+							}
+						}
+						if($x_verif>$largeurTotale){
+							$j=1;
+						}
+						$tmp_taille_police=$j;
+					}
+
+					$y=round($tab20[2*$i+1]-(90-($angle-270))*(ImageFontHeight($taille_police)-2)/90);
+				}
+
+
+				//imagestring ($img, $taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($angle." ".$texte,"_"," "), $axes);
+				//imagestring ($img, $tmp_taille_police, $x, $y, strtr($texte,"_"," "), $axes);
+
+				$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
+				$y2=$y+20;
+
+				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+				//if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+				//if(isset($info_imagemap[$i])){
+				if(isset($info_imagemap[$k])){
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$i."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-10,20);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+				}
+
+			}
+			//=================================
+			echo "</map>\n";
+			//***********************************************************
+
 
 
 
@@ -2382,6 +2966,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "&amp;temoin_image_escalier=$temoin_image_escalier";
 				echo "' style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
 				//echo "usemap='#imagemap' ";
+				echo "usemap='#imagemap_star' ";
 				echo "/>\n";
 			}
 

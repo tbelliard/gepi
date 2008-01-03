@@ -2223,30 +2223,42 @@ function debug_var(){
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 	echo "<p>Variables envoyées en POST:</p>\n";
 	echo "<blockquote>\n";
+	echo "<table>";
 	foreach($_POST as $post => $val){
-		echo "\$_POST['".$post."']=".$val."<br />\n";
+		//echo "\$_POST['".$post."']=".$val."<br />\n";
+		echo "<tr><td>\$_POST['".$post."']=</td><td>".$val."</td></tr>\n";
 	}
+	echo "</table>\n";
 	echo "</blockquote>\n";
 
 	echo "<p>Variables envoyées en GET:</p>\n";
 	echo "<blockquote>\n";
+	echo "<table>";
 	foreach($_GET as $get => $val){
-		echo "\$_GET['".$get."']=".$val."<br />\n";
+		//echo "\$_GET['".$get."']=".$val."<br />\n";
+		echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
 	}
+	echo "</table>\n";
 	echo "</blockquote>\n";
 
 	echo "<p>Variables envoyées en SESSION:</p>\n";
 	echo "<blockquote>\n";
+	echo "<table>";
 	foreach($_SESSION as $variable => $val){
-		echo "\$_SESSION['".$variable."']=".$val."<br />\n";
+		//echo "\$_SESSION['".$variable."']=".$val."<br />\n";
+		echo "<tr><td>\$_SESSION['".$variable."']=</td><td>".$val."</td></tr>\n";
 	}
+	echo "</table>\n";
 	echo "</blockquote>\n";
 
 	echo "<p>Variables envoyées en SERVER:</p>\n";
 	echo "<blockquote>\n";
+	echo "<table>";
 	foreach($_SERVER as $variable => $valeur){
-		echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
+		//echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
+		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";
 	}
+	echo "</table>\n";
 	echo "</blockquote>\n";
 
 	echo "</div>\n";
@@ -2333,5 +2345,29 @@ function redimensionne_image2($photo){
 	$nouvelle_hauteur=round($hauteur/$ratio);
 
 	return array($nouvelle_largeur, $nouvelle_hauteur);
+}
+
+function calc_moy_debug($texte){
+	// Passer à 1 la variable pour générer un fichier de debug...
+	$debug=0;
+	if($debug==1){
+		$fich=fopen("/tmp/calc_moy_debug.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
+
+function get_class_from_id($id_classe) {
+	$sql="SELECT classe FROM classes c WHERE id='$id_classe';";
+	$res_class=mysql_query($sql);
+
+	if(mysql_num_rows($res_class)>0){
+		$lig_tmp=mysql_fetch_object($res_class);
+		$classe=$lig_tmp->classe;
+		return $classe;
+	}
+	else{
+		return false;
+	}
 }
 ?>

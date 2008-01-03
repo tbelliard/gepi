@@ -59,6 +59,12 @@ if (!checkAccess()) {
 	    else { if (isset($_GET['tri_par_etab_origine'])) {$tri_par_etab_origine=$_GET['tri_par_etab_origine'];} if (isset($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine=$_POST['tri_par_etab_origine'];} }
 
 
+	//=========================
+	// AJOUT: boireaus 20080102
+	$bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : NULL;
+	//=========================
+
+
 	// ERIC on n'imprime plus que les periodes fermées
 	/*
 	   if (empty($_GET['periode_ferme']) and empty($_POST['periode_ferme'])) { $periode_ferme = ''; }
@@ -73,35 +79,87 @@ if (!checkAccess()) {
 		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) !'; }
 		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) et la ou les période(s) !'; }
 
-	$_SESSION['classe'] = $classe;
-	$_SESSION['eleve'] = $eleve;
-	$_SESSION['periode'] = $periode;
-	$_SESSION['periode_ferme'] = $periode_ferme;
-	$_SESSION['type_bulletin'] = $type_bulletin;
-
-	$_SESSION['tri_par_etab_origine'] = $tri_par_etab_origine;
-
-
-//ERIC
-	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
-	    // le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
-  /*	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
-		if ($option_modele_bulletin!=1) {
-	      if ($type_bulletin == -1) {
-		    //cas avec les modèles affectés aux classes.
-	        header("Location: bulletin_pdf_avec_modele_classe.php");
-		  } else {
-		    //cas sans les modèles affectés à chaque classe .
-			header("Location: buletin_pdf.php");
-		  }
-		} else { // on utilise le modèle définie dans les paramètres de la classe.
-		    //cas avec les modèles affectés aux classes.
-	        header("Location: bulletin_pdf_avec_modele_classe.php");
-		}
-		*/
-	 header("Location: bulletin_pdf_avec_modele_classe.php");
+	/*
+	//debug_var();
+	for($i=0;$i<count($classe);$i++){
+		echo "\$classe[$i]=".$classe[$i]."<br />";
 	}
-// FIN Christian renvoye vers le fichier PDF bulletin
+	for($i=0;$i<count($periode);$i++){
+		echo "\$periode[$i]=".$periode[$i]."<br />";
+	}
+	*/
+
+	//if(!isset($msg)){$msg='';}
+	if ( !empty($classe[0]) and !empty($periode[0])) {
+		for($i=0;$i<count($classe);$i++){
+			//echo "\$classe[$i]=".$classe[$i]."<br />";
+			for($j=0;$j<count($periode);$j++){
+				//echo "\$periode[$j]=".$periode[$j]."<br />";
+
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode='".$periode[$j]."' AND verouiller!='O';";
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸']","%",$periode[$j])."' AND verouiller!='O';";
+				//$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[^.a-zA-Z0-9_-]+","%",$periode[$j])."' AND verouiller!='O';";
+				$sql="SELECT 1=1 FROM periodes WHERE id_classe='".$classe[$i]."' AND nom_periode LIKE '".ereg_replace("[^.a-zA-Z0-9_-]+","%",html_entity_decode($periode[$j]))."' AND verouiller!='O';";
+				//echo "$sql<br />\n";
+				$test_per=mysql_query($sql);
+				//echo "mysql_num_rows(\$test_per)=".mysql_num_rows($test_per)."<br />";
+				if(mysql_num_rows($test_per)>0){
+
+					if($message_erreur!=''){$message_erreur.='<br />';}
+					$message_erreur.="La période $periode[$j] n'est pas close pour ".get_class_from_id($classe[$i]);
+					/*
+					if($msg!=''){$msg.='<br />';}
+					$msg.="La période $periode[$j] n'est pas close pour la classe ".get_class_from_id($classe[$i]);
+					//echo "msg=$msg<br />";
+					*/
+				}
+			}
+		}
+	}
+
+	if($message_erreur=='') {
+	//if(($message_erreur=='')&&($msg=='')) {
+		$_SESSION['classe'] = $classe;
+		$_SESSION['eleve'] = $eleve;
+		$_SESSION['periode'] = $periode;
+		$_SESSION['periode_ferme'] = $periode_ferme;
+		$_SESSION['type_bulletin'] = $type_bulletin;
+
+		$_SESSION['tri_par_etab_origine'] = $tri_par_etab_origine;
+
+
+		//=========================
+		// AJOUT: boireaus 20080102
+		if(isset($bull_pdf_debug)) {
+			$_SESSION['bull_pdf_debug']=$bull_pdf_debug;
+		}
+		else{
+			unset($_SESSION['bull_pdf_debug']);
+		}
+		//=========================
+
+
+	//ERIC
+		if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
+			// le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
+	/*	    $option_modele_bulletin=getSettingValue("option_modele_bulletin");
+			if ($option_modele_bulletin!=1) {
+			if ($type_bulletin == -1) {
+				//cas avec les modèles affectés aux classes.
+				header("Location: bulletin_pdf_avec_modele_classe.php");
+			} else {
+				//cas sans les modèles affectés à chaque classe .
+				header("Location: buletin_pdf.php");
+			}
+			} else { // on utilise le modèle définie dans les paramètres de la classe.
+				//cas avec les modèles affectés aux classes.
+				header("Location: bulletin_pdf_avec_modele_classe.php");
+			}
+			*/
+		header("Location: bulletin_pdf_avec_modele_classe.php");
+		}
+	// FIN Christian renvoye vers le fichier PDF bulletin
+	}
 
 // Modif Christian pour les variable PDF
 	$selection = isset($_POST["selection"]) ? $_POST["selection"] :NULL;
@@ -223,7 +281,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 			<?php if ( $message_erreur != '' ) { ?><span style="color: #FF0000; font-weight: bold;"><?php echo $message_erreur; ?></span><?php } ?>
 
 
-<?PHP
+<?php
 //ERIC
 		$option_modele_bulletin=getSettingValue("option_modele_bulletin");
 
@@ -248,6 +306,15 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		  <br /><br />
 
 		  <input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" /><label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br /><br />
+
+			<?php
+				//==========================
+				// AJOUT: boireaus: 20080102
+			?>
+		  <input type="checkbox" name="bull_pdf_debug" id="bull_pdf_debug" value="oui" /><label for="bull_pdf_debug" style="cursor: pointer;">Activer le debug pour afficher les variables perturbant la génération de PDF.</label><br /><br />
+			<?php
+				//==========================
+			?>
 
 	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
@@ -399,15 +466,15 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 		} else {
 			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i' /> </td>\n";
 			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i'";
-			echo "<td align='center'><input type='radio' name='periode_num' value='$i'";
+			echo "<td align='center'><input type='radio' name='periode_num' id='periode_num_$i' value='$i'";
 			if($nb_per_close==0){
 				echo " checked";
 			}
 			echo " /> </td>\n";
-			echo "<td><b>".ucfirst($nom_periode[$i])."</b>";
+			echo "<td><label for='periode_num_$i' style='cursor: pointer;'><b>".ucfirst($nom_periode[$i])."</b>";
 			if ($ver_periode[$i] == "P"){echo " (<i>Période partiellement close, seule la saisie des avis du conseil de classe est possible</i>)";}
 			if ($ver_periode[$i] == "O"){echo " (<i>Période entièrement close, plus aucune saisie/modification n'est possible</i>)";}
-			echo "</td>\n";
+			echo "</label></td>\n";
 			$num_per_close=$i;
 			$nb_per_close++;
 		}
@@ -458,13 +525,13 @@ for(i=0;i<$nb_per_close;i++){
 
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
-		echo "<td valign='top'><input type='radio' name='selection' value='_CLASSE_ENTIERE_' onchange=\"affiche_nb_ele_select();\" checked /></td>\n";
-		echo "<td valign='top'>Classe entière</td>\n";
+		echo "<td valign='top'><input type='radio' name='selection' id='selection_CLASSE_ENTIERE_' value='_CLASSE_ENTIERE_' onchange=\"affiche_nb_ele_select();\" checked /></td>\n";
+		echo "<td valign='top'><label for='selection_CLASSE_ENTIERE_' style='cursor: pointer;'>Classe entière</label></td>\n";
 		echo "<td valign='top'> ou </td>\n";
 		//echo "</tr>\n";
 		//echo "<tr>\n";
 		echo "<td valign='top'><input type='radio' name='selection' id='selection_ele' value='_SELECTION_' onchange=\"affiche_nb_ele_select();\" /></td>\n";
-		echo "<td valign='top'>Sélection<br />\n";
+		echo "<td valign='top'><label for='selection_ele' style='cursor: pointer;'>Sélection</label><br />\n";
 		echo "<select id='liste_login_ele' name='liste_login_ele[]' multiple='yes' size='5' onchange=\"document.getElementById('selection_ele').checked=true;affiche_nb_ele_select();\">\n";
 		//echo "<option value='_CLASSE_ENTIERE_' selected>Classe entière</option>\n";
 
@@ -508,7 +575,7 @@ for(i=0;i<$nb_per_close;i++){
 </script>\n";
 
 	echo "<table border='0'>\n";
-	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' value='oui' /></td><td>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</td></tr>\n";
+	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
 
     if(!getSettingValue("bull_intitule_app")){
@@ -537,7 +604,7 @@ for(i=0;i<$nb_per_close;i++){
 		}
 		echo ".<br /></b></td>\n";
 		echo "</tr>\n";
-		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' value='oui' /></td><td>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 	}
 	echo "</table>\n";
 

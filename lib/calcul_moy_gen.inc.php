@@ -11,6 +11,7 @@
      - $periode_num : la période concernée
 */
 
+/*
 function calc_moy_debug($texte){
 	// Passer à 1 la variable pour générer un fichier de debug...
 	$debug=0;
@@ -20,6 +21,7 @@ function calc_moy_debug($texte){
 		fclose($fich);
 	}
 }
+*/
 
 $quartile1_classe_gen = 0;
 $quartile2_classe_gen = 0;

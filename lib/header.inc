@@ -528,5 +528,8 @@ if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
 	}
 }
 
+// Décommenter la ligne ci -dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+//debug_var();
+
 //if (isset($titre_page)) echo "</div>";
 ?>
