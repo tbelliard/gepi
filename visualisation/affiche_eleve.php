@@ -1365,7 +1365,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<label for='desactivation_infobulle' style='cursor: pointer;'><input type='checkbox' name='desactivation_infobulle' id='desactivation_infobulle' value='y' onchange='fct_desactivation_infobulle();' ";
 	if($desactivation_infobulle=="y"){echo "checked ";}
 	echo "/> Désactiver l'affichage des appréciations</label>\n";
-	if($desactivation_infobulle=="y"){echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";}
+	if($desactivation_infobulle=="y"){
+		echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";
+	}
+	else{
+		echo "<script type='text/javascript'>desactivation_infobulle='n';</script>\n";
+	}
 
 	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	echo "</form>\n";
