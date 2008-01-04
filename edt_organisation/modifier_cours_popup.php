@@ -68,6 +68,7 @@ $periode_calendrier = isset($_POST["periode_calendrier"]) ? $_POST["periode_cale
 $aid = isset($_POST["aid"]) ? $_POST["aid"] : NULL;
 $horaire = isset($_GET["horaire"]) ? $_GET["horaire"] : (isset($_POST["horaire"]) ? $_POST["horaire"] : NULL);
 $cours = isset($_GET["cours"]) ? $_GET["cours"] : (isset($_POST["cours"]) ? $_POST["cours"] : NULL);
+$message = "";
 
 // Traitement des changements
 if (isset($modifier_cours) AND $modifier_cours == "ok") {
@@ -87,19 +88,25 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 }elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 
 	// On crée le cours après quelques vérifications
-	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut) == "non") {
+	// Est-ce que le prof a déjà cours ?
+	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "non") {
 		// puisqu'il n'y a pas de cours pour ce prof, on peut passer à la vérif suivante
-		$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
-			 id_salle = '$login_salle',
-			 jour_semaine = '$ch_jour_semaine',
-			 id_definie_periode = '$ch_heure',
-			 duree = '$duree',
-			 heuredeb_dec = '$heure_debut',
-			 id_semaine = '$choix_semaine',
-			 id_calendrier = '$periode_calendrier'")
-		OR DIE('Erreur dans la création du cours : '.mysql_error());
+		// Est-ce que la salle est libre ?
+		if (verifSalle($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
+			$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
+				 id_salle = '$login_salle',
+				 jour_semaine = '$ch_jour_semaine',
+				 id_definie_periode = '$ch_heure',
+				 duree = '$duree',
+				 heuredeb_dec = '$heure_debut',
+				 id_semaine = '$choix_semaine',
+				 id_calendrier = '$periode_calendrier'")
+			OR DIE('Erreur dans la création du cours : '.mysql_error());
+		}else {
+			$message = "La salle n'est pas libre.";
+		}
 	}else{
-		// On ne fait rien
+		$message = "Ce cours en chevauche un autre.";
 	}
 
 } else {
@@ -157,13 +164,20 @@ if ($autorise == "oui") {
 	// On récupère les infos sur le professeur
 	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$identite."'"));
 
+	// On insère alors le message d'erreur s'il existe
+	if (isset($message)) {
+		$affmessage = $message;
+	}else {
+		$affmessage = "";
+	}
+
 	// On affiche les différents items du cours
 echo '
 	<fieldset>
 		<legend>Modification du cours</legend>
 		<form action="modifier_cours_popup.php" name="choix_prof" method="post">
 
-			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.')</h2>
+			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.') '.$affmessage.'</h2>
 
 	<table id="edt_modif">
 		<tr class="ligneimpaire">

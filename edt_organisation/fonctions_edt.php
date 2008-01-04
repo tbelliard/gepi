@@ -472,8 +472,8 @@ $debg = NULL;
 			$deb = "debut";
 		}
 		// On envoie le lien si et seulement si c'est un administrateur ou un scolarite
-		if ($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") {
-			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>-</a>';
+		if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") AND $type_edt == "prof") {
+			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,285,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>(-+-)</a>';
 		}else{
 			$creer_cours = "-";
 		}
@@ -537,7 +537,13 @@ $debg = NULL;
 			}else if ($duree0 > $duree1) {
 					// à gauche le plus long
 				$rowspan = $duree0;
-				$complement = "\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n<tr><!--<td>-</td><td></td>--></tr>\n";
+				$complement = "
+						<tr>
+							<!--<td>1</td><td></td>-->
+						</tr>
+						<tr>
+							<td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td>2</td>-->
+						</tr>\n";
 				$rowleft = "4";
 				$rowright = "2";
 				$style_l = "height: 100%;";
@@ -546,7 +552,13 @@ $debg = NULL;
 			}else {
 					// à droite le plus long
 				$rowspan = $duree1;
-				$complement = "\n<tr><!--<td>-</td><td></td>--></tr>\n<tr><td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td></td>--></tr>\n";
+				$complement = "
+						<tr>
+							<!--<td></td><td>4</td>-->
+						</tr>
+						<tr>
+							<td rowspan=\"2\" style=\"height: 70px;\">-</td><!--<td>3</td>-->
+						</tr>\n";
 				$rowleft = "2";
 				$rowright = "4";
 				$style_r = "height: 100%;";
@@ -555,14 +567,16 @@ $debg = NULL;
 			}
 			$case_tab = "
 				<td rowspan=\"".$rowspan."\" style=\"height: 35px;\">
-					<table class=\"tab_edt_1\" style=\"".$style_tab."\"><tbody>
+					<table class=\"tab_edt_1\" style=\"".$style_tab."\">
 						<tr>
 							<td rowspan=\"".$rowleft."\" style=\"font-size: 10px; ".$style_l." background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>
 							<td rowspan=\"".$rowright."\" style=\"font-size: 10px; ".$style_r." background-color: ".couleurCellule($ens_tab[1]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[1])."</td>
 						</tr>
 						".$complement."
-						<tr><!--<td></td><td></td>--></tr>
-					</tbody></table>
+						<tr>
+							<!--<td>5</td><td></td>-->
+						</tr>
+					</table>
 				</td>";
 		}
 
