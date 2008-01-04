@@ -148,6 +148,8 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 // Vérifications droits d'accès
 if (
 	($_SESSION['statut'] == "responsable" AND getSettingValue("GepiAccesGraphParent") != "yes") OR
@@ -479,6 +481,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : "moyclasse";
 	*/
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
+
+	// Possibilité de désactiver l'affichage des infobulles via un JavaScript:
+	$desactivation_infobulle=isset($_POST['desactivation_infobulle']) ? $_POST['desactivation_infobulle'] : 'n';
 
 	// Vérification de sécurité
 	if ($_SESSION['statut'] == "eleve") {
@@ -1342,6 +1347,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//======================================================================
 	//======================================================================
 
+	echo "<hr width='150' />\n";
+
+	echo "<script type='text/javascript'>
+	function fct_desactivation_infobulle(){
+		if(document.getElementById('desactivation_infobulle')){
+			if(document.getElementById('desactivation_infobulle').checked==true){
+				desactivation_infobulle='y';
+			}
+			else{
+				desactivation_infobulle='n';
+			}
+		}
+	}
+</script>\n";
+
+	echo "<label for='desactivation_infobulle' style='cursor: pointer;'><input type='checkbox' name='desactivation_infobulle' id='desactivation_infobulle' value='y' onchange='fct_desactivation_infobulle();' ";
+	if($desactivation_infobulle=="y"){echo "checked ";}
+	echo "/> Désactiver l'affichage des appréciations</label>\n";
+	if($desactivation_infobulle=="y"){echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";}
 
 	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	echo "</form>\n";
