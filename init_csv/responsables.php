@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* Last modification  : 15/09/2006
+* $Id$
 *
 * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

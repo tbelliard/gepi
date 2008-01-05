@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 15/09/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -98,4 +98,9 @@ require_once("../lib/header.inc");
 </li>
 <li><p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p></li>
 </ul>
+<p><br /></p>
+
+<p><b>ATTENTION:</b> Le <i>n° d'identifiant élève interne à l'établissement</i> ne doit être constitué que de chiffres.</p>
+<p><br /></p>
+
 <?php require("../lib/footer.inc.php");?>

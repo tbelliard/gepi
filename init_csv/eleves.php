@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* Last modification  : 15/09/2006
+* $Id$
 *
 * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -157,6 +157,13 @@ if (!isset($_POST["action"])) {
             $reg_regime = $_POST["ligne".$i."_regime"];
             $reg_sexe = $_POST["ligne".$i."_sexe"];
 
+			//==========================
+			// DEBUG
+			//echo "<p>\$reg_nom=$reg_nom<br />\n";
+			//echo "\$reg_prenom=$reg_prenom<br />\n";
+			//echo "\$reg_id_int=$reg_id_int<br />\n";
+			//==========================
+
             // On nettoie et on vérifie :
             //$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
             //$reg_nom = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)));
@@ -200,6 +207,12 @@ if (!isset($_POST["action"])) {
 
             $test = mysql_result(mysql_query("SELECT count(login) FROM eleves WHERE elenoet = '" . $reg_id_int . "'"), 0);
 
+			//==========================
+			// DEBUG
+			//echo "\$reg_id_int=$reg_id_int<br />\n";
+			//echo "\$test=$test<br />\n";
+			//==========================
+
             if ($test == 0) {
                 // Test négatif : aucun élève avec cet ID... on enregistre !
 
@@ -231,6 +244,11 @@ if (!isset($_POST["action"])) {
                 }
 
                 // Normalement on a maintenant un login dont on est sûr qu'il est unique...
+
+				//==========================
+				// DEBUG
+				//echo "On va enregistrer l'élève avec le login \$reg_login=$reg_login</p>\n";
+				//==========================
 
                 // On insert les données
 
@@ -279,7 +297,6 @@ if (!isset($_POST["action"])) {
                         $error++;
                         echo mysql_error();
                     }
-
                 }
 
             }
