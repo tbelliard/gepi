@@ -74,6 +74,10 @@ if ($aff_reglages == "oui") {
 Pour les entr&eacute;es simples, la saisie manuelle est possible.
 Elle vous permettra de rentrer heure par heure des informations
 en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
+<p>Nous vous conseillons pour cela de saisir les emplois du temps des professeurs directement sur leur affichage.
+ Pour cela, cliquez sur [Visionner], [Professeur], puis vous choisissez le professeur dans la liste déroulante.
+  En cliquant ensuite sur (-+-), une fenêtre apparait où vous pouvez saisir les cours. Un module de vérification
+  des cours est présent mais ne peut se substituer à un véritable logiciel de fabrication des emplois du temps.</p>
 
 	<h5 class=\"red\">Attention ! seuls les enseignements
 d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps.</h5>
@@ -84,6 +88,8 @@ else {
 }
 	// Saisie manuelle de l'emploi du temps
 echo '
+	<span class="legend">Vous ne devriez utiliser ce menu que pour de rares occasions car il n\'est pas aussi
+	performant que la méthode décrite plus haut.</span>
 		<form action="edt_initialiser.php" name="choix_prof" method="post">
 	<fieldset id="init_edt1">
 		<legend>Saisie manuelle</legend>
@@ -426,7 +432,8 @@ if ($aff_reglages2 == "oui") {
 	 qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d\'avoir param&eacute;tr&eacute;
  	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement. En suivant les instructions suivantes
  	tout devrait bien se passer.</h5>
- 	<h4 class="red">Toutes les proc&eacute;dures d\'initialisation par csv ou xml effacent l\'emploi du temps déjà créé.</h4>
+ 	<h4 class="red">Toutes les proc&eacute;dures d\'initialisation par csv ou xml effacent l\'emploi du temps déjà créé,
+	 sauf si vous leur demandez de ne pas le faire.</h4>
 
  	<div id="lien"><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></div>
  		';

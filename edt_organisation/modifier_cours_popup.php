@@ -88,20 +88,27 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 }elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 
 	// On crée le cours après quelques vérifications
-	// Est-ce que le prof a déjà cours ?
-	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "non") {
+	// Est-ce que le prof est libre ?
+	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
 		// puisqu'il n'y a pas de cours pour ce prof, on peut passer à la vérif suivante
 		// Est-ce que la salle est libre ?
 		if (verifSalle($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
-			$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
-				 id_salle = '$login_salle',
-				 jour_semaine = '$ch_jour_semaine',
-				 id_definie_periode = '$ch_heure',
-				 duree = '$duree',
-				 heuredeb_dec = '$heure_debut',
-				 id_semaine = '$choix_semaine',
-				 id_calendrier = '$periode_calendrier'")
-			OR DIE('Erreur dans la création du cours : '.mysql_error());
+			// puisque ce prof et cette salle sont libres, on peut vérifier si le groupe en question est libre aussi
+			// Normalement, cela devrait fonctionner avec les AID aussi
+			if (verifGroupe($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
+				$nouveau_cours = mysql_query("INSERT INTO edt_cours SET id_groupe = '$enseignement',
+					 id_salle = '$login_salle',
+					 jour_semaine = '$ch_jour_semaine',
+					 id_definie_periode = '$ch_heure',
+					 duree = '$duree',
+					 heuredeb_dec = '$heure_debut',
+					 id_semaine = '$choix_semaine',
+					 id_calendrier = '$periode_calendrier'")
+				OR DIE('Erreur dans la création du cours : '.mysql_error());
+
+			}else {
+				$message = "Les élèves ont déjà cours.";
+			}
 		}else {
 			$message = "La salle n'est pas libre.";
 		}
