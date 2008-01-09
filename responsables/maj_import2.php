@@ -4003,7 +4003,7 @@ else{
 
 				$nb_adr=mysql_num_rows($res1);
 
-				echo "<p>Les ".$nb_adr." adresses responsables vont être parcourus par tranches de 20 à la recherche de différences.</p>\n";
+				echo "<p>Les ".$nb_adr." adresses responsables vont être parcourues par tranches de 20 à la recherche de différences.</p>\n";
 
 				echo "<p>Parcours de la tranche <b>1</b>.</p>\n";
 
@@ -6228,12 +6228,27 @@ else{
 				echo "<p><i>NOTES:</i></p>\n";
 				echo "<ul>\n";
 				echo "<li>La case de suppression d'un responsable n'est proposée que s'il n'est associé à aucun élève effectivement présent dans votre table 'eleves'.</li>\n";
-				echo "<li>Le message 'Aucun élève pour ele_id=...' signifie que l'import fait référence à un identifiant d'élève qui n'est plus dans l'établissement ou qui était proposé à l'import des élèves et que vous n'avez pas coché.<br />Cela ne signifie pas que le responsable n'est pas associé à autre élève qui lui est bien présent dans votre table 'eleves'.</li>\n";
+				echo "<li>Le message 'Aucun élève pour ele_id=...' signifie que l'import fait référence à un identifiant d'élève qui n'est plus dans l'établissement ou qui était proposé à l'import des élèves et que vous n'avez pas coché.<br />Cela ne signifie pas que le responsable n'est pas associé à autre élève qui lui est bien présent dans votre table 'eleves'.<br />Rien n'est inséré dans la table 'responsables2' pour ces lignes.</li>\n";
 				echo "</ul>\n";
 
 			}
 			else{
 				echo "<input type='hidden' name='step' value='19' />\n";
+
+				echo "<p>Nettoyage des tables temporaires: "
+				unset($liste_tab_del);
+				$liste_tab_del=array("temp_ele_classe", "temp_gep_import2", "temp_resp_adr_import", "temp_resp_pers_import", "temp_responsables2_import", "tempo2");
+				$j=0;
+				for($i=0;$i<count($liste_tab_del);$i++){
+					if($liste_tab_del[$i]!=""){
+						if($j>0){echo ", ";}
+						echo $liste_tab_del[$i];
+						$sql="TRUNCATE TABLE $liste_tab_del[$i];";
+						$nettoyage=mysql_query($sql);
+						$j++;
+					}
+				}
+				echo "</p>\n";
 
 				//echo "<p align='center'><input type=submit value='Terminer' /></p>\n";
 				echo "<p>Retour à:</p>\n";
