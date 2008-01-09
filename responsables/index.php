@@ -337,6 +337,7 @@ else{
 	$cpt=0;
 	if(($order_by=="nom,prenom")&&($num_resp==0)){
 		$cpt=0;
+		/*
 		$sql="SELECT DISTINCT pers_id FROM resp_pers";
 		$res1=mysql_query($sql);
 		if(mysql_num_rows($res1)>0){
@@ -348,6 +349,49 @@ else{
 				}
 			}
 		}
+		echo "\$cpt=$cpt<br />";
+		*/
+
+		/*
+		$sql="SELECT 1=1 FROM responsables2 r
+			LEFT JOIN eleves e ON e.ele_id=r.ele_id
+			WHERE e.ele_id is NULL;";
+		$res1=mysql_query($sql);
+		$cpt=mysql_num_rows($res1);
+		echo "\$cpt=$cpt<br />";
+		*/
+
+		$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0){
+			echo "<p>Suppression de responsabilités sans élève.<br />Voici la liste des identifiants de responsables qui étaient associés à des élèves inexistants: \n";
+			$cpt_nett=0;
+			while($lig_nett=mysql_fetch_object($test)){
+				if($cpt_nett>0){echo ", ";}
+				echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
+				$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
+				$nettoyage=mysql_query($sql);
+				flush();
+				$cpt_nett++;
+			}
+			echo ".</p>\n";
+			echo "<p>$cpt_nett associations aberrantes supprimées.</p>\n";
+		}
+
+		$sql="SELECT 1=1 FROM resp_pers rp
+			LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
+			WHERE r.pers_id is NULL;";
+		/*
+		$sql="(SELECT 1=1 FROM resp_pers rp
+			LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
+			WHERE r.pers_id is NULL) UNION (SELECT 1=1 FROM responsables2 r
+			LEFT JOIN eleves e ON e.ele_id=r.ele_id
+			WHERE e.ele_id is NULL);";
+		*/
+		$res1=mysql_query($sql);
+		$cpt=mysql_num_rows($res1);
+		//echo "\$cpt=$cpt<br />";
+		//echo "\$cpt2=$cpt2<br />";
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==1)){
 		// Pour ne récupérer qu'une seule occurence de pers_id:
@@ -546,6 +590,7 @@ echo "</table>\n";
 echo "<center><input type='submit' value='Valider' /></center>\n";
 echo "</div>\n";
 echo "</div>\n";
+flush();
 
 //echo "<center><input type='submit' value='Valider' /></center>\n";
 
@@ -570,7 +615,10 @@ if("$num_resp"=="0"){
 	*/
 
 	$cpt=0;
-	$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
+	//$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
+	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
+		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
+		WHERE r.pers_id is NULL;";
 	$res1=mysql_query($sql);
 	$alt=1;
 	if(mysql_num_rows($res1)>0){
@@ -610,9 +658,9 @@ if("$num_resp"=="0"){
 		echo "<table class='boireaus' align='center'>\n";
 
 		while($lig1=mysql_fetch_object($res1)){
-			$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0){
+			//$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
+			//$test=mysql_query($sql);
+			//if(mysql_num_rows($test)==0){
 
 				if($cpt%10==0){
 					echo $ligne_titre;
@@ -639,7 +687,7 @@ if("$num_resp"=="0"){
 				echo "</td>\n";
 
 
-					echo "<td style='text-align:center;'>\n";
+				echo "<td style='text-align:center;'>\n";
 				$sql="SELECT ra.* FROM resp_adr ra WHERE
 								ra.adr_id='$lig1->adr_id'";
 				$res2=mysql_query($sql);
@@ -694,7 +742,7 @@ if("$num_resp"=="0"){
 				}
 				*/
 
-			}
+			//}
 		}
 
 		echo "</table>\n";
