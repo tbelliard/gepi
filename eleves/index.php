@@ -1114,7 +1114,7 @@ if (!isset($quelles_classes)) {
 		$i++;
 	}
 	echo "</table>\n";
-	echo "<p>Total : $nombreligne éleves</p>\n";
+	echo "<p>Total : $nombreligne élèves</p>\n";
 	?>
 	<!--/table-->
 	<input type="hidden" name="is_posted" value="1" />
