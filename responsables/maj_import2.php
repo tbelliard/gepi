@@ -6250,6 +6250,25 @@ else{
 				}
 				echo "</p>\n";
 
+
+				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					echo "<p>Suppression de responsabilités sans élève.<br />Voici la liste des identifiants de responsables qui étaient associés à des élèves inexistants: \n";
+					$cpt_nett=0;
+					while($lig_nett=mysql_fetch_object($test)){
+						if($cpt_nett>0){echo ", ";}
+						echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
+						$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
+						$nettoyage=mysql_query($sql);
+						flush();
+						$cpt_nett++;
+					}
+					echo ".</p>\n";
+					echo "<p>$cpt_nett associations aberrantes supprimées.</p>\n";
+				}
+
+
 				//echo "<p align='center'><input type=submit value='Terminer' /></p>\n";
 				echo "<p>Retour à:</p>\n";
 				echo "<ul>\n";
