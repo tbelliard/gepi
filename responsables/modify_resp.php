@@ -890,9 +890,9 @@ if($temoin_adr==1){
 		// L'adresse n'est associée à au moins un autre responsable.
 		echo "<table><tr><td><b>Attention:</b></td><td>L'adresse indiquée ci-dessous est partagée avec un autre responsable.</td></tr>\n";
 		//<br />\nSi vous modifiez l'adresse, elle le sera pour l'autre responsable également.</p>\n";
-		echo "<tr><td>&nbsp;</td><td><input type='radio' name='changement_adresse' value='corriger' checked /> Corriger/modifier l'adresse commune aux deux responsables, <b>ou</b></td></tr>\n";
+		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_corriger' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_corriger' value='corriger' checked /> Corriger/modifier l'adresse commune aux deux responsables,</label> <b>ou</b></td></tr>\n";
 		//echo "<tr><td>&nbsp;</td><td>ou</td></tr>\n";
-		echo "<tr><td>&nbsp;</td><td><input type='radio' name='changement_adresse' value='desolidariser' /> Désolidariser l'adresse de celle de l'autre responsable.</td></tr></table>\n";
+		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_desolidariser' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_desolidariser' value='desolidariser' /> Désolidariser l'adresse de celle de l'autre responsable.</label></td></tr></table>\n";
 	}
 }
 else{
