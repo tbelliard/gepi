@@ -187,6 +187,12 @@ if(!isset($id_classe)){
 	//echo "</form>\n";
 }
 else{
+
+	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : NULL);
+	//$num_periode=isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL;
+	$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+
+
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	// Classe précédente/suivante
 
@@ -214,15 +220,20 @@ else{
 		}
 	}// =================================
 
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+	if(isset($num_periode)){
+		echo "&amp;num_periode=$num_periode";
+	}
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+	if(isset($num_periode)){
+		echo "&amp;num_periode=$num_periode";
+	}
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 
 
 	echo "</p></div>\n";
 
-	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : NULL);
-	//$num_periode=isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL;
-	$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 
 	//if(!isset($_POST['choix_periode'])){
 	//if(!isset($choix_periode)){
@@ -328,7 +339,8 @@ else{
 		else{
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
 
-			echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
+			//echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
+			echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Valider la recopie\" /></p>\n";
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 			echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
@@ -477,7 +489,8 @@ else{
 				$i++;
 			}
 			echo "</table>\n";
-			echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
+			//echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
+			echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Valider la recopie\" /></p>\n";
 			echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 			echo "</form>\n";
 
