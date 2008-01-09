@@ -116,7 +116,7 @@ INSERT INTO droits VALUES ('/classes/classes_ajout.php', 'V', 'F', 'F', 'F', 'F'
 INSERT INTO droits VALUES ('/classes/classes_const.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
 INSERT INTO droits VALUES ('/classes/cpe_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des CPE aux classes', '');
 INSERT INTO droits VALUES ('/classes/duplicate_class.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
-INSERT INTO droits VALUES ('/classes/eleve_options.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
+INSERT INTO droits VALUES ('/classes/eleve_options.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
 INSERT INTO droits VALUES ('/classes/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
 INSERT INTO droits VALUES ('/classes/init_options.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
 INSERT INTO droits VALUES ('/classes/modify_class.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');

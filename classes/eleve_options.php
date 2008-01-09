@@ -41,48 +41,66 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+// Seuls les comptes Administrateur et Scolarité ont accès
+if($_SESSION['statut']=="scolarite"){
+	// Tester si le compte scolarité a accès à cette classe...
+	// Si ce n'est pas le cas -> intrusion...
+
+	$sql="SELECT 1=1 FROM j_scol_classes jsc WHERE jsc.id_classe='$id_classe' AND jsc.login='".$_SESSION['login']."';";
+	$test=mysql_query($sql);
+	if ($test == "0") {
+		tentative_intrusion("2", "Tentative d'accès par un compte scolarité à une classe à laquelle il n'est pas associé.");
+		echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas référent !";
+		require ("../lib/footer.inc.php");
+		die();
+	}
+}
+
 include "../lib/periodes.inc.php";
 
-if (isset($is_posted)) {
-	$msg = '';
-	$j = 1;
-	while ($j < $nb_periode) {
-		$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
-		$nombre_ligne = mysql_num_rows($call_group);
-		$i=0;
-		while ($i < $nombre_ligne) {
-			$id_groupe = mysql_result($call_group, $i, "id");
-			$nom_groupe = mysql_result($call_group, $i, "name");
-			$id_group[$j] = $id_groupe."_".$j;
-			$test_query = mysql_query("SELECT 1=1 FROM j_eleves_groupes WHERE (" .
-					"id_groupe = '" . $id_groupe . "' and " .
-					"login = '" . $login_eleve . "' and " .
-					"periode = '" . $j . "')");
-			$test = mysql_num_rows($test_query);
-			if (isset($_POST[$id_group[$j]])) {
-				if ($test == 0) {
-					$req = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'");
-				}
-			} else {
-				$test1 = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
-				$nb_test1 = mysql_num_rows($test1);
-				$test2 = mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
-				$nb_test2 = mysql_num_rows($test2);
-				if (($nb_test1 != 0) or ($nb_test2 != 0)) {
-					$msg = $msg."--> Impossible de supprimer cette option pour l'élève $login_eleve car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $j ! Commencez par supprimer ces données !<br />";
-				} else {
-					if ($test != "0")  $req = mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$login_eleve."' and id_groupe='".$id_groupe."' and periode = '".$j."')");
-				}
-			}
-			$i++;
-		}
-		$j++;
-	}
-	//$affiche_message = 'yes';
-	$msg = "Les modifications ont été enregistrées !";
-}
-//$message_enregistrement = "Les modifications ont été enregistrées !";
 
+if($_SESSION['statut']=="administrateur"){
+	if (isset($is_posted)) {
+		$msg = '';
+		$j = 1;
+		while ($j < $nb_periode) {
+			$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+			$nombre_ligne = mysql_num_rows($call_group);
+			$i=0;
+			while ($i < $nombre_ligne) {
+				$id_groupe = mysql_result($call_group, $i, "id");
+				$nom_groupe = mysql_result($call_group, $i, "name");
+				$id_group[$j] = $id_groupe."_".$j;
+				$test_query = mysql_query("SELECT 1=1 FROM j_eleves_groupes WHERE (" .
+						"id_groupe = '" . $id_groupe . "' and " .
+						"login = '" . $login_eleve . "' and " .
+						"periode = '" . $j . "')");
+				$test = mysql_num_rows($test_query);
+				if (isset($_POST[$id_group[$j]])) {
+					if ($test == 0) {
+						$req = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'");
+					}
+				} else {
+					$test1 = mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+					$nb_test1 = mysql_num_rows($test1);
+					$test2 = mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
+					$nb_test2 = mysql_num_rows($test2);
+					if (($nb_test1 != 0) or ($nb_test2 != 0)) {
+						$msg = $msg."--> Impossible de supprimer cette option pour l'élève $login_eleve car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $j ! Commencez par supprimer ces données !<br />";
+					} else {
+						if ($test != "0")  $req = mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$login_eleve."' and id_groupe='".$id_groupe."' and periode = '".$j."')");
+					}
+				}
+				$i++;
+			}
+			$j++;
+		}
+		//$affiche_message = 'yes';
+		$msg = "Les modifications ont été enregistrées !";
+	}
+	//$message_enregistrement = "Les modifications ont été enregistrées !";
+}
 
 
 // =================================
@@ -130,6 +148,9 @@ if(mysql_num_rows($res_ele_tmp)>0){
 // =================================
 
 
+if($_SESSION['statut']=="administrateur"){
+	$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+}
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des matières par élève";
 require_once("../lib/header.inc");
@@ -138,13 +159,23 @@ require_once("../lib/header.inc");
 //=============================
 // MODIF: boireaus
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 if(!isset($quitter_la_page)){
 	echo "<form action='eleve_options.php' name='form1' method='post'>\n";
-	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
-	if("$login_eleve_prec"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève précédent</a>";}
+	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\"";
+	if($_SESSION['statut']=="administrateur"){
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	}
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+	if("$login_eleve_prec"!="0"){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'";
+		if($_SESSION['statut']=="administrateur"){
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		}
+		echo ">Elève précédent</a>";
+	}
 
 
 	echo "<script type='text/javascript'>
@@ -172,11 +203,21 @@ if(!isset($quitter_la_page)){
 
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 	//echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
-	echo " | <select name='login_eleve' id='login_eleve' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+	echo " | <select name='login_eleve' id='login_eleve'";
+	if($_SESSION['statut']=="administrateur"){
+		echo " onchange=\"confirm_changement_eleve(change, '$themessage');\"";
+	}
+	echo ">\n";
 	echo $chaine_options_login_eleves;
 	echo "</select>\n";
 
-	if("$login_eleve_suiv"!="0"){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève suivant</a>";}
+	if("$login_eleve_suiv"!="0"){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'";
+		if($_SESSION['statut']=="administrateur"){
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		}
+		echo ">Elève suivant</a>";
+	}
 
 	echo "</p>\n";
 	echo "</form>\n";
@@ -186,7 +227,12 @@ else{
 	// Après modification éventuelle, il faut quitter cette page.
 	//echo "<p class=bold><a href=\"#\" onclick=\"return confirm_abandon (this, change, '$themessage');\">Refermer la page</a></p>\n";
 	//echo "<p class=bold><a href=\"#\" onclick=\"if(return confirm_abandon (this, change, '$themessage')){self.close()};\">Refermer la page</a></p>\n";
-	echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+	if($_SESSION['statut']=="administrateur"){
+		echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+	}
+	else{
+		echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
+	}
 
 	echo "<script type='text/javascript'>
 	// Initialisation
@@ -218,14 +264,14 @@ else{
 
 //=============================
 
-?>
-<form action="eleve_options.php" name='form2' method=post>
-<?php
+if($_SESSION['statut']=="administrateur"){
+	echo "<form action='eleve_options.php' name='form2' method=post>\n";
 
-if(isset($quitter_la_page)){
-	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
-	// Après modification éventuelle, il faut quitter cette page.
-	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
+	if(isset($quitter_la_page)){
+		// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+		// Après modification éventuelle, il faut quitter cette page.
+		echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
+	}
 }
 
 $call_nom_class = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
@@ -236,10 +282,13 @@ $nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
 $prenom_eleve = @mysql_result($call_data_eleves, '0', 'prenom');
 
 echo "<h3>".$nom_eleve." ".$prenom_eleve." - Classe : $classe</h3>\n";
-//echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>\n";
-echo "<p>Pour valider les modifications, cliquez sur le bouton.</p>\n";
 
-echo "<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>\n";
+if($_SESSION['statut']=="administrateur"){
+	//echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>\n";
+	echo "<p>Pour valider les modifications, cliquez sur le bouton.</p>\n";
+
+	echo "<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>\n";
+}
 
 // J'appelle les différents groupes existants pour la classe de l'élève
 
@@ -261,13 +310,16 @@ while ($j < $nb_periode) {
 	//=========================
 	// MODIF: boireaus
 	//echo "<td><b>".$nom_periode[$j]."</b></td>";
-	echo "<td><b>".$nom_periode[$j]."</b><br />\n";
-	//echo "<input type='button' name='coche_col_$j' id='id_coche_col_$j' value='Coche' onClick='coche($j,\"col\")' />/\n";
-	//echo "<input type='button' name='decoche_col_$j' id='id_decoche_col_$j' value='Décoche' onClick='decoche($j,\"col\")' />\n";
-	//echo "<input type='button' name='coche_col_$j' value='C' onClick='modif_case($j,\"col\",true)' />/\n";
-	//echo "<input type='button' name='decoche_col_$j' value='D' onClick='modif_case($j,\"col\",false)' />\n";
-	echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-	echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "<td><b>".$nom_periode[$j]."</b>";
+	if($_SESSION['statut']=="administrateur"){
+		echo "<br />\n";
+		//echo "<input type='button' name='coche_col_$j' id='id_coche_col_$j' value='Coche' onClick='coche($j,\"col\")' />/\n";
+		//echo "<input type='button' name='decoche_col_$j' id='id_decoche_col_$j' value='Décoche' onClick='decoche($j,\"col\")' />\n";
+		//echo "<input type='button' name='coche_col_$j' value='C' onClick='modif_case($j,\"col\",true)' />/\n";
+		//echo "<input type='button' name='decoche_col_$j' value='D' onClick='modif_case($j,\"col\",false)' />\n";
+		echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	}
 	echo "</td>\n";
 
 	$chaine_coche.="modif_case($j,\"col\",true);";
@@ -278,10 +330,12 @@ while ($j < $nb_periode) {
 }
 //echo "<td>&nbsp;</td>\n";
 
-echo "<td>\n";
-echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-echo "</td>\n";
+if($_SESSION['statut']=="administrateur"){
+	echo "<td>\n";
+	echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+	echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "</td>\n";
+}
 
 echo "</tr>\n";
 
@@ -291,7 +345,8 @@ $alt=1;
 while ($i < $nombre_ligne) {
 	$id_groupe = mysql_result($call_group, $i, "id");
 	$nom_groupe = mysql_result($call_group, $i, "name");
-	$description_groupe = mysql_result($call_group, $i, "description");
+	//$description_groupe = mysql_result($call_group, $i, "description");
+	$description_groupe = htmlentities(mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td>".$nom_groupe;
@@ -330,11 +385,26 @@ while ($i < $nombre_ligne) {
 				}
 
 				if($temoin!=""){
-					echo "<td><center>".$temoin."<input type='hidden' name=".$id_groupe."_".$j." value='checked' /></center></td>\n";
+					echo "<td><center>".$temoin;
+					if($_SESSION['statut']=="administrateur"){
+						echo "<input type='hidden' name=".$id_groupe."_".$j." value='checked' />";
+					}
+					else{
+						echo "<img src='../images/enabled.png' width='15' height='15' alt='Inscrit' />";
+					}
+					echo "</center></td>\n";
 				}
 				else{
-					$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
-					echo "<td><center><a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a></center></td>\n";
+					echo "<td><center>";
+					if($_SESSION['statut']=="administrateur"){
+						$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
+						echo "<a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a>";
+					}
+					else{
+						$msg_erreur="Cette case est validée et ne devrait pas l être. Contactez l administrateur pour corriger.";
+						echo "<a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a>";
+					}
+					echo "</center></td>\n";
 					$nb_erreurs++;
 				}
 			}
@@ -351,10 +421,20 @@ while ($i < $nombre_ligne) {
 			// MODIF: boireaus
 			if (mysql_num_rows($test) == "0") {
 				//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." /></center></td>\n";
-				echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' /></center></td>\n";
+				if($_SESSION['statut']=="administrateur"){
+					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' /></center></td>\n";
+				}
+				else {
+					echo "<td>&nbsp;</td>\n";
+				}
 			} else {
-				//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
-				echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' CHECKED /></center></td>\n";
+				if($_SESSION['statut']=="administrateur"){
+					//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
+					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' CHECKED /></center></td>\n";
+				}
+				else {
+					echo "<td><center><img src='../images/enabled.png' width='15' height='15' alt='Inscrit' /></center></td>\n";
+				}
 			}
 			//=========================
 		}
@@ -362,12 +442,14 @@ while ($i < $nombre_ligne) {
 	}
 	//=========================
 	// AJOUT: boireaus
-	echo "<td>\n";
-	//echo "<input type='button' name='coche_lig_$i' value='C' onClick='modif_case($i,\"lig\",true)' />/\n";
-	//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
-	echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-	echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-	echo "</td>\n";
+	if($_SESSION['statut']=="administrateur"){
+		echo "<td>\n";
+		//echo "<input type='button' name='coche_lig_$i' value='C' onClick='modif_case($i,\"lig\",true)' />/\n";
+		//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
+		echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "</td>\n";
+	}
 	//=========================
 	echo "</tr>\n";
 	$i++;
@@ -401,14 +483,30 @@ echo "<script type='text/javascript' language='javascript'>
 </script>\n";
 
 if($nb_erreurs>0){
-	echo "<p style='color:red;'>Cet élève est affecté dans des groupes sur des périodes pour lesquelles il n'est pas dans la classe.<br />Pour supprimer l'élève de ces groupes, validez le présent formulaire.</p>\n";
+	echo "<p style='color:red;'>Cet élève est affecté dans des groupes sur des périodes pour lesquelles il n'est pas dans la classe.<br />";
+	if($_SESSION['statut']=="administrateur"){
+		echo "Pour supprimer l'élève de ces groupes, validez le présent formulaire.";
+	}
+	else{
+		echo "Contactez l'administrateur pour corriger.";
+	}
+	echo "</p>\n";
 }
 //============================================
+
+if($_SESSION['statut']=="administrateur"){
 ?>
-<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>
-<input type='hidden' name='id_classe' value='<?php echo $id_classe;?>' />
-<input type='hidden' name='login_eleve' value='<?php echo $login_eleve;?>' />
-<input type='hidden' name='is_posted' value='1' />
-<br />
-</form>
-<?php require("../lib/footer.inc.php");?>
+	<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>
+	<input type='hidden' name='id_classe' value='<?php echo $id_classe;?>' />
+	<input type='hidden' name='login_eleve' value='<?php echo $login_eleve;?>' />
+	<input type='hidden' name='is_posted' value='1' />
+	<br />
+	</form>
+<?php
+}
+else{
+	echo "<p><br /></p>\n";
+}
+
+require("../lib/footer.inc.php");
+?>
