@@ -329,7 +329,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 				}
 			}
 		} else {
-			$msg="L'identifiant choisi est constitué au maximum de 12 caractères : lettres, chiffres ou \"_ .\" et ne doit pas commencer par un chiffre !";
+			$msg="L'identifiant choisi est constitué au maximum de 12 caractères : lettres, chiffres, \"_\" ou \".\" et ne doit pas commencer par un chiffre !";
 		}
 	} else if ($continue == 'yes') {
 		// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
