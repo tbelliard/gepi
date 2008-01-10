@@ -95,11 +95,14 @@ $message = "";
 <i>La d&eacute;sactivation des emplois du temps n'entra&icirc;ne aucune suppression des donn&eacute;es.
  Lorsque le module est d&eacute;sactiv&eacute;, personne n'a acc&egrave;s au module et
  la consultation des emplois du temps est impossible.</i><br />
-<br />
-		<input name="activ_tous" value="y" type="radio"<?php echo eval_checked("autorise_edt_tous", "y"); ?> onclick='document.autorise_edt.submit();' />
-&nbsp;Activer les emplois du temps pour tous les utilisateurs<br />
-		<input name="activ_tous" value="n" type="radio"<?php echo eval_checked("autorise_edt_tous", "n"); ?> onclick='document.autorise_edt.submit();' />
-&nbsp;Désactiver les emplois du temps pour tous les utilisateurs<br />
+<p>
+		<input name="activ_tous" id="activTous" value="y" type="radio"<?php echo eval_checked("autorise_edt_tous", "y"); ?> onclick='document.autorise_edt.submit();' />
+<label for="activTous">&nbsp;Activer les emplois du temps pour tous les utilisateurs</label>
+</p>
+<p>
+		<input name="activ_tous" id="activPas" value="n" type="radio"<?php echo eval_checked("autorise_edt_tous", "n"); ?> onclick='document.autorise_edt.submit();' />
+<label for="activPas">&nbsp;Désactiver les emplois du temps pour tous les utilisateurs</label>
+</p>
 
 	</form>
 
@@ -110,11 +113,14 @@ $message = "";
 <i>Les comptes </i>administrateur<i> ont acc&egrave;s aux emplois du temps si celui-ci est activ&eacute; pour eux. Si vous
 avez d&eacute;sactiv&eacute; l'acc&egrave;s pour tous,
  vous pouvez quand m&ecirc;me autoriser les comptes </i>administrateur<i> &agrave; y avoir acc&egrave;s.</i><br />
-<br />
-		<input name="activ_ad" value="y" type="radio"<?php echo eval_checked("autorise_edt_admin", "y"); ?> onclick='document.autorise_admin.submit();' />
-&nbsp;Activer les emplois du temps pour les administrateurs<br />
-		<input name="activ_ad" value="n" type="radio"<?php echo eval_checked("autorise_edt_admin", "n"); ?> onclick='document.autorise_admin.submit();' />
-&nbsp;D&eacute;sactiver les emplois du temps pour les administrateurs<br />
+<p>
+		<input name="activ_ad" id="activAdY" value="y" type="radio"<?php echo eval_checked("autorise_edt_admin", "y"); ?> onclick='document.autorise_admin.submit();' />
+<label for="activAdY">&nbsp;Activer les emplois du temps pour les administrateurs</label>
+</p>
+<p>
+		<input name="activ_ad" id="activAdN" value="n" type="radio"<?php echo eval_checked("autorise_edt_admin", "n"); ?> onclick='document.autorise_admin.submit();' />
+<label for="activAdN">&eacute;sactiver les emplois du temps pour les administrateurs</label>
+</p>
 
 	</form>
 <br /><hr />
@@ -125,11 +131,14 @@ avez d&eacute;sactiv&eacute; l'acc&egrave;s pour tous,
 
 <i>Si vous souhaitez rendre accessible leur emploi du temps aux &eacute;l&egrave;ves et
 &agrave; leurs responsables, il faut imp&eacute;rativement l'autoriser ici.</i><br />
-<br />
-		<input name="activ_ele" value="y" type="radio"<?php echo eval_checked("autorise_edt_eleve", "y"); ?> onclick='document.autorise_ele.submit();' />
-&nbsp;Activer les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables<br />
-		<input name="activ_ele" value="n" type="radio"<?php echo eval_checked("autorise_edt_eleve", "n"); ?> onclick='document.autorise_ele.submit();' />
-&nbsp;D&eacute;sactiver les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables<br />
+<p>
+		<input name="activ_ele" id="activEleY" value="y" type="radio"<?php echo eval_checked("autorise_edt_eleve", "y"); ?> onclick='document.autorise_ele.submit();' />
+<label for="activEleY"> &nbsp;Activer les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables</label>
+</p>
+<p>
+		<input name="activ_ele" id="activEleN" value="n" type="radio"<?php echo eval_checked("autorise_edt_eleve", "n"); ?> onclick='document.autorise_ele.submit();' />
+<label for="activEleN">&nbsp;D&eacute;sactiver les emplois du temps pour les &eacute;l&egrave;ves et leurs responsables</label>
+</p>
 	</form>
 <br /><br />
 	</div>

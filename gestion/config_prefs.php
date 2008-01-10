@@ -54,20 +54,69 @@ function getPref($login,$item,$default){
 	}
 }
 */
-
-//$page=isset($_GET['page']) ? $_GET['page'] : NULL;
-$page=isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : NULL);
-
-$prof=isset($_POST['prof']) ? $_POST['prof'] : NULL;
+// Ajout de la possibilité d'afficher ou pas le menu en barre horizontale
+$afficherMenu = isset($_POST["afficher_menu"]) ? $_POST["afficher_menu"] : NULL;
+$modifier_le_menu = isset($_POST["modifier_le_menu"]) ? $_POST["modifier_le_menu"] : NULL;
+$page = isset($_GET['page']) ? $_GET['page'] : (isset($_POST['page']) ? $_POST['page'] : NULL);
+$prof = isset($_POST['prof']) ? $_POST['prof'] : NULL;
+$enregistrer=isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
+$msg="";
 
 if($_SESSION['statut']!="administrateur"){
 	unset($prof);
-	$prof=array($_SESSION['login']);
+	$prof = array($_SESSION['login']);
 }
+// +++++++++++++++++++++ MENU en barre horizontale ++++++++++++++++++++
 
-//$page=isset($_POST['page']) ? $_POST['page'] : NULL;
-$enregistrer=isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
-$msg="";
+	// Petite fonction pour déterminer le checked="checked" des input en tenant compte des deux utilisations (admin et prof)
+	function eval_checked($Settings, $yn, $statut, $nom){
+			$aff_check = '';
+	if ($statut == "professeur") {
+		$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'"))
+							OR DIE ('Erreur requête eval_setting (prof) : '.mysql_error());
+	}elseif ($statut == "administrateur") {
+		$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'"))
+							OR DIE ('Erreur requête eval_setting (admin) : '.mysql_error());
+	}
+		if ($req_setting["value"] == $yn) {
+			$aff_check = ' checked="checked"';
+		}else {
+			$aff_check = '';
+		}
+
+		return $aff_check;
+	} //function eval_checked()
+
+	// On traite si c'est demandé
+			$messageMenu = '';
+if ($modifier_le_menu == "ok") {
+	// On fait la modif demandée
+	// pour l'administrateur général
+	if ($_SESSION["statut"] == "administrateur"){
+		$sql = "UPDATE setting SET value = '".$afficherMenu."' WHERE name = 'utiliserMenuBarre'";
+	// ou pour les professeurs
+	}elseif ($_SESSION["statut"] == "professeur") {
+		// Pour le prof, on vérifie si ce réglage existe ou pas
+		$query = mysql_query("SELECT value FROM preferences WHERE name = 'utiliserMenuBarre' AND login = '".$_SESSION["login"]."'");
+		$verif = mysql_num_rows($query);
+		if ($verif == 1) {
+			// S'il existe, on le modifie
+			$sql = "UPDATE preferences SET value = '".$afficherMenu."' WHERE name = 'utiliserMenuBarre' AND login = '".$_SESSION["login"]."'";
+		}else {
+			// Sinon, on le crée
+			$sql = "INSERT INTO preferences SET login = '".$_SESSION["login"]."', name = 'utiliserMenuBarre', value = '".$afficherMenu."'";
+		}
+	}
+		// Dans tous les cas, on envoie la requête et on renvoie le message adéquat.
+		$requete = mysql_query($sql);
+		if ($requete) {
+			$messageMenu = "<p style=\"color: green\">La modification a été enregistrée</p>";
+		}else{
+			$messageMenu = "<p style=\"color: red\">La modification a échoué, vous devriez mettre à jour votre base
+							 avant de poursuivre</p>";
+		}
+} // fin du if ($modifier_le_menu...
+// +++++++++++++++++++++ FIN -- MENU en barre horizontale -- FIN ++++++++++++++++++++
 
 // Tester les valeurs de $page
 // Les valeurs autorisées sont (actuellement): accueil, add_modif_dev, add_modif_conteneur
@@ -343,7 +392,7 @@ else{
 		}
 
 		echo "</td>\n";
-	}
+	} // FIN function cellule_checkbox
 
 
 /*
@@ -717,6 +766,37 @@ else{
 }
 
 echo "</form>\n";
+
+	// On ajoute le réglage pour le menu en barre horizontale
+	$aff = "non";
+if ($_SESSION["statut"] == "administrateur") {
+	$aff = "oui";
+}elseif($_SESSION["statut"] == "professeur" AND getSettingValue("utiliserMenuBarre") == "yes") {
+	$aff = "oui";
+}else {
+	$aff = "non";
+}
+// On affiche si c'est autorisé
+if ($aff == "oui") {
+	echo '
+		<form name="change_menu" method="post" action="./config_prefs.php">
+	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
+		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
+			<input type="hidden" name="modifier_le_menu" value="ok" />
+		<p>
+			<label for="visibleMenu">Rendre visible la barre de menu horizontale sous l\'en-tête.</label>
+			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+		<p>
+			<label for="invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
+			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+	</fieldset>
+		</form>
+		'.$messageMenu
+		;
+} // fin du if ($aff == "oui")
+
 echo "<br />\n";
 require("../lib/footer.inc.php");
 ?>

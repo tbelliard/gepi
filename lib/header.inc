@@ -440,9 +440,13 @@ if (isset($titre_page)) {
 	echo "</div>";
 
 	echo "</div>\n";
-// ==========> On ajoute la barre de menu
+// ==========> On ajoute la barre de menu <========================= //
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur") {
-	include("header_barre_menu.php");
+	// On vérifie que l'utilisateur ne l'a pas enlevée
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		include("header_barre_menu.php");
+	}
+
 }
 
 	echo "<!-- Header end -->\n";

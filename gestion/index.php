@@ -94,8 +94,8 @@ require_once("../lib/header.inc");
     </td>
 </tr>
 <tr>
-    <td width=200><a href="config_prefs.php">Interface simplifiée</a></td>
-    <td>Paramétrage des items de l'interface simplifiée pour certaines pages.</td>
+    <td width=200><a href="config_prefs.php">Paramétrage de l'interface professeur</a></td>
+    <td>Paramétrage des items de l'interface simplifiée pour certaines pages. Gestion du menu en barre horizontale.</td>
 </tr>
 <tr>
     <td width=200><a href="param_couleurs.php">Paramétrage des couleurs</a></td>
