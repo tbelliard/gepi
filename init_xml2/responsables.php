@@ -635,6 +635,29 @@
 					}
 					*/
 
+
+
+					$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0){
+						echo "<p>Suppression de responsabilités sans élève.\n";
+						flush();
+						$cpt_nett=0;
+						while($lig_nett=mysql_fetch_object($test)){
+							//if($cpt_nett>0){echo ", ";}
+							//echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
+							$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
+							$nettoyage=mysql_query($sql);
+							//flush();
+							$cpt_nett++;
+						}
+						//echo ".</p>\n";
+						echo "<br />$cpt_nett associations aberrantes supprimées.</p>\n";
+					}
+
+
+
+
 					if ($nb_err!=0) {
 						echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 					}
