@@ -792,3 +792,31 @@ table.boireaus {
 	background-color: #eeaaff;
 }
 /* ===================== */
+#essaiMenu {
+	margin: 0;
+	padding: 0.1em 1em;
+	background: #686397;
+	color: #FFF;
+}
+
+#essaiMenu li {
+	display: inline;
+	margin-right: 0.5em;
+	padding-right: 0.75em;
+	border-right: 1px solid #99C;
+	font-weight: bold;
+	font-size: 0.8em;
+}
+
+#essaiMenu li.last {
+	border-right: 0;
+}
+
+#essaiMenu a {
+	/*color: #D4EC84;*/
+	color: white;
+}
+
+#essaiMenu a:hover {
+	color: lightblue;
+}
