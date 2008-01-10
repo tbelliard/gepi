@@ -169,7 +169,8 @@ $gepiAuthors = array(
     "Thomas Belliard" => "thomas.belliard@free.fr",
     "Laurent Delineau" => "laurent.delineau@ac-poitiers.fr",
     "Eric Lebrun" => "eric.lebrun@ac-poitiers.fr",
-    "Stéphane Boireau" => "stephane.boireau@ac-rouen.fr"
+    "Stéphane Boireau" => "stephane.boireau@ac-rouen.fr",
+    "Julien Jocal" => "collegerb@free.fr"
 );
 
 // Affichage des dates en français
