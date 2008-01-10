@@ -5317,6 +5317,20 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
 		}
 
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'utiliserMenuBarre' à la table 'setting'<br />";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name='utiliserMenuBarre'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query = mysql_query("INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');");
+            if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
     }
 
 
