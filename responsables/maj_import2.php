@@ -6235,7 +6235,7 @@ else{
 			else{
 				echo "<input type='hidden' name='step' value='19' />\n";
 
-				echo "<p>Nettoyage des tables temporaires: "
+				echo "<p>Nettoyage des tables temporaires: ";
 				unset($liste_tab_del);
 				$liste_tab_del=array("temp_ele_classe", "temp_gep_import2", "temp_resp_adr_import", "temp_resp_pers_import", "temp_responsables2_import", "tempo2");
 				$j=0;
