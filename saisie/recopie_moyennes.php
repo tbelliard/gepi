@@ -148,7 +148,7 @@ if(!isset($id_classe)){
 	echo "</p></div>\n";
 
 	//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
-	echo "<p>Cette page est destinée à effectuer la recopie des moyennes.<br />Ne seront recopiées que les moyennes autres que 'abs', 'disp' et '-'.</p>\n";
+	echo "<p>Cette page est destinée à effectuer la recopie des moyennes des carnets de notes vers les bulletins.<br />Ne seront recopiées que les moyennes autres que 'abs', 'disp' et '-'.</p>\n";
 	$sql="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
 	$res_classe=mysql_query($sql);
 
@@ -239,7 +239,7 @@ else{
 	//if(!isset($choix_periode)){
 	if(!isset($num_periode)){
 		//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
-		echo "<p>Cette page est destinée à effectuer la recopie des moyennes.</p>\n";
+		echo "<p>Cette page est destinée à effectuer la recopie des moyennes des carnets de notes vers les bulletins.</p>\n";
 
 		//$sql="SELECT classe FROM classes WHERE id='".$_POST['id_classe']."'";
 		$sql="SELECT classe FROM classes WHERE id='".$id_classe."'";
@@ -337,6 +337,15 @@ else{
 			die("</body></html>");
 		}
 		else{
+			echo "<p>Recopie des moyennes des carnets de notes vers les bulletins.</p>\n";
+			$nb_carnets_notes=mysql_num_rows($resultat);
+			if($nb_carnets_notes==1){
+				echo "<p>".$nb_carnets_notes." carnet de note seulement est actuellement renseigné.<br />C'est le seul proposé dans la recopie ci-dessous.</p>\n";
+			}
+			else{
+				echo "<p>".$nb_carnets_notes." carnets de notes sont actuellement renseignés.<br />Ce sont les seuls proposés dans la recopie ci-dessous.</p>\n";
+			}
+
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
 
 			//echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
