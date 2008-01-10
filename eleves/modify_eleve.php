@@ -1528,7 +1528,7 @@ if(isset($eleve_login)){
 				if(mysql_num_rows($res_adr)==0){
 					// L'adresse du responsable 1 n'est pas définie:
 					echo "<td colspan='2'>\n";
-					echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
+					echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
 					echo "</td>\n";
 					$adr_id_1er_resp="";
 				}
@@ -1546,7 +1546,7 @@ if(isset($eleve_login)){
 					echo $chaine_adr1;
 					echo "</td>\n";
 					echo "<td>\n";
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>Modifier l'adresse du responsable</a>\n";
+					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
@@ -1610,7 +1610,7 @@ if(isset($eleve_login)){
 				if(mysql_num_rows($res_adr)==0){
 					// L'adresse du responsable 2 n'est pas définie:
 					echo "<td colspan='2'>\n";
-					echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
+					echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
 					echo "</td>\n";
 				}
 				else{
@@ -1639,7 +1639,7 @@ if(isset($eleve_login)){
 					}
 					echo "</td>\n";
 					echo "<td>\n";
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>Modifier l'adresse du responsable</a>\n";
+					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 					if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
 						if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
 							echo "<br />";

@@ -869,6 +869,7 @@ echo "</table>\n";
 
 //==============================================
 
+echo "<a name='adresse'></a>\n";
 echo "<p><b>Adresse:</b>";
 if(isset($adr_id)){echo " (<i>n°$adr_id</i>)";}
 echo "</p>\n";
