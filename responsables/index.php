@@ -50,33 +50,33 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 	if(isset($suppr_resp1)){
 		$suppr_resp=$suppr_resp1;
 		for($i=0;$i<count($suppr_resp);$i++){
-			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='1'";
+			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='1';";
 			//echo "$sql<br />\n";
 			$res0=mysql_query($sql);
 			if($res0){
 				// Est-ce que ce responsable est encore responsable de quelqu'un?
-				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]'";
+				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)>0){
 						$lig1=mysql_fetch_object($res1);
-						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(!$res2){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
-							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id'";
+							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)==0){
-								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id'";
+								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 								//echo "$sql<br />\n";
 								$res4=mysql_query($sql);
 								if(!$res4){
@@ -100,33 +100,33 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 	if(isset($suppr_resp2)){
 		$suppr_resp=$suppr_resp2;
 		for($i=0;$i<count($suppr_resp);$i++){
-			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='2'";
+			$sql="DELETE FROM responsables2 WHERE pers_id='$suppr_resp[$i]' AND resp_legal='2';";
 			//echo "$sql<br />\n";
 			$res0=mysql_query($sql);
 			if($res0){
 				// Est-ce que ce responsable est encore responsable de quelqu'un?
-				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]'";
+				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)>0){
 						$lig1=mysql_fetch_object($res1);
-						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(!$res2){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
-							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id'";
+							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)==0){
-								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id'";
+								$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 								//echo "$sql<br />\n";
 								$res4=mysql_query($sql);
 								if(!$res4){
@@ -156,23 +156,23 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 		$suppr_resp=$suppr_resp0;
 		for($i=0;$i<count($suppr_resp);$i++){
 			// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-			$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+			$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 			//echo "$sql<br />\n";
 			$res1=mysql_query($sql);
 			if(mysql_num_rows($res1)>0){
 				$lig1=mysql_fetch_object($res1);
-				$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]'";
+				$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
 				$res2=mysql_query($sql);
 				if(!$res2){
 					$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 				}
 				else{
-					$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id'";
+					$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 					//echo "$sql<br />\n";
 					$res3=mysql_query($sql);
 					if(mysql_num_rows($res3)==0){
-						$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id'";
+						$sql="DELETE FROM resp_adr WHERE adr_id='$lig1->adr_id';";
 						//echo "$sql<br />\n";
 						$res4=mysql_query($sql);
 						if(!$res4){
@@ -311,6 +311,13 @@ if($val_rech!=""){
 		}
 
 		switch($champ_rech){
+			case "resp0":
+					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
+					$num_resp=0;
+
+					//$chaine_info_recherche.="le $crit_rech de la personne non responsable $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech $mode_rech $val_rech";
+				break;
 			case "resp1":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=1;
@@ -426,6 +433,8 @@ else{
 
 //echo "cpt=$cpt<br />";
 
+//debug_var();
+
 //echo "<p>\$chaine_recherche=$chaine_recherche et \$num_resp=$num_resp</p>";
 
 echo "<p style='font-weight:bold; text-align:center;'>";
@@ -539,57 +548,96 @@ echo "		}
 	}
 </script>\n";
 
-
-echo "<div style='text-align:center;'>\n";
-echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
-echo "<div id='div_rech' style='display:none;' align='center'>\n";
-echo "<table border='0'><tr><td>parmi les </td>\n";
-echo "<td>\n";
-echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
-echo "</label>\n";
-echo "<br />\n";
-echo "<label for='champ_rech_resp2' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' /> responsables (<i>légal 2</i>)\n";
-echo "</label>\n";
-echo "<br />\n";
-echo "<label for='champ_rech_eleves' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' /> élèves\n";
-echo "</label>\n";
-echo "</td>\n";
-echo "<td>\n";
-echo " ceux dont le \n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
-echo "</label>\n";
-echo "<br />\n";
-echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
-echo "</label>\n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
-echo "</label>\n";
-echo "<br />\n";
-echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
-echo "</label>\n";
-echo "<br />\n";
-echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
-echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
-echo "</label>\n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<input type='text' name='val_rech' value='' />\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-echo "<center><input type='submit' value='Valider' /></center>\n";
-echo "</div>\n";
-echo "</div>\n";
+if($num_resp==0){
+	echo "<div style='text-align:center;'>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
+	echo "<div id='div_rech' style='display:none;' align='center'>\n";
+	echo "<table border='0'><tr><td>les personnnes dont le \n";
+	echo "<input type='hidden' name='champ_rech' value='resp0' />\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' name='val_rech' value='' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<center><input type='submit' value='Valider' /></center>\n";
+	echo "</div>\n";
+	echo "</div>\n";
+}
+else{
+	echo "<div style='text-align:center;'>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
+	echo "<div id='div_rech' style='display:none;' align='center'>\n";
+	echo "<table border='0'><tr><td>parmi les </td>\n";
+	echo "<td>\n";
+	echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='champ_rech_resp2' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_resp2' value='resp2' /> responsables (<i>légal 2</i>)\n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='champ_rech_eleves' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_eleves' value='eleves' /> élèves\n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo " ceux dont le \n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' name='val_rech' value='' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<center><input type='submit' value='Valider' /></center>\n";
+	echo "</div>\n";
+	echo "</div>\n";
+}
 flush();
 
 //echo "<center><input type='submit' value='Valider' /></center>\n";
@@ -605,6 +653,9 @@ if("$num_resp"=="0"){
 
 	//echo "<tr><td colspan='3'>TEMOIN: $num_resp</td></tr>";
 
+	echo "<input type='hidden' name='num_resp' value='0' />\n";
+	echo "<input type='hidden' name='order_by' value='nom,prenom' />\n";
+
 	/*
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
@@ -616,9 +667,24 @@ if("$num_resp"=="0"){
 
 	$cpt=0;
 	//$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
+	/*
 	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
 		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
 		WHERE r.pers_id is NULL;";
+	*/
+	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
+		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
+		WHERE r.pers_id is NULL";
+
+	if(isset($chaine_recherche)){
+		$sql.=" AND $chaine_recherche";
+		//echo "<!--$sql-->\n";
+	}
+
+	if($limit!='TOUS'){
+		$sql.=" LIMIT $debut,$limit";
+	}
+	echo "<!--$sql-->\n";
 	$res1=mysql_query($sql);
 	$alt=1;
 	if(mysql_num_rows($res1)>0){
