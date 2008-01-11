@@ -548,6 +548,7 @@ INSERT INTO droits VALUES ('/edt_organisation/modifier_cours_popup.php', 'V', 'F
 INSERT INTO droits VALUES ('/edt_organisation/edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Régler le module emploi du temps', '');
 INSERT INTO droits VALUES ('/edt_organisation/edt_eleve.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'Régler le module emploi du temps', '');
 INSERT INTO droits VALUES ('/edt_organisation/edt_param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Régler les couleurs des matières (EdT)', '');
+INSERT INTO droits VALUES ('/edt_organisation/ajax_edtcouleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Changer les couleurs des matières (EdT)', '');
 INSERT INTO edt_setting VALUES (1, 'nom_creneaux_s', '1');
 INSERT INTO edt_setting VALUES (2, 'edt_aff_salle', 'nom');
 INSERT INTO edt_setting VALUES (3, 'edt_aff_matiere', 'long');
@@ -580,3 +581,4 @@ INSERT INTO droits VALUES ('/lib/change_mode_header.php', 'V', 'V', 'V', 'V', 'V
 INSERT INTO droits VALUES ('/saisie/recopie_moyennes.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'Recopie des moyennes', '');
 INSERT INTO droits VALUES ('/groupes/fusion_group.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Fusionner des groupes', '');
 INSERT INTO droits VALUES ('/gestion/security_panel_archives.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'page archive du panneau de sécurité', '');
+INSERT INTO droits VALUES ('/lib/header_barre_menu.php/', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Barre horizontale de menu', '');

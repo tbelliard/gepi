@@ -42,7 +42,9 @@ $couleur = "";
 $sql = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
 $matiere_long = mysql_fetch_array($sql);
 // les requêtes AJAX se font en utf8, il faut donc encoder utf8 pour être tranquille
-$aff_matiere_long = utf8_encode($matiere_long["nom_complet"]);
+//$aff_matiere_long = utf8_encode($matiere_long["nom_complet"]);
+$aff_matiere_long = $matiere_long["nom_complet"];
+
 // On récupère la couleur de la matière en question
 $verif_couleur = GetSettingEdt($M_couleur);
 	if ($verif_couleur == "") {

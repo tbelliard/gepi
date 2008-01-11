@@ -6,6 +6,12 @@
  * @version $Id$
  * @copyright 2008
  */
+// ====== SECURITE =======
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
 
 /* On fixe l'ensemble des modules qui sont ouverts pour faire la liste des <li> */
 	// module absence
