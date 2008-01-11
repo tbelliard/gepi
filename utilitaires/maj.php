@@ -4690,7 +4690,7 @@ if (isset ($_POST['maj'])) {
 		}
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'nom_creneaux_s' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='nom_creneaux_s'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'nom_creneaux_s'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'nom_creneaux_s', '1');");
@@ -4704,7 +4704,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_salle' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_salle'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_salle'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_salle', 'nom');");
@@ -4718,7 +4718,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_matiere' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_matiere'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_matiere', 'long');");
@@ -4732,7 +4732,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_creneaux' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_creneaux'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_creneaux'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_creneaux', 'noms');");
@@ -4746,7 +4746,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_init_infos' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_init_infos'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_init_infos', 'oui');");
@@ -4760,7 +4760,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_couleur' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_couleur'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_couleur', 'nb');");
@@ -4774,7 +4774,7 @@ if (isset ($_POST['maj'])) {
         }
 
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'edt_aff_init_infos2' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='edt_aff_init_infos2'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_init_infos2'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'edt_aff_init_infos2', 'oui');");
@@ -4788,7 +4788,7 @@ if (isset ($_POST['maj'])) {
         }
 
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'aff_cherche_salle' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='aff_cherche_salle'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'aff_cherche_salle'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'aff_cherche_salle', 'tous');");
@@ -4802,10 +4802,24 @@ if (isset ($_POST['maj'])) {
         }
 
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'param_menu_edt' à la table 'edt_setting'<br/>";
-        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage='param_menu_edt'");
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO edt_setting VALUES ('', 'param_menu_edt', 'mouseover');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'scolarite_modif_cours' à la table 'edt_setting'<br/>";
+        $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'scolarite_modif_cours'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO edt_setting VALUES ('' , 'scolarite_modif_cours', 'y');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {
