@@ -69,23 +69,92 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) 
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else{
+
+		$sql="SELECT MAX(num_periode) nb_max_periode FROM periodes;";
+		$res_per=mysql_query($sql);
+		$tmp_per=mysql_fetch_object($res_per);
+		$nb_max_periode=$tmp_per->nb_max_periode;
+
+		echo "<table class='boireaus'>\n";
+
+		echo "<tr>\n";
+		echo "<th rowspan='2'>Classe</th>\n";
+		echo "<th rowspan='2' onMouseover=\"afficher_div('info_classe','y',10,10)\" onmouseout=\"cacher_div('info_classe')\">Avis seul</th>\n";
+		echo "<th rowspan='2'>Individuel avec<br />appréciations</th>\n";
+		echo "<th colspan='$nb_max_periode'>Import CSV</th>\n";
+		echo "</tr>\n";
+
+		$tabdiv_infobulle[]=creer_div_infobulle("info_classe","","","<center>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</center>","",10,0,"n","n","y","n");
+
+
+		echo "<tr>\n";
+		for($i=1;$i<=$nb_max_periode;$i++){
+			echo "<th>Période $i</th>\n";
+		}
+		echo "</tr>\n";
+
+
+		$tabdiv_infobulle[]=creer_div_infobulle("saisie_avis1","","","<center>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</center>","",15,0,"n","n","y","n");
+		$tabdiv_infobulle[]=creer_div_infobulle("saisie_avis2","","","<center>Saisir les avis, élève par élève, avec visualisation des résultats de l'élève.</center>","",15,0,"n","n","y","n");
+		$tabdiv_infobulle[]=creer_div_infobulle("import_avis","","","<center>Importer un fichier d'appréciations (format csv)</center>","",15,0,"n","n","y","n");		$tabdiv_infobulle[]=creer_div_infobulle("periode_close","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
+
 		$j = "0";
+		$alt=1;
 		while ($j < $nombre_classe) {
 			$id_classe = mysql_result($call_classe, $j, "id");
 			$classe_suivi = mysql_result($call_classe, $j, "classe");
+
+			/*
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</a>";
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis2.php?id_classe=$id_classe'>Saisir les avis, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
+			*/
+
+			/*
 			include "../lib/periodes.inc.php";
 			$k="1";
 			while ($k < $nb_periode) {
-			if ($ver_periode[$k] != "O") {
-				echo "<b>$classe_suivi</b> --- ".ucfirst($nom_periode[$k]);
-				echo " --- <a href='import_app_cons.php?id_classe=$id_classe&amp;periode_num=$k'>Importer un fichier d'appréciations (format csv)</a><br />";
+				if ($ver_periode[$k] != "O") {
+					echo "<b>$classe_suivi</b> --- ".ucfirst($nom_periode[$k]);
+					echo " --- <a href='import_app_cons.php?id_classe=$id_classe&amp;periode_num=$k'>Importer un fichier d'appréciations (format csv)</a><br />";
+				}
+				$k++;
 			}
-			$k++;
+			*/
+
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>$classe_suivi</td>\n";
+			//echo "<td><a href='saisie_avis1.php?id_classe=$id_classe'><img src='../images/import_notes_app.png' width='30' height='30' /></a></td>\n";
+			echo "<td><a href='saisie_avis1.php?id_classe=$id_classe'><img src='../images/saisie_avis1.png' width='34' height='34'";
+			echo " onmouseover=\"afficher_div('saisie_avis1','y',10,10)\" onmouseout=\"cacher_div('saisie_avis1')\" />\n";
+			echo "</a></td>\n";
+			echo "<td><a href='saisie_avis2.php?id_classe=$id_classe'><img src='../images/saisie_avis2.png' width='34' height='34'";
+			echo " onmouseover=\"afficher_div('saisie_avis2','y',10,10)\" onmouseout=\"cacher_div('saisie_avis2')\" />\n";
+			echo "</a></td>\n";
+
+
+			include "../lib/periodes.inc.php";
+			$k="1";
+			while ($k < $nb_periode) {
+				if ($ver_periode[$k] != "O") {
+					echo "<td><a href='import_app_cons.php?id_classe=$id_classe&amp;periode_num=$k'><img src='../images/import_notes_app.png' width='30' height='30'";
+					echo " onmouseover=\"afficher_div('import_avis','y',10,10)\" onmouseout=\"cacher_div('import_avis')\" />\n";
+					echo "</a></td>\n";
+				}
+				else{
+					echo "<td>\n";
+					echo "<img src='../images/disabled.png' width='20' height='20'";
+					echo " onmouseover=\"afficher_div('periode_close','y',10,10)\" onmouseout=\"cacher_div('periode_close')\" />\n";
+					echo "</td>\n";
+				}
+				$k++;
 			}
+			echo "</tr>\n";
+
 			$j++;
 		}
+		echo "</table>\n";
+
 	}
 } else {
     $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
@@ -114,5 +183,6 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) 
         }
     }
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
