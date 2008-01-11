@@ -64,19 +64,19 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été
 $titre_page = "Gestion du module de mise à jour";
 require_once("../../lib/header.inc");
 ?>
-<p class=bold>
+<p class="bold">
 |<a href="../../accueil.php">Accueil</a>|
 <a href="../../accueil_modules.php">Retour administration des modules</a>|
 </p>
-<H2>Gestion des mise à jour de GEPI</H2>
-<p><i>La désactivation du module de la gestion des mises à jour n'entraîne aucune suppression des données. Lorsque le module est désactivé, les administrateur n'ont pas accès au module.</i></p>
+<h2>Gestion des mise à jour de GEPI</h2>
+<p><i>La désactivation du module de la gestion des mises à jour n'entraîne aucune suppression des données. Lorsque le module est désactivé, les administrateurs n'ont pas accès au module.</i></p>
 <p>Note : l'option 'allow_url_fopen' dans php.ini doit être à 'On' sur le serveur pour que ce module puisse fonctionner.</p>
 <br />
 <form action="index.php" name="form1" method="post">
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer le module de mise à jour de GEPI<br />
 <input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver le module de mise à jour de GEPI<br />
-<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions RC&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version RC sont des versions de test donc à ne jamais utilisé en production.</span></a>&nbsp;<input type="radio" name="activer_rc" value="y" <?php if (getSettingValue("rc_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_rc" value="n" <?php if (getSettingValue("rc_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver
-<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions BETA&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version BETA sont des versions de développement donc à ne jamais utilisé en production.</span></a>&nbsp;<input type="radio" name="activer_beta" value="y" <?php if (getSettingValue("beta_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_beta" value="n" <?php if (getSettingValue("beta_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver<br />
+<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions RC&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version RC sont des versions de test donc à ne jamais utiliser en production.</span></a>&nbsp;<input type="radio" name="activer_rc" value="y" <?php if (getSettingValue("rc_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_rc" value="n" <?php if (getSettingValue("rc_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver
+<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions BETA&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version BETA sont des versions de développement donc à ne jamais utiliser en production.</span></a>&nbsp;<input type="radio" name="activer_beta" value="y" <?php if (getSettingValue("beta_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_beta" value="n" <?php if (getSettingValue("beta_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver<br />
 <h2>Information site de mise à jour de GEPI</h2>
 &nbsp;&nbsp;&nbsp;&nbsp;Adresse du site internet de mise à jour de GEPI&nbsp;<input type="texte" name="site_msj_gepi" value="<?php echo getSettingValue("site_msj_gepi"); ?>" size="40" /><br />
 <h2>Information serveur FTP</h2>
@@ -84,6 +84,7 @@ require_once("../../lib/header.inc");
 <input type="hidden" name="is_posted" value="1" />
 <br /><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/>
 <br />
-</form>
-</body>
-</html>
+
+<?php
+require_once("../../lib/footer.inc.php");
+?>
