@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: edit_eleve.php 933 2007-10-31 14:50:32Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

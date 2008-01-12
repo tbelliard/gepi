@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id$
+* $Id: classes_ajout.php 1270 2007-12-18 18:14:14Z crob $
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: contacter_admin.php 1278 2007-12-20 08:25:05Z crob $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  *

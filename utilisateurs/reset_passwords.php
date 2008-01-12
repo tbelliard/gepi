@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id$
+* $Id: reset_passwords.php 1258 2007-12-15 15:35:47Z crob $
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: view_artichow_absences_petit.php 275 2007-04-05 11:07:02Z eabgrall $
 //
 $eleve_1 = $_GET['eleve_1'];
 $classe_1 = $_GET['classe_1'];

@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id$
+* $Id: impression_absences.php 1037 2007-11-09 19:39:12Z jjocal $
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

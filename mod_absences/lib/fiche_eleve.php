@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: fiche_eleve.php 275 2007-04-05 11:07:02Z eabgrall $
  *
  * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

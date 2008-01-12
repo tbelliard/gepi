@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id$
+* $Id: eleve_options.php 1305 2008-01-09 15:17:41Z crob $
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id$
+ * $Id: prof_ajout_abs.php 1106 2007-11-19 21:16:47Z jjocal $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

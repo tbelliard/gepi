@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*$Id$
+*$Id: ajout_abs.php 275 2007-04-05 11:07:02Z eabgrall $
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

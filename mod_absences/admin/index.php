@@ -1,7 +1,7 @@
 <?php
 /*
  *
- *$Id$
+ *$Id: index.php 1180 2007-12-02 15:17:43Z jjocal $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

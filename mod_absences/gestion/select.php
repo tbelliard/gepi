@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: select.php 286 2007-04-08 17:43:44Z eabgrall $
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

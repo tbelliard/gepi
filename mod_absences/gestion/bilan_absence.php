@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*$Id$
+*$Id: bilan_absence.php 909 2007-10-26 07:33:11Z jjocal $
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

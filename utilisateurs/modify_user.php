@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id$
+* $Id: modify_user.php 1230 2007-12-08 21:23:31Z crob $
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id$
+ * $Id: admin_periodes_absences.php 1004 2007-11-06 21:40:48Z jjocal $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
