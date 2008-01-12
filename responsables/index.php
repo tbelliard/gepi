@@ -339,7 +339,8 @@ if($val_rech!=""){
 		}
 	}
 }
-else{
+
+//else{
 	// Y a-t-il des responsables,... dans la base pour le mode choisi.
 	$cpt=0;
 	if(($order_by=="nom,prenom")&&($num_resp==0)){
@@ -387,7 +388,12 @@ else{
 
 		$sql="SELECT 1=1 FROM resp_pers rp
 			LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
-			WHERE r.pers_id is NULL;";
+			WHERE r.pers_id is NULL";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			//echo "<!--$sql-->\n";
+		}
+
 		/*
 		$sql="(SELECT 1=1 FROM resp_pers rp
 			LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
@@ -404,21 +410,34 @@ else{
 		// Pour ne récupérer qu'une seule occurence de pers_id:
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp'
-			ORDER BY $order_by";
+				r.resp_legal='$num_resp' ";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			//echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY $order_by";
 		$res1=mysql_query($sql);
 		$cpt=mysql_num_rows($res1);
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp'
-			ORDER BY $order_by";
+				r.resp_legal='$num_resp' ";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			//echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY $order_by";
 		$res1=mysql_query($sql);
 		$cpt=mysql_num_rows($res1);
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
-		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
+		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
+		if(isset($chaine_recherche)){
+			$sql.=" AND $chaine_recherche";
+			//echo "<!--$sql-->\n";
+		}
+		$sql.=" ORDER BY e.nom,e.prenom";
 		$res1=mysql_query($sql);
 		$cpt=mysql_num_rows($res1);
 	}
@@ -429,7 +448,7 @@ else{
 		require("../lib/footer.inc.php");
 		die();
 	}
-}
+//}
 
 //echo "cpt=$cpt<br />";
 
@@ -454,6 +473,7 @@ elseif(($order_by=="nom,prenom")&&("$num_resp"=="ele")) {
 if($chaine_info_recherche!=""){
 	echo "<br />dont ".$chaine_info_recherche;
 }
+echo "(<span style='font-weight:normal; font-style:italic;'>effectif: $cpt</span>)";
 echo ".</p>\n";
 
 
@@ -557,28 +577,64 @@ if($num_resp==0){
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom'";
+	if($val_rech==""){
+		echo " checked";
+	}
+	else{
+		if($crit_rech=="nom"){
+			echo " checked";
+		}
+	}
+	echo " /> nom\n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom'";
+	if($val_rech!=""){
+		if($crit_rech=="prenom"){
+			echo " checked";
+		}
+	}
+	echo " /> prénom\n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient'";
+	if($val_rech==""){
+		echo " checked";
+	}
+	else{
+		if($mode_rech=="contient"){
+			echo " checked";
+		}
+	}
+	echo " /> contient \n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par'";
+	if($val_rech!=""){
+		if($mode_rech=="commence par"){
+			echo " checked";
+		}
+	}
+	echo " /> commence par \n";
 	echo "</label>\n";
 	echo "<br />\n";
 	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par'";
+	if($val_rech!=""){
+		if($mode_rech=="se termine par"){
+			echo " checked";
+		}
+	}
+	echo " /> se termine par \n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='val_rech' value='' />\n";
+	echo "<input type='text' name='val_rech' value='$val_rech' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -607,6 +663,7 @@ else{
 	echo "<td>\n";
 	echo " ceux dont le \n";
 	echo "</td>\n";
+/*
 	echo "<td>\n";
 	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
 	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
@@ -634,9 +691,78 @@ else{
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+*/
+	echo "<td>\n";
+	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom'";
+	if($val_rech==""){
+		echo " checked";
+	}
+	else{
+		if($crit_rech=="nom"){
+			echo " checked";
+		}
+	}
+	echo " /> nom\n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom'";
+	if($val_rech!=""){
+		if($crit_rech=="prenom"){
+			echo " checked";
+		}
+	}
+	echo " /> prénom\n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient'";
+	if($val_rech==""){
+		echo " checked";
+	}
+	else{
+		if($mode_rech=="contient"){
+			echo " checked";
+		}
+	}
+	echo " /> contient \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par'";
+	if($val_rech!=""){
+		if($mode_rech=="commence par"){
+			echo " checked";
+		}
+	}
+	echo " /> commence par \n";
+	echo "</label>\n";
+	echo "<br />\n";
+	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
+	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par'";
+	if($val_rech!=""){
+		if($mode_rech=="se termine par"){
+			echo " checked";
+		}
+	}
+	echo " /> se termine par \n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' name='val_rech' value='$val_rech' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 	echo "<center><input type='submit' value='Valider' /></center>\n";
 	echo "</div>\n";
 	echo "</div>\n";
+}
+if($val_rech!=""){
+	echo "<script type='text/javascript'>
+	document.getElementById('div_rech').style.display='';
+</script>\n";
 }
 flush();
 
@@ -720,6 +846,8 @@ if("$num_resp"=="0"){
 		}
 	}
 </script>\n";
+
+		//echo "<p align='center'>Effectif: ".mysql_num_rows($res1)."</p>\n";
 
 		echo "<table class='boireaus' align='center'>\n";
 
