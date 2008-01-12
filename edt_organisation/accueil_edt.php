@@ -24,5 +24,6 @@ if ($_SESSION["statut"] == "administrateur") {
 		</p>
 	';
 }
+else{}
 
 
