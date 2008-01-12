@@ -40,70 +40,86 @@ if (!checkAccess()) {
     die();
 }
 
-
 //On vérifie si le module est activé
 if (getSettingValue("active_module_msj")!='y') {
     die("Le module n'est pas activé.");
 }
 
-  include('../lib/fonction_dossier.php');
-  include('../lib/pclzip.lib.php');
-  include('../lib/pcltar.lib.php');
-  include('../lib/pcltrace.lib.php');
-  include('../lib/pclerror.lib.php');
-
+	include('../lib/fonction_dossier.php');
+/*
+	include('../lib/pclzip.lib.php');
+	include('../lib/pcltar.lib.php');
+	include('../lib/pcltrace.lib.php');
+	include('../lib/pclerror.lib.php');
+*/
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
- if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
- if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {$uid_post='';}
-    else { if (isset($_GET['uid_post'])) {$uid_post=$_GET['uid_post'];} if (isset($_POST['uid_post'])) {$uid_post=$_POST['uid_post'];} }
+if(empty($_SESSION['uid_prime'])) {
+	$_SESSION['uid_prime']='';
+}
+if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {
+	$uid_post='';
+}else {
+	$uid_post = isset($_GET['uid_post']) ? $_GET['uid_post'] : (isset($_POST['uid_post']) ? $_POST['uid_post'] : NULL);
+}
 	$uid = md5(uniqid(microtime(), 1));
-	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
-	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
-	// variable à connaître
-	$site_de_miseajour = getSettingValue('site_msj_gepi');
+		// on remplace les %20 par des espaces
+		$uid_post = eregi_replace('%20',' ',$uid_post);
+		// et on vérifie si les deux infos sont identiques ou pas avant de savoir si le formulaire a été validé ou pas
+		if($uid_post===$_SESSION['uid_prime']) {
+			$valide_form = 'yes';
+		} else {
+			$valide_form = 'no';
+		}
 
-    if (empty($_GET['maj_logiciel']) AND empty($_POST['maj_logiciel'])) {$maj_logiciel='';}
-     else { if (isset($_GET['maj_logiciel'])) {$maj_logiciel=$_GET['maj_logiciel'];} if (isset($_POST['maj_logiciel'])) {$maj_logiciel=$_POST['maj_logiciel'];} }
-    if (empty($_GET['maj_fichier']) AND empty($_POST['maj_fichier'])) {$maj_fichier='';}
-     else { if (isset($_GET['maj_fichier'])) {$maj_fichier=$_GET['maj_fichier'];} if (isset($_POST['maj_fichier'])) {$maj_fichier=$_POST['maj_fichier'];} }
-    if (empty($_GET['maj_type']) AND empty($_POST['maj_type'])) {$maj_type='';}
-     else { if (isset($_GET['maj_type'])) {$maj_type=$_GET['maj_type'];} if (isset($_POST['maj_type'])) {$maj_type=$_POST['maj_type'];} }
-    if (empty($_GET['tableau_select']) AND empty($_POST['tableau_select'])) {$tableau_select='';}
-     else { if (isset($_GET['tableau_select'])) {$tableau_select=$_GET['tableau_select'];} if (isset($_POST['tableau_select'])) {$tableau_select=$_POST['tableau_select'];} }
-    if(!isset($_SESSION['message_traitement'])) { $message_traitement=''; } else { $message_traitement=$_SESSION['message_traitement']; }
-    if(!isset($_SESSION['message_erreur'])) { $message_erreur=''; } else { $message_erreur=$_SESSION['message_erreur']; }
-
-		if(empty($_POST['source_fichier_select'])) { $source_fichier_select=''; } else {$source_fichier_select=$_POST['source_fichier_select']; }
-		if(empty($_POST['nom_fichier_select'])) { $nom_fichier_select=''; } else {$nom_fichier_select=$_POST['nom_fichier_select']; }
-		if(empty($_POST['emplacement_fichier_select'])) { $emplacement_fichier_select=''; } else {$emplacement_fichier_select=$_POST['emplacement_fichier_select']; }
-		if(empty($_POST['date_fichier_select'])) { $date_fichier_select=''; } else {$date_fichier_select=$_POST['date_fichier_select']; }
-		if(empty($_POST['heure_fichier_select'])) { $heure_fichier_select=''; } else {$heure_fichier_select=$_POST['heure_fichier_select']; }
-		if(empty($_POST['md5_fichier_select'])) { $md5_fichier_select=''; } else {$md5_fichier_select=$_POST['md5_fichier_select']; }
-
-	$affiche_info_rc=''; $affiche_info_beta='';
-
-$ligne=''; $ligne2='';
-$version_stable=''; $version_rc=''; $version_beta='';
-
+// =========== variable à connaître et à initialiser ========
+$site_de_miseajour = getSettingValue('site_msj_gepi');
 	//information FTP
-	$dossier_ftp_gepi = getSettingValue("dossier_ftp_gepi");
-	
+$dossier_ftp_gepi = getSettingValue("dossier_ftp_gepi");
+$affiche_info_rc='';
+$affiche_info_beta='';
+$ligne='';
+$ligne2='';
+$version_stable='';
+$version_rc='';
+$version_beta='';
+
+$maj_logiciel = isset($_GET["maj_logiciel"]) ? $_GET["maj_logiciel"] : (isset($_POST["maj_logiciel"]) ? $_POST["maj_logiciel"] : NULL);
+$maj_fichier = isset($_GET["maj_fichier"]) ? $_GET["maj_fichier"] : (isset($_POST["maj_fichier"]) ? $_POST["maj_fichier"] : NULL);
+$maj_type = isset($_GET["maj_type"]) ? $_GET["maj_type"] : (isset($_POST["maj_type"]) ? $_POST["maj_type"] : NULL);
+$tableau_select = isset($_GET["tableau_select"]) ? $_GET["tableau_select"] : (isset($_POST["tableau_select"]) ? $_POST["tableau_select"] : NULL);
+$source_fichier_select = isset($_POST["source_fichier_select"]) ? $_POST["source_fichier_select"] : NULL;
+$nom_fichier_select = isset($_POST["nom_fichier_select"]) ? $_POST["nom_fichier_select"] : NULL;
+$emplacement_fichier_select = isset($_POST["emplacement_fichier_select"]) ? $_POST["emplacement_fichier_select"] : NULL;
+$date_fichier_select = isset($_POST["date_fichier_select"]) ? $_POST["date_fichier_select"] : NULL;
+$heure_fichier_select = isset($_POST["heure_fichier_select"]) ? $_POST["heure_fichier_select"] : NULL;
+$md5_fichier_select = isset($_POST["md5_fichier_select"]) ? $_POST["md5_fichier_select"] : NULL;
+$message_traitement = isset($_SESSION["message_traitement"]) ? $_SESSION["message_traitement"] : NULL;
+$message_erreur = isset($_SESSION["message_erreur"]) ? $_SESSION["message_erreur"] : NULL;
+
+//$ = isset($_GET[""]) ? $_GET[""] : (isset($_POST[""]) ? $_POST[""] : NULL);
+//if(empty($_POST['source_fichier_select'])) { $source_fichier_select=''; } else {$source_fichier_select=$_POST['source_fichier_select']; }
+
+// =============== header ========
+$style_specifique = "mod_miseajour/lib/style_maj";
+$javascript_specifique = "mod_miseajour/lib/javascript_maj";
+
+require_once("../../lib/header.inc");
+
 //on recherche le fichier de mise à jour sur le site du principal
-if(url_exists($site_de_miseajour."version.msj"))
-{
-	    if (!$fp = fopen($site_de_miseajour."version.msj","r"))
- 	     {
-		   // impossible d'ouvrire le fichier de mise à jour
-		   $_SESSION['message_erreur'] = "Impossible d'ouvrir le fichier d'information de mise à jour";
-		   header("Location: fenetre.php?maj_type=".$maj_type);
-	      } else {
-			  while (!feof($fp)) { //on parcourt toutes les lignes
-			        $ligne .= fgets($fp, 4096); // lecture du contenu de la ligne
-			  }
-	   	          fclose($fp);
+if(url_exists($site_de_miseajour."version.msj")) {
+
+	if (!$fp = fopen($site_de_miseajour."version.msj","r")) {
+		// impossible d'ouvrire le fichier de mise à jour
+		$_SESSION['message_erreur'] = "Impossible d'ouvrir le fichier d'information de mise à jour";
+		header("Location: fenetre.php?maj_type=".$maj_type);
+	} else {
+		while (!feof($fp)) {
+			//on parcourt toutes les lignes
+			$ligne .= fgets($fp, 4096); // lecture du contenu de la ligne
+		}
+		fclose($fp);
 
 			$ereg = eregi("<info>(.*)</info>",$ligne,$stable_serveur);
 				$erega = eregi("<changelog>(.*)</changelog>",$stable_serveur[1],$changelog);
@@ -142,40 +158,40 @@ if(url_exists($site_de_miseajour."version.msj"))
 $nouvelle_stable = 'non';
 $texte_stable='pas de version stable disponible actuellement';
 if($version_stable_serveur[1]>$version_stable_client[1]) {
-		$texte_stable = 'une nouvelle version stable est disponible';		
+		$texte_stable = 'une nouvelle version stable est disponible';
 		$nouvelle_stable = 'oui';
 } elseif($version_stable_serveur[1]===$version_stable_client[1]) {
-		$texte_stable = 'votre version est à jour';	
+		$texte_stable = 'votre version est à jour';
 } elseif($version_stable_serveur[1]<$version_stable_client[1]) {
 		$texte_stable = 'vous avez une version supérieur à celle disponible';
 }
 
 // version rc
 if($affiche_info_rc==='oui')
-{ 
+{
 $nouvelle_rc = 'non';
 $texte_rc='pas de version RC disponible actuellement';
 $rc_version = explode('/', $version_rc_serveur[1]);
-if($rc_version[0]>$version_stable_client[1] or $rc_version[0]===$version_stable_client[1]) 
+if($rc_version[0]>$version_stable_client[1] or $rc_version[0]===$version_stable_client[1])
  {
 	if($rc_version[1]>$version_rc_client[1] and $rc_version[1]!='0') {
 		$texte_rc = 'une nouvelle version RC est disponible';
 		$nouvelle_rc = 'oui';
 	} elseif($rc_version[1]===$version_rc_client[1]) {
-		$texte_rc = 'votre version RC est à jour';	
+		$texte_rc = 'votre version RC est à jour';
 	} elseif($rc_version[1]<$version_rc_client[1]) {
-		$texte_rc = 'vous avez une version supérieur à celle disponible';	
+		$texte_rc = 'vous avez une version supérieur à celle disponible';
 	}
  } else { $texte_rc = 'aucune version RC disponible actuellement'; }
 }
-	
+
 // version beta
 if($affiche_info_beta==='oui')
-{ 
+{
 $nouvelle_beta = 'non';
 $texte_beta='pas de version BETA disponible actuellement';
 $beta_version = explode('/', $version_beta_serveur[1]);
-if($beta_version[0]>$version_stable_client[1] or $beta_version[0]===$version_stable_client[1]) 
+if($beta_version[0]>$version_stable_client[1] or $beta_version[0]===$version_stable_client[1])
  {
 	if($beta_version[1]>$version_beta_client[1] and $beta_version[1]!='0') {
 		$texte_beta = 'une nouvelle version BETA est disponible';
@@ -183,7 +199,7 @@ if($beta_version[0]>$version_stable_client[1] or $beta_version[0]===$version_sta
 	} elseif($beta_version[1]===$version_beta_client[1]) {
 		$texte_beta = 'votre version BETA à jour';
 	} elseif($beta_version[1]<$version_beta_client[1]) {
-		$texte_beta = 'vous avez une version supérieur à celle disponible';	
+		$texte_beta = 'vous avez une version supérieur à celle disponible';
 	}
  } else { $texte_beta = 'aucune version BETA disponible actuellement'; }
  if( $rc_version[0]!='' ) { $nouvelle_beta='non'; }
@@ -244,7 +260,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 	$rep_de_miseajour='../../documents/msj_temp/';
 	if (!is_dir($rep_de_miseajour))
 	 {
-		$old = umask(0000); 
+		$old = umask(0000);
 		mkdir($rep_de_miseajour, 0777);
 		chmod($rep_de_miseajour, 0777);
 		umask($old);
@@ -252,7 +268,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 
 
 	// on copie l'archive du logiciel à jour dans le dossier des mise à jour
-	$old = umask(0000); 
+	$old = umask(0000);
 	if(!url_exists($file))
          {
 	   // le téléchargement n'a pas réussi car le fichier de mise à jour n'est pas présent
@@ -260,7 +276,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
            header("Location: fenetre.php?maj_type=".$maj_type);
 	 } else {
 		  // le fichier existe on le copie
-		  if (!copy($file, $newfile)) 
+		  if (!copy($file, $newfile))
                   {
 		    // le téléchargement n'a pas réussi echec de connection au serveur de mise à jour
 		    $_SESSION['message_erreur'] = "La copie du fichier $file n'a pas réussi...";
@@ -278,7 +294,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 			     } else {
 				      // si le md5 est bon on continue la mise à jour
 				      // on décompresse le fichier
-				      if(!class_exists("PclZip")) 
+				      if(!class_exists("PclZip"))
    				      {
 					// si il manque la bilbliothèque on donne un message d'erreur
 					$_SESSION['message_erreur'] = "il manque la bibliothèque de décompression des fichiers";
@@ -302,7 +318,7 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 						      $old = umask(0000);
 						      $dossier_destination[0]=$destination;
 						      supprimer_rep($dossier_destination);
-						      // puis on le recret
+						      // puis on le recrée
 						      mkdir($destination, 0777);
 					              umask($old);
 
@@ -348,152 +364,13 @@ if($maj_logiciel==='oui' and $valide_form==='yes')
 						   $_SESSION['message_traitement'] = 'mise à jour terminée ! Pensez à vous déconnecter et vous reconnecter en administrateur après cette mise à jour';
 						   $_SESSION['message_erreur'] = '';
 				 		   header("Location: fenetre.php?maj_type=".$maj_type);
-					       }	   
+					       }
 		                     }
 			  }
 	         }
 }
-
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="fr">
-<head>
-<title>Mise à jour de GEPI</title>
-<meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-<META HTTP-EQUIV="Expires" CONTENT="0" />
-<link rel="stylesheet" type="text/css" href="../../style.css" />
 
-<script type="text/javascript">
-//******************************************************************************
-//   Composant de barre d'attente - jsWait
-//   Vincent Fiack - 18/03/2003
-//*******************************************************************************/
-    
-document.writeln('<div id="jsWaitMessage" style="font-family: Verdana; font-size: 10px; text-align: center; padding: 3px; position: absolute; left: 30%; top: 40%; height: 20px; width: 300px; z-index:3"><\/div>');
-document.writeln('<div id="jsWaitArea" style="display: none; position: absolute; left: 30%; top: 40%; height: 20px; width: 300px; border: 1px black solid; background: #DFF1FF;z-index:2">');
-document.writeln('<div id="jsWaitBlock" style="position: relative; left: 0px; height: 20px; width: 50px; background: #4A57EF;z-index:2"><\/div>' );
-document.writeln('<\/div>');
- 
-jsWait_defaultInstance = null;
- 
-function showWait(message)
-{
- jsWait_defaultInstance = new jsWait('jsWait_defaultInstance', message);
- jsWait_defaultInstance.show();
-}
- 
-// -------------------------------------------
-//        Définition du type jsWait
-// -------------------------------------------
- 
-/**
-* Constructeur
-* @param name le nom du composant
-* @param message le message a afficher
-*/
-function jsWait(name, message)
-{
- this.name = name;
- this.message = message;
- this.speed = 10;
- this.direction = 2;
- 
- this.waiting = false;
- 
- this.divMessage = document.getElementById("jsWaitMessage" );
- this.divArea = document.getElementById("jsWaitArea" );
- this.divBlock = document.getElementById("jsWaitBlock" );
-}
- 
- 
-// -------------------------------------------
-//        Méthodes publiques
-// -------------------------------------------
- 
-jsWait.prototype.show = function()
-{
- this.divMessage.innerHTML = this.message;
- this.divMessage.style.display = "block";
- this.divArea.style.display = "block";
- this.divBlock.style.display = "block";
- this.divBlock.style.left = "0px";
- this.waiting = true;
- this.loop();
-}
- 
-jsWait.prototype.setMessage = function(message)
-{
- this.message = message;
- this.divMessage.innerHTML = this.message;
-}
- 
-jsWait.prototype.stop = function()
-{
- this.waiting = false;
- this.divMessage.style.display = "none";
- this.divArea.style.display = "none";
- this.divBlock.style.display = "none";
-}
- 
- 
-// -------------------------------------------
-//        Méthodes privées
-// -------------------------------------------
- 
-jsWait.prototype.loop = function()
-{
- myLeft = this.divBlock.style.left;
- myLeft = myLeft.substring(0, myLeft.length-2);
- intLeft = parseInt(myLeft);
- 
- if(intLeft >= 250)
-   this.direction = -2;
- if(intLeft <= 0)
-   this.direction = 2;
- 
- myLeft = "" + (intLeft+this.direction) + "px";
- this.divBlock.style.left = myLeft;
- 
- if(this.waiting)
-   setTimeout(this.name + ".loop()", this.speed);
-} 
-
-function fermeFenetre() {
-  window.open('','_parent','');
-  window.close();
-}
-
-</script>
-<style type="text/css">
-/* affichage si erreur */
-.erreur {
-    color: #FFFFFF;
-    font: normal 10pt Arial;
-    text-align: center;
-}
-
-.info {
-    color: #FFFFFF;
-    font: normal 10pt Arial;
-    text-align: center;
-}
-
-.table_erreur {
-    width: 500px;
-    margin: auto;
-    background: #FF0022;
-}
-
-.table_info {
-    width: 500px;
-    margin: auto;
-    background: #0075FF;
-}
-</style>
-</head>
-<body bgcolor="#FFFFFF">
 <center>
 <h2>Syst&egrave;me de mise &agrave; jour du logiciel</h2>
 <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #5A7ACF;  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
@@ -528,7 +405,7 @@ while(!empty($donne_fichier['nom_fichier'][$nb_a])) { ?>
 	   if(!empty($info_fichier_base[$identitification]['date']))
 	   {
 	       if($info_fichier_base[$identitification]['date']===$donne_fichier['date_fichier'][$nb_a])
-	        { 
+	        {
 	  	    if($info_fichier_base[$identitification]['heure']===$donne_fichier['heure_fichier'][$nb_a]) { $amettreajour='non'; $info_etat='version du fichier à jour'; }
   		    if($info_fichier_base[$identitification]['heure'] < $donne_fichier['heure_fichier'][$nb_a]) { $amettreajour='oui'; $info_etat='une mise à jour du fichier est disponible'; }
 		    if($info_fichier_base[$identitification]['heure'] > $donne_fichier['heure_fichier'][$nb_a]) { $amettreajour='non'; $info_etat='version du fichier à jour'; }
@@ -538,7 +415,8 @@ while(!empty($donne_fichier['nom_fichier'][$nb_a])) { ?>
 	   }
 	   if(empty($info_fichier_base[$identitification]['date']))
 	   {
-	     $amettreajour='oui'; $info_etat='une mise à jour du fichier est disponible';
+	     $amettreajour='oui';
+		 $info_etat='une mise à jour du fichier est disponible';
 	   }
 	?>
 	<?php if($amettreajour==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_fichier=oui&amp;maj_type=fichier" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><?php $tableau_select['source_fichier']['1'] = $donne_fichier['source_fichier'][$nb_a]; $tableau_select['nom_fichier']['1'] = $donne_fichier['nom_fichier'][$nb_a]; $tableau_select['emplacement_fichier']['1'] = $donne_fichier['emplacement_fichier'][$nb_a]; $tableau_select['date_fichier']['1'] = $donne_fichier['date_fichier'][$nb_a]; $tableau_select['heure_fichier']['1'] = $donne_fichier['heure_fichier'][$nb_a]; $tableau_select['md5_fichier']['1'] = $donne_fichier['md5_fichier'][$nb_a]; ?>
@@ -556,7 +434,7 @@ while(!empty($donne_fichier['nom_fichier'][$nb_a])) { ?>
 <?php $amettreajour='non'; $info_etat=''; $nb_a++; } ?>
 </div>
 
-<?php 
+<?php
 if($affiche_info_rc==='oui')
 { ?>
 <br />
@@ -580,13 +458,13 @@ if($affiche_info_rc==='oui')
 </div>
 <?php } ?>
 
-<?php 
+<?php
 if($affiche_info_beta==='oui')
 { ?>
 <br />
-<div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
-   <div style="border-style:solid; border-width:0px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin: 2px; font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #FFFFFF;">VERSION BETA</div>
-   <div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #FFFFFF;  padding: 6px; margin: 2px;">
+	<div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 0px;  text-align: left;">
+	<div style="border-style:solid; border-width:0px; border-color: #6F6968; background-color: rgb(255, 0, 0);  padding: 2px; margin: 2px; font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #FFFFFF;">VERSION BETA</div>
+	<div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #FFFFFF;  padding: 6px; margin: 2px;">
 	<?php if($nouvelle_beta==='oui') { ?><div style="margin: 0px; padding: 0px; float: right; border-style:solid; border-width:1px; border-color: #6F6968; height: 25px;"><form action="fenetre.php?maj_logiciel=oui&amp;maj_type=stable" method="post" onSubmit="showWait('Mise à jour en cours...')"><input type="hidden" name="donnee[]" value="" /><input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" /><input type="submit" value="Passer en BETA <?php echo $version_beta_serveur[1]; ?>" style="height: 25px; wight: auto;" onclick="return confirmlink(this,'Voulez vous le mettre à jour')" /></form></div><?php } ?>
 	<span style=" font-family: Helvetica,Arial,sans-serif; font-weight: bold; color: #000000;">Version BETA de GEPI a installer: <?php if($version_beta_client[1]!='') { echo 'BETA '.$version_beta_client[1]; } else { echo 'aucune'; } ?></span><br />
 	<span style="font-family: Helvetica,Arial,sans-serif; color: rgb(255, 0, 0); margin-left: 20px;"><?php echo $texte_beta; ?></span><br />
@@ -607,5 +485,16 @@ if($affiche_info_beta==='oui')
 </center>
 </body>
 </html>
-<?php } else { echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html lang="fr"><head><title>Erreur</title></head><body><br /><br /><br /><center><strong>mise à jour impossible</strong><br />le serveur de mise à jour n\'est pas disponible</center></body></html>'; } ?>
-<?php mysql_close(); ?>
+<?php }
+else {
+	echo '
+
+			<br /><br /><h3 class="center">Mise à jour impossible</h3>
+			<p class="center">le serveur de mise à jour n\'est pas disponible</p>
+		';
+}
+mysql_close();
+
+// Inclusion du footer
+require_once("../../lib/footer.inc.php");
+?>

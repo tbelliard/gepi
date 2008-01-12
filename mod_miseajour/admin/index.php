@@ -60,9 +60,13 @@ if (isset($_POST['activer_beta'])) {
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
-// header
+// ============= header ==============
+	// Inclusion du style spécifique
+$style_specifique = "/mod_miseajour/lib/style_maj";
+
 $titre_page = "Gestion du module de mise à jour";
 require_once("../../lib/header.inc");
+// ============= fin header ==========
 ?>
 <p class="bold">
 |<a href="../../accueil.php">Accueil</a>|
@@ -73,18 +77,53 @@ require_once("../../lib/header.inc");
 <p>Note : l'option 'allow_url_fopen' dans php.ini doit être à 'On' sur le serveur pour que ce module puisse fonctionner.</p>
 <br />
 <form action="index.php" name="form1" method="post">
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer le module de mise à jour de GEPI<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver le module de mise à jour de GEPI<br />
-<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions RC&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version RC sont des versions de test donc à ne jamais utiliser en production.</span></a>&nbsp;<input type="radio" name="activer_rc" value="y" <?php if (getSettingValue("rc_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_rc" value="n" <?php if (getSettingValue("rc_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver
-<br />&nbsp;&nbsp;&nbsp;&nbsp;Afficher les versions BETA&nbsp;<a class="info" style="font-weight: bold;">?<span style="width: 400px;">Attention les version BETA sont des versions de développement donc à ne jamais utiliser en production.</span></a>&nbsp;<input type="radio" name="activer_beta" value="y" <?php if (getSettingValue("beta_module_msj")=='y') echo ' checked="checked"'; ?> />&nbsp;Activer&nbsp;<input type="radio" name="activer_beta" value="n" <?php if (getSettingValue("beta_module_msj")=='n') echo ' checked="checked"'; ?> />&nbsp;Désactiver<br />
+	<p>
+	<input type="radio" id="activMaj" name="activer" value="y" <?php if (getSettingValue("active_module_msj")=='y') echo ' checked="checked"'; ?> />
+	<label for="activMaj">&nbsp;Activer le module de mise à jour de GEPI</label>
+	</p>
+	<p>
+	<input type="radio" id="desactiMaj" name="activer" value="n" <?php if (getSettingValue("active_module_msj")=='n') echo ' checked="checked"'; ?> />
+	<label for="desactiMaj">&nbsp;Désactiver le module de mise à jour de GEPI</label>
+	</p>
+<br />
+	<p>Par d&eacute;faut, seules les versions stables sont v&eacute;rifi&eacute;es, mais vous pouvez inclure les autres versions.</p>
+	<p class="decale">
+	Afficher les versions RC&nbsp;<a class="info" style="font-weight: bold;">?
+		<span style="width: 400px;">Attention les version RC sont des versions de test donc à ne jamais utiliser en production.</span></a>
+		<input type="radio" id="activRc" name="activer_rc" value="y" <?php if (getSettingValue("rc_module_msj")=='y') echo ' checked="checked"'; ?> />
+		<label for="actiRc">Activer</label>
+		<input type="radio" id="desactivRc" name="activer_rc" value="n" <?php if (getSettingValue("rc_module_msj")=='n') echo ' checked="checked"'; ?> />
+		<label for="desactivRc">Désactiver</label>
+	</p>
+	<p class="decale">
+	Afficher les versions BETA&nbsp;<a class="info" style="font-weight: bold;">?
+		<span style="width: 400px;">Attention les version BETA sont des versions de développement donc à ne jamais utiliser en production.</span></a>
+		<input type="radio" id="activBeta" name="activer_beta" value="y" <?php if (getSettingValue("beta_module_msj")=='y') echo ' checked="checked"'; ?> />
+		<label for="activBeta">Activer</label>
+		<input type="radio" id="desactivBeta" name="activer_beta" value="n" <?php if (getSettingValue("beta_module_msj")=='n') echo ' checked="checked"'; ?> />
+		<label for="desactivBeta">Désactiver</label>
+	</p>
+
 <h2>Information site de mise à jour de GEPI</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;Adresse du site internet de mise à jour de GEPI&nbsp;<input type="texte" name="site_msj_gepi" value="<?php echo getSettingValue("site_msj_gepi"); ?>" size="40" /><br />
+	<p class="decale">
+	<label for="siteMaj">Adresse du site internet de mise à jour de GEPI</label>
+	<input type="text" id="siteMaj" name="site_msj_gepi" value="<?php echo getSettingValue("site_msj_gepi"); ?>" size="40" />
+	</p>
+
 <h2>Information serveur FTP</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;Nom du dossier d'installation de GEPI sur le FTP utilisé&nbsp;<input type="texte" name="dossier_ftp_gepi" value="<?php echo getSettingValue("dossier_ftp_gepi"); ?>" size="20" />&nbsp; ex: gepi<br />
-<input type="hidden" name="is_posted" value="1" />
-<br /><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/>
+	<p class="decale">
+	<label for="dossierFtp">Nom du dossier d'installation de GEPI sur le FTP utilisé</label>
+	<input type="text" id="dossierFtp" name="dossier_ftp_gepi" value="<?php echo getSettingValue("dossier_ftp_gepi"); ?>" size="20" />&nbsp; ex: gepi
+	</p>
+	<p class="decale">
+	<input type="hidden" name="is_posted" value="1" />
+	<input type="submit" value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+</form>
+
 <br />
 
 <?php
 require_once("../../lib/footer.inc.php");
 ?>
+
