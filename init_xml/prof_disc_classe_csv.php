@@ -1,8 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* Last modification  : 09/08/2006
-* MODIF: boireaus AFFICHAGE DE COMMENTAIRES...
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

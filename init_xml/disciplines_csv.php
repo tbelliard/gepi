@@ -2,7 +2,7 @@
 
 @set_time_limit(0);
 /*
-* Last modification  : 07/05/2005
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
