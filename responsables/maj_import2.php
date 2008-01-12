@@ -1092,7 +1092,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			/*
@@ -2328,30 +2328,30 @@ else{
 				// Pas de nouveau:
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=$stop'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=$stop'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=y'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=9&amp;stop=$stop'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 						break;
 				}
 			}
 			else{
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=$stop'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=$stop'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=y'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6&amp;stop=$stop'>affectation des nouveaux élèves dans leurs classes</a>.</p>\n";
 						break;
 				}
 			}
@@ -4003,9 +4003,10 @@ else{
 
 				$nb_adr=mysql_num_rows($res1);
 
-				echo "<p>Les ".$nb_adr." adresses responsables vont être parcourues par tranches de 20 à la recherche de différences.</p>\n";
+				echo "<p>Les ".$nb_adr." adresses responsables vont être parcourues dans un premier temps à la recherche de nouvelles adresses.<br />\n";
+				echo "Ensuite, les adresses responsables existant préalablement vont être parcourues par tranches de 20 à la recherche de différences.</p>\n";
 
-				echo "<p>Parcours de la tranche <b>1</b>.</p>\n";
+				echo "<p>Recherche des nouvelles adresses, puis parcours de la tranche <b>1</b>.</p>\n";
 
 				// On construit une barre de 100 cellules pour faire les changements de couleurs au fur et à mesure du traitement et donner une indication de progression:
 				echo "<table align='center' style='border: 1px solid black;'>\n";
@@ -5145,7 +5146,7 @@ else{
 				echo "<p>Aucune modification n'a été confirmée/demandée.</p>\n";
 
 				// IL RESTE... les responsabilités
-				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 
 			}
 			else{
@@ -5573,7 +5574,7 @@ else{
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
-   echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
 			if(!isset($parcours_diff)){

@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
- * Last modification  : 11/05/2005
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * This file is part of GEPI.
