@@ -1,5 +1,8 @@
 <?php
-	// SI on ne souhaite pas utiliser les js de base, on enlève tout ce qui suit :
+/*
+ $Id$
+*/
+// SI on ne souhaite pas utiliser les js de base, on enlève tout ce qui suit :
 if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	echo "<!-- Pas de js en pied -->\n";
 } else {
@@ -36,6 +39,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	// Par exemple: la fonction cacher_div() utilisée plus bas teste cette variable pour ne tenter les opérations que si la variable est à 'ok'
 	echo "<script type='text/javascript'>
 	temporisation_chargement='ok';
+	//desactivation_infobulle='n';
 </script>\n";
 
 	if(isset($tabid_infobulle)){
