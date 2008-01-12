@@ -52,8 +52,8 @@ echo "</p>\n";
 
 echo "<p>Vous pouvez effectuer les mises à jour de deux façons:</p>\n";
 echo "<ul>\n";
-echo "<li><a href='maj_import1.php'>Méthode 1</a>: En générant des fichiers CSV à partir des fichiers XML de Sconet/STS.</li>\n";
-echo "<li><a href='maj_import2.php'>Méthode 2</a>: Nouvelle méthode, en fournissant directement les fichiers XML de Sconet/STS.</li>\n";
+echo "<li><a href='maj_import2.php'>Nouvelle méthode (<i>plus complète</i>)</a>: Nouvelle méthode, en fournissant directement les fichiers XML de Sconet/STS.</li>\n";
+echo "<li><a href='maj_import1.php'>Ancienne méthode</a>: En générant des fichiers CSV à partir des fichiers XML de Sconet/STS.</li>\n";
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 
@@ -69,7 +69,10 @@ else{
 		echo "<p>Tous vos responsables ont un identifiant 'pers_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
 	}
 	else{
-		echo "<p>Un ou des responsables ont un identifiant 'pers_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces responsables ne pourront pas être mis à jour automatiquement d'après Sconet.</p>";
+		echo "<p>Un ou des responsables ont un identifiant 'pers_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces responsables ne pourront pas être mis à jour automatiquement d'après Sconet.</p>\n";
+
+		echo "<p>Voir en <a href='#notes_correction'>bas de page</a> les possibilités de correction.</p>\n";
+
 		echo "<blockquote>\n";
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
@@ -178,6 +181,11 @@ else{
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
+
+		echo "<a name='notes_correction'></a>\n";
+		echo "<p>Si les ELE_ID ne sont pas corrects, mais que les ELENOET de la table 'eleves' correspondent bien à ceux du fichier 'ElevesSansAdresses.xml', vous vouvez corriger les 'ELE_ID' automatiquement dans la page suivante: <a href='corrige_ele_id.php'>Correction des ELE_ID</a></p>\n";
+
+		echo "</blockquote>\n";
 	}
 }
 // Il faudrait permettre de corriger l'ELE_ID et le PERS_ID
