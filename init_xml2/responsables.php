@@ -1,9 +1,7 @@
 <?php
 	@set_time_limit(0);
 
-	// Auteur: Stephane Boireau
-	// Dernière modification: 17/07/2007
-
+	// $Id$
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
