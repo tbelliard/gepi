@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 08/08/2006
+ $Id$
 */
 
 // On précise de ne pas traiter les données avec la fonction anti_inject

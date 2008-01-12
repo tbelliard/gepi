@@ -1,4 +1,7 @@
 <?php
+/*
+ $Id$
+*/
 	header("Content-type:image/png");
 
 	// On précise de ne pas traiter les données avec la fonction anti_inject

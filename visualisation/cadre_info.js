@@ -1,3 +1,6 @@
+/*
+* $Id$
+*/
 IE4 = (document.all) ? 1 : 0;
 NS4 = (document.layers) ? 1 : 0;
 moz = (document.getElementById) ? 1 : 0;

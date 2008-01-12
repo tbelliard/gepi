@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 06/06/2005
+ $Id$
 */
 require_once("../secure/connect.inc.php");
 require_once("../lib/global.inc");

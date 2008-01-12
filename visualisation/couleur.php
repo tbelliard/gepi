@@ -1,6 +1,6 @@
 <?php
 /*
-* Last modification  : 05/12/2006
+* $Id$
 *
 * Modification... Stephane Boireau
 *
