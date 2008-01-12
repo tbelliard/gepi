@@ -1,7 +1,7 @@
 <?php
 
 /*
-* $Id: consulter_absences.php 423 2007-05-14 15:25:48Z tbelliard $
+* $Id$
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

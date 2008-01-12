@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: index.php 171 2007-03-20 18:35:36Z eabgrall $
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
