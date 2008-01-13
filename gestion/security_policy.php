@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: security_policy.php 426 2007-05-15 07:22:00Z tbelliard $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

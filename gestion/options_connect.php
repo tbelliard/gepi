@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: options_connect.php 949 2007-11-01 14:38:20Z crob $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

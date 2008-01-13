@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: gestion_connect.php 1292 2007-12-30 18:14:49Z eabgrall $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

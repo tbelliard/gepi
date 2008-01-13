@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: modele_fiche_information.php 1331 2008-01-12 13:42:59Z crob $
+ *  $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

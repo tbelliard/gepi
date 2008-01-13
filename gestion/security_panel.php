@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: security_panel.php 1289 2007-12-29 18:18:04Z eabgrall $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

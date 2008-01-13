@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: accueil_sauve.php 1161 2007-11-29 18:09:01Z crob $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

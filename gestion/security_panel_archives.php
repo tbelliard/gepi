@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: security_panel.php 484 2007-05-27 05:52:37Z tbelliard $
+ * $Id$
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

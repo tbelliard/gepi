@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: index.php 1323 2008-01-10 21:28:50Z jjocal $
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
