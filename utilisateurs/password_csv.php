@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: password_csv.php 1241 2007-12-09 17:59:46Z eabgrall $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

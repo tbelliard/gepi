@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: mon_compte.php 1228 2007-12-08 16:58:37Z crob $
+* $Id$
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

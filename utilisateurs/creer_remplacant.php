@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: modify_user.php 125 2007-03-16 09:36:12Z tbelliard $
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

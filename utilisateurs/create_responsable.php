@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: create_responsable.php 978 2007-11-02 21:34:34Z crob $
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
