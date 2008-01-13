@@ -260,11 +260,12 @@ echo "<pre>\n";
 print_r($reg_professeurs);
 echo "</pre>\n";
 */
+
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //echo "\$_SERVER['HTTP_REFERER']=".$_SERVER['HTTP_REFERER']."<br />\n";
 
@@ -332,7 +333,15 @@ if ($mode == "groupe") {
     }
     echo "</select>\n";
     //echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."&mode=regroupement'>sélectionner plusieurs classes</a>]</p>\n";
-    echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sélectionner plusieurs classes</a>]</p>\n";
+    echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sélectionner plusieurs classes</a>]\n";
+
+	// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas déjà de notes,...
+	// ... NON: On fera le test sur les groupes à y associer seulement.
+	//          Ce sont les autres groupes qui seraient susceptibles de voir leurs notes disparaitre
+    echo "<br />[-> <a href='fusion_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."'>fusionner le groupe avec un ou des groupes existants</a>]";
+
+	echo "</p>\n";
+
 } else if ($mode == "regroupement") {
     echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
     echo "<p>Sélectionnez les classes auxquelles appartient le regroupement :";
@@ -378,6 +387,12 @@ if ($mode == "groupe") {
         echo "</tr>\n";
         echo "</table>\n";
 
+		// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas déjà de notes,...
+		// ... NON: On fera le test sur les groupes à y associer seulement.
+		//          Ce sont les autres groupes qui seraient susceptibles de voir leurs notes disparaitre
+		echo "<p>[-> <a href='fusion_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."'>fusionner le groupe avec un ou des groupes existants</a>]";
+
+		echo "</p>\n";
 
     } else {
         echo "<p>Aucune classe définie !</p>\n";
@@ -496,8 +511,8 @@ if(isset($chemin_retour)){
 echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 echo "</div>\n";
 echo "</div>\n";
+
+echo "</form>\n";
+
+require("../lib/footer.inc.php");
 ?>
-</form>
-</div>
-</body>
-</html>
