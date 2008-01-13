@@ -4,7 +4,7 @@
  * Fichier de traitement des demandes en ajax pour les aid
  *
  * @version $Id$
- * @copyright 2007
+ *
  */
 
 // Initialisation des variables

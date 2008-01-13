@@ -4,7 +4,7 @@
  * Document destiné à constituer les AID (élèves) en partant d'un lot de classes.
  *
  * @version $Id$
- * @copyright 2007
+ *
  */
 
 // Initialisation

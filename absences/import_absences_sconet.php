@@ -1,4 +1,8 @@
 <?php
+/*
+* @version: $Id$
+*/
+
 @set_time_limit(0);
 
 // Initialisations files
