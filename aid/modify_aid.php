@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: modify_aid.php 1333 2008-01-12 13:47:25Z crob $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
