@@ -1,4 +1,8 @@
 <?php
+/*
+* @version: $Id$
+*/
+
 function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {
     //============================
     // AJOUT: boireaus
@@ -167,7 +171,7 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //------
 }
 
- 
+
 function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {
     //============================
     // AJOUT: boireaus
@@ -275,7 +279,7 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
 		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 		echo "<span class='$style_bulletin'>$aid_note_moyenne</span></td>\n";
-		
+
 		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 		echo "<span class='$style_bulletin'>$aid_note_max</span></td>\n";
 	}
@@ -446,7 +450,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
 		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 		echo "<span class='$style_bulletin'>$aid_note_moyenne</span></td>\n";
-		
+
 		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 		echo "<span class='$style_bulletin'>$aid_note_max</span></td>\n";
 	}
@@ -468,9 +472,9 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 			echo $current_eleve_aid_statut;
 		}
 		echo "</b></span></td>\n";
-	
-	
-	
+
+
+
     } else {
 /*	//==========================
 	// MODIF: boireaus
@@ -485,7 +489,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 	}
 	//==========================
 	*/
-	
+
 	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
     }
     if ($affiche_graph == 'y')  {
@@ -509,16 +513,16 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         }
     }
     echo "$current_eleve_aid_appreciation</span></td>\n";
-		
+
 	if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
-	
+
 			if($min_max_moyclas!=1){
 			echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 			echo "<span class='$style_bulletin'>$aid_note_min</span></td>\n";
-	
+
 			echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 			echo "<span class='$style_bulletin'>$aid_note_moyenne</span></td>\n";
-			
+
 			echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
 			echo "<span class='$style_bulletin'>$aid_note_max</span></td>\n";
 		}
@@ -528,7 +532,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 			echo "$aid_note_moyenne<br />\n";
 			echo "$aid_note_max</span></td>\n";
 		}
-		
+
 	}
 	else {
     	if($min_max_moyclas!=1){
@@ -541,14 +545,14 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 			echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
 		}
     }
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	echo "</tr>\n";
     //------
 }
