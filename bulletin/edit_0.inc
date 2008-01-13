@@ -1,4 +1,8 @@
 <?php
+/*
+ * @version: $Id$
+ */
+
         // On initialise le tableau des notes et appréciations :
         echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 

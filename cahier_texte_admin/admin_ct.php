@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/04/2005
+ * @version: $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -102,7 +102,7 @@ if (isset($_POST['action'])) {
   $id_prop = $_POST['id_prop'];
 
   if ($_POST['action'] == 'change_groupe') {
-  	 $id_former_group = $_POST['id_former_group'];	
+  	 $id_former_group = $_POST['id_former_group'];
      $sql1 = sql_query("UPDATE ct_entry SET id_groupe='".$id_groupe."' WHERE (id_groupe='".$id_former_group."' and id_login='".$id_prop."')");
      $sql2 = sql_query("UPDATE ct_devoirs_entry SET id_groupe='".$id_groupe."' WHERE (id_groupe='".$id_former_group."' and id_login='".$id_prop."')");
      if (($sql1) and ($sql2)) {
@@ -166,14 +166,14 @@ if (isset($_GET['action'])) {
      echo "Propriétaire actuel : <b>".$nom_prof."</b></p>";
      echo "<p>Vous pouvez attribuer à ce cahier de texte un nouveau groupe.</p>";
      echo "<p>Choisissez la nouvelle classe : </p>";
-     
+
      $sql_groupe = sql_query("select g.id, g.name from groupes g, classes c, j_groupes_classes jc " .
      		"WHERE (".
      		"c.id = jc.id_classe and ".
 			"jc.id_groupe = g.id) " .
 			"order by c.classe");
-     
-     
+
+
      echo "<select name=\"id_groupe\" size=\"1\">";
      for ($i=0; ($row=sql_row($sql_groupe,$i)); $i++) {
         $new_id_groupe = $row[0];
@@ -266,7 +266,7 @@ if (!(isset($_GET['action']))) {
       	$classes .= $current_classe;
       	if ($c+1<$nb_classes) $classes .= ", ";
       }
-      
+
       if ($nom_groupe == "-1") $nom_groupe = "<font color='red'>Groupe inexistant</font>";
       $sql_prof = sql_query("select nom, prenom from utilisateurs where login = '".$id_prop."'");
       if (!($sql_prof)) {
