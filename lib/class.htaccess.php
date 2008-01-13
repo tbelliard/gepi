@@ -37,7 +37,7 @@
  *
  * @link http://www.open-publisher.net/
  * @author Armand Turpel <contact@open-publisher.net>
- * @version $Revision: 1.6 $
+ * @version $Revision$
  * @since 2003-05-09
  */
 class htaccess
