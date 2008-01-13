@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: gestion_absences.php 909 2007-10-26 07:33:11Z jjocal $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

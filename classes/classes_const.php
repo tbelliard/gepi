@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: classes_const.php 1271 2007-12-18 18:16:27Z crob $
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

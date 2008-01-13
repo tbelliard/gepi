@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: admin_motifs_absences.php 419 2007-05-14 13:52:32Z tbelliard $
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
