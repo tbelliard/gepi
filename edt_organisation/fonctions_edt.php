@@ -429,11 +429,15 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				$nbre_ens_1 = count($ens_tab);
 			if ($nbre_ens_1 === 0) {
 				$nbre_ens = 0;
-			} // 3 étant le nombre de périodes (il faudra changer cela)
-			else {
+			} else {
+				// 3 étant le nombre de périodes (il faudra changer cela)
 				$nbre_ens = ($nbre_ens_1/3);
-				$ens_tab[1] = isset($ens_tab[4]) ? $ens_tab[4] : NULL;
-				$ens_tab[2] = isset($ens_tab[6]) ? $ens_tab[6] : NULL;
+				$b = 0;
+				for($a = 1; $a < ($nbre_ens + 1); $a++) {
+					$b = $b+3;
+					$ens_tab[$a] = isset($ens_tab[$b]) ? $ens_tab[$b] : NULL;
+				}
+
 			}
 		} else {
 			$nbre_ens = count($ens_tab);
