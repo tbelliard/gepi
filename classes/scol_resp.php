@@ -47,6 +47,8 @@ CREATE TABLE `j_scol_classes` (
 );
 */
 
+$quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
+
 //if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	$msg = '';
@@ -134,54 +136,83 @@ if (isset($_GET['disp_filter'])) {
 	$disp_filter = "only_undefined";
 }
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
+
+echo "<form name='setScolResp' action='scol_resp.php?disp_filter=" . $disp_filter . "' method='post'>\n";
+
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'>";
+	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+	echo "</p>\n";
+}
+else{
+	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
+	// Après modification éventuelle, il faut quitter cette page.
+	echo "<p class='bold'>";
+	echo "<a href='index.php' onClick=\"if(confirm_abandon (this, change, '$themessage')){self.close()};return false;\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>";
+	echo "</p>\n";
+
+	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
+	// Il va falloir faire en sorte que la page destination tienne compte de la variable...
+}
 ?>
-<p class="bold"><a href="./index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <p>Affectez les classes aux comptes scolarité.</p>
 <!--p><a href="scol_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="scol_resp.php?disp_filter=only_undefined">Afficher les classes non-paramétrées</a></p-->
 <?php
-	echo "<form name='setScolResp' action='scol_resp.php?disp_filter=" . $disp_filter . "' method='post'>\n";
 
-	echo "<table border='1'>\n";
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus'>\n";
 	//#96C8F0
 	$ligne_comptes_scol="<tr style='background-color:#FAFABE;'>\n";
-	$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
+	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
+	$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>Comptes</th>\n";
 	$call_scol = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
 	$nb = mysql_num_rows($call_scol);
 	$i=0;
 	$scol_login=array();
 	while($lig_scol=mysql_fetch_object($call_scol)){
-		$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</td>\n";
+		//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</td>\n";
+		$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</th>\n";
 		$scol_login[$i]=$lig_scol->login;
 		$i++;
 	}
-	$ligne_comptes_scol.="<td>\n";
+	//$ligne_comptes_scol.="<td>\n";
+	//$ligne_comptes_scol.="&nbsp;\n";
+	//$ligne_comptes_scol.="</td>\n";
+	$ligne_comptes_scol.="<th>\n";
 	$ligne_comptes_scol.="&nbsp;\n";
-	$ligne_comptes_scol.="</td>\n";
+	$ligne_comptes_scol.="</th>\n";
 	$ligne_comptes_scol.="</tr>\n";
 	echo $ligne_comptes_scol;
 
 	echo "<tr style='background-color:#FAFABE;'>\n";
-	echo "<td style='text-align:center; font-weight:bold;'>Classes</td>\n";
+	//echo "<td style='text-align:center; font-weight:bold;'>Classes</td>\n";
+	echo "<th style='text-align:center; font-weight:bold;'>Classes</th>\n";
 	for($i=0;$i<$nb;$i++){
-		echo "<td style='text-align:center;'>\n";
+		//echo "<td style='text-align:center;'>\n";
+		echo "<th style='text-align:center;'>\n";
 
 		//echo "<a href='javascript:modif_case($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		echo "<a href=\"javascript:modif_case($i,true,'col')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href=\"javascript:modif_case($i,true,'col');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-		echo "<a href=\"javascript:modif_case($i,false,'col')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "<a href=\"javascript:modif_case($i,false,'col')changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 
 		echo "<input type='hidden' name='scol_login[$i]' value='$scol_login[$i]' />";
-		echo "</td>\n";
+		//echo "</td>\n";
+		echo "</th>\n";
 	}
-	echo "<td>\n";
+	//echo "<td>\n";
+	echo "<th>\n";
 	echo "&nbsp;\n";
-	echo "</td>\n";
+	//echo "</td>\n";
+	echo "</th>\n";
 	echo "</tr>\n";
 
 	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -190,27 +221,32 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	if ($nombre_lignes != 0) {
 		// Lignes classes...
 		$j=0;
+		$alt=1;
 		while($lig_clas=mysql_fetch_object($call_data)){
 			if(($j%10==0)&&$j>0){echo $ligne_comptes_scol;}
 
-			if($j%2==0){$bgcolor="style='background-color: gray;'";}else{$bgcolor='';}
-			echo "<tr $bgcolor>\n";
+			$alt=$alt*(-1);
+
+			//if($j%2==0){$bgcolor="style='background-color: gray;'";}else{$bgcolor='';}
+			//echo "<tr $bgcolor>\n";
+			echo "<tr class='lig$alt'>\n";
 			echo "<td style='text-align:center;'>";
 			echo "<input type='hidden' name='tab_id_clas[$j]' value='$lig_clas->id' />\n";
 			echo "$lig_clas->classe";
 			echo "</td>\n";
 			for($i=0;$i<$nb;$i++){
 				$test=mysql_query("SELECT 1=1 FROM j_scol_classes WHERE id_classe='".$lig_clas->id."' AND login='".$scol_login[$i]."'");
-				if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: #AAE6AA;";}
+				//if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: #AAE6AA;";}
+				if(mysql_num_rows($test)==0){$checked="";$bgcolor="";}else{$checked="checked ";$bgcolor="background-color: plum;";}
 
 				echo "<td style='text-align:center;$bgcolor'>\n";
-				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' $checked/>\n";
+				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' onchange='changement();' $checked/>\n";
 				echo "</td>\n";
 			}
 			echo "<td>\n";
-			echo "<a href=\"javascript:modif_case($j,true,'lig')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href=\"javascript:modif_case($j,true,'lig');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 			//echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
-			echo "<a href=\"javascript:modif_case($j,false,'lig')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href=\"javascript:modif_case($j,false,'lig');changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			$j++;

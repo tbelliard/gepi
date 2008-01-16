@@ -290,6 +290,7 @@ if(mysql_num_rows($res_class_tmp)>0){
 // =================================
 
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des élèves";
@@ -297,9 +298,6 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
-
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-
 
 ?>
 <form enctype="multipart/form-data" action="classes_const.php" method=post>
