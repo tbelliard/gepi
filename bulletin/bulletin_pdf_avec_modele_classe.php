@@ -3094,43 +3094,49 @@ $cpt_ordre = $cpt_ordre + 1;
 			$Y_decal = $Y_decal+($espace_entre_matier/2);
 			$pdf->SetXY($X_bloc_matiere, $Y_decal);
 			$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+
 			// nom des professeurs
-			$nb_prof_matiere = count($matiere[$ident_eleve_aff][$id_periode][$m]['prof']);
-			$espace_matiere_prof = $espace_entre_matier/2;
-			//$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
-			if($nb_prof_matiere>0){
-				$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
-			}
-			$nb_pass_count = '0';
-			$text_prof = '';
-			while ($nb_prof_matiere > $nb_pass_count)
+
+			if ( isset($matiere[$ident_eleve_aff][$id_periode][$m]['prof']) )
 			{
-				// calcule de la hauteur du caractère du prof
-				$text_prof = $matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count];
-				if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
-				elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
-				elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
-				$val = $pdf->GetStringWidth($text_prof);
-				$taille_texte = ($largeur_matiere[$classe_id]);
-				$grandeur_texte='test';
-				while($grandeur_texte!='ok') {
-					if($taille_texte<$val)
-					{
-						$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-						$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
-						$val = $pdf->GetStringWidth($text_prof);
-					} else { $grandeur_texte='ok'; }
+
+				$nb_prof_matiere = count($matiere[$ident_eleve_aff][$id_periode][$m]['prof']);
+				$espace_matiere_prof = $espace_entre_matier/2;
+				//$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+				if($nb_prof_matiere>0){
+					$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
 				}
-				$grandeur_texte='test';
-				$pdf->SetX($X_bloc_matiere);
-				if( empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-					$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
+				$nb_pass_count = '0';
+				$text_prof = '';
+				while ($nb_prof_matiere > $nb_pass_count)
+				{
+					// calcule de la hauteur du caractère du prof
+					$text_prof = $matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count];
+					if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
+					elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
+					elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+					$val = $pdf->GetStringWidth($text_prof);
+					$taille_texte = ($largeur_matiere[$classe_id]);
+					$grandeur_texte='test';
+					while($grandeur_texte!='ok') {
+						if($taille_texte<$val)
+						{
+							$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+							$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+							$val = $pdf->GetStringWidth($text_prof);
+						} else { $grandeur_texte='ok'; }
+					}
+					$grandeur_texte='test';
+					$pdf->SetX($X_bloc_matiere);
+					if( empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
+						$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
+					}
+					if( !empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
+						$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
+					}
+					$nb_pass_count = $nb_pass_count + 1;
 				}
-				if( !empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-					$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
-				}
-				$nb_pass_count = $nb_pass_count + 1;
 			}
 			//$pdf->Cell($largeur_matiere[$classe_id], $espace_entre_matier/3, $matiere[$ident_eleve_aff][$id_periode][$m]['prof'],'LRB',0,'L');
 			$largeur_utilise = $largeur_matiere[$classe_id];
