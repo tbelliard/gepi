@@ -3998,7 +3998,8 @@ else{
 			if(!isset($parcours_diff)){
 				echo "<p>On va commencer les comparaisons...</p>\n";
 
-				$sql="select adr_id from temp_resp_adr_import;";
+				//$sql="select adr_id from temp_resp_adr_import;";
+				$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import;";
 				$res1=mysql_query($sql);
 
 				$nb_adr=mysql_num_rows($res1);
@@ -4007,6 +4008,8 @@ else{
 				echo "Ensuite, les adresses responsables existant préalablement vont être parcourues par tranches de 20 à la recherche de différences.</p>\n";
 
 				echo "<p>Recherche des nouvelles adresses, puis parcours de la tranche <b>1</b>.</p>\n";
+
+				echo "<p><i>NOTE:</i> Il se peut, à ce stade, que des adresses non associées à des responsables soient détectées comme des différences.<br />Pour autant, elles ne seront pas prises en compte par la suite.</p>\n";
 
 				// On construit une barre de 100 cellules pour faire les changements de couleurs au fur et à mesure du traitement et donner une indication de progression:
 				echo "<table align='center' style='border: 1px solid black;'>\n";
@@ -4051,6 +4054,7 @@ else{
 					$sql="SELECT 1=1 FROM resp_adr ra WHERE ra.adr_id='$lig->adr_id'";
 					$test1=mysql_query($sql);
 
+					/*
 					$sql="SELECT 1=1 FROM resp_adr ra, temp_resp_adr_import t WHERE ra.adr_id=t.adr_id AND t.adr_id='$lig->adr_id'";
 					$test2=mysql_query($sql);
 					if((mysql_num_rows($test1)==0)||(mysql_num_rows($test2)==0)){
@@ -4065,7 +4069,7 @@ else{
 												tr.ele_id=e.ele_id";
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
-							//echo "<span style='color:blue;'> $lig->adr_id </span>";
+							echo "<span style='color:blue;'> $lig->adr_id </span>";
 							if($cpt>0){$chaine_nouveaux.=", ";}
 							$chaine_nouveaux.=$lig->adr_id;
 							echo "<input type='hidden' name='tab_adr_id_diff[]' value='$lig->adr_id' />\n";
@@ -4075,11 +4079,20 @@ else{
 							$tab_adr_id_diff[]=$lig->adr_id;
 							// Est-ce qu'il peut arriver qu'on ne fasse pas un tour dans la boucle de formulaire...
 						}
-						/*
 						else{
 							echo "<span style='color:red;'> $lig->adr_id </span>";
 						}
 						*/
+					if(mysql_num_rows($test1)==0) {
+						//echo "<span style='color:blue;'> $lig->adr_id </span>";
+						if($cpt>0){$chaine_nouveaux.=", ";}
+						$chaine_nouveaux.=$lig->adr_id;
+						echo "<input type='hidden' name='tab_adr_id_diff[]' value='$lig->adr_id' />\n";
+						$cpt++;
+
+						// Peut-être mettre:
+						$tab_adr_id_diff[]=$lig->adr_id;
+						// Est-ce qu'il peut arriver qu'on ne fasse pas un tour dans la boucle de formulaire...
 					}
 					else{
 						// Ce n'est pas une nouvelle adresse.
@@ -4102,6 +4115,7 @@ else{
 					}
 					echo "</script>\n";
 
+					flush();
 					$compteur++;
 				}
 				$time2=time();
@@ -4343,18 +4357,19 @@ else{
 							$insert=mysql_query($sql);
 						}
 					}
+					else{
+						$sql="SELECT DISTINCT pers_id FROM temp_resp_pers_import WHERE adr_id='$tab_adr_id_diff[$i]'";
+						$test=mysql_query($sql);
 
-					$sql="SELECT DISTINCT pers_id FROM temp_resp_pers_import WHERE adr_id='$tab_adr_id_diff[$i]'";
-					$test=mysql_query($sql);
-
-					if(mysql_num_rows($test)>0){
-						while($lig=mysql_fetch_object($test)){
-							$sql="INSERT INTO tempo2 SET col1='pers_id', col2='$lig->pers_id'";
-							$insert=mysql_query($sql);
+						if(mysql_num_rows($test)>0){
+							while($lig=mysql_fetch_object($test)){
+								$sql="INSERT INTO tempo2 SET col1='pers_id', col2='$lig->pers_id'";
+								$insert=mysql_query($sql);
+							}
 						}
+						// Les doublons importent peu.
+						// On fait des recherches en DISTINCT par la suite.
 					}
-					// Les doublons importent peu.
-					// On fait des recherches en DISTINCT par la suite.
 				}
 
 				echo "<input type='hidden' name='step' value='15' />\n";
@@ -4376,6 +4391,8 @@ else{
 			}
 			echo "</form>\n";
 
+
+			echo "<p><i>NOTE:</i> Il se peut, à ce stade, que des adresses non associées à des responsables soient détectées comme des différences.<br />Pour autant, elles ne seront pas prises en compte par la suite.</p>\n";
 
 			break;
 		case 15:
@@ -4496,6 +4513,7 @@ else{
 				//$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
 				$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Modifier<br />\n";
 				//$ligne_entete_tableau.="<th style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
+
 				$ligne_entete_tableau.="<a href=\"javascript:modifcase('coche')\">";
 				$ligne_entete_tableau.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				$ligne_entete_tableau.=" / ";
@@ -4523,6 +4541,11 @@ else{
 				// - sinon on indique 'Identifiant d adresse inchangé'
 				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Adresse</td>\n";
 				$ligne_entete_tableau.="</tr>\n";
+
+				$texte_infobulle="<center>La personne n'est associée à aucun élève.</center>";
+				$tabdiv_infobulle[]=creer_div_infobulle('nouveau_resp_sans_eleve',"","",$texte_infobulle,"",14,0,'y','y','n','n');
+
+				$liste_resp_sans_eleve="";
 
 				echo $ligne_entete_tableau;
 
@@ -4602,7 +4625,16 @@ else{
 							echo "<td class='nouveau'>Nouveau</td>\n";
 						}
 						else{
-							echo "<td style='background-color:orange;'>Nouveau</td>\n";
+							if($liste_resp_sans_eleve!=""){$liste_resp_sans_eleve.=",";}
+							//$liste_resp_sans_eleve.="'$pers_id'";
+							$liste_resp_sans_eleve.="'$cpt'";
+							echo "<td style='background-color:orange;'>";
+							echo "<a href='#' onmouseover=\"afficher_div('nouveau_resp_sans_eleve','y',-20,20);\"";
+							echo " onmouseout=\"cacher_div('nouveau_resp_sans_eleve')\" onclick=\"return false;\"";
+							echo ">";
+							echo "Nouveau<br />(*)";
+							echo "</a>";
+							echo "</td>\n";
 						}
 					}
 
@@ -5104,6 +5136,11 @@ else{
 				echo $ligne_entete_tableau;
 				echo "</table>\n";
 
+				if($liste_resp_sans_eleve!=""){
+					echo "<p>Une ou des personnes apparaissent comme nouvelles, mais ne sont associées à aucun élève (<i>ni dans l'actuelle table 'responsables2', ni dans la table temporaire 'temp_responsables2_import'</i>).<br />Pour ne cocher que les responsables réellement associés à des élèves, cliquez ici: <a href=\"javascript:modifcase2()\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher intelligemment' /></a></p>\n";
+				}
+
+
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
 		for(i=0;i<$cpt;i++){
@@ -5117,7 +5154,24 @@ else{
 			}
 		}
 	}
-</script>\n";
+";
+
+				if($liste_resp_sans_eleve!=""){
+					echo "	function modifcase2(){
+		modifcase('coche');
+
+		fauxresp=new Array($liste_resp_sans_eleve);
+
+		for(i=0;i<fauxresp.length;i++){
+			if(document.getElementById('check_'+fauxresp[i])){
+				document.getElementById('check_'+fauxresp[i]).checked=false;
+			}
+		}
+	}
+";
+				}
+
+				echo "</script>\n";
 
 				echo "<input type='hidden' name='step' value='15' />\n";
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
