@@ -57,6 +57,71 @@ echo "<li><a href='maj_import1.php'>Ancienne méthode</a>: En générant des fichie
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 
+$sql="SELECT 1=1 FROM eleves;";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0){
+	echo "<p>Aucun élève ne semble encore présent dans la base.</p>\n";
+}
+else{
+	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%';";
+	$res_ele=mysql_query($sql);
+
+	if(mysql_num_rows($res_ele)==0){
+		echo "<p>Tous vos élèves ont un identifiant 'ele_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
+	}
+	else{
+		echo "<p>Un ou des élèves ont un identifiant 'ele_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces élèves ne pourront pas être mis à jour automatiquement d'après Sconet.</p>";
+
+		echo "<p>Voir en <a href='#notes_correction'>sous le tableau</a> les possibilités de correction.</p>\n";
+
+		echo "<blockquote>\n";
+		echo "<table class='boireaus'>\n";
+		echo "<tr>\n";
+		echo "<th>Identifiant<br />'ele_id'</th>\n";
+		echo "<th>Login</th>\n";
+		echo "<th>Nom</th>\n";
+		echo "<th>Prénom</th>\n";
+		echo "<th>Classe</th>\n";
+		echo "</tr>\n";
+		$alt=1;
+		while($lig=mysql_fetch_object($res_ele)){
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>".$lig->ele_id."</td>\n";
+			echo "<td>".$lig->login."</td>\n";
+			echo "<td>".strtoupper($lig->nom)."</td>\n";
+			echo "<td>".ucfirst(strtolower($lig->prenom))."</td>\n";
+			echo "<td>\n";
+
+			$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login';";
+			$res_clas=mysql_query($sql);
+			if(mysql_num_rows($res_clas)==0){
+				echo "(<i><span style='color:red;'>aucune classe</span></i>)\n";
+			}
+			else{
+				$cpt_clas=0;
+				echo "(<i>";
+				while($lig3=mysql_fetch_object($res_clas)){
+					if($cpt_clas>0){echo ", \n";}
+					echo $lig3->classe;
+					$cpt_clas++;
+				}
+				echo "</i>)\n";
+			}
+
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+
+		echo "<a name='notes_correction'></a>\n";
+		echo "<p>Si les ELE_ID ne sont pas corrects, mais que les ELENOET de la table 'eleves' correspondent bien à ceux du fichier 'ElevesSansAdresses.xml', vous pouvez corriger les 'ELE_ID' automatiquement dans la page suivante: <a href='corrige_ele_id.php'>Correction des ELE_ID</a></p>\n";
+
+		echo "</blockquote>\n";
+	}
+}
+
+
 $sql="SELECT 1=1 FROM resp_pers;";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0){
@@ -70,8 +135,6 @@ else{
 	}
 	else{
 		echo "<p>Un ou des responsables ont un identifiant 'pers_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces responsables ne pourront pas être mis à jour automatiquement d'après Sconet.</p>\n";
-
-		echo "<p>Voir en <a href='#notes_correction'>bas de page</a> les possibilités de correction.</p>\n";
 
 		echo "<blockquote>\n";
 		echo "<table class='boireaus'>\n";
@@ -128,66 +191,7 @@ else{
 }
 
 
-$sql="SELECT 1=1 FROM eleves;";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0){
-	echo "<p>Aucun élève ne semble encore présent dans la base.</p>\n";
-}
-else{
-	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%';";
-	$res_ele=mysql_query($sql);
 
-	if(mysql_num_rows($res_ele)==0){
-		echo "<p>Tous vos élèves ont un identifiant 'ele_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
-	}
-	else{
-		echo "<p>Un ou des élèves ont un identifiant 'ele_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces élèves ne pourront pas être mis à jour automatiquement d'après Sconet.</p>";
-		echo "<blockquote>\n";
-		echo "<table class='boireaus'>\n";
-		echo "<tr>\n";
-		echo "<th>Identifiant<br />'ele_id'</th>\n";
-		echo "<th>Login</th>\n";
-		echo "<th>Nom</th>\n";
-		echo "<th>Prénom</th>\n";
-		echo "<th>Classe</th>\n";
-		echo "</tr>\n";
-		$alt=1;
-		while($lig=mysql_fetch_object($res_ele)){
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>".$lig->ele_id."</td>\n";
-			echo "<td>".$lig->login."</td>\n";
-			echo "<td>".strtoupper($lig->nom)."</td>\n";
-			echo "<td>".ucfirst(strtolower($lig->prenom))."</td>\n";
-			echo "<td>\n";
-
-			$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login';";
-			$res_clas=mysql_query($sql);
-			if(mysql_num_rows($res_clas)==0){
-				echo "(<i><span style='color:red;'>aucune classe</span></i>)\n";
-			}
-			else{
-				$cpt_clas=0;
-				echo "(<i>";
-				while($lig3=mysql_fetch_object($res_clas)){
-					if($cpt_clas>0){echo ", \n";}
-					echo $lig3->classe;
-					$cpt_clas++;
-				}
-				echo "</i>)\n";
-			}
-
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
-
-		echo "<a name='notes_correction'></a>\n";
-		echo "<p>Si les ELE_ID ne sont pas corrects, mais que les ELENOET de la table 'eleves' correspondent bien à ceux du fichier 'ElevesSansAdresses.xml', vous vouvez corriger les 'ELE_ID' automatiquement dans la page suivante: <a href='corrige_ele_id.php'>Correction des ELE_ID</a></p>\n";
-
-		echo "</blockquote>\n";
-	}
-}
 // Il faudrait permettre de corriger l'ELE_ID et le PERS_ID
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

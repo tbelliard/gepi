@@ -38,12 +38,12 @@ if ($resultat_session == 'c') {
 };
 
 // INSERT INTO `droits` VALUES ('/responsables/corrige_ele_id.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction des ELE_ID d apres Sconet', '');
-/*
+
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-*/
+
 
 function extr_valeur($lig){
 	unset($tabtmp);
@@ -205,10 +205,11 @@ if(!isset($step)) {
 	echo "<p><i>NOTE:</i> Après une phase d'analyse, les corrections seront proposées.</p>\n";
 }
 else{
-
+	/*
 	if($step>0){
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Correction des ELE_ID d'apres Sconet</a>";
 	}
+	*/
 	echo "</p>\n";
 
 
