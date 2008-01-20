@@ -69,9 +69,25 @@ case "envoi":
 	$message.="\n".$corps_message."\n";
 
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
+		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
+		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email (<a href='mailto:$email_reponse'>$email_reponse</a>).");
+		$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email ($email_reponse).");
 	} else {
-		$message .= "\n\nMode de réponse : par email (si spécifié)";
+		$message .= "\n\nMode de réponse : par email ";
+		if($email_reponse!="") {
+			//$message.="(<a href='mailto:$email_reponse'>$email_reponse</a>)";
+			$message.="($email_reponse)";
+		}
+		else{
+			$message.="(si spécifié)";
+		}
+	}
+
+	// On ne devrait pas POSTer l'identité, mais plutôt la lire de la SESSION...
+	// ... ajout d'un test...
+	if("$nama"!=$_SESSION['prenom']." ".$_SESSION['nom']){
+		$message.="\n\n";
+		$message.="Bizarrerie: L'identité POSTée est: $nama\n            Et l'identité de connexion est: ".$_SESSION['prenom']." ".$_SESSION['nom'];
 	}
 
 	// ===============
@@ -97,23 +113,30 @@ case "envoi":
 		"Demande d'aide dans GEPI",
 		$message,
 	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress)."\r\n"
-	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
+	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\nCc: $nama <$email_reponse>\r\n" :"")
 	."X-Mailer: PHP/" . phpversion());
 
 	if ($envoi) {
-		echo "<br><br><br><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br>une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br><br><br><a href=\"javascript:self.close();\">Fermer</a></p>";
+		echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>\n";
 	} else {
-		echo "<br><br><br><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
+		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>\n";
 	}
 	break;
 default://formulaire d'envoi
 	echo "<table cellpadding='5'>";
-	echo "<tr><td>Message posté par :</td><td><b>".$_SESSION['prenom'] . " " . $_SESSION['nom']."</b></td></tr>";
-	echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
+	echo "<tr><td>Message posté par :</td><td><b>".$_SESSION['prenom'] . " " . $_SESSION['nom']."</b></td></tr>\n";
+	echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
 
-	echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
-	echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b> ou bien rédigez votre message ci-dessous : </td><td></tr>";
-	echo "</table>";
+	echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
+
+	if(getSettingValue("gepiAdminAdressFormHidden")!="y"){
+		echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b> ou bien rédigez votre message ci-dessous : </td><td></tr>\n";
+	}
+	else{
+		echo "<tr><td colspan=2>Rédigez votre message ci-dessous : </td><td></tr>\n";
+	}
+
+	echo "</table>\n";
 	?>
 	<form action="contacter_admin.php" method="post" name="doc">
 	<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
