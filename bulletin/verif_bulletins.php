@@ -200,10 +200,29 @@ if (!(isset($id_classe))) {
 
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
-	echo "<th>Vérifier</th>\n";
+	echo "<th rowspan='2'>Vérifier</th>\n";
 	$i=1;
 	while ($i < $nb_periode) {
 		echo "<th>".ucfirst($nom_periode[$i])."</th>\n";
+		$i++;
+	}
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	//echo "<th>Vérifier</th>\n";
+	$i=1;
+	while ($i < $nb_periode) {
+		echo "<th>";
+		echo "<span style='font-size:x-small;'>";
+		if ($ver_periode[$i] == "P")  {
+			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+		} else if ($ver_periode[$i] == "O")  {
+			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+		} else {
+			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+		}
+		echo "</span>\n";
+		echo "</th>\n";
 		$i++;
 	}
 	echo "</tr>\n";
@@ -231,7 +250,9 @@ if (!(isset($id_classe))) {
 	while ($i < $nb_periode) {
 
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=note_app'>";
-		echo "<img src='../images/icons/chercher.png' width='16' height='16' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a><br />\n";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		/*
+		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
 			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
@@ -241,6 +262,7 @@ if (!(isset($id_classe))) {
 			echo " (période ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
+		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -252,7 +274,9 @@ if (!(isset($id_classe))) {
 	while ($i < $nb_periode) {
 
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=abs'>";
-		echo "<img src='../images/icons/chercher.png' width='16' height='16' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a><br />\n";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		/*
+		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
 			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
@@ -262,6 +286,7 @@ if (!(isset($id_classe))) {
 			echo " (période ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
+		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -273,7 +298,9 @@ if (!(isset($id_classe))) {
 	while ($i < $nb_periode) {
 
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=avis'>";
-		echo "<img src='../images/icons/chercher.png' width='16' height='16' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a><br />\n";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		/*
+		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
 			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
@@ -283,6 +310,7 @@ if (!(isset($id_classe))) {
 			echo " (période ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
+		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -294,7 +322,9 @@ if (!(isset($id_classe))) {
 	while ($i < $nb_periode) {
 
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i'>";
-		echo "<img src='../images/icons/chercher.png' width='16' height='16' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a><br />\n";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		/*
+		echo "<br />\n";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
 			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
@@ -304,6 +334,7 @@ if (!(isset($id_classe))) {
 			echo " (période ouverte, les saisies/modifications sont possibles)\n";
 		}
 		echo "</span>\n";
+		*/
 		echo "</td>\n";
 		$i++;
 	}
