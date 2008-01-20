@@ -577,6 +577,24 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesModifMaPhotoEleve !";
 	}
 
+	if (isset($_POST['GepiAccesGestElevesProfP'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesGestElevesProfP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestElevesProfP !";
+	}
+
+	if (isset($_POST['GepiAccesGestPhotoElevesProfP'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesGestPhotoElevesProfP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestPhotoElevesProfP !";
+	}
+
 }
 
 // Load settings
@@ -608,7 +626,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProfTousEleves" id="GepiAccesReleveProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesReleveProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveProfTousEleves' style='cursor: pointer;'> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesReleveProfTousEleves' style='cursor: pointer;'> a accès aux relevés de notes de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -623,7 +641,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesMoyennesProfTousEleves" id="GepiAccesMoyennesProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesMoyennesProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesMoyennesProfTousEleves' style='cursor: pointer;'> a accès aux moyennes de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesMoyennesProfTousEleves' style='cursor: pointer;'> a accès aux moyennes de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -638,7 +656,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimpleProfTousEleves" id="GepiAccesBulletinSimpleProfTousEleves" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimpleProfTousEleves")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfTousEleves' style='cursor: pointer;'> a accès aux bulletins simples de tous les élèves des classes dans lesquelles il enseigne (si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimpleProfTousEleves' style='cursor: pointer;'> a accès aux bulletins simples de tous les élèves des classes dans lesquelles il enseigne (<i>si case non cochée, le professeur ne voit que les élèves de ses groupes d'enseignement et pas les autres élèves des classes concernées</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -648,7 +666,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitProf" id="GepiPasswordReinitProf" value="yes" <?php if (getSettingValue("GepiPasswordReinitProf")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitProf' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitProf' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -700,17 +718,31 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiProfImprBul" id="GepiProfImprBul" value="yes" <?php if (getSettingValue("GepiProfImprBul")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiProfImprBul' style='cursor: pointer;'> édite/imprime les bulletins périodiques des classes dont il a la charge.<br />
-				<span class='small'>(Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins)</span></label></td>
+				<span class='small'>(<i>Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins</i>)</span></label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiProfImprBulSettings" id="GepiProfImprBulSettings" value="yes" <?php if (getSettingValue("GepiProfImprBulSettings")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiProfImprBulSettings' style='cursor: pointer;'> a accès au paramétrage de l'impression des bulletins (lorsqu'il est autorisé à éditer/imprimer les bulletins)</label></td>
+				<td style='border: 0px;'><label for='GepiProfImprBulSettings' style='cursor: pointer;'> a accès au paramétrage de l'impression des bulletins (<i>lorsqu'il est autorisé à éditer/imprimer les bulletins</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProfP" id="GepiAccesReleveProfP" value="yes" <?php if (getSettingValue("GepiAccesReleveProfP")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveProfP' style='cursor: pointer;'> a accès aux relevés des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesGestElevesProfP" id="GepiAccesGestElevesProfP" value="yes" <?php if (getSettingValue("GepiAccesGestElevesProfP")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesGestElevesProfP' style='cursor: pointer;'> a accès aux fiches des élèves dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label>
+				</td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'>
+				<input type="checkbox" name="GepiAccesGestPhotoElevesProfP" id="GepiAccesGestPhotoElevesProfP" value="yes" <?php if (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') echo "checked"; ?> />
+				</td>
+				<td style='border: 0px;'><label for='GepiAccesGestPhotoElevesProfP' style='cursor: pointer;'>
+				 a accès à l'upload des photos de ces élèves si le module trombinoscope est activé et si le professeur a accès aux fiches élèves (<i>ci-dessus</i>).</label></td>
 			</tr>
 
 			<!-- Années antérieures -->
@@ -746,7 +778,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitScolarite" id="GepiPasswordReinitScolarite" value="yes" <?php if (getSettingValue("GepiPasswordReinitScolarite")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitScolarite' style='cursor: pointer;'> peut réinitialiser elle-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitScolarite' style='cursor: pointer;'> peut réinitialiser elle-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -784,7 +816,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitCpe" id="GepiPasswordReinitCpe" value="yes" <?php if (getSettingValue("GepiPasswordReinitCpe")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitCpe' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitCpe' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -822,7 +854,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitAdmin" id="GepiPasswordReinitAdmin" value="yes" <?php if (getSettingValue("GepiPasswordReinitAdmin")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitAdmin' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitAdmin' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -843,7 +875,7 @@ require_once("../lib/header.inc");
 			</tr>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesOptionsReleveEleve" id="GepiAccesOptionsReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesOptionsReleveEleve")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesOptionsReleveEleve' style='cursor: pointer;'> a accès aux options du relevés de notes (nom court, coef, date des devoirs, ...)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesOptionsReleveEleve' style='cursor: pointer;'> a accès aux options du relevés de notes (<i>nom court, coef, date des devoirs, ...</i>)</label></td>
 			</tr>
 
 
@@ -854,7 +886,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitEleve" id="GepiPasswordReinitEleve" value="yes" <?php if (getSettingValue("GepiPasswordReinitEleve")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitEleve' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitEleve' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -864,7 +896,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCpePPEmailEleve" id="GepiAccesCpePPEmailEleve" value="yes" <?php if (getSettingValue("GepiAccesCpePPEmailEleve")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesCpePPEmailEleve' style='cursor: pointer;'> a accès aux adresses email de son CPE et de son professeur principal (paramètre utile seulement si le paramètre suivant est décoché)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesCpePPEmailEleve' style='cursor: pointer;'> a accès aux adresses email de son CPE et de son professeur principal (<i>paramètre utile seulement si le paramètre suivant est décoché</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -907,7 +939,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesOptionsReleveParent" id="GepiAccesOptionsReleveParent" value="yes" <?php if (getSettingValue("GepiAccesOptionsReleveParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesOptionsReleveParent' style='cursor: pointer;'> a accès aux options du relevés de notes (nom court, coef, date des devoirs, ...)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesOptionsReleveParent' style='cursor: pointer;'> a accès aux options du relevés de notes (<i>nom court, coef, date des devoirs,...</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -917,7 +949,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitParent" id="GepiPasswordReinitParent" value="yes" <?php if (getSettingValue("GepiPasswordReinitParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitParent' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (si fonction activée)</label></td>
+				<td style='border: 0px;'><label for='GepiPasswordReinitParent' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<i>si fonction activée</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -927,7 +959,7 @@ require_once("../lib/header.inc");
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCpePPEmailParent" id="GepiAccesCpePPEmailParent" value="yes" <?php if (getSettingValue("GepiAccesCpePPEmailParent")=='yes') echo "checked"; ?> /></td>
-				<td style='border: 0px;'><label for='GepiAccesCpePPEmailParent' style='cursor: pointer;'> a accès aux adresses email du CPE et du professeur principal responsables des élèves dont il est responsable (paramètre utile seulement si le paramètre suivant est décoché)</label></td>
+				<td style='border: 0px;'><label for='GepiAccesCpePPEmailParent' style='cursor: pointer;'> a accès aux adresses email du CPE et du professeur principal responsables des élèves dont il est responsable (<i>paramètre utile seulement si le paramètre suivant est décoché</i>)</label></td>
 			</tr>
 
 			<tr valign='top'>
@@ -957,4 +989,5 @@ require_once("../lib/header.inc");
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
 </form>
+<p><br /></p>
 <?php require("../lib/footer.inc.php");?>

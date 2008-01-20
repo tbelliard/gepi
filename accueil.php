@@ -885,7 +885,17 @@ while ($i < $nb_aid) {
     $i++;
 }
 
-
+if(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiAccesGestElevesProfP')=='yes')) {
+	// Le professeur est-il professeur principal dans une classe au moins.
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
+	$test=mysql_query($sql);
+	if (mysql_num_rows($test)>0) {
+		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+		$chemin[] = "/eleves/index.php";
+		$titre[] = "Gestion des élèves";
+		$expli[] = "Cet outil permet d'accéder aux informations des élèves dont vous êtes $gepi_prof_suivi.";
+	}
+}
 
 $nb_ligne = count($chemin);
 $affiche = 'no';

@@ -228,8 +228,8 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/classes/prof_suivi.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/eleves/help.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des élèves', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/eleves/import_eleves_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des élèves', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/eleves/index.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Gestion des élèves', '');";
-    $tab_req[] = "INSERT INTO droits VALUES ('/eleves/modify_eleve.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'Gestion des élèves', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/eleves/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Gestion des élèves', '');";
+    $tab_req[] = "INSERT INTO droits VALUES ('/eleves/modify_eleve.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Gestion des élèves', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/etablissements/help.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des établissements', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/etablissements/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des établissements', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/etablissements/modify_etab.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des établissements', '');";
