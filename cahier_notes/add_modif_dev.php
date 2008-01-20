@@ -562,12 +562,18 @@ else{
 	// ======
 
 	echo "<h3 class='gepi'>Statut de l'évaluation</h3>\n";
-	echo "<table><tr><td><input type='radio' name='facultatif' value='O' "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	echo "<table><tr><td><input type='radio' name='facultatif' id='facultatif_O' value='O' "; if ($facultatif=='O') echo "checked"; echo " /></td><td>";
+	echo "<label for='facultatif_O' style='cursor: pointer;'>";
 	echo "La note de l'évaluation entre dans le calcul de la moyenne.";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' value='B' "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
+	echo "</label>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_B' value='B' "; if ($facultatif=='B') echo "checked"; echo " /></td><td>";
+	echo "<label for='facultatif_B' style='cursor: pointer;'>";
 	echo "Seules les notes de l'évaluation supérieures à 10 entrent dans le calcul de la moyenne.";
-	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' value='N' "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
+	echo "</label>";
+	echo "</td></tr>\n<tr><td><input type='radio' name='facultatif' id='facultatif_N' value='N' "; if ($facultatif=='N') echo "checked"; echo " /></td><td>";
+	echo "<label for='facultatif_N' style='cursor: pointer;'>";
 	echo "La note de l'évaluation n'entre dans le calcul de la moyenne que si elle améliore la moyenne.";
+	echo "</label>";
 	echo "</td></tr></table>\n";
 
 	//====================================
@@ -585,9 +591,13 @@ else{
 
 	echo "<h3 class='gepi'>Affichage de la note sur le relevé de notes</h3>\n";
 	echo "<table><tr><td>";
+
+	echo "<label for='display_parents' style='cursor: pointer;'>";
 	echo "Faire apparaître la note de l'évaluation sur le relevé de notes de l'élève ";
+	echo "</label>";
+
 	//echo "</td><td><input type='checkbox' name='display_parents' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr></table>\n";
-	echo "</td><td><input type='checkbox' name='display_parents' value='1' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr></table>\n";
+	echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' value='1' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr></table>\n";
 
 }
 
