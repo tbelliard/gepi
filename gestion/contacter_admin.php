@@ -113,7 +113,8 @@ case "envoi":
 		"Demande d'aide dans GEPI",
 		$message,
 	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress)."\r\n"
-	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\nCc: $nama <$email_reponse>\r\n" :"")
+	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
+	.(getSettingValue("gepiAdminAdressFormHidden")!="y" ? "Cc: $nama <$email_reponse>\r\n" : "")
 	."X-Mailer: PHP/" . phpversion());
 
 	if ($envoi) {
