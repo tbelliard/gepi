@@ -117,6 +117,7 @@ $total_diff=isset($_POST['total_diff']) ? $_POST['total_diff'] : NULL;
 
 $liste_assoc=isset($_POST['liste_assoc']) ? $_POST['liste_assoc'] : NULL;
 
+$ne_pas_proposer_resp_sans_eleve=isset($_POST['ne_pas_proposer_resp_sans_eleve']) ? $_POST['ne_pas_proposer_resp_sans_eleve'] : (isset($_GET['ne_pas_proposer_resp_sans_eleve']) ? $_GET['ne_pas_proposer_resp_sans_eleve'] : (isset($_SESSION['ne_pas_proposer_resp_sans_eleve']) ? $_SESSION['ne_pas_proposer_resp_sans_eleve'] : "si"));
 
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
@@ -138,8 +139,10 @@ if(isset($step)){
 		($step==12)||
 		($step==13)||
 		($step==14)||
-		($step==17)
+		($step==18)
 		) {
+//		($step==17)
+
 		echo "<div style='float: right; border: 1px solid black; width: 4em;'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='checkbox' name='stop' id='stop' value='y' onchange='stop_change()' ";
@@ -3068,12 +3071,17 @@ else{
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 
+			echo "<input type='checkbox' name='ne_pas_proposer_resp_sans_eleve' id='ne_pas_proposer_resp_sans_eleve' value='non' checked />\n";
+			//$ne_pas_proposer_resp_sans_eleve
+			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grnad nombre dans Sconet</i>)<br />\n";
+
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' ";
 			if("$stop"=="y"){echo "checked ";}
-			echo "/><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label></p>\n";
+			echo "/><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>";
+			echo "</p>\n";
 			//==============================
 
 			echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -3094,6 +3102,8 @@ else{
 			break;
 		case "10":
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
 
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
@@ -3343,7 +3353,7 @@ else{
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=y'>Suite</a></p>\n";
-
+						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=y&amp;ne_pas_proposer_resp_sans_eleve=$ne_pas_proposer_resp_sans_eleve'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -4372,8 +4382,16 @@ else{
 					}
 				}
 
-				echo "<input type='hidden' name='step' value='15' />\n";
-				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+				if($ne_pas_proposer_resp_sans_eleve=="si"){
+					//echo "<input type='hidden' name='step' value='15' />\n";
+					echo "<input type='hidden' name='step' value='16' />\n";
+					echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+				}
+				else{
+					//echo "<input type='hidden' name='step' value='a15' />\n";
+					echo "<input type='hidden' name='step' value='15' />\n";
+					echo "<p><input type='submit' value='Effectuer un nettoyage avant affichage des différences' /></p>\n";
+				}
 
 				/*
 				echo "<script type='text/javascript'>
@@ -4395,7 +4413,62 @@ else{
 			echo "<p><i>NOTE:</i> Il se peut, à ce stade, que des adresses non associées à des responsables soient détectées comme des différences.<br />Pour autant, elles ne seront pas prises en compte par la suite.</p>\n";
 
 			break;
-		case 15:
+
+		case "15":
+			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			//==============================
+			// AJOUT pour tenir compte de l'automatisation ou non:
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			//echo "<input type='hidden' name='step' value='15' />\n";
+			echo "<input type='hidden' name='step' value='16' />\n";
+			//==============================
+
+			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id';";
+			$test=mysql_query($sql);
+
+			//echo "<p>mysql_num_rows(\$test)=".mysql_num_rows($test)."</p>\n";
+			echo "<p>Les ".mysql_num_rows($test)." personnes vont être contrôlées pour s'assurer qu'elles sont bien associées à des élèves.</p>\n";
+
+			echo "<p>Suppression des responsables fantômes de la table temporaire: ";
+			echo "<span style='font-size:xx-small;'>";
+			$cpt=0;
+			while($lig=mysql_fetch_object($test)){
+				//$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
+				$sql="SELECT trp.nom,trp.prenom FROM temp_resp_pers_import trp,
+										temp_responsables2_import tr,
+										eleves e
+								WHERE trp.pers_id='$lig->col2' AND
+										trp.pers_id=tr.pers_id AND
+										tr.ele_id=e.ele_id";
+				$test2=mysql_query($sql);
+				if(mysql_num_rows($test2)==0){
+					if($cpt>0){echo ", ";}
+					//$liste_resp_sans_eleve.="'$pers_id'";
+					echo $lig->col2;
+
+					//echo " (<span style='font-size:xx-small;'>$cpt</span>)";
+
+					$sql="DELETE FROM tempo2 WHERE col1='pers_id' AND col2='$lig->col2';";
+					$suppr=mysql_query($sql);
+
+					$cpt++;
+					flush();
+				}
+			}
+			echo "</span>\n";
+			echo "</p>\n";
+
+			echo "<p>$cpt fantôme(s) supprimé(s) de la table temporaire.</p>\n";
+
+			echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
+			echo "</form>\n";
+
+			break;
+
+		//case 15:
+		case 16:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 
@@ -5173,7 +5246,8 @@ else{
 
 				echo "</script>\n";
 
-				echo "<input type='hidden' name='step' value='15' />\n";
+				//echo "<input type='hidden' name='step' value='15' />\n";
+				echo "<input type='hidden' name='step' value='16' />\n";
 				//echo "<p align='center'><input type='submit' value='Poursuivre' /></p>\n";
 				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			}
@@ -5181,7 +5255,8 @@ else{
 				// On est à la fin on peut passer à step=12 et effectuer les changements confirmés.
 				echo "<p>Toutes les différences concernant les personnes ont été parcourues.</p>\n";
 
-				echo "<input type='hidden' name='step' value='16' />\n";
+				//echo "<input type='hidden' name='step' value='16' />\n";
+				echo "<input type='hidden' name='step' value='17' />\n";
 				echo "<p><input type='submit' value='Valider les modifications' /></p>\n";
 			}
 
@@ -5189,7 +5264,8 @@ else{
 			echo "</form>\n";
 
 			break;
-		case 16:
+		//case 16:
+		case 17:
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
@@ -5200,7 +5276,8 @@ else{
 				echo "<p>Aucune modification n'a été confirmée/demandée.</p>\n";
 
 				// IL RESTE... les responsabilités
-				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+				//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+				echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 
 			}
 			else{
@@ -5353,20 +5430,24 @@ else{
 
 				switch($erreur){
 					case 0:
-						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 					case 1:
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 
 					default:
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 				}
 			}
 
 			break;
-		case 17:
+		//case 17:
+		case 18:
 			//echo "<h2>Import/mise à jour des responsabilités</h2>\n";
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
@@ -5568,7 +5649,8 @@ else{
 
 			if(count($tab_resp)>$eff_tranche){
 				echo "<input type='hidden' name='parcours_diff' value='$parcours_diff' />\n";
-				echo "<input type='hidden' name='step' value='17' />\n";
+				//echo "<input type='hidden' name='step' value='17' />\n";
+				echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 
 
@@ -5598,7 +5680,8 @@ else{
 					$update=mysql_query($sql);
 				}
 
-				echo "<input type='hidden' name='step' value='18' />\n";
+				//echo "<input type='hidden' name='step' value='18' />\n";
+				echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 
 				echo "<script type='text/javascript'>
@@ -5621,7 +5704,8 @@ else{
 
 
 			break;
-		case 18:
+		//case 18:
+		case 19:
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
@@ -6276,7 +6360,8 @@ else{
 	}
 </script>\n";
 
-				echo "<input type='hidden' name='step' value='18' />\n";
+				//echo "<input type='hidden' name='step' value='18' />\n";
+				echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 
 				echo "<p><br /></p>\n";
@@ -6288,7 +6373,8 @@ else{
 
 			}
 			else{
-				echo "<input type='hidden' name='step' value='19' />\n";
+				//echo "<input type='hidden' name='step' value='19' />\n";
+				echo "<input type='hidden' name='step' value='20' />\n";
 
 				echo "<p>Nettoyage des tables temporaires: ";
 				unset($liste_tab_del);
@@ -6336,7 +6422,8 @@ else{
 			echo "</form>\n";
 
 			break;
-		case 19:
+		//case 19:
+		case 20:
 			echo "<h2>THE END ?</h2>\n";
 			break;
 	}
