@@ -261,12 +261,15 @@ require_once("../lib/header.inc");
 	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 	$critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : "";
+	$critere_recherche_login=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche_login);
 
 	//====================================
+	
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<table style='border:1px solid black;'>\n";
 	echo "<tr>\n";
-	echo "<td valign='top' rowspan='3'>\n";
+	echo "<td valign='top' rowspan='4'>\n";
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -274,6 +277,13 @@ require_once("../lib/header.inc");
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables ayant un <b>login</b> qui contient: ";
+	echo "<input type='text' name='critere_recherche_login' value='$critere_recherche_login' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "ou";
@@ -309,7 +319,11 @@ $sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = '
 if($afficher_tous_les_resp!='y'){
 	if($critere_recherche!=""){
 		$sql.=" AND u.nom like '%".$critere_recherche."%'";
-	}
+	} else {
+		if($critere_recherche_login!=""){
+			$sql.=" AND u.login like '%".$critere_recherche_login."%'";
+		}
+    }
 }
 $sql.=") ORDER BY u.nom,u.prenom";
 
@@ -372,7 +386,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		if($current_parent->etat == "actif"){
 			echo "<br />";
 			//echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='change'>Réinitialiser le mot de passe</a>";
-			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
+			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
+			echo " - <a href=\"change_pwd.php?user_login=".$current_parent->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>choisi </a>";
 		}
 		echo "</td>\n";
 	echo "</tr>\n";
