@@ -538,7 +538,7 @@ else{
 						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=$stop'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -852,7 +852,7 @@ else{
 
 			// ON SAUTE L'ETAPE 2 QUI CORRESPOND AUX OPTIONS DES ELEVES... NON PRISES EN CHARGE POUR LE MOMENT.
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y'>Suite</a></p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
 
 			require("../lib/footer.inc.php");
 			die();
@@ -1035,7 +1035,7 @@ else{
 				echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -2647,7 +2647,7 @@ else{
 				echo "</p>\n";
 			}
 
-			echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=8&amp;stop=y'>inscription des nouveaux élèves dans les groupes</a>.</p>\n";
+			echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=8&amp;stop=$stop'>inscription des nouveaux élèves dans les groupes</a>.</p>\n";
 
 			break;
 
@@ -3073,7 +3073,7 @@ else{
 
 			echo "<input type='checkbox' name='ne_pas_proposer_resp_sans_eleve' id='ne_pas_proposer_resp_sans_eleve' value='non' checked />\n";
 			//$ne_pas_proposer_resp_sans_eleve
-			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grnad nombre dans Sconet</i>)<br />\n";
+			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
 
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -3352,7 +3352,7 @@ else{
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
 						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=y'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=$stop'>Suite</a></p>\n";
 						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=11&amp;stop=y&amp;ne_pas_proposer_resp_sans_eleve=$ne_pas_proposer_resp_sans_eleve'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
@@ -3525,7 +3525,7 @@ else{
 
 				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=12&amp;stop=y'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=12&amp;stop=$stop'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -3723,7 +3723,7 @@ else{
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=y'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -4451,6 +4451,10 @@ else{
 					//echo " (<span style='font-size:xx-small;'>$cpt</span>)";
 
 					$sql="DELETE FROM tempo2 WHERE col1='pers_id' AND col2='$lig->col2';";
+					$suppr=mysql_query($sql);
+
+					// On supprime aussi les entrées dans la table temporaire jointure ele_id/pers_id
+					$sql="DELETE FROM temp_responsables2_import WHERE pers_id='$lig->col2';";
 					$suppr=mysql_query($sql);
 
 					$cpt++;
@@ -5431,16 +5435,16 @@ else{
 				switch($erreur){
 					case 0:
 						//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 					case 1:
 						//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 
 					default:
 						//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
 						break;
 				}
 			}
@@ -5483,12 +5487,22 @@ else{
 					$tab_resp=array();
 					while($lig=mysql_fetch_object($res1)){
 						// On ne va considérer un couple valide que si le responsable est une personne associée à un élève effectivement accepté dans la table 'eleves':
+						/*
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
 												temp_responsables2_import tr,
 												eleves e
 										WHERE trp.pers_id='$lig->pers_id' AND
 												trp.pers_id=tr.pers_id AND
 												tr.ele_id=e.ele_id";
+						*/
+						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
+												temp_responsables2_import tr,
+												eleves e
+										WHERE trp.pers_id='$lig->pers_id' AND
+												trp.pers_id=tr.pers_id AND
+												tr.ele_id=e.ele_id AND
+												e.ele_id='$lig->ele_id'";
+
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0){
 							$sql="INSERT INTO tempo2 SET col1='t', col2='t_".$lig->ele_id."_".$lig->pers_id."'";
@@ -5672,7 +5686,7 @@ else{
 
 			}
 			else{
-				echo "<p>Le parcours des différences concernant les associations élève/responsables est terminé.<br />Vous allez pouvoir contrôler les différences.</p>\n";
+				echo "<p>Le parcours des différences concernant les associations élèves/responsables est terminé.<br />Vous allez pouvoir contrôler les différences.</p>\n";
 				//echo "<p>La première phase du parcours des différences concernant les associations élève/responsables est terminé.<br />Vous allez pouvoir passer à la deuxième phase avant de contrôler les différences.</p>\n";
 
 				for($i=0;$i<count($tab_resp_diff);$i++){
@@ -5707,6 +5721,8 @@ else{
 		//case 18:
 		case 19:
 
+			//debug_var();
+
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
@@ -5715,7 +5731,9 @@ else{
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
 
-			if(!isset($parcours_diff)){
+			echo "<input type='hidden' name='temoin_phase_19' value='19' />\n";
+			//if(!isset($parcours_diff)){
+			if((!isset($parcours_diff))||(!isset($_POST['temoin_phase_19']))) {
 				$sql="SELECT 1=1 FROM tempo2 WHERE col1='t_diff';";
 				$test=mysql_query($sql);
 
@@ -5739,7 +5757,7 @@ else{
 				$modif=isset($_POST['modif']) ? $_POST['modif'] : NULL;
 				$new=isset($_POST['new']) ? $_POST['new'] : NULL;
 
-				// A VOIR: IL FAUDRAIT PEUT-ETRE VALIDER LES MODIFS DES CE NIVEAU...
+				// A VOIR: IL FAUDRAIT PEUT-ETRE VALIDER LES MODIFS DèS CE NIVEAU...
 				// LES TESTS POUR NE PAS AVOIR DEUX resp_legal=1 PEUVENT ETRE PERTURBéS PAR DES ENREGISTREMENTS DIFFéRéS...
 
 				if(isset($modif)){
