@@ -463,6 +463,10 @@ if (!(isset($id_classe))) {
 	echo "<td align='left'>\n";
 
 
+	$temoin_note_app=0;
+	$temoin_avis=0;
+	$temoin_aid=0;
+	$temoin_abs=0;
 	while($j < $nb_eleves) {
 
 		//affichage 2 colonnes
@@ -475,6 +479,7 @@ if (!(isset($id_classe))) {
 		$id_eleve[$j] = mysql_result($appel_donnees_eleves, $j, "login");
 		$eleve_nom[$j] = mysql_result($appel_donnees_eleves, $j, "nom");
 		$eleve_prenom[$j] = mysql_result($appel_donnees_eleves, $j, "prenom");
+
 
 		$affiche_nom = 1;
 		if(($mode=="note_app")||($mode=="tout")){
@@ -541,6 +546,7 @@ if (!(isset($id_classe))) {
 						}
 						echo ")\n";
 
+						$temoin_note_app++;
 					}
 				}
 				$i++;
@@ -599,6 +605,7 @@ if (!(isset($id_classe))) {
 						}
 						echo ")\n";
 
+						$temoin_note_app++;
 					}
 				}
 				$i++;
@@ -644,6 +651,9 @@ if (!(isset($id_classe))) {
 				}
 
 				$affiche_nom = 0;
+
+				$temoin_avis++;
+
 			}
 		}
 
@@ -703,7 +713,9 @@ if (!(isset($id_classe))) {
 								if ($virgule == 1) {echo ", ";}
 							}
 							echo ")\n";
-						$affiche_nom = 0;
+							$affiche_nom = 0;
+
+							$temoin_aid++;
 						}
 						//
 						// Vérification des moyennes
@@ -747,6 +759,8 @@ if (!(isset($id_classe))) {
 								}
 								echo ")\n";
 								$affiche_nom = 0;
+
+								$temoin_aid++;
 							}
 						}
 					}
@@ -754,7 +768,6 @@ if (!(isset($id_classe))) {
 				$z++;
 			}
 		}
-
 
 		if(($mode=="abs")||($mode=="tout")){
 			//
@@ -780,23 +793,25 @@ if (!(isset($id_classe))) {
 				$m=0;
 				$virgule = 1;
 				while ($m < $nb_prof) {
-				$login_prof = @mysql_result($query_resp, $m, 'login');
-						$email = retourne_email($login_prof);
-						$nom_prof = @mysql_result($query_resp, $m, 'nom');
-						$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
-						//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
-						if($email!=""){
-							echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
-						}
-						else{
-							echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
-						}
-						$m++;
-						if ($m == $nb_prof) {$virgule = 0;}
-						if ($virgule == 1) {echo ", ";}
+					$login_prof = @mysql_result($query_resp, $m, 'login');
+					$email = retourne_email($login_prof);
+					$nom_prof = @mysql_result($query_resp, $m, 'nom');
+					$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
+					//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
+					if($email!=""){
+						echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 					}
+					else{
+						echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+					}
+					$m++;
+					if ($m == $nb_prof) {$virgule = 0;}
+					if ($virgule == 1) {echo ", ";}
+				}
 				echo ")\n";
 				$affiche_nom = 0;
+
+				$temoin_abs++;
 			}
 		}
 
@@ -820,7 +835,13 @@ if (!(isset($id_classe))) {
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=retour'>cliquant ici.</a> puis revenir à la page outil de vérification.</p></li>\n";
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_html'>cliquant ici.</a> puis aller à la page impression des bulletins HTML.</p></li>\n";
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>\n";
-	} else {
+	} elseif(($temoin_note_app==0)&&($temoin_aid==0)&&($mode=='note_app')) {
+		echo "<p class='bold'>Toutes les moyennes et appréciations des bulletins de cette classe ont été renseignées.</p>\n";
+	} elseif(($temoin_avis==0)&&($mode=='avis')) {
+		echo "<p class='bold'>Tous les avis de conseil de classe des bulletins de cette classe ont été renseignés.</p>\n";
+	} elseif(($temoin_abs==0)&&($mode=='abs')) {
+		echo "<p class='bold'>Toutes les absences et retards des bulletins de cette classe ont été renseignés.</p>\n";
+	} else{
 		echo "<br /><p class='bold'>*** Fin des vérifications. ***</p>\n";
 		/*
 		echo "<ul><li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=rien'>cliquant ici.</a></p></li>";
