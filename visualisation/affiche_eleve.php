@@ -1520,6 +1520,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$nbMat=;
 			*/
 			$tab_imagemap=array();
+			$tab_imagemap_commentaire_present=array();
 
 			$cpt=1;
 			// Boucle sur l'ordre des matières:
