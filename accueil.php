@@ -579,6 +579,15 @@ if ($condition) {
     }
 }
 
+// les absences
+$conditions3 = ($_SESSION['statut'] == "responsable" AND
+				getSettingValue("active_module_absence") == 'y' AND
+				getSettingValue("active_absences_parents") == 'y');
+if ($conditions3) {
+	$chemin[] = "/mod_absences/absences.php";
+	$titre[] = "Absences";
+	$expli[] = "Permet de suivre les absences et les retards des &eacute;l&egrave;ves dont je suis responsable";
+}
 
 $nb_ligne = count($chemin);
 $affiche = 'no';

@@ -568,6 +568,7 @@ INSERT INTO setting VALUES ('autorise_edt_tous', 'y');
 INSERT INTO setting VALUES ('autorise_edt_admin', 'y');
 INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');
 INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');
+INSERT INTO setting VALUES ('active_absences_parents', 'no');
 INSERT INTO droits VALUES ('/absences/import_absences_sconet.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'Saisie des absences', '');
 INSERT INTO droits VALUES ('/mod_absences/admin/admin_config_calendrier.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définir les différentes périodes', '');
 INSERT INTO droits VALUES ('/bulletin/export_modele_pdf.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'exportation en csv des modeles de bulletin pdf', '');
@@ -577,6 +578,7 @@ INSERT INTO droits VALUES ('/mod_absences/professeurs/bilan_absences_classe.php'
 INSERT INTO droits VALUES ('/mod_absences/gestion/voir_absences_viescolaire.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences du jour', '');
 INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_quotidien.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences par créneau', '');
 INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_classe.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences par classe', '');
+INSERT INTO droits VALUES ('/mod_absences/absences.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Consulter les absences de son enfant', '');
 INSERT INTO droits VALUES ('/absences/import_absences_gepi.php', 'F', 'F', 'V', 'V', 'F', 'F', 'V', 'Page d''importation des absences de gepi mod_absences', '1');
 INSERT INTO droits VALUES ('/lib/change_mode_header.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'Page AJAX pour changer la variable cacher_header', '1');
 INSERT INTO droits VALUES ('/saisie/recopie_moyennes.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'Recopie des moyennes', '');

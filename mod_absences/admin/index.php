@@ -46,10 +46,19 @@ if (!checkAccess()) {
 
 $msg = '';
 if (isset($_POST['activer'])) {
-    if (!saveSetting("active_module_absence", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+    if (!saveSetting("active_module_absence", $_POST['activer'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
 }
 if (isset($_POST['activer_prof'])) {
-    if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+    if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
+}
+if (isset($_POST['activer_resp'])) {
+	if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
@@ -62,23 +71,56 @@ require_once("../../lib/header.inc");
 echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
-<H2>Gestion des absences par les CPE</H2>
-<i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</i>
-<br />
+<h2>Gestion des absences par les CPE</h2>
+<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
+suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
+
 <form action="index.php" name="form1" method="post">
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_absence")=='y') echo " checked"; ?> />&nbsp;Activer le module de la gestion des absences<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_module_absence")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la gestion des absences
-<input type="hidden" name="is_posted" value="1" />
-<br />
-<i>La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
-Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</i>
-<H2>Saisie des absences par les professeurs</H2>
-<input type="radio" name="activer_prof" value="y" <?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked"; ?> />&nbsp;Activer le module de la saisie des absences par les professeurs<br />
-<input type="radio" name="activer_prof" value="n" <?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked"; ?> />&nbsp;Désactiver le module de la saisie des absences par les professeurs
-<input type="hidden" name="is_posted" value="1" />
+<p>
+	<input type="radio" id="activerY" name="activer" value="y"
+	<?php if (getSettingValue("active_module_absence")=='y') echo ' checked="checked"'; ?> />
+	<label for="activerY">&nbsp;Activer le module de la gestion des absences</label>
+</p>
+<p>
+	<input type="radio" id="activerN" name="activer" value="n"
+	<?php if (getSettingValue("active_module_absence")=='n') echo ' checked="checked"'; ?> />
+	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
+	<input type="hidden" name="is_posted" value="1" />
+</p>
+
+<h2>Saisie des absences par les professeurs</h2>
+<p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
+Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</p>
+<p>
+	<input type="radio" id="activerProfY" name="activer_prof" value="y"
+	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
+	<label for="activerProfY">&nbsp;Activer le module de la saisie des absences par les professeurs</label>
+</p>
+<p>
+	<input type="radio" id="activerProfN" name="activer_prof" value="n"
+	<?php if (getSettingValue("active_module_absence_professeur")=='n') echo " checked='checked'"; ?> />
+	<label for="activerProfN">&nbsp;Désactiver le module de la saisie des absences par les professeurs</label>
+	<input type="hidden" name="is_posted" value="1" />
+</p>
+
+<h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
+<p style="font-style: italic">Vous pouvez permettre aux responsables d'acc&eacute;der aux donn&eacute;es brutes
+entr&eacute;es dans Gepi par le biais du module absences.</p>
+<p>
+	<input type="radio" id="activerRespOk" name="activer_resp" value="y"
+	<?php if (getSettingValue("active_absences_parents") == 'y') echo ' checked="checked"'; ?> />
+	<label for="activerRespOk">Permettre l'acc&egrave;s aux responsables</label>
+</p>
+<p>
+	<input type="radio" id="activerRespKo" name="activer_resp" value="n"
+	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
+	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
+</p>
+
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
 </form>
-<H2>Configuration avancée</H2>
+
+<h2>Configuration avancée</h2>
 <blockquote>
   <a href="admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
   <a href="admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />

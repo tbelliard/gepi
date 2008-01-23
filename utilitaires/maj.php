@@ -524,6 +524,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/voir_absences_viescolaire.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences du jour', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_quotidien.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences par créneau', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_classe.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Consulter les absences par classe', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/absences.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Consulter les absences de son enfant', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_gepi.php', 'F', 'F', 'V', 'V', 'F', 'F', 'V', 'Page d''importation des absences de gepi mod_absences', '1');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/saisie/ajax_appreciations.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'Sauvegarde des appréciations du bulletins', '');";
 
@@ -5347,6 +5348,19 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'active_absences_parents' à la table 'setting'<br />";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name='active_absences_parents'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query = mysql_query("INSERT INTO setting VALUES ('active_absences_parents', 'no');");
+            if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
     }
 
 
