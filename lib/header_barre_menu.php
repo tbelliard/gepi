@@ -13,15 +13,29 @@ if (!checkAccess()) {
     die();
 }
 
+	// Pour permettre d'utiliser le module EdT avec les autres modules
+	$groupe_abs = $groupe_text = '';
+	if (getSettingValue("autorise_edt_tous") == "y") {
+		// Actuellement, ce professeur à ce cours (id_cours):
+		$cours_actu = retourneCours($_SESSION["login"]);
+		// Qui correspond à cet id_groupe :
+		if ($cours_actu != "non") {
+			$queryG = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$cours_actu."'");
+			$groupe_actu = mysql_fetch_array($queryG);
+			$groupe_text = '?id_groupe='.$groupe_actu["id_groupe"].'&year='.date("Y").'&month='.date("n").'&day='.date("d").'&edit_devoir=';
+			$groupe_abs = '?groupe='.$groupe_actu["id_groupe"].'&amp;menuBar=ok';
+		}
+	}
+
 /* On fixe l'ensemble des modules qui sont ouverts pour faire la liste des <li> */
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
-		$absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php">Absences</a></li>';
+		$absence = '<li><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
 	}else{$absence = '';}
 
 	// Module Cahier de textes
 	if (getSettingValue("active_cahiers_texte") == 'y') {
-		$textes = '<li><a href="'.$gepiPath.'/cahier_texte/index.php">C. de Textes</a></li>';
+		$textes = '<li><a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'">C. de Textes</a></li>';
 	}else{$textes = '';}
 
 	// Module carnet de notes
@@ -34,6 +48,8 @@ if (!checkAccess()) {
 	if (getSettingValue("autorise_edt_tous") == "y") {
 		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
 	}else{$edt = '';}
+
+
 
 	echo '
 	<ol id="essaiMenu">

@@ -920,7 +920,7 @@ function periode_actuel($heure_choix)
   }
 
 //connaitre l'heure du début soit de la fin d'une période
-// ex: perdiode_heure($id_periode) > [0]11:00:00 [1]11:55:00
+// ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure($periode)
 {
 	$debut = ''; $fin = '';

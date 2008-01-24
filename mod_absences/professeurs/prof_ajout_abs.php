@@ -96,35 +96,25 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 			mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 	}
 }
-
-if (empty($_POST['d_heure_absence_eleve'])) {
-	$d_heure_absence_eleve = '';
-} else {
-	$d_heure_absence_eleve = $_POST['d_heure_absence_eleve'];
-}
-if (empty($_POST['a_heure_absence_eleve'])) {
-	$a_heure_absence_eleve = '';
-} else {
-	$a_heure_absence_eleve = $_POST['a_heure_absence_eleve'];
-}
-if (empty($_POST['d_heure_absence_eleve_ins'])) {
-	$d_heure_absence_eleve_ins = '';
-} else {
-	$d_heure_absence_eleve_ins = $_POST['d_heure_absence_eleve_ins'];
-}
-if (empty($_POST['a_heure_absence_eleve_ins'])) { $a_heure_absence_eleve_ins = ''; } else { $a_heure_absence_eleve_ins = $_POST['a_heure_absence_eleve_ins']; }
-
-if (empty($_POST['heuredebut_definie_periode'])) {$heuredebut_definie_periode = ''; } else {$heuredebut_definie_periode=$_POST['heuredebut_definie_periode']; }
-if (empty($_POST['heurefin_definie_periode'])) {$heurefin_definie_periode = ''; } else {$heurefin_definie_periode=$_POST['heurefin_definie_periode']; }
-
+$menuBar = isset($_GET["menuBar"]) ? $_GET["menuBar"] : NULL;
+$etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
+$d_heure_absence_eleve = isset($_POST['d_heure_absence_eleve']) ? $_POST['d_heure_absence_eleve'] : NULL;
+$a_heure_absence_eleve = isset($_POST["a_heure_absence_eleve"]) ? $_POST["a_heure_absence_eleve"] : NULL;
+$d_heure_absence_eleve_ins = isset($_POST["d_heure_absence_eleve_ins"]) ? $_POST["d_heure_absence_eleve_ins"] : NULL;
+$a_heure_absence_eleve_ins = isset($_POST["a_heure_absence_eleve_ins"]) ? $_POST["a_heure_absence_eleve_ins"] : NULL;
+$heuredebut_definie_periode = isset($_POST["heuredebut_definie_periode"]) ? $_POST["heuredebut_definie_periode"] : NULL;
+$heurefin_definie_periode = isset($_POST["heurefin_definie_periode"]) ? $_POST["heurefin_definie_periode"] : NULL;
+$d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] : date('d/m/Y');
+$classe = isset($_POST["classe"]) ? $_POST["classe"] : "";
+$eleve_initial = isset($_POST["eleve_initial"]) ? $_POST["eleve_initial"] :"";
 if(empty($etape)) { $etape = ''; }
 
-if (empty($_POST['d_date_absence_eleve'])) { $d_date_absence_eleve = date('d/m/Y'); } else {$d_date_absence_eleve=$_POST['d_date_absence_eleve']; }
-if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) { $d_date_absence_eleve = date_fr($d_date_absence_eleve); }
-if (getSettingValue("active_module_trombinoscopes")=='y')
+if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) {
+	$d_date_absence_eleve = date_fr($d_date_absence_eleve);
+}
+if (getSettingValue("active_module_trombinoscopes")=='y') {
 	$photo = isset($_POST["photo"]) ? $_POST["photo"] :"";
-$classe = isset($_POST["classe"]) ? $_POST["classe"] :"";
-$eleve_initial = isset($_POST["eleve_initial"]) ? $_POST["eleve_initial"] :"";
+}
 
 // Si une classe et un élève sont définis en même temps, on réinitialise
 if ($classe!="" and $eleve_initial!="") {
@@ -341,7 +331,7 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 
 // gestion des erreurs de saisi d'entre du formulaire de demande
 $msg_erreur = '';
-if ( $etape == '2' ) {
+if ( $etape == '2' AND $menuBar != "ok") {
 	if ( $a_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de fin'; $$etape = ''; }
 	if ( $d_heure_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir un horaire de debut'; $$etape = ''; }
 	if ( $d_date_absence_eleve === '' ) { $msg_erreur = 'Attention il faut saisir une date'; $$etape = ''; }
@@ -367,7 +357,7 @@ if($edt_enregistrement==='1') {
 }
 
 	$datej = date('Y-m-d');
-	$annee_en_cours_t=annee_en_cours_t($datej);
+	$annee_en_cours_t = annee_en_cours_t($datej);
 	$datejour = date('d/m/Y');
 	$type_de_semaine = semaine_type($datejour);
 
@@ -412,27 +402,37 @@ echo "</p>";
 
 <?php
 // Première étape
-    if($passage_form!='manuel') {
-	// vérification de l'emploi du temps
-	//horaire dans leqelle nous nous trouvons actuellement
-	$horaire = periode_heure(periode_actuel(date('H:i:s')));
-	// jour de la semaine au format chiffre
-	$jour_aujourdhui = jour_semaine($datej);
+    if($passage_form != 'manuel') {
+    	//horaire dans lequel nous nous trouvons actuellement
+		$horaire = periode_heure(periode_actuel(date('H:i:s')));
+		// jour de la semaine au format chiffre
+		$jour_aujourdhui = jour_semaine($datej);
 
-	// on vérifie si un emploi du temps pour ce prof n'est pas disponible
-//	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND datedebut_edt_classe <= "'.$datej.'" AND datefin_edt_classe >= "'.$datej.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-	$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-	$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-	// on fait une boucle qui va faire un tour pour chaque enregistrement
-	while($data = mysql_fetch_array($req))
-	{
-		$d_heure_absence_eleve = $data['heuredebut_edt_classe'];
-		$a_heure_absence_eleve = $data['heurefin_edt_classe'];
-		$classe = $data['groupe_edt_classe'];
-		$etape = '2';
-		$passage_auto = 'oui';
+    	// On vérifie si la menuBarre n'a pas renvoyé une classe (nouvelle version)
+    	if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $menuBar == 'ok'){
+			$d_heure_absence_eleve = $horaire["debut"];
+			$a_heure_absence_eleve = $horaire["fin"];
+			$classe = isset($_GET["groupe"]) ? $_GET["groupe"] : NULL;
+			$etape = '2';
+			$passage_auto = 'oui';
+		}else{
+			// on vérifie si un emploi du temps pour ce prof n'est pas disponible (ancienne version)
+			$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
+			$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+			$nbre = mysql_num_rows($req);
+			if ($nbre >= 1) {
+				// on fait une boucle qui va faire un tour pour chaque enregistrement
+				while($data = mysql_fetch_array($req)) {
+					$d_heure_absence_eleve = $data['heuredebut_edt_classe'];
+					$a_heure_absence_eleve = $data['heurefin_edt_classe'];
+					$classe = $data['groupe_edt_classe'];
+					$etape = '2';
+					$passage_auto = 'oui';
+				}
+			}
+
+		}
 	}
-  }
 
 if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) { ?>
  <div style="text-align: center; margin: auto; width: 550px;">

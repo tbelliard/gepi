@@ -40,7 +40,7 @@ function retourneJour(){
 // Fonction qui retourne l'id du créneau actuel
 function retourneCreneau(){
 		$retour = 'non';
-	$heure = date("h:i:s");
+	$heure = date("H:i:s");
 	$query = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE
 			heuredebut_definie_periode <= '".$heure."' AND
 			heurefin_definie_periode > '".$heure."'")
@@ -58,7 +58,7 @@ function retourneCreneau(){
 function heureDeb(){
 		$retour = '0';
 	// On compare des minutes car c'est plus simple
-	$heureMn = (date("h") * 60) + date("i");
+	$heureMn = (date("H") * 60) + date("i");
 	$creneauId = retourneCreneau();
 	// On récupère l'heure de début et celle de fin du créneau
 	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneauId."'");
@@ -84,16 +84,22 @@ function heureDeb(){
 
 // Fonction qui retourne l'id du cours d'un prof à un créneau, jour et type_semaine donnés
 function retourneCours($prof){
-	$query = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE
+		$retour = 'non';
+	$query = mysql_query("SELECT id_cours FROM edt_cours, j_groupes_professeurs WHERE
 			edt_cours.jour_semaine='".retourneJour()."' AND
 			edt_cours.id_definie_periode='".retourneCreneau()."' AND
 			edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND
 			login='".$prof."' AND
-			edt_cours.heuredeb_dec = '".heureDeb()."' AND
-			edt_cours.id_semaine = '".typeSemaineActu()."'
+			edt_cours.heuredeb_dec = '0' AND
+			(edt_cours.id_semaine = '".typeSemaineActu()."' OR edt_cours.id_semaine = '0')
 			ORDER BY edt_cours.id_semaine")
 				or die('Erreur : retourneCours(prof) !'.mysql_error());
-
+	$nbreCours = mysql_num_rows($query);
+	if ($nbreCours >= 1) {
+		$reponse = mysql_fetch_array($query);
+		$retour = $reponse["id_cours"];
+	}
+	return $retour;
 }
 
 ?>

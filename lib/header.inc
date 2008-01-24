@@ -444,6 +444,11 @@ if (isset($titre_page)) {
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur") {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+			require_once($prefix."edt_organisation/fonctions_calendrier.php");
+		}elseif(file_exists("fonctions_calendrier.php")){
+			require_once("./fonctions_calendrier.php");
+		}
 		include("header_barre_menu.php");
 	}
 

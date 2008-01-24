@@ -56,7 +56,7 @@ function displaydd($numero){
 
 	<div id="agauche">
 
-		<span class="refus"><?php echo ('Semaine n° '.strftime("%W")); ?></span>
+		<span class="refus"><?php echo ('Semaine n° '.date("W")); ?></span>
 
 		<dl id="menu_edt">
 			<dd>
