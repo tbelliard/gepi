@@ -56,25 +56,9 @@ if (getSettingValue("active_module_absence")!='y') {
 
 // =============================== fin initialisation de base ===================
 // =============================== Ensemble des opérations php ==================
-		/*CREATE TABLE `absences_eleves` (
-		  `id_absence_eleve` int(11) NOT NULL auto_increment,
-		  `type_absence_eleve` char(1) NOT NULL default '',
-		  `eleve_absence_eleve` varchar(25) NOT NULL default '0',
-		  `justify_absence_eleve` char(3) NOT NULL default '',
-		  `info_justify_absence_eleve` text NOT NULL,
-		  `motif_absence_eleve` varchar(4) NOT NULL default '',
-		  `info_absence_eleve` text NOT NULL,
-		  `d_date_absence_eleve` date NOT NULL default '0000-00-00',
-		  `a_date_absence_eleve` date default NULL,
-		  `d_heure_absence_eleve` time default NULL,
-		  `a_heure_absence_eleve` time default NULL,
-		  `saisie_absence_eleve` varchar(50) NOT NULL default '',
-		  `heure_retard_eleve` time NOT NULL,
-		  PRIMARY KEY  (`id_absence_eleve`)
-		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;*/
 
 // on met le header ici pour récupérer des infos sur les enfants
-$style_specifique = '';
+$style_specifique = 'mod_absences/styles/parents_absences';
 $javascript_specifique = '';
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
@@ -82,18 +66,17 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 // On récupère du header les infos sur les enfants : $tab_tmp_ele
-//$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+// Sécurité supplémentaire car il faut nécessairement être un responsable pour avoir ces infos
 $aff_absences = array();
 for($i = 0; $i < count($tab_tmp_ele); ){
 	$aff_absences[$i] = '';
-	$n = $i + 1; // pour le nom de l'élève
-	$p = $i + 2; // pour le prénom de l'élève
+	$n = $i + 1; // pour le nom et le prénom de l'élève
+
 	// On récupère toutes les absences qui correspondent à ce login
 	$query = mysql_query("SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
 					OR DIE('Erreur dans la récupération des absences de votre enfant : '.mysql_error());
 	$nbre_absence = mysql_num_rows($query);
-//$debug = mysql_fetch_array($query);
-//echo $nbre_absence.' | '.$debug["d_date_absence_eleve"];
+
 	// et on les mets en forme
 	for($a = 0; $a < $nbre_absence; $a++){
 		// on récupère ce dont on a besoin
@@ -124,7 +107,7 @@ for($i = 0; $i < count($tab_tmp_ele); ){
 			$justifie = "<td> - </td>";
 		}
 		// on construit la ligne
-		$aff_absences[$i] = '
+		$aff_absences[$a] = '
 			<tr>
 				<td>'.$tab_tmp_ele[$n].'</td>'
 				.$type.'
@@ -136,19 +119,67 @@ for($i = 0; $i < count($tab_tmp_ele); ){
 		';
 
 	}
+	// On vérifie si les bulletins ont été renseignés pour les différentes périodes
+	$query_b = mysql_query("SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
+	$verif = mysql_num_rows($query_b);
+		$aff_absences_bulletin = '';
+	if ($verif >= 1) {
+		$aff_absences_bulletin .= '<br /><br />
+		<table id="absBull">
+			<caption title="Ces absences sont enregistrées sur le bulletin après traitement et vérification.">
+			Les absences retenues sur le bulletin</caption>
+			<thead>
+				<tr>
+					<th>Elève concerné</th>
+					<th>Période</th>
+					<th>Nbre d\'absences</th>
+					<th>dont non justifiées</th>
+					<th>Nbre de retards</th>
+					<th>Appréciation</th>
+				</tr>
+			</thead>
+			<tbody>
+		';
+		for($ab = 0; $ab < $verif; $ab++){
+			$absbull[$ab]["periode"] = mysql_result($query_b, $ab, "periode");
+			$absbull[$ab]["nb_absences"] = mysql_result($query_b, $ab, "nb_absences");
+			$absbull[$ab]["non_justifie"] = mysql_result($query_b, $ab, "non_justifie");
+			$absbull[$ab]["nb_retards"] = mysql_result($query_b, $ab, "nb_retards");
+			$absbull[$ab]["appreciation"] = mysql_result($query_b, $ab, "appreciation");
+			if ($absbull[$ab]["appreciation"] == "") {
+				$appreciation = "Aucune";
+			}else {
+				$appreciation = $absbull[$ab]["appreciation"];
+			}
+			// On construit le tableau
+			$aff_absences_bulletin .= '
+				<tr>
+				<td>'.$tab_tmp_ele[$n].'</td>
+				<td>'.$absbull[$ab]["periode"].'</td>
+				<td>'.$absbull[$ab]["nb_absences"].'</td>
+				<td>'.$absbull[$ab]["non_justifie"].'</td>
+				<td>'.$absbull[$ab]["nb_retards"].'</td>
+				<td>'.$appreciation.'</td>
+				</tr>
+			';
+		}
+		$aff_absences_bulletin .= '</tbody></table>'."\n";
+	} // if ($verif >= 1)...
+
 
 	$i = $i + 2;
-}
-// on détermine quels sont les enfants sous la responsabilité de ce responsable
+} // fin for($i = 0; $i < count($tab_tmp_ele); ...
 
 // =============================== Fin des opérations php =======================
 
 ?>
 <!-- Debut de la page absences parents -->
-<h2>Les absences enregistr&eacute;es dans l'&eacute;tablissement</h2>
-<table>
+<h2>Les Absences</h2>
+
+<table id="abs">
+	<caption title="Ces absences sont l'ensemble des saisies enregistr&eacute;es avant v&eacute;rification">Les absences enregistr&eacute;es dans l'&eacute;tablissement</caption>
 	<thead>
-		<tr style="background: silver;">
+		<tr>
 			<th>El&egrave;ve concern&eacute;</th>
 			<th>Abs. / Ret.</th>
 			<th>Date et heure de d&eacute;but de l'absence</th>
@@ -168,7 +199,12 @@ for($c = 0; $c < $nbre_absence; $c++){
 
 </table>
 
-<!-- fin de la page absences parents -->
-<?PHP
+<?php // Si les bulletins sont renseignés, on affiche les infos relatives aux absences
+if (isset($aff_absences_bulletin) AND $aff_absences_bulletin != "") {
+	echo $aff_absences_bulletin;
+}
+
+echo "<!-- fin de la page absences parents -->";
+// on inclut le footer
 require("../lib/footer.inc.php");
 ?>
