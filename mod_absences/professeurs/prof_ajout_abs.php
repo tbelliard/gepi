@@ -510,66 +510,85 @@ foreach($groups as $group) {
 
 <?php
 // Deuxième étape
-if ( $etape === '2' and $classe != 'toutes' and ( $classe != '' or $eleve_initial != '' ) and $msg_erreur === '') {
-$current_groupe = get_group($classe);
+if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initial != '' ) AND $msg_erreur === '') {
+	$current_groupe = get_group($classe);
 ?>
 
-<div style="text-align: center; margin: auto; width: 550px;">
-      <form method="post" action="prof_ajout_abs.php" name="liste_absence_eleve">
-      <div style="text-align: center; font: normal 12pt verdana, sans-serif;">
-      	Saisie des absences<br/>
-      	du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong> de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong> à <strong><?php echo heure_court($a_heure_absence_eleve); ?></strong><br/>
+	<div style="text-align: center; margin: auto; width: 550px;">
+		<form method="post" action="prof_ajout_abs.php" name="liste_absence_eleve">
+			<div style="text-align: center; font: normal 12pt verdana, sans-serif;">
+	      	Saisie des absences<br/>
+    	  	du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong>
+			de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong>
+			à <strong><?php echo heure_court($a_heure_absence_eleve); ?></strong><br/>
 		<?php echo "<b>".$current_groupe["description"]."</b> (".$current_groupe["classlist_string"] .")";?>
-      </div>
-      <?php if($passage_auto==='oui' and $passage_form==='') { ?><div style="text-align: center; font: normal 10pt verdana, sans-serif;"><a href="prof_ajout_abs.php?passage_form=manuel">Ceci n'est pas la bonne liste d'appel ?</a></div><?php } ?>
-      <br />
-	   <div style="text-align: center; margin-bottom: 20px;">
-	   	<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-	   </div>
-      <table style="text-align: left; width: 500px;" border="0" cellpadding="0" cellspacing="1">
-      <tbody>
-        <tr class="titre_tableau_gestion" style="white-space: nowrap;">
-          <td style="width: 300px; text-align: center;">Liste des &eacute;l&egrave;ves</td>
-          <td style="width: 100px; text-align: center;">Absence</td>
-          <td style="width: 100px; text-align: center;">Retard</td>
-        </tr>
-        <?php
-        //if(empty($classe) and !empty($eleve_initial) and empty($eleve_absent)) {$requete_liste_eleve ="SELECT * FROM eleves WHERE eleves.nom  LIKE '".$eleve_initial."%' GROUP BY nom, prenom"; }
-        //if(!empty($classe) and empty($eleve_initial) and empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
-        //if(empty($classe) and empty($eleve_initial) and !empty($eleve_absent)) { $requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login = '".$eleve_absent[0]."' AND eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom"; }
-		$requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom";
-        $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
-        $cpt_eleve = '0';
-        $ic = '1';
-        while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve))
-        {
-          if ($ic === '1') { $ic='2'; $couleur_cellule="td_tableau_absence_1"; $background_couleur="#E8F1F4"; } else { $couleur_cellule="td_tableau_absence_2"; $background_couleur="#C6DCE3"; $ic='1'; }
-          ?>
-          <tr bgcolor="<?php echo $background_couleur; ?>" onmouseover="this.bgColor='#F7F03A';" onmouseout="this.bgColor='<?php echo $background_couleur; ?>'">
-            <td style="width: 400px; font-size: 14px; padding-left: 10px;"><input type="hidden" name="eleve_absent[<?php echo $cpt_eleve; ?>]" value="<?php echo $data_liste_eleve['login']; ?>" /><a href="javascript:centrerpopup('../lib/fiche_eleve.php?select_fiche_eleve=<?php echo $data_liste_eleve['login']; ?>',550,500,'scrollbars=yes,statusbar=no,resizable=yes');"><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); if($data_liste_eleve['sexe']=="M") { ?> (M.)<?php } elseif ($data_liste_eleve['sexe']=="F") { ?> (Mlle)<?php } $sexe=$data_liste_eleve['sexe']; ?></a></td>
-            <td style="width: 100px; text-align: center;">
-            <?php
-            $pass='0';
-            $requete = "SELECT * FROM absences_eleves
-			         WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
-			  	   AND type_absence_eleve = 'A'
-				   AND
-				   ( '".date_sql($d_date_absence_eleve)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
-				     OR d_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
-				     OR a_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
-				   )
-				   AND
-				   ( '".$d_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
-				     AND '".$a_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
-				     OR (d_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
-				     AND a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."')
-				   )";
-            $query = mysql_query($requete);
-            $cpt_absences = mysql_num_rows($query);
-            if($cpt_absences != '0') { $pass = '1'; }
-            if ($pass === '0') { ?><input name="active_absence_eleve[<?php echo $cpt_eleve; ?>]" value="1" type="checkbox" /><?php } else { if($sexe=="M") { ?>Absent<?php } if($sexe=="F") { ?>Absente<?php } ?><input name="active_absence_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><?php }
-            $pass='0';
-            ?>
+	</div>
+	<?php
+	if($passage_auto==='oui' and $passage_form==='') {
+	?>
+	<div style="text-align: center; font: normal 10pt verdana, sans-serif;">
+	<a href="prof_ajout_abs.php?passage_form=manuel">Ceci n'est pas la bonne liste d'appel ?</a>
+		</div>
+	<?php
+	}
+	?>
+	<br />
+	<div style="text-align: center; margin-bottom: 20px;">
+		<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+	</div>
+	<table style="text-align: left; width: 500px;" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
+				<td style="width: 300px; text-align: center;">Liste des &eacute;l&egrave;ves</td>
+				<td style="width: 100px; text-align: center;">Absence</td>
+				<td style="width: 100px; text-align: center;">Retard</td>
+			</tr>
+	<?php
+	$requete_liste_eleve ="SELECT * FROM eleves, groupes, j_eleves_groupes WHERE eleves.login=j_eleves_groupes.login AND j_eleves_groupes.id_groupe=groupes.id AND id = '".$classe."' GROUP BY nom, prenom";
+    $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+	$cpt_eleve = '0';
+	$ic = '1';
+	while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)) {
+		if ($ic === '1') {
+			$ic='2';
+			$couleur_cellule="td_tableau_absence_1";
+			$background_couleur="#E8F1F4";
+		} else {
+			$couleur_cellule="td_tableau_absence_2";
+			$background_couleur="#C6DCE3"; $ic='1';
+		}
+	?>
+			<tr bgcolor="<?php echo $background_couleur; ?>" onmouseover="this.bgColor='#F7F03A';" onmouseout="this.bgColor='<?php echo $background_couleur; ?>'">
+				<td style="width: 400px; font-size: 14px; padding-left: 10px;">
+					<input type="hidden" name="eleve_absent[<?php echo $cpt_eleve; ?>]" value="<?php echo $data_liste_eleve['login']; ?>" />
+					<a href="javascript:centrerpopup('../lib/fiche_eleve.php?select_fiche_eleve=<?php echo $data_liste_eleve['login']; ?>',550,500,'scrollbars=yes,statusbar=no,resizable=yes');">
+					<?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); if($data_liste_eleve['sexe']=="M") { ?> (M.)<?php } elseif ($data_liste_eleve['sexe']=="F") { ?> (Mlle)<?php } $sexe = $data_liste_eleve['sexe']; ?></a></td>
+				<td style="width: 100px; text-align: center;">
+	<?php
+	$pass='0';
+	$requete = "SELECT * FROM absences_eleves
+		WHERE eleve_absence_eleve='".$data_liste_eleve['login']."'
+		AND type_absence_eleve = 'A'
+		AND ( '".date_sql($d_date_absence_eleve)."' BETWEEN d_date_absence_eleve AND a_date_absence_eleve
+			OR d_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."'
+			OR a_date_absence_eleve BETWEEN '".date_sql($d_date_absence_eleve)."' AND '".date_sql($d_date_absence_eleve)."')
+		AND ( '".$d_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+			AND '".$a_heure_absence_eleve."' BETWEEN d_heure_absence_eleve AND a_heure_absence_eleve
+			OR (d_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
+			AND a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."')
+	   )";
+	$query = mysql_query($requete);
+	$cpt_absences = mysql_num_rows($query);
+	if($cpt_absences != '0') {
+		$pass = '1';
+	}
+	if ($pass === '0') {
+		?>
+		<input name="active_absence_eleve[<?php echo $cpt_eleve; ?>]" value="1" type="checkbox" />
+		<?php } else { if($sexe=="M") { ?>Absent<?php } if($sexe=="F") { ?>Absente<?php } ?>
+		<input name="active_absence_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><?php }
+        $pass='0';
+    ?>
             </td>
             <td style="width: 100px; text-align: center;">
             <?php
@@ -589,47 +608,64 @@ $current_groupe = get_group($classe);
 					          OR a_heure_absence_eleve BETWEEN '".$d_heure_absence_eleve."' AND '".$a_heure_absence_eleve."'
 				      		)";
            $cpt_retards = mysql_result(mysql_query($requete_retards),0);
-           if($cpt_retards != '0') { $pass = '1'; }
-           if ($pass === '0') {
-           ?><input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onClick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" /> <input type="text" id="heure_retard_eleve<?php echo $cpt_eleve; ?>" name="heure_retard_eleve[<?php echo $cpt_eleve; ?>]" size="3" maxlength="8" value="<?php echo heure_court($heuredebut_definie_periode); ?>" />
-           <?php } else { ?>En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" /><?php } ?>
-           <?php
+			if($cpt_retards != '0') {
+				$pass = '1';
+			}
+			if ($pass === '0') {
+		?>
+				<input type="checkbox" id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="1" onClick="getHeure(active_retard_eleve<?php echo $cpt_eleve; ?>,heure_retard_eleve<?php echo $cpt_eleve; ?>,'liste_absence_eleve')" />
+				<input type="text" id="heure_retard_eleve<?php echo $cpt_eleve; ?>" name="heure_retard_eleve[<?php echo $cpt_eleve; ?>]" size="3" maxlength="8" value="<?php echo heure_court($heuredebut_definie_periode); ?>" />
+		<?php
+			} else {
+		?>
+				En retard<input id="active_retard_eleve<?php echo $cpt_eleve; ?>" name="active_retard_eleve[<?php echo $cpt_eleve; ?>]" value="0" type="hidden" />
+		<?php
+			}
+		?>
+		<?php
            // Avec ou sans photo
-           if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-               $photos = "../../photos/eleves/".$data_liste_eleve['elenoet'].".jpg";
-               if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-	       $valeur=redimensionne_image_petit($photos);
-               ?>
-               <td>
-               <img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
-               </td>
-           <?php } ?>
+		if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
+			$photos = "../../photos/eleves/".$data_liste_eleve['elenoet'].".jpg";
+			if (!(file_exists($photos))) {
+				$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
+			}
+			$valeur=redimensionne_image_petit($photos);
+		?>
+				<td>
+					<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+				</td>
+		<?php
+		} ?>
 
-           </tr>
+			</tr>
            <?php
-           $type_saisie="A";
-           $cpt_eleve = $cpt_eleve + 1; } ?>
-           </tbody>
-           </table>
-           <input value="0" name="etape" type="hidden" />
-           <input type="hidden" name="nb_i" value="<?php echo $cpt_eleve; ?>" />
-           <input type="hidden" name="type_absence_eleve" value="<?php echo $type_saisie; ?>" />
-           <input type="hidden" name="saisie_absence_eleve" value="<?php echo $_SESSION['login']; ?>" />
-           <input type="hidden" name="classe" value="<?php echo $classe; ?>" />
-           <input type="hidden" name="action_sql" value="ajouter" />
-           <?php if (getSettingValue("active_module_trombinoscopes")=='y')
-               ?><input type="hidden" name="photo" value="<?php echo $photo; ?>" /><?php
-           ?>
-           <input type="hidden" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" />
-           <input type="hidden" name="d_heure_absence_eleve" value="<?php echo $d_heure_absence_eleve; ?>" />
-           <input type="hidden" name="etape" value="2" />
-           <input type="hidden" name="a_heure_absence_eleve" value="<?php echo $a_heure_absence_eleve; ?>" />
-	   		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
-           <div style="text-align: center; margin: 20px;">
-           	<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-           </div>
-        </form>
+		$type_saisie="A";
+		$cpt_eleve = $cpt_eleve + 1;
+	} //while ($data_liste_eleve = mysql_fetch_array($execution_liste_eleve)
+?>
+		</tbody>
+	</table>
+		<input value="0" name="etape" type="hidden" />
+		<input type="hidden" name="nb_i" value="<?php echo $cpt_eleve; ?>" />
+		<input type="hidden" name="type_absence_eleve" value="<?php echo $type_saisie; ?>" />
+		<input type="hidden" name="saisie_absence_eleve" value="<?php echo $_SESSION['login']; ?>" />
+		<input type="hidden" name="classe" value="<?php echo $classe; ?>" />
+		<input type="hidden" name="action_sql" value="ajouter" />
+	<?php if (getSettingValue("active_module_trombinoscopes")=='y'){
+		echo '<input type="hidden" name="photo" value="'.$photo.'" />'."\n";
+	}
+	?>
+		<input type="hidden" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" />
+		<input type="hidden" name="d_heure_absence_eleve" value="<?php echo $d_heure_absence_eleve; ?>" />
+		<input type="hidden" name="etape" value="2" />
+		<input type="hidden" name="a_heure_absence_eleve" value="<?php echo $a_heure_absence_eleve; ?>" />
+		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
+		<div style="text-align: center; margin: 20px;">
+			<input value="Enregistrer" name="Valider" type="submit"  onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
+		</div>
+	</form>
 </div>
-<?php }
+<?php
+} // fin if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $el ...
 require("../../lib/footer.inc.php");
 ?>
