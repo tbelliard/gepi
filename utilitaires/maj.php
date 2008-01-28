@@ -393,10 +393,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/impression_serie.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Impression des listes (PDF) en série', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/impression.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Impression rapide d une listes (PDF) ', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/impression/liste_pdf.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'Impression des listes (PDF)', '');";
-
-
-
-	$tab_req[] = "INSERT INTO droits VALUES ('/init_xml/lecture_xml_sconet.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
+  $tab_req[] = "INSERT INTO droits VALUES ('/init_xml/lecture_xml_sconet.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/init_xml/init_pp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/init_xml/clean_tables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/init_xml/step2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
@@ -538,7 +535,12 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/corrige_ele_id.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction des ELE_ID d apres Sconet', '');";
 
-	//$tab_req[] = "";
+	$tab_req[] = "INSERT INTO droits VALUES ('/mod_inscription/inscription_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', '(De)activation du module inscription', '');";
+  $tab_req[] = "INSERT INTO droits VALUES ('/mod_inscription/inscription_index.php', 'V', 'V', 'V', 'V', 'F', 'V', 'F','', 'accès au module configuration');";
+  $tab_req[] = "INSERT INTO droits VALUES ('/mod_inscription/inscription_config.php', 'V', 'F', 'F', 'V', 'F', 'F','F', '', 'Configuration du module inscription');";
+
+
+  //$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 	if ($test1 == 1) {
@@ -5363,10 +5365,53 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
         }
     }
 
+    //Initialisation des paramètres liés au module inscription
+    $result_inter = "";
+    $result .= "&nbsp;-> Initialisation des paramètres liés au module inscription ";
 
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_items'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(20) NOT NULL default '', heure varchar(10) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id));");
+      if ($result_inter == '')
+          $result .= "<br /><font color=\"green\">La table inscription_items a été créée !</font>";
+      else
+          $result .= $result_inter;
+    } else {
+      $result .= "<br /><font color=\"blue\">La table inscription_items existe déjà.</font>";
+    }
 
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_j_login_items'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');");
+      if ($result_inter == '')
+          $result .= "<br /><font color=\"green\">La table inscription_j_login_items a été créée !</font>";
+      else
+          $result .= $result_inter;
+    } else {
+      $result .= "<br /><font color=\"blue\">La table inscription_j_login_items existe déjà.</font>";
+    }
 
+    $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription'");
+		if ($req == -1)
+			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_inscription', 'n');");
+    else
+       $result .= "<br /><font color=\"blue\">Le paramètre active_inscription existe déjà.</font>";
+    $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_explication'");
+		if ($req == -1)
+      $result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_explication', '<p> <strong>Pr&eacute;sentation des dispositifs du Lyc&eacute;e dans les coll&egrave;ges qui organisent des rencontres avec les parents.</strong> <br />\r\n<br />\r\nChacun d&rsquo;entre vous conna&icirc;t la situation dans laquelle sont plac&eacute;s les &eacute;tablissements : </p>\r\n<ul>\r\n    <li>baisse d&eacute;mographique</li>\r\n    <li>r&eacute;gulation des moyens</li>\r\n    <li>- ... </li>\r\n</ul>\r\nCette ann&eacute;e encore nous devons &ecirc;tre pr&eacute;sents dans les r&eacute;unions organis&eacute;es au sein des coll&egrave;ges afin de pr&eacute;senter nos sp&eacute;cificit&eacute;s, notre valeur ajout&eacute;e, les &eacute;volution du projet, le label international, ... <br />\r\nsur cette feuille, vous avez la possibilit&eacute; de vous inscrire afin d''intervenir dans un ou plusieurs coll&egrave;ges selon vos convenances.');");
+    else
+       $result .= "<br /><font color=\"blue\">Le paramètre mod_inscription_explication existe déjà.</font>";
+    $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_titre'");
+		if ($req == -1)
+      $result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_titre', 'Intervention dans les collèges');");
+		else
+       $result .= "<br /><font color=\"blue\">Le paramètre mod_inscription_titre existe déjà.</font>";
 
+    if ($result_inter == '') {
+      $result .= "<br /><font color=\"green\">Ok !</font><br />";
+    } else {
+           $result .= "<br />".$result_inter;
+    }
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
     saveSetting("versionRc", $gepiRcVersion);

@@ -1150,6 +1150,41 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
     echo "</table>\n";
 }
 
+//
+// Module d'inscription
+//
+if (getSettingValue("active_inscription")=='y') {
+  $chemin = array();
+  $chemin[]="/mod_inscription/inscription_index.php";
+  $chemin[]="/mod_inscription/inscription_config.php";
+
+  $titre = array();
+  $titre[] = "Accès au module d'inscription/visualisation";
+  $titre[] = "Configuration du module d'inscription/visualisation";
+
+  $expli = array();
+  $expli[] = "S'inscrire ou se désinscrire - Consulter les inscriptions";
+  $expli[] = "Configuration des différents paramètres du module";
+
+  $nb_ligne = count($chemin);
+  $affiche = 'no';
+  for ($i=0;$i<$nb_ligne;$i++) {
+      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+  }
+  if ($affiche=='yes') {
+      echo "<table class='menu'>\n";
+      echo "<tr>\n";
+      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - ".getSettingValue("mod_inscription_titre")." - Inscription </th>\n";
+      echo "</tr>\n";
+      for ($i=0;$i<$nb_ligne;$i++) {
+          affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+      }
+      echo "</table>";
+  }
+}
+
+
+
 //=================================
 // AJOUT: boireaus 20071127
 //        Ajout pour un module spécial.

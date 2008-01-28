@@ -87,6 +87,7 @@ $chemin[] = "/edt_organisation/edt.php";
 if ($force_msj) $chemin[] = "/mod_miseajour/admin/index.php";
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $chemin[] = "/mod_notanet/notanet_admin.php";
+$chemin[] = "/mod_inscription/inscription_admin.php";
 
 $titre = array(
 "Cahier de textes",
@@ -96,6 +97,7 @@ $titre[] = "Emploi du temps";
 if ($force_msj) $titre[] = "Mise à jour automatisée";
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
+$titre[] = "Inscription";
 
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
@@ -110,6 +112,7 @@ $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
 $expli[] = "Pour gérer le module Années antérieures";
+$expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
 
 $nb_ligne = count($chemin);
 //
