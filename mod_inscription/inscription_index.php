@@ -78,7 +78,7 @@ require_once("../lib/header.inc");
 <?php
 echo getSettingValue("mod_inscription_explication");
 
-echo "<form name=\"formulaire\" method=\"post\">";
+echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_index.php\">";
 echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
 
 echo "<tr>\n";
@@ -115,24 +115,25 @@ while ($i < $nombre_lignes){
     $nb_inscrits = mysql_num_rows($inscrits);
     if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
     $k = 0;
+    $nom_prenom = "";
     while ($k < $nb_inscrits) {
         $login_inscrit = mysql_result($inscrits, $k, "login");
         $nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
         $prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
         if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
         if ($prenom_inscrit == -1) $prenom_inscrit = "";
-        $noms_prenom =$prenom_inscrit." ".$nom_inscrit."<br />";
+        $nom_prenom =$prenom_inscrit." ".$nom_inscrit."<br />";
         $k++;
 
     }
 
 
     echo "<tr>\n";
-    echo "<td>$id</td>\n";
+    echo "<td>$id $inscrit</td>\n";
     echo "<td>$date</td>\n";
     echo "<td>$heure</td>\n";
     echo "<td>$description</td>\n";
-    echo "<td>".$noms_prenom."</td>\n";
+    echo "<td>".$nom_prenom."</td>\n";
     echo "<td><input type=\"checkbox\" name=\"".$id."\" value=\"y\" ";
     if ($inscrit == $id) echo " checked";
     echo " /></td>\n";
@@ -143,10 +144,6 @@ echo "</table>";
 echo "<input type=\"hidden\" name=\"is_posted\" value=\"yes\" />";
 echo "<div id=\"fixe\"><center>";
 echo "<input type=\"submit\" name=\"ok\" value=\"Enregistrer\" />";
-echo "</center></div>";
+echo "</center></div></form><br />&nbsp;<br />&nbsp;<br />&nbsp;";
 
-
-?>
-</form>
-</body>
-</html>
+require("../lib/footer.inc.php");?>
