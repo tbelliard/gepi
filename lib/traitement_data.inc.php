@@ -75,6 +75,7 @@ function cree_variables_non_protegees() {
                 $NON_PROTECT[$temp] = stripslashes($_POST[$key]);
             else
                 $NON_PROTECT[$temp] = $_POST[$key];
+
         }
     }
 }
@@ -96,7 +97,7 @@ $liste_scripts_non_traites = array(
 
 $url = parse_url($_SERVER['REQUEST_URI']);
 // On traite les données postées si nécessaire
-if (    (!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
+if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
   array_walk($_GET, 'anti_inject');
   array_walk($_POST, 'anti_inject');
 }

@@ -54,11 +54,11 @@ define('LCS_PAGE_LDAP_INC_PHP',"/var/www/Annu/includes/ldap.inc.php");
 // R?alise la connexion ? la base d'authentification du LCS et include des fonctions de lcs/includes/functions.inc.php
 define('LCS_PAGE_AUTH_INC_PHP',"/var/www/lcs/includes/headerauth.inc.php");
 // adresse du serveur LDAP du SE3 (necessaire pour l'importation initiale de la base)
-$lcs_ldap_host = '192.168.1.2';
+$lcs_ldap_host = 'lpi200.lpi.ac-poitiers.fr';
 // le port usuel du serveur
 $lcs_ldap_port = '389';
 // la base DN
-$lcs_ldap_base_dn = "dc=etab,dc=ac-xxxxx,dc=fr";
+$lcs_ldap_base_dn = "dc=lpi,dc=ac-poitiers,dc=fr";
 
 # Apr?s installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: mysql_real_escape_string() ...",
 # votre version de PHP est inf?rieure ? 4.3.0.
@@ -274,7 +274,9 @@ $liste_tables = array(
 "j_eleves_groupes",
 "j_groupes_classes",
 "j_groupes_professeurs",
-"j_groupes_matieres"
+"j_groupes_matieres",
+"inscription_items",
+"inscription_j_login_items"
 );
 
 # Make sure notice errors are not reported

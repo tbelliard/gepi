@@ -147,6 +147,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $req[] = "DELETE FROM j_scol_classes WHERE login='$cible1';";
 	$nombre_req++;
 
+    $mess[] = "Table de jointure du module Inscription :";
+    $test_nb[] = "SELECT * FROM inscription_j_login_items WHERE login='$cible1'";
+    $req[] = "DELETE FROM inscription_j_login_items WHERE login='$cible1';";
+	$nombre_req++;
+
 	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_config';");
 	if(mysql_num_rows($test_existence)>0){
 		$mess[] = "Table des responsables de l'observatoire :";
