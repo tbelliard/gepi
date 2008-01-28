@@ -718,6 +718,11 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
     $type_note = @mysql_result($call_data, 0, "type_note");
     $display_begin = @mysql_result($call_data, 0, "display_begin");
     $display_end = @mysql_result($call_data, 0, "display_end");
+    $display_bul = @mysql_result($call_data, 0, "display_bulletin");
+    // On vérifie que ces aid sont autorisés à l'affichage
+    if ($display_bul == "n") {
+    	return "";
+    }
 
     $aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
     $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
