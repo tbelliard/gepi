@@ -57,6 +57,21 @@ if (isset($add_prof) and ($add_prof == "yes")) {
 }
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
+    // Les élèves responsable : à chercher parmi les élèves de l'AID
+    // On commence par supprimer les élèves responsables
+    sql_query("delete from j_aid_eleves_resp where id_aid='$aid_id' and indice_aid='$indice_aid'");
+    // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
+    $call_eleves = mysql_query("SELECT * FROM j_aid_eleves WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')");
+    $nombre = mysql_num_rows($call_eleves);
+    $i = "0";
+    while ($i < $nombre) {
+        $login_eleve = mysql_result($call_eleves, $i, "login");
+        if (isset($_POST[$login_eleve."_resp"])) {
+            sql_query("insert into j_aid_eleves_resp set id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
+        }
+        $i++;
+    }
+
     // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
     $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
@@ -68,6 +83,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
             if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'élève"; } else { $msg = "L'élève a bien été ajouté."; }
         }
     }
+    $msg .= "<br />Les modifications ont été enregistrées.";
     $flag = "eleve";
 }
 
@@ -75,6 +91,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
+$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 
 $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 $aid_nom = mysql_result($calldata, 0, "nom");
@@ -158,7 +175,8 @@ if ($flag == "eleve") {
     <?php
     $vide = 1;
     // Ajout d'un tableau
-	echo "<table class=\"aid_tableau\">";
+echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
+	echo "<table class=\"aid_tableau\" border=\"0\">";
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
     $nombre = mysql_num_rows($call_liste_data);
@@ -171,19 +189,29 @@ if ($flag == "eleve") {
 			$s = "";
 		}
     echo "<tr><td>\n";
-    echo $nombre." élève".$s.".\n</td></tr>\n";
+    echo $nombre." élève".$s.".\n</td><td></td>";
+    if ($activer_outils_comp == "y") {
+      echo "<td>Elève responsable (*)</td>";
+    }
+    echo "</tr>\n";
     $i = "0";
     while ($i < $nombre) {
         $vide = 0;
         $login_eleve = mysql_result($call_liste_data, $i, "login");
         $nom_eleve = mysql_result($call_liste_data, $i, "nom");
         $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
-
+        $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
         $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
         echo "<tr><td>\n";
         echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
-        echo "</td></tr>\n";
+        echo "</td>";
+        if ($activer_outils_comp == "y") {
+            echo "<td><center><input type=\"checkbox\" name=\"".$login_eleve."_resp\" value=\"y\" ";
+            if ($eleve_resp!=-1) echo " checked ";
+        echo "/></center></td>";
+        }
+        echo "</tr>\n";
     $i++;
     }
 
@@ -197,8 +225,7 @@ if ($flag == "eleve") {
     if ($nombreligne != 0) {
         echo "<br />\n<p><span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>\n";
         echo "<a href=\"modify_aid_new.php?id_aid=".$aid_id."&amp;indice_aid=".$indice_aid."\">Lister les élèves par classe</a>\n";
-        echo "<br /><form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
-        echo "<select size=\"1\" name=\"reg_add_eleve_login\">";
+        echo "<br /><select size=\"1\" name=\"reg_add_eleve_login\">";
         //echo "<option value=''><p>(aucun)</p></option>";
         echo "<option value=''>(aucun)</option>\n";
         $i = "0" ;
@@ -214,15 +241,20 @@ if ($flag == "eleve") {
         }
         ?>
         </select>
-        <input type=hidden name=add_eleve value=yes />
-        <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-        <input type=hidden name=aid_id value="<?php echo $aid_id;?>" />
-        <input type=submit value='Enregistrer' />
-        </form>
+
 
 <?php } else {
         echo "<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
     }
+    ?>
+    <input type=hidden name=add_eleve value=yes />
+    <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
+    <input type=hidden name=aid_id value="<?php echo $aid_id;?>" />
+    <input type=submit value='Enregistrer' />
+    </form>
+    <?php if ($activer_outils_comp == "y") {?>
+    <p><br />(*) Les &eacute;l&egrave;ves responsables peuvent par exemple acc&eacute;der dans certaines conditions &agrave; l'&eacute;dition des fiches AID.
+    <?php }
 }
 require ("../lib/footer.inc.php");
 ?>

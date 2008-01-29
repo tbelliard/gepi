@@ -70,13 +70,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     // Suppression d'un élève d'une aid
     case "del_eleve_aid":
-    $nombre_req = 2;
+    $nombre_req = 3;
     $mess[0] = "Table de jointure aid/eleves";
     $test_nb[0] = "SELECT * FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[0] = "DELETE FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[1] = "Table des appréciations aid";
-    $test_nb[1] = "SELECT * FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $req[1] = "DELETE FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
+    $mess[1] = "Table de jointure aid/eleves responsable";
+    $test_nb[1] = "SELECT * FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
+    $req[1] = "DELETE FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
+    $mess[2] = "Table des appréciations aid";
+    $test_nb[2] = "SELECT * FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
+    $req[2] = "DELETE FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     break;
 
     // Suppression d'un type d'AID
