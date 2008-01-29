@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: accueil_modules.php 1398 2008-01-28 20:42:10Z delineau $
+ * $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
