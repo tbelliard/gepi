@@ -569,6 +569,7 @@ INSERT INTO setting VALUES ('autorise_edt_admin', 'y');
 INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');
 INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');
 INSERT INTO setting VALUES ('active_absences_parents', 'no');
+INSERT INTO setting VALUES ('creneau_different', 'n');
 INSERT INTO setting VALUES ('active_inscription', 'n');
 INSERT INTO setting VALUES ('mod_inscription_explication', '<p> <strong>Pr&eacute;sentation des dispositifs du Lyc&eacute;e dans les coll&egrave;ges qui organisent des rencontres avec les parents.</strong> <br />\r\n<br />\r\nChacun d&rsquo;entre vous conna&icirc;t la situation dans laquelle sont plac&eacute;s les &eacute;tablissements : </p>\r\n<ul>\r\n    <li>baisse d&eacute;mographique</li>\r\n    <li>r&eacute;gulation des moyens</li>\r\n    <li>- ... </li>\r\n</ul>\r\nCette ann&eacute;e encore nous devons &ecirc;tre pr&eacute;sents dans les r&eacute;unions organis&eacute;es au sein des coll&egrave;ges afin de pr&eacute;senter nos sp&eacute;cificit&eacute;s, notre valeur ajout&eacute;e, les &eacute;volution du projet, le label international, ... <br />\r\nsur cette feuille, vous avez la possibilit&eacute; de vous inscrire afin d''intervenir dans un ou plusieurs coll&egrave;ges selon vos convenances.');
 INSERT INTO setting VALUES ('mod_inscription_titre', 'Intervention dans les collèges');
@@ -592,4 +593,3 @@ INSERT INTO droits VALUES ('/responsables/corrige_ele_id.php', 'V', 'F', 'F', 'F
 INSERT INTO droits VALUES ('/mod_inscription/inscription_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', '(De)activation du module inscription', '');
 INSERT INTO droits VALUES ('/mod_inscription/inscription_index.php', 'V', 'V', 'V', 'V', 'F', 'V', 'F','', 'accès au module configuration');
 INSERT INTO droits VALUES ('/mod_inscription/inscription_config.php', 'V', 'F', 'F', 'V', 'F', 'F','F', '', 'Configuration du module inscription');
-
