@@ -68,7 +68,8 @@ $nb_enr_tableau = sizeof ($donnees_personne_csv['login']);
 
 if (($donnees_personne_csv)) {
     // On rechercher par rapport au premier login si c'est un eleve ou un parent. ==> format de sortie CSV différent.
-	$login=$donnees_personne_csv['login'][1];
+	//$login=$donnees_personne_csv['login'][1];
+	$login=$donnees_personne_csv['login'][0];
 	$sql_statut="SELECT statut FROM utilisateurs WHERE login='$login'";
 	$resultat_statut = mysql_query($sql_statut);
 	$statut = mysql_result($resultat_statut, 0, "statut");
