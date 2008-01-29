@@ -1155,15 +1155,15 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 //
 if (getSettingValue("active_inscription")=='y') {
   $chemin = array();
-  $chemin[]="/mod_inscription/inscription_index.php";
+  if (getSettingValue("active_inscription_utilisateurs")=='y') $chemin[]="/mod_inscription/inscription_index.php";
   $chemin[]="/mod_inscription/inscription_config.php";
 
   $titre = array();
-  $titre[] = "Accès au module d'inscription/visualisation";
+  if (getSettingValue("active_inscription_utilisateurs")=='y') $titre[] = "Accès au module d'inscription/visualisation";
   $titre[] = "Configuration du module d'inscription/visualisation";
 
   $expli = array();
-  $expli[] = "S'inscrire ou se désinscrire - Consulter les inscriptions";
+  if (getSettingValue("active_inscription_utilisateurs")=='y') $expli[] = "S'inscrire ou se désinscrire - Consulter les inscriptions";
   $expli[] = "Configuration des différents paramètres du module";
 
   $nb_ligne = count($chemin);

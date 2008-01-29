@@ -62,13 +62,9 @@ require_once("../lib/header.inc");
 
 <form action="inscription_admin.php" name="form1" method="post">
 <p>Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
-au(x)quel(s) les professeurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.<br />
-<ul>
-<li>La configuration du module est accéssible aux administrateurs.</li>
-<li>L'interface d'inscription/désinscription est accessible aux professeurs, cpe, administrateur et vie scolaire.</li>
-</ul>
-
-
+au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.<br />
+<a href="help.php" target="_blank">Consultez l'aide</a> pour en savoir plus.
+<br /><br />
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_inscription")=='y') echo " checked"; ?> />
 &nbsp;Activer l'accès au module Inscription<br />
 <input type="radio" name="activer" value="n" <?php if (getSettingValue("active_inscription")=='n') echo " checked"; ?> />

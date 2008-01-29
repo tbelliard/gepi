@@ -65,14 +65,15 @@ if (isset($_GET['action']) and ($_GET['action'] == "supprimer")) {
 
 if (isset($_POST['is_posted_notes'])) {
   $msg = "";
-
-  if (isset($NON_PROTECT['notes'])) {
+  if (!saveSetting("active_inscription_utilisateurs", $_POST['activer']))
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	if (isset($NON_PROTECT['notes'])) {
     $msg = "";
     $imp = traitement_magic_quotes($NON_PROTECT['notes']);
     if (!saveSetting("mod_inscription_explication", $imp)) $msg .= "Erreur lors de l'enregistrement du paramètre mod_inscription_explication !";
   }
   if (!saveSetting("mod_inscription_titre", $_POST['mod_inscription_titre']))
-        $msg .= "Erreur lors de l'enregistrement de mod_inscription_titre !";
+    $msg .= "Erreur lors de l'enregistrement de mod_inscription_titre !";
 }
 if (isset($_POST['is_posted'])) {
     $msg = "";
@@ -107,7 +108,7 @@ require_once("../lib/header.inc");
 
 // Ajout d'un item
 if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
-    echo "<p class=bold>|<a href=\"./inscription_config.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> |</p>";
+    echo "<p class=bold>|<a href=\"./inscription_config.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"help.php\" target=\"_blank\">Aide</a>|</p>";
     echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_config.php\">";
     if (isset($id_inter)) {
         $req = mysql_query("select * from inscription_items where id='".$id_inter."'");
@@ -136,8 +137,20 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     die();
 }
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> |</p>";
+echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"help.php\" target=\"_blank\">Aide</a>|</p>";
 echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">";
+echo "<H2>Activation  / Désactivation</H2>";
+$active_prof = getSettingValue("active_inscription_utilisateurs");
+if ($active_prof == "y") {
+  echo "Actuellement, la page autorisant les inscriptions est activée : les utilisateurs (professeurs, cpe, scolarité) peuvent donc s'inscrire.";
+} else {
+  echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (professeurs, cpe, scolarité) ne peuvent pas s'inscrire.";
+}
+?><br /> <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
+&nbsp;Activer l'acc&egrave;s aux inscriptions<br />
+<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_inscription_utilisateurs")=='n') echo " checked"; ?> />
+&nbsp;Désactiver l'accès aux inscriptions
+<?php
 echo "<H2>Liste des items</H2>";
 if ($nombre_lignes != 0) {
   echo "<p>Chaque item ci-dessous correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>";
