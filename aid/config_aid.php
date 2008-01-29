@@ -25,10 +25,6 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-extract($_GET, EXTR_OVERWRITE);
-extract($_POST, EXTR_OVERWRITE);
-
-
 // Resume session
 $resultat_session = resumeSession();
 
@@ -45,17 +41,44 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+// ========== Iniialisation des variables ==========
+$reg_nom = isset($_POST["reg_nom"]) ? $_POST["reg_nom"] : NULL;
+$reg_nom_complet = isset($_POST["reg_nom_complet"]) ? $_POST["reg_nom_complet"] : NULL;
+$note_max = isset($_POST["note_max"]) ? $_POST["note_max"] : NULL;
+$display_begin = isset($_POST["display_begin"]) ? $_POST["display_begin"] : NULL;
+$display_end = isset($_POST["display_end"]) ? $_POST["display_end"] : NULL;
+$type_note = isset($_POST["type_note"]) ? $_POST["type_note"] : NULL;
+$order_display1 = isset($_POST["order_display1"]) ? $_POST["order_display1"] : NULL;
+$order_display2 = isset($_POST["order_display2"]) ? $_POST["order_display2"] : NULL;
+$message = isset($_POST["message"]) ? $_POST["message"] : NULL;
+$display_nom = isset($_POST["display_nom"]) ? $_POST["display_nom"] : NULL;
+$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL;
+$display_bulletin = isset($_POST["display_bulletin"]) ? $_POST["display_bulletin"] : 'n';
+$bull_simplifie = isset($_POST["bull_simplifie"]) ? $_POST["bull_simplifie"] : 'n';
+$is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 
-
+// ========== fin initialisation ===================
 
 if (isset($is_posted) and ($is_posted == "1")) {
-    if ($display_end < $display_begin) {$display_end = $display_begin;}
-    if (!isset($display_bulletin)) $display_bulletin = 'n'; // Compatibilité avec version
-    $del = mysql_query("DELETE FROM aid_config WHERE indice_aid = '$indice_aid'");
-    echo "<!-- DELETE FROM aid_config WHERE indice_aid = '$indice_aid' -->";
-    $reg_data = mysql_query("INSERT INTO aid_config SET nom='".$reg_nom."', nom_complet='".$reg_nom_complet."', note_max='$note_max', display_begin='$display_begin', display_end='$display_end', type_note='$type_note', order_display1 = '$order_display1', order_display2 = '$order_display2', message ='".$message."', display_nom='$display_nom', indice_aid='$indice_aid', display_bulletin='$display_bulletin'");
-    if (!$reg_data) {
-        $msg = "Erreur lors de l'enregistrement des données !";
+	if ($display_end < $display_begin) {$display_end = $display_begin;}
+	$del = mysql_query("DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
+	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
+	$reg_data = mysql_query("INSERT INTO aid_config SET
+			nom='".$reg_nom."',
+			nom_complet='".$reg_nom_complet."',
+			note_max='".$note_max."',
+			display_begin='".$display_begin."',
+			display_end='".$display_end."',
+			type_note='".$type_note."',
+			order_display1 = '".$order_display1."',
+			order_display2 = '".$order_display2."',
+			message ='".$message."',
+			display_nom='".$display_nom."',
+			indice_aid='".$indice_aid."',
+			display_bulletin='".$display_bulletin."',
+			bull_simplifie = '".$bull_simplifie."'");
+	if (!$reg_data) {
+		$msg = "Erreur lors de l'enregistrement des données !";
     } else {
         $msg = "Enregistrement réussi !";
     }
@@ -128,16 +151,11 @@ if (isset($indice_aid)) {
     $message = @mysql_result($call_data, 0, "message");
     $display_nom = @mysql_result($call_data, 0, "display_nom");
     $display_bulletin = @mysql_result($call_data, 0, "display_bulletin");
+    $bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
 
     // Compatibilité avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
 
-/*
-    // AJOUT: boireaus
-    echo "<script language='javascript' type='text/javascript'>
-    setTimeout('window.location=\"index.php\"',1000);
-</script>\n";
-*/
 } else {
     $call_data = mysql_query("SELECT max(indice_aid) max FROM aid_config");
     $indice_aid = @mysql_result($call_data, 0, "max");
@@ -151,6 +169,7 @@ if (isset($indice_aid)) {
     $order_display2 = '';
     $type_note = "every";
     $display_bulletin = "y";
+    $bull_simplifie = "y";
 }
 
 ?>
@@ -158,11 +177,11 @@ if (isset($indice_aid)) {
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements(this, 'reg_nom_complet') && (emptyFormElements(this, 'reg_nom')) && checkFormElementInRange(this, 'order_display2', 0, 100))"-->
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements(this, 'reg_nom_complet') &amp;&amp; (emptyFormElements(this, 'reg_nom')) &amp;&amp;s checkFormElementInRange(this, 'order_display2', 0, 100))"-->
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') && (emptyFormElements('formulaire', 'reg_nom')) && checkFormElementInRange('formulaire', 'order_display2', 0, 100))"-->
-<form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
+<form enctype="multipart/form-data" name="formulaire" action="config_aid.php" method="post" onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
 
-<div class='norme'><p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<div class='norme'><p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
-<input type=submit value=Enregistrer /><br />
+<input type="submit" value="Enregistrer" /><br />
 
 <br /><b>Configuration des AID (Activités Inter-Disciplinaires) :</b>
 
@@ -170,21 +189,21 @@ if (isset($indice_aid)) {
 
 Choisissez le nom complet de l'AID (par exemple Travaux Pratiques Encadrés) :
 
-<br />Nom complet : <input type=text name=reg_nom_complet size=40 <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}?> />
+<br />Nom complet : <input type="text" name="reg_nom_complet" size="40" <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}?> />
 
 <br /><br />Choisissez le nom abrégé de l'AID (par exemple T.P.E.) :
 
-<br />Nom : <input type=text name=reg_nom size=20 <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> />
+<br />Nom : <input type="text" name="reg_nom" size="20" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> />
 
 <hr />
 
 Type de notation :  <br />
 
-<input type=radio name=type_note value=every <?php if (($type_note == "every") or ($type_note == "")) { echo "CHECKED" ;} ?> /> Une note pour chaque période
+<input type="radio" name="type_note" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /> Une note pour chaque période
 
-<input type=radio name=type_note value=last <?php if ($type_note == "last") { echo "CHECKED" ;} ?> /> Une note uniquement pour la dernière période
+<input type="radio" name="type_note" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /> Une note uniquement pour la dernière période
 
-<input type=radio name=type_note value=no <?php if ($type_note == "no") { echo "CHECKED" ;} ?> onclick="mise_a_zero()" /> Pas de note
+<input type="radio" name="type_note" value="no" <?php if ($type_note == "no") { echo ' checked="checked"';} ?> onclick="mise_a_zero()" /> Pas de note
 
 <hr />
 
@@ -212,7 +231,7 @@ $i = 1;
 
 while ($i < $max_periode) {
 
-    echo "<option"; if ($display_begin==$i) {echo " selected";} echo ">$i";
+    echo "<option"; if ($display_begin==$i) {echo ' selected="selected"';} echo ">$i";
 
     $i++;
 
@@ -232,7 +251,7 @@ $i = 1;
 
 while ($i < $max_periode) {
 
-    echo "<option"; if ($display_end==$i) {echo " selected";} echo ">$i";
+    echo "<option"; if ($display_end==$i) {echo ' selected="selected"';} echo ">$i";
 
     $i++;
 
@@ -250,45 +269,56 @@ while ($i < $max_periode) {
 
 Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
 
-<br />Note maximum : <input type=text name=note_max size=20 <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
+<br />Note maximum : <input type="text" name="note_max" size="20" <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
 
 <hr />
 
 Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :<br />
 
-<input type=radio name=display_nom value=y <?php if (($display_nom == "y") or ($display_nom == "")) { echo "CHECKED" ;} ?> /> Oui
+<input type="radio" name="display_nom" value="y" <?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> /> Oui
 
-<input type=radio name=display_nom value=n <?php if ($display_nom == "n") { echo "CHECKED" ;} ?> /> Non
+<input type="radio" name="display_nom" value="n" <?php if ($display_nom == "n") { echo ' checked="checked"';} ?> /> Non
 
 <hr />
 
 Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :<br />
 
-<input type=text name=message size=40 <?php if ($message) { echo "value=\"".$message."\"";}?> />
+<input type="text" name="message" size="40" <?php if ($message) { echo "value=\"".$message."\"";}?> />
 
 <hr />
 
-Place de la case réservée à cette aid dans le bulletin final :<br />
+<p>Place de la case réservée à cette aid dans le bulletin final :</p>
+<p>
+<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" <?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"';;} ?> />
+<label for="orderDisplay1Y"> En début du bulletin</label>
+<input type="radio"id="orderDisplay1N" name="order_display1" value="e" <?php if ($order_display1 == "e") { echo ' checked="checked"';;} ?> />
+<label for="orderDisplay1N"> En fin de bulletin</label>
+</p>
 
-<input type=radio name=order_display1 value=b <?php if (($order_display1 == "b") or (!$order_display1)) { echo "CHECKED" ;} ?> /> En début du bulletin
 
-<input type=radio name=order_display1 value=e <?php if ($order_display1 == "e") { echo "CHECKED" ;} ?> /> En fin de bulletin
+
+
 
 <br />
 
 Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 
-<input type=text name=order_display2 size=1 <?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";}?> />
+<input type="text" name="order_display2" size="1" <?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";}?> />
 
 <hr />
 
-Affichage :  <br />
-
-<input type=checkbox name=display_bulletin value='y' <?php if ($display_bulletin == "y") { echo "CHECKED" ;} ?> /> L'AID apparaît dans le bulletin officiel (si la case est décochée la rubrique AID n'apparaît que dans le bulletin simplifié)
-
+<p>Affichage :  </p>
+<p>
+<input type="checkbox" id="displayBulletin" name="display_bulletin" value="y" <?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
+<label for="displayBulletin">L'AID apparaît dans le bulletin officiel</label>
+</p>
+<p>
+<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' <?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
+<label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
+</p>
 </div>
-<input type=hidden name=is_posted value=1 />
-<input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-<input type=submit value=Enregistrer />
+<input type="hidden" name="is_posted" value="1" />
+<input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+<input type="submit" value="Enregistrer" />
 </form>
-<?php require("../lib/footer.inc.php");
+<?php require("../lib/footer.inc.php"); ?>

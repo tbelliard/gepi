@@ -48,54 +48,27 @@ if (getSettingValue("active_module_absence")!='y') {
     die("Le module n'est pas activé.");
 }
 
-// fonction de sécuritée
+// ================= fonctions de sécuritée =======================
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
 if(empty($_SESSION['uid_prime'])) {
 	$_SESSION['uid_prime']='';
 }
-if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {
-	$uid_post='';
-}else {
-	if (isset($_GET['uid_post'])) {
-		$uid_post=$_GET['uid_post'];
-	}
-	if (isset($_POST['uid_post'])) {
-		$uid_post=$_POST['uid_post'];
-	}
-}
-	$uid = md5(uniqid(microtime(), 1));
-	   // on remplace les %20 par des espaces
-	    $uid_post = eregi_replace('%20',' ',$uid_post);
+$uid_post = isset($_GET["uid_post"]) ? $_GET["uid_post"] : (isset($_POST["uid_post"]) ? $_POST["uid_post"] : NULL);
+
+$uid = md5(uniqid(microtime(), 1));
+// on remplace les %20 par des espaces
+$uid_post = eregi_replace('%20',' ',$uid_post);
 if($uid_post===$_SESSION['uid_prime']) {
 	$valide_form = 'yes';
 } else {
 	$valide_form = 'no';
 }
 	$_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécuritée
+// ================= fin des fonctions de sécuritée =======================
+// On inclut les fonctions
+require_once("fonctions_prof_abs.php");
 
-// permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
-function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
-	global $prefix_base;
-		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
-		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
-	$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
-	if( $cpt_lettre_suivi == 1 ) {
-		$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
-		mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-	}
-	// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
-	$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
-	if( $cpt_lettre_suivi == 1 ) {
-		$requete = mysql_query("SELECT * FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'");
-		$donnee = mysql_fetch_array($requete);
-		$remplace_sa = ','.$id_absence_eleve.',';
-		$modifier_par = ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
-		$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$modifier_par."', envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-			mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-	}
-}
 $menuBar = isset($_GET["menuBar"]) ? $_GET["menuBar"] : NULL;
 $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $d_heure_absence_eleve = isset($_POST['d_heure_absence_eleve']) ? $_POST['d_heure_absence_eleve'] : NULL;
@@ -107,13 +80,12 @@ $heurefin_definie_periode = isset($_POST["heurefin_definie_periode"]) ? $_POST["
 $d_date_absence_eleve = isset($_POST["d_date_absence_eleve"]) ? $_POST["d_date_absence_eleve"] : date('d/m/Y');
 $classe = isset($_POST["classe"]) ? $_POST["classe"] : "";
 $eleve_initial = isset($_POST["eleve_initial"]) ? $_POST["eleve_initial"] :"";
-if(empty($etape)) { $etape = ''; }
 
 if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) {
 	$d_date_absence_eleve = date_fr($d_date_absence_eleve);
 }
 if (getSettingValue("active_module_trombinoscopes")=='y') {
-	$photo = isset($_POST["photo"]) ? $_POST["photo"] :"";
+	$photo = isset($_POST["photo"]) ? $_POST["photo"] : "";
 }
 
 // Si une classe et un élève sont définis en même temps, on réinitialise
@@ -121,24 +93,18 @@ if ($classe!="" and $eleve_initial!="") {
     $classe="";
     $eleve_initial="";
 }
-$etape = isset($_POST["etape"]) ? $_POST["etape"] :(isset($_GET["etape"]) ? $_GET["etape"] :1);
-if (empty($_POST['action_sql'])) {$action_sql = ''; } else {$action_sql=$_POST['action_sql']; }
-
-
+$etape = isset($_POST["etape"]) ? $_POST["etape"] : (isset($_GET["etape"]) ? $_GET["etape"] : 1);
+$action_sql = isset($_POST["action_sql"]) ? $_POST["action_sql"] : NULL;
 $id = isset($_POST["id"]) ? $_POST["id"] :"";
+$saisie_absence_eleve = isset($_POST["saisie_absence_eleve"]) ? $_POST["saisie_absence_eleve"] : NULL;
+$eleve_absent = isset($_POST["eleve_absent"]) ? $_POST["eleve_absent"] : NULL;
+$active_absence_eleve = isset($_POST["active_absence_eleve"]) ? $_POST["active_absence_eleve"] : NULL;
+$active_retard_eleve = isset($_POST["active_retard_eleve"]) ? $_POST["active_retard_eleve"] : NULL;
+$heure_retard_eleve = isset($_POST["heure_retard_eleve"]) ? $_POST["heure_retard_eleve"] : NULL;
+$edt_enregistrement = isset($_POST["edt_enregistrement"]) ? $_POST["edt_enregistrement"] : NULL;
+$passage_form = isset($_GET['passage_form']) ? $_GET['passage_form'] : (isset($_POST['passage_form']) ? $_POST['passage_form'] : NULL);
 
-if (empty($_POST['saisie_absence_eleve'])) {$saisie_absence_eleve = ''; } else {$saisie_absence_eleve=$_POST['saisie_absence_eleve']; }
-if (empty($_POST['eleve_absent'])) {$eleve_absent = ''; } else {$eleve_absent=$_POST['eleve_absent']; }
-if (empty($_POST['active_absence_eleve'])) {$active_absence_eleve = ''; } else {$active_absence_eleve=$_POST['active_absence_eleve']; }
-if (empty($_POST['active_retard_eleve'])) {$active_retard_eleve = ''; } else {$active_retard_eleve=$_POST['active_retard_eleve']; }
-if (empty($_POST['heure_retard_eleve'])) {$heure_retard_eleve = ''; } else {$heure_retard_eleve=$_POST['heure_retard_eleve']; }
-
-if (empty($_POST['edt_enregistrement'])) {$edt_enregistrement = ''; } else {$edt_enregistrement=$_POST['edt_enregistrement']; }
-
-    if (empty($_GET['passage_form']) and empty($_POST['passage_form'])) {$passage_form='';}
-     else { if (isset($_GET['passage_form'])) {$passage_form=$_GET['passage_form'];} if (isset($_POST['passage_form'])) {$passage_form=$_POST['passage_form'];} }
-    $passage_auto='';
-
+$passage_auto='';
 $heure_choix = date('G:i');
 $num_periode = periode_actuel($heure_choix);
 $datej = date('Y-m-d');
@@ -152,13 +118,13 @@ $erreur = '0';
 $nb = '0';
 
 if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='yes') {
-	$type_absence_eleve = $_POST['type_absence_eleve'];
+	$type_absence_eleve = isset($_POST['type_absence_eleve']) ? $_POST['type_absence_eleve'] : NULL;
 	$d_date_absence_eleve_format_sql = date_sql($_POST['d_date_absence_eleve']);
 	$a_date_absence_eleve_format_sql = $d_date_absence_eleve_format_sql;
 	$justify_absence_eleve = "N";
 	$motif_absence_eleve = "A";
 
-	$nb_i = isset($_POST["nb_i"]) ? $_POST["nb_i"] :1;
+	$nb_i = isset($_POST["nb_i"]) ? $_POST["nb_i"] : 1;
 	$total = '0';
 
 	while ($total < $nb_i) {
@@ -203,11 +169,11 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 			$heurefin_definie_periode_ins = $a_heure_absence_eleve;
 
 			if(!isset($active_retard_eleve[$total])) {
-				$active_retard_eleve[$total]='0';
+				$active_retard_eleve[$total] = '0';
 			}
-			if($active_retard_eleve[$total]!='1') {
+			if($active_retard_eleve[$total] != '1') {
 				//on prend les donnée pour les vérifier
-				$miseajour='';
+				$miseajour = '';
 				while ($data = mysql_fetch_array($resultat)) {
 					//id de la base sélectionné
 					$id_abs = $data['id_absence_eleve'];
@@ -404,7 +370,17 @@ echo "</p>";
 // Première étape
     if($passage_form != 'manuel') {
     	//horaire dans lequel nous nous trouvons actuellement
-		$horaire = periode_heure(periode_actuel(date('H:i:s')));
+    	// en tenant compte du jour différent
+    	if (getSettingValue("creneau_different") != 'n') {
+			if (date("w") == getSettingValue("creneau_different")) {
+				$horaire = periode_heure_mercredi(periode_actuel_mercredi(date('H:i:s')));
+			} else {
+				$horaire = periode_heure(periode_actuel(date('H:i:s')));
+			}
+		}else {
+			$horaire = periode_heure(periode_actuel(date('H:i:s')));
+		}
+
 		// jour de la semaine au format chiffre
 		$jour_aujourdhui = jour_semaine($datej);
 
@@ -434,53 +410,99 @@ echo "</p>";
 		}
 	}
 
-if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) { ?>
- <div style="text-align: center; margin: auto; width: 550px;">
+if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $etape != '3' ) or $msg_erreur != '' ) {
+?>
+	<div style="text-align: center; margin: auto; width: 550px;">
 	<h2>Saisie des absences : choix du cours</h2>
-	<?php if ( $msg_erreur != '' ) { echo '<span style="color: #FF0000; font-weight: bold;">'.$msg_erreur.'</span>'; } ?>
-       <form method="post" action="prof_ajout_abs.php" name="absence">
-          Date
-	  <?php if(empty($d_date_absence_eleve)) { $d_date_absence_eleve=date('d/m/Y'); } ?>
-          <input size="10" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" /><a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a><br />
-          <br />
-          De
-          <select name="d_heure_absence_eleve">
-          <?php
-          $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
-          $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-          ?><option value="" <?php if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
-          while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
-              <option value="<?php echo $data_pe['heuredebut_definie_periode']; ?>" <?php if($data_pe['id_definie_periode']==periode_actuel($heure_choix)) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heuredebut_definie_periode']); ?></option><?php
-          } ?>
-          </select>
-          &nbsp;A&nbsp;
-          <select name="a_heure_absence_eleve">
-          <?php
-          $requete_pe = ('SELECT * FROM absences_creneaux ORDER BY heuredebut_definie_periode ASC');
-          $resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
-          ?><option value="" <?php if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") { ?>selected<?php } else { } ?>>pas de s&eacute;lection</option><?php
-          while($data_pe = mysql_fetch_array ($resultat_pe)) { ?>
-              <option value="<?php echo $data_pe['heurefin_definie_periode']; ?>" <?php if($data_pe['id_definie_periode']==periode_actuel($heure_choix)) { ?>selected="selected"<?php } ?>><?php echo $data_pe['nom_definie_periode']." ".heure_court($data_pe['heurefin_definie_periode']); ?></option><?php
-          } ?>
-          </select>
-          <br />
-          <br />
-	 Groupe
-         <select name="classe">
+<?php
+if ( $msg_erreur != '' ) {
+	echo '<span style="color: #FF0000; font-weight: bold;">'.$msg_erreur.'</span>';
+}
+?>
+		<form method="post" action="prof_ajout_abs.php" name="absence">
+		Date
+<?php
+if(empty($d_date_absence_eleve)) {
+	$d_date_absence_eleve = date('d/m/Y');
+}
+?>
+		<input size="10" name="d_date_absence_eleve" value="<?php echo $d_date_absence_eleve; ?>" />
+		<a href="#calend" onClick="<?php echo $cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+		<br /><br />
+		De
+		<select name="d_heure_absence_eleve">
+<?php // choix de l'heure de début du créneau
+$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
+// On détermine l'affichage du selected
+if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") {
+	$selected = ' selected="selected"';
+} else {
+	$selected = '';
+}
+?>
+		<option value=""<?php echo $selected; ?>>pas de s&eacute;lection</option>
+<?php
+while($data_pe = mysql_fetch_array ($resultat_pe)) {
+	if($data_pe['id_definie_periode'] == periode_actuel($heure_choix)) {
+		$selected = ' selected="selected"';
+	}else{
+		$selected = '';
+	}
+	echo '
+			<option value="'.$data_pe['heuredebut_definie_periode'].'"'.$selected.'>'.$data_pe['nom_definie_periode'].' '.heure_court($data_pe['heuredebut_definie_periode']).'</option>
+		';
+}
+?>
+
+		</select>
+		&nbsp;A&nbsp;
+		<select name="a_heure_absence_eleve">
+<?php // choix de l'heure de fin du créneau en question (en tenant compte de la durée
+$requete_pe = ('SELECT * FROM absences_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
+$resultat_pe = mysql_query($requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysql_error());
+// on détermine l'affichage du selected
+if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") {
+	$selected = ' selected="selected"';
+} else {
+	$selected = '';
+}
+?>
+		  <option value="">pas de s&eacute;lection</option>
+<?php
+while($data_pe = mysql_fetch_array ($resultat_pe)) {
+	if($data_pe['id_definie_periode'] == periode_actuel($heure_choix)) {
+		$selected = ' selected="selected"';
+	}else {
+		$selected = '';
+	}
+	echo '<option value="'.$data_pe['heurefin_definie_periode'].'"'.$selected.'>'.$data_pe['nom_definie_periode'].' '.heure_court($data_pe['heurefin_definie_periode']).'</option>';
+}
+?>
+		</select>
+		<br /><br />
+		Groupe
+		<select name="classe">
 <?php
 $groups = get_groups_for_prof($_SESSION["login"]);
 
 foreach($groups as $group) {
-           ?><option value="<?php echo $group["id"]; ?>" <?php if(!empty($classe) and $classe == $group["id"]) { ?>selected="selected"<?php } ?>>
-            <?php
-	    echo $group["description"]."&nbsp;-&nbsp;(";
-            $str = null;
-            foreach ($group["classes"]["classes"] as $classe) {
-                $str .= $classe["classe"] . ", ";
-            }
-            $str = substr($str, 0, -2);
-            echo $str . ")";
-            ?>
+
+	if(!empty($classe) and $classe == $group["id"]) {
+		$selected = ' selected="selected"';
+	}else{
+		$selected = '';
+	}
+	echo '<option value="'.$group["id"].'"'.$selected.'>'."\n";
+
+	echo $group["description"]."&nbsp;-&nbsp;(";
+		$str = null;
+		foreach ($group["classes"]["classes"] as $classe) {
+			$str .= $classe["classe"] . ", ";
+		}
+		$str = substr($str, 0, -2);
+		echo $str . ")";
+?>
 	    </option>
 	<?php } ?>
 	</select>
