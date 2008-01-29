@@ -107,12 +107,13 @@ $expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
 if ($force_msj) $expli[] = "Pour gérer le module de mise à jour de GEPI";
 $expli[] = "Pour gérer le module trombinoscope";
 $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
+$expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
 
 // Années antérieures
 $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
 $expli[] = "Pour gérer le module Années antérieures";
-$expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
+
 
 $nb_ligne = count($chemin);
 //
