@@ -5488,7 +5488,6 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
     if ($test == 0) {
-    if ($test == 0) {
       $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table j_aid_eleves_resp a été créée !</font><br />";
