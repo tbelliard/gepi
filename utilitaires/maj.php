@@ -5290,6 +5290,21 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 		}
 		//===================================================
+		// Ajout d'un champ pour les AID et le bulletin simplifié
+		$result .= "&nbsp;->Ajout du champ 'bull_simplifie' à la table 'aid_config'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'bull_simplifie'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `aid_config` ADD `bull_simplifie` CHAR(1) NOT NULL DEFAULT 'y';";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
 
 		// Création de la table absences_rb
 		$result .= "&nbsp;->Ajout de la table absences_rb. <br />";
@@ -5363,6 +5378,21 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
         } else {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
+
+        		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'creneau_different' à la table 'setting'<br />";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name='creneau_different'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query = mysql_query("INSERT INTO setting VALUES ('creneau_different', 'n');");
+            if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
     }
 
     //Initialisation des paramètres liés au module inscription
