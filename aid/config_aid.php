@@ -52,11 +52,11 @@ $order_display1 = isset($_POST["order_display1"]) ? $_POST["order_display1"] : N
 $order_display2 = isset($_POST["order_display2"]) ? $_POST["order_display2"] : NULL;
 $message = isset($_POST["message"]) ? $_POST["message"] : NULL;
 $display_nom = isset($_POST["display_nom"]) ? $_POST["display_nom"] : NULL;
-$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL;
+$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
 $display_bulletin = isset($_POST["display_bulletin"]) ? $_POST["display_bulletin"] : 'n';
 $bull_simplifie = isset($_POST["bull_simplifie"]) ? $_POST["bull_simplifie"] : 'n';
+$activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_outils_comp"] : 'n';
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
-
 // ========== fin initialisation ===================
 
 if (isset($is_posted) and ($is_posted == "1")) {
@@ -76,7 +76,8 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			display_nom='".$display_nom."',
 			indice_aid='".$indice_aid."',
 			display_bulletin='".$display_bulletin."',
-			bull_simplifie = '".$bull_simplifie."'");
+			bull_simplifie = '".$bull_simplifie."',
+			outils_complementaires = '".$activer_outils_comp."'");
 	if (!$reg_data) {
 		$msg = "Erreur lors de l'enregistrement des données !";
     } else {
@@ -135,9 +136,6 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 </script>
 
 <?php
-
-
-
 if (isset($indice_aid)) {
     $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
     $reg_nom = @mysql_result($call_data, 0, "nom");
@@ -152,10 +150,10 @@ if (isset($indice_aid)) {
     $display_nom = @mysql_result($call_data, 0, "display_nom");
     $display_bulletin = @mysql_result($call_data, 0, "display_bulletin");
     $bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
+    $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 
     // Compatibilité avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
-
 } else {
     $call_data = mysql_query("SELECT max(indice_aid) max FROM aid_config");
     $indice_aid = @mysql_result($call_data, 0, "max");
@@ -170,8 +168,8 @@ if (isset($indice_aid)) {
     $type_note = "every";
     $display_bulletin = "y";
     $bull_simplifie = "y";
+    $activer_outils_comp = "n";
 }
-
 ?>
 
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements(this, 'reg_nom_complet') && (emptyFormElements(this, 'reg_nom')) && checkFormElementInRange(this, 'order_display2', 0, 100))"-->
@@ -316,6 +314,16 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 <input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' <?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
 <label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
 </p>
+
+<hr />
+<p>Outils complémentaires de gestion des AIDs :</p>
+<p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
+(attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).</p>
+<p>
+<input type="radio" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
+<input type="radio" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires
+</p>
+
 </div>
 <input type="hidden" name="is_posted" value="1" />
 <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
