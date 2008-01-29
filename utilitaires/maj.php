@@ -5464,6 +5464,39 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">Le champ outils_complementaires dans la table aid_config existe déjà.</font><br />";
     }
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'jury'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE aid ADD salle VARCHAR( 50 ) NOT NULL ,
+      ADD jury VARCHAR( 50 ) NOT NULL ,
+      ADD productions VARCHAR( 100 ) NOT NULL ,
+      ADD resume TEXT NOT NULL ,
+      ADD famille SMALLINT( 6 ) NOT NULL ,
+      ADD mots_cles VARCHAR( 255 ) NOT NULL ,
+      ADD adresse1 VARCHAR( 255 ) NOT NULL ,
+      ADD adresse2 VARCHAR( 255 ) NOT NULL ,
+      ADD public_destinataire VARCHAR( 50 ) NOT NULL ,
+      ADD contacts TEXT NOT NULL ,
+      ADD divers TEXT NOT NULL ,
+      ADD matiere1 VARCHAR( 100 ) NOT NULL ,
+      ADD matiere2 VARCHAR( 100 ) NOT NULL ;");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2 dans la table aid ont été créés !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2 dans la table aid existent déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
+    if ($test == 0) {
+    if ($test == 0) {
+      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table j_aid_eleves_resp a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table j_aid_eleves_resp existe déjà.</font><br />";
+    }
 
 
     // Mise à jour du numéro de version

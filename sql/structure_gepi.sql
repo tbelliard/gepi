@@ -3,7 +3,7 @@ CREATE TABLE `absences` (`login` varchar(50) NOT NULL default '', `periode` int(
 DROP TABLE IF EXISTS `absences_gep`;
 CREATE TABLE `absences_gep` ( `id_seq` char(2) NOT NULL default '', `type` char(1) NOT NULL default '', PRIMARY KEY  (`id_seq`));
 DROP TABLE IF EXISTS `aid`;
-CREATE TABLE `aid` (`id` varchar(100) NOT NULL default '', `nom` varchar(100) NOT NULL default '', `numero` varchar(8) NOT NULL default '0', `indice_aid` int(11) NOT NULL default '0', PRIMARY KEY  (`id`));
+CREATE TABLE `aid` (`id` varchar(100) NOT NULL default '', `nom` varchar(100) NOT NULL default '', `numero` varchar(8) NOT NULL default '0', `indice_aid` int(11) NOT NULL default '0', `salle` varchar(50) NOT NULL default '', `jury` varchar(50) NOT NULL default '', `productions` varchar(100) NOT NULL default '', `resume` text NOT NULL, `famille` smallint(6) NOT NULL default '0', `mots_cles` varchar(255) NOT NULL default '', `adresse1` varchar(255) NOT NULL default '', `adresse2` varchar(255) NOT NULL default '', `public_destinataire` varchar(50) NOT NULL default '', `contacts` text NOT NULL, `divers` text NOT NULL, `matiere1` varchar(100) NOT NULL default '', `matiere2` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `aid_appreciations`;
 CREATE TABLE `aid_appreciations` ( `login` varchar(50) NOT NULL default '', `id_aid` varchar(100) NOT NULL default '', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, `statut`  char(10) NOT NULL default '', `note` float default NULL, `indice_aid` int(11) NOT NULL default '0', PRIMARY KEY  (`login`,`id_aid`,`periode`));
 DROP TABLE IF EXISTS `aid_config`;
