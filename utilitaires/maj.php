@@ -5399,57 +5399,73 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 
     //Initialisation des paramètres liés au module inscription
     $result_inter = "";
-    $result .= "&nbsp;-> Initialisation des paramètres liés au module inscription ";
+    $result .= "&nbsp;-> Initialisation des paramètres liés au module inscription<br />";
 
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_items'"));
     if ($test == 0) {
       $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(20) NOT NULL default '', heure varchar(10) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id));");
       if ($result_inter == '')
-          $result .= "<br /><font color=\"green\">La table inscription_items a été créée !</font>";
+          $result .= "<font color=\"green\">La table inscription_items a été créée !</font><br />";
       else
-          $result .= $result_inter;
+          $result .= $result_inter."<br />";
     } else {
-      $result .= "<br /><font color=\"blue\">La table inscription_items existe déjà.</font>";
+      $result .= "<font color=\"blue\">La table inscription_items existe déjà.</font><br />";
     }
 
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_j_login_items'"));
     if ($test == 0) {
       $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');");
       if ($result_inter == '')
-          $result .= "<br /><font color=\"green\">La table inscription_j_login_items a été créée !</font>";
+          $result .= "<font color=\"green\">La table inscription_j_login_items a été créée !</font><br />";
       else
-          $result .= $result_inter;
+          $result .= $result_inter."<br />";
     } else {
-      $result .= "<br /><font color=\"blue\">La table inscription_j_login_items existe déjà.</font>";
+      $result .= "<font color=\"blue\">La table inscription_j_login_items existe déjà.</font><br />";
     }
 
     $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription'");
 		if ($req == -1)
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_inscription', 'n');");
     else
-       $result .= "<br /><font color=\"blue\">Le paramètre active_inscription existe déjà.</font>";
+       $result .= "<font color=\"blue\">Le paramètre active_inscription existe déjà.</font><br />";
     $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription_utilisateurs'");
 		if ($req == -1)
 			$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_inscription_utilisateurs', 'n');");
     else
-       $result .= "<br /><font color=\"blue\">Le paramètre active_inscription_utilisateurs existe déjà.</font>";
+       $result .= "<font color=\"blue\">Le paramètre active_inscription_utilisateurs existe déjà.</font><br />";
 
     $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_explication'");
 		if ($req == -1)
       $result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_explication', '<p> <strong>Pr&eacute;sentation des dispositifs du Lyc&eacute;e dans les coll&egrave;ges qui organisent des rencontres avec les parents.</strong> <br />\r\n<br />\r\nChacun d&rsquo;entre vous conna&icirc;t la situation dans laquelle sont plac&eacute;s les &eacute;tablissements : </p>\r\n<ul>\r\n    <li>baisse d&eacute;mographique</li>\r\n    <li>r&eacute;gulation des moyens</li>\r\n    <li>- ... </li>\r\n</ul>\r\nCette ann&eacute;e encore nous devons &ecirc;tre pr&eacute;sents dans les r&eacute;unions organis&eacute;es au sein des coll&egrave;ges afin de pr&eacute;senter nos sp&eacute;cificit&eacute;s, notre valeur ajout&eacute;e, les &eacute;volution du projet, le label international, ... <br />\r\nsur cette feuille, vous avez la possibilit&eacute; de vous inscrire afin d''intervenir dans un ou plusieurs coll&egrave;ges selon vos convenances.');");
     else
-       $result .= "<br /><font color=\"blue\">Le paramètre mod_inscription_explication existe déjà.</font>";
+       $result .= "<font color=\"blue\">Le paramètre mod_inscription_explication existe déjà.</font><br />";
     $req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_titre'");
 		if ($req == -1)
       $result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_titre', 'Intervention dans les collèges');");
 		else
-       $result .= "<br /><font color=\"blue\">Le paramètre mod_inscription_titre existe déjà.</font>";
+       $result .= "<font color=\"blue\">Le paramètre mod_inscription_titre existe déjà.</font><br />";
 
     if ($result_inter == '') {
-      $result .= "<br /><font color=\"green\">Ok !</font><br />";
+      $result .= "<font color=\"green\">Ok !</font><br />";
     } else {
-           $result .= "<br />".$result_inter;
+           $result .= $result_inter."<br />";
     }
+
+    // Outils complémenraires de gestion des AID
+    $result_inter = "";
+    $result .= "<br />&nbsp;->Ajout des paramètres liés aux outils complémentaires de gestion des AIDs<br />";
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'outils_complementaires'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE aid_config ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">Le champ outils_complementaires dans la table aid_config a été créé !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">Le champ outils_complementaires dans la table aid_config existe déjà.</font><br />";
+    }
+
+
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
     saveSetting("versionRc", $gepiRcVersion);
