@@ -90,6 +90,9 @@ function periode_actuel_jourdifferent($heure_choix) {
 //connaitre l'heure du début soit de la fin d'une période
 // ex: perdiode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure_jourdifferent($periode){
+	if ($periode == "") {
+		return "";
+	}
 	$debut = '';
 	$fin = '';
 	// on recherche les informations sur la périodes sélectionné

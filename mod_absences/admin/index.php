@@ -95,6 +95,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<input type="radio" id="activerProfY" name="activer_prof" value="y"
 	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
 	<label for="activerProfY">&nbsp;Activer le module de la saisie des absences par les professeurs</label>
+	<a href="./interface_abs.php">&nbsp;Param&eacute;trer l'interface des professeurs</a>
 </p>
 <p>
 	<input type="radio" id="activerProfN" name="activer_prof" value="n"
