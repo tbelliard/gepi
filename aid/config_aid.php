@@ -316,7 +316,7 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 </p>
 
 <hr />
-<p>Outils complémentaires de gestion des AIDs :</p>
+<p><b>Outils complémentaires de gestion des AIDs :</b></p>
 <p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
 (attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).</p>
 <p>
