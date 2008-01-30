@@ -5,13 +5,14 @@
  * en ordonnant le classement des élèves par classe et par ordre alphabétique.
  *
  * @version $Id$
- * @copyright 2007
+ * @copyright 2008
  */
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
+// ainsi que les fonctions de l'EdT pour la gestion des créneaux
 require_once("../../edt_organisation/fonctions_edt.php");
 
 // Resume session
@@ -23,15 +24,15 @@ die();
     header("Location: ../../logout.php?auto=1");
 die();
 };
-// Il faudra remettre cette sécurité
-// INSERT INTO droits VALUES ('/mod_absences/professeurs/bilan_absences_professeur.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Historique des absences saisies par le professeur', '');
+
+// Sécurité
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
 die();
 }
 
 // Insertion du style spécifique
-$style_specifique = "mod_absences/gestion/style_absences";
+$style_specifique = "mod_absences/styles/bilan_absences";
 
 //+++++++++++++++++++++++++++++++++
 //++++++++++HEADER+++++++++++++++++
@@ -60,7 +61,7 @@ $creneaux = retourne_creneaux();
 			$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		else {
-		$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau_id."'");
+			$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		$rep_sql = mysql_fetch_array($req_sql);
 		$heuredeb = explode(":", $rep_sql["heuredebut_definie_periode"]);
@@ -73,14 +74,15 @@ $creneaux = retourne_creneaux();
 		$rep = mysql_fetch_array($req);
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
-			return "<td style=\"border: 1px solid black; background-color: #ffd4d4; color: red;\"><b>A</b></td>";
+			$retour = "<td style=\"border: 1px solid black; background-color: #ffd4d4; color: red;\"><b>A</b></td>";
 		}
 			// S'il est marqué en retard R -> fond vert
 		else if ($rep["retard_absence"] == "R") {
-			return "<td style=\"border: 1px solid black; background-color: #d7ffd4; color: green;\"><b>R</b></td>";
+			$retour = "<td style=\"border: 1px solid black; background-color: #d7ffd4; color: green;\"><b>R</b></td>";
+		} else {
+			$retour = "<td style=\"border: 1px solid black;\"></td>";
 		}
-		else
-		return "<td style=\"border: 1px solid black;\"></td>";
+		return $retour;
 	}
 
 ?>
