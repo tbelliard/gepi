@@ -41,14 +41,11 @@ $date_jour = date("d/m/Y");
 $date_mysql = date("Y-m-d");
 $heure_mysql = date("H:i:s");
 
+$style_specifique = "/edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absents du collège.";
 require_once("../../lib/header.inc");
 //************** FIN EN-TETE ***************
-// style_edt en insertion
-echo '
-<link href="../../edt_organisation/style_edt.css" rel="stylesheet" type="text/css" />
-';
 
 	// Traitement du passage entre absence et retard
 	// Pour le collège j'ai ajouté OR $_SESSION["login"] == "VISCO" mais il faudra l'enlever
@@ -65,7 +62,8 @@ echo '
 
 
 	// Préparation de la requête quand un créneau est choisi
-$aff_aid_absences = "Les groupes :";
+$aff_aid_absences = "";
+$nbre_rep = "";
 if (isset($choix_creneau)) {
 		// On transforme les horaires du créneau en timestamp UNIX sur la date du jour
 		$ex_horaire = explode(":", $choix_creneau);
@@ -85,26 +83,18 @@ if (isset($choix_creneau)) {
 
 
 /*==============AFFICHAGE PAGE=============*/
+// On récupère la liste des classes de l'établissement
+$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
+$nbre_classe = mysql_num_rows($query);
+$td_classe = array();
+$aff_classe = array();
+	// On passe le tout à la moulinette :
+	for($i = 0; $i < $nbre_classe; $i++){
+		$reponse[$i]["classe"] = mysql_result($query, $i, "classe");
 
-// On le fait à la main, mais il faudra voir pour automatiser tout ça.
-$td_classe61 = "<h2 style=\"color: red;\">6EME1</h2>";
-$td_classe62 = "<h2 style=\"color: red;\">6EME2</h2>";
-$td_classe63 = "<h2 style=\"color: red;\">6EME3</h2>";
-$td_classe64 = "<h2 style=\"color: red;\">6EME4</h2>";
-$td_classe65 = "<h2 style=\"color: red;\">6EME5</h2>";
-$td_classe51 = "<h2 style=\"color: red;\">5EME1</h2>";
-$td_classe52 = "<h2 style=\"color: red;\">5EME2</h2>";
-$td_classe53 = "<h2 style=\"color: red;\">5EME3</h2>";
-$td_classe54 = "<h2 style=\"color: red;\">5EME4</h2>";
-$td_classe41 = "<h2 style=\"color: red;\">4EME1</h2>";
-$td_classe42 = "<h2 style=\"color: red;\">4EME2</h2>";
-$td_classe43 = "<h2 style=\"color: red;\">4EME3</h2>";
-$td_classe44 = "<h2 style=\"color: red;\">4EME4</h2>";
-$td_classe31 = "<h2 style=\"color: red;\">3EME1</h2>";
-$td_classe32 = "<h2 style=\"color: red;\">3EME2</h2>";
-$td_classe33 = "<h2 style=\"color: red;\">3EME3</h2>";
-$td_classe34 = "<h2 style=\"color: red;\">3EME4</h2>";
-$td_classeupi = "<h2 style=\"color: red;\">UPI</h2>";
+		$td_classe[$i] = '';//$reponse[$i]["classe"];
+		$aff_classe[$i] = $reponse[$i]["classe"];
+	}
 
 for($i=0; $i<$nbre_rep; $i++) {
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
@@ -133,85 +123,34 @@ for($i=0; $i<$nbre_rep; $i++) {
 	}
 
 	// On vérifie l'état de la saisie absence ou retard ou sans absent (signifier que l'appel a bien été effectué
-		if ($rep_absences[$i]["eleve_id"] == "appel") {
-				// On récupère le nom de la matière
-			$rep_matiere = mysql_fetch_array(mysql_query("SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
-			$etat = "<span style=\"color: brown; font-style: bold;\">L'appel a bien été effectué par ".$rep_matiere["description"].".</span>";
-			$modif = "";
-			$modif_f = "";
-		}
-		else if ($rep_absences[$i]["retard_absence"] == "R") {
-			$etat = " (retard)";
-			$modif = "<a href=\"./voir_absences_viescolaire.php?vers_absence=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"En retard\" style=\"color: green;\">";
-			$modif_f = "</a>";
-		}
-		else {
-			$etat = "";
-			$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"Absent\"><b>";
-			$modif_f = "</a></b>";
-		}
+	if ($rep_absences[$i]["eleve_id"] == "appel") {
+		// On récupère le nom de la matière
+		$rep_matiere = mysql_fetch_array(mysql_query("SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
+		$etat = "<span style=\"color: brown; font-style: bold;\">L'appel a bien été effectué par ".$rep_matiere["description"].".</span>";
+		$modif = "";
+		$modif_f = "";
+	} else if ($rep_absences[$i]["retard_absence"] == "R") {
+		$etat = " (retard)";
+		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_absence=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"En retard\" style=\"color: green;\">";
+		$modif_f = "</a>";
+	} else {
+		$etat = "";
+		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"Absent\"><b>";
+		$modif_f = "</a></b>";
+	}
 
 	// Seul le CPE peut modifier une absence vers retard et vice-versa
-		if ($_SESSION["statut"] != "cpe") {
-			$modif = "";
-			$modif_f = "";
-		}
+	if ($_SESSION["statut"] != "cpe") {
+		$modif = "";
+		$modif_f = "";
+	}
 
-
-		if ($rep_classe[0] == "6EME1") {
-			$td_classe61 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
+	// On lance la moulinette pour afficher la liste des absents pour chaque classe
+	for($i = 0; $i < $nbre_classe; $i++){
+		if ($rep_classe[0] == $aff_classe[$i]) {
+			$td_classe[$i] .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
 		}
-		else if ($rep_classe[0] == "6EME2") {
-			$td_classe62 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "6EME3") {
-			$td_classe63 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "6EME4") {
-			$td_classe64 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "6EME5") {
-			$td_classe65 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "5EME1") {
-			$td_classe51 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "5EME2") {
-			$td_classe52 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "5EME3") {
-			$td_classe53 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "5EME4") {
-			$td_classe54 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "4EME1") {
-			$td_classe41 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "4EME2") {
-			$td_classe42 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
-		}
-		else if ($rep_classe[0] == "4EME3") {
-			$td_classe43 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "4EME4") {
-			$td_classe44 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "3EME1") {
-			$td_classe31 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "3EME2") {
-			$td_classe32 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "3EME3") {
-			$td_classe33 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "3EME4") {
-			$td_classe34 .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
-		else if ($rep_classe[0] == "UPI") {
-			$td_classeupi .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />";
-		}
+	}
 } // for
 
 
@@ -225,7 +164,7 @@ for($i=0; $i<$nbre_rep; $i++) {
 		<option value="rien">Choix du cr&eacute;neau</option>
 <?php
 		// test sur le jour pour voir les créneaux du mercredi
-	if (date("w") == 3) {
+	if (date("w") == getSettingValue("creneau_different")) {
 		$req_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	else {
@@ -255,36 +194,19 @@ if (isset($choix_creneau)) {
 <!-- Affichage des réponses-->
 <table class="tab_edt">
 	<tr>
-		<td colspan="5"><?php echo $aff_aid_absences; ?></td>
+		<td>Les groupes</td>
+		<td><?php echo $aff_aid_absences; ?></td>
 	</tr>
+<?php
+// On affiche la liste des classes
+for($a = 0; $a < $nbre_classe; $a++){
+	echo '
 	<tr>
-		<td><?php echo $td_classe61; ?></td>
-		<td><?php echo $td_classe62; ?></td>
-		<td><?php echo $td_classe63; ?></td>
-		<td><?php echo $td_classe64; ?></td>
-		<td><?php echo $td_classe65; ?></td>
-	</tr>
-	<tr>
-		<td><?php echo $td_classe51; ?></td>
-		<td><?php echo $td_classe52; ?></td>
-		<td><?php echo $td_classe53; ?></td>
-		<td><?php echo $td_classe54; ?></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><?php echo $td_classe41; ?></td>
-		<td><?php echo $td_classe42; ?></td>
-		<td><?php echo $td_classe43; ?></td>
-		<td><?php echo $td_classe44; ?></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><?php echo $td_classe31; ?></td>
-		<td><?php echo $td_classe32; ?></td>
-		<td><?php echo $td_classe33; ?></td>
-		<td><?php echo $td_classe34; ?></td>
-		<td><?php echo $td_classeupi; ?></td>
-	</tr>
+		<td><h2 style="color: red;">'.$aff_classe[$a].'</h2></td>
+		<td>'.$td_classe[$a].'</td>
+	</tr>';
+}
+?>
 
 </table>
 
