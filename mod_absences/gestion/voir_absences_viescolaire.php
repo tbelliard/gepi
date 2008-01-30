@@ -41,7 +41,7 @@ $date_jour = date("d/m/Y");
 $date_mysql = date("Y-m-d");
 $heure_mysql = date("H:i:s");
 
-$style_specifique = "/edt_organisation/style_edt";
+$style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absents du collège.";
 require_once("../../lib/header.inc");
@@ -81,7 +81,6 @@ if (isset($choix_creneau)) {
 	}
 } // if (isset($choix_creneau))
 
-
 /*==============AFFICHAGE PAGE=============*/
 // On récupère la liste des classes de l'établissement
 $query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
@@ -92,11 +91,14 @@ $aff_classe = array();
 	for($i = 0; $i < $nbre_classe; $i++){
 		$reponse[$i]["classe"] = mysql_result($query, $i, "classe");
 
-		$td_classe[$i] = '';//$reponse[$i]["classe"];
+		$td_classe[$i] = '';
 		$aff_classe[$i] = $reponse[$i]["classe"];
 	}
 
-for($i=0; $i<$nbre_rep; $i++) {
+for($i = 0; $i < $nbre_rep; $i++) {
+	$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
+	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$req_prof["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
+
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
 		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$i]["eleve_id"]."'"));
 		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."'"));
@@ -110,8 +112,6 @@ for($i=0; $i<$nbre_rep; $i++) {
 		$verif_aid = explode(":", $rep_absences[$i]["groupe_id"]);
 		if ($verif_aid[0] == "AID") {
 			$rep_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysql_error());
-			$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
-			$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$req_prof["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
 			// On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
 			// quand un prof a fait l'appel alors qu'il est avec un aid
 			$aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
@@ -126,17 +126,17 @@ for($i=0; $i<$nbre_rep; $i++) {
 	if ($rep_absences[$i]["eleve_id"] == "appel") {
 		// On récupère le nom de la matière
 		$rep_matiere = mysql_fetch_array(mysql_query("SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
-		$etat = "<span style=\"color: brown; font-style: bold;\">L'appel a bien été effectué par ".$rep_matiere["description"].".</span>";
+		$etat = "<span style=\"color: brown; font-style: bold;\" title=\"Par".$rep_prof["nom"]." ".$rep_prof["prenom"]."\">L'appel a bien été effectué en ".$rep_matiere["description"].".</span>";
 		$modif = "";
 		$modif_f = "";
 	} else if ($rep_absences[$i]["retard_absence"] == "R") {
 		$etat = " (retard)";
-		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_absence=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"En retard\" style=\"color: green;\">";
+		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_absence=".$rep_absences[$i]["id_abs"]."&amp;choix_creneau=".$choix_creneau."\" title=\"En retard\" style=\"color: green;\">";
 		$modif_f = "</a>";
 	} else {
 		$etat = "";
-		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&choix_creneau=".$choix_creneau."\" title=\"Absent\"><b>";
-		$modif_f = "</a></b>";
+		$modif = "<a href=\"./voir_absences_viescolaire.php?vers_retard=".$rep_absences[$i]["id_abs"]."&amp;choix_creneau=".$choix_creneau."\" title=\"Absent\"><b>";
+		$modif_f = "</b></a>";
 	}
 
 	// Seul le CPE peut modifier une absence vers retard et vice-versa
@@ -146,31 +146,29 @@ for($i=0; $i<$nbre_rep; $i++) {
 	}
 
 	// On lance la moulinette pour afficher la liste des absents pour chaque classe
-	for($i = 0; $i < $nbre_classe; $i++){
-		if ($rep_classe[0] == $aff_classe[$i]) {
-			$td_classe[$i] .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
+	for($c = 0; $c < $nbre_classe; $c++){
+		if ($rep_classe[0] == $aff_classe[$c]) {
+			$td_classe[$c] .= $modif.$rep_nom["nom"]." ".$rep_nom["prenom"].$etat.$modif_f."<br />\n";
 		}
 	}
 } // for
 
 
 ?>
-	<h2>Les absents du <?php echo $date_jour; ?> rangés par classe et par ordre alphabétique.</h2>
-	<h3><a href="./bilan_absences_quotidien.php">Bilan de la journ&eacute;e</a></h3>
+	<h2>Les absents du <?php echo $date_jour; ?> rangés par classe et par ordre alphabétique - <a href="./bilan_absences_quotidien.php">Bilan de la journ&eacute;e</a></h2>
 
-<h3>Vous devez choisir un cr&eacute;neau pour visionner les absents :</h3>
 <form name="choix_du_creneau" action="voir_absences_viescolaire.php" method="post">
+	<p>Vous devez choisir un cr&eacute;neau pour visionner les absents
 	<select name="choix_creneau" onchange='document.choix_du_creneau.submit();'>
 		<option value="rien">Choix du cr&eacute;neau</option>
 <?php
-		// test sur le jour pour voir les créneaux du mercredi
+		// test sur le jour pour voir les créneaux
 	if (date("w") == getSettingValue("creneau_different")) {
 		$req_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	else {
 		$req_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
-	//$rep_creneau = mysql_fetch_array($req_creneaux);
 	$nbre_creneaux = mysql_num_rows($req_creneaux);
 	for($a=0; $a<$nbre_creneaux; $a++) {
 		$aff_creneaux[$a]["nom"] = mysql_result($req_creneaux, $a, "nom_definie_periode");
@@ -183,34 +181,52 @@ for($i=0; $i<$nbre_rep; $i++) {
 	}
 ?>
 	</select>
+	</p>
+</form>
 <?php
 if (isset($choix_creneau)) {
 	$aff_horaires = explode(":", $choix_creneau);
 	echo ' Voir les absences de <span style="color: blue;">'.$aff_horaires[0].':'.$aff_horaires[1].'</span> à <span style="color: blue;">'.$aff_horaires[3].':'.$aff_horaires[4].'</span>.';
 }
 ?>
-</form>
 <br />
 <!-- Affichage des réponses-->
 <table class="tab_edt">
 	<tr>
 		<td>Les groupes</td>
-		<td><?php echo $aff_aid_absences; ?></td>
+		<td colspan="3"><?php echo $aff_aid_absences; ?></td>
+		<!--<td></td>
+		<td></td>-->
 	</tr>
 <?php
 // On affiche la liste des classes
 for($a = 0; $a < $nbre_classe; $a++){
+	// On détermine si sur deux colonnes, le compte tombe juste
+	$calc = $nbre_classe / 2;
+	$modulo = $nbre_classe % 2;
 	echo '
 	<tr>
-		<td><h2 style="color: red;">'.$aff_classe[$a].'</h2></td>
-		<td>'.$td_classe[$a].'</td>
-	</tr>';
+		<td><h4 style="color: red;">'.$aff_classe[$a].'</h4></td>
+		<td style="width: 250px;">'.$td_classe[$a].'</td>';
+	if ($a == ($nbre_classe - 1) AND $modulo == 1) {
+		// c'est qu'on est arrivé à la dernière ligne et que le nombre de classes est impair
+		echo '
+		<td></td>
+		<td style="width: 250px;"></td>
+		</tr>';
+	}else{
+		$a++; // on passe à la colonne suivante
+		echo '
+			<td><h4 style="color: red;">'.$aff_classe[$a].'</h4></td>
+			<td style="width: 250px;">'.$td_classe[$a].'</td>
+		</tr>';
+	}
 }
 ?>
 
 </table>
 
-<h2>En cliquant sur un &eacute;l&egrave;ve, vous le changer d'&eacute;tat (de absent &agrave; retard ou inversement).</h2>
+<h2>En cliquant sur un &eacute;l&egrave;ve, vous le changez d'&eacute;tat (de absent &agrave; retard ou inversement).</h2>
 <p>Attention, cette action est uniquement disponible depuis un compte CPE ou vie scolaire.</p>
 
 <br/>

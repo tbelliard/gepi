@@ -15,6 +15,7 @@ require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
 require_once("../../edt_organisation/fonctions_edt.php");
+require_once("../../edt_organisation/fonctions_calendrier.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -25,12 +26,12 @@ if ($resultat_session == 'c') {
     header("Location: ../../logout.php?auto=1");
 die();
 };
-/*/ Il faudra remettre cette sécurité
+
 // INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_quotidien.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Visionner les absences du jour', '');
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
 die();
-}*/
+}
 
 // Insertion du style spécifique
 $style_specifique = "mod_absences/gestion/style_absences";
@@ -55,7 +56,7 @@ $creneaux = retourne_creneaux();
 		// On récupère les horaires de début du créneau en question et on les transforme en timestamp UNIX
 			$choix_date = explode("/", $date_choisie);
 			$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
-		if (date("w", $date_choisie_ts) == 3) {
+		if (date("w", $date_choisie_ts) == getSettingValue("creneau_different")) {
 			$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		else {
@@ -83,6 +84,7 @@ $creneaux = retourne_creneaux();
 	}
 
 ?>
+	<form name="autre_date" method="post" action="bilan_absences_quotidien.php">
 <table>
 	<tr>
 		<td>
@@ -94,18 +96,16 @@ $creneaux = retourne_creneaux();
 		<td> - Modifier la date
 		</td>
 		<td>
-	<form name="autre_date" method="post" action="bilan_absences_quotidien.php">
-		<input type="text" name="date_choisie" maxlenght="10" size="10" value="<?php echo $date_choisie; ?>" />
-		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
-		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
+		<input type="text" name="date_choisie" style="maxlenght: 10;" size="10" value="<?php echo $date_choisie; ?>" />
+		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&amp;ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
+		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 		</td>
 		<td>
 		<input type="submit" name="valider" title="valider" />
-	</form>
 		</td>
 	</tr>
 </table>
-
+	</form>
 <table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 
 	<tr>
@@ -134,18 +134,12 @@ $creneaux = retourne_creneaux();
 
 
 <?php
-// Quelques variables utiles
-// Il faudra prévoir de chercher les horaires dans la table horaires_etablissement
-//00000000000000000000000000000 Il faut faire une fonction qui transforme le date("w") en mot français sur le
-// jour de la semaine
-if (date("w", $date_choisie_ts) == getSettingValue("creneau_different")) {
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = 'mercredi'"));
-}
-else {
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = 'lundi'"));
-}
+// ===================== Quelques variables utiles ===============
+	// On détermine le jour en Français actuel
+	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
+	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'"));
 
-// Avec le résultat, on calcule les timestamps UNIX
+	// Avec le résultat, on calcule les timestamps UNIX
 	$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 	$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 	$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
@@ -181,7 +175,7 @@ for($i=0; $i<$nbre; $i++) {
 			<td></td>
 			<td>'.$rep_nom["nom"].' '.$rep_nom["prenom"].'</td>
 			';
-			// On traite alors pour chaque créneaux
+			// On traite alors pour chaque créneau
 			if (getSettingValue("creneau_different") != 'n') {
 				if (date("w") == getSettingValue("creneau_different")) {
 					$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause'");

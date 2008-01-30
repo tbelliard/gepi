@@ -680,12 +680,15 @@ if (getSettingValue("active_module_absence")=='y') {
 //
     $chemin = array();
     $chemin[] = "/mod_absences/gestion/gestion_absences.php";
+    $chemin[] = "/mod_absences/gestion/voir_absences_viescolaire.php";
 
     $titre = array();
     $titre[] = "Gestion Absences, dispenses, retards et infirmeries";
+    $titre[] = "Visualiser les absences";
 
     $expli = array();
     $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
+    $expli[] = "Vous pouvez visualiser créneau par créneau la saisie des absences.";
 
     $nb_ligne = count($chemin);
     $affiche = 'no';

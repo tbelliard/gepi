@@ -703,6 +703,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 ?>
 		il est actuellement : <?php echo date('G:i')  ?>
 	</p>
+	<p><a href="./bilan_absences_professeur.php">Visualiser toutes ses saisies d'absences</a></p>
 	</form>
 </div>
 <?php
@@ -1009,6 +1010,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	</form>
 	<h3>Quand vous saisissez vos absences (avec ou sans absent),
 	Gepi enregistre la date et l'heure ainsi que votre identifiant.</h3>
+
 </div>
 <?php
 } // fin if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $el ...

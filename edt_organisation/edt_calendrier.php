@@ -1,6 +1,12 @@
 <?php
 
-/* Fichier destiné à paramétrer le calendrier de Gepi pour l'Emploi du temps */
+/*
+ *
+ * @version $Id$
+ * @copyright 2008
+ *
+ * Fichier destiné à paramétrer le calendrier de Gepi pour l'Emploi du temps
+ */
 $titre_page = "Emploi du temps - Calendrier";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;

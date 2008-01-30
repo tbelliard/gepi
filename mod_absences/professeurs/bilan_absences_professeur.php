@@ -1,10 +1,11 @@
 <?php
 
 /**
+ * @version $Id$
+ *
  * destiné à permettre de visionner le bilan de la journée des absences heure par heure et cours par cours
  * en ordonnant le classement des élèves par classe et par ordre alphabétique.
  *
- * @version $Id$
  * @copyright 2008
  */
 $niveau_arbo = 2;
@@ -57,7 +58,7 @@ $creneaux = retourne_creneaux();
 		// On récupère les horaires de début du créneau en question et on les transforme en timestamp UNIX
 			$choix_date = explode("/", $date_choisie);
 			$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
-		if (date("w", $date_choisie_ts) == 3) {
+		if (date("w", $date_choisie_ts) == getSettingValue("creneau_different")) {
 			$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE id_definie_periode = '".$creneau_id."'");
 		}
 		else {
@@ -86,6 +87,7 @@ $creneaux = retourne_creneaux();
 	}
 
 ?>
+	<form name="autre_date" method="post" action="bilan_absences_professeur.php">
 <table>
 	<tr>
 		<td>
@@ -94,26 +96,24 @@ $creneaux = retourne_creneaux();
 		<td> - D&eacute;but :
 		</td>
 		<td>
-	<form name="autre_date" method="post" action="bilan_absences_professeur.php">
 		<input type="text" name="date_choisie_deb" maxlenght="10" size="10" value="<?php echo $date_choisie_deb; ?>" />
-		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&ch=date_choisie_deb','calendrier','width=350,height=170,scrollbars=0').focus();">
-		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
+		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&amp;ch=date_choisie_deb','calendrier','width=350,height=170,scrollbars=0').focus();">
+		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 		</td>
 		<td> - Fin :
 		</td>
 		<td>
-	<form name="autre_date" method="post" action="bilan_absences_quotidien.php">
 		<input type="text" name="date_choisie" maxlenght="10" size="10" value="<?php echo $date_choisie; ?>" />
-		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
-		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0"></a>
+		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&amp;ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
+		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 		</td>
 		<td>
 		<input type="submit" name="valider" title="valider" />
-	</form>
 		</td>
 	</tr>
 </table>
-<p>Bilan des absents que vous avez saisi - Vous pouvez modifier les dates</p>
+	</form>
+<p>Bilan des absences que vous avez saisies - Vous pouvez modifier les dates</p>
 <table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 
 	<tr>
@@ -135,17 +135,11 @@ $creneaux = retourne_creneaux();
 
 
 <?php
-// Quelques variables utiles
+	// Quelques variables utiles
+	$jour_choisi = retourneJour(date("w"));
+	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'"));
 
-if (date("w", $date_choisie_ts) == 3) {
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = 'mercredi'"));
-
-}
-else {
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = 'lundi'"));
-}
-
-// Avec le résultat, on calcule les timestamps UNIX
+	// Avec le résultat, on calcule les timestamps UNIX
 	$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 	$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 	$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date_deb[1], $choix_date_deb[0], $choix_date_deb[2]);
@@ -170,9 +164,8 @@ for($i=0; $i<$nbre; $i++){
 	$nbre_a = mysql_num_rows($req_absences);
 
 	for($b=0; $b<$nbre_a; $b++){
-	$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
-	$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
-	//$req_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_id_classe["id_classe"]."'"));
+		$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
+		$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
 		// On affiche l'élève en fonction de la classe à laquelle il appartient
 		if ($rep_classe[$i]["id"] == $req_id_classe["id_classe"]) {

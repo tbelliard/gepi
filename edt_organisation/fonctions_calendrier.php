@@ -24,8 +24,10 @@ function typeSemaineActu(){
 }
 
 // Fonction qui retourne le jour actu en français et en toutes lettres
-function retourneJour(){
+function retourneJour($jour){
+	if ($jour == "") {
 		$jour = date("w");
+	}
 	// On traduit le nom du jour
 	$semaine = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 			$jour_semaine = '';
@@ -86,7 +88,7 @@ function heureDeb(){
 function retourneCours($prof){
 		$retour = 'non';
 	$query = mysql_query("SELECT id_cours FROM edt_cours, j_groupes_professeurs WHERE
-			edt_cours.jour_semaine='".retourneJour()."' AND
+			edt_cours.jour_semaine='".retourneJour('')."' AND
 			edt_cours.id_definie_periode='".retourneCreneau()."' AND
 			edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND
 			login='".$prof."' AND
