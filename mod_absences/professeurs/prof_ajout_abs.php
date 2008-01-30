@@ -813,7 +813,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		$sql = "SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
-	$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
+	$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
 
 	for($i=0; $i<$nbre_noms; $i++) {
 		$rep_sql[$i]["nom_creneau"] = mysql_result($req_noms, $i, "nom_definie_periode");
