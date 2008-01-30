@@ -392,7 +392,7 @@ echo "<div id='new_div_login' class='center'>\n";
 
 	<div id="new_login_footer">
 		<a href="http://gepi.mutualibre.org/">GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)</a><br />
-		Copyright &copy; 2001-2007
+		Copyright &copy; 2001-2008
 		<?php
 			reset($gepiAuthors);
 			$i = 0;
