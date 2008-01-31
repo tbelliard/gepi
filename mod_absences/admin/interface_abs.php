@@ -82,12 +82,17 @@ if ($clic == "ok") {
 	for($a = 0; $a < 6; $a++) {
 		$query = mysql_query("SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		$verif = mysql_num_rows($query);
-		$rep_phase1 = mysql_result($query, 0, "value");
+
 			// Si le setting n'existe pas, on le crée
 		if ($verif == 0) {
 			$creationSetting = mysql_query("INSERT INTO setting (name, value) values ('".$test_query[$a]["name"]."', '".$test_query[$a]["value"]."')");
+			// On recharge la requête car elle a été mise à jour
+			$query = mysql_query("SELECT value FROM setting WHERE name = '".$test_query[$a]."'");
 		}
-		if ($rep_phase1 == $test_query[$a]["value"]) {
+		// et on récupère sa valeur
+		$rep_phase1 = mysql_fetch_array($query);
+
+		if ($rep_phase1["value"] == $test_query[$a]["value"]) {
 		// On ne fait rien
 		}else {
 			$modif = mysql_query("UPDATE setting SET value = '".$test_query[$a]["value"]."' WHERE name = '".$test_query[$a]["name"]."'");
