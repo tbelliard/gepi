@@ -18,11 +18,15 @@
 	}
 
 	// On récupère le mode pour le Header (normalement en POST):
-	$cacher_header=isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
+	$cacher_header = isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
 
 	// On n'accepte que deux valeurs:
 	if(($cacher_header!="y")&&($cacher_header!="n")){$cacher_header="n";}
 
 	// On enregistre le mode pour le Header:
-	$_SESSION['cacher_header']=$cacher_header;
+	$_SESSION['cacher_header'] = $cacher_header;
+
+	// Et on renvoie un message http valide
+	header("HTTP/1.0 200 OK");
+	echo ' ';
 ?>
