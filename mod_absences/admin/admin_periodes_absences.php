@@ -25,9 +25,9 @@
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
-//mes fonctions
+//les fonctions spécifiques
 include("../lib/functions.php");
-include("../../../edt_organisation/fonctions_calendrier.php");
+include("../../edt_organisation/fonctions_calendrier.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -67,12 +67,39 @@ require_once("../../lib/header.inc");
 	if (empty($_GET['type_creneaux']) and empty($_POST['type_creneaux'])) { $type_creneaux = ''; }
 	   else { if (isset($_GET['type_creneaux'])) { $type_creneaux = $_GET['type_creneaux']; } if (isset($_POST['type_creneaux'])) { $type_creneaux = $_POST['type_creneaux']; } }
 
+$jour_semaine = isset($_POST["jour_semaine"]) ? $_POST["jour_semaine"] : NULL;
+$demande_jour_semaine = isset($_POST["demande_jour_semaine"]) ? $_POST["demande_jour_semaine"] : NULL;
 
-$total = '0'; $verification[0] = '1'; $erreur = '0';
+// on prévoit de passer systématiquement vers les créneaux du jour différent si $cren est initialisé
+// Dans ce cas, on appelle absences_creneaux_bis
+$cren = isset($_GET["cren"]) ? $_GET["cren"] : (isset($_POST["cren"]) ? $_POST["cren"] : NULL);
+if ($cren == "diff") {
+	$aff_creneau_diff = '&amp;cren=diff';
+	$choix_table = '_bis';
+}else{
+	$aff_creneau_diff = '';
+	$choix_table = '';
+}
+$total = '0';
+$verification[0] = '1';
+$erreur = '0';
+
+// On commence par sauvegarder le réglage sur le jour où les créneaux sont différents si c'est demandé
+	$creneau_different = getSettingValue("creneau_different"); // on charge la variable pour éviter les prob avec la fonction getSettingValue
+if ($demande_jour_semaine == "ok_diff") {
+	// On compare la demande avec le setting actuel
+	if ($jour_semaine != getSettingValue("creneau_different")) {
+		// On met à jour le setting
+		$query = mysql_query("UPDATE setting SET value = '".$jour_semaine."' WHERE name = 'creneau_different'");
+		$creneau_different = $jour_semaine;
+	}else{
+		$creneau_different = getSettingValue("creneau_different");
+	}
+}
 
 if ($action_sql == "ajouter" or $action_sql == "modifier") {
 	while ($total < $nb_ajout) {
-		// Vérifcation des variable
+		// Vérification des variables
 		$nom_definie_periode_ins = $_POST['nom_definie_periode'][$total];
 		$heuredebut_definie_periode_ins = $_POST['heuredebut_definie_periode'][$total];
 		$heurefin_definie_periode_ins = $_POST['heurefin_definie_periode'][$total];
@@ -96,19 +123,19 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 				if($heurefin_definie_periode_ins != "00:00") {
 					if($heurefin_definie_periode_ins > $heuredebut_definie_periode_ins) {
 						if($action_sql == "ajouter") {
-							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
 						}
 						if($action_sql == "modifier") {
-							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
 						}
                         if ($test == "0") {
                         	if($action_sql == "ajouter") {
                         		// Requete d'insertion MYSQL
-								$requete = "INSERT INTO ".$prefix_base."absences_creneaux (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
+								$requete = "INSERT INTO ".$prefix_base."absences_creneaux".$choix_table." (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
 							}
 							if($action_sql == "modifier") {
 								// Requete de mise à jour MYSQL
-								$requete = "UPDATE ".$prefix_base."absences_creneaux SET
+								$requete = "UPDATE ".$prefix_base."absences_creneaux".$choix_table." SET
 											nom_definie_periode = '$nom_definie_periode_ins',
 											heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
 											heurefin_definie_periode = '$heurefin_definie_periode_ins',
@@ -125,105 +152,158 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 							$erreur = 1;
 						}
 					} else {
-                                  // vérification = 5 - L'heure de fin n'est pas définie
-                                    $verification[$total] = 6;
-                                    $erreur = 1;
+						// vérification = 5 - L'heure de fin n'est pas définie
+						$verification[$total] = 6;
+						$erreur = 1;
 					}
 				} else {
-                                 // vérification = 5 - L'heure de fin n'est pas définie
-                                   $verification[$total] = 5;
-                                   $erreur = 1;
+					// vérification = 5 - L'heure de fin n'est pas définie
+					$verification[$total] = 5;
+					$erreur = 1;
 				}
 			} else {
-                             // vérification = 4 - L'heure de début n'est pas définie
-                               $verification[$total] = 4;
-                               $erreur = 1;
-                          }
+				// vérification = 4 - L'heure de début n'est pas définie
+				$verification[$total] = 4;
+				$erreur = 1;
+			}
 		} else {
-                     // vérification = 3 - Tous les champs ne sont pas remplie
-                     $verification[$total] = 3;
-                     $erreur = 1;
+			// vérification = 3 - Tous les champs ne sont pas remplie
+			$verification[$total] = 3;
+			$erreur = 1;
 		}
 		$total = $total + 1;
 	} // fin du while
 
-	if($erreur == 0)
-       {
-          $action = "visualiser";
-       } else {
-                 $o = 0;
-                 $n = 0;
-                 while ($o < $nb_ajout)
-                  {
-                    if($verification[$o] != 1)
-                     {
-                        $nom_definie_periode_erreur[$n] = $nom_definie_periode[$o];
-                        $heuredebut_definie_periode_erreur[$n] = $heuredebut_definie_periode[$o];
-                        $heurefin_definie_periode_erreur[$n] = $heurefin_definie_periode[$o];
-                        $verification_erreur[$n] = $verification[$o];
-			if ( isset($suivi_definie_periode[$o]) ) { $suivi_definie_periode_erreur[$n] = $suivi_definie_periode[$o]; }
-                        if ($action_sql == "modifier") { $id_definie_periode_erreur[$n] = $id_periode[$o]; }
-                        $n = $n + 1;
-                     }
-                     $o = $o + 1;
-                  }
-                  $nb_ajout = $n;
-                  if ($action_sql == "ajouter") { $action = "ajouter"; }
-                  if ($action_sql == "modifier") { $action = "modifier"; }
-              }
+	if($erreur == 0) {
+		$action = "visualiser";
+	} else {
+		$o = 0;
+		$n = 0;
+		while ($o < $nb_ajout) {
+			if($verification[$o] != 1) {
+				$nom_definie_periode_erreur[$n] = $nom_definie_periode[$o];
+				$heuredebut_definie_periode_erreur[$n] = $heuredebut_definie_periode[$o];
+				$heurefin_definie_periode_erreur[$n] = $heurefin_definie_periode[$o];
+				$verification_erreur[$n] = $verification[$o];
+				if ( isset($suivi_definie_periode[$o]) ) {
+					$suivi_definie_periode_erreur[$n] = $suivi_definie_periode[$o];
+				}
+				if ($action_sql == "modifier") {
+					$id_definie_periode_erreur[$n] = $id_periode[$o];
+				}
+				$n = $n + 1;
+			}
+			$o = $o + 1;
+		}
+		$nb_ajout = $n;
+		if ($action_sql == "ajouter") {
+			$action = "ajouter";
+		}
+		if ($action_sql == "modifier") {
+			$action = "modifier";
+		}
+	}
 } //if ($action_sql == "ajouter" or $action_sql == "modifier")
 
-if ($action_sql == "supprimer")
- {
-     //Requete d'insertion MYSQL
-     $requete = "DELETE FROM ".$prefix_base."absences_creneaux WHERE id_definie_periode ='$id_periode'";
-     // Execution de cette requete
-     mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
- }
+if ($action_sql == "supprimer") {
+	//Requete d'insertion MYSQL
+	$requete = "DELETE FROM ".$prefix_base."absences_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
+	// Execution de cette requete
+	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+}
 
-if ($action == "modifier")
- {
-      $requete_modif_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux WHERE id_definie_periode="'.$id_periode.'"';
-      $resultat_modif_periode = mysql_query($requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.mysql_error());
-      $data_modif_periode = mysql_fetch_array($resultat_modif_periode);
- }
-
-
+if ($action == "modifier") {
+	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
+	$resultat_modif_periode = mysql_query($requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.mysql_error());
+	$data_modif_periode = mysql_fetch_array($resultat_modif_periode);
+}
 
 echo "<p class=\"bold\">\n";
 if ($action=="modifier" or $action=="ajouter") {
-	echo "<a href=\"admin_periodes_absences.php?action=visualiser\">\n";
+	echo "<a href=\"admin_periodes_absences.php?action=visualiser".$aff_creneau_diff."\">\n";
 } else {
 	// On veut distinguer le retour vers EdT ou Absences en fonction de la $_SESSION["retour"]
 	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] !== "") {
 		$retour = "	<a href='../../edt_organisation/".$_SESSION["retour"].".php'>\n";
-	}
-	else
+	} else {
 		$retour = "	<a href='index.php'>\n";
-echo $retour;
+	}
+	echo $retour;
 }
 echo "	<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo "</p>\n";
+// On regarde la table utilisée avant d'afficher le lien
+	if ($cren == "diff") {
+		$cherche_table = '';
+		$texte_lien = ' Voir les créneaux de tous les jours';
+	}else{
+		$cherche_table = '&amp;cren=diff';
+		$texte_lien = ' Voir les cr&eacute;neaux du jour diff&eacute;rent';
+	}
+		echo "| <a href='admin_periodes_absences.php?action=visualiser".$cherche_table."'>".$texte_lien."</a>
+	</p>\n";
+
+
+if ($action == "visualiser") {
+	if ($cren == "diff") {
+		// On peut cocher un seul jour différent des autres
+		// Si ce jour n'existe pas, on coche "aucun"
+		if ($creneau_different == 'n') {
+			$coche = ' checked="checked"';
+		}else{
+			$coche = '';
+		}
+		echo '<p>Vous devez choisir un seul jour où les créneaux sont différents des autres jours (comme le mercredi...)</p>';
+
+		// On affiche alors une série de radio qui correspondent aux jours de la semaine
+		echo '
+		<form name="choisir_jour_diff" action="admin_periodes_absences.php" method="post">
+			<p>';
+		for($c = 0; $c < 7; $c++){
+			$id = $c;
+			$jour = retourneJour($c); // le jour de la semaine en Français
+			// On détermine le coche
+			if ($creneau_different == $c) {
+				$coched = ' checked="checked"';
+			}else{
+				$coched = '';
+			}
+			echo '
+			<label for="jourSemaine'.$c.'">'.$jour.'</label>
+			<input type="radio" id="jourSemaine'.$c.'" name="jour_semaine" value="'.$c.'"'.$coched.' />
+			';
+		} // for($c...
+		echo '
+			<label for="aucunCren">Aucun</label>
+			<input type="radio" id="aucunCren" name="jour_semaine" value="n"'.$coche.' />
+			<input type="hidden" name="action" value="visualiser" />
+			<input type="hidden" name="cren" value="diff" />
+			<input type="hidden" name="demande_jour_semaine" value="ok_diff" />
+			<input type="submit" name="valider" value="Enregistrer" />
+		</p>
+		</form>';
+	}
+	/* div de centrage du tableau pour ie5 */
 ?>
-<?php if ($action == "visualiser") { ?>
-<? /* div de centrage du tableau pour ie5 */ ?>
-<div style="text-align:center">
+<div style="text-align: center;">
 <h2>Définition des créneaux horaires</h2>
-	<a href="admin_periodes_absences.php?action=ajouter">
+	<p>
+		<a href="admin_periodes_absences.php?action=ajouter<?php echo $aff_creneau_diff; ?>">
 		<img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un créneau horaire
-	</a>
-<br /><br />
-    <table cellpadding="0" cellspacing="1" class="tab_table">
-      <tr>
-        <th class="tab_th" style="width: 80px;">code</th>
-        <th class="tab_th" style="width: 90px;">heure de début</th>
-        <th class="tab_th" style="width: 90px;">heure de fin</th>
-        <th class="tab_th" style="width: 90px;">type</th>
-        <th class="tab_th" style="width: 25px;"></th>
-        <th class="tab_th" style="width: 25px;"></th>
-      </tr>
-    <?php
-    $requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
+		</a>
+	</p><br />
+
+	<table cellpadding="0" cellspacing="1" class="tab_table">
+		<tr>
+			<th class="tab_th" style="width: 80px;">code</th>
+			<th class="tab_th" style="width: 90px;">heure de début</th>
+			<th class="tab_th" style="width: 90px;">heure de fin</th>
+			<th class="tab_th" style="width: 90px;">type</th>
+			<th class="tab_th" style="width: 25px;"></th>
+			<th class="tab_th" style="width: 25px;"></th>
+		</tr>
+<?php
+	$requete_periode = 'SELECT * FROM '.$prefix_base.'absences_creneaux'.$choix_table.' ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
+
     $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
     $i=1;
 	while ( $data_periode = mysql_fetch_array( $execution_periode ) ) {
@@ -262,7 +342,7 @@ echo "</p>\n";
 
 	<h2>Ajout de créneaux horaires</h2>
 
-    <form name="form1" method="post" action="admin_periodes_absences.php?action=ajouter">
+    <form name="form1" method="post" action="admin_periodes_absences.php?action=ajouter<?php echo $aff_creneau_diff; ?>">
       <table class="tab_table">
         <tr>
           <th class="tab_th">Nombre de créneaux horaires à ajouter</th>
@@ -289,10 +369,7 @@ for($a=1; $a<=15; $a++) {
 echo '			</select>
 	';
 
-/*
-<input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="Submit2" value="Mettre à jour" />
-*/
+
 ?>
 			</td>
         </tr>
@@ -305,7 +382,7 @@ echo '			</select>
 		echo "<h2>Modifier un créneau horaire</h2>";
 	}
 	?>
-    <form action="admin_periodes_absences.php?action=visualiser&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
+    <form action="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
           <th class="tab_th">Code</th>

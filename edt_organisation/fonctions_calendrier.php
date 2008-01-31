@@ -25,7 +25,7 @@ function typeSemaineActu(){
 
 // Fonction qui retourne le jour actu en français et en toutes lettres
 function retourneJour($jour){
-	if ($jour == "") {
+	if ($jour === "") {
 		$jour = date("w");
 	}
 	// On traduit le nom du jour

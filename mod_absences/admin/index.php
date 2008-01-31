@@ -130,7 +130,7 @@ $req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE na
 $req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.mysql_error());
 	if ($req_setting["value"] == 'y' OR $req_setting2["value"] == 'y') {
 		// On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
-		$_SESSION["retour"] = "../mod_absences/admin/index.php";
+		$_SESSION["retour"] = "../mod_absences/admin/index";
 		echo '<a href="../../edt_organisation/edt_calendrier.php">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';
 	} else {
 		echo '<a href="admin_config_calendrier.php?action=visualiser">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';

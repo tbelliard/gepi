@@ -157,3 +157,5 @@ DROP TABLE IF EXISTS `inscription_items`;
 CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(10) NOT NULL default '', heure varchar(20) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id));
 DROP TABLE IF EXISTS `inscription_j_login_items`;
 CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');
+DROP TABLE IF EXISTS `absences_creneaux_bis`;
+CREATE TABLE IF NOT EXISTS absences_creneaux_bis (`id_definie_periode` int(11) NOT NULL auto_increment, `nom_definie_periode` varchar(10) NOT NULL default '', `heuredebut_definie_periode` time NOT NULL default '00:00:00', `heurefin_definie_periode` time NOT NULL default '00:00:00', `suivi_definie_periode` tinyint(4) NOT NULL, `type_creneaux` varchar(15) NOT NULL, PRIMARY KEY  (`id_definie_periode`));

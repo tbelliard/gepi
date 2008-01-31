@@ -5395,6 +5395,29 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
+       	// Création de la table absences_creneaux_bis
+		$result .= "&nbsp;->Ajout de la table absences_creneaux_bis. <br />";
+		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_creneaux_bis'"));
+		if ($test1 == 0) {
+			$sql = "CREATE TABLE `absences_creneaux_bis` (
+				`id_definie_periode` int(11) NOT NULL auto_increment,
+				`nom_definie_periode` varchar(10) NOT NULL default '',
+				`heuredebut_definie_periode` time NOT NULL default '00:00:00',
+				`heurefin_definie_periode` time NOT NULL default '00:00:00',
+				`suivi_definie_periode` tinyint(4) NOT NULL,
+				`type_creneaux` varchar(15) NOT NULL,
+				PRIMARY KEY  (`id_definie_periode`));";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+		}
+
     }
 
     //Initialisation des paramètres liés au module inscription
