@@ -359,6 +359,23 @@ foreach ($liste_eleves as $eleve_login) {
 			//
 			// si l'élève suit la matière
 			//
+			if ($restauration != "oui" AND $restauration != "non") {
+				// On récupère l'appréciation tempo pour la rajouter à $eleve_app
+				$app_t_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE
+					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				$verif_t = mysql_num_rows($app_t_query);
+				if ($verif_t != 0) {
+					$eleve_app_t = '<p style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</p>';
+					$style_t = "style=\"border: 2px solid red;\" ";
+				}else{
+					$eleve_app_t = '';
+					$style_t = '';
+				}
+			}else{
+				$eleve_app_t = '';
+				$style_t = '';
+			}
+
 			// Appel des appréciations (en vérifiant si une restauration est demandée ou non)
 			if ($restauration == "oui") {
 				$app_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
@@ -444,7 +461,10 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ".$liste_notes."<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
-				$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\">".$eleve_app."</textarea></td>\n";
+				$mess[$k].="<textarea ".$style_t."id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\">".$eleve_app."</textarea>\n";
+				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
+				$mess[$k].=$eleve_app_t;
+				$mess[$k].= "</td>\n";
 
 				//=========================
 

@@ -73,5 +73,5 @@ $verif_var1 = explode("_t", $var1);
 	}
 	// et on renvoie une réponse valide
 	header("HTTP/1.0 200 OK");
-	echo' ';
+	echo ' ';
 ?>
