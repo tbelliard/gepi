@@ -27,6 +27,7 @@ $niveau_arbo = 2;
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
+include("../../../edt_organisation/fonctions_calendrier.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -69,80 +70,84 @@ require_once("../../lib/header.inc");
 
 $total = '0'; $verification[0] = '1'; $erreur = '0';
 
-if ($action_sql == "ajouter" or $action_sql == "modifier")
-{
-   while ($total < $nb_ajout)
-      {
-            // Vérifcation des variable
-              $nom_definie_periode_ins = $_POST['nom_definie_periode'][$total];
-              $heuredebut_definie_periode_ins = $_POST['heuredebut_definie_periode'][$total];
-              $heurefin_definie_periode_ins = $_POST['heurefin_definie_periode'][$total];
-		if ( isset($type_creneaux[$total]) ) { $type_creneaux_ins = $type_creneaux[$total]; } else { $type_creneaux_ins = 'cours'; }
-		if ( isset($suivi_definie_periode[$total]) ) { $suivi_definie_periode_ins = $suivi_definie_periode[$total]; } else { $suivi_definie_periode_ins = ''; }
+if ($action_sql == "ajouter" or $action_sql == "modifier") {
+	while ($total < $nb_ajout) {
+		// Vérifcation des variable
+		$nom_definie_periode_ins = $_POST['nom_definie_periode'][$total];
+		$heuredebut_definie_periode_ins = $_POST['heuredebut_definie_periode'][$total];
+		$heurefin_definie_periode_ins = $_POST['heurefin_definie_periode'][$total];
+		if ( isset($type_creneaux[$total]) ) {
+			$type_creneaux_ins = $type_creneaux[$total];
+		} else {
+			$type_creneaux_ins = 'cours';
+		}
+		if ( isset($suivi_definie_periode[$total]) ) {
+			$suivi_definie_periode_ins = $suivi_definie_periode[$total];
+		} else {
+			$suivi_definie_periode_ins = '';
+		}
 
-              if ($action_sql == "modifier") { $id_definie_periode_ins = $_POST['id_periode'][$total]; }
-
-            // Vérification des champs nom et prenom (si il ne sont pas vides ?)
-            if($nom_definie_periode_ins != "" && $heuredebut_definie_periode_ins != "" && $heurefin_definie_periode_ins != "")
-            {
-                if($heuredebut_definie_periode_ins != "00:00")
-                 {
-                     if($heurefin_definie_periode_ins != "00:00")
-                     {
-                         if($heurefin_definie_periode_ins > $heuredebut_definie_periode_ins)
-                         {
-                            if($action_sql == "ajouter") { $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0); }
-                            if($action_sql == "modifier") { $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0); }
-                              if ($test == "0")
-                              {
-                                 if($action_sql == "ajouter")
-                                  {
-                                     // Requete d'insertion MYSQL
-                                        $requete = "INSERT INTO ".$prefix_base."absences_creneaux (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
-                                  }
-                                 if($action_sql == "modifier")
-                                  {
-                                     // Requete de mise à jour MYSQL
-                                        $requete = "UPDATE ".$prefix_base."absences_creneaux SET
-                                                        nom_definie_periode = '$nom_definie_periode_ins',
-                                                        heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
-                                                        heurefin_definie_periode = '$heurefin_definie_periode_ins',
-							suivi_definie_periode = '$suivi_definie_periode_ins',
-							type_creneaux = '$type_creneaux_ins'
-                                                        WHERE id_definie_periode = '".$id_definie_periode_ins."' ";
-                                  }
-                                // Execution de cette requete dans la base cartouche
-                                  mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
-                                  $verification[$total] = 1;
-                              } else {
-                                        // vérification = 2 - Ce créneaux horaires existe déjas
-                                         $verification[$total] = 2;
-                                         $erreur = 1;
-                                     }
-                         } else {
+		if ($action_sql == "modifier") {
+			$id_definie_periode_ins = $_POST['id_periode'][$total];
+		}
+		// Vérification des champs nom et prenom (si il ne sont pas vides ?)
+		if($nom_definie_periode_ins != "" && $heuredebut_definie_periode_ins != "" && $heurefin_definie_periode_ins != ""){
+			if($heuredebut_definie_periode_ins != "00:00") {
+				if($heurefin_definie_periode_ins != "00:00") {
+					if($heurefin_definie_periode_ins > $heuredebut_definie_periode_ins) {
+						if($action_sql == "ajouter") {
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins')"),0);
+						}
+						if($action_sql == "modifier") {
+							$test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_creneaux WHERE id_definie_periode != '$id_definie_periode_ins' AND (nom_definie_periode='$nom_definie_periode_ins' OR (heuredebut_definie_periode='$heuredebut_definie_periode_ins' AND heurefin_definie_periode='$heurefin_definie_periode_ins'))"),0);
+						}
+                        if ($test == "0") {
+                        	if($action_sql == "ajouter") {
+                        		// Requete d'insertion MYSQL
+								$requete = "INSERT INTO ".$prefix_base."absences_creneaux (nom_definie_periode,heuredebut_definie_periode,heurefin_definie_periode,suivi_definie_periode,type_creneaux) VALUES ('$nom_definie_periode_ins','$heuredebut_definie_periode_ins','$heurefin_definie_periode_ins', '$suivi_definie_periode_ins', '$type_creneaux_ins')";
+							}
+							if($action_sql == "modifier") {
+								// Requete de mise à jour MYSQL
+								$requete = "UPDATE ".$prefix_base."absences_creneaux SET
+											nom_definie_periode = '$nom_definie_periode_ins',
+											heuredebut_definie_periode = '$heuredebut_definie_periode_ins',
+											heurefin_definie_periode = '$heurefin_definie_periode_ins',
+											suivi_definie_periode = '$suivi_definie_periode_ins',
+											type_creneaux = '$type_creneaux_ins'
+												WHERE id_definie_periode = '".$id_definie_periode_ins."' ";
+							}
+							// Execution de cette requete dans la base cartouche
+							mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
+							$verification[$total] = 1;
+						} else {
+							// vérification = 2 - Ce créneaux horaires existe déjas
+							$verification[$total] = 2;
+							$erreur = 1;
+						}
+					} else {
                                   // vérification = 5 - L'heure de fin n'est pas définie
                                     $verification[$total] = 6;
                                     $erreur = 1;
-                                }
-                       } else {
+					}
+				} else {
                                  // vérification = 5 - L'heure de fin n'est pas définie
                                    $verification[$total] = 5;
                                    $erreur = 1;
-                              }
-                   } else {
+				}
+			} else {
                              // vérification = 4 - L'heure de début n'est pas définie
                                $verification[$total] = 4;
                                $erreur = 1;
                           }
-            } else {
+		} else {
                      // vérification = 3 - Tous les champs ne sont pas remplie
                      $verification[$total] = 3;
                      $erreur = 1;
-                   }
-      $total = $total + 1;
-      }
+		}
+		$total = $total + 1;
+	} // fin du while
 
-      if($erreur == 0)
+	if($erreur == 0)
        {
           $action = "visualiser";
        } else {
@@ -166,7 +171,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                   if ($action_sql == "ajouter") { $action = "ajouter"; }
                   if ($action_sql == "modifier") { $action = "modifier"; }
               }
-}
+} //if ($action_sql == "ajouter" or $action_sql == "modifier")
 
 if ($action_sql == "supprimer")
  {
