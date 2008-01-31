@@ -365,7 +365,7 @@ foreach ($liste_eleves as $eleve_login) {
 					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				$verif_t = mysql_num_rows($app_t_query);
 				if ($verif_t != 0) {
-					$eleve_app_t = '<p style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</p>';
+					$eleve_app_t = "\n".'<p>Restauration : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
 					$style_t = "style=\"border: 2px solid red;\" ";
 				}else{
 					$eleve_app_t = '';
