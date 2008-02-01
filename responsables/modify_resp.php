@@ -460,7 +460,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 }
 
 
-
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Ajouter ou modifier un responsable";
 require_once("../lib/header.inc");
@@ -545,12 +545,14 @@ if(isset($associer_eleve)) {
 			die();
 		}
 
-		if($_SESSION['statut']=="administrateur"){
+		//if($_SESSION['statut']=="administrateur"){
 			echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+		/*
 		}
 		else{
 			echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
 		}
+		*/
 	}
 
 	// AFFICHER LE RESPONSABLE COURANT
@@ -591,7 +593,9 @@ if(isset($associer_eleve)) {
 				echo "<p>Sélectionner l'élève à associer à ".ucfirst(strtolower($lig_pers->prenom))." ".strtoupper($lig_pers->nom)."<br />\n";
 
 				//echo "<p align='center'>\n";
-				echo "<select name='add_ele_id'>\n";
+				echo "<select name='add_ele_id'";
+				echo " onchange='changement();'";
+				echo ">\n";
 				echo "<option value=''>--- Ajouter un élève ---</option>\n";
 			}
 
@@ -619,17 +623,23 @@ if(isset($associer_eleve)) {
 
 
 if(!isset($quitter_la_page)){
-	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<p class='bold'><a href='index.php'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='modify_resp.php'>Ajouter un responsable</a>";
 }
 else {
-	if($_SESSION['statut']=="administrateur"){
+	//if($_SESSION['statut']=="administrateur"){
 		echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+	/*
 	}
 	else{
 		echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a>\n";
 	}
-	echo " | <a href='modify_resp.php&amp;quitter_la_page=y'>Ajouter un responsable</a>";
+	*/
+	echo " | <a href='modify_resp.php&amp;quitter_la_page=y'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Ajouter un responsable</a>";
 }
 echo "</p>\n";
 
@@ -719,8 +729,8 @@ echo "<td valign='top'>\n";
 	echo "</p>\n";
 
 	echo "<table>\n";
-	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=resp_nom value = \"".$resp_nom."\" /></td></tr>\n";
-	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" /></td></tr>\n";
+	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=resp_nom value = \"".$resp_nom."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" onchange='changement();' /></td></tr>\n";
 	echo "<tr><td>Civilité : </td><td>\n";
 
 	echo "<table border='0'>\n";
@@ -730,28 +740,28 @@ echo "<td valign='top'>\n";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='civilite' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='civilite' id='civilite' value=\"\" ";
+	echo "<input type='radio' name='civilite' id='civilite' value=\"\" onchange='changement();' ";
 	if($civilite==""){echo "checked ";}
 	echo "/> X \n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='civiliteM' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='civilite' id='civiliteM' value=\"M.\" ";
+	echo "<input type='radio' name='civilite' id='civiliteM' value=\"M.\" onchange='changement();' ";
 	if($civilite=="M."){echo "checked ";}
 	echo "/> M. \n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='civiliteMme' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='civilite' id='civiliteMme' value=\"Mme\" ";
+	echo "<input type='radio' name='civilite' id='civiliteMme' value=\"Mme\" onchange='changement();' ";
 	if($civilite=="Mme"){echo "checked ";}
 	echo "/> Mme \n";
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='civiliteMlle' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='civilite' id='civiliteMlle' value=\"Mlle\" ";
+	echo "<input type='radio' name='civilite' id='civiliteMlle' value=\"Mlle\" onchange='changement();' ";
 	if($civilite=="Mlle"){echo "checked ";}
 	echo "/> Mlle\n";
 	echo "</label>\n";
@@ -760,10 +770,10 @@ echo "<td valign='top'>\n";
 	echo "</table>\n";
 
 	echo "</td></tr>\n";
-	echo "<tr><td>Tel.perso : </td><td><input type=text size=15 name=tel_pers value = \"".$tel_pers."\" /></td></tr>\n";
-	echo "<tr><td>Tel.portable : </td><td><input type=text size=15 name=tel_port value = \"".$tel_port."\" /></td></tr>\n";
-	echo "<tr><td>Tel.professionnel : </td><td><input type=text size=15 name=tel_prof value = \"".$tel_prof."\" /></td></tr>\n";
-	echo "<tr><td>Mel : </td><td><input type=text size=50 name=mel value = \"".$mel."\" /></td></tr>\n";
+	echo "<tr><td>Tel.perso : </td><td><input type=text size=15 name=tel_pers value = \"".$tel_pers."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Tel.portable : </td><td><input type=text size=15 name=tel_port value = \"".$tel_port."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Tel.professionnel : </td><td><input type=text size=15 name=tel_prof value = \"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Mel : </td><td><input type=text size=50 name=mel value = \"".$mel."\" onchange='changement();' /></td></tr>\n";
 	echo "</table>\n";
 
 echo "</td>\n";
@@ -816,19 +826,19 @@ if(isset($pers_id)){
 				$tmpbg="";
 			}
 
-			echo "<td style='text-align:center;$tmpbg'><input type='radio' name='resp_legal[$cpt]' value='1'";
+			echo "<td style='text-align:center;$tmpbg'><input type='radio' name='resp_legal[$cpt]' value='1' onchange='changement();'";
 			if($resp_legal1==1){echo " checked";}
 			echo " /></td>\n";
 
 			echo "<td style='text-align:center;'>";
 			if(mysql_num_rows($res_resp)>0){
-				echo "<input type='radio' name='resp_legal[$cpt]' value='2'";
+				echo "<input type='radio' name='resp_legal[$cpt]' value='2' onchange='changement();'";
 				if($resp_legal1!=1){echo " checked";}
 				echo " />";
 			}
 			echo "</td>\n";
 
-			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' /></td>\n";
+			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' onchange='changement();' /></td>\n";
 
 			echo "<td style='text-align:center;'>\n";
 			//$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2')";
@@ -846,7 +856,7 @@ if(isset($pers_id)){
 			if(mysql_num_rows($res_resp)>0){
 				if(mysql_num_rows($res_resp)==1){
 					$lig_resp=mysql_fetch_object($res_resp);
-					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a>\n";
+					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a>\n";
 					//echo "<input type='hidden' name='pers_id[]' value='$lig_resp->pers_id' />\n";
 					echo "<input type='hidden' name='pers_id2[".$cpt."]' value='$lig_resp->pers_id' />\n";
 				}
@@ -854,7 +864,7 @@ if(isset($pers_id)){
 					echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
 					echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
 					while($lig_resp=mysql_fetch_object($res_resp)){
-						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a><br />\n";
+						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a><br />\n";
 					}
 				}
 			}
@@ -871,7 +881,13 @@ if(isset($pers_id)){
 
 if(isset($pers_id)) {
 	// Ajout de l'association avec un élève existant:
-	echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;associer_eleve=y'>Ajouter l'association avec un élève</a></p>\n";
+	echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;associer_eleve=y";
+	if(isset($quitter_la_page)){
+		echo "&amp;quitter_la_page=$quitter_la_page";
+	}
+	echo "'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Ajouter l'association avec un élève</a></p>\n";
 }
 
 /*
@@ -952,9 +968,9 @@ if($temoin_adr==1){
 		// L'adresse n'est associée à au moins un autre responsable.
 		echo "<table><tr><td><b>Attention:</b></td><td>L'adresse indiquée ci-dessous est partagée avec un autre responsable.</td></tr>\n";
 		//<br />\nSi vous modifiez l'adresse, elle le sera pour l'autre responsable également.</p>\n";
-		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_corriger' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_corriger' value='corriger' checked /> Corriger/modifier l'adresse commune aux deux responsables,</label> <b>ou</b></td></tr>\n";
+		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_corriger' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_corriger' value='corriger' checked onchange='changement();' /> Corriger/modifier l'adresse commune aux deux responsables,</label> <b>ou</b></td></tr>\n";
 		//echo "<tr><td>&nbsp;</td><td>ou</td></tr>\n";
-		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_desolidariser' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_desolidariser' value='desolidariser' /> Désolidariser l'adresse de celle de l'autre responsable.</label></td></tr></table>\n";
+		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_desolidariser' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_desolidariser' value='desolidariser' onchange='changement();' /> Désolidariser l'adresse de celle de l'autre responsable.</label></td></tr></table>\n";
 	}
 }
 else{
@@ -963,14 +979,14 @@ else{
 
 echo "<table>\n";
 //echo "<tr><td colspan='2'>Saisir une adresse</td></tr>\n";
-echo "<tr><td>Adresse * : </td><td><input type=text size=50 name=adr1 value = \"".$adr1."\" /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr2 value = \"".$adr2."\" /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr3 value = \"".$adr3."\" /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr4 value = \"".$adr4."\" /></td></tr>\n";
-echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = \"".$cp."\" />";
-echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" />\n";
+echo "<tr><td>Adresse * : </td><td><input type=text size=50 name=adr1 value = \"".$adr1."\" onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr2 value = \"".$adr2."\" onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr3 value = \"".$adr3."\" onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr4 value = \"".$adr4."\" onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = \"".$cp."\" onchange='changement();' />";
+echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" onchange='changement();' />\n";
 echo "</td></tr>\n";
-echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" /></td></tr>\n";
+echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" onchange='changement();' /></td></tr>\n";
 //echo "<tr><td>Pays : </td><td><input type=text size=50 name=pays value = \"".$pays."\" /></td></tr>\n";
 
 /*
@@ -1020,21 +1036,38 @@ if(isset($pers_id)){
 	if(isset($quitter_la_page)) {
 		echo "&amp;quitter_la_page=$quitter_la_page";
 	}
-	// A FAIRE... VOIR COMMENT GERER LA FERMETURE DANS choix_adr_existante.php
-	echo "'>Choisir une adresse existante.</a></p>\n";
+	echo "'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Choisir une adresse existante.</a></p>\n";
 }
 else{
 	//echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?choisir_adr_existante=oui' onClick=''>Choisir une adresse existante.</a></p>";
 
 	echo "<script type='text/javascript'>
-	function creer_pers_id_puis_choisir_adr_exist(){
-		document.forms.resp.choisir_ad_existante.value='oui';
-		//setTimeout('document.forms.resp.submit()',5000);
-		document.forms.resp.submit();
+	function creer_pers_id_puis_choisir_adr_exist(theLink, thechange, themessage){
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms.resp.choisir_ad_existante.value='oui';
+			//setTimeout('document.forms.resp.submit()',5000);
+			document.forms.resp.submit();
+			return false;
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms.resp.choisir_ad_existante.value='oui';
+				//setTimeout('document.forms.resp.submit()',5000);
+				document.forms.resp.submit();
+				return false;
+			}
+			else{
+				return false;
+			}
+		}
 	}
 </script>\n";
 
-	echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."' onClick='creer_pers_id_puis_choisir_adr_exist();return false;'>Choisir une adresse existante.</a></p>";
+	echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."' onClick=\"creer_pers_id_puis_choisir_adr_exist(this, change, '$themessage');return false;\">Choisir une adresse existante.</a></p>";
 	echo "<input type='hidden' name='choisir_ad_existante' value='' />";
 }
 

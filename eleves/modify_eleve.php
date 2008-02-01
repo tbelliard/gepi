@@ -981,6 +981,7 @@ if (isset($eleve_login)) {
 }
 
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
 require_once("../lib/header.inc");
@@ -1039,7 +1040,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if(isset($definir_resp)){
 		if(!isset($valider_choix_resp)){
 
-			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 			echo "<p>Choix du responsable légal <b>$definir_resp</b> pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
@@ -1114,7 +1115,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 				echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
 				echo "<table align='center' class='boireaus'>\n";
 				echo "<tr>\n";
-				echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' /></td>\n";
+				echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' onchange='changement();' /></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Responsable légal $definir_resp</b></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Adresse</b></td>\n";
 				echo "</tr>\n";
@@ -1129,7 +1130,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 					if($lig_resp->pers_id==$pers_id){
 						echo "checked ";
 					}
-					echo "/></td>\n";
+					echo "onchange='changement();' /></td>\n";
 					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 					echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id&amp;quitter_la_page=y' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 					echo "<td>";
@@ -1194,7 +1195,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 	if(isset($definir_etab)){
 		if(!isset($valider_choix_etab)){
-			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 			echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
 
@@ -1227,7 +1228,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 					if($lig_etab->id==$id_etab){
 						echo "checked ";
 					}
-					echo "/></td>";
+					echo "onchange='changement();' /></td>";
 					echo "<td style='text-align:center; background-color:$couleur;'><a href='../etablissements/modify_etab.php?id=$lig_etab->id' target='_blank'>$lig_etab->id</a></td>\n";
 					echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->niveau</td>\n";
 					echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->type</td>\n";
@@ -1247,7 +1248,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			}
 
 			echo "<p>Si un établissement ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
-			echo "en vous rendant dans [Gestion des bases-><a href='../etablissements/index.php'>Gestion des établissements</a>]</p>\n";
+			echo "en vous rendant dans [Gestion des bases-><a href='../etablissements/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestion des établissements</a>]</p>\n";
 
 
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
@@ -1267,13 +1268,13 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 }
 
 
-echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "<p class=bold><a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 if ((isset($order_type)) and (isset($quelles_classes))) {
     //echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
     echo " | <a href=\"index.php?quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-	echo "&amp;order_type=$order_type\">Retour à votre recherche</a>\n";
+	echo "&amp;order_type=$order_type\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour à votre recherche</a>\n";
 }
 /*
 else {
@@ -1329,7 +1330,7 @@ if (isset($eleve_login)) {
 	echo " /></td>\n";
 } else {
 	echo "<th style='text-align:left;'>Identifiant GEPI * : </th>
-	<td><input type=text name=reg_login size=20 value=\"\" /></td>\n";
+	<td><input type=text name=reg_login size=20 value=\"\" onchange='changement();' /></td>\n";
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
@@ -1340,7 +1341,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($eleve_nom)) {
 		echo "value=\"".$eleve_nom."\"";
 	}
-	echo " /></td>
+	echo " onchange='changement();' /></td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Prénom * : </th>
@@ -1348,7 +1349,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($eleve_prenom)) {
 		echo "value=\"".$eleve_prenom."\"";
 	}
-	echo " /></td>
+	echo " onchange='changement();' /></td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Email : </th>
@@ -1356,20 +1357,20 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($eleve_email)) {
 		echo "value=\"".$eleve_email."\"";
 	}
-	echo " /></td>
+	echo " onchange='changement();' /></td>
 	</tr>
 	<tr>
     <th style='text-align:left;'>Identifiant National : </th>\n";
     echo "<td><input type='text' name='reg_no_nat' size='20' ";
     if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
-    echo " /></td>\n";
+    echo " onchange='changement();' /></td>\n";
 
 	echo "</tr>\n";
 
     //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
     echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>elenoet</i>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-    echo " /></td>\n";
+    echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 }
 else{
@@ -1473,7 +1474,7 @@ if(isset($reg_no_gep)){
 		if("$photo"!=""){
 			if(file_exists($photo)){
 				echo "<br />\n";
-				echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
+				echo "<input type='checkbox' name='suppr_filephoto' value='y' onchange='changement();' /> Supprimer la photo existante\n";
 			}
 		}
 		echo "</div>\n";
@@ -1530,16 +1531,16 @@ if(isset($eleve_login)){
 		echo "<th>Régime: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='reg_regime' value='i-e' ";
 		if ($reg_regime == 'i-e') {echo " checked";}
-		echo " /></td>\n";
+		echo " onchange='changement();' /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='reg_regime' value='int.' ";
 		if ($reg_regime == 'int.') {echo " checked";}
-		echo " /></td>\n";
+		echo " onchange='changement();' /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='reg_regime' value='d/p' ";
 		if ($reg_regime == 'd/p') {echo " checked";}
-		echo " /></td>\n";
+		echo " onchange='changement();' /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='reg_regime' value='ext.' ";
 		if ($reg_regime == 'ext.') {echo " checked";}
-		echo " /></td></tr>\n";
+		echo " onchange='changement();' /></td></tr>\n";
 		echo "</table>\n";
 
 		echo "<br />\n";
@@ -1550,10 +1551,10 @@ if(isset($eleve_login)){
 		echo "<th>Redoublant: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>O<br /><input type='radio' name='reg_doublant' value='R' ";
 		if ($reg_doublant == 'R') {echo " checked";}
-		echo " /></td>\n";
+		echo " onchange='changement();' /></td>\n";
 		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>N<br /><input type='radio' name='reg_doublant' value='-' ";
 		if ($reg_doublant == '-') {echo " checked";}
-		echo " /></td></tr>\n";
+		echo " onchange='changement();' /></td></tr>\n";
 		echo "</table>\n";
 
 		echo "<br />\n";
@@ -1623,13 +1624,13 @@ if($_SESSION['statut']!="professeur") {
 <?php
 if (!(isset($eleve_sexe))) $eleve_sexe="M";
 ?>
-<label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
-<label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
+<label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> onchange='changement();' /> Masculin</label>
+<label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> onchange='changement();' /> Féminin</label>
 </div></td><td><div class='norme'>
 <b>Date de naissance (respecter format 00/00/0000) :</b> <br />
-Jour <input type=text name=birth_day size=2 value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
-Mois<input type=text name=birth_month size=2 value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
-Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
+Jour <input type=text name=birth_day size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
+Mois<input type=text name=birth_month size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
+Année<input type=text name=birth_year size=4 onchange='changement();' value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
 </div></td></tr>
 </table></center>
 
@@ -1693,7 +1694,7 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-				echo "'>Définir le responsable légal 1</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 1</a>";
 			}
 			echo "</p>\n";
 		}
@@ -1711,7 +1712,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-					echo "'>Définir le responsable légal 1</a>";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 1</a>";
 				}
 				echo "</p>\n";
 			}
@@ -1740,7 +1741,7 @@ if(isset($eleve_login)){
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
 					//echo "'>Modifier le responsable</a></td>\n";
-					echo "'>Changer de responsable</a></td>\n";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
 				echo "</tr>\n";
 
@@ -1805,7 +1806,7 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-				echo "'>Définir le responsable légal 2</a></p>\n";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 2</a></p>\n";
 			}
 		}
 		else{
@@ -1823,7 +1824,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-					echo "'>Définir le responsable légal 2</a></p>\n";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir le responsable légal 2</a></p>\n";
 				}
 			}
 			else{
@@ -1848,7 +1849,7 @@ if(isset($eleve_login)){
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
 					//echo "'>Modifier le responsable</a></td>\n";
-					echo "'>Changer de responsable</a></td>\n";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
 				echo "</tr>\n";
 
@@ -1976,7 +1977,7 @@ if(isset($eleve_login)){
 			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-			echo "'>Renseigner l'établissement d'origine</a>";
+			echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Renseigner l'établissement d'origine</a>";
 		}
 		echo "</p>\n";
 	}
@@ -1992,7 +1993,7 @@ if(isset($eleve_login)){
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-				echo "'>Définir l'établissement d'origine</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Définir l'établissement d'origine</a>";
 				echo "</p>\n";
 			}
 		}
@@ -2010,7 +2011,7 @@ if(isset($eleve_login)){
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
 
-					echo "'>Modifier l'établissement d'origine</a>";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier l'établissement d'origine</a>";
 				}
 				echo "</p>\n";
 			}
@@ -2035,7 +2036,7 @@ if(isset($eleve_login)){
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-					echo "'>Modifier l'établissement d'origine</a>";
+					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier l'établissement d'origine</a>";
 				}
 				echo "</p>\n";
 			}

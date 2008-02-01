@@ -56,7 +56,12 @@ if(isset($is_posted)){
 
 	if($is_posted=="choix_adr_existante"){
 		if($adr_id_existant==''){
-			header("Location: modify_resp.php?pers_id=$pers_id");
+			if(!isset($quitter_la_page)) {
+				header("Location: modify_resp.php?pers_id=$pers_id");
+			}
+			else{
+				header("Location: modify_resp.php?pers_id=$pers_id&quitter_la_page=$quitter_la_page");
+			}
 			die();
 		}
 		else{
@@ -69,7 +74,12 @@ if(isset($is_posted)){
 					$msg.="Erreur lors de l'insertion de l'association personne/adresse. ";
 				}
 				else{
-					header("Location: modify_resp.php?pers_id=$pers_id");
+					if(!isset($quitter_la_page)) {
+						header("Location: modify_resp.php?pers_id=$pers_id");
+					}
+					else{
+						header("Location: modify_resp.php?pers_id=$pers_id&quitter_la_page=$quitter_la_page");
+					}
 					die();
 				}
 			}
@@ -77,6 +87,7 @@ if(isset($is_posted)){
 	}
 }
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Choisir une adresse responsable";
 require_once("../lib/header.inc");
@@ -112,8 +123,40 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
-echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
 
+	function confirm_close(theLink, thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			self.close();
+			return false;
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				self.close();
+				return false;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+</script>\n";
+
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+}
+else {
+	echo "<p class=bold><a href=\"#\"";
+	echo " onclick=\"return confirm_close (this, change, '$themessage')\"";
+	echo ">Refermer la page</a></p>\n";
+}
 
 //$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 //$res_adr=mysql_query($sql);
@@ -134,6 +177,10 @@ else{
 	echo "<p>Choix d'une adresse pour $lig_pers->nom $lig_pers->prenom (<i>$pers_id</i>)</p>\n";
 
 	echo "<form enctype=\"multipart/form-data\" name=\"param_liste\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+
+	if(isset($quitter_la_page)) {
+		echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
+	}
 
 	echo "<p align='center'>";
 	if(!isset($debut)){
@@ -291,6 +338,10 @@ else{
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
+	if(isset($quitter_la_page)) {
+		echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
+	}
+
 	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
@@ -396,6 +447,7 @@ else{
 		//if(!isset($adr_id_actuel)){
 			echo "checked ";
 		//}
+		echo "onchange='changement();' ";
 		echo "/></td>\n";
 		echo "<td style='text-align:center; background-color:#FAFABE;' colspan='7'>Ne pas utiliser une adresse existante (<i>ne pas modifier</i>)</td>\n";
 		echo "</tr>\n";
@@ -408,7 +460,9 @@ else{
 		if(mysql_num_rows($res_adr_actuelle)!=0){
 			$lig_adr_actuelle=mysql_fetch_object($res_adr_actuelle);
 			echo "<tr style='background-color:orange;'>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr_actuelle->adr_id\" checked /></td>\n";
+			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr_actuelle->adr_id\" checked ";
+			echo "onchange='changement();' ";
+			echo "/></td>\n";
 			echo "<td style='text-align:center;'>$lig_adr_actuelle->adr_id</td>\n";
 			echo "<td style='text-align:center;'>\n";
 			if($lig_adr_actuelle->adr1!=""){
@@ -459,12 +513,14 @@ else{
 					echo "<tr style='background-color:orange;'>\n";
 					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
 					echo "checked ";
+					echo "onchange='changement();' ";
 					echo "/></td>\n";
 				}
 				else{
 					//echo "<tr style='background-color:$couleur;'>\n";
 					echo "<tr class='lig$alt'>\n";
 					echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+					echo "onchange='changement();' ";
 					echo "/></td>\n";
 				}
 			}
@@ -472,6 +528,7 @@ else{
 				//echo "<tr style='background-color:$couleur;'>\n";
 				echo "<tr class='lig$alt'>\n";
 				echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"".$tab_adr[$i]["adr_id"]."\" ";
+				echo "onchange='changement();' ";
 				echo "/></td>\n";
 			}
 			//echo "/></td>\n";
