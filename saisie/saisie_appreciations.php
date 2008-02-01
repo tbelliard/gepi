@@ -298,12 +298,19 @@ $restauration = isset($_GET["restauration"]) ? $_GET["restauration"] : NULL;
 		if ($test !== 0 AND $restauration == NULL) {
 			// On envoie un message à l'utilisateur
 			echo "
-			<p class=\"red\">Voulez-vous restaurer les appréciations qui n'avaient pas été enregistrées ?
-			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a> -
+			<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
+				Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
+			</p>
+			<p class=\"red\">
+			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a>
+			(elles remplaceront alors la saisie précédente)
+			 -
 			<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non\">NON</a>
+			(elles seront alors définitivement perdues)
 			</p>
 			";
 		}
+
 	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
 
 
@@ -365,15 +372,12 @@ foreach ($liste_eleves as $eleve_login) {
 					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				$verif_t = mysql_num_rows($app_t_query);
 				if ($verif_t != 0) {
-					$eleve_app_t = "\n".'<p>Restauration : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
-					$style_t = "style=\"border: 2px solid red;\" ";
+					$eleve_app_t = "\n".'<p>Appréciation non enregistrée : <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
 				}else{
 					$eleve_app_t = '';
-					$style_t = '';
 				}
 			}else{
 				$eleve_app_t = '';
-				$style_t = '';
 			}
 
 			// Appel des appréciations (en vérifiant si une restauration est demandée ou non)
@@ -461,7 +465,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ".$liste_notes."<br />\n";
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
-				$mess[$k].="<textarea ".$style_t."id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\">".$eleve_app."</textarea>\n";
+				$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\">".$eleve_app."</textarea>\n";
 				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
 				$mess[$k].=$eleve_app_t;
 				$mess[$k].= "</td>\n";
