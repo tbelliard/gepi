@@ -1,4 +1,5 @@
 <?php
+error_reporting (E_ALL);
 /*
  * @version: $Id$
  *
@@ -24,9 +25,6 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-extract($_GET, EXTR_OVERWRITE);
-extract($_POST, EXTR_OVERWRITE);
-
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -43,12 +41,76 @@ if (!checkAccess()) {
     die();
 }
 
+//Initialisation des variables
+$indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
+$order_by = isset($_GET["order_by"]) ? $_GET["order_by"] : NULL;
+
+
 if ($indice_aid =='') {
     header("Location: index.php");
     die();
 }
 $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
+$activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
+
+if (isset($_POST["is_posted"])) {
+    // Enregistrement des données
+    // On va chercher les aid déjà existantes
+    $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $nombreligne = mysql_num_rows($calldata);
+    $i = 0;
+    $msg_inter = "";
+    while ($i < $nombreligne){
+        $aid_id = @mysql_result($calldata, $i, "id");
+        // Enregistrement de fiche publique
+        if (isset($_POST["fiche_publique_".$aid_id])) {
+            $register = mysql_query("update aid set fiche_publique='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set fiche_publique='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée fiche_publique de l'aid $aid_id <br />\n";
+        // Enregistrement de eleve_peut_modifier
+        if (isset($_POST["eleve_peut_modifier_".$aid_id])) {
+            $register = mysql_query("update aid set eleve_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set eleve_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée eleve_peut_modifier de l'aid $aid_id <br />\n";
+         // Enregistrement de prof_peut_modifier
+        if (isset($_POST["prof_peut_modifier_".$aid_id])) {
+            $register = mysql_query("update aid set prof_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set prof_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée prof_peut_modifier de l'aid $aid_id <br />\n";
+        // Enregistrement de affiche_adresse1
+        if (isset($_POST["affiche_adresse1_".$aid_id])) {
+            $register = mysql_query("update aid set affiche_adresse1='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set affiche_adresse1='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée affiche_adresse1 de l'aid $aid_id <br />\n";
+        // Enregistrement de en_contruction
+        if (isset($_POST["en_contruction_".$aid_id])) {
+            $register = mysql_query("update aid set en_contruction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set en_contruction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_contruction de l'aid $aid_id <br />\n";
+        $i++;
+    }
+    if ($msg_inter == "") {
+        $msg = "Les modifications ont été enregistrées.";
+    } else {
+        $msg = $msg_inter;
+    }
+}
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
@@ -66,27 +128,111 @@ if (!isset($order_by)) {$order_by = "numero,nom";}
 $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
 
-echo "<table width = 100% cellpadding=3 border=1>";
-echo "<tr><td><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></td><td><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+if ($activer_outils_comp == "y")
+    echo"<form action=\"index2.php\" name=\"form1\" method=\"post\">\n";
+echo "<table border='1' cellpadding='5' class='boireaus'>";
+echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></th>\n";
+echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></th>";
+echo "<th>&nbsp;</th><th>&nbsp;</th>";
+// colonne publier la fiche
+if ($activer_outils_comp == "y") {
+    echo "<th><p class=\"small\">La fiche est visible sur la partie publique</p>\n";
+    echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+
+    echo "<th><p class=\"small\">Les élèves reponsables peuvent modifier la fiche</p>\n";
+    echo "<a href=\"javascript:CocheColonne(2);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(2);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+
+    echo "<th><p class=\"small\">Les professeurs reponsables peuvent modifier la fiche</p>\n";
+    echo "<a href=\"javascript:CocheColonne(3);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(3);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+
+    echo "<th><p class=\"small\">Le lien \"adresse publique\" est visible sur la partie publique</p>\n";
+    echo "<a href=\"javascript:CocheColonne(4);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(4);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+
+    echo "<th><p class=\"small\">Le lien \"adresse publique\" est accompagné d'une message \"En construction\"</p>\n";
+    echo "<a href=\"javascript:CocheColonne(5);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(5);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+}
+// Colonne "supprimer
+echo "<th>&nbsp;</th></tr>";
+
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
-
 $i = 0;
+$alt=1;
 while ($i < $nombreligne){
-
     $aid_nom = @mysql_result($calldata, $i, "nom");
     $aid_num = @mysql_result($calldata, $i, "numero");
+    $eleve_peut_modifier = @mysql_result($calldata, $i, "eleve_peut_modifier");
+    $prof_peut_modifier = @mysql_result($calldata, $i, "prof_peut_modifier");
+    $fiche_publique = @mysql_result($calldata, $i, "fiche_publique");
+    $affiche_adresse1 = @mysql_result($calldata, $i, "affiche_adresse1");
+    $en_contruction = @mysql_result($calldata, $i, "en_contruction");
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @mysql_result($calldata, $i, "id");
-    echo "<tr><td><p class='medium'><b>$aid_num</b></p></td>";
-    echo "<td><p class='medium'><a href='add_aid.php?action=modif_aid&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'><b>$aid_nom</b></a></p></td>";
-    echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>";
-    echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>";
-    echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible2=$indice_aid&amp;action=del_aid'>supprimer</a></p></td></tr>";
+    $alt=$alt*(-1);
+    echo "<tr class='lig$alt'><td><p class='medium'><b>$aid_num</b></p></td>";
+    echo "<td><p class='medium'><a href='add_aid.php?action=modif_aid&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'><b>$aid_nom</b></a></p></td>\n";
+    echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
+    echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
+    if ($activer_outils_comp == "y") {
+        // La fiche est-elle publique ?
+        echo "<td><center><input type=\"checkbox\" name=\"fiche_publique_".$aid_id."\" value=\"y\" id=\"case_1_".$i."\" ";
+        if ($fiche_publique == "y") echo "checked";
+        echo " /></center></td>\n";
+        // Les élèves peuvent-ils modifier la fiche ?
+        echo "<td><center><input type=\"checkbox\" name=\"eleve_peut_modifier_".$aid_id."\" value=\"y\" id=\"case_2_".$i."\" ";
+        if ($eleve_peut_modifier == "y") echo "checked";
+        echo " /></center></td>\n";
+        // Les profs peuvent-ils modifier la fiche ?
+        echo "<td><center><input type=\"checkbox\" name=\"prof_peut_modifier_".$aid_id."\" value=\"y\" id=\"case_3_".$i."\" ";
+        if ($prof_peut_modifier == "y") echo "checked";
+        echo " /></center></td>\n";
+        // Le lien public est-il visible sur la partie publique ?
+        echo "<td><center><input type=\"checkbox\" name=\"affiche_adresse1_".$aid_id."\" value=\"y\" id=\"case_4_".$i."\" ";
+        if ($affiche_adresse1 == "y") echo "checked";
+        echo " /></center></td>\n";
+        // Avertissement "en construction"
+        echo "<td><center><input type=\"checkbox\" name=\"en_contruction_".$aid_id."\" value=\"y\" id=\"case_5_".$i."\" ";
+        if ($en_contruction == "y") echo "checked";
+        echo " /></center></td>\n";
 
+    }
+    echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible2=$indice_aid&amp;action=del_aid'>supprimer</a></p></td></tr>\n";
 
 $i++;
 }
 
 ?>
 </table>
-<?php require("../lib/footer.inc.php");
+<?php
+if ($activer_outils_comp == "y") {
+  echo "<br /><br /><br /><center>\n";
+	echo "<div id='fixe'>\n";
+  echo "<input type=\"submit\" name=\"Valider\" />";
+	echo "</div>\n";
+	echo "</center>\n";
+  echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
+  echo "<input type=\"hidden\" name=\"is_posted\" value=\"y\" />\n";
+  echo "</form>\n";
+  echo "<script type='text/javascript'>
+  function CocheColonne(i) {
+	 for (var ki=0;ki<$nombreligne;ki++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = true;
+		}
+	 }
+  }
+  function DecocheColonne(i) {
+	 for (var ki=0;ki<$nombreligne;ki++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = false;
+		}
+	 }
+  }
+</script>
+";
+}
+require("../lib/footer.inc.php");

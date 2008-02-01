@@ -59,7 +59,11 @@ $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_ou
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 // ========== fin initialisation ===================
 
+// En attente de fonctionnement
+$utilisation_prototype = "ok";
+
 if (isset($is_posted) and ($is_posted == "1")) {
+  $msg_inter = "";
 	if ($display_end < $display_begin) {$display_end = $display_begin;}
 	$del = mysql_query("DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
 	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
@@ -78,8 +82,35 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			display_bulletin='".$display_bulletin."',
 			bull_simplifie = '".$bull_simplifie."',
 			outils_complementaires = '".$activer_outils_comp."'");
-	if (!$reg_data) {
-		$msg = "Erreur lors de l'enregistrement des données !";
+	  if (!$reg_data)
+		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
+
+		// Suppression de professeurs dans le cas des outils complémentaire
+		$call_profs = mysql_query("SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
+		$nb_profs = mysql_num_rows($call_profs);
+		$i = 0;
+		while($i < $nb_profs) {
+		    $login_prof = mysql_result($call_profs,$i);
+		    if (isset($_POST["delete_".$login_prof])) {
+		        $reg_data = mysql_query("delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
+            if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_prof!<br />";
+		    }
+		    $i++;
+		} // while
+
+
+    if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
+        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and indice_aid='$indice_aid')");
+        if ($test != "0") {
+            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+        } else {
+            $reg_data = mysql_query("INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '$reg_prof_login', indice_aid='$indice_aid'");
+            if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
+        }
+    }
+    if ($msg_inter !="") {
+        $msg = $msg_inter;
     } else {
         $msg = "Enregistrement réussi !";
     }
@@ -320,13 +351,57 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 <p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
 (attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).</p>
 <p>
-<input type="radio" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
-<input type="radio" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires
+<input type="radio" onclick="javascript:Element.show('outils_comp');" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
+<input type="radio" onclick="javascript:Element.hide('outils_comp');" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires
 </p>
+<?php if ($activer_outils_comp=='y') {?>
+    <div id="outils_comp">
+<?php } else { ?>
+    <div id="outils_comp" style="display:none;">
+<?php } ?>
+<hr />
+<p><b>Modification des fiches projet : </b></p>
+<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs ayant le droit de modifier les fiches projet (documentaliste, ...)
+même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
+<?php
+$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur)  order by u.nom, u.prenom");
+$nombre = mysql_num_rows($call_liste_data);
+if ($nombre !=0)
+    echo "<table border=0>";
+$i = "0";
+while ($i < $nombre) {
+    $login_prof = mysql_result($call_liste_data, $i, "login");
+    $nom_prof = mysql_result($call_liste_data, $i, "nom");
+    $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+    echo "<tr><td><b>";
+    echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_".$login_prof."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
+
+    $i++;
+}
+if ($nombre !=0)
+    echo "</table>";
+echo "<select size=1 name=reg_prof_login>\n";
+echo "<option value=''>(aucun)</option>\n";
+$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND statut != 'eleve' order by nom");
+$nombreligne = mysql_num_rows($call_prof);
+$i = "0" ;
+while ($i < $nombreligne) {
+    $login_prof = mysql_result($call_prof, $i, 'login');
+    $nom_el = mysql_result($call_prof, $i, 'nom');
+    $prenom_el = mysql_result($call_prof, $i, 'prenom');
+    echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+    $i++;
+}
+?>
+</select>
+
+</div>
 
 </div>
 <input type="hidden" name="is_posted" value="1" />
 <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+<div id='fixe'>
 <input type="submit" value="Enregistrer" />
+</div>
 </form>
 <?php require("../lib/footer.inc.php"); ?>

@@ -111,7 +111,12 @@ require_once("../lib/header.inc");
 <?php if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
     <p><span class='bold'>Liste des professeurs responsables :</span>
+    <br />Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
     <?php
+    if ($activer_outils_comp == "y")
+        echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).<br />";
+
+
     $vide = 1;
     $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysql_num_rows($call_liste_data);

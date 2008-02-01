@@ -5473,10 +5473,23 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
            $result .= $result_inter."<br />";
     }
-
+    //
     // Outils complémenraires de gestion des AID
+    //
     $result_inter = "";
     $result .= "<br />&nbsp;->Ajout des paramètres liés aux outils complémentaires de gestion des AIDs<br />";
+    // Création de la table j_aidcateg_utilisateurs
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aidcateg_utilisateurs'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_utilisateurs (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table j_aidcateg_utilisateurs a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table j_aidcateg_utilisateurs existe déjà.</font><br />";
+    }
+    // Modification de la table aid_config
     $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'outils_complementaires'"));
     if ($test == 0) {
       $result_inter .= traite_requete("ALTER TABLE aid_config ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
@@ -5487,7 +5500,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">Le champ outils_complementaires dans la table aid_config existe déjà.</font><br />";
     }
-    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'jury'"));
+    // Modification de la table aid
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'en_contruction'"));
     if ($test == 0) {
       $result_inter .= traite_requete("ALTER TABLE aid ADD salle VARCHAR( 50 ) NOT NULL ,
       ADD jury VARCHAR( 50 ) NOT NULL ,
@@ -5501,13 +5515,21 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       ADD contacts TEXT NOT NULL ,
       ADD divers TEXT NOT NULL ,
       ADD matiere1 VARCHAR( 100 ) NOT NULL ,
-      ADD matiere2 VARCHAR( 100 ) NOT NULL ;");
+      ADD matiere2 VARCHAR( 100 ) NOT NULL
+      ;");
+      $result_inter .= traite_requete("ALTER TABLE aid
+      ADD eleve_peut_modifier ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' ,
+      ADD prof_peut_modifier ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' ,
+      ADD fiche_publique ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' ,
+      ADD affiche_adresse1 ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' ,
+      ADD en_contruction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
+      ;");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2 dans la table aid ont été créés !</font><br />";
+          $result .= "<font color=\"green\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, fiche_publique, affiche_adresse1, en_contruction dans la table aid ont été créés !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
-      $result .= "<font color=\"blue\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2 dans la table aid existent déjà.</font><br />";
+      $result .= "<font color=\"blue\">Les champ jury, productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, fiche_publique, affiche_adresse1, en_contruction dans la table aid existent déjà.</font><br />";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
     if ($test == 0) {

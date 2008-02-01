@@ -46,11 +46,11 @@ require_once("../lib/header.inc");
 <H1>Le module Inscription</H1>
 Le module Inscription permet de définir un ou plusieurs items (journée, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
 <ul>
-<li>La configuration du module est accéssible aux administrateurs et à la scolarité.</li>
-<li>L'interface d'inscription/désinscription est accessible aux professeurs, cpe, administrateurs et vie scolaire.</li>
+<li>La configuration du module est accessible aux administrateurs et à la scolarité.</li>
+<li>L'interface d'inscription/désinscription est accessible aux professeurs, cpe, administrateurs et scolarit&eacute;.</li>
 </ul>
 
-<p>Après avoir activé le module, les administrateurs et la vie scolaire disposent dans la page d'accueil
+<p>Après avoir activé le module, les administrateurs et la scolarit&eacute; disposent dans la page d'accueil
  d'un nouveau module de configuration.</p>
 <p>La première étape consiste à configurer ce module :
 <ul>
