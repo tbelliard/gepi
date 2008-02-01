@@ -137,13 +137,18 @@ $creneaux = retourne_creneaux();
 <?php
 	// Quelques variables utiles
 	$jour_choisi = retourneJour(date("w"));
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'"));
+	$query = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
 
-	// Avec le résultat, on calcule les timestamps UNIX
-	$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
-	$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
-	$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date_deb[1], $choix_date_deb[0], $choix_date_deb[2]);
-	$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date_fin[1], $choix_date_fin[0], $choix_date_fin[2]);
+	$nbre_rep = mysql_num_rows($query);
+	if ($nbre_rep >= 1) {
+		// Avec le résultat, on calcule les timestamps UNIX
+		$req = mysql_fetch_array($query);
+		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
+		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
+		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date_deb[1], $choix_date_deb[0], $choix_date_deb[2]);
+		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date_fin[1], $choix_date_fin[0], $choix_date_fin[2]);
+	}
+
 
 // Affichage des noms répartis par classe
 $req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
