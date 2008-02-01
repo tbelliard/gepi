@@ -1130,7 +1130,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 						echo "checked ";
 					}
 					echo "/></td>\n";
-					echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
+					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
+					echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id&amp;quitter_la_page=y' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 					echo "<td>";
 
 					$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$lig_resp->pers_id' AND rp.adr_id=ra.adr_id";
@@ -1725,7 +1726,8 @@ if(isset($eleve_login)){
 					echo ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom);
 				}
 				else{
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>";
+					//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>";
+					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y' target='_blank'>";
 					echo ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom);
 					echo "</a>";
 				}
@@ -1754,7 +1756,8 @@ if(isset($eleve_login)){
 						echo "L'adresse du responsable légal 1 n'est pas définie.\n";
 					}
 					else{
-						echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
+						//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
+						echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
 					}
 					echo "</td>\n";
 					$adr_id_1er_resp="";
@@ -1774,7 +1777,8 @@ if(isset($eleve_login)){
 					echo "</td>\n";
 					if($_SESSION['statut']!="professeur") {
 						echo "<td>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						echo "</td>\n";
 					}
 				}
@@ -1835,7 +1839,8 @@ if(isset($eleve_login)){
 					echo "<td>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</td>\n";
 				}
 				else{
-					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
+					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
+					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 
 					//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
 					echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
@@ -1859,7 +1864,8 @@ if(isset($eleve_login)){
 						echo "L'adresse du responsable légal 2 n'est pas définie.\n";
 					}
 					else{
-						echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
+						//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
+						echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
 					}
 					echo "</td>\n";
 				}
@@ -1890,7 +1896,8 @@ if(isset($eleve_login)){
 					echo "</td>\n";
 					if($_SESSION['statut']!="professeur") {
 						echo "<td>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
 							if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
 								echo "<br />";

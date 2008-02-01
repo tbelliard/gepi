@@ -496,19 +496,62 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
+// &amp;quitter_la_page=y
+
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_close(theLink, thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			self.close();
+			return false;
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				self.close();
+				return false;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+</script>\n";
 
 
 if(isset($associer_eleve)) {
 
-	if (!isset($pers_id)) {
-		echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-		echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
+	if(!isset($quitter_la_page)){
+		if (!isset($pers_id)) {
+			echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
 
-	echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	echo "</p>\n";
+		echo "<p class='bold'><a href='modify_resp.php?pers_id=$pers_id'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+		echo "</p>\n";
+	}
+	else {
+		if (!isset($pers_id)) {
+			echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
+			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		if($_SESSION['statut']=="administrateur"){
+			echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+		}
+		else{
+			echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
+		}
+	}
 
 	// AFFICHER LE RESPONSABLE COURANT
 
@@ -541,6 +584,10 @@ if(isset($associer_eleve)) {
 				echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>\n";
 				echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
+				if(isset($quitter_la_page)) {
+					echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
+				}
+
 				echo "<p>Sélectionner l'élève à associer à ".ucfirst(strtolower($lig_pers->prenom))." ".strtoupper($lig_pers->nom)."<br />\n";
 
 				//echo "<p align='center'>\n";
@@ -571,12 +618,26 @@ if(isset($associer_eleve)) {
 }
 
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href='modify_resp.php'>Ajouter un responsable</a>";
-
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo " | <a href='modify_resp.php'>Ajouter un responsable</a>";
+}
+else {
+	if($_SESSION['statut']=="administrateur"){
+		echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+	}
+	else{
+		echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a>\n";
+	}
+	echo " | <a href='modify_resp.php&amp;quitter_la_page=y'>Ajouter un responsable</a>";
+}
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>\n";
+
+if(isset($quitter_la_page)) {
+	echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
+}
 
 $temoin_adr=0;
 //if (isset($ereno)) {
@@ -956,6 +1017,10 @@ if(isset($pers_id)){
 	if(isset($adr_id)){
 		echo "&amp;adr_id_actuel=$adr_id";
 	}
+	if(isset($quitter_la_page)) {
+		echo "&amp;quitter_la_page=$quitter_la_page";
+	}
+	// A FAIRE... VOIR COMMENT GERER LA FERMETURE DANS choix_adr_existante.php
 	echo "'>Choisir une adresse existante.</a></p>\n";
 }
 else{
