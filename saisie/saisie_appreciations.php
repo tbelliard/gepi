@@ -83,6 +83,40 @@ if (isset($_POST['is_posted'])) {
 		$log_eleve=isset($_POST['log_eleve_'.$k]) ? $_POST['log_eleve_'.$k] : NULL;
 		//=========================
 
+		//=================================================
+		// AJOUT: boireaus 20080201
+		if(isset($_POST['app_grp_'.$k])){
+			if($current_group["classe"]["ver_periode"]['all'][$k]!=0){
+				if (isset($NON_PROTECT["app_grp_".$k])){
+					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
+				}
+				else{
+					$app = "";
+				}
+				//echo "$k: $app<br />";
+				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+				$app=ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+
+				$test_grp_app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+				$test = mysql_num_rows($test_grp_app_query);
+				if ($test != "0") {
+					if ($app != "") {
+						$register = mysql_query("UPDATE matieres_appreciations_grp SET appreciation='" . $app . "' WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+					} else {
+						$register = mysql_query("DELETE FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+					}
+					if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
+
+				} else {
+					if ($app != "") {
+						$register = mysql_query("INSERT INTO matieres_appreciations_grp SET id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
+						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
+					}
+				}
+			}
+		}
+		//=================================================
+
 		if(isset($log_eleve)){
 			//for($i=0;$i<count($log_eleve);$i++){
 			for($i=0;$i<$indice_max_log_eleve;$i++){
@@ -313,9 +347,85 @@ $restauration = isset($_GET["restauration"]) ? $_GET["restauration"] : NULL;
 
 	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
 
+//=================================
+// AJOUT: boireaus 20080201
+$k=1;
+$num_id = 10;
+while ($k < $nb_periode) {
+
+	$app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+	$app_grp[$k] = @mysql_result($app_query, 0, "appreciation");
+
+	$call_moyenne_t[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
+								"WHERE (" .
+								"n.id_groupe='" . $current_group["id"] ."' AND " .
+								"n.login = j.login AND " .
+								"n.statut='' AND " .
+								"j.id_groupe = n.id_groupe AND " .
+								"n.periode='$k' AND j.periode='$k'" .
+								")");
+	$moyenne_t[$k] = mysql_result($call_moyenne_t[$k], 0, "moyenne");
+
+	if ($moyenne_t[$k]=='') {
+		$moyenne_t[$k]="&nbsp;";
+	}
+
+	$mess[$k] = '';
+	$mess[$k]="<td>".$moyenne_t[$k]."</td>\n";
+	$mess[$k].="<td>\n";
+	if ($current_group["classe"]["ver_periode"]['all'][$k] == 0){
+		echo htmlentities(nl2br($app_grp[$k]));
+	}
+	else {
+		$mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
+		$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\"";
+		// onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"
+		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
+	}
+	// on affiche si besoin l'appréciation temporaire (en sauvegarde)
+	//$mess[$k].=$eleve_app_t;
+	$mess[$k].= "</td>\n";
+	$k++;
+}
+
+
+echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\">\n";
+echo "<tr>\n";
+echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
+echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
+echo "<th><div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
+echo "</div></th>\n";
+echo "</tr>\n";
+//=================================================
+
+
+$num_id++;
+$k=1;
+$alt=1;
+while ($k < $nb_periode) {
+	$alt=$alt*(-1);
+	if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
+		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+	} else {
+		echo "<tr class='lig$alt'><td>$nom_periode[$k]</td>\n";
+	}
+	echo $mess[$k];
+	$k++;
+}
+echo "</tr>\n";
+echo "</table>\n";
+echo "<br />\n";
+
+
+//=================================
+
+
 
 $prev_classe = null;
-$num_id = 10;
+//=================================================
+// COMMENTé: boireaus 20080201
+//$num_id = 10;
+//=================================================
 //=========================
 // AJOUT: boireaus 20071010
 // Compteur pour les élèves

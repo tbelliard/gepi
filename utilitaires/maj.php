@@ -5542,6 +5542,16 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result .= "<font color=\"blue\">La table j_aid_eleves_resp existe déjà.</font><br />";
     }
 
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_grp'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table matieres_appreciations_grp a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table matieres_appreciations_grp existe déjà.</font><br />";
+    }
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);

@@ -161,3 +161,5 @@ DROP TABLE IF EXISTS `absences_creneaux_bis`;
 CREATE TABLE IF NOT EXISTS absences_creneaux_bis (`id_definie_periode` int(11) NOT NULL auto_increment, `nom_definie_periode` varchar(10) NOT NULL default '', `heuredebut_definie_periode` time NOT NULL default '00:00:00', `heurefin_definie_periode` time NOT NULL default '00:00:00', `suivi_definie_periode` tinyint(4) NOT NULL, `type_creneaux` varchar(15) NOT NULL, PRIMARY KEY  (`id_definie_periode`));
 DROP TABLE IF EXISTS `j_aidcateg_utilisateurs`;
 CREATE TABLE  IF NOT EXISTS j_aidcateg_utilisateurs (`indice_aid` INT NOT NULL ,`id_utilisateur` VARCHAR( 50 ) NOT NULL);
+DROP TABLE IF EXISTS `matieres_appreciations_grp`;
+CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));
