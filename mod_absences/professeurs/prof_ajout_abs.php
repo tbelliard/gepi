@@ -532,7 +532,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	<p>
 		Date
 		<input size="10" name="d_date_absence_eleve" value="'.$d_date_absence_eleve.'" />
-		<a href="#calend" onClick="<?php echo $cal_1->get_strPopup(\'../../lib/calendrier/pop.calendrier.php\', 350, 170); ?>">
+		<a href="#calend" onClick="'.$cal_1->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170).'">
 			<img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" />
 		</a>
 	</p>
