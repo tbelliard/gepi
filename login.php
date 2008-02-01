@@ -85,12 +85,14 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 			echo "\n<p>Erreur : Echec de la connexion à la base de données";
 			exit;
 		}
-		if (is_eleve($login)) {
+		/*
+    if (is_eleve($login)) {
 			// On renvoie à la page d'accueil des cahiers de texte
 			session_write_close();
 			header("Location: ./public/index.php");
 			die();
 		}
+		*/
 		$password = '';
 		$result = openSession($login,$password,"lcs",$lcs_tab_login) ;
 		$message = '';

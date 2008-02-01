@@ -306,10 +306,12 @@ echo "<tr><td>\n";
 	} else {
 		echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
 	}
-	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
-	echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
-	if ($user_show_email == "yes") echo " CHECKED";
-	echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
+	if ($test_sso) {
+      if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
+	        echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
+	        if ($user_show_email == "yes") echo " CHECKED";
+	        echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
+	    }
 	}
 	//echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>\n";
 	echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>\n";
@@ -326,7 +328,6 @@ if(($_SESSION['statut']=='administrateur')||
 ) {
 	$user_login=$_SESSION['login'];
 	if(getSettingValue("active_module_trombinoscopes")=='y'){
-
 		// pour module trombinoscope
 		$photo_largeur_max=150;
 		$photo_hauteur_max=150;
@@ -337,7 +338,7 @@ if(($_SESSION['statut']=='administrateur')||
 			$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
 			$res_elenoet=mysql_query($sql);
 			if(mysql_num_rows($res_elenoet)==0){
-				echo "</td>/tr></table>\n";
+				echo "</td></tr></table>\n";
 				echo "<p><b>ERREUR !</b> Votre statut d'élève ne semble pas être confirmé dans la table 'eleves'.</p>\n";
 				// A FAIRE
 				// AJOUTER UNE ALERTE INTRUSION
@@ -467,8 +468,8 @@ if(($_SESSION['statut']=='administrateur')||
 }
 echo "</td>\n";
 echo "</table>\n";
-echo "<p><input type='submit' value='Enregistrer' /></p>\n";
-
+if ($test_sso)
+    echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 /*
 //Supp ERIC
 $tab_class_mat =  make_tables_of_classes_matieres();

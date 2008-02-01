@@ -41,6 +41,9 @@ if (!checkAccess()) {
 }
 
 // Initialisation des variables
+// Test SSO. Dans le cas d'un SSO, on laisse le mot de passevide.
+$test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and (getSettingValue("use_sso") != "lcs") and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
+
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
@@ -118,21 +121,25 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				//$msg .= "<br /><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>";
 				//$msg .= "<br /><a target='change' href='reset_passwords.php?user_login=".$_POST['eleve_login']."'>Imprimer la fiche de bienvenue</a>";
-				$msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
+				if ($test_sso)
+            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
-				if ($_POST['classe'] == "all") {
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
-				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-					$msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				if ($test_sso) {
+            if ($_POST['classe'] == "all") {
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    } elseif (is_numeric($_POST['classe'])) {
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+					    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    }
 				}
 			}
-			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
+			if ($test_sso)
+			    $msg .= "<br />Vous devez effectuer cette opération maintenant !";
 		}
 	}
 }
@@ -157,7 +164,7 @@ else{
 	//echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte d'accès à Gepi.</p>\n";
 	echo "<p>$nb élèves n'ont pas encore de compte d'accès à Gepi.</p>\n";
 
-	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
+	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "ldap_scribe")) {
 		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Pour le moment, les logins élèves de Gepi sont générés selon une méthode interne à Gepi. Il est donc peu probable que le SSO fonctionne pour les comptes élèves.</p>\n";
 	}
 
