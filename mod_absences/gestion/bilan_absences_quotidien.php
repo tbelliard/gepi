@@ -12,7 +12,7 @@
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
-//mes fonctions
+// Les fonctions utiles
 include("../lib/functions.php");
 require_once("../../edt_organisation/fonctions_edt.php");
 require_once("../../edt_organisation/fonctions_calendrier.php");
@@ -27,7 +27,7 @@ if ($resultat_session == 'c') {
 die();
 };
 
-// INSERT INTO droits VALUES ('/mod_absences/gestion/bilan_absences_quotidien.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'Visionner les absences du jour', '');
+// Sécurité
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
 die();
@@ -92,7 +92,7 @@ $creneaux = retourne_creneaux();
 		</td>
 		<td> -
 			<a href="./voir_absences_viescolaire.php">Retour</a>
-		 </td>
+		</td>
 		<td> - Modifier la date
 		</td>
 		<td>
@@ -122,14 +122,13 @@ $creneaux = retourne_creneaux();
 	<tr>
 		<th style="border: 1px solid black; background-color: grey;">Classe</th>
 		<th style="border: 1px solid black; background-color: grey; width: 300px;">Nom Pr&eacute;nom</th>
-		<?php //afficher les créneaux
-		$i=0;
+<?php //afficher les créneaux
+			$i=0;
 		while($i<count($creneaux)){
-
-				echo "<th style=\"border: 1px solid black; background-color: grey;\">".$creneaux[$i]."</th>\n";
-		$i++;
-			}
-		 ?>
+			echo "<th style=\"border: 1px solid black; background-color: grey;\">".$creneaux[$i]."</th>\n";
+			$i++;
+		}
+?>
 	</tr>
 
 
