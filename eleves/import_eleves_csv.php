@@ -103,7 +103,9 @@ while ($i < $nb_classes) {
         $eleve_login = mysql_result($appel_donnees_eleves, $j, "login");
         $eleve_nom = mysql_result($appel_donnees_eleves, $j, "nom");
         $eleve_prenom = mysql_result($appel_donnees_eleves, $j, "prenom");
-        $fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe."\n";
+        //$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe."\n";
+        $eleve_elenoet = mysql_result($appel_donnees_eleves, $j, "elenoet");
+        $fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe.";".$eleve_elenoet."\n";
         $j++;
     }
     $i++;
