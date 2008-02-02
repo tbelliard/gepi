@@ -137,13 +137,24 @@ $creneaux = retourne_creneaux();
 // ===================== Quelques variables utiles ===============
 	// On détermine le jour en Français actuel
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
-	$req = mysql_fetch_array(mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'"));
+	$query = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
+	$attention = ''; // message de prévention au cas où $query ne retourne rien
 
-	// Avec le résultat, on calcule les timestamps UNIX
-	$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
-	$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
-	$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
-	$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
+	$nbre_rep = mysql_num_rows($query);
+	if ($nbre_rep >= 1) {
+		// Avec le résultat, on calcule les timestamps UNIX
+		$req = mysql_fetch_array($query);
+		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
+		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
+		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
+		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
+	}else{
+		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
+		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+		$time_actu_fin = mktime(23, 59, 0, date("m"), date("d"), date("Y"));
+		// et on affiche un petit message
+		$attention = "L'établissement est censé être fermé aujourd'hui.";
+	}
 
 // Affichage des noms répartis par classe
 $req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
@@ -204,5 +215,6 @@ for($i=0; $i<$nbre; $i++) {
 
 <h5>Impression faite le <?php echo date("d/m/Y - h:i"); ?>.</h5>
 <?php
+echo '<p class="red">'.$attention.'</p>'; // message d'information si le jour demandé est un jour fermé normalement
 require("../../lib/footer.inc.php");
 ?>
