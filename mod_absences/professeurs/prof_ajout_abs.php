@@ -683,9 +683,16 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		<input type="checkbox" id="affPhoto" name="photo" value="avec_photo"'.$checkedPhoto.' />
 		<label for="affPhoto">Avec photos</label>'."\n";
 	}
-?>
+
+	// On vérifie si l'utilisateur peut se servir de la mémorisation de ses cours
+	if (getSettingValue("memorisation") == "y") {
+		echo '
 		<input type="checkbox" id="edtEnregistrement" name="edt_enregistrement" value="1" />
 		<label for="edtEnregistrement">Mémoriser cette sélection</label>
+		';
+	}
+?>
+
 	</p>
 		<input value="2" name="etape" type="hidden" />
 		<input type="hidden" name="premier_passage" value="ok" />

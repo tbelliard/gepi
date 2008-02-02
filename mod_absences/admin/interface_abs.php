@@ -103,13 +103,21 @@ if ($clic == "ok") {
 			}
 		}
 	}
+	$test_query[0]["checked"] = isset($date_phase1) ? $date_phase1 : getSettingValue("date_phase1");
+	$test_query[1]["checked"] = isset($liste_absents) ? $liste_absents : getSettingValue("liste_absents");
+	$test_query[2]["checked"] = isset($voir_fiche_eleve) ? $voir_fiche_eleve : getSettingValue("voir_fiche_eleve");
+	$test_query[3]["checked"] = isset($renseigner_retard) ? $renseigner_retard : getSettingValue("renseigner_retard");
+	$test_query[4]["checked"] = isset($module_edt) ? $module_edt : getSettingValue("module_edt");
+	$test_query[5]["checked"] = isset($memorisation) ? $memorisation : getSettingValue("memorisation");
 }
-$test_query[0]["checked"] = isset($date_phase1) ? $date_phase1 : getSettingValue("date_phase1");
-$test_query[1]["checked"] = isset($liste_absents) ? $liste_absents : getSettingValue("liste_absents");
-$test_query[2]["checked"] = isset($voir_fiche_eleve) ? $voir_fiche_eleve : getSettingValue("voir_fiche_eleve");
-$test_query[3]["checked"] = isset($renseigner_retard) ? $renseigner_retard : getSettingValue("renseigner_retard");
-$test_query[4]["checked"] = isset($module_edt) ? $module_edt : getSettingValue("module_edt");
-$test_query[5]["checked"] = isset($memorisation) ? $memorisation : getSettingValue("memorisation");
+
+$test_query[0]["checked"] = isset($_POST["date_phase1"]) ? $_POST["date_phase1"] : getSettingValue("date_phase1");
+$test_query[1]["checked"] = isset($_POST["liste_absents"]) ? $_POST["liste_absents"] : getSettingValue("liste_absents");
+$test_query[2]["checked"] = isset($_POST["voir_fiche_eleve"]) ? $_POST["voir_fiche_eleve"] : getSettingValue("voir_fiche_eleve");
+$test_query[3]["checked"] = isset($_POST["renseigner_retard"]) ? $_POST["renseigner_retard"] : getSettingValue("renseigner_retard");
+$test_query[4]["checked"] = isset($_POST["module_edt"]) ? $_POST["module_edt"] : getSettingValue("module_edt");
+$test_query[5]["checked"] = isset($_POST["memorisation"]) ? $_POST["memorisation"] : getSettingValue("memorisation");
+
 // On décide de l'affichage des checked
 		$checked = array();
 for($a = 0; $a < 6; $a++) {
