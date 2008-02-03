@@ -617,11 +617,20 @@ if (!isset($quelles_classes)) {
 			}
 		}
 		// =====================================================
+
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_cpe jec ON jec.e_login=e.login
 			where jec.e_login is NULL;";
 		$test_no_cpe=mysql_query($sql);
 		$test_no_cpe_effectif=mysql_num_rows($test_no_cpe)-mysql_num_rows($test_na);
+
+		/*
+		$sql="SELECT 1=1 FROM eleves e
+			LEFT JOIN j_eleves_cpe jec ON jec.e_login=e.login
+			WHERE jec.e_login is NULL
+			AND e_login IN (SELECT DISTINCT login FROM j_eleves_classes);";
+		$test_no_cpe_effectif=mysql_query($sql);
+		*/
 		//if(mysql_num_rows($test_no_cpe)==0){
 		if($test_no_cpe_effectif==0){
 			echo "<tr>\n";
@@ -632,7 +641,7 @@ if (!isset($quelles_classes)) {
 
 			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_cpe' onclick='verif2()' /></span>\n";
 
-			echo "<span class='norme'>Tous les élèves ont un CPE associé.</span><br />\n";
+			echo "<span class='norme'>Tous les élèves (<i>affectés dans des classes</i>) ont un CPE associé.</span><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -644,7 +653,7 @@ if (!isset($quelles_classes)) {
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_cpe' style='cursor: pointer;'>\n";
 			//echo "<span class='norme'>Les élèves sans CPE (<i>".mysql_num_rows($test_no_cpe)."</i>).</span><br />\n";
-			echo "<span class='norme'>Les élèves sans CPE (<i>".$test_no_cpe_effectif."</i>).</span><br />\n";
+			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) sans CPE (<i>".$test_no_cpe_effectif."</i>).</span><br />\n";
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1203,7 +1212,8 @@ if(isset($quelles_classes)) {
 			((($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes'))||
 				($_SESSION['statut']!="professeur"))) {
 
-			echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
+			//echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
+			echo "<td style='white-space: nowrap; text-align:left;'><input name='photo[$i]' type='file' />\n";
 
 			echo "<input type='hidden' name='quiestce[$i]' value=\"$elenoet\" />\n";
 
