@@ -507,10 +507,23 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
 
 }
 
+function fdebug($texte){
+	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
+	$local_debug="n";
+	if($local_debug=="y") {
+		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
+
 //
-// Calul de la moyenne d'un élève
+// Calcul de la moyenne d'un élève
 //
 function calcule_moyenne($login, $id_racine, $id_conteneur) {
+	fdebug("===================================\n");
+	fdebug("$login: $id_racine - $id_conteneur\n");
+
     $total_point = 0;
     $somme_coef = 0;
     $exist_dev_fac = '';
@@ -522,6 +535,11 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     $arrondir =  mysql_result($appel_conteneur, 0, 'arrondir');
     $mode =  mysql_result($appel_conteneur, 0, 'mode');
     $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
+
+	fdebug("\$arrondir=$arrondir\n");
+	fdebug("\$mode=$mode\n");
+	fdebug("\$ponderation=$ponderation\n");
+
 
     // Détermination des sous-conteneurs à prendre en compte
     $nom_sous_cont = array();
@@ -557,6 +575,8 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         $id_cont[0] = $id_conteneur;
 
     }
+
+
     //
     // Prise en compte de la pondération
     // Calcul de l'indice du coefficient à pondérer
@@ -582,24 +602,50 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
             $k++;
         }
     }
+	if(isset($indice_pond)) {
+		fdebug("\$indice_pond=$indice_pond\n");
+		fdebug("\$max=$max\n");
+	}
+
 
     //
     // Calcul du total des points et de la somme des coefficients
     //
+	// Pour $mode==1, pour les devoirs à Bonus, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ici ces devoirs au lieu de faire une boucle sur la liste des sous-conteneurs (while ($j < $nb_boucle))
     $j=0;
+	//=========================
+	// AJOUT: boireaus 20080202
+	$m=0;
+	//=========================
     while ($j < $nb_boucle) {
-        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]'");
+		//=========================
+		// MODIF: boireaus 20080202
+        //$appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]'");
+        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]' ORDER BY date,id");
+		//=========================
         $nb_dev  = mysql_num_rows($appel_dev);
         $k = 0;
         while ($k < $nb_dev) {
             $id_dev = mysql_result($appel_dev, $k, 'id');
+			fdebug("\n\$id_dev=$id_dev\n");
+
             $coef[$k] = mysql_result($appel_dev, $k, 'coef');
+			fdebug("\$coef[$k]=$coef[$k]\n");
+
             // Prise en compte de la pondération
             if (($ponderation != 0) and ($j==0) and ($k==$indice_pond)) $coef[$k] = $coef[$k] + $ponderation;
+			fdebug("\$ponderation=$ponderation\n");
+
             $facultatif[$k] = mysql_result($appel_dev, $k, 'facultatif');
+			fdebug("\$facultatif[$k]=$facultatif[$k]\n");
+
             $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
             $statut = @mysql_result($note_query, 0, "statut");
+			fdebug("\$statut=$statut\n");
+
             $note = @mysql_result($note_query, 0, "note");
+			fdebug("\$note=$note\n");
+
             if (($statut == '') and ($note!='')) {
                 if ($facultatif[$k] == 'O') {
                     // le devoir n'est pas facultatif (Obligatoire) et entre systématiquement dans le calcul de la moyenne si le coef est différent de zéro
@@ -614,15 +660,37 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
                 } else {
                     //$facultatif == 'N' le devoir est facultatif comme une note : Le devoir est pris en compte dans la moyenne uniquement s'il améliore la moyenne de l'élève.
                     $exist_dev_fac = 'yes';
-                    $total_point = $total_point + $coef[$k]*$note;
+					//=========================
+					// MODIF: boireaus 20080202
+                    /*
+					$total_point = $total_point + $coef[$k]*$note;
                     $somme_coef = $somme_coef + $coef[$k];
                     $points[$k] = $coef[$k]*$note;
+                    */
+					// On ne compte pas la note dans la moyenne pour le moment.
+					// On regardera plus loin si cela améliore la moyenne ou non.
+					$f_coef[$m]=$coef[$k];
+					$points[$m] = $f_coef[$m]*$note;
+
+					fdebug("\$points[$m]=$points[$m]\n");
+					fdebug("\$f_coef[$m]=$f_coef[$m]\n");
+
+					$m++;
+					//=========================
                 }
+				fdebug("\$total_point=$total_point\n");
+				fdebug("\$somme_coef=$somme_coef\n");
+				/*
+				if(isset($points[$k])){
+					fdebug("\$points[$k]=$points[$k]\n");
+				}
+				*/
             }
             $k++;
         }
         $j++;
     }
+
 
     //
     // Prise en comptes des sous-conteneurs si mode=2
@@ -643,26 +711,58 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         }
     }
 
+
     //
     // calcul de la moyenne des évaluations
     //
+	//=========================
+	// A FAIRE: boireaus 20080202
+	// Il faudrait considérer le cas vicieux: présence de note à bonus et pas d'autre note...
     if ($somme_coef != 0) {
+	//=========================
         $moyenne = $total_point/$somme_coef;
+		fdebug("\$moyenne=".$moyenne."\n");
         //
         // si un des devoirs a l'option "N", on prend la meilleure moyenne :
         //
+		// Ca ne fonctionne bien que pour $mode==2
+		// Pour $mode==1, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ces devoirs plus haut au lieu de faire une boucle sur la liste des sous-conteneurs
         if ($exist_dev_fac == 'yes') {
+			fdebug("\$exist_dev_fac=".$exist_dev_fac."\n");
+			/*
             $k=0;
             while ($k < $nb_dev) {
                 if ((($somme_coef - $coef[$k]) != 0) and ($facultatif[$k]=='N')) {
                     if (isset($points[$k])) {
                        $points[$k] = ($total_point-$points[$k])/($somme_coef - $coef[$k]);
+						fdebug("\$points[$k]=$points[$k]\n");
+						fdebug("\$moyenne=max($moyenne,$points[$k])=");
                        $moyenne = max($moyenne,$points[$k]);
+						fdebug("$moyenne\n");
                     }
                 }
                 $k++;
             }
+			*/
+			$m=0;
+            while ($m<count($points)) {
+				fdebug("count(\$points)=".count($points)."\n");
+				if((isset($points[$m]))&&(isset($f_coef[$m]))) {
+					fdebug("\$points[$m]=$points[$m] et \$f_coef[$m]=$f_coef[$m]\n");
+					$tmp_moy=($total_point+$points[$m])/($somme_coef+$f_coef[$m]);
+					fdebug("\$tmp_moy=$tmp_moy et \$moyenne=$moyenne\n");
+					if($tmp_moy>$moyenne){
+						$moyenne=$tmp_moy;
+						$total_point=$total_point+$points[$m];
+						$somme_coef=$somme_coef+$f_coef[$m];
+					}
+					fdebug("\$moyenne=$moyenne\n");
+				}
+				$m++;
+			}
         }
+
+
         //
         // Calcul des arrondis
         //
