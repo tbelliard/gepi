@@ -164,8 +164,9 @@ else{
 	//echo "<p>Les $nb élèves ci-dessous n'ont pas encore de compte d'accès à Gepi.</p>\n";
 	echo "<p>$nb élèves n'ont pas encore de compte d'accès à Gepi.</p>\n";
 
-	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "ldap_scribe")) {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Pour le moment, les logins élèves de Gepi sont générés selon une méthode interne à Gepi. Il est donc peu probable que le SSO fonctionne pour les comptes élèves.</p>\n";
+	if (!$test_sso)  {
+		echo "<p class='small'><b>Note :</b>
+    Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêtez à créer. Par ailleurs, les identifiant de ces utilisateurs sont les mêmes que ceux déjà existants de la table des élèves. Pour que le SSO fonctionne, ces identifiants doivent être identiques à ceux de votre source d'authentification SSO.</p>\n";
 	}
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
