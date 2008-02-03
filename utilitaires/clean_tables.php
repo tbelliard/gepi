@@ -1198,6 +1198,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
 		echo "<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
 
+		// Les champs vides pouvaient apparaitre avec le bug (désormais corrigé) sur les POINTS et TIRETS dans les noms de login.
 		$sql="SELECT * FROM j_eleves_cpe WHERE cpe_login='' OR e_login='';";
 		$test=mysql_query($sql);
 		$nb_pb_cpe=mysql_num_rows($test);
@@ -1213,6 +1214,41 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			}
 		}
 
+		// Problème de suppression de l'association eleve/cpe après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
+		$sql="SELECT jecpe.e_login FROM j_eleves_cpe jecpe LEFT JOIN j_eleves_classes jec ON jecpe.e_login=jec.login WHERE jec.login is NULL;";
+		$test=mysql_query($sql);
+		$nb_pb_cpe=mysql_num_rows($test);
+		if($nb_pb_cpe>0){
+			echo "<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$cpt_ele_cpe=0;
+			while($lig=mysql_fetch_object($test)){
+				if($cpt_ele_cpe>0){echo ", ";}
+				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->e_login';";
+				//echo "<!-- $sql -->\n";
+				$info=mysql_query($sql);
+				if(mysql_num_rows($info)>0) {
+					$lig2=mysql_fetch_object($info);
+					$eleve=ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+				}
+				else {
+					$eleve=$lig->e_login;
+				}
+				//echo "<!-- eleve=$eleve -->\n";
+
+				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login';";
+				//echo "<!-- $sql -->\n";
+				$nettoyage=mysql_query($sql);
+				if($nettoyage){
+					echo $eleve;
+				}
+				else{
+					echo "<span style='color:red;'>$eleve</span>\n";
+				}
+				$cpt_ele_cpe++;
+			}
+			echo ".</p>\n";
+		}
+
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
 		$test=mysql_query($sql);
 		$nb_pb_pp=mysql_num_rows($test);
@@ -1226,6 +1262,38 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			else{
 				echo "<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
 			}
+		}
+
+		// Problème de suppression de l'association eleve/professeur après suppression d'un élève de toutes les périodes... (plus dans aucune classe)
+		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
+		$test=mysql_query($sql);
+		$nb_pb_pp=mysql_num_rows($test);
+		if($nb_pb_pp>0){
+			echo "<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$cpt_ele_pp=0;
+			while($lig=mysql_fetch_object($test)){
+				if($cpt_ele_pp>0){echo ", ";}
+				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->login';";
+				$info=mysql_query($sql);
+				if(mysql_num_rows($info)>0) {
+					$lig2=mysql_fetch_object($info);
+					$eleve=ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+				}
+				else {
+					$eleve=$lig->login;
+				}
+
+				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
+				$nettoyage=mysql_query($sql);
+				if($nettoyage){
+					echo $eleve;
+				}
+				else{
+					echo "<span style='color:red;'>$eleve</span>\n";
+				}
+				$cpt_ele_pp++;
+			}
+			echo ".</p>\n";
 		}
 
 	} else {
@@ -1255,6 +1323,23 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 		flush();
 
+		$sql="SELECT jecpe.e_login FROM j_eleves_cpe jecpe LEFT JOIN j_eleves_classes jec ON jecpe.e_login=jec.login WHERE jec.login is NULL;";
+		$test=mysql_query($sql);
+		$nb_pb_cpe=mysql_num_rows($test);
+		if($nb_pb_cpe==0){
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'associe un élève non scolarisé à un CPE.</p>\n";
+		}
+		elseif($nb_pb_cpe==1){
+			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_cpe' associe un élève non scolarisé à un CPE.<br />Cet enregistrement peut perturber la désignation de CPE responsable.<br />Vous devrier le supprimer.</p>\n";
+			$temoin_pb="y";
+		}
+		else{
+			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_cpe' associent des élèves non scolarisés à un ou des CPE.<br />\n";
+			echo "Ces enregistrements peuvent perturber la désignation de CPE responsable.<br />\n";
+			echo "Vous devrier les supprimer.</p>\n";
+			$temoin_pb="y";
+		}
+
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
 		$test=mysql_query($sql);
 		$nb_pb_pp=mysql_num_rows($test);
@@ -1269,6 +1354,23 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		}
 		else{
 			echo "<p><b>$nb_pb_pp</b> enregistrements dans la table 'j_eleves_professeurs' ont un login élève ou un login $gepi_prof_suivi vide.<br />\n";
+			echo "Ces enregistrements peuvent perturber la désignation de $gepi_prof_suivi.<br />\n";
+			echo "Vous devrier les supprimer.</p>\n";
+			$temoin_pb="y";
+		}
+
+		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
+		$test=mysql_query($sql);
+		$nb_pb_cpe=mysql_num_rows($test);
+		if($nb_pb_cpe==0){
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'associe un élève non scolarisé à un $gepi_prof_suivi.</p>\n";
+		}
+		elseif($nb_pb_cpe==1){
+			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_professeurs' associe un élève non scolarisé à un $gepi_prof_suivi.<br />Cet enregistrement peut perturber la désignation de $gepi_prof_suivi.<br />Vous devrier le supprimer.</p>\n";
+			$temoin_pb="y";
+		}
+		else{
+			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_professeurs' associent des élèves non scolarisés à un ou des $gepi_prof_suivi.<br />\n";
 			echo "Ces enregistrements peuvent perturber la désignation de $gepi_prof_suivi.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
 			$temoin_pb="y";
