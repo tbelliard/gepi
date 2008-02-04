@@ -43,7 +43,7 @@ $heure_mysql = date("H:i:s");
 
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
-$titre_page = "Les absents du collège.";
+$titre_page = "Les absents du jour.";
 require_once("../../lib/header.inc");
 //************** FIN EN-TETE ***************
 
@@ -155,7 +155,8 @@ for($i = 0; $i < $nbre_rep; $i++) {
 
 
 ?>
-	<h2>Les absents du <?php echo $date_jour; ?> rangés par classe et par ordre alphabétique - <a href="./bilan_absences_quotidien.php">Bilan de la journ&eacute;e</a></h2>
+<h2><a href="../../accueil.php"><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> -
+	Les absents du <?php echo $date_jour; ?> rangés par classe et par ordre alphabétique - <a href="./bilan_absences_quotidien.php">Bilan de la journ&eacute;e</a></h2>
 
 <form name="choix_du_creneau" action="voir_absences_viescolaire.php" method="post">
 	<p>Vous devez choisir un cr&eacute;neau pour visionner les absents

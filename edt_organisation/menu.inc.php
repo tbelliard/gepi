@@ -15,6 +15,10 @@ $analyse = explode("/", $serveur_script);
 	}
 
 //===========================INITIALISATION DES VARIABLES=======
+
+// Pour éviter d'avoir un décalage dans les infobulles
+$pas_de_decalage_infobulle = "oui";
+
 // AJOUT: boireaus
 $voirgroup=isset($_GET['voirgroup']) ? $_GET['voirgroup'] : (isset($_POST['voirgroup']) ? $_POST['voirgroup'] : NULL);
 $visioedt=isset($_GET['visioedt']) ? $_GET['visioedt'] : (isset($_POST['visioedt']) ? $_POST['visioedt'] : NULL);

@@ -2226,6 +2226,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $tabid_infobulle;
 	global $unite_div_infobulle;
 	global $niveau_arbo;
+	global $pas_de_decalage_infobulle;
 
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
@@ -2313,7 +2314,12 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	$div.="</div>\n";
 
 	// Les div vont s'afficher côte à côte sans superposition en bas de page si JavaScript est désactivé:
-	$posDiv_infobulle=$posDiv_infobulle+$largeur;
+	if (isset($pas_de_decalage_infobulle) AND $pas_de_decalage_infobulle == "oui") {
+		// on ne décale pas les div des infobulles
+		$posDiv_infobulle = $posDiv_infobulle;
+	}else{
+		$posDiv_infobulle = $posDiv_infobulle+$largeur;
+	}
 
 	return $div;
 }
