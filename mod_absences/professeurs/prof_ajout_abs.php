@@ -866,9 +866,12 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		}
 		$sexe = $data_liste_eleve['sexe'];
 			// On vérifie si le prof a le droit de voir la fiche de l'élève
-			if ($_SESSION["statut"] == "professeur" AND getSettingValue("voir_fiche_eleve") == "n") {
+			if ($_SESSION["statut"] == "professeur" AND getSettingValue("voir_fiche_eleve") == "n" OR getSettingValue("voir_fiche_eleve") == '') {
+
 				echo strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom']).' '.$civile;
+
 			}elseif($_SESSION["statut"] != "professeur" OR getSettingValue("voir_fiche_eleve") == "y"){
+
 				echo '
 				<a href="javascript:centrerpopup(\'../lib/fiche_eleve.php?select_fiche_eleve='.$data_liste_eleve['login'].'\',550,500,\'scrollbars=yes,statusbar=no,resizable=yes\');">
 				'.strtoupper($data_liste_eleve['nom']).' '.ucfirst($data_liste_eleve['prenom'])
@@ -877,9 +880,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			}
 
 ?>
-
 				</td>
 				<td style="width: 100px; text-align: center;">
+
 <?php
 		$pass='0';
 		$requete = "SELECT * FROM absences_eleves
