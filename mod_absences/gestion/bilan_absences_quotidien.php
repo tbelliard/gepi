@@ -88,10 +88,12 @@ $creneaux = retourne_creneaux();
 <table>
 	<tr>
 		<td>
-			<h2>Bilan des absences du <?php echo date_frl(date_sql($date_choisie)); ?>.</h2>
+			<a href="./voir_absences_viescolaire.php">
+				<img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />
+			&nbsp;Retour</a>
 		</td>
-		<td> -
-			<a href="./voir_absences_viescolaire.php">Retour</a>
+		<td>
+			<h3 class="gepi"> - Bilan des absences du <?php echo date_frl(date_sql($date_choisie)); ?>.</h3>
 		</td>
 		<td> - Modifier la date
 		</td>
