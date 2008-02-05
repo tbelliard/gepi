@@ -9,22 +9,13 @@
  *
  */
 // On récupère les infos utiles pour le fonctionnement des requêtes sql
-$niveau_arbo = 2;
-require_once("../../lib/initialisations.inc.php");
-
-// Resume session
-$resultat_session = resumeSession();
-if ($resultat_session == 'c') {
-   header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
-   die();
-} else if ($resultat_session == '0') {
-    header("Location: ../../logout.php?auto=1");
-    die();
-}
+$niveau_arbo = 1;
+require_once("../lib/initialisations.inc.php");
 
 // Sécurité : éviter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
+$analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	if ($analyse[4] == "select_professeurs.php") {
 		die();
 	}
@@ -41,7 +32,7 @@ echo '<select name ="'.$increment.'">';
 		$prenom[$i] = mysql_result($query, $i, "prenom");
 
 		echo '
-		<option value="'.$utilisateur[$i].'">'.$nom[$i].' '.$prenom[$i].'</option>'."\n";
+		<option value="'.$utilisateur[$i].'">'.$nom[$i].' '.$prenom[$i].'</option>';
 	}
 echo '</select>';
 ?>

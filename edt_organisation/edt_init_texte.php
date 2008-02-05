@@ -100,8 +100,14 @@ if ($action == "upload_file") {
 
 			$neuf_etapes = array("PROFESSEUR", "CLASSE", "GROUPE", "PARTIE", "MATIERE", "ETABLISSEMENT", "SEMAINE", "CONGES", "COURS");
 			$autorise = "stop";
+
+			// Avant de lancer le while, on met en place le formulaire qui enverra les concordances
+			echo '
+				<form name="concordance" action="edt_init_concordance.php" method="post">';
 			// On ouvre alors le fichier ligne par ligne
+				$numero = 0;
 			while($tab = fgetcsv($fp, 1024, "	")) {
+
 				if ($tab[0] == $neuf_etapes[$etape - 1]) {
 					// On commence l'étape demandée et on autorise donc à récupérer les données utiles
 					$autorise = "continue";
@@ -112,7 +118,6 @@ if ($action == "upload_file") {
 					// On arrive à l'étape suivante et donc on arrête de récupérer lesdonnées du fichier
 					$autorise = "stop";
 					echo '<p>La lecture du fichier pour cette étape est terminée, vous devez maintenant faire les concordances.</p>';
-					echo "\n<hr /><br />\n";
 				}
 				// Si $autorise = "continue"; alors on peut utiliser les infos
 
@@ -120,19 +125,27 @@ if ($action == "upload_file") {
 					if ($etape == 1) {
 						// On traite les professeurs
 						if ($tab[0] == "PROFESSEUR") {
+							$nbre_lignes = $tab[1];
 							echo 'Il y a '.$tab[1].' professeurs.<br />'."\n";
 						}else{
 							// on permet la concordance
-							echo 'Matière : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].'</b>';
-
-
+							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].'</b>';
+							$nom_select = "professeur_".$numero;
+							include("helpers\select_professeurs.php");
 							echo '<br />'."\n";
 						}
 					}
 				}
-
+				$numero++;
 			}
 
+			// on ferme le formulaire
+			echo '
+				<input type="hidden" name="etape" value="'.$etape.'" />
+				<input type="hidden" name="nbre_ligne" value="'.$nbre_lignes.'" />
+				<input type="submit" name="Enregistrer" value="Enregistrer ces concordances" />
+			</form>';
+			echo "\n<hr /><br />\n";
 		}
 	}else{
 		// Si on est là c'est que le nom du fichier n'est pas bon.
