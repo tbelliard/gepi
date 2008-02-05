@@ -100,6 +100,7 @@ if ($action == "upload_file") {
 
 			$neuf_etapes = array("PROFESSEUR", "CLASSE", "GROUPE", "PARTIE", "MATIERE", "ETABLISSEMENT", "SEMAINE", "CONGES", "COURS");
 			$autorise = "stop";
+			$neuf_etapes[9] = ''; // on initialise la fin du fichier texte
 
 			// Avant de lancer le while, on met en place le formulaire qui enverra les concordances
 			echo '
@@ -115,7 +116,7 @@ if ($action == "upload_file") {
 					echo '<p>Gestion des '.$neuf_etapes[$etape - 1].'.</p>';
 
 				}elseif($tab[0] == $neuf_etapes[$etape]){
-					// On arrive à l'étape suivante et donc on arrête de récupérer lesdonnées du fichier
+					// On arrive à l'étape suivante et donc on arrête de récupérer les données du fichier
 					$autorise = "stop";
 					echo '<p>La lecture du fichier pour cette étape est terminée, vous devez maintenant faire les concordances.</p>';
 				}
@@ -128,15 +129,105 @@ if ($action == "upload_file") {
 							$nbre_lignes = $tab[1];
 							echo 'Il y a '.$tab[1].' professeurs.<br />'."\n";
 						}else{
+							// On détermine si la première lettre du prénom existe
+							$prenom = (isset($tab[3]) AND $tab[3] != '') ? '('.$tab[3].'.)' : NULL;
 							// on permet la concordance
-							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].'</b>';
-							$nom_select = "professeur_".$numero;
+							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
+							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
+							$nom_select = "nom_gepi_".$numero;
 							include("helpers\select_professeurs.php");
 							echo '<br />'."\n";
 						}
+					}elseif($etape == 2){
+						// On traite des classes
+						if($tab[0] == "CLASSE"){
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' classes.<br />'."\n";
+						}else{
+							// On permet la concordance
+							echo 'Numéro : '.$tab[0].' classe :<b>'.$tab[1].'</b>';
+							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
+							$nom_select = "nom_gepi_".$numero;
+							include("helpers\select_classes.php");
+							echo '<br />'."\n";
+						}
+					}elseif($etape == 3){
+						// On traite des GROUPES
+						if($tab[0] == "GROUPE"){
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' groupes.<br />'."\n";
+						}else{
+							// On permet la concordance
+							echo 'Numéro : '.$tab[0].' groupe :<b>'.$tab[1].'</b>';
+							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
+							$nom_select = "nom_gepi_".$numero;
+							include("helpers\select_aid_groupes.php");
+							echo '<br />'."\n";
+						}
+					}elseif($etape == 4){
+						// On traite des "PARTIE"
+						if ($tab[0] == "PARTIE") {
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' "parties".<br />'."\n";
+						}else{
+							echo '
+							<p>A priori, les PARTIES ne servent pas pour l\'emploi du temps car l\'exportation ne donne pas la liste des élèves</p>
+							<p>Cliquez sur le bouton ci-dessous pour passer à l\'étape suivante.</p>';
+							break;
+						}
+					}elseif($etape == 5){
+						// On traite des "MATIERE"
+						if($tab[0] == "MATIERE"){
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' matières.<br />'."\n";
+						}else{
+							// On permet la concordance
+							echo 'Numéro : '.$tab[0].' matière :<b>'.$tab[1].'</b>';
+							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
+							$nom_select = "nom_gepi_".$numero;
+							include("helpers\select_matieres.php");
+							echo '<br />'."\n";
+						}
+					}elseif($etape == 6){
+						// On traite des "ETABLISSEMENT"
+						if ($tab[0] == "ETABLISSEMENT") {
+							$nbre_lignes = 0;
+						}else{
+							echo '
+							<p>A priori, l\'établissement '.$tab[1].' est le bon.</p>
+							<p>Cliquez sur le bouton ci-dessous pour passer à l\'étape suivante.</p>';
+							break;
+						}
+					}elseif($etape == 7){
+						//  On traite des "SEMAINE"
+						if($tab[0] == "SEMAINE"){
+							$nbre_lignes = 53;
+							echo 'Il y a 53 semaines.<br />'."\n";
+						}else{
+							// on va aller remplir la table edt_semaines
+							$nbre_lignes = 0;
+						}
+					}elseif($etape == 8){
+						// On traite des "CONGES"
+						if($tab[0] == "CONGES"){
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' congés.<br />'."\n";
+						}else{
+							// on va aller remplir la table edt_calendrier
+							$nbre_lignes = 0;
+						}
+					}elseif($etape == 9){
+						// On traite des "COURS"
+						// C'est la partie la plus importante
+						if($tab[0] == "COURS"){
+							$nbre_lignes = $tab[1];
+							echo 'Il y a '.$tab[1].' cours.<br />'."\n";
+						}else{
+							// On cherche dans la table edt_init les concordances et on crée les cours en question
+						}
 					}
+					$numero++;
 				}
-				$numero++;
 			}
 
 			// on ferme le formulaire

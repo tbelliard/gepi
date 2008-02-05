@@ -22,7 +22,9 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 
 $increment = isset($nom_select) ? $nom_select : "liste_professeur";
 
-echo '<select name ="'.$increment.'">';
+echo '
+	<select name ="'.$increment.'">
+		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
 	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur'");
 	$nbre = mysql_num_rows($query);
