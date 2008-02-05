@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @version $Id$
+ * @copyright 2008
+ *
+ * Fichier qui renvoie un select des classes de l'établissement
+ * pour l'intégrer dans un fomulaire
+ *
+ */
+// On récupère les infos utiles pour le fonctionnement des requêtes sql
+$niveau_arbo = 1;
+require_once("../lib/initialisations.inc.php");
+
+// Sécurité : éviter que quelqu'un appelle ce fichier seul
+$serveur_script = $_SERVER["SCRIPT_NAME"];
+$analyse = explode("/", $serveur_script);
+$analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
+	if ($analyse[4] == "select_classes.php") {
+		die();
+	}
+
+$increment = isset($nom_select) ? $nom_select : "liste_classes";
+
+echo '
+	<select name ="'.$increment.'">
+		<option value="aucun">Liste des classes</option>';
+	// on recherche la liste des classes
+	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
+	$nbre = mysql_num_rows($query);
+	for($i = 0; $i < $nbre; $i++){
+		$classe[$i] = mysql_result($query, $i, "id");
+		$nom[$i] = mysql_result($query, $i, "classe");
+
+		echo '
+		<option value="'.$classe[$i].'">'.$nom[$i].'</option>';
+	}
+echo '</select>';
+?>
