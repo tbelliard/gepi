@@ -151,6 +151,8 @@ DROP TABLE IF EXISTS `edt_setting`;
 CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL);
 DROP TABLE IF EXISTS `edt_calendrier`;
 CREATE TABLE `edt_calendrier` (`id_calendrier` int(11) NOT NULL auto_increment,`classe_concerne_calendrier` text NOT NULL,`nom_calendrier` varchar(100) NOT NULL default '',`debut_calendrier_ts` varchar(11) NOT NULL,`fin_calendrier_ts` varchar(11) NOT NULL,`jourdebut_calendrier` date NOT NULL default '0000-00-00',`heuredebut_calendrier` time NOT NULL default '00:00:00',`jourfin_calendrier` date NOT NULL default '0000-00-00',`heurefin_calendrier` time NOT NULL default '00:00:00',`numero_periode` tinyint(4) NOT NULL default '0',`etabferme_calendrier` tinyint(4) NOT NULL,`etabvacances_calendrier` tinyint(4) NOT NULL,PRIMARY KEY (`id_calendrier`));
+DROP TABLE IF EXISTS `edt_init`;
+CREATE TABLE `edt_init` (`id_init` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `ident_export` VARCHAR( 100 ) NOT NULL , `nom_export` VARCHAR( 200 ) NOT NULL , `nom_gepi` VARCHAR( 200 ) NOT NULL);
 DROP TABLE IF EXISTS `absences_rb`;
 CREATE TABLE `absences_rb` (`id` int(5) NOT NULL auto_increment,`eleve_id` varchar(30) NOT NULL,`retard_absence` varchar(1) NOT NULL default 'A',`groupe_id` varchar(8) NOT NULL,`edt_id` int(5) NOT NULL default '0',`jour_semaine` varchar(10) NOT NULL,`creneau_id` int(5) NOT NULL,`debut_ts` int(11) NOT NULL,`fin_ts` int(11) NOT NULL,`date_saisie` int(20) NOT NULL,`login_saisie` varchar(30) NOT NULL, PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `inscription_items`;
