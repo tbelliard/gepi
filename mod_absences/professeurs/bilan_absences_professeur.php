@@ -14,6 +14,7 @@ require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
 // ainsi que les fonctions de l'EdT pour la gestion des créneaux
+require_once("../../edt_organisation/fonctions_calendrier.php");
 require_once("../../edt_organisation/fonctions_edt.php");
 
 // Resume session
