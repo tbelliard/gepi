@@ -221,7 +221,9 @@ $compter_echecs = 2; // pour afficher à la fin le message : Tous ces cours ont b
     		} // fin du else
 
 		// Si tout est ok, on rentre la ligne dans la table sinon, on affiche le problème
-		$insert_csv = "INSERT INTO edt_cours (`id_groupe`, `id_salle`, `jour_semaine`, `id_definie_periode`, `duree`, `heuredeb_dec`, `id_semaine`, `id_calendrier`, `modif_edt`) VALUES ('$rep_groupe[0]', '$rep_salle', '$rep_jour', '$rep_heuredebut', '$rep_duree', '$rep_heuredeb_dec', '$rep_typesemaine', '$rep_calendar', '0')";
+		$insert_csv = "INSERT INTO edt_cours
+						(`id_groupe`, `id_salle`, `jour_semaine`, `id_definie_periode`, `duree`, `heuredeb_dec`, `id_semaine`, `id_calendrier`, `modif_edt`, `login_prof`)
+						VALUES ('$rep_groupe[0]', '$rep_salle', '$rep_jour', '$rep_heuredebut', '$rep_duree', '$rep_heuredeb_dec', '$rep_typesemaine', '$rep_calendar', '0', '$prof_login')";
 			// On vérifie que les items existent
 		if ($rep_groupe[0] != "" AND $rep_jour != "" AND $rep_heuredebut != "" AND $probleme == "") {
 			$req_insert_csv = mysql_query($insert_csv);

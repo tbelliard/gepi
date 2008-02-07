@@ -151,22 +151,39 @@ function enseignements_prof($login_prof, $rep){
 function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt, $heuredeb_dec){
 		$tab_ens = array();
 	if ($type_edt == "prof") {
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(prof) !');
-		// On cherche les AID du créneau
-		$req_aid_horaire = mysql_query("SELECT * FROM edt_cours WHERE jour_semaine = '".$jour_semaine."' AND id_definie_periode='".$id_creneaux."' AND heuredeb_dec = '".$heuredeb_dec."' AND id_groupe LIKE 'AID%'");
+		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE
+								jour_semaine = '".$jour_semaine."' AND
+								id_definie_periode = '".$id_creneaux."' AND
+								heuredeb_dec = '".$heuredeb_dec."'AND
+								login_prof = '".$login_general."'
+									ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(prof) !');
+		/*/ On cherche les AID du créneau
+		$req_aid_horaire = mysql_query("SELECT * FROM edt_cours WHERE
+								jour_semaine = '".$jour_semaine."' AND
+								id_definie_periode = '".$id_creneaux."' AND
+								heuredeb_dec = '".$heuredeb_dec."' AND
+								id_groupe LIKE 'AID%'");
 		$nbre_reponse = mysql_num_rows($req_aid_horaire);
 		for($i=0; $i<$nbre_reponse; $i++) {
 			$rep[$i]["id_groupe"] = mysql_result($req_aid_horaire, $i, "id_groupe");
 			$test = explode("|", $rep[$i]["id_groupe"]);
 			// On vérifie si le prof fait partie de l'AID ou pas
-			$req_prof = mysql_num_rows(mysql_query("SELECT indice_aid FROM j_aid_utilisateurs WHERE id_utilisateur = '".$login_general."' AND id_aid = '".$test[1]."'"));
+			$req_prof = mysql_num_rows(mysql_query("SELECT indice_aid FROM j_aid_utilisateurs WHERE
+											id_utilisateur = '".$login_general."' AND
+											id_aid = '".$test[1]."'"));
 			if ($req_prof == "1") {
 				$tab_ens[] = $rep[$i]["id_groupe"];
 			}
-		}
-	}
-	elseif ($type_edt == "classe") {
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_groupes_classes.id_groupe AND id_classe='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_groupe") or die('Erreur : cree_tab_general(classe) : '.mysql_error());
+		}*/
+	}elseif ($type_edt == "classe") {
+		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE
+								edt_cours.jour_semaine='".$jour_semaine."' AND
+								edt_cours.id_definie_periode='".$id_creneaux."' AND
+								edt_cours.id_groupe=j_groupes_classes.id_groupe AND
+								id_classe='".$login_general."' AND
+								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
+								ORDER BY edt_cours.id_groupe")
+									or die('Erreur : cree_tab_general(classe) : '.mysql_error());
 	}
 	elseif ($type_edt == "eleve"){
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_eleves_groupes.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(eleve) !');
@@ -791,10 +808,10 @@ function premiere_ligne_tab_edt(){
 	echo("<th>Horaires</th>\n");
 
 	$compter_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
-while ($jour_semaine = mysql_fetch_array($compter_colonnes)) {
+	while ($jour_semaine = mysql_fetch_array($compter_colonnes)) {
 
-   printf("<th>".$jour_semaine["jour_horaire_etablissement"]."</th>\n");
-   }
+	printf("<th>".$jour_semaine["jour_horaire_etablissement"]."</th>\n");
+	}
     echo("</tr>\n");
 }
 
@@ -803,32 +820,46 @@ while ($jour_semaine = mysql_fetch_array($compter_colonnes)) {
 
 function construction_tab_edt($heure, $heuredeb_dec){
 
-if ($_SESSION['statut'] == "eleve") {
-	$req_type_login = $_SESSION['login'];
-}
-else $req_type_login = isset($_GET["login_edt"]) ? $_GET["login_edt"] : (isset($_POST["login_edt"]) ? $_POST["login_edt"] : NULL);
+	if ($_SESSION['statut'] == "eleve") {
+		$req_type_login = $_SESSION['login'];
+	}else{
+		$req_type_login = isset($_GET["login_edt"]) ? $_GET["login_edt"] : (isset($_POST["login_edt"]) ? $_POST["login_edt"] : NULL);
+	}
 
-if ($_SESSION['statut'] == "eleve") {
+	if ($_SESSION['statut'] == "eleve") {
 		$type_edt = $_SESSION['statut'];
-}
-else $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
-
+	}else{
+		$type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
+	}
+	// On détermine le nombre de jours à afficher
 	$compter_nbre_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
 	$compter_colonnes = mysql_num_rows($compter_nbre_colonnes);
 
 	$req_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
-		$jour_sem_tab=array();
-		while($data_sem_tab=mysql_fetch_array($req_colonnes)) {
-		$jour_sem_tab[]=$data_sem_tab["jour_horaire_etablissement"];
+		$jour_sem_tab = array();
+		while($data_sem_tab = mysql_fetch_array($req_colonnes)) {
+			$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
 		}
 	if ($compter_colonnes <= 4) {
-	return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n</tr>\n";
+		return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n</tr>\n";
 	}
 	elseif ($compter_colonnes <= 5) {
-	return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[4], $type_edt, $heuredeb_dec))."\n</tr>\n";
+		return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[4], $type_edt, $heuredeb_dec))."\n</tr>\n";
 	}
 	elseif ($compter_colonnes <= 6) {
-	return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[4], $type_edt, $heuredeb_dec))."\n".(contenu_enseignement($req_type_login, $heure, $jour_semaine_tab[5], $type_edt, $heuredeb_dec))."\n</tr>\n";
+		return "".(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[0], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[1], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[4], $type_edt, $heuredeb_dec))."\n"
+				.(contenu_enseignement($req_type_login, $heure, $jour_semaine_tab[5], $type_edt, $heuredeb_dec))."\n</tr>\n";
 	}
 }
 

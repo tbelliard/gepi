@@ -72,7 +72,7 @@ require_once("./menu.inc.php"); ?>
 	// Initialisation des variables de la page
 $initialiser = isset($_POST["initialiser"]) ? $_POST["initialiser"] : NULL;
 $choix_prof = isset($_POST["prof"]) ? $_POST["prof"] : NULL;
-$enseignement = isset($_POST["enseignement"]) ?$_POST["enseignement"] : NULL;
+$enseignement = isset($_POST["enseignement"]) ? $_POST["enseignement"] : NULL;
 $ch_heure = isset($_POST["ch_heure"]) ? $_POST["ch_heure"] : NULL;
 $ch_jour_semaine = isset($_POST["ch_jour_semaine"]) ? $_POST["ch_jour_semaine"] : NULL;
 $duree = isset($_POST["duree"]) ? $_POST["duree"] : NULL;
@@ -139,7 +139,8 @@ echo '
  		</select>
 			<input type="hidden" name="initialiser" value="ok" />
 	</fieldset>
-		</form>';
+		</form>
+	<br />';
 
 	// Ensuite, on propose la liste des enseignements de ce professeur associés à la matière
 if (isset($choix_prof)) {
@@ -162,13 +163,13 @@ if (isset($choix_prof)) {
 	// On détermine le selected
 	for($i=0; $i<count($tab_enseignements); $i++) {
 		if(isset($enseignement)){
-			if($enseignement==$tab_enseignements[$i]["id"]){
-				$selected=" selected='selected'";
+			if($enseignement == $tab_enseignements[$i]["id"]){
+				$selected = ' selected="selected"';
 			}else{
-				$selected="";
+				$selected = '';
 			}
 		}else{
-			$selected="";
+			$selected = '';
 		}
 			echo "
 				<option value=\"".$tab_enseignements[$i]["id"]."\"".$selected.">".$tab_enseignements[$i]["classlist_string"]." : ".$tab_enseignements[$i]["description"]."</option>\n";
@@ -390,25 +391,63 @@ if (isset($choix_prof)) {
 			}
 
 			// Vérification que ce prof n'a pas déjà cours à ce moment là
-			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$ch_jour_semaine."' AND edt_cours.id_definie_periode='".$ch_heure."' AND edt_cours.id_semaine = '".$choix_semaine."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$choix_prof."' AND edt_cours.heuredeb_dec = '".$heure_debut."'") or die('erreur verif prof !');
+			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE
+									edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
+									edt_cours.id_definie_periode = '".$ch_heure."' AND
+									(edt_cours.id_semaine = '".$choix_semaine."' OR edt_cours.id_semaine = '0') AND
+									edt_cours.id_groupe = j_groupes_professeurs.id_groupe AND
+									login = '".$choix_prof."' AND
+									edt_cours.heuredeb_dec = '".$heure_debut."' AND
+									edt_cours.login_prof = '".$choix_prof."'")
+										or die('erreur verif prof !');
 			$rep_verif_prof = mysql_fetch_array($verif_prof);
 			$nbre_verif_prof = mysql_num_rows($verif_prof);
 			if ($nbre_verif_prof != 0) {
-				$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-				echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
+				// On vérifie si ce n'est pas une AID
+				if (retourneAid($rep_verif_prof["id_groupe"]) != "non") {
+					$aid = retourneAid($rep_verif_prof["id_groupe"]);
+					echo "<p class=\"refus\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
+				}else{
+					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
+					echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
+				}
 			}
 
 			// Si c'est bon, on enregistre le cours dans l'EdT
 			if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
-				$insert_edt = mysql_query("INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt)
-					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
+				$insert_edt = mysql_query("INSERT INTO edt_cours
+				(id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt, login_prof)
+					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0', '".$choix_prof."')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
 
 				// et on affiche les infos sur le cours enregistré
-				$tab_infos = get_group($enseignement);
-				$contenu="";
-				foreach ($tab_infos["eleves"][1]["users"] as $eleve_login) {
-					$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+					$contenu = "";
+				if (retourneAid($enseignement) != "non") {
+					// c'est une AID et donc on récupère les infos de cette AID
+					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".retourneAid($enseignement)."'");
+					$rep_aid = mysql_fetch_array($query1);
+					$tab_infos["classlist_string"] = $rep_aid["nom"];
+					// puis le nom de l'AID
+					$rep_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
+					$tab_infos["description"] = $rep_nom_aid["nom"];
+					// $contenu est la liste des élèves
+					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".retourneAid($enseignement)."'");
+					$nbre = mysql_num_rows($query);
+					for($a = 0; $a < $nbre; $a++){
+						$nom[$a] = mysql_result($query, $a, "login");
+						// On récupère ses nom et prénom
+						$query_n = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
+						$contenu .= $query_n["nom"].' '.$query_n["prenom"].'<br />';
+					}
+
+				}else {
+					// C'est un enseignement de la table GROUPES
+					$tab_infos = get_group($enseignement);
+
+					foreach ($tab_infos["eleves"][1]["users"] as $eleve_login) {
+						$contenu .= $eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+					}
 				}
+
 				$titre_listeleve = "Liste des élèves";
 
 				$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>

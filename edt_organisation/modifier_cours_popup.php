@@ -120,7 +120,8 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 					 duree = '$duree',
 					 heuredeb_dec = '$heure_debut',
 					 id_semaine = '$choix_semaine',
-					 id_calendrier = '$periode_calendrier'")
+					 id_calendrier = '$periode_calendrier',
+					 login_prof = '".$identite."'")
 				OR DIE('Erreur dans la création du cours : '.mysql_error());
 
 			}else {
@@ -502,7 +503,7 @@ echo '
 		<input type="hidden" name="aid" value="'.$rep_cours["id_groupe"].'" />
 	';
 	// Cas où il s'agit de la création d'un cours
-	if ($cours == "aucun") {
+	if ($cours == "aucun" OR $modifier_cours == "non") {
 		echo '		<input type="hidden" name="modifier_cours" value="non" />';
 	} else {
 		echo '		<input type="hidden" name="modifier_cours" value="ok" />';
