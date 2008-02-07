@@ -4644,6 +4644,22 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
         }
 
+        // Ajout d'un champ à cette table
+        $result .= "&nbsp;->Ajout du champ 'login_prof' à la table 'edt_cours'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_cours LIKE 'login_prof'"));
+        if ($test1 == 0) {
+			$sql="ALTER TABLE `edt_cours` ADD `login_prof` varchar(50) NOT NULL;";
+			$query = mysql_query($sql);
+			if ($query) {
+				$result .= "<font color=\"green\">Ok !</font><br />";
+			} else {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+			}
+		}
+		else{
+			$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+		}
+
 		$result .= "&nbsp;->Création de la table 'edt_setting'<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_setting'"));
         if ($test1 == 0) {
