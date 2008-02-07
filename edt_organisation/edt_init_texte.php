@@ -1,19 +1,29 @@
 <?php
 
 /**
- * edt_init_textes.php est un fichier qui permet d'initialiser l'EdT par les exports de type "Charlemagne".
- * On passe par une table edt_init qui a 4 champs : id_init (auto incrémenté), identifiant, nom_gepi, nom_export
- *
- * CREATE TABLE `edt_init` (
- * `id_init` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
- * `ident_export` VARCHAR( 100 ) NOT NULL ,
- * `nom_export` VARCHAR( 200 ) NOT NULL ,
- * `nom_gepi` VARCHAR( 200 ) NOT NULL
- * );
- *
  * @version $Id$
- * @copyright 2007
+ *
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+// edt_init_textes.php est un fichier qui permet d'initialiser l'EdT par les exports de type "Charlemagne".
+// On passe par une table edt_init qui a 4 champs : id_init (auto incrémenté), identifiant, nom_gepi, nom_export
 
 $titre_page = "Emploi du temps - Initialisation EDT";
 $affiche_connexion = 'yes';
