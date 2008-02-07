@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `absences`;
+  DROP TABLE IF EXISTS `absences`;
 DROP TABLE IF EXISTS `absences`;
 CREATE TABLE `absences` (`login` varchar(50) NOT NULL default '', `periode` int(11) NOT NULL default '0', `nb_absences` char(2) NOT NULL default '', `non_justifie` char(2) NOT NULL default '', `nb_retards` char(2) NOT NULL default '', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`periode`));
 DROP TABLE IF EXISTS `absences_gep`;
