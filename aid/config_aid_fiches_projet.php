@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: config_aid.php 1441 2008-02-01 18:21:17Z delineau $
+ * @version: $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

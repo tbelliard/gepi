@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: accueil.php 1431 2008-01-30 23:33:47Z jjocal $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
