@@ -1,5 +1,4 @@
 <?php
-error_reporting (E_ALL);
 /*
  * @version: $Id$
  *
@@ -87,6 +86,15 @@ if (isset($_POST["is_posted"])) {
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée prof_peut_modifier de l'aid $aid_id <br />\n";
+        // Enregistrement de cpe_peut_modifier
+        if (isset($_POST["cpe_peut_modifier_".$aid_id])) {
+            $register = mysql_query("update aid set cpe_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysql_query("update aid set cpe_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée cpe_peut_modifier de l'aid $aid_id <br />\n";
+
         // Enregistrement de affiche_adresse1
         if (isset($_POST["affiche_adresse1_".$aid_id])) {
             $register = mysql_query("update aid set affiche_adresse1='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -95,14 +103,14 @@ if (isset($_POST["is_posted"])) {
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée affiche_adresse1 de l'aid $aid_id <br />\n";
-        // Enregistrement de en_contruction
-        if (isset($_POST["en_contruction_".$aid_id])) {
-            $register = mysql_query("update aid set en_contruction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        // Enregistrement de en_construction
+        if (isset($_POST["en_construction_".$aid_id])) {
+            $register = mysql_query("update aid set en_construction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         } else {
-            $register = mysql_query("update aid set en_contruction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+            $register = mysql_query("update aid set en_construction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_contruction de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_construction de l'aid $aid_id <br />\n";
         $i++;
     }
     if ($msg_inter == "") {
@@ -136,7 +144,7 @@ echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a
 echo "<th>&nbsp;</th><th>&nbsp;</th>";
 // colonne publier la fiche
 if ($activer_outils_comp == "y") {
-    echo "<th><p class=\"small\">La fiche est visible sur la partie publique</p>\n";
+    echo "<th><p class=\"small\">La fiche est visible sur la <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">partie publique</a></p>\n";
     echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
@@ -148,12 +156,16 @@ if ($activer_outils_comp == "y") {
     echo "<a href=\"javascript:CocheColonne(3);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(3);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Le lien \"adresse publique\" est visible sur la partie publique</p>\n";
+    echo "<th><p class=\"small\">Les CPE peuvent modifier la fiche</p>\n";
     echo "<a href=\"javascript:CocheColonne(4);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(4);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Le lien \"adresse publique\" est accompagné d'une message \"En construction\"</p>\n";
+    echo "<th><p class=\"small\">Le lien \"adresse publique\" est visible sur la partie publique</p>\n";
     echo "<a href=\"javascript:CocheColonne(5);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(5);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "</th>\n";
+
+    echo "<th><p class=\"small\">Le lien \"adresse publique\" est accompagné d'une message \"En construction\"</p>\n";
+    echo "<a href=\"javascript:CocheColonne(6);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(6);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 }
 // Colonne "supprimer
@@ -167,14 +179,18 @@ while ($i < $nombreligne){
     $aid_num = @mysql_result($calldata, $i, "numero");
     $eleve_peut_modifier = @mysql_result($calldata, $i, "eleve_peut_modifier");
     $prof_peut_modifier = @mysql_result($calldata, $i, "prof_peut_modifier");
+    $cpe_peut_modifier = @mysql_result($calldata, $i, "cpe_peut_modifier");
     $fiche_publique = @mysql_result($calldata, $i, "fiche_publique");
     $affiche_adresse1 = @mysql_result($calldata, $i, "affiche_adresse1");
-    $en_contruction = @mysql_result($calldata, $i, "en_contruction");
+    $en_construction = @mysql_result($calldata, $i, "en_construction");
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @mysql_result($calldata, $i, "id");
     $alt=$alt*(-1);
     echo "<tr class='lig$alt'><td><p class='medium'><b>$aid_num</b></p></td>";
-    echo "<td><p class='medium'><a href='add_aid.php?action=modif_aid&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'><b>$aid_nom</b></a></p></td>\n";
+    if ($activer_outils_comp == "y")
+        echo "<td><p class='medium'><a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;retour=index2.php'><b>$aid_nom</b></a></p></td>\n";
+    else
+        echo "<td><p class='medium'><a href='add_aid.php?action=modif_aid&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'><b>$aid_nom</b></a></p></td>\n";
     echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
     echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
     if ($activer_outils_comp == "y") {
@@ -190,13 +206,17 @@ while ($i < $nombreligne){
         echo "<td><center><input type=\"checkbox\" name=\"prof_peut_modifier_".$aid_id."\" value=\"y\" id=\"case_3_".$i."\" ";
         if ($prof_peut_modifier == "y") echo "checked";
         echo " /></center></td>\n";
+        // Les CPE peuvent-ils modifier la fiche ?
+        echo "<td><center><input type=\"checkbox\" name=\"cpe_peut_modifier_".$aid_id."\" value=\"y\" id=\"case_4_".$i."\" ";
+        if ($cpe_peut_modifier == "y") echo "checked";
+        echo " /></center></td>\n";
         // Le lien public est-il visible sur la partie publique ?
-        echo "<td><center><input type=\"checkbox\" name=\"affiche_adresse1_".$aid_id."\" value=\"y\" id=\"case_4_".$i."\" ";
+        echo "<td><center><input type=\"checkbox\" name=\"affiche_adresse1_".$aid_id."\" value=\"y\" id=\"case_5_".$i."\" ";
         if ($affiche_adresse1 == "y") echo "checked";
         echo " /></center></td>\n";
         // Avertissement "en construction"
-        echo "<td><center><input type=\"checkbox\" name=\"en_contruction_".$aid_id."\" value=\"y\" id=\"case_5_".$i."\" ";
-        if ($en_contruction == "y") echo "checked";
+        echo "<td><center><input type=\"checkbox\" name=\"en_construction_".$aid_id."\" value=\"y\" id=\"case_6_".$i."\" ";
+        if ($en_construction == "y") echo "checked";
         echo " /></center></td>\n";
 
     }

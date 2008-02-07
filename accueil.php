@@ -780,6 +780,43 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     }
 }
 
+// Outils complémentaires de gestion des AID
+// Y-a-t-il des AIDs pour lesquelles les outils complémetaires sont activés ?
+$call_data = sql_query("select indice_aid, nom from aid_config WHERE outils_complementaires = 'y' order by nom_complet");
+$nb_aid = mysql_num_rows($call_data);
+if ($nb_aid != 0) {
+    $chemin = array();
+    $titre = array();
+    $expli = array();
+    $i = 0;
+    while ($i<$nb_aid) {
+        $indice_aid = mysql_result($call_data,$i,"indice_aid");
+        $nom_aid = mysql_result($call_data,$i,"nom");
+        $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
+        $titre[] = $nom_aid. " : outils de visualisation et d'édition";
+        $expli[] = "Tableau récapitulatif, liste des élèves, ...";
+        $i++;
+    }
+  $nb_ligne = count($chemin);
+  $affiche = 'no';
+  for ($i=0;$i<$nb_ligne;$i++) {
+      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+  }
+  if ($affiche=='yes') {
+      echo "<table class='menu'>\n";
+      echo "<tr>\n";
+      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
+      echo "</tr>\n";
+      for ($i=0;$i<$nb_ligne;$i++) {
+          affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+      }
+      echo "</table>";
+  }
+}
+
+
+
+
 // Accès aux modules propres au LPI
 if (file_exists("./lpi/accueil.php")) require("./lpi/accueil.php");
 

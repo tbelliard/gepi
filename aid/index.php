@@ -74,6 +74,10 @@ require_once("../lib/header.inc");
 echo "<p class=bold>";
 echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 echo "| <a href=\"config_aid.php\">Ajouter une catégorie d'AID</a> |";
+$test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
+if ($test_outils_comp != 0) {
+    echo " <a href=\"config_aid_fiches_projet.php\">Configurer les fiches projet</a> |";
+}
 echo "</p><p class=\"medium\">";
 
 $call_data = mysql_query("SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
@@ -93,7 +97,12 @@ if ($nb_aid == 0) {
         $nom_aid = @mysql_result($call_data, $i, "nom");
         $nom_complet_aid = @mysql_result($call_data, $i, "nom_complet");
         $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-        echo "<tr><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a></p></td>";
+        $outils_complementaires  = @mysql_result($call_data, $i, "outils_complementaires");
+        if ($outils_complementaires=='y')
+            $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
+        else
+            $display_outils="";
+        echo "<tr><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils</p></td>";
         echo "<td><p><a href='index2.php?indice_aid=$indice_aid'>Liste des aid de la catégorie</a></p></td>";
         echo "<td><p>$nom_complet_aid</p></td>";
         echo "<td><center><p><input type=\"checkbox\" name=\"sup".$indice_aid."\" /></p></center></td></tr>";

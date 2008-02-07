@@ -108,7 +108,8 @@ require_once("../lib/header.inc");
 
 // Ajout d'un item
 if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
-    echo "<p class=bold>|<a href=\"./inscription_config.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"help.php\" target=\"_blank\">Aide</a>|</p>";
+    echo "<p class=bold>|<a href=\"./inscription_config.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a>|</p>";
+
     echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_config.php\">";
     if (isset($id_inter)) {
         $req = mysql_query("select * from inscription_items where id='".$id_inter."'");
@@ -137,7 +138,7 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     die();
 }
 
-echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"help.php\" target=\"_blank\">Aide</a>|</p>";
+echo "<p class=bold>|<a href=\"../accueil.php\">Retour</a>|<a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a>|<a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a>|</p>";
 echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">";
 echo "<H2>Activation  / Désactivation</H2>";
 $active_prof = getSettingValue("active_inscription_utilisateurs");

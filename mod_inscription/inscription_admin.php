@@ -63,7 +63,7 @@ require_once("../lib/header.inc");
 <form action="inscription_admin.php" name="form1" method="post">
 <p>Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
 au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.<br />
-<a href="help.php" target="_blank">Consultez l'aide</a> pour en savoir plus.
+<a href="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')">Consultez l'aide</a> pour en savoir plus.
 <br /><br />
 <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_inscription")=='y') echo " checked"; ?> />
 &nbsp;Activer l'accès au module Inscription<br />

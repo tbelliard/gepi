@@ -73,6 +73,7 @@ while (!checkdate($month, $day, $year)) $day--;
 $today=mktime(0,0,0,$month,$day,$year);
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
+$page_accueil = "index.php?id_classe=-1";
 require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé

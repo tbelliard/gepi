@@ -56,11 +56,9 @@ $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET[
 $display_bulletin = isset($_POST["display_bulletin"]) ? $_POST["display_bulletin"] : 'n';
 $bull_simplifie = isset($_POST["bull_simplifie"]) ? $_POST["bull_simplifie"] : 'n';
 $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_outils_comp"] : 'n';
+$feuille_presence = isset($_POST["feuille_presence"]) ? $_POST["feuille_presence"] : 'n';
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 // ========== fin initialisation ===================
-
-// En attente de fonctionnement
-$utilisation_prototype = "ok";
 
 if (isset($is_posted) and ($is_posted == "1")) {
   $msg_inter = "";
@@ -81,6 +79,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			indice_aid='".$indice_aid."',
 			display_bulletin='".$display_bulletin."',
 			bull_simplifie = '".$bull_simplifie."',
+			feuille_presence = '".$feuille_presence."',
 			outils_complementaires = '".$activer_outils_comp."'");
 	  if (!$reg_data)
 		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
@@ -182,6 +181,7 @@ if (isset($indice_aid)) {
     $display_bulletin = @mysql_result($call_data, 0, "display_bulletin");
     $bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
     $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
+    $feuille_presence = @mysql_result($call_data, 0, "feuille_presence");
 
     // Compatibilité avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
@@ -200,6 +200,7 @@ if (isset($indice_aid)) {
     $display_bulletin = "y";
     $bull_simplifie = "y";
     $activer_outils_comp = "n";
+    $feuille_presence = "n";
 }
 ?>
 
@@ -361,10 +362,10 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 <?php } ?>
 <hr />
 <p><b>Modification des fiches projet : </b></p>
-<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs ayant le droit de modifier les fiches projet (documentaliste, ...)
+<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de modifier les fiches projet (documentaliste, ...)
 même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
 <?php
-$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur)  order by u.nom, u.prenom");
+$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
 $nombre = mysql_num_rows($call_liste_data);
 if ($nombre !=0)
     echo "<table border=0>";
@@ -392,9 +393,15 @@ while ($i < $nombreligne) {
     echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
 }
+
 ?>
 </select>
-
+<p><b>Feuille de présence : </b></p>
+<p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
+<p>
+<input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> />
+<label for="feuille_presence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
+</p>
 </div>
 
 </div>

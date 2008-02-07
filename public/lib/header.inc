@@ -29,7 +29,7 @@
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <title><?php echo getSettingValue("gepiSchoolName");
-if ($id_classe != -1) echo " - $classe_nom";
+if ((isset($id_classe)) and ($id_classe != -1)) echo " - $classe_nom";
 if (isset($id_groupe)) echo "- $matiere_nom ";
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/style.css" />
@@ -37,6 +37,7 @@ if (isset($id_groupe)) echo "- $matiere_nom ";
 <LINK REL="SHORTCUT ICON" type="image/x-icon" href="../favicon.ico" />
 
 <?php
+echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
 if(isset($style_screen_ajout)){
 	// Styles paramétrables depuis l'interface:
 	if($style_screen_ajout=='y'){
@@ -46,6 +47,7 @@ if(isset($style_screen_ajout)){
 	}
 }
 ?>
+
 
 </head>
 <body>
@@ -71,8 +73,6 @@ if(isset($style_screen_ajout)){
 		echo "<table id='table_header' border='0' width='100%'>\n";
 	}
 
-	//echo "<tr height='20px'>\n";
-	//echo "<tr height='20%'>\n";
 	echo "<tr>\n";
 		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div></td>\n";
 
@@ -90,7 +90,7 @@ if(isset($style_screen_ajout)){
 		// Pour empêcher de trop réduire la taille de la cellule de droite
 		echo "<div style='width:400px;'></div>\n";
 
-    	echo getSettingValue("gepiSchoolName"). " : module public de consultation";
+    	echo getSettingValue("gepiSchoolName"). " - ".$titre_page." : module public de consultation";
 
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -102,7 +102,7 @@ if(isset($style_screen_ajout)){
 
 		echo "<td id='td_headerBottomRight' style='padding-bottom: 5px;'>\n";
 		echo "<span class='grey'>";
-		    echo "<a href=\"index.php?id_classe=-1\">Accueil</a> - ";
+		    echo "<a href=\"".$page_accueil."\">Accueil</a> - ";
 		    echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a> - ";
 		    echo "<a href=\"javascript:centrerpopup('contacter_admin_pub.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>";
 		echo "</span>\n";
