@@ -32,6 +32,7 @@ require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
 require_once("./fonctions_edt.php");
+require_once("./fonctions_cours.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -140,7 +141,7 @@ echo '
 	</fieldset>
 		</form>';
 
-	// Ensuite, on propose la liste des enseignements de ce professeur associé à la matière
+	// Ensuite, on propose la liste des enseignements de ce professeur associés à la matière
 if (isset($choix_prof)) {
 	echo '
 			<form action="edt_initialiser.php" name="choix_enseignement" method="post">
@@ -152,29 +153,37 @@ if (isset($choix_prof)) {
 		<td>
 
 			<select name="enseignement">';
-echo "\n";
+	echo "\n";
 
 		$tab_enseignements = get_groups_for_prof($choix_prof);
-echo "
+	echo "
 				<option value=\"rien\">Choix de l'enseignement</option>\n";
 
-
-		for($i=0; $i<count($tab_enseignements); $i++) {
-	if(isset($enseignement)){
-		if($enseignement==$tab_enseignements[$i]["id"]){
-			$selected=" selected='selected'";
-		}
-		else{
+	// On détermine le selected
+	for($i=0; $i<count($tab_enseignements); $i++) {
+		if(isset($enseignement)){
+			if($enseignement==$tab_enseignements[$i]["id"]){
+				$selected=" selected='selected'";
+			}else{
+				$selected="";
+			}
+		}else{
 			$selected="";
 		}
-	}
-	else{
-		$selected="";
-	}
 			echo "
 				<option value=\"".$tab_enseignements[$i]["id"]."\"".$selected.">".$tab_enseignements[$i]["classlist_string"]." : ".$tab_enseignements[$i]["description"]."</option>\n";
-		}
-echo '
+	}
+
+	// On ajoute sa liste des aid
+		$tab_aid = renvoieAid("prof", $choix_prof);
+	for($i = 0; $i < count($tab_aid); $i++) {
+		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		echo '
+				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$nom_aid["nom"].'</option>
+		';
+	}
+
+	echo '
 			</select>
 
 			<input type="hidden" name="initialiser" value="ok" />
@@ -183,7 +192,7 @@ echo '
 		<td>
 			<select name="ch_jour_semaine">
 				<option value="rien">Jour</option>';
-echo "\n";
+	echo "\n";
 
 	// On propose aussi le choix du jour
 
@@ -198,25 +207,23 @@ echo "\n";
 		if(isset($ch_jour_semaine)){
 			if($ch_jour_semaine==$tab_select_jour[$a]["jour_sem"]){
 				$selected=" selected='selected'";
-			}
-			else{
+			}else{
 				$selected="";
 			}
-		}
-		else{
-		$selected="";
+		}else{
+			$selected="";
 		}
 		echo "
 		<option value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</option>\n";
 	}
-echo '
+	echo '
 			</select>
 		</td>
 
 		<td>
 			<select name="ch_heure">
 				<option value="rien">Horaire</option>';
-echo "\n";
+	echo "\n";
 	// On propose aussi le choix de l'horaire
 
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
@@ -232,19 +239,17 @@ echo "\n";
 		if(isset($ch_heure)){
 			if($ch_heure==$tab_select_heure[$b]["id_heure"]){
 				$selected=" selected='selected'";
-			}
-			else{
+			}else{
 				$selected="";
 			}
-		}
-		else{
+		}else{
 			$selected="";
 		}
 		echo "
 		<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n";
 
 	}
-echo '
+	echo '
 			</select>
 		</td>
 		<td>
@@ -260,7 +265,7 @@ echo '
 
 	// On propose aussi le choix du type de semaine et l'heure de début du cours
 
-echo '
+	echo '
 		<td>
 			<select name="duree">
 				<option value="2">1 heure</option>
@@ -277,7 +282,7 @@ echo '
 			<select name="choix_semaine">
 				<option value="0">Toutes les semaines</option>
 		';
-// on récupère les types de semaines
+	// on récupère les types de semaines
 				//<option value="2">Semaines paires</option>
 				//<option value="1">Semaines impaires</option>
 	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
@@ -292,7 +297,7 @@ echo '
 		';
 	}
 
-echo '
+	echo '
 			</select>
 		</td>
 		<td>
@@ -310,18 +315,16 @@ echo '
 		if(isset($login_salle)){
 			if($login_salle==$tab_select_salle[$c]["id_salle"]){
 				$selected=" selected='selected'";
-			}
-			else{
+			}else{
 				$selected="";
 			}
-		}
-		else{
+		}else{
 			$selected="";
 		}
 		echo "
 				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 	}
-echo '
+	echo '
 			</select>
 		</td>
 		<td>
@@ -339,7 +342,7 @@ echo '
 			'."\n";
 		}
 
-echo '
+	echo '
 			</select>
 		</td>
 		<td>
@@ -354,73 +357,68 @@ echo '
 
 	// Traitement et enregistrement des entrées manuelles de l'EdT
 
-if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
-	echo '
-<p class="refus">Vous devez renseigner tous les champs !</p><br />';
-}
-else {
-	if (isset($choix_prof) AND $enseignement != NULL) {
-		//echo "<font color=\"green\">OK Tout Est OK !</font>";
+	if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
+		echo '
+	<p class="refus">Vous devez renseigner tous les champs !</p><br />';
+	}else {
+		if (isset($choix_prof) AND $enseignement != NULL) {
+			//echo "<font color=\"green\">OK Tout Est OK !</font>";
 
 
-	// Vérification que la salle est libre à ce jour cette heure
-	$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE id_salle ='".$login_salle."' AND jour_semaine = '".$ch_jour_semaine."' AND id_definie_periode = '".$ch_heure."' AND (id_semaine = '0' OR id_semaine = '".$choix_semaine."')") or die ('Erreur dans la verif salle');
-	$rep_verif_s = mysql_fetch_array($verif_salle);
+			// Vérification que la salle est libre à ce jour cette heure
+			$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE
+						id_salle ='".$login_salle."' AND
+						jour_semaine = '".$ch_jour_semaine."' AND
+						id_definie_periode = '".$ch_heure."' AND
+						(id_semaine = '0' OR id_semaine = '".$choix_semaine."')")
+							 or die ('Erreur dans la verif salle');
+			$rep_verif_s = mysql_fetch_array($verif_salle);
 
-	$nbre_verif_s = mysql_num_rows($verif_salle);
-		if ($nbre_verif_s != 0) {
-			$req_present_s = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
-			$rep_present_s = mysql_fetch_array($req_present_s);
-			$tab_present_s = get_group($rep_present_s["id_groupe"]);
-			echo "<p class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
-		}
+			$nbre_verif_s = mysql_num_rows($verif_salle);
+			if ($nbre_verif_s != 0) {
+				$req_present_s = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
+				$rep_present_s = mysql_fetch_array($req_present_s);
+				// On vérifie si ce n'est pas une AID
+				if (retourneAid($rep_present_s["id_groupe"]) != "non") {
+					$aid = retourneAid($rep_present_s["id_groupe"]);
+					echo "<p class=\"refus\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
+				}else{
+					$tab_present_s = get_group($rep_present_s["id_groupe"]);
+					echo "<p class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
+				}
 
-	// Vérification que ce prof n'a pas déjà cours à ce moment là
-	$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$ch_jour_semaine."' AND edt_cours.id_definie_periode='".$ch_heure."' AND edt_cours.id_semaine = '".$choix_semaine."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$choix_prof."' AND edt_cours.heuredeb_dec = '".$heure_debut."'") or die('erreur verif prof !');
-	$rep_verif_prof = mysql_fetch_array($verif_prof);
-	$nbre_verif_prof = mysql_num_rows($verif_prof);
-		if ($nbre_verif_prof != 0) {
-			$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-			echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
-		}
+			}
 
-	// Vérification que le groupe est bien libre à ce moment là
-	/* ATTENTION Prévoir de regarder les créneaux précédents en vérifiant la durée
-	$verif_groupe = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_groupe = '".$enseignement."' AND jour_semaine = '".$ch_jour_semaine."' AND id_definie_periode = '".$ch_heure."' AND (id_semaine = '0' OR id_semaine = ".$choix_semaine.")");
-	$rep_verif_g = mysql_fetch_array($verif_groupe);*/
+			// Vérification que ce prof n'a pas déjà cours à ce moment là
+			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE edt_cours.jour_semaine='".$ch_jour_semaine."' AND edt_cours.id_definie_periode='".$ch_heure."' AND edt_cours.id_semaine = '".$choix_semaine."' AND edt_cours.id_groupe=j_groupes_professeurs.id_groupe AND login='".$choix_prof."' AND edt_cours.heuredeb_dec = '".$heure_debut."'") or die('erreur verif prof !');
+			$rep_verif_prof = mysql_fetch_array($verif_prof);
+			$nbre_verif_prof = mysql_num_rows($verif_prof);
+			if ($nbre_verif_prof != 0) {
+				$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
+				echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
+			}
 
-
-
-	// Si c'est bon, on enregistre le cours dans l'EdT
-	if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
-		$insert_edt = mysql_query("INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt)
-					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
-	/*/ SI ce cours commence au milieu d'un créneau (0.5) et dure 1h30 (duree = 3), il faut créer son doublon avec une durée de 0
-		if ($duree == 3 AND $heure_debut == "0.5") {
-
-				$cherche_creneaux = array();
-				$cherche_creneaux = retourne_id_creneaux();
-				$ch_index = array_search($ch_heure, $cherche_creneaux);
-				$heure_suivante = $cherche_creneaux[$ch_index+1];
+			// Si c'est bon, on enregistre le cours dans l'EdT
+			if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
 				$insert_edt = mysql_query("INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt)
-					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$heure_suivante."', '0', '0', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement n°2 !');
-		}*/
-	// et on affiche les infos sur le cours enregistré
-		$tab_infos = get_group($enseignement);
+					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
+
+				// et on affiche les infos sur le cours enregistré
+				$tab_infos = get_group($enseignement);
 				$contenu="";
-		foreach ($tab_infos["eleves"][1]["users"] as $eleve_login) {
-			$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+				foreach ($tab_infos["eleves"][1]["users"] as $eleve_login) {
+					$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+				}
+				$titre_listeleve = "Liste des élèves";
+
+				$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>
+					".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
+				echo "<p>Ce cours est enregistré :<font color=\"green\" size=\"1\">
+					Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
+			}
 		}
-		$titre_listeleve = "Liste des élèves";
-
-	$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>\n".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
-		echo "<p>Ce cours est enregistré :<font color=\"green\" size=\"1\">Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
 	}
-
-}
-}
-}
-else {
+}else {
 //echo '
 //		</fieldset>';
 }

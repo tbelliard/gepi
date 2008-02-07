@@ -83,6 +83,18 @@ function inverseHeuredeb_dec($heuredeb_dec){
 	return $retour;
 } // inverseHeuredeb_dec()
 
+// Fonction qui vérifie si l'id_groupe de l'Edt n'est pas une AID
+function retourneAid($id_groupe){
+	// On explode pour voir
+	$explode = explode("|", $id_groupe);
+	if ($explode[0] == "AID") {
+		return $explode[1];
+	}else{
+		return "non";
+	}
+}
+
+
 // Fonction qui vérifie que le professeur n'a pas déjà cours à ce moment là et sur la durée
 function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 
