@@ -1,0 +1,23 @@
+/*
+* @version: $Id: style_aid.css 1359 2008-01-13 19:52:02Z jjocal $
+*/
+
+
+/* Stype spécifique aux  fiches AID de Gepi */
+
+.bloc {
+width: 80%;
+padding:5px;
+margin:10px;
+text-align:justify;
+color:#000000 ;
+border-width: 1px;
+border-style: solid;
+border-color: #ff7200;
+}
+
+div#fixe   {
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+}
