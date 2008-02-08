@@ -5527,6 +5527,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">La table j_aidcateg_utilisateurs existe déjà.</font><br />";
     }
+    $result_inter = "";
     // Modification de la table aid_config
     $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'feuille_presence'"));
     if ($test == 0) {
@@ -5571,7 +5572,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     // Modification de la table aid
     $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'en_construction'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("ALTER TABLE aid ADD perso1 VARCHAR( 255 ) NOT NULL ,
+      $result_inter = traite_requete("ALTER TABLE aid ADD perso1 VARCHAR( 255 ) NOT NULL ,
       ADD perso2 VARCHAR( 255 ) NOT NULL ,
       ADD perso3 VARCHAR( 255 ) NOT NULL ,
       ADD productions VARCHAR( 100 ) NOT NULL ,
@@ -5601,7 +5602,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table j_aid_eleves_resp a été créée !</font><br />";
       else
@@ -5611,8 +5612,17 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_familles'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '');");
-      $result_inter .= traite_requete("INSERT INTO `aid_familles` (`ordre_affichage`, `id`, `type`) VALUES
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '');");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table aid_familles a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table aid_familles est déjà créée.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("select ordre_affichage from aid_familles"));
+    if ($test == 0) {
+       $result_inter = traite_requete("INSERT INTO `aid_familles` (`ordre_affichage`, `id`, `type`) VALUES
       (0, 10, 'Information, presse'),
       (1, 11, 'Philosophie et psychologie, pensée'),
       (2, 12, 'Religions'),
@@ -5624,16 +5634,25 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       (8, 18, 'Littérature, théâtre, poésie'),
       (9, 19, 'Géographie et Histoire, civilisations anciennes');");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">La table aid_familles a été créée !</font><br />";
+          $result .= "<font color=\"green\">La table aid_familles a été ùise à jour !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
-      $result .= "<font color=\"blue\">La table aid_familles existe déjà.</font><br />";
+      $result .= "<font color=\"blue\">La table aid_familles est déjà remplie.</font><br />";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_public'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `aid_public` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`public` varchar(100) NOT NULL default '');");
-      $result_inter .= traite_requete("INSERT INTO `aid_public` (`ordre_affichage`, `id`, `public`) VALUES
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_public` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`public` varchar(100) NOT NULL default '');");
+    if ($result_inter == '')
+          $result .= "<font color=\"green\">La table aid_public a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table aid_public existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("select * from aid_public"));
+    if ($test == 0) {
+      $result_inter = traite_requete("INSERT INTO `aid_public` (`ordre_affichage`, `id`, `public`) VALUES
     (3, 1, 'Lycéens'),
     (2, 2, 'Collègiens'),
     (1, 3, 'Ecoliers'),
@@ -5641,16 +5660,25 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     (5, 5, 'Experts (ou spécialistes)'),
     (4, 6, 'Etudiants');");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">La table aid_public a été créée !</font><br />";
+          $result .= "<font color=\"green\">La table aid_public a été mise à jour !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
-      $result .= "<font color=\"blue\">La table aid_public existe déjà.</font><br />";
+      $result .= "<font color=\"blue\">La table aid_public est déjà remplie.</font><br />";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_productions'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL default '0',`nom` varchar(100) NOT NULL default '');");
-      $result_inter .= traite_requete("INSERT INTO `aid_productions` (`id`, `nom`) VALUES
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL default '0',`nom` varchar(100) NOT NULL default '');");
+    if ($result_inter == '')
+          $result .= "<font color=\"green\">La table aid_productions a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table aid_productions existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("select * from aid_productions"));
+    if ($test == 0) {
+      $result_inter = traite_requete("INSERT INTO `aid_productions` (`id`, `nom`) VALUES
       (1, 'Dossier papier'),
       (2, 'Emission de radio'),
       (3, 'Exposition'),
@@ -5669,46 +5697,59 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       (16, 'Programmation logicielle'),
       (17, 'Journal');");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">La table aid_productions a été créée !</font><br />";
+          $result .= "<font color=\"green\">La table aid_productions a été mise à jour !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
-      $result .= "<font color=\"blue\">La table aid_productions existe déjà.</font><br />";
+      $result .= "<font color=\"blue\">La table aid_productions est déjà remplie.</font><br />";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_aid'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS `droits_aid` (`id` varchar(200) NOT NULL default '',`public` char(1) NOT NULL default '',`professeur` char(1) NOT NULL default '',`cpe` char(1) NOT NULL default '',`scolarite` char(1) NOT NULL default '',`eleve` char(1) NOT NULL default '',`responsable` char(1) NOT NULL default 'F',`secours` char(1) NOT NULL default '',`description` varchar(255) NOT NULL default '',`statut` char(1) NOT NULL default '',PRIMARY KEY  (`id`));");
-      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('nom', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('numero', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('perso1', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('perso2', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('productions', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Production', '1');
-INSERT INTO `droits_aid` VALUES('resume', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Résumé', '1');
-INSERT INTO `droits_aid` VALUES('famille', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Famille', '1');
-INSERT INTO `droits_aid` VALUES('mots_cles', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Mots clés', '1');
-INSERT INTO `droits_aid` VALUES('adresse1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse publique', '1');
-INSERT INTO `droits_aid` VALUES('adresse2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse privée', '1');
-INSERT INTO `droits_aid` VALUES('public_destinataire', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Public destinataire', '1');
-INSERT INTO `droits_aid` VALUES('contacts', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Contacts, ressources', '1');
-INSERT INTO `droits_aid` VALUES('divers', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Divers', '1');
-INSERT INTO `droits_aid` VALUES('matiere1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline principale', '1');
-INSERT INTO `droits_aid` VALUES('matiere2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline secondaire', '1');
-INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('prof_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '0');
-INSERT INTO `droits_aid` VALUES('fiche_publique', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('affiche_adresse1', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('en_construction', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');
-INSERT INTO `droits_aid` VALUES('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '0');
-");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `droits_aid` (`id` varchar(200) NOT NULL default '',`public` char(1) NOT NULL default '',`professeur` char(1) NOT NULL default '',`cpe` char(1) NOT NULL default '',`scolarite` char(1) NOT NULL default '',`eleve` char(1) NOT NULL default '',`responsable` char(1) NOT NULL default 'F',`secours` char(1) NOT NULL default '',`description` varchar(255) NOT NULL default '',`statut` char(1) NOT NULL default '',PRIMARY KEY  (`id`));");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">La table des droits_aid a été créée et mise à jour !</font><br />";
+          $result .= "<font color=\"green\">La table des droits_aid a été créée !</font><br />";
       else
           $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table droits_aid existe déjà.</font><br />";
     }
+    $test = mysql_num_rows(mysql_query("select * from droits_aid"));
+    if ($test == 0) {
+      $result_inter = traite_requete("INSERT INTO `droits_aid` VALUES('nom', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('numero', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso1', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso2', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('productions', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Production', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('resume', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Résumé', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('famille', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Famille', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('mots_cles', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Mots clés', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('adresse1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse publique', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('adresse2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse privée', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('public_destinataire', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Public destinataire', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('contacts', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Contacts, ressources', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('divers', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Divers', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline principale', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline secondaire', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('prof_peut_modifier', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '0');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('fiche_publique', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('affiche_adresse1', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('en_construction', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A préciser', '1');");
+      $result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A préciser', '0');");
+
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table des droits_aid a été mise à jour !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table droits_aid est déjà remplie.</font><br />";
+    }
+
+    $result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_grp<br />";
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_grp'"));
     if ($test == 0) {
-      $result_inter .= traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));");
+      $result_inter = traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table matieres_appreciations_grp a été créée !</font><br />";
       else
