@@ -234,6 +234,7 @@ if ($action == "upload_file") {
 							echo 'Il y a '.$tab[1].' cours.<br />'."\n";
 						}else{
 							// On cherche dans la table edt_init les concordances et on crée les cours en question
+
 						}
 					}
 					$numero++;
