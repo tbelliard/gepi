@@ -103,13 +103,14 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	or die('Erreur dans la mofication du cours : '.mysql_error().'');
 
 }elseif (isset($modifier_cours) AND $modifier_cours == "non") {
-
+	// on initialise les variables de vérification
+	$verif_salle = verifSalle($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine);
 	// On crée le cours après quelques vérifications
 	// Est-ce que le prof est libre ?
 	if (verifProf($identite, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
 		// puisqu'il n'y a pas de cours pour ce prof, on peut passer à la vérif suivante
 		// Est-ce que la salle est libre ?
-		if (verifSalle($login_salle, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
+		if ($verif_salle == "oui") {
 			// puisque ce prof et cette salle sont libres, on peut vérifier si le groupe en question est libre aussi
 			// Normalement, cela devrait fonctionner avec les AID aussi
 			if (verifGroupe($enseignement, $ch_jour_semaine, $ch_heure, $duree, $heure_debut, $choix_semaine) == "oui") {
@@ -128,7 +129,7 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 				$message = "Les élèves ont déjà cours.";
 			}
 		}else {
-			$message = "La salle n'est pas libre.";
+			$message = "La salle n'est pas libre.".$verif_salle;
 		}
 	}else{
 		$message = "Ce cours en chevauche un autre.";

@@ -635,7 +635,8 @@ $debg = NULL;
 				for($z=0; $z<$nbre_ens; $z++) {
 					$contenu .= "<p>".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[$z])."</p>";
 				}
-			$id_div = "ens_".$id_creneaux."_".$jour_semaine;
+				// dans le nom du div, on prévoit beaucoup d'infos pour éviter que deux div aient le même nom
+			$id_div = "ens_".$id_creneaux."_".$jour_semaine.$ens_tab[$z];
 			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
 		}
 		else {

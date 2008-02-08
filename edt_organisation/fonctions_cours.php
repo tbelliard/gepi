@@ -54,7 +54,10 @@ function creneauPrecedent($creneau){
 function nombreCreneauxPrecedent($creneau){
 	// On récupère l'heure du creneau appelé
 	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau."'"));
-	$requete = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE heuredebut_definie_periode < '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$requete = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE
+						heuredebut_definie_periode < '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND
+						type_creneaux != 'pause'
+						ORDER BY heuredebut_definie_periode");
 	$nbre = mysql_num_rows($requete);
 
 	return $nbre;
@@ -96,6 +99,8 @@ function retourneAid($id_groupe){
 
 
 // Fonction qui vérifie que le professeur n'a pas déjà cours à ce moment là et sur la durée
+// On pourrait faire l'inverse et récupérer tous les cours d'un prof puis de vérifier si ces cours
+// empiètent sur ceux qu'on veut créer.
 function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 
 	$proflibre = "oui";
@@ -124,7 +129,8 @@ function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 				jour_semaine = '".$jour."' AND
 				id_definie_periode = '".$creneau_t."' AND
 				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-				heuredeb_dec = '".$heuredeb_dec."'")
+				heuredeb_dec = '".$heuredeb_dec."' AND
+				login_prof = '".$nom."'")
 					OR DIE('Erreur dans la requete n° '.$a.' du type FOR : '.mysql_error());
 			$verif = mysql_fetch_array($requete);
 			// On vérifie que la durée n'excède pas le cours appelé
@@ -142,7 +148,9 @@ function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 				jour_semaine = '".$jour."' AND
 				edt_cours.id_definie_periode = '".$creneau_u."' AND
 				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-				heuredeb_dec = '".$inv_heuredeb_dec."'") OR DIE('Erreur dans la requete n° '.$a.' du type FOR2 : '.mysql_error());
+				heuredeb_dec = '".$inv_heuredeb_dec."' AND
+				login_prof = '".$nom."'")
+					OR DIE('Erreur dans la requete n° '.$a.' du type FOR2 : '.mysql_error());
 			$verif = mysql_fetch_array($requete);
 			// On vérifie que la durée n'excède pas le cours appelé
 				if ($verif["duree"] > ((2 * $a) +1)) {
@@ -158,7 +166,8 @@ function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 			jour_semaine = '".$jour."' AND
 			id_definie_periode = '".$creneau_v."' AND
 			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-			heuredeb_dec = '0.5'")
+			heuredeb_dec = '0.5' AND
+			login_prof = '".$nom."'")
 				OR DIE('Erreur dans la requete : '.mysql_error());
 		$verif1 = mysql_num_rows($requete);
 		if ($verif1 >= 1) {
@@ -176,8 +185,9 @@ function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 					jour_semaine = '".$jour."' AND
 					id_definie_periode = '".$creneau_v."' AND
 					(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-					heuredeb_dec = '".$heuredeb_dec."'")
-					OR DIE('Erreur dans la requete FOR3a : '.mysql_error());
+					heuredeb_dec = '".$heuredeb_dec."' AND
+					login_prof = '".$nom."'")
+						OR DIE('Erreur dans la requete FOR3a : '.mysql_error());
 				$verif = mysql_num_rows($requete);
 
 				if ($verif >= 1) {
@@ -191,8 +201,9 @@ function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
 					jour_semaine = '".$jour."' AND
 					id_definie_periode = '".$creneau_v."' AND
 					(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-					heuredeb_dec = '".$heuredeb_dec_i."'")
-					OR DIE('Erreur dans la requete FOR3b : '.mysql_error());
+					heuredeb_dec = '".$heuredeb_dec_i."' AND
+					login_prof = '".$nom."'")
+						OR DIE('Erreur dans la requete FOR3b : '.mysql_error());
 				$verif = mysql_num_rows($requete);
 
 				if ($verif >= 1) {
@@ -214,16 +225,17 @@ function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semain
 		$sallelibre = "oui";
 	// On commence par vérifier le creneau demandé TEST1
 	$requete = mysql_query("SELECT id_cours FROM edt_cours WHERE
-			id_salle = '".$salle."'
-			AND jour_semaine = '".$jour."'
-			AND id_definie_periode = '".$creneau."'
-			AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
-			AND heuredeb_dec = '".$heuredeb_dec."'")
-				OR DIE('Erreur dans la vérification TEST1'.mysql_error());
+				id_salle = '".$salle."'
+				AND jour_semaine = '".$jour."'
+				AND id_definie_periode = '".$creneau."'
+				AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+				AND heuredeb_dec = '".$heuredeb_dec."'")
+					OR DIE('Erreur dans la vérification TEST1 : '.mysql_error());
 	$verif = mysql_num_rows($requete);
-		if ($verif >= 1) {
-			$sallelibre = "non";
-		}
+	// S'il y a une réponse, c'est que la salle est déjà prise
+	if ($verif >= 1) {
+		$sallelibre = "non TEST1";
+	}
 	//echo "TEST1 : ".$verif."|".$sallelibre."<br />";
 
 	// On vérifie alors les créneaux précédents TEST2
@@ -234,32 +246,32 @@ function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semain
 		// d'abord sur le même $heuredeb_dec
 	for($a = 1; $a < $nbre_tests; $a++) {
 		$test_creneau = creneauPrecedent($test_creneau);
-			$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
-			id_salle = '".$salle."'
-			AND jour_semaine = '".$jour."'
-			AND id_definie_periode = '".$test_creneau."'
-			AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
-			AND heuredeb_dec = '".$heuredeb_dec."'")
-				OR DIE('Erreur dans la vérification TEST2a'.mysql_error());
+		$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
+					id_salle = '".$salle."'
+					AND jour_semaine = '".$jour."'
+					AND id_definie_periode = '".$test_creneau."'
+					AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+					AND heuredeb_dec = '".$heuredeb_dec."'")
+						OR DIE('Erreur dans la vérification TEST2a : '.mysql_error());
 		$verif = mysql_fetch_array($requete);
 		// Si la duree du cours précédent excède le cours qu'on veut créer, c'est pas possible (sauf si la semaine en question l'exige)
 		if ($verif["duree"] > (2 * $a)) {
-			$sallelibre = "non";
+			$sallelibre = "non TEST2a ".$verif["id_cours"];
 		}
 		//echo "TEST2a(".$a.") : ".$verif."|".$sallelibre."<br />";
 
 		// Puis on vérifie en inverseHeuredeb_dec($heuredeb_dec)
-			$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
-			id_salle = '".$salle."'
-			AND jour_semaine = '".$jour."'
-			AND id_definie_periode = '".$test_creneau."'
-			AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
-			AND heuredeb_dec = '".$heuredeb_dec_i."'")
-				OR DIE('Erreur dans la vérification TEST2b'.mysql_error());
+		$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
+					id_salle = '".$salle."'
+					AND jour_semaine = '".$jour."'
+					AND id_definie_periode = '".$test_creneau."'
+					AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+					AND heuredeb_dec = '".$heuredeb_dec_i."'")
+						OR DIE('Erreur dans la vérification TEST2b : '.mysql_error());
 		$verif = mysql_fetch_array($requete);
 		// Si la duree du cours précédent excède le cours qu'on veut créer, c'est pas possible (sauf si la semaine en question l'exige)
 		if ($verif["duree"] > ((2 * $a) + 1)) {
-			$sallelibre = "non";
+			$sallelibre = "non TEST2b";
 		}
 		//echo "TEST2b(".$a.") : ".$verif."|".$sallelibre."<br />";
 
@@ -270,31 +282,36 @@ function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semain
 	$nbre_tests = nombreCreneauxApres($creneau) + 1;
 	$creneau_s = $creneau;
 	$creneau_a = creneauSuivant($creneau);
-		// On vérifie d'abord le demi-creneau suivant
-		if ($duree > 1) {
-			if ($heuredeb_dec == 0) {
-				$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
-				id_salle = '".$salle."'
-				AND jour_semaine = '".$jour."'
-				AND id_definie_periode = '".$creneau."'
-				AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
-				AND heuredeb_dec = '0.5'")
-					OR DIE('Erreur dans la vérification TEST3a :'.mysql_error());
-			}elseif ($heuredeb_dec == "0.5"){
-				$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
-				id_salle = '".$salle."'
-				AND jour_semaine = '".$jour."'
-				AND id_definie_periode = '".$creneau_a."'
-				AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
-				AND heuredeb_dec = '0'")
-					OR DIE('Erreur dans la vérification TEST3b :'.mysql_error());
-			}
-			$verif = mysql_num_rows($requete);
-			if ($verif >= 1) {
-				$sallelibre = "non";
-			}
+	// On vérifie d'abord le demi-creneau suivant
+	if ($duree > 1) {
+		if ($heuredeb_dec == 0) {
+			$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
+					id_salle = '".$salle."'
+					AND jour_semaine = '".$jour."'
+					AND id_definie_periode = '".$creneau."'
+					AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+					AND heuredeb_dec = '0.5'")
+						OR DIE('Erreur dans la vérification TEST3a : '.mysql_error());
+		}elseif ($heuredeb_dec == "0.5"){
+			$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
+					id_salle = '".$salle."'
+					AND jour_semaine = '".$jour."'
+					AND id_definie_periode = '".$creneau_a."'
+					AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+					AND heuredeb_dec = '0'")
+						OR DIE('Erreur dans la vérification TEST3b : '.mysql_error());
 		}
-
+		$verif = mysql_num_rows($requete);
+		if ($verif >= 1) {
+			$sallelibre = "non TEST3ab";
+		}
+	}
+	// Puis on vérifie tous les cours suivants pour être certain que la durée du cours à créer n'empiète pas sur un autre
+	// mais d'abord, si la durée est de 1/2 créneau, on renvoie un "oui"
+	if ($duree == '1') {
+		return "oui";
+	}
+	// sinon on vérifie en fonction de la durée demandée
 	for($b = 1; $b < $nbre_tests; $b++) {
 			$creneau_s = creneauSuivant($creneau_s);
 		if ($duree > ($b * 2)) {
@@ -304,7 +321,7 @@ function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semain
 				AND id_definie_periode = '".$creneau_s."'
 				AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
 				AND heuredeb_dec = '".$heuredeb_dec."'")
-					OR DIE('Erreur dans la vérification TEST3c :'.mysql_error());
+					OR DIE('Erreur dans la vérification TEST3c : '.mysql_error());
 			$verif = mysql_num_rows($requete);
 		}elseif($duree > (($b * 2) + 1)) {
 			$requete = mysql_query("SELECT id_cours, duree FROM edt_cours WHERE
@@ -313,11 +330,11 @@ function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semain
 				AND id_definie_periode = '".$creneau_s."'
 				AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
 				AND heuredeb_dec = '".$heuredeb_dec_i."'")
-					OR DIE('Erreur dans la vérification TEST3d :'.mysql_error());
+					OR DIE('Erreur dans la vérification TEST3d : '.mysql_error());
 			$verif = mysql_num_rows($requete);
 		}
 		if ($verif >= 1) {
-			$sallelibre = "non";
+			$sallelibre = "non TEST3cd";
 		}
 	} // fin du for($b...
 
@@ -336,7 +353,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 		id_definie_periode = '".$creneau."' AND
 		(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 		heuredeb_dec = '".$heuredeb_dec."'")
-			OR DIE('Erreur dans la verification TESTa :'.mysql_error());
+			OR DIE('Erreur dans la verification TESTa : '.mysql_error());
 	$verif = mysql_num_rows($requete);
 	if ($verif >= 1) {
 		$groupelibre = "non";
@@ -349,7 +366,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 			id_definie_periode = '".$creneau."' AND
 			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 			heuredeb_dec = '0'")
-				OR DIE('Erreur dans la verification TESTb :'.mysql_error());
+				OR DIE('Erreur dans la verification TESTb : '.mysql_error());
 		$verif = mysql_fetch_array($requete);
 		if ($verif["duree"] > 1) {
 			$groupelibre = "non";
@@ -367,7 +384,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 			id_definie_periode = '".$creneau_test."' AND
 			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 			heuredeb_dec = '".$heuredeb_dec."'")
-				OR DIE('Erreur dans la verification TEST1a :'.mysql_error());
+				OR DIE('Erreur dans la verification TEST1a : '.mysql_error());
 		$verif = mysql_fetch_array($requete);
 		if ($verif["duree"] > (2 * $a)) {
 			$groupelibre = "non";
@@ -379,7 +396,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 			id_definie_periode = '".$creneau_test."' AND
 			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 			heuredeb_dec = '".$heuredeb_dec_i."'")
-				OR DIE('Erreur dans la verification TEST1b :'.mysql_error());
+				OR DIE('Erreur dans la verification TEST1b : '.mysql_error());
 		$verif = mysql_fetch_array($requete);
 		if ($verif["duree"] > ((2 * $a) + 1)) {
 			$groupelibre = "non";
@@ -405,7 +422,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 			id_definie_periode = '".creneauSuivant($creneau)."' AND
 			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 			heuredeb_dec = '0'")
-				OR DIE('Erreur dans la verification TEST2 :'.mysql_error());
+				OR DIE('Erreur dans la verification TEST2 : '.mysql_error());
 		$verif = mysql_num_rows($requete);
 		if ($verif >= 1) {
 			$groupelibre = "non";
@@ -423,7 +440,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 				id_definie_periode = '".$creneau_test."' AND
 				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 				heuredeb_dec = '".$heuredeb_dec."'")
-					OR DIE('Erreur dans la verification TEST2a :'.mysql_error());
+					OR DIE('Erreur dans la verification TEST2a : '.mysql_error());
 			$verif = mysql_num_rows($requete);
 			if ($verif >= 1) {
 				$groupelibre = "non";
@@ -435,7 +452,7 @@ function verifGroupe($groupe, $jour, $creneau, $duree, $heuredeb_dec, $type_sema
 				id_definie_periode = '".$creneau_test."' AND
 				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
 				heuredeb_dec = '".$heuredeb_dec_i."'")
-					OR DIE('Erreur dans la verification TEST2b :'.mysql_error());
+					OR DIE('Erreur dans la verification TEST2b : '.mysql_error());
 			$verif_b = mysql_num_rows($requete);
 			if ($verif_b >= 1) {
 				$groupelibre = "non";
