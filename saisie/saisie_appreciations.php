@@ -264,6 +264,61 @@ echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>
 echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
 //=========================
 
+/*
+// =================================
+// AJOUT: boireaus
+// Pour proposer de passer à la classe suivante ou à la précédente
+//$sql="SELECT id, classe FROM classes ORDER BY classe";
+if($_SESSION['statut']=='secours'){
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+}
+else
+*/
+if($_SESSION['statut']=='professeur'){
+	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+
+    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+    //$tab_groups = get_groups_for_prof($_SESSION["login"]);
+
+	if(!empty($tab_groups)) {
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		//foreach($tab_groups as $tmp_group) {
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if($tab_groups[$loop]['id']==$id_groupe){
+				$temoin_tmp=1;
+				if(isset($tab_groups[$loop+1])){
+					$id_grp_suiv=$tab_groups[$loop+1]['id'];
+				}
+				else{
+					$id_grp_suiv=0;
+				}
+			}
+			if($temoin_tmp==0){
+				$id_grp_prec=$tab_groups[$loop]['id'];
+			}
+		}
+		// =================================
+
+		if(isset($id_grp_prec)){
+			if($id_grp_prec!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
+				echo "'>Enseignement précédent</a>";
+			}
+		}
+		if(isset($id_grp_suiv)){
+			if($id_grp_suiv!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
+				echo "'>Enseignement suivant</a>";
+				}
+		}
+	}
+	// =================================
+}
+
+
 echo " | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";

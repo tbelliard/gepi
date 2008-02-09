@@ -46,6 +46,10 @@ if (!checkAccess()) {
 }
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
+//==============================
+// AJOUT: boireaus 20080209
+include "../lib/bulletin_simple_classe.inc.php";
+//==============================
 require_once("../lib/header.inc");
 
 // Vérifications de sécurité
@@ -151,12 +155,14 @@ if ($affiche_rang == 'y') {
 $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 */
+//echo "\$choix_edit=$choix_edit<br />";
 
 if ($choix_edit == '2') {
     bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 }
 
 if ($choix_edit != '2') {
+
 	//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 	if ($_SESSION['statut'] == "professeur" AND
 	getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes" AND
@@ -208,6 +214,14 @@ if ($choix_edit != '2') {
 	}
 
     $nombre_eleves = mysql_num_rows($appel_liste_eleves);
+
+	//=========================
+	// AJOUT: boireaus 20080209
+	// Affichage des appréciations saisies pour la classe
+	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+	echo "<p class=saut>&nbsp;</p>\n";
+	//=========================
+
     $i=0;
     $k=0;
     while ($i < $nombre_eleves) {
