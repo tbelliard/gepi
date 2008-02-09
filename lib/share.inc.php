@@ -2371,8 +2371,8 @@ function debug_var(){
 }
 
 function param_edt($statut){
-	// Fonction qui permet de vérifier si tel statut peut avoir accès à l'EdT en fonction des settin de l'admin
-	$verif = "";
+	// Fonction qui permet de vérifier si tel statut peut avoir accès à l'EdT en fonction des settings de l'admin
+		$verif = "";
 	if ($statut == "administrateur") {
 		$verif = getSettingValue("autorise_edt_admin");
 	} elseif ($statut == "professeur" OR $statut == "scolarite" OR $statut == "cpe" OR $statut == "secours") {
