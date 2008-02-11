@@ -24,16 +24,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-class bul_PDF extends FPDF_MULTICELLTAG
-{
-/**
-* Draws text within a box defined by width = w, height = h, and aligns
-* the text vertically within the box ($valign = M/B/T for middle, bottom, or top)
-* Also, aligns the text horizontally ($align = L/C/R/J for left, centered, right or justified)
-* drawTextBox uses drawRows
-*
-* This function is provided by TUFaT.com
-*/
+class bul_PDF extends FPDF_MULTICELLTAG {
+
+	/**
+	* Draws text within a box defined by width = w, height = h, and aligns
+	* the text vertically within the box ($valign = M/B/T for middle, bottom, or top)
+	* Also, aligns the text horizontally ($align = L/C/R/J for left, centered, right or justified)
+	* drawTextBox uses drawRows
+	*
+	* This function is provided by TUFaT.com
+	*/
+
 	function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1) {
 		$xi=$this->GetX();
 		$yi=$this->GetY();
@@ -219,6 +220,78 @@ class bul_PDF extends FPDF_MULTICELLTAG
 			$s='q '.$this->TextColor.' '.$s.' Q';
 		$this->_out($s);
 	} // function TextWithRotation
+
+	// fonction graphique de niveau
+	function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data, $place)
+	{
+		$this->SetFont('Courier', '', 10);
+		//encadrement général
+		$this->Rect($X_placement, $Y_placement, $L_diagramme, $H_diagramme, 'D');
+		//encadrement du diagramme
+		$this->SetDrawColor(180);
+		$X_placement_diagramme = $X_placement+0.5;
+		$Y_placement_diagramme = $Y_placement+0.5;
+		$L_diagramme_affiche = $L_diagramme-1;
+		$H_diagramme_affiche = $H_diagramme-1;
+		$this->Rect($X_placement_diagramme, $Y_placement_diagramme, $L_diagramme_affiche, $H_diagramme_affiche, 'D');
+
+
+		//calcul de la longeur de chaque barre
+		$nb_valeur=count($data);
+		$L_barre = $L_diagramme_affiche/$nb_valeur;
+		// calcul de la somme total des informations
+		$total_des_valeur = array_sum($data);
+
+		if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
+			$espace_entre = $H_diagramme_affiche / $total_des_valeur;
+		} else {
+			$espace_entre = $H_diagramme_affiche;
+		}
+
+		for($o=0;$o<$total_des_valeur;$o++)
+		{
+			$Y_echelle=$Y_placement_diagramme+($espace_entre*$o);
+			//echelle
+			$this->SetDrawColor(180);
+			$this->Line($X_placement_diagramme, $Y_echelle, $X_placement_diagramme+$L_diagramme_affiche, $Y_echelle);
+		}
+
+		$i=0;
+		foreach($data as $val) {
+			//Barre
+			if($place===$i) {
+				$this->SetFillColor(5);
+			} else {
+				$this->SetFillColor(240);
+			}
+			$this->SetDrawColor(0, 0, 0);
+			if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
+				$H_barre = ($H_diagramme_affiche*$val)/$total_des_valeur;
+			} else {
+				$H_barre = ($H_diagramme_affiche*$val);
+			}
+			$Y_barre = ($Y_placement_diagramme+$H_diagramme_affiche) - $H_barre;
+			$X_barre = $X_placement_diagramme+($L_barre*$i);
+			$this->Rect($X_barre, $Y_barre, $L_barre, $H_barre, 'DF');
+			$i++;
+		}
+	} // function DiagBarre
+
+	//En-tête du document
+	function Header(){
+
+	}
+
+	//Pied de page du document
+	function Footer() {
+		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+		$this->SetXY(5,-10);
+		//Police Arial Gras 6
+		$this->SetFont('Arial','B',8);
+		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
+		$fomule = getSettingValue("bull_formule_bas");
+		$this->Cell(0,4.5, $fomule,0,0,'C');
+	}
 
 } // class bul_PDF
 ?>

@@ -72,6 +72,9 @@ require('../fpdf/fpdf.php');
 require('../fpdf/ex_fpdf.php');
 require_once("../fpdf/class.multicelltag.php");
 
+// Fichier d'extension de fpdf pour le bulletin
+require_once("../class_php/gepi_pdf.class.php");
+
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');
 define('RightMargin','2');
@@ -84,33 +87,6 @@ session_cache_limiter('private');
 $X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
 $X3 = 0; $Y3 = 0; $X4 = 0; $Y4 = 0;
 $X5 = 0; $Y5 = 0; $X6 = 0; $Y6 = 0;
-
-/*
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-
-// Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
-// Pour le contourner, on ajoutez la ligne suivante avant session_start() :
-session_cache_limiter('private');
-
-// Resume session
-$resultat_session = resumeSession();
-if ($resultat_session == 'c') {
-	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-	die();
-} else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
-	die();
-};
-
-
-if (!checkAccess()) {
-	header("Location: ../logout.php?auto=1");
-	die();
-}
-Header('Pragma: public');
-*/
 
 
 //variable de session
@@ -137,14 +113,6 @@ $RneEtablissement=getSettingValue("gepiSchoolRne");
 
 $tri_par_etab_origine = $_SESSION['tri_par_etab_origine']; //est ce que l'on trie les bulletins par etablissement d'origine ?
 
-	/*
-	if(getSettingValue('bull_pdf_INE_eleve')=='y') {
-		$bull_pdf_INE_eleve="y";
-	}
-	else{
-		$bull_pdf_INE_eleve="n";
-	}
-	*/
 
 function redimensionne_image($photo, $L_max, $H_max)
 {
@@ -204,7 +172,7 @@ function calcul_toute_moyenne_classe ($groupe_select, $periode_select)
 	return array($moyenne_groupe, $moyenne_mini, $moyenne_maxi);
 }
 
-//permet de transformer les caractère html
+// Calcul de la moyenne des AID
 function calcul_toute_moyenne_aid ($indice_aid, $periode_select)
 {
 	global $prefix_base;
@@ -231,7 +199,7 @@ function calcul_toute_moyenne_aid ($indice_aid, $periode_select)
 	return array($moyenne_groupe, $moyenne_mini, $moyenne_maxi);
 }
 
-//permet de transformer les caractère html
+//permet de transformer les caractères html
 function unhtmlentities($chaineHtml) {
 
 	$tmp = get_html_translation_table(HTML_ENTITIES);
@@ -272,300 +240,26 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 		return($nombre);
 }
 
-class bul_PDF extends FPDF_MULTICELLTAG
-{
-/**
-* Draws text within a box defined by width = w, height = h, and aligns
-* the text vertically within the box ($valign = M/B/T for middle, bottom, or top)
-* Also, aligns the text horizontally ($align = L/C/R/J for left, centered, right or justified)
-* drawTextBox uses drawRows
-*
-* This function is provided by TUFaT.com
-*/
-function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
-{
-	$xi=$this->GetX();
-	$yi=$this->GetY();
+// chargement des informations de la base de données
+	// connaitre la sélection
+		//si ce sont des classes ou une classe qui à été sélectionnée on va prendre l'id de tous leurs élèves
+		//dès que nous avons notre liste d'élèves à imprimer on va prendre les informations
 
-	$hrow=$this->FontSize;
-	$textrows=$this->drawRows($w,$hrow,$strText,0,$align,0,0,0);
-	$maxrows=floor($h/$this->FontSize);
-	$rows=min($textrows,$maxrows);
-
-	if ($border==1)
-		$this->Rect($xi,$yi,$w,$h,'D');
-	if ($border==2)
-		$this->Rect($xi,$yi,$w,$h,'DF');
-
-	$dy=0;
-	if (strtoupper($valign)=='M')
-		$dy=($h-$rows*$this->FontSize)/2;
-	if (strtoupper($valign)=='B')
-		$dy=$h-$rows*$this->FontSize;
-
-	$this->SetY($yi+$dy);
-	$this->SetX($xi);
-
-	$this->drawRows($w,$hrow,$strText,0,$align,0,$rows,1);
-
-}
-
-function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
-{
-	$cw=&$this->CurrentFont['cw'];
-	if($w==0)
-		$w=$this->w-$this->rMargin-$this->x;
-	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
-	$s=str_replace("\r",'',$txt);
-	$nb=strlen($s);
-	if($nb>0 and $s[$nb-1]=="\n")
-		$nb--;
-	$b=0;
-	if($border)
-	{
-		if($border==1)
-		{
-			$border='LTRB';
-			$b='LRT';
-			$b2='LR';
-		}
-		else
-		{
-			$b2='';
-			if(is_int(strpos($border,'L')))
-				$b2.='L';
-			if(is_int(strpos($border,'R')))
-				$b2.='R';
-			$b=is_int(strpos($border,'T')) ? $b2.'T' : $b2;
-		}
-	}
-	$sep=-1;
-	$i=0;
-	$j=0;
-	$l=0;
-	$ns=0;
-	$nl=1;
-	while($i<$nb)
-	{
-		//Get next character
-		$c=$s[$i];
-		if($c=="\n")
-		{
-			//Explicit line break
-			if($this->ws>0)
-			{
-				$this->ws=0;
-				if ($prn==1) $this->_out('0 Tw');
-			}
-			if ($prn==1) {
-				$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
-			}
-			$i++;
-			$sep=-1;
-			$j=$i;
-			$l=0;
-			$ns=0;
-			$nl++;
-			if($border and $nl==2)
-				$b=$b2;
-			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
-			continue;
-		}
-		if($c==' ')
-		{
-			$sep=$i;
-			$ls=$l;
-			$ns++;
-		}
-		$l+=$cw[$c];
-		if($l>$wmax)
-		{
-			//Automatic line break
-			if($sep==-1)
-			{
-				if($i==$j)
-					$i++;
-				if($this->ws>0)
-				{
-					$this->ws=0;
-					if ($prn==1) $this->_out('0 Tw');
-				}
-				if ($prn==1) {
-					$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
-				}
-			}
-			else
-			{
-				if($align=='J')
-				{
-					$this->ws=($ns>1) ? ($wmax-$ls)/1000*$this->FontSize/($ns-1) : 0;
-					if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
-				}
-				if ($prn==1){
-					$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
-				}
-				$i=$sep+1;
-			}
-			$sep=-1;
-			$j=$i;
-			$l=0;
-			$ns=0;
-			$nl++;
-			if($border and $nl==2)
-				$b=$b2;
-			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
-		}
-		else
-			$i++;
-	}
-	//Last chunk
-	if($this->ws>0)
-	{
-		$this->ws=0;
-		if ($prn==1) $this->_out('0 Tw');
-	}
-	if($border and is_int(strpos($border,'B')))
-		$b.='B';
-	if ($prn==1) {
-		$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
-	}
-	$this->x=$this->lMargin;
-	return $nl;
-}
-
-function TextWithDirection($x,$y,$txt,$direction='R')
-{
-	$txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
-	if ($direction=='R')
-		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',1,0,0,1,$x*$this->k,($this->h-$y)*$this->k,$txt);
-	elseif ($direction=='L')
-		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',-1,0,0,-1,$x*$this->k,($this->h-$y)*$this->k,$txt);
-	elseif ($direction=='U')
-		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',0,1,-1,0,$x*$this->k,($this->h-$y)*$this->k,$txt);
-	elseif ($direction=='D')
-		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',0,-1,1,0,$x*$this->k,($this->h-$y)*$this->k,$txt);
-	else
-		$s=sprintf('BT %.2f %.2f Td (%s) Tj ET',$x*$this->k,($this->h-$y)*$this->k,$txt);
-	if ($this->ColorFlag)
-		$s='q '.$this->TextColor.' '.$s.' Q';
-	$this->_out($s);
-}
-
-function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
-{
-	$txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
-
-	$font_angle+=90+$txt_angle;
-	$txt_angle*=M_PI/180;
-	$font_angle*=M_PI/180;
-
-	$txt_dx=cos($txt_angle);
-	$txt_dy=sin($txt_angle);
-	$font_dx=cos($font_angle);
-	$font_dy=sin($font_angle);
-
-	$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',
-			$txt_dx,$txt_dy,$font_dx,$font_dy,
-			$x*$this->k,($this->h-$y)*$this->k,$txt);
-	if ($this->ColorFlag)
-		$s='q '.$this->TextColor.' '.$s.' Q';
-	$this->_out($s);
-}
-
-// fonction graphique de niveau
-function DiagBarre($X_placement, $Y_placement, $L_diagramme, $H_diagramme, $data, $place)
-	{
-		$this->SetFont('Courier', '', 10);
-		//encadrement général
-		$this->Rect($X_placement, $Y_placement, $L_diagramme, $H_diagramme, 'D');
-		//encadrement du diagramme
-		$this->SetDrawColor(180);
-		$X_placement_diagramme = $X_placement+0.5;
-		$Y_placement_diagramme = $Y_placement+0.5;
-		$L_diagramme_affiche = $L_diagramme-1;
-		$H_diagramme_affiche = $H_diagramme-1;
-		$this->Rect($X_placement_diagramme, $Y_placement_diagramme, $L_diagramme_affiche, $H_diagramme_affiche, 'D');
-
-
-		//calcul de la longeur de chaque barre
-		$nb_valeur=count($data);
-		$L_barre = $L_diagramme_affiche/$nb_valeur;
-		// calcul de la somme total des informations
-		$total_des_valeur = array_sum($data);
-
-		if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
-		  $espace_entre = $H_diagramme_affiche / $total_des_valeur;
-		} else { $espace_entre = $H_diagramme_affiche; }
-
-		for($o=0;$o<$total_des_valeur;$o++)
-		{
-		$Y_echelle=$Y_placement_diagramme+($espace_entre*$o);
-		//echelle
-		$this->SetDrawColor(180);
-		$this->Line($X_placement_diagramme, $Y_echelle, $X_placement_diagramme+$L_diagramme_affiche, $Y_echelle);
-		}
-
-		$i=0;
-		foreach($data as $val) {
-			//Barre
-			if($place===$i) { $this->SetFillColor(5); } else { $this->SetFillColor(240); }
-			$this->SetDrawColor(0, 0, 0);
-			if ( $total_des_valeur != '0' and $total_des_valeur != '' ) {
-			$H_barre = ($H_diagramme_affiche*$val)/$total_des_valeur;
-			} else { $H_barre = ($H_diagramme_affiche*$val); }
-			$Y_barre = ($Y_placement_diagramme+$H_diagramme_affiche) - $H_barre;
-			$X_barre = $X_placement_diagramme+($L_barre*$i);
-			$this->Rect($X_barre, $Y_barre, $L_barre, $H_barre, 'DF');
-			$i++;
-		}
-	}
-
-	//En-tête du document
-	function Header()
-	{
-	}
-
-	//Pied de page du document
-	function Footer()
-	{
-		//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
-	$this->SetXY(5,-10);
-		//Police Arial Gras 6
-		$this->SetFont('Arial','B',8);
-		// $fomule = 'Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.'
-		$fomule = getSettingValue("bull_formule_bas");
-		$this->Cell(0,4.5, $fomule,0,0,'C');
-	}
-}
-
-// chargement des information de la base de données
-	// connaitre la selection
-		//si se sont des classes ou une classe qui à été sélectionner on vas prendre l'id de tout leurs élèves
-		//dès que nous avons notre liste d'élèves à imprimer on vas prendre les informations
-
-	//variable invariable
+	//variables invariables
 	$gepiYear = getSettingValue('gepiYear');
 	$annee_scolaire = $gepiYear;
 	$date_bulletin=date("d/m/Y H:i");
 	$nom_bulletin=date("Ymd_Hi");
 
-// sélection des information sur le modèle des bulletins choisi.
+// sélection des informations sur le modèle des bulletins choisis.
 
 $option_modele_bulletin=getSettingValue("option_modele_bulletin");
 
 if(!empty($model_bulletin)) {
-	//on compte le nombre de classes sélecionnées
 
-	//=====================================================
-	// Modif: boireaus
-
-	//$nb_classes_selectionnees = 8; //sizeof($id_classe);
+	//on compte le nombre de classes sélectionnées
 	$nb_classes_selectionnees=sizeof($id_classe);
 	//=====================================================
-
-	//echo $nb_classes_selectionnees;
 
 	for ($z=0;$z<$nb_classes_selectionnees;$z++) {
 		//en fonction de l'id de la classe, on recherche l'id du modèle utilisé.
@@ -581,7 +275,7 @@ if(!empty($model_bulletin)) {
 
 		//echo "<br>Modèle N° ".$model_bulletin." Classe N°".$id_classe[$z]." VAR CLASSE_ID ".$classe_id;
 
-		// la requete à modifier en fonction de $$option_modele_bulletin
+		// la requete à modifier en fonction de $option_modele_bulletin
 		switch ($option_modele_bulletin) {
 			case 1 : //uniquement avec modèle classe
 				//$requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"');
@@ -598,11 +292,9 @@ if(!empty($model_bulletin)) {
 				break;
 			case 3 : //choix d'un modèle
 				//ici on recopie le même modèle pour chaque classe
-				//$requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"');
 				$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
 				break;
 		}
-		//echo "$sql<br />\n";
 		$requete_model = mysql_query($sql);
 
 
@@ -611,7 +303,8 @@ if(!empty($model_bulletin)) {
 		/****************** A T T E N T I O N ****************
 		Tous les paramètres des modèles de  bulletin utilisés dans la table model_bulletin sont initialisés ci-dessous.
 
-		Pour chaque paramètre, un tableau est construit. C'est l'ID de la classe qui sert d'indice pour récupérer la valeur du paramètre correspondant au modèle de bulletin de la classe.
+		Pour chaque paramètre, un tableau est construit. C'est l'ID de la classe qui sert d'indice pour récupérer la valeur
+		* du paramètre correspondant au modèle de bulletin de la classe.
 		************************************************/
 
 		while($donner_model = mysql_fetch_array($requete_model)) {
@@ -767,12 +460,14 @@ if(!empty($model_bulletin)) {
 			$affiche_moyenne_mini_general[$classe_id] = $donner_model['affiche_moyenne_mini_general']; // permet l'affichage de la moyenne général mini
 			$affiche_moyenne_maxi_general[$classe_id] = $donner_model['affiche_moyenne_maxi_general']; // permet l'affichage de la moyenne général maxi
 			$affiche_date_edition[$classe_id] = $donner_model['affiche_date_edition']; // affiche la date d'édition
-		} //FOR ???
-	}
+
+		} //while($donner_model = mysql_fetch_array($requete_model)
+	} // for ($z=0;$z<$nb_classes_selectionnees;$z++)
+
 } else {
 	$classe_id=0;
 
-	// information d'activation des différents partie du bulletin
+	// information d'activation des différentes parties du bulletin
 	$affiche_filigrame[$classe_id]='1'; // affiche un filigramme
 	$texte_filigrame[$classe_id]='DUPLICATA INTERNET'; // texte du filigrame
 	$affiche_logo_etab[$classe_id]='1';
