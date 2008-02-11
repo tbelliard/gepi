@@ -1661,7 +1661,10 @@ function timestamps_decode($timestamps, $type)
 	if ( $timestamps != '' )
 	{
 		// string  gmdate ( string   format  , int   timestamp  )
-		$donnees = gmdate("m d Y H:i:s", $timestamps);
+		// gmdate renvoie en GMT
+		//$donnees = gmdate("m d Y H:i:s", $timestamps);
+		// date renvoie en GMT+1
+		$donnees = date("m d Y H:i:s", $timestamps);
 
 	// décortication de la date au format SQL ou FR
 		$donnees_decompose = explode(' ',$donnees);

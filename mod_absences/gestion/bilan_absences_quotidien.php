@@ -50,6 +50,8 @@ $date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2])
 // On récupère le nom des créneaux
 
 $creneaux = retourne_creneaux();
+// On récupère le nombre de créneaux
+$nb_creneaux = count($creneaux);
 
 // Fonctions des absences
 	function suivi_absence($creneau_id, $eleve_id, $date_choisie){
@@ -74,44 +76,39 @@ $creneaux = retourne_creneaux();
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
 			return "<td style=\"border: 1px solid black; background-color: #ffd4d4; color: red;\"><b>A</b></td>";
-		}
+		} elseif ($rep["retard_absence"] == "R") {
 			// S'il est marqué en retard R -> fond vert
-		else if ($rep["retard_absence"] == "R") {
 			return "<td style=\"border: 1px solid black; background-color: #d7ffd4; color: green;\"><b>R</b></td>";
+		} else {
+			return "<td style=\"border: 1px solid black;\"></td>";
 		}
-		else
-		return "<td style=\"border: 1px solid black;\"></td>";
 	}
 
 ?>
-	<form name="autre_date" method="post" action="bilan_absences_quotidien.php">
-<table>
-	<tr>
-		<td>
-			<a href="./voir_absences_viescolaire.php">
-				<img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />
-			&nbsp;Retour</a>
-		</td>
-		<td>
-			<h3 class="gepi"> - Bilan des absences du <?php echo date_frl(date_sql($date_choisie)); ?>.</h3>
-		</td>
-		<td> - Modifier la date
-		</td>
-		<td>
-		<input type="text" name="date_choisie" style="maxlenght: 10;" size="10" value="<?php echo $date_choisie; ?>" />
-		<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&amp;ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
-		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
-		</td>
-		<td>
-		<input type="submit" name="valider" title="valider" />
-		</td>
-	</tr>
-</table>
-	</form>
+<form name="autre_date" method="post" action="bilan_absences_quotidien.php">
+
+	<a href="./voir_absences_viescolaire.php">
+		<img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour
+	</a> -
+
+	<label for="dateChoisie" style="cursor: pointer;">Voir le bilan du&nbsp;</label>
+	<input type="text" name="date_choisie" id="dateChoisie" style="maxlenght: 10;" size="10" value="<?php echo $date_choisie; ?>" />
+	<a href="#calend" onclick="window.open('../../lib/calendrier/pop.calendrier.php?frm=autre_date&amp;ch=date_choisie','calendrier','width=350,height=170,scrollbars=0').focus();">
+		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" />
+	</a>
+	<input type="submit" name="valider" title="valider" />
+	<?php /*
+	&nbsp;-&nbsp;
+	<a href="bilan_absences_quotidien_pdf.php?date_choisie=<?php echo $date_choisie; ?>" alt="exporter au format PDF">Version PDF</a>
+	*/
+	?>
+</form>
+
+	<h3 class="gepi" style="margin-bottom: 2px; margin-left: 4px;">Bilan des absences du <?php echo date_frl(date_sql($date_choisie)); ?>.</h3>
 <table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 
 	<tr>
-	<td colspan="<?php echo(count($creneaux) + 2); ?>">
+	<td colspan="<?php echo($nb_creneaux + 2); ?>">
 		<table border="0" cellspacing="0" cellpadding="1">
 		<tr>
 		<td style="background-color: #d7ffd4; width: 15px; color: green;"><b>R</b></td><td> Retard</td><td></td>
@@ -124,15 +121,15 @@ $creneaux = retourne_creneaux();
 	<tr>
 		<th style="border: 1px solid black; background-color: grey;">Classe</th>
 		<th style="border: 1px solid black; background-color: grey; width: 300px;">Nom Pr&eacute;nom</th>
-<?php //afficher les créneaux
-			$i=0;
-		while($i<count($creneaux)){
+<?php
+		//afficher les créneaux
+			$i = 0;
+		while($i < $nb_creneaux){
 			echo "<th style=\"border: 1px solid black; background-color: grey;\">".$creneaux[$i]."</th>\n";
 			$i++;
 		}
 ?>
 	</tr>
-
 
 <?php
 // ===================== Quelques variables utiles ===============
@@ -161,21 +158,21 @@ $creneaux = retourne_creneaux();
 $req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
 $nbre = mysql_num_rows($req_classe);
 
-for($i=0; $i<$nbre; $i++) {
+for($i = 0; $i < $nbre; $i++) {
 	// On récupère le nom de toutes les classes
 	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
 	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
 			<td><a href="bilan_absences_classe.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
-			<td colspan="'.(count($creneaux) + 1).'"></td>
+			<td colspan="'.($nb_creneaux + 1).'"></td>
 		</tr>
 		';
 	// On traite alors l'affichage de tous les élèves de chaque classe
 	$req_absences = mysql_query("SELECT DISTINCT eleve_id FROM absences_rb WHERE eleve_id != 'appel' AND debut_ts >= '".$time_actu_deb."' AND fin_ts <= '".$time_actu_fin."' ORDER BY eleve_id");
 	$nbre_a = mysql_num_rows($req_absences);
 
-	for($b=0; $b<$nbre_a; $b++){
+	for($b = 0; $b < $nbre_a; $b++){
 		$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
 		$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 

@@ -350,14 +350,14 @@ function DecocheCheckbox() {
 		$execution_top10 = mysql_query($requete_top10)
 			or die('Erreur SQL !'.$requete_top10.'<br />'.mysql_error());
 		// On définit le margin_top pour la suite
-			$margin_top = 40;
+			$margin_top = 50;
 		while ( $data_top10 = mysql_fetch_array($execution_top10)) {
 			$compte = $data_top10[5];
 
 			echo '
 				<div id="d'.$data_top10['login'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 			';
-			$margin_top = $margin_top + 18;
+			$margin_top = $margin_top + 23;
 ?>
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
@@ -457,13 +457,13 @@ function DecocheCheckbox() {
          }
          $execution_sans_motif = mysql_query($requete_sans_motif) or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
 		// Pour la position du premier div, on définit le margin-top
-		$margin_top = 40;
+		$margin_top = 50;
 		while ( $data_sans_motif = mysql_fetch_array($execution_sans_motif)) {
 			// DEBUT DE GESTION DU CALQUE D'INFORMATION
 			echo '
 				<div id="d'.$data_sans_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-			$margin_top = $margin_top + 18;
+			$margin_top = $margin_top + 23;
 ?>
           <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
              <tr>
@@ -616,14 +616,14 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		$execution_sans_motif = mysql_query($requete_sans_motif)
 			or die('Erreur SQL !'.$requete_sans_motif.'<br />'.mysql_error());
 		// Pour la position du premier div, on définit le margin-top
-			$margin_top = 40;
+			$margin_top = 50;
 		while($data_sans_motif = mysql_fetch_array($execution_sans_motif)){
 
 			if($type == "A" or $type == "I" or $type == "R" or $type == "D") {
 				echo '
 					<div id="d'.$data_sans_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-				$margin_top = $margin_top + 18;
+				$margin_top = $margin_top + 23;
 ?>
          <table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
             <tr>
@@ -773,14 +773,14 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		 	or die('Erreur SQL !'.$requete_avec_motif.'<br />'.mysql_error());
 		// On construit alors le div de la fiche élève
 		// Pour la position du premier div, on définit le margin-top
-			$margin_top = 40;
+			$margin_top = 50;
 		while ( $data_avec_motif = mysql_fetch_array($execution_avec_motif)) {
 
 			if($type == "A" or $type == "I" or $type == "R" or $type == "D") {
 				echo '
 					<div id="d'.$data_avec_motif['id_absence_eleve'].'" style="position: absolute; margin-left: 200px; margin-top: '.$margin_top.'px; z-index: 20; display: none; top: 0px; left: 0px;">
 				';
-				$margin_top = $margin_top + 18;
+				$margin_top = $margin_top + 23;
 	?>
 		<table border="0" cellpadding="2" cellspacing="2" class="tableau_calque_information">
 			<tr>
