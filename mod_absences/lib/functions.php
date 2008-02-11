@@ -919,6 +919,49 @@ function periode_actuel($heure_choix)
       return($num_periode);
   }
 
+// fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
+// s'il y en a plusieurs alors il retourne sous cette forme M1;M2;M3
+function periode_actuel_nom($heure_debut, $heure_fin) {
+	// si aucune heure on prend l'heure actuelle
+	if ( $heure_debut == '' or $heure_fin == ''){
+		$nom_periode = '';
+	}else{
+		// initilalisation de la variable du nom de la periode
+		$nom_periode = '';
+
+		//on liste dans un tableau les périodes existante
+		$requete_periode = ('SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
+				     FROM absences_creneaux
+				     WHERE (
+       				    "'.$heure_debut .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+       				    OR "'.$heure_fin .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+       				       	)
+       				    AND heuredebut_definie_periode != "'.$heure_fin .'"
+         			    AND heurefin_definie_periode != "'.$heure_debut .'"
+				        AND suivi_definie_periode = "1"
+				        AND type_creneaux != "pause"'
+						);
+
+		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		while($data_periode = mysql_fetch_array ($resultat_periode)){
+
+			if ( $nom_periode == '' ){
+
+				$nom_periode = $data_periode['nom_definie_periode'];
+
+			}else{
+
+				$nom_periode = $nom_periode.';'.$data_periode['nom_definie_periode'];
+
+			}
+
+		}
+
+	}
+
+	return $nom_periode;
+}
+
 //connaitre l'heure du début soit de la fin d'une période
 // ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure($periode)
