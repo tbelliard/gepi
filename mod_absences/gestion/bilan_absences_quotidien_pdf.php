@@ -52,7 +52,7 @@ if (!checkAccess()) {
 
 //================================
 // AJOUT: boireaus 20080102
-if(!isset($_SESSION["bull_pdf_debug"]))
+if(!isset($_SESSION['pdf_debug']))
 {
 
 	header('Content-Type: application/pdf');
@@ -67,27 +67,19 @@ else
 {
 
 	echo "<p style='color:red'>DEBUG:<br />
-La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
-mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
-</p>\n";
+	      La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
+              mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
+              </p>\n";
 
 }
 //================================
-// Include des différentes librairies et classes php utiles
 
-// 	Les fonctions pdf de fpdf
+
 require('../../fpdf/fpdf.php');
-require('../../fpdf/ex_fpdf.php');
-require_once('../../fpdf/class.multicelltag.php');
 
-// la classe de Gepi pour les pdf
-require_once("../../class_php/gepi_pdf.class.php");
-
-// les fonctions de temps du module EdT et calendrier
 include("../../edt_organisation/fonctions_edt.php");
 include("../../edt_organisation/fonctions_calendrier.php");
 
-// Les fonctions du module absences
 include("../lib/functions.php");
 
 define('FPDF_FONTPATH','../../fpdf/font/');
@@ -131,25 +123,77 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
 
+// fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
+// s'il y en a plusieur alors il retoure sous cette forme M1;M2;M3
+function periode_actuel_nom($heure_debut, $heure_fin)
+{
 
+	// si aucune heure on prend l'heure actuel
+	if ( $heure_debut == '' or $heure_fin == '')
+	{
+
+		$nom_periode = '';
+
+	}
+	else
+	{
+
+		// initilalisation de la variable du nom de la periode
+		$nom_periode = '';
+
+		//on liste dans un tableau les périodes existante
+		$requete_periode = ('SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
+				     FROM absences_creneaux
+				     WHERE (
+       				            "'.$heure_debut .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+       				            OR "'.$heure_fin .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+       				       	   )
+       				       AND heuredebut_definie_periode != "'.$heure_fin .'"
+         			       AND heurefin_definie_periode != "'.$heure_debut .'"
+				       AND suivi_definie_periode = "1"
+				       AND type_creneaux != "pause"'
+				   );
+
+		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		while($data_periode = mysql_fetch_array ($resultat_periode))
+		{
+
+			if ( $nom_periode == '' )
+			{
+
+				$nom_periode = $data_periode['nom_definie_periode'];
+
+			}
+			else
+			{
+
+				$nom_periode = $nom_periode.';'.$data_periode['nom_definie_periode'];
+
+			}
+
+		}
+
+	}
+
+	return $nom_periode;
+}
 /* ************************* */
 
 
 /* ******************************************** */
-/*     initialisation des variable d'entrée     */
+/*     initialisation des variables d'entrée    */
 /* ******************************************** */
 
-	// si aucune date de demandé alors on met celle du jour au format jj/mm/aaaa
+	// si aucune date n'est demandée alors on met celle du jour au format jj/mm/aaaa
 	$date_choisie = isset($_POST["date_choisie"]) ? $_POST["date_choisie"] : (date("d/m/Y"));
 
+/* ******************************************** */
 
 /* *********************************************/
 /* information sur la présentation du document */
 /* *********************************************/
 
 	$caractere_utilise = 'arial'; // caractère utilisé
-	$affiche_filigrame = '1'; // affiche un filigramme
-	$texte_filigrame = 'DUPLICATA INTERNET'; // texte du filigrame
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
 	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
@@ -165,7 +209,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$centrage_logo = '1'; // centrer le logo de l'établissement
 	$Y_centre_logo = '18'; // centre du logo sur la page
 	$affiche_date_edition = '1'; // affiche la date d'édition
-	$taille_texte_date_edition = '8'; // définit la taille de la date d'édition du bulletin
+	$taille_texte_date_edition = '8'; // définit la taille de la date d'édition
 
 	// point de commencement du tableau sur la page
 	$x_tab = '5';
@@ -183,10 +227,10 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// largeur de la colonne du nom des créneaux
 	$lar_col_creneaux = '130';
 
-	// nombre de ligne à affiché sur 1 page
+	// nombre de ligne à afficher sur 1 page
 	$nb_ligne_parpage = '25';
 
-	// largeur total du tableau
+	// largeur totale du tableau
 	$lar_total_tableau = $lar_col_classe + $lar_col_eleve + $lar_col_creneaux;
 
 	// hauteur de la cellule des données
@@ -202,9 +246,9 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* ******************************************** */
 /*     construction du tableau des données      */
 /* ******************************************** */
-// chargement des information de la base de données
+// chargement des informations de la base de données
 
-	// les données concernerons la journée du (date au format timestamp)
+	// les données concerneront la journée du (date au format timestamp)
 	$choix_date = explode("/",$date_choisie);
 	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
@@ -222,8 +266,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 				FROM horaires_etablissement
 				WHERE jour_horaire_etablissement = '" . $jour_choisi . "'");
 	$nbre_rep = mysql_num_rows($requete);
-	if ($nbre_rep >= 1)
-	{
+	if ($nbre_rep >= 1) {
 
 		// Avec le résultat, on calcule les timestamps UNIX
 		$req = mysql_fetch_array($requete);
@@ -232,9 +275,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	}
-	else
-	{
+	}else{
 
 		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
 		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
@@ -242,7 +283,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 	}
 
-	// nous recherchons tout les élèves absence le jour choisie
+	// nous recherchons tous les élèves absents le jour choisie
 	$requete = "SELECT ar.id, ar.eleve_id, ar.retard_absence, ar.creneau_id, ar.debut_ts, ar.fin_ts, jec.login, jec.id_classe, e.login, e.nom, e.prenom, c.id, c.nom_complet
 		    FROM " . $prefix_base . "absences_rb ar, " . $prefix_base . "j_eleves_classes jec, " . $prefix_base . "eleves e, " . $prefix_base . "classes c
 		    WHERE ( jec.login = ar.eleve_id
@@ -295,26 +336,26 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quel créneau nous nous trouvons par rapport à une heure donnée
+			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heure donnée
 			$periode = periode_actuel_nom($heure_debut, $heure_fin);
 
-			// si des période existe
+			// si des périodes existent
 			if ( $periode != '' )
 			{
 
-				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
+				// aprés la récupération des périodes sur lesquelles l'absence se tient on l'explose en tableau
 				$periode_tab = explode(';',$periode);
 
-				// compteur temporaire de période
+				// compteur temporaire de périodes
 				$compteur_periode = 0;
 
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionné
+					// nom de la période sélectionnée
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des donnée de $tab_donnee_sup
+					// définition des données de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -340,14 +381,14 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
+			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heure donnée
 			$periode = periode_actuel_nom($heure_debut, $heure_fin);
 
-			// si des période existe
+			// si des périodes existent
 			if ( $periode != '' )
 			{
 
-				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
+				// aprés la récupération des périodes sur lesquelles l'absence se tient on l'explose en tableau
 				$periode_tab = explode(';',$periode);
 
 				// compteur temporaire de période
@@ -356,10 +397,10 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionné
+					// nom de la période sélectionnée
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des donnée de $tab_donnee_sup
+					// définition des données de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -386,7 +427,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 	};
 
-	// nombre de page à créer, arrondit au nombre supérieur
+	// nombre de pages à créer, arrondi au nombre supérieur
 	$nb_page_total = ceil( ( $nb_d_entree_total + $ic ) / $nb_ligne_parpage );
 
 
@@ -395,14 +436,13 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 
 /* **************************** */
-/*     variables invariables    */
+/*     variables invariables      */
 /* **************************** */
 
 	$gepiYear = getSettingValue('gepiYear');
 	$RneEtablissement = getSettingValue("gepiSchoolRne");
 	$annee_scolaire = $gepiYear;
-	$date_bulletin = date("d/m/Y H:i");
-	$nom_bulletin = date("Ymd_Hi");
+	$datation_fichier = date("Ymd_Hi");
 
 /* **************************** */
 
@@ -413,7 +453,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* début de la génération du fichier PDF */
 
 	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
-	$pdf = new bul_PDF('p', 'mm', 'A4');
+	$pdf=new FPDF('p', 'mm', 'A4');
 
 	// compteur pour le nombre d'élève à afficher
 	$nb_eleve_aff = 1;
@@ -433,9 +473,9 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// mots clé
 	$pdf->SetKeywords('');
 	// sujet du document
-	$pdf->SetSubject('Bulletin');
+	$pdf->SetSubject('Bilan journalier des absences');
 	// titre du document
-	$pdf->SetTitle('Bulletin');
+	$pdf->SetTitle('Bilan journalier des absences');
 	// méthode d'affichage du document à son ouverture
 	$pdf->SetDisplayMode('fullwidth', 'single');
 	// compression du document
@@ -447,17 +487,17 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* **************************** */
 /* début de la boucle des pages */
 
-// comptage du nombre de page traité
+// comptage du nombre de pages traitées
 $nb_page_traite = 0;
 
-// initialiser la variable compteur de ligne passé pour le tableau
+// initialiser la variable compteur de ligne passée pour le tableau
 $nb_ligne_passe = 0;
 
 // initialiser un compteur temporaire autre que i
-// il serviras pour savoir à quelle endroit de la liste nous somme rendus
+// il servira pour savoir à quel endroit de la liste nous sommes rendus
 $j = 0;
 
-// boucle des page
+// boucle des pages
 while ($nb_page_traite < $nb_page_total)
 {
 
@@ -467,18 +507,7 @@ while ($nb_page_traite < $nb_page_total)
 	// police de caractère utilisé
 	$pdf->SetFont('Arial');
 
-/* ENTETE - DEBUT */
-
-	//Affiche le filigrame
-	if($affiche_filigrame==='1')
-	{
-
-		$pdf->SetFont('Arial','B',50);
-		$pdf->SetTextColor(255,192,203);
-		$pdf->TextWithRotation(40,190,$texte_filigrame,45);
-		$pdf->SetTextColor(0,0,0);
-
-	}
+	/* ================= ENTETE - DEBUT ================== */
 
 	//bloc identification etablissement
 	$logo = '../../images/'.getSettingValue('logo_etab');
@@ -671,6 +700,12 @@ while ($nb_page_traite < $nb_page_total)
 
 		$pdf->SetX(85);
 		$pdf->Cell(120, 8, 'du '.$date_choisie, 0, 1, 'C');
+
+		$pdf->SetX(85);
+		$pdf->Cell(120, 5, 'année', 0, 1, 'C');
+
+		$pdf->SetX(85);
+		$pdf->Cell(120, 5, $annee_scolaire, 0, 1, 'C');
 
 
 /* ENTETE TITRE - FIN */
@@ -914,9 +949,9 @@ while ($nb_page_traite < $nb_page_total)
 // fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 
 	// génération du nom du document
-	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
+	$nom_fichier = 'bilan_journalier_'.$datation_fichier.'.pdf';
 
 	// génération du document
-	$pdf->Output($nom_bulletin,'I');
+	$pdf->Output($nom_fichier,'I');
 
 ?>
