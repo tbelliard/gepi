@@ -77,6 +77,8 @@ require_once("../class_php/gepi_pdf.class.php");
 
 // Fonctions php des bulletins pdf
 require_once("bulletin_fonctions.php");
+// Ensemble des données communes
+require_once("bulletin_donnees.php");
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');
@@ -107,14 +109,11 @@ else {
 
 $periode = $_SESSION['periode'];
 $periode_ferme = $_SESSION['periode_ferme'];
-$model_bulletin = $_SESSION['type_bulletin'];
+// le modèle sélectionné dans le menu deroulant :
+$type_bulletin = $model_bulletin = $_SESSION['type_bulletin'];
 
-$type_bulletin = $model_bulletin; // le modèle sélectionné dans le menu deroulant
-
-$RneEtablissement=getSettingValue("gepiSchoolRne");
-
-$tri_par_etab_origine = $_SESSION['tri_par_etab_origine']; //est ce que l'on trie les bulletins par etablissement d'origine ?
-
+//est ce que l'on trie les bulletins par etablissement d'origine ?
+$tri_par_etab_origine = $_SESSION['tri_par_etab_origine'];
 
 
 // chargement des informations de la base de données
@@ -123,47 +122,45 @@ $tri_par_etab_origine = $_SESSION['tri_par_etab_origine']; //est ce que l'on tri
 		//dès que nous avons notre liste d'élèves à imprimer on va prendre les informations
 
 	//variables invariables
-	$gepiYear = getSettingValue('gepiYear');
 	$annee_scolaire = $gepiYear;
-	$date_bulletin=date("d/m/Y H:i");
-	$nom_bulletin=date("Ymd_Hi");
+	$date_bulletin = date("d/m/Y H:i");
+	$nom_bulletin = date("Ymd_Hi");
 
 // sélection des informations sur le modèle des bulletins choisis.
 
-$option_modele_bulletin=getSettingValue("option_modele_bulletin");
+$option_modele_bulletin = getSettingValue("option_modele_bulletin");
 
 if(!empty($model_bulletin)) {
 
 	//on compte le nombre de classes sélectionnées
-	$nb_classes_selectionnees=sizeof($id_classe);
+	$nb_classes_selectionnees = sizeof($id_classe);
 	//=====================================================
 
-	for ($z=0;$z<$nb_classes_selectionnees;$z++) {
+	for ($z = 0; $z < $nb_classes_selectionnees; $z++) {
 		//en fonction de l'id de la classe, on recherche l'id du modèle utilisé.
 
 		$la_classe = $id_classe[$z];
-
 		$sql_classe = "SELECT * FROM classes WHERE id='$la_classe'";
 		$call_classe = mysql_query($sql_classe);
 		$result_classe = mysql_fetch_array($call_classe);
 		$model_bulletin = $result_classe['modele_bulletin_pdf'];
-		if ($model_bulletin == NULL) {$model_bulletin=1;}
+		if ($model_bulletin == NULL) {
+			// Alors on impose le modèle 1
+			$model_bulletin = 1;
+		}
 		$classe_id = $la_classe;
-
-		//echo "<br>Modèle N° ".$model_bulletin." Classe N°".$id_classe[$z]." VAR CLASSE_ID ".$classe_id;
 
 		// la requete à modifier en fonction de $option_modele_bulletin
 		switch ($option_modele_bulletin) {
 			case 1 : //uniquement avec modèle classe
-				//$requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"');
 				$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
 				break;
 			case 2 : //modèle par classe et choix possible
-				if ($type_bulletin == -1) { // cas modèle par classe
-					//$requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"');
+				if ($type_bulletin == -1) {
+					// cas modèle par classe
 					$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
-				} else { //ici on recopie le même modèle pour chaque classe
-					//$requete_model = mysql_query('SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"');
+				} else {
+					//ici on recopie le même modèle pour chaque classe
 					$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
 				}
 				break;
@@ -175,12 +172,12 @@ if(!empty($model_bulletin)) {
 		$requete_model = mysql_query($sql);
 
 
-		//echo $type_bulletin;
-
 		/****************** A T T E N T I O N ****************
-		Tous les paramètres des modèles de  bulletin utilisés dans la table model_bulletin sont initialisés ci-dessous.
-
-		Pour chaque paramètre, un tableau est construit. C'est l'ID de la classe qui sert d'indice pour récupérer la valeur
+		* Tous les paramètres des modèles de bulletin utilisés dans la table model_bulletin sont initialisés ci-dessous.
+		*
+		* ATTENTION : l'ensemble des informations communes ne seront plus traitées ici mais dans le fichier bulletin_donnees.php
+		*
+		* Pour chaque paramètre, un tableau est construit. C'est l'ID de la classe qui sert d'indice pour récupérer la valeur
 		* du paramètre correspondant au modèle de bulletin de la classe.
 		************************************************/
 
@@ -1610,30 +1607,30 @@ while($cpt_info_eleve<=$nb_eleve_total)
 $cpt_info_eleve=$cpt_info_eleve+1;
 }
 
-// christian pdf
-//echo "<pre>";
-//print_r($matiere);
-//echo "</pre>";
 	// définition d'une variable
 	$hauteur_pris = 0;
 
-// début de la génération du fichier PDF
-$pdf=new bul_PDF('p', 'mm', 'A4'); //création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
-$nb_eleve_aff = 1;
-$categorie_passe = '';
-$categorie_passe_count = 0;
-if(empty($gepiSchoolName)) { $gepiSchoolName=getSettingValue('gepiSchoolName'); }
-$pdf->SetCreator($gepiSchoolName);
-$pdf->SetAuthor($gepiSchoolName);
-$pdf->SetKeywords('');
-$pdf->SetSubject('Bulletin');
-$pdf->SetTitle('Bulletin');
-$pdf->SetDisplayMode('fullwidth', 'single');
-$pdf->SetCompression(TRUE);
-$pdf->SetAutoPageBreak(TRUE, 5);
+/*****************************************
+* début de la génération du fichier PDF  *
+* ****************************************/
 
-$responsable_place = 0;
+	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+	$pdf=new bul_PDF('p', 'mm', 'A4');
+	$nb_eleve_aff = 1;
+	$categorie_passe = '';
+	$categorie_passe_count = 0;
+	$pdf->SetCreator($gepiSchoolName);
+	$pdf->SetAuthor($gepiSchoolName);
+	$pdf->SetKeywords('');
+	$pdf->SetSubject('Bulletin');
+	$pdf->SetTitle('Bulletin');
+	$pdf->SetDisplayMode('fullwidth', 'single');
+	$pdf->SetCompression(TRUE);
+	$pdf->SetAutoPageBreak(TRUE, 5);
 
+	$responsable_place = 0;
+
+// On lance la construction du bulletin pour chaque élève sélectionné
 while(!empty($nom_eleve[$nb_eleve_aff])) {
     $ident_eleve_aff = $ident_eleve[$nb_eleve_aff];
 	$cpt_info_periode=0;
@@ -1642,401 +1639,430 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	// AJOUT ERIC on récupère l'id de la classe pour les paramètres.
 	$classe_id=$id_classe_selection;
 
-	// quand on change d'élève on vide les variables suivante
+	// quand on change d'élève on vide les variables suivantes
 	$categorie_passe = '';
-
-	$total_moyenne_classe_en_calcul=0; $total_moyenne_min_en_calcul=0; $total_moyenne_max_en_calcul=0; $total_coef_en_calcul=0;
+	$total_moyenne_classe_en_calcul = 0;
+	$total_moyenne_min_en_calcul = 0;
+	$total_moyenne_max_en_calcul = 0;
+	$total_coef_en_calcul = 0;
 
 	//boucle pour chaque période d'un élève
 	while(!empty($periode_classe[$id_classe_selection][$cpt_info_periode]))
 	{
 
-	$pdf->AddPage(); //ajout d'une page au document
-	$pdf->SetFont('Arial');
-//DEBUT ENTETE BULLETIN
-	//Affiche le filigrame
-	if($affiche_filigrame[$classe_id]==='1')
-	{
-	$pdf->SetFont('Arial','B',50);
-	$pdf->SetTextColor(255,192,203);
-	$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
-	$pdf->SetTextColor(0,0,0);
-	}
+		$pdf->AddPage(); //ajout d'une page au document
+		$pdf->SetFont('Arial');
 
-	//bloc identification etablissement
-	$logo = '../images/'.getSettingValue('logo_etab');
-	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
-	if($affiche_logo_etab[$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
-	{
-	$valeur=redimensionne_image($logo, $L_max_logo[$classe_id], $H_max_logo[$classe_id]);
-	$X_logo = 5;
-	$Y_logo = 5;
-	$L_logo = $valeur[0];
-	$H_logo = $valeur[1];
-	$X_etab = $X_logo + $L_logo + 1;
-	$Y_etab = $Y_logo;
-
-	if ( !isset($centrage_logo[$classe_id]) or empty($centrage_logo[$classe_id]) ) { $centrage_logo[$classe_id] = '0'; }
-	if ( $centrage_logo[$classe_id] === '1' ) {
-		// centrage du logo
-		$centre_du_logo = ( $H_logo / 2 );
-		$Y_logo = $Y_centre_logo[$classe_id] - $centre_du_logo;
-	}
-
-	//logo
-		$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
-	}
-
-	//adresse
-	if ( !isset($X_etab) or empty($X_etab) ) { $X_etab = '5'; $Y_etab = '5'; }
-	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont($caractere_utilse[$classe_id],'',14);
-//	 $pdf->SetFont($caractere_utilse[$classe_id],'',$taille);
-	$gepiSchoolName = getSettingValue('gepiSchoolName');
-
-	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
-	if ( $nom_etab_gras[$classe_id] === '1' ) { $pdf->SetFont($caractere_utilse[$classe_id],'B',14); }
-	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
-
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-	$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
-
-	if ( $gepiSchoolAdress1 != '' ) {
-	$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
-	}
-	$gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-
-	if ( $gepiSchoolAdress2 != '' ) {
-	$pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
-	}
-
-	$gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
-	$gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
-	$gepiSchoolTel = getSettingValue('gepiSchoolTel');
-	$gepiSchoolFax = getSettingValue('gepiSchoolFax');
-
-	$passealaligne = '0';
-	// entête téléphone
-			// emplacement du cadre télécome
-			$x_telecom = $pdf->GetX();
-			$y_telecom = $pdf->GetY();
-
-	if( $entente_tel[$classe_id]==='1' ) {
-		$grandeur = ''; $text_tel = '';
-		if ( $tel_image[$classe_id] != '' ) {
-			$a = $pdf->GetX();
-			$b = $pdf->GetY();
-			$ima = '../images/imabulle/'.$tel_image[$classe_id].'.jpg';
-			$valeurima=redimensionne_image($ima, 15, 15);
-			$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
-			$text_tel = '      '.$gepiSchoolTel;
-			$grandeur = $pdf->GetStringWidth($text_tel);
-			$grandeur = $grandeur + 2;
-		}
-		if ( $tel_texte[$classe_id] != '' and $tel_image[$classe_id] === '' ) {
-			$text_tel = $tel_texte[$classe_id].''.$gepiSchoolTel;
-			$grandeur = $pdf->GetStringWidth($text_tel);
+	// ==================== DEBUT ENTETE BULLETIN ====================
+		//Affiche le filigrame
+		if($affiche_filigrame[$classe_id]==='1'){
+			$pdf->SetFont('Arial','B',50);
+			$pdf->SetTextColor(255,192,203);
+			$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			$pdf->SetTextColor(0,0,0);
 		}
 
-		$pdf->Cell($grandeur,5, $text_tel,0,$passealaligne,'');
-	}
-
-	$passealaligne = '2';
-	// entête fax
-	if( $entente_fax[$classe_id]==='1' ) {
-		$text_fax = '';
-		if ( $fax_image[$classe_id] != '' ) {
-			$a = $pdf->GetX();
-			$b = $pdf->GetY();
-			$ima = '../images/imabulle/'.$fax_image[$classe_id].'.jpg';
-			$valeurima=redimensionne_image($ima, 15, 15);
-			$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
-			$text_fax = '      '.$gepiSchoolFax;
-		}
-		if ( $fax_texte[$classe_id] != '' and $fax_image[$classe_id] === '' ) {
-			$text_fax = $fax_texte[$classe_id].''.$gepiSchoolFax;
-		}
-		$pdf->Cell(90,5, $text_fax,0,$passealaligne,'');
-	}
-
-
-	if($entente_mel[$classe_id]==='1') {
-		$text_mel = '';
-		$y_telecom = $y_telecom + 5;
-		$pdf->SetXY($x_telecom,$y_telecom);
-	$gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-		$text_mel = $gepiSchoolEmail;
-		if ( $courrier_image[$classe_id] != '' ) {
-			$a = $pdf->GetX();
-			$b = $pdf->GetY();
-			$ima = '../images/imabulle/'.$courrier_image[$classe_id].'.jpg';
-			$valeurima=redimensionne_image($ima, 15, 15);
-			$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
-			$text_mel = '      '.$gepiSchoolEmail;
-		}
-		if ( $courrier_texte[$classe_id] != '' and $courrier_image[$classe_id] === '' ) {
-			$text_mel = $courrier_texte[$classe_id].' '.$gepiSchoolEmail;
-		}
-		$pdf->Cell(90,5, $text_mel,0,2,'');
-	}
-// FIN ENTETE BULLETIN
-
-
-	$i = $nb_eleve_aff;
-	$id_periode = $periode_classe[$id_classe_selection][$cpt_info_periode];
-
-	// AJOUT ERIC
-	$classe_id=$id_classe_selection;
-
-	$pdf->SetFont('Arial','B',12);
-
-	// gestion des styles
-	$pdf->SetStyle("b","arial","B",8,"0,0,0");
-	$pdf->SetStyle("i","arial","I",8,"0,0,0");
-	$pdf->SetStyle("u","arial","U",8,"0,0,0");
-
-		// style pour la case appréciation général
-		// identité du professeur principal
-			if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) { $taille = $taille_profprincipal_bloc_avis_conseil[$classe_id]; } else { $taille = '10'; }
-			$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
-			$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
-
-	// bloc affichage de l'adresse des parents
-	if($active_bloc_adresse_parent[$classe_id]==='1') {
-	$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
-		// définition des Lageur - hauteur
-		if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) { $longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id]; } else { $longeur_cadre_adresse = '90'; }
-		if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) { $hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id]; } else { $hauteur_cadre_adresse = '1'; }
-
-	$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
-	$texte_1_responsable = trim($texte_1_responsable);
-		$hauteur_caractere=12;
-		$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
-		$val = $pdf->GetStringWidth($texte_1_responsable);
-		$taille_texte = $longeur_cadre_adresse;
-		$grandeur_texte='test';
-		while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
+		//bloc identification etablissement
+		$logo = '../images/'.getSettingValue('logo_etab');
+		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
+		if($affiche_logo_etab[$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
-			$hauteur_caractere = $hauteur_caractere-0.3;
+			$valeur=redimensionne_image($logo, $L_max_logo[$classe_id], $H_max_logo[$classe_id]);
+			$X_logo = 5;
+			$Y_logo = 5;
+			$L_logo = $valeur[0];
+			$H_logo = $valeur[1];
+			$X_etab = $X_logo + $L_logo + 1;
+			$Y_etab = $Y_logo;
+
+			if ( !isset($centrage_logo[$classe_id]) or empty($centrage_logo[$classe_id]) ) {
+				$centrage_logo[$classe_id] = '0';
+			}
+			if ( $centrage_logo[$classe_id] === '1' ) {
+				// centrage du logo
+				$centre_du_logo = ( $H_logo / 2 );
+				$Y_logo = $Y_centre_logo[$classe_id] - $centre_du_logo;
+			}
+
+			//logo
+			$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+		}
+
+		//adresse
+		if ( !isset($X_etab) or empty($X_etab) ) {
+			$X_etab = '5';
+			$Y_etab = '5';
+		}
+		$pdf->SetXY($X_etab,$Y_etab);
+		$pdf->SetFont($caractere_utilse[$classe_id],'',14);
+
+		// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
+		if ( $nom_etab_gras[$classe_id] === '1' ) {
+			$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+		}
+		$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
+
+		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+
+		if ( $gepiSchoolAdress1 != '' ) {
+			$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
+		}
+		if ( $gepiSchoolAdress2 != '' ) {
+			$pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
+		}
+
+		$pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
+
+		$passealaligne = '0';
+		// entête téléphone
+		// emplacement du cadre télécome
+		$x_telecom = $pdf->GetX();
+		$y_telecom = $pdf->GetY();
+
+		if( $entente_tel[$classe_id]==='1' ) {
+			$grandeur = ''; $text_tel = '';
+			if ( $tel_image[$classe_id] != '' ) {
+				$a = $pdf->GetX();
+				$b = $pdf->GetY();
+				$ima = '../images/imabulle/'.$tel_image[$classe_id].'.jpg';
+				$valeurima=redimensionne_image($ima, 15, 15);
+				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
+				$text_tel = '      '.$gepiSchoolTel;
+				$grandeur = $pdf->GetStringWidth($text_tel);
+				$grandeur = $grandeur + 2;
+			}
+			if ( $tel_texte[$classe_id] != '' and $tel_image[$classe_id] === '' ) {
+				$text_tel = $tel_texte[$classe_id].''.$gepiSchoolTel;
+				$grandeur = $pdf->GetStringWidth($text_tel);
+			}
+
+			$pdf->Cell($grandeur,5, $text_tel,0,$passealaligne,'');
+		}
+
+		$passealaligne = '2';
+		// entête fax
+		if( $entente_fax[$classe_id]==='1' ) {
+			$text_fax = '';
+			if ( $fax_image[$classe_id] != '' ) {
+				$a = $pdf->GetX();
+				$b = $pdf->GetY();
+				$ima = '../images/imabulle/'.$fax_image[$classe_id].'.jpg';
+				$valeurima=redimensionne_image($ima, 15, 15);
+				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
+				$text_fax = '      '.$gepiSchoolFax;
+			}
+			if ( $fax_texte[$classe_id] != '' and $fax_image[$classe_id] === '' ) {
+				$text_fax = $fax_texte[$classe_id].''.$gepiSchoolFax;
+			}
+			$pdf->Cell(90,5, $text_fax,0,$passealaligne,'');
+		}
+
+		if($entente_mel[$classe_id]==='1') {
+			$text_mel = '';
+			$y_telecom = $y_telecom + 5;
+			$pdf->SetXY($x_telecom,$y_telecom);
+
+			$text_mel = $gepiSchoolEmail;
+			if ( $courrier_image[$classe_id] != '' ) {
+				$a = $pdf->GetX();
+				$b = $pdf->GetY();
+				$ima = '../images/imabulle/'.$courrier_image[$classe_id].'.jpg';
+				$valeurima=redimensionne_image($ima, 15, 15);
+				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
+				$text_mel = '      '.$gepiSchoolEmail;
+			}
+			if ( $courrier_texte[$classe_id] != '' and $courrier_image[$classe_id] === '' ) {
+				$text_mel = $courrier_texte[$classe_id].' '.$gepiSchoolEmail;
+			}
+			$pdf->Cell(90,5, $text_mel,0,2,'');
+		}
+	// ============= FIN ENTETE BULLETIN ==========================
+
+		$i = $nb_eleve_aff;
+		$id_periode = $periode_classe[$id_classe_selection][$cpt_info_periode];
+
+		// AJOUT ERIC
+		$classe_id=$id_classe_selection;
+
+		$pdf->SetFont('Arial','B',12);
+
+		// gestion des styles
+		$pdf->SetStyle("b","arial","B",8,"0,0,0");
+		$pdf->SetStyle("i","arial","I",8,"0,0,0");
+		$pdf->SetStyle("u","arial","U",8,"0,0,0");
+
+		// style pour la case appréciation générale
+		// identité du professeur principal
+		if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
+			$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+		} else {
+			$taille = '10';
+		}
+		$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
+		$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
+
+		// bloc affichage de l'adresse des parents
+		if($active_bloc_adresse_parent[$classe_id]==='1') {
+			$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
+			// définition des Lageur - hauteur
+			if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) {
+				$longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id];
+			} else {
+				$longeur_cadre_adresse = '90';
+			}
+			if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) {
+				$hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id];
+			} else {
+				$hauteur_cadre_adresse = '1';
+			}
+
+			$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+			$texte_1_responsable = trim($texte_1_responsable);
+			$hauteur_caractere=12;
 			$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
-		} else { $grandeur_texte='ok'; }
+			$taille_texte = $longeur_cadre_adresse;
+			$grandeur_texte='test';
+			while($grandeur_texte != 'ok') {
+				if($taille_texte < $val){
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte_1_responsable);
+				} else {
+					$grandeur_texte = 'ok';
+				}
 			}
-	$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
+			$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
 
-	$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
-		$hauteur_caractere=10;
-		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		$val = $pdf->GetStringWidth($texte_1_responsable);
-		$taille_texte = $longeur_cadre_adresse;
-		$grandeur_texte='test';
-		while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
-		{
-			$hauteur_caractere = $hauteur_caractere-0.3;
+			$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
+			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
-		} else { $grandeur_texte='ok'; }
+			$taille_texte = $longeur_cadre_adresse;
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val){
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte_1_responsable);
+				} else {
+					$grandeur_texte='ok';
+				}
 			}
-	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 
-	$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
-		$hauteur_caractere=10;
-		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		$val = $pdf->GetStringWidth($texte_1_responsable);
-		$taille_texte = $longeur_cadre_adresse;
-		$grandeur_texte='test';
-		while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
-		{
-			$hauteur_caractere = $hauteur_caractere-0.3;
+			$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
+			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
-		} else { $grandeur_texte='ok'; }
+			$taille_texte = $longeur_cadre_adresse;
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val){
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte_1_responsable);
+				} else {
+					$grandeur_texte='ok';
+				}
 			}
-	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 
-	// Suppression du saut de ligne pour mettre la ligne 3 de l'adresse
-	//$pdf->Cell(90,5, '',0,2,'');
+			// Suppression du saut de ligne pour mettre la ligne 3 de l'adresse
+			//$pdf->Cell(90,5, '',0,2,'');
 
-	$texte_1_responsable = $adresse3_parents[$ident_eleve_aff][$responsable_place];
-		$hauteur_caractere=10;
-		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		$val = $pdf->GetStringWidth($texte_1_responsable);
-		$taille_texte = $longeur_cadre_adresse;
-		$grandeur_texte='test';
-		while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
-		{
-			$hauteur_caractere = $hauteur_caractere-0.3;
+			$texte_1_responsable = $adresse3_parents[$ident_eleve_aff][$responsable_place];
+			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
-		} else { $grandeur_texte='ok'; }
+			$taille_texte = $longeur_cadre_adresse;
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val){
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte_1_responsable);
+				} else {
+					$grandeur_texte='ok';
+				}
 			}
-	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 
-	$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
-		$hauteur_caractere=10;
-		$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		$val = $pdf->GetStringWidth($texte_1_responsable);
-		$taille_texte = $longeur_cadre_adresse;
-		$grandeur_texte='test';
-		while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
-		{
-			$hauteur_caractere = $hauteur_caractere-0.3;
+			$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
+			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
-		} else { $grandeur_texte='ok'; }
+			$taille_texte = $longeur_cadre_adresse;
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val){
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte_1_responsable);
+				} else {
+					$grandeur_texte='ok';
+				}
 			}
-	$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 
-	$texte_1_responsable = '';
-	if ( $cadre_adresse[$classe_id] != 0 ) { $pdf->Rect($X_parent[$classe_id], $Y_parent[$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D'); }
-	}
+			$texte_1_responsable = '';
+			if ( $cadre_adresse[$classe_id] != 0 ) {
+				$pdf->Rect($X_parent[$classe_id], $Y_parent[$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
+			}
+		} // if($active_bloc_adresse_parent[$classe_id]==='1')
 
 
 	// bloc affichage information sur l'élèves
 	if($active_bloc_eleve[$classe_id]==='1') {
-	$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
+		$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
 		// définition des Lageur - hauteur
-		if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) { $longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id]; } else { $longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$i]." ".$prenom_eleve[$i]); $rajout_cadre_eleve = 100-$longeur_cadre_eleve; $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve; }
-		if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) { $hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id]; } else { $nb_ligne = 5; $hauteur_ligne = 6; $hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne; }
+		if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) {
+			$longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id];
+		} else {
+			$longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$i]." ".$prenom_eleve[$i]); $rajout_cadre_eleve = 100-$longeur_cadre_eleve; $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve;
+		}
+		if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) {
+			$hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id];
+		} else {
+			$nb_ligne = 5;
+			$hauteur_ligne = 6;
+			$hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne;
+		}
 
-	$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+		$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
 
-	if($cadre_eleve[$classe_id]!=0) { $pdf->Rect($X_eleve[$classe_id], $Y_eleve[$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D'); }
-	$X_eleve_2=$X_eleve[$classe_id]; $Y_eleve_2=$Y_eleve[$classe_id];
+		if($cadre_eleve[$classe_id]!=0) {
+			$pdf->Rect($X_eleve[$classe_id], $Y_eleve[$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D');
+		}
+		$X_eleve_2 = $X_eleve[$classe_id]; $Y_eleve_2=$Y_eleve[$classe_id];
 
 		//photo de l'élève
-		if ( !isset($ajout_cadre_blanc_photo[$classe_id]) or empty($ajout_cadre_blanc_photo[$classe_id]) ) { $ajout_cadre_blanc_photo[$classe_id] = '0'; }
-		if ( $ajout_cadre_blanc_photo[$classe_id] === '1' ) { $ajouter = '1'; } else { $ajouter = '0'; }
+		if ( !isset($ajout_cadre_blanc_photo[$classe_id]) or empty($ajout_cadre_blanc_photo[$classe_id]) ) {
+			$ajout_cadre_blanc_photo[$classe_id] = '0';
+		}
+		if ( $ajout_cadre_blanc_photo[$classe_id] === '1' ) {
+			$ajouter = '1';
+		} else {
+			$ajouter = '0';
+		}
 		if($active_photo[$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
-		$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
-		$H_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
-		$valeur=redimensionne_image($photo[$i], $L_photo_max, $H_photo_max);
-		$X_photo = $X_eleve[$classe_id]+ 0.20 + $ajouter;
-		$Y_photo = $Y_eleve[$classe_id]+ 0.25 + $ajouter;
-		$L_photo = $valeur[0]; $H_photo = $valeur[1];
-		$X_eleve_2 = $X_eleve[$classe_id] + $L_photo + $ajouter + 1;
-		$Y_eleve_2 = $Y_photo;
+			$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
+			$H_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
+			$valeur=redimensionne_image($photo[$i], $L_photo_max, $H_photo_max);
+			$X_photo = $X_eleve[$classe_id]+ 0.20 + $ajouter;
+			$Y_photo = $Y_eleve[$classe_id]+ 0.25 + $ajouter;
+			$L_photo = $valeur[0]; $H_photo = $valeur[1];
+			$X_eleve_2 = $X_eleve[$classe_id] + $L_photo + $ajouter + 1;
+			$Y_eleve_2 = $Y_photo;
 			$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
 			$longeur_cadre_eleve = $longeur_cadre_eleve - ( $valeur[0] + $ajouter );
 		}
 
-	$pdf->SetXY($X_eleve_2,$Y_eleve_2);
-	$pdf->Cell(90,7, $nom_eleve[$i]." ".$prenom_eleve[$i],0,2,'');
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-	if($affiche_date_naissance[$classe_id]==='1') {
-		if($date_naissance[$i]!="") { $pdf->Cell(90,5, $date_naissance[$i],0,2,''); }
-	}
-
-	if($affiche_dp[$classe_id]==='1') {
-	if($dp[$i]!="") { $pdf->Cell(90,4, $dp[$i],0,2,''); }
-	}
-	if($affiche_doublement[$classe_id]==='1') {
-	if($doublement[$i]!="") { $pdf->Cell(90,4.5, $doublement[$i],0,2,''); }
-	}
-	if($affiche_nom_court[$classe_id]==='1') {
-	if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
-	}
-
-	//if($affiche_dp[$classe_id]==='1') {
-	//	if($dp[$i]!="") {
-			/*
-			if ($affiche_doublement[$classe_id]=='1') {
-				if ($doublement[$i]!="") {
-					$pass_ligne=0;
-					$ajout_virg=", ";
-				}
-				else{
-					$pass_ligne=0;
-					$ajout_virg="";
-				}
+		$pdf->SetXY($X_eleve_2,$Y_eleve_2);
+		$pdf->Cell(90,7, $nom_eleve[$i]." ".$prenom_eleve[$i],0,2,'');
+		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		if($affiche_date_naissance[$classe_id]==='1') {
+			if($date_naissance[$i]!="") {
+				$pdf->Cell(90,5, $date_naissance[$i],0,2,'');
 			}
-			else{
-				$pass_ligne=2;
-				$ajout_virg="";
+		}
+
+		if($affiche_dp[$classe_id]==='1') {
+			if($dp[$i]!="") {
+				$pdf->Cell(90,4, $dp[$i],0,2,'');
 			}
-			*/
-
-	//		$pdf->Cell(90,4, $dp[$i],0,2,'');
-	//		//$pdf->Cell(50,4, $dp[$i].$ajout_virg,0,$pass_ligne,'');
-	//	}
-	//}
-	//if($affiche_doublement[$classe_id]==='1') {
-	//	$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
-	//}
-	//if($affiche_nom_court[$classe_id]==='1') {
-	//	if($classe_nomcour[$i]!="") { $pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,''); }
-	//}
-
-/*
-	// INSERTION DE L'INE DE L'ELEVE
-	if($bull_pdf_INE_eleve=="y"){
-		$pdf->Cell(45,4.5, 'N°INE : '.$INE_eleve[$i],0,2,'');
-	}
-*/
-
-
-	if($affiche_effectif_classe[$classe_id]==='1') {
+		}
+		if($affiche_doublement[$classe_id]==='1') {
+			if($doublement[$i]!="") {
+				$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
+			}
+		}
+		if($affiche_nom_court[$classe_id]==='1') {
+			if($classe_nomcour[$i]!="") {
+				$pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,'');
+			}
+		}
+		// Affichage du numéro d'impression
+		if($affiche_effectif_classe[$classe_id]==='1') {
+			if($affiche_numero_impression[$classe_id]==='1') {
+				$pass_ligne = '0';
+			} else {
+				$pass_ligne = '2';
+			}
+			if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
+				$pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,$pass_ligne,'');
+			}
+		}
 		if($affiche_numero_impression[$classe_id]==='1') {
-			$pass_ligne = '0';
-		} else { $pass_ligne = '2'; }
-		if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
-			$pdf->Cell(45,4.5, 'Effectif :
-			'.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].'
-			élèves',0,$pass_ligne,''); }
-	}
-
-
-
-	//if($affiche_effectif_classe==='1') {
-	// if($info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") { $pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,0,''); }
-	//}
-
-	if($affiche_numero_impression[$classe_id]==='1') {
-	$num_ordre = $i;
-	$pdf->Cell(45,4, 'Bulletin N° '.$num_ordre,0,2,'');
-	}
-	if($affiche_etab_origine[$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
-	$pdf->SetX($X_eleve_2);
-	$hauteur_caractere_etaborigine = '10';
-	$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
- 	  $val = $pdf->GetStringWidth('Etab. Origine : '.$etablissement_origine[$i]);
-	  $taille_texte = $longeur_cadre_eleve-3;
-	  $grandeur_texte='test';
-	  while($grandeur_texte!='ok') {
-		if($taille_texte<$val)
-		{
-			$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
+			$num_ordre = $i;
+			$pdf->Cell(45,4, 'Bulletin N° '.$num_ordre,0,2,'');
+		}
+		// Affichage de l'établissement d'origine
+		if($affiche_etab_origine[$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
+			$pdf->SetX($X_eleve_2);
+			$hauteur_caractere_etaborigine = '10';
 			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
 			$val = $pdf->GetStringWidth('Etab. Origine : '.$etablissement_origine[$i]);
-		} else { $grandeur_texte='ok'; }
-	  }
-	  $grandeur_texte='test';
-	$pdf->Cell(90,4, 'Etab. Origine : '.$etablissement_origine[$i],0,2);
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-	}
-	}
+			$taille_texte = $longeur_cadre_eleve-3;
+			$grandeur_texte='test';
+			while($grandeur_texte!='ok') {
+				if($taille_texte<$val) {
+					$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
+					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
+					$val = $pdf->GetStringWidth('Etab. Origine : '.$etablissement_origine[$i]);
+				} else {
+					$grandeur_texte='ok';
+				}
+			}
+			$grandeur_texte='test';
+			$pdf->Cell(90,4, 'Etab. Origine : '.$etablissement_origine[$i],0,2);
+			$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		}
+	} // fin du bloc affichage information sur l'élèves
 
 	// bloc affichage datation du bulletin
 	if($active_bloc_datation[$classe_id]==='1') {
-	$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
-		// définition des Lageur - hauteur
-		if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) { $longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id]; } else { $longeur_cadre_datation_bul = '95'; }
-		if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) { $hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id]; } else { $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6; $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul; }
+		$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
+		// définition des Largeur - hauteur
+		if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) {
+			$longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id];
+		} else {
+			$longeur_cadre_datation_bul = '95';
+		}
+		if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) {
+			$hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id];
+		} else {
+			$nb_ligne_datation_bul = 3;
+			$hauteur_ligne_datation_bul = 6;
+			$hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul;
+		}
 
-if($cadre_datation_bul[$classe_id]!=0) { $pdf->Rect($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id], $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D'); }
-	$taille_texte = '14'; $type_texte = 'B';
-	if ( $taille_texte_classe[$classe_id] != '' and $taille_texte_classe[$classe_id] != '0' ) { $taille_texte = $taille_texte_classe[$classe_id]; } else { $taille_texte = '14'; }
-	if ( $type_texte_classe[$classe_id] != '' ) { if ( $type_texte_classe[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_classe[$classe_id]; } } else { $type_texte = 'B'; }
-	$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
-	$pdf->Cell(90,7, "Classe de ".unhtmlentities($classe_nomlong[$i]),0,2,'C');
-	$taille_texte = '12'; $type_texte = '';
-	if ( $taille_texte_annee[$classe_id] != '' and $taille_texte_annee[$classe_id] != '0') { $taille_texte = $taille_texte_annee[$classe_id]; } else { $taille_texte = '12'; }
+		if($cadre_datation_bul[$classe_id]!=0) {
+			$pdf->Rect($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id], $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D');
+		}
+		$taille_texte = '14'; $type_texte = 'B';
+		if ( $taille_texte_classe[$classe_id] != '' and $taille_texte_classe[$classe_id] != '0' ) {
+			$taille_texte = $taille_texte_classe[$classe_id];
+		} else {
+			$taille_texte = '14';
+		}
+		if ( $type_texte_classe[$classe_id] != '' ) {
+			if ( $type_texte_classe[$classe_id] === 'N' ) {
+				$type_texte = '';
+			} else {
+				$type_texte = $type_texte_classe[$classe_id];
+			}
+		} else {
+			$type_texte = 'B';
+		}
+		$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+		$pdf->Cell(90,7, "Classe de ".unhtmlentities($classe_nomlong[$i]),0,2,'C');
+		$taille_texte = '12'; $type_texte = '';
+		if ( $taille_texte_annee[$classe_id] != '' and $taille_texte_annee[$classe_id] != '0') {
+			$taille_texte = $taille_texte_annee[$classe_id];
+		} else {
+			$taille_texte = '12';
+		}
 	if ( $type_texte_annee[$classe_id] != '' ) { if ( $type_texte_annee[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_annee[$classe_id]; } } else { $type_texte = ''; }
 	$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
 	$pdf->Cell(90,5, "Année scolaire ".$annee_scolaire,0,2,'C');
@@ -3136,7 +3162,7 @@ $cpt_ordre = $cpt_ordre + 1;
 		}
 	}
 
-	// bloc absence
+	// =============== bloc absence ==================
 	if($active_bloc_absence[$classe_id]==='1') {
 	$pdf->SetXY($X_absence[$classe_id], $Y_absence[$classe_id]);
 	$origine_Y_absence = $Y_absence[$classe_id];
@@ -3165,23 +3191,8 @@ $cpt_ordre = $cpt_ordre + 1;
 	}
 
 	$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-/*
-		echo "  (C.P.E. chargé";
-		$sql="SELECT civilite FROM utilisateurs WHERE login='$current_eleve_cperesp_login'";
-		$res_civi=mysql_query($sql);
-		if(mysql_num_rows($res_civi)>0){
-			$lig_civi=mysql_fetch_object($res_civi);
-			if($lig_civi->civilite!="M."){
-				echo "e";
-			}
-		}
-		echo " du suivi : ". affiche_utilisateur($current_eleve_cperesp_login,$id_classe) . ")";
-			if ($current_eleve_appreciation_absences != ""){echo "<br />$current_eleve_appreciation_absences";}
-			echo "</p></td>\n</tr>\n</table>\n";
-		}
-*/
+
 		// MODIF: boireaus
-		//$info_absence = $info_absence." (C.P.E. chargé du suivi : ".$cpe_eleve[$i].")";
 		$info_absence = $info_absence." (C.P.E. chargé";
 		$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
 		$res_civi=mysql_query($sql);
@@ -3217,7 +3228,7 @@ $cpt_ordre = $cpt_ordre + 1;
 		$pdf->MultiCellTag(200, 3, $info_absence_appreciation, '', 'J', '');
 		//$hauteur_avis_cons_init = $hauteur_avis_cons[$classe_id];
 		$val = $pdf->GetStringWidth($info_absence_appreciation);
-		// nombre de ligne que prend la remarque cpe
+		// nombre de lignes que prend la remarque cpe
 			//Arrondi à l'entier supérieur : ceil()
 		$nb_ligne = 1;
 		$nb_ligne = ceil($val / 200);
@@ -3255,48 +3266,71 @@ $cpt_ordre = $cpt_ordre + 1;
 		$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] + 0.5;
 	}
 
-	// bloc avis du conseil de classe
+// ================ bloc avis du conseil de classe =================
 	if($active_bloc_avis_conseil[$classe_id]==='1') {
-	if($cadre_avis_cons[$classe_id]!=0) { $pdf->Rect($X_avis_cons[$classe_id], $Y_avis_cons[$classe_id], $longeur_avis_cons[$classe_id], $hauteur_avis_cons[$classe_id], 'D'); }
-	$pdf->SetXY($X_avis_cons[$classe_id],$Y_avis_cons[$classe_id]);
-		if ( $taille_titre_bloc_avis_conseil[$classe_id] != '' and $taille_titre_bloc_avis_conseil[$classe_id] < '15' ) { $taille = $taille_titre_bloc_avis_conseil[$classe_id]; } else { $taille = '10'; }
-	$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
-		if ( $titre_bloc_avis_conseil[$classe_id] != '' ) { $tt_avis = $titre_bloc_avis_conseil[$classe_id]; } else { $tt_avis = 'Avis du Conseil de classe:'; }
-	$pdf->Cell($longeur_avis_cons[$classe_id],5, $tt_avis,0,2,'');
-	$pdf->SetXY($X_avis_cons[$classe_id]+2.5,$Y_avis_cons[$classe_id]+5);
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-	$texteavis = $info_bulletin[$ident_eleve_aff][$id_periode]['avis_conseil_classe'];
-	$pdf->drawTextBox($texteavis, $longeur_avis_cons[$classe_id]-5, $hauteur_avis_cons[$classe_id]-10, 'J', 'M', 0);
-	$X_pp_aff=$X_avis_cons[$classe_id]; $Y_pp_aff=$Y_avis_cons[$classe_id]+$hauteur_avis_cons[$classe_id]-5;
-	$pdf->SetXY($X_pp_aff,$Y_pp_aff);
-		if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) { $taille = $taille_profprincipal_bloc_avis_conseil[$classe_id]; } else { $taille = '10'; }
-	$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
-	$pdf->MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
+		if($cadre_avis_cons[$classe_id]!=0) {
+			$pdf->Rect($X_avis_cons[$classe_id], $Y_avis_cons[$classe_id], $longeur_avis_cons[$classe_id], $hauteur_avis_cons[$classe_id], 'D');
+		}
+		$pdf->SetXY($X_avis_cons[$classe_id],$Y_avis_cons[$classe_id]);
+		if ( $taille_titre_bloc_avis_conseil[$classe_id] != '' and $taille_titre_bloc_avis_conseil[$classe_id] < '15' ) {
+			$taille = $taille_titre_bloc_avis_conseil[$classe_id];
+		} else {
+			$taille = '10';
+		}
+		$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+		if ( $titre_bloc_avis_conseil[$classe_id] != '' ) {
+			$tt_avis = $titre_bloc_avis_conseil[$classe_id];
+		} else {
+			$tt_avis = 'Avis du Conseil de classe:';
+		}
+		$pdf->Cell($longeur_avis_cons[$classe_id],5, $tt_avis,0,2,'');
+		$pdf->SetXY($X_avis_cons[$classe_id]+2.5,$Y_avis_cons[$classe_id]+5);
+		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$texteavis = $info_bulletin[$ident_eleve_aff][$id_periode]['avis_conseil_classe'];
+		$pdf->drawTextBox($texteavis, $longeur_avis_cons[$classe_id]-5, $hauteur_avis_cons[$classe_id]-10, 'J', 'M', 0);
+		$X_pp_aff=$X_avis_cons[$classe_id]; $Y_pp_aff=$Y_avis_cons[$classe_id]+$hauteur_avis_cons[$classe_id]-5;
+		$pdf->SetXY($X_pp_aff,$Y_pp_aff);
+		if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
+			$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+		} else {
+			$taille = '10';
+		}
+		$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+		$pdf->MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
 	}
 
-	// bloc du chef
+// ======================= bloc du président du conseil de classe ================
 	if( $active_bloc_chef[$classe_id] === '1' ) {
-	if( $cadre_sign_chef[$classe_id] != 0 ) { $pdf->Rect($X_sign_chef[$classe_id], $Y_sign_chef[$classe_id], $longeur_sign_chef[$classe_id], $hauteur_sign_chef[$classe_id], 'D'); }
-	$pdf->SetXY($X_sign_chef[$classe_id],$Y_sign_chef[$classe_id]);
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-	if( $affichage_haut_responsable[$classe_id] === '1' ) {
-		if ( $affiche_fonction_chef[$classe_id] === '1' )
-		{
-			if ( $taille_texte_fonction_chef[$classe_id] != '' and $taille_texte_fonction_chef[$classe_id] != '0' and $taille_texte_fonction_chef[$classe_id] < '15' ) { $taille = $taille_texte_fonction_chef[$classe_id]; } else { $taille = '10'; }
-			$pdf->SetFont($caractere_utilse[$classe_id],'B',$taille);
-		$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['fonction_hautresponsable'],0,2,'');
+		if( $cadre_sign_chef[$classe_id] != 0 ) {
+			$pdf->Rect($X_sign_chef[$classe_id], $Y_sign_chef[$classe_id], $longeur_sign_chef[$classe_id], $hauteur_sign_chef[$classe_id], 'D');
 		}
-		if ( $taille_texte_identitee_chef[$classe_id] != '' and $taille_texte_identitee_chef[$classe_id] != '0' and $taille_texte_identitee_chef[$classe_id] < '15' ) { $taille = $taille_texte_identitee_chef[$classe_id]; } else { $taille_avis = '8'; }
-		$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
-		$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['nom_hautresponsable'],0,2,'');
-	} else {
+		$pdf->SetXY($X_sign_chef[$classe_id],$Y_sign_chef[$classe_id]);
+		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		if( $affichage_haut_responsable[$classe_id] === '1' ) {
+			if ( $affiche_fonction_chef[$classe_id] === '1' ){
+				if ( $taille_texte_fonction_chef[$classe_id] != '' and $taille_texte_fonction_chef[$classe_id] != '0' and $taille_texte_fonction_chef[$classe_id] < '15' ) {
+					$taille = $taille_texte_fonction_chef[$classe_id];
+				} else {
+					$taille = '10';
+				}
+				$pdf->SetFont($caractere_utilse[$classe_id],'B',$taille);
+				$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['fonction_hautresponsable'],0,2,'');
+			}
+			if ( $taille_texte_identitee_chef[$classe_id] != '' and $taille_texte_identitee_chef[$classe_id] != '0' and $taille_texte_identitee_chef[$classe_id] < '15' ) {
+				$taille = $taille_texte_identitee_chef[$classe_id];
+			} else {
+				$taille_avis = '8';
+			}
+			$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+			$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['nom_hautresponsable'],0,2,'');
+		} else {
 			$pdf->MultiCell($longeur_sign_chef[$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
 		}
 	}
-$cpt_info_periode = $cpt_info_periode+1;
-}
+	$cpt_info_periode = $cpt_info_periode+1;
+}	// fin de la boucle pour chaque période d'un élève
+	//while(!empty($periode_classe[$id_classe_selection][$cpt_info_periode]))
 
-	//$nb_eleve_aff = $nb_eleve_aff + 1;
 	if ( $nb_bulletin_parent[$ident_eleve_aff] === 1 or $passage_deux === 'oui' )
 	{
 		//compte le nombre d'élément affiché
@@ -3322,11 +3356,10 @@ $cpt_info_periode = $cpt_info_periode+1;
 
 }
 
-//vidé les variable de session utilisé
-//unset($_SESSION["periode"]);
+//vider les variables de session utilisées
 unset($_SESSION["classe"]);
 unset($_SESSION["eleve"]);
-unset ($_SESSION['tri_par_etab_origine']);
+unset($_SESSION['tri_par_etab_origine']);
 
 //fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 $nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';

@@ -457,16 +457,6 @@ echo "}\n";
 	}
 
 
-
-/*
-	if(isset($_POST['ne_pas_afficher_moy_gen'])){
-		$ne_pas_afficher_moy_gen="NE_PAS_AFFICHER";
-	}
-	else{
-		$ne_pas_afficher_moy_gen="";
-	}
-*/
-	//echo "/* \$ne_pas_afficher_moy_gen=$ne_pas_afficher_moy_gen */\n";
     ?>
 
     </style>
