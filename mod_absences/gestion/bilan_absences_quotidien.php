@@ -97,11 +97,11 @@ $nb_creneaux = count($creneaux);
 		<img src="../../lib/calendrier/petit_calendrier.gif" alt="" border="0" />
 	</a>
 	<input type="submit" name="valider" title="valider" />
-	<?php /*
-	&nbsp;-&nbsp;
-	<a href="bilan_absences_quotidien_pdf.php?date_choisie=<?php echo $date_choisie; ?>" alt="exporter au format PDF">Version PDF</a>
-	*/
-	?>
+<?php
+/*	&nbsp;-&nbsp;
+	<a href="bilan_absences_quotidien_pdf.php?date_choisie=<?php echo $date_choisie; ?>" title="exporter au format PDF">Version PDF</a>
+*/
+?>
 </form>
 
 	<h3 class="gepi" style="margin-bottom: 2px; margin-left: 4px;">Bilan des absences du <?php echo date_frl(date_sql($date_choisie)); ?>.</h3>

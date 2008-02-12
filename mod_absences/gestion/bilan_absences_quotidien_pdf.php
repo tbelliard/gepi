@@ -45,8 +45,8 @@ if ($resultat_session == 'c') {
 
 
 if (!checkAccess()) {
-//	header("Location: ../logout.php?auto=1");
-//	die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 //================================
 
@@ -181,10 +181,10 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 
 
 /* ******************************************** */
-/*     initialisation des variables d'entrée    */
+/*     initialisation des variable d'entré      */
 /* ******************************************** */
 
-	// si aucune date n'est demandée alors on met celle du jour au format jj/mm/aaaa
+	// si aucune date de demandé alors on met celle du jour au format jj/mm/aaaa
 	$date_choisie = isset($_POST["date_choisie"]) ? $_POST["date_choisie"] : (date("d/m/Y"));
 
 /* ******************************************** */
@@ -193,7 +193,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 /* information sur la présentation du document */
 /* *********************************************/
 
-	$caractere_utilise = 'arial'; // caractère utilisé
+	$caractere_utilse = 'arial'; // caractère utilisé
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
 	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
@@ -227,10 +227,10 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 	// largeur de la colonne du nom des créneaux
 	$lar_col_creneaux = '130';
 
-	// nombre de ligne à afficher sur 1 page
+	// nombre de ligne à affiché sur 1 page
 	$nb_ligne_parpage = '25';
 
-	// largeur totale du tableau
+	// largeur total du tableau
 	$lar_total_tableau = $lar_col_classe + $lar_col_eleve + $lar_col_creneaux;
 
 	// hauteur de la cellule des données
@@ -246,9 +246,9 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 /* ******************************************** */
 /*     construction du tableau des données      */
 /* ******************************************** */
-// chargement des informations de la base de données
+// chargement des information de la base de données
 
-	// les données concerneront la journée du (date au format timestamp)
+	// les données concernerons la journée du (date au format timestamp)
 	$choix_date = explode("/",$date_choisie);
 	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
@@ -266,7 +266,8 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 				FROM horaires_etablissement
 				WHERE jour_horaire_etablissement = '" . $jour_choisi . "'");
 	$nbre_rep = mysql_num_rows($requete);
-	if ($nbre_rep >= 1) {
+	if ($nbre_rep >= 1)
+	{
 
 		// Avec le résultat, on calcule les timestamps UNIX
 		$req = mysql_fetch_array($requete);
@@ -275,7 +276,9 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	}else{
+	}
+	else
+	{
 
 		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
 		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
@@ -283,7 +286,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 
 	}
 
-	// nous recherchons tous les élèves absents le jour choisie
+	// nous recherchons tout les élèves absence le jour choisie
 	$requete = "SELECT ar.id, ar.eleve_id, ar.retard_absence, ar.creneau_id, ar.debut_ts, ar.fin_ts, jec.login, jec.id_classe, e.login, e.nom, e.prenom, c.id, c.nom_complet
 		    FROM " . $prefix_base . "absences_rb ar, " . $prefix_base . "j_eleves_classes jec, " . $prefix_base . "eleves e, " . $prefix_base . "classes c
 		    WHERE ( jec.login = ar.eleve_id
@@ -306,15 +309,15 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 	while ( $donnee = mysql_fetch_array($execution))
 	{
 
-		// si la classe précedente est différente de celle que nous traitons
-		// et différente de rien alors on incrémente notre tableau de données
+		// si la classe précedent et différent de celle que nous traiton
+		// est différent de rien alors on incrément notre tableau de donnée
 		if ( $classe_precedent != $donnee['nom_complet'] and $classe_precedent != '' )
 		{
 			$ic = $ic + 1;
 		}
 
-		// si l'élève précedent est différent de celui que nous traitons et que la variable de l'élève précédent
-		// est différente de rien alors on incrémente notre tableau de données
+		// si l'élève précedent et différent de celui que nous traiton et que la variable de l'élève précédent
+		// est différent de rien alors on incrément notre tableau de donnée
 		if ( $eleve_precedent != $donnee['login'] and $eleve_precedent != '' )
 		{
 			$i = $i + 1;
@@ -336,26 +339,26 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heure donnée
+			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
 			$periode = periode_actuel_nom($heure_debut, $heure_fin);
 
-			// si des périodes existent
+			// si des période existe
 			if ( $periode != '' )
 			{
 
-				// aprés la récupération des périodes sur lesquelles l'absence se tient on l'explose en tableau
+				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
 				$periode_tab = explode(';',$periode);
 
-				// compteur temporaire de périodes
+				// compteur temporaire de période
 				$compteur_periode = 0;
 
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionnée
+					// nom de la période sélectionné
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des données de $tab_donnee_sup
+					// définition des donnée de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -381,14 +384,14 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heure donnée
+			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
 			$periode = periode_actuel_nom($heure_debut, $heure_fin);
 
-			// si des périodes existent
+			// si des période existe
 			if ( $periode != '' )
 			{
 
-				// aprés la récupération des périodes sur lesquelles l'absence se tient on l'explose en tableau
+				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
 				$periode_tab = explode(';',$periode);
 
 				// compteur temporaire de période
@@ -397,10 +400,10 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionnée
+					// nom de la période sélectionné
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des données de $tab_donnee_sup
+					// définition des donnée de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -427,7 +430,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 
 	};
 
-	// nombre de pages à créer, arrondi au nombre supérieur
+	// nombre de page à créer, arrondit au nombre supérieur
 	$nb_page_total = ceil( ( $nb_d_entree_total + $ic ) / $nb_ligne_parpage );
 
 
@@ -436,7 +439,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 
 
 /* **************************** */
-/*     variables invariables      */
+/*     variable invariable      */
 /* **************************** */
 
 	$gepiYear = getSettingValue('gepiYear');
@@ -455,7 +458,7 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 	$pdf=new FPDF('p', 'mm', 'A4');
 
-	// compteur pour le nombre d'élève à afficher
+	// compteur pour le nombre d'élève à affiché
 	$nb_eleve_aff = 1;
 
 	// si la variable $gepiSchoolName est vide alors on cherche les informations dans la base
@@ -487,17 +490,17 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 /* **************************** */
 /* début de la boucle des pages */
 
-// comptage du nombre de pages traitées
+// comptage du nombre de page traité
 $nb_page_traite = 0;
 
-// initialiser la variable compteur de ligne passée pour le tableau
+// initialiser la variable compteur de ligne passé pour le tableau
 $nb_ligne_passe = 0;
 
 // initialiser un compteur temporaire autre que i
-// il servira pour savoir à quel endroit de la liste nous sommes rendus
+// il serviras pour savoir à quelle endroit de la liste nous somme rendus
 $j = 0;
 
-// boucle des pages
+// boucle des page
 while ($nb_page_traite < $nb_page_total)
 {
 
@@ -507,7 +510,7 @@ while ($nb_page_traite < $nb_page_total)
 	// police de caractère utilisé
 	$pdf->SetFont('Arial');
 
-	/* ================= ENTETE - DEBUT ================== */
+/* ENTETE - DEBUT */
 
 	//bloc identification etablissement
 	$logo = '../../images/'.getSettingValue('logo_etab');
@@ -553,19 +556,19 @@ while ($nb_page_traite < $nb_page_total)
 
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont($caractere_utilise,'',14);
+	$pdf->SetFont($caractere_utilse,'',14);
 	$gepiSchoolName = getSettingValue('gepiSchoolName');
 
 	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
 	if ( $nom_etab_gras === '1' )
 	{
 
-		$pdf->SetFont($caractere_utilise,'B',14);
+		$pdf->SetFont($caractere_utilse,'B',14);
 
 	}
 	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 
-	$pdf->SetFont($caractere_utilise,'',10);
+	$pdf->SetFont($caractere_utilse,'',10);
 	$gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 
 	if ( $gepiSchoolAdress1 != '' )
@@ -715,7 +718,7 @@ while ($nb_page_traite < $nb_page_total)
 /* ENTETE TABLEAU - DEBUT */
 
 	//Sélection de la police
-	$pdf->SetFont($caractere_utilise, 'B', 10);
+	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
