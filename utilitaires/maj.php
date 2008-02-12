@@ -5637,7 +5637,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       (8, 18, 'Littérature, théâtre, poésie'),
       (9, 19, 'Géographie et Histoire, civilisations anciennes');");
       if ($result_inter == '')
-          $result .= "<font color=\"green\">La table aid_familles a été ùise à jour !</font><br />";
+          $result .= "<font color=\"green\">La table aid_familles a été mise à jour !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
