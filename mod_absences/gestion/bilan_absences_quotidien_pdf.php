@@ -45,8 +45,8 @@ if ($resultat_session == 'c') {
 
 
 if (!checkAccess()) {
-	header("Location: ../logout.php?auto=1");
-	die();
+//	header("Location: ../logout.php?auto=1");
+//	die();
 }
 //================================
 
@@ -185,7 +185,8 @@ function periode_actuel_nom($heure_debut, $heure_fin)
 /* ******************************************** */
 
 	// si aucune date de demandé alors on met celle du jour au format jj/mm/aaaa
-	$date_choisie = isset($_POST["date_choisie"]) ? $_POST["date_choisie"] : (date("d/m/Y"));
+	if (empty($_GET['date_choisie']) and empty($_POST['date_choisie'])) { $date_choisie = date("d/m/Y"); }
+	  else { if (isset($_GET['date_choisie'])) { $date_choisie = $_GET['date_choisie']; } if (isset($_POST['date_choisie'])) { $date_choisie = $_POST['date_choisie']; } }
 
 /* ******************************************** */
 

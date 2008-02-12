@@ -70,17 +70,6 @@ if(getSettingValue("min_max_moyclas")){
 
 $RneEtablissement=getSettingValue("gepiSchoolRne");
 
-/*
-if (isset($_GET['id_classe'])) {
-    settype($_GET['id_classe'],"integer");
-    $id_classe = $_GET['id_classe'];
-} else die();
-
-if (isset($_GET['periode_num'])) {
-    settype($_GET['periode_num'],"integer");
-    $periode_num = $_GET['periode_num'];
-} else die();
-*/
 
 if (isset($_POST['id_classe'])) {
     settype($_POST['id_classe'],"integer");

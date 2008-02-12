@@ -53,7 +53,7 @@ $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 
 
-// On appelle la liste des matière de la classe
+// On appelle la liste des matières de la classe
 if ($affiche_categories) {
 		// On utilise les valeurs spécifiées pour la classe en question
 		/*
