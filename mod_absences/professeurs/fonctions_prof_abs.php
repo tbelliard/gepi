@@ -81,14 +81,14 @@ function periode_actuel_jourdifferent($heure_choix) {
 	$resultat_periode = mysql_query($requete_periode)
 					or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
 	while($data_periode = mysql_fetch_array ($resultat_periode)) {
-		$debut=$data_periode['heuredebut_definie_periode'];
-		$num_periode=$data_periode['id_definie_periode'];
+		$debut = $data_periode['heuredebut_definie_periode'];
+		$num_periode = $data_periode['id_definie_periode'];
 	}
 	return($num_periode);
 }
 
 //connaitre l'heure du début soit de la fin d'une période
-// ex: perdiode_heure($id_periode) > [0]11:00:00 [1]11:55:00
+// ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure_jourdifferent($periode){
 	if ($periode == "") {
 		return "";

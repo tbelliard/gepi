@@ -574,7 +574,13 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 			<option value=""<?php echo $selected; ?>>pas de s&eacute;lection</option>
 <?php
 	while($data_pe = mysql_fetch_array ($resultat_pe)) {
-		if($data_pe['id_definie_periode'] == periode_actuel($heure_choix)) {
+		// On vérifie si on a un jour différent ou pas
+		if (getSettingValue("creneau_different") != 'n' AND date("w") == getSettingValue("creneau_different")) {
+			$test1 = periode_actuel_jourdifferent($heure_choix);
+		}else {
+			$test1 = periode_actuel($heure_choix);
+		}
+		if($data_pe['id_definie_periode'] == $test1) {
 			$selected = ' selected="selected"';
 		}else{
 			$selected = '';
@@ -611,7 +617,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 			<option value="">pas de s&eacute;lection</option>
 <?php
 	while($data_pe = mysql_fetch_array ($resultat_pe)) {
-		if($data_pe['id_definie_periode'] == periode_actuel($heure_choix)) {
+
+		if($data_pe['id_definie_periode'] == $test1) {
 			$selected = ' selected="selected"';
 		}else {
 			$selected = '';
