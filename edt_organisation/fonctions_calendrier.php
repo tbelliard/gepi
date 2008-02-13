@@ -59,7 +59,13 @@ function retourneJour($jour){
 function retourneCreneau(){
 		$retour = 'non';
 	$heure = date("H:i:s");
-	$query = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE
+	// On vérifie si on est dans un jour différent ou pas
+	if (date("w") == getSettingValue("jour_different")) {
+		$table = 'absences_creneaux_bis';
+	}else{
+		$table = 'absences_creneaux';
+	}
+	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
 			heuredebut_definie_periode <= '".$heure."' AND
 			heurefin_definie_periode > '".$heure."'")
 				OR DIE('Le creneau n\'est pas trouvé : '.mysql_error());
