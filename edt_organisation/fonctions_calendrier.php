@@ -60,7 +60,7 @@ function retourneCreneau(){
 		$retour = 'non';
 	$heure = date("H:i:s");
 	// On vérifie si on est dans un jour différent ou pas
-	if (date("w") == getSettingValue("jour_different")) {
+	if (date("w") == getSettingValue("creneau_different")) {
 		$table = 'absences_creneaux_bis';
 	}else{
 		$table = 'absences_creneaux';
