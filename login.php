@@ -115,6 +115,8 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 			$message = "Vous avez bien été identifié mais un utilisateur \"local\" dans la base de GEPI, ayant le même login, existe déjà. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
 		} else if ($result=="4") {
 			$message = "Vous avez bien été identifié mais vous ne figurez pas parmi les utilisateurs dans la base de GEPI. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
+		} else if ($result=="6") {
+			$message = "Vous avez bien été identifié mais vous <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
 		} else {
 			$message = "Vous avez bien été identifié mais un problème est survenu. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
 		}

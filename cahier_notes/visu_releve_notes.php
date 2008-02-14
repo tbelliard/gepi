@@ -1630,7 +1630,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		}
 
 		if ($_SESSION['statut'] == "eleve") {
-			if ($login_eleve != $_SESSION['login']) {
+			if (strtoupper($login_eleve) != strtoupper($_SESSION['login'])) {
 	            tentative_intrusion(3, "Tentative d'un élève de visualiser les relevés de notes d'un autre élève.");
 	            echo "Vous ne pouvez visualiser que vos relevés de notes.\n";
 	            require("../lib/footer.inc.php");

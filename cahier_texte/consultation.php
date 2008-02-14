@@ -78,7 +78,7 @@ if ($login_eleve) {
 if ($_SESSION['statut'] == 'eleve') {
 	// On enregistre si un élève essaie de voir le cahier de texte d'un autre élève
 	if ($selected_eleve) {
-		if ($selected_eleve->login != $_SESSION['login']) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");
+		if (strtolower($selected_eleve->login) != strtolower($_SESSION['login'])) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");
 	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {

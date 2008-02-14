@@ -288,7 +288,9 @@ while ($j < $nombre_groupes) {
     //-----------------------------
     $nb=$periode1;
     while ($nb < $periode2+1) {
-        if (in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) {
+        if ((in_array(strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
+        (in_array(strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"])))
+         {
             $inser_ligne='yes';
             $current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login' AND periode='$nb' AND id_groupe='" . $current_group["id"] . "')");
             $current_eleve_note[$nb] = @mysql_result($current_eleve_note_query, 0, "note");

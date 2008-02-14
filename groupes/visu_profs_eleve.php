@@ -60,7 +60,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
-	if ($login_eleve != null and $login_eleve != $_SESSION['login']) {
+	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
 		tentative_intrusion(2, "Tentative d'un élève d'accéder à l'équipe pédagogique d'un autre élève.");
 	}
 	$login_eleve = $_SESSION['login'];

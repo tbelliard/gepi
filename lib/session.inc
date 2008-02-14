@@ -55,13 +55,17 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
         // présentes dans la base de données de Gepi
         $sql = "select upper(login) login, password, prenom, nom, statut, now() start, change_mdp
                 from utilisateurs
-                where login = '" . $_login . "' and password = '' and etat != 'inactif'";
+                where login = '" . $_login . "' and password = ''";
 
         $res_user = sql_query($sql);
         $num_row = sql_count($res_user);
 
         if ($num_row == 1) {  // L'utilisateur est présent dans la base locale
-            if ($_sso_login == 'lcs') {
+            $etat_utilisateur = sql_query1("select etat from utilisateurs where login = '" . $_login . "' and password = ''");
+            if ($etat_utilisateur!="actif") {
+                return "6";
+            } else {
+              if ($_sso_login == 'lcs') {
                 $nom_user = $lcs_tab_login["nom"];
                 $email_user = $lcs_tab_login["email"];
                 $prenom_user = $lcs_tab_login["fullname"];
@@ -75,14 +79,14 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
                     return "2";
                     die();
                 }
+              }
+
+              // on récupère les données de l'utilisateur dans $row
+              $row = sql_row($res_user,0);
+              // Get principal matter of this user
+              $sql2 = "select id_matiere from j_professeurs_matieres where id_professeur = '" . $_login . "' order by ordre_matieres limit 1";
+              $matiere_princ = sql_query1($sql2);
             }
-
-            // on récupère les données de l'utilisateur dans $row
-            $row = sql_row($res_user,0);
-            // Get principal matter of this user
-            $sql2 = "select id_matiere from j_professeurs_matieres where id_professeur = '" . $_login . "' order by ordre_matieres limit 1";
-            $matiere_princ = sql_query1($sql2);
-
         } else { // L'utilisateur n'est pas présent dans la base locale
             // On teste si un utilisateur porte déjà le même login
             $test = mysql_num_rows(mysql_query("select login from utilisateurs where login = '".$_login."'"));

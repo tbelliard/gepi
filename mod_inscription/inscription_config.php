@@ -199,7 +199,7 @@ if ($nombre_lignes != 0) {
 
 
     echo "<tr>\n";
-    echo "<td>$id - <a href=\"./inscription_config.php?id_inter=$id&amp;action=ajout\" >Modifier</a></td>\n";
+    echo "<td>$id <br /><a href=\"./inscription_config.php?id_inter=$id&amp;action=ajout\" >Modifier</a></td>\n";
     echo "<td>$date</td>\n";
     echo "<td>$heure</td>\n";
     echo "<td>$description</td>\n";

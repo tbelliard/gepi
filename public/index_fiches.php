@@ -47,8 +47,8 @@ if ($indice_aid =='') {
         $k=0;
         while ($i < $nb_projet) {
             $indice_aid = mysql_result($call_aid,$i,"indice_aid");
-            $nb_fiches_publiques[$i] = sql_query1("SELECT count(id) FROM aid WHERE indice_aid='".$indice_aid."' and fiche_publique='y'");
-            if ($nb_fiches_publiques[$i]!=0)
+            $nb_fiches_publiques[$indice_aid] = sql_query1("SELECT count(id) FROM aid WHERE indice_aid='".$indice_aid."' and fiche_publique='y'");
+            if ($nb_fiches_publiques[$indice_aid]!=0)
                 $k++;
             $i++;
         }
@@ -57,14 +57,14 @@ if ($indice_aid =='') {
             echo "<ul>\n";
             $i = 0;
             while ($i < $nb_projet) {
-                if ($nb_fiches_publiques[$i]!=0) {
-                    $indice_aid = mysql_result($call_aid,$i,"indice_aid");
-                    $nb_fiches_publiques = sql_query1("SELECT count(aid) FROM aid WHERE indice_aid='$indice_aid' and fiche_publique='y'");
+                $indice_aid = mysql_result($call_aid,$i,"indice_aid");
+                if ($nb_fiches_publiques[$indice_aid]!=0) {
+                    //$nb_fiches_publiques = sql_query1("SELECT count(aid) FROM aid WHERE indice_aid='$indice_aid' and fiche_publique='y'");
                     $nom = mysql_result($call_aid,$i,"nom");
                     $nom_complet = mysql_result($call_aid,$i,"nom_complet");
                     echo "<li><a href='index_fiches.php?indice_aid=".$indice_aid."'>".$nom_complet."</a> (".$nom.")</li>\n";
                 }
-            $i++;
+                $i++;
             }
             echo "</ul>\n";
         } else

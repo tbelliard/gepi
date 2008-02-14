@@ -122,18 +122,19 @@ while ($i < $nombre_lignes){
         $prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
         if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";
         if ($prenom_inscrit == -1) $prenom_inscrit = "";
-        $nom_prenom =$prenom_inscrit." ".$nom_inscrit."<br />";
+        $nom_prenom .=$prenom_inscrit." ".$nom_inscrit;
+        if ($k < ($nb_inscrits-1)) $nom_prenom .= "<br />";
         $k++;
 
     }
 
 
     echo "<tr>\n";
-    echo "<td>$id $inscrit</td>\n";
+    echo "<td>$id</td>\n";
     echo "<td>$date</td>\n";
     echo "<td>$heure</td>\n";
     echo "<td>$description</td>\n";
-    echo "<td>".$nom_prenom."</td>\n";
+    echo "<td>".$nom_prenom."&nbsp;</td>\n";
     echo "<td><input type=\"checkbox\" name=\"".$id."\" value=\"y\" ";
     if ($inscrit == $id) echo " checked";
     echo " /></td>\n";
