@@ -146,8 +146,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
 		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO.
-		if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "lcs" AND getSettingValue("use_sso") != "ldap_scribe") {
-			if ($create_mode == "individual") {
+		// Cas particlulier de LCS : les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Dans ce cas, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI."
+    if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "ldap_scribe") {
+    	if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
 			} else {
@@ -240,8 +241,13 @@ else{
 	if (getSettingValue("mode_generation_login") == null) {
 		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>\n";
 	}
-	if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "lcs" OR getSettingValue("use_sso") == "ldap_scribe")) {
+	// Cas particlulier de LCS : les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Dans ce cas, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI."
+  if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "ldap_scribe")) {
 		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
+	}
+	if (getSettingValue('use_sso') == "lcs") {
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (LCS). Les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Par conséquent, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI.
+    <br /><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</p>\n";
 	}
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
