@@ -589,9 +589,10 @@ while ($k < 5) {
     $k++;
 }
 
-echo "<div class='bloc'><span class = 'bold'>Mots clés </span> :\n";
+echo "<div class='bloc'>\n";
 If ($action != "visu")  {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'mots_cles',"W")) {
+    echo "<span class = 'bold'>Mots clés </span> :\n";
     echo "<br /><i>Tapez entre 3 et 5 mots-cles</i>";
     echo "<table><tr>";
     $k = 0;
@@ -603,6 +604,7 @@ If ($action != "visu")  {
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'mots_cles',"R")) {
+    echo "<span class = 'bold'>Mots clés </span> :\n";
     $aff_motcle = "";
     $k = 0;
     while ($k < 5) {
