@@ -35,7 +35,7 @@ require_once("./lib/initialisations.inc.php");
 
 $use_sso = null;
 $use_sso = getSettingValue('use_sso');
-if (!(isset($_GET['local']))) $_GET['local'] = false;
+$local = isset($_POST["local"]) ? $_POST["local"] :(isset($_GET["local"]) ? $_GET["local"] :NULL);
 
 if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	require_once("./lib/cas.inc.php");
@@ -64,7 +64,7 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	session_write_close();
 	header("Location:accueil.php");
 	die();
-} elseif (!($_GET['local']) and isset($use_sso) and ($use_sso == "lcs") and !$block_sso and
+} elseif (!(isset($local)) and isset($use_sso) and ($use_sso == "lcs") and !$block_sso and
 !(isset($_POST['login']) && isset($_POST['no_anti_inject_password']))) {
 	include LCS_PAGE_AUTH_INC_PHP;
 	include LCS_PAGE_LDAP_INC_PHP;
@@ -298,7 +298,9 @@ echo "<div id='new_div_login' class='center'>\n";
 
 		echo "</div>\n";
 	echo "</div>\n";
-
+  if (isset($local)) {
+      echo "<input type=\"hidden\" name=\"local\" value=\"yes\" />";
+  }
 	echo "</form>\n";
 
 	?>
