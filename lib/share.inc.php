@@ -2524,14 +2524,12 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode) {
         // Si l'utilisateur a des droits spéciaux, il peut modifier
         $CheckAccessEleve = sql_query1("select eleve_peut_modifier from aid where id = '".$aid_id."' and indice_aid = '".$indice_aid."'");
         if ($CheckAccessEleve != "y") {
-            return false;
-            die();
+            if ($champ == "") {return false; die();}
         }
         // L'élève est-il responsable de cet AID ?
         $CheckAccessEleve2 = sql_query1("select count(login) from j_aid_eleves_resp WHERE (login='".$_SESSION['login']."' and indice_aid='".$indice_aid."' and id_aid='".$aid_id."')");
         if ($CheckAccessEleve2 == 0) {
-            return false;
-            die();
+             if ($champ == "") {return false; die();}
         }
     }
     // Cas d'un professeur
