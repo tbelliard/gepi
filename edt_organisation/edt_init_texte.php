@@ -214,8 +214,9 @@ if ($action == "upload_file") {
 							$nbre_lignes = 53;
 							echo 'Il y a 53 semaines.<br />'."\n";
 						}else{
-							// on va aller remplir la table edt_semaines
-							$nbre_lignes = 0;
+							// on va aller remplir la table edt_semaines $tab[0] est le numéro de la semaine et $tab[1] son type (A/B, 1/2,...)
+							echo '<input type="hidden" name="semaine_'.$tab[0].'" value="'.$tab[1].'" />'."\n";
+							$nbre_lignes = 53;
 						}
 					}elseif($etape == 8){
 						// On traite des "CONGES"
@@ -234,7 +235,8 @@ if ($action == "upload_file") {
 							echo 'Il y a '.$tab[1].' cours.<br />'."\n";
 						}else{
 							// On cherche dans la table edt_init les concordances et on crée les cours en question
-
+							// ESSAI : on propose des champs hidden avec toutes les infos et c'est edt_init_concordance.php qui fait le travail
+							echo '<input type="hidden" name="cours_'.$numero.'" value="'.$cours.'" />'."\n";
 						}
 					}
 					$numero++;
