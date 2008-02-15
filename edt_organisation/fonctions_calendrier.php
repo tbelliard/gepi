@@ -84,8 +84,14 @@ function heureDeb(){
 	// On compare des minutes car c'est plus simple
 	$heureMn = (date("H") * 60) + date("i");
 	$creneauId = retourneCreneau();
+	// On vérifie si il existe un jour différent et si c'est aujourd'hui
+	if (date("w") == getSettingValue("creneau_different")) {
+		$table = "absences_creneaux_bis";
+	}else {
+		$table = "absences_creneaux";
+	}
 	// On récupère l'heure de début et celle de fin du créneau
-	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneauId."'");
+	$query = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table." WHERE id_definie_periode = '".$creneauId."'");
 	if ($query) {
 		$reponse = mysql_fetch_array($query);
 		// On enlève les secondes
