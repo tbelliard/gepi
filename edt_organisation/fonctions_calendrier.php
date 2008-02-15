@@ -122,6 +122,22 @@ function retourneCours($prof){
 	if ($nbreCours >= 1) {
 		$reponse = mysql_fetch_array($query);
 		$retour = $reponse["id_cours"];
+	}else{
+		// On teste les AID
+		$query_aid = mysql_query("SELECT id_cours FROM edt_cours WHERE
+			jour_semaine = '".retourneJour('')."' AND
+			id_definie_periode = '".retourneCreneau()."' AND
+			id_groupe LIKE 'AID|%' AND
+			login_prof = '".$prof."' AND
+			heuredeb_dec = '0' AND
+			(id_semaine = '".typeSemaineActu()."' OR id_semaine = '0')
+			ORDER BY id_semaine")
+				or die('Erreur : retourneCours(prof) !'.mysql_error());
+			$nbreCours = mysql_num_rows($query_aid);
+		if ($nbreCours >= 1) {
+			$reponse = mysql_fetch_array($query_aid);
+			$retour = $reponse["id_cours"];
+		}
 	}
 	return $retour;
 }

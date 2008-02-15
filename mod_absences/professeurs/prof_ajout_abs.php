@@ -663,7 +663,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		$rep_aid[$i]["id_aid"] = mysql_result($req_aid, $i, "id_aid");
 		$recup_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$rep_aid[$i]["id_aid"]."'"));
 		echo '
-		<option value="AID:'.$rep_aid[$i]["id_aid"].'">AID : '.$recup_nom_aid["nom"].'</option>';
+		<option value="AID|'.$rep_aid[$i]["id_aid"].'">AID : '.$recup_nom_aid["nom"].'</option>';
 	}
 	echo "\n";
 ?>
@@ -731,7 +731,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 // Deuxième étape
 if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initial != '' ) AND $msg_erreur === '') {
 	// on vérifie que l'enseignement envoyé n'est pas une AID
-	$test = explode(":", $classe);
+	$test = explode("|", $classe);
 	if ($test[0] == "AID") {
 		// On récupère les infos sur l'AID
 		$aid_nom = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$test[1]."'"));

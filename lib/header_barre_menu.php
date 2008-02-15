@@ -23,9 +23,9 @@ if (!checkAccess()) {
 			$queryG = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$cours_actu."'");
 			$groupe_actu = mysql_fetch_array($queryG);
 			// Il faudrait vérifier si ce n'est pas une AID
-			$test = explode($groupe_actu);
+			$test = explode("|", $groupe_actu["id_groupe"]);
 			if ($test[0] == "AID") {
-				$groupe_abs = '';
+				$groupe_abs = '?groupe='.$groupe_actu["id_groupe"].'&amp;menuBar=ok';
 				$groupe_text = '';
 			}else{
 				$groupe_text = '?id_groupe='.$groupe_actu["id_groupe"].'&amp;year='.date("Y").'&amp;month='.date("n").'&amp;day='.date("d").'&amp;edit_devoir=';
