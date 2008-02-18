@@ -74,6 +74,14 @@ function verif_date($date_fr)
 	    else { if (isset($_GET['type'])) {$type=$_GET['type'];} if (isset($_POST['type'])) {$type=$_POST['type'];} }
 	if (empty($_GET['avec_adresse_responsable']) AND empty($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable="";}
 	    else { if (isset($_GET['avec_adresse_responsable'])) {$avec_adresse_responsable=$_GET['avec_adresse_responsable'];} if (isset($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable=$_POST['avec_adresse_responsable'];} }
+
+    //=========================
+	//AJOUT: eric 16022008
+    if (empty($_GET['choix_adr_parent']) AND empty($_POST['choix_adr_parent'])) {$choix_adr_parent="";}
+	    else { if (isset($_GET['choix_adr_parent'])) {$choix_adr_parent=$_GET['choix_adr_parent'];} if (isset($_POST['choix_adr_parent'])) {$choix_adr_parent=$_POST['choix_adr_parent'];} }
+	//=========================		
+		
+		
 	if (empty($_GET['active_entete_regroupement']) and empty($_POST['active_entete_regroupement'])) {$active_entete_regroupement="";}
 	    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
@@ -123,6 +131,12 @@ function verif_date($date_fr)
 	//=========================
 	$_SESSION['type'] = $type;
 	$_SESSION['avec_adresse_responsable'] = $avec_adresse_responsable;
+	
+	//=========================
+	//AJOUT: eric 16022008
+	$_SESSION['choix_adr_parent'] = $choix_adr_parent;
+	//=========================
+	
 	$_SESSION['date_debut_aff'] = $date_debut;
 	$_SESSION['date_fin_aff'] = $date_fin;
 	$_SESSION['active_entete_regroupement'] = $active_entete_regroupement;
@@ -887,7 +901,21 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			//=================================
 			// MODIF: chapel 20071019
 			?>
-          <span id='ligne_adresse_parent'><br /><input type="checkbox" name="avec_adresse_responsable" id="avec_adresse_responsable" value="1" <?php if(isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_adresse_responsable" style="cursor: pointer;">Afficher les adresses responsables.</label></span>
+		  <div style="text-align: left;">
+            <span id='ligne_adresse_parent'><br />
+		    <input type="checkbox" name="avec_adresse_responsable" id="avec_adresse_responsable" value="1" <?php if(isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_adresse_responsable" style="cursor: pointer;">Afficher les adresses responsables.</label>
+		    <br/>
+			<!-- DEBUT AJOUT Eric 16022008-->
+			
+			<b>choix de l'adresse à imprimer</b>
+				<br /><input name="choix_adr_parent" id="choix_adr_parent1" value="1" type="radio" <?php if(isset($choix_adr_parent) and ( $choix_adr_parent === '1' or $choix_adr_parent == '' ) ) { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent1" style="cursor: pointer;"> Tous les Responsables 1</label>
+				<br /><input name="choix_adr_parent" id="choix_adr_parent2" value="2" type="radio" <?php if(isset($choix_adr_parent) and $choix_adr_parent === '2') { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent2" style="cursor: pointer;">Tous les Responsables 1 et uniquement les responsables 2 différent du responsable 1</label>
+				<br /><input name="choix_adr_parent" id="choix_adr_parent3" value="3" type="radio" <?php if(isset($choix_adr_parent) and $choix_adr_parent === '3') { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent3" style="cursor: pointer;">Tous les Responsables 2</label>
+				<br /><input name="choix_adr_parent" id="choix_adr_parent4" value="4" type="radio" <?php if(isset($choix_adr_parent) and $choix_adr_parent === '4') { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent4" style="cursor: pointer;">Uniquement les Responsables 2 différent du responsable 1</label>
+
+			</div>
+			<!-- FIN AJOUT Eric 16022008-->
+		  </span>
           <br />
           <br />Type
           <select tabindex="5" name="type" id="type">
