@@ -203,6 +203,7 @@ if ($action == "upload_file") {
 						if ($tab[0] == "ETABLISSEMENT") {
 							$nbre_lignes = 0;
 						}else{
+							// Difficile en l'état de faire mieux que ne rien faire.
 							echo '
 							<p>A priori, l\'établissement '.$tab[1].' est le bon.</p>
 							<p>Cliquez sur le bouton ci-dessous pour passer à l\'étape suivante.</p>';
@@ -215,7 +216,8 @@ if ($action == "upload_file") {
 							echo 'Il y a 53 semaines.<br />'."\n";
 						}else{
 							// on va aller remplir la table edt_semaines $tab[0] est le numéro de la semaine et $tab[1] son type (A/B, 1/2,...)
-							echo '<input type="hidden" name="semaine_'.$tab[0].'" value="'.$tab[1].'" />'."\n";
+							// le fichier txt commence par le rne établissement puis le n° de la semaine et sa valeur
+							echo '<input type="hidden" name="semaine_'.$tab[1].'" value="'.$tab[2].'" />'."\n";
 							$nbre_lignes = 53;
 						}
 					}elseif($etape == 8){
@@ -236,6 +238,14 @@ if ($action == "upload_file") {
 						}else{
 							// On cherche dans la table edt_init les concordances et on crée les cours en question
 							// ESSAI : on propose des champs hidden avec toutes les infos et c'est edt_init_concordance.php qui fait le travail
+								$cours = '';
+							for($a = 0; $a < 11; $a++){
+								if (isset($tab[$a])) {
+									$cours .= $tab[$a].'|';
+								}else{
+									$cours .= 'rien|';
+								}
+							}
 							echo '<input type="hidden" name="cours_'.$numero.'" value="'.$cours.'" />'."\n";
 						}
 					}

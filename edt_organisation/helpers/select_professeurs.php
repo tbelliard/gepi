@@ -26,7 +26,7 @@ echo '
 	<select name ="'.$increment.'">
 		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
-	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur'");
+	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' ORDER BY nom, prenom");
 	$nbre = mysql_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
 		$utilisateur[$i] = mysql_result($query, $i, "login");

@@ -33,7 +33,7 @@ echo '
 		$nom[$i] = mysql_result($query, $i, "nom_complet");
 		$indice_aid[$i] = mysql_result($query, $i, "indice_aid");
 		// On récupère le nom précis de cette AID
-		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."'");
+		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
 		$nom_aid = mysql_result($query2, "nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
@@ -43,7 +43,7 @@ echo '
 	echo '
 			</optgroup>
 			<optgroup label="Les groupes">';
-	$query = mysql_query("SELECT id, description FROM groupes");
+	$query = mysql_query("SELECT id, description FROM groupes ORDER BY description");
 	$nbre_groupes = mysql_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
 		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
