@@ -38,7 +38,7 @@ echo '
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
 		echo '
-		<option value="'.$indice_aid[$i].'">'.$nom[$i].' ('.$nom_aid.' avec '.$nbre_eleves.' élèves)</option>';
+		<option value="AID|'.$indice_aid[$i].'">'.$nom[$i].' ('.$nom_aid.' avec '.$nbre_eleves.' élèves)</option>';
 	}
 	echo '
 			</optgroup>

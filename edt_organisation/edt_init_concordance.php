@@ -3,7 +3,7 @@
 /**
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -73,13 +73,18 @@ if ($etape != NULL) {
 				echo '
 				<h3>L\'opération est réussie</h3>
 				<p>Il y a eu '.$nbre_ligne.' enregistrements dans la base</p>
-				';
+				<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
 			}else{
 				// Il y a eu des problèmes et on affiche l'erreur
 				echo $erreur;
 			}
 		}else{
 			// On ne fait rien puisque cette table est initialisée à la base (/sql/data_gepi.sql)
+			$prochaine_etape = $etape + 1;
+			$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
+			echo '
+			<h3>L\'opération a réussi</h3>
+			<a href="./edt_init_texte.php">Revenez en arrière et recommencer la même opération pour l\'étape '.$prochaine_etape.'.</a>';
 		}
 
 
@@ -107,6 +112,11 @@ if ($etape != NULL) {
 				' Grpe/entière : '.$elements_cours[10].'<br />'."\n";
 			// On cherche à retrouver la salle du cours
 			$salle = renvoiIdSalle($elements_cours[9]);
+			if ($salle == "inc") {
+				// on insère cette nouvelle classe dans la table adéquate
+				$query = mysql_query("INSERT INTO classe_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
+				$salle = mysql_insert_id();
+			}
 			// On veut récupérer le jour de la semaine
 			$jour = renvoiJour($elements_cours[2]);
 			// Ainsi que l'id du créneau id_definie_periode

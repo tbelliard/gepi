@@ -8,7 +8,23 @@
  * Ensemble des fonctions qui renvoient la concordance pour le fichier txt
  * de l'import des EdT.
  *
- * @copyright 2008
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 // le login du prof
@@ -29,7 +45,12 @@ function renvoiIdSalle($chiffre){
 	// On cherche l'Id de la salle
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$chiffre."'");
 	if ($query) {
-		$retour = mysql_result($query, "id_salle");
+		$reponse = mysql_result($query, "id_salle");
+		if ($reponse != '') {
+			$retour = $reponse;
+		}else{
+			$retour = "inc";
+		}
 	}else{
 		$retour = 'erreur_salle';
 	}
@@ -169,9 +190,30 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 
 }
 
+// Renvoi des concordances
+function renvoiConcordances($chiffre, $etape){
+	// On récupère dans la table edt_init la bonne concordance
+	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières
+	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
+	if ($query) {
+		$retour = mysql_result($query, "nom_gepi");
+	}else{
+		$retour = "inc";
+	}
+
+	return $retour;
+}
+
 // L'id_groupe
 function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt){
 	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autresinfos ne sont pas encore "concordés"
-
+	// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
+	$classe = renvoiConcordances($classe_txt, 2);
+	$matiere = renvoiConcordances($matiere_txt, 5);
+	$grp = renvoiConcordances($grp_txt, 3);
+	// On commence par le groupe. S'il existe, on le renvoie tout de suite
+	if ($grp != "aucun") {
+		return $grp;
+	}
 }
 ?>

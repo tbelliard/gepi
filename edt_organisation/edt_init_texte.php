@@ -3,7 +3,7 @@
 /**
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -83,10 +83,10 @@ if ($query) {
 		<h3>Vous êtes actuellement à l\'étape numéro'.$etape_effectuee["nom_export"].'</h3>
 	';
 }else{
-	echo '
+	$aff_etape = '
 	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
 }
-
+echo $aff_etape;
 // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
 // en proposant des champs de saisie pour modifier les données si on le souhaite
 if ($action == "upload_file") {
