@@ -1967,16 +1967,26 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			}
 		}
 
+		$rdbt = '';
 		if($affiche_dp[$classe_id]==='1') {
+		    if($affiche_doublement[$classe_id]==='1') {
+				if($doublement[$i]!="") {
+					$rdbt = " ; ".$doublement[$i];
+				}
 			if($dp[$i]!="") {
-				$pdf->Cell(90,4, $dp[$i],0,2,'');
+				$pdf->Cell(90,4, $dp[$i].$rdbt,0,2,'');
+			} else {
+			  $pdf->Cell(90,4,$rdbt,0,2,'');
+			}
+			}
+		} else {
+			if($affiche_doublement[$classe_id]==='1') {
+				if($doublement[$i]!="") {
+					$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
+				}
 			}
 		}
-		if($affiche_doublement[$classe_id]==='1') {
-			if($doublement[$i]!="") {
-				$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
-			}
-		}
+		
 		if($affiche_nom_court[$classe_id]==='1') {
 			if($classe_nomcour[$i]!="") {
 				$pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,'');
