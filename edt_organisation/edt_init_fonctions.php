@@ -1,0 +1,177 @@
+<?php
+
+/**
+ *
+ *
+ * @version $Id$
+ *
+ * Ensemble des fonctions qui renvoient la concordance pour le fichier txt
+ * de l'import des EdT.
+ *
+ * @copyright 2008
+ */
+
+// le login du prof
+function renvoiLoginProf($numero){
+	// on cherche dans la base
+	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$numero."' AND ident_export = '1'");
+	if ($query) {
+		$retour = mysql_result($query, "nom_gepi");
+	}else{
+		$retour = 'erreur_prof';
+	}
+
+	return $retour;
+}
+
+// la salle
+function renvoiIdSalle($chiffre){
+	// On cherche l'Id de la salle
+	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$chiffre."'");
+	if ($query) {
+		$retour = mysql_result($query, "id_salle");
+	}else{
+		$retour = 'erreur_salle';
+	}
+
+	return $retour;
+}
+
+// le jour
+function renvoiJour($diminutif){
+	// Les jours sont de la forme lu, Ma, Je,...
+	switch ($diminutif) {
+	case 'Lu':
+	    $retour = 'lundi';
+	    break;
+	case 'Ma':
+	    $retour = 'mardi';
+	    break;
+	case 'Me':
+	    $retour = 'mercredi';
+	    break;
+	case 'Je':
+	    $retour = 'jeudi';
+	    break;
+	case 'Ve':
+	    $retour = 'vendredi';
+	    break;
+	case 'Sa':
+	    $retour = 'samedi';
+	    break;
+	case 'Di':
+	    $retour = 'dimanche';
+	    break;
+	default :
+		$retour = 'inc';
+	}
+}
+
+// renvoie le nom de la bonne table des créneaux
+function nomTableCreneau($jour){
+	$jour_semaine = array("dimanche", "lundi", "mardi", "mercerdi", "jeudi", "vendredi", "samedi");
+		$numero_jour = NULL;
+	for($t = 0; $t < 7; $t++){
+		// On cherche à faire correspondre le numero_jour avec ce que donne la fonction php date("w")
+		if ($jour == $jour_semaine[$t]) {
+			$numero_jour = $t;
+		}else{
+			// A priori il n'y a rien à faire
+		}
+	}
+	// Ensuite, en fonction du résultat, on teste et on renvoie la bonne table des créneaux
+	if ($numero_jour == getSettingValue("jour_different")) {
+		$retour = 'absences_creneaux_bis';
+	}else{
+		$retour = 'absences_creneaux';
+	}
+
+	return $retour;
+}
+// Id du créneau de début
+function renvoiIdCreneau($heure_brute, $jour){
+	// On transforme $heure_brute en un horaire de la forme hh:mm:ss
+	$minutes = substr($heure_brute, 2);
+	$heures = substr($heure_brute, 0, -2);
+	$heuredebut = $heures.':'.$minutes.':00';
+	$table = nomTableCreneau($jour);
+	$query = mysql_query("SELECT id_definie_periode FROM ".$table." WHERE
+					heuredebut_definie_periode <= '".$heuredebut."' AND
+					heurefin_definie_periode > '".$heuredebut."'")
+						OR DIE('Erreur renvoiIdCreneau : '.mysql_error());
+	if ($query) {
+		$retour = mysql_result($query, "id_definie_periode");
+	}else{
+		$retour = 'erreur_creneau';
+	}
+
+	return $retour;
+}
+
+// durée d'un créneau dans Gepi
+function dureeCreneau(){
+	// On récupère les infos sur un créneau
+	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux LIMIT 1"));
+	$nombre_mn_deb = (substr($deb, 0, -5) * 60) + (substr($deb, 3, -3));
+	$nombre_mn_fin = (substr($fin, 0, -5) * 60) + (substr($fin, 3, -3));
+	$retour = $nombre_mn_fin - $nombre_mn_deb;
+
+	return $retour;
+}
+
+// La durée
+function renvoiDuree($deb, $fin){
+	// On détermine la durée d'un cours
+	$duree_cours_base = dureeCreneau();
+	$nombre_mn_deb = (substr($deb, 0, -2) * 60) + (substr($deb, 2));
+	$nombre_mn_fin = (substr($fin, 0, -2) * 60) + (substr($fin, 2));
+	$duree_mn = $nombre_mn_fin - $nombre_mn_deb;
+	// le nombre d'heures entières
+	$nbre = $duree_mn / $duree_cours_base;
+	// le nombre de minutes qui restent
+	$mod = $duree_mn % $duree_cours_base;
+	// Et on analyse ce dernier (attention, la durée se compte en demi-créneaux)
+	if ($mod >= (($duree_cours_base * 2) / 3)) {
+		// Si c'est supérieur au 2/3 de la durée du cours, alors c'est une heure entière
+		$retour = ($nbre*2) + 2;
+	}elseif($mod > (($duree_cours_base) / 3)) {
+		// Si c'est supérieur au tiers de la durée d'un cours, alors c'est un demi-créneau de plus
+		$retour = ($nbre*2) + 1;
+	}else{
+		// sinon, c'est un souci de quelques minutes sans importance
+		$retour = $nbre*2;
+	}
+
+	return $retour;
+}
+
+// Heure debut decalée ou pas
+function renvoiDebut($id_creneau, $heure_deb, $jour){
+	// On détermine la durée d'un cours
+	$duree_cours_base = dureeCreneau();
+	// nbre de mn de l'heure de l'import
+	$nombre_mn_deb = (substr($heure_deb, 0, -2) * 60) + (substr($heure_deb, 2));
+	// Nombre de mn de l'horaire de Gepi
+	$table = nomTableCreneau($jour);
+	$heure = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
+	$decompose = explode(":", $heure["heuredebut_definie_periode"]);
+	$nbre_mn_gepi = ($decompose[0] * 60) + $decompose[1];
+	// On fait la différence entre les deux horaires qui ont été convertis en nombre de minutes
+	$diff = $nombre_mn_deb - $nbre_mn_gepi;
+	// et on analyse cette différence
+	if ($diff === 0 OR $diff < ($duree_cours_base / 4)) {
+		$retour = '0';
+	}elseif($diff > ($duree_cours_base / 3) AND $diff < (($duree_cours_base / 3) * 2)){
+		$retour = '0.5';
+	}else{
+		$retour = '0';
+	}
+
+}
+
+// L'id_groupe
+function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt){
+	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autresinfos ne sont pas encore "concordés"
+
+}
+?>

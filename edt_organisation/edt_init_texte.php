@@ -72,6 +72,20 @@ $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $txt_file = isset($_FILES["txt_file"]) ? $_FILES["txt_file"] : NULL;
 $truncate_cours = isset($_POST["truncate_edt"]) ? $_POST["truncate_edt"] : NULL;
 $etape = NULL;
+$aff_etape = NULL;
+
+// On teste d'abord pour savoir à quelle étape on est
+$query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
+// On affiche le numéro de l'étape
+if ($query) {
+	$etape_effectuee = mysql_fetch_array($query);
+	$aff_etape = '
+		<h3>Vous êtes actuellement à l\'étape numéro'.$etape_effectuee["nom_export"].'</h3>
+	';
+}else{
+	echo '
+	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
+}
 
 // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
 // en proposant des champs de saisie pour modifier les données si on le souhaite
@@ -94,8 +108,6 @@ if ($action == "upload_file") {
 			} // fin du !fp
 
 			// On peut enfin s'attaquer au travail sur le fichier
-			// On teste d'abord pour savoir à quelle étape on est
-			$query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fichierTexte'");
 			$nbre_rep = mysql_num_rows($query);
 			if ($nbre_rep === 0) {
 				// C'est qu'on est au tout début, au premier passage et donc
@@ -175,7 +187,7 @@ if ($action == "upload_file") {
 							echo '<br />'."\n";
 						}
 					}elseif($etape == 4){
-						// On traite des "PARTIE"
+						// On traite des "PARTIES"
 						if ($tab[0] == "PARTIE") {
 							$nbre_lignes = $tab[1];
 							echo 'Il y a '.$tab[1].' "parties".<br />'."\n";
@@ -215,10 +227,11 @@ if ($action == "upload_file") {
 							$nbre_lignes = 53;
 							echo 'Il y a 53 semaines.<br />'."\n";
 						}else{
-							// on va aller remplir la table edt_semaines $tab[0] est le numéro de la semaine et $tab[1] son type (A/B, 1/2,...)
+							// on va aller remplir la table edt_semaines $tab[1] est le numéro de la semaine et $tab[2] son type (A/B, 1/2,...)
 							// le fichier txt commence par le rne établissement puis le n° de la semaine et sa valeur
 							echo '<input type="hidden" name="semaine_'.$tab[1].'" value="'.$tab[2].'" />'."\n";
 							$nbre_lignes = 53;
+							// voir plus bas le champ checkbox sur le choix de vider ou non la table edt_semaines
 						}
 					}elseif($etape == 8){
 						// On traite des "CONGES"
@@ -252,7 +265,14 @@ if ($action == "upload_file") {
 					$numero++;
 				}
 			}
+			// Si c'est l'étape 7 (le type des semaines) on propose de vider la table edt_semaines ou pas.
+			if ($etape == 7) {
+				echo '
+				<label for="etapeSemaines">Si vous n\'avez pas encore initialisé le type des semaines de l\'année, cochez : </label>
+				<input type="checkbox" id="etapeSemaines" name="effacer_semaines" value="ok" />
+				';
 
+			}
 			// on ferme le formulaire
 			echo '
 				<input type="hidden" name="etape" value="'.$etape.'" />

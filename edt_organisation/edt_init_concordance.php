@@ -38,6 +38,7 @@ if ($resultat_session == 'c') {
 // On initialise les variables
 $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $nbre_ligne = isset($_POST["nbre_ligne"]) ? $_POST["nbre_ligne"] : NULL;
+$effacer_semaines = isset($_POST["effacer_semaines"]) ? $_POST["effacer_semaines"] : NULL;
 $values = '';
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 ?>
@@ -56,12 +57,36 @@ if ($etape != NULL) {
 	// On prend d'abord le cas des semaines
 	if ($etape == 7) {
 		// On récupère les données pour les sauvegarder dans la table edt_semaines
-		// Mais avant on vérifie si cette table n'est pas déjà remplie
+		// Si c'est demandé, on vide la table edt_semaines
+		if ($effacer_semaines == "ok") {
+			// alors on met à jour la table
+				$erreur = 'non'; // sert à enregistrer les erreurs du update
+				$type_semaine = array();
+			for($s = 1; $s < ($nbre_ligne + 1); $s++){
+				$type_semaine[$s] = isset($_POST["semaine_".$s]) ? $_POST["semaine_".$s] : NULL;
+				$update = mysql_query("UPDATE edt_semaines SET type_edt_semaine = '".$type_semaine[$s]."' WHERE num_edt_semaine = ".$s."");
+				if (!$update) {
+					$erreur .= 'erreur'.$s.'('.mysql_error().') | ';
+				}
+			}
+			if ($erreur == 'non') {
+				echo '
+				<h3>L\'opération est réussie</h3>
+				<p>Il y a eu '.$nbre_ligne.' enregistrements dans la base</p>
+				';
+			}else{
+				// Il y a eu des problèmes et on affiche l'erreur
+				echo $erreur;
+			}
+		}else{
+			// On ne fait rien puisque cette table est initialisée à la base (/sql/data_gepi.sql)
+		}
 
 
 	// Puis on prend le cas des cours
 	}elseif($etape == 9){
 		// Pour les cours, on fait le lien avec les infos déjà rentrées dans la table edt_init
+		require_once("edt_init_fonctions.php");
 		// On explose la valeur
 		for($c = 1; $c < $nbre_ligne + 1; $c++){
 			$cours[$c] = isset($_POST["cours_".$c]) ? $_POST["cours_".$c] : NULL;
@@ -80,6 +105,24 @@ if ($etape != NULL) {
 				' matière : '.$elements_cours[8].
 				' salle : '.$elements_cours[9].
 				' Grpe/entière : '.$elements_cours[10].'<br />'."\n";
+			// On cherche à retrouver la salle du cours
+			$salle = renvoiIdSalle($elements_cours[9]);
+			// On veut récupérer le jour de la semaine
+			$jour = renvoiJour($elements_cours[2]);
+			// Ainsi que l'id du créneau id_definie_periode
+			$debut = renvoiIdCreneau($elements_cours[3], $jour);
+			// La durée (est-ce qu'on la met à 1 ? )
+			$duree = renvoiDuree($elements_cours[3], $elements_cours[4]);
+			// on détermine si le cours commence au début ou au milieu d'un créneau
+			$debut_dec = renvoiDebut($debut, $elements_cours[3], $jour);
+			// Il reste à afficher le login du professeur
+			$prof = renvoiLoginProf($elements_cours[5]);
+			// On cherche à reconstituer le groupe/enseignement/AID concerné
+			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7]);
+			// Au final, on insère dans la table edt_cours
+			$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
+						VALUES ('', '".$groupe."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$elements_cours[1]."', '0', '0', '".$prof."') ";
+			$query = mysql_query($sql) OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.mysql_error());
 
 		} // for($c = 0; $c < $nbre_ligne; $c++)  (de l'étape 9)
 
@@ -102,7 +145,7 @@ if ($etape != NULL) {
 		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
 					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 
-		// si l'envoi est une réussite alors on pass à l'étape 2
+		// si l'envoi est une réussite alors on passe à l'étape suivante
 		if ($envoie) {
 			$prochaine_etape = $etape + 1;
 			$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte'");
