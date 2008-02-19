@@ -60,7 +60,7 @@ require_once("../lib/header.inc");
 // Accueil
 if (!isset($_GET['action'])) {
     echo "<p class=bold>";
-    echo "|<a href=\"../accueil.php\">Retour</a> |";
+    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
     echo "<b>Votre choix : </b>\n";
     echo "<ul>";
@@ -83,7 +83,7 @@ if (!isset($_GET['action'])) {
 // Affichage de la liste des projets
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     echo "<p class=bold>";
-    echo "|<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\">Retour</a> |";
+    echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
 
     echo "<h2>Liste des ".$nom_projet."</h2>";
@@ -323,7 +323,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     if ($order_by2 == "classe") $order_by2 = "c.classe, e.nom, e.prenom";
     if ($order_by2 == "projet") $order_by2 = "a.nom, e.nom, e.prenom";
     echo "<p class=bold>";
-    echo "|<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\">Retour</a> |";
+    echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
     echo "<h2>Liste des élèves</h2>";
     echo "Cliquez sur l'en-tête de la première ligne pour classer les élèves par nom et prénom, classe ou projet<br /><br />";
@@ -390,7 +390,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     if ($order_by2 == "nom") $order_by2 = "e.nom, e.prenom";
     if ($order_by2 == "classe") $order_by2 = "c.classe, e.nom, e.prenom";
     echo "<p class=bold>";
-    echo "|<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\">Retour</a> |";
+    echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
     echo "<h2>Liste des élèves non affectés</h2>";
     echo "Cliquez sur l'en-tête de la première ligne pour classer les élèves par nom et prénom ou classe<br /><br />";

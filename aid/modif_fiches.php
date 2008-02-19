@@ -357,14 +357,14 @@ obj.checked = false;
 <?php
 }
 
-echo "<p class=bold>|";
-echo "<a href=\"".$_SESSION['retour']."\">Retour</a>|";
+echo "<p class=bold>";
+echo "<a href=\"".$_SESSION['retour']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if ($action == "visu") {
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,"","")) {
-        echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif'>Modifier la fiche</a>|";
+        echo " | <a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif'>Modifier la fiche</a>";
     }
 } else {
-    echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=visu'>Visualiser la fiche</a>|";
+    echo " | <a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=visu'>Visualiser la fiche</a>";
 }
 echo "</p>\n";
 // Nom du projet

@@ -51,8 +51,8 @@ $titre_page = "Visualisation des fiches ".$nom_projet;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold>|";
-echo "<a href=\"index_fiches.php?indice_aid=".$indice_aid."\">Retour</a>|";
+echo "<p class=bold>";
+echo "<a href=\"index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 echo "<center><H3>Liste des projets ".$nom_projet."</H3></center>";
 
