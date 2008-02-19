@@ -72,8 +72,7 @@ require_once("../lib/header.inc");
 ?>
 
 <p class=bold>
-|<a href="../accueil.php">Retour</a>
-|
+<a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
 echo getSettingValue("mod_inscription_explication");
