@@ -196,9 +196,14 @@ function renvoiConcordances($chiffre, $etape){
 	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières
 	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
 	if ($query) {
-		$retour = mysql_result($query, "nom_gepi");
+		$reponse = mysql_result($query, "nom_gepi");
+		if ($reponse == '') {
+			$retour = "inc";
+		}else{
+			$retour = $reponse;
+		}
 	}else{
-		$retour = "inc";
+		$retour = "erreur_".$etape;
 	}
 
 	return $retour;
@@ -210,10 +215,35 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt)
 	// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
 	$classe = renvoiConcordances($classe_txt, 2);
 	$matiere = renvoiConcordances($matiere_txt, 5);
+	$partie = renvoiConcordances($partie_txt, 4);
 	$grp = renvoiConcordances($grp_txt, 3);
+
 	// On commence par le groupe. S'il existe, on le renvoie tout de suite
 	if ($grp != "aucun") {
 		return $grp;
-	}
+	}elseif($partie != "aucun"){
+		// Pour le moment, on n'utilise pas ça
+	}else{
+		// On récupère la classe, la matière et le professeur
+		// et on cherche un enseignement qui pourrait correspondre avec
+		$req_groupe = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE
+						jgp.login = '".$prof."' AND
+						jgc.id_classe = '".$classe."' AND
+						jgm.id_matiere = '".$matiere."' AND
+						jgp.id_groupe = jgc.id_groupe AND
+						jgp.id_groupe = jgm.id_groupe");
+
+    	$rep_groupe = mysql_fetch_array($req_groupe);
+    	$nbre_rep = mysql_num_rows($req_groupe);
+    	// On vérifie ce qu'il y a dans la réponse
+    	if ($nbre_rep === 0) {
+				$retour = "aucun";
+		} elseif ($nbre_rep > 1) {
+    			$retour = "plusieurs";
+    	}
+
+	} // fin du else
+
+	return $retour;
 }
 ?>

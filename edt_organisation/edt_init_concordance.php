@@ -110,6 +110,7 @@ if ($etape != NULL) {
 				' matière : '.$elements_cours[8].
 				' salle : '.$elements_cours[9].
 				' Grpe/entière : '.$elements_cours[10].'<br />'."\n";
+
 			// On cherche à retrouver la salle du cours
 			$salle = renvoiIdSalle($elements_cours[9]);
 			if ($salle == "inc") {
@@ -129,10 +130,19 @@ if ($etape != NULL) {
 			$prof = renvoiLoginProf($elements_cours[5]);
 			// On cherche à reconstituer le groupe/enseignement/AID concerné
 			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7]);
-			// Au final, on insère dans la table edt_cours
-			$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
-						VALUES ('', '".$groupe."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$elements_cours[1]."', '0', '0', '".$prof."') ";
-			$query = mysql_query($sql) OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.mysql_error());
+				if ($groupe == "aucun") {
+					//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					//=====================================================================
+				}elseif($groupe == "plusieurs"){
+
+				}else{
+					// Au final, on insère dans la table edt_cours
+					$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
+								VALUES ('', '".$groupe_insert."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$elements_cours[1]."', '0', '0', '".$prof."') ";
+					$query = mysql_query($sql) OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.mysql_error());
+
+				}
 
 		} // for($c = 0; $c < $nbre_ligne; $c++)  (de l'étape 9)
 
