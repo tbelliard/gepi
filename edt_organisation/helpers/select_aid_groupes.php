@@ -27,18 +27,19 @@ echo '
 		<option value="aucun">Liste des AID et des groupes</option>
 			<optgroup label="Les AID">';
 	// on recherche la liste des AID
-	$query = mysql_query("SELECT nom_complet, indice_aid FROM aid_config");
+	$query = mysql_query("SELECT id, nom FROM aid");
 	$nbre = mysql_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
-		$nom[$i] = mysql_result($query, $i, "nom_complet");
-		$indice_aid[$i] = mysql_result($query, $i, "indice_aid");
-		// On récupère le nom précis de cette AID
+		$nom[$i] = mysql_result($query, $i, "nom");
+		$indice_aid[$i] = mysql_result($query, $i, "id");
+		/*/ On récupère le nom précis de cette AID
 		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
 		$nom_aid = mysql_result($query2, "nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
+		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/
 		echo '
-		<option value="AID|'.$indice_aid[$i].'">'.$nom[$i].' ('.$nom_aid.' avec '.$nbre_eleves.' élèves)</option>';
+		<option value="AID|'.$indice_aid[$i].'">'.$nom[$i].'</option>';
 	}
 	echo '
 			</optgroup>

@@ -40,6 +40,7 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $nbre_ligne = isset($_POST["nbre_ligne"]) ? $_POST["nbre_ligne"] : NULL;
 $effacer_semaines = isset($_POST["effacer_semaines"]) ? $_POST["effacer_semaines"] : NULL;
 $values = '';
+$msg = NULL; // le message destiné aux lignes non reconnues par l'import
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -98,7 +99,7 @@ if ($etape != NULL) {
 			$elements_cours = explode("|", $cours[$c]);
 			// Si l'enregistrement n'est pas bon (soit que Gepi ne retrouve pas l'enseignement / AID soit que
 			// la base réagit mal, on affiche toutes les infos sur la ligne qui n'est pas enregistrée
-			echo '<b>Ligne n° '.$c.'</b>
+			/*echo '<b>Ligne n° '.$c.'</b>
 				  classe : '.$elements_cours[0].
 				' type semaine : '.$elements_cours[1].
 				' jour : '.$elements_cours[2].
@@ -110,13 +111,20 @@ if ($etape != NULL) {
 				' matière : '.$elements_cours[8].
 				' salle : '.$elements_cours[9].
 				' Grpe/entière : '.$elements_cours[10].'<br />'."\n";
-
+			*/
 			// On cherche à retrouver la salle du cours
 			$salle = renvoiIdSalle($elements_cours[9]);
 			if ($salle == "inc") {
 				// on insère cette nouvelle classe dans la table adéquate
-				$query = mysql_query("INSERT INTO classe_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
+				$query = mysql_query("INSERT INTO salle_cours SET numero_salle = '".$elements_cours[9]."', nom_salle = ''");
 				$salle = mysql_insert_id();
+			}
+
+			// Le type de semaine
+			if ($elements_cours[1] == '') {
+				$week_type = "0";
+			}else{
+				$week_type = $elements_cours[1];
 			}
 			// On veut récupérer le jour de la semaine
 			$jour = renvoiJour($elements_cours[2]);
@@ -130,17 +138,28 @@ if ($etape != NULL) {
 			$prof = renvoiLoginProf($elements_cours[5]);
 			// On cherche à reconstituer le groupe/enseignement/AID concerné
 			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7]);
+				$choix_groupe = "non";
 				if ($groupe == "aucun") {
-					//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					//=====================================================================
+					// On enregistre quand même le cours avec "inc" comme id_groupe
+					$groupe_insert = "inc";
+					//$choix_groupe = "oui";
+					$msg .= '<p>Pour la ligne n° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer.</p>';
 				}elseif($groupe == "plusieurs"){
+					// On propose un message
+					$msg .= '<p>Pour la ligne n° '.$c.', Gepi renvoie trop de réponses possibles.
+							Impossible de l\'enregistrer.</p>';
 
 				}else{
+					// Il n'y a qu'une réponse
+					$choix_groupe = "oui";
+					$groupe_insert = $groupe;
+				}
+				if ($choix_groupe == "oui") {
 					// Au final, on insère dans la table edt_cours
 					$sql = "INSERT INTO edt_cours (id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, id_calendrier, modif_edt, login_prof)
-								VALUES ('', '".$groupe_insert."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$elements_cours[1]."', '0', '0', '".$prof."') ";
-					$query = mysql_query($sql) OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.mysql_error());
+								VALUES ('', '".$groupe_insert."', '".$salle."', '".$jour."', '".$debut."', '".$duree."', '".$debut_dec."', '".$week_type."', '0', '0', '".$prof."') ";
+					$query = mysql_query($sql)
+								OR DIE('Erreur dans l\'enregistrement du cours '.$sql.'<br /> -> '.mysql_error());
 
 				}
 
@@ -187,7 +206,12 @@ if ($etape != NULL) {
 
 	} // fin du else
 } // fin du if ($etape != NULL)
-
+if (isset($msg) AND $msg != '') {
+	echo $msg;
+	echo '
+	<p>Vous pouvez aller vérifier les emplois du temps des professeurs. <a href="index_edt.php">REVENIR</a></p>
+	';
+}
 
 ?>
 </body>

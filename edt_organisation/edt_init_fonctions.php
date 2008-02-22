@@ -43,13 +43,16 @@ function renvoiLoginProf($numero){
 // la salle
 function renvoiIdSalle($chiffre){
 	// On cherche l'Id de la salle
-	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$chiffre."'");
+		$retour = 'erreur_salle';
+	// On ne prend que les 10 premières lettres du numéro ($chiffre)
+	$cherche = substr($chiffre, 0, 10);
+	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
 		$reponse = mysql_result($query, "id_salle");
-		if ($reponse != '') {
-			$retour = $reponse;
-		}else{
+		if ($reponse == '') {
 			$retour = "inc";
+		}else{
+			$retour = $reponse;
 		}
 	}else{
 		$retour = 'erreur_salle';
@@ -86,6 +89,7 @@ function renvoiJour($diminutif){
 	default :
 		$retour = 'inc';
 	}
+	return $retour;
 }
 
 // renvoie le nom de la bonne table des créneaux
@@ -133,6 +137,8 @@ function renvoiIdCreneau($heure_brute, $jour){
 function dureeCreneau(){
 	// On récupère les infos sur un créneau
 	$creneau = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux LIMIT 1"));
+	$deb = $creneau["heuredebut_definie_periode"];
+	$fin = $creneau["heurefin_definie_periode"];
 	$nombre_mn_deb = (substr($deb, 0, -5) * 60) + (substr($deb, 3, -3));
 	$nombre_mn_fin = (substr($fin, 0, -5) * 60) + (substr($fin, 3, -3));
 	$retour = $nombre_mn_fin - $nombre_mn_deb;
@@ -149,6 +155,7 @@ function renvoiDuree($deb, $fin){
 	$duree_mn = $nombre_mn_fin - $nombre_mn_deb;
 	// le nombre d'heures entières
 	$nbre = $duree_mn / $duree_cours_base;
+	$nbre = settype($nbre,'integer');
 	// le nombre de minutes qui restent
 	$mod = $duree_mn % $duree_cours_base;
 	// Et on analyse ce dernier (attention, la durée se compte en demi-créneaux)
@@ -187,7 +194,7 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 	}else{
 		$retour = '0';
 	}
-
+	return $retour;
 }
 
 // Renvoi des concordances
@@ -215,13 +222,13 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt)
 	// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
 	$classe = renvoiConcordances($classe_txt, 2);
 	$matiere = renvoiConcordances($matiere_txt, 5);
-	$partie = renvoiConcordances($partie_txt, 4);
+	$partie = $partie_txt; //renvoiConcordances($partie_txt, 4);
 	$grp = renvoiConcordances($grp_txt, 3);
 
 	// On commence par le groupe. S'il existe, on le renvoie tout de suite
-	if ($grp != "aucun") {
+	if ($grp != "aucun" AND $grp != '' AND $grp != "inc") {
 		return $grp;
-	}elseif($partie != "aucun"){
+	//}elseif($partie != "aucun" AND $partie != ''){
 		// Pour le moment, on n'utilise pas ça
 	}else{
 		// On récupère la classe, la matière et le professeur
@@ -236,11 +243,13 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt)
     	$rep_groupe = mysql_fetch_array($req_groupe);
     	$nbre_rep = mysql_num_rows($req_groupe);
     	// On vérifie ce qu'il y a dans la réponse
-    	if ($nbre_rep === 0) {
-				$retour = "aucun";
+    	if ($nbre_rep == 0) {
+			$retour = "aucun";
 		} elseif ($nbre_rep > 1) {
-    			$retour = "plusieurs";
-    	}
+    		$retour = "plusieurs";
+    	}else{
+			$retour = $rep_groupe["id_groupe"];
+		}
 
 	} // fin du else
 
