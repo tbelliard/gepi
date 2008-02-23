@@ -1231,7 +1231,7 @@ if(isset($quelles_classes)) {
 
 				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
 
-				echo "<a href='$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
+				echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
 				echo "<img src='../mod_trombinoscopes/images/";
 				if($eleve_sexe=="F") {
 					echo "photo_f.png";
