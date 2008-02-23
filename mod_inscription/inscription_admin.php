@@ -65,10 +65,10 @@ require_once("../lib/header.inc");
 au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.<br />
 <a href="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')">Consultez l'aide</a> pour en savoir plus.
 <br /><br />
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_inscription")=='y') echo " checked"; ?> />
-&nbsp;Activer l'accès au module Inscription<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_inscription")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès au module Inscription</p>
+<label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription")=='y') echo " checked"; ?> />
+&nbsp;Activer l'accès au module Inscription</label><br />
+<label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_inscription")=='n') echo " checked"; ?> />
+&nbsp;Désactiver l'accès au module Inscription</label></p>
 
 <input type="hidden" name="is_posted" value="1" />
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 04/01/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -108,7 +108,7 @@ require_once("../lib/header.inc");
 
 // Ajout d'un item
 if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
-    echo "<p class=bold><a href=\"./inscription_config.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>";
+    echo "<p class=bold><a href=\"./inscription_config.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
 
     echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_config.php\">";
     if (isset($id_inter)) {
@@ -124,8 +124,8 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
         $description = "";
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"ajout\" />\n";
     }
-    echo "<H2>Ajout d'un item</H2>";
-    echo "<p>un item correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>";
+    echo "<H2>Ajout d'un item</H2>\n";
+    echo "<p>un item correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
     echo "<table cellpadding=\"6\">\n";
     echo "<tr><td>Date (au format AAAA/MM/JJ) : </td><td><input type=\"text\" name=\"date\" value=\"$date\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Heure : </td><td><input type=\"text\" name=\"heure\" value=\"$heure\" size=\"20\" /></td></tr>\n";
@@ -138,23 +138,23 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     die();
 }
 
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>";
-echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">";
-echo "<H2>Activation  / Désactivation</H2>";
+echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
+echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">\n";
+echo "<H2>Activation  / Désactivation</H2>\n";
 $active_prof = getSettingValue("active_inscription_utilisateurs");
 if ($active_prof == "y") {
   echo "Actuellement, la page autorisant les inscriptions est activée : les utilisateurs (professeurs, cpe, scolarité) peuvent donc s'inscrire.";
 } else {
   echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (professeurs, cpe, scolarité) ne peuvent pas s'inscrire.";
 }
-?><br /> <input type="radio" name="activer" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
-&nbsp;Activer l'acc&egrave;s aux inscriptions<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_inscription_utilisateurs")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès aux inscriptions
+?><br /> <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
+&nbsp;Activer l'acc&egrave;s aux inscriptions</label><br />
+<label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_inscription_utilisateurs")=='n') echo " checked"; ?> />
+&nbsp;Désactiver l'accès aux inscriptions</label>
 <?php
-echo "<H2>Liste des items</H2>";
+echo "<H2>Liste des items</H2>\n";
 if ($nombre_lignes != 0) {
-  echo "<p>Chaque item ci-dessous correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>";
+  echo "<p>Chaque item ci-dessous correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
   echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
   echo "<tr>\n";
   echo "<td><p class='bold'><a href='inscription_config.php?order_by_=id'>N°</a></p></td>\n";
@@ -208,16 +208,16 @@ if ($nombre_lignes != 0) {
     echo "</tr>\n";
     $i++;
   }
-  echo "</table>";
+  echo "</table>\n";
 } else {
   echo "<p>Actuellement aucun item n'est présent dans la base.";
 }
 $contenu = getSettingValue("mod_inscription_explication");
-echo "<H2>Titre du module</H2>";
-echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".getSettingValue("mod_inscription_titre")."\" />";
-echo "<H2>Texte explicatif</H2>";
-echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module d'inscription/désincription.</p>";
-echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />";
+echo "<H2>Titre du module</H2>\n";
+echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".getSettingValue("mod_inscription_titre")."\" />\n";
+echo "<H2>Texte explicatif</H2>\n";
+echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module d'inscription/désincription.</p>\n";
+echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
     // lancement de FCKeditor
 
     $oFCKeditor = new FCKeditor('no_anti_inject_notes') ;
@@ -233,6 +233,6 @@ echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />";
 
 echo "<div id=\"fixe\"><center>";
 echo "<input type=\"submit\" name=\"ok\" value=\"Enregistrer\" />";
-echo "</center></div>";
-echo "</form>";
+echo "</center></div>\n";
+echo "</form>\n";
 require("../lib/footer.inc.php");?>
