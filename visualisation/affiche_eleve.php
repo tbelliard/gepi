@@ -161,6 +161,8 @@ if (
 	die();
 }
 
+
+
 //echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css" />';
 //echo "\n";
 
@@ -350,6 +352,65 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// Remonté pour éviter/limiter des erreurs JavaScript lors du chargement...
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 	// On utilise maintenant /lib/position.js
+
+
+
+
+	//==========================================================
+	// AJOUT: boireaus 20080218
+	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+	unset($tab_acces_app);
+	$tab_acces_app=array();
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		for($i=1;$i<=$nb_periode;$i++) {
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+												statut='".$_SESSION['statut']."' AND
+												periode='$i';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if($res) {
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+					if($lig->acces=="y") {
+						$tab_acces_app[$i]="y";
+					}
+					elseif($lig->acces=="date") {
+						//echo "<p>Période $i: Date limite: $lig->date<br />";
+						$tab_date=explode("-",$lig->date);
+						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
+						//echo "$timestamp_limite<br />";
+						$timestamp_courant=time();
+						//echo "$timestamp_courant<br />";
+
+						if($timestamp_courant>$timestamp_limite){
+							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
+			}
+			else {
+				$tab_acces_app[$i]="n";
+			}
+		}
+	}
+	else {
+		// Pas de limitations d'accès pour les autres statuts.
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$tab_acces_app[$i]="y";
+		}
+	}
+	//==========================================================
+
 
 
 
@@ -1621,44 +1682,54 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					}
 
 
-					$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
-					affiche_debug("$sql<br />");
-					$app_eleve_query=mysql_query($sql);
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					if($tab_acces_app[$num_periode]=="y") {
+					//==========================================================
+						$sql="SELECT ma.* FROM matieres_appreciations ma, j_groupes_matieres jgm WHERE (ma.login='$eleve1' AND ma.periode='$num_periode' AND jgm.id_matiere='$current_matiere' AND ma.id_groupe=jgm.id_groupe)";
+						affiche_debug("$sql<br />");
+						$app_eleve_query=mysql_query($sql);
 
-					/*
-					echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-					if(mysql_num_rows($app_eleve_query)>0){
-						$ligtmp=mysql_fetch_object($app_eleve_query);
+						/*
+						echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+						if(mysql_num_rows($app_eleve_query)>0){
+							$ligtmp=mysql_fetch_object($app_eleve_query);
 
-						echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-						//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
-						echo "<b>".htmlentities($current_matiere_nom).":</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
+							echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+							//echo "<b>Appréciation:</b> $current_matiere ".htmlentities($ligtmp->appreciation);
+							echo "<b>".htmlentities($current_matiere_nom).":</b> (<i>$periode</i>)<br />".htmlentities($ligtmp->appreciation);
+							echo "</div>\n";
+
+							//$chaine_map.="";
+							//$tab_imagemap[]=$cpt;
+						}
 						echo "</div>\n";
+						*/
 
-						//$chaine_map.="";
-						//$tab_imagemap[]=$cpt;
-					}
-					echo "</div>\n";
-					*/
+						if(mysql_num_rows($app_eleve_query)>0){
+							$ligtmp=mysql_fetch_object($app_eleve_query);
 
-					if(mysql_num_rows($app_eleve_query)>0){
-						$ligtmp=mysql_fetch_object($app_eleve_query);
+							$titre_bulle=htmlentities($current_matiere_nom)." (<i>$periode</i>)";
+							$texte_bulle="<div align='center'>\n";
+							$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
+							$texte_bulle.="</div>\n";
+							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
-						$titre_bulle=htmlentities($current_matiere_nom)." (<i>$periode</i>)";
-						$texte_bulle="<div align='center'>\n";
-						$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
-						$texte_bulle.="</div>\n";
-						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+							if($type_graphe=='etoile'){
+								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
+							}
+							else{
+								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+							}
 
-						if($type_graphe=='etoile'){
-							$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
+							$tab_imagemap_commentaire_present[]=$cpt;
 						}
-						else{
-							$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
-						}
-
-						$tab_imagemap_commentaire_present[]=$cpt;
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 					}
+					//==========================================================
 
 					$tab_nom_matiere[]=$current_matiere_nom;
 					// On stocke dans un tableau, les numéros $cpt correspondant aux matières que l'élève a.
@@ -1675,35 +1746,54 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "\$cpt2=$cpt2<br />";
 
 
-			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
-			$res_avis=mysql_query($sql);
-			/*
-			echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-			if(mysql_num_rows($res_avis)>0){
-				echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
-				echo "<b>Avis du Conseil de classe:</b><br />\n";
-				$lig_avis=mysql_fetch_object($res_avis);
-				echo htmlentities($lig_avis->avis)."\n";
+			//==========================================================
+			// AJOUT: boireaus 20080218
+			//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+			if($tab_acces_app[$num_periode]=="y") {
+			//==========================================================
+				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
+				$res_avis=mysql_query($sql);
+				/*
+				echo "<div id='div_avis_1' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
+				if(mysql_num_rows($res_avis)>0){
+					echo "<div style='text-align: center; width: 300px; border: 1px solid black; background-color:white;'>\n";
+					echo "<b>Avis du Conseil de classe:</b><br />\n";
+					$lig_avis=mysql_fetch_object($res_avis);
+					echo htmlentities($lig_avis->avis)."\n";
+					echo "</div>\n";
+				}
 				echo "</div>\n";
+				*/
+
+				$temoin_avis_present="n";
+				if(mysql_num_rows($res_avis)>0){
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					$lig_avis=mysql_fetch_object($res_avis);
+					if($lig_avis->avis!="") {
+					//==========================================================
+						$titre_bulle="Avis du Conseil de classe";
+
+						//$lig_avis=mysql_fetch_object($res_avis);
+						//echo htmlentities($lig_avis->avis)."\n";
+
+						$texte_bulle="<div align='center'>\n";
+						$texte_bulle.=htmlentities($lig_avis->avis)."\n";
+						$texte_bulle.="</div>\n";
+						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
+
+						$temoin_avis_present="y";
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					}
+					//==========================================================
+				}
+			//==========================================================
+			// AJOUT: boireaus 20080218
+			//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 			}
-			echo "</div>\n";
-			*/
-
-			$temoin_avis_present="n";
-			if(mysql_num_rows($res_avis)>0){
-				$titre_bulle="Avis du Conseil de classe";
-
-				$lig_avis=mysql_fetch_object($res_avis);
-				//echo htmlentities($lig_avis->avis)."\n";
-
-				$texte_bulle="<div align='center'>\n";
-				$texte_bulle.=htmlentities($lig_avis->avis)."\n";
-				$texte_bulle.="</div>\n";
-				//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
-				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
-
-				$temoin_avis_present="y";
-			}
+			//==========================================================
 
 			# Image Map
 			//$chaine_map="<map name='imagemap'>\n";
@@ -2548,7 +2638,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 					affiche_debug("$sql<br />");
 					$app_eleve_query=mysql_query($sql);
 					//echo "<div id='div_matiere_$cpt' style='position: absolute; z-index: 1000; top: 300px; left: 200px; width: 300px; display:none;'>\n";
-					if(mysql_num_rows($app_eleve_query)>0){
+					//==========================================================
+					// MODIF: boireaus 20080218
+					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					//if(mysql_num_rows($app_eleve_query)>0){
+					if((mysql_num_rows($app_eleve_query)>0)&&($tab_acces_app[$cpt]=="y")) {
+					//==========================================================
 						$ligtmp=mysql_fetch_object($app_eleve_query);
 
 						/*
@@ -2679,14 +2774,29 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%'>\n";
 				while($lig_avis=mysql_fetch_object($res_avis)){
-					$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+					//if($tab_acces_app[$lig_avis->periode]=="y") {
+					if(($tab_acces_app[$lig_avis->periode]=="y")&&($lig_avis->avis!="")) {
+					//==========================================================
+						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlentities($lig_avis->avis)."</td></tr>\n";
+					//==========================================================
+					// AJOUT: boireaus 20080218
+					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+						$temoin_avis_present="y";
+					}
+					//==========================================================
 				}
 				$texte_bulle.="</table>\n";
 
 				//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 				$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
 
-				$temoin_avis_present="y";
+				//==========================================================
+				// COMMENTé ET REMONTé: boireaus 20080218
+				//$temoin_avis_present="y";
+				//==========================================================
 			}
 
 			//if(count($tab_imagemap)>0){

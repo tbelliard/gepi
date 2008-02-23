@@ -711,14 +711,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso' value='y' ";
+	echo "<input type='checkbox' name='utiliser_couleurs_perso' id='utiliser_couleurs_perso' value='y' ";
 	if(getSettingValue('utiliser_couleurs_perso')=='y'){
 		echo "checked ";
 	}
 	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "Utiliser des couleurs personnalisées.\n";
+	echo "<label for='utiliser_couleurs_perso' style='cursor: pointer;'>Utiliser des couleurs personnalisées.</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -795,14 +795,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_degrade' value='y' ";
+	echo "<input type='checkbox' name='utiliser_degrade' id='utiliser_degrade' value='y' ";
 	if(getSettingValue('utiliser_degrade')=='y'){
 		echo "checked ";
 	}
 	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "Générer/utiliser un dégradé personnalisé pour l'entête de page.\n";
+	echo "<label for='utiliser_degrade' style='cursor: pointer;'>Générer/utiliser un dégradé personnalisé pour l'entête de page.</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -920,14 +920,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' value='y' ";
+	echo "<input type='checkbox' name='utiliser_couleurs_perso_infobulles' id='utiliser_couleurs_perso_infobulles' value='y' ";
 	if(getSettingValue('utiliser_couleurs_perso_infobulles')=='y'){
 		echo "checked ";
 	}
 	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "Utiliser des couleurs personnalisées pour les infobulles.\n";
+	echo "<label for='utiliser_couleurs_perso_infobulles' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les infobulles.</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -1040,14 +1040,14 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
+	echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
 	if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y'){
 		echo "checked ";
 	}
 	echo "/> ";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "Utiliser des couleurs personnalisées pour les lignes alternées dans les tableaux.\n";
+	echo "<label for='utiliser_couleurs_perso_lig_tab_alt' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les lignes alternées dans les tableaux.</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

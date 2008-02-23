@@ -278,8 +278,20 @@ if ($current_group) {
 	if(getSettingValue("export_cn_ods")=='y') {
 		echo "<tr class='lig1'>\n";
 		echo "<th>ODS</th>\n";
-		if($_SESSION['user_temp_directory']=='y'){
 
+		$temoin_ods="y";
+		// Vérification si les tests file_exists() sont acceptés.
+		if(getSettingValue("gepi_pmv")!="n"){
+			if(!file_exists("../lib/ss_zip.class.php")){
+				$temoin_ods="n";
+			}
+		}
+
+		if($_SESSION['user_temp_directory']!='y'){
+			$temoin_ods="n";
+		}
+
+		if($temoin_ods=="y"){
 			$i="1";
 			// importation par csv
 			while ($i < $nb_periode) {

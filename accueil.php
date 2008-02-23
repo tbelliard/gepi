@@ -348,6 +348,17 @@ if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) 
 {$chemin[] = "/bulletin/verif_bulletins.php"; }
 if ($_SESSION['statut']!='professeur')
 {$chemin[] = "/bulletin/verrouillage.php"; }
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $chemin[] = "/classes/acces_appreciations.php"; }
+//==========================================================
+
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $chemin[] = "/bulletin/param_bull.php"; }
 if ($_SESSION['statut']=='scolarite')
@@ -362,6 +373,17 @@ if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) 
 { $titre[] = "Outil de vérification";}
 if ($_SESSION['statut']!='professeur')
 { $titre[] = "Verrouillage/Déverrouillage des périodes";}
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $titre[] = "Accès des élèves et responsables aux appreciations"; }
+//==========================================================
+
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $titre[] = "Paramètres d'impression des bulletins";}
 if ($_SESSION['statut']=='scolarite')
@@ -376,6 +398,17 @@ if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) 
 {$expli[] = "Permet de vérifier si toutes les rubriques des bulletins sont remplies.";}
 if ($_SESSION['statut']!='professeur')
 { $expli[] = "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.";}
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $expli[] = "Permet de définir quand les comptes élèves et responsables (s'ils existent) peuvent accéder aux appreciations des professeurs sur le bulletin et avis du conseil de classe."; }
+//==========================================================
+
 if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
 { $expli[] = "Permet de modifier les paramètres de mise en page et d'impression des bulletins.";}
 if ($_SESSION['statut']=='scolarite')

@@ -67,10 +67,10 @@ require_once("../lib/header.inc");
 <form action="notanet_admin.php" name="form1" method="post">
 
 <p>Le module Notanet/Fiches Brevet concernet les collèges.<br />
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_notanet")=='y') echo " checked"; ?> />
-&nbsp;Activer l'accès au module Notanet/Fiches Brevet<br />
-<input type="radio" name="activer" value="n" <?php if (getSettingValue("active_notanet")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès au module Notanet/Fiches Brevet</p>
+<label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_notanet")=='y') echo " checked"; ?> />
+&nbsp;Activer l'accès au module Notanet/Fiches Brevet</label><br />
+<label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_notanet")=='n') echo " checked"; ?> />
+&nbsp;Désactiver l'accès au module Notanet/Fiches Brevet</label></p>
 
 <input type="hidden" name="is_posted" value="1" />
 

@@ -148,7 +148,7 @@ for ($row=1; $row<$nb_row; $row++) {
                 $test = mysql_num_rows($test_eleve_app_query);
                 if ($test != 0) {
                     $reg_data2 = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
-                } else {          
+                } else {
                     $reg_data2 = mysql_query("INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
                     echo mysql_error();
                 }
@@ -181,8 +181,8 @@ if ($modif == 'yes') {
     where id='".$id_groupe."'");
 }
 
-echo "</p>";
-echo "<p><a href='saisie_notes.php?id_groupe=$id_groupe&order_by=nom'>Accéder à la page de saisie des moyennes pour vérification</a>";
-echo "<br /><a href='saisie_appreciations.php?id_groupe=$id_groupe&order_by=nom'>Accéder à la page de saisie des appréciations pour vérification</a></p>";
+echo "</p>\n";
+echo "<p><a href='saisie_notes.php?id_groupe=$id_groupe&amp;order_by=nom'>Accéder à la page de saisie des moyennes pour vérification</a>";
+echo "<br /><a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Accéder à la page de saisie des appréciations pour vérification</a></p>\n";
 require("../lib/footer.inc.php");
 ?>

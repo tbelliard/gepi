@@ -51,6 +51,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
  | <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
  | <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
  | <a href='scol_resp.php'>Paramétrage scolarité</a>
+ | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
 </p>
 <p style='margin-top: 10px;'>
 <img src='../images/icons/add.png' alt='' class='back_link' /> <a href="modify_nom_class.php">Ajouter une classe</a>

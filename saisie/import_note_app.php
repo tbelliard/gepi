@@ -82,15 +82,15 @@ if (!isset($is_posted)) {
     ?>
     <form enctype="multipart/form-data" action="import_note_app.php" method=post name=formulaire>
     <?php $csv_file=""; ?>
-    <p>Fichier CSV à importer : <INPUT TYPE=FILE NAME="csv_file" />    <INPUT TYPE=SUBMIT value = Ouvrir /></p>
+    <p>Fichier CSV à importer : <input type='file' name="csv_file" />    <input type='submit' value='Ouvrir' /></p>
     <p>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre&nbsp;
-    <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" checked /></p>
-    <INPUT TYPE=HIDDEN name=is_posted value = 1 />
+    <input type='checkbox' name="en_tete" value="yes" checked /></p>
+    <input type='hidden' name=is_posted value = 1 />
     <?php
-    echo "<input type=hidden name=id_groupe value='" . $id_groupe . "' />\n";
-    echo "<input type=hidden name=periode_num value='" . $periode_num . "' />\n";
+    echo "<input type='hidden' name='id_groupe' value='" . $id_groupe . "' />\n";
+    echo "<input type='hidden' name='periode_num' value='" . $periode_num . "' />\n";
     ?>
-    </FORM>
+    </form>
     <?php
     echo "<p>Vous avez décidé d'importer directement un fichier de moyennes et/ou d'appréciations. Le fichier d'importation doit être au format csv (séparateur : point-virgule) et doit contenir les trois champs suivants :<br />\n";
     echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'élève (<b>voir les explications plus bas</b>).<br />\n";

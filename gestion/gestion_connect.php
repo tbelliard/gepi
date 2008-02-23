@@ -146,10 +146,10 @@ if (isset($_POST['enable_password_recovery'])) {
 
 //EXPORT CSV
 if(isset($_GET['mode'])){
-	if($_GET['mode']=="csv"){	
-	
+	if($_GET['mode']=="csv"){
+
 	if (!isset($_SESSION['donnees_export_csv_log'])) { $ligne_csv = false ; } else {$ligne_csv =  $_SESSION['donnees_export_csv_log'];}
-	
+
 		$chaine_titre="Export_log_Annee_scolaire_".getSettingValue("gepiYear");
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 		$nom_fic=$chaine_titre."_".$now.".csv";
@@ -165,12 +165,12 @@ if(isset($_GET['mode'])){
 			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
 			header('Pragma: no-cache');
 		}
-		
+
 		$nb_ligne = count($ligne_csv);
-		
+
 		for ($i=0;$i<$nb_ligne;$i++) {
 		  echo $ligne_csv[$i];
-		}	
+		}
 		die();
 	}
 }
@@ -570,7 +570,8 @@ if ($res) {
         $heures_f = substr($row[8],11,2);
         $minutes_f = substr($row[8],14,2);
         $secondes_f = substr($row[8],17,2);
-        $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
+        //$date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
+        $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f."&nbsp;h&nbsp;".$minutes_f;
         $end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
         $annee_b = substr($row[2],0,4);
         $mois_b =  substr($row[2],5,2);
@@ -578,22 +579,24 @@ if ($res) {
         $heures_b = substr($row[2],11,2);
         $minutes_b = substr($row[2],14,2);
         $secondes_b = substr($row[2],17,2);
-        $date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
+        //$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
+        $date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b."&nbsp;h&nbsp;".$minutes_b;
         $temp1 = '';
         $temp2 = '';
         if ($end_time > $now) {
-            $temp1 = "<font color=green>";
+            $temp1 = "<font color='green'>";
             $temp2 = "</font>";
         }
-        if ($row[1] == '') {$row[1] = "<font color=red><b>Utilisateur inconnu</b></font>";}
+        if ($row[1] == '') {$row[1] = "<font color='red'><b>Utilisateur inconnu</b></font>";}
 
         echo "<tr>\n";
-		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10]."</span></td>\n";
+		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10].$temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br /><a href=\"mailto:" .$row[9]. "\">".$row[1] . "</a>".$temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>\n";
-		
-		$ligne_csv[$nb_ligne] = "$row[10];$row[0];$date_debut;";
-		
+
+		//$ligne_csv[$nb_ligne] = "$row[10];$row[0];$date_debut;";
+		$ligne_csv[$nb_ligne] = ereg_replace("&nbsp;"," ","$row[10];$row[0];$date_debut;");
+
         if ($row[7] == 4) {
            echo "<td class=\"col\" style=\"color: red;\"><span class='small'><b>Tentative de connexion<br />avec mot de passe erroné.</b></span></td>\n";
         } else if ($end_time > $now) {
@@ -627,19 +630,66 @@ if ($res) {
         echo "<td class=\"col\"><span class='small'>".$temp1. detect_browser($row[5]) .$temp2. "</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>\n";
 
-		$ligne_csv[$nb_ligne] .= "$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n";
-		
+		//$ligne_csv[$nb_ligne] .= "$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n";
+		$ligne_csv[$nb_ligne] .= ereg_replace("&nbsp;"," ","$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n");
+
         echo "</tr>\n";
-		
+
 		$nb_ligne++;
-		
+
 		flush();
     }
 }
 
 $_SESSION['donnees_export_csv_log']=$ligne_csv;
 
-?>
+echo "</table>\n";
+
+echo "<p><i>NOTES:</i></p>\n";
+echo "<ul>\n";
+echo "<li><p>La résolution d'adresse IP en nom DNS peut ralentir l'affichage de cette page.<br />
+Dans le cas d'un serveur situé sur un réseau local, il se peut qu'aucun serveur DNS ne soit en mesure d'assurer la résolution IP/NOM.<br />
+Si l'attente vous pèse, vous pouvez modifier le paramétrage de la variable <b>\$active_hostbyaddr</b> dans le fichier <b>lib/global.inc</b></p>\n";
+
+$texte="<p style='text-align:justify;'>L'organisme gérant l'espace d'adressage public (adresses IP routables) est l'Internet Assigned Number Authority (IANA). La RFC 1918 définit un espace d'adressage privé permettant à toute organisation d'attribuer des adresses IP aux machines de son réseau interne sans risque d'entrer en conflit avec une adresse IP publique allouée par l'IANA. Ces adresses dites non-routables correspondent aux plages d'adresses suivantes :</p>
+
+<ul>
+<li>Classe A : plage de 10.0.0.0 à 10.255.255.255 ;</li>
+<li>Classe B : plage de 172.16.0.0 à 172.31.255.255 ;</li>
+<li>Classe C : plage de 192.168.0.0 à 192.168.255.55 ;</li>
+</ul>
+
+<p style='text-align:justify;'>Toutes les machines d'un réseau interne, connectées à internet par l'intermédiaire d'un routeur et ne possédant pas d'adresse IP publique doivent utiliser une adresse contenue dans l'une de ces plages. Pour les petits réseaux domestiques, la plage d'adresses de 192.168.0.1 à 192.168.0.255 est généralement utilisée.</p>";
+$tabdiv_infobulle[]=creer_div_infobulle('ip_priv',"Espaces d'adressage","",$texte,"",30,0,'y','y','n','n');
+
+echo "<p>Voici les valeurs possibles pour la variable:</p>
+<table class='boireaus'>
+<tr>
+	<th>Valeur</th>
+	<th>Signification</th>
+</tr>
+<tr class='lig1'>
+	<td>all</td>
+	<td>la résolution inverse de toutes les adresses IP est activée.<br />
+	Cela peut se traduire par des lenteurs à l'affichage de la présente page.
+	</td>
+</tr>
+<tr class='lig-1'>
+	<td>no</td>
+	<td>la résolution inverse des adresses IP est désactivée.<br />
+	Radical, mais toutes les adresses fournies sont en IP.</td>
+</tr>
+<tr class='lig1'>
+	<td>no_local</td>
+	<td>la résolution inverse des adresses IP locales (<i>privées</i>) est désactivée.<br />
+	Seules les adresses IP de <a href='#' onmouseover=\"afficher_div('ip_priv','y',20,20);\" onclick=\"return false;\">réseaux non-privés</a> sont traduites en noms DNS.</td>
+</tr>
 </table>
-</div>
-<?php require("../lib/footer.inc.php");?>
+<p>La valeur actuelle de la variable <b>\$active_hostbyaddr</b> sur votre GEPI est: <b>$active_hostbyaddr</b></p>
+</li>\n";
+echo "</ul>\n";
+
+echo "</div>\n";
+
+require("../lib/footer.inc.php");
+?>
