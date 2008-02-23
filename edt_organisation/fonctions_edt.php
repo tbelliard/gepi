@@ -49,10 +49,13 @@ function nbre_colonnes_tab_edt(){
 function retourne_creneaux(){
 
 	$req_nom_creneaux_r = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
-
-	$rep_creneaux=array();
-	while($data_creneaux=mysql_fetch_array($req_nom_creneaux_r)) {
-		$rep_creneaux[] = $data_creneaux["nom_definie_periode"];
+	if ($req_nom_creneaux_r) {
+		$rep_creneaux = array();
+		while($data_creneaux = mysql_fetch_array($req_nom_creneaux_r)) {
+			$rep_creneaux[] = $data_creneaux["nom_definie_periode"];
+		}
+	}else{
+		$rep_creneaux = '';
 	}
 	return $rep_creneaux;
 }
@@ -63,17 +66,21 @@ function retourne_horaire(){
 
 	$req_nom_horaire = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 
-	$num_nom_horaire = mysql_num_rows($req_nom_horaire);
-
-	$horaire = array();
-	for($i=0; $i<$num_nom_horaire; $i++) {
-		$horaire1[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
-		$exp_hor = explode(":", $horaire1[$i]["heure_debut"]);
-		$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlève les secondes
-		$horaire1[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
-		$exp_hor = explode(":", $horaire1[$i]["heure_fin"]);
-		$horaire[$i]["heure_fin"] = $exp_hor[0].":".$exp_hor[1];
+	if ($req_nom_horaire) {
+		$num_nom_horaire = mysql_num_rows($req_nom_horaire);
+		$horaire = array();
+		for($i=0; $i<$num_nom_horaire; $i++) {
+			$horaire1[$i]["heure_debut"] = mysql_result($req_nom_horaire, $i, "heuredebut_definie_periode");
+			$exp_hor = explode(":", $horaire1[$i]["heure_debut"]);
+			$horaire[$i]["heure_debut"] = $exp_hor[0].":".$exp_hor[1]; // On enlève les secondes
+			$horaire1[$i]["heure_fin"] = mysql_result($req_nom_horaire, $i, "heurefin_definie_periode");
+			$exp_hor = explode(":", $horaire1[$i]["heure_fin"]);
+			$horaire[$i]["heure_fin"] = $exp_hor[0].":".$exp_hor[1];
+		}
+	}else{
+		$horaire = '';
 	}
+
 	return $horaire;
 }
 
@@ -84,9 +91,13 @@ function retourne_id_creneaux(){
 
 	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode") or die('Erreur : retourne_id_creneaux 1');
 
-	$rep_id_creneaux=array();
-	while($data_id_creneaux=mysql_fetch_array($req_id_creneaux)) {
-		$rep_id_creneaux[] = $data_id_creneaux["id_definie_periode"];
+	if ($req_id_creneaux) {
+		$rep_id_creneaux = array();
+		while($data_id_creneaux = mysql_fetch_array($req_id_creneaux)) {
+			$rep_id_creneaux[] = $data_id_creneaux["id_definie_periode"];
+		}
+	}else{
+		$rep_id_creneaux = '';
 	}
 	return $rep_id_creneaux;
 }
@@ -109,7 +120,6 @@ function retourne_setting_edt($reglage_edt){
 
 function retourne_ens($jour_semaine, $id_creneaux){
 
-	{
 	$req_nom_creneaux = mysql_query("SELECT nom_definie_periode FROM absences_creneaux WHERE id_definie_periode ='".$id_creneaux."'");
 	$rep_nom_creneaux = mysql_fetch_array($req_nom_creneaux);
 	// On récupère tous les enseignements de l'horaire
@@ -120,7 +130,6 @@ function retourne_ens($jour_semaine, $id_creneaux){
 		$result_ens[] = $rep_ens;
 	}
 	return $result_ens;
-	}
 }
 
 
@@ -134,13 +143,11 @@ function enseignements_prof($login_prof, $rep){
 	if ($rep === 1) {
 		// on renvoie alors le nombre d'enseignements
 		return $enseignements_prof_num;
-
-	}
-	else {
+	} else {
 		$result = array();
 		while($enseignements_prof = mysql_fetch_array($req)) {
-		// on renvoie alors la liste des enseignements
-		$result[] = $enseignements_prof;
+			// on renvoie alors la liste des enseignements
+			$result[] = $enseignements_prof;
 		}
 		return $result;
 	}
@@ -175,7 +182,7 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 				$tab_ens[] = $rep[$i]["id_groupe"];
 			}
 		}*/
-	}elseif ($type_edt == "classe") {
+	} elseif ($type_edt == "classe") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE
 								edt_cours.jour_semaine='".$jour_semaine."' AND
 								edt_cours.id_definie_periode='".$id_creneaux."' AND
@@ -184,11 +191,9 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
 								ORDER BY edt_cours.id_groupe")
 									or die('Erreur : cree_tab_general(classe) : '.mysql_error());
-	}
-	elseif ($type_edt == "eleve"){
+	} elseif ($type_edt == "eleve"){
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_eleves_groupes.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(eleve) !');
-	}
-	elseif ($type_edt == "salle") {
+	} elseif ($type_edt == "salle") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_salle='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(salle) !');
 	} else {
 		$req_ens_horaire = "";
