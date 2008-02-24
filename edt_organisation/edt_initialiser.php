@@ -489,7 +489,10 @@ if ($aff_reglages2 == "oui") {
  	<h4 class="red">Toutes les proc&eacute;dures d\'initialisation par csv ou xml effacent l\'emploi du temps déjà créé,
 	 sauf si vous leur demandez de ne pas le faire.</h4>
 
- 	<div id="lien"><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></div>
+ 	<div id="lien">
+		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></p>
+		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte</a></p>
+	</div>
  		';
 
  //<div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>

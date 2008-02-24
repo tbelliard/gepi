@@ -89,15 +89,20 @@ function retourne_horaire(){
 
 function retourne_id_creneaux(){
 
-	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode") or die('Erreur : retourne_id_creneaux 1');
-
-	if ($req_id_creneaux) {
+	$req_id_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux
+								WHERE type_creneaux != 'pause'
+								ORDER BY heuredebut_definie_periode");
+	// On compte alors le nombre de réponses et on renvoie en fonction de la réponse
+	$nbre_rep = count($req_id_creneaux);
+	if ($nbre_rep == 0) {
+		return "aucun";
+	}elseif ($req_id_creneaux) {
 		$rep_id_creneaux = array();
 		while($data_id_creneaux = mysql_fetch_array($req_id_creneaux)) {
 			$rep_id_creneaux[] = $data_id_creneaux["id_definie_periode"];
 		}
 	}else{
-		$rep_id_creneaux = '';
+		Die('Erreur sur retourne_id_creneaux 1');
 	}
 	return $rep_id_creneaux;
 }
