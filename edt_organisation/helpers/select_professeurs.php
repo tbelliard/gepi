@@ -21,6 +21,7 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_professeur";
+$nom_selected = isset($nom_prof) ? $nom_prof : NULL;
 
 echo '
 	<select name ="'.$increment.'">
@@ -32,9 +33,14 @@ echo '
 		$utilisateur[$i] = mysql_result($query, $i, "login");
 		$nom[$i] = mysql_result($query, $i, "nom");
 		$prenom[$i] = mysql_result($query, $i, "prenom");
-
+		// On détermine le selected si c'est possible
+		if ($nom[$i] == $nom_selected) {
+			$selected = ' selected="selected"';
+		}else{
+			$selected = '';
+		}
 		echo '
-		<option value="'.$utilisateur[$i].'">'.$nom[$i].' '.$prenom[$i].'</option>';
+		<option value="'.$utilisateur[$i].'"'.$selected.'>'.$nom[$i].' '.$prenom[$i].'</option>';
 	}
 echo '</select>';
 ?>

@@ -140,7 +140,7 @@ if ($etape != NULL) {
 			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7]);
 				$choix_groupe = "non";
 				if ($groupe == "aucun") {
-					// On enregistre quand même le cours avec "inc" comme id_groupe
+					// On n'enregistre pas le cours avec "inc" comme id_groupe
 					$groupe_insert = "inc";
 					//$choix_groupe = "oui";
 					$msg .= '<p>Pour la ligne n° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer('.$prof.' '.renvoiConcordances($elements_cours[8], 5).').</p>';

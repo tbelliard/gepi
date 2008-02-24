@@ -80,7 +80,7 @@ $query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fich
 if ($query) {
 	$etape_effectuee = mysql_fetch_array($query);
 	$aff_etape = '
-		<h3>Vous êtes actuellement à l\'étape numéro'.$etape_effectuee["nom_export"].'</h3>
+		<h3 class="gepi">Vous êtes actuellement à l\'étape numéro '.$etape_effectuee["nom_export"].'</h3>
 	';
 }else{
 	$aff_etape = '
@@ -135,7 +135,7 @@ if ($action == "upload_file") {
 					// On commence l'étape demandée et on autorise donc à récupérer les données utiles
 					$autorise = "continue";
 					echo '<p>Vous êtes dans l\'étape '.$etape.'</p>';
-					echo '<p>Gestion des '.$neuf_etapes[$etape - 1].'.</p>';
+					echo '<p>Gestion des "'.$neuf_etapes[$etape - 1].'".</p>';
 
 				}elseif($tab[0] == $neuf_etapes[$etape]){
 					// On arrive à l'étape suivante et donc on arrête de récupérer les données du fichier
@@ -156,7 +156,8 @@ if ($action == "upload_file") {
 							// on permet la concordance
 							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
-							$nom_select = "nom_gepi_".$numero;
+							$nom_select = "nom_gepi_".$numero; // pour le name du select
+							$nom_prof = $tab[2]; // pour le selected
 							include("helpers\select_professeurs.php");
 							echo '<br />'."\n";
 						}
@@ -169,7 +170,8 @@ if ($action == "upload_file") {
 							// On permet la concordance
 							echo 'Numéro : '.$tab[0].' classe :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
-							$nom_select = "nom_gepi_".$numero;
+							$nom_select = "nom_gepi_".$numero; // pour le name du select
+							$nom_classe = $tab[1]; // pour le selected
 							include("helpers\select_classes.php");
 							echo '<br />'."\n";
 						}
@@ -206,7 +208,8 @@ if ($action == "upload_file") {
 							// On permet la concordance
 							echo 'Numéro : '.$tab[0].' matière :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
-							$nom_select = "nom_gepi_".$numero;
+							$nom_select = "nom_gepi_".$numero; // pour le name du select
+							$nom_matiere = $tab[1]; // pour le selected
 							include("helpers\select_matieres.php");
 							echo '<br />'."\n";
 						}

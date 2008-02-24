@@ -21,6 +21,7 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_classes";
+$classe_selected = isset($nom_classe) ? $nom_classe : NULL;
 
 echo '
 	<select name ="'.$increment.'">
@@ -31,9 +32,15 @@ echo '
 	for($i = 0; $i < $nbre; $i++){
 		$classe[$i] = mysql_result($query, $i, "id");
 		$nom[$i] = mysql_result($query, $i, "classe");
+		// On détermine le selected si c'est possible
+		if ($nom[$i] == $classe_selected) {
+			$selected = ' selected="selected"';
+		}else{
+			$selected = '';
+		}
 
 		echo '
-		<option value="'.$classe[$i].'">'.$nom[$i].'</option>';
+		<option value="'.$classe[$i].'"'.$selected.'>'.$nom[$i].'</option>';
 	}
 echo '</select>';
 ?>

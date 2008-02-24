@@ -21,6 +21,7 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_matieres";
+$matiere_selected = isset($nom_matiere) ? strtoupper($nom_matiere) : NULL;
 
 echo '
 	<select name ="'.$increment.'">
@@ -31,9 +32,14 @@ echo '
 	for($i = 0; $i < $nbre; $i++){
 		$matiere[$i] = mysql_result($query, $i, "matiere");
 		$nom[$i] = mysql_result($query, $i, "nom_complet");
+		if (strtoupper($nom[$i]) == $matiere_selected OR strtoupper($matiere[$i]) == $matiere_selected) {
+			$selected = ' selected="selected"';
+		}else{
+			$selected = '';
+		}
 
 		echo '
-		<option value="'.$matiere[$i].'">'.$nom[$i].'</option>';
+		<option value="'.$matiere[$i].'"'.$selected.'>'.$nom[$i].'</option>';
 	}
 echo '</select>';
 ?>
