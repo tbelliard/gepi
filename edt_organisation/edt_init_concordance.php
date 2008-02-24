@@ -143,16 +143,35 @@ if ($etape != NULL) {
 					// On enregistre quand même le cours avec "inc" comme id_groupe
 					$groupe_insert = "inc";
 					//$choix_groupe = "oui";
-					$msg .= '<p>Pour la ligne n° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer.</p>';
+					$msg .= '<p>Pour la ligne n° '.$c.', Gepi ne trouve pas la concordance, impossible de l\'enregistrer('.$prof.' '.renvoiConcordances($elements_cours[8], 5).').</p>';
 				}elseif($groupe == "plusieurs"){
 					// On propose un message
 					$msg .= '<p>Pour la ligne n° '.$c.', Gepi renvoie trop de réponses possibles.
 							Impossible de l\'enregistrer.</p>';
 
 				}else{
-					// Il n'y a qu'une réponse
-					$choix_groupe = "oui";
-					$groupe_insert = $groupe;
+					// On vérifie que ce cours n'existe pas déjà
+					$query = mysql_query("SELECT id_cours FROM edt_cours WHERE
+										id_groupe = '".$groupe."' AND
+										id_salle = '".$salle."' AND
+										jour_semaine = '".$jour."' AND
+										id_definie_periode = '".$debut."' AND
+										duree = '".$duree."' AND
+										heuredeb_dec = '".$debut_dec."' AND
+										id_semaine = '".$week_type."' AND
+										id_calendrier = '0' AND
+										modif_edt = '0' AND
+										login_prof = '".$prof."'")
+											OR DIE('Erreur dans la vérification sur l\'existence du cours : '.mysql_error());
+					$verif_exist = mysql_num_rows($query);
+					if ($verif_exist >= 1) {
+						// On n'enregistre pas une deuxième fois
+						$choix_groupe = "non";
+					}else{
+						// Il n'y a qu'une réponse, alors c'est bon
+						$choix_groupe = "oui";
+						$groupe_insert = $groupe;
+					}
 				}
 				if ($choix_groupe == "oui") {
 					// Au final, on insère dans la table edt_cours

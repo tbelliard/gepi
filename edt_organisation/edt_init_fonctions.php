@@ -94,7 +94,7 @@ function renvoiJour($diminutif){
 
 // renvoie le nom de la bonne table des créneaux
 function nomTableCreneau($jour){
-	$jour_semaine = array("dimanche", "lundi", "mardi", "mercerdi", "jeudi", "vendredi", "samedi");
+	$jour_semaine = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 		$numero_jour = NULL;
 	for($t = 0; $t < 7; $t++){
 		// On cherche à faire correspondre le numero_jour avec ce que donne la fonction php date("w")
@@ -155,19 +155,19 @@ function renvoiDuree($deb, $fin){
 	$duree_mn = $nombre_mn_fin - $nombre_mn_deb;
 	// le nombre d'heures entières
 	$nbre = $duree_mn / $duree_cours_base;
-	$nbre = settype($nbre,'integer');
+	settype($nbre, 'integer');
 	// le nombre de minutes qui restent
 	$mod = $duree_mn % $duree_cours_base;
 	// Et on analyse ce dernier (attention, la durée se compte en demi-créneaux)
 	if ($mod >= (($duree_cours_base * 2) / 3)) {
 		// Si c'est supérieur au 2/3 de la durée du cours, alors c'est une heure entière
-		$retour = ($nbre*2) + 2;
+		$retour = ($nbre * 2) + 2;
 	}elseif($mod > (($duree_cours_base) / 3)) {
 		// Si c'est supérieur au tiers de la durée d'un cours, alors c'est un demi-créneau de plus
-		$retour = ($nbre*2) + 1;
+		$retour = ($nbre * 2) + 1;
 	}else{
 		// sinon, c'est un souci de quelques minutes sans importance
-		$retour = $nbre*2;
+		$retour = $nbre * 2;
 	}
 
 	return $retour;
@@ -181,19 +181,25 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 	$nombre_mn_deb = (substr($heure_deb, 0, -2) * 60) + (substr($heure_deb, 2));
 	// Nombre de mn de l'horaire de Gepi
 	$table = nomTableCreneau($jour);
-	$heure = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
-	$decompose = explode(":", $heure["heuredebut_definie_periode"]);
-	$nbre_mn_gepi = ($decompose[0] * 60) + $decompose[1];
-	// On fait la différence entre les deux horaires qui ont été convertis en nombre de minutes
-	$diff = $nombre_mn_deb - $nbre_mn_gepi;
-	// et on analyse cette différence
-	if ($diff === 0 OR $diff < ($duree_cours_base / 4)) {
-		$retour = '0';
-	}elseif($diff > ($duree_cours_base / 3) AND $diff < (($duree_cours_base / 3) * 2)){
-		$retour = '0.5';
+	if ($id_creneau != '') {
+			$heure = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM ".$table." WHERE id_definie_periode = '".$id_creneau."'"));
+		$decompose = explode(":", $heure["heuredebut_definie_periode"]);
+		$nbre_mn_gepi = ($decompose[0] * 60) + $decompose[1];
+		// On fait la différence entre les deux horaires qui ont été convertis en nombre de minutes
+		$diff = $nombre_mn_deb - $nbre_mn_gepi;
+		// et on analyse cette différence
+		if ($diff === 0 OR $diff < ($duree_cours_base / 4)) {
+			$retour = '0';
+		}elseif($diff > ($duree_cours_base / 3) AND $diff < (($duree_cours_base / 3) * 2)){
+			$retour = '0.5';
+		}else{
+			$retour = '0';
+		}
 	}else{
+		// par défaut, on renvoie un début classique
 		$retour = '0';
 	}
+
 	return $retour;
 }
 
