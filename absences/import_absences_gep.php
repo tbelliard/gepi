@@ -81,6 +81,13 @@ if (!isset($step)) {
 	}
 }
 
+function affiche_debug($texte) {
+	$debug="n";
+	if($debug=="y") {
+		echo $texte;
+	}
+}
+
 
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
@@ -279,7 +286,35 @@ if ($step == 0) {
 	echo "&nbsp;à la date : ";
 	echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />\n";
 	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-	echo "<li>Inclure le samedi matin dans le décompte des demi-journées d'absence <input type=checkbox name='samedi_compte' value='yes' /></li>\n";
+
+
+	//=========================
+	// Modif: boireaus 20080225
+	echo "<li>Inclure le samedi matin dans le décompte des demi-journées d'absence <input type=checkbox name='samedi_compte' value='yes' ";
+
+	if(isset($_SESSION['samedi_compte'])) {
+		if($_SESSION['samedi_compte']=="yes") {
+			echo "checked ";
+		}
+	}
+
+	echo "/></li>\n";
+	//=========================
+
+
+	//=========================
+	// Ajout: boireaus 20080225
+	echo "<li>Ne pas inclure le mercredi après-midi dans le décompte des demi-journées d'absence <input type=checkbox name='mercredi_apm_compte' value='no' ";
+
+	if(isset($_SESSION['mercredi_apm_compte'])) {
+		if($_SESSION['mercredi_apm_compte']=="no") {
+			echo "checked ";
+		}
+	}
+
+	echo "/></li>\n";
+	//=========================
+
 	//echo "</li></ul>\n";
 	echo "</ul>\n";
 	echo "<input type=hidden name='step' value='4' />\n";
@@ -311,6 +346,13 @@ if ($step == 0) {
 	//=========================
 	// AJOUT: boireaus 20071202
 	$samedi_compte=isset($_POST['samedi_compte']) ? $_POST['samedi_compte'] : "no";
+	//=========================
+
+	//=========================
+	// AJOUT: boireaus 20080225
+	$mercredi_apm_compte=isset($_POST['mercredi_apm_compte']) ? $_POST['mercredi_apm_compte'] : "yes";
+	$_SESSION['mercredi_apm_compte']=$_POST['mercredi_apm_compte'];
+	$_SESSION['samedi_compte']=$_POST['samedi_compte'];
 	//=========================
 
 	// On fait quelques tests quand même, histoire de voir si les dates saisies sont cohérentes
@@ -422,8 +464,8 @@ if ($step == 0) {
 				}
 			}
 
-			//echo "<table border=\"1\">\n";
-			//echo "<tr><td>Num.</td><td>ABSTYPE</td><td>ELENOET</td><td>ABSDATD</td><td>ABSDATF</td><td>ABSSEQD</td><td>ABSSEQF</td><td>ABSHEUR</td><td>ABSJUST</td><td>ABSMOTI</td><td>ABSACTI</td></tr>\n";
+			affiche_debug("<table border=\"1\">\n");
+			affiche_debug("<tr><td>Num.</td><td>ABSTYPE</td><td>ELENOET</td><td>ABSDATD</td><td>ABSDATF</td><td>ABSSEQD</td><td>ABSSEQF</td><td>ABSHEUR</td><td>ABSJUST</td><td>ABSMOTI</td><td>ABSACTI</td></tr>\n");
 
 			//=========================
 			// AJOUT: boireaus 20071202
@@ -445,16 +487,16 @@ if ($step == 0) {
 
 					if ($temp=array_search($affiche[1], $tab)) {
 
-						/*
-						echo "<tr>\n";
-						echo "<td>$k</td>\n";
-						for($loop=0;$loop<count($affiche);$loop++){echo "<td>$affiche[$loop]</td>\n";}
-						echo "</tr>\n";
-						*/
+
+						affiche_debug("<tr>\n");
+						affiche_debug("<td>$k</td>\n");
+						for($loop=0;$loop<count($affiche);$loop++){affiche_debug("<td>$affiche[$loop]</td>\n");}
+						affiche_debug("</tr>\n");
+
 
 						// Pour que les erreurs s'affichent au bon niveau:
-						//echo "<tr>\n";
-						//echo "<td colspan='11'>\n";
+						affiche_debug("<tr>\n");
+						affiche_debug("<td colspan='11'>\n");
 
 
 						// on comptabilise les retards
@@ -484,13 +526,13 @@ if ($step == 0) {
 						$test_timechange14 = mktime(0, 0, 0, 10, 30, 2011);
 
 						if (($affiche[0] == 'A') and ($affiche[2] != '') and ($affiche[3] != '') and ($affiche[4] != '') and ($affiche[5] != ''))  {
-							//echo "\$previous_eleve=$previous_eleve<br />";
+							affiche_debug("\$previous_eleve=$previous_eleve<br />");
 
 							$debut_a = mktime(0, 0, 0, substr($affiche[2],4,2), substr($affiche[2],6,2), substr($affiche[2],0,4));
 							$fin_a = mktime(0, 0, 0, substr($affiche[3],4,2), substr($affiche[3],6,2), substr($affiche[3],0,4));
 
-							//echo "\$debut_a=$debut_a<br />";
-							//echo "\$fin_a=$fin_a<br />";
+							affiche_debug("\$debut_a=$debut_a<br />");
+							affiche_debug("\$fin_a=$fin_a<br />");
 
 							// Prise en compte du changement d'heure
 							if (($test_timechange1 > $debut_a AND $test_timechange1 < $fin_a)
@@ -515,54 +557,82 @@ if ($step == 0) {
 								$modifier = "0";
 							}
 
-							//echo "\$modifier=$modifier<br />";
+							affiche_debug("\$modifier=$modifier<br />");
 
 							//$nb_demi_jour = (($fin_a - $debut_a)/(60*60*24)+1)*2; // Sans prise en compte du changement d'heure
 							$nb_demi_jour = (($fin_a - $debut_a + $modifier)/(60*60*24)+1)*2;  // Avec prise en compte du changement d'heure
-							//echo "\$nb_demi_jour=$nb_demi_jour<br />";
+							affiche_debug("\$nb_demi_jour=$nb_demi_jour<br />");
 
-							//echo "<p>Test : " . $affiche[1] . " " . $debut_a . ":" . $fin_a . ":" . $nb_demi_jour ."</p>\n"; // Quelques tests de débuggage
+							affiche_debug("<p>Test : " . $affiche[1] . " " . $debut_a . ":" . $fin_a . ":" . $nb_demi_jour ."</p>\n");// Quelques tests de débuggage
 							if ($tab_seq[$affiche[4]] == "S") $nb_demi_jour--;
 							if ($tab_seq[$affiche[5]] == "M") $nb_demi_jour--;
-							//echo "\$nb_demi_jour=$nb_demi_jour<br />";
+							affiche_debug("Avant décompte des samedi/dimanche: \$nb_demi_jour=$nb_demi_jour<br />");
 
-							// Question de la prise en compte des demie-journées de week-end : on filtre les samedi et dimanche.
+							// Question de la prise en compte des demi-journées de week-end : on filtre les samedi et dimanche.
 							$jour_debut = strftime("%u", $debut_a);
 							//$jour_fin = strftime("%u", $fin_a);
 							$duree_a = (($fin_a - $debut_a + $modifier)/(60*60*24)+1);
+							affiche_debug("\$duree_a=$duree_a<br />");
 
 							// Est-ce qu'on a un week-end dans la période d'absence ?
 
 							$w = 0;
 							while (($duree_a + $jour_debut - 1) >= (7 + $w)) {
+								$temp_var=$duree_a + $jour_debut - 1;
+								affiche_debug("<p>WEEK-END : <br />");
+								affiche_debug("\$duree_a + \$jour_debut - 1 = ".$duree_a." + ".$jour_debut." - 1 = ".$temp_var."<br />");
+								$temp_var=7 + $w;
+								affiche_debug("7 + \$w = 7 + ".$w." = ".$temp_var."<br />");
 								//=========================
 								// MODIF: boireaus 20071202
 								//if ($_POST['samedi_compte'] == "yes") {
 								if ($samedi_compte == "yes") {
 								//=========================
 									$nb_demi_jour -= 3;
-									//$temp_test = 3;
+									$temp_test = 3;
 								} else {
 									$nb_demi_jour -= 4;
-									//$temp_test = 4;
+									$temp_test = 4;
 								}
-								//echo "<p>WEEK-END : " . $temp_test . " demi-journées retirées du calcul (début : $jour_debut ; fin : $jour_fin)</p>\n";
+								affiche_debug($temp_test . " demi-journées retirées du calcul (début : $jour_debut ; fin : $jour_fin)</p>\n");
 								$w += 7;
 							}
-							//echo "\$nb_demi_jour=$nb_demi_jour<br />";
+							affiche_debug("Après décompte des samedi/dimanche: \$nb_demi_jour=$nb_demi_jour<br />");
+
+							// Décompte des mercredi après-midi:
+							if($mercredi_apm_compte=="no") {
+								// On vérifie s'il y a un mercredi dans la période.
+
+								$j_debut=strftime("%d", $debut_a);
+								$m_debut=strftime("%m", $debut_a);
+								$y_debut=strftime("%Y", $debut_a);
+								$timestamp_debut_test_mercr=mktime(5,0,0,$m_debut,$j_debut,$y_debut);
+								$d=0;
+								while($timestamp_debut_test_mercr+$d*3600*24<$fin_a) {
+									affiche_debug("Test du ".strftime("%a %d/%m/%Y",$timestamp_debut_test_mercr+$d*3600*24)."\n");
+									if(strftime("%u",$timestamp_debut_test_mercr+$d*3600*24)==3) {
+										affiche_debug(" MERCREDI: -1 demi-journée\n");
+										$nb_demi_jour--;
+									}
+									affiche_debug("<br />\n");
+									$d++;
+								}
+							}
+
 
 							// On regarde si l'on n'a pas déjà enregistré une absence pour la demi-journée concernée
 
 							$current_eleve = $affiche[1];
 							if ($current_eleve != $previous_eleve) {
 								$tab_date = array();
+								affiche_debug("<hr width='200'/>\n");
 							}
 							$previous_eleve = $current_eleve;
 
 							$current_d_date = $affiche[2] . $tab_seq[$affiche[4]];
 							$current_f_date = $affiche[3] . $tab_seq[$affiche[5]];
-							//echo "<p>" . $affiche[1] . " : $current_d_date :: $current_f_date</p>\n";
-							//echo "<p>\$tab_date[$current_d_date]=".$tab_date[$current_d_date]."</p>\n";
+							affiche_debug("<p>" . $affiche[1] . " : $current_d_date :: $current_f_date</p>\n");
+							affiche_debug("<p>\$tab_date[$current_d_date]=".$tab_date[$current_d_date]."</p>\n");
 
 							//if ($tab_date[$current_d_date] == "yes") {
 							if ((isset($tab_date[$current_d_date]))&&($tab_date[$current_d_date] == "yes")) {
@@ -571,14 +641,14 @@ if ($step == 0) {
 								$tab_date[$current_d_date] = "yes";
 								$tab_date[$current_f_date] = "yes";
 							}
-							//echo "\$nb_demi_jour=$nb_demi_jour<br />";
+							affiche_debug("\$nb_demi_jour=$nb_demi_jour<br />");
 
 
 
 							$abs[$temp]  += $nb_demi_jour;
-							//echo "\$abs[$temp]=$abs[$temp]<br />";
+							affiche_debug("\$abs[$temp]=$abs[$temp]<br />");
 							if ($affiche[7] == 'N') $abs_nj[$temp] += $nb_demi_jour;
-							//echo "\$abs_nj[$temp]=$abs_nj[$temp]<br />";
+							affiche_debug("\$abs_nj[$temp]=$abs_nj[$temp]<br />");
 
 
 						}
@@ -591,8 +661,8 @@ if ($step == 0) {
 							echo "<td bgcolor=\"#00FF80\">".$affiche[$i]."</td>\n";
 						}
 					*/
-						//echo "</td>\n";
-						//echo "</tr>\n";
+						affiche_debug("</td>\n");
+						affiche_debug("</tr>\n");
 					}
 				/*
 				} else {
