@@ -350,7 +350,8 @@ Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
 <hr />
 <p><b>Outils complémentaires de gestion des AIDs :</b></p>
 <p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
-(attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).</p>
+(attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).
+<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Consulter l'aide</a>.</p>
 <p>
 <input type="radio" onclick="javascript:Element.show('outils_comp');" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
 <input type="radio" onclick="javascript:Element.hide('outils_comp');" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires

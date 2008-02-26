@@ -78,10 +78,11 @@ require_once("../lib/header.inc");
 ?>
 <form enctype="multipart/form-data" name="formulaire" action="config_aid_fiches_projet.php" method="post">
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+|<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>|
 <input type="submit" value="Enregistrer" /><br />
 <?php
 
-echo "<p>le tableau suivant permet de fixer les droits sur les différents champs des fiches projet.";
+echo "<p>Le tableau suivant permet de fixer les droits sur les différents champs des fiches projet.";
 echo "<br><br />Remarques :
 <ul>
 <li>Quand un champ est <b>actif</b>, il est visible dans l'interface privée de GEPI (utilisateur connecté) par les administrateurs, les professeurs, les CPE, les élèves et les responsables.</li>

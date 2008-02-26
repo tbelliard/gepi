@@ -7,8 +7,9 @@
 
 Gepi-1.5.1-rcx (xx/xx/2007)
 ===========================
-- ajout d'un script afin de créer un remplaçant pour un professeur
-- ajout d'un module très simple d'inscription à des journées, stages, ...
+- Ajout d'un script afin de créer un remplaçant pour un professeur
+- Ajout d'un module très simple d'inscription à des journées, stages, ...
+- Ajout d'outils complémentaires de gestion des AIDs permettant la mise en place de fiches projet
 - Compatibilité LCS avec les comptes utilisateurs élèves
 
 

@@ -129,8 +129,13 @@ require_once("../lib/header.inc");
 echo "<p class=bold>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
-echo "<br />|<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
-echo "</p><p class=\"medium\">";
+echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
+echo "</p>";
+
+if ($activer_outils_comp == "y")
+    echo "<br /><p class=\"medium\">Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page <b><i>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></i></b>.</p>";
+
+echo "<p class=\"medium\">";
 // On va chercher les aid déjà existantes, et on les affiche.
 if (!isset($order_by)) {$order_by = "numero,nom";}
 $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
@@ -148,15 +153,15 @@ if ($activer_outils_comp == "y") {
     echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Les élèves reponsables peuvent modifier la fiche</p>\n";
+    echo "<th><p class=\"small\">Les élèves reponsables peuvent modifier la fiche (*)</p>\n";
     echo "<a href=\"javascript:CocheColonne(2);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(2);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Les professeurs reponsables peuvent modifier la fiche</p>\n";
+    echo "<th><p class=\"small\">Les professeurs reponsables peuvent modifier la fiche (*)</p>\n";
     echo "<a href=\"javascript:CocheColonne(3);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(3);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Les CPE peuvent modifier la fiche</p>\n";
+    echo "<th><p class=\"small\">Les CPE peuvent modifier la fiche (*)</p>\n";
     echo "<a href=\"javascript:CocheColonne(4);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(4);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
 
@@ -226,7 +231,7 @@ $i++;
 }
 
 ?>
-</table>
+</table><br />(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.
 <?php
 if ($activer_outils_comp == "y") {
   echo "<br /><br /><br /><center>\n";
