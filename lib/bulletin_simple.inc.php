@@ -763,7 +763,7 @@ $nb=$periode1;
 while ($nb < $periode2+1) {
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
 	$current_eleve_avis[$nb] = @mysql_result($current_eleve_avis_query, 0, "avis");
-	if ($current_eleve_avis[$nb] == '') {$current_eleve_avis[$nb] = ' -';}
+	if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$current_eleve_avis[$nb] = ' -';}
 	echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl'>$nom_periode[$nb]</td>\n";
 	echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl'>$current_eleve_avis[$nb]</td>\n";
 //=====================
