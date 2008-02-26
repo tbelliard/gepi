@@ -65,6 +65,8 @@ $liste_tables_del = array(
 //"matieres",
 "matieres_appreciations",
 "matieres_notes",
+"matieres_appreciations_grp",
+"matieres_appreciations_tempo",
 //"periodes",
 "tempo2",
 //"temp_gep_import",
