@@ -162,27 +162,28 @@ if (isset($_POST['ok'])) {
         if (!$reg)  $reg_ok = "no";
     }
 
-
-/*
     if (isset($_POST['display_parents'])) {
-        $display_parents = 1;
+		    if($_POST['display_parents']==1)
+            $display_parents=1;
+		    else
+		        $display_parents=0;
     } else {
-        $display_parents = 0;
-    }
-*/
-    if (isset($_POST['display_parents'])) {
-		if($_POST['display_parents']==1){
-			$display_parents=1;
-		}
-		else{
-			$display_parents=0;
-		}
-    } else {
-        //$display_parents=1;
         $display_parents=0;
     }
 
     $reg = mysql_query("UPDATE cn_devoirs SET display_parents = '$display_parents' WHERE id = '$id_devoir'");
+    if (!$reg)  $reg_ok = "no";
+
+    if (isset($_POST['display_parents_app'])) {
+		    if($_POST['display_parents_app']==1)
+            $display_parents_app=1;
+		    else
+		        $display_parents_app=0;
+    } else {
+        $display_parents_app=0;
+    }
+
+    $reg = mysql_query("UPDATE cn_devoirs SET display_parents_app = '$display_parents_app' WHERE id = '$id_devoir'");
     if (!$reg)  $reg_ok = "no";
 
     //==========================================================
@@ -258,6 +259,7 @@ if ($id_devoir)  {
     $coef = mysql_result($appel_devoir, 0, 'coef');
     $facultatif = mysql_result($appel_devoir, 0, 'facultatif');
     $display_parents = mysql_result($appel_devoir, 0, 'display_parents');
+    $display_parents_app = mysql_result($appel_devoir, 0, 'display_parents_app');
     $date = mysql_result($appel_devoir, 0, 'date');
     $id_conteneur = mysql_result($appel_devoir, 0, 'id_conteneur');
 
@@ -273,6 +275,7 @@ if ($id_devoir)  {
     $new_devoir = 'yes';
     $coef = "1";
     $display_parents = "1";
+    $display_parents_app = "0";
     $facultatif = "O";
     $date = "";
     $annee = strftime("%Y");
@@ -415,7 +418,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		echo "<textarea name='description' rows='2' cols='40' wrap='virtual'>".$description."</textarea>\n";
+		echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -423,7 +426,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
 		echo "<td>\n";
-		//echo "<textarea name='description' rows='2' cols='40' wrap='virtual'>".$description."</textarea>\n";
+		//echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
 		echo "<input type='hidden' name='description' value='$description' />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -516,6 +519,7 @@ if($interface_simplifiee=="y"){
 	echo "</div>\n";
 	echo "<input type='hidden' name='facultatif' value='$facultatif' />\n";
 	echo "<input type='hidden' name='display_parents' value='$display_parents' />\n";
+	echo "<input type='hidden' name='display_parents_app' value='$display_parents_app' />\n";
 	echo "<input type='hidden' name='interface_simplifiee' value='$interface_simplifiee' />\n";
 
 	//echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
@@ -531,7 +535,7 @@ else{
 	echo "<tr><td>Nom court : </td><td><input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
 	//echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" /></td></tr>\n";
 	echo "<tr><td>Nom complet : </td><td><input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" /></td></tr>\n";
-	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' wrap='virtual'>".$description."</textarea></td></tr></table>\n";
+	echo "<tr><td>Description : </td><td><textarea name='description' rows='2' cols='40' >".$description."</textarea></td></tr></table>\n";
 	echo "<br />\n";
 	echo "<table><tr><td><h3 class='gepi'>Emplacement de l'évaluation : </h3></td>\n<td>";
 	echo "<select size='1' name='id_emplacement'>\n";
@@ -589,15 +593,19 @@ else{
 	// Relevé de notes
 	// ===============
 
-	echo "<h3 class='gepi'>Affichage de la note sur le relevé de notes</h3>\n";
-	echo "<table><tr><td>";
-
-	echo "<label for='display_parents' style='cursor: pointer;'>";
-	echo "Faire apparaître la note de l'évaluation sur le relevé de notes de l'élève ";
+	echo "<h3 class='gepi'>Affichage sur le relevé de notes</h3>\n";
+	echo "<table>\n";
+	echo "<tr><td><label for='display_parents' style='cursor: pointer;'>";
+	echo "Faire <b>apparaître cette évaluation</b> sur le <b>relevé de notes</b> de l'élève : ";
 	echo "</label>";
+	echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' value='1' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr>\n";
 
-	//echo "</td><td><input type='checkbox' name='display_parents' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr></table>\n";
-	echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' value='1' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr></table>\n";
+	echo "<tr><td><label for='display_parents_app' style='cursor: pointer;'>";
+	echo "<b>L'appréciation</b> de l'évaluation est affichable sur le <b>relevé de notes</b> de l'élève (si l'option précédente a été validée) :";
+	echo "</label>";
+	echo "</td><td><input type='checkbox' name='display_parents_app' id='display_parents_app' value='1' "; if ($display_parents_app == 1) echo " checked"; echo " /></td></tr>\n";
+
+  echo "</table>\n";
 
 }
 

@@ -5765,6 +5765,19 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result .= "<font color=\"blue\">La table matieres_appreciations_grp existe déjà.</font><br />";
     }
 
+    $result .= "<br />&nbsp;->Tentative d'ajout du champ display_parents_app dans la table cn_devoirs.<br />";
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM cn_devoirs LIKE 'display_parents_app'"));
+    if ($test == 0) {
+        $result_inter = traite_requete("ALTER TABLE `cn_devoirs` ADD `display_parents_app` CHAR( 1 ) NOT NULL DEFAULT '0'");
+        if ($result_inter == '') {
+            $result .= "<font color=\"green\">Ok !</font><br />";
+        } else {
+            $result .= $result_inter;
+        }
+		} else {
+			$result .= "<font color=\"blue\">Le champs existe déjà.</font><br />";
+		}
+
 	//==========================================================
 	// AJOUT: boireaus 20080218
 	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves

@@ -70,6 +70,8 @@ function verif_date($date_fr)
 	    else { if (isset($_GET['creer_pdf'])) {$creer_pdf=$_GET['creer_pdf'];} if (isset($_POST['creer_pdf'])) {$creer_pdf=$_POST['creer_pdf'];} }
 	if (empty($_GET['avec_nom_devoir']) AND empty($_POST['avec_nom_devoir'])) {$avec_nom_devoir="";}
 	    else { if (isset($_GET['avec_nom_devoir'])) {$avec_nom_devoir=$_GET['avec_nom_devoir'];} if (isset($_POST['avec_nom_devoir'])) {$avec_nom_devoir=$_POST['avec_nom_devoir'];} }
+	if (empty($_GET['avec_appreciation_devoir']) AND empty($_POST['avec_appreciation_devoir'])) {$avec_appreciation_devoir="";}
+	    else { if (isset($_GET['avec_appreciation_devoir'])) {$avec_appreciation_devoir=$_GET['avec_appreciation_devoir'];} if (isset($_POST['avec_appreciation_devoir'])) {$avec_appreciation_devoir=$_POST['avec_appreciation_devoir'];} }
 	if (empty($_GET['type']) AND empty($_POST['type'])) {$type="";}
 	    else { if (isset($_GET['type'])) {$type=$_GET['type'];} if (isset($_POST['type'])) {$type=$_POST['type'];} }
 	if (empty($_GET['avec_adresse_responsable']) AND empty($_POST['avec_adresse_responsable'])) {$avec_adresse_responsable="";}
@@ -79,9 +81,9 @@ function verif_date($date_fr)
 	//AJOUT: eric 16022008
     if (empty($_GET['choix_adr_parent']) AND empty($_POST['choix_adr_parent'])) {$choix_adr_parent="";}
 	    else { if (isset($_GET['choix_adr_parent'])) {$choix_adr_parent=$_GET['choix_adr_parent'];} if (isset($_POST['choix_adr_parent'])) {$choix_adr_parent=$_POST['choix_adr_parent'];} }
-	//=========================		
-		
-		
+	//=========================
+
+
 	if (empty($_GET['active_entete_regroupement']) and empty($_POST['active_entete_regroupement'])) {$active_entete_regroupement="";}
 	    else { if (isset($_GET['active_entete_regroupement'])) {$active_entete_regroupement=$_GET['active_entete_regroupement'];} if (isset($_POST['active_entete_regroupement'])) {$active_entete_regroupement=$_POST['active_entete_regroupement'];} }
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
@@ -118,6 +120,7 @@ function verif_date($date_fr)
 	$_SESSION['classe'] = $classe;
 	$_SESSION['eleve'] = $eleve;
 	$_SESSION['avec_nom_devoir'] = $avec_nom_devoir;
+	$_SESSION['avec_appreciation_devoir'] = $avec_appreciation_devoir;
 	//=========================
 	// AJOUT: chapel 20071019
     $_SESSION['avec_coef'] = $avec_coef;
@@ -131,12 +134,12 @@ function verif_date($date_fr)
 	//=========================
 	$_SESSION['type'] = $type;
 	$_SESSION['avec_adresse_responsable'] = $avec_adresse_responsable;
-	
+
 	//=========================
 	//AJOUT: eric 16022008
 	$_SESSION['choix_adr_parent'] = $choix_adr_parent;
 	//=========================
-	
+
 	$_SESSION['date_debut_aff'] = $date_debut;
 	$_SESSION['date_fin_aff'] = $date_fin;
 	$_SESSION['active_entete_regroupement'] = $active_entete_regroupement;
@@ -220,6 +223,7 @@ if(!isset($choix_edit)){
 			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
 			*/
 			$avec_nom_devoir=$lig_class_tmp->rn_nomdev;
+			$avec_appreciation_devoir="";
 			$avec_tous_coef_devoir=$lig_class_tmp->rn_toutcoefdev;
 			$avec_coef_devoir=$lig_class_tmp->rn_coefdev_si_diff;
 			$avec_date_devoir=$lig_class_tmp->rn_datedev;
@@ -234,6 +238,7 @@ if(!isset($choix_edit)){
 		}
 		else{
 			$avec_nom_devoir="";
+			$avec_appreciation_devoir="";
 			$avec_coef_devoir="";
 			$avec_tous_coef_devoir="";
 			$chaine_coef="coef.: ";
@@ -264,6 +269,7 @@ if(!isset($choix_edit)){
 }
 else{
 	$avec_nom_devoir=isset($_POST["avec_nom_devoir"]) ? $_POST["avec_nom_devoir"] : "";
+	$avec_appreciation_devoir=isset($_POST["avec_appreciation_devoir"]) ? $_POST["avec_appreciation_devoir"] : "";
 	$avec_coef_devoir=isset($_POST["avec_coef_devoir"]) ? $_POST["avec_coef_devoir"] : "";
 	$avec_tous_coef_devoir=isset($_POST["avec_tous_coef_devoir"]) ? $_POST["avec_tous_coef_devoir"] : "";
 	$chaine_coef="coef.: ";
@@ -302,6 +308,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	//====================================================================
 	// AJOUT: boireaus
 	global $avec_nom_devoir;
+	global $avec_appreciation_devoir;
 	global $avec_coef_devoir;
 	global $avec_tous_coef_devoir;
 	global $chaine_coef;
@@ -315,6 +322,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	//====================================================================
 	global $categories;
 	global $cat_names;
+	global $tabdiv_infobulle;
 	// données requise :
 	//- le login de l'élève    : $current_eleve_login
 	//- $periode1 : numéro de la première période à afficher
@@ -449,8 +457,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	//------------------------------
 	// Boucle 'groupes'
 	//------------------------------
-
-	if ($affiche_categories) {
+  if ($affiche_categories) {
 		// On utilise les valeurs spécifiées pour la classe en question
 		$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgm.id_matiere matiere, jgc.categorie_id ".
 		"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
@@ -566,7 +573,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 		//$query_notes = mysql_query("SELECT nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 		if ($choix_periode ==0) {
 			//$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-			$sql1="SELECT d.coef, nd.note, d.nom_court, nd.statut, d.date FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			$sql1="SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 			nd.login = '".$current_eleve_login."' and
 			nd.id_devoir = d.id and
 			d.display_parents='1' and
@@ -579,10 +586,10 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			";
 			$query_notes = mysql_query($sql1);
 		} else {
-			$sql1 = "SELECT d.coef, nd.note, d.nom_court, nd.statut, d.date FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+			$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 			nd.login = '".$current_eleve_login."' and
 			nd.id_devoir = d.id and
-			d.display_parents='1' and
+  		d.display_parents='1' and
 			d.id_racine = cn.id_cahier_notes and
 			cn.id_groupe = '".$current_groupe."' and
 			cn.periode = '".$choix_periode."'
@@ -598,23 +605,34 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 		$m = 0;
 		$tiret = "no";
 		while ($m < $count_notes) {
+      $eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
+			$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
 			$eleve_note = @mysql_result($query_notes,$m,'nd.note');
 			$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
 			$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
-
-			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-				$affiche_note = $eleve_statut;
-			} else if ($eleve_statut == 'v') {
-				$affiche_note = "";
-			} else {
-				if ($eleve_note != '') {
-					$affiche_note = $eleve_note;
-				} else {
-					$affiche_note = "";
-				}
+ 			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+    		$affiche_note = $eleve_statut;
+	    } else if ($eleve_statut == 'v') {
+		    $affiche_note = "";
+	    } else {
+		    if ($eleve_note != '') {
+			    $affiche_note = $eleve_note;
+		    } else {
+			    $affiche_note = "";
+		    }
+	    }
+			if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
+			    if (($affiche_note=="") and ($avec_nom_devoir!="oui"))
+              $affiche_note = $eleve_nom_court;
+          else
+              $affiche_note = "&nbsp;";
 			}
 			if ($affiche_note != '') {
-				if ($tiret == "yes") { echo " - "; }
+				if ($tiret == "yes")
+            if (($avec_appreciation_devoir=="oui") or ($avec_nom_devoir=="oui"))
+                echo "<br />";
+            else
+                echo " - ";
 				//====================================================================
 				// MODIF: boireaus
 				//echo "<b>".$affiche_note."</b> (".$eleve_nom_court.")";
@@ -624,14 +642,20 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				}
 				else{
 					echo "<b>".$affiche_note."</b>";
-				}
+  			}
 
 				if(($avec_tous_coef_devoir=="oui")||(($avec_coef_devoir=="oui")&&($affiche_coef=="oui"))){
 					$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
 					echo " (<i><small>".$chaine_coef.$coef_devoir."</small></i>)";
 					//echo " \$affiche_coef=$affiche_coef";
 				}
-
+				if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
+				  echo " - Appréciation : ";
+          if ($eleve_app!="")
+              echo $eleve_app;
+          else
+              echo "-";
+        }
 				if($avec_date_devoir=="oui"){
 					$date_note = @mysql_result($query_notes,$m,'d.date');
 					// Format: 2006-09-28 00:00:00
@@ -906,7 +930,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		    <input type="checkbox" name="avec_adresse_responsable" id="avec_adresse_responsable" value="1" <?php if(isset($avec_adresse_responsable) and $avec_adresse_responsable === '1') { ?>checked="checked"<?php } ?> /> <label for="avec_adresse_responsable" style="cursor: pointer;">Afficher les adresses responsables.</label>
 		    <br/>
 			<!-- DEBUT AJOUT Eric 16022008-->
-			
+
 			<b>choix de l'adresse à imprimer</b>
 				<br /><input name="choix_adr_parent" id="choix_adr_parent1" value="1" type="radio" <?php if(isset($choix_adr_parent) and ( $choix_adr_parent === '1' or $choix_adr_parent == '' ) ) { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent1" style="cursor: pointer;"> Tous les Responsables 1</label>
 				<br /><input name="choix_adr_parent" id="choix_adr_parent2" value="2" type="radio" <?php if(isset($choix_adr_parent) and $choix_adr_parent === '2') { ?>checked="checked"<?php } ?> /><label for="choix_adr_parent2" style="cursor: pointer;">Tous les Responsables 1 et uniquement les responsables 2 différent du responsable 1</label>
@@ -926,7 +950,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	<div style="text-align: left;"><a href="#ao" onclick="affichercacher('div_1')" style="cursor: pointer;"><img style="border: 0px solid ; width: 13px; height: 13px; border: none; padding:2px; margin:2px; float: left;" name="img_1" alt="" title="Information" src="../images/fleche_na.gif" align="middle" />Autres options</a></div>
 	<a name="ao"></a>
 	<div style="text-align: left;">
-		<div id="div_1" style="display: <?php if( $avec_nom_devoir != '' or $active_entete_regroupement != '' or $avec_coef != '' or $avec_date_devoir != '' or $avec_sign_parent != '' or $avec_sign_pp != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><!--a name="ao"></a-->
+		<div id="div_1" style="display: <?php if( $avec_nom_devoir != '' or $avec_appreciation_devoir != '' or $active_entete_regroupement != '' or $avec_coef != '' or $avec_date_devoir != '' or $avec_sign_parent != '' or $avec_sign_pp != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF"><!--a name="ao"></a-->
 		  <span style="font-family: Arial;">
 
 			<!-- DEBUT AJOUT chapel 20071026-->
@@ -937,6 +961,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			<!-- FIN AJOUT chapel 20071026-->
 
 			<input type="checkbox" name="avec_nom_devoir" id="avec_nom_devoir" value="oui" <?php if(isset($avec_nom_devoir) and $avec_nom_devoir === 'oui') { ?>checked="checked"<?php } ?> /> <label for="avec_nom_devoir" style="cursor: pointer;">Afficher le nom des devoirs.</label><br />
+			<input type="checkbox" name="avec_appreciation_devoir" id="avec_appreciation_devoir" value="oui" <?php if(isset($avec_appreciation_devoir) and $avec_appreciation_devoir === 'oui') { ?>checked="checked"<?php } ?> /> <label for="avec_appreciation_devoir" style="cursor: pointer;"> Afficher les appréciations (lorsque le professeur a validé cette option).</label><br />
 			<input type="checkbox" name="active_entete_regroupement" id="active_entete_regroupement" value="1" <?php if(isset($active_entete_regroupement) and $active_entete_regroupement === '1') { ?>checked="checked"<?php } ?> /> <label for="active_entete_regroupement" style="cursor: pointer;">Afficher les catégories.</label><br />
 			<input type="checkbox" name="avec_coef" id="avec_coef1" value="oui1" onclick="activedesactive('avec_ceof2','avec_coef1');"  <?php if(isset($avec_coef) and $avec_coef === 'oui1') { ?>checked="checked"<?php } ?> /> <label for="avec_coef1" style="cursor: pointer;">Afficher tous les coefficients des devoirs.</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="avec_coef" id="avec_coef2" value="oui2" onclick="activedesactive('avec_ceof1','avec_coef2');" <?php if(isset($avec_coef) and $avec_coef === 'oui2') { ?>checked="checked"<?php } ?> /> <label for="avec_coef2" style="cursor: pointer;">Afficher les coefficients des devoirs si différent de 1.</label><br />
@@ -1449,7 +1474,8 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     // MODIF: boireaus
 
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-		$avec_nom_devoir="n";
+		$avec_nom_devoir="y";
+		$avec_appreciation_devoir="n";
 		$avec_tous_coef_devoir="n";
 		$avec_coef_devoir="n";
 		$avec_date_devoir="n";
@@ -1467,6 +1493,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
 			echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
+
+      echo "\n<br />\n<input type='checkbox' name='avec_appreciation_devoir' id='avec_appreciation_devoir' value='oui' ";
+			if($avec_appreciation_devoir=="y"){echo "checked ";}
+			echo "/><label for='avec_appreciation_devoir' style='cursor: pointer;'> Afficher les appréciations (lorsque le professeur a validé cette option).</label>\n";
 
 			echo "<br />\n";
 			echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
@@ -1491,6 +1521,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 			if($avec_nom_devoir=="y"){echo "checked ";}
 			echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
+
+			echo "\n<br />\n<input type='checkbox' name='avec_appreciation_devoir' id='avec_appreciation_devoir' value='oui' ";
+			if($avec_appreciation_devoir=="y"){echo "checked ";}
+			echo "/><label for='avec_appreciation_devoir' style='cursor: pointer;'> Afficher les appréciations (lorsque le professeur a validé cette option).</label>\n";
 
 			echo "<br />\n";
 			echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
@@ -1523,6 +1557,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 		echo "\n<br />\n<input type='checkbox' name='avec_nom_devoir' id='avec_nom_devoir' value='oui' ";
 		if($avec_nom_devoir=="y"){echo "checked ";}
 		echo "/><label for='avec_nom_devoir' style='cursor: pointer;'> Afficher le nom des devoirs.</label>\n";
+
+		echo "\n<br />\n<input type='checkbox' name='avec_appreciation_devoir' id='avec_appreciation_devoir' value='oui' ";
+		if($avec_appreciation_devoir=="y"){echo "checked ";}
+		echo "/><label for='avec_appreciation_devoir' style='cursor: pointer;'> Afficher les appréciations (lorsque le professeur a validé cette option).</label>\n";
 
 		echo "<br />\n";
 		echo "<input type='checkbox' name='avec_tous_coef_devoir' id='avec_tous_coef_devoir' value='oui' ";
