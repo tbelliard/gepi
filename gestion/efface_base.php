@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
- * Last modification  : 09/03/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -125,6 +125,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
    //"matieres",
    "matieres_appreciations",
    "matieres_notes",
+	"matieres_appreciations_grp",
+	"matieres_appreciations_tempo",
    //"periodes",
    "tempo2",
    "temp_gep_import",
