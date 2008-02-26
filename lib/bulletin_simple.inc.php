@@ -4,6 +4,57 @@
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
+function acces_appreciations($periode1, $periode2, $id_classe) {
+	
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
+												statut='".$_SESSION['statut']."' AND
+												periode='$i';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if($res) {
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+					if($lig->acces=="y") {
+						$tab_acces_app[$i]="y";
+					}
+					elseif($lig->acces=="date") {
+						//echo "<p>Période $i: Date limite: $lig->date<br />";
+						$tab_date=explode("-",$lig->date);
+						$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
+						//echo "$timestamp_limite<br />";
+						$timestamp_courant=time();
+						//echo "$timestamp_courant<br />";
+
+						if($timestamp_courant>$timestamp_limite){
+							$tab_acces_app[$i]="y";
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$tab_acces_app[$i]="n";
+				}
+			}
+			else {
+				$tab_acces_app[$i]="n";
+			}
+		}
+	}
+	else {
+		// Pas de limitations d'accès pour les autres statuts.
+		for($i=$periode1;$i<=$periode2;$i++) {
+			$tab_acces_app[$i]="y";
+		}
+	}
+  return $tab_acces_app;
+} // function
 
 function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
@@ -26,53 +77,7 @@ global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
 unset($tab_acces_app);
 $tab_acces_app=array();
-if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-	for($i=$periode1;$i<=$periode2;$i++) {
-		$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
-											statut='".$_SESSION['statut']."' AND
-											periode='$i';";
-		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if($res) {
-			if(mysql_num_rows($res)>0) {
-				$lig=mysql_fetch_object($res);
-				if($lig->acces=="y") {
-					$tab_acces_app[$i]="y";
-				}
-				elseif($lig->acces=="date") {
-					//echo "<p>Période $i: Date limite: $lig->date<br />";
-					$tab_date=explode("-",$lig->date);
-					$timestamp_limite=mktime(0,0,0,$tab_date[1],$tab_date[2],$tab_date[0]);
-					//echo "$timestamp_limite<br />";
-					$timestamp_courant=time();
-					//echo "$timestamp_courant<br />";
-
-					if($timestamp_courant>$timestamp_limite){
-						$tab_acces_app[$i]="y";
-					}
-					else {
-						$tab_acces_app[$i]="n";
-					}
-				}
-				else {
-					$tab_acces_app[$i]="n";
-				}
-			}
-			else {
-				$tab_acces_app[$i]="n";
-			}
-		}
-		else {
-			$tab_acces_app[$i]="n";
-		}
-	}
-}
-else {
-	// Pas de limitations d'accès pour les autres statuts.
-	for($i=$periode1;$i<=$periode2;$i++) {
-		$tab_acces_app[$i]="y";
-	}
-}
+$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 //==========================================================
 
 
@@ -776,6 +781,11 @@ echo "</table>\n";
 
 
 function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe,$style_bulletin) {
+
+unset($tab_acces_app);
+$tab_acces_app=array();
+$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+
 	$nb_periodes = $periode2 - $periode1 + 1;
 	$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 	$AID_NOM = @mysql_result($call_data, 0, "nom");
@@ -857,10 +867,12 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
 		$n++;
 	}
 	echo "</i></td>";
-	if ($test_coef != 0) {
-		echo "<td ";
-		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-		echo " align=\"center\"><p class='".$style_bulletin."'>-</p></td>";
+	if($affiche_coef=='y'){
+		if ($test_coef != 0) {
+			echo "<td ";
+			if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
+			echo " align=\"center\"><p class='".$style_bulletin."'>-</p></td>";
+		}
 	}
 	$nb=$periode1;
 	$print_tr = 'no';
@@ -881,7 +893,7 @@ function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$curre
 		}
 		echo "</b></td>";
 		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."'>-</td>";
-
+		if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$eleve_aid_app[$nb] = ' -';}
 		echo "<td class='$style_bulletin'>$eleve_aid_app[$nb]</td></tr>";
 		$print_tr = 'yes';
 		$nb++;
