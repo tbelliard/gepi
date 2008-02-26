@@ -124,6 +124,8 @@ $liste_tables_del = array(
 //"matieres",
 "matieres_appreciations",
 "matieres_notes",
+"matieres_appreciations_grp",
+"matieres_appreciations_tempo",
 "observatoire",
 "observatoire_comment",
 //"observatoire_config",
