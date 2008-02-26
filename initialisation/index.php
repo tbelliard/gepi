@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Last modification  : 14/03/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
