@@ -815,6 +815,19 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 // Outils complémentaires de gestion des AID
 // Y-a-t-il des AIDs pour lesquelles les outils complémetaires sont activés ?
+
+// Dans le cas des élèves, on n'affiche que les AID dans lesquelles ils sont inscrits
+function AfficheAid($_statut,$_login,$indice_aid){
+    if ($_statut == "eleve") {
+        $test = sql_query1("select count(login) from j_aid_eleves where login='".$_login."' and indice_aid='".$indice_aid."' ");
+        if ($test == 0)
+            return false;
+        else
+            return true;
+    } else
+        return true;
+}
+
 $call_data = sql_query("select indice_aid, nom from aid_config WHERE outils_complementaires = 'y' order by nom_complet");
 $nb_aid = mysql_num_rows($call_data);
 if ($nb_aid != 0) {
@@ -824,6 +837,7 @@ if ($nb_aid != 0) {
     $i = 0;
     while ($i<$nb_aid) {
         $indice_aid = mysql_result($call_data,$i,"indice_aid");
+        $_indice_aid[] = mysql_result($call_data,$i,"indice_aid");
         $nom_aid = mysql_result($call_data,$i,"nom");
         $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
         $titre[] = $nom_aid. " : outils de visualisation et d'édition";
@@ -833,7 +847,7 @@ if ($nb_aid != 0) {
   $nb_ligne = count($chemin);
   $affiche = 'no';
   for ($i=0;$i<$nb_ligne;$i++) {
-      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+      if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
       echo "<table class='menu'>\n";
@@ -841,7 +855,8 @@ if ($nb_aid != 0) {
       echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
       echo "</tr>\n";
       for ($i=0;$i<$nb_ligne;$i++) {
-          affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+          if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))
+              affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
       }
       echo "</table>";
   }
