@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 13/07/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -65,6 +65,8 @@ $liste_tables_del = array(
 //"matieres",
 "matieres_appreciations",
 "matieres_notes",
+"matieres_appreciations_grp",
+"matieres_appreciations_tempo",
 //"periodes",
 //"periodes_observatoire",
 "tempo2",
