@@ -9,7 +9,7 @@
 		$timestamp_limite=mktime(0,0,0,$tmp_tabdate[1],$tmp_tabdate[0],$tmp_tabdate[2]);
 		$timestamp_courant=time();
 
-		if($timestamp_courant>$timestamp_limite) {echo "<span style='color:green;'>Accessible à la date du jour</span>";} else {echo "<span style='color:red;'>Inaccessible à la date du jour</span>";}
+		if($timestamp_courant>$timestamp_limite) {echo "<span style='color:green;'>Accessible &agrave; la date du jour</span>";} else {echo "<span style='color:red;'>Inaccessible &agrave; la date du jour</span>";}
 	}
 	else {
 		//new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?classe_periode='+classe_periode+'accessible='+accessible,{method: 'get'});
