@@ -79,6 +79,7 @@ require_once("../lib/header.inc");
 <form enctype="multipart/form-data" name="formulaire" action="config_aid_fiches_projet.php" method="post">
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 |<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>|
+<a href="config_aid_matieres.php">Configuration des disciplines</a>|
 <input type="submit" value="Enregistrer" /><br />
 <?php
 

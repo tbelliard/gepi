@@ -276,12 +276,26 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
     $tab["j_aid_eleves"][4] = "id";  // nom du champ de la première table lié à la table de liaison
     $tab["j_aid_eleves"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
 
+    $tab["j_aid_eleves_resp"][0] = "aid"; //1ère table
+    $tab["j_aid_eleves_resp"][1] = "eleves"; // 2ème table
+    $tab["j_aid_eleves_resp"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
+    $tab["j_aid_eleves_resp"][3] = "login";  // nom du champ de la table de liaison lié à la deuxième table
+    $tab["j_aid_eleves_resp"][4] = "id";  // nom du champ de la première table lié à la table de liaison
+    $tab["j_aid_eleves_resp"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+
     $tab["j_aid_utilisateurs"][0] = "aid"; //1ère table
     $tab["j_aid_utilisateurs"][1] = "utilisateurs"; // 2ème table
     $tab["j_aid_utilisateurs"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
     $tab["j_aid_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
     $tab["j_aid_utilisateurs"][4] = "id";  // nom du champ de la première table lié à la table de liaison
     $tab["j_aid_utilisateurs"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+
+    $tab["j_aidcateg_utilisateurs"][0] = "aid_config"; //1ère table
+    $tab["j_aidcateg_utilisateurs"][1] = "utilisateurs"; // 2ème table
+    $tab["j_aidcateg_utilisateurs"][2] = "indice_aid"; // nom du champ de la table de liaison lié à la première table
+    $tab["j_aidcateg_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
+    $tab["j_aidcateg_utilisateurs"][4] = "indice_aid";  // nom du champ de la première table lié à la table de liaison
+    $tab["j_aidcateg_utilisateurs"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
 
     $tab["j_eleves_etablissements"][0] = "eleves"; //1ère table
     $tab["j_eleves_etablissements"][1] = "etablissements"; // 2ème table
@@ -306,6 +320,7 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 
 
     foreach ($tab as $key => $val) {
+       $cpt=0;
        echo "<H2>Vérification de la table ".$key."</H2>\n";
        // $key : le nom de la table de liaison
        // $val[0] : le nom de la première table
@@ -457,78 +472,6 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
     echo "<H2 align=\"center\">Etape 3/$total_etapes</H2>\n";
     // Cas de la table j_classes_matieres_professeurs
     echo "<H2>Vérification de la table j_classes_matieres_professeurs</H2>\n";
-
-    /*
-    $req = mysql_query("SELECT * FROM j_classes_matieres_professeurs order by id_classe,id_matiere,id_professeur");
-    $nb_lignes = mysql_num_rows($req);
-    $i = 0;
-    while ($i < $nb_lignes) {
-        $id_classe = mysql_result($req,$i,'id_classe');
-        $id_matiere = mysql_result($req,$i,'id_matiere');
-        $id_professeur = mysql_result($req,$i,'id_professeur');
-
-        // Détection des doublons
-        $req2 = mysql_query("SELECT * FROM j_classes_matieres_professeurs
-        where
-        id_classe ='$id_classe' and
-        id_matiere ='$id_matiere' and
-        id_professeur ='$id_professeur'
-        ");
-        $nb_lignes2 = mysql_num_rows($req2);
-        if ($nb_lignes2 > "1") {
-            $nb = $nb_lignes2-1;
-//            echo "Suppression d'un doublon : identifiant classe = $id_classe - identifiant matiere = $id_matiere - Identifiant professeur = $id_professeur<br />";
-            // On efface les lignes en trop
-            $del = mysql_query("delete from j_classes_matieres_professeurs where
-            id_classe ='$id_classe' and
-            id_matiere ='$id_matiere' and
-            id_professeur ='$id_professeur' LIMIT $nb");
-
-           $cpt++;
-        }
-
-        // Détection des lignes inutiles
-        $req3 = mysql_query("SELECT *
-        FROM j_classes_matieres_professeurs j,
-        matieres m,
-        utilisateurs u,
-        j_professeurs_matieres jpm,
-        classes c
-
-        where
-        j.id_matiere = '$id_matiere' and
-        m.matiere = '$id_matiere' and
-        j.id_professeur = '$id_professeur' and
-        u.login = '$id_professeur' and
-        jpm.id_professeur = '$id_professeur' and
-        jpm.id_matiere = '$id_matiere' and
-        j.id_classe ='$id_classe' and
-        c.id = '$id_classe'
-        ");
-        $nb_lignes3 = mysql_num_rows($req3);
-        if ($nb_lignes3 == "0") {
-            $nb = $nb_lignes2-1;
-//            echo "Suppression d'une ligne inutile : identifiant classe = $id_classe - identifiant matiere = $id_matiere - Identifiant professeur = $id_professeur<br />";
-            // On efface les lignes en trop
-            $del = mysql_query("delete from j_classes_matieres_professeurs where
-            id_classe ='$id_classe' and
-            id_matiere ='$id_matiere' and
-            id_professeur ='$id_professeur'");
-            $cpt++;
-        }
-        mysql_free_result($req2);
-        mysql_free_result($req3);
-
-    $i++;
-    }
-
-    if ($cpt != 0) {
-        echo "<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />";
-    } else {
-        echo "<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />";
-    }
-    echo "<b>La table j_classes_matieres_professeurs est OK.</b><br />";
-    */
     echo "<p>La table j_classes_matieres_professeurs n'existe plus et ne peut donc pas être nettoyée. Cette étape sera remplacée par un nettoyage des tables de gestion des groupes.</p>\n";
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
     echo "<input type=\"hidden\" name=\"maj\" value=\"4\" />\n";
@@ -610,45 +553,6 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="5")) or (isset($_GET['maj']) and (($_GET['maj'])=="5"))) {
     echo "<H2 align=\"center\">Etape 5/$total_etapes</H2>\n";
     echo "<H2>Nettoyage de la table j_eleves_matieres</H2>\n";
-    /*init_time(); //initialise le temps
-    //début de fichier
-    if (!isset($_GET["offset"])) $offset=0;
-        else $offset=$_GET["offset"];
-    if (!isset($_GET['nb_lignes'])) {
-        $req = mysql_query("SELECT * FROM j_eleves_matieres order by login");
-        $nb_lignes = mysql_num_rows($req);
-    } else {
-        $nb_lignes = $_GET['nb_lignes'];
-    }
-    if(isset($offset)){
-        if ($offset>=0)
-           $percent=min(100,round(100*$offset/$nb_lignes,0));
-        else $percent=100;
-    }
-    else $percent=0;
-
-    if ($percent >= 0) {
-        $percentwitdh=$percent*4;
-        echo "<div align='center'><table width=\"400\" border=\"0\">
-        <tr><td width='400' align='center'><b>Nettoyage en cours </b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
-    }
-    flush();
-    if ($offset>=0){
-        if (etape5()) {
-            echo "<br />Redirection automatique sinon cliquez <a href=\"clean_tables.php?maj=5&duree=$duree&offset=$offset&cpt=$cpt&nb_lignes=$nb_lignes\">ici</a>";
-            echo "<script>window.location=\"clean_tables.php?maj=5&duree=$duree&offset=$offset&cpt=$cpt&nb_lignes=$nb_lignes\";</script>";
-            flush();
-            exit;
-       }
-    } else {
-        if ($cpt != 0) {
-            echo "<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />";
-            echo "<b>La table j_eleves_matieres OK.</b><br />";
-        } else {
-            echo "<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />";
-            echo "<b>La table j_eleves_matieres est OK.</b><br />";
-        }
-        */
         echo "<p>Cette table n'est plus utilisée. Cette étape devrait donc être, un jour, remplacée par une étape de nettoyage des attributions d'élèves aux groupes...</p>\n";
         echo "<form action=\"clean_tables.php\" method=\"post\">\n";
         echo "<input type=\"hidden\" name=\"maj\" value=\"6\" />\n";

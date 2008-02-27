@@ -5754,7 +5754,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_matiere'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_matiere` (`id_matiere` VARCHAR( 255 ) NOT NULL;");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_matiere` (`id_matiere` VARCHAR( 255 ) NOT NULL);");
     if ($result_inter == '')
           $result .= "<font color=\"green\">La table aid_matiere a été créée !</font><br />";
       else

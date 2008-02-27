@@ -218,7 +218,19 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[] = "SELECT * FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
     $req[] = "DELETE FROM j_professeurs_matieres WHERE id_matiere='$cible1'";
 
-    $nombre_req = 3;
+    $mess[] = "Table aid_matiere :";
+    $test_nb[] = "SELECT * FROM aid_matiere WHERE id_matiere='$cible1'";
+    $req[] = "DELETE FROM aid_matiere WHERE id_matiere='$cible1'";
+
+    $mess[] = "Matière principale des fiches projets :";
+    $test_nb[] = "SELECT * FROM aid WHERE matiere1='$cible1'";
+    $req[] = "UPDATE aid SET matiere1 = '' WHERE matiere1='$cible1'";
+
+    $mess[] = "Matière secondaire des fiches projets :";
+    $test_nb[] = "SELECT * FROM aid WHERE matiere2='$cible1'";
+    $req[] = "UPDATE aid SET matiere2 = '' WHERE matiere2='$cible1'";
+
+    $nombre_req = 6;
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire';");
 	if(mysql_num_rows($test_existence)>0){

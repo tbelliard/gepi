@@ -384,7 +384,7 @@ if ($nombre !=0)
     echo "</table>";
 echo "<select size=1 name=reg_prof_login>\n";
 echo "<option value=''>(aucun)</option>\n";
-$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND statut != 'eleve' order by nom");
+$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysql_num_rows($call_prof);
 $i = "0" ;
 while ($i < $nombreligne) {

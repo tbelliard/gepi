@@ -789,7 +789,7 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere1',"W")) {
     echo "<span class = 'bold'>Indiquez la discipline principale à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysql_query("select * from matieres order by nom_complet");
+    $call_discipline = mysql_query("select distinct matiere, nom_complet from matieres, aid_matiere where (matieres.matiere=aid_matiere.id_matiere) order by nom_complet");
     $nb_discipline = mysql_num_rows($call_discipline);
     echo "<select name=\"reg_discipline1\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
@@ -818,7 +818,7 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere2',"W")) {
     echo "<span class = 'bold'>Indiquez la discipline secondaire à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysql_query("select * from matieres order by nom_complet");
+    $call_discipline = mysql_query("select distinct matiere, nom_complet from matieres, aid_matiere where (matieres.matiere=aid_matiere.id_matiere) order by nom_complet");
     $nb_discipline = mysql_num_rows($call_discipline);
     echo "<select name=\"reg_discipline2\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
