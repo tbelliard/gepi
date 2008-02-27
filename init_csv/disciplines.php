@@ -109,7 +109,7 @@ if (!isset($_POST["action"])) {
 
 				$insert = mysql_query("INSERT INTO matieres SET " .
 						"matiere = '" . $reg_nom_court . "', " .
-						"nom_complet = '" . $reg_nom_long . "'");
+						"nom_complet = '" . $reg_nom_long . "',priority='0',matiere_aid='n',matiere_atelier='n'");
 						//"nom_complet = '" . htmlentities($reg_nom_long) . "'");
 
 				if (!$insert) {

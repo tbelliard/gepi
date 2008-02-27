@@ -188,7 +188,7 @@ if (!isset($_POST["action"])) {
 
                     if (mysql_num_rows($test) == 0) {
                         // La matière n'existe pas, on la créé
-                        $res = mysql_query("INSERT INTO matieres SET matiere = '" . $reg_matiere . "', nom_complet = '" . $reg_matiere . "'");
+                        $res = mysql_query("INSERT INTO matieres SET matiere = '" . $reg_matiere . "', nom_complet = '" . $reg_matiere . "',priority='0',matiere_aid='n',matiere_atelier='n'");
                         $reg_matiere_complet = $reg_matiere;
                         $warning_matiere = true;
                     } else {

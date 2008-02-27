@@ -62,7 +62,7 @@ if (isset($_POST['isposted'])) {
                 $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
-                $register_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "'");
+                $register_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n'");
                 if (!$register_matiere) {
                     $msg = rawurlencode("Une erreur s'est produite lors de l'enregistrement de la nouvelle matière.");
                     $ok = 'no';

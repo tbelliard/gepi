@@ -247,7 +247,7 @@ if (!isset($is_posted)) {
 						$verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
 						$resverif = mysql_num_rows($verif);
 						if($resverif == 0) {
-							$req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0'");
+							$req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
 							if(!$req) {
 								$nb_reg_no++; echo mysql_error();
 							} else {

@@ -460,7 +460,7 @@
 								$verif=mysql_query($sql);
 								$resverif = mysql_num_rows($verif);
 								if($resverif==0) {
-									$sql="insert into matieres set matiere='".$matiere[$i]['code_gestion']."', nom_complet='".$matiere[$i]['libelle_court']."', priority='0';";
+									$sql="insert into matieres set matiere='".$matiere[$i]['code_gestion']."', nom_complet='".$matiere[$i]['libelle_court']."', priority='0',matiere_aid='n',matiere_atelier='n';";
 									$req=mysql_query($sql);
 									if(!$req) {
 										$nb_reg_no++;
