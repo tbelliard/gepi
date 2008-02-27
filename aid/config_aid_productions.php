@@ -55,7 +55,6 @@ if (isset($is_posted) and ($is_posted == "1")) {
             if ($value == "") {
                 $test = sql_query1("select count(id) from aid where productions='".$key."'");
                 if ($test > 0) {
-                    $req = mysql_query("insert into aid_matiere set id_matiere='".$matiere."'");
                     $msg .= "Le type ".$value." ne peut être supprimée il est déjà utilisé dans au moins une fiche projet.<br />";
                     $pb = "yes";
                 } else {

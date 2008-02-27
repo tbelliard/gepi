@@ -609,6 +609,7 @@ INSERT INTO droits VALUES ('/aid/visu_fiches.php', 'V', 'V', 'V', 'F', 'V', 'F',
 INSERT INTO droits VALUES ('/aid/modif_fiches.php', 'V', 'V', 'V', 'F', 'V', 'F', 'F', 'Outils complémentaires de gestion des AIDs', '');
 INSERT INTO droits VALUES ('/aid/config_aid_fiches_projet.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');
 INSERT INTO droits VALUES ('/aid/config_aid_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');
+INSERT INTO droits VALUES ('/aid/config_aid_productions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');
 INSERT INTO `aid_familles` VALUES(0, 10, 'Information, presse');
 INSERT INTO `aid_familles` VALUES(1, 11, 'Philosophie et psychologie, pensée');
 INSERT INTO `aid_familles` VALUES(2, 12, 'Religions');

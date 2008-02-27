@@ -108,7 +108,6 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
 "aid_appreciations",
 //"aid_config",
 //"aid_familles",
-//"aid_matiere",
 //"aid_productions",
 //"aid_public",
 "avis_conseil_classe",

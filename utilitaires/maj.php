@@ -549,6 +549,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/aid/modif_fiches.php', 'V', 'V', 'V', 'F', 'V', 'F', 'F', 'Outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_fiches_projet.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
   $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
+  $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_productions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/acces_appreciations.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Configuration de la restriction d accès aux appréciations pour les élèves et responsables', '');";
 
 	//$tab_req[] = "";
@@ -5547,35 +5548,6 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">Les champs outils_complementaires et feuille_presence dans la table aid_config existent déjà.</font><br />";
     }
-    // Lignes suivantes à supprimer dans la version finale
-    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'salle'"));
-    if ($test != 0) {
-        traite_requete("ALTER TABLE `aid` DROP `salle`;");
-        traite_requete("ALTER TABLE `aid` DROP `jury`;");
-        traite_requete("ALTER TABLE `aid` DROP `productions`;");
-        traite_requete("ALTER TABLE `aid` DROP `resume`;");
-        traite_requete("ALTER TABLE `aid` DROP `famille`;");
-        traite_requete("ALTER TABLE `aid` DROP `mots_cles`;");
-        traite_requete("ALTER TABLE `aid` DROP `adresse1`;");
-        traite_requete("ALTER TABLE `aid` DROP `adresse2`;");
-        traite_requete("ALTER TABLE `aid` DROP `public_destinataire`;");
-        traite_requete("ALTER TABLE `aid` DROP `contacts`;");
-        traite_requete("ALTER TABLE `aid` DROP `divers`;");
-        traite_requete("ALTER TABLE `aid` DROP `matiere1`;");
-        traite_requete("ALTER TABLE `aid` DROP `matiere2`;");
-        traite_requete("ALTER TABLE `aid` DROP `en_construction`;");
-        traite_requete("ALTER TABLE `aid` DROP `en_contruction`;");
-        traite_requete("ALTER TABLE `aid` DROP `eleve_peut_modifier`;");
-        traite_requete("ALTER TABLE `aid` DROP `prof_peut_modifier`;");
-        traite_requete("ALTER TABLE `aid` DROP `cpe_peut_modifier`;");
-        traite_requete("ALTER TABLE `aid` DROP `fiche_publique`;");
-        traite_requete("ALTER TABLE `aid` DROP `affiche_adresse1`;");
-        traite_requete("ALTER TABLE `aid` DROP `perso1`;");
-        traite_requete("ALTER TABLE `aid` DROP `perso2`;");
-        traite_requete("ALTER TABLE `aid` DROP `perso3`;");
-    }
-    // Fin des lignes à supprimer dans la version finale
-
     // Modification de la table aid
     $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'en_construction'"));
     if ($test == 0) {
@@ -5673,9 +5645,11 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">La table aid_public est déjà remplie.</font><br />";
     }
+    // la ligne suivante est à supprimer dans la version finale
+    mysql_query("DROP TABLE IF EXISTS aid_productions");
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_productions'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL default '0',`nom` varchar(100) NOT NULL default '');");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL auto_increment, `nom` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`) );");
     if ($result_inter == '')
           $result .= "<font color=\"green\">La table aid_productions a été créée !</font><br />";
       else
@@ -5752,17 +5726,16 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">La table droits_aid est déjà remplie.</font><br />";
     }
-    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_matiere'"));
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM matieres LIKE 'matiere_aid'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_matiere` (`id_matiere` VARCHAR( 255 ) NOT NULL);");
+      $result_inter = traite_requete("ALTER TABLE `matieres` ADD `matiere_aid` CHAR( 1 ) DEFAULT 'n' NOT NULL , ADD `matiere_atelier` CHAR( 1 ) DEFAULT 'n' NOT NULL;");
     if ($result_inter == '')
-          $result .= "<font color=\"green\">La table aid_matiere a été créée !</font><br />";
+          $result .= "<font color=\"green\">Les champs matiere_aid et matiere_atelier ont été ajoutés à la table matieres !</font><br />";
       else
           $result .= $result_inter."<br />";
     } else {
-      $result .= "<font color=\"blue\">La table aid_matiere existe déjà.</font><br />";
+      $result .= "<font color=\"blue\">Les champs matiere_aid et matiere_atelier existent déjà dans la table matieres !</font><br />";
     }
-
     $result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_grp<br />";
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_grp'"));
     if ($test == 0) {

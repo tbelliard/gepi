@@ -52,19 +52,26 @@ if (isset($is_posted) and ($is_posted == "1")) {
     $res = mysql_query($requete);
     $nb_lignes = mysql_num_rows($res);
     $i = 0;
-    mysql_query("TRUNCATE TABLE `aid_matiere`");
     while ($i < $nb_lignes) {
         $matiere = mysql_result($res,$i,"matiere");
         if (isset($_POST["id_".$matiere])) {
-            $req = mysql_query("insert into aid_matiere set id_matiere='".$matiere."'");
-            if (!$req)
+            $req = mysql_query("update matieres set matiere_aid='y' where matiere='".$matiere."'");
+            if (!$req) {
                 $msg .= "Problème lors de l'enregistrement de la matière ".$matiere.".<br />";
+                $pb="yes";
+            }
         } else {
             $test = sql_query1("select count(id) from aid where matiere1='".$matiere."' or matiere2='".$matiere."'");
             if ($test > 0) {
-                $req = mysql_query("insert into aid_matiere set id_matiere='".$matiere."'");
                 $msg .= "La matière ".$matiere." ne peut être supprimée car elle est déjà utilisée dans au moins une fiche projet.<br />";
                 $pb = "yes";
+            } else {
+                $req = mysql_query("update matieres set matiere_aid='n' where matiere='".$matiere."'");
+                if (!$req) {
+                    $msg .= "Problème lors de la suppression de la matière ".$matiere.".<br />";
+                    $pb="yes";
+                }
+
             }
         }
         $i++;
@@ -100,13 +107,13 @@ $alt=1;
 while ($i < $nb_lignes) {
     $matiere = mysql_result($res,$i,"matiere");
     $nom_complet = mysql_result($res,$i,"nom_complet");
-    $is_discipline = sql_query1("select count(id_matiere) from aid_matiere where id_matiere='".$matiere."'");
+    $matiere_aid  = mysql_result($res,$i,"matiere_aid");
     $alt=$alt*(-1);
     echo "<tr class='lig$alt'>";
     echo "<td>".$matiere."</td>\n";
     echo "<td>".$nom_complet."</td>\n";
     echo "<td><input type=\"checkbox\" name=\"id_".$matiere."\" value=\"y\" ";
-    if ($is_discipline!='0') echo " checked ";
+    if ($matiere_aid=='y') echo " checked ";
     echo "/></td>\n";
     echo "</tr>\n";
     $i++;
