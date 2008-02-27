@@ -1062,7 +1062,7 @@ for($i=0;$i<count($groups);$i++){
 
 
 	echo "</tr>\n";
-
+	flush();
 	/*
 	echo "<p>\n";
 	echo "\$groups[$i]['id']=".$groups[$i]['id']."<br />\n";
