@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 15/03/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -64,7 +64,53 @@ if ($_SESSION['statut'] != "secours") {
 $titre_page = "Saisie des moyennes et appréciations | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a></p>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
+//====================================
+if($_SESSION['statut']=='professeur'){
+	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+
+    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+    //$tab_groups = get_groups_for_prof($_SESSION["login"]);
+
+	if(!empty($tab_groups)) {
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		//foreach($tab_groups as $tmp_group) {
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if($tab_groups[$loop]['id']==$id_groupe){
+				$temoin_tmp=1;
+				if(isset($tab_groups[$loop+1])){
+					$id_grp_suiv=$tab_groups[$loop+1]['id'];
+				}
+				else{
+					$id_grp_suiv=0;
+				}
+			}
+			if($temoin_tmp==0){
+				$id_grp_prec=$tab_groups[$loop]['id'];
+			}
+		}
+		// =================================
+
+		if(isset($id_grp_prec)){
+			if($id_grp_prec!=0){
+				echo " | <a href='import_note_app.php?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+				echo "'>Enseignement précédent</a>";
+			}
+		}
+		if(isset($id_grp_suiv)){
+			if($id_grp_suiv!=0){
+				echo " | <a href='import_note_app.php?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+				echo "'>Enseignement suivant</a>";
+				}
+		}
+	}
+	// =================================
+}
+//====================================
+echo "</p>\n";
 
 echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
 echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"];
