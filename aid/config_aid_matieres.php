@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: config_aid_fiches_projet.php 1548 2008-02-26 21:43:21Z delineau $
+ * @version: $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
