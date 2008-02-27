@@ -548,7 +548,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/aid/visu_fiches.php', 'V', 'V', 'V', 'F', 'V', 'F', 'F', 'Outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/aid/modif_fiches.php', 'V', 'V', 'V', 'F', 'V', 'F', 'F', 'Outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_fiches_projet.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
-
+  $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/acces_appreciations.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Configuration de la restriction d accès aux appréciations pour les élèves et responsables', '');";
 
 	//$tab_req[] = "";
@@ -5751,6 +5751,16 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
           $result .= $result_inter."<br />";
     } else {
       $result .= "<font color=\"blue\">La table droits_aid est déjà remplie.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_matiere'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_matiere` (`id_matiere` VARCHAR( 255 ) NOT NULL;");
+    if ($result_inter == '')
+          $result .= "<font color=\"green\">La table aid_matiere a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table aid_matiere existe déjà.</font><br />";
     }
 
     $result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_grp<br />";
