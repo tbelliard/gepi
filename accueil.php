@@ -1239,6 +1239,36 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 }
 
 //
+// Module Ateliers
+//
+
+if (EstAutoriseAteliers($_SESSION["login"])) {
+  $chemin = array();
+  $titre = array();
+  $expli = array();
+
+  $chemin[]="/mod_ateliers/ateliers_accueil_admin.php";
+  $titre[] = "Configuration du module Ateliers";
+  $expli[] = "Configuration des événements, des disciplines, des professeurs, des salles.";
+
+  $nb_ligne = count($chemin);
+  $affiche = 'no';
+  for ($i=0;$i<$nb_ligne;$i++) {
+      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+  }
+  if ($affiche=='yes') {
+      echo "<table class='menu'>\n";
+      echo "<tr>\n";
+      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - Module Ateliers </th>\n";
+      echo "</tr>\n";
+      for ($i=0;$i<$nb_ligne;$i++) {
+          affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+      }
+      echo "</table>";
+  }
+}
+
+//
 // Module d'inscription
 //
 if (getSettingValue("active_inscription")=='y') {

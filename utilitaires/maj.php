@@ -5760,6 +5760,32 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		} else {
 			$result .= "<font color=\"blue\">Le champs existe déjà.</font><br />";
 		}
+	  //==========================================================
+	  // Module Ateliers
+    $result .= "<br />&nbsp;->Mise en place du module Ateliers<br />";
+    $test = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_ateliers'");
+		if ($test == -1) {
+       $result_inter = traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('active_ateliers', 'n');");
+       if ($result_inter == '') {
+            $result .= "<font color=\"green\">Le paramètre active_ateliers a été créé.</font><br />";
+       } else {
+            $result .= $result_inter;
+       }
+		} else {
+       $result .= "<font color=\"blue\">Le paramètre active_ateliers existe déjà.</font><br />";
+    }
+
+    $test = sql_query1("SHOW TABLES LIKE 'ateliers_config'");
+		if ($test == -1) {
+       $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `ateliers_config` (`nom_champ` char(100) NOT NULL default '', `content` char(255) NOT NULL default '',`param` char(100) NOT NULL default '');");
+       if ($result_inter == '') {
+            $result .= "<font color=\"green\">La table ateliers_config a été créée.</font><br />";
+       } else {
+            $result .= $result_inter;
+       }
+		} else {
+       $result .= "<font color=\"blue\">La table ateliers_config existe déjà.</font><br />";
+    }
 
 	//==========================================================
 	// AJOUT: boireaus 20080218

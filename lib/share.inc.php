@@ -2612,4 +2612,22 @@ function LibelleChampAid($champ) {
     $nom = sql_query1("select description from droits_aid where id = '".$champ."'");
     return $nom;
 }
+
+/* Module Atelier
+fonction qui vérifie si la personne a le droit d'être ici
+*/
+function EstAutoriseAteliers($_login) {
+    if (getSettingValue("active_ateliers")!='y') {
+        return False;
+        die();
+    }
+    $test = sql_query1("SELECT count(nom_champ) FROM ateliers_config WHERE (nom_champ='ateliers_resp' and content='$_login')");
+    if ($test == "0") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
 ?>

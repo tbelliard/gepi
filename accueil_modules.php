@@ -114,6 +114,10 @@ $chemin[] = "/mod_annees_anterieures/admin.php";
 $titre[] = "Années antérieures";
 $expli[] = "Pour gérer le module Années antérieures";
 
+// Module ateliers
+$chemin[] = "/mod_ateliers/ateliers_config.php";
+$titre[] = "Ateliers";
+$expli[] = "Gestion et mise en place d'ateliers de type conférences (gestion des ateliers, des intervenants, des inscriptions...).";
 
 $nb_ligne = count($chemin);
 //
