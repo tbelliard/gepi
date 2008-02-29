@@ -448,10 +448,15 @@ while ($p < $nb_users) {
 			$temoin_user_deja_traite="y";
 		}
 		else{
-			$new_password = pass_gen();
+      $new_password = pass_gen();
 			$tab_password[$user_login]=$new_password;
 
-			$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+		  if (isset($_GET['sso'])) {
+		      // Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
+			    $save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+		  } else {
+ 			    $save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+      }
 		}
 	}
 	// =====================
@@ -498,8 +503,7 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
-
+    echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 		//if($cas_traite!=0){
 		if ($user_statut == "responsable") {
 			echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
@@ -662,7 +666,12 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+	  if (isset($_GET['sso'])) {
+		      // Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
+         echo "<tr><td>Le mot de passe de cet utilisateur a été supprimé.</td></tr>\n";
+    } else {
+         echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+    }
 		echo "<tr><td>Classe : </td><td><span class = \"bold\">";
 		if(count($tab_tmp_classe)>0){
 			$chaine="";

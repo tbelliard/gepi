@@ -63,8 +63,19 @@ if (isset($_POST['login'])) {
 			$ok = false;
 		}
 
+    // dans le cas d'un SSO, existence d'utilisateurs SSO repérés grâce au champ password vide.
+    $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
+    if ($testpassword == -1) {
+			$ok = false;
+			$sso='yes';
+		} else {
+      $sso='no';
+    }
+
 		if (!$ok) {
 			$message = "Pour des raisons de sécurité, votre statut utilisateur ne vous permet pas de réinitialiser votre mot de passe par cette procédure. Vous devrez donc contacter l'administrateur pour obtenir un nouveau mot de passe.";
+      if ($sso=='yes')
+    			$message = "Ce n'est pas GEPI qui gère votre compte mais un système d'authentification unique. Vous ne pouvez donc pas réinitialiser votre mot de passe par cette procédure.";
 		} else {
 			//On envoie un mail!
 			// On génère le ticket

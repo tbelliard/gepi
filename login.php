@@ -112,7 +112,8 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 		} else if ($result=="2") {
 			$message = "Vous avez bien été identifié mais la mise à jour de votre profil dans GEPI n'a pas pu s'effectuer correctement. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
 		} else if ($result=="3") {
-			$message = "Vous avez bien été identifié mais un utilisateur \"local\" dans la base de GEPI, ayant le même login, existe déjà. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
+			$message = "Vous avez bien été identifié mais un utilisateur \"local\" dans la base de GEPI, ayant le même login, existe déjà. Si vous pensez qu'il s'agit d'une erreur, veuillez signaler ce problème à l'administrateur du site.";
+      $message .= "<br /><br />Si vous possédez un compte local d'accès à GEPI, vous pouvez néanmoins <b><a href='./login.php?local=yes'>accéder à la page de connexion de GEPI</a></b>.";
 		} else if ($result=="4") {
 			$message = "Vous avez bien été identifié mais vous ne figurez pas parmi les utilisateurs dans la base de GEPI. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
       $message .= "<br /><br />Vous pouvez néanmoins <b><a href='./public/index.php'>accéder aux cahiers de texte de GEPI</a></b>.";

@@ -95,7 +95,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 	}
 	if ($user_show_email != $reg_show_email) {
-		if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
+	  if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
 		$reg = mysql_query("UPDATE utilisateurs SET show_email = '$reg_show_email' WHERE login = '" . $_SESSION['login'] . "'");
 		if ($reg) {
 			$msg = $msg."<br />Le paramétrage d'affichage de votre email a été modifié !";
@@ -281,15 +281,19 @@ $titre_page = "Gérer son compte";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
+// dans le cas de LCS, existence d'utilisateurs locaux repérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$_SESSION['login']."'");
 if ($testpassword == -1) $testpassword = '';
 // Test SSO
 $test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
+if ($test_sso) {
+    $affiche_bouton_submit = 'yes';
+} else {
+    $affiche_bouton_submit = 'no';
+}
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
-if ($test_sso)
-	echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
+echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 echo "<h2>Informations personnelles *</h2>\n";
 
 echo "<table>\n";
@@ -306,14 +310,12 @@ echo "<tr><td>\n";
 	} else {
 		echo "<tr><td>Email : </td><td>".$user_email."<input type=\"hidden\" name=\"reg_email\" value=\"".$user_email."\" /></td></tr>\n";
 	}
-	if ($test_sso) {
-      if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
-	        echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
-	        if ($user_show_email == "yes") echo " CHECKED";
-	        echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
-	    }
+	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
+	    $affiche_bouton_submit = 'yes';
+	    echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
+	    if ($user_show_email == "yes") echo " CHECKED";
+	    echo "/> Autoriser l'affichage de mon adresse email<br />pour les utilisateurs non personnels de l'établissement **</label></td></tr>\n";
 	}
-	//echo "<tr><td>Statut : </td><td>".$user_statut."</td></tr>\n";
 	echo "<tr><td>Statut : </td><td>".statut_accentue($user_statut)."</td></tr>\n";
 	echo "</table>\n";
 echo "</td>\n";
@@ -468,7 +470,7 @@ if(($_SESSION['statut']=='administrateur')||
 }
 echo "</td>\n";
 echo "</table>\n";
-if ($test_sso)
+if ($affiche_bouton_submit=='yes')
     echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 /*
 //Supp ERIC
@@ -551,13 +553,13 @@ if ($test_sso) {
 	echo "</tr><tr>\n";
 	echo "<td>Nouveau mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 /></td>\n";
 	echo "</tr></table>\n";
-	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
 	if ((isset($_GET['retour'])) or (isset($_POST['retour'])))
 		echo "<input type=\"hidden\" name=\"retour\" value=\"accueil\" />\n";
-	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
-	//echo "</span></form>\n";
-	echo "</form>\n";
 }
+if ($affiche_bouton_submit=='yes')
+	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
+echo "</form>\n";
 echo "  <hr />\n";
 // Journal des connexions
 echo "<a name=\"connexion\"></a>\n";
