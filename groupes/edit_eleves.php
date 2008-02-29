@@ -402,6 +402,16 @@ foreach ($current_group["periodes"] as $period) {
 	$new_classe = 0;
 	$empty_td = false;
 
+	//=====================================
+	// AJOUT: boireaus 20080229
+	$chaine_sql_classe="(";
+	for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
+		if($i>0) {$chaine_sql_classe.=" OR ";}
+		$chaine_sql_classe.="id_classe='".$current_group["classes"]["list"][$i]."'";
+	}
+	$chaine_sql_classe.=")";
+	//=====================================
+
 	$alt=1;
 	foreach($total_eleves as $e_login) {
 
@@ -416,31 +426,45 @@ foreach ($current_group["periodes"] as $period) {
 			}
 		}
 		if($num_eleve!=-1){
+
 			//=========================
-		//$new_classe = $eleves_list["users"][$e_login]["id_classe"];
-		if(isset($eleves_list["users"][$e_login])){
-			$new_classe = $eleves_list["users"][$e_login]["id_classe"];
-		}
-		else{
-			$new_classe="BIZARRE";
-		}
-
-		if ($new_classe != $prev_classe and $order_by == "classe" and $multiclasses) {
-			echo "<tr style='background-color: #CCCCCC;'>\n";
-			echo "<td colspan='3' style='padding: 5px; font-weight: bold;'>";
-			echo "Classe de : " . $eleves_list["users"][$e_login]["classe"];
-			echo "</td>\n";
-			foreach ($current_group["periodes"] as $period) {
-				echo "<td>&nbsp;</td>\n";
+			// AJOUT: boireaus 20080229
+			// Test de l'appartenance à plusieurs classes
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$e_login';";
+			$test_plusieurs_classes=mysql_query($sql);
+			if(mysql_num_rows($test_plusieurs_classes)==1) {
+				$temoin_eleve_changeant_de_classe="n";
 			}
-			echo "<td>&nbsp;</td>\n";
-			echo "</tr>\n";
-			$prev_classe = $new_classe;
-		}
+			else {
+				$temoin_eleve_changeant_de_classe="y";
+			}
+			//=========================
 
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
-		if (array_key_exists($e_login, $eleves_list["users"])){
+			//=========================
+			//$new_classe = $eleves_list["users"][$e_login]["id_classe"];
+			if(isset($eleves_list["users"][$e_login])){
+				$new_classe = $eleves_list["users"][$e_login]["id_classe"];
+			}
+			else{
+				$new_classe="BIZARRE";
+			}
+
+			if ($new_classe != $prev_classe and $order_by == "classe" and $multiclasses) {
+				echo "<tr style='background-color: #CCCCCC;'>\n";
+				echo "<td colspan='3' style='padding: 5px; font-weight: bold;'>";
+				echo "Classe de : " . $eleves_list["users"][$e_login]["classe"];
+				echo "</td>\n";
+				foreach ($current_group["periodes"] as $period) {
+					echo "<td>&nbsp;</td>\n";
+				}
+				echo "<td>&nbsp;</td>\n";
+				echo "</tr>\n";
+				$prev_classe = $new_classe;
+			}
+
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			if (array_key_exists($e_login, $eleves_list["users"])){
 				/*
 				echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
 					$eleves_list["users"][$e_login]["nom"] .
@@ -478,7 +502,11 @@ foreach ($current_group["periodes"] as $period) {
 			if($period["num_periode"]!=""){
 				echo "<td align='center'>";
 
-				$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$e_login' AND id_classe='".$new_classe."' AND periode='".$period["num_periode"]."'";
+				//=========================
+				// MODIF: boireaus 20080229
+				//$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$e_login' AND id_classe='".$new_classe."' AND periode='".$period["num_periode"]."'";
+				$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$e_login' AND $chaine_sql_classe AND periode='".$period["num_periode"]."'";
+				//=========================
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0){
 					//=========================
@@ -491,6 +519,18 @@ foreach ($current_group["periodes"] as $period) {
 					} else {
 						echo " />";
 					}
+
+					//=========================
+					// AJOUT: boireaus 20080229
+					if($temoin_eleve_changeant_de_classe=="y") {
+						$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$e_login' AND jec.id_classe=c.id AND jec.periode='".$period["num_periode"]."';";
+						$res_classe_ele=mysql_query($sql);
+						if(mysql_num_rows($res_classe_ele)>0){
+							$lig_tmp=mysql_fetch_object($res_classe_ele);
+							echo " $lig_tmp->classe";
+						}
+					}
+					//=========================
 				}
 				else{
 					echo "&nbsp;\n";
