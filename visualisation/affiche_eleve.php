@@ -405,7 +405,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	else {
 		// Pas de limitations d'accès pour les autres statuts.
-		for($i=$periode1;$i<=$periode2;$i++) {
+		//for($i=$periode1;$i<=$periode2;$i++) {
+		for($i=1;$i<=$nb_periode;$i++) {
 			$tab_acces_app[$i]="y";
 		}
 	}

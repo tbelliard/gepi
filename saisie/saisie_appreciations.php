@@ -489,6 +489,7 @@ $i=0;
 foreach ($liste_eleves as $eleve_login) {
 
 	$k=1;
+	$temoin_photo="";
 
 	while ($k < $nb_periode) {
 
@@ -511,7 +512,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 				// Photo...
 				$photo=nom_photo($eleve_elenoet);
-				$temoin_photo="";
+				//$temoin_photo="";
 				if("$photo"!=""){
 					$titre="$eleve_nom $eleve_prenom";
 
