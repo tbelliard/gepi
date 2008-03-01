@@ -354,8 +354,8 @@ if ($_SESSION['statut']!='professeur')
 //        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 
 //        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
 { $chemin[] = "/classes/acces_appreciations.php"; }
 //==========================================================
 
@@ -379,8 +379,8 @@ if ($_SESSION['statut']!='professeur')
 //        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 
 //        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
 { $titre[] = "Accès des élèves et responsables aux appreciations"; }
 //==========================================================
 
@@ -404,8 +404,8 @@ if ($_SESSION['statut']!='professeur')
 //        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 
 //        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiRubConseilProf : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiRubConseilProf")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
 { $expli[] = "Permet de définir quand les comptes élèves et responsables (s'ils existent) peuvent accéder aux appreciations des professeurs sur le bulletin et avis du conseil de classe."; }
 //==========================================================
 

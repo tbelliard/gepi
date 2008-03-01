@@ -99,6 +99,17 @@ if (isset($_POST['OK'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiProfImprBulSettings !";
 	}
 
+
+	if (isset($_POST['GepiAccesRestrAccesAppProfP'])) {
+		$temp = "yes";
+	} else {
+		$temp ="no";
+	}
+	if (!saveSetting("GepiAccesRestrAccesAppProfP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesRestrAccesAppProfP !";
+	}
+
+
 	if (isset($_POST['GepiAdminImprBulSettings'])) {
 		$temp = "yes";
 	} else {
@@ -724,6 +735,11 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiProfImprBulSettings" id="GepiProfImprBulSettings" value="yes" <?php if (getSettingValue("GepiProfImprBulSettings")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiProfImprBulSettings' style='cursor: pointer;'> a accès au paramétrage de l'impression des bulletins (<i>lorsqu'il est autorisé à éditer/imprimer les bulletins</i>)</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesRestrAccesAppProfP" id="GepiAccesRestrAccesAppProfP" value="yes" <?php if (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesRestrAccesAppProfP' style='cursor: pointer;'> a accès au paramétrage des accès parents/élèves aux appréciations/avis des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label></td>
 			</tr>
 
 			<tr valign='top'>

@@ -41,6 +41,26 @@ if (!checkAccess()) {
 
 $msg="";
 
+
+//GepiAccesRestrAccesAppProfP
+if($_SESSION['statut']=="professeur") {
+	if(getSettingValue('GepiAccesRestrAccesAppProfP')!="yes") {
+		$msg="Accès interdit au paramétrage des accès aux appréciatons/avis pour les parents et élèves.";
+		header("Location: ../accueil.php?msg=".rawurlencode($msg));
+	    die();
+	}
+
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0){
+		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+		$msg="Vous n'êtes pas ".$gepi_prof_suivi.".<br />Vous ne devriez donc pas accéder à cette page.";
+		header("Location: ../accueil.php?msg=".rawurlencode($msg));
+	    die();
+	}
+}
+
+
 $sql="CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (
 `id_classe` INT( 11 ) NOT NULL ,
 `statut` VARCHAR( 255 ) NOT NULL ,
