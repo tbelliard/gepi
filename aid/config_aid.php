@@ -104,7 +104,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
         if ($test != "0") {
             $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
         } else {
-            $reg_data = mysql_query("INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '$reg_prof_login', indice_aid='$indice_aid'");
+            $reg_data = mysql_query("INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
         }
     }
