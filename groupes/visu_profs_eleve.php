@@ -213,7 +213,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		    	)
 		    	)){
                 //echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
-                echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
+                echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
             }
             else{
                 //echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
