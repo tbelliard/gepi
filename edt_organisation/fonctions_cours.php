@@ -24,6 +24,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// Toutes les fonctions d'initialisation de l'EdT sont utiles
+require_once("edt_init_fonctions.php");
+
 // Fonction qui renvoie l'id du créneau suivant de celui qui est appelé
 function creneauSuivant($creneau){
 	$cherche_creneaux = array();
@@ -97,127 +100,124 @@ function retourneAid($id_groupe){
 	}
 }
 
+/*
+ * Fonction qui renvoie le début et la fin d'un cours en prenant en compte l'idée que chaque créneau
+ * dure 2 "temps". Par exemple, pour un cours qui commence au début du 4ème créneau de la journée et
+ * qui dure 2 heures, la fonction renvoie $retour["deb"] = 5 et $retour["fin"] = 8;
+ * $jour = le jour de la semaine en toute lettre et en Français
+ * $creneau = id du créneau (table absences_creneaux)
+ * $heuredeb_dec vaut '0' si le cours commence au début d'un créneau et '0.5' si le cours commence au milieu du créneau
+ * $duree = nombre de demi-cours (un cours d'un créneau et demi aura donc une durée de 3)
+*/
+function dureeTemps($jour, $creneau, $heuredeb_dec, $duree){
+	// On détermine le "lieu" du début du cours
+	$deb = 0;
+	$fin = 0;
+	$c_p = nombreCreneauxPrecedent($creneau);
+	// et on calcule de début
+	if ($c_p == 0) {
+		$deb = 0;
+	}elseif ($heuredeb_dec == 0) {
+		$deb = ($c_p * 2) + 1;
+	}else{
+		$deb = ($c_p * 2) + 2;
+	}
+	// puis la fin
+	$fin = $deb + $duree - 1;
+	$retour = array();
+	$retour["deb"] = $deb;
+	$retour["fin"] = $fin;
 
-// Fonction qui vérifie que le professeur n'a pas déjà cours à ce moment là et sur la durée
-// On pourrait faire l'inverse et récupérer tous les cours d'un prof puis de vérifier si ces cours
-// empiètent sur ceux qu'on veut créer.
+	return $retour;
+}
+
+/*
+ * Fonction qui vérifie si un prof a déjà cours pendant le cours qu'on veut créer
+ * en tenant compte des types de semaine, des cours avant et après le cours qu'on veut créer.
+ * $nom = login du prof (de Gepi)
+ * $jour = le jour en toute lettres et en Français
+ * $creneau = id de la table absences_creneaux
+ * $duree = nombre de demi-cours (un cours d'un créneau et demi aura donc une durée de 3)
+ * $heuredeb_dec vaut '0' si le cours commence au début d'un créneau et '0.5' si le cours commence au milieu du créneau
+ * $type_semaine reprend la table edt_semaines ('0' si le cours a lieu toutes les semaines).
+ * la fonction renvoie 'oui' si le prof n'a pas déjà cours et 'non' s'il a déjà cours.
+*/
 function verifProf($nom, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){
+	$prof_libre = 'oui';
+	// On récupère quelques infos utiles sur le cours qu'on veut créer
+	$verif_temps = dureeTemps($jour, $creneau, $heuredeb_dec, $duree);
+	$query_hdddc = mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$creneau."'");
+	$heurededebutducours = mysql_result($query_hdddc, "heuredebut_definie_periode");
+echo '<br /> Essai pour un cours '.$nom.' '.$jour.' '.$creneau.' '.$duree.' '.$heuredeb_dec.' '.$type_semaine.' '.$verif_temps["deb"].' '.$verif_temps["fin"];
+	// On essaie de récupérer directement tous les cours de ce prof dans la journée
+	$query = mysql_query("SELECT e.jour_semaine, e.id_definie_periode, e.heuredeb_dec, e.duree, c.heuredebut_definie_periode
+							FROM edt_cours e, absences_creneaux c
+							WHERE jour_semaine = '".$jour."'
+							AND (id_semaine = '".$type_semaine."' OR id_semaine = '0')
+							AND login_prof = '".$nom."'
+							AND e.id_definie_periode = c.id_definie_periode
+							ORDER BY heuredebut_definie_periode
+							") OR DIE('Erreur dans la requête : '.mysql_error());
+	$compter_reponses = mysql_num_rows($query);
+	if ($compter_reponses == 0) {
+		// c'est fini, comme c'est le premier cours de ce prof sur cette journée, le cours est ok
+		return $prof_libre;
+	}else{
+		// On détermine pour chaque cours quel est le début et la fin
+		for($a = 0; $a < $compter_reponses; $a++){
+			$jour_v[$a] = mysql_result($query, $a, "jour_semaine");
+			$creneau_v[$a] = mysql_result($query, $a, "id_definie_periode");
+			$heuredebut_v[$a] = mysql_result($query, $a, "heuredebut_definie_periode");
+			$heuredeb_dec_v[$a] = mysql_result($query, $a, "heuredeb_dec");
+			$duree_v[$a] = mysql_result($query, $a, "duree");
+			$temps_v = dureeTemps($jour_v[$a], $creneau_v[$a], $heuredeb_dec_v[$a], $duree_v[$a]);
+echo '<br />'.$jour_v[$a].' | '.$creneau_v[$a].' | '.$heuredeb_dec_v[$a].' | '.$duree_v[$a].' | '.$heuredebut_v[$a].' | '.$heuredeb_dec;
+echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> '.$temps_v["deb"].' - '.$temps_v["fin"].'<br />';
+			// On vérifie d'abord les cours qui commencent avant le cours qu'on veut créer
+			if ($heuredebut_v[$a] < $heurededebutducours) {
+				// alors on vérifie si la fin des cours précédents n'empiètent pas sur le cours à créer
+				if ($verif_temps["deb"] <= $temps_v["fin"]) {
+					// Si la fin d'un cours existant dépasse le début du cours qu'on veut créer, on renvoie 'non'
+					return 'non';
+				}else{
+					$prof_libre = 'oui';
+				}
+			}elseif($heuredebut_v[$a] == $heurededebutducours){
+				// Le cas où les cours existants commencent sur le même créneau que le cours à créer
+				if ($heuredeb_dec_v[$a] == $heuredeb_dec) {
+					// les deux cours se chevauchent
+					return 'non';
+				}elseif($heuredeb_dec_v[$a] < $heuredeb_dec){
+					// le cours existant commence juste avant celui qu'on veut créer
+					// Si sa durée dépasse ou égale 2, alors il y a chevauchement
+					if ($duree_v[$a] >= 2) {
+						return 'non';
+					}else{
+						$prof_libre = 'oui';
+					}
+				}else{
+					// le cours existant commence juste après celui qu'on veut créer
+					// Si la durée du cours à créer dépasse ou égale 2, alors il y a chevauchement
+					if ($duree >= 2) {
+						return 'non';
+					}else{
+						$prof_libre = 'oui';
+					}
+				}
 
-	$proflibre = "oui";
-	// Le nouveau cours doit être créé ce $jour, sur ce $creneau sur une $duree donnée.
-	$requete = mysql_query("SELECT * FROM edt_cours WHERE
-			jour_semaine = '".$jour."' AND
-			id_definie_periode = '".$creneau."' AND
-			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-			heuredeb_dec = '".$heuredeb_dec."' AND
-			login_prof = '".$nom."'");
-	$verif = mysql_num_rows($requete);
-		if ($verif >= 1) {
-			$proflibre = "non";
-		}elseif($verif == 0) {
-			// Dans le cas où la durée est de 1/2 créneau, on retourne "oui"
-			if ($duree == 1) {
-				return "oui";
+			}else{
+				// Nous sommes dans le cas où des cours existants commencent après le cours à créer
+				if ($verif_temps["fin"] >= $temps_v["deb"]) {
+					// Alors on ne peut pas créer un nouveau cours la dessus
+					return 'non';
+				}else{
+					$prof_libre = 'oui';
+				}
 			}
-		}
-	// On vérifie alors pour tous les créneaux précédents sans oublier les 1/2 créneaux
-		$creneau_t = $creneau;
-		$nbre_test = (nombreCreneauxPrecedent($creneau)) + 1;
-		for($a = 1; $a < $nbre_test; $a++){
-			$creneau_t = creneauPrecedent($creneau_t);
-			$requete = mysql_query("SELECT duree FROM edt_cours WHERE
-				jour_semaine = '".$jour."' AND
-				id_definie_periode = '".$creneau_t."' AND
-				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-				heuredeb_dec = '".$heuredeb_dec."' AND
-				login_prof = '".$nom."'")
-					OR DIE('Erreur dans la requete n° '.$a.' du type FOR : '.mysql_error());
-			$verif = mysql_fetch_array($requete);
-			// On vérifie que la durée n'excède pas le cours appelé
-				if ($verif["duree"] > (2 * $a)) {
-					$proflibre = "non";
-				}
-			//echo "FOR($a) : |".$verif["duree"]."|".$heuredeb_dec."|".$creneau."<br />";
-		}
-	// On décale l'heure de début et on refait la même opération
-	$inv_heuredeb_dec = inverseHeuredeb_dec($heuredeb_dec);
-	$creneau_u = $creneau;
-		for($a = 1; $a < $nbre_test; $a++){
-			$creneau_u = creneauPrecedent($creneau_u);
-			$requete = mysql_query("SELECT duree FROM edt_cours WHERE
-				jour_semaine = '".$jour."' AND
-				edt_cours.id_definie_periode = '".$creneau_u."' AND
-				(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-				heuredeb_dec = '".$inv_heuredeb_dec."' AND
-				login_prof = '".$nom."'")
-					OR DIE('Erreur dans la requete n° '.$a.' du type FOR2 : '.mysql_error());
-			$verif = mysql_fetch_array($requete);
-			// On vérifie que la durée n'excède pas le cours appelé
-				if ($verif["duree"] > ((2 * $a) +1)) {
-					$proflibre = "non";
-				}
-			//echo "FOR2($a) : ".$verif["duree"]."|".$inv_heuredeb_dec."|".$creneau."<br />";
-		}
-	$creneau_v = $creneau;
-// On vérifie aussi si ce nouveau cours n'empiète pas sur un cours suivant pour le même professeur
-	if ($duree >= 2 AND $heuredeb_dec == "0") {
-		// On vérifie s'il n'y a pas déjà un cours qui commence en 0.5
-		$requete = mysql_query("SELECT duree FROM edt_cours WHERE
-			jour_semaine = '".$jour."' AND
-			id_definie_periode = '".$creneau_v."' AND
-			(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-			heuredeb_dec = '0.5' AND
-			login_prof = '".$nom."'")
-				OR DIE('Erreur dans la requete : '.mysql_error());
-		$verif1 = mysql_num_rows($requete);
-		if ($verif1 >= 1) {
-			$proflibre = "non";
 		}
 	}
-	// Si la durée est supérieure à 1 créneau (donc supérieure à 2)
-	if ($duree >= 2){
-		// Il convient alors de vérifier le tout en fonction de cette durée
-			$nbre_test = nombreCreneauxApres($creneau_v) + 1;
-		for($c = 1; $c < $nbre_test; $c++){
-			if ($duree >= ($c * 2)) {
-				$creneau_v = creneauSuivant($creneau_v);
-				$requete = mysql_query("SELECT duree FROM edt_cours WHERE
-					jour_semaine = '".$jour."' AND
-					id_definie_periode = '".$creneau_v."' AND
-					(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-					heuredeb_dec = '".$heuredeb_dec."' AND
-					login_prof = '".$nom."'")
-						OR DIE('Erreur dans la requete FOR3a : '.mysql_error());
-				$verif = mysql_num_rows($requete);
-
-				if ($verif >= 1) {
-					$proflibre = "non";
-				}
-			}
-			//echo "FOR3a($c) : ".$verif."|".$heuredeb_dec."|".$creneau."<br />";
-			if ($duree >= ($c * 2 + 1)) {
-				$heuredeb_dec_i = inverseHeuredeb_dec($heuredeb_dec);
-				$requete = mysql_query("SELECT duree FROM edt_cours WHERE
-					jour_semaine = '".$jour."' AND
-					id_definie_periode = '".$creneau_v."' AND
-					(id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
-					heuredeb_dec = '".$heuredeb_dec_i."' AND
-					login_prof = '".$nom."'")
-						OR DIE('Erreur dans la requete FOR3b : '.mysql_error());
-				$verif = mysql_num_rows($requete);
-
-				if ($verif >= 1) {
-					$proflibre = "non";
-				}
-			}
-			//echo "FOR3b($c) : ".$verif."|".$heuredeb_dec."|".$creneau."<br />";
-		}
-	}
-
-
-	return $proflibre;
-
-} // verifProf()
+	return $prof_libre;
+}
 
 // Fonction qui vérifie si la salle est libre pour ce nouveau cours
 function verifSalle($salle, $jour, $creneau, $duree, $heuredeb_dec, $type_semaine){

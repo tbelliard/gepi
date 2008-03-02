@@ -168,38 +168,35 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 								id_definie_periode = '".$id_creneaux."' AND
 								heuredeb_dec = '".$heuredeb_dec."'AND
 								login_prof = '".$login_general."'
-									ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(prof) !');
-		/*/ On cherche les AID du créneau
-		$req_aid_horaire = mysql_query("SELECT * FROM edt_cours WHERE
-								jour_semaine = '".$jour_semaine."' AND
-								id_definie_periode = '".$id_creneaux."' AND
-								heuredeb_dec = '".$heuredeb_dec."' AND
-								id_groupe LIKE 'AID%'");
-		$nbre_reponse = mysql_num_rows($req_aid_horaire);
-		for($i=0; $i<$nbre_reponse; $i++) {
-			$rep[$i]["id_groupe"] = mysql_result($req_aid_horaire, $i, "id_groupe");
-			$test = explode("|", $rep[$i]["id_groupe"]);
-			// On vérifie si le prof fait partie de l'AID ou pas
-			$req_prof = mysql_num_rows(mysql_query("SELECT indice_aid FROM j_aid_utilisateurs WHERE
-											id_utilisateur = '".$login_general."' AND
-											id_aid = '".$test[1]."'"));
-			if ($req_prof == "1") {
-				$tab_ens[] = $rep[$i]["id_groupe"];
-			}
-		}*/
+								ORDER BY edt_cours.id_semaine")
+									or die('Erreur : cree_tab_general(prof) !');
+
 	} elseif ($type_edt == "classe") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_groupes_classes WHERE
-								edt_cours.jour_semaine='".$jour_semaine."' AND
-								edt_cours.id_definie_periode='".$id_creneaux."' AND
-								edt_cours.id_groupe=j_groupes_classes.id_groupe AND
-								id_classe='".$login_general."' AND
+								edt_cours.jour_semaine = '".$jour_semaine."' AND
+								edt_cours.id_definie_periode = '".$id_creneaux."' AND
+								edt_cours.id_groupe = j_groupes_classes.id_groupe AND
+								id_classe = '".$login_general."' AND
 								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
 								ORDER BY edt_cours.id_groupe")
 									or die('Erreur : cree_tab_general(classe) : '.mysql_error());
 	} elseif ($type_edt == "eleve"){
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_groupe=j_eleves_groupes.id_groupe AND login='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."' ORDER BY edt_cours.id_semaine") or die('Erreur : cree_tab_general(eleve) !');
+		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours, j_eleves_groupes WHERE
+								edt_cours.jour_semaine = '".$jour_semaine."' AND
+								edt_cours.id_definie_periode = '".$id_creneaux."' AND
+								edt_cours.id_groupe = j_eleves_groupes.id_groupe AND
+								login = '".$login_general."' AND
+								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
+								ORDER BY edt_cours.id_semaine")
+									or die('Erreur : cree_tab_general(eleve) !'.msql_error());
 	} elseif ($type_edt == "salle") {
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE edt_cours.jour_semaine='".$jour_semaine."' AND edt_cours.id_definie_periode='".$id_creneaux."' AND edt_cours.id_salle='".$login_general."' AND edt_cours.heuredeb_dec = '".$heuredeb_dec."'") or die('Erreur : cree_tab_general(salle) !');
+		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE
+								edt_cours.jour_semaine='".$jour_semaine."' AND
+								edt_cours.id_definie_periode='".$id_creneaux."' AND
+								edt_cours.id_salle='".$login_general."' AND
+								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
+								ORDER BY edt_cours.id_semaine")
+									or die('Erreur : cree_tab_general(salle) !');
 	} else {
 		$req_ens_horaire = "";
 	}
@@ -663,46 +660,47 @@ $debg = NULL;
 function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $enseignement){
 	// On récupère l'id
 	$effacer_cours = "";
-	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE id_groupe = '".$enseignement."' AND jour_semaine = '".$jour_semaine."' AND id_definie_periode = '".$id_creneaux."'"));
+	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE
+										id_groupe = '".$enseignement."' AND
+										jour_semaine = '".$jour_semaine."' AND
+										id_definie_periode = '".$id_creneaux."'"));
 
-		// Seul l'admin peut effacer ce cours
-		if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
-			$effacer_cours = '
+	// Seul l'admin peut effacer ce cours
+	if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
+		$effacer_cours = '
 					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')">
 					<img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>
-					';
-		}
-		else {
-			$effacer_cours = "";
-		}
-		// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
-		if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
-			$modifier_cours = '
-					<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
-					<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
+				';
+	}else {
+		$effacer_cours = "";
+	}
+	// Seuls l'admin et la scolarité peuvent modifier un cours (sauf si admin n'a pas autorisé scolarite)
+	if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
+		$modifier_cours = '
+				<a href=\'javascript:centrerpopup("modifier_cours_popup.php?id_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'",700,280,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
+				<img src="../images/edit16.png" title="Modifier" alt="Modifier" /></a>
 						';
-		}
-		else {
-			$modifier_cours = "";
-		}
+	}else {
+		$modifier_cours = "";
+	}
 
-	// On vérifie si $enseignement est ou pas pas un AID
+	// On vérifie si $enseignement est ou pas pas un AID (en vérifiant qu'il est bien renseigné)
 	$analyse = explode("|", $enseignement);
-if ($analyse[0] == "AID") {
-	//echo "c'est un AID";
-	$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$analyse[1]."'");
-	$rep_nom_aid = mysql_fetch_array($req_nom_aid);
+	if ($analyse[0] == "AID") {
+		//echo "c'est un AID";
+		$req_nom_aid = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$analyse[1]."'");
+		$rep_nom_aid = mysql_fetch_array($req_nom_aid);
 
-	// On récupère le nom de l'aid
-	$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_nom_aid["indice_aid"]."'");
-	$rep_nom_complet = mysql_fetch_array($req_nom_complet);
-	$aff_matiere = $rep_nom_complet["nom"];
+		// On récupère le nom de l'aid
+		$req_nom_complet = mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_nom_aid["indice_aid"]."'");
+		$rep_nom_complet = mysql_fetch_array($req_nom_complet);
+		$aff_matiere = $rep_nom_complet["nom"];
 
 		$contenu="";
 
-	// On compte les élèves de l'aid $aff_nbre_eleve
-	$req_nbre_eleves = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$analyse[1]."' ORDER BY login");
-	$aff_nbre_eleve = mysql_num_rows($req_nbre_eleves);
+		// On compte les élèves de l'aid $aff_nbre_eleve
+		$req_nbre_eleves = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$analyse[1]."' ORDER BY login");
+		$aff_nbre_eleve = mysql_num_rows($req_nbre_eleves);
 		for($a=0; $a < $aff_nbre_eleve; $a++) {
 			$rep_eleves[$a]["login"] = mysql_result($req_nbre_eleves, $a, "login");
 			$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_eleves[$a]["login"]."'"));
@@ -711,101 +709,106 @@ if ($analyse[0] == "AID") {
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
 		$id_div = strtr($id_div_p, " -|/", "www");
-	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
+		$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
-	// On dresse la liste des noms de prof
-	$rep_nom_prof['civilite'] = "";
-	$rep_nom_prof['nom'] = "Cours en groupe";
+		// On dresse la liste des noms de prof
+		$rep_nom_prof['civilite'] = "";
+		$rep_nom_prof['nom'] = "Cours en groupe";
 
-}else {
+	}elseif($analyse[0] == '' OR $analyse[0] == 'inc'){
+		// le groupe n'est pas renseigné, donc, on affiche en fonction
+		//$aff_matiere."<br />\n".$classe_js." ".$effacer_cours." ".$modifier_cours." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve." él.\n");
+		$aff_matiere = 'inc.';
+		$classe_js = NULL;
+		$aff_nbre_eleve = '0';
+		$aff_sem = NULL;
+		$rep_salle = NULL;
+	}else {
 
-	// on récupère le nom court de la classe en question
-	{
-	$req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
-	$rep_id_classe = mysql_fetch_array($req_id_classe);
-	$req_classe = mysql_query("SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
-	$rep_classe = mysql_fetch_array($req_classe);
-	}
-	// On compte le nombre d'élèves
-	{
-	$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = 1 AND id_groupe ='".$enseignement."'");
-	$rep_compter_eleves = mysql_fetch_array($req_compter_eleves);
-	$aff_nbre_eleve = $rep_compter_eleves[0];
-	}
-	// On récupère la liste des élèves de l'enseignement
+		// on récupère le nom court de la classe en question
+		$req_id_classe = mysql_query("SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
+		$rep_id_classe = mysql_fetch_array($req_id_classe);
+		$req_classe = mysql_query("SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
+		$rep_classe = mysql_fetch_array($req_classe);
 
-	if (($type_edt == "prof") OR ($type_edt == "salle")) {
-	$current_group = get_group($enseignement);
+		// On compte le nombre d'élèves
+		$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = 1 AND id_groupe ='".$enseignement."'");
+		$rep_compter_eleves = mysql_fetch_array($req_compter_eleves);
+		$aff_nbre_eleve = $rep_compter_eleves[0];
 
-		$contenu="";
+		// On récupère la liste des élèves de l'enseignement
+		if (($type_edt == "prof") OR ($type_edt == "salle")) {
+			$current_group = get_group($enseignement);
+
+			$contenu="";
 			// 1 étant le numéro de la période
-		foreach ($current_group["eleves"][1]["users"] as $eleve_login) {
-			$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+			foreach ($current_group["eleves"][1]["users"] as $eleve_login) {
+				$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+			}
+			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+
+			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
+			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux;
+			$id_div = strtr($id_div_p, " ", "_");
+			$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
+				".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 		}
-		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
+		// On récupère le nom et la civilite du prof en question
+		$req_login_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe ='".$enseignement."'");
+		$rep_login_prof = mysql_fetch_array($req_login_prof);
+		$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login']."'");
+		$rep_nom_prof = mysql_fetch_array($req_nom_prof);
 
-	//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
-		$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux;
-		$id_div = strtr($id_div_p, " ", "_");
-	$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
-			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
-	}
-	// On récupère le nom et la civilite du prof en question
-	{
-	$req_login_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe ='".$enseignement."'");
-	$rep_login_prof = mysql_fetch_array($req_login_prof);
-	$req_nom_prof = mysql_query("SELECT nom, civilite FROM utilisateurs WHERE login ='".$rep_login_prof['login']."'");
-	$rep_nom_prof = mysql_fetch_array($req_nom_prof);
-	}
-	// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
-	{
-	$req_groupe = mysql_query("SELECT description FROM groupes WHERE id ='".$enseignement."'");
-	$rep_matiere = mysql_fetch_array($req_groupe);
-	if (GetSettingEdt("edt_aff_matiere") == "long") {
-		// SI c'est l'admin, il faut réduire la taille de la police de caractères
-		//if ($_SESSION["statut"] == "administrateur") {
+		// On récupère le nom de l'enseignement en question (en fonction du paramètre long ou court)
+		$req_groupe = mysql_query("SELECT description FROM groupes WHERE id ='".$enseignement."'");
+		$rep_matiere = mysql_fetch_array($req_groupe);
+		if (GetSettingEdt("edt_aff_matiere") == "long") {
+			// SI c'est l'admin, il faut réduire la taille de la police de caractères
+			//if ($_SESSION["statut"] == "administrateur") {
 			//$aff_matiere = "<span class=\"edt_admin\">".$rep_matiere['description']."</span>";
-		//}
-		//else
-		$aff_matiere = $rep_matiere['description'];
-	}
-	else {
-		$req_2_matiere = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."'");
-		$rep_2_matiere = mysql_fetch_array($req_2_matiere);
-		$aff_matiere = $rep_2_matiere['id_matiere'];
-	}
-	}
+			//}
+			//else
+			$aff_matiere = $rep_matiere['description'];
+		}else {
+			$req_2_matiere = mysql_query("SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe ='".$enseignement."'");
+			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
+			$aff_matiere = $rep_2_matiere['id_matiere'];
+		}
 
-} // fin du else après les aid
+	} // fin du else après les aid
 
 	// On récupère le type de semaine si besoin
 	$req_sem = mysql_query("SELECT id_semaine FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
 	$rep_sem = mysql_fetch_array($req_sem);
-		if ($rep_sem["id_semaine"] == "0") {
-			$aff_sem = '';
-		}
-		else $aff_sem = '<font color="#663333"> - Sem.'.$rep_sem["id_semaine"].'</font>';
+	if ($rep_sem["id_semaine"] == "0") {
+		$aff_sem = '';
+	}else {
+		$aff_sem = '<font color="#663333"> - Sem.'.$rep_sem["id_semaine"].'</font>';
+	}
 
 	// On récupère le nom complet de la salle en question
-	{
 	if (GetSettingEdt("edt_aff_salle") == "nom") {
 		$salle_aff = "nom_salle";
+	}else {
+		$salle_aff = "numero_salle";
 	}
-	else $salle_aff = "numero_salle";
 	$req_id_salle = mysql_query("SELECT id_salle FROM edt_cours WHERE id_groupe ='".$enseignement."' AND id_definie_periode ='".$id_creneaux."' AND jour_semaine ='".$jour_semaine."'");
 	$rep_id_salle = mysql_fetch_array($req_id_salle);
 	$req_salle = mysql_query("SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'");
 	$tab_rep_salle = mysql_fetch_array($req_salle);
 	$rep_salle = $tab_rep_salle[0];
-	}
 
 
-	if ($type_edt == "prof")
+
+	if ($type_edt == "prof"){
 		return ("".$aff_matiere."<br />\n".$classe_js." ".$effacer_cours." ".$modifier_cours." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve." él.\n");
-	elseif (($type_edt == "classe") OR ($type_edt == "eleve"))
+	}elseif (($type_edt == "classe") OR ($type_edt == "eleve")){
 		return ("".$aff_matiere."<br />".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
-	elseif ($type_edt == "salle")
+	}elseif ($type_edt == "salle"){
 		return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js." - ".$aff_nbre_eleve." él.\n");
+	}else{
+		return '';
+	}
 }
 
 
