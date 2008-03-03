@@ -83,12 +83,14 @@ function calcul_toute_moyenne_classe ($groupe_select, $periode_select)
 }
 
 // Calcul de la moyenne des AID
-function calcul_toute_moyenne_aid ($indice_aid, $periode_select)
-{
+function calcul_toute_moyenne_aid ($indice_aid, $periode_select) {
 	global $prefix_base;
 
 	$addition_des_notes=0; $note=0; $cpt_notes=0; $moyenne_mini=20; $moyenne_maxi=0;
-	$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'aid_appreciations aa WHERE aa.indice_aid = "'.$indice_aid.'" AND aa.periode = "'.$periode_select.'" AND aa.statut=""');
+	$requete_note = mysql_query('SELECT * FROM '.$prefix_base.'aid_appreciations aa
+						WHERE aa.indice_aid = "'.$indice_aid.'" AND
+						aa.periode = "'.$periode_select.'" AND
+						aa.statut = ""');
 	while ($donner_note = mysql_fetch_array($requete_note))
 	{
 		$note = $donner_note['note'];

@@ -1087,16 +1087,23 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'] = 'AID'; // nom de la catégorie de la matière
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['affiche_moyenne'] = '1'; // afficher ou ne pas afficher la moyenne de la catégorie
 
-			// calcule du nombre d'élève fesant partie de ce groupe
-			if(empty($nb_eleve_groupe[$id_groupe_aff])) { $nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa WHERE ac.indice_aid = jae.indice_aid AND aa.indice_aid = ac.indice_aid AND aa.periode = "'.$id_periode.'" AND ac.indice_aid = "'.$id_groupe_aff.'" AND jae.login = aa.login'),0); }
+			// on calcule le nombre d'élèves faisant partie de cette aid
+			if(empty($nb_eleve_groupe[$id_groupe_aff])) {
+				$nb_eleve_groupe[$id_groupe_aff]= mysql_result(mysql_query('SELECT count(*) FROM '.$prefix_base.'j_aid_eleves jae, '.$prefix_base.'aid_config ac, '.$prefix_base.'aid_appreciations aa
+																		WHERE ac.indice_aid = jae.indice_aid AND
+																		aa.indice_aid = ac.indice_aid AND
+																		aa.periode = "'.$id_periode.'" AND
+																		ac.indice_aid = "'.$id_groupe_aff.'" AND
+																		jae.login = aa.login'),0);
+			}
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = $nb_eleve_groupe[$id_groupe_aff];
 
 			// désactiver pour l'instant - 20071106
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_eleve_rang'] = '-';
 			// fin
 
-			//calcule des moyennes du groupe
-			$groupe_matiere = $donner_aid['indice_aid']; // id du groupe de la matière sélectionné
+			//calcul des moyennes de l'aid
+			$groupe_matiere = $donner_aid['indice_aid']; // indice de l'aid
 			$moyenne_general_groupe[$groupe_matiere] = calcul_toute_moyenne_aid ($id_groupe_aff, $id_periode); // on récupère les donnes le tableau des moyennes moyenne_classe/min/max d'un groupe/nombre de note
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe'] = $moyenne_general_groupe[$groupe_matiere][0]; // moyenne du groupe
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min'] = $moyenne_general_groupe[$groupe_matiere][1]; // moyenne minimal du groupe
@@ -1135,13 +1142,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$apprec_aid = '';
 			if ($donner_aid['message'] != '') {
 		            $apprec_aid = $donner_aid['message'];
-		        }
+		    }
 			if ($donner_aid['display_nom'] === 'y') {
 		            $apprec_aid = $apprec_aid.' '.$donner_aid['nom_complet'].' : ';
-		        }
+		    }
 			if (($donner_aid['statut'] === '') and ($donner_aid['note_max'] != 20) ) {
 		            $apprec_aid = $apprec_aid.' (note sur '.$donner_aid['note_max'].')';
-		        }
+		    }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['appreciation'] = $apprec_aid.' '.$donner_aid['appreciation'];
 
 			// connaitre le coefficient de la matière
@@ -1150,28 +1157,39 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
 				and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
-			$total_coef =$total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+				$total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 			}
 
-			//calcule des moyennes par catégorie
+			//calcul des moyennes par catégorie
 			if($active_entete_regroupement[$classe_id]==='1') {
-			$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0'; }
+				$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '-';
+				}else{
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				}
 
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-
-			if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
-			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			}
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0'; }
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0;
+				}
+				if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				}
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0';
+				}
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 			}
 
 			//total pour la moyenne général
-			$moy_general_eleve = $moy_general_eleve+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
+				// On ajoute alors à la moyenne générale de l'élève
+				$moy_general_eleve = $moy_general_eleve+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+			}
 
 			// gestion des graphique de niveau par matière
 			if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
@@ -1328,7 +1346,9 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			//calcule des moyennes par catégorie
 			if($active_entete_regroupement[$classe_id]==='1') {
 			$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0'; }
+			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0';
+			}
 
 			//echo "\$coef_matiere[$id_classe][$groupe_matiere]['coef']=".$coef_matiere[$id_classe][$groupe_matiere]['coef']."<br />";
 
@@ -1422,23 +1442,23 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			//calcule des moyennes du groupe
 			$groupe_matiere = $donner_aid['indice_aid']; // id du groupe de la matière sélectionné
-                        $moyenne_general_groupe[$groupe_matiere] = calcul_toute_moyenne_aid($groupe_matiere, $id_periode); // on récupère les donnes le tableau des moyennes moyenne_classe/min/max d'un groupe/nombre de note
+            $moyenne_general_groupe[$groupe_matiere] = calcul_toute_moyenne_aid($groupe_matiere, $id_periode); // on récupère les donnes le tableau des moyennes moyenne_classe/min/max d'un groupe/nombre de note
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe'] = $moyenne_general_groupe[$groupe_matiere][0]; // moyenne du groupe
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min'] = $moyenne_general_groupe[$groupe_matiere][1]; // moyenne minimal du groupe
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max'] = $moyenne_general_groupe[$groupe_matiere][2]; //moyenne maximal du groupe
 
 			//calcule du nombre de note dans une période donner pour un groupe
 			if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
-			// Nombre total de devoirs
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = '';
-			// Nombre de devoir de l'élève
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = '';
+				// Nombre total de devoirs
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = '';
+				// Nombre de devoir de l'élève
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = '';
 			}
 
 			// autre requete pour rechercher les professeur responsable de la matière sélectionné
 			$call_profs = mysql_query('SELECT * FROM '.$prefix_base.'aid a, '.$prefix_base.'j_aid_utilisateurs jau, '.$prefix_base.'utilisateurs u
 							 	  WHERE ( jau.indice_aid = "'.$id_groupe_aff.'"
-							            AND jau.id_utilisateur = u.login
+						            AND jau.id_utilisateur = u.login
 								    AND a.id = jau.id_aid
 								    AND a.indice_aid = jau.indice_aid
 								    AND a.nom = "'.$nom_aid_select.'"
@@ -1460,13 +1480,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$apprec_aid = '';
 			if ($donner_aid['message'] != '') {
 		            $apprec_aid = $donner_aid['message'];
-		        }
+		    }
 			if ($donner_aid['display_nom'] === 'y') {
 		            $apprec_aid = $apprec_aid.' '.$donner_aid['nom_complet'].' : ';
-		        }
+		    }
 			if (($donner_aid['statut'] === '') and ($donner_aid['note_max'] != 20) ) {
 		            $apprec_aid = $apprec_aid.' (note sur '.$donner_aid['note_max'].')';
-		        }
+		    }
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['appreciation'] = $apprec_aid.' '.$donner_aid['appreciation'];
 
 			// connaitre le coefficient de la matière
@@ -1475,41 +1495,53 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
 				and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
-			$total_coef =$total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+				$total_coef =$total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 			}
 
 			//calcule des moyennes par catégorie
 			if($active_entete_regroupement[$classe_id]==='1') {
-			$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0'; }
+				$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '-';
+				}else{
+					// On vérifie alors les coef
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				}
 
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-
-			if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
-			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			}
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0'; $matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0'; }
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0;
+				}
+				if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				}
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0';
+				}
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 			}
 
 			//total pour la moyenne général
-			$moy_general_eleve = $moy_general_eleve+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
+				// Si la moyenne de ce tour est différente de '-' alors on l'ajoute à la moyenne générale
+				$moy_general_eleve = $moy_general_eleve+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
+			} // Sinon, on ne l'ajoute pas.
 
-			// gestion des graphique de niveau par matière
+			// gestion des graphiques de niveau par matière
 			if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
-								$data_grap[$id_periode][$id_groupe_aff][0] = sql_query1("SELECT COUNT( note ) as quartile1 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=15)");
-								$data_grap[$id_periode][$id_groupe_aff][1] = sql_query1("SELECT COUNT( note ) as quartile2 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=12 AND note<15)");
-								$data_grap[$id_periode][$id_groupe_aff][2] = sql_query1("SELECT COUNT( note ) as quartile3 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=10 AND note<12)");
-								$data_grap[$id_periode][$id_groupe_aff][3] = sql_query1("SELECT COUNT( note ) as quartile4 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=8 AND note<10)");
-								$data_grap[$id_periode][$id_groupe_aff][4] = sql_query1("SELECT COUNT( note ) as quartile5 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=5 AND note<8)");
-								$data_grap[$id_periode][$id_groupe_aff][5] = sql_query1("SELECT COUNT( note ) as quartile6 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note<5)");
-							}
+				$data_grap[$id_periode][$id_groupe_aff][0] = sql_query1("SELECT COUNT( note ) as quartile1 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=15)");
+				$data_grap[$id_periode][$id_groupe_aff][1] = sql_query1("SELECT COUNT( note ) as quartile2 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=12 AND note<15)");
+				$data_grap[$id_periode][$id_groupe_aff][2] = sql_query1("SELECT COUNT( note ) as quartile3 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=10 AND note<12)");
+				$data_grap[$id_periode][$id_groupe_aff][3] = sql_query1("SELECT COUNT( note ) as quartile4 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=8 AND note<10)");
+				$data_grap[$id_periode][$id_groupe_aff][4] = sql_query1("SELECT COUNT( note ) as quartile5 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=5 AND note<8)");
+				$data_grap[$id_periode][$id_groupe_aff][5] = sql_query1("SELECT COUNT( note ) as quartile6 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note<5)");
+			}
 			$nombre_de_matiere = $nombre_de_matiere + 1;
 
-		$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
+			$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
 		}
 		// FIN information AID en fin de bulletin
 
@@ -1986,7 +2018,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 				}
 			}
 		}
-		
+
 		if($affiche_nom_court[$classe_id]==='1') {
 			if($classe_nomcour[$i]!="") {
 				$pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,'');
