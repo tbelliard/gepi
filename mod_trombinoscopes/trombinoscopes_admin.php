@@ -113,7 +113,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 <input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
 </ul>
 
-<H2>Gestion de l'acc&egrave;s des &eacute;l&egrave;ves</H2>
+<H2>Gestion de l'accès des élèves</H2>
 Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de donner à <b>tous les élèves</b> le droit d'envoyer/modifier lui-même sa photo dans l'interface "Gérer mon compte".
 <br />
 <b>Si cette option est activée</b>, vous pouvez, ci-dessous, gérer plus finement quels élèves ont le droit d'envoyer/modifier leur photo.
@@ -126,8 +126,9 @@ Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de d
 <br />Les autres paramètres n'ont pas d'importance.</li>
 <li>Dans la "Liste des aid de la catégorie", ajoutez une aid "trombinoscope", intitulée par exemple "Liste des élèves pouvant envoyer/modifier leur photo".</li>
 <li>Ci-dessous, sélectionner dans la liste des AIDs, celle portant le nom que vous avez donné ci-dessus.
-<i>(cette liste n'appararâit pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
+<i>(cette liste n'appararaît pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
 </li>
+<li>Tous les élèves faisant partie de l'AID sus-nommée pourront alors envoyer/modifier leur photo.</li>
 </ul>
 
 <?php
