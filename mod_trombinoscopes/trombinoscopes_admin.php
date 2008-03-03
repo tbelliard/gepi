@@ -125,7 +125,7 @@ Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de d
 <br />- L'AID n'apparaîsse pas dans le bulletin simplifié.
 <br />Les autres paramètres n'ont pas d'importance.</li>
 <li>Dans la "Liste des aid de la catégorie", ajoutez une aid "trombinoscope", intitulée par exemple "Liste des élèves pouvant envoyer/modifier leur photo".</li>
-<li>Ci-dessous, sélectionner dans la liste des AIDs, celle portant le nom que vous avez donné ci-dessous.
+<li>Ci-dessous, sélectionner dans la liste des AIDs, celle portant le nom que vous avez donné ci-dessus.
 <i>(cette liste n'appararâit pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
 </li>
 </ul>
