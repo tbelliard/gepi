@@ -41,6 +41,14 @@ if (!checkAccess()) {
 die();
 }
 $msg = '';
+if (isset($_POST['num_aid_trombinoscopes'])) {
+    if ($_POST['num_aid_trombinoscopes']!='') {
+        if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
+    } else {
+        $del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
+        $grrSettings['num_aid_trombinoscopes']="";
+    }
+}
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_module_trombinoscopes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
@@ -104,6 +112,49 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 <input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked="checked"<?php } ?> /> 180°
 <input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
 </ul>
+
+<H2>Gestion de l'acc&egrave;s des &eacute;l&egrave;ves</H2>
+Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de donner à <b>tous les élèves</b> le droit d'envoyer/modifier lui-même sa photo dans l'interface "Gérer mon compte".
+<br />
+<b>Si cette option est activée</b>, vous pouvez, ci-dessous, gérer plus finement quels élèves ont le droit d'envoyer/modifier leur photo.
+<br /><b>Marche à suivre :</b>
+<ul>
+<li>Créez une "catégorie d'AID" ayant par exemple pour intitulé "trombinoscope".</li>
+<li>Configurez l'affichage de cette cat&eacute;gorie d'AID de sorte que :
+<br />- L'AID n'apparaîsse pas dans le bulletin officiel,
+<br />- L'AID n'apparaîsse pas dans le bulletin simplifié.
+<br />Les autres paramètres n'ont pas d'importance.</li>
+<li>Dans la "Liste des aid de la catégorie", ajoutez une aid "trombinoscope", intitulée par exemple "Liste des élèves pouvant envoyer/modifier leur photo".</li>
+<li>Ci-dessous, sélectionner dans la liste des AIDs, celle portant le nom que vous avez donné ci-dessous.
+<i>(cette liste n'appararâit pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
+</li>
+</ul>
+
+<?php
+if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
+    $req_trombino = mysql_query("select id, nom from aid order by nom");
+    $nb_aid = mysql_num_rows($req_trombino);
+    ?>
+    <b>Nom de l'AID permettant de g&eacute;rer l'acc&egrave;s des &eacute;l&egrave;ves : </b><select name="num_aid_trombinoscopes" size="1">
+    <option value="">(aucune)</option>
+    <?php
+    $i = 0;
+    while($i < $nb_aid){
+        $aid_id = mysql_result($req_trombino,$i,'id');
+        $aid_nom = mysql_result($req_trombino,$i,'nom');
+        $i++;
+        echo "<option value='".$aid_id."' ";
+        if (getSettingValue("num_aid_trombinoscopes")==$aid_id) echo " selected";
+        echo ">".$aid_nom."</option>";
+    }
+    ?>
+    </select><br />
+    <b>Remarque :</b>Si "aucune" AID n'est définie, <b>tous les élèves</b> peuvent envoyer/modifier leur photo.
+    <br />
+<?php
+}
+?>
+
 <input type="hidden" name="is_posted" value="1" />
 <div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>
 </form>

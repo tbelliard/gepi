@@ -5790,7 +5790,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	//==========================================================
 	// AJOUT: boireaus 20080218
 	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-    $result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_acces<br />";
+    $result .= "<br />&nbsp;->Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves<br />";
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_acces'"));
     if ($test == 0) {
       $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (`id_classe` INT( 11 ) NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , `periode` INT( 11 ) NOT NULL , `date` DATE NOT NULL , `acces` ENUM( 'y', 'n', 'date' ) NOT NULL );");
@@ -5801,6 +5801,20 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">La table matieres_appreciations_acces existe déjà.</font><br />";
     }
+
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEleveAppProf'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0) {
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRestrAccesAppProfP', 'no');");
+        if ($result_inter == '')
+          $result .= "<font color=\"green\">Le paramètre GepiAccesRestrAccesAppProfP a été ajouté à la table setting !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre GepiAccesRestrAccesAppProfP existe déjà dans la table setting.</font><br />";
+    }
+
+
 	//==========================================================
 
 

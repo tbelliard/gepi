@@ -372,7 +372,19 @@ if(($_SESSION['statut']=='administrateur')||
 					}
 				}
 
-				if(getSettingValue($GepiAccesModifMaPhoto)=='yes') {
+				// Cas particulier des élèves pour une gestion plus fine avec les AIDs
+        if ((getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') and ($_SESSION['statut']=='eleve') and (getSettingValue("num_aid_trombinoscopes")!='')) {
+            // L'AID existe t-elle ?
+            $test1 = sql_query1("select count(id) from aid where id='".getSettingValue("num_aid_trombinoscopes")."'");
+            if ($test1!="0")
+                $test_eleve = sql_query1("select count(login) from j_aid_eleves where login='".$_SESSION['login']."' and id_aid='".getSettingValue("num_aid_trombinoscopes")."'");
+            else
+                $test_eleve = "1";
+				} else
+				    $test_eleve = "1";
+
+        if ((getSettingValue($GepiAccesModifMaPhoto)=='yes') and ($test_eleve!=0)) {
+          $affiche_bouton_submit='yes';
 					echo "<div align='center'>\n";
 					//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 					echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";

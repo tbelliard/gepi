@@ -939,6 +939,7 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoEleve" id="GepiAccesModifMaPhotoEleve" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoEleve' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
+				<br /><i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
 			</table>

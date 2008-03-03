@@ -582,7 +582,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     // Calcul de l'indice du coefficient à pondérer
     //
     if ($ponderation != 0) {
-        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur'");
+        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur' ORDER BY date,id");
         $nb_dev  = mysql_num_rows($appel_dev);
         $max = 0;
         $indice_pond = 0;

@@ -27,6 +27,7 @@ Nouvelles fonctionalités
 
 Corrections de bugs
 ------------------
+- Bug dans le calcul (avec pondération) des moyennes du carnet de notes dans le cas où les dates des devoirs changeaient l'ordre  de création des devoirs.
 - affichage multiple des groupes multi-classes lors de la sélection d'un carnet de notes par le prof
 - mise à jour de la détection des codes civilités lors de la synchro avec Scribe Ng
 - bulletin PDF : Lors du calcul de la moyenne générale et par catégorie, en cas d'absence de moyenne pour une matière, les moyennes calculées étaient fausses.

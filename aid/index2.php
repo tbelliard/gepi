@@ -231,9 +231,10 @@ $i++;
 }
 
 ?>
-</table><br />(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.
+</table>
 <?php
 if ($activer_outils_comp == "y") {
+  echo "<br />(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.";
   echo "<br /><br /><br /><center>\n";
 	echo "<div id='fixe'>\n";
   echo "<input type=\"submit\" name=\"Valider\" />";
