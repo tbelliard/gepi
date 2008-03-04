@@ -126,6 +126,7 @@ require_once("../lib/header.inc");
         $login_prof = mysql_result($call_liste_data, $i, "login");
         $nom_prof = mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+
         echo "<br /><b>";
         echo "$nom_prof $prenom_prof</b> | <a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'>\n<font size=2>supprimer</font></a>\n";
     $i++;
@@ -183,7 +184,7 @@ if ($flag == "eleve") {
 echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
 	echo "<table class=\"aid_tableau\" border=\"0\">";
     // appel de la liste des élèves de l'AID :
-    $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
+    $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
     $nombre = mysql_num_rows($call_liste_data);
     // On affiche d'abord le nombre d'élèves
     		$s = "";
@@ -208,8 +209,32 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
         $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
+        $v_elenoet=mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
         echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
+
+        // Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
+        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
+          $info="<div align='center'>\n";
+      	  if($v_elenoet!=""){
+		        $photo=nom_photo($v_elenoet);
+		        if($photo!=""){
+			          $info.="<img src='../photos/eleves/".$photo."' width='150' alt=\"photo\" />";
+		        }
+	        }
+      	  $info.="</div>\n";
+      	  $tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve'.$v_elenoet,$titre,"",$info,"",14,0,'y','y','n','n');
+
+		      if($photo!="") {
+       	    echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve".$v_elenoet."','y',-100,20);\"";
+	          echo " onmouseout=\"cacher_div('info_popup_eleve".$v_elenoet."');\">";
+	          echo "<img src='../images/icons/buddy.png' alt='Photo élève' />";
+	          echo "</a>";
+	        } else {
+	          echo "<img src='../images/icons/buddy_no.png' alt='Pas de photo' />";
+          }
+        }
+
         echo "</td>";
         if ($activer_outils_comp == "y") {
             echo "<td><center><input type=\"checkbox\" name=\"".$login_eleve."_resp\" value=\"y\" ";

@@ -102,7 +102,12 @@ if ($nb_aid == 0) {
             $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
         else
             $display_outils="";
-        echo "<tr><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils</p></td>";
+        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid)
+            $display_trombino = "<br /><span class='small'>(Gestion des accès élèves au trombinoscope)</span>";
+        else
+            $display_trombino="";
+
+        echo "<tr><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils $display_trombino</p></td>";
         echo "<td><p><a href='index2.php?indice_aid=$indice_aid'>Liste des aid de la catégorie</a></p></td>";
         echo "<td><p>$nom_complet_aid</p></td>";
         echo "<td><center><p><input type=\"checkbox\" name=\"sup".$indice_aid."\" /></p></center></td></tr>";

@@ -130,32 +130,32 @@ Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de d
 <br /><b>Marche à suivre :</b>
 <ul>
 <li>Créez une "catégorie d'AID" ayant par exemple pour intitulé "trombinoscope".</li>
-<li>Configurez l'affichage de cette cat&eacute;gorie d'AID de sorte que :
+<li>Configurez l'affichage de cette catégorie d'AID de sorte que :
 <br />- L'AID n'apparaîsse pas dans le bulletin officiel,
 <br />- L'AID n'apparaîsse pas dans le bulletin simplifié.
 <br />Les autres paramètres n'ont pas d'importance.</li>
-<li>Dans la "Liste des aid de la catégorie", ajoutez une aid "trombinoscope", intitulée par exemple "Liste des élèves pouvant envoyer/modifier leur photo".</li>
-<li>Ci-dessous, sélectionner dans la liste des AIDs, celle portant le nom que vous avez donné ci-dessus.
+<li>Dans la "Liste des aid de la catégorie", ajoutez une ou plusieurs AIDs.</li>
+<li>Ci-dessous, sélectionner dans la liste des catégories d'AIDs, celle portant le nom que vous avez donné ci-dessus.
 <i>(cette liste n'appararaît pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
 </li>
-<li>Tous les élèves faisant partie de l'AID sus-nommée pourront alors envoyer/modifier leur photo.</li>
+<li>Tous les élèves faisant inscrits dans une des AIDs de la catégorie sus-nommée pourront alors envoyer/modifier leur photo.</li>
 </ul>
 
 <?php
 if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
-    $req_trombino = mysql_query("select id, nom from aid order by nom");
+    $req_trombino = mysql_query("select indice_aid, nom from aid_config order by nom");
     $nb_aid = mysql_num_rows($req_trombino);
     ?>
-    <b>Nom de l'AID permettant de g&eacute;rer l'acc&egrave;s des &eacute;l&egrave;ves : </b><select name="num_aid_trombinoscopes" size="1">
+    <b>Nom de la cat&eacute;gorie d'AID permettant de g&eacute;rer l'acc&egrave;s des &eacute;l&egrave;ves : </b><select name="num_aid_trombinoscopes" size="1">
     <option value="">(aucune)</option>
     <?php
     $i = 0;
     while($i < $nb_aid){
-        $aid_id = mysql_result($req_trombino,$i,'id');
+        $indice_aid = mysql_result($req_trombino,$i,'indice_aid');
         $aid_nom = mysql_result($req_trombino,$i,'nom');
         $i++;
-        echo "<option value='".$aid_id."' ";
-        if (getSettingValue("num_aid_trombinoscopes")==$aid_id) echo " selected";
+        echo "<option value='".$indice_aid."' ";
+        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo " selected";
         echo ">".$aid_nom."</option>";
     }
     ?>
