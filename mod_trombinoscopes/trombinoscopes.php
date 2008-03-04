@@ -498,8 +498,8 @@ $total = $cpt_photo;
 						$valeur=redimensionne_image($photo);
 					}
 					else {
-						$valeur[0]=120;
-						$valeur[1]=160;
+						$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+						$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 					}
 				}
 
@@ -536,8 +536,8 @@ $total = $cpt_photo;
 				$valeur=redimensionne_image($photo);
 			}
 			else {
-				$valeur[0]=120;
-				$valeur[1]=160;
+				$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+				$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 			}
 			echo "<img src='";
 			if (file_exists($photo)) {
@@ -566,8 +566,8 @@ $total = $cpt_photo;
 				$valeur=redimensionne_image($photo);
 			}
 			else {
-				$valeur[0]=120;
-				$valeur[1]=160;
+				$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+				$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 			}
 			echo "<img src='";
 			if (file_exists($photo)) {

@@ -196,9 +196,8 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 						if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 							// si le redimensionnement des photos est activé on redimenssionne
 							$source = imagecreatefromjpeg("../photos/personnels/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
-							if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
-							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
-
+							if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
 							//rotation de l'image si choix différent de rien
 							//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 

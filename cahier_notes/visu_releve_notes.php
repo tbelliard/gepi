@@ -622,7 +622,8 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 		    }
 	    }
 			if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
-			    if (($affiche_note=="") and ($avec_nom_devoir!="oui"))
+			    if ($affiche_note=="")
+          if ($avec_nom_devoir!="oui")
               $affiche_note = $eleve_nom_court;
           else
               $affiche_note = "&nbsp;";

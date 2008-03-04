@@ -668,3 +668,5 @@ INSERT INTO `droits_aid` VALUES('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A 
 INSERT INTO droits VALUES ('/classes/acces_appreciations.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Configuration de la restriction d accès aux appréciations pour les élèves et responsables', '');
 INSERT INTO setting VALUES ('active_ateliers', 'n');
 INSERT INTO setting VALUES ('GepiAccesRestrAccesAppProfP', 'no');
+INSERT INTO setting VALUES ('l_resize_trombinoscopes', '120');
+INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');

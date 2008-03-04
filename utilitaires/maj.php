@@ -991,11 +991,6 @@ if (isset ($_POST['maj'])) {
         if ($res_test == 0)
             $result .= traite_requete("INSERT INTO `setting` VALUES ('gepiSchoolEmail', 'ce.XXXXXXXX@ac-xxxxx.fr');");
 
-        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'param_module_trombinoscopes'");
-        $res_test = mysql_num_rows($req_test);
-        if ($res_test == 0)
-            $result .= traite_requete("INSERT INTO setting VALUES ('param_module_trombinoscopes', 'no_gep');");
-
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'addressblock_padding_right'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
@@ -1237,11 +1232,6 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0)
             $result .= traite_requete("INSERT INTO setting VALUES ('active_module_absence_professeur', 'y');");
-
-        $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_module_trombinoscopes'");
-        $res_test = mysql_num_rows($req_test);
-        if ($res_test == 0)
-            $result .= traite_requete("INSERT INTO setting VALUES ('active_module_trombinoscopes', 'y');");
 
         $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'bull_affiche_appreciations'");
         $res_test = mysql_num_rows($req_test);
@@ -1944,53 +1934,6 @@ if (isset ($_POST['maj'])) {
         } else {
             $result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
         }
-
-    //=================================================
-    // AJOUT: boireaus
-    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_aff_trombinoscopes'");
-    $res_test=mysql_num_rows($req_test);
-    if ($res_test==0){
-        $query_tromb1=mysql_query("INSERT INTO setting VALUES ('l_max_aff_trombinoscopes', '120');");
-        if($query_tromb1){
-            $result.="Définition du paramètre l_max_aff_trombinoscopes à 120: <font color=\"green\">Ok !</font><br />";
-        }
-        else{
-            $result.="Définition du paramètre l_max_aff_trombinoscopes à 120: <font color=\"red\">Erreur !</font><br />";
-        }
-    }
-    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_aff_trombinoscopes'");
-    $res_test=mysql_num_rows($req_test);
-    if ($res_test==0){
-        $query_tromb2=mysql_query("INSERT INTO setting VALUES ('h_max_aff_trombinoscopes', '160');");
-        if($query_tromb2){
-            $result.="Définition du paramètre h_max_aff_trombinoscopes à 160: <font color=\"green\">Ok !</font><br />";
-        }
-        else{
-            $result.="Définition du paramètre h_max_aff_trombinoscopes à 160: <font color=\"red\">Erreur !</font><br />";
-        }
-    }
-    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_imp_trombinoscopes'");
-    $res_test=mysql_num_rows($req_test);
-    if ($res_test==0){
-        $query_tromb3=mysql_query("INSERT INTO setting VALUES ('l_max_imp_trombinoscopes', '70');");
-        if($query_tromb3){
-            $result.="Définition du paramètre l_max_imp_trombinoscopes à 70: <font color=\"green\">Ok !</font><br />";
-        }
-        else{
-            $result.="Définition du paramètre l_max_imp_trombinoscopes à 70: <font color=\"red\">Erreur !</font><br />";
-        }
-    }
-    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_imp_trombinoscopes'");
-    $res_test=mysql_num_rows($req_test);
-    if ($res_test==0){
-        $query_tromb4=mysql_query("INSERT INTO setting VALUES ('h_max_imp_trombinoscopes', '100');");
-        if($query_tromb4){
-            $result.="Définition du paramètre h_max_imp_trombinoscopes à 100: <font color=\"green\">Ok !</font><br />";
-        }
-        else{
-            $result.="Définition du paramètre h_max_imp_trombinoscopes à 100: <font color=\"red\">Erreur !</font><br />";
-        }
-    }
 
         $result .= "&nbsp;->Ajout du champ display_nbdev à la table classes<br />";
         $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'display_nbdev'"));
@@ -5788,6 +5731,115 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
 
 	//==========================================================
+	// Trombinoscope
+    $result .= "<br />&nbsp;->Trombinoscope<br />";
+
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'param_module_trombinoscopes'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0) {
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('param_module_trombinoscopes', 'no_gep');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre param_module_trombinoscopes à no_gep: Ok !</font><br />";
+        }
+        else{
+            $result.="<font color=\"red\">Définition du paramètre param_module_trombinoscopes à no_gep: Erreur !</font><br />";
+        }
+    }else {
+      $result .= "<font color=\"blue\">Le paramètre param_module_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_module_trombinoscopes'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0) {
+        $result .= traite_requete("INSERT INTO setting VALUES ('active_module_trombinoscopes', 'y');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre active_module_trombinoscopes à y: Ok !</font><br />";
+        }
+        else{
+            $result.="<font color=\"red\">Définition du paramètre active_module_trombinoscopes à y: Erreur !</font><br />";
+        }
+    }else {
+      $result .= "<font color=\"blue\">Le paramètre active_module_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_aff_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('l_max_aff_trombinoscopes', '120');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre l_max_aff_trombinoscopes à 120: Ok !</font><br />";
+        }
+        else{
+            $result.="<font color=\"red\">Définition du paramètre l_max_aff_trombinoscopes à 120: Erreur !</font><br />";
+        }
+    }else {
+      $result .= "<font color=\"blue\">Le paramètre l_max_aff_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_aff_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('h_max_aff_trombinoscopes', '160');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre h_max_aff_trombinoscopes à 160: Ok !</font><br />";
+        }
+        else{
+            $result.="<font color=\"red\">Définition du paramètre h_max_aff_trombinoscopes à 160: Erreur !</font><br />";
+        }
+    }else {
+      $result .= "<font color=\"blue\">Le paramètre h_max_aff_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_imp_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('l_max_imp_trombinoscopes', '70');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre l_max_imp_trombinoscopes à 70: Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre l_max_imp_trombinoscopes à 70: Erreur !</font><br />";
+        }
+    }else {
+      $result .= "<font color=\"blue\">Le paramètre l_max_imp_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_imp_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('h_max_imp_trombinoscopes', '100');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre h_max_imp_trombinoscopes à 100: Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre h_max_imp_trombinoscopes à 100: Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre h_max_imp_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_resize_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre h_resize_trombinoscopes à 160: Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre h_resize_trombinoscopes à 160: Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre h_resize_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_resize_trombinoscopes'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('l_resize_trombinoscopes', '120');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre l_resize_trombinoscopes à 120: Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre l_resize_trombinoscopes à 120: Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre l_resize_trombinoscopes existe déjà dans la table setting.</font><br />";
+    }
+
+	//==========================================================
 	// AJOUT: boireaus 20080218
 	//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
     $result .= "<br />&nbsp;->Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves<br />";
@@ -5802,7 +5854,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result .= "<font color=\"blue\">La table matieres_appreciations_acces existe déjà.</font><br />";
     }
 
-    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEleveAppProf'");
+    $req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesRestrAccesAppProfP'");
     $res_test = mysql_num_rows($req_test);
     if ($res_test == 0) {
         $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRestrAccesAppProfP', 'no');");

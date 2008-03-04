@@ -173,8 +173,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					               // si le redimensionnement des photos est activé on redimenssionne
 					               $source = imagecreatefromjpeg("../photos/personnels/$nouveau_code_photo.jpg"); // La photo est la source
-					               if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
-					               if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
+					               if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+					               if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
 
                 				// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
 					              $largeur_source = imagesx($source);
@@ -265,8 +265,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					               // si le redimensionnement des photos est activé on redimenssionne
 					               $source = imagecreatefromjpeg("../photos/eleves/$reg_no_gep.jpg"); // La photo est la source
-					               if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(120, 160); } // On crée la miniature vide
-					               if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(160, 120); } // On crée la miniature vide
+					               if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+					               if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
 
                 				// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
 					              $largeur_source = imagesx($source);
@@ -461,8 +461,8 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "<div id='div_upload_photo' style='display:none;'>";
 					echo "<input type='file' name='filephoto' />\n";
       		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : 120 pixels, hauteur : 140 pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à 120 et 140.</span>";
+					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
+            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>";
           }
 
 					if("$photo"!=""){
@@ -513,8 +513,8 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "<div id='div_upload_photo' style='display: none;'>\n";
 					echo "<input type='file' name='filephoto' size='12' />\n";
       		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : 120 pixels, hauteur : 140 pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à 120 et 140.</span>";
+					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
+            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>";
           }
           echo "<br />\n";
 					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";

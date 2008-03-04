@@ -70,6 +70,12 @@ if (isset($_POST['l_max_imp_trombinoscopes'])) {
 if (isset($_POST['h_max_imp_trombinoscopes'])) {
     if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
 }
+if (isset($_POST['l_resize_trombinoscopes'])) {
+    if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
+}
+if (isset($_POST['h_resize_trombinoscopes'])) {
+    if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
+}
 
 if (empty($_GET['sousrub']) and empty($_POST['sousrub'])) { $sousrub = ''; }
    else { if (isset($_GET['sousrub'])) { $sousrub = $_GET['sousrub']; } if (isset($_POST['sousrub'])) { $sousrub = $_POST['sousrub']; } }
@@ -92,7 +98,7 @@ require_once("../lib/header.inc");
 ?>  />&nbsp;Désactiver le module trombinoscope
 <input type="hidden" name="is_posted" value="1" />
 <br />
-<H2>Configuration d'affichage</H2>
+<H2>Configuration d'affichage et de stockage</H2>
 &nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.</i><br />
 <span style="font-weight: bold;">Pour l'écran</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_aff_trombinoscopes"); ?>" />&nbsp;
@@ -100,11 +106,15 @@ hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" 
 <br /><span style="font-weight: bold;">Pour l'impression</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_imp_trombinoscopes"); ?>" />&nbsp;
 hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />
+<br /><span style="font-weight: bold;">Pour le stockage sur le serveur</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;largeur <input name="l_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_resize_trombinoscopes"); ?>" />&nbsp;
+hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_resize_trombinoscopes"); ?>" />
+
 <br />
 <H2>Configuration du redimensionnement des photos</H2>
-<i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en 340x240.</i>
+<i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
 <br /><br />
-<input type="radio" name="activer_redimensionne" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> />&nbsp;Activer le redimensionnement des photos en 120x160<br />
+<input type="radio" name="activer_redimensionne" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> />&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?><br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
 <input type="radio" name="activer_redimensionne" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked"; ?> />&nbsp;Désactiver le redimensionnement des photos
 <ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked="checked"<?php } ?> /> 0°
