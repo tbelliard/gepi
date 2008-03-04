@@ -189,6 +189,27 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
 								ORDER BY edt_cours.id_semaine")
 									or die('Erreur : cree_tab_general(eleve) !'.msql_error());
+		// On y ajoute les éventuelles AID
+		$rep_aid_eleve = NULL; // pour être certain qu'elle est vide
+		$aid = renvoieAid("eleve", $login_general);
+		$nbre_aid = count($aid);
+		for($a = 0; $a < $nbre_aid; $a++){
+			// on va tester la table pour chaque aid de l'élève pour voir si ça donne quelque chose
+			$cherche_aid[$a] = mysql_query("SELECT * FROM edt_cours WHERE
+								jour_semaine = '".$jour_semaine."' AND
+								id_definie_periode = '".$id_creneaux."' AND
+								id_groupe = 'AID|".$aid[$a]["id_aid"]."' AND
+								heuredeb_dec = '".$heuredeb_dec."'
+								ORDER BY id_semaine")
+									or die('Erreur : cree_tab_general(eleve AID) : '.msql_error());
+			if ($cherche_aid[$a]) {
+				$rep_aid = mysql_fetch_array($cherche_aid[$a]);
+				if ($rep_aid) {
+					// Si c'est concluant, on le atocke dans les cours de l'élève (voir plus bas)
+					$rep_aid_eleve[] = $rep_aid["id_groupe"];
+				}
+			}
+		}
 	} elseif ($type_edt == "salle") {
 		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE
 								edt_cours.jour_semaine='".$jour_semaine."' AND
@@ -203,6 +224,15 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 
 	while($data_rep_ens = mysql_fetch_array($req_ens_horaire)) {
 		$tab_ens[] = $data_rep_ens["id_groupe"];
+	}
+	// Si c'est un élève, on vérifie s'il ne faut pas ajouter les AID
+	if ($type_edt == "eleve") {
+		// la boucle concernera au maximum le nombre d'AID auxquelles l'élève appratient
+		for($a = 0; $a < $nbre_aid; $a++){
+			if (isset($rep_aid_eleve[$a])) {
+				$tab_ens[] = $rep_aid_eleve[$a];
+			}
+		}
 	}
 	return $tab_ens;
 }
@@ -470,8 +500,12 @@ function contenu_enseignement($req_type_login, $id_creneaux, $jour_semaine, $typ
 				$nbre_ens_1 = count($ens_tab);
 			if ($nbre_ens_1 === 0) {
 				$nbre_ens = 0;
-			} else {
+			} elseif($nbre_ens_1 === 1) {
+				// S'il y en a qu'un, c'est que c'est une AID
+				$nbre_ens = count($ens_tab);
+			}else{
 				// 3 étant le nombre de périodes (il faudra changer cela)
+
 				$nbre_ens = ($nbre_ens_1/3);
 				$b = 0;
 				for($a = 1; $a < ($nbre_ens + 1); $a++) {
@@ -659,13 +693,13 @@ $debg = NULL;
 
 function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $enseignement){
 	// On récupère l'id
-	$effacer_cours = "";
 	$req_recup_id = mysql_fetch_array(mysql_query("SELECT id_cours FROM edt_cours WHERE
 										id_groupe = '".$enseignement."' AND
 										jour_semaine = '".$jour_semaine."' AND
 										id_definie_periode = '".$id_creneaux."'"));
 
-	// Seul l'admin peut effacer ce cours
+	// Seul l'admin peut effacer ce cours ou le scolarite si l'admin l'y a autorisé
+	$effacer_cours = "";
 	if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
 		$effacer_cours = '
 					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')">
