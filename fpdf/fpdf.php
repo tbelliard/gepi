@@ -610,6 +610,10 @@ function Link($x,$y,$w,$h,$link)
 
 function Text($x,$y,$txt)
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output a string
     $s=sprintf('BT %.2f %.2f Td (%s) Tj ET',$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
     if($this->underline and $txt!='')
@@ -627,6 +631,10 @@ function AcceptPageBreak()
 
 function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -706,6 +714,10 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 
 function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output text with automatic or explicit line breaks
     $cw=&$this->CurrentFont['cw'];
     if($w==0)
@@ -819,6 +831,10 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 
 function Write($h,$txt,$link='')
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output text in flowing mode
     $cw=&$this->CurrentFont['cw'];
     $w=$this->w-$this->rMargin-$this->x;

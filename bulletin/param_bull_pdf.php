@@ -42,6 +42,15 @@ if (!checkAccess()) {
     die();
 }
 
+// réglage pour le utf8
+$decode = isset($_POST["decode"]) ? $_POST["decode"] : 'n';
+$ok = isset($_POST["ok"]) ? $_POST["ok"] : NULL;
+if ($ok == "Enregistrer") {
+	// On peut alors tester les variables envoyées et mettre à jour les réglages pour l'utf8
+		// On vérifie si le setting existe
+	$operation = saveSetting('decode_pdf_utf8', $decode) OR DIE('Erreur dans le saveSetting().');
+}
+
 $reg_ok = 'yes';
 $msg = '';
 if (isset($_POST['option_modele_bulletin'])) {
@@ -434,12 +443,12 @@ if ( isset($action) and $action === 'importmodelcsv' )  {
 				// décortication du fichier csv
 				// ouverture du fichier en lecture
 				$fp = fopen($fichiercsv['tmp_name'],"r");
-	
+
 				$nb = 0; $nb_champs = ''; $tableau_donnee_csv = '';
 				// On importe ligne par ligne dans un tableau
 			 	while (!feof($fp)) //Jusqu'a la fin du fichier
 				{
-              
+
 					$ligne = fgets($fp,4096);      // je lit la ligne
 					$liste = explode(";",$ligne);  // je transforme la ligne en liste tout les sepration avec un ;
 						// on compte le nombre de champs
@@ -449,7 +458,7 @@ if ( isset($action) and $action === 'importmodelcsv' )  {
        						$nb_champs2 = count($liste); $nb_champs2 = $nb_champs2 - 1;
 
 				    if ($nb_champs2 > '1') {
-	       
+
 					// on distribue les variable
 					$o = 0;
 					while ( $nb_champs > $o ) {
@@ -462,7 +471,7 @@ if ( isset($action) and $action === 'importmodelcsv' )  {
 				   }
 				}
 
-				// si il y a des informations à inserer 
+				// si il y a des informations à inserer
 				$cpt_ligne = 1; $nom_champs = ''; $texte_champs = '';
 				while ( !empty($tableau_donnee_csv[$cpt_ligne]) )
 				{
@@ -627,9 +636,9 @@ echo "</p><br/><br/>";
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
     echo "Interdire la sélection du modèle de bulletin lors de l'impression. Le modèle doit être défini dans les paramètres de chaque classe. <i>(En cas d'absence de modèle, le modèle standard est utilisé.)</i><br />\n";
     echo "</td>\n";
-    echo "<td align=\"center\" >\n";
+    echo "<td style=\"text-align: center;\">\n";
         echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"1\" ";
-        if (getSettingValue("option_modele_bulletin") == '1') echo " checked";
+        if (getSettingValue("option_modele_bulletin") == '1') echo " checked=\"checked\"";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
@@ -638,9 +647,9 @@ echo "</p><br/><br/>";
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
     echo "Le modèle utilisé par défaut est celui défini dans les paramètres de la classe. Un autre modèle pourra être choisi lors de l'impression des bulletins. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
     echo "</td>\n";
-    echo "<td align=\"center\" >\n";
+    echo "<td style=\"text-align: center;\">\n";
 		echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"2\" ";
-        if (getSettingValue("option_modele_bulletin") == '2') echo " checked";
+        if (getSettingValue("option_modele_bulletin") == '2') echo " checked=\"checked\"";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
@@ -649,13 +658,26 @@ echo "</p><br/><br/>";
     echo "<td style=\"font-variant: small-caps;\" width=\"80%\" >\n";
     echo "Le modèle devra être choisi au moment de l'impression indépendamment du modèle paramétré dans les paramètres de la classe. Il s'appliquera à toutes les classes sélectionnées.<br />\n";
     echo "</td>\n";
-    echo "<td align=\"center\" >\n";
+    echo "<td style=\"text-align: center;\">\n";
 		echo "<input type=\"radio\" name=\"option_modele_bulletin\" value=\"3\" ";
-        if (getSettingValue("option_modele_bulletin") == '3') echo " checked";
+        if (getSettingValue("option_modele_bulletin") == '3') echo " checked=\"checked\"";
         echo " />\n";
     echo "</td>\n";
     echo "</tr>\n";
-
+	// Possibilité d'ajouter la fonction utf8-decode() dans certains cas sur les bulletins pdf.
+	// Ce réglage est ensuite directement récupéré dans fpdf.php et ex_fpdf.php
+	if (getSettingValue("decode_pdf_utf8") == "y") {
+		$selected = ' checked="checked"';
+	}else{
+		$selected = '';
+	}
+	echo '
+	<tr><td style="font-variant: small-caps; color: brown;">
+	<label for="decodeUtf8">Sur certains serveurs web, il y a un problème d\'encodage dans la génération des pdf, ce coche devrait résoudre le problème :</label>
+	</td><td style="text-align: center;">
+	<input type="checkbox" id="decodeUtf8" name="decode" value="y"'.$selected.' />
+	</td></tr>
+	';
 	echo "</table>\n<hr />\n";
 
 	/*
@@ -878,7 +900,7 @@ echo "</p><br/><br/>";
 			<input name="affiche_filigrame" id="filigrame" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_filigrame) and $affiche_filigrame==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="filigrame" style="cursor: pointer;">Filigramme</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;<label for="text_fili" style="cursor: pointer;">texte du filigrame</label>&nbsp;<input name="texte_filigrame" id="text_fili" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($texte_filigrame)) { ?>value="<?php echo $texte_filigrame; ?>" <?php } ?> /><br />
 			<input name="entente_tel" id="telephone" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_tel) and $entente_tel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="telephone" style="cursor: pointer;">Téléphone</label><br />
-			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="tel_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($tel_texte)) { ?>value="<?php echo $tel_texte; ?>" <?php } ?> /> ou 
+			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="tel_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($tel_texte)) { ?>value="<?php echo $tel_texte; ?>" <?php } ?> /> ou
 			<input name="tel_image" id="tel_image_1" value="tel1" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel1') { ?>checked="checked"<?php } ?> /><label for="tel_image_1" style="cursor: pointer;"><img src="../images/imabulle/tel1.jpg" style="width: 6.5px; height: 15.5px; border: 0px" alt="" title="" /></label>
 			<input name="tel_image" id="tel_image_2" value="tel2" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel2') { ?>checked="checked"<?php } ?> /><label for="tel_image_2" style="cursor: pointer;"><img src="../images/imabulle/tel2.jpg" style="width: 18.5px; height: 15px; border: 0px" alt="" title="" /></label>
 			<input name="tel_image" id="tel_image_3" value="tel3" type="radio" <?php if(!empty($tel_image) and $tel_image==='tel3') { ?>checked="checked"<?php } ?> /><label for="tel_image_3" style="cursor: pointer;"><img src="../images/imabulle/tel3.jpg" style="width: 18px; height: 15px; border: 0px" alt="" title="" /></label>
@@ -886,7 +908,7 @@ echo "</p><br/><br/>";
 			<input name="tel_image" id="tel_image_5" value="" type="radio" <?php if(empty($tel_image) and $tel_image==='') { ?>checked="checked"<?php } ?> /><label for="tel_image_5" style="cursor: pointer;">aucune</label>
 			<br />
 			<input name="entente_fax" id="fax" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_fax) and $entente_fax==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="fax" style="cursor: pointer;">Fax</label><br />
-			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="fax_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($fax_texte)) { ?>value="<?php echo $fax_texte; ?>" <?php } ?> /> ou 
+			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="fax_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($fax_texte)) { ?>value="<?php echo $fax_texte; ?>" <?php } ?> /> ou
 			<input name="fax_image" id="fax_image_1" value="fax" type="radio" <?php if(!empty($fax_image) and $fax_image==='fax') { ?>checked="checked"<?php } ?> /><label for="fax_image_1" style="cursor: pointer;"><img src="../images/imabulle/fax.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
 			<input name="fax_image" id="fax_image_2" value="" type="radio" <?php if(empty($fax_image) and $fax_image==='') { ?>checked="checked"<?php } ?> /><label for="fax_image_2" style="cursor: pointer;">aucune</label>
 			<br />

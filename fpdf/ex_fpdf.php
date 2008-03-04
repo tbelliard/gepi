@@ -233,6 +233,10 @@ function Header()
     // L'utilisation est identique à MultiCell sauf qu'il y a un paramètre supplémentaire $blt pour la définition de la puce.
     function MultiCellBlt($w,$h,$blt,$txt,$border=0,$align='J',$fill=0)
     {
+    	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+	    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    		$txt = utf8_decode($txt);
+    	}
         //Get bullet width including margins
         $blt_width = $this->GetStringWidth($blt)+$this->cMargin*2;
 
@@ -247,7 +251,7 @@ function Header()
         //Restore x
         $this->x = $bak_x;
     }
-    
+
 
     // versions étendue de la méthode Cell
     //Cell(float w [, float h [, string txt [, mixed border [, int ln [, string align [, int fill [, mixed link]]]]]]])
@@ -270,6 +274,10 @@ function Header()
     //    Valeur par défaut : 0.
     function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -292,7 +300,7 @@ function Header()
     if($w==0)
         $w=$this->w-$this->rMargin-$this->x;
     $s='';
-// begin change Cell function 12.08.2003 
+// begin change Cell function 12.08.2003
     if($fill==1 or $border>0)
     {
         if($fill==1)
@@ -314,17 +322,17 @@ function Header()
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-$y)*$k,$x*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'l')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',$x*$k,($this->h-$y)*$k,$x*$k,($this->h-($y+$h))*$k);
-            
+
         if(is_int(strpos($border,'T')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-$y)*$k);
         else if(is_int(strpos($border,'t')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',$x*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-$y)*$k);
-        
+
         if(is_int(strpos($border,'R')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',($x+$w)*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'r')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',($x+$w)*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
-        
+
         if(is_int(strpos($border,'B')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-($y+$h))*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'b')))
@@ -407,6 +415,10 @@ function Header()
 
 function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
 {
+	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
+    if (getSettingValue('decode_pdf_utf8') == 'y') {
+    	$txt = utf8_decode($txt);
+    }
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -429,7 +441,7 @@ function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
     if($w==0)
         $w=$this->w-$this->rMargin-$this->x;
     $s='';
-// begin change Cell function 
+// begin change Cell function
     if($fill==1 or $border>0)
     {
         if($fill==1)
@@ -451,17 +463,17 @@ function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-$y)*$k,$x*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'l')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',$x*$k,($this->h-$y)*$k,$x*$k,($this->h-($y+$h))*$k);
-            
+
         if(is_int(strpos($border,'T')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-$y)*$k);
         else if(is_int(strpos($border,'t')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',$x*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-$y)*$k);
-        
+
         if(is_int(strpos($border,'R')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',($x+$w)*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'r')))
             $s.=sprintf('q 2 w %.2f %.2f m %.2f %.2f l S Q ',($x+$w)*$k,($this->h-$y)*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
-        
+
         if(is_int(strpos($border,'B')))
             $s.=sprintf('%.2f %.2f m %.2f %.2f l S ',$x*$k,($this->h-($y+$h))*$k,($x+$w)*$k,($this->h-($y+$h))*$k);
         else if(is_int(strpos($border,'b')))
@@ -515,7 +527,7 @@ function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
                 $s.='Q ';
         }
     }
-// end change Cell function 
+// end change Cell function
     if($s)
         $this->_out($s);
     $this->lasth=$h;
