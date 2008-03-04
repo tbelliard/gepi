@@ -745,13 +745,16 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$id_div = strtr($id_div_p, " -|/", "www");
 		$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
-		// On dresse la liste des noms de prof
-		$rep_nom_prof['civilite'] = "";
-		$rep_nom_prof['nom'] = "Cours en groupe";
+		// On dresse la liste des noms de prof (on n'affiche que le premier)
+		$noms_prof = mysql_fetch_array(mysql_query("SELECT nom, civilite FROM j_aid_utilisateurs jau, utilisateurs u WHERE
+									id_aid = '".$analyse[1]."' AND
+									jau.id_utilisateur = u.login
+									ORDER BY nom LIMIT 1")); // on n'en garde qu'un
+		$rep_nom_prof['civilite'] = $noms_prof["civilite"].' '.$noms_prof["nom"].'<br />';
+		$rep_nom_prof['nom'] = "<span style='font-size: 0.8em;'>Cours en groupe</span>";
 
 	}elseif($analyse[0] == '' OR $analyse[0] == 'inc'){
 		// le groupe n'est pas renseigné, donc, on affiche en fonction
-		//$aff_matiere."<br />\n".$classe_js." ".$effacer_cours." ".$modifier_cours." \n".$aff_sem."<br />\n<i>".$rep_salle."</i> - ".$aff_nbre_eleve." él.\n");
 		$aff_matiere = 'inc.';
 		$classe_js = NULL;
 		$aff_nbre_eleve = '0';
