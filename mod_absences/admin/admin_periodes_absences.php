@@ -282,6 +282,12 @@ if ($action == "visualiser") {
 		</p>
 		</form>';
 	}
+// On teste la table des emplois du temps et on envoie un message adéquat si elle est remplie
+$query = mysql_query("SELECT * FROM edt_cours LIMIT 5");
+$compter = mysql_num_rows($query);
+if ($compter >= 1) {
+	echo "<p class=\"red\">Attention, si vous modifiez les créneaux maintenant, les cours de l'emploi du temps seront perturbés !</p>";
+}
 	/* div de centrage du tableau pour ie5 */
 ?>
 <div style="text-align: center;">
