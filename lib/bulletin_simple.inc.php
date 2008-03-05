@@ -5,7 +5,7 @@
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 function acces_appreciations($periode1, $periode2, $id_classe) {
-	
+
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		for($i=$periode1;$i<=$periode2;$i++) {
 			$sql="SELECT * FROM matieres_appreciations_acces WHERE id_classe='$id_classe' AND
@@ -214,7 +214,7 @@ while ($z < $nb_aid) {
 		$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
 		$aid_id = @mysql_result($aid_query, 0, "id_aid");
 		if ($aid_id != '') {
-			affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl');
+			affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
 		}
 	}
 	$z++;
@@ -607,7 +607,7 @@ while ($z < $nb_aid) {
 		$aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
 		$aid_id = @mysql_result($aid_query, 0, "id_aid");
 		if ($aid_id != '') {
-			affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl');
+			affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
 		}
 	}
 	$z++;
@@ -777,10 +777,10 @@ echo "</tr>\n";
 	$nb++;
 }
 echo "</table>\n";
-}
+} // fin de la fonction
 
 
-function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe,$style_bulletin) {
+function affiche_aid_simple($affiche_rang, $test_coef, $indice_aid, $aid_id, $current_eleve_login, $periode1, $periode2, $id_classe, $style_bulletin, $affiche_coef) {
 
 unset($tab_acces_app);
 $tab_acces_app=array();
@@ -794,7 +794,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 	$display_begin = @mysql_result($call_data, 0, "display_begin");
 	$display_end = @mysql_result($call_data, 0, "display_end");
 	$bull_simplifie = @mysql_result($call_data, 0, "bull_simplifie");
-	// On vérifie que cet AID soit autorisée à l'affichage dans le bulletin simplifié
+	// On vérifie que cette AID soit autorisée à l'affichage dans le bulletin simplifié
 	if ($bull_simplifie == "n") {
 		return "";
 	}
@@ -802,7 +802,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 	$aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
 	$aid_nom = @mysql_result($aid_nom_query, 0, "nom");
 	//------
-	// On regarde maintenant quelle sont les profs responsables de cette AID
+	// On regarde maintenant quels sont les profs responsables de cette AID
 	$aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
 	$nb_lig = mysql_num_rows($aid_prof_resp_query);
 	$n = '0';
@@ -874,6 +874,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 			echo " align=\"center\"><p class='".$style_bulletin."'>-</p></td>";
 		}
 	}
+
 	$nb=$periode1;
 	$print_tr = 'no';
 	while ($nb < $periode2+1) {
