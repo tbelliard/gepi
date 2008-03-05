@@ -133,6 +133,7 @@ if ($periode1 > $periode2) {
 }
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+//echo "\$test_coef=$test_coef<br />";
 
 
 // On regarde si on affiche les catégories de matières
@@ -218,7 +219,8 @@ if ($choix_edit != '2') {
 	//=========================
 	// AJOUT: boireaus 20080209
 	// Affichage des appréciations saisies pour la classe
-	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+	//echo "\$test_coef=$test_coef<br />";
+	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories);
 	echo "<p class=saut>&nbsp;</p>\n";
 	//=========================
 

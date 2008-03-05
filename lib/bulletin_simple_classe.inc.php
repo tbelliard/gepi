@@ -73,6 +73,8 @@ if ($periode1 < $periode2) {
 //-------------------------------
 // Fin de l'en-tête
 
+//echo "\$test_coef=$test_coef<br />";
+
 // On initialise le tableau :
 
 $larg_tab = 680;
@@ -347,7 +349,8 @@ while ($j < $nombre_groupes) {
                 // On récupère les infos nécessaires, et on affiche une ligne
 
                 // On détermine le nombre de colonnes pour le colspan
-                $nb_total_cols = 4;
+                //$nb_total_cols = 4;
+                $nb_total_cols = 3;
 				//====================
 				// Modif: boireaus 20070626
 				if($affiche_coef=='y'){
@@ -390,7 +393,8 @@ while ($j < $nombre_groupes) {
 			if ($test_coef != 0) {
 				//if ($current_coef > 0) $print_coef= $current_coef ; else $print_coef='-';
 				//if ($coef_eleve > 0) $print_coef= $coef_eleve; else $print_coef='-';
-				if ($coef_eleve > 0) $print_coef= number_format($coef_eleve,1, ',', ' '); else $print_coef='-';
+				//if ($coef_eleve > 0) $print_coef= number_format($coef_eleve,1, ',', ' '); else $print_coef='-';
+				$print_coef= number_format($current_coef,1, ',', ' ');
 				echo "<td width=\"$larg_col2\"";
 				if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 				echo " align=\"center\"><p class='bull_simpl'>".$print_coef."</p></td>\n";
