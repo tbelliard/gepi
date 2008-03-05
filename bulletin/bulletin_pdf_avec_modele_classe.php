@@ -1133,7 +1133,17 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$k++;
 			}
 
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
+			// On définit quelle doit être la moyenne de l'élève
+			// Mais si cette moyenne est égale à 0, on vérifie le statut
+			if ($donner_aid['note'] == 0) {
+				if ($donner_aid["statut"] == 'disp' OR $donner_aid["statut"] == '-' OR $donner_aid["statut"] == 'abs' OR $donner_aid["statut"] == 'other') {
+					// on vient de voir tous les cas de figure développés dans saisie/saisie_aid.php
+					$donner_aid["note"] = '-';
+				}
+			}
+			// par défaut :
+			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
+
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = '-'; // rang de l'élève pour une matière donnée dans une périodes données
 
 			$note_rang = '';
@@ -1470,8 +1480,17 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['prof'][$k]=affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe);
 					$k++;
 			}
+			// On définit quelle doit être la moyenne de l'élève
+			// Mais si cette moyenne est égale à 0, on vérifie le statut
+			if ($donner_aid['note'] == 0) {
+				if ($donner_aid["statut"] == 'disp' OR $donner_aid["statut"] == '-' OR $donner_aid["statut"] == 'abs' OR $donner_aid["statut"] == 'other') {
+					// on vient de voir tous les cas de figure développés dans saisie/saisie_aid.php
+					$donner_aid["note"] = '-';
+				}
+			}
+			// par défaut :
+			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
 
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = '-'; // rang de l'élève pour une matière donnée dans une périodes données
 
 			$note_rang = '';
