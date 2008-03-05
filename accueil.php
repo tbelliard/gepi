@@ -966,7 +966,7 @@ if ($conditions_bulsimples)
 	$expli[] = "Bulletins simplifiés d'une classe.";
 
 
-$call_data = mysql_query("SELECT * FROM aid_config ORDER BY nom");
+$call_data = mysql_query("SELECT * FROM aid_config WHERE display_bulletin = 'y' OR bull_simplifie = 'y' ORDER BY nom");
 $nb_aid = mysql_num_rows($call_data);
 $i=0;
 while ($i < $nb_aid) {
