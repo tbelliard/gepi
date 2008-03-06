@@ -223,13 +223,29 @@ function renvoiConcordances($chiffre, $etape){
 }
 
 // L'id_groupe
-function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt){
+function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt, $type_import){
 	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autresinfos ne sont pas encore "concordés"
-	// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
-	$classe = renvoiConcordances($classe_txt, 2);
-	$matiere = renvoiConcordances($matiere_txt, 5);
-	$partie = $partie_txt; //renvoiConcordances($partie_txt, 4);
-	$grp = renvoiConcordances($grp_txt, 3);
+
+	if ($type_import == 'texte') {
+		// On se préoccupe de la partie qui arrive de edt_init_texte.php et edt_init_concordance.php
+		// Les autres variables sont explicites dans leur désignation (c'est leur nom dans l'export texte)
+		$classe = renvoiConcordances($classe_txt, 2);
+		$matiere = renvoiConcordances($matiere_txt, 5);
+		$partie = $partie_txt; //renvoiConcordances($partie_txt, 4);
+		$grp = renvoiConcordances($grp_txt, 3);
+	}elseif($type_import == 'csv2'){
+		// On se préoccupe de la partie csv2 venant de edt_init_csv2.php et edt_init_concordance2.php
+		$classe = '';
+		$matiere = '';
+		$partie = '';
+		$grp = '';
+	}else{
+		$classe = '';
+		$matiere = '';
+		$partie = '';
+		$grp = '';
+	}
+
 
 	// On commence par le groupe. S'il existe, on le renvoie tout de suite
 	if ($grp != "aucun" AND $grp != '' AND $grp != "inc") {

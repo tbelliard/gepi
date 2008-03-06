@@ -20,11 +20,14 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 		die();
 	}
 
-$increment = isset($nom_select) ? $nom_select : "liste_professeur";
-$nom_selected = isset($nom_prof) ? $nom_prof : NULL;
+$increment = isset($nom_select) ? $nom_select : "liste_professeur"; // name du select
+$id_select = isset($nom_id_select) ? (' id="'.$nom_id_select.'"') : NULL; // id du select
+if (!isset($nom_selected)) {
+	$nom_selected = isset($nom_prof) ? $nom_prof : NULL; // permet de définir le selected
+}
 
 echo '
-	<select name ="'.$increment.'">
+	<select name ="'.$increment.'"'.$id_select.'>
 		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
 	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' ORDER BY nom, prenom");

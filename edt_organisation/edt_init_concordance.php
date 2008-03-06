@@ -137,7 +137,7 @@ if ($etape != NULL) {
 			// Il reste à afficher le login du professeur
 			$prof = renvoiLoginProf($elements_cours[5]);
 			// On cherche à reconstituer le groupe/enseignement/AID concerné
-			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7]);
+			$groupe = renvoiIdGroupe($prof, $elements_cours[0], $elements_cours[8], $elements_cours[6], $elements_cours[7], 'texte');
 				$choix_groupe = "non";
 				if ($groupe == "aucun") {
 					// On n'enregistre pas le cours avec "inc" comme id_groupe
