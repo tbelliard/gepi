@@ -169,7 +169,7 @@ if ($action == "upload_file") {
 				}
 			}
 			// On commence le traitement des entrées et des sorties
-			echo '<form name="edtInitCsv2" action="" method="post">';
+			echo '<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
 			for($a = 0; $a < count($tableau); $a++){
 				echo '
 				<p>
