@@ -490,8 +490,9 @@ if ($aff_reglages2 == "oui") {
 	 sauf si vous leur demandez de ne pas le faire.</h4>
 
  	<div id="lien">
-		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv</a></p>
-		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte</a></p>
+		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv (csv à formater pour Gepi)</a></p>
+		<p><a href="./edt_init_csv2.php">Cliquer ici pour un autre type d\'initialisation par fichiers csv (export logiciel propriétaire).</a></p>
+		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte (export logiciel propriétaire).</a></p>
 	</div>
  		';
 

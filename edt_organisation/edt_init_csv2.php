@@ -154,45 +154,73 @@ if ($action == "upload_file") {
 							'Les effectifs : non utilisés pour l\'EdT',
 							'Les Modalités : non utilisées pour l\'EdT',
 							'La fréquence : le type de semaine ainsi que les cours qui ne durent pas toute l\'année',
-							'L\'aire : non utilisée dans Gepi');
+							'L\'aire : non utilisée dans Gepi',
+							'Vous allez pouvoir enregistrer les cours dans la base');
 			// On détermine quel est le helper appelé
-			$helpers = array('aucun', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
+			$helpers = array('select_jours', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
 							'select_aid_groupes', 'aucun', 'aucun', 'frequence', 'aucun');
 
 			echo '<p>'.$titre[$etape].'</p>';
-			while($tab = fgetcsv($fp, 1024, ";")) {
-				if (in_array($tab[$etape], $tableau) === FALSE) {
-					// Puisque la valeur du champ n'est pas encore dans $tableau, on l'insère pour éviter les doublons
-					if ($tab[$etape] != '') {
-						$tableau[] = $tab[$etape];
+			if ($etape != 12) {
+				while($tab = fgetcsv($fp, 1024, ";")) {
+					if (in_array($tab[$etape], $tableau) === FALSE) {
+						// Puisque la valeur du champ n'est pas encore dans $tableau, on l'insère pour éviter les doublons
+						if ($tab[$etape] != '') {
+							$tableau[] = $tab[$etape];
+						}
 					}
 				}
-			}
-			// On commence le traitement des entrées et des sorties
-			echo '<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
-			for($a = 0; $a < count($tableau); $a++){
-				echo '
-				<p>
-				<input type="hidden" name="nom_export_'.$a.'" value="'.$tableau[$a].'" />
-				<label for="nomGepi'.$a.'">'.$tableau[$a].'</label>
-				';
-				// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
-				$test_selected = explode(" ", $tableau[$a]);
-				$nom_select = 'nom_gepi_'.$a; // pour le nom du select
-				$nom_selected = $test_selected[0]; // pour le selected du helper
-				$nom_id_select = 'nomGepi'.$a; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
-				// On appelle le bon helper
-				if ($helpers[$etape] != 'aucun') {
-					include("helpers/".$helpers[$etape].".php");
-				}
+				// On commence le traitement des entrées et des sorties
+				echo '<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
+				$nbre_lignes = count($tableau);
+				for($a = 0; $a < $nbre_lignes; $a++){
+					echo '
+					<p>
+					<input type="hidden" name="nom_export_'.$a.'" value="'.$tableau[$a].'" />
+					<label for="nomGepi'.$a.'">'.$tableau[$a].'</label>
+					';
+					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
+					$test_selected = explode(" ", $tableau[$a]);
+					$nom_select = 'nom_gepi_'.$a; // pour le nom du select
+					$nom_selected = $test_selected[0]; // pour le selected du helper
+					$nom_id_select = 'nomGepi'.$a; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
+					// On appelle le bon helper
+					if ($helpers[$etape] != 'aucun') {
+						include("helpers/".$helpers[$etape].".php");
+					}else{
+						echo '
+						<input type="hidden" name="'.$nom_select.'" value="none" />';
+					}
 
-				echo '</p>';
+					echo '</p>';
+				}
+			}elseif($etape == 12){
+				echo '
+				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
+				$b = 0; // c'est pour le while
+
+				// C'est là qu'on enregistre les cours en se servant des données recueillies auparavant
+				while($tab = fgetcsv($fp, 1024, ";")) {
+					$nbre_lignes = $b;
+					$toutelaligne = NULL;
+					// On rentre toutes les cellules de la ligne dans une seule variable
+					for($t = 0; $t < 12; $t++){
+						$toutelaligne .= $tab[$t].'|';
+					}
+
+						echo '
+					<input type="hidden" name="ligne_'.$b.'" value="'.$toutelaligne.'" />';
+					$b++; // on incrémente le compteur pour le name
+				}
+			}else{
+				// rien pour le moment
 			}
 			echo '
-				<input type="hidden" name="etape" value="'.$etape.'" />
-				<input type="hidden" name="concord_csv2" value="ok" />
-				<input type="submit" name="enregistrer" value="Enregistrer ces concordances" />
-			</form>';
+					<input type="hidden" name="nbre_lignes" value="'.$nbre_lignes.'" />
+					<input type="hidden" name="etape" value="'.$etape.'" />
+					<input type="hidden" name="concord_csv2" value="ok" />
+					<input type="submit" name="enregistrer" value="Enregistrer ces concordances" />
+				</form>';
 		}
 	} else{
 		// Ce n'est pas le bon nom de fichier
