@@ -26,7 +26,7 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 $increment = isset($nom_select) ? $nom_select : "liste_jours"; // name du select
 $id_select = isset($nom_id_select) ? (' id="'.$nom_id_select.'"') : NULL; // id du select
 if (!isset($nom_selected)) {
-	$nom_selected = isset($nom_creneau) ? $nom_creneau : NULL; // permet de définir le selected
+	$nom_selected = isset($nom_jour) ? $nom_jour : NULL; // permet de définir le selected
 }
 
 echo '
@@ -39,13 +39,13 @@ $query = mysql_query("SELECT * FROM horaires_etablissement LIMIT 0, 7")
 
 while($jours = mysql_fetch_array($query)){
 	// le selected
-	if ($nom_select == ucfirst($jours["jour_horaire_etablissement"])) {
+	if ($nom_selected == ucfirst($jours["jour_horaire_etablissement"])) {
 		$selected = ' selected="selected"';
 	}else{
 		$selected = '';
 	}
 	echo '
-		<option value="'.$jours["id_horaire_etablissement"].'">'.$jours["jour_horaire_etablissement"].'</option>';
+		<option value="'.$jours["id_horaire_etablissement"].'"'.$selected.'>'.ucfirst($jours["jour_horaire_etablissement"]).'</option>';
 }
 
 echo '

@@ -27,6 +27,10 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+// fonctions edt
+require_once("./fonctions_edt.php");
+require_once("./edt_init_fonctions.php");
+
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -48,6 +52,7 @@ $nbre_lignes = isset($_POST["nbre_lignes"]) ? $_POST["nbre_lignes"] : NULL;
 <html lang="fr">
 <head>
 	<title>Enregistrer les concordances(2) pour l'import de l'EdT</title>
+	<LINK REL="SHORTCUT ICON" href="/gepi_trunk/favicon.ico" />
 </head>
 <body>
 <?php
@@ -58,9 +63,49 @@ if ($etape != NULL) {
 
 	echo '<p>Etape numéro : '.$etape.'</p>';
 	echo '<p>Nbre lignes : '.$nbre_lignes.'</p>';
-	if ($etape != 12) {
+
+	if ($etape != 12 AND $etape != 5) {
+			$values = NULL;
+		// C'est le cas général pour enregistrer les concordances entre le fichier csv et Gepi
+		// On réceptionne les données et on les rentre dans la base
+		for($a = 0; $a < $nbre_lignes; $a++){
+
+			$nom_gepi[$a] = isset($_POST["nom_gepi_".$a]) ? $_POST["nom_gepi_".$a] : NULL;
+			$nom_export[$a] = isset($_POST["nom_export_".$a]) ? $_POST["nom_export_".$a] : NULL;
+
+			// On prépare la requête en vérifiant qu'elle doit bien être construite
+			if ($nom_gepi[$a] != '' AND $nom_gepi[$a] != 'none') {
+				$values .= "('', '".$etape."', '".$nom_export[$a]."', '".$nom_gepi[$a]."'), ";
+
+			}
+		}
+		// On envoie toutes les requêtes d'un coup
+		echo $values;
+		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
+					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')")
+					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
+		// On récupère le nombre de valeurs enregistrées et on affiche
+
+		echo '<p>'.$nbre_lignes.' lignes ont été enregistrées dans la base.</p>';
+
+	}elseif($etape == 5){
+			$enre = $deja = 0;
+		// Ce sont les salles. On va enregistrer celles qui ne sont pas encore dans Gepi
+		for($a = 0; $a < $nbre_lignes; $a++){
+			$nom_export[$a] = isset($_POST["nom_export_".$a]) ? $_POST["nom_export_".$a] : NULL;
+			$test = testerSalleCsv2($nom_export[$a]);
+			if ($test == "enregistree") {
+				$enre++;
+			}elseif($test == "ok"){
+				$deja++;
+			}
+		}
+		echo '
+		<p>'.$enre.' nouvelles salles ont été enregistrées et '.$deja.' existaient déjà.</p>';
 
 	}elseif($etape == 12){
+
+		// Ce sont les cours qui arrivent, car on a terminé les concordances
 		for($i = 0; $i < $nbre_lignes; $i++){
 			// On initialisise toutes les variables et on affiche la valeur de chaque cours
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
@@ -71,10 +116,11 @@ if ($etape != NULL) {
 	echo '
 	<a href="edt_init_csv2.php">Retour</a>';
 
-	// On incrément le numéro de l'étape
-	$prochaine_etape = $etape + 1;
-	$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
-
+	// On incrémente le numéro de l'étape
+	if ($etape != 12) {
+		$prochaine_etape = $etape + 1;
+		$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
+	}
 }
 
 ?>

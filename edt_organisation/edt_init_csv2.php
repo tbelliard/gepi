@@ -88,13 +88,19 @@ $recommencer = isset($_POST["recommencer"]) ? $_POST["recommencer"] : NULL;
 $etape = NULL;
 $aff_etape = NULL;
 
-// Si l'utilisateur veut recommencer, on efface toutes les entrées qui sont après l'étape qu'il a demandée
+// Si l'utilisateur veut recommencer, on efface toutes les entrées de l'étape qu'il a demandée
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
-	// On efface toutes les entrées depuis cette étape (les étapes vont de 0 à 12)
-	$supprimer = mysql_query("DELETE FROM et_init WHERE ident_export >= '".$recommencer."'")
-						OR error_reporting('Erreur dans le $recommencer : '.mysql_error());
-}
 
+	// On efface toutes les entrées de cette étape (les étapes vont de 0 à 12)
+	$supprimer = mysql_query("DELETE FROM edt_init WHERE ident_export >= '".$recommencer."' AND ident_export != 'fichierTexte2'")
+						OR error_reporting('Erreur dans le $recommencer : '.mysql_error());
+	$modifier = mysql_query("UPDATE edt_init SET nom_export = '".$recommencer."' WHERE ident_export = 'fichierTexte2'")
+						OR error_reporting('Erreur dans le $modifier : '.mysql_error());
+}
+$teste = (mysql_query("SELECT DISTINCT ident_export FROM edt_init WHERE ident_export >= '2' AND ident_export != 'fichierTexte2'"));
+while($aff = mysql_fetch_array($teste)){
+	echo $aff["ident_export"].'<br />|';
+}
 // On teste d'abord pour savoir à quelle étape on est
 $query = mysql_query("SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
 // On affiche le numéro de l'étape
@@ -112,7 +118,7 @@ if ($query) {
 	';
 	if ($date_last != '' AND $etape != 0) {
 		echo '
-		<p>Dernière modification le : '.$date_last[0].' à '.$date_last[1].'</p>
+		<p>Cette initialisation a été commencée le : '.$date_last[0].' à '.$date_last[1].'</p>
 		';
 	}
 }else{
@@ -141,7 +147,7 @@ if ($action == "upload_file") {
             }
 
             // On ouvre alors toutes les lignes de tous les champs
-				$tableau = array();
+			$tableau = array();
 			// On affiche le tire pour chaque étape
 			$titre = array('Les jours de la semaine',
 							'Les créneaux : vous devez faire la concordance sur les créneaux de début de cours <br />&nbsp;&nbsp;&nbsp;-> (et uniquement pour les horaires qui correspondent au début d\'un créneau).',
@@ -158,7 +164,7 @@ if ($action == "upload_file") {
 							'Vous allez pouvoir enregistrer les cours dans la base');
 			// On détermine quel est le helper appelé
 			$helpers = array('select_jours', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
-							'select_aid_groupes', 'aucun', 'aucun', 'frequence', 'aucun');
+							'select_aid_groupes', 'aucun', 'aucun', 'select_frequence', 'aucun');
 
 			echo '<p>'.$titre[$etape].'</p>';
 			if ($etape != 12) {
@@ -173,17 +179,18 @@ if ($action == "upload_file") {
 				// On commence le traitement des entrées et des sorties
 				echo '<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
 				$nbre_lignes = count($tableau);
-				for($a = 0; $a < $nbre_lignes; $a++){
+
+				for($l = 0; $l < $nbre_lignes; $l++){
 					echo '
 					<p>
-					<input type="hidden" name="nom_export_'.$a.'" value="'.$tableau[$a].'" />
-					<label for="nomGepi'.$a.'">'.$tableau[$a].'</label>
+					<input type="hidden" name="nom_export_'.$l.'" value="'.$tableau[$l].'" />
+					<label for="nomGepi'.$l.'">'.$tableau[$l].'</label>
 					';
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
-					$test_selected = explode(" ", $tableau[$a]);
-					$nom_select = 'nom_gepi_'.$a; // pour le nom du select
+					$test_selected = explode(" ", $tableau[$l]);
+					$nom_select = 'nom_gepi_'.$l; // pour le nom du select
 					$nom_selected = $test_selected[0]; // pour le selected du helper
-					$nom_id_select = 'nomGepi'.$a; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
+					$nom_id_select = 'nomGepi'.$l; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
 					// On appelle le bon helper
 					if ($helpers[$etape] != 'aucun') {
 						include("helpers/".$helpers[$etape].".php");
@@ -194,6 +201,7 @@ if ($action == "upload_file") {
 
 					echo '</p>';
 				}
+				$aff_enregistrer = 'concordances';
 			}elseif($etape == 12){
 				echo '
 				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
@@ -205,13 +213,20 @@ if ($action == "upload_file") {
 					$toutelaligne = NULL;
 					// On rentre toutes les cellules de la ligne dans une seule variable
 					for($t = 0; $t < 12; $t++){
-						$toutelaligne .= $tab[$t].'|';
+						// On fait attention au traitement des données envoyées en post
+						//if (!get_magic_quotes_gpc()){
+						//	$toutelaligne .= addslashes($tab[$t]).'|';
+						//}else{
+							$toutelaligne .= $tab[$t].'|';
+						//}
 					}
 
 						echo '
 					<input type="hidden" name="ligne_'.$b.'" value="'.$toutelaligne.'" />';
 					$b++; // on incrémente le compteur pour le name
 				}
+				echo 'Votre fichier comporte '.$nbre_lignes.' cours.';
+				$aff_enregistrer = 'cours';
 			}else{
 				// rien pour le moment
 			}
@@ -219,7 +234,7 @@ if ($action == "upload_file") {
 					<input type="hidden" name="nbre_lignes" value="'.$nbre_lignes.'" />
 					<input type="hidden" name="etape" value="'.$etape.'" />
 					<input type="hidden" name="concord_csv2" value="ok" />
-					<input type="submit" name="enregistrer" value="Enregistrer ces concordances" />
+					<input type="submit" name="enregistrer" value="Enregistrer ces '.$aff_enregistrer.'" />
 				</form>';
 		}
 	} else{

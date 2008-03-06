@@ -277,4 +277,25 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 
 	return $retour;
 }
+
+/*
+ * Fonction qui teste si une salle existe dans Gepi et qui l'enregistre si elle n'existe pas
+ * $numero est le numéro de la salle
+*/
+function testerSalleCsv2($numero){
+	// On teste la table
+	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
+				OR error_reporting('Erreur dans la requête '.$query.' : '.mysql_error());
+	$rep = @mysql_result($query, "id_salle");
+	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
+		// On renvoie "ok"
+		return "ok";
+	}else{
+		// On enregistre la nouvelle salle
+		$query2 = mysql_query("INSERT INTO salle_cours SET numero_salle = '".$numero."', nom_salle = ''");
+		if ($query2) {
+			return "enregistree";
+		}
+	}
+}
 ?>

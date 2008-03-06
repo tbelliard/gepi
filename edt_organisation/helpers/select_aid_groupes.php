@@ -21,9 +21,11 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_aid_groupes";
+$id_select = isset($nom_id_select) ? ' id="'.$nom_id_select.'"' : NULL;
+$test_selected = isset($nom_selected) ? $nom_selected : NULL;
 
 echo '
-	<select name ="'.$increment.'">
+	<select name ="'.$increment.'"'.$id_select.'>
 		<option value="aucun">Liste des AID et des groupes</option>
 			<optgroup label="Les AID">';
 	// on recherche la liste des AID
@@ -38,8 +40,14 @@ echo '
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
 		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/
+		// On teste le selected
+		if ($nom[$i] == $test_selected) {
+			$selected = ' selected="selected"';
+		}else{
+			$selected = '';
+		}
 		echo '
-		<option value="AID|'.$indice_aid[$i].'">'.$nom[$i].'</option>';
+		<option value="AID|'.$indice_aid[$i].'"'.$selected.'>'.$nom[$i].'</option>';
 	}
 	echo '
 			</optgroup>
@@ -56,9 +64,15 @@ echo '
 		$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
 		$classe = mysql_fetch_array($query1);
 
+		// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
+			if ($id_groupe[$a]["description"] == $test_selected) {
+				$selected = ' selected="selected"';
+			}else{
+				$selected = '';
+			}
 
 		echo '
-		<option value="'.$id_groupe[$a]["id"].'">'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
+		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
 	}
 echo '
 			</optgroup>
