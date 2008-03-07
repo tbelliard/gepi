@@ -273,7 +273,7 @@ if ($action == "upload_file") {
 			<input type="hidden" name="initialiser" value="ok" />
 
 			<p><label for="truncateCours">Effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
-			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui" checked="checked" />
+			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui" />
 			<label for="affInfosEdt">Afficher l'enregistrement de tous les cours</label>
 			<input type="checkbox" id="affInfosEdT" name="aff_infos" value="oui" checked="checked" /></p>
 

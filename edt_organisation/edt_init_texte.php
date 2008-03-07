@@ -79,9 +79,14 @@ $query = mysql_query("SELECT nom_export FROM edt_init WHERE ident_export = 'fich
 // On affiche le numéro de l'étape
 if ($query) {
 	$etape_effectuee = mysql_fetch_array($query);
-	$aff_etape = '
-		<h3 class="gepi">Vous êtes actuellement à l\'étape numéro '.$etape_effectuee["nom_export"].'</h3>
-	';
+	if ($etape_effectuee["nom_export"] != '') {
+		$aff_etape = '
+		<h3 class="gepi">Vous êtes actuellement à l\'étape numéro '.$etape_effectuee["nom_export"].'</h3>';
+	}else{
+		$aff_etape = '
+		<p class="red">Vous n\'avez pas commencé la concordance.</p>';
+	}
+
 }else{
 	$aff_etape = '
 	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
@@ -325,5 +330,5 @@ la derni&egrave;re sera la plus longue.</p>
 		</form>
 
 <?php
-require_once("..\lib\footer.inc.php");
+require_once("../lib/footer.inc.php");
 ?>
