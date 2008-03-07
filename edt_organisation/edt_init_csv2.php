@@ -247,8 +247,9 @@ if ($action == "upload_file") {
 ?>
 <h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'une export csv d'un logiciel propri&eacute;taire.</h3>
 
-	<p>Attention, cette initialisation efface toutes les donn&eacute;es concernant les cours d&eacute;j&agrave; pr&eacute;sents sauf si vous d&eacute;cochez le bouton.</p>
-	<p><span class="red">Attention</span> de respecter au mieux les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute; auparavant.
+	<p>Attention, l'&eacute;tape 12 n'efface pas les donn&eacute;es d&eacute;j&agrave; existantes pour les cours sauf si vous cochez le bouton.</p>
+	<p><span class="red">Attention</span> de respecter au mieux les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute;s auparavant,
+	l'initialisation de l'emploi du temps en sera simplifi&eacute;e.
 	Vous devez fournir un fichier csv dont les champs suivants 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s
 	par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 <ol>

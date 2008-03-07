@@ -107,9 +107,11 @@ if ($etape != NULL) {
 
 		// Ce sont les cours qui arrivent, car on a terminé les concordances
 		for($i = 0; $i < $nbre_lignes; $i++){
-			// On initialisise toutes les variables et on affiche la valeur de chaque cours
+			// On initialise toutes les variables et on affiche la valeur de chaque cours
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
 			echo $ligne.'<br />';
+			// On explose la variable pour récupérer toutes les données
+			$tab = explode("|", $ligne);
 		}
 	}
 	// On affiche un lien pour revenir à la page de départ

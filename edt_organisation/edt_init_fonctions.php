@@ -206,7 +206,8 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 // Renvoi des concordances
 function renvoiConcordances($chiffre, $etape){
 	// On récupère dans la table edt_init la bonne concordance
-	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières
+	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
+	// pour UDT de OMT
 	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
 	if ($query) {
 		$reponse = mysql_result($query, "nom_gepi");
