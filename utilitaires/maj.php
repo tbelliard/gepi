@@ -5590,8 +5590,6 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">La table aid_public est déjà remplie.</font><br />";
     }
-    // la ligne suivante est à supprimer dans la version finale
-    mysql_query("DROP TABLE IF EXISTS aid_productions");
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_productions'"));
     if ($test == 0) {
       $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL auto_increment, `nom` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`) );");
