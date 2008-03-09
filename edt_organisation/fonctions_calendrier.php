@@ -27,7 +27,7 @@
 // Fonction qui retourne le type de la semaine en cours
 function typeSemaineActu(){
 		$retour = '0';
-	$numero_sem_actu = date("w");
+	$numero_sem_actu = date("W");
 	$query = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
 
 	if (count($query) != 1) {
