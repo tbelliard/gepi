@@ -45,7 +45,9 @@ if ($resultat_session == 'c') {
 $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $concord_csv2 = isset($_POST["concord_csv2"]) ? $_POST["concord_csv2"] : NULL;
 $nbre_lignes = isset($_POST["nbre_lignes"]) ? $_POST["nbre_lignes"] : NULL;
+$aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
+$msg_enreg = '';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -112,18 +114,35 @@ if ($etape != NULL) {
 			echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
 			$tab = explode("|", $ligne);
+			// Toutes les infos sont envoyées en brut
+			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
+			if ($enregistre == 'ok') {
+				// On affiche les infos si c'est demandé
+				if ($aff_infos == 'oui') {
+					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
+				}
+			}else{
+				if ($aff_infos == 'oui') {
+					$msg_enreg .= 'La ligne '.$i.' n\'a pas été enregistrée.<br />';
+				}
+			}
 		}
 	}
-	// On affiche un lien pour revenir à la page de départ
-	echo '
-	<a href="edt_init_csv2.php">Retour</a>';
 
 	// On incrémente le numéro de l'étape
 	if ($etape != 12) {
 		$prochaine_etape = $etape + 1;
 		$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
+		// et on affiche un lien qui permet de continuer
+		echo '
+		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la même procédure pour l\'étape n° '.$prochaine_etape.'</a>';
+
+	}else{
+		// On affiche un lien pour revenir à la page de départ
+		echo '
+		<a href="edt_init_csv2.php">Retour</a>';
 	}
-}
+} // on a finit de bosser
 
 ?>
 </body>

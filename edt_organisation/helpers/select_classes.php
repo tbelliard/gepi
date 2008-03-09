@@ -21,10 +21,11 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_classes";
-$classe_selected = isset($nom_classe) ? $nom_classe : NULL;
+$classe_selected = isset($nom_classe) ? $nom_classe : (isset($nom_selected) ? $nom_selected : NULL);
+$id_select = isset($nom_id_select) ? $nom_id_select : NULL;
 
 echo '
-	<select name ="'.$increment.'">
+	<select name ="'.$increment.'"'.$id_select.'>
 		<option value="aucun">Liste des classes</option>';
 	// on recherche la liste des classes
 	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");

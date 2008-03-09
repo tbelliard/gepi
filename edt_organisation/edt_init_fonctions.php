@@ -146,7 +146,7 @@ function dureeCreneau(){
 	return $retour;
 }
 
-// La durée
+// La durée pour les imports texte
 function renvoiDuree($deb, $fin){
 	// On détermine la durée d'un cours
 	$duree_cours_base = dureeCreneau();
@@ -207,7 +207,7 @@ function renvoiDebut($id_creneau, $heure_deb, $jour){
 function renvoiConcordances($chiffre, $etape){
 	// On récupère dans la table edt_init la bonne concordance
 	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
-	// pour UDT de OMT
+	// 1=créneaux 2=classe 3=matière 4=professeurs 7=regroupements 10=fréquence pour UDT de OMT
 	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
 	if ($query) {
 		$reponse = mysql_result($query, "nom_gepi");
@@ -297,6 +297,116 @@ function testerSalleCsv2($numero){
 		if ($query2) {
 			return "enregistree";
 		}
+	}
+}
+
+/*
+ * Fonction qui fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours (CSV2)
+ * sous la forme d'un tableau id_creneau, duree et debut
+*/
+function rechercheCreneauCsv2($creneau){
+	$duree_base = dureeCreneau();
+
+	// On fait attention à la construction de ce créneau
+	$test1 = explode(" - ", $creneau);
+
+	// Pour le id du creneau
+	$id_creneau = renvoiConcordances($creneau, 1);
+	if ($id_creneau != 'inc') {
+		$retour["id_creneau"] = $id_creneau;
+	}else{
+		// Il faut chercher d'une autre façon le bon id de cours avec $test1[0]
+		$test2 = explode("h", $test1[0]); // $test2[0] = 8 et $test2[1] = 00
+		if (strlen($test2[0]) < 2) {
+			// On ajoute un '0' devant l'heure
+			$heure = '0'.$test2[0];
+		}else{
+			$heure = $test2[0];
+		}
+		$heure_reconstruite = $heure.':'.$test2[1].':'.'00';
+		$query = mysql_query("SELECT DISTINCT id_definie_periode FROM absences_creneaux
+						WHERE heuredebut_definie_periode <= '".$heure_reconstruite."'
+						ORDER BY heuredebut_definie_periode ASC LIMIT 1");
+		if ($query) {
+			// On a trouvé
+			$reponse_id = mysql_fetch_array($query);
+			if ($reponse_id["id_definie_periode"] != '') {
+				$retour["id_creneau"] = $id_creneau;
+			}else{
+				// Si on n'a pas de réponse valide, on ne peut pas définir le cours
+				return 'erreur';
+			}
+		}
+	}
+
+	// la durée et le début
+	if (isset($test1[1])) {
+		// ça veut dire que le créneau étudié est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
+		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
+		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
+		$test3 = explode(":", $heure_debut);
+		if (substr($test3[0], 0, -1) == "0") {
+			$heu = substr($test3[0], -1);
+		}else{
+			$heu = $test3[0];
+		}
+
+		// On définit le moment de début du cours
+		if (($heu.'h'.$test3[1]) == $test[0]) {
+			// Le cours commence au début du créneau
+			$retour["debut"] = '0';
+		}else{
+			// Le cours commence au milieu du créneau
+			$retour["debut"] = 'O.5';
+		}
+
+		// On définit la durée
+		$he0 = explode("h", $test1[0]); // l'heure de début de la demande
+		$he1 = explode("h", $test1[1]); // l'heure de fin de la demande
+		$duree_demandee = (60 * ($he1[0] - $he0[0])) + ($he1[1] - $he0[1]);
+		if ($duree_demandee == $duree_base) {
+			// ALors la durée est de 1 créneau donc 2 pour Gepi
+			$retour["duree"] = 2;
+		}elseif($duree_demandee < $duree_base){
+			// Alors le cours la moitié d'un créneau
+			$retour["duree"] = 1;
+		}else{
+			// Le cours dure plus de 1 créneau
+			// On détermine la durée exacte
+			$test_duree = $duree_demandee / $duree_base;
+		}
+
+	}else{
+		// ça veut dire que le cours commence au début du créneau et dure 1 créneau (donc 2 pour Gepi)
+		$retour["duree"] = '2';
+		$retour["debut"] = '0';
+	}
+	return $retour;
+}
+
+/*
+ * Fonction qui enregistre les cours des imports UDT de OMT
+*/
+function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, $groupe, $regroupement, $effectif, $modalite, $frequence, $aire){
+	// Les étapes vont de 0 à 11 en suivant l'ordre des variables ci-dessus
+	// Si un cours est enregistré, on renvoie 'oui', sinon on renvoie 'non'
+
+	// le jour => il est bon, il faut juste l'écrire en minuscule
+	$jour_e = strtolower($jour);
+	// Cette fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours
+	$test_creneau = rechercheCreneauCsv2($creneau);
+	$creneau_e = $test_creneau["id_creneau"];
+	$duree_e = $test_creneau["duree"];
+	$heuredeb_dec = $test_creneau["debut"];
+
+	// On vérifie si tous les champs importants sont précisés ou non
+	if ($creneau_e != 'erreur') {
+		return 'non';
+	}else{
+		// On enregistre la ligne
+
+		// et on renvoie 'ok'
+		return 'ok';
 	}
 }
 ?>

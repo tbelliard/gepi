@@ -97,10 +97,7 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
 	$modifier = mysql_query("UPDATE edt_init SET nom_export = '".$recommencer."' WHERE ident_export = 'fichierTexte2'")
 						OR error_reporting('Erreur dans le $modifier : '.mysql_error());
 }
-$teste = (mysql_query("SELECT DISTINCT ident_export FROM edt_init WHERE ident_export >= '2' AND ident_export != 'fichierTexte2'"));
-while($aff = mysql_fetch_array($teste)){
-	echo $aff["ident_export"].'<br />|';
-}
+
 // On teste d'abord pour savoir à quelle étape on est
 $query = mysql_query("SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
 // On affiche le numéro de l'étape
@@ -233,6 +230,7 @@ if ($action == "upload_file") {
 			echo '
 					<input type="hidden" name="nbre_lignes" value="'.$nbre_lignes.'" />
 					<input type="hidden" name="etape" value="'.$etape.'" />
+					<input type="hidden" name="aff_infos" value="'.$aff_infos.'" />
 					<input type="hidden" name="concord_csv2" value="ok" />
 					<input type="submit" name="enregistrer" value="Enregistrer ces '.$aff_enregistrer.'" />
 				</form>';
