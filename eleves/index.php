@@ -618,12 +618,17 @@ if (!isset($quelles_classes)) {
 		}
 		// =====================================================
 
+		/*
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_cpe jec ON jec.e_login=e.login
 			where jec.e_login is NULL;";
+		*/
+		$sql="SELECT DISTINCT login FROM j_eleves_classes jecl
+			LEFT JOIN j_eleves_cpe jec ON jecl.login=jec.e_login
+			WHERE jec.e_login is null;";
 		$test_no_cpe=mysql_query($sql);
-		$test_no_cpe_effectif=mysql_num_rows($test_no_cpe)-mysql_num_rows($test_na);
-
+		//$test_no_cpe_effectif=mysql_num_rows($test_no_cpe)-mysql_num_rows($test_na);
+		$test_no_cpe_effectif=mysql_num_rows($test_no_cpe);
 		/*
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_cpe jec ON jec.e_login=e.login
