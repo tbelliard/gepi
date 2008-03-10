@@ -307,3 +307,12 @@ table {
 	height: 40px;
 	border: 1px solid grey;
 }
+
+#divCsv2 label {
+	float: left;
+	width: 30%;
+	text-align: right;
+	margin: 0;
+	padding: 0 .5em 0 0;
+	line-height: 1.8;
+}

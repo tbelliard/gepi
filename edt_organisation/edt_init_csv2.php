@@ -125,6 +125,7 @@ if ($query) {
 	$aff_etape = '
 	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
 }
+echo '<div id="divCsv2">';
 echo $aff_etape;
 // On commence le travail sur le fichier
 if ($action == "upload_file") {
@@ -147,7 +148,7 @@ if ($action == "upload_file") {
 			$tableau = array();
 			// On affiche le tire pour chaque étape
 			$titre = array('Les jours de la semaine',
-							'Les créneaux : vous devez faire la concordance sur les créneaux de début de cours <br />&nbsp;&nbsp;&nbsp;-> (et uniquement pour les horaires qui correspondent au début d\'un créneau).',
+							'Les créneaux : vous devez faire la concordance sur les créneaux de début de cours <br />&nbsp;&nbsp;&nbsp;-> <span style="font-style: italic;">Précisez le créneau de début pour tous les créneaux</span>.',
 							'Les divisions : le nom des classes',
 							'Les matières : appelées aussi disciplines',
 							'Les professeurs : ',
@@ -184,10 +185,16 @@ if ($action == "upload_file") {
 					<label for="nomGepi'.$l.'">'.$tableau[$l].'</label>
 					';
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
-					$test_selected = explode(" ", $tableau[$l]);
+					if ($etape != 2) {
+						$test_selected = explode(" ", $tableau[$l]);
+					}else{
+						$test_selected[0] = $tableau[$l];
+					}
+
 					$nom_select = 'nom_gepi_'.$l; // pour le nom du select
 					$nom_selected = $test_selected[0]; // pour le selected du helper
 					$nom_id_select = 'nomGepi'.$l; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
+					$style_select = ' style="text-align: center;"';
 					// On appelle le bon helper
 					if ($helpers[$etape] != 'aucun') {
 						include("helpers/".$helpers[$etape].".php");
@@ -242,6 +249,7 @@ if ($action == "upload_file") {
 		';
 	}
 }
+echo '</div>'; // fin du div id="DivCsv2"
 ?>
 <h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'une export csv d'un logiciel propri&eacute;taire.</h3>
 

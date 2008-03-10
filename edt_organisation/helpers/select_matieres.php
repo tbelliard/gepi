@@ -21,7 +21,7 @@ $analyse[4] = isset($analyse[4]) ? $analyse[4] : NULL;
 	}
 
 $increment = isset($nom_select) ? $nom_select : "liste_matieres";
-$matiere_selected = isset($nom_matiere) ? strtoupper($nom_matiere) : NULL;
+$matiere_selected = isset($nom_matiere) ? strtoupper($nom_matiere) : (isset($nom_selected) ? $nom_selected : NULL);
 
 echo '
 	<select name ="'.$increment.'">

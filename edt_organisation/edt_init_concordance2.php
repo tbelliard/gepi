@@ -111,22 +111,30 @@ if ($etape != NULL) {
 		for($i = 0; $i < $nbre_lignes; $i++){
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
-			echo $ligne.'<br />';
+			//echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
 			$tab = explode("|", $ligne);
 			// Toutes les infos sont envoyées en brut
+			for($v = 0; $v < 12; $v++){
+				if (!isset($tab[$v])) {
+					$tab[$v] = '';
+				}
+			}
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
-			if ($enregistre == 'ok') {
+			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé
 				if ($aff_infos == 'oui') {
 					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
 				}
-			}else{
+			}elseif($enregistre["reponse"] == 'non'){
 				if ($aff_infos == 'oui') {
-					$msg_enreg .= 'La ligne '.$i.' n\'a pas été enregistrée.<br />';
+					$msg_enreg .= 'La ligne '.$i.' n\'a pas été enregistrée.'.$enregistre["msg_erreur"].'<br />';
 				}
+			}else{
+				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
 			}
 		}
+		echo $msg_enreg; // permet d'afficher le message de bilan
 	}
 
 	// On incrémente le numéro de l'étape

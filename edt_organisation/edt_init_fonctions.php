@@ -208,7 +208,12 @@ function renvoiConcordances($chiffre, $etape){
 	// On récupère dans la table edt_init la bonne concordance
 	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
 	// 1=créneaux 2=classe 3=matière 4=professeurs 7=regroupements 10=fréquence pour UDT de OMT
-	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
+	if ($chiffre != '') {
+		$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
+	}else{
+		$query = NULL;
+	}
+
 	if ($query) {
 		$reponse = mysql_result($query, "nom_gepi");
 		if ($reponse == '') {
@@ -217,7 +222,7 @@ function renvoiConcordances($chiffre, $etape){
 			$retour = $reponse;
 		}
 	}else{
-		$retour = "erreur_".$etape;
+		$retour = "erreur";
 	}
 
 	return $retour;
@@ -331,7 +336,7 @@ function rechercheCreneauCsv2($creneau){
 			// On a trouvé
 			$reponse_id = mysql_fetch_array($query);
 			if ($reponse_id["id_definie_periode"] != '') {
-				$retour["id_creneau"] = $id_creneau;
+				$retour["id_creneau"] = $id_creneau = $reponse_id["id_definie_periode"];
 			}else{
 				// Si on n'a pas de réponse valide, on ne peut pas définir le cours
 				return 'erreur';
@@ -344,7 +349,7 @@ function rechercheCreneauCsv2($creneau){
 		// ça veut dire que le créneau étudié est de la forme 8h00 - 9h35 : $test1[0] = 8h00 et $test1(1] = 9h00
 		// on recherche si le début est bon ou pas pour savoir si le cours commence au début du créneau ou pas
 		$heure_debut = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM absences_creneaux WHERE id_definie_periode = '".$id_creneau."'"));
-		$test3 = explode(":", $heure_debut);
+		$test3 = explode(":", $heure_debut["heuredebut_definie_periode"]);
 		if (substr($test3[0], 0, -1) == "0") {
 			$heu = substr($test3[0], -1);
 		}else{
@@ -352,7 +357,7 @@ function rechercheCreneauCsv2($creneau){
 		}
 
 		// On définit le moment de début du cours
-		if (($heu.'h'.$test3[1]) == $test[0]) {
+		if (($heu.'h'.$test3[1]) == $test1[0]) {
 			// Le cours commence au début du créneau
 			$retour["debut"] = '0';
 		}else{
@@ -363,6 +368,8 @@ function rechercheCreneauCsv2($creneau){
 		// On définit la durée
 		$he0 = explode("h", $test1[0]); // l'heure de début de la demande
 		$he1 = explode("h", $test1[1]); // l'heure de fin de la demande
+		if (!isset($he0[1])) { $he0[1] = '00';	}
+		if (!isset($he1[1])) { $he1[1] = '00';	}
 		$duree_demandee = (60 * ($he1[0] - $he0[0])) + ($he1[1] - $he0[1]);
 		if ($duree_demandee == $duree_base) {
 			// ALors la durée est de 1 créneau donc 2 pour Gepi
@@ -407,6 +414,7 @@ function rechercheCreneauCsv2($creneau){
  * Fonction qui enregistre les cours des imports UDT de OMT
 */
 function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, $groupe, $regroupement, $effectif, $modalite, $frequence, $aire){
+	$retour["msg_erreur"] = '';
 	// Les étapes vont de 0 à 11 en suivant l'ordre des variables ci-dessus
 	// Si un cours est enregistré, on renvoie 'oui', sinon on renvoie 'non'
 
@@ -422,31 +430,54 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	$matiere_e = renvoiConcordances($matiere, 3);
 	$prof_e = renvoiConcordances($prof, 4);
 	$salle_e = $salle; // on peut se le permettre puisque le travail sur les salles a déjà été effectué
-	$type_semaine = renvoiConcordances($frequences, 10);
-	if ($type_semaine == '') {
+	$type_semaine = renvoiConcordances($frequence, 10);
+	if ($type_semaine == '' OR $type_semaine == 'erreur') {
 		$type_semaine = '0';
 	}
 
 	// Il reste à déterminer le groupe
 	if ($regroupement != '') {
 		$groupe_e = renvoiConcordances($regroupement, 7);
+		if ($groupe_e == 'erreur') {
+			$regrp = '';
+			$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
+		}
 	}else{
 		// On recherche le groupe
-		$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $groupe_e, $groupe, 'csv2');
+		$regrp = '';
+		$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
 	}
 
 	// On vérifie si tous les champs importants sont précisés ou non
-	if ($jour_e != '' OR $creneau_e != 'erreur'
-		OR $groupe_e != 'aucun' OR $groupe_e != 'plusieurs'
-		OR $matiere_e != 'inc' OR $classe_e != 'inc'
-		OR $prof_e != 'inc') {
+	if ($jour_e == '' OR $creneau_e == 'erreur'
+		OR $groupe_e == 'aucun' OR $groupe_e == 'plusieurs' OR $groupe_e == 'erreur'
+		OR $matiere_e == 'inc' OR $classe_e == 'inc'
+		OR $prof_e == 'inc' OR $prof_e == 'erreur' OR $prof_e == 'aucun') {
 
 		// Il manque des informations
-		return 'non';
+		$retour["reponse"] = 'non';
+		$retour["msg_erreur"] .= $jour_e.'|'.$creneau_e.'|'.$groupe_e.'|'.$matiere_e.'|'.$classe_e.'|'.$prof_e;
 
 	}else{
-		// On enregistre la ligne
-		$sql = "INSERT INTO `edt_cours` (`id_cours`,
+		// On vérifie que cette ligne n'existe pas déjà
+		$ifexists = mysql_query("SELECT id_cours FROM edt_cours WHERE
+							id_groupe = '".$groupe_e."' AND
+							id_salle = '".$salle_e."' AND
+							jour_semaine = '".$jour_e."' AND
+							id_definie_periode = '".$creneau_e."' AND
+							duree = '".$duree_e."' AND
+							heuredeb_dec = '".$heuredeb_dec."' AND
+							id_semaine = '".$type_semaine."' AND
+							id_calendrier = '0' AND
+							modif_edt = '0' AND
+							login_prof = '".$prof."'")
+							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
+
+		$retour["msg_erreur"] .= $ifexists;
+
+		if (mysql_num_rows($ifexists) < 1) {
+			// On enregistre la ligne
+			$sql = "INSERT INTO `edt_cours` (`id_cours`,
 										`id_groupe`,
 										`id_salle`,
 										`jour_semaine`,
@@ -458,7 +489,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 										`modif_edt`,
 										`login_prof`)
 								VALUES ('',
-										'".$a."',
+										'".$groupe_e."',
 										'".$salle_e."',
 										'".$jour_e."',
 										'".$creneau_e."',
@@ -468,13 +499,20 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 										'0',
 										'0',
 										'".$prof_e."')";
-		$envoi = mysql_query($sql);
-		if ($envoi) {
-			// et on renvoie 'ok'
-			return 'ok';
+
+			$retour["msg_erreur"] .= '<br />&nbsp;&nbsp;&nbsp;&nbsp;'.$sql;
+
+			$envoi = mysql_query($sql) OR DIE('Erreur dans la requête '.$sql);
+			if ($envoi) {
+				// et on renvoie 'ok'
+				$retour["reponse"] = 'ok';
+			}else{
+				$retour["reponse"] = 'non';
+			}
 		}else{
-			return 'non';
+			$retour["reponse"] = 'non';
 		}
 	}
+	return $retour;
 }
 ?>
