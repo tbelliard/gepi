@@ -236,10 +236,10 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 		$grp = renvoiConcordances($grp_txt, 3);
 	}elseif($type_import == 'csv2'){
 		// On se préoccupe de la partie csv2 venant de edt_init_csv2.php et edt_init_concordance2.php
-		$classe = '';
-		$matiere = '';
+		$classe = $classe_txt;
+		$matiere = $matiere_txt;
 		$partie = '';
-		$grp = '';
+		$grp = $grp_txt;
 	}else{
 		$classe = '';
 		$matiere = '';
@@ -374,6 +374,25 @@ function rechercheCreneauCsv2($creneau){
 			// Le cours dure plus de 1 créneau
 			// On détermine la durée exacte
 			$test_duree = $duree_demandee / $duree_base;
+			// On récupère le nombre de créneaux entiers
+			$nbre_t = explode(".", $test_duree); // $nbre_t[0] est donc le nombre créneaux entiers
+			if (isset($nbre_t[1])) {
+				$test2 = substr($nbre_t[1], 0, 1); // on ne garde que le premier chiffre après la virgule
+			}else{
+				$test2 = 0;
+			}
+
+			if ($test2 < 3) {
+				// c'est fini
+				$retour["duree"] = $nbre_t[0] * 2;
+			}elseif($test2 > 7){
+				// On ajoute 1 créneau entier en plus
+				$retour["duree"] = ($nbre_t[0] * 2) + 2;
+			}else{
+				// On ajoute un demi créneau en plus
+				$retour["duree"] = ($nbre_t[0] * 2) + 1;
+			}
+
 		}
 
 	}else{
@@ -398,13 +417,48 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	$creneau_e = $test_creneau["id_creneau"];
 	$duree_e = $test_creneau["duree"];
 	$heuredeb_dec = $test_creneau["debut"];
+	// On récupère les concordances
+	$classe_e = renvoiConcordances($classe, 2);
+	$matiere_e = renvoiConcordances($matiere, 3);
+	$prof_e = renvoiConcordances($prof, 4);
+	$salle_e = $salle; // on peut se le permettre puisque le travail sur les salles a déjà été effectué
+	$type_semaine = renvoiConcordances($frequences, 10);
+
+	// Il reste à déterminer le groupe
+	if ($regroupement != '') {
+		$groupe_e = renvoiConcordances($regroupement, 7);
+	}else{
+		// On recherche le groupe
+		renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $groupe_e, $groupe, 'csv2');
+	}
 
 	// On vérifie si tous les champs importants sont précisés ou non
-	if ($creneau_e != 'erreur') {
+	if ($jour_e != '' OR $creneau_e != 'erreur') {
 		return 'non';
 	}else{
 		// On enregistre la ligne
-
+		$sql = "INSERT INTO `edt_cours` (`id_cours`,
+										`id_groupe`,
+										`id_salle`,
+										`jour_semaine`,
+										`id_definie_periode`,
+										`duree`,
+										`heuredeb_dec`,
+										`id_semaine`,
+										`id_calendrier`,
+										`modif_edt`,
+										`login_prof`)
+								VALUES ('',
+										'".$a."',
+										'".$salle_e."',
+										'".$jour_e."',
+										'".$creneau_e."',
+										'".$duree_e."',
+										'".$heuredeb_dec."',
+										'".$type_semaine."',
+										'0',
+										'0',
+										'".$prof_e."')";
 		// et on renvoie 'ok'
 		return 'ok';
 	}

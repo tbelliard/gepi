@@ -86,6 +86,19 @@ $aff_reglages = GetSettingEdt("edt_aff_init_infos");
 
 if ($aff_reglages == "oui") {
 	echo "
+	<p style=\"font-weight: bold;\">Avant de commencer la création des cours dans l'emploi du temps, il faut préparer le logiciel.</p>
+
+	<p>Une partie de l'initialisation est commune avec le module absences : <a href=\"../mod_absences/admin/admin_periodes_absences.php?action=visualiser\">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
+	 <a href=\"../mod_absences/admin/admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...) et
+	 <a href=\"../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
+
+<hr />
+
+	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
+	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ... Si tous vos
+	cours durent le temps de l'ann&eacute;e scolaire, vous pouvez vous passer de cette &eacute;tape.</p>
+
+<hr />
 	<p>
 	Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
 	<br />
@@ -96,6 +109,8 @@ en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
  Pour cela, cliquez sur [Visionner], [Professeur], puis vous choisissez le professeur dans la liste déroulante.
   En cliquant ensuite sur (-+-), une fenêtre apparait où vous pouvez saisir les cours. Un module de vérification
   des cours est présent mais ne peut se substituer à un véritable logiciel de fabrication des emplois du temps.</p>
+<br />
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vous pouvez utiliser une initialisation venue d'un logiciel de construction des emplois du temps (voir ci-dessous).</p>
 
 	<h5 class=\"red\">Attention ! seuls les enseignements
 d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps.</h5>
