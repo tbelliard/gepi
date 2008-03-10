@@ -423,18 +423,27 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	$prof_e = renvoiConcordances($prof, 4);
 	$salle_e = $salle; // on peut se le permettre puisque le travail sur les salles a déjà été effectué
 	$type_semaine = renvoiConcordances($frequences, 10);
+	if ($type_semaine == '') {
+		$type_semaine = '0';
+	}
 
 	// Il reste à déterminer le groupe
 	if ($regroupement != '') {
 		$groupe_e = renvoiConcordances($regroupement, 7);
 	}else{
 		// On recherche le groupe
-		renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $groupe_e, $groupe, 'csv2');
+		$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $groupe_e, $groupe, 'csv2');
 	}
 
 	// On vérifie si tous les champs importants sont précisés ou non
-	if ($jour_e != '' OR $creneau_e != 'erreur') {
+	if ($jour_e != '' OR $creneau_e != 'erreur'
+		OR $groupe_e != 'aucun' OR $groupe_e != 'plusieurs'
+		OR $matiere_e != 'inc' OR $classe_e != 'inc'
+		OR $prof_e != 'inc') {
+
+		// Il manque des informations
 		return 'non';
+
 	}else{
 		// On enregistre la ligne
 		$sql = "INSERT INTO `edt_cours` (`id_cours`,
@@ -459,8 +468,13 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 										'0',
 										'0',
 										'".$prof_e."')";
-		// et on renvoie 'ok'
-		return 'ok';
+		$envoi = mysql_query($sql);
+		if ($envoi) {
+			// et on renvoie 'ok'
+			return 'ok';
+		}else{
+			return 'non';
+		}
 	}
 }
 ?>
