@@ -23,8 +23,18 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-extract($_GET, EXTR_OVERWRITE);
-extract($_POST, EXTR_OVERWRITE);
+//extract($_GET, EXTR_OVERWRITE);
+//extract($_POST, EXTR_OVERWRITE);
+
+// Initialisation des variables
+$flag = isset($_GET["flag"]) ? $_GET["flag"] : (isset($_POST["flag"]) ? $_POST["flag"] : NULL);
+$aid_id = isset($_GET["aid_id"]) ? $_GET["aid_id"] : (isset($_POST["aid_id"]) ? $_POST["aid_id"] : NULL);
+$indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
+$add_eleve = isset($_POST["add_eleve"]) ? $_POST["add_eleve"] : NULL;
+$add_prof = isset($_POST["add_prof"]) ? $_POST["add_prof"] : NULL;
+$reg_prof_login = isset($_POST["reg_prof_login"]) ? $_POST["reg_prof_login"] : NULL;
+$reg_add_eleve_login = isset($_POST["reg_add_eleve_login"]) ? $_POST["reg_add_eleve_login"] : NULL;
+
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -97,6 +107,9 @@ $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id' and indice_ai
 $aid_nom = mysql_result($calldata, 0, "nom");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
+if (!isset($_GET["aid_id"]) OR !isset($_GET["indice_aid"]) OR !isset($_GET["flag"])) {
+	$_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'].'?flag='.$flag.'&aid_id='.$aid_id.'&indice_aid='.$indice_aid;
+}
 // Ajout d'un style spécifique pour l'AID
 $style_specifique = "aid/style_aid";
 
@@ -104,51 +117,68 @@ $style_specifique = "aid/style_aid";
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-?>
 
-<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
 
-<?php
-	//$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-	//$aid_nom = mysql_result($calldata, 0, "nom");
-	//$aid_num = mysql_result($calldata, 0, "numero");
+// On affiche un select avec la liste des aid de cette catégorie
+$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero";
+$query = mysql_query($sql) OR DIE('Erreur dans la requête select * from aid : '.mysql_error());
+$nbre = mysql_num_rows($query);
 
-	$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
-	//echo "$sql<br />";
-	$res_aid_tmp=mysql_query($sql);
-	if(mysql_num_rows($res_aid_tmp)>0){
-		$id_aid_prec=-1;
-		$id_aid_suiv=-1;
-		$temoin_tmp=0;
-		while($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
-			if($lig_aid_tmp->id==$aid_id){
-				$temoin_tmp=1;
-				if($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
-					$id_aid_suiv=$lig_aid_tmp->id;
-				}
-				else{
-					$id_aid_suiv=-1;
-				}
-			}
-			if($temoin_tmp==0){
-				$id_aid_prec=$lig_aid_tmp->id;
-			}
+$aff_precedent = '';
+$aff_suivant = '';
+
+// On recherche les AID précédente et suivante
+for($a = 0; $a < $nbre; $a++){
+	$aid_p[$a]["id"] = mysql_result($query, $a, "id");
+
+	// On teste pour savoir quel est le aid_id actuellement affiché
+	if ($a != 0) {
+		// Alors on propose un lien vers l'AID précédente
+		if ($aid_p[$a]["id"] == $aid_id) {
+			$aid_precedent = $aid_p[$a-1]["id"];
+			$aff_precedent = '
+			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_precedent.'">Aid précédente&nbsp;</a>';
 		}
 	}
 
-	if($id_aid_prec!=-1) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?flag=$flag&amp;aid_id=$id_aid_prec&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID précédent</a>";
+	if ($a < ($nbre - 1)) {
+		// alors on propose un lien vers l'AID suivante
+		if ($aid_p[$a]["id"] == $aid_id) {
+			$aid_suivant = mysql_result($query, $a+1, "id");
+			$aff_suivant = '
+			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_suivant.'">&nbsp;Aid suivante</a>';
+		}
 	}
-	if($id_aid_suiv!=-1) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?flag=$flag&amp;aid_id=$id_aid_suiv&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID suivant</a>";
-	}
-?>
+}
 
+echo '<form action="modify_aid.php" method="post" name="autre_aid">
+<p class="bold"><a href="index2.php?indice_aid='.$indice_aid.'">
+	<img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a>&nbsp;|&nbsp;'.$aff_precedent.'
+		<select name="aid_id" onchange="document.autre_aid.submit();">
+	';
+
+// On recommence le query
+$query = mysql_query($sql) OR DIE('Erreur dans la requête select * from aid : '.mysql_error());
+while($infos = mysql_fetch_array($query)){
+	// On affiche la liste des "<option>"
+	if ($aid_id == $infos["id"]) {
+		$selected = ' selected="selected"';
+	}else{
+		$selected = '';
+	}
+	echo '<option value="'.$infos["id"].'"'.$selected.'>&nbsp;'.$infos["nom"].'&nbsp;</option>'."\n";
+}
+echo '
+		</select>
+		<input type="hidden" name="indice_aid" value="'.$indice_aid.'" />
+		<input type="hidden" name="flag" value="'.$flag.'" />'.$aff_suivant.'
 </p>
+	</form>';
 
-<?php if ($flag == "prof") { ?>
+
+if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
-    <p><span class='bold'>Liste des professeurs responsables :</span>
+    <p class='bold'>Liste des professeurs responsables :</p>
     <br />Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
     <?php
     if ($activer_outils_comp == "y")
@@ -170,13 +200,13 @@ require_once("../lib/header.inc");
     $i++;
     }
     if ($vide == 1) {
-        echo "<br /><font color = red>Il n'y a pas actuellement de professeur responsable !</font>";
+        echo "<h4 style=\"color: red;\">Il n'y a pas actuellement de professeur responsable !</h4>";
     }
     ?>
-    <br /><br /><span class='bold'>Ajouter un professeur responsable à la liste de l'AID :</span>
-    </p>
-    <form enctype="multipart/form-data" action="modify_aid.php" method=post>
-    <select size=1 name=reg_prof_login>
+    <p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
+
+    <form enctype="multipart/form-data" action="modify_aid.php" method="post">
+    <select size=1 name="reg_prof_login">
     <!--option value=''><p>(aucun)</p></option-->
     <option value=''>(aucun)</option>
     <?php
@@ -187,16 +217,16 @@ require_once("../lib/header.inc");
         $login_prof = mysql_result($call_prof, $i, 'login');
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
-        //echo "<option value=$login_prof><p>$nom_el  $prenom_el </p></option>";
+
         echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
     }
     ?>
     </select>
-    <input type=hidden name=add_prof value=yes />
-    <input type=hidden name=aid_id value="<?php echo $aid_id;?>" />
-    <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-    <input type=submit value='Enregistrer' />
+    <input type="hidden" name="add_prof" value="yes" />
+    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
+    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+    <input type="submit" value='Enregistrer' />
     </form>
 <?php }
 
@@ -214,7 +244,7 @@ if ($flag == "eleve") {
 ?>
     <p class='grand'><?php echo "$nom_aid  $aid_nom. $aff_profs"; ?></p>
 
-    <p><span class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</span>
+    <p class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</p>
     <hr />
     <?php
     $vide = 1;
@@ -286,7 +316,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     echo "</table>";
 
     if ($vide == 1) {
-        echo "<br /><font color = red>Il n'y a pas actuellement d'élèves dans cette AID !</font>";
+        echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
     }
     $call_eleve = mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e LEFT JOIN j_aid_eleves j ON (e.login = j.login  and j.indice_aid='$indice_aid') WHERE j.login is null order by e.nom, e.prenom");
     $nombreligne = mysql_num_rows($call_eleve);
@@ -304,7 +334,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 
             $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
             $classe_eleve = @mysql_result($call_classe, '0', "classe");
-            echo "<option value=$eleve>$nom_el  $prenom_el $classe_eleve</option>\n";
+            echo "<option value=\"$eleve\">$nom_el  $prenom_el $classe_eleve</option>\n";
         $i++;
         }
         ?>
@@ -315,10 +345,10 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         echo "<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
     }
     ?>
-    <input type=hidden name=add_eleve value=yes />
-    <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-    <input type=hidden name=aid_id value="<?php echo $aid_id;?>" />
-    <input type=submit value='Enregistrer' />
+    <input type="hidden" name="add_eleve" value="yes" />
+    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
+    <input type="submit" value='Enregistrer' />
     </form>
     <?php if ($activer_outils_comp == "y") {?>
     <p><br />(*) Les &eacute;l&egrave;ves responsables peuvent par exemple acc&eacute;der dans certaines conditions &agrave; l'&eacute;dition des fiches AID.
