@@ -106,7 +106,45 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 
-<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></p>
+<p class=bold><a href="index2.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
+
+<?php
+	//$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+	//$aid_nom = mysql_result($calldata, 0, "nom");
+	//$aid_num = mysql_result($calldata, 0, "numero");
+
+	$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
+	//echo "$sql<br />";
+	$res_aid_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_aid_tmp)>0){
+		$id_aid_prec=-1;
+		$id_aid_suiv=-1;
+		$temoin_tmp=0;
+		while($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
+			if($lig_aid_tmp->id==$aid_id){
+				$temoin_tmp=1;
+				if($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
+					$id_aid_suiv=$lig_aid_tmp->id;
+				}
+				else{
+					$id_aid_suiv=-1;
+				}
+			}
+			if($temoin_tmp==0){
+				$id_aid_prec=$lig_aid_tmp->id;
+			}
+		}
+	}
+
+	if($id_aid_prec!=-1) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?flag=$flag&amp;aid_id=$id_aid_prec&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID précédent</a>";
+	}
+	if($id_aid_suiv!=-1) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?flag=$flag&amp;aid_id=$id_aid_suiv&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID suivant</a>";
+	}
+?>
+
+</p>
 
 <?php if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>

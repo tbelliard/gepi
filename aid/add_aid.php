@@ -43,6 +43,8 @@ if (!checkAccess()) {
 die();
 }
 
+if(!isset($mess)) {$mess="";}
+
 if (isset($is_posted) and ($is_posted =="1")) {
     //  On regarde si une aid porte déjà le même nom
     $test = mysql_query("SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
@@ -115,12 +117,56 @@ if (isset($is_posted) and ($is_posted =="2")) {
 }
 
 //**************** EN-TETE *********************
-$titre_page = "Gestion des AID | Ajouter Une AID";
+if ($action == "modif_aid") {
+	$titre_page = "Gestion des AID | Modifier Une AID";
+}
+else {
+	$titre_page = "Gestion des AID | Ajouter Une AID";
+}
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>
 |<a href="index.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+
+<?php
+	if ($action == "modif_aid") {
+		//$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+		//$aid_nom = mysql_result($calldata, 0, "nom");
+		//$aid_num = mysql_result($calldata, 0, "numero");
+
+		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
+		//echo "$sql<br />";
+		$res_aid_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_aid_tmp)>0){
+			$id_aid_prec=-1;
+			$id_aid_suiv=-1;
+			$temoin_tmp=0;
+			while($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
+				if($lig_aid_tmp->id==$aid_id){
+					$temoin_tmp=1;
+					if($lig_aid_tmp=mysql_fetch_object($res_aid_tmp)){
+						$id_aid_suiv=$lig_aid_tmp->id;
+					}
+					else{
+						$id_aid_suiv=-1;
+					}
+				}
+				if($temoin_tmp==0){
+					$id_aid_prec=$lig_aid_tmp->id;
+				}
+			}
+		}
+
+		if($id_aid_prec!=-1) {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?action=modif_aid&amp;aid_id=$id_aid_prec&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID précédent</a>";
+		}
+		if($id_aid_suiv!=-1) {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?action=modif_aid&amp;aid_id=$id_aid_suiv&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID suivant</a>";
+		}
+	}
+?>
+
 </p>
 
 <?php if ($action == "add_aid") { ?>
