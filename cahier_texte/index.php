@@ -419,8 +419,8 @@ if ($id_groupe != null) {
 echo "<p class='grand'>".strftime("%A %d %B %Y", $today)."</p>";
 if ($delai > 0) {
 	$cr_cours = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["c"]."; font-weight: bold;\">
-		<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">
-		Compte-rendus de séance</a></p>\n";
+		<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">
+		Comptes rendus de séance</a></p>\n";
 	$travaux_perso = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["t"]."; font-weight: bold;\">
 		<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">
 		Travaux personnels à effectuer</a></p> \n";
@@ -557,10 +557,10 @@ if ($delai > 0) {
     if (isset($edit_devoir)) {
     	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
         echo "<b>>> Travaux personnels à effectuer<<</b> - \n";
-        echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les compte-rendus de s&eacute;ance de cours\">Compte-rendus de séance</a>\n";
+        echo "<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">Comptes rendus de séance</a>\n";
     } else {
         echo "<a href=\"index.php?edit_devoir=yes&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=". $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les notifications de travaux personnels &agrave; faire\">Travaux personnels à effectuer</a> - \n";
-        echo "<b>>> Compte-rendus de séance <<</b>\n";
+        echo "<b>>> Comptes rendus de séance <<</b>\n";
     }
 }
 echo "</center>\n";
@@ -798,7 +798,7 @@ if (isset($edit_devoir)) {
     if (isset($info))
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Informations générales ";
     else
-        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte-rendu ";
+        echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu ";
     if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
 //    echo "de la séance du " . strftime("%A %d %B %Y", $today);
     if (isset($id_ct)) {

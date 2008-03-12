@@ -302,7 +302,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	die();
 }
 
-// Affichage des compte-rendus et des travaux à faire.
+// Affichage des comptes rendus et des travaux à faire.
 echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 
 // Première colonne : affichage du 'travail à faire' à venir
