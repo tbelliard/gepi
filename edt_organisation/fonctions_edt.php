@@ -163,12 +163,12 @@ function enseignements_prof($login_prof, $rep){
 function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt, $heuredeb_dec){
 		$tab_ens = array();
 	if ($type_edt == "prof") {
-		$req_ens_horaire = mysql_query("SELECT * FROM edt_cours WHERE
+		$req_ens_horaire = mysql_query("SELECT id_groupe FROM edt_cours WHERE
 								jour_semaine = '".$jour_semaine."' AND
 								id_definie_periode = '".$id_creneaux."' AND
 								heuredeb_dec = '".$heuredeb_dec."'AND
 								login_prof = '".$login_general."'
-								ORDER BY edt_cours.id_semaine")
+								ORDER BY id_semaine")
 									or die('Erreur : cree_tab_general(prof) !');
 
 	} elseif ($type_edt == "classe") {

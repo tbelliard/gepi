@@ -460,6 +460,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 	}else{
 		// On vérifie que cette ligne n'existe pas déjà
+		// On ne tient pas compte du type de semaine car on estime que si un enseignement a lieu sur deux types de semaines, c'est qu'il a lieu toutes les semaines
 		$ifexists = mysql_query("SELECT id_cours FROM edt_cours WHERE
 							id_groupe = '".$groupe_e."' AND
 							id_salle = '".$salle_e."' AND
@@ -467,10 +468,9 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 							id_definie_periode = '".$creneau_e."' AND
 							duree = '".$duree_e."' AND
 							heuredeb_dec = '".$heuredeb_dec."' AND
-							id_semaine = '".$type_semaine."' AND
 							id_calendrier = '0' AND
 							modif_edt = '0' AND
-							login_prof = '".$prof."'")
+							login_prof = '".$prof_e."'")
 							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
 
 		$retour["msg_erreur"] .= $ifexists;
