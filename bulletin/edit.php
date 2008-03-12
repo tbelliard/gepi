@@ -1033,6 +1033,7 @@ while ($i < $nombre_eleves2) {
 			$ligne3="";
 		}
 		else{
+			/*
 			if($civilite_resp[1]!=""){
 				$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
 			}
@@ -1051,13 +1052,66 @@ while ($i < $nombre_eleves2) {
 				$ligne2.="<br />\n".$adr4_resp[1];
 			}
 			$ligne3=$cp_resp[1]." ".$commune_resp[1];
+			*/
+
+
+			if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
+				if((
+				(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+				and (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+				and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+				and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+				and ($cp_resp[1]==$cp_resp[2])
+				and ($commune_resp[1]==$commune_resp[2]))
+				and ($adr1_resp[2]!='')) {
+
+					//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
+					//if($nom_resp[1]!=$nom_resp[2]){
+					if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
+						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+					}
+					else{
+						$ligne1="M. et Mme. ".$nom_resp[1]." ".$prenom_resp[1];
+					}
+
+				}
+				elseif($civilite_resp[1]!=""){
+					$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+				}
+				else{
+					$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				}
+			}
+			else {
+				if($civilite_resp[1]!=""){
+					$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+				}
+				else{
+					$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				}
+			}
+
+			//echo "\$ligne1=$ligne1 <br />\n";
+			echo "<!-- \$ligne1=$ligne1 -->\n";
+			$ligne2=$adr1_resp[1];
+			if($adr2_resp[1]!=""){
+				$ligne2.="<br />\n".$adr2_resp[1];
+			}
+			if($adr3_resp[1]!=""){
+				$ligne2.="<br />\n".$adr3_resp[1];
+			}
+			if($adr4_resp[1]!=""){
+				$ligne2.="<br />\n".$adr4_resp[1];
+			}
+			$ligne3=$cp_resp[1]." ".$commune_resp[1];
+
 		}
-        }
+	}
 	else {
 		$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 		$ligne2 = "";
 		$ligne3 = "";
-        }
+	}
 
 		$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
 
@@ -1094,7 +1148,7 @@ while ($i < $nombre_eleves2) {
             $nb_bulletins = 2;
         }
 */
-	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))){
+	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 		if((
 		(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
 		or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
@@ -1102,7 +1156,7 @@ while ($i < $nombre_eleves2) {
 		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 		or ($cp_resp[1]!=$cp_resp[2])
 		or ($commune_resp[1]!=$commune_resp[2]))
-		and ($adr1_resp[2]!='')){
+		and ($adr1_resp[2]!='')) {
 			$nb_bulletins=2;
 		}
 	}
@@ -1125,7 +1179,7 @@ while ($i < $nombre_eleves2) {
         // On imprime la deuxième page de garde si nécessaire entre les deux bulletins pour permettre un recto-verso
         if ($affiche_page_garde == "yes") {
             // Pour le deuxième bulletin, $bulletin vaut 1:
-            if($bulletin==1){
+            if($bulletin==1) {
                 // Impression d'une deuxième page de garde s'il y a un deuxième responsable
 /*
                 if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
@@ -1140,42 +1194,42 @@ while ($i < $nombre_eleves2) {
 
                 }
 */
-		if (((substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
-		or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
-		or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
-		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
-		or ($cp_resp[1]!=$cp_resp[2])
-		or ($commune_resp[1]!=$commune_resp[2]))
-		and ($adr1_resp[2]!='')) {
-			//$ligne1=$nom_resp[2]." ".$prenom_resp[2];
-			if($civilite_resp[2]!=""){
-				$ligne1=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
-			}
-			else{
-				$ligne1=$nom_resp[2]." ".$prenom_resp[2];
-			}
+				if (((substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+				or (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)!=substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+				or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+				or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+				or ($cp_resp[1]!=$cp_resp[2])
+				or ($commune_resp[1]!=$commune_resp[2]))
+				and ($adr1_resp[2]!='')) {
+					//$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+					if($civilite_resp[2]!=""){
+						$ligne1=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+					}
+					else{
+						$ligne1=$nom_resp[2]." ".$prenom_resp[2];
+					}
 
-			$ligne2=$adr1_resp[2];
-			if($adr2_resp[2]!=""){
-				$ligne2.="<br />\n".$adr2_resp[2];
-			}
-			if($adr3_resp[2]!=""){
-				$ligne2.="<br />\n".$adr3_resp[2];
-			}
-			if($adr4_resp[2]!=""){
-				$ligne2.="<br />\n".$adr4_resp[2];
-			}
-			$ligne3=$cp_resp[2]." ".$commune_resp[2];
+					$ligne2=$adr1_resp[2];
+					if($adr2_resp[2]!=""){
+						$ligne2.="<br />\n".$adr2_resp[2];
+					}
+					if($adr3_resp[2]!=""){
+						$ligne2.="<br />\n".$adr3_resp[2];
+					}
+					if($adr4_resp[2]!=""){
+						$ligne2.="<br />\n".$adr4_resp[2];
+					}
+					$ligne3=$cp_resp[2]." ".$commune_resp[2];
 
-			include "./page_garde.php";
-			// Saut de page
-			echo "<p class='saut'>&nbsp;</p>";
-		}
+					include "./page_garde.php";
+					// Saut de page
+					echo "<p class='saut'>&nbsp;</p>";
+				}
 
             }
         }
         //====================================================================
-
+		//echo "<span style='color:green;'>$ligne1</span>";
 /*
         // On est dans la première boucle. On appelle les données complètes de l'élève :
         //-------------------------------
@@ -1225,12 +1279,54 @@ while ($i < $nombre_eleves2) {
 */
 			if(isset($nom_resp[1])){
 				//$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+				/*
 				if($civilite_resp[1]!=""){
 					$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
 				}
 				else{
 					$ligne1=$nom_resp[1]." ".$prenom_resp[1];
 				}
+				*/
+
+				if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
+					if((
+					(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)==substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
+					and (substr($adr2_resp[1],0,strlen($adr2_resp[1])-1)==substr($adr2_resp[2],0,strlen($adr2_resp[2])-1))
+					and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
+					and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
+					and ($cp_resp[1]==$cp_resp[2])
+					and ($commune_resp[1]==$commune_resp[2]))
+					and ($adr1_resp[2]!='')) {
+
+						//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
+						//if($nom_resp[1]!=$nom_resp[2]){
+						if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
+							$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+						}
+						else{
+							$ligne1="M. et Mme. ".$nom_resp[1]." ".$prenom_resp[1];
+						}
+
+					}
+					elseif($civilite_resp[1]!=""){
+						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+					}
+					else{
+						$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+					}
+				}
+				else {
+					if($civilite_resp[1]!=""){
+						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+					}
+					else{
+						$ligne1=$nom_resp[1]." ".$prenom_resp[1];
+					}
+				}
+
+
+
+
 				$ligne2=$adr1_resp[1];
 				if($adr2_resp[1]!=""){
 					$ligne2.="<br />\n".$adr2_resp[1];
