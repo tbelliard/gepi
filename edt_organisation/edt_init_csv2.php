@@ -251,13 +251,19 @@ if ($action == "upload_file") {
 }
 echo '</div>'; // fin du div id="DivCsv2"
 ?>
-<h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'une export csv d'un logiciel propri&eacute;taire.</h3>
+<h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'un export csv d'un logiciel propri&eacute;taire.</h3>
 
+<p style="font-weight: bold;">Vous pouvez obtenir un csv valide sur UnDeuxTemps en passant par UDT/admin > Recherche > Emploi du temps > toutes options par défaut.</p>
+
+<p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier csv 12 fois et
+la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;re &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez faire la derni&egrave;re
+ &eacute;tape (importation des cours eux-m&ecirc;mes autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
 	<p>Attention, l'&eacute;tape 12 n'efface pas les donn&eacute;es d&eacute;j&agrave; existantes pour les cours sauf si vous cochez le bouton.</p>
 	<p><span class="red">Attention</span> de respecter au mieux les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute;s auparavant,
-	l'initialisation de l'emploi du temps en sera simplifi&eacute;e.
+	l'initialisation de l'emploi du temps en sera simplifi&eacute;e.</p>
+	<p>
 	Vous devez fournir un fichier csv dont les champs suivants 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s
-	par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
+	par un point-virgule et encadr&eacute;s par des guillemets ""</b> <span style="color: green; font-weight: bold;">(sans ligne d'ent&ecirc;te)</span> :</p>
 <ol>
 	<li>Jour</li>
 	<li>Heure</li>

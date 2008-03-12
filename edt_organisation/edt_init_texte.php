@@ -316,7 +316,8 @@ Celles-ci doivent avoir 9 parties pour pouvoir les utiliser ici :</p>
 </ul>
 
 <p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier texte 9 fois et
-la derni&egrave;re sera la plus longue.</p>
+la derni&egrave;re sera la plus longue. Par contre, les 8 premi&egrave;re &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez effectuer la derni&egrave;re
+ &eacute;tape (importation des cours eux-m&ecirc;mes autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
 
 	<p>Veuillez préciser le nom complet du fichier <b>emploidutemps.txt</b>.</p>
 		<form enctype="multipart/form-data" action="edt_init_texte.php" method="post">
