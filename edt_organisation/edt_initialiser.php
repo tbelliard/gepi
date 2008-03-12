@@ -505,9 +505,9 @@ if ($aff_reglages2 == "oui") {
 	 sauf si vous leur demandez de ne pas le faire.</h4>
 
  	<div id="lien">
-		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv (csv à formater pour Gepi)</a></p>
-		<p><a href="./edt_init_csv2.php">Cliquer ici pour un autre type d\'initialisation par fichiers csv (export logiciel propriétaire).</a></p>
-		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte (export logiciel propriétaire).</a></p>
+		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv (csv construit manuellement)</a></p>
+		<p><a href="./edt_init_csv2.php">Cliquer ici pour un autre type d\'initialisation par fichiers csv (export depuis UnDeuxTemps).</a></p>
+		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte (export type Charlemagne).</a></p>
 	</div>
  		';
 
@@ -525,43 +525,6 @@ else {
 		';
 
 }
-
-	/* A enlever après vérification de la fonction
-
-echo "<br />\n<br />\n<table CELLSPACING=\"1\" BORDER=\"1\"><tr>\n";
-$aff_essai = mysql_query("SELECT jgp.id_groupe FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgp.login = 'FDAUCOUR' AND jgc.id_classe = '6' AND jgm.id_matiere = 'HG' AND jgp.id_groupe = jgc.id_groupe AND jgp.id_groupe = jgm.id_groupe") OR die ('saucisse');
-$nbre_tab_essai = count($aff_essai);
-echo "<td HEIGHT=\"50\" WIDTH=\"150\">tab_essai : ".$nbre_tab_essai."<br /></td>\n";
-echo "<td WIDTH=\"250\">".$aff_essai."<br /><!--coucou --></td>\n</tr>\n";
-$aff_tab_essai = array();
-		while($rep_toutes = mysql_fetch_array($aff_essai))
-		{
-		$aff_tab_essai[]=$rep_toutes["id_groupe"];
-		}
-		echo "<tr>\n<td HEIGHT=\"50\">rep_toutes : ".$rep_toutes["id_groupe"]."<br /></td>\n";
-		echo "<td>";
-	for($i=0; $i<count($aff_essai); ) {
-
-			echo "aff_tab_essai : ".$aff_tab_essai[$i]."<br />";
-		$i++;
-	}
-
-	$current_group=get_group($aff_tab_essai[0]);
-
-		$contenu="";
-		foreach ($current_group["eleves"][1]["users"] as $eleve_login) {
-			$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
-		}
-		$titre_listeleve = "Liste des élèves";
-
-	$classe_js = aff_popup("LISTE", "edt", $titre_listeleve, $contenu);
-
-		echo "".$current_group["matiere"]["matiere"]." ".$current_group["description"]." ";
-
-		echo " ".$classe_js."</td>\n</tr>\n</table>\n";
-
-		========FIN DU TRAVAIL A ENLEVER==================
-		*/
 
 ?>
 
