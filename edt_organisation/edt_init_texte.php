@@ -299,7 +299,7 @@ if ($action == "upload_file") {
 // ======================= fin du traitement du fichier ==============
 ?>
 
-<h4 class="gepi">Initialisation des l'emploi du temps de Gepi en utilisant les exports textes du type "Charlemagne".</h4>
+<h4 class="gepi">Initialisation des l'emploi du temps de Gepi en utilisant les exports texte du type "Charlemagne".</h4>
 
 <p>Certains logiciels propri&eacute;taires de traitement des emplois du temps proposent des exportations en format texte.
 Celles-ci doivent avoir 9 parties pour pouvoir les utiliser ici :</p>
