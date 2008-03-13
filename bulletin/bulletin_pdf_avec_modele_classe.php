@@ -1867,7 +1867,60 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 				$hauteur_cadre_adresse = '1';
 			}
 
-			$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+			//=========================
+			// Modif: boireaus 20080312
+			//$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+			if($responsable_place==0) {
+				/*
+					$civilite_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['civilite'];
+					$nom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['nom'];
+					$prenom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['prenom'];
+					$adresse1_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr1'];
+					$adresse2_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr2'];
+					$adresse3_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr3'];
+					$adresse4_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr4'];
+					$ville_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['commune'];
+					$cp_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['cp'];
+				*/
+
+				if((isset($adresse1_parents[$ident_eleve_aff][1]))&&
+					(isset($adresse2_parents[$ident_eleve_aff][1]))&&
+					(isset($adresse3_parents[$ident_eleve_aff][1]))&&
+					(isset($adresse4_parents[$ident_eleve_aff][1]))&&
+					(isset($ville_parents[$ident_eleve_aff][1]))&&
+					(isset($cp_parents[$ident_eleve_aff][1]))
+				) {
+					if(($adresse1_parents[$ident_eleve_aff][0]==$adresse1_parents[$ident_eleve_aff][1])&&
+						($adresse2_parents[$ident_eleve_aff][0]==$adresse2_parents[$ident_eleve_aff][1])&&
+						($adresse3_parents[$ident_eleve_aff][0]==$adresse2_parents[$ident_eleve_aff][1])&&
+						($adresse4_parents[$ident_eleve_aff][0]==$adresse4_parents[$ident_eleve_aff][1])&&
+						($ville_parents[$ident_eleve_aff][0]==$ville_parents[$ident_eleve_aff][1])&&
+						($cp_parents[$ident_eleve_aff][0]==$cp_parents[$ident_eleve_aff][1])
+					) {
+						if(($nom_parents[$ident_eleve_aff][0]!=$nom_parents[$ident_eleve_aff][1])&&($nom_parents[$ident_eleve_aff][1]!="")) {
+							//$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+							$texte_1_responsable = $civilite_parents[$ident_eleve_aff][0]." ".$nom_parents[$ident_eleve_aff][0]." ".$prenom_parents[$ident_eleve_aff][0]." et ".$civilite_parents[$ident_eleve_aff][1]." ".$nom_parents[$ident_eleve_aff][1]." ".$prenom_parents[$ident_eleve_aff][1];
+						}
+						else{
+							//$ligne1="M. et Mme. ".$nom_resp[1]." ".$prenom_resp[1];
+							$texte_1_responsable = "M. et Mme ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+
+						}
+					}
+					else {
+						$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+					}
+
+				}
+				else {
+					$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+				}
+			}
+			else {
+				$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+			}
+			//=========================
+
 			$texte_1_responsable = trim($texte_1_responsable);
 			$hauteur_caractere=12;
 			$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
