@@ -343,7 +343,8 @@ if($val_rech!=""){
 //else{
 	// Y a-t-il des responsables,... dans la base pour le mode choisi.
 	$cpt=0;
-	if(($order_by=="nom,prenom")&&($num_resp==0)){
+	//if(($order_by=="nom,prenom")&&($num_resp==0)){
+	if(($order_by=="nom,prenom")&&("$num_resp"=="0")){
 		$cpt=0;
 		/*
 		$sql="SELECT DISTINCT pers_id FROM resp_pers";
