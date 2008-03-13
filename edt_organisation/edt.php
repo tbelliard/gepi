@@ -134,7 +134,7 @@ avez d&eacute;sactiv&eacute; l'acc&egrave;s pour tous,
 </p>
 <p>
 		<input name="activ_ad" id="activAdN" value="n" type="radio"<?php echo eval_checked("autorise_edt_admin", "n"); ?> onclick='document.autorise_admin.submit();' />
-<label for="activAdN">&eacute;sactiver les emplois du temps pour les administrateurs</label>
+<label for="activAdN">D&eacute;sactiver les emplois du temps pour les administrateurs</label>
 </p>
 
 	</form>
