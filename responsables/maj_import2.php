@@ -5787,6 +5787,18 @@ else{
 				// A VOIR: IL FAUDRAIT PEUT-ETRE VALIDER LES MODIFS DèS CE NIVEAU...
 				// LES TESTS POUR NE PAS AVOIR DEUX resp_legal=1 PEUVENT ETRE PERTURBéS PAR DES ENREGISTREMENTS DIFFéRéS...
 
+				$suppr_resp=isset($_POST['suppr_resp']) ? $_POST['suppr_resp'] : NULL;
+				if(isset($suppr_resp)){
+					// On modifie la valeur de col1 pour les ele_id/pers_id supprimés pour ne pas les re-parcourir:
+					for($i=0;$i<count($suppr_resp);$i++){
+						$sql="UPDATE tempo2 SET col1='t_diff_suppr' WHERE col2='$suppr_resp[$i]';";
+						$update=mysql_query($sql);
+					}
+
+					$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$suppr_resp[$i]';";
+					$nettoyage=mysql_query($sql);
+				}
+
 				if(isset($modif)){
 					// On modifie la valeur de col1 pour les ele_id/pers_id confirmés pour ne pas les re-parcourir:
 					for($i=0;$i<count($modif);$i++){
@@ -5980,6 +5992,7 @@ else{
 			$eff_tranche=20;
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='t_diff' LIMIT $eff_tranche";
+			//echo "$sql<br />";
 			$res0=mysql_query($sql);
 
 			if(mysql_num_rows($res0)>0){
@@ -6029,6 +6042,7 @@ else{
 
 				echo "</tr>\n";
 
+				$cpt_nb_lig_tab=0;
 
 				$alt=1;
 
@@ -6044,6 +6058,7 @@ else{
 					$pers_id=$tab_tmp[2];
 
 					$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id'";
+					//echo "$sql<br />";
 					$res0b=mysql_query($sql);
 					if(mysql_num_rows($res0b)==0){
 						// CA NE DOIT PAS ARRIVER
@@ -6061,6 +6076,7 @@ else{
 
 					//$sql="SELECT * FROM responsables2 WHERE ele_id='$affiche[0]' AND pers_id='$affiche[1]'";
 					$sql="SELECT * FROM responsables2 WHERE (ele_id='$ele_id' AND pers_id='$pers_id')";
+					//echo "$sql<br />";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
 						// L'association responsable/eleve n'existe pas encore
@@ -6219,6 +6235,7 @@ else{
 
 
 						echo "</tr>\n";
+						$cpt_nb_lig_tab++;
 					}
 					else{
 
@@ -6226,6 +6243,7 @@ else{
 						$lig1=mysql_fetch_object($res1);
 						if((stripslashes($lig1->resp_legal)!=stripslashes($resp_legal))||
 						(stripslashes($lig1->pers_contact)!=stripslashes($pers_contact))){
+							//echo "temoin<br />";
 							// L'un des champs resp_legal ou pers_contact au moins a changé
 							//$resp_modif[]="$affiche[0]:$affiche[1]";
 							$resp_modif[]="$ele_id:$pers_id";
@@ -6380,15 +6398,19 @@ else{
 							//=========================
 
 							echo "</tr>\n";
+							$cpt_nb_lig_tab++;
 						}
 						// Sinon, il n'est pas nécessaire de refaire l'inscription déjà présente.
+						else {
+							$sql="UPDATE tempo2 SET col1='t_diff_pas_modif' WHERE col2='t_".$ele_id."_".$pers_id."'";
+							$update=mysql_query($sql);
+						}
 					}
 
 					//echo "</tr>\n";
 					$cpt++;
 				}
 				echo "</table>\n";
-
 
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
@@ -6407,7 +6429,13 @@ else{
 
 				//echo "<input type='hidden' name='step' value='18' />\n";
 				echo "<input type='hidden' name='step' value='19' />\n";
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+
+				if($cpt_nb_lig_tab==0) {
+					echo "<p>Aucune ligne de différence n'est proposée après contrôle.</p>\n";
+				}
+				else {
+					echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				}
 
 				echo "<p><br /></p>\n";
 				echo "<p><i>NOTES:</i></p>\n";

@@ -821,6 +821,7 @@ else{
 			if(mysql_num_rows($res)==0){
 				if(isset($_POST['is_posted'])) {
 					echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
+					echo "<p>Terminé.</p>\n";
 				}
 				else{
 					echo "<p>Aucun ELENOET trouvé pour effectuer une correction.</p>\n";
