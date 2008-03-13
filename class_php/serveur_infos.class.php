@@ -41,7 +41,7 @@ class infos{
 		$version = substr($test, 0, 1);
 		if ($version == 5) {
 			$retour = '<span style="color: green;">'.phpversion().'</span>';
-		}elseif($version == 4){
+		}elseif($version == 4 AND substr($test, 2, 2) >= 3){
 			$retour = '<span style="color: green;">'.phpversion().'(Attention, car php4 ne sera plus suivi pour la sécurité à partir du 8 août 2008</span>';
 		}else{
 			$retour = '<span style="color: red;">'.phpversion().'(version ancienne !)</span>';

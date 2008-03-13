@@ -53,6 +53,12 @@ $style_specifique = "edt_organisation/style_edt";
 
 require_once("../lib/header.inc");
 /*++++++++++++++++++++++ fin entête ++++++++++++++++++++++++++++++++++++*/
+echo '
+<p class=bold><a href="../gestion/index.php">
+	<img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a>
+</p>
+';
+
 
 /* ======= Affichage des paramètres ============= */
 
@@ -60,14 +66,14 @@ require_once("../lib/header.inc");
 $test = new infos;
 
 echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
-	<p>Votre version du module GD est la '.$test->versionGd().'.</p>
 	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>
+	<p>Votre version du module GD est la '.$test->versionGd().'.</p>
 	<br />';
 
 echo '<p>&nbsp;&nbsp;Liste des modules implémentés avec votre php : '.$test->listeExtension();
 echo '<p>Les réglages php : </p>
-	- La mémoire maximale allouée à php est de '.$test->memoryLimit();
-echo '<br />- Un fichier ne doit pas dépassé '.$test->maxSize();
+	- La mémoire maximale allouée à php est de '.$test->memoryLimit().'.';
+echo '<br />- Un fichier ne doit pas dépasser '.$test->maxSize().'.';
 
 
 // inclusion du footer

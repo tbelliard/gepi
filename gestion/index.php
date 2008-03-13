@@ -67,6 +67,10 @@ require_once("../lib/header.inc");
     <td>Définir les seuils d'alerte et les actions à entreprendre dans le cas de tentatives d'intrusion ou d'accès illégal à des ressources.
     </td>
 </tr>
+<tr>
+	<td width="200"><a href="../class_php/test_serveur.php">Configuration serveur</a></td>
+	<td>Voir la configuration du serveur php/Mysql pour v&eacute;rifier la compatibilit&eacute; avec Gepi.</td>
+</tr>
 </table>
 
 <table class='menu'>
