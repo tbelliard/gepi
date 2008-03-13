@@ -1,9 +1,9 @@
-GEPI-1.5.0-rc2
+GEPI-1.5.1-rc1
 ==============
 
 Thomas BELLIARD <thomas.belliard@free.fr>
 Laurent DELINEAU <laurent.delineau@ac-poitiers.fr>
-Edouard HUE <edouardh@myrealbox.com>
+Julien JOCAL <collegerb@free.fr>
 Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
 
 http://gepi.mutualibre.org/
@@ -25,7 +25,7 @@ des élèves, et tout ce qui y est attaché, par une interface Web. Cela signifie, 
 * un module "cahier de texte",
 * un outil trombinoscope
 * un module de saisie des absences par les professeurs
-
+* un module emploi du temps / calendrier
 
 1. Installation
 2. Licence
@@ -44,7 +44,7 @@ Pour une installation simplifiée, décompressez simplement cette archive sur un
 serveur, et indiquez l'adresse où se trouvent les fichiers extraits dans un navigateur (ex: http://www.monsite.fr/gepi).
 
 * Préalables pour l'installation automatisée :
-- disposer d'un espace FTP sur un serveur, pour y transférer les fichiers
+- disposer d'un espace FTP sur un serveur avec PHP 5 ou supérieur, pour y transférer les fichiers
 - disposer d'une base de données MySQL (adresse du serveur MySQL, login, mot
   de passe)
 
@@ -88,10 +88,9 @@ aux discussions relatives à l'utilisation et au développement de Gepi.
 4. Développements en cours
 =======================================
 
-Les développements actuels de Gepi portent essentiellement sur l'interopérabilité
-avec des solutions serveurs (comme par exemple le module Scribe d'Eole), en attendant
-que sorte le successeur de Gepi, qui sera modulaire et interopérable avec
-les ENT.
+Les développeurs de Gepi travaillent en fonction des besoins de leurs établissements
+respectifs. N'hésitez pas à leur suggérer des fonctionnalités, par le biais
+de la liste de diffusion des utilisateurs.
 
 
 5. Documentation

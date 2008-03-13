@@ -5,13 +5,74 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.1-rcx (xx/xx/2007)
+Gepi-1.5.1-rc1 (13/03/2007)
 ===========================
 - Ajout d'un script afin de créer un remplaçant pour un professeur
 - Ajout d'un module très simple d'inscription à des journées, stages, ...
 - Ajout d'outils complémentaires de gestion des AIDs permettant la mise en place de fiches projet
 - Compatibilité LCS avec les comptes utilisateurs élèves
+- Ajout d'un module de gestion des années antérieures
+- Ajout d'un module Notanet / Fiche brevet
+- Ajout d'un module emploi du temps / calendrier
+- Absences : possibilité d'ajouter les absences directement sur le bulletin
+- Absences : import des absences de sconet absences
+- Absences : amélioration de la gestion pour le cpe.
+- Trombinoscope : ajout des enseignants.
+- Une nouvelle interface professeur permet d'avoir tous les liens sous les yeux
+- Amélioration de la création de nouveaux utilisateurs (la longueur du login est
+paramétrable).
+- Modification de certaines interfaces pour l'administrateur
+- Modifications nombreuses dans le bulletin pdf
 
+Gepi-1.5.0.1-stable (13/03/2008)
+==============================
+
+Corrections de bugs
+------------------
+- Ajout du support du login élève sur un LDAP Scribe NG.
+- Correction du bug sur le POINT dans les noms de login.
+- Corrections sur le module absences.
+- Amélioration du calcul des moyennes (bug de la division par 0).
+- Correction du système de création des mots de passe responsables.
+- Correction de la valeur par défaut pour le régime.
+- Ajout de la base des établissements de l'académie de Caen.
+- Ajout de la base des établissements de l'académie de Nantes.
+- Amélioration de la gestion des mises à jour par sconet.
+- Correction de l'erreur sur le code postal.
+- Modification de la gestion du resp_legal=0 de sconet.
+- Amélioration du code (x)html.
+- Corrections orthographiques.
+- Ajout des AID sur les bulletins pdf.
+- Correction sur la gestion des pdf.
+- Correction sur la gestion des droits.
+- Corrections de la gestion du point, du trait d'union et de l'apostrophe dans les noms.
+- Correction du test sur l'existence de la photo des élèves.
+- Correction de l'affichage sur le test de présence de pmv.php.
+- Réorganisation de certains affichages.
+
+Gepi-1.5.0-stable (14/08/2007)
+==============================
+
+Nouvelles fonctionalités
+------------------------
+- possibilité d'afficher le numéro INE de l'élève sur le bulletin
+- ajout de la possibilité d'afficher les graphes de toutes les classes
+- paramètre pour afficher toutes les équipes pédagogiques
+- ajout d'une sécurité pour ne pas supprimer par erreur des responsables
+- création de dossiers temporaires par utilisateur pour la génération d'exports au format ODS
+- mise en place d'une page permettant de supprimer les dossiers temporaires
+
+Corrections de bugs
+------------------
+- bug sur l'association des responsables
+- validité HTML
+- bugs javascript
+- bug de la fonction d'envoi de mail dans le cas où l'adresse 'Administrateur' était une liste
+- bug de listing des responsables
+- ajout de droits manquants
+- bug avec les coefficients personnalisés
+- erreurs sur les calculs de moyennes avec coefficients personnalisés et sur la moyenne minimale dans le cas où l'élève n'avait aucune note
+- prise en compte de statuts pour les relevés de notes (on avait 0 à la place de 'dispensé')
 
 Gepi-1.5.0-rc3 (25/05/2007)
 ===========================
