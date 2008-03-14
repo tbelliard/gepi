@@ -87,6 +87,9 @@ if (!empty($d_date_absence_eleve) AND $etape=='1' AND !empty($eleve_absent)) {
 if (getSettingValue("active_module_trombinoscopes")=='y') {
 	$modif_photo = isset($_POST["photo"]) ? $_POST["photo"] : NULL;
 	$photo = isset($_POST["photo"]) ? $_POST["photo"] : getPref($_SESSION["login"],"absences_avec_photo","");
+}else{
+	$modif_photo = NULL;
+	$photo = NULL;
 }
 
 // Si une classe et un élève sont définis en même temps, on réinitialise
