@@ -1071,7 +1071,12 @@ while ($i < $nombre_eleves2) {
 						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
 					}
 					else{
-						$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+						if(($civilite_resp[1]!="")&&($civilite_resp[2]!="")) {
+							$ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
+						}
+						else {
+							$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+						}
 					}
 
 				}
@@ -1304,7 +1309,13 @@ while ($i < $nombre_eleves2) {
 							$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
 						}
 						else{
-							$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+							//$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+							if(($civilite_resp[1]!="")&&($civilite_resp[2]!="")) {
+								$ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
+							}
+							else {
+								$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
+							}
 						}
 
 					}

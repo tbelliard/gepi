@@ -1903,7 +1903,14 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 						}
 						else{
 							//$ligne1="M. et Mme. ".$nom_resp[1]." ".$prenom_resp[1];
-							$texte_1_responsable = "M. et Mme ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+							//$texte_1_responsable = "M. et Mme ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+							if(($civilite_parents[$ident_eleve_aff][0]!="")&&($civilite_parents[$ident_eleve_aff][1]!="")) {
+								//$ligne1=$civilite_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[1]." ".$prenom_resp[1];
+								$texte_1_responsable = $civilite_parents[$ident_eleve_aff][0]." et ".$civilite_parents[$ident_eleve_aff][1]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+							}
+							else {
+								$texte_1_responsable = "M. et Mme ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
+							}
 
 						}
 					}
