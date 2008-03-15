@@ -191,7 +191,11 @@ $larg_col2 = 38;
 $larg_col3 = 38;
 $larg_col4 = 20;
 $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
-echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+//=========================
+// MODIF: boireaus 20080315
+//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=$larg_tab class='boireaus' cellspacing=1 cellpadding=1>\n";
+//=========================
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$compteur";
 if ($total != '') {echo "/$total";}
 echo "</td>\n";
@@ -443,7 +447,7 @@ while ($j < $nombre_groupes) {
 				// On a toutes les infos. On affiche !
 				echo "<tr>\n";
 				echo "<td colspan='" . $nb_total_cols . "'>\n";
-				echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$cat_names[$prev_cat_id]."</p></td>\n";
+				echo "<p style='padding: 0; margin:0; font-size: 10px; text-align:left;'>".$cat_names[$prev_cat_id]."</p></td>\n";
 				echo "</tr>\n";
 			}
 		}
@@ -477,12 +481,32 @@ while ($j < $nombre_groupes) {
 		$print_tr = 'no';
 		while ($nb < $periode2+1) {
 			if ($print_tr == 'yes') echo "<tr style='border-width: 5px;'>\n";
-			echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>\n";
+			//=========================
+			// MODIF: boireaus 20080315
+			//echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>\n";
+			//if($nb>$periode1) {$style_bordure_cell="border: 1px dashed black;";} else {$style_bordure_cell="";}
+			//$style_bordure_cell="border: 1px dashed black;";
+			if($nb==$periode1) {
+				if($nb==$periode2) {
+					$style_bordure_cell="border: 1px solid black";
+				}
+				else {
+					$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+				}
+			}
+			elseif($nb==$periode2) {
+				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+			}
+			else {
+				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+			}
+			echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
+			//=========================
 			//echo "\$nb=$nb<br />";
 			$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
 			if ($note != "0,0")  {echo $note;} else {echo "-";}
 			echo "</td>\n";
-			echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>\n<b>";
+			echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n<b>";
 			$flag_moy[$nb] = 'no';
 			if ($current_eleve_note[$nb] != '') {
 				if ($current_eleve_statut[$nb] != '') {
@@ -514,10 +538,10 @@ while ($j < $nombre_groupes) {
 					//}
 					//$rang.="<br />\$nb_notes[".$current_group["id"]."][$nb]";
 				}
-				echo "<td width=\"$larg_col4\" align=\"center\" class='bull_simpl'><i>".$rang."</i></td>\n";
+				echo "<td width=\"$larg_col4\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'><i>".$rang."</i></td>\n";
 			}
 			// Affichage des cases appréciations
-			echo "<td width=\"$larg_col5\" class='bull_simpl'>\n";
+			echo "<td width=\"$larg_col5\" class='bull_simpl' style='$style_bordure_cell; text-align:left;'>\n";
 			// Affichage des moyennes secondaires
 			if ($nb_ligne_cn[$nb] != 0) {
 				$tiret = 'no';
@@ -635,18 +659,37 @@ if ($test_coef != 0) {
 	if($affiche_coef=='y'){
 		echo "<td";
 		if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
-		echo " align=\"center\">-</td>\n";
+		echo " align=\"center\" style='$style_bordure_cell'>-</td>\n";
 	}
 	//====================
 
 	$nb=$periode1;
 	$print_tr = 'no';
 	while ($nb < $periode2+1) {
-	//=============================
-	//if($nb==$periode1){echo "<tr>\n";}
-	if($print_tr=='yes'){echo "<tr style='border-width: 5px;'>\n";}
-	//=============================
-		echo "<td class='bull_simpl' align=\"center\">\n";
+		//=============================
+		//if($nb==$periode1){echo "<tr>\n";}
+		if($print_tr=='yes'){echo "<tr style='border-width: 5px;'>\n";}
+		//=============================
+
+		//=========================
+		// AJOUT: boireaus 20080315
+		if($nb==$periode1) {
+			if($nb==$periode2) {
+				$style_bordure_cell="border: 1px solid black";
+			}
+			else {
+				$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+			}
+		}
+		elseif($nb==$periode2) {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+		}
+		else {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+		}
+		//=========================
+
+		echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 		if ($total_points_classe[$nb] != 0) {
 			//$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
 			$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
@@ -654,7 +697,7 @@ if ($test_coef != 0) {
 			$moy_classe = '-';
 		}
 		echo "$moy_classe";
-		echo "</td>\n<td class='bull_simpl' align=\"center\">\n";
+		echo "</td>\n<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 		if ($total_points_eleve[$nb] != '0') {
 			//$moy_eleve=number_format($total_points_eleve[$nb]/$total_coef[$nb],1, ',', ' ');
 			$moy_eleve=number_format($total_points_eleve[$nb]/$total_coef_eleve[$nb],1, ',', ' ');
@@ -669,10 +712,10 @@ if ($test_coef != 0) {
 			login = '".$current_eleve_login."' )
 			");
 			if (($rang == 0) or ($rang == -1)) $rang = "-"; else  $rang .="/".$nombre_eleves;
-				echo "<td class='bull_simpl' align=\"center\">".$rang."</td>\n";
+				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>".$rang."</td>\n";
 		}
 		if ($affiche_categories) {
-			echo "<td class='bull_simpl'>\n";
+			echo "<td class='bull_simpl' style='$style_bordure_cell; text-align:left;'>\n";
 			foreach($categories as $cat_id) {
 
 				// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
@@ -704,7 +747,7 @@ if ($test_coef != 0) {
 			}
 			echo "</td>\n</tr>\n";
 		} else {
-			echo "<td class='bull_simpl'>-</td>\n</tr>\n";
+			echo "<td class='bull_simpl' style='$style_bordure_cell'>-</td>\n</tr>\n";
 		}
 		$nb++;
 	$print_tr = 'yes';
@@ -715,7 +758,8 @@ echo "</table>\n";
 
 // Les absences
 
-echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=$larg_tab class='boireaus' border=1 cellspacing=1 cellpadding=1>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
 	$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
@@ -762,7 +806,7 @@ if ($test_eleve_app != 0) {
 	  if ($test_eleve_app != 0) {
 	    echo "<tr>\n";
 	    echo "<td valign=top class='bull_simpl'>&nbsp;</td>\n";
-	    echo "<td valign=top class='bull_simpl' colspan=\"3\">";
+	    echo "<td valign=top class='bull_simpl' colspan=\"3\" style='text-align:left;'>";
 	    echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
 	  } else {
 	    echo "<tr><td valign=top class='bull_simpl'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\">-</td>\n</tr>\n";
@@ -782,7 +826,7 @@ if ($current_eleve_profsuivi_login) {
 }
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
-echo "<table width=\"$larg_tab\" border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=\"$larg_tab\" border=1 class='boireaus' cellspacing=1 cellpadding=1>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
@@ -791,7 +835,7 @@ while ($nb < $periode2+1) {
   $test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
   if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y") or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
   echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl'>$nom_periode[$nb]</td>\n";
-  echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl'>$current_eleve_avis[$nb]</td>\n";
+  echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left;'>$current_eleve_avis[$nb]</td>\n";
   echo "</tr>\n";
 	$nb++;
 }
