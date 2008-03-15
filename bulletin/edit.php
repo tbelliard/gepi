@@ -1116,7 +1116,7 @@ while ($i < $nombre_eleves2) {
 			$ligne3=$cp_resp[1]." ".$commune_resp[1];
 
 			//if($pays_resp[1]!="") {
-			if(($pays_resp[1]!="")&&($pays_resp[1]!="$gepiSchoolPays")) {
+			if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSchoolPays))) {
 				//$ligne3.="<br />$pays_resp[1]";
 				if($ligne3!=" "){
 					$ligne3.="<br />";
@@ -1244,7 +1244,7 @@ while ($i < $nombre_eleves2) {
 					}
 					$ligne3=$cp_resp[2]." ".$commune_resp[2];
 
-					if(($pays_resp[2]!="")&&($pays_resp[2]!="$gepiSchoolPays")) {
+					if(($pays_resp[2]!="")&&(strtolower($pays_resp[2])!=strtolower($gepiSchoolPays))) {
 						//$ligne3.="<br />$pays_resp[2]";
 						if($ligne3!=" "){
 							$ligne3.="<br />";
@@ -1378,7 +1378,7 @@ while ($i < $nombre_eleves2) {
 				}
 				$ligne3=$cp_resp[1]." ".$commune_resp[1];
 
-				if(($pays_resp[1]!="")&&($pays_resp[1]!="$gepiSchoolPays")) {
+				if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSchoolPays))) {
 					//$ligne3.="<br />$pays_resp[1]";
 					if($ligne3!=" "){
 						$ligne3.="<br />";
@@ -1424,7 +1424,7 @@ while ($i < $nombre_eleves2) {
 				}
 				$ligne3=$cp_resp[2]." ".$commune_resp[2];
 
-				if(($pays_resp[2]!="")&&($pays_resp[2]!="$gepiSchoolPays")) {
+				if(($pays_resp[2]!="")&&(strtolower($pays_resp[2])!=strtolower($gepiSchoolPays))) {
 					if($ligne3!=" "){
 						$ligne3.="<br />";
 					}

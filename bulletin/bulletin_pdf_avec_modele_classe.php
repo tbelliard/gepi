@@ -115,6 +115,7 @@ $type_bulletin = $model_bulletin = $_SESSION['type_bulletin'];
 //est ce que l'on trie les bulletins par etablissement d'origine ?
 $tri_par_etab_origine = $_SESSION['tri_par_etab_origine'];
 
+$gepiSchoolPays=getSettingValue("gepiSchoolPays");
 
 // chargement des informations de la base de données
 	// connaitre la sélection
@@ -832,6 +833,7 @@ if(!empty($model_bulletin)) {
 				$adresse3_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr3'];
 				$adresse4_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr4'];
 				$ville_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['commune'];
+				$pays_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['pays'];
 				$cp_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['cp'];
 				$cpt_parents = $cpt_parents + 1;
 			}
@@ -844,6 +846,7 @@ if(!empty($model_bulletin)) {
 			$adresse3_parents[$ident_eleve_sel1][0] = '';
 			$adresse4_parents[$ident_eleve_sel1][0] = '';
 			$ville_parents[$ident_eleve_sel1][0] = '';
+			$pays_parents[$ident_eleve_sel1][0] = '';
 			$cp_parents[$ident_eleve_sel1][0] = '';
 
 			$civilite_parents[$ident_eleve_sel1][1] = '';
@@ -854,6 +857,7 @@ if(!empty($model_bulletin)) {
 			$adresse3_parents[$ident_eleve_sel1][1] = '';
 			$adresse4_parents[$ident_eleve_sel1][1] = '';
 			$ville_parents[$ident_eleve_sel1][1] = '';
+			$pays_parents[$ident_eleve_sel1][1] = '';
 			$cp_parents[$ident_eleve_sel1][1] = '';
 		}
 
@@ -874,6 +878,7 @@ if(!empty($model_bulletin)) {
 					($adresse3_parents[$ident_eleve_sel1][0] != $adresse3_parents[$ident_eleve_sel1][1]) or
 					($adresse4_parents[$ident_eleve_sel1][0] != $adresse4_parents[$ident_eleve_sel1][1]) or
 					($ville_parents[$ident_eleve_sel1][0] != $ville_parents[$ident_eleve_sel1][1]) or
+					($pays_parents[$ident_eleve_sel1][0] != $pays_parents[$ident_eleve_sel1][1]) or
 					($cp_parents[$ident_eleve_sel1][0] != $cp_parents[$ident_eleve_sel1][1])
 					)
 				{
@@ -1888,6 +1893,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 					(isset($adresse3_parents[$ident_eleve_aff][1]))&&
 					(isset($adresse4_parents[$ident_eleve_aff][1]))&&
 					(isset($ville_parents[$ident_eleve_aff][1]))&&
+					(isset($pays_parents[$ident_eleve_aff][1]))&&
 					(isset($cp_parents[$ident_eleve_aff][1]))
 				) {
 					if(($adresse1_parents[$ident_eleve_aff][0]==$adresse1_parents[$ident_eleve_aff][1])&&
@@ -1895,6 +1901,7 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 						($adresse3_parents[$ident_eleve_aff][0]==$adresse2_parents[$ident_eleve_aff][1])&&
 						($adresse4_parents[$ident_eleve_aff][0]==$adresse4_parents[$ident_eleve_aff][1])&&
 						($ville_parents[$ident_eleve_aff][0]==$ville_parents[$ident_eleve_aff][1])&&
+						($pays_parents[$ident_eleve_aff][0]==$pays_parents[$ident_eleve_aff][1])&&
 						($cp_parents[$ident_eleve_aff][0]==$cp_parents[$ident_eleve_aff][1])
 					) {
 						if(($nom_parents[$ident_eleve_aff][0]!=$nom_parents[$ident_eleve_aff][1])&&($nom_parents[$ident_eleve_aff][1]!="")) {
@@ -2015,6 +2022,28 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 				}
 			}
 			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+
+
+			//============================
+			if((strtolower($gepiSchoolPays)!=strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
+				$texte_1_responsable = $pays_parents[$ident_eleve_aff][$responsable_place];
+				$hauteur_caractere=10;
+				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				$val = $pdf->GetStringWidth($texte_1_responsable);
+				$taille_texte = $longeur_cadre_adresse;
+				$grandeur_texte='test';
+				while($grandeur_texte!='ok') {
+					if($taille_texte<$val){
+						$hauteur_caractere = $hauteur_caractere-0.3;
+						$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+						$val = $pdf->GetStringWidth($texte_1_responsable);
+					} else {
+						$grandeur_texte='ok';
+					}
+				}
+				$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
+			}
+			//============================
 
 			$texte_1_responsable = '';
 			if ( $cadre_adresse[$classe_id] != 0 ) {
