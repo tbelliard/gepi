@@ -143,6 +143,11 @@ if (isset($_POST['gepiSchoolCity'])) {
 		$msg .= "Erreur lors de l'enregistrement de la ville !";
 	}
 }
+if (isset($_POST['gepiSchoolPays'])) {
+	if (!saveSetting("gepiSchoolPays", $_POST['gepiSchoolPays'])) {
+		$msg .= "Erreur lors de l'enregistrement du pays !";
+	}
+}
 if (isset($_POST['gepiSchoolTel'])) {
 	if (!saveSetting("gepiSchoolTel", $_POST['gepiSchoolTel'])) {
 		$msg .= "Erreur lors de l'enregistrement du numéro de téléphone !";
@@ -348,7 +353,15 @@ require_once("../lib/header.inc");
 		<td><input type="text" name="gepiSchoolCity" size="20" value="<?php echo(getSettingValue("gepiSchoolCity")); ?>" />
 		</td>
 	</tr>
-		<tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		Pays :<br />
+		(<span style='font-style:italic;font-size:x-small'>Le pays est utilisé pour comparer avec celui des responsables dans les blocs adresse des courriers adressés aux responsables</span>)
+		</td>
+		<td><input type="text" name="gepiSchoolPays" size="20" value="<?php echo(getSettingValue("gepiSchoolPays")); ?>" />
+		</td>
+	</tr>
+	<tr>
 		<td style="font-variant: small-caps;">
 		Téléphone établissement :
 		</td>

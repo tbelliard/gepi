@@ -315,6 +315,7 @@ echo "}\n";
 	$gepiSchoolAdress2=getSettingValue("gepiSchoolAdress2");
 	$gepiSchoolZipCode=getSettingValue("gepiSchoolZipCode");
 	$gepiSchoolCity=getSettingValue("gepiSchoolCity");
+	$gepiSchoolPays=getSettingValue("gepiSchoolPays");
 
 	// Affichage ou non du nom et de l'adresse de l'établissement
 	$bull_affich_nom_etab=getSettingValue("bull_affich_nom_etab");
@@ -1008,6 +1009,7 @@ while ($i < $nombre_eleves2) {
 		$adr4_resp=array();
 		$cp_resp=array();
 		$commune_resp=array();
+		$pays_resp=array();
 		$cpt=1;
 		while($lig_resp=mysql_fetch_object($call_resp)){
 			$nom_resp[$cpt]=$lig_resp->nom;
@@ -1019,6 +1021,7 @@ while ($i < $nombre_eleves2) {
 			$adr4_resp[$cpt]=$lig_resp->adr4;
 			$cp_resp[$cpt]=$lig_resp->cp;
 			$commune_resp[$cpt]=$lig_resp->commune;
+			$pays_resp[$cpt]=$lig_resp->pays;
 
 			echo "<!--\n";
 			echo "\$nom_resp[$cpt]=$nom_resp[$cpt]\n";
@@ -1062,7 +1065,9 @@ while ($i < $nombre_eleves2) {
 				and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
 				and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 				and ($cp_resp[1]==$cp_resp[2])
-				and ($commune_resp[1]==$commune_resp[2]))
+				and ($commune_resp[1]==$commune_resp[2])
+				and ($pays_resp[1]==$pays_resp[2])
+				)
 				and ($adr1_resp[2]!='')) {
 
 					//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
@@ -1109,6 +1114,15 @@ while ($i < $nombre_eleves2) {
 				$ligne2.="<br />\n".$adr4_resp[1];
 			}
 			$ligne3=$cp_resp[1]." ".$commune_resp[1];
+
+			//if($pays_resp[1]!="") {
+			if(($pays_resp[1]!="")&&($pays_resp[1]!="$gepiSchoolPays")) {
+				//$ligne3.="<br />$pays_resp[1]";
+				if($ligne3!=" "){
+					$ligne3.="<br />";
+				}
+				$ligne3.="$pays_resp[1]";
+			}
 
 		}
 	}
@@ -1160,7 +1174,9 @@ while ($i < $nombre_eleves2) {
 		or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
 		or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 		or ($cp_resp[1]!=$cp_resp[2])
-		or ($commune_resp[1]!=$commune_resp[2]))
+		or ($commune_resp[1]!=$commune_resp[2])
+		or ($pays_resp[1]!=$pays_resp[2])
+		)
 		and ($adr1_resp[2]!='')) {
 			$nb_bulletins=2;
 		}
@@ -1204,7 +1220,9 @@ while ($i < $nombre_eleves2) {
 				or (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)!=substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
 				or (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)!=substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 				or ($cp_resp[1]!=$cp_resp[2])
-				or ($commune_resp[1]!=$commune_resp[2]))
+				or ($commune_resp[1]!=$commune_resp[2])
+				or ($pays_resp[1]!=$pays_resp[2])
+				)
 				and ($adr1_resp[2]!='')) {
 					//$ligne1=$nom_resp[2]." ".$prenom_resp[2];
 					if($civilite_resp[2]!=""){
@@ -1225,6 +1243,14 @@ while ($i < $nombre_eleves2) {
 						$ligne2.="<br />\n".$adr4_resp[2];
 					}
 					$ligne3=$cp_resp[2]." ".$commune_resp[2];
+
+					if(($pays_resp[2]!="")&&($pays_resp[2]!="$gepiSchoolPays")) {
+						//$ligne3.="<br />$pays_resp[2]";
+						if($ligne3!=" "){
+							$ligne3.="<br />";
+						}
+						$ligne3.="$pays_resp[2]";
+					}
 
 					include "./page_garde.php";
 					// Saut de page
@@ -1300,7 +1326,9 @@ while ($i < $nombre_eleves2) {
 					and (substr($adr3_resp[1],0,strlen($adr3_resp[1])-1)==substr($adr3_resp[2],0,strlen($adr3_resp[2])-1))
 					and (substr($adr4_resp[1],0,strlen($adr4_resp[1])-1)==substr($adr4_resp[2],0,strlen($adr4_resp[2])-1))
 					and ($cp_resp[1]==$cp_resp[2])
-					and ($commune_resp[1]==$commune_resp[2]))
+					and ($commune_resp[1]==$commune_resp[2])
+					and ($pays_resp[1]==$pays_resp[2])
+					)
 					and ($adr1_resp[2]!='')) {
 
 						//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
@@ -1349,6 +1377,15 @@ while ($i < $nombre_eleves2) {
 					$ligne2.="<br />\n".$adr4_resp[1];
 				}
 				$ligne3=$cp_resp[1]." ".$commune_resp[1];
+
+				if(($pays_resp[1]!="")&&($pays_resp[1]!="$gepiSchoolPays")) {
+					//$ligne3.="<br />$pays_resp[1]";
+					if($ligne3!=" "){
+						$ligne3.="<br />";
+					}
+					$ligne3.="$pays_resp[1]";
+				}
+
 			}
 			else{
 				$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
@@ -1386,7 +1423,15 @@ while ($i < $nombre_eleves2) {
 					$ligne2.="<br />\n".$adr4_resp[2];
 				}
 				$ligne3=$cp_resp[2]." ".$commune_resp[2];
+
+				if(($pays_resp[2]!="")&&($pays_resp[2]!="$gepiSchoolPays")) {
+					if($ligne3!=" "){
+						$ligne3.="<br />";
+					}
+					$ligne3.="$pays_resp[2]";
 				}
+
+			}
 			else{
 				$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 				$ligne2="";
