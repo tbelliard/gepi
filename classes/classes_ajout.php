@@ -41,11 +41,14 @@ if (!checkAccess()) {
 }
 include "../lib/periodes.inc.php";
 
+$msg_complement="";
 
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 
 if (isset($is_posted) and ($is_posted == 1)) {
+	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
+
 	$call_eleves = mysql_query("SELECT login FROM eleves ORDER BY nom, prenom");
 	$nombreligne = mysql_num_rows($call_eleves);
 
@@ -154,6 +157,47 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							}
 						}
 
+						$sql="SELECT DISTINCT cpe_login FROM j_eleves_cpe jecpe, j_eleves_classes jec
+									WHERE (
+										jec.id_classe='$id_classe' AND
+										jecpe.e_login=jec.login AND
+										jec.periode='$i'
+									)";
+						//echo "$sql<br />";
+						$res_cpe=mysql_query($sql);
+						if(mysql_num_rows($res_cpe)==1) {
+							$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve';";
+							//echo "$sql<br />";
+							$nettoyage=mysql_query($sql);
+
+							$lig_tmp=mysql_fetch_object($res_cpe);
+							$sql="INSERT INTO j_eleves_cpe SET cpe_login='$lig_tmp->cpe_login', e_login='$login_eleve';";
+							//echo "$sql<br />";
+							$insert_cpe=mysql_query($sql);
+						}
+						else {
+							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un CPE.";
+						}
+
+						$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs jep
+									WHERE (
+										jep.id_classe='$id_classe'
+									)";
+						//echo "$sql<br />";
+						$res_pp=mysql_query($sql);
+						if(mysql_num_rows($res_pp)==1) {
+							$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve';";
+							//echo "$sql<br />";
+							$nettoyage=mysql_query($sql);
+
+							$lig_tmp=mysql_fetch_object($res_pp);
+							$sql="INSERT INTO j_eleves_professeurs SET professeur='$lig_tmp->professeur', login='$login_eleve', id_classe='$id_classe';";
+							//echo "$sql<br />";
+							$insert_pp=mysql_query($sql);
+						}
+						else {
+							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un ".$gepiProfSuivi.".";
+						}
 					}
 				}
 				$i++;
@@ -167,6 +211,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	} else {
 	$msg = "Il y a eu un problème lors de l'enregistrement !";
 	}
+	$msg.=$msg_complement;
 }
 
 // =================================
