@@ -79,10 +79,13 @@ if (isset($_POST['is_posted'])) {
 
 					// Récupération du numéro de l'élève dans les saisies:
 					$num_eleve=-1;
-					for($k=0;$k<count($log_eleve);$k++){
-						if("$reg_eleve_login"."_t".$i=="$log_eleve[$k]"){
-							$num_eleve=$k;
-							break;
+					//for($k=0;$k<count($log_eleve);$k++){
+					for($k=0;$k<$lignes;$k++){
+						if(isset($log_eleve[$k])) {
+							if("$reg_eleve_login"."_t".$i=="$log_eleve[$k]"){
+								$num_eleve=$k;
+								break;
+							}
 						}
 					}
 					if($num_eleve!=-1){
