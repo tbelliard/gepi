@@ -2390,30 +2390,43 @@ function param_edt($statut){
 	}
 }
 
-function nom_photo($elenoet){
-	$photo="";
-	if(file_exists("../photos/eleves/$elenoet.jpg")){
-		$photo="$elenoet.jpg";
-	}
-	else{
-		if(file_exists("../photos/eleves/".sprintf("%05d",$elenoet).".jpg")){
-			$photo=sprintf("%05d",$elenoet).".jpg";
-		}
-		else{
-			for($i=0;$i<5;$i++){
-				if(substr($elenoet,$i,1)=="0"){
-					$test_photo=substr($elenoet,$i+1);
-
-					if(file_exists("../photos/eleves/".$test_photo.".jpg")){
-						$photo=$test_photo.".jpg";
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	return $photo;
+function nom_photo($_elenoet_ou_login,$repertoire="eleves"){
+  if (($repertoire != "eleves") and ($repertoire != "personnels")) {
+     return "";
+     die();
+  }
+  if (getSettingValue("active_module_trombinoscopes")!='y') {
+     return "";
+     die();
+  }
+  if ($repertoire == "eleves") {
+    	$photo="";
+	    if(file_exists("../photos/eleves/$_elenoet_ou_login.jpg")){
+		    $photo="$_elenoet_ou_login.jpg";
+	    } else {
+		    if(file_exists("../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+			      $photo=sprintf("%05d",$_elenoet_ou_login).".jpg";
+		    } else {
+			    for($i=0;$i<5;$i++){
+				    if(substr($_elenoet_ou_login,$i,1)=="0"){
+					      $test_photo=substr($_elenoet_ou_login,$i+1);
+    					  if(file_exists("../photos/eleves/".$test_photo.".jpg")){
+		     				  $photo=$test_photo.".jpg";
+					   	    break;
+					      }
+				    }
+			    }
+		    }
+	   }
+	 } else {
+      $_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
+	    if(file_exists("../photos/personnels/$_elenoet_ou_login.jpg")){
+		      $photo="$_elenoet_ou_login.jpg";
+	    } else {
+	        $photo = "-";
+      }
+   }
+   return $photo;
 }
 
 function insert_confirm_abandon(){
@@ -2627,6 +2640,10 @@ function EstAutoriseAteliers($_login) {
     } else {
         return true;
     }
+}
+
+function trombine($_elenoet){
+
 }
 
 
