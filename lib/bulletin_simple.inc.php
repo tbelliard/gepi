@@ -59,6 +59,8 @@ function acces_appreciations($periode1, $periode2, $id_classe) {
 function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
+//echo "\$test_coef=$test_coef<br />";
+
 //=========================
 // AJOUT: boireaus 20080316
 global $tab_moy_gen;

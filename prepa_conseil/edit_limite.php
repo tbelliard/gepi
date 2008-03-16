@@ -134,6 +134,8 @@ if ($periode1 > $periode2) {
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
 $test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 //echo "\$test_coef=$test_coef<br />";
+// Apparemment, $test_coef est réaffecté plus loin dans un des include()
+$nb_coef_superieurs_a_zero=$test_coef;
 
 
 // On regarde si on affiche les catégories de matières
@@ -183,7 +185,8 @@ $display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id
 //=========================
 
 if ($choix_edit == '2') {
-    bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+    //bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+    bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
 }
 
 if ($choix_edit != '2') {
@@ -243,8 +246,9 @@ if ($choix_edit != '2') {
 	//=========================
 	// AJOUT: boireaus 20080209
 	// Affichage des appréciations saisies pour la classe
-	//echo "\$test_coef=$test_coef<br />";
-	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories);
+	//echo "2 \$test_coef=$test_coef<br />";
+	//bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories);
+	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories);
 	echo "<p class=saut>&nbsp;</p>\n";
 	//=========================
 
@@ -253,7 +257,8 @@ if ($choix_edit != '2') {
     while ($i < $nombre_eleves) {
         $current_eleve_login = mysql_result($appel_liste_eleves, $i, "login");
         $k++;
-        bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+        //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
+        bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
         if ($i != $nombre_eleves-1) {echo "<p class=saut>&nbsp;</p>";}
         $i++;
     }
