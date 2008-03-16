@@ -102,7 +102,7 @@ if ($nb_aid == 0) {
             $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
         else
             $display_outils="";
-        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid)
+        if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))
             $display_trombino = "<br /><span class='small'>(Gestion des accès élèves au trombinoscope)</span>";
         else
             $display_trombino="";

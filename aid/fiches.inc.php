@@ -112,11 +112,11 @@ while ($i < $nombreligne){
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','')) and ($adresse1 != "")) {
         if (($affiche_adresse1 == 'y')or(($affiche_adresse1 != 'y') and ($_login!="") )) {
             if ((substr($adresse1,0,4) == "http") or (substr($adresse1,0,3) == "ftp")) {
-                echo " -  Accès publique : <a href='".$adresse1."' title='".$adresse1."' target='_blank' ";
+                echo " -  Accès public : <a href='".$adresse1."' title='".$adresse1."' target='_blank' ";
                 if (($en_construction == 'y') and ($message_avertissement!="")) echo " onclick='alert(\"".$message_avertissement."\");' ";
                 echo ">cliquer pour accéder au site</a>";
              } else
-                echo " -  Accès publique : <b>".$adresse1."</b>";
+                echo " -  Accès public : <b>".$adresse1."</b>";
         }
     }
     // Adresse privée :
