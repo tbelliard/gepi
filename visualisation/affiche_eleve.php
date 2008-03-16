@@ -1747,6 +1747,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			//echo "\$cpt2=$cpt2<br />";
 
 
+			$temoin_avis_present="n";
 			//==========================================================
 			// AJOUT: boireaus 20080218
 			//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
@@ -1766,7 +1767,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "</div>\n";
 				*/
 
-				$temoin_avis_present="n";
+				//$temoin_avis_present="n";
 				if(mysql_num_rows($res_avis)>0){
 					//==========================================================
 					// AJOUT: boireaus 20080218
