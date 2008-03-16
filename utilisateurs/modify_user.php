@@ -273,72 +273,6 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				// Variable utilisée pour la partie photo:
 				$temoin_ajout_ou_modif_ok="y";
 
-				/*
-				// pour le module trombinoscope
-				// Envoi de la photo
-				// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
-				$i_photo = 0;
-				$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
-				$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
-				$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
-
-				$repertoire = '../photos/personnels/';
-				$ancien_code_photo = md5($user_login.''.$ancien_nom.' '.$ancien_prenom);
-				$nouveau_code_photo = md5($user_login.''.$_POST['reg_nom'].' '.$_POST['reg_prenom']);
-
-				// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
-				if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
-					$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
-					$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
-
-					@rename($ancien_nom_fichier, $nouveau_nom_fichier);
-				}
-
-				if(isset($ancien_code_photo)) {
-					if($ancien_code_photo != ""){
-						if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
-							if($_POST['suppr_filephoto']=='y'){
-								if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
-									$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
-								}
-								else{
-									$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
-								}
-							}
-						}
-
-						// filephoto
-						if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
-							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
-							if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
-								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
-								// Tester la taille max de la photo?
-
-								if(is_uploaded_file($filephoto_tmp)){
-									$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
-									$source_file = stripslashes("$filephoto_tmp");
-									$res_copy=copy("$source_file" , "$dest_file");
-									if($res_copy){
-										$msg = "Mise en place de la photo effectuée.";
-									}
-									else{
-										$msg = "Erreur lors de la mise en place de la photo.";
-									}
-								}
-								else{
-									$msg = "Erreur lors de l'upload de la photo.";
-								}
-							}
-						}
-					}
-				}
-
-					// si suppression de la fiche il faut supprimer la photo
-
-				// fin pour le module trombinoscope
-				*/
-
 				$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
 				$res_statut_user=mysql_query($sql);
 				$lig_tmp=mysql_fetch_object($res_statut_user);
@@ -394,33 +328,21 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		if($temoin_ajout_ou_modif_ok=="y"){
 			// pour le module trombinoscope
 			// Envoi de la photo
-			// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
 			$i_photo = 0;
 			$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
-			$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
-			$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
 
 			$repertoire = '../photos/personnels/';
-			$ancien_code_photo = md5($user_login.''.$ancien_nom.' '.$ancien_prenom);
-			$nouveau_code_photo = md5($user_login.''.$_POST['reg_nom'].' '.$_POST['reg_prenom']);
+			$code_photo = md5(strtolower($user_login));
 
-			// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
-			if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
-				$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
-				$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
 
-				@rename($ancien_nom_fichier, $nouveau_nom_fichier);
-			}
 
-			if(isset($ancien_code_photo)) {
-				if($ancien_code_photo != ""){
 					if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
 						if($_POST['suppr_filephoto']=='y'){
-							if(unlink("../photos/personnels/$ancien_code_photo.jpg")){
-								$msg = "La photo ../photos/personnels/$ancien_code_photo.jpg a été supprimée. ";
+							if(unlink("../photos/personnels/$code_photo.jpg")){
+								$msg = "La photo ../photos/personnels/$code_photo.jpg a été supprimée. ";
 							}
 							else{
-								$msg = "Echec de la suppression de la photo ../photos/personnels/$ancien_code_photo.jpg ";
+								$msg = "Echec de la suppression de la photo ../photos/personnels/$code_photo.jpg ";
 							}
 						}
 					}
@@ -434,7 +356,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							// Tester la taille max de la photo?
 
 							if(is_uploaded_file($filephoto_tmp)){
-								$dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
+								$dest_file = "../photos/personnels/$code_photo.jpg";
 								$source_file = stripslashes("$filephoto_tmp");
 								$res_copy=copy("$source_file" , "$dest_file");
 								if($res_copy){
@@ -449,8 +371,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							}
 						}
 					}
-				}
-			}
+
 
 				// si suppression de la fiche il faut supprimer la photo
 
@@ -521,6 +442,7 @@ if (isset($user_login) and ($user_login!='')) {
 }
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage2 = "Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuellement cet utilisateur se connecte à GEPI en s\'authentifiant auprès d\'un SSO.\\n En attribuant un mot de passe, vous lancerez la procédure, qui génèrera un mot de passe local. Cet utilisateur ne pourra donc plus se connecter à GEPI via le SSO mais uniquement localement.";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
 require_once("../lib/header.inc");
@@ -540,7 +462,9 @@ if ($testpassword == -1) $testpassword = '';
 if (isset($user_login) and ($user_login!='')) {
 	if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
 		echo " | <a href=\"change_pwd.php?user_login=".$user_login."\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer le mot de passe</a>\n";
-	}
+	} else if (getSettingValue('use_sso') == "lcs") {
+		echo " | <a href=\"change_pwd.php?user_login=".$user_login."&amp;attib_mdp=yes\" onclick=\"return confirm ('$themessage2')\">Attribuer un mot de passe</a>\n";
+  }
 	echo " | <a href=\"modify_user.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter un nouvel utilisateur</a>\n";
 }
 
@@ -595,7 +519,7 @@ if (isset($user_login) and ($user_login!='')) {
 
 if(getSettingValue("active_module_trombinoscopes")=='y'){
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
-		$code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
+		$code_photo = md5(strtolower($user_login));
 		$photo="../photos/personnels/".$code_photo.".jpg";
 		echo "<table style='text-align: center;'>\n";
 		echo "<tr>\n";

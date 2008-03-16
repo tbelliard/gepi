@@ -372,20 +372,6 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		$texte="<div align='center'>\n";
 		//$texte.="<tr>\n";
 		if($v_elenoet1!=""){
-			/*
-			if(file_exists("../photos/eleves/".$v_elenoet1.".jpg")){
-				//$texte.="<td>\n";
-				$texte.="<img src='../photos/eleves/".$v_elenoet1.".jpg' width='150' alt=\"$v_eleve_nom_prenom1\" />";
-				//$texte.="</td>\n";
-				$texte.="<br />\n";
-			}
-			elseif(file_exists("../photos/eleves/0".$v_elenoet1.".jpg")){
-				//$texte.="<td>\n";
-				$texte.="<img src='../photos/eleves/0".$v_elenoet1.".jpg' width='150' alt=\"$v_eleve_nom_prenom1\" />";
-				//$texte.="</td>\n";
-				$texte.="<br />\n";
-			}
-			*/
 			$photo=nom_photo($v_elenoet1);
 			if("$photo"!=""){
 				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
@@ -425,18 +411,6 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		$texte="<div align='center'>\n";
 		//$texte.="<tr>\n";
 		if($v_elenoet2!=""){
-			/*
-			if(file_exists("../photos/eleves/".$v_elenoet2.".jpg")){
-				//$texte.="<td>\n";
-				$texte.="<img src='../photos/eleves/".$v_elenoet2.".jpg' width='150' alt=\"$v_eleve_nom_prenom2\" />";
-				//$texte.="</td>\n";
-			}
-			elseif(file_exists("../photos/eleves/0".$v_elenoet2.".jpg")){
-				//$texte.="<td>\n";
-				$texte.="<img src='../photos/eleves/0".$v_elenoet2.".jpg' width='150' alt=\"$v_eleve_nom_prenom2\" />";
-				//$texte.="</td>\n";
-			}
-			*/
 			$photo=nom_photo($v_elenoet2);
 			if("$photo"!=""){
 				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom2\" />";

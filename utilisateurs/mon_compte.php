@@ -119,10 +119,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
 
 		$repertoire = '../photos/personnels/';
-		if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!=''))
-				$ancien_code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
-		else
-				$ancien_code_photo = md5($user_login);
+  	$ancien_code_photo = md5(strtolower($user_login));
 		$nouveau_code_photo = $ancien_code_photo;
 
 		/*
@@ -158,7 +155,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
   					$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
 						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
 						$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
-		        if ((!preg_match('/jpg$/',$filephoto_name)) || (!preg_match('/JPG$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
+            if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 			        $msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 			      } else {
 					  // Tester la taille max de la photo?
@@ -247,8 +244,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
 								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
 								$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
-
-				        if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
+                if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 					        //$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 					        $msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 					      } else {
@@ -487,10 +483,7 @@ if(($_SESSION['statut']=='administrateur')||
 			echo "<tr>\n";
 			echo "<td style='text-align: center;'>\n";
 
-			if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!=''))
-				$code_photo = md5($user_login.''.$user_nom.' '.$user_prenom);
-			else
-				$code_photo = md5($user_login);
+				$code_photo = md5(strtolower($user_login));
 
 				$photo="../photos/personnels/".$code_photo.".jpg";
 				$temoin_photo="non";

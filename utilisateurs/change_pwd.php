@@ -92,7 +92,7 @@ require_once("../lib/header.inc");
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
-if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"  or ((getSettingValue("use_sso") == "lcs") and ($testpassword =='')) or getSettingValue("use_sso") == "ldap_scribe") {
+if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"  or ((getSettingValue("use_sso") == "lcs") and ($testpassword =='') and (!isset($_GET['attib_mdp']))) or getSettingValue("use_sso") == "ldap_scribe") {
     echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure.";
     echo "</div>\n";
     echo "</body></html>\n";
