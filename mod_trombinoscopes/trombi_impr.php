@@ -151,24 +151,24 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	//je recherche les personnes concerné pour la sélection effectué
 	   // élève d'une classe
-           if ( $action_affiche === 'classe' ) { $requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet 
+           if ( $action_affiche === 'classe' ) { $requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet
 								    FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
-								    WHERE e.login = jec.login 
-								      AND jec.id_classe = c.id 
+								    WHERE e.login = jec.login
+								      AND jec.id_classe = c.id
 								      AND id = '".$classe."'
 								    GROUP BY nom, prenom"; }
 	   // élève d'un groupe
-           if ( $action_affiche === 'groupe' ) { $requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description 
-								    FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg 
-								    WHERE jeg.login = e.login 
-								      AND jeg.id_groupe = g.id 
-								      AND g.id = '".$groupe."' 
+           if ( $action_affiche === 'groupe' ) { $requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+								    FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
+								    WHERE jeg.login = e.login
+								      AND jeg.id_groupe = g.id
+								      AND g.id = '".$groupe."'
 								    GROUP BY nom, prenom"; }
 
 	   // professeurs d'une équipe pédagogique
            if ( $action_affiche === 'equipepeda' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-								        WHERE jgp.id_groupe = jgc.id_groupe 
-									  AND jgc.id_classe = c.id 
+								        WHERE jgp.id_groupe = jgc.id_groupe
+									  AND jgc.id_classe = c.id
 									  AND u.login = jgp.login
 								      	  AND c.id = "'.$equipepeda.'"
 								        GROUP BY u.nom, u.prenom
@@ -218,12 +218,12 @@ function matiereprof($prof, $equipepeda) {
                   $login_trombinoscope[$cpt_photo] = $donnee_trombi['login'];
                   $nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
                   $prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
-                  
+
 		       if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
 		       if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-		       if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
-		       if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
-		       if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
+		       if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+		       if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+		       if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 
 		       $matiere_prof[$cpt_photo] = '';
 		       if ( $action_affiche === 'equipepeda' and $affdiscipline === 'oui' ) { $matiere_prof[$cpt_photo] = matiereprof($login_trombinoscope[$cpt_photo], $equipepeda); }
@@ -252,11 +252,16 @@ function matiereprof($prof, $equipepeda) {
   <table width="100%" border="0" cellspacing="0" cellpadding="1" align="center">
   <?php $i = 1; while( $i < $total) {?>
     <tr align="center" valign="top">
-      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg"; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
-      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg"; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
-      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg"; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
-      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg"; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
-      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg"; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
+      <?php $nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire); ?>
+      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$nom_photo; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
+      <?php $nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire); ?>
+      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$nom_photo; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
+      <?php $nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire); ?>
+      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$nom_photo; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
+      <?php $nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire); ?>
+      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$nom_photo; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
+      <?php $nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire); ?>
+      <td width="20%"><?php if ($i < $total) { $nom_es = Strtoupper($nom_trombinoscope[$i]); $prenom_es = Ucfirst($prenom_trombinoscope[$i]); $photo = "../photos/".$repertoire."/".$nom_photo; if(file_exists($photo)) { $valeur=redimensionne_image($photo); } else { $valeur[0]=76; $valeur[1]=100; } ?><img src="<?php if (file_exists($photo)) { echo $photo; } else { ?>images/trombivide.jpg<?php } ?>" style="border: 0px; width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px;" alt="<?php echo $prenom_es." ".$nom_es; ?>" title="<?php echo $prenom_es." ".$nom_es; ?>" /><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;"><br /><b><?php echo $nom_es; ?></b><br /><?php echo $prenom_es; if ( $matiere_prof[$i] != '' ) { ?><span style=" font: normal 10pt Arial, Helvetica, sans-serif;"><?php echo $matiere_prof[$i]; ?></span> <?php } $i = $i + 1; ?></span><?php } ?></td>
     </tr>
   <?php } ?>
   </table>

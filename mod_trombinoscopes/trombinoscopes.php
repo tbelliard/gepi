@@ -457,9 +457,9 @@ while ($donnee_trombi = mysql_fetch_array($execution_trombi))
 
 	if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
 	if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-	if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
-	if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
-	if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = md5($donnee_trombi['login'].''.$donnee_trombi['nom'].' '.$donnee_trombi['prenom']); }
+	if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+	if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+	if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 
 	$matiere_prof[$cpt_photo] = '';
 	if ( $action_affiche === 'equipepeda' and $affdiscipline === 'oui' ) {
@@ -487,24 +487,18 @@ $total = $cpt_photo;
 			if ($i < $total) {
 				$nom_es = strtoupper($nom_trombinoscope[$i]);
 				$prenom_es = ucfirst($prenom_trombinoscope[$i]);
-				$photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg";
-				if(file_exists($photo)) {
+				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
+        $photo = "../photos/".$repertoire."/".$nom_photo;
+
+        if (($nom_photo != "") and (file_exists($photo))) {
 					$valeur=redimensionne_image($photo);
-				}
-				else {
-					// Pour gérer les ELENOET avec ou sans préfixe 0
-					$photo = "../photos/".$repertoire."/".sprintf("%05d",$id_photo_trombinoscope[$i]).".jpg";
-					if(file_exists($photo)) {
-						$valeur=redimensionne_image($photo);
-					}
-					else {
-						$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
-						$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
-					}
+				} else {
+          $valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+					$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 				}
 
 				echo "<img src='";
-				if (file_exists($photo)) {
+				if (($nom_photo != "") and (file_exists($photo))) {
 					echo $photo;
 				}
 				else {
@@ -526,68 +520,6 @@ $total = $cpt_photo;
 			}
 			echo "</td>\n";
 		}
-		/*
-		echo "<td>\n";
-		if ($i < $total) {
-			$nom_es = strtoupper($nom_trombinoscope[$i]);
-			$prenom_es = ucfirst($prenom_trombinoscope[$i]);
-			$photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg";
-			if(file_exists($photo)) {
-				$valeur=redimensionne_image($photo);
-			}
-			else {
-				$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
-				$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
-			}
-			echo "<img src='";
-			if (file_exists($photo)) {
-				echo $photo;
-			}
-			else {
-				echo "images/trombivide.jpg";
-			}
-			echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
-			echo "<span style='font-family: Arial, Helvetica, sans-serif'><br />\n";
-			echo "<b>$nom_es</b><br />\n";
-			echo $prenom_es;
-			if ( $matiere_prof[$i] != '' ) {
-				echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
-			}
-			$i = $i + 1;
-			echo "</span>\n";
-		}
-		echo "</td>\n";
-		echo "<td>\n";
-		if ($i < $total) {
-			$nom_es = strtoupper($nom_trombinoscope[$i]);
-			$prenom_es = ucfirst($prenom_trombinoscope[$i]);
-			$photo = "../photos/".$repertoire."/".$id_photo_trombinoscope[$i].".jpg";
-			if(file_exists($photo)) {
-				$valeur=redimensionne_image($photo);
-			}
-			else {
-				$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
-				$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
-			}
-			echo "<img src='";
-			if (file_exists($photo)) {
-				echo $photo;
-			}
-			else {
-				echo "images/trombivide.jpg";
-			}
-			echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
-			echo "<span style='font-family: Arial, Helvetica, sans-serif'><br />\n";
-			echo "<b>$nom_es</b><br />\n";
-			echo $prenom_es;
-			if ( $matiere_prof[$i] != '' ) {
-				echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i];</span>\n";
-			}
-			$i = $i + 1;
-			echo "</span>\n";
-		}
-		echo "</td>\n";
-		*/
 		echo "</tr>\n";
 
 		?>

@@ -207,8 +207,9 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 		$eleve_classe[$cpt_eleve] = $donnee_liste_eleve['nom_complet'];
 		$eleve_classe_court[$cpt_eleve] = $donnee_liste_eleve['classe'];
 		$eleve_elenoet[$cpt_eleve] = $donnee_liste_eleve['elenoet'];
-		$photo = "../photos/eleves/".$eleve_elenoet[$cpt_eleve].".jpg";
-		if(file_exists($photo)) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
+		$nom_photo = nom_photo($eleve_elenoet[$cpt_eleve]);
+		$photo = "../photos/eleves/".$nom_photo;
+		if (($nom_photo != "") and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
 		$cpt_eleve = $cpt_eleve + 1;
 	}
 
@@ -253,9 +254,11 @@ if ( $sousrub === 'vp' ) {
 		$personnel_login[$cpt_personnel] = $donnee_liste_personnel['login'];
 		$personnel_nom[$cpt_personnel] = $donnee_liste_personnel['nom'];
 		$personnel_prenom[$cpt_personnel] = $donnee_liste_personnel['prenom'];
-		$codephoto = md5($personnel_login[$cpt_personnel].''.$personnel_nom[$cpt_personnel].' '.$personnel_prenom[$cpt_personnel]);
-		$photo = '../photos/personnels/'.$codephoto.'.jpg';
-		if(file_exists($photo)) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
+
+		$codephoto = $personnel_login[$cpt_personnel];
+		$nom_photo = nom_photo($codephoto,"personnels");
+		$photo = '../photos/personnels/'.$nom_photo;
+		if (($nom_photo != "") and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
 		$cpt_personnel = $cpt_personnel + 1;
 	}
 
