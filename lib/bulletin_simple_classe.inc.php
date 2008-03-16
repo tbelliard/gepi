@@ -21,6 +21,13 @@ $affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_class
 //echo "\$affiche_coef=$affiche_coef<br />\n";
 //====================
 
+//=========================
+// AJOUT: boireaus 20080316
+global $tab_moy_gen;
+//global $tab_moy_cat_classe;
+global $display_moy_gen;
+//=========================
+
 //echo "\$affiche_categories=$affiche_categories<br />";
 if(!getSettingValue("bull_intitule_app")){
 	$bull_intitule_app="Appréciations/Conseils";
@@ -83,7 +90,8 @@ $larg_col2 = 38;
 $larg_col3 = 38;
 $larg_col4 = 20;
 $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
-echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=$larg_tab class='boireaus' border=1 cellspacing=1 cellpadding=1>\n";
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$total élèves";
 echo "</td>\n";
 
@@ -560,6 +568,7 @@ while ($z < $nb_aid) {
 //echo "<tr><td>\$test_coef=$test_coef</td></tr>";
 // Affichage des moyennes générales
 //if ($test_coef != 0) {
+if($display_moy_gen=="y") {
     echo "<tr>\n<td";
     if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
     echo ">\n<p class='bull_simpl'><b>Moyenne générale</b></p>\n</td>\n";
@@ -582,7 +591,11 @@ while ($z < $nb_aid) {
         echo "<td class='bull_simpl' align=\"center\">\n";
         if ($total_points_classe[$nb] != 0) {
             //$moy_classe=number_format($total_points_classe[$nb]/$total_coef[$nb],1, ',', ' ');
-            $moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
+			//=========================
+			// MODIF: boireaus 20080316
+            //$moy_classe=number_format($total_points_classe[$nb]/$total_coef_classe[$nb],1, ',', ' ');
+			$moy_classe=$tab_moy_gen[$nb];
+			//=========================
         } else {
             $moy_classe = '-';
         }
@@ -647,6 +660,7 @@ while ($z < $nb_aid) {
 		$print_tr = 'yes';
     }
 //}
+}
 
 echo "</table>\n";
 
@@ -725,7 +739,7 @@ else {
 
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
-echo "<table width=\"$larg_tab\" border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=\"$larg_tab\" class='boireaus' border=1 cellspacing=1 cellpadding=1>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
     //$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
