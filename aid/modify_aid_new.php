@@ -41,12 +41,10 @@ if ($resultat_session == 'c') {
     die();
 };
 
-/*/ En attente de la gestion des droits
-// INSERT INTO droits SET
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
-}*/
+}
 
 //Initialisation des variables
 $id_aid = isset($_GET["id_aid"]) ? $_GET["id_aid"] : (isset($_POST["id_aid"]) ? $_POST["id_aid"] : NULL);
