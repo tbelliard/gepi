@@ -222,7 +222,8 @@ if ($choix_edit != '2') {
 	    }
 	} else {
 	    // On sélectionne sans restriction
-	    if ($choix_edit == '1') {
+	    //if ($choix_edit == '1') {
+	    if (($choix_edit == '1')||(!isset($login_prof))) {
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
@@ -249,6 +250,10 @@ if ($choix_edit != '2') {
 	//echo "2 \$test_coef=$test_coef<br />";
 	//bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories);
 	bulletin_classe($nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories);
+	if ($choix_edit == '4') {
+		require("../lib/footer.inc.php");
+		die();
+	}
 	echo "<p class=saut>&nbsp;</p>\n";
 	//=========================
 

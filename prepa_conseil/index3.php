@@ -269,21 +269,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	    $nom_classe = mysql_result($classe_eleve, 0, "classe");
 	    echo "<p class='grand'>Classe de $nom_classe</p>\n";
 	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-	    echo "<table><tr>\n";
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
-	    echo "<td>Les bulletins simplifiés de tous les élèves de la classe";
+	    echo "<table>\n";
+		echo "<tr>\n";
+	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" checked /></td>\n";
+	    echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les élèves de la classe";
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 			echo " (uniquement les élèves que j'ai en cours)";
 		}
-		echo "</td></tr>\n";
+		echo "</label></td></tr>\n";
 
 	    $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
 	    $nb_lignes = mysql_num_rows($call_suivi);
 	    $indice = 1;
 	    if ($nb_lignes > 1) {
 	        echo "<tr>\n";
-	        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"3\" /></td>\n";
-	        echo "<td>Uniquement les bulletins simplifiés des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :\n";
+	        echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" /></td>\n";
+	        echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
 	        echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
 	        $i=0;
 	        while ($i < $nb_lignes) {
@@ -300,8 +301,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 	    echo "<tr>\n";
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>\n";
-	    echo "<td>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : \n";
+	    echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" /></td>\n";
+	    echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'élève sélectionné ci-contre : </label>\n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 	    //if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
@@ -329,7 +330,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	        echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
 	        $i++;
 	    }
-	    echo "</select></td></tr></table>\n";
+	    echo "</select></td></tr>\n";
+
+		echo "<tr>\n";
+	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" /></td>\n";
+	    echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
+		echo "</label></td></tr>\n";
+
+		echo "</table>\n";
     } else {
     	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
     	$prenom_eleve = mysql_result($eleve, 0, "prenom");
