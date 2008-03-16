@@ -158,6 +158,30 @@ if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_
 */
 //echo "\$choix_edit=$choix_edit<br />";
 
+//=========================
+// AJOUT: boireaus 20080316
+$coefficients_a_1="non";
+$affiche_graph = 'n';
+/*
+$get_cat = mysql_query("SELECT id FROM matieres_categories");
+$categories = array();
+while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+  	$categories[] = $row["id"];
+}
+*/
+unset($tab_moy_gen);
+//unset($tab_moy_cat_classe);
+for($loop=$periode1;$loop<=$periode2;$loop++) {
+	$periode_num=$loop;
+	include "../lib/calcul_moy_gen.inc.php";
+	$tab_moy_gen[$loop]=$moy_generale_classe;
+	//$tab_moy_cat_classe
+}
+
+$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
+
+//=========================
+
 if ($choix_edit == '2') {
     bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
 }
