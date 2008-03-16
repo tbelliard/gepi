@@ -365,8 +365,9 @@ function DecocheCheckbox() {
 			<?php if ($type == "A") {?>Absence saisie : <?php } ?><?php if ($type == "R") {?>Retard saisi : <?php } ?><?php if ($type == "I") {?>Passage à l'infirmerie saisi : <?php } ?><?php if ($type == "D") {?>Dispense saisie : <?php } ?><b><?php echo $compte ?></b><br /></td>
                 <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                  echo "<td style=\"width: 60px; vertical-align: top\">";
-                 $photos = "../../photos/eleves/".$data_top10['elenoet'].".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 $nom_photo = nom_photo($data_top10['elenoet']);
+                 $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
@@ -402,8 +403,9 @@ function DecocheCheckbox() {
           <td class="<?php echo $couleur_cellule; ?>" onmouseover="changementDisplay('d<?php echo $data_top10['login']; ?>', ''); return true;" onmouseout="changementDisplay('d<?php echo $data_top10['login']; ?>', ''); return true;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $data_top10['login']; ?>" title="consulter la fiche de l'élève"><?php echo "<b>".strtoupper($data_top10['nom'])."</b> ".ucfirst($data_top10['prenom']); ?><a/></td>
           <td class="<?php echo $couleur_cellule; ?>">
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-             $photos = "../../photos/eleves/".$data_top10['elenoet'].".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+              $nom_photo = nom_photo($data_top10['elenoet']);
+             $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
              } ?>
@@ -470,8 +472,9 @@ function DecocheCheckbox() {
                 <td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_sans_motif['nom'])."</b> ".ucfirst($data_sans_motif['prenom']); ?> élève de <?php echo "<b>".classe_de($data_sans_motif['login'])."</b>";  $id_classe_eleve = classe_de($data_sans_motif['login']); ?><br /><?php if ($data_sans_motif['type_absence_eleve']=="A") { ?> a été absent<?php if ($data_sans_motif['sexe'] == "F") { ?>e<?php } } if  ($data_sans_motif['type_absence_eleve']=="R") { ?> est arrivé<?php if ($data_sans_motif['sexe'] == "F") { ?>e<?php } ?> en retard<?php } ?><?php if ($data_sans_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?><br /> le <?php echo date_frl($data_sans_motif['d_date_absence_eleve']); ?><?php if (($data_sans_motif['a_date_absence_eleve'] != $data_sans_motif['d_date_absence_eleve'] and $data_sans_motif['a_date_absence_eleve'] != "") or $data_sans_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_sans_motif['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_sans_motif['a_heure_absence_eleve'] == "00:00:00" or $data_sans_motif['a_heure_absence_eleve'] == "") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_sans_motif['d_heure_absence_eleve']); ?> <?php if ($data_sans_motif['a_heure_absence_eleve'] == "00:00:00" or $data_sans_motif['a_heure_absence_eleve'] == "") { } else { echo 'à '.heure($data_sans_motif['a_heure_absence_eleve']); } ?></td>
                  <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                  echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
-                 $photos = "../../photos/eleves/".$data_sans_motif['elenoet'].".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 $nom_photo = nom_photo($data_top10['elenoet']);
+                 $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
@@ -537,8 +540,9 @@ function DecocheCheckbox() {
             <td class="<?php echo $couleur_cellule; ?>">
 
               <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-                  $photos = "../../photos/eleves/".$data_sans_motif['elenoet'].".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                  $nom_photo = nom_photo($data_top10['elenoet']);
+                  $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
               <?php } ?>
@@ -630,8 +634,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                <td class="texte_fondjaune_calque_information"><?php echo "<b>".$data_sans_motif['nom']."</b> ".$data_sans_motif['prenom']; ?> élève de <?php echo "<b>".classe_de($data_sans_motif['login'])."</b>"; $id_classe_eleve = classe_de($data_sans_motif['login']); ?><br /><?php if ($data_sans_motif['type_absence_eleve']=="A") { ?> a été absent<?php if ($data_sans_motif['sexe'] == "F") { ?>e<?php } } if  ($data_sans_motif['type_absence_eleve']=="R") { ?> est arrivé<?php if ($data_sans_motif['sexe'] == "F") { ?>e<?php } ?> en retard<?php } ?><?php if ($data_sans_motif['type_absence_eleve']=="I") { ?>est allé à l'infirmerie<?php } ?><br /> le <?php echo date_frl($data_sans_motif['d_date_absence_eleve']); ?><?php if (($data_sans_motif['a_date_absence_eleve'] != $data_sans_motif['d_date_absence_eleve'] and $data_sans_motif['a_date_absence_eleve'] != "") or $data_sans_motif['a_date_absence_eleve'] == "0000-00-00") { ?> au <?php echo date_frl($data_sans_motif['a_date_absence_eleve']); ?><?php } ?><br /><?php if ($data_sans_motif['a_heure_absence_eleve'] == "" or $data_sans_motif['a_heure_absence_eleve'] == "00:00:00") { ?>à <?php } else { ?>de <?php } ?><?php echo heure($data_sans_motif['d_heure_absence_eleve']); ?> <?php if ($data_sans_motif['a_heure_absence_eleve'] == "00:00:00" or $data_sans_motif['a_heure_absence_eleve'] == "") { } else { echo 'à '.heure($data_sans_motif['a_heure_absence_eleve']); } ?></td>
                <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                  echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
-                 $photos = "../../photos/eleves/".$data_sans_motif['elenoet'].".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 $nom_photo = nom_photo($data_top10['elenoet']);
+                 $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php                 } ?>
             </tr>
@@ -698,8 +703,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
                                       $id_eleve = $data_sans_motif['id_absence_eleve'];
                                       $id_eleve_photo = $data_sans_motif['elenoet'];
-                                      $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                                      $nom_photo = nom_photo($id_eleve_photo);
+                                      $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
             <?php } ?>
@@ -795,8 +801,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 <?php
 				if (getSettingValue("active_module_trombinoscopes")=='y') {
 					echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
-					$photos = "../../photos/eleves/".$data_avec_motif['elenoet'].".jpg";
-					if (!(file_exists($photos))) {
+					$nom_photo = nom_photo($data_avec_motif['elenoet']);
+          $photos = "../../photos/eleves/".$nom_photo;
+					if (($nom_photo == "") or (!(file_exists($photos)))) {
 						$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 					}
 					$valeur=redimensionne_image($photos);
@@ -869,8 +876,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 		<td class="<?php echo $couleur_cellule; ?>">
 <?php
 			if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-				$photos = "../../photos/eleves/".$data_avec_motif['elenoet'].".jpg";
-				if (!(file_exists($photos))) {
+				$nom_photo = nom_photo($data_avec_motif['elenoet']);
+        $photos = "../../photos/eleves/".$nom_photo;
+				if (($nom_photo == "") or (!(file_exists($photos)))) {
 					$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 				}
 				$valeur = redimensionne_image($photos);
@@ -1002,8 +1010,9 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 	<div style="height: 135px; background: transparent url(../images/grid_10.png)">
 		<div style="float: left; margin: 12.5px;">
                 <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
-                $photos = "../../photos/eleves/".$id_eleve_photo.".jpg";
-                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                $nom_photo = nom_photo($id_eleve_photo);
+                $photos = "../../photos/eleves/".$nom_photo;
+                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
                  } ?>

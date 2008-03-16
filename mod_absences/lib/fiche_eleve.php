@@ -173,7 +173,7 @@ if ($action === 'modifier')
   <meta http-equiv="Expires" CONTENT="0" />
 <?php /*  <link rel="stylesheet" type="text/css" href="../styles/mod_absences.css" /> */ ?>
 <link rel="stylesheet" type="text/css" href="../styles/mod_absences.css" />
-  <link rel="stylesheet" type="text/css" href="../../style.css" /> 
+  <link rel="stylesheet" type="text/css" href="../../style.css" />
   <script type="text/javascript">
 	function fermeFenetre() {
 	  window.open('','_parent','');
@@ -224,10 +224,11 @@ if ($action === 'modifier')
 <div class="couleur_ligne_3" style="width: 500px; height: 135px; margin: auto; border: solid 2px #2F4F4F;">
 	<div style="background-image: url(../images/haut_tab.png); font-size: 120%; font-weight: bold; color: #E8F1F4; text-align: left;">Identitée élève</div>
 	<div style="width: 90px; float: right; padding: 2px; text-align: center;">
-		<?php 
+		<?php
 		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
-	             $photos = "../../photos/eleves/".$select_fiche_eleve_photo.".jpg";
-	                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+		$nom_photo = nom_photo($select_fiche_eleve_photo);
+	             $photos = "../../photos/eleves/".$nom_photo;
+	                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 			       $valeur=redimensionne_image($photos);
 	                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
 	             }
@@ -273,7 +274,7 @@ if ($action === 'modifier')
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC LIMIT ".$debut_selection_suivi.", 2";
              $execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
               while ( $data_komenti = mysql_fetch_array($execution_komenti))
-                { 
+                {
 			$action_pour_eleve = '';
 			if(!empty($data_komenti['action_suivi_eleve_cpe']) and $data_komenti['action_suivi_eleve_cpe'] != 'A') { $action_pour_eleve = ', '.action_de($data_komenti['action_suivi_eleve_cpe']); }
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
