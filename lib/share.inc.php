@@ -2390,7 +2390,14 @@ function param_edt($statut){
 	}
 }
 
-function nom_photo($_elenoet_ou_login,$repertoire="eleves"){
+/*
+Renvoie le nom de la photo de l'élève ou du prof
+Renvoie une chaine vide si :
+- le module trombinoscope n'est pas activé
+- ou bien la photo n'existe pas.
+*/
+function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1){
+  if ($arbo==2) $chemin = "../"; else $chemin = "";
   if (($repertoire != "eleves") and ($repertoire != "personnels")) {
      return "";
      die();
@@ -2401,16 +2408,16 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves"){
   }
   if ($repertoire == "eleves") {
     	$photo="";
-	    if(file_exists("../photos/eleves/$_elenoet_ou_login.jpg")){
+	    if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")){
 		    $photo="$_elenoet_ou_login.jpg";
 	    } else {
-		    if(file_exists("../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+		    if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
 			      $photo=sprintf("%05d",$_elenoet_ou_login).".jpg";
 		    } else {
 			    for($i=0;$i<5;$i++){
 				    if(substr($_elenoet_ou_login,$i,1)=="0"){
 					      $test_photo=substr($_elenoet_ou_login,$i+1);
-    					  if(file_exists("../photos/eleves/".$test_photo.".jpg")){
+    					  if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 		     				  $photo=$test_photo.".jpg";
 					   	    break;
 					      }
@@ -2420,7 +2427,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves"){
 	   }
 	 } else {
       $_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
-	    if(file_exists("../photos/personnels/$_elenoet_ou_login.jpg")){
+	    if(file_exists($chemin."../photos/personnels/$_elenoet_ou_login.jpg")){
 		      $photo="$_elenoet_ou_login.jpg";
 	    } else {
 	        $photo = "-";

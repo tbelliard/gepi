@@ -989,10 +989,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 // ===================== fin du suivi sur les différents créneaux ========================================
            // Avec ou sans photo
 		if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
-      $nom_photo = nom_photo($data_liste_eleve['elenoet']);
-
+      $nom_photo = nom_photo($data_liste_eleve['elenoet'],"eleves",2);
 			$photos = "../../photos/eleves/".$nom_photo;
-			if (($nom_photo != "") and (file_exists($photos))) {
+			if (($nom_photo == "") or (!(file_exists($photos)))) {
 				$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 			}
 			$valeur = redimensionne_image_petit($photos);
