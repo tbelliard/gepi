@@ -120,7 +120,6 @@ if (isset($is_posted) and ($is_posted == '2')) {
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
-	//if (isset($is_posted) and ($is_posted == '1') and empty($_FILES["photo"])) {
 	if (isset($is_posted) and ($is_posted == '1')) {
 		$calldata = mysql_query("SELECT * FROM eleves");
 		$nombreligne = mysql_num_rows($calldata);
@@ -243,8 +242,6 @@ function test_ecriture_backup() {
 	return $ok;
 }
 
-//echo "action=$action<br />\$total_photo=$total_photo<br />\n";
-
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 	$cpt_photo = 0;
 	while($cpt_photo < $total_photo)
@@ -256,13 +253,11 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 				$msg = "Erreur de téléchargement niveau 1.";
 			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
 					$msg = "Erreur de téléchargement niveau 2.";
-			//} else if ((!preg_match('/jpg$/',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
 			} else if ((!preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
 					$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 			} else {
 					$dest = "../photos/eleves/";
 				$n = 0;
-				//$nom_corrige = ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/eleves/".$quiestce[$cpt_photo].".jpg")) {
 					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/";
 				} else {
@@ -559,10 +554,8 @@ if (!isset($quelles_classes)) {
 		}
 
 		// =====================================================
-		// A FAIRE:
-		// Liste des élèves sans photo
-		// Test d'existence de PMV... utilisé ici pour le file_exists() des photos
-		if(getSettingValue("gepi_pmv")!="n"){
+		// Les photos
+		if (getSettingValue("active_module_trombinoscopes")=='y') {
 			$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
 			$test_elenoet_ok=mysql_query($sql);
 			if(mysql_num_rows($test_elenoet_ok)!=0){
@@ -1212,7 +1205,6 @@ if(isset($quelles_classes)) {
 			echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
 		}
 
-		//if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if ((getSettingValue("active_module_trombinoscopes")=='y')&&
 			((($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes'))||
 				($_SESSION['statut']!="professeur"))) {
@@ -1247,22 +1239,6 @@ if(isset($quelles_classes)) {
 				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
 				echo "</a>";
 			}
-
-			/*
-			$photo = "../photos/eleves/".$elenoet.".jpg";
-			if(file_exists($photo)) {
-				echo "<a href='$photo' target='_blank'>";
-				echo "<img src='../mod_trombinoscopes/images/";
-				if($eleve_sexe=="F") {
-					echo "photo_f.png";
-				}
-				else{
-					echo "photo_g.png";
-				}
-				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
-				echo "</a>";
-			}
-			*/
 
 			echo "</td>\n";
 		}

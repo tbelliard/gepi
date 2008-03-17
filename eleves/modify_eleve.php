@@ -1424,12 +1424,6 @@ echo "</table>\n";
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 //echo "<td>\$reg_no_gep=$reg_no_gep</td>";
 if(isset($reg_no_gep)){
-	/*
-	$photo="../photos/eleves/".$reg_no_gep.".jpg";
-	if(!file_exists($photo)){
-		$photo="../photos/eleves/".sprintf("%05d",$reg_no_gep).".jpg";
-	}
-	*/
 	// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 	$photo=nom_photo($reg_no_gep);
 
@@ -1453,8 +1447,7 @@ if(isset($reg_no_gep)){
 	}
 
 	//echo "getSettingValue(\"GepiAccesGestPhotoElevesProfP\")=".getSettingValue("GepiAccesGestPhotoElevesProfP")."<br />";
-
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||(($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes'))){
+  if ((getSettingValue("active_module_trombinoscopes")=='y') and (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||(($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')))){
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
@@ -1648,7 +1641,7 @@ if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$elev
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 
 if($_SESSION['statut']=='professeur'){
-	if(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes'){
+  if ((getSettingValue("active_module_trombinoscopes")=='y') && (getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')){
 		echo "<center><input type=submit value=Enregistrer /></center>\n";
 	}
 }

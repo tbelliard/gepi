@@ -2395,6 +2395,10 @@ Renvoie le nom de la photo de l'élève ou du prof
 Renvoie une chaine vide si :
 - le module trombinoscope n'est pas activé
 - ou bien la photo n'existe pas.
+
+$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
+$repertoire : "eleves" ou "personnels"
+$arbo : niveau d'aborescence (1 ou 2).
 */
 function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1){
   if ($arbo==2) $chemin = "../"; else $chemin = "";
@@ -2406,7 +2410,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1){
      return "";
      die();
   }
-  if ($repertoire == "eleves") {
+   // Cas des élèves
+   if ($repertoire == "eleves") {
     	$photo="";
 	    if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")){
 		    $photo="$_elenoet_ou_login.jpg";
@@ -2425,7 +2430,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1){
 			    }
 		    }
 	   }
-	 } else {
+	 // Cas des non-élèves
+   } else {
       $_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
 	    if(file_exists($chemin."../photos/personnels/$_elenoet_ou_login.jpg")){
 		      $photo="$_elenoet_ou_login.jpg";
