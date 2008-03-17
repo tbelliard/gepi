@@ -49,7 +49,7 @@ if (!checkAccess()) {
 //Initialisation des variables
 $id_aid = isset($_GET["id_aid"]) ? $_GET["id_aid"] : (isset($_POST["id_aid"]) ? $_POST["id_aid"] : NULL);
 $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
-$aff_liste_m = isset($_GET["classe"]) ? $_GET["classe"] : (isset($_POST["classe"]) ? $_POST["classe"] : NULL);
+$aff_liste_m = (isset($_GET["classe"]) AND is_numeric($_GET["classe"])) ? $_GET["classe"] : (isset($_POST["classe"]) ? $_POST["classe"] : NULL);
 $choix_aid = isset($_GET["choix_aid"]) ? $_GET["choix_aid"] : (isset($_POST["choix_aid"]) ? $_POST["choix_aid"] : NULL);
 $id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : (isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : NULL);
 $eleve = isset($_GET["eleve"]) ? $_GET["eleve"] : (isset($_POST["eleve"]) ? $_POST["eleve"] : NULL);
@@ -172,11 +172,7 @@ if (isset($aff_liste_m)) {
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
 		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
-		// On récupère toutes les infos sur l'élève avec son id_eleve
-		//$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'")
-		//	 or die('Erreur dans la requête {nom prenom sexe id_eleve} : '.mysql_error());
-		//$nbre_req = mysql_num_rows($req);
-		//for($c=0; $c<$nbre_req; $c++) {
+
 			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
 			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
@@ -199,7 +195,6 @@ if (isset($aff_liste_m)) {
 							</a></td></tr>
 					";
 				}
-		//}// for $c...
 	}// for $b
 
 
@@ -218,7 +213,14 @@ if (isset($aff_liste_m)) {
 			$aff_aid_d .= "".$rep_nom["civilite"].$rep_nom["nom"]." ";
 		}
 
-	$req_ele_aid = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."' ORDER BY login");
+	$req_ele_aid = mysql_query("SELECT DISTINCT j.login, e.nom, e.prenom, c.id, c.classe
+										FROM j_aid_eleves j, eleves e, j_eleves_classes jec, classes c
+										WHERE j.id_aid = '".$id_aid."' AND
+										j.login = e.login AND
+										jec.login = j.login AND
+										jec.id_classe = c.id
+										ORDER BY c.classe, e.nom, e.prenom")
+									OR trigger_error('Erreur sur la liste d\'élèves : '.mysql_error(), E_USER_ERROR);
 	$nbre = mysql_num_rows($req_ele_aid);
 		$s = "";
 		if ($nbre >= 2) {
@@ -230,12 +232,17 @@ if (isset($aff_liste_m)) {
 		$aff_aid_d .= "\n<br />".$nbre." élève".$s.".<br />";
 
 	for($d=0; $d<$nbre; $d++){
-		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
 		// On récupère ses noms et prénoms, puis la classe
-			$recup_noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_ele_aid[$d]["login"]."'"));
-			$recup_id_classe = mysql_fetch_array(mysql_query("SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login = '".$rep_ele_aid[$d]["login"]."'"));
-			$recup_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$recup_id_classe[0]."'"));
-		$aff_aid_d .= "<br /><a href='./modify_aid_new.php?classe=".$recup_id_classe["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>".$recup_noms["nom"]." ".$recup_noms["prenom"]." ".$recup_classe["classe"]."\n";
+		$rep_ele_aid[$d]["login"] = mysql_result($req_ele_aid, $d, "login");
+		$rep_ele_aid[$d]["nom"] = mysql_result($req_ele_aid, $d, "nom");
+		$rep_ele_aid[$d]["prenom"] = mysql_result($req_ele_aid, $d, "prenom");
+		$rep_ele_aid[$d]["classe"] = mysql_result($req_ele_aid, $d, "classe");
+		$rep_ele_aid[$d]["id_classe"] = mysql_result($req_ele_aid, $d, "id");
+
+		$aff_aid_d .= "<br />
+			<a href='./modify_aid_new.php?classe=".$rep_ele_aid[$d]["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid'>
+				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" />
+			</a>".$rep_ele_aid[$d]["nom"]." ".$rep_ele_aid[$d]["prenom"]." ".$rep_ele_aid[$d]["classe"]."\n";
 	}
 
 ?>
