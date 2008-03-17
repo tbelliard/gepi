@@ -408,7 +408,8 @@ if($interface_simplifiee=="y"){
 	$aff_display_bull=getPref($_SESSION['login'],'add_modif_conteneur_aff_display_bull','n');
 
 	echo "<div align='center'>\n";
-	echo "<table border='1'>\n";
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus' border='1'>\n";
 
 	//#aaaae6
 	//#aae6aa
@@ -907,7 +908,7 @@ echo "<input type=hidden name=id_conteneur value='$id_conteneur' />\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "<input type=hidden name=id_retour value='$id_retour' />\n";
 
-echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
+echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 echo "</form>\n";
 require("../lib/footer.inc.php");
 ?>

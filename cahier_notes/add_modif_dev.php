@@ -373,7 +373,8 @@ if($interface_simplifiee=="y"){
 
 
 	echo "<div align='center'>\n";
-	echo "<table border='1'>\n";
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus' border='1'>\n";
 
 	//#aaaae6
 	//#aae6aa
@@ -617,8 +618,8 @@ echo "<input type='hidden' name='id_retour' value='$id_retour' />\n";
 
 //echo "<center><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
 echo "<div style='display:none'><input type=\"hidden\" name='ok' value=\"Enregistrer\" /></div>\n";
-echo "<center><input type=\"submit\" name='ok1' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></center>\n";
-echo "<center><input type=\"button\" name='ok2' value=\"Enregistrer et saisir dans la foulée\" style=\"font-variant: small-caps;\" onClick=\"document.forms['formulaire'].mode_navig.value='saisie_devoir';document.forms['formulaire'].submit();\" /></center>\n";
+echo "<p style='text-align:center;'><input type=\"submit\" name='ok1' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /><br/>\n";
+echo "<input type=\"button\" name='ok2' value=\"Enregistrer et saisir dans la foulée\" style=\"font-variant: small-caps;\" onClick=\"document.forms['formulaire'].mode_navig.value='saisie_devoir';document.forms['formulaire'].submit();\" /></p>\n";
 
 echo "</form>\n";
 echo "<br />\n";
