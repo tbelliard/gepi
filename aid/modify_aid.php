@@ -304,7 +304,12 @@ if ($flag == "eleve") {
 echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
 	echo "<table class=\"aid_tableau\" border=\"0\">";
     // appel de la liste des élèves de l'AID :
-    $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
+    $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet
+							FROM eleves e, j_aid_eleves j
+							WHERE (j.id_aid = '$aid_id' and
+							e.login = j.login and
+							j.indice_aid = '$indice_aid')
+							ORDER BY e.nom, e.prenom");
     $nombre = mysql_num_rows($call_liste_data);
     // On affiche d'abord le nombre d'élèves
     		$s = "";

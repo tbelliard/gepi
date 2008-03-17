@@ -141,7 +141,11 @@ if (isset($aff_liste_m)) {
 	$aff_nom_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$aff_liste_m."'"));
 
 	// Récupérer la liste des élèves de la classe en question
-	$req_ele = mysql_query("SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."'");
+	$req_ele = mysql_query("SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
+					FROM j_eleves_classes jec, eleves e
+					WHERE id_classe = '".$aff_liste_m."'
+					AND jec.login = e.login ORDER BY nom, prenom")
+						OR DIE('Erreur dans la requête $req_ele : '.mysql_error());
 	$nbre_ele_m = mysql_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -169,14 +173,14 @@ if (isset($aff_liste_m)) {
 	for($b=0; $b<$nbre_ele_m; $b++) {
 		$aff_ele_m[$b]["login"] = mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysql_error());
 		// On récupère toutes les infos sur l'élève avec son id_eleve
-		$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'")
-			 or die('Erreur dans la requête {nom prenom sexe id_eleve} : '.mysql_error());
-		$nbre_req = mysql_num_rows($req);
-		for($c=0; $c<$nbre_req; $c++) {
-			$aff_ele_m[$c]["id_eleve"] = mysql_result($req, $c, "id_eleve");
-			$aff_ele_m[$c]["nom"] = mysql_result($req, $c, "nom");
-			$aff_ele_m[$c]["prenom"] = mysql_result($req, $c, "prenom");
-			$aff_ele_m[$c]["sexe"] = mysql_result($req, $c, "sexe");
+		//$req = mysql_query("SELECT nom, prenom, sexe, id_eleve FROM eleves WHERE login = '".$aff_ele_m[$b]["login"]."'")
+		//	 or die('Erreur dans la requête {nom prenom sexe id_eleve} : '.mysql_error());
+		//$nbre_req = mysql_num_rows($req);
+		//for($c=0; $c<$nbre_req; $c++) {
+			$aff_ele_m[$b]["id_eleve"] = mysql_result($req_ele, $b, "id_eleve");
+			$aff_ele_m[$b]["nom"] = mysql_result($req_ele, $b, "nom");
+			$aff_ele_m[$b]["prenom"] = mysql_result($req_ele, $b, "prenom");
+			$aff_ele_m[$b]["sexe"] = mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
 			$req_verif = mysql_query("SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
@@ -190,12 +194,12 @@ if (isset($aff_liste_m)) {
 				else {
 					$aff_classes_m .= "
 					<tr class=\"".$aff_tr_css."\">
-					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$c]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
-							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$aff_ele_m[$c]["nom"]." ".$aff_ele_m[$c]["prenom"]."
+					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$b]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$aff_ele_m[$b]["nom"]." ".$aff_ele_m[$b]["prenom"]."
 							</a></td></tr>
 					";
 				}
-		}// for $c...
+		//}// for $c...
 	}// for $b
 
 
