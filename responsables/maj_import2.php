@@ -636,6 +636,7 @@ else{
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
 				"CODE_SEXE",
+				"DATE_SORTIE"
 				);
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
@@ -803,42 +804,68 @@ else{
 						}
 						*/
 
-						$sql="UPDATE temp_gep_import2 SET ";
-						$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
-						if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-						//$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-						$sql.="elenom='".addslashes(strtoupper($eleves[$i]['nom']))."', ";
+						$temoin_date_sortie="n";
+						if(isset($eleves[$i]['date_sortie'])) {
+							echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
 
-						//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
-						// On ne retient que le premier prénom:
-						$tab_prenom = explode(" ",$eleves[$i]['prenom']);
-						$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
+							$tmp_tab_date=explode("/",$eleves[$i]['date_sortie']);
+							if(checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
+								$timestamp_sortie=mktime(0,0,0,$tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2]);
+								$timestamp_instant=time();
+								if($timestamp_instant>$timestamp_sortie){
+									$temoin_date_sortie="y";
+								}
+							}
+						}
 
-						//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
-						if(isset($eleves[$i]["code_sexe"])) {
-							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+						if($temoin_date_sortie=="y") {
+							$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							$nettoyage=mysql_query($sql);
 						}
 						else {
-							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
-							$sql.="elesexe='M', ";
-						}
-						$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
-						$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
-						if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
-						if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
-						$sql=substr($sql,0,strlen($sql)-2);
-						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-						affiche_debug("$sql<br />\n");
-						$res_insert=mysql_query($sql);
-						if(!$res_insert){
-							echo "Erreur lors de la requête $sql<br />\n";
-							$nb_err++;
-							flush();
-						}
-						else{
-							$stat++;
+							$sql="UPDATE temp_gep_import2 SET ";
+							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
+							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+							//$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
+							$sql.="elenom='".addslashes(strtoupper($eleves[$i]['nom']))."', ";
+
+							//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+							// On ne retient que le premier prénom:
+							$tab_prenom = explode(" ",$eleves[$i]['prenom']);
+							$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
+
+							//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+							if(isset($eleves[$i]["code_sexe"])) {
+								$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+							}
+							else {
+								echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
+								$sql.="elesexe='M', ";
+							}
+							$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
+							$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
+							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
+							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
+							$sql=substr($sql,0,strlen($sql)-2);
+							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							affiche_debug("$sql<br />\n");
+							$res_insert=mysql_query($sql);
+							if(!$res_insert){
+								echo "Erreur lors de la requête $sql<br />\n";
+								$nb_err++;
+								flush();
+							}
+							else{
+								$stat++;
+							}
 						}
 					}
+					/*
+					else{
+						echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe...<br />";
+						// On devrait supprimer l'élève de la table là, non?
+					}
+					*/
 				}
 				if($nb_err==0) {
 					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
