@@ -764,7 +764,7 @@ if($display_moy_gen=="y") {
 				}
 				echo "</td>\n</tr>\n";
 			} else {
-				echo "<td class='bull_simpl' style='$style_bordure_cell'>-</td>\n</tr>\n";
+				echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>-</td>\n</tr>\n";
 			}
 			$nb++;
 			$print_tr = 'yes';
@@ -775,8 +775,9 @@ echo "</table>\n";
 
 // Les absences
 
+echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-echo "<table width=$larg_tab class='boireaus' border=1 cellspacing=1 cellpadding=1>\n";
+echo "<table width=$larg_tab class='boireaus' cellspacing=1 cellpadding=1>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
 	$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
@@ -792,11 +793,30 @@ while ($nb < $periode2+1) {
 	$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 	if ($eleve_abs_nj[$nb] == '') { $eleve_abs_nj[$nb] = "?"; }
 	if ($eleve_retards[$nb] == '') { $eleve_retards[$nb] = "?"; }
-	echo "<tr>\n<td valign=top class='bull_simpl'>$nom_periode[$nb]</td>\n";
+
+	//====================================
+	// AJOUT: boireaus 20080317
+	if($nb==$periode1) {
+		if($nb==$periode2) {
+			$style_bordure_cell="border: 1px solid black";
+		}
+		else {
+			$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+		}
+	}
+	elseif($nb==$periode2) {
+		$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+	}
+	else {
+		$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+	}
+	//====================================
+
+	echo "<tr>\n<td valign=top class='bull_simpl' style='$style_bordure_cell'>$nom_periode[$nb]</td>\n";
   // Test pour savoir si l'élève appartient à la classe pour la période considérée
   $test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
 if ($test_eleve_app != 0) {
- 	echo "<td valign=top class='bull_simpl'>\n";
+ 	echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
 	if ($eleve_abs_j[$nb] == "1") {
 		echo "Absences justifiées : une demi-journée";
 	} else if ($eleve_abs_j[$nb] != "0") {
@@ -805,7 +825,7 @@ if ($test_eleve_app != 0) {
 		echo "Aucune absence justifiée";
 	}
 	echo "</td>\n";
-	echo "<td valign=top class='bull_simpl'>\n";
+	echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>\n";
 	if ($eleve_abs_nj[$nb] == '1') {
 		echo "Absences non justifiées : une demi-journée";
 	} else if ($eleve_abs_nj[$nb] != '0') {
@@ -814,19 +834,19 @@ if ($test_eleve_app != 0) {
 		echo "Aucune absence non justifiée";
 	}
 	echo "</td>\n";
-	echo "<td valign=top class='bull_simpl'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
+	echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>Nb. de retards : $eleve_retards[$nb]</td>\n</tr>\n";
 } else {
-  echo "<td valign=top class='bull_simpl'>-</td><td valign=top class='bull_simpl'>-</td><td valign=top class='bull_simpl'>-</td>\n</tr>\n";
+  echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td><td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td><td valign=top class='bull_simpl' style='$style_bordure_cell'>-</td>\n</tr>\n";
 }
 	//Ajout Eric
 	if ($current_eleve_appreciation_absences != "") {
 	  if ($test_eleve_app != 0) {
 	    echo "<tr>\n";
-	    echo "<td valign=top class='bull_simpl'>&nbsp;</td>\n";
-	    echo "<td valign=top class='bull_simpl' colspan=\"3\" style='text-align:left;'>";
+	    echo "<td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td>\n";
+	    echo "<td valign=top class='bull_simpl' colspan=\"3\" style='text-align:left; $style_bordure_cell'>";
 	    echo " Observation(s) : $current_eleve_appreciation_absences</td>\n</tr>\n";
 	  } else {
-	    echo "<tr><td valign=top class='bull_simpl'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\">-</td>\n</tr>\n";
+	    echo "<tr><td valign=top class='bull_simpl' style='$style_bordure_cell'>&nbsp;</td><td valign=top class='bull_simpl' colspan=\"3\" style='$style_bordure_cell'>-</td>\n</tr>\n";
     }
 	}
 
@@ -843,16 +863,37 @@ if ($current_eleve_profsuivi_login) {
 }
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
-echo "<table width=\"$larg_tab\" border=1 class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width=\"$larg_tab\" class='boireaus' cellspacing=1 cellpadding=1>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
+
+	//=========================
+	// AJOUT: boireaus 20080317
+	if($nb==$periode1) {
+		if($nb==$periode2) {
+			$style_bordure_cell="border: 1px solid black";
+		}
+		else {
+			$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+		}
+	}
+	elseif($nb==$periode2) {
+		$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+	}
+	else {
+		$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+	}
+	//=========================
+
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
 	$current_eleve_avis[$nb] = @mysql_result($current_eleve_avis_query, 0, "avis");
   // Test pour savoir si l'élève appartient à la classe pour la période considérée
   $test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
   if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y") or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
-  echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl'>$nom_periode[$nb]</td>\n";
-  echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left;'>$current_eleve_avis[$nb]</td>\n";
+
+  echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
+
+  echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$current_eleve_avis[$nb]</td>\n";
   echo "</tr>\n";
 	$nb++;
 }
@@ -896,6 +937,24 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 	//------
 	$nb=$periode1;
 	while($nb < $periode2+1) {
+		//=========================
+		// AJOUT: boireaus 20080317
+		if($nb==$periode1) {
+			if($nb==$periode2) {
+				$style_bordure_cell="border: 1px solid black";
+			}
+			else {
+				$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+			}
+		}
+		elseif($nb==$periode2) {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+		}
+		else {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+		}
+		//=========================
+
 		$current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$nb' and id_aid='$aid_id' and indice_aid='$indice_aid')");
 		$eleve_aid_app[$nb] = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
 		if ($eleve_aid_app[$nb] == '') {$eleve_aid_app[$nb] = ' -';}
@@ -941,7 +1000,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 
 	echo "<tr><td ";
 	if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-	echo " class='$style_bulletin'><b>$AID_NOM : $aid_nom</b><br /><i>";
+	echo " class='$style_bulletin' style='$style_bordure_cell'><b>$AID_NOM : $aid_nom</b><br /><i>";
 	$n = '0';
 	while ($n < $nb_lig) {
 		echo affiche_utilisateur($aid_prof_resp_login[$n],$id_classe)."<br />";
@@ -952,7 +1011,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 		if ($test_coef != 0) {
 			echo "<td ";
 			if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-			echo " align=\"center\"><p class='".$style_bulletin."'>-</p></td>";
+			echo " align=\"center\" style='$style_bordure_cell'><p class='".$style_bulletin."'>-</p></td>";
 		}
 	}
 
@@ -960,8 +1019,8 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 	$print_tr = 'no';
 	while ($nb < $periode2+1) {
 		if ($print_tr == 'yes') echo "<tr>";
-		echo "<td align=\"center\" class='$style_bulletin'>$aid_note_moyenne[$nb]</td>";
-		echo "<td align=\"center\" class='$style_bulletin'><b>";
+		echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'>$aid_note_moyenne[$nb]</td>";
+		echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'><b>";
 		// L'élève fait-il partie de la classe pour la période considérée ?
 		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
     if ($test_eleve_app !=0) {
@@ -978,11 +1037,11 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 		 }
 		} else  echo "-";
 		echo "</b></td>";
-		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."'>-</td>";
+		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."' style='$style_bordure_cell'>-</td>";
 		if ($test_eleve_app !=0) {
         if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$eleve_aid_app[$nb] = ' -';}
-		    echo "<td class='$style_bulletin'>$eleve_aid_app[$nb]</td></tr>";
-		} else echo "<td class='$style_bulletin'>-</td></tr>";
+		    echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>$eleve_aid_app[$nb]</td></tr>";
+		} else echo "<td class='$style_bulletin' style='$style_bordure_cell'>-</td></tr>";
 		$print_tr = 'yes';
 		$nb++;
 	}
