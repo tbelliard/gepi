@@ -279,10 +279,17 @@ if (!isset($aid_id)) {
 	// Initialisation de $num3 pour le cas où il n'y a pas de période ouverte:
 	$num3=0;
 	while ($num < $nb_periode_max + 1) {
-		if ($type_note == 'last') {$last_periode_aid = min($num,$display_end);}
+		if ($type_note == 'last') {
+			$last_periode_aid = min($num,$display_end);
+		}
 		$appel_login_eleves = mysql_query("SELECT DISTINCT a.login
-		FROM j_eleves_classes cc, j_aid_eleves a, $nom_table c
-		WHERE (a.id_aid='$aid_id' and cc.login = a.login and cc.id_classe = c.id_classe and c.num = $num and a.indice_aid='$indice_aid') ORDER BY login");
+									FROM j_eleves_classes cc, j_aid_eleves a, $nom_table c, eleves e
+									WHERE (a.id_aid='$aid_id' AND
+									cc.login = a.login AND
+									a.login = e.login AND
+									cc.id_classe = c.id_classe AND
+									c.num = $num AND
+									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
 		$nombre_lignes = mysql_num_rows($appel_login_eleves);
 		if ($nombre_lignes != '0') { ?>
 			<tr><td><b>Nom Prénom</b></td>
