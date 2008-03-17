@@ -209,13 +209,15 @@ function renvoiConcordances($chiffre, $etape){
 	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
 	// 1=créneaux 2=classe 3=matière 4=professeurs 7=regroupements 10=fréquence pour UDT de OMT
 	if ($chiffre != '') {
-		$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'");
+		$sql = "SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'";
+		$query = mysql_query($sql);
 	}else{
 		$query = NULL;
 	}
 
 	if ($query) {
-		$reponse = mysql_result($query, "nom_gepi");
+		$reponse = mysql_result($query, "nom_gepi")
+			OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
 		if ($reponse == '') {
 			$retour = "inc";
 		}else{

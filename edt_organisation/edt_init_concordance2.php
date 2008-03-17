@@ -113,13 +113,14 @@ if ($etape != NULL) {
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
 			//echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
-			$tab = explode("|", $ligne);
+			$var = explode("|", $ligne);
 			// Toutes les infos sont envoyées en brut
 			for($v = 0; $v < 12; $v++){
 				if (!isset($tab[$v])) {
 					$tab[$v] = '';
 				}
 			}
+
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé

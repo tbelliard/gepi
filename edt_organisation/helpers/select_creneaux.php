@@ -34,18 +34,32 @@ echo '
 		<option value="aucun">Liste des créneaux</option>
 ';
 // On appele la liste des créneaux
-$query = mysql_query("SELECT * FROM absences_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas'")
-			OR error_reporting('Erreur dans la recherche des créneaux : '.mysql_error());
+$query = mysql_query("SELECT * FROM absences_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode")
+			OR trigger_error('Erreur dans la recherche des créneaux : '.mysql_error());
 
 while($creneaux = mysql_fetch_array($query)){
 	// On teste pour le selected
-	if ($nom_selected == $creneaux["heuredebut_definie_periode"]) {
+	// Dans le cas de edt_init_csv2.php, on modifie la forme des heures de début de créneau
+	$test_creneau = explode("/", $_SERVER["SCRIPT_NAME"]);
+
+	if ($test_creneau[3] == "edt_init_csv2.php") {
+		// On tranforme le créneau
+		$creneau_expl = explode(":", $creneaux["heuredebut_definie_periode"]);
+		$creneau_udt = $creneau_expl[0].'H'.$creneau_expl[1];
+	}else{
+		$creneau_udt = $creneaux["heuredebut_definie_periode"];
+	}
+	if ($nom_selected == $creneau_udt) {
 		$selected = ' selected="selected"';
 	}else{
 		$selected = '';
 	}
+
+	// On enlève les secondes à la fin
+	$heure_deb = substr($creneaux["heuredebut_definie_periode"], 0, -3);
+
 	echo '
-		<option value="'.$creneaux["id_definie_periode"].'"'.$selected.'>'.$creneaux["nom_definie_periode"].' : '.$creneaux["heuredebut_definie_periode"].'</option>';
+		<option value="'.$creneaux["id_definie_periode"].'"'.$selected.'>'.$creneaux["nom_definie_periode"].' : '.$heure_deb.'</option>';
 }
 
 echo '
