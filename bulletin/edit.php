@@ -1818,8 +1818,8 @@ echo "'>\n";
 		echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
 	}
 	if($bull_affich_adr_etab=="y"){
-		echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
-		echo "<br />\n";
+		//echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
+		if($bull_affich_nom_etab=="y"){echo "<br />\n";}
 		echo $gepiSchoolAdress1."<br />\n";
 		echo $gepiSchoolAdress2."<br />\n";
 		echo $gepiSchoolZipCode." ".$gepiSchoolCity;
