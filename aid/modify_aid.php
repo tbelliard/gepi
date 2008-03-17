@@ -375,7 +375,11 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     if ($vide == 1) {
         echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
     }
-    $call_eleve = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet FROM eleves e LEFT JOIN j_aid_eleves j ON (e.login = j.login  and j.indice_aid='$indice_aid') WHERE j.login is null order by e.nom, e.prenom");
+    $call_eleve = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet
+						FROM eleves e LEFT JOIN j_aid_eleves j ON
+						(e.login = j.login  and
+						j.indice_aid = '$indice_aid')
+						WHERE j.login is null order by e.nom, e.prenom");
     $nombreligne = mysql_num_rows($call_eleve);
     if ($nombreligne != 0) {
 
