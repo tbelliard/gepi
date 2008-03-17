@@ -162,8 +162,8 @@ die();
            }
 
 
-//  SELECT departement, COUNT(membre) FROM la_table WHERE pays='france' GROUP BY departement  
-//  avec eventuellement un ORDER BY departement 
+//  SELECT departement, COUNT(membre) FROM la_table WHERE pays='france' GROUP BY departement
+//  avec eventuellement un ORDER BY departement
 
 // on recherche tout les élèves ayant 5 absence depuis le 01/01/2007
 $type = 'suivi';
@@ -205,7 +205,7 @@ if ( $action_page != 'gestion_ag' ) {
 	$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'";
       	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
 	// requete par requete on passe en boucle requete 1 requete 2 ex : 5 abs, 5 ret...
-       	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type)) 
+       	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
 	{
 		// les donnees
 			$id_alert_type = $donnee_alert_type['id_alert_type'];
@@ -243,7 +243,7 @@ if ( $action_page != 'gestion_ag' ) {
 					// si oui on lit le total des trucs
 			      		$requete_alert_eleve = "SELECT * FROM ".$prefix_base."vs_alerts_eleves WHERE ( eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."' ) ";
 			               	$resultat_alert_eleve = mysql_query($requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.mysql_error());
-					while ( $donnee_alert_eleve = mysql_fetch_array ($resultat_alert_eleve)) 
+					while ( $donnee_alert_eleve = mysql_fetch_array ($resultat_alert_eleve))
 					{
 						$total_compteur = $total_compteur + $donnee_alert_eleve['nb_trouve'];
 						$dernier_enregistrement = $donnee_alert_eleve['nb_trouve'];
@@ -251,7 +251,7 @@ if ( $action_page != 'gestion_ag' ) {
 					}
 						// total de ce que l'on cherche à ne pas dépaser si on ajout la limit
 						$total_anepas_depasser = $nb_comptage_limit + $dernier_enregistrement;
-						// si le total a ne pas dépaser et plus petit que le total trouvé 
+						// si le total a ne pas dépaser et plus petit que le total trouvé
 						if ( $total_anepas_depasser <= $nb_fois[$i_cpt] )
 						{
 							// on ne prend que les plus par rapport au total des enregistrements
@@ -278,7 +278,7 @@ if ( $action_page != 'gestion_ag' ) {
 		$heure_t1 = explode(':', $heure_t1);
 
 		while ( !empty($eleve[$i_cpt]) )
-		{ 
+		{
 			$login = $eleve[$i_cpt];
 			if ( isset($alert[$login]) )
 			{
@@ -359,8 +359,8 @@ if ( $action === 'modifier_alert_groupe' and $valide_form === 'yes' ) {
 		{
 			$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'";
 	               	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe)) 
-			{ 
+	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
+			{
 				$nom_alert_groupe = $donnee_alert_groupe['nom_alert_groupe'];
 			}
 		} else { $message_erreur = 'Cette id n\'exite pas.'; }
@@ -394,7 +394,7 @@ if ( $action === 'modifier_alert_type' and $valide_form === 'yes' ) {
 		{
 			$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'";
 	               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
-	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type)) 
+	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
 			{
 				$type_alert_type = $donnee_alert_type['type_alert_type'];
 				$specifisite_alert_type = $donnee_alert_type['specifisite_alert_type'];
@@ -424,13 +424,13 @@ require_once("../../lib/header.inc");
 function twAfficheCache(nObjet,nEtat) {
 	document.getElementById(nObjet).style.visibility = (nEtat==0?'hidden':'visible');
 }
-</script> 
+</script>
 <p class=bold><a href='gestion_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a> |
 
 <a href="impression_absences.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Impression</a> |
 <a href="statistiques.php?year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Statistiques</a> |
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
-<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a> 
+<a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
 
 <? /* div de centrage du tableau pour ie5 */ ?>
@@ -445,7 +445,7 @@ function twAfficheCache(nObjet,nEtat) {
                  		<?php
 				$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes ORDER BY nom_alert_groupe ASC";
 	                    	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	                    	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe)) 
+	                    	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
 				{ ?>
 	                          <option value="<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>" <?php if ( !empty($id_alert_groupe) and $id_alert_groupe === $donnee_alert_groupe['id_alert_groupe'] ) { ?>selected="selected"<?php } ?>><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></option>
         	          <?php } ?>
@@ -522,13 +522,14 @@ function twAfficheCache(nObjet,nEtat) {
 		<a name="ea"></a>
 
 			<div style="width: 90px; float: right; padding: 2px; text-align: center;">
-			<?php 
+			<?php
 			if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
-		             $photos = "../../photos/eleves/".$elenoet_eleve.".jpg";
-		                 if (!(file_exists($photos))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-				       $valeur=redimensionne_image($photos);
-		                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
-		             }
+			    $nom_photo = nom_photo($elenoet_eleve,"eleves",2);
+			    if ($nom_photo != "") $photos = "../../photos/eleves/".$nom_photo;
+			    if ((!(file_exists($photos))) or ($nom_photo == "")) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+			    $valeur=redimensionne_image($photos);
+          ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
+		  }
 			?>
 			</div>
 				<div style="font-size: 150%; background: #555555; color: #FFFFFF;"><?php echo $civilite_eleve.' '.$nom_eleve.' '.$prenom_eleve; ?></div>
@@ -550,7 +551,7 @@ function twAfficheCache(nObjet,nEtat) {
 				</div><br />
 				<div style="font-size: 150%; background: #555555; color: #FFFFFF;">Filtre</div>
 				<div style="margin-left: 10px; padding-left: 10px;">
-<?php 
+<?php
 
 ?>L'alerte que vous venez de sélectionner contient le(s) filtre(s) suiviant(s) :<br /><ul><?php
 				$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_groupes vsag, ".$prefix_base."vs_alerts_types vsat WHERE vsag.id_alert_groupe = '".$id_alert_groupe."' AND vsat.groupe_alert_type = vsag.id_alert_groupe";
@@ -566,7 +567,7 @@ function twAfficheCache(nObjet,nEtat) {
 
 	$spec_type_alert = '';
 	if ( $donnee_alert_type['type_alert_type'] === 'C' )
-	{ 
+	{
 		$spec_type_alert = lettre_type($donnee_alert_type['specifisite_alert_type']);
 	}
 	if ( $donnee_alert_type['type_alert_type'] === 'P' )
@@ -574,7 +575,7 @@ function twAfficheCache(nObjet,nEtat) {
 		if ( $donnee_alert_type['specifisite_alert_type'] === 'A' ) { $spec_type_alert = 'absence'; }
 		if ( $donnee_alert_type['specifisite_alert_type'] === 'R' ) { $spec_type_alert = 'retard'; }
 		if ( $donnee_alert_type['specifisite_alert_type'] === 'D' ) { $spec_type_alert = 'dispense'; }
-		if ( $donnee_alert_type['specifisite_alert_type'] === 'I' ) { $spec_type_alert = 'passage à l\'infirmerie'; }		
+		if ( $donnee_alert_type['specifisite_alert_type'] === 'I' ) { $spec_type_alert = 'passage à l\'infirmerie'; }
 	}
 	if ( $donnee_alert_type['type_alert_type'] === 'F' )
 	{
@@ -652,8 +653,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 			$i_couleur = '1';
 			$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes ORDER BY nom_alert_groupe ASC";
 	               	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe)) 
-			{ 
+	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
+			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 			  <tr class="<?php echo $couleur_cellule; ?>">
 				<td style="text-align: left; padding: 2px;"><a href="alert_suivi.php?action_page=<?php echo $action_page; ?>&amp;action=editer_alert_groupe&amp;id_alert_groupe=<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>&amp;uid_post=<?php echo ereg_replace(' ','%20',$uid); ?>#eg" title="editer le groupe"><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></a></td>
@@ -741,8 +742,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 			$i_couleur = '1';
 			$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE ( groupe_alert_type = '".$id_alert_groupe."' ) ORDER BY date_debut_comptage ASC";
 	               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
-	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type)) 
-			{ 
+	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
+			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 			  <tr class="<?php echo $couleur_cellule; ?>">
 				<td style="text-align: left; padding: 2px;">

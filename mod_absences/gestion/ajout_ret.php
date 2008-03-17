@@ -219,7 +219,7 @@ if(isset($id_absence_eleve_erreur[0]) and !empty($id_absence_eleve_erreur[0]))
             $d_heure_absence_eleve[$i] = $d_heure_absence_eleve_erreur[$i];
             $heure_retard_eleve[$i] = $d_heure_absence_eleve_erreur[$i];
 	    if(isset($id) and !empty($id)) { $action = 'modifier'; }
-            $i = $i + 1;            
+            $i = $i + 1;
         }
 }
 
@@ -267,7 +267,7 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
             <?php if (isset($texte_eleve_erreur[$i])) { ?>
              <tr class="table_erreur">
               <td class="centre"><img src="../images/attention.png" width="28" height="28" alt="" /></td>
-              <td colspan="4" class="erreur"><strong>Erreur: 
+              <td colspan="4" class="erreur"><strong>Erreur:
               <?php  echo $texte_eleve_erreur[$i]; ?>
               </strong></td>
              </tr>
@@ -291,10 +291,11 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
              $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                       WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='R'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
-                       $photo = "../../photos/eleves/".$id_eleve_photo.".jpg";
-                     if (!(file_exists($photo))) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		     $valeur=redimensionne_image_petit($photo);
-                     ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
+                      $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
+                      if ($nom_photo != "") $photo = "../../photos/eleves/".$nom_photo;
+                      if ((!(file_exists($photo))) or ($nom_photo == "")) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                      $valeur=redimensionne_image_petit($photo);
+                      ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
                    }
                  ?>
                  <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">

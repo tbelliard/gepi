@@ -126,7 +126,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
               $d_heure_absence_eleve_erreur[$j] = $d_heure_absence_eleve;
               $a_heure_absence_eleve_erreur[$j] = $a_heure_absence_eleve;
               $j = $j + 1;
-         } else{ 
+         } else{
                     if ( $action_sql == "ajouter" ) { $requete="INSERT INTO ".$prefix_base."absences_eleves (type_absence_eleve,eleve_absence_eleve, justify_absence_eleve,info_justify_absence_eleve,motif_absence_eleve,d_date_absence_eleve,a_date_absence_eleve,d_heure_absence_eleve,a_heure_absence_eleve,saisie_absence_eleve) values ('$type_absence_eleve','$eleve_absence_eleve','O','$info_justify_absence_eleve','$motif_absence_eleve','$d_date_absence_eleve','$a_date_absence_eleve','$d_heure_absence_eleve','$a_heure_absence_eleve','".$_SESSION['login']."')"; }
                     if ( $action_sql == "modifier" ) { $requete="UPDATE ".$prefix_base."absences_eleves SET info_justify_absence_eleve = '$info_justify_absence_eleve', d_date_absence_eleve = '$d_date_absence_eleve', a_date_absence_eleve = '$a_date_absence_eleve', d_heure_absence_eleve = '$d_heure_absence_eleve', a_heure_absence_eleve = '$a_heure_absence_eleve', saisie_absence_eleve = '".$_SESSION['login']."' WHERE id_absence_eleve = '".$id."'"; }
                     $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
@@ -201,7 +201,7 @@ if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[
             $d_heure_absence_eleve[$i] = $d_heure_absence_eleve_erreur[$i];
             $a_heure_absence_eleve[$i] = $a_heure_absence_eleve_erreur[$i];
 	    if(isset($id) and !empty($id)) { $action = 'modifier'; }
-            $i = $i + 1;            
+            $i = $i + 1;
         }
 }
 
@@ -270,12 +270,13 @@ $i = 0;
                         <strong><?php echo strtoupper($data_id['nom']); ?></strong><br /><?php echo ucfirst($data_id['prenom']); $id_eleve = $data_id['login']; $id_eleve_photo = $data_id['elenoet']; ?><br /><span class="norme_absence_bleu"><strong><?php echo classe_de($data_id['login']); } ?></strong></span><br />
                 <?php
                   $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
-                                                      WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='I'"),0);
-                                  if (getSettingValue("active_module_trombinoscopes")=='y') {
-                       $photo = "../../photos/eleves/".$id_eleve_photo.".jpg";
-                     if (!(file_exists($photo))) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-		     $valeur=redimensionne_image($photo);
-                     ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
+                                                   WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='I'"),0);
+                  if (getSettingValue("active_module_trombinoscopes")=='y') {
+                      $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
+                      if ($nom_photo != "") $photo = "../../photos/eleves/".$nom_photo;
+                      if ((!(file_exists($photo))) or ($nom_photo == "")) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                      $valeur=redimensionne_image($photo);
+                      ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
                    }
                  ?>
                  <table class="tableau_info_compt" border="0" cellspacing="0" cellpadding="2">
