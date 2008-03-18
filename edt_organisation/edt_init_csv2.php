@@ -204,7 +204,11 @@ if ($action == "upload_file") {
                     }
 
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
-                    $nom_selected = $test_selected[0]; // pour le selected du helper
+                    if ($etape == 4) {
+                    	$nom_selected = strtoupper($test_selected[0]);
+                    }else{
+						$nom_selected = $test_selected[0]; // pour le selected du helper
+					}
                     $nom_id_select = 'nomGepi' . $l; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
                     $style_select = ' style="text-align: center;"';
                     // On appelle le bon helper

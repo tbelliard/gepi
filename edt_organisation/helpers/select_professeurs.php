@@ -35,9 +35,10 @@ echo '
 	for($i = 0; $i < $nbre; $i++){
 		$utilisateur[$i] = mysql_result($query, $i, "login");
 		$nom[$i] = mysql_result($query, $i, "nom");
+		$nom_m[$i] = strtoupper(mysql_result($query, $i, "nom"));
 		$prenom[$i] = mysql_result($query, $i, "prenom");
 		// On détermine le selected si c'est possible
-		if ($nom[$i] == $nom_selected) {
+		if ($nom_m[$i] == $nom_selected) {
 			$selected = ' selected="selected"';
 		}else{
 			$selected = '';
