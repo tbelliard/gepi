@@ -47,6 +47,22 @@ if ($resultat_session == 'c') {
     die();
 }
 
+// Instance de la classe infos (voir serveur_infos.class.php)
+$test = new infos;
+
+// Analyse des paramètres
+if ($test->secureServeur() == 'on') {
+	$style_register = ' style="color: red; font-weight: bold;"';
+}elseif($test->secureServeur() == 'off'){
+	$style_register = '';
+}else{
+	$style_register = ' style="color: red; font-style: italic;"';
+}
+if ($test->maxExecution() <= '30') {
+	$warning_maxExec = '&nbsp;(Cette valeur peut être un peu courte si votre établissement est important)';
+}else{
+	$warning_maxExec = '&nbsp;(Cette valeur devrait suffire dans la grande majorité des cas)';
+}
 /*+++++++++++++++++++++ On insère l'entête de Gepi ++++++++++++++++++++*/
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
@@ -62,19 +78,29 @@ echo '
 
 /* ======= Affichage des paramètres ============= */
 
-// Instance de la classe infos
-$test = new infos;
+
+
+echo '
+	<h4>Les données de base de votre serveur web</h4>
+	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>';
 
 echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
 	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>
-	<p>Votre version du module GD est la '.$test->versionGd().'.</p>
-	<br />';
+	<p>Votre version du module GD est la '.$test->versionGd().'&nbsp;(indispensable pour toutes les images).</p>
+	<br />
+	<hr />
+	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test->listeExtension().'
+	<hr />
+	<h4>Les réglages php : </h4>
+	- La mémoire maximale allouée à php est de '.$test->memoryLimit().'.
+	<br />
+	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().'.
+	<br />
+	- Le temps maximum alloué à php pour traiter une requête est de : '.$test->maxExecution().' secondes'.$warning_maxExec.'.
+	<br />
+	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().'.';
 
-echo '<p>&nbsp;&nbsp;Liste des modules implémentés avec votre php : '.$test->listeExtension();
-echo '<p>Les réglages php : </p>
-	- La mémoire maximale allouée à php est de '.$test->memoryLimit().'.';
-echo '<br />- Un fichier ne doit pas dépasser '.$test->maxSize().'.';
-
+echo '<br />';
 
 // inclusion du footer
 require_once("../lib/footer.inc.php");

@@ -49,6 +49,11 @@ class infos{
 		return $retour;
 	}
 	function versionGd(){
+		if (gd_info()) {
+			$gd = gd_info() OR trigger_error('Le module gd n\'est pas disponible sur le serveur ', E_USER_WARNING);
+		}else{
+			$gd["GD Version"] = 'aucune';
+		}
 		$gd = gd_info();
 		return $gd["GD Version"];
 	}
@@ -105,6 +110,24 @@ class infos{
 	}
 	function maxSize(){
 		return ini_get('post_max_size');
+	}
+	function maxExecution(){
+		return ini_get("max_execution_time");
+	}
+	function tailleMaxFichier(){
+		return ini_get("upload_max_filesize");
+	}
+	function secureServeur(){
+		if (ini_get('register_globals') == 1) {
+			$register_g = "on";
+		}elseif(ini_get('register_globals') == ''){
+			$register_g = "off";
+		}else{
+			$register_g = "paramètre inconnu";
+		}
+		$retour = $register_g;
+
+		return $retour;
 	}
 } // fin class infos
 
