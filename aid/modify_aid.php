@@ -195,7 +195,7 @@ echo '<form action="modify_aid.php" method="post" name="autre_aid">
 	';
 
 // On recommence le query
-$query = mysql_query($sql) OR DIE('Erreur dans la requête select * from aid : '.mysql_error());
+$query = mysql_query($sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysql_error(), E_USER_ERROR);
 while($infos = mysql_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {
@@ -304,12 +304,14 @@ if ($flag == "eleve") {
 echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
 	echo "<table class=\"aid_tableau\" border=\"0\">";
     // appel de la liste des élèves de l'AID :
-    $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom, e.elenoet
-							FROM eleves e, j_aid_eleves j
+    $call_liste_data = mysql_query("SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
+							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
 							WHERE (j.id_aid = '$aid_id' and
 							e.login = j.login and
+							jec.id_classe = c.id and
+							jec.login = j.login AND
 							j.indice_aid = '$indice_aid')
-							ORDER BY e.nom, e.prenom");
+							ORDER BY c.classe, e.nom, e.prenom");
     $nombre = mysql_num_rows($call_liste_data);
     // On affiche d'abord le nombre d'élèves
     		$s = "";
