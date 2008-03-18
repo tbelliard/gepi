@@ -137,8 +137,8 @@ $couleur_cellule_gen = "#F6F7EF";
 
 // Version de GEPI
 $gepiVersion = "1.5.1";
-$gepiRcVersion = "";
-$gepiBetaVersion = "1";
+$gepiRcVersion = "1";
+$gepiBetaVersion = "";
 
 // Forcer l'utilisation du module de gestion des absences au quoditien
 //
