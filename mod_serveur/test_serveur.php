@@ -35,7 +35,7 @@ $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // Définition de la classe php
-require_once("serveur_infos.class.php");
+require_once("../class_php/serveur_infos.class.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -81,7 +81,7 @@ echo '
 
 
 echo '
-	<h4>Les données de base de votre serveur web</h4>
+	<h4>Les données de base de votre serveur web :</h4>
 	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>';
 
 echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
@@ -96,11 +96,11 @@ echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
 	<br />
 	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().'.
 	<br />
-	- Le temps maximum alloué à php pour traiter une requête est de : '.$test->maxExecution().' secondes'.$warning_maxExec.'.
+	- Le temps maximum alloué à php pour traiter une requête est de '.$test->maxExecution().' secondes'.$warning_maxExec.'.
 	<br />
 	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().'.';
 
-echo '<br />';
+echo '<br /><br /><br />';
 
 // inclusion du footer
 require_once("../lib/footer.inc.php");

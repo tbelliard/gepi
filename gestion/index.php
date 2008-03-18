@@ -68,7 +68,7 @@ require_once("../lib/header.inc");
     </td>
 </tr>
 <tr>
-	<td width="200"><a href="../class_php/test_serveur.php">Configuration serveur</a></td>
+	<td width="200"><a href="../mod_serveur/test_serveur.php">Configuration serveur</a></td>
 	<td>Voir la configuration du serveur php/Mysql pour v&eacute;rifier la compatibilit&eacute; avec Gepi.</td>
 </tr>
 </table>
