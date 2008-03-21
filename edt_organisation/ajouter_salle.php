@@ -77,40 +77,6 @@ $del_salle = isset($_POST["del_salle"]) ? $_POST["del_salle"] : NULL;
 $modif_salle = isset($_POST["modif_salle"]) ? $_POST["modif_salle"] : NULL;
 $new_name = isset($_POST["new_name"]) ? $_POST["new_name"] : NULL;
 ?>
-<!-- AJAX de formulaire -->
-
-<script type="text/javascript">
-function nomSalle(ident_salle) {
-	var xmlhttp;
-
-	//if (typeof XMLHttpRequest == "object") xmlhttp = new XMLHttpRequest();
-	//if (typeof ActiveXObject == "object" || typeof ActiveXObject == "function") xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-//--Début du scrip Stéphane Boireau
-			if(window.XMLHttpRequest) // Firefox
-				xmlhttp = new XMLHttpRequest();
-			else if(window.ActiveXObject) // Internet Explorer
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			else { // XMLHttpRequest non supporté par le navigateur
-				alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-				return;
-			}
-//--fin du script Stephane Boireau
-	xmlhttp.open("POST", "ajax_edt.php", true);
-
-	xmlhttp.onreadystatechange = function() {
-		try {
-			if (xmlhttp.readyState == 4) {
-				var resultat = xmlhttp.responseText;
-				nomSalle.innerHTML = resultat;
-			}
-		} catch (erreur) {}
-	}
-
-	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	var data = "salle="+ident_salle;
-	xmlhttp.send(data);
-}
-</script>
 
 G&eacute;rer les salles de Gepi
 <br /><br />
@@ -147,14 +113,15 @@ G&eacute;rer les salles de Gepi
 
 <?php
 if (isset($nom_salle) AND isset($numero_salle)) {
-		// SI le nom de la salle n'est pas précisé
-		if ($numero_salle == "") {
-			echo "<font color=\"red\">Vous devez précisez un numéro de salle !</font>\n<br />\n";
-		}
+	// Si le nom de la salle n'est pas précisé
+	if ($numero_salle == "") {
+		echo "<font color=\"red\">Vous devez précisez un numéro de salle !</font>\n<br />\n";
+	}
 	if ($nom_salle == "") {
 		$nom_salle = "salle ".$numero_salle;
+	}else{
+		$nom_salle = $_POST["nomsalle"];
 	}
-	else $nom_salle = $_POST["nomsalle"];
 }
 
 // Quelques vérifications d'usage
@@ -168,8 +135,10 @@ $verif_champs = 0;
 			$add_new_numero = addslashes($numero_salle);
 			$add_new_salle = addslashes($nom_salle);
 			$verif_champs = 1;
+
+		}else{
+			die();
 		}
-		else die();
 	}
 
 	// Ultime vérification avant de rentrer de nouvelles salles dans la base
@@ -182,10 +151,12 @@ if (isset($add_new_numero) AND isset($add_new_salle)) {
 			OR die ('Echec lors de l\'enregistrement');
 			echo "<span class=\"accept\">La salle numéro ".$add_new_numero." appelée \"".$add_new_salle."\" a bien été enregistrée !</span>";
 		}
-		else
-		echo "<span class=\"refus\">Cette salle existe déjà ! Veuillez changer son numéro</span>";
+		else{
+			echo "<span class=\"refus\">Cette salle existe déjà ! Veuillez changer son numéro</span>";
+		}
+	}else{
+		trigger_error('Impossible de rentrer de nouvelles salles', E_USER_WARNING);
 	}
-	else die ('Impossible de rentrer de nouvelles salles');
 }
 
 
@@ -294,16 +265,24 @@ if (isset($new_name) AND $new_name != "" ) {
 			<tr><td>
 <?php
 if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle != NULL AND $del_salle != "rien") {
-	$req_verif = mysql_query("SELECT nom_salle FROM salle_cours WHERE id_salle = '".$del_salle."'");
+	$req_verif = mysql_query("SELECT numero_salle, nom_salle FROM salle_cours WHERE id_salle = '".$del_salle."'");
 	$rep_nom = mysql_fetch_array($req_verif);
 	$rep_verif = mysql_num_rows($req_verif);
 		if ($rep_verif != 1) {
 			echo "Impossible d'effacer cette salle car elle n'existe pas !";
-			die();
+			trigger_error("Vous essayez d'effacer une salle qui n'existe pas !", E_USER_ERROR);
 		}
 	$req_effacer = mysql_query("DELETE FROM salle_cours WHERE id_salle = '".$del_salle."'")
-	OR die ('Cette salle n\'a pas pu être effacée');
-	echo "<font color=\"green\">la salle \"".$rep_nom["nom_salle"]."\" a été effacée de la base de Gepi</font>\n";
+						OR trigger_error('Cette salle n\'a pas pu être effacée', E_USER_WARNING);
+
+	if ($rep_nom["nom_salle"] != '') {
+		$aff_nom_salle = ' ('.$rep_nom["nom_salle"].')';
+	}else{
+		$aff_nom_salle = '';
+	}
+
+	echo '
+	<font color="green">la salle '.$rep_nom["numero_salle"].$aff_nom_salle.' a été effacée de la base de Gepi</font>';
 }
 ?>
 			</td><td>

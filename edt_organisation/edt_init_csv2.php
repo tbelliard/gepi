@@ -157,7 +157,7 @@ if ($action == "upload_file") {
                 'Les divisions : le nom des classes',
                 'Les matières enseignées : ',
                 'Les professeurs : ',
-                'Les salles : si aucune salle n\'existe encore, Gepi va les créer',
+                'Les salles : <b>Gepi vérifie l\'existence de ces salles et crée celles qui n\'existent pas.</b>',
                 'Les groupes : subdivisions des regroupements',
                 'Les regroupements : ce sont les enseignements ou les AID de Gepi',
                 'Les effectifs : non utilisés pour l\'EdT',
@@ -205,6 +205,7 @@ if ($action == "upload_file") {
 
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
                     if ($etape == 4) {
+                    	// Pour les prof, on met tout en majuscule
                     	$nom_selected = strtoupper($test_selected[0]);
                     }else{
 						$nom_selected = $test_selected[0]; // pour le selected du helper

@@ -30,21 +30,42 @@ echo '
 	<select name ="'.$increment.'"'.$id_select.'>
 		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
-	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' ORDER BY nom, prenom");
+	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs
+						WHERE statut = 'professeur' AND
+						etat = 'actif'
+						ORDER BY nom, prenom");
 	$nbre = mysql_num_rows($query);
+	$verif = 0;
 	for($i = 0; $i < $nbre; $i++){
 		$utilisateur[$i] = mysql_result($query, $i, "login");
 		$nom[$i] = mysql_result($query, $i, "nom");
 		$nom_m[$i] = strtoupper(mysql_result($query, $i, "nom"));
 		$prenom[$i] = mysql_result($query, $i, "prenom");
+		//Pour les noms composés, on ajoute un test
+		$test = explode(" ", $nom_m[$i]);
 		// On détermine le selected si c'est possible
 		if ($nom_m[$i] == $nom_selected) {
+			$verif++; // on crée une marque pour afficher un couleur si il y a une interrogation sur le résultat
+			$selected = ' selected="selected"';
+		}elseif ($test[0] == $nom_selected) {
+			$verif++; // on crée une marque pour afficher un couleur si il y a une interrogation sur le résultat
 			$selected = ' selected="selected"';
 		}else{
 			$selected = '';
 		}
+
 		echo '
-		<option value="'.$utilisateur[$i].'"'.$selected.'>'.$nom[$i].' '.$prenom[$i].'</option>';
+		<option value="'.$utilisateur[$i].'"'.$selected.'>'.$nom[$i].'&nbsp;&nbsp;'.$prenom[$i].'</option>';
 	}
-echo '</select>';
+	// On teste la marque $verif[$i] et on calcule le nombre de réponses positives
+	if ($verif >= 2) {
+		$its_ok = '&nbsp;<span style="color: orange; font-weight: bold;">(?)</span>';
+	}elseif($verif == 0){
+		$its_ok = '&nbsp;<span style="color: red; font-weight: bold;">(non trouvée)</span>';
+	}elseif($verif == 1){
+		$its_ok = '&nbsp;<span style="color: green; font-weight: bold;">(ok ?)</span>';
+	}else{
+		$its_ok = '';
+	}
+echo '</select>&nbsp;'.$its_ok;
 ?>
