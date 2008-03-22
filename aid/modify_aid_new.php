@@ -66,6 +66,13 @@ $style_specifique = "aid/style_aid";
 $utilisation_prototype = "ok";
 $javascript_specifique = "aid/aid_ajax";
 
+// Vérification du niveau de gestion des AIDs
+if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des élèves dans les AID";
 require_once("../lib/header.inc");
@@ -103,7 +110,8 @@ require_once("../lib/header.inc");
 	// Attention de penser à sortir les lignes des notes et appréciations si elles existent
 	if (isset($action) AND $action == "del_eleve_aid") {
 		// On supprime l'élève de l'AID
-		$req_suppr = mysql_query("DELETE FROM j_aid_eleves WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
+		$req_suppr1 = mysql_query("DELETE FROM j_aid_eleves WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
+		$req_suppr2 = mysql_query("DELETE FROM j_aid_eleves_resp WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
 		//On teste ensuite si cet élève avait des appréciations / notes
 		$req_test_notes = mysql_query("SELECT * FROM aid_appreciations WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
 		$test_notes = mysql_num_rows($req_test_notes);

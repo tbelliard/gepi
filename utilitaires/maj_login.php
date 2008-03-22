@@ -106,6 +106,7 @@ $liste_tables = array(
 "cn_notes_devoirs",
 "eleves",
 "j_aid_eleves",
+"j_aid_eleves_resp",
 "j_eleves_classes",
 "j_eleves_professeurs",
 "j_eleves_regime",

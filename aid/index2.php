@@ -39,10 +39,15 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
 //Initialisation des variables
 $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
 $order_by = isset($_GET["order_by"]) ? $_GET["order_by"] : NULL;
+
+// Vérification du niveau de gestion des AIDs
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) <= 0) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
 
 
 if ($indice_aid =='') {
@@ -53,7 +58,7 @@ $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_a
 $nom_aid = @mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 
-if (isset($_POST["is_posted"])) {
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["is_posted"]))) {
     // Enregistrement des données
     // On va chercher les aid déjà existantes
     $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
@@ -128,11 +133,13 @@ require_once("../lib/header.inc");
 
 echo "<p class=bold>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
-echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
+    echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
+    echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
+}
 echo "</p>";
 
-if ($activer_outils_comp == "y")
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
     echo "<br /><p class=\"medium\">Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page <b><i>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></i></b>.</p>";
 
 echo "<p class=\"medium\">";
@@ -141,14 +148,19 @@ if (!isset($order_by)) {$order_by = "numero,nom";}
 $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
 
-if ($activer_outils_comp == "y")
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
     echo"<form action=\"index2.php\" name=\"form1\" method=\"post\">\n";
 echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></th>\n";
 echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></th>";
-echo "<th>&nbsp;</th><th>&nbsp;</th>";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
+    echo "<th>&nbsp;</th>";
+echo "<th>&nbsp;</th>";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
+if (getSettingValue("active_version151")=="y")  // lorsque le trunk sera officiellement en 151, on supprimera ce test
+    echo "<th>&nbsp;</th>";
 // colonne publier la fiche
-if ($activer_outils_comp == "y") {
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
     echo "<th><p class=\"small\">La fiche est visible sur la <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">partie publique</a></p>\n";
     echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
     echo "</th>\n";
@@ -174,7 +186,8 @@ if ($activer_outils_comp == "y") {
     echo "</th>\n";
 }
 // Colonne "supprimer
-echo "<th>&nbsp;</th></tr>";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
+    echo "<th>&nbsp;</th></tr>";
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
@@ -191,14 +204,28 @@ while ($i < $nombreligne){
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @mysql_result($calldata, $i, "id");
     $alt=$alt*(-1);
-    echo "<tr class='lig$alt'><td><p class='medium'><b>$aid_num</b></p></td>";
-    if ($activer_outils_comp == "y")
+    // Première colonne du numéro de l'AID
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
+        echo "<tr class='lig$alt'><td><p class='medium'><b>$aid_num</b></p></td>";
+    // Colonne du nom de l'AID
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+      if ($activer_outils_comp == "y")
         echo "<td><p class='medium'><a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;retour=index2.php'><b>$aid_nom</b></a></p></td>\n";
-    else
+      else
         echo "<td><p class='medium'><a href='add_aid.php?action=modif_aid&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'><b>$aid_nom</b></a></p></td>\n";
-    echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
-    echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
-    if ($activer_outils_comp == "y") {
+    else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
+      echo "<td><p class='medium'><b>$aid_nom</b></p></td>\n";
+    // colonne "Ajouter, supprimer des professeurs"
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+        echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
+    // colonne "Ajouter, supprimer des élèves"
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
+        echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
+    // colonne "Ajouter, supprimer des gestionnaires"
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+      if (getSettingValue("active_version151")=="y")  // lorsque le trunk sera officiellement en 151, on supprimera ce test
+            echo "<td><p class='medium'><a href='modify_aid.php?flag=prof_gest&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des gestionnaires</a></p></td>\n";
+    if ((NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) and ($activer_outils_comp == "y")) {
         // La fiche est-elle publique ?
         echo "<td><center><input type=\"checkbox\" name=\"fiche_publique_".$aid_id."\" value=\"y\" id=\"case_1_".$i."\" ";
         if ($fiche_publique == "y") echo "checked";
@@ -225,7 +252,9 @@ while ($i < $nombreligne){
         echo " /></center></td>\n";
 
     }
-    echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible2=$indice_aid&amp;action=del_aid'>supprimer</a></p></td></tr>\n";
+    // colonne "Supprimer"
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+        echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible2=$indice_aid&amp;action=del_aid'>supprimer</a></p></td></tr>\n";
 
 $i++;
 }
@@ -233,7 +262,7 @@ $i++;
 ?>
 </table>
 <?php
-if ($activer_outils_comp == "y") {
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
   echo "<br />(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.";
   echo "<br /><br /><br /><center>\n";
 	echo "<div id='fixe'>\n";

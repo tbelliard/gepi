@@ -32,6 +32,7 @@ $aid_id = isset($_GET["aid_id"]) ? $_GET["aid_id"] : (isset($_POST["aid_id"]) ? 
 $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
 $add_eleve = isset($_POST["add_eleve"]) ? $_POST["add_eleve"] : NULL;
 $add_prof = isset($_POST["add_prof"]) ? $_POST["add_prof"] : NULL;
+$add_prof_gest = isset($_POST["add_prof_gest"]) ? $_POST["add_prof_gest"] : NULL;
 $reg_prof_login = isset($_POST["reg_prof_login"]) ? $_POST["reg_prof_login"] : NULL;
 $reg_add_eleve_login = isset($_POST["reg_add_eleve_login"]) ? $_POST["reg_add_eleve_login"] : NULL;
 
@@ -51,7 +52,13 @@ if (!checkAccess()) {
     die();
 }
 
-if (isset($add_prof) and ($add_prof == "yes")) {
+// Vérification du niveau de gestion des AIDs
+if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof) and ($add_prof == "yes"))) {
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
@@ -64,6 +71,21 @@ if (isset($add_prof) and ($add_prof == "yes")) {
         }
     }
     $flag = "prof";
+}
+
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
+    // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+    $test = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
+    $test2 = mysql_num_rows($test);
+    if ($test2 != "0") {
+        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
+    } else {
+        if ($reg_prof_login != '') {
+            $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
+        }
+    }
+    $flag = "prof_gest";
 }
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
@@ -157,7 +179,12 @@ require_once("../lib/header.inc");
 
 
 // On affiche un select avec la liste des aid de cette catégorie
-$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+    $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
+else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
+    $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
+
+
 $query = mysql_query($sql) OR DIE('Erreur dans la requête select * from aid : '.mysql_error());
 $nbre = mysql_num_rows($query);
 
@@ -215,34 +242,37 @@ echo '
 
 if ($flag == "prof") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
-    <p class='bold'>Liste des professeurs responsables :</p>
-    <br />Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
-    <?php
-    if ($activer_outils_comp == "y")
-        echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).<br />";
-
-
-    $vide = 1;
+   <?php
     $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysql_num_rows($call_liste_data);
+    echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
+    if ($nombre !=0) {
+    ?>
+        <p class='bold'>Liste des professeurs responsables :</p>
+        Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
+        <?php
+        if ($activer_outils_comp == "y")
+              echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).";
+        echo "<hr /><table class=\"aid_tableau\" border=\"0\">\n";
+    }
     $i = "0";
     while ($i < $nombre) {
-        $vide = 0;
         $login_prof = mysql_result($call_liste_data, $i, "login");
         $nom_prof = mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
-
-        echo "<br /><b>";
-        echo "$nom_prof $prenom_prof</b> | <a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'>\n<font size=2>supprimer</font></a>\n";
+        echo "<tr><td><b>";
+        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
+        echo "</tr>";
     $i++;
     }
-    if ($vide == 1) {
+
+    if ($nombre == 0) {
         echo "<h4 style=\"color: red;\">Il n'y a pas actuellement de professeur responsable !</h4>";
+    } else {
+        echo "</table>";
     }
     ?>
     <p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
-
-    <form enctype="multipart/form-data" action="modify_aid.php" method="post">
     <select size=1 name="reg_prof_login">
     <!--option value=''><p>(aucun)</p></option-->
     <option value=''>(aucun)</option>
@@ -267,7 +297,7 @@ if ($flag == "prof") { ?>
     </form>
 
     <?php
-    if ($vide != 1) {
+    if ($nombre != 0) {
     ?>
       <form enctype="multipart/form-data" action="modify_aid.php" method="post">
       <hr /><H2>Affecter cette liste aux Aids sans professeur responsable</H2>
@@ -280,6 +310,61 @@ if ($flag == "prof") { ?>
       echo "</form>";
    }
 
+}
+
+if ($flag == "prof_gest") { ?>
+   <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
+   <?php
+    echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
+    $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+    $nombre = mysql_num_rows($call_liste_data);
+    if ($nombre !=0) {
+    ?>
+        <p class='bold'>Liste des utilisateurs gestionnaires :</p>
+        Les utilisateurs peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans les AIds.<br />
+        <?php
+        echo "<hr /><table class=\"aid_tableau\" border=\"0\">\n";
+    }
+    $i = "0";
+    while ($i < $nombre) {
+        $login_prof = mysql_result($call_liste_data, $i, "login");
+        $nom_prof = mysql_result($call_liste_data, $i, "nom");
+        $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+        echo "<tr><td><b>";
+        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_gest_aid'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
+        echo "</tr>";
+    $i++;
+    }
+
+    if ($nombre == 0) {
+        echo "<h4 style=\"color: red;\">Il n'y a pas actuellement d'utilisateur gestionnaire !</h4>";
+    } else {
+        echo "</table>";
+    }
+    ?>
+    <p class='bold'>Ajouter un utilisateur à la liste des gestionnaires de l'AID :</p>
+    <select size=1 name="reg_prof_login">
+    <option value=''>(aucun)</option>
+    <?php
+    $call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
+    $nombreligne = mysql_num_rows($call_prof);
+    $i = "0" ;
+    while ($i < $nombreligne) {
+        $login_prof = mysql_result($call_prof, $i, 'login');
+        $nom_el = mysql_result($call_prof, $i, 'nom');
+        $prenom_el = mysql_result($call_prof, $i, 'prenom');
+        echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+    $i++;
+    }
+    ?>
+    </select>
+    <input type="hidden" name="add_prof_gest" value="yes" />
+    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
+    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+    <input type="submit" value='Enregistrer' />
+    </form>
+
+    <?php
 }
 
 if ($flag == "eleve") {
@@ -386,7 +471,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     if ($nombreligne != 0) {
 
         if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
-            echo "<br />Lister uniquement les élèves sans photographie <input type=\"checkbox\" name=\"eleves_sans_photos\" value=\"y\" ";
+            echo "<br />Ci-dessous, lister uniquement les élèves sans photographie <input type=\"checkbox\" name=\"eleves_sans_photos\" value=\"y\" ";
             if(isset($_SESSION['eleves_sans_photos'])) echo " checked ";
             echo "/>";
         }

@@ -2654,9 +2654,63 @@ function EstAutoriseAteliers($_login) {
         return true;
     }
 }
+/* Gestion des AIDs
+fonction qui calcul le niveau de gestion des AIDs
+0 : aucun droit
+1 : peut uniquement ajouter / supprimer des élèves
+2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
+3 : ...
+10 : Peut tout faire
+*/
+function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
+    if (getSettingValue("active_version151")!="y") {// lorsque le trunk sera officiellement en 151, on supprimera ce test
+        return 10;
+        die();
+    }
+    if ($_SESSION['statut'] == "administrateur") {
+        return 10;
+        die();
+    }
+    // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
+    if ($_id_aid == "") {
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+        if ($test >= 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+    // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
+        if ($test == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
 
-function trombine($_elenoet){
-
+/* Gestion des droits d'accès à confirm_query.php
+*/
+function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cible3) {
+    if (getSettingValue("active_version151")!="y") {// lorsque le trunk sera officiellement en 151, on supprimera ce test
+        return TRUE;
+        die();
+    }
+    if ($_SESSION['statut'] == "administrateur") {
+        return TRUE;
+        die();
+    }
+    if ($_action=="del_eleve_aid") {
+    // on regarde si l'utilisateur est gestionnaire de l'aid
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
+        if ($test == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    return FALSE;
 }
 
 

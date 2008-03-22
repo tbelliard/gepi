@@ -72,9 +72,9 @@ if (!isset($is_posted)) {
         // Par sécurité, on efface d'éventuelles données résiduelles dans les tables j_aid_utilisateurs et j_aid_eleves
 
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
-
+        $del = mysql_query("DELETE FROM j_aid_utilisateurs_gest WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
-
+        $del = mysql_query("DELETE FROM j_aid_eleves_resp WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
 
         $is_posted='debut';

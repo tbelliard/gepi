@@ -48,6 +48,11 @@ $cible2 = isset($_POST["cible2"]) ? $_POST["cible2"] :NULL;
 $cible3 = isset($_POST["cible3"]) ? $_POST["cible3"] :NULL;
 $k = isset($_POST["k"]) ? $_POST["k"] :(isset($_GET["k"]) ? $_GET["k"] :NULL);
 
+if (!PeutEffectuerActionSuppression($_SESSION["login"],$action,$liste_cible1,$liste_cible2,$liste_cible3)) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
 if (isset($liste_cible)) $tab_cible1 = explode(";", $liste_cible);
 if (isset($liste_cible2)) $tab_cible2 = explode(";", $liste_cible2);
 if (isset($liste_cible3)) $tab_cible3 = explode(";", $liste_cible3);
@@ -69,6 +74,14 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[1] = "Table de jointure aid/utilisateurs pouvant modifier les fiches projets";
     $test_nb[1] = "SELECT * FROM j_aidcateg_utilisateurs WHERE id_utilisateur='$cible1' and indice_aid='$cible3'";
     $req[1] = "DELETE FROM j_aidcateg_utilisateurs WHERE id_utilisateur='$cible1' and indice_aid='$cible3'";
+    break;
+
+    // Suppression d'un gestionnaire d'une aid
+    case "del_gest_aid":
+    $nombre_req = 1;
+    $mess[0] = "Table de jointure aid/utilisateurs";
+    $test_nb[0] = "SELECT * FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
+    $req[0] = "DELETE FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     break;
 
     // Suppression d'un élève d'une aid
@@ -146,12 +159,12 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[] = "Table de définition cpe/élève :";
     $test_nb[] = "SELECT * FROM j_eleves_cpe WHERE cpe_login='$cible1'";
     $req[] = "DELETE FROM j_eleves_cpe WHERE cpe_login='$cible1';";
-	$nombre_req++;
+  	$nombre_req++;
 
     $mess[] = "Table de définition scolarité/classe :";
     $test_nb[] = "SELECT * FROM j_scol_classes WHERE login='$cible1'";
     $req[] = "DELETE FROM j_scol_classes WHERE login='$cible1';";
-	$nombre_req++;
+	  $nombre_req++;
 
     $mess[] = "Table de jointure du module Inscription :";
     $test_nb[] = "SELECT * FROM inscription_j_login_items WHERE login='$cible1'";
@@ -161,7 +174,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 	  $mess[] = "Table de jointure aid/utilisateurs pouvant modifier les fiches projets";
     $test_nb[] = "SELECT * FROM j_aidcateg_utilisateurs WHERE id_utilisateur='$cible1'";
     $req[] = "DELETE FROM j_aidcateg_utilisateurs WHERE id_utilisateur='$cible1'";
-  $nombre_req++;
+    $nombre_req++;
+
+    $mess[] = "Table de jointure Aid/utilisateurs gestionnaires :";
+    $test_nb[] = "SELECT * FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1'";
+    $req[] = "DELETE FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1';";
+    $nombre_req++;
+
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'observatoire_config';");
 	if(mysql_num_rows($test_existence)>0){
@@ -403,7 +422,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[5] = "SELECT * FROM j_aid_eleves_resp WHERE id_aid = '$cible1' and indice_aid='$cible2'";
     $req[5] = "DELETE FROM j_aid_eleves_resp WHERE id_aid = '$cible1' and indice_aid='$cible2'";
 
-    $nombre_req = 6;
+    $mess[6] = "Table de jointure Aid/gestionnaire :";
+    $test_nb[6] = "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_aid='$cible1' and indice_aid='$cible2')";
+    $req[6] = "DELETE FROM j_aid_utilisateurs_gest WHERE (id_aid='$cible1' and indice_aid='$cible2')";
+
+    $nombre_req = 7;
 
     break;
     case "retire_eleve":

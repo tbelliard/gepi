@@ -795,6 +795,24 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     $expli = array();
     $expli[] = "Cet outil vous permet de visualiser les trombinoscopes des classes.";
 
+    // On n'appelle les aid "trombinoscope"
+    $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
+    $nb_aid = mysql_num_rows($call_data);
+    $i=0;
+    while ($i < $nb_aid) {
+        $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+        $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
+        $nb_result = mysql_num_rows($call_prof);
+        if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
+            $nom_aid = @mysql_result($call_data, $i, "nom");
+            $chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
+            $titre[] = $nom_aid;
+            $expli[] = "Cet outil vous permet de visualiser quels élèves ont le droit d'envoyer/modifier leur photo.";
+        }
+        $i++;
+    }
+
+
     $nb_ligne = count($chemin);
     $affiche = 'no';
     for ($i=0;$i<$nb_ligne;$i++) {
