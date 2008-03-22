@@ -282,7 +282,7 @@ if ($_SESSION["statut"] == "administrateur" AND isset($del_salle) AND $del_salle
 	}
 
 	echo '
-	<font color="green">la salle '.$rep_nom["numero_salle"].$aff_nom_salle.' a été effacée de la base de Gepi</font>';
+	<font color="green">La salle '.$rep_nom["numero_salle"].$aff_nom_salle.' a été effacée de la base de Gepi.</font>';
 }
 ?>
 			</td><td>
