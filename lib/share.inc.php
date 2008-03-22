@@ -2663,7 +2663,7 @@ fonction qui calcul le niveau de gestion des AIDs
 10 : Peut tout faire
 */
 function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
-    if (getSettingValue("active_version151")!="y") {// lorsque le trunk sera officiellement en 151, on supprimera ce test
+    if (getSettingValue("active_version152")!="y") {// lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
         return 10;
         die();
     }
@@ -2693,7 +2693,7 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
 /* Gestion des droits d'accès à confirm_query.php
 */
 function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cible3) {
-    if (getSettingValue("active_version151")!="y") {// lorsque le trunk sera officiellement en 151, on supprimera ce test
+    if (getSettingValue("active_version152")!="y") {// lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
         return TRUE;
         die();
     }

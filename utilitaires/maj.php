@@ -194,7 +194,7 @@ if (isset ($_POST['maj'])) {
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/export_csv_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/help.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
     $tab_req[] = "INSERT INTO droits VALUES ('/aid/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');";
-    if (getSettingValue("active_version151")=="y") { // lorsque le trunk sera officiellement en 151, on supprimera ce test
+    if (getSettingValue("active_version152")=="y") { // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
       $tab_req[] = "INSERT INTO droits VALUES ('/aid/index2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion des AID (profs, élèves)', '');";
       $tab_req[] = "INSERT INTO droits VALUES ('/aid/modify_aid.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion des AID (profs, élèves)', '');";
       $tab_req[] = "INSERT INTO droits VALUES ('/aid/modify_aid_new.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'Gestion des AID (profs, élèves)', '');";
@@ -5877,7 +5877,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 
 	//==========================================================
     // Modification Delineau
-    if (getSettingValue("active_version151")=="y") { // lorsque le trunk sera officiellement en 151, on supprimera ce test
+    if (getSettingValue("active_version152")=="y") { // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
     $result .= "<br />&nbsp;->Tentative de création de la table j_aid_utilisateurs_gest.<br />";
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_utilisateurs_gest'"));
     if ($test == 0) {

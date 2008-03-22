@@ -242,7 +242,7 @@ $liste_tables = array(
 "j_aid_eleves",
 "j_aid_eleves_resp",
 "j_aid_utilisateurs",
-//"j_aid_utilisateurs_gest", // active_version151
+//"j_aid_utilisateurs_gest", // active_version152
 "j_eleves_classes",
 "j_eleves_cpe",
 "j_eleves_etablissements",
