@@ -5891,6 +5891,21 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     }
 
+	//==========================================================
+	$result .= "<br />&nbsp;->Ajout du champ 'affiche_ine' à la table 'model_bulletin'<br />";
+	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_ine'"));
+	if ($test1 == 0) {
+		$query3 = mysql_query("ALTER TABLE model_bulletin ADD affiche_ine TINYINT NOT NULL;");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	} else {
+		$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	}
+	//==========================================================
+
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);

@@ -335,6 +335,7 @@ if(!empty($model_bulletin)) {
 			$affiche_moyenne_mini_general[$classe_id] = $donner_model['affiche_moyenne_mini_general']; // permet l'affichage de la moyenne général mini
 			$affiche_moyenne_maxi_general[$classe_id] = $donner_model['affiche_moyenne_maxi_general']; // permet l'affichage de la moyenne général maxi
 			$affiche_date_edition[$classe_id] = $donner_model['affiche_date_edition']; // affiche la date d'édition
+			$affiche_ine[$classe_id] = $donner_model['affiche_ine']; // affiche l'INE de l'élève
 
 		} //while($donner_model = mysql_fetch_array($requete_model)
 	} // for ($z=0;$z<$nb_classes_selectionnees;$z++)
@@ -478,6 +479,7 @@ if(!empty($model_bulletin)) {
 	$affiche_moyenne_maxi_general[$classe_id] = '1'; // permet l'affichage de la moyenne général maxi
 
 	$affiche_date_edition[$classe_id] = '1'; // affiche la date d'édition
+	$affiche_ine[$classe_id] = '0'; // affiche l'INE de l'élève
 	}
 
 
@@ -2127,12 +2129,44 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			}
 		}
 
-		if($affiche_nom_court[$classe_id]==='1') {
-			if($classe_nomcour[$i]!="") {
-				$pdf->Cell(90,4.5, unhtmlentities($classe_nomcour[$i]),0,2,'');
+		// affiche le nom court de la classe
+		if ( $affiche_nom_court[$classe_id] === '1' )
+		{
+
+			if($classe_nomcour[$i]!="")
+			{
+
+				// si l'affichage du numéro INE est activé alors on ne passe pas
+				$passe_a_la_ligne = 0;
+				if ( $affiche_ine[$classe_id] != '1' or $INE_eleve[$i] == '' )
+				{
+						$passe_a_la_ligne = 1;
+
+				}
+
+				$pdf->Cell(45,4.5, unhtmlentities($classe_nomcour[$i]),0, $passe_a_la_ligne,'');
+
 			}
+
 		}
+
+
+		// affiche l'INE de l'élève
+		if ( $affiche_ine[$classe_id] === '1' )
+		{
+
+			if ( $INE_eleve[$i] != '' )
+			{
+
+				$pdf->Cell(45,4.5, 'INE: '.$INE_eleve[$i], 0, 1,'');
+
+			}
+
+		}
+
 		// Affichage du numéro d'impression
+		$pdf->SetX($X_eleve_2);
+
 		if($affiche_effectif_classe[$classe_id]==='1') {
 			if($affiche_numero_impression[$classe_id]==='1') {
 				$pass_ligne = '0';
