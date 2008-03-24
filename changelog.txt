@@ -5,7 +5,12 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.5.1-rc1 (13/03/2007)
+Gepi-1.5.1-rc2 (XX/XX/2008)
+===========================
+
+
+
+Gepi-1.5.1-rc1 (13/03/2008)
 ===========================
 - Ajout d'un script afin de créer un remplaçant pour un professeur
 - Ajout d'un module très simple d'inscription à des journées, stages, ...

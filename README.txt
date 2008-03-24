@@ -1,4 +1,4 @@
-GEPI-1.5.1-rc1
+GEPI-1.5.1-rc2
 ==============
 
 Thomas BELLIARD <thomas.belliard@free.fr>
