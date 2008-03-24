@@ -54,6 +54,8 @@ if (!checkAccess()) {
 	if (empty($_GET['type_bulletin']) and empty($_POST['type_bulletin'])) {$type_bulletin="";}
 	    else { if (isset($_GET['type_bulletin'])) {$type_bulletin=$_GET['type_bulletin'];} if (isset($_POST['type_bulletin'])) {$type_bulletin=$_POST['type_bulletin'];} }
 
+	$bulletin_pass = 'non';
+
 	//ajout Eric pour impression triée par Etab d'origine
 	if (empty($_GET['tri_par_etab_origine']) and empty($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine="non";}
 	    else { if (isset($_GET['tri_par_etab_origine'])) {$tri_par_etab_origine=$_GET['tri_par_etab_origine'];} if (isset($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine=$_POST['tri_par_etab_origine'];} }
@@ -156,7 +158,10 @@ if (!checkAccess()) {
 				header("Location: bulletin_pdf_avec_modele_classe.php");
 			}
 			*/
-		header("Location: bulletin_pdf_avec_modele_classe.php");
+
+
+		//		header("Location: bulletin_pdf_avec_modele_classe.php");
+		$bulletin_pass = 'oui';
 		}
 	// FIN Christian renvoye vers le fichier PDF bulletin
 	}
@@ -194,7 +199,29 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
        //modification Christian CHAPEL
 	if($format === 'pdf' and ( empty($bt_select_periode)) or !empty($creer_pdf) and $modele ==='' and !isset($classe[0]))
 	{
+
+		if ( $bulletin_pass === 'oui' )
+		{
+
+			?>
+			<form method="post" action="bulletin_pdf_avec_modele_classe.php" name="imprime_pdf_ok" target="_blank">
+		  		<fieldset style="width: 90%; margin: auto;"><legend>Votre sélection</legend>
+		  		 	<input type="hidden" name="classe" value="<?php echo $classe; ?>" />
+		  		 	<input type="hidden" name="eleve" value="<?php echo $eleve; ?>" />
+		  		 	<input type="hidden" name="periode" value="<?php echo $periode; ?>" />
+		  		 	<input type="hidden" name="periode_ferme" value="<?php echo $periode_ferme; ?>" />
+		  		 	<input type="hidden" name="type_bulletin" value="<?php echo $type_bulletin; ?>" />
+		  		 	<input type="hidden" name="tri_par_etab_origine" value="<?php echo $tri_par_etab_origine; ?>" />
+		  		 	<input type="hidden" name="bull_pdf_debug" value="<?php echo $bull_pdf_debug; ?>" />
+		  		 	<input type="hidden" name="format" value="<?php echo $format; ?>" />
+		  			<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Télécharger le PDF" /></center>
+				</fieldset>
+			</form>
+			<?php
+
+		}
 		?>
+
 		<form method="post" action="index.php" name="imprime_pdf">
 		  <fieldset style="width: 90%; margin: auto;"><legend>S&eacute;lection</legend>
 		  <center>
