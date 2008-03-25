@@ -194,8 +194,14 @@ if ($action == "upload_file") {
                     echo '
 					<p>
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
-					<label for="nomGepi' . $l . '">' . $val . '</label>
+					<label for="nomGepi' . $l . '"><b>' . $val . '</b></label>
 					';
+					// Pour les salles, on annonce celles qui existent déjà
+					if (salleifexists($valeur)== "oui") {
+						echo '<span style="font-style: italic; color: green; font-size: 0.8em;">Salle existante, non créée !</span>';
+					}else{
+						echo '<span style="font-style: italic; color: red; font-size: 0.8em;">Salle à créer !</span>';
+					}
                     // On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
                         $test_selected = explode(" ", $val);
@@ -207,6 +213,8 @@ if ($action == "upload_file") {
                     if ($etape == 4) {
                     	// Pour les prof, on met tout en majuscule
                     	$nom_selected = strtoupper($test_selected[0]);
+                    	// et on enlève tous les accents
+
                     }else{
 						$nom_selected = $test_selected[0]; // pour le selected du helper
 					}

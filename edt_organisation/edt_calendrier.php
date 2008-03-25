@@ -358,7 +358,7 @@ if (isset($modif_ok) AND isset($nom_periode)) {
 	$fin_ts = gmmktime($exp_heurefin[0], $exp_heurefin[1], 0, $exp_jourfin[1], $exp_jourfin[0], $exp_jourfin[2]);
 	$jourfin = $exp_jourfin[2]."-".$exp_jourfin[1]."-".$exp_jourfin[0];
 	$modif_periode = mysql_query("UPDATE edt_calendrier
-				SET nom_calendrier = '".$nom_periode."',
+				SET nom_calendrier = '".traitement_magic_quotes($nom_periode)."',
 				classe_concerne_calendrier = '".$classes_concernees_insert."',
 				debut_calendrier_ts = '".$deb_ts."',
 				fin_calendrier_ts = '".$fin_ts."',
@@ -398,13 +398,32 @@ $detail_jourfin = explode("/", $jour_fin);
 		$heure_fin = $heure_fin.":00";
 			$expfin = explode(":", $heure_fin);
 			// On insére ces dates en timestamp Unix GMT
-		$heuredeb_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2]);
-		$heurefin_ts = gmmktime($expfin[0], $expfin[1], 0, $detail_jourfin[1], $detail_jourfin[0], $detail_jourfin[2]);
-		$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
-							VALUES ('$nom_periode', '$classes_concernees_insert', '$heuredeb_ts', '$heurefin_ts', '$jourdebut', '$heure_debut', '$jourfin', '$heure_fin', '$choix_periode', '$etabferme', '$vacances')")
-							OR DIE ('Echec dans la requête de création d\'une nouvelle entrée !');
+		$heuredeb_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2])
+							OR trigger_error('La date de début n\'est pas valide. ', E_USER_WARNING);
+		$heurefin_ts = gmmktime($expfin[0], $expfin[1], 0, $detail_jourfin[1], $detail_jourfin[0], $detail_jourfin[2])
+							OR trigger_error('La date de fin n\'est pas valide. ', E_USER_WARNING);
+
+		// On vérifie que tout soit bien rempli et on sauvegarde
+		if ($nom_periode != '' AND $heuredeb_ts != '' AND $heurefin_ts != '') {
+			$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
+							VALUES ('".traitement_magic_quotes($nom_periode)."',
+									'".$classes_concernees_insert."',
+									'".$heuredeb_ts."',
+									'".$heurefin_ts."',
+									'".$jourdebut."',
+									'".$heure_debut."',
+									'".$jourfin."',
+									'".$heure_fin."',
+									'".$choix_periode."',
+									'".$etabferme."',
+									'".$vacances."')")
+							OR trigger_error('Echec dans la requête de création d\'une nouvelle entrée !', E_USER_WARNING);
+		}
+
+	}else{
+
+		echo '<h3 class="red">Ce nom de période existe déjà</h3>';
 	}
-	else echo '<h3 class="red">Ce nom de période existe déjà</h3>';
 }
 
 /* ============ On affiche alors toutes les périodes de la table ==============*/

@@ -308,6 +308,10 @@ table {
 	border: 1px solid grey;
 }
 
+#edt_table_couleurs td p {
+	cursor: pointer;
+}
+
 #divCsv2 label {
 	float: left;
 	width: 30%;

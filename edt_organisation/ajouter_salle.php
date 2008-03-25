@@ -132,12 +132,12 @@ $verif_champs = 0;
 
 	if ($verif_long_num > 0) {
 		if ($verif_long_num <= 5 OR $verif_long_nom <= 30) {
-			$add_new_numero = addslashes($numero_salle);
-			$add_new_salle = addslashes($nom_salle);
+			$add_new_numero = traitement_magic_quotes($numero_salle);
+			$add_new_salle = traitement_magic_quotes($nom_salle);
 			$verif_champs = 1;
 
 		}else{
-			die();
+			trigger_error('Une erreur de saisie a bloqué le système, veuillez recommencer. ', E_USER_ERROR);
 		}
 	}
 
@@ -147,15 +147,18 @@ if (isset($add_new_numero) AND isset($add_new_salle)) {
 		$reche_salle = mysql_query("SELECT numero_salle FROM salle_cours WHERE numero_salle = '".$add_new_numero."'");
 		$nbre_salle = mysql_num_rows($reche_salle);
 		if ($nbre_salle === 0) {
-			$req_ajout = mysql_query("INSERT INTO salle_cours (id_salle, numero_salle, nom_salle) VALUES ('', '$add_new_numero', '$add_new_salle')")
-			OR die ('Echec lors de l\'enregistrement');
-			echo "<span class=\"accept\">La salle numéro ".$add_new_numero." appelée \"".$add_new_salle."\" a bien été enregistrée !</span>";
+			$req_ajout = mysql_query("INSERT INTO salle_cours
+									(id_salle, numero_salle, nom_salle) VALUES
+									('', '$add_new_numero', '$add_new_salle')")
+								OR trigger_error('Echec lors de l\'enregistrement : '.mysql_error(), E_USER_ERROR);
+
+			echo "<span class=\"accept\">La salle numéro ".unslashes($add_new_numero)." appelée \"".unslashes($add_new_salle)."\" a bien été enregistrée !</span>";
 		}
 		else{
 			echo "<span class=\"refus\">Cette salle existe déjà ! Veuillez changer son numéro</span>";
 		}
 	}else{
-		trigger_error('Impossible de rentrer de nouvelles salles', E_USER_WARNING);
+		trigger_error('Impossible de rentrer de nouvelles salles. ', E_USER_WARNING);
 	}
 }
 
@@ -235,9 +238,14 @@ if (isset($modif_salle)) {
 
 	// Traitement du nouveau nom de la salle
 if (isset($new_name) AND $new_name != "" ) {
-	$new_name_propre = substr($new_name, 0, 30);
-	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'") OR DIE ('Echec dans le changement de nom');
-	$req_numero = mysql_query("SELECT numero_salle FROM salle_cours WHERE id_salle = '$modif_salle'") OR DIE ('Echec dans le changement du nom');
+	$nettoyage1 = substr($new_name, 0, 30);
+	$new_name_propre = traitement_magic_quotes($nettoyage1); // cette fonction est dans le traitement_data.inc.php
+
+	$req_modif_nom = mysql_query("UPDATE salle_cours SET nom_salle = '$new_name_propre' WHERE id_salle = '$modif_salle'")
+						OR trigger_error('Echec dans le changement de nom', E_USER_WARNING);
+	$req_numero = mysql_query("SELECT numero_salle FROM salle_cours WHERE id_salle = '$modif_salle'")
+						OR trigger_error('Echec dans le changement du nom', E_USER_WARNING);
+
 	$rep_numero = mysql_fetch_array($req_numero);
 		$num_salle = $rep_numero["numero_salle"];
 	echo '		</td>
@@ -245,7 +253,7 @@ if (isset($new_name) AND $new_name != "" ) {
 			<tr>
 				<td></td>
 				<td>
-	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.$new_name_propre.'.</span>
+	<span class="accept">La salle numéro '.$num_salle.' s\'appelle désormais : '.unslashes($new_name_propre).'.</span>
 	';
 }
 ?>

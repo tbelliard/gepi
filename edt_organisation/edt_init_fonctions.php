@@ -293,7 +293,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 function testerSalleCsv2($numero){
 	// On teste la table
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
-				OR error_reporting('Erreur dans la requête '.$query.' : '.mysql_error());
+				OR trigger_error('Erreur dans la requête '.$query.' : '.mysql_error());
 	$rep = @mysql_result($query, "id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
@@ -306,6 +306,26 @@ function testerSalleCsv2($numero){
 		}
 	}
 }
+
+/*
+ * Fonction qui teste si une salle existe dans Gepi
+ * $numero est le numéro de la salle
+*/
+function salleifexists($numero){
+	// On teste la table
+	$sql = "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'";
+	$query = mysql_query($sql)
+				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.mysql_error(), E_USER_WARNING);
+	// On force tout de même le résultat
+	$rep = @mysql_result($query, "id_salle");
+	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
+		// On renvoie "oui"
+		return "oui";
+	}else{
+		return "non";
+	}
+}
+
 
 /*
  * Fonction qui fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours (CSV2)
