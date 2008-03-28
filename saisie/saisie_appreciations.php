@@ -247,7 +247,8 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
 
 echo "<p class=bold>";
-if ($periode_cn != 0) {
+//if ($periode_cn != 0) {
+if (($periode_cn != 0)&&($_SESSION['statut']!='secours')) {
 	//echo "|<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>";
 	echo "<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 } else {
