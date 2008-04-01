@@ -185,7 +185,15 @@
                         if ($bull_affiche_appreciations == 'y') {$nb_total_cols++; $nb_last_cols++;}
 
                         // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
-                        $affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+                        //$affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+                        $sql="SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')";
+                        //$affiche_cat_moyenne = mysql_result(mysql_query($sql), 0);
+		                $affiche_cat_moyenne_query = mysql_query($sql);
+		                if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+		                	$affiche_cat_moyenne = false;
+		                } else {
+		                	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+		                }
 
                         // On a toutes les infos. On affiche !
                         //echo "<tr>\n";
