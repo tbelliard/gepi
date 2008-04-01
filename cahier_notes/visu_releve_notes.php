@@ -501,8 +501,19 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				// On détermine le nombre de colonnes pour le colspan
 				$nb_total_cols = 2;
 
+				//=========================================
 				// On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
-				$affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+				//$affiche_cat_moyenne = mysql_result(mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')"), 0);
+				$sql="SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')";
+				//$affiche_cat_moyenne = mysql_result(mysql_query($sql), 0);
+				$affiche_cat_moyenne_query = mysql_query($sql);
+				if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+					$affiche_cat_moyenne = false;
+				} else {
+					$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+				}
+				// Ce test est inutile parce qu'apparemment on n'affiche pas de moyenne de catégorie... d'ailleurs la moyenne de catégorie n'est-elle pas calculée qu'une fois la Recopie des moyennes vers le bulletin effectuée?
+				//=========================================
 
 				// On a toutes les infos. On affiche !
 				echo "<tr>";
