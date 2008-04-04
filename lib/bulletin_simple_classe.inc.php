@@ -765,15 +765,15 @@ if ($current_eleve_profsuivi_login) {
 */
 if(empty($current_profsuivi_login)) {
 	//echo "Pas de $gepi_prof_suivi désigné.";
-	echo "-";
+	echo "(-)";
 }
 else {
-	echo "<b>$gepi_prof_suivi <i>";
+	echo "<b>($gepi_prof_suivi <i>";
 	for($loop=0;$loop<count($current_profsuivi_login);$loop++) {
 		if($loop>0) {echo ", ";}
 		echo affiche_utilisateur($current_profsuivi_login[$loop],$id_classe);
 	}
-	echo "</i></b>";
+	echo "</i></b>)";
 }
 
 echo " :</span>\n";
