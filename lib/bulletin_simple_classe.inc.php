@@ -764,7 +764,8 @@ if ($current_eleve_profsuivi_login) {
 }
 */
 if(empty($current_profsuivi_login)) {
-	echo "Pas de $gepi_prof_suivi désigné.";
+	//echo "Pas de $gepi_prof_suivi désigné.";
+	echo "-";
 }
 else {
 	echo "<b>$gepi_prof_suivi <i>";

@@ -858,9 +858,25 @@ echo "</table>\n";
 // Maintenant, on met l'avis du conseil de classe :
 
 echo "<span class='bull_simpl'><b>Avis du conseil de classe </b> ";
+$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
+/*
 if ($current_eleve_profsuivi_login) {
 	echo "<b>(".ucfirst(getSettingValue("gepi_prof_suivi"))." : <i>".affiche_utilisateur($current_eleve_profsuivi_login,$id_classe)."</i>)</b>";
 }
+*/
+if(empty($current_profsuivi_login)) {
+	//echo "Pas de $gepi_prof_suivi désigné.";
+	echo "-";
+}
+else {
+	echo "<b>$gepi_prof_suivi <i>";
+	for($loop=0;$loop<count($current_profsuivi_login);$loop++) {
+		if($loop>0) {echo ", ";}
+		echo affiche_utilisateur($current_profsuivi_login[$loop],$id_classe);
+	}
+	echo "</i></b>";
+}
+
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
 echo "<table width=\"$larg_tab\" class='boireaus' cellspacing=1 cellpadding=1>\n";
