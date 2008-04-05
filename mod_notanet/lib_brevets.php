@@ -20,7 +20,30 @@ $tab_type_brevet[7]="TECHNOLOGIQUE, option de série AGRICOLE";
 // Ajouter un traitement/test pour permettre l'affichage de la ligne Option DP6 sur la fiche brevet sans exiger de saisie en 'non dispensée dans l'établissement' au niveau de notanet
 // *****************
 
+
+function get_classe_from_id($id){
+	//$sql="SELECT * FROM classes WHERE id='$id_classe[0]'";
+	$sql="SELECT * FROM classes WHERE id='$id'";
+	$resultat_classe=mysql_query($sql);
+	if(mysql_num_rows($resultat_classe)!=1){
+		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu être identifiée.</p>";
+		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu être identifiée.</p>";
+	}
+	else{
+		$ligne_classe=mysql_fetch_object($resultat_classe);
+		$classe=$ligne_classe->classe;
+		return $classe;
+	}
+}
+
+
 function tabmatieres($type_brevet){
+	//====================
+	// AJOUT: boireaus 20080329
+	global $tabmatieres;
+	unset($tabmatieres);
+	//====================
+
 	switch($type_brevet){
 		case 0:
 			// COLLEGE, option de série LV2
@@ -875,4 +898,469 @@ function tabmatieres($type_brevet){
 	return $tabmatieres;
 }
 
+
+
+
+
+
+
+function colore_ligne_notanet($chaine){
+	$tabchaine=explode("|",$chaine);
+	/*
+	echo "<!--\n$chaine\n";
+	for($loop=0;$loop<count($tabchaine);$loop++){
+		echo "\$tabchaine[$loop]=$tabchaine[$loop]\n";
+	}
+	echo "-->\n";
+	*/
+	//$color1="red";
+	$color1="blue";
+	$color2="green";
+	$color3="blue";
+	return "<span style='color: $color1;'>$tabchaine[0]</span>|<span style='color: $color2;'>$tabchaine[1]</span>|<span style='color: $color3;'>$tabchaine[2]</span>|";
+}
+
+function formate_note_notanet($chaine){
+	// Arrondir au demi-point:
+	$chaine_tmp=round($chaine*2)/2;
+	// Formater en AA.BB:
+	//return str_pad(sprintf("%02.2f",$chaine_tmp),5,"0",STR_PAD_LEFT);
+	return sprintf("%05.2f",$chaine_tmp);
+}
+
+
+
+
+function tab_extract_moy($tab_ele,$id_clas) {
+	global $num_eleve, $classe, $tab_mat;
+
+	//echo "\$tab_ele['type_brevet']=".$tab_ele['type_brevet']."<br />";
+	$tabmatieres=tabmatieres($tab_ele['type_brevet']);
+	//echo "count(\$tabmatieres)=".count($tabmatieres)."<br />";
+
+	$id_matiere=$tab_mat[$tab_ele['type_brevet']]['id_matiere'];
+	$statut_matiere=$tab_mat[$tab_ele['type_brevet']]['statut_matiere'];
+
+	//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='".$tab_ele['type_brevet']."'";
+
+	// Témoin destiné à signaler les élèves pour lesquels une erreur se produit.
+	$temoin_notanet_eleve="";
+	$info_erreur="";
+
+	echo "<p>\n";
+	if($tab_ele['no_gep']==""){
+		echo "<b style='color:red;'>ERREUR:</b> Numéro INE non attribué: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
+		$temoin_notanet_eleve="ERREUR";
+		$info_erreur="Pas de numéro INE";
+		echo "INE: <input type='text' name='INE[$num_eleve]' value='' />\n";
+	}
+	else{
+		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']."</b> ".$tab_ele['no_gep']."<br />\n";
+		$INE=$tab_ele['no_gep'];
+		echo "INE: <input type='text' name='INE[$num_eleve]' value='$INE' />\n";
+	}
+	// Guillemets sur la valeur à cause des apostrophes dans des noms...
+	echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
+	echo "</p>\n";
+
+
+	// Tableau destiné à présenter à gauche, le tableau des notes, moyennes,... et à droite les commentaires/erreurs et éventuellement les lignes du fichier d'export.
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top' style='padding-top: 2px; padding-left:2px; vertical-align:top;'>\n";
+
+	//$TOT=0;
+	//echo "<table border='1'>\n";
+	echo "<table class='boireaus'>\n";
+	$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
+	//echo "<td>$sql</td>";
+	$resultat_periodes=mysql_query($sql);
+	echo "<tr style='font-weight: bold; text-align:center;'>\n";
+	echo "<th>Id</th>\n";
+	echo "<th>Matière</th>\n";
+	echo "<th>Moyenne</th>\n";
+	while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
+		echo "<th>T $ligne_periodes->num_periode</th>\n";
+	}
+	echo "<th>Moyenne</th>\n";
+	echo "<th>Correction</th>\n";
+	echo "</tr>\n";
+
+	$alt=1;
+	for($j=101;$j<=122;$j++){
+
+
+		// Initialisation de la moyenne pour la matière NOTANET courante.
+		$moy_NOTANET[$j]="";
+
+
+		// Compteur destiné à repérer des matières pour lesquelles l'élève aurait des notes dans plus d'une option.
+		// On ne sait alors pas quelle valeur retenir
+		$cpt=0;
+		//if($tabmatieres[$j][0]!=''){
+		if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
+
+			//$ligne_NOTANET="$INE|$j";
+
+			//$temoin_au_moins_une_note="n";
+
+			$moyenne=NULL;
+			//echo "<p><b>".$tabmatieres[$j][0]."</b><br />\n";
+			for($k=0;$k<count($id_matiere[$j]);$k++){
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'>\n";
+				//echo $id_matiere[$j][$k]."<br />\n";
+				// A FAIRE: REQUETE moyenne pour la matière... si non vide... (test si note!="-" aussi?)
+
+				//$sql="SELECT round(avg(n.note),1) as moyenne FROM matieres_notes n, j_eleves_classes c WHERE (n.periode='$num_periode' AND n.matiere='$matiere[$j]' AND c.id_classe='$id_classe' AND c.login = n.login AND n.statut =''  AND c.periode='$num_periode')";
+
+				echo "<td><span style='color:green;'>$j</span></td>\n";
+				echo "<td>".$id_matiere[$j][$k]."</td>\n";
+
+				$temoin_moyenne="";
+				//======================================================================
+				//$sql="SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='')";
+				$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
+				//echo "$sql<br />\n";
+				$resultat_moy=mysql_query($sql);
+				if(mysql_num_rows($resultat_moy)>0){
+					$ligne_moy=mysql_fetch_object($resultat_moy);
+					//echo "$ligne_moy->moyenne<br />";
+					echo "<td style='font-weight:bold; text-align:center;'>$ligne_moy->moyenne</td>\n";
+					//$cpt++;
+					if($ligne_moy->moyenne!=""){
+						$temoin_moyenne="oui";
+					}
+				}
+				else{
+					//echo "X<br />\n";
+					// On ne passe jamais par là.
+					// Le calcul de la moyenne avec $resultat_moy retourne NULL et on a toujours mysql_num_rows($resultat_moy)=1
+					echo "<td style='font-weight:bold; text-align:center;'>X</td>\n";
+				}
+				echo "<!--\$temoin_moyenne=$temoin_moyenne-->\n";
+				// Cette solution donne les infos, mais ne permet pas de contrôler si tout est OK...
+				//======================================================================
+
+				$total=0;
+				$nbnotes=0;
+				//$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode";
+				$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
+				//echo "<td>$sql</td>";
+				$resultat_periodes=mysql_query($sql);
+				while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
+					//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='') ORDER BY periode";
+					//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='' AND periode='$ligne_periodes->num_periode')";
+
+					//===================================================================
+					// SUR LE STATUT... IL FAUDRAIT VOIR CE QUE DONNENT LES dispensés,...
+					// POUR POUVOIR LES CODER DANS L'EXPORT NOTANET
+					//===================================================================
+					//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='' AND periode='$ligne_periodes->num_periode')";
+					$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.statut ='' AND mn.periode='$ligne_periodes->num_periode' AND mn.id_groupe=jgm.id_groupe)";
+
+					//echo "<!-- $sql -->\n";
+					//echo "$sql<br />\n";
+					$resultat_notes=mysql_query($sql);
+					//echo "<!-- mysql_num_rows(\$resultat_notes)=".mysql_num_rows($resultat_notes)." -->\n";
+					if(mysql_num_rows($resultat_notes)>0){
+						if(mysql_num_rows($resultat_notes)>1){
+							//$infos="Erreur? Il y a plusieurs notes/moyennes pour une même période! ";
+							$infos="<p>Erreur? Il y a plusieurs notes/moyennes pour une même période! <br />";
+
+							//$infos.="<br />$sql<br />";
+
+							$temoin_notanet_eleve="ERREUR";
+							if($info_erreur==""){
+								$info_erreur="Plusieurs notes/moyennes pour une même période.";
+
+								$info_erreur.="<br />Dans ce cas, la moyenne est la somme des moyennes affichées divisée par le nombre de moyennes.<br />La valeur est correcte, s'il y a le même nombre de moyennes sur chaque trimestre et si on donne le même poids aux différentes moyennes.<br />";
+
+							}
+							else{
+								$info_erreur=$info_erreur." - Plusieurs notes/moyennes pour une même période.";
+							}
+							$chaine_couleur=" bgcolor='red'";
+						}
+						else{
+							$infos="";
+							$chaine_couleur="";
+						}
+						// Il ne devrait y avoir qu'une seule valeur:
+						echo "<td$chaine_couleur style='text-align: center;'>\n";
+						//echo "<!-- ... -->\n";
+						while($ligne_notes=mysql_fetch_object($resultat_notes)){
+							//echo "<td>".$infos.$ligne_notes->note."</td>\n";
+
+							//echo $infos.$ligne_notes->note." ";
+							if($infos!="") {
+								echo $infos."<b>".$ligne_notes->note."</b> ";
+								//echo "<div style='font-size:xx-small;'>".$infos."</div>".$ligne_notes->note." ";
+								//echo "<span style='font-size:xx-small;'>".$infos."</span>".$ligne_notes->note." ";
+							}
+							else {
+								echo $ligne_notes->note." ";
+							}
+
+							// Le test devrait toujours être vrai puisqu'on a exclu les moyennes avec un statut non vide
+							if(($ligne_notes->note!="")&&($ligne_notes->note!="-")){
+								// PROBLEME: S'il y a plusieurs notes pour une même période, le total est faussé et la moyenne itou...
+								// ... mais cela ne devrait pas arriver, ou alors la base GEPI n'est pas nette.
+								$total=$total+$ligne_notes->note;
+								$nbnotes++;
+								//echo "<!-- \$total=$total\n \$nbnotes=$nbnotes-->\n";
+								//echo "<\$total=$total\n \$nbnotes=$nbnotes>\n";
+
+
+								//$temoin_au_moins_une_note="y";
+
+								//echo "\$temoin_au_moins_une_note=$temoin_au_moins_une_note<br />";
+								//echo "\$cpt=$cpt<br />";
+							}
+						}
+						echo "</td>\n";
+					}
+					else{
+
+						if($temoin_moyenne=="oui"){
+							$chaine_couleur=" bgcolor='yellow'";
+						}
+						else{
+							$chaine_couleur="";
+						}
+
+						//echo "<td>X</td>\n";
+						// S'il n'y a pas de moyenne avec statut vide, on cherche si un statut dispensé ou autre est dans la table 'matieres_notes':
+						//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND periode='$ligne_periodes->num_periode')";
+						$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.periode='$ligne_periodes->num_periode' AND mn.id_groupe=jgm.id_groupe)";
+						$resultat_notes=mysql_query($sql);
+						if(mysql_num_rows($resultat_notes)>0){
+							$ligne_notes=mysql_fetch_object($resultat_notes);
+							if($ligne_notes->statut!=""){
+								$chaine_couleur=" bgcolor='red'";
+							}
+							echo "<td$chaine_couleur style='text-align:center;'>".$ligne_notes->note." - ".$ligne_notes->statut."</td>\n";
+						}
+						else{
+							echo "<td$chaine_couleur style='text-align:center;'>X</td>\n";
+						}
+					}
+				}
+				if($nbnotes>0){
+					$cpt++;
+					$moyenne=round($total/$nbnotes,1);
+					//echo "<td style='font-weight:bold; text-align:center;'>$total/$nbnotes = $moyenne</td>\n";
+					echo "<td style='font-weight:bold; text-align:center;'>$moyenne</td>\n";
+					//echo "<td><input type='text' name='' value='$moyenne'></td>\n";
+
+					/*
+					//if($tabmatieres[$j][-1]=="POINTS"){
+					//if(($tabmatieres[$j][-1]=="POINTS")||($tabmatieres[$j][-1]=="NOTNONCA")){
+					if($tabmatieres[$j][-1]=="POINTS"){
+						$ligne_NOTANET=$ligne_NOTANET."|$moyenne|";
+						$TOT=$TOT+$moyenne;
+					}
+					else{
+						if($tabmatieres[$j][-1]=="PTSUP"){
+							$ptsup=$moyenne-10;
+							if($ptsup>0){
+								$ligne_NOTANET=$ligne_NOTANET."|$ptsup|";
+								$TOT=$TOT+$ptsup;
+							}
+						}
+						else{
+							//$tabmatieres[$j][-1]="NOTNONCA";
+							// On ne modifie pas... euh si... une ligne est insérée, mais elle n'intervient pas dans le calcul du TOTal.
+							if($tabmatieres[$j][-1]=="NOTNONCA"){
+								$ligne_NOTANET=$ligne_NOTANET."|$moyenne|";
+							}
+						}
+					}
+					*/
+
+					//$moy_NOTANET[$j]="$moyenne";
+
+					//echo "<td><input type='text' name='moy.$j.$k[$num_eleve]' value='$moyenne' size='6'></td>\n";
+					//echo "<td><input type='text' name='moy_$j"."_"."$k[$num_eleve]' value='$moyenne' size='6'></td>\n";
+					//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='$moyenne' size='6'></td>\n";
+
+					//$moyenne_arrondie=round($moyenne*2)/2;
+					//La note globale attribuée aux élèves dans chaque discipline, à l'issue des deux classes, est calculée sur la base de la moyenne des deux notes attribuées en quatrième et en troisième. Chaque note globale est affectée du coefficient défini par l'arrêté du 18 août 1999. Les notes globales, arrondies au demi point supérieur, sont arrêtées par le conseil des professeurs du troisième trimestre.
+					$moyenne_arrondie=ceil($moyenne*2)/2;
+					//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' /></td>\n";
+					echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' />";
+					//echo "<input type='hidden' name='matiere_".$j."_[$num_eleve]' value='".$id_matiere[$j][$k]."' size='6' />";
+					echo "</td>\n";
+
+					//$moy_NOTANET[$j]="$moyenne";
+					$moy_NOTANET[$j]="$moyenne_arrondie";
+
+				}
+				else{
+
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND jeg.login='".$tab_ele['login']."' AND jgm.id_groupe=jeg.id_groupe);";
+					$test_ele_matiere=mysql_query($sql);
+
+					//if((($statut_matiere[$j]=='imposee'))&&($k+1==count($id_matiere[$j]))&&($moy_NOTANET[$j]=="")){
+					if((($statut_matiere[$j]=='imposee'))&&(mysql_num_rows($test_ele_matiere)!=0)&&($moy_NOTANET[$j]=="")) {
+						$bgmoy="background-color:red";
+					}
+					else{
+						$bgmoy="";
+					}
+
+
+					echo "<td style='font-weight:bold; text-align:center;$bgmoy'>X</td>\n";
+					//echo "<td><input type='text' name='moy.$j.$k[$num_eleve]' value='' size='6'></td>\n";
+					//echo "<td><input type='text' name='moy_$j"."_"."$k[$num_eleve]' value='' size='6'></td>\n";
+					echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='' size='6' /></td>\n";
+					//echo "<td></td>\n";
+				}
+				/*
+				else{
+					if($statut_matiere[$j]=='imposee'){
+						$temoin_notanet_eleve="ERREUR";
+						if($info_erreur==""){
+							$info_erreur="Pas de moyenne à une matière non optionnelle.";
+						}
+						else{
+							$info_erreur=$info_erreur." - Pas de moyenne à une matière non optionnelle.";
+						}
+					}
+				}
+				*/
+
+
+				/*
+				//if($temoin_notanet_eleve!="ERREUR"){
+				if(($temoin_notanet_eleve!="ERREUR")&&($moyenne!="")){
+					echo "<td>$ligne_NOTANET</td>\n";
+				}
+				*/
+
+				echo "</tr>\n";
+			}
+			/*
+			if($temoin_notanet_eleve!="ERREUR"){
+				echo "<tr><td>$ligne_NOTANET</td></tr>\n";
+			}
+			*/
+			//echo "</p>\n";
+
+			//echo "<tr><td>\$cpt=$cpt</td><td>\$statut_matiere[$j]=$statut_matiere[$j]</td></tr>";
+			if($cpt==0){
+				// Pas de moyenne trouvée pour cet élève.
+				if($statut_matiere[$j]=='imposee'){
+					// Si la matière est imposée, alors il y a un problème à régler...
+					$temoin_notanet_eleve="ERREUR";
+					if($info_erreur==""){
+						//$info_erreur="Pas de moyenne à une matière non optionnelle: ".$id_matiere[$j][0];
+						$info_erreur="Pas de moyenne à une matière non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+						//$tabmatieres[$j][-3]
+					}
+					else{
+						//$info_erreur=$info_erreur." - Pas de moyenne à une matière non optionnelle: ".$id_matiere[$j][0];
+						$info_erreur=$info_erreur."Pas de moyenne à une matière non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+					}
+				}
+			}
+		}
+		if($cpt>1){
+			$temoin_notanet_eleve="ERREUR";
+			// Un élève a des notes dans deux options d'un même choix NOTANET (par exemple AGL1 et ALL1)
+			if($info_erreur==""){
+				//$info_erreur="Plusieurs options d'une même matière.";
+				$info_erreur="Plusieurs options d'une même matière.<br />";
+			}
+			else{
+				//$info_erreur=$info_erreur." - Plusieurs options d'une même matière.";
+				$info_erreur=$info_erreur."Plusieurs options d'une même matière.<br />";
+			}
+		}
+	}
+	echo "</table>\n";
+
+
+	// Pour présenter à côté, le résultat:
+	echo "</td>\n";
+	echo "<td valign='top' style='vertical-align:top;'>\n";
+	//echo "\$temoin_notanet_eleve=$temoin_notanet_eleve<br />";
+	if($temoin_notanet_eleve=="ERREUR"){
+		echo "<b style='color:red;'>ERREUR:</b> $info_erreur";
+	}
+	else{
+		//echo "$INE|TOT|$TOT|<br />\n";
+		//echo "---";
+		$TOT=0;
+
+
+
+
+
+
+		echo "<p>\n";
+		echo "Portion de fichier générée:<br />";
+		for($j=101;$j<=122;$j++){
+			// Pour les matières NOTANET existantes:
+			if($tabmatieres[$j][0]!=''){
+				// Si une moyenne a été extraite
+				// (c'est-à-dire si l'élève a la matière et que l'extraction a réussi (donc pas d'ERREUR))
+				//echo "\$tabmatieres[$j][-1]=".$tabmatieres[$j][-1]."<br />\n";
+				//echo "\$moy_NOTANET[$j]=".$moy_NOTANET[$j]."<br />\n";
+				if($moy_NOTANET[$j]!=""){
+					$ligne_NOTANET="$INE|$j";
+					if($tabmatieres[$j][-1]=="POINTS"){
+						//$ligne_NOTANET=$ligne_NOTANET."|$moy_NOTANET[$j]|";
+						//$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
+						// Pour les brevets dans lesquels certaines notes sont sur 40 ou 60 au lieu de 20:
+						$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2])."|";
+						//$TOT=$TOT+$moy_NOTANET[$j];
+						$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
+					}
+					else{
+						if($tabmatieres[$j][-1]=="PTSUP"){
+							$ptsup=$moy_NOTANET[$j]-10;
+							if($ptsup>0){
+								//$ligne_NOTANET=$ligne_NOTANET."|$ptsup|";
+								$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
+								//$TOT=$TOT+$ptsup;
+								$TOT=$TOT+round($ptsup*2)/2;
+							}
+							else{
+								$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
+							}
+						}
+						else{
+							//$tabmatieres[$j][-1]="NOTNONCA";
+							// On ne modifie pas... euh si... une ligne est insérée, mais elle n'intervient pas dans le calcul du TOTal.
+							if($tabmatieres[$j][-1]=="NOTNONCA"){
+								//$ligne_NOTANET=$ligne_NOTANET."|$moy_NOTANET[$j]|";
+								$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
+							}
+						}
+					}
+					echo colore_ligne_notanet($ligne_NOTANET)."<br />\n";
+					$tabnotanet[]=$ligne_NOTANET;
+					//$fichtmp=fopen($fich_notanet,"a+");
+					//fwrite($fichtmp,$ligne_NOTANET."\n");
+					//fclose($fichtmp);
+				}
+			}
+		}
+		//echo "$INE|TOT|$TOT|<br />\n";
+		echo colore_ligne_notanet("$INE|TOT|".sprintf("%02.2f",$TOT)."|")."<br />\n";
+		$tabnotanet[]="$INE|TOT|".sprintf("%02.2f",$TOT)."|";
+		//$fichtmp=fopen($fich_notanet,"a+");
+		// PROBLEME: $TOT peut dépasser 100... quel doit être le formatage à gauche quand on est en dessous de 100?
+		//fwrite($fichtmp,"$INE|TOT|$TOT|\n");
+		//fwrite($fichtmp,"$INE|TOT|".formate_note_notanet($TOT)."|\n");
+		//fwrite($fichtmp,"$INE|TOT|".sprintf("%02.2f",$TOT)."|\n");
+		//fclose($fichtmp);
+		echo "</p>\n";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+}
 ?>

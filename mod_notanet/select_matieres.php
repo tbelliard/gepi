@@ -1,0 +1,378 @@
+<?php
+/* $Id$ */
+/*
+* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == 'c') {
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
+} else if ($resultat_session == '0') {
+	header("Location: ../logout.php?auto=1");
+	die();
+};
+
+
+
+
+
+//======================================================================================
+// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','Notanet: Association Types de brevet/Matières','');
+// Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
+if (!checkAccess()) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+//======================================================================================
+
+
+// Type de brevet:
+$type_brevet=isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
+if(($type_brevet!=0)&&
+($type_brevet!=0)&&
+($type_brevet!=1)&&
+($type_brevet!=2)&&
+($type_brevet!=3)&&
+($type_brevet!=4)&&
+($type_brevet!=5)&&
+($type_brevet!=6)&&
+($type_brevet!=7)) {
+	$type_brevet=NULL;
+}
+
+if(!isset($msg)) {$msg="";}
+
+// Bibliothèque pour Notanet et Fiches brevet
+include("lib_brevets.php");
+
+$id_matiere=array();
+for($j=101;$j<=122;$j++){
+	if(isset($_POST['id_matiere'.$j])){
+		$id_matiere[$j]=$_POST['id_matiere'.$j];
+
+	}
+}
+$statut_matiere=isset($_POST['statut_matiere']) ? $_POST['statut_matiere'] : NULL;
+
+$choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
+
+if((isset($choix_matieres))&&(isset($type_brevet))) {
+
+	$tabmatieres=tabmatieres($type_brevet);
+
+	// Nettoyage des choix de matières dans 'notanet_corresp'
+	$sql="DELETE FROM notanet_corresp WHERE type_brevet='$type_brevet';";
+	$res_nettoyage=mysql_query($sql);
+	if(!$res_nettoyage){
+		$msg.="ERREUR lors du nettoyage de la table 'notanet_corresp'.<br />\n";
+	}
+	else {
+		$nb_err=0;
+		$cpt_enr=0;
+		// Enregistrement des choix de matières dans 'notanet_corresp'
+		for($j=101;$j<=122;$j++){
+			if($tabmatieres[$j][0]!=''){
+				if(isset($id_matiere[$j])){
+					for($i=0;$i<count($id_matiere[$j]);$i++){
+						$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
+																matiere='".$id_matiere[$j][$i]."',
+																statut='".$statut_matiere[$j]."',
+																id_mat='$j',
+																type_brevet='$type_brevet';";
+						$res_insert=mysql_query($sql);
+						if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+					}
+				}
+				else{
+					// Cas de matières non dispensées...
+					$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
+															matiere='',
+															statut='".$statut_matiere[$j]."',
+															id_mat='$j',
+															type_brevet='$type_brevet';";
+					$res_insert=mysql_query($sql);
+					if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+				}
+			}
+		}
+
+		if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).<br />\n";}
+	}
+}
+
+
+//**************** EN-TETE *****************
+$titre_page = "Notanet: Associations type de brevet/matières";
+//echo "<div class='noprint'>\n";
+require_once("../lib/header.inc");
+//echo "</div>\n";
+//**************** FIN EN-TETE *****************
+
+echo "<div class='noprint'>\n";
+echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
+
+// Choix du type de Brevet:
+if (!isset($type_brevet)) {
+	echo "</p>\n";
+	echo "</div>\n";
+	echo "<h3>Choix du type de brevet</h3>\n";
+
+	/*
+	echo "<p>Choisissez un type de brevet:<br />\n";
+	for($i=0;$i<count($tab_type_brevet);$i++){
+		echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$i'>$tab_type_brevet[$i]</a><br />\n";
+	}
+	*/
+
+	$sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0){
+		echo "<p>Aucun élève n'est encore associé à un type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else {
+		echo "<p>Choisissez un type de brevet:<br />\n";
+
+		while($lig=mysql_fetch_object($res)) {
+			echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$lig->type_brevet'>".$tab_type_brevet[$lig->type_brevet]."</a><br />\n";
+		}
+
+		echo "</p>\n";
+	}
+
+}
+else {
+	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir un autre type de brevet</a>";
+	echo "</p>\n";
+	echo "</div>\n";
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
+						id INT NOT NULL AUTO_INCREMENT ,
+						type_brevet tinyint(4) NOT NULL,
+						id_mat tinyint(4) NOT NULL ,
+						notanet_mat VARCHAR( 255 ) NOT NULL ,
+						matiere VARCHAR( 50 ) NOT NULL ,
+						statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL ,
+						PRIMARY KEY  (id)
+						)";
+	$res_creation_table=mysql_query($sql);
+	if(!$res_creation_table){
+		echo "<p><b style='color:red;'>ERREUR</b> lors de la création de la table 'notanet_corresp'.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	// Fonction définie dans lib_brevets.php
+	$tabmatieres=tabmatieres($type_brevet);
+
+
+	//if(!isset($_POST['choix_matieres'])){
+
+		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type n WHERE n.login=jec.login ORDER BY id_classe";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<p>Aucun élève n'est encore associé à ce type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
+
+			require("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				$id_classe[$cpt]=$lig->id_classe;
+				$cpt++;
+			}
+		}
+
+		$conditions="id_classe='$id_classe[0]'";
+		if(count($id_classe)==1) {
+			echo "<p>La seule classe concernée est ".get_classe_from_id($id_classe[0]);
+		}
+		else {
+			echo "<p>Les classes concernées sont ".get_classe_from_id($id_classe[0]);
+			for($i=1;$i<count($id_classe);$i++){
+				$conditions=$conditions." OR id_classe='$id_classe[$i]'";
+				echo ", ".get_classe_from_id($id_classe[$i]);
+			}
+		}
+		echo ".</p>\n";
+
+		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_matieres' method='post'>\n";
+		//echo "<input type='hidden' name='choix1' value='export' />\n";
+		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
+
+		$sql="SELECT DISTINCT j_groupes_matieres.id_matiere FROM j_groupes_matieres,j_groupes_classes WHERE j_groupes_matieres.id_groupe=j_groupes_classes.id_groupe AND $conditions ORDER BY id_matiere";
+		$call_classe_infos = mysql_query($sql);
+
+		$nombre_lignes = mysql_num_rows($call_classe_infos);
+		$cpt=0;
+		while($ligne=mysql_fetch_object($call_classe_infos)){
+			$tab_mat_classes[$cpt]="$ligne->id_matiere";
+			$cpt++;
+		}
+
+		//echo "<table border='1'>\n";
+		echo "<table class='boireaus'>\n";
+		echo "<tr style='font-weight:bold; text-align:center'>\n";
+		echo "<th>&nbsp;</th>\n";
+		echo "<th colspan='3'>Matière</th>\n";
+		echo "<th>&nbsp;</th>\n";
+
+		echo "<tr style='font-weight:bold; text-align:center'>\n";
+		echo "<th>Intitulé</th>\n";
+		echo "<th>Imposée</th>\n";
+		echo "<th>Optionnelle</th>\n";
+		echo "<th>Non dispensée dans l'établissement</th>\n";
+		echo "<th>Matière GEPI</th>\n";
+
+		echo "</tr>\n";
+
+		$alt=1;
+		for($j=101;$j<=122;$j++){
+			if($tabmatieres[$j][0]!=''){
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>".$tabmatieres[$j][0]."</td>\n";
+
+				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
+				$res_notanet_corresp=mysql_query($sql);
+				if(mysql_num_rows($res_notanet_corresp)>0){
+					$lig_notanet_corresp=mysql_fetch_object($res_notanet_corresp);
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
+					if($lig_notanet_corresp->statut=='imposee'){
+						echo " checked='true'";
+					}
+					echo " /></td>\n";
+
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='optionnelle'";
+					if($lig_notanet_corresp->statut=='optionnelle'){
+						echo " checked='true'";
+					}
+					echo " /></td>\n";
+
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='non dispensee dans l etablissement'";
+					if($lig_notanet_corresp->statut=='non dispensee dans l etablissement'){
+						echo " checked='true'";
+					}
+					echo " /></td>\n";
+				}
+				else{
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
+					echo " checked='true'";
+					echo " /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='optionnelle' /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='non dispensee dans l etablissement' /></td>\n";
+				}
+
+				echo "<td>\n";
+				echo "<select multiple='true' size='4' name='id_matiere".$j."[]'>\n";
+				echo "<option value=''>&nbsp;</option>\n";
+				for($k=0;$k<$cpt;$k++){
+					echo "<option value='$tab_mat_classes[$k]'";
+					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND matiere='".$tab_mat_classes[$k]."' AND type_brevet='$type_brevet';";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)>0){
+						echo " selected='true'";
+					}
+					echo ">$tab_mat_classes[$k]</option>\n";
+				}
+				echo "</select>\n";
+				echo "</td>\n";
+
+				echo "</tr>\n";
+			}
+		}
+		echo "</table>\n";
+
+		//echo "<p>Le fichier d'export Notanet doit-il avoir des fins de lignes Unix ou Dos?<br /><input type='radio' name='finsdelignes' value='dos' checked /> Fins de lignes DOS<br /><input type='radio' name='finsdelignes' value='unix' /> Fins de lignes UNIX</p>\n";
+
+		echo "<input type='submit' name='choix_matieres' value='Enregistrer' />\n";
+		echo "</form>\n";
+
+		echo "<p><i>NOTES:</i></p>\n";
+		echo "<ul>\n";
+		echo "<li><p>La désignation comme optionnelle de certaines matières ci-dessus ne correspond pas nécessairement au caractère optionnel d'une matière dans NOTANET, mais au fait que l'on ne considère pas comme une erreur le fait qu'un élève n'ait pas de moyenne saisie dans cette matière (<i>qu'on ne trouve pas de moyenne dans la table 'matiere_notes'</i>).</p></li>\n";
+		echo "<li><p>Certaines erreurs seront sans doute signalées parce que certains élèves sont dispensés, absents,... sur certaines matières.<br />Il sera alors possible de saisir les valeurs autorisées DI, AB,... avant de générer un fichier CSV complet.</p></li>\n";
+		//echo "<li><p></p></li>\n";
+		echo "<li><p>Il est possible de sélectionner plusieurs matières pour une option (<i>ex.: AGL1 et ALL1 pour la Langue vivante 1</i>) en utilisant CTRL+clic avec la souris.<br />
+		(<i>on parle de sélection multiple</i>)</p></li>\n";
+		echo "</ul>\n";
+
+		if($type_brevet==2){
+			echo "<p><b>ATTENTION:</b></p>\n";
+			echo "<blockquote>\n";
+			echo "<p>Pour le Brevet de série PROFESSIONNELLE, sans option de série, il faut cocher 'optionnelle' la LV1 et les Sciences-Physiques, puisque chaque élève n'a de notes que dans l'une ou l'autre.<br />Ne pas cocher cette case conduirait à considérer qu'il manque une moyenne qui en LV1, qui en Sciences-Physiques pour chaque élève et une erreur serait affichée sans production des lignes de l'export NOTANET.</p>\n";
+			echo "<p>L'inconvénient: si un élève n'a de moyenne ni en LV1, ni en Sciences-physiques, cela ne sera pas signalé comme une erreur alors que cela devrait l'être...<br />En attendant une éventuelle amélioration du dispositif, il convient de contrôler manuellement (de visu) de tels manques.</p>\n";
+			echo "<p><br /></p>";
+			echo "<p><b>GROS DOUTE:</b> Est-ce qu'un élève peut suivre les deux (LV1 et Sc-Phy) et choisir la matière à retenir pour le Brevet?<br />Si oui, je n'ai pas géré ce cas... il faut corriger (vider) la matière non souhaitée pour chaque élève dans le prochain formulaire.</p>";
+			echo "</blockquote>\n";
+		}
+	/*
+	}
+	else {
+		echo "</div>\n";
+
+		// Nettoyage des choix de matières dans 'notanet_corresp'
+		$sql="DELETE FROM notanet_corresp WHERE type_brevet='$type_brevet';";
+		$res_nettoyage=mysql_query($sql);
+		if(!$res_nettoyage){
+			echo "<p><b style='color:red;'>ERREUR</b> lors du nettoyage de la table 'notanet_corresp'.</p>\n";
+		}
+
+		// Enregistrement des choix de matières dans 'notanet_corresp'
+		for($j=101;$j<=122;$j++){
+			if($tabmatieres[$j][0]!=''){
+				//$tabmatieres[$j][0]
+
+				//if(count($id_matiere[$j])>0){
+				if(isset($id_matiere[$j])){
+					for($i=0;$i<count($id_matiere[$j]);$i++){
+						$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
+																matiere='".$id_matiere[$j][$i]."',
+																statut='".$statut_matiere[$j]."',
+																type_brevet='$type_brevet';";
+						$res_insert=mysql_query($sql);
+					}
+				}
+				else{
+					// Cas de matières non dispensées...
+					$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
+															matiere='',
+															statut='".$statut_matiere[$j]."',
+															type_brevet='$type_brevet';";
+					$res_insert=mysql_query($sql);
+				}
+			}
+		}
+	}
+	*/
+}
+
+require("../lib/footer.inc.php");
+?>

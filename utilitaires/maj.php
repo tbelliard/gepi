@@ -464,9 +464,6 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des couleurs pour Gepi', '');";
 
-	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès aux fiches brevet','');";
-	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet.php','V','F','F','F','F','F','F','Accès à l export NOTANET','');";
-	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');";
 	$tab_req[] = "INSERT INTO `droits` VALUES ('/utilisateurs/creer_remplacant.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'script de création d un remplaçant', '');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/gestion/lettre_pdf.php', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Publipostage des lettres d absences PDF', '1');";
@@ -561,6 +558,18 @@ if (isset ($_POST['maj'])) {
   $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
   $tab_req[] = "INSERT INTO droits VALUES ('/aid/config_aid_productions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des outils complémentaires de gestion des AIDs', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/acces_appreciations.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'Configuration de la restriction d accès aux appréciations pour les élèves et responsables', '');";
+
+
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès aux fiches brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','Notanet: Accueil','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','Notanet: Extraction des moyennes','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/select_eleves.php','V','F','F','F','F','F','F','Notanet: Associations élèves/type de brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','Notanet: Associations matières/type de brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','F','V','F','F','F','F','F','Notanet: Saisie des appréciations','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/generer_csv.php','V','F','F','F','F','F','F','Notanet: Génération de CSV','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','Notanet: Génération de CSV','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','Notanet: (Dé)Verrouillage des saisies','');";
 
 	//$tab_req[] = "";
 
@@ -5904,6 +5913,129 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	} else {
 		$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 	}
+	//==========================================================
+
+
+	//==========================================================
+	$result .= "<br />&nbsp;->Contrôle/Mise à jour du dispositif Notanet/Fiches Brevet<br />";
+	$temoin_notanet_err=0;
+
+	$sql="SHOW COLUMNS FROM notanet LIKE 'note_notanet';";
+	$test1 = mysql_num_rows(mysql_query($sql));
+
+	$sql="SHOW COLUMNS FROM notanet LIKE 'id_mat';";
+	$test2 = mysql_num_rows(mysql_query($sql));
+
+	$sql="SHOW COLUMNS FROM notanet LIKE 'notanet_mat';";
+	$test3 = mysql_num_rows(mysql_query($sql));
+
+	if(($test1 == 0)||($test2 == 0)||($test3 == 0)) {
+		$result .= "<br />Suppression de l'ancienne table 'notanet': ";
+		$query3 = mysql_query("");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+			$temoin_notanet_err++;
+		}
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet (
+			login varchar(50) NOT NULL default '',
+			ine text NOT NULL,
+			id_mat tinyint(4) NOT NULL,
+			notanet_mat varchar(255) NOT NULL,
+			matiere varchar(50) NOT NULL,
+			note varchar(4) NOT NULL default '',
+			note_notanet varchar(4) NOT NULL,
+			id_classe smallint(6) NOT NULL default '0'
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+          $result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_app (
+			login varchar(50) NOT NULL,
+			id_mat tinyint(4) NOT NULL,
+			matiere varchar(50) NOT NULL,
+			appreciation text NOT NULL,
+			id int(11) NOT NULL auto_increment,
+			PRIMARY KEY  (id)
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+          $result .= "Erreur sur la table 'notanet_app': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_corresp (
+			id int(11) NOT NULL auto_increment,
+			type_brevet tinyint(4) NOT NULL,
+			id_mat tinyint(4) NOT NULL,
+			notanet_mat varchar(255) NOT NULL default '',
+			matiere varchar(50) NOT NULL default '',
+			statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',
+			PRIMARY KEY  (id)
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+          $result .= "Erreur sur la table 'notanet_corresp': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	$sql="SHOW COLUMNS FROM notanet_corresp LIKE 'type_brevet';";
+	$test1 = mysql_num_rows(mysql_query($sql));
+	if($test1 == 0) {
+		$result .= "<br />Ajout du champ 'type_brevet' à la table 'notanet_corresp': ";
+		$query3 = mysql_query("ALTER TABLE notanet_corresp ADD type_brevet TINYINT NOT NULL AFTER id;");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+			$temoin_notanet_err++;
+		}
+	}
+
+	$sql="SHOW COLUMNS FROM notanet_corresp LIKE 'id_mat';";
+	$test1 = mysql_num_rows(mysql_query($sql));
+	if($test1 == 0) {
+		$result .= "<br />Ajout du champ 'id_mat' à la table 'notanet_corresp': ";
+		$query3 = mysql_query("ALTER TABLE `notanet_corresp` ADD `id_mat` TINYINT NOT NULL AFTER `type_brevet` ;");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+			$temoin_notanet_err++;
+		}
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_ele_type (
+			login varchar(50) NOT NULL,
+			type_brevet tinyint(4) NOT NULL,
+			PRIMARY KEY  (login)
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "Erreur sur la table 'notanet_ele_type': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_verrou (
+			id_classe TINYINT NOT NULL ,
+			type_brevet TINYINT NOT NULL ,
+			verrouillage CHAR( 1 ) NOT NULL
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "Erreur sur la table 'notanet_verrou': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	if($temoin_notanet_err==0) {$result .= "<font color=\"green\">Ok !</font><br />";}
+
+
 	//==========================================================
 
 

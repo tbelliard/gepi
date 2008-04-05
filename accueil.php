@@ -1034,22 +1034,53 @@ if ($affiche=='yes') {
 // Gestion Notanet
 if (getSettingValue("active_notanet")=='y') {
 	$chemin = array();
-	$chemin[] = "/mod_notanet/notanet.php";
-	$chemin[] = "/mod_notanet/fiches_brevet.php";
+	//$chemin[] = "/mod_notanet/notanet.php";
+	$chemin[] = "/mod_notanet/index.php";
+	//$chemin[] = "/mod_notanet/fiches_brevet.php";
 
 	$titre = array();
-	$titre[] = "Notanet";
-	$titre[] = "Fiches Brevet";
+	//$titre[] = "Notanet";
+	//$titre[] = "Fiches Brevet";
+	$titre[] = "Notanet/Fiches Brevet";
 
 	$expli = array();
-	$expli[] = "Cet outil permet d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.<br />L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.";
-	$expli[] = "Cet outil permet de générer les fiches brevet.";
+	//$expli[] = "Cet outil permet d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.<br />L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.";
+	//$expli[] = "Cet outil permet de générer les fiches brevet.";
+	if($_SESSION['statut']=='professeur') {
+		$expli[] = "Cet outil permet de saisir les appréciations pour les Fiches Brevet.";
+	}
+	else {
+		$expli[] = "Cet outil permet<br /><ul><li>d'effectuer les calculs et la génération du fichier CSV requis pour Notanet.<br />L'opération renseigne également les tables nécessaires pour générer les Fiches brevet.</li><li>de générer les fiches brevet</li></ul>";
+	}
 
 	$nb_ligne = count($chemin);
 	$affiche = 'no';
 	for ($i=0;$i<$nb_ligne;$i++) {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
+
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT DISTINCT g.*,c.classe FROM groupes g,
+							j_groupes_classes jgc,
+							j_groupes_professeurs jgp,
+							j_groupes_matieres jgm,
+							classes c,
+							notanet n
+						WHERE g.id=jgc.id_groupe AND
+							jgc.id_classe=n.id_classe AND
+							jgc.id_classe=c.id AND
+							jgc.id_groupe=jgp.id_groupe AND
+							jgp.login='".$_SESSION['login']."' AND
+							jgm.id_groupe=g.id AND
+							jgm.id_matiere=n.matiere
+						ORDER BY jgc.id_classe;";
+		//echo "$sql<br />";
+		$res_grp=mysql_query($sql);
+		if(mysql_num_rows($res_grp)==0) {
+			$affiche='no';
+		}
+	}
+
 	if ($affiche=='yes') {
 		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
 		echo "<table class='menu'>\n";

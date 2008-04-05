@@ -1,0 +1,256 @@
+<?php
+/*
+* $Id$
+*
+* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+// Resume session
+
+$resultat_session = resumeSession();
+
+if ($resultat_session == 'c') {
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
+} else if ($resultat_session == '0') {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+
+if (!checkAccess()) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+
+$nom_fic = "notanet_".date('Y.m.d_H.i.s_').ereg_replace(" ","_",microtime()).".csv";
+
+$now = gmdate('D, d M Y H:i:s') . ' GMT';
+header('Content-Type: text/x-csv');
+header('Expires: ' . $now);
+// lem9 & loic1: IE need specific headers
+if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+	header('Pragma: public');
+} else {
+	header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+	header('Pragma: no-cache');
+}
+
+
+//header('Content-Type: application/octetstream');
+//header('Content-Disposition: filename="' . $nom_fic . '"');
+//header('Pragma: no-cache');
+//header('Expires: 0');
+
+// Fin de ligne
+$eol="\r\n";
+
+// Récupération des lignes
+$lig_notanet=isset($_POST['lig_notanet']) ? $_POST['lig_notanet'] : NULL;
+
+// Initialisation du fichier
+$fd = '';
+
+if (isset($lig_notanet)) {
+	sort($lig_notanet);
+
+	// Remplissage du fichier
+	for($i=0;$i<count($lig_notanet);$i++) {
+		$fd.=$lig_notanet[$i].$eol;
+	}
+}
+else {
+	// On extrait les infos de la table MySQL
+	/*
+	$sql="SELECT n.* FROM notanet n,
+						notanet_corresp nc,
+						notanet_ele_type net
+					WHERE n.login=net.login AND
+						net.type_brevet=nc.type_brevet
+					ORDER BY nc.type_brevet,n.ine,nc.id_mat";
+	*/
+
+	$extract_mode=isset($_POST['extract_mode']) ? $_POST['extract_mode'] : (isset($_GET['extract_mode']) ? $_GET['extract_mode'] : NULL);
+
+	//$fd.="TEMOIN".$eol;
+
+	// Bibliothèque pour Notanet et Fiches brevet
+	include("lib_brevets.php");
+
+	/*
+	//=========================================================
+	unset($tab_mat);
+	$sql="SELECT * FROM notanet_corresp ORDER BY type_brevet;";
+	$res1=mysql_query($sql);
+	while($lig1=mysql_fetch_object($res1)) {
+		$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
+		$res2=mysql_query($sql);
+
+		unset($id_matiere);
+		unset($statut_matiere);
+
+		while($lig2=mysql_fetch_object($res2)) {
+			$id_matiere[$lig2->id_mat][]=$lig2->matiere;
+			//$statut_matiere[$lig2->id_mat][]=$lig2->statut;
+			$statut_matiere[$lig2->id_mat]=$lig2->statut;
+		}
+
+		$tab_mat[$lig1->type_brevet]=array();
+
+		//for($j=101;$j<=122;$j++) {
+		//	$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
+		//}
+
+		$tab_mat[$lig1->type_brevet]['id_matiere']=$id_matiere;
+		$tab_mat[$lig1->type_brevet]['statut_matiere']=$statut_matiere;
+	}
+	//=========================================================
+	*/
+
+	//$fd.="TEMOIN".$eol;
+	//$fd.="\$extract_mode=$extract_mode".$eol;
+
+	unset($lig_notanet);
+	if($extract_mode=="tous") {
+		//$fd.="\$extract_mode=$extract_mode".$eol;
+
+		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp ORDER BY type_brevet;";
+		$res0=mysql_query($sql);
+		if(mysql_num_rows($res0)>0) {
+			while($lig0=mysql_fetch_object($res0)) {
+
+				$type_brevet=$lig0->type_brevet;
+
+				//$tabmatieres=tabmatieres($lig0->type_brevet);
+				$tabmatieres=tabmatieres($type_brevet);
+
+				//$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$lig0->type_brevet';";
+				$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
+				$res1=mysql_query($sql);
+				if(mysql_num_rows($res1)>0) {
+					while($lig1=mysql_fetch_object($res1)) {
+						/*
+						$sql="SELECT n.ine,n.note_notanet,nc.id_mat FROM notanet n,
+										notanet_corresp nc
+									WHERE n.login='$lig1->login' AND
+										nc.type_brevet='$lig1->type_brevet' AND
+										nc.matiere=n.mat
+									ORDER BY nc.id_mat;";
+						*/
+						$sql="SELECT n.ine,n.note_notanet,n.id_mat FROM notanet n
+									WHERE n.login='$lig1->login'
+									ORDER BY n.id_mat;";
+						//$fd.=$sql.$eol;
+						$res2=mysql_query($sql);
+						if(mysql_num_rows($res2)>0) {
+							$TOT=0;
+							$ine="";
+							while($lig2=mysql_fetch_object($res2)) {
+								$ine=$lig2->ine;
+								if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+									if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
+										$TOT+=$lig2->note_notanet;
+									}
+								}
+								// Le formatage est déjà fait lors de l'insertion dans la table
+								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
+								$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
+							}
+							$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif((ereg("[0-9]",$extract_mode))&&(strlen(ereg_replace("[0-9]","",$extract_mode))==0)) {
+		$type_brevet=$extract_mode;
+
+		/*
+		$sql="SELECT login FROM notanet_ele_type WHERE type_brevet='$extract_mode';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$sql="SELECT * FROM notanet WHERE login='$lig->login';";
+				//$nettoyage=mysql_query($sql);
+			}
+		}
+		*/
+
+
+		$tabmatieres=tabmatieres($type_brevet);
+
+		//$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$lig0->type_brevet';";
+		$sql="SELECT DISTINCT login,type_brevet FROM notanet_ele_type WHERE type_brevet='$type_brevet';";
+		$res1=mysql_query($sql);
+		if(mysql_num_rows($res1)>0) {
+			while($lig1=mysql_fetch_object($res1)) {
+				/*
+				$sql="SELECT n.ine,n.note_notanet,nc.id_mat FROM notanet n,
+								notanet_corresp nc
+							WHERE n.login='$lig1->login' AND
+								nc.type_brevet='$lig1->type_brevet' AND
+								nc.matiere=n.mat
+							ORDER BY nc.id_mat;";
+				*/
+				$sql="SELECT n.ine,n.note_notanet,n.id_mat FROM notanet n
+							WHERE n.login='$lig1->login'
+							ORDER BY n.id_mat;";
+				//$fd.=$sql.$eol;
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					$TOT=0;
+					$ine="";
+					while($lig2=mysql_fetch_object($res2)) {
+						$ine=$lig2->ine;
+						if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+							if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
+								$TOT+=$lig2->note_notanet;
+							}
+						}
+						// Le formatage est déjà fait lors de l'insertion dans la table
+						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
+						$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
+					}
+					$lig_notanet[]="$ine|TOT|".formate_note_notanet($TOT)."|";
+				}
+			}
+		}
+
+	}
+
+	if (isset($lig_notanet)) {
+		sort($lig_notanet);
+
+		// Remplissage du fichier
+		for($i=0;$i<count($lig_notanet);$i++) {
+			$fd.=$lig_notanet[$i].$eol;
+		}
+	}
+
+}
+
+// Génération/envoi au navigateur du fichier
+echo $fd;
+?>
