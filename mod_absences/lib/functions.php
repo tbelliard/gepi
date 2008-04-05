@@ -98,14 +98,36 @@ function dategl($jour, $mois, $annee)
 
 // renvoie en format text la lecture de l'heure au format 00h00 ou 00h si les minutes sont égale à 00
 function heure($heure)
-  {
-  $tab_heure = explode(':', $heure);
+{
+	$tab_heure = explode(':', $heure);
 
-	  if ( $tab_heure[1] === '00' ) { $heure = $tab_heure[0]."h"; }
-	  else { $heure = $tab_heure[0]."h".$tab_heure[1]."min"; }
+	if ( !empty($tab_heure[0]) )
+	{
 
-	  return($heure);
-  }
+		if ( $tab_heure[1] == '00' )
+		{
+
+			$heure = $tab_heure[0]."h";
+
+		}
+		else
+		{
+
+			$heure = $tab_heure[0]."h".$tab_heure[1]."min";
+
+		}
+
+	}
+	else
+	{
+
+		// si $heure n'est pas défini alors on renvoie la variable à vide
+		$heure = '';
+
+	}
+
+	return($heure);
+}
 
 function heure_texte_court($heure)
   {

@@ -1,9 +1,9 @@
 <?php
 /*
-*
-*$Id$
-*
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ *
+ * $Id$
+ *
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -30,8 +30,6 @@ include("../lib/functions.php");
 
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
-
-header('Content-Type: application/pdf');
 
 // Global configuration file
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
@@ -124,7 +122,7 @@ class bilan_PDF extends FPDF
 
 	//bloc identification etablissement
 	$logo = '../../images/'.getSettingValue('logo_etab');
-	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
+	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
@@ -139,26 +137,26 @@ class bilan_PDF extends FPDF
  	 $this->SetXY($X_etab,$Y_etab);
  	 $this->SetFont($caractere_utilse,'',14);
 	  $gepiSchoolName = getSettingValue('gepiSchoolName');
-	 $this->Cell(90,7, $gepiSchoolName,0,2,''); 
+	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
 	 $this->SetFont($caractere_utilse,'',10);
 	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 	  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
 	  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 	  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 	if( isset($entete_communic) and $entete_communic != '' ) {
-	 $this->Cell(90,5, $entete_communic,0,2,''); 
+	 $this->Cell(90,5, $entete_communic,0,2,'');
 	}
 	if($entente_mel==='1') {
 	  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-	 $this->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+	 $this->Cell(90,5, $gepiSchoolEmail,0,2,'');
 	}
     }
 
@@ -210,159 +208,270 @@ class bilan_PDF extends FPDF
 
 	$this->Cell(0, 4.5, $adresse, 0, 1, 'C', '');
 	$this->Cell(0, 4.5, $adresse2, 0, 1, 'C', '');
-    } 
+    }
 }
 
 
 //requete dans la base de donnée
-  //etablissement
-          $niveau_etab = "";
-          $nom_etab = getSettingValue("gepiSchoolName");
-          $adresse1_etab = getSettingValue("gepiSchoolAdress1");
-          $adresse2_etab = getSettingValue("gepiSchoolAdress2");
-          $cp_etab = getSettingValue("gepiSchoolZipCode");
-          $ville_etab = getSettingValue("gepiSchoolCity");
-          $cedex_etab = "";
-          $telephone_etab = getSettingValue("gepiSchoolTel");
-          $fax_etab = getSettingValue("gepiSchoolFax");
-          $mel_etab = getSettingValue("gepiSchoolEmail");
-  //contage des pages
-      if ($classe != "tous" and $eleve == "tous")
-        {
-		if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-		if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-		if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT DISTINCT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-        }
-      if ($classe == "tous" and $eleve == "tous")
-        {
-            if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-            if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-            if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-        }
-      if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
-        {
-          if ( $absencenj != '1' and $retardnj != '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-          if ( $absencenj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-          if ( $retardnj === '1' ) { $cpt_requete_1 =mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$eleve."' ORDER BY nom, prenom, d_date_absence_eleve ASC"),0); }
-        }
+  	//etablissement
+    $niveau_etab = "";
+    $nom_etab = getSettingValue("gepiSchoolName");
+    $adresse1_etab = getSettingValue("gepiSchoolAdress1");
+    $adresse2_etab = getSettingValue("gepiSchoolAdress2");
+    $cp_etab = getSettingValue("gepiSchoolZipCode");
+    $ville_etab = getSettingValue("gepiSchoolCity");
+    $cedex_etab = "";
+    $telephone_etab = getSettingValue("gepiSchoolTel");
+    $fax_etab = getSettingValue("gepiSchoolFax");
+    $mel_etab = getSettingValue("gepiSchoolEmail");
 
-        //je compte le nombre de page
-        $nb_par_page = 35;
-        $nb_page = $cpt_requete_1 / $nb_par_page;
- 
-        if(number_format($cpt_requete_1, 0, ',' ,'') == number_format($nb_page, 0, ',' ,'')) { $nb_page = number_format($nb_page, 0, ',' ,''); } else { $nb_page = number_format($nb_page, 0, ',' ,'') + 1; }
+	/* ********************************* */
+	/* DEBUT - préparation de la requête */
 
-// mode paysage, a4, etc.
-$pdf=new bilan_PDF('P','mm','A4');
-$pdf->Open();
-$pdf->SetAutoPageBreak(true);
+	$select_requete = "e.login, e.nom, e.prenom, e.sexe, ae.type_absence_eleve, ae.justify_absence_eleve, ae.info_justify_absence_eleve, ae.motif_absence_eleve, ae.info_absence_eleve, ae.d_date_absence_eleve, ae.a_date_absence_eleve, ae.d_heure_absence_eleve, ae.a_heure_absence_eleve, ae.saisie_absence_eleve, jec.id_classe";
+	$from_requete = $prefix_base . "absences_eleves ae, " . $prefix_base . " eleves e, " . $prefix_base . "j_eleves_classes jec";
+	$where_requete = "( ae.d_date_absence_eleve <= '" . date_sql($au) . "' AND ae.a_date_absence_eleve >= '" . date_sql($du) . "' ) AND ae.eleve_absence_eleve = e.login AND jec.login = e.login";
+	$groupby_requete = "ae.id_absence_eleve";
+	$orderby_requete = "e.nom, e.prenom, ae.d_date_absence_eleve ASC";
 
-// champs facultatifs
-$pdf->SetAuthor('');
-$pdf->SetCreator('créer avec Fpdf');
-$pdf->SetTitle('Bilan des absences général');
-$pdf->SetSubject('Bilan des absences général');
+		if ( $classe != 'tous' )
+		{
 
-$pdf->SetMargins(10,10);
-$page = 0;
-$nb_debut = 0;
-$nb_fin = 0;
-while ($page<$nb_page) {
-$pdf->AddPage();
+			if ( $where_requete != '' ) $where_requete .= " AND ";
+			$where_requete .= "id_classe = " . $classe;
 
-$pdf->SetFont('Arial','',12);
-$pdf->SetY(20);
-$pdf->SetX(65);
-$pdf->SetFont('Arial','B',18);
-$pdf->Cell(0, 6, 'RELEVE DES ABSENCES', 0, 1, 'C', '');
-$pdf->SetFont('Arial','',10);
-if ( $absencenj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option absence sans justification', 0, 1, 'C', ''); }
-if ( $retardnj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option retard sans justification', 0, 1, 'C', ''); }
-$pdf->SetFont('Arial','',14);
-$duu = "du ".date_frl(date_sql($du));
-$auu = "au ".date_frl(date_sql($au));
-$pdf->SetX(65);
-$pdf->Cell(0, 8, $duu, 0, 1, 'C', '');
-if ($du != $au)
+		}
+
+		if ( $eleve != 'tous' )
+		{
+
+			if ( $where_requete != '' ) $where_requete .= " AND ";
+			$where_requete .= "e.login = '" . $eleve . "'";
+
+		}
+
+		if ( $absencenj === '1' )
+		{
+
+			if ( $where_requete != '' ) $where_requete .= " AND ";
+			$where_requete .= "justify_absence_eleve != 'O' AND type_absence_eleve = 'A'";
+
+		}
+
+		if ( $retardnj === '1' )
+		{
+
+			if ( $where_requete != '' ) $where_requete .= " AND ";
+			$where_requete .= "justify_absence_eleve != 'O' AND type_absence_eleve = 'R'";
+
+		}
+
+	/* FIN - de prépation de la requête */
+	/* ******************************** */
+
+
+	/* ******************************************* */
+	/* DEBUT - construction du tableau des données */
+
+		$cpt = 0;
+
+		$requete = "SELECT " . $select_requete . " FROM " . $from_requete . " WHERE " . $where_requete . " GROUP BY " . $groupby_requete . " ORDER BY " . $orderby_requete;
+		$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		while($donnee = mysql_fetch_array($execution))
+		{
+
+			$tableau[$cpt]['nom'] = $donnee['nom'];
+			$tableau[$cpt]['prenom'] = $donnee['prenom'];
+			$tableau[$cpt]['regime'] = regime($donnee['login']);
+			$tableau[$cpt]['identite'] = strtoupper($tableau[$cpt]['nom'])." ".ucfirst($tableau[$cpt]['prenom'])." (" . $tableau[$cpt]['regime'] . ")";
+			// classe
+			$tableau[$cpt]['classe'] = classe_court_de($donnee['login']);
+
+			// motif
+			$motif_abrege = $donnee['motif_absence_eleve'];
+			$motif_texte['A'] = '';
+
+			if ( !isset($motif_texte[$motif_abrege]) )
+			{
+
+				$motif_texte[$motif_abrege] = motif_type_abs($motif_abrege);
+
+			}
+
+        	$tableau[$cpt]['motif'] = tronquer_texte($motif_texte[$motif_abrege], '20')." (".$donnee['type_absence_eleve'].")";
+
+			// horodatage
+			// début
+			$tableau[$cpt]['debut'] = date_fr($donnee['d_date_absence_eleve']);
+			if ( !empty($donnee['d_heure_absence_eleve']) )
+			{
+
+				$tableau[$cpt]['debut'] .= " à ".heure($donnee['d_heure_absence_eleve']);
+
+			}
+
+			// fin
+            if ( $donnee['a_heure_absence_eleve'] == "" or $donnee['a_heure_absence_eleve'] == "00:00:00" or $donnee['a_heure_absence_eleve'] == $donnee['d_heure_absence_eleve'] )
+        	{
+
+            	$tableau[$cpt]['fin'] = "";
+
+        	}
+        	else
+        	{
+
+            	$tableau[$cpt]['fin'] = date_fr($donnee['a_date_absence_eleve']);
+            	if ( !empty($donnee['a_heure_absence_eleve']) )
+            	{
+
+            		$tableau[$cpt]['fin'] .= " à ".heure($donnee['a_heure_absence_eleve']);
+
+				}
+
+        	}
+
+			$cpt = $cpt + 1;
+
+		};
+
+
+	/* FIN - construction du tableau des données */
+	/* ***************************************** */
+
+	/* ********************************* */
+	/* DEBUT - gestion du nombre de page */
+
+    $nb_par_page = 35;
+    $nb_page = ceil( $cpt / $nb_par_page );
+
+    /* FIN - gestion du nombre de page */
+    /* ******************************* */
+
+/* ************************* */
+/* DEBUT - Génération du PDF */
+
+	$pdf=new bilan_PDF('P','mm','A4');
+	$pdf->Open();
+	$pdf->SetAutoPageBreak(true);
+
+	// champs facultatifs
+	$pdf->SetAuthor('');
+	$pdf->SetCreator('créer avec Fpdf');
+	$pdf->SetTitle('Bilan des absences général');
+	$pdf->SetSubject('Bilan des absences général');
+
+	$pdf->SetMargins(10,10);
+
+	$page = 0;
+	$nb_debut = 0;
+	$nb_fin = 0;
+	// compteur du passage des entree
+	$cpt = 0;
+
+while ( $page < $nb_page )
 {
-  $pdf->SetX(65);
-  $pdf->Cell(0, 6, $auu, 0, 1, 'C', '');
-}
-//tableau
-$pdf->SetX(30);
-$pdf->SetY(52);
-            $pdf->SetFont('Arial','',9.5);
-            $pdf->Cell(55, 5, 'Nom et Prénom', 1, 0, 'C', '');
-            $pdf->Cell(17, 5, 'Classe', 1, 0, 'C', '');
-            $pdf->Cell(42, 5, 'Motif', 1, 0, 'C', '');
-            $pdf->Cell(38, 5, 'Du', 1, 0, 'C', '');
-            $pdf->Cell(38, 5, 'Au', 1, 1, 'C', '');
 
-if ($classe != "tous" and $eleve == "tous")
-    {
-	if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-	if ( $absencenj === '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-	if ( $retardnj === '1' ) { $requete_1 ="SELECT DISTINCT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve = 'N' AND type_absence_eleve = 'A' AND eleve_absence_eleve=".$prefix_base."eleves.login AND ".$prefix_base."j_eleves_classes.login=".$prefix_base."eleves.login AND id_classe='".$classe."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-    }
-if ($classe == "tous" and $eleve == "tous")
-    {
-        if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
-        if ( $absencenj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
-        if ( $retardnj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve = login GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC LIMIT $nb_debut, $nb_par_page"; }
-    }
-if (($classe != "tous" or $classe == "tous") and $eleve != "tous")
-    {
-        if ( $absencenj != '1' and $retardnj != '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-        if ( $absencenj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-        if ( $retardnj === '1' ) { $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve <= '".date_sql($au)."' AND a_date_absence_eleve >= '".date_sql($du)."') AND justify_absence_eleve != 'O' AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$eleve."' GROUP BY id_absence_eleve ORDER BY nom, prenom, d_date_absence_eleve ASC"; }
-    }
+	$pdf->AddPage();
 
-$execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
-while ( $data_1 = mysql_fetch_array($execution_1))
-      {
-      //tableau des absences
-            $pdf->SetFont('Arial','',9);
-            $pdf->SetFont('Arial','',9);
-		$regime = regime($data_1['login']);
-            $ident_eleve = strtoupper($data_1['nom'])." ".ucfirst($data_1['prenom'])." (".$regime.")";
-            $pdf->Cell(55, 5, $ident_eleve, 1, 0, '', '');
-            $classe_eleve = classe_court_de($data_1['login']);
-            $pdf->Cell(17, 5, $classe_eleve, 1, 0, '', '');
-		$motif_abrege = $data_1['motif_absence_eleve'];
-		$motif_texte['A'] = '';
-		if ( !isset($motif_texte[$motif_abrege]) ) { $motif_texte[$motif_abrege] = motif_type_abs($motif_abrege); }
-            $motif = tronquer_texte($motif_texte[$motif_abrege], '20')." (".$data_1['type_absence_eleve'].")";
-            $pdf->Cell(42, 5, $motif, 1, 0, '', '');
-            $debut = date_fr($data_1['d_date_absence_eleve'])." à ".heure($data_1['d_heure_absence_eleve']);
-            $pdf->Cell(38, 5, $debut, 1, 0, '', '');
-            if($data_1['a_heure_absence_eleve'] == "" or $data_1['a_heure_absence_eleve'] == "00:00:00" or $data_1['a_heure_absence_eleve'] == $data_1['d_heure_absence_eleve'])
-            {
-            $fin = "";
-            } else {
-                     $fin = date_fr($data_1['a_date_absence_eleve'])." à ".heure($data_1['a_heure_absence_eleve']);
-                   }
+	/* *********************************** */
+	/*            DEBUT - ENTETE           */
 
-            $pdf->Cell(38, 5, $fin, 1, 1, '', '');
-      }
+	$pdf->SetFont('Arial','',12);
+	$pdf->SetY(20);
+	$pdf->SetX(65);
+
+	$pdf->SetFont('Arial','B',18);
+	$pdf->Cell(0, 6, 'RELEVE DES ABSENCES', 0, 1, 'C', '');
+
+	$pdf->SetFont('Arial','',10);
+	if ( $absencenj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option absence sans justification', 0, 1, 'C', ''); }
+	if ( $retardnj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option retard sans justification', 0, 1, 'C', ''); }
+
+	$pdf->SetFont('Arial','',14);
+	$duu = "du ".date_frl(date_sql($du));
+	$auu = "au ".date_frl(date_sql($au));
+
+	$pdf->SetX(65);
+	$pdf->Cell(0, 8, $duu, 0, 1, 'C', '');
+	if ($du != $au)
+	{
+
+		$pdf->SetX(65);
+  		$pdf->Cell(0, 6, $auu, 0, 1, 'C', '');
+
+	}
+
+	/*            FIN - ENTETE           */
+	/* ********************************* */
+
+
+	/* **************************** */
+	/* DEBUT - Affichage du tableau */
+
+	$pdf->SetX(30);
+	$pdf->SetY(52);
+    $pdf->SetFont('Arial','',9.5);
+    $pdf->Cell(55, 5, 'Nom et Prénom', 1, 0, 'C', '');
+    $pdf->Cell(17, 5, 'Classe', 1, 0, 'C', '');
+    $pdf->Cell(42, 5, 'Motif', 1, 0, 'C', '');
+    $pdf->Cell(38, 5, 'Du', 1, 0, 'C', '');
+    $pdf->Cell(38, 5, 'Au', 1, 1, 'C', '');
+
+	$nb_sur_cette_page = 0;
+	while ( $nb_sur_cette_page < $nb_par_page )
+    {
+
+    	//tableau des absences
+    	if ( !empty($tableau[$cpt]['identite']) )
+    	{
+
+        	$pdf->SetFont('Arial','',9);
+        	$pdf->SetFont('Arial','',9);
+			$pdf->Cell(55, 5, $tableau[$cpt]['identite'], 1, 0, '', '');
+        	$pdf->Cell(17, 5, $tableau[$cpt]['classe'], 1, 0, '', '');
+			$pdf->Cell(42, 5, $tableau[$cpt]['motif'], 1, 0, '', '');
+        	$pdf->Cell(38, 5, $tableau[$cpt]['debut'], 1, 0, '', '');
+        	$pdf->Cell(38, 5, $tableau[$cpt]['fin'], 1, 1, '', '');
+
+        }
+
+		$cpt = $cpt + 1;
+		$nb_sur_cette_page = $nb_sur_cette_page + 1;
+
+    }
     $pdf->Cell(0, 5, '(A): absence     (R): retard     (I): infirmerie     (D): dispense', 0, 1, '', '');
 
-if($nb_page>1)
-{
-    $nb_affiche_page = $page + 1;
-    $nb_affiche_sur_page = $nb_page;
-    $info_page = "page : ".$nb_affiche_page."/".$nb_affiche_sur_page;
-    $pdf->Cell(0, 5, $info_page, 0, 1, 'C', '');
+    /* FIN - Affichage du tableau */
+    /* ************************** */
+
+	/* ******************** */
+	/* DEBUT - Pied de page */
+
+	if ( $nb_page > 1 )
+	{
+
+    	$nb_affiche_page = $page + 1;
+    	$nb_affiche_sur_page = $nb_page;
+    	$info_page = "page : ".$nb_affiche_page."/".$nb_affiche_sur_page;
+    	$pdf->Cell(0, 5, $info_page, 0, 1, 'C', '');
+
+	}
+
+	/* FIN - Pied de page */
+	/* ******************** */
+
+	$nb_debut = $nb_debut + $nb_par_page;
+	$page = $page + 1;
+
 }
 
-//}
-$nb_debut = $nb_debut + $nb_par_page;
-$page = $page + 1;
-}
-// Et on affiche le pdf généré... (ou on le sauvegarde en local)
-// $pdf->Output(); pour afficher sur votre browser
-$nom_lettre=date("Ymd_Hi");
-$nom_lettre='Bilan_absence_'.$nom_lettre.'.pdf';
-$pdf->Output($nom_lettre,'I');
+// initialise le nom du fichier
+$datation_fichier = date("Ymd_Hi");
+$nom_fichier = 'Bilan_absence_' . $datation_fichier . '.pdf';
 
+// générer la sotie PDF
+$pdf->Output($nom_fichier,'I');
 
+/* FIN - Génération du PDF */
+/* *********************** */
 ?>
