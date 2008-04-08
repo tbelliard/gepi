@@ -737,7 +737,7 @@ echo "</div>\n";
 echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"W")) {
-    echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien public</B> qui donne accès à la production :</span>\n";
+    echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien public de type internet</B> qui donne accès à la production :</span>\n";
     echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlentities($reg_adresse1)."\" size=\"50\" />\n";
   }
 } else {
@@ -753,7 +753,8 @@ echo "</div>\n";
 echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"W")) {
-    echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien à accès restreint</B> qui donne accès à la production :</span>\n";
+    echo "<span class = 'bold'>Indiquez ci-dessous un <b>lien à accès restreint</B>
+    <br />(par exemple, <b>chemin d'accès à la production sur un serveur</b>) :</span>\n";
     echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlentities($reg_adresse2)."\" size=\"50\" />\n";
   }
 } else {

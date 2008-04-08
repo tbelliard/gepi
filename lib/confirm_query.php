@@ -38,6 +38,16 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+function AfficheNiveauGraviteRequete($_texte,$_niveau){
+    if ($_niveau<="1") {
+        return $_texte;
+    } else {
+        return "<span style=\"color: red; font-weight: bold;\">".$_texte."</span>";
+    }
+}
+
+
 // Initialisation
 $liste_cible = isset($_POST["liste_cible"]) ? $_POST["liste_cible"] :(isset($_GET["liste_cible"]) ? $_GET["liste_cible"] :NULL);
 $liste_cible2 = isset($_POST["liste_cible2"]) ? $_POST["liste_cible2"] :(isset($_GET["liste_cible2"]) ? $_GET["liste_cible2"] :NULL);
@@ -87,13 +97,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     // Suppression d'un élève d'une aid
     case "del_eleve_aid":
     $nombre_req = 3;
-    $mess[0] = "Table de jointure aid/eleves";
+    $mess[0] = AfficheNiveauGraviteRequete("Supression de l'élève de la table de correspondance aid<->eleves",1);
     $test_nb[0] = "SELECT * FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[0] = "DELETE FROM j_aid_eleves WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[1] = "Table de jointure aid/eleves responsable";
+    $mess[1] = AfficheNiveauGraviteRequete("Supression de l'élève de la table de correspondance aid<->eleves responsable",1);
     $test_nb[1] = "SELECT * FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[1] = "DELETE FROM j_aid_eleves_resp WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
-    $mess[2] = "Table des appréciations aid";
+    $mess[2] = AfficheNiveauGraviteRequete("Suppression d'enregistrements de la table des appréciations aid",2);
     $test_nb[2] = "SELECT * FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     $req[2] = "DELETE FROM aid_appreciations WHERE login='$cible1' and id_aid = '$cible2' and indice_aid='$cible3'";
     break;
@@ -480,7 +490,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
             $nb_lignes = mysql_num_rows($call);
             if ($nb_lignes != 0) {
                 echo "<span class='bold'>$mess[$c] : </span><br />";
-                echo "--> $req[$c] ($nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo ")<br /><br />";
+                echo "<span class='small'>--> $req[$c] ($nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo ")</span><br /><br />";
             }
         }
         echo "</p>";

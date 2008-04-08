@@ -155,7 +155,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
   					$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
 						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
 						$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
-            if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
+            if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 			        $msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 			      } else {
 					  // Tester la taille max de la photo?

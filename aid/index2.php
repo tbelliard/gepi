@@ -132,7 +132,10 @@ require_once("../lib/header.inc");
 
 
 echo "<p class=bold>";
-echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+if ($_SESSION['statut']=="administrateur")
+    echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+else
+    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
     echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
     echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
@@ -153,11 +156,15 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></th>\n";
 echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></th>";
+// En tete de la colonne "Ajouter, supprimer des professeurs"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
+  if(!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')))
     echo "<th>&nbsp;</th>";
+// En tete de la colonne "Ajouter, supprimer des élèves"
 echo "<th>&nbsp;</th>";
+  // En tete de la colonne "Ajouter, supprimer des gestionnairess"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
-if (getSettingValue("active_version152")=="y")  // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
+  if (getSettingValue("active_version152")=="y")  // lorsque le trunk sera officiellement en 1.5.2, on supprimera ce test
     echo "<th>&nbsp;</th>";
 // colonne publier la fiche
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
@@ -217,6 +224,7 @@ while ($i < $nombreligne){
       echo "<td><p class='medium'><b>$aid_nom</b></p></td>\n";
     // colonne "Ajouter, supprimer des professeurs"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+      if (!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')))
         echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
     // colonne "Ajouter, supprimer des élèves"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)

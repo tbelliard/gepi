@@ -156,6 +156,34 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     if ($msg == '') $msg = "Les modifications ont été enregistrées.";
 }
 
+if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
+    $msg = "";
+    // On récupère la liste des profs responsable de cette Aids :
+    $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
+    $query = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+    while($temp = mysql_fetch_array($query)) {
+        $liste_profs[] = $temp["id_utilisateur"];
+    }
+    // On appelle toutes les aids de la catégorie
+    $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $nombreligne = mysql_num_rows($calldata);
+    $i = 0;
+    while ($i < $nombreligne){
+        $aid_id = @mysql_result($calldata, $i, "id");
+        // Y-a-il des profs responsables
+        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE id_aid = '$aid_id' and indice_aid='$indice_aid'");
+        if ($test1 == 0) {
+          // Pas de profs responsable donc on applique les changements
+          foreach($liste_profs as $key){
+              $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$key', id_aid = '$aid_id', indice_aid='$indice_aid'");
+              if (!$reg_data) { $msg .= "Erreur lors de l'ajout de l'utilisateur $key !<br />"; }
+          }
+        }
+        $i++;
+    }
+    $flag = "prof_gest";
+    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+}
 
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
@@ -301,7 +329,7 @@ if ($flag == "prof") { ?>
     ?>
       <form enctype="multipart/form-data" action="modify_aid.php" method="post">
       <hr /><H2>Affecter cette liste aux Aids sans professeur responsable</H2>
-      Si vous cliquez sur le bouton ci-dessous, les professeurs de la listes ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de professeurs responsables.
+      Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
       <?php
       echo "<input type=\"hidden\" name=\"toutes_aids\" value=\"y\" />\n";
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
@@ -320,8 +348,8 @@ if ($flag == "prof_gest") { ?>
     $nombre = mysql_num_rows($call_liste_data);
     if ($nombre !=0) {
     ?>
+        Les gestionnaires peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans cette AID.
         <p class='bold'>Liste des utilisateurs gestionnaires :</p>
-        Les utilisateurs peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans les AIds.<br />
         <?php
         echo "<hr /><table class=\"aid_tableau\" border=\"0\">\n";
     }
@@ -365,6 +393,18 @@ if ($flag == "prof_gest") { ?>
     </form>
 
     <?php
+    if ($nombre != 0) {
+    ?>
+      <form enctype="multipart/form-data" action="modify_aid.php" method="post">
+      <hr /><H2>Affecter cette liste aux Aids sans gestionnaire</H2>
+      Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de gestionnaire.
+      <?php
+      echo "<input type=\"hidden\" name=\"toutes_aids_gest\" value=\"y\" />\n";
+      echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
+      echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
+      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sans gestionnaire\" />\n";
+      echo "</form>";
+   }
 }
 
 if ($flag == "eleve") {
