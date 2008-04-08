@@ -180,7 +180,7 @@ DROP TABLE IF EXISTS `j_aid_eleves_resp`;
 CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));
 DROP TABLE IF EXISTS `ateliers_config`;
 CREATE TABLE IF NOT EXISTS `ateliers_config` (`nom_champ` char(100) NOT NULL default '', `content` char(255) NOT NULL default '',`param` char(100) NOT NULL default '');
-DROP TABLE IF EXISTS `j_aid_utilisateurs`;
+DROP TABLE IF EXISTS `j_aid_utilisateurs_gest`;
 CREATE TABLE `j_aid_utilisateurs_gest` ( `id_aid` varchar(100) NOT NULL default '', `id_utilisateur` varchar(50) NOT NULL default '', `indice_aid` int(11) NOT NULL default '0', PRIMARY KEY  (`id_aid`,`id_utilisateur`));
 DROP TABLE IF EXISTS notanet;
 CREATE TABLE IF NOT EXISTS notanet (login varchar(50) NOT NULL default '',ine text NOT NULL,id_mat tinyint(4) NOT NULL,notanet_mat varchar(255) NOT NULL,matiere varchar(50) NOT NULL,note varchar(4) NOT NULL default '',note_notanet varchar(4) NOT NULL,id_classe smallint(6) NOT NULL default '0');
