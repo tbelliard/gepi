@@ -670,6 +670,7 @@ INSERT INTO setting VALUES ('active_ateliers', 'n');
 INSERT INTO setting VALUES ('GepiAccesRestrAccesAppProfP', 'no');
 INSERT INTO setting VALUES ('l_resize_trombinoscopes', '120');
 INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');
+INSERT INTO setting VALUES ('multisite', 'n');
 INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','Accès à l export NOTANET','');
 INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','Gestion du module NOTANET','');
 INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','Notanet: Accueil','');
