@@ -44,6 +44,7 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	$password = '';
 	$sso_login = 'cas';
 	$result = openSession($login,$password,$sso_login);
+
 	session_write_close();
 	header("Location:accueil.php");
 	die();
@@ -242,7 +243,10 @@ echo "<div id='new_div_login' class='center'>\n";
 	//==================================
 
 	echo "<form action='login.php' method='post' style='width: 100%; margin-top: 24px; margin-bottom: 48px;'>\n";
-
+	// Utilisation multisite
+	if (getSettingValue("multisite") == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '') {
+		echo '	<input type="hidden" name="rne" value="'.$_GET["rne"].'" />';
+	}
 	echo "<div align='center'>\n";
 
 		echo "<div id='div_login'>\n";

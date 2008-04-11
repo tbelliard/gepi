@@ -70,7 +70,7 @@ else{
 
 // End standart header
 require_once("./lib/header.inc");
-
+echo $_SESSION["RNE"].'fraise';
 /*
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 

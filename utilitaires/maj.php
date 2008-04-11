@@ -4900,6 +4900,21 @@ if (isset ($_POST['maj'])) {
 		// ====================================
 
 
+		// Multisite
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'multisite' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name='multisite'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('multisite', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
 
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'active_notanet' à la table 'setting'<br/>";
         $req_test = mysql_query("SELECT value FROM setting WHERE name='active_notanet'");
