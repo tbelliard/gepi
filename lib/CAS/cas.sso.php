@@ -20,11 +20,11 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
  // Paramétrage du serveur CAS
- 
- $serveurSSO = "localhost"; // l'hôte du serveur CAS
- $serveurSSOPort = 8443; // Le port
- $serveurSSORacine = 'cas'; 
- 
+
+ $serveurSSO = "ent-auth.ac-bordeaux.fr"; // l'hôte du serveur CAS
+ $serveurSSOPort = 443; // Le port
+ $serveurSSORacine = '';
+
 ?>

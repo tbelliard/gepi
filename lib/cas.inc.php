@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 26/12/2005
+ * @version $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -20,8 +20,8 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
- 
+
+
 // Le package phpCAS doit etre stocké dans un sous-répertoire « CAS »
 // dans un répertoire correspondant a l'include_path du php.ini (exemple : /var/lib/php)
 include_once('CAS/CAS.php');
@@ -33,9 +33,9 @@ include('CAS/cas.sso.php');
 
 // declare le script comme un client CAS
 // Le dernier argument (true par défaut) donne la possibilité à phpCAS d'ouvrir une session php.
-// Si tel est le cas, l'authentification CAS n'est pas répercutée dans GRR (et il faut se réauthentifier dans l'appli),
-// car le "start_session()" de l'application (environ ligne 232 dans le fichier "session.inc.php") ne marche pas ===> la session a été ouverte par phpCAS
-// et les variables de session positionnées par la suite par grr ne sont pas récupérables.
+// Si tel est le cas, l'authentification CAS n'est pas répercutée dans GEPI (et il faut se réauthentifier dans l'appli),
+// car le "start_session()" de l'application (environ ligne 232 dans le fichier "session.inc.php") ne marche pas ===> la session a été ouverte par phpCAS => inexact dans gepi 1.5.x, le session_start est vers la ligne 375
+// et les variables de session positionnées par la suite par gepi ne sont pas récupérables.
 
 phpCAS::client(CAS_VERSION_2_0,$serveurSSO,$serveurSSOPort,$serveurSSORacine,false);
 

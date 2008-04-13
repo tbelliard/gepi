@@ -40,11 +40,14 @@ $local = isset($_POST["local"]) ? $_POST["local"] :(isset($_GET["local"]) ? $_GE
 if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	require_once("./lib/cas.inc.php");
 	// A ce stade, l'utilisateur est authentifié par CAS
-
+	if ($multisite == 'y') {
+		require_once("demande_ldap.inc.php");
+		include_once("secure/connect.inc.php");
+	}
 	$password = '';
 	$sso_login = 'cas';
 	$result = openSession($login,$password,$sso_login);
-
+	$_SESSION["rne"] = isset($RNE) ? $RNE : NULL;
 	session_write_close();
 	header("Location:accueil.php");
 	die();
