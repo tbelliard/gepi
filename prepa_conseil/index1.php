@@ -59,6 +59,60 @@ if (count($current_group["classes"]["list"]) > 1) {
     $order_by = "nom";
 }
 
+
+//=====================================================
+if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
+
+	$now = gmdate('D, d M Y H:i:s') . ' GMT';
+
+	$chaine_titre="export";
+	if(isset($current_group)) {
+		//$chaine_titre=$current_group['name']."_".$current_group['description'];
+		$chaine_titre=$current_group['name']."_".ereg_replace(",","_",$current_group['classlist_string']);
+	}
+
+	$nom_fic=$chaine_titre."_".$now.".csv";
+
+	// Filtrer les caractères dans le nom de fichier:
+	$nom_fic=ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+
+	header('Content-Type: text/x-csv');
+	header('Expires: ' . $now);
+	// lem9 & loic1: IE need specific headers
+	if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+		header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+	} else {
+		header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+		header('Pragma: no-cache');
+	}
+
+	$fd="";
+	//$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col);
+
+	$ligne1_csv=$_POST['ligne1_csv'];
+	//$col_csv=$_POST['col_csv'];
+	$lignes_csv=$_POST['lignes_csv'];
+
+	$fd.=ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[1])));
+	for($i=2;$i<=count($ligne1_csv);$i++) {
+		$fd.=";".ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[$i])));
+	}
+	$fd.="\n";
+
+	for($j=0;$j<count($lignes_csv);$j++) {
+		$fd.=ereg_replace("&#039;","'",html_entity_decode($lignes_csv[$j])."\n");
+	}
+
+	echo $fd;
+	die();
+}
+//=====================================================
+
+
+
+
 include "../lib/periodes.inc.php";
     //**************** EN-TETE *****************
 if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et appréciations";
@@ -206,6 +260,38 @@ if (!$current_group) {
             echo "<p><input type='checkbox' name='$name' id='$name' value='yes' /><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les appréciations</label></p>\n";
     $i++;
     }
+
+	//==========================================
+	// MODIF: boireaus 20080407
+	// Le rang doit-il être affiché
+	$aff_rang="y";
+	$affiche_categories="n";
+	for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
+		$sql="SELECT display_rang FROM classes WHERE id='".$current_group["classes"]["list"][$i]."';";
+		$test_rang=mysql_query($sql);
+		$lig_rang=mysql_fetch_object($test_rang);
+		if($lig_rang->display_rang=="y") {
+			$id_classe=$current_group["classes"]["list"][$i];
+
+			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
+			$res_per=mysql_query($sql);
+			while($lig_per=mysql_fetch_object($res_per)) {
+				$periode_num=$lig_per->num_periode;
+				include("../lib/calcul_rang.inc.php");
+			}
+		}
+		else {
+			$aff_rang="n";
+			break;
+		}
+	}
+	if($aff_rang=="y") {
+	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' /><label for='afficher_rang' style='cursor: pointer;'>Afficher le rang des élèves.</label></p>\n";
+	}
+	//==========================================
+
     echo "<p><input type='checkbox' name='stat' id='stat' value='yes' /><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
     if ($multiclasses) {
         echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les élèves par ordre alphabétique </label>";
@@ -240,9 +326,50 @@ if (!$current_group) {
         }
     }
 
+	//debug_var();
+
+	//==========================================
+	// MODIF: boireaus 20080407
+	// Le rang doit-il être affiché
+	$aff_rang="n";
+	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+		$aff_rang="y";
+		$affiche_categories="n";
+		for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
+			$sql="SELECT display_rang FROM classes WHERE id='".$current_group["classes"]["list"][$i]."';";
+			$test_rang=mysql_query($sql);
+			$lig_rang=mysql_fetch_object($test_rang);
+			if($lig_rang->display_rang=="y") {
+				/*
+				$id_classe=$current_group["classes"]["list"][$i];
+
+				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+
+				$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
+				$res_per=mysql_query($sql);
+				while($lig_per=mysql_fetch_object($res_per)) {
+					$periode_num=$lig_per->num_periode;
+					include("../lib/calcul_rang.inc.php");
+				}
+				*/
+			}
+			else {
+				$aff_rang="n";
+				break;
+			}
+		}
+	}
+	//==========================================
+
 
     $nb_col = 1;
     if ($multiclasses) $nb_col++;
+
+	//==========================================
+	// MODIF: boireaus 20080407
+	//if ($aff_rang=="y") {$nb_col++;}
+	//==========================================
+
     $total_notes = 0;
     $min_notes = '-';
     $max_notes = '-';
@@ -276,26 +403,54 @@ if (!$current_group) {
     // Calcul du nombre de colonnes à afficher et définition de la première ligne à afficher
     //
     $ligne1[1] = "Nom Prénom";
+    $ligne1_csv[1] = "Nom Prénom";
     if ($multiclasses) $ligne1[2] = "Classe";
     $k = 1;
 //    if (isset($_POST['stat']) or isset($_GET['stat'])) $only_stats = 'yes'; else $only_stats = 'no';
     while ($k < $nb_periode) {
+
+		//==========================================
+		// MODIF: boireaus 20080407
+		if ($aff_rang=="y") {
+			$temoin_periode=0;
+
+			$temp = "visu_note_".$k;
+			if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				$temoin_periode++;
+			}
+
+			$temp = "visu_app_".$k;
+			if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				$temoin_periode++;
+			}
+
+			if($temoin_periode>0) {
+				$nb_col++;
+				$ligne1[$nb_col] = "Rang P".$k;
+				$ligne1_csv[$nb_col] = "Rang P".$k;
+			}
+		}
+		//==========================================
+
         $temp = "visu_note_".$k;
         if (isset($_POST[$temp]) or isset($_GET[$temp])) {
             $nb_col++;
 //            $only_stats = 'no';
             $ligne1[$nb_col] = "Note P".$k;
+            $ligne1_csv[$nb_col] = "Note P".$k;
         }
         $temp = "visu_app_".$k;
         if (isset($_POST[$temp]) or isset($_GET[$temp])) {
             $nb_col++;
             $ligne1[$nb_col] = "Appréciation P".$k;
+            $ligne1_csv[$nb_col] = "Appréciation P".$k;
         }
         $k++;
     }
     if ($stat == "yes") {
         $nb_col++;
         $ligne1[$nb_col] = "Moyenne";
+        $ligne1_csv[$nb_col] = "Moyenne";
     }
     $i = 0;
     $nb_lignes = '0';
@@ -303,11 +458,16 @@ if (!$current_group) {
     while($i < $nombre_eleves) {
         if ($affiche_ligne[$i] == 'yes') {
             // Calcul de la moyenne
-            if ($stat == "yes") $col[$nb_col][$nb_lignes] = '';
+            if ($stat == "yes") {
+				$col[$nb_col][$nb_lignes] = '';
+				$col_csv[$nb_col][$nb_lignes] = '';
+			}
             for ($k=1;$k<$nb_periode;$k++) {
                 if (in_array($login_eleve[$i], $current_group["eleves"][$k]["list"])) {
                     $col[1][$nb_lignes] = $current_group["eleves"][$k]["users"][$login_eleve[$i]]["prenom"] . " " . $current_group["eleves"][$k]["users"][$login_eleve[$i]]["nom"];
+                    $col_csv[1][$nb_lignes] = $current_group["eleves"][$k]["users"][$login_eleve[$i]]["prenom"] . " " . $current_group["eleves"][$k]["users"][$login_eleve[$i]]["nom"];
                     if ($multiclasses) $col[2][$nb_lignes] = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$login_eleve[$i]]["classe"]]["classe"];
+                    if ($multiclasses) $col_csv[2][$nb_lignes] = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$login_eleve[$i]]["classe"]]["classe"];
                     break;
                 }
             }
@@ -316,6 +476,55 @@ if (!$current_group) {
             $j=1;
             if ($multiclasses) $j++;
             while ($k < $nb_periode) {
+
+				//==========================================
+				// MODIF: boireaus 20080407
+				if ($aff_rang=="y") {
+					$temoin_periode=0;
+
+					$temp = "visu_note_".$k;
+					if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+						$temoin_periode++;
+					}
+
+					$temp = "visu_app_".$k;
+					if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+						$temoin_periode++;
+					}
+
+					if($temoin_periode>0) {
+						$j++;
+						$note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
+						if($note_query) {
+							$_statut = @mysql_result($note_query, 0, "statut");
+							//$note = @mysql_result($note_query, 0, "note");
+							$rang = @mysql_result($note_query, 0, "rang");
+							if ($option[$i][$k] == "non") {
+								//$col[$j][$nb_lignes] = "-";
+								//$col[$j][$nb_lignes] = "<span style='text-align:center;'>-</span>";
+								$col[$j][$nb_lignes] = "<center>-</center>";
+								$col_csv[$j][$nb_lignes] = "-";
+							} else {
+								//$col[$j][$nb_lignes] = $rang;
+								//$col[$j][$nb_lignes] = "<span style='text-align:center;'>".$rang."</span>";
+								if($rang!="") {
+									$col[$j][$nb_lignes] = "<center>".$rang."</center>";
+									$col_csv[$j][$nb_lignes] = $rang;
+								}
+								else {
+									$col[$j][$nb_lignes] = "<center>-</center>";
+									$col_csv[$j][$nb_lignes] = "-";
+								}
+							}
+						}
+						else {
+							$col[$j][$nb_lignes] = "<center>-</center>";
+							$col_csv[$j][$nb_lignes] = "-";
+						}
+					}
+				}
+				//==========================================
+
                 $temp = "visu_note_".$k;
                 if (isset($_POST[$temp]) or isset($_GET[$temp])) {
                     $j++;
@@ -323,19 +532,25 @@ if (!$current_group) {
                     $_statut = @mysql_result($note_query, 0, "statut");
                     $note = @mysql_result($note_query, 0, "note");
                     if ($option[$i][$k] == "non") {
-                        $col[$j][$nb_lignes] = "-";
+                        $col[$j][$nb_lignes] = "<center>-</center>";
+						$col_csv[$j][$nb_lignes] = "-";
                     } else {
                         if ($_statut != '') {
                             $col[$j][$nb_lignes] = $_statut;
-                        } else {
+							$col_csv[$j][$nb_lignes] = $_statut;
+						} else {
                             if ($note != '') {
-                                $col[$j][$nb_lignes] = number_format($note,1,',','');
+                                //$col[$j][$nb_lignes] = number_format($note,1,',','');
+								$col[$j][$nb_lignes] = "<center>".number_format($note,1,',','')."</center>";
+								$col_csv[$j][$nb_lignes] = number_format($note,1,',','');
                                 if ($stat == "yes") {
                                     $col[$nb_col][$nb_lignes] += $note;
                                     if (!isset($nb_note[$nb_lignes])) $nb_note[$nb_lignes]=1; else $nb_note[$nb_lignes]++;
                                 }
                             } else {
-                                $col[$j][$nb_lignes] = '-';
+                                //$col[$j][$nb_lignes] = '-';
+								$col[$j][$nb_lignes] = "<center>-</center>";
+								$col_csv[$j][$nb_lignes] = "-";
                             }
                         }
                     }
@@ -347,20 +562,20 @@ if (!$current_group) {
                     $app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
                     $app = @mysql_result($app_query, 0, "appreciation");
 
-		    //++++++++++++++++++++++++
-		    // Modif d'après F.Boisson
-		    // notes dans appreciation
+				//++++++++++++++++++++++++
+				// Modif d'après F.Boisson
+				// notes dans appreciation
         	    $sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$login_eleve[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
 	            $result_nbct=mysql_query($sql);
-		    $string_notes='';
-		    if ($result_nbct ) {
-			while ($snnote =  mysql_fetch_assoc($result_nbct)) {
-				if ($string_notes != '') $string_notes .= ", ";
-				$string_notes .= $snnote['note'];
-			}
-		    }
-		    $app = str_replace('@@Notes', $string_notes,$app);
-		    //++++++++++++++++++++++++
+			    $string_notes='';
+				if ($result_nbct ) {
+					while ($snnote =  mysql_fetch_assoc($result_nbct)) {
+						if ($string_notes != '') $string_notes .= ", ";
+						$string_notes .= $snnote['note'];
+					}
+				}
+				$app = str_replace('@@Notes', $string_notes,$app);
+				//++++++++++++++++++++++++
 
 
                     if ($app != '') {
@@ -373,9 +588,11 @@ if (!$current_group) {
 			else{
 				$col[$j][$nb_lignes] = nl2br($app);
 			}
+			$col_csv[$j][$nb_lignes] = $app;
 			// =========================================
                     } else {
                         $col[$j][$nb_lignes] = '-';
+						$col_csv[$j][$nb_lignes] = "-";
                     }
                 }
                 $k++;
@@ -385,6 +602,7 @@ if (!$current_group) {
                     // moyenne de chaque élève
                     $temp = round($col[$nb_col][$nb_lignes]/$nb_note[$nb_lignes],1);
                     $col[$nb_col][$nb_lignes] = number_format($temp,1,',','');
+					$col_csv[$nb_col][$nb_lignes] = number_format($temp,1,',','');
                     // Total des moyennes de chaque élève
                     $total_notes += $temp;
                     $nb_notes++;
@@ -395,6 +613,7 @@ if (!$current_group) {
                     if ($temp >= 12) $pourcent_se12++;
                 } else {
                     $col[$nb_col][$nb_lignes] = '-' ;
+                    $col_csv[$nb_col][$nb_lignes] = '-' ;
                 }
             }
             $nb_lignes++;
@@ -419,6 +638,33 @@ if (!$current_group) {
         $j=1;
         if ($multiclasses) $j++;
         while ($k < $nb_periode) {
+			if ($aff_rang=="y") {
+				$temoin_periode=0;
+
+				$temp = "visu_note_".$k;
+				if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+					$temoin_periode++;
+				}
+
+				$temp = "visu_app_".$k;
+				if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+					$temoin_periode++;
+				}
+
+				if($temoin_periode>0) {
+					$j++;
+                    //$col[$j][$nb_lignes] = '-';
+					//$col[$j][$nb_lignes+1] = '-';
+					//$col[$j][$nb_lignes+2] = '-';
+					$col[$j][$nb_lignes] = "<center>-</center>";
+					$col[$j][$nb_lignes+1] = "<center>-</center>";
+					$col[$j][$nb_lignes+2] = "<center>-</center>";
+                    $col_csv[$j][$nb_lignes] = '-' ;
+                    $col_csv[$j][$nb_lignes+1] = '-' ;
+                    $col_csv[$j][$nb_lignes+2] = '-' ;
+				}
+			}
+
             $temp = "visu_note_".$k;
             if (isset($_POST[$temp]) or isset($_GET[$temp])) {
 
@@ -428,21 +674,33 @@ if (!$current_group) {
                 $call_min = mysql_query("SELECT min(note) note_min FROM matieres_notes WHERE (id_groupe='$id_groupe' AND statut ='' AND periode='$k')");
                 $temp = @mysql_result($call_moyenne, 0, "moyenne");
                 if ($temp != '') {
-                    $col[$j][$nb_lignes] = number_format($temp,1,',','');
+                    //$col[$j][$nb_lignes] = number_format($temp,1,',','');
+					$col[$j][$nb_lignes] = "<center>".number_format($temp,1,',','')."</center>";
+                    $col_csv[$j][$nb_lignes] = number_format($temp,1,',','') ;
                 } else {
-                    $col[$j][$nb_lignes] = '-';
+                    //$col[$j][$nb_lignes] = '-';
+					$col[$j][$nb_lignes] = "<center>-</center>";
+                    $col_csv[$j][$nb_lignes] = '-' ;
                 }
                 $temp = @mysql_result($call_min, 0, "note_min");
                 if ($temp != '') {
-                    $col[$j][$nb_lignes+1] = number_format($temp,1,',','');
+                    //$col[$j][$nb_lignes+1] = number_format($temp,1,',','');
+					$col[$j][$nb_lignes+1] = "<center>".number_format($temp,1,',','')."</center>";
+                    $col_csv[$j][$nb_lignes+1] = number_format($temp,1,',','') ;
                 } else {
-                    $col[$j][$nb_lignes+1] = '-';
+                    //$col[$j][$nb_lignes+1] = '-';
+					$col[$j][$nb_lignes+1] = "<center>-</center>";
+                    $col_csv[$j][$nb_lignes+1] = '-' ;
                 }
                 $temp = @mysql_result($call_max, 0, "note_max");
                 if ($temp != '') {
-                    $col[$j][$nb_lignes+2] = number_format($temp,1,',','');
+                    //$col[$j][$nb_lignes+2] = number_format($temp,1,',','');
+					$col[$j][$nb_lignes+2] = "<center>".number_format($temp,1,',','')."</center>";
+                    $col_csv[$j][$nb_lignes+2] = number_format($temp,1,',','') ;
                 } else {
-                    $col[$j][$nb_lignes+2] = '-';
+                    //$col[$j][$nb_lignes+2] = '-';
+					$col[$j][$nb_lignes+2] = "<center>-</center>";
+                    $col_csv[$j][$nb_lignes+2] = '-' ;
                 }
             }
             $temp = "visu_app_".$k;
@@ -451,15 +709,27 @@ if (!$current_group) {
                 $col[$j][$nb_lignes] = '-';
                 $col[$j][$nb_lignes+1] = '-';
                 $col[$j][$nb_lignes+2] = '-';
+                $col_csv[$j][$nb_lignes] = '-';
+                $col_csv[$j][$nb_lignes+1] = '-';
+                $col_csv[$j][$nb_lignes+2] = '-';
             }
             $k++;
         }
         if ($stat == "yes") {
             // moyenne générale de la classe
-            if ($total_notes != 0) $col[$nb_col][$nb_lignes] = number_format(round($total_notes/$nb_notes,1),1,',','') ; else $col[$nb_col][$nb_lignes] = '-';
+            if ($total_notes != 0) {
+				$col[$nb_col][$nb_lignes] = number_format(round($total_notes/$nb_notes,1),1,',','') ;
+			}
+			else {
+				$col[$nb_col][$nb_lignes] = '-';
+			}
+			$col_csv[$nb_col][$nb_lignes]=$col[$nb_col][$nb_lignes];
+
             $moy_gen = $col[$nb_col][$nb_lignes];
             $col[$nb_col][$nb_lignes+1] = $min_notes;
+            $col_csv[$nb_col][$nb_lignes+1] = $min_notes;
             $col[$nb_col][$nb_lignes+2] = $max_notes;
+            $col_csv[$nb_col][$nb_lignes+2] = $max_notes;
 		if($nb_notes!=0){
 			$pourcent_se8_ie12 = number_format(($nb_notes-$pourcent_se12-$pourcent_i8)*100/$nb_notes,1,',','');
 			if ($pourcent_i8 != '-') $pourcent_i8 = number_format(round($pourcent_i8*100/$nb_notes,1),1,',','');
@@ -476,10 +746,18 @@ if (!$current_group) {
         $col[1][$nb_lignes] = '<b>Moyenne</b>';
         $col[1][$nb_lignes+1] = '<b>Min.</b>';
         $col[1][$nb_lignes+2] = '<b>Max.</b>';
+
+        $col_csv[1][$nb_lignes] = 'Moyenne';
+        $col_csv[1][$nb_lignes+1] = 'Min.';
+        $col_csv[1][$nb_lignes+2] = 'Max.';
         if ($multiclasses) {
             $col[2][$nb_lignes] = '&nbsp;';
             $col[2][$nb_lignes+1] = '&nbsp;';
             $col[2][$nb_lignes+2] = '&nbsp;';
+
+            $col_csv[2][$nb_lignes] = '';
+            $col_csv[2][$nb_lignes+1] = '';
+            $col_csv[2][$nb_lignes+2] = '';
         }
         $nb_lignes = $nb_lignes + 3;
     }
@@ -518,6 +796,44 @@ if (!$current_group) {
 
     echo "</form>\n";
 
+
+	//=======================================================
+    echo "<div style='width:10em;float:right;'>\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_csv\" target='_blank'>\n";
+
+	for($i=1;$i<=count($ligne1_csv);$i++) {
+		echo "<input type='hidden' name='ligne1_csv[$i]' value=\"$ligne1_csv[$i]\" />\n";
+	}
+	echo "<br />\n";
+
+	$lignes_csv=array();
+	for($i=1;$i<=count($col_csv);$i++) {
+		for($j=0;$j<count($col_csv[$i]);$j++) {
+			if(!isset($lignes_csv[$j])) {
+				$lignes_csv[$j]=$col_csv[$i][$j];
+			}
+			else {
+				$lignes_csv[$j].=";".ereg_replace('"',"'",ereg_replace(";",",",ereg_replace("&#039;","'",html_entity_decode($col_csv[$i][$j]))));
+			}
+
+			//echo "<input type='hidden' name='col_csv_".$i."[$j]' value='".$col_csv[$i][$j]."' />\n";
+		}
+		//echo "<br />\n";
+	}
+
+	for($j=0;$j<count($col_csv[1]);$j++) {
+		echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
+		//echo "<br />\n";
+	}
+
+	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+	echo "<input type='hidden' name='mode' value='csv' />\n";
+	echo "<input type='submit' value='Générer un CSV' />\n";
+    echo "</form>\n";
+    echo "</div>\n";
+	//=======================================================
+
+
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire2\">\n";
     if ($en_tete == "yes")
         parametres_tableau($larg_tab, $bord);
@@ -545,6 +861,8 @@ if (!$current_group) {
 //    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
 //    $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
 
+
+
     if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
     if ($test == 1 and  $stat == "yes") {
         echo "<br /><table border=\"$bord\" cellpadding=\"5\" cellspacing=\"1\" width=\"$larg_tab\"><tr><td>
@@ -554,6 +872,7 @@ if (!$current_group) {
         echo "<li>entre 8 et 12 : <b>".$pourcent_se8_ie12."</b></li>\n";
         echo "<li>supérieure ou égale à 12 : <b>".$pourcent_se12."</b></li></ul></td></tr></table>\n";
     }
+
 }
 require("../lib/footer.inc.php");
 ?>
