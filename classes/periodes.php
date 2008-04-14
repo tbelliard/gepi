@@ -180,21 +180,29 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 
 <?php
 echo "<p>Nombre de périodes : ";
-echo "<select size=1 name='nombre_periode'";
-echo " onchange='changement()'";
-echo ">\n";
 
-$temp = $nb_periode - 1;
-$i = "0" ;
-while ($i < '7') {
-
-   echo "<option value=$i "; if ($i == $temp) {echo " selected";} echo ">$i</option>\n";
-
-   $i++;
+//$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$id_classe';";
+$sql="SELECT 1=1 FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe;";
+$verif=mysql_query($sql);
+if(mysql_num_rows($verif)>0) {
+	$temp = $nb_periode - 1;
+	echo "<b>".$temp."</b>";
 }
-?>
-</select></p>
-<?php
+else {
+	echo "<select size=1 name='nombre_periode'";
+	echo " onchange='changement()'";
+	echo ">\n";
+
+	$temp = $nb_periode - 1;
+	$i = "0" ;
+	while ($i < '7') {
+	echo "<option value=$i "; if ($i == $temp) {echo " selected";} echo ">$i</option>\n";
+	$i++;
+	}
+	echo "</select>\n";
+}
+echo "</p>\n";
+
 if ($test_periode == 0) {
     echo "<p>Si vous choisissez de ne pas définir de périodes pour cette classe (nombre de périodes = 0), cette classe sera considérée comme virtuelle.</p><p>Remarques : </p>";
     echo "<ul><li>Vous pouvez affecter une ou plusieurs matières à une classe virtuelle.</li>";
