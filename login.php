@@ -50,6 +50,10 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	$_SESSION["rne"] = isset($RNE) ? $RNE : NULL;
 	session_write_close();
 	header("Location:accueil.php");
+	//===============
+	// Envoi d'un mail lors de la connexion si l'option a été activée
+	mail_connexion();
+	//===============
 	die();
 } elseif (isset($use_sso) and ($use_sso == "lemon") and !$block_sso) {
 	if (isset($_GET['login'])) $login = $_GET['login']; else $login = "";
@@ -67,6 +71,10 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 	$result = openSession($login,$password,$sso_login) ;
 	session_write_close();
 	header("Location:accueil.php");
+	//===============
+	// Envoi d'un mail lors de la connexion si l'option a été activée
+	mail_connexion();
+	//===============
 	die();
 } elseif (!(isset($local)) and isset($use_sso) and ($use_sso == "lcs") and !$block_sso and
 !(isset($_POST['login']) && isset($_POST['no_anti_inject_password']))) {
@@ -136,6 +144,10 @@ if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
 			// On renvoie à la page d'accueil
 			session_write_close();
 			header("Location: ./accueil.php");
+			//===============
+			// Envoi d'un mail lors de la connexion si l'option a été activée
+			mail_connexion();
+			//===============
 			die();
 		} else {
 		// L'utilisateur n'a pas été identifié'
@@ -165,10 +177,18 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 		// On renvoie à la page d'accueil
 		session_write_close();
 		header("Location: ./accueil.php");
+		//===============
+		// Envoi d'un mail lors de la connexion si l'option a été activée
+		mail_connexion();
+		//===============
 		die();
 	} else if ($temp=="c") {
 		session_write_close();
 		header("Location: ./utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+		//===============
+		// Envoi d'un mail lors de la connexion si l'option a été activée
+		mail_connexion();
+		//===============
 		die();
 	} else if ($temp=="dl") {
 		$message = "Site momentanément inaccessible.";

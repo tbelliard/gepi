@@ -2713,5 +2713,87 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
     return FALSE;
 }
 
+/*
+function fdebug_mail_connexion($texte){
+	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
+	$local_debug="n";
+	if($local_debug=="y") {
+		$fich=fopen("/tmp/mail_connexion.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
+*/
+
+function mail_connexion() {
+	global $active_hostbyaddr;
+
+	$test_envoi_mail=getSettingValue("envoi_mail_connexion");
+
+	//$date = strftime("%Y-%m-%d %H:%M:%S");
+	//$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+	//fdebug_mail_connexion("\$_SESSION['login']=".$_SESSION['login']."\n\$test_envoi_mail=$test_envoi_mail\n\$date=$date\n====================\n");
+
+	if($test_envoi_mail=="y") {
+		$user_login = $_SESSION['login'];
+
+		$sql="SELECT nom,prenom,email FROM utilisateurs WHERE login='$user_login';";
+		$res_user=mysql_query($sql);
+		if (mysql_num_rows($res_user)>0) {
+			$lig_user=mysql_fetch_object($res_user);
+
+			$adresse_ip = $_SERVER['REMOTE_ADDR'];
+			//$date = strftime("%Y-%m-%d %H:%M:%S");
+			$date = ucfirst(strftime("%A %d-%m-%Y à %H:%M:%S"));
+			//$url = parse_url($_SERVER['REQUEST_URI']);
+
+			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+			}
+			else if($active_hostbyaddr == "no_local") {
+				if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+					$result_hostbyaddr = "";
+				}
+				else{
+					$tabip=explode(".",$adresse_ip);
+					if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+						$result_hostbyaddr = "";
+					}
+					else{
+						$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
+					}
+				}
+			}
+			else{
+				$result_hostbyaddr = "";
+			}
+
+
+			$message = "** Mail connexion Gepi **\n\n";
+			$message .= "\n";
+			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
+			$message .= "Identité                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+			$message .= "Login                   : ".$user_login."\n";
+			$message .= "Date                    : ".$date."\n";
+			$message .= "Origine de la connexion : ".$adresse_ip."\n";
+			if($result_hostbyaddr!="") {
+				$message .= "Adresse IP résolue en   : ".$result_hostbyaddr."\n";
+			}
+			$message .= "\n";
+			$message .= "Ce message, s'il vous parvient alors que vous ne vous êtes pas connecté à la date/heure indiquée, est susceptible d'indiquer que votre identité a pu être usurpée.\nVous devriez contrôler vos données, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'établissement) pour qu'il puisse prendre les mesures appropriées.\n";
+			$message .= "\n";
+			$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
+
+			// On envoie le mail
+			// getSettingValue("gepiAdminAdress")
+			$envoi = mail($lig_user->email,
+				"GEPI : Connexion $date",
+				$message,
+			"From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
+			//fdebug_mail_connexion("\$message=$message\n====================\n");
+
+		}
+	}
+}
 
 ?>

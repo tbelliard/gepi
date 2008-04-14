@@ -177,6 +177,19 @@ if(isset($_GET['mode'])){
 //FIN EXPORT CSV
 
 
+if(isset($_POST['valid_envoi_mail_connexion'])){
+	$envoi_mail_connexion=isset($_POST['envoi_mail_connexion']) ? $_POST['envoi_mail_connexion'] : "n";
+	if($envoi_mail_connexion!="y") {
+		$envoi_mail_connexion="n";
+	}
+	if (!saveSetting("envoi_mail_connexion", $envoi_mail_connexion)) {
+		$msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'envoi ou non de mail lors des connexions.";
+	} else {
+		$msg = "l'enregistrement du paramètre d'envoi ou non de mail lors des connexions a été effectué avec succès.";
+	}
+}
+
+
 // End standart header
 require_once("../lib/header.inc");
 isset($mode_navig);
@@ -322,6 +335,41 @@ echo "</tr></table>";
 echo "<center><input type=\"submit\" name=\"valid_param_mdp\" value=\"Valider\" /></center>";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
 
+
+
+
+//
+// Avertissement des utilisateurs lors des connexions
+//
+echo "<h3 class='gepi'>Avertissement lors des connexions</h3>";
+echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous réserve que leur adresse mail soit renseignée dans Gepi (<i>information modifiable par le lien 'Gérer mon compte'</i>).<br />Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.<br />S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultéréieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'Gérer mon compte'.</p>\n";
+
+echo "<form action=\"gestion_connect.php\" name=\"form_mail_connexion\" method=\"post\">";
+echo "<table>\n";
+echo "<tr>\n";
+echo "<td valign='top'>Activer l'envoi de mail lors de la connexion: </td>\n";
+echo "<td>\n";
+echo "<label for='envoi_mail_connexion_y' style='cursor: pointer;'><input type=\"radio\" name=\"envoi_mail_connexion\" id=\"envoi_mail_connexion_y\" value='y' ";
+if(getSettingValue("envoi_mail_connexion")=="y") {
+	echo "checked ";
+}
+echo " /> Oui</label>\n";
+echo "<br />\n";
+echo "<label for='envoi_mail_connexion_n' style='cursor: pointer;'><input type=\"radio\" name=\"envoi_mail_connexion\" id=\"envoi_mail_connexion_n\" value='n' ";
+if(getSettingValue("envoi_mail_connexion")!="y") {
+	echo "checked ";
+}
+echo " /> Non</label>\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+
+echo "<center><input type=\"submit\" name=\"valid_envoi_mail_connexion\" value=\"Valider\" /></center>";
+echo "</form>\n";
+echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+
+
+
 /*
 //
 // Changement du mot de passe obligatoire
@@ -433,7 +481,24 @@ echo "</form>";
 if (isset($_POST['duree2'])) {
    $duree2 = $_POST['duree2'];
 } else {
-   $duree2 = '20dernieres';
+	if (isset($_GET['duree2'])) {
+		$duree2 = $_GET['duree2'];
+	} else {
+		$duree2 = '20dernieres';
+	}
+}
+
+if(($duree2!="20dernieres")&&
+	($duree2!="2")&&
+	($duree2!="7")&&
+	($duree2!="15")&&
+	($duree2!="30")&&
+	($duree2!="60")&&
+	($duree2!="183")&&
+	($duree2!="365")&&
+	($duree2!="all")
+	) {
+		$duree2="20dernieres";
 }
 
 switch( $duree2 ) {
@@ -479,49 +544,50 @@ echo "<h3 class='gepi'>Journal des connexions <b>".$display_duree."</b></H3>";
 
 <?php
 
-echo "<form action=\"gestion_connect.php\" name=\"form_affiche_log\" method=\"post\">";
-echo "Afficher le journal des connexions : <select name=\"duree2\" size=\"1\">";
+echo "<form action=\"gestion_connect.php#tab_connexions\" name=\"form_affiche_log\" method=\"post\">\n";
+echo "Afficher le journal des connexions : <select name=\"duree2\" size=\"1\">\n";
 echo "<option ";
 if ($duree2 == '20dernieres') echo "selected";
-echo " value='20dernieres'>les 20 dernières</option>";
+echo " value='20dernieres'>les 20 dernières</option>\n";
 echo "<option ";
 if ($duree2 == 2) echo "selected";
-echo " value=2>depuis Deux jours</option>";
+echo " value=2>depuis Deux jours</option>\n";
 echo "<option ";
 if ($duree2 == 7) echo "selected";
-echo " value=7>depuis Une semaine</option>";
+echo " value=7>depuis Une semaine</option>\n";
 echo "<option ";
 if ($duree2 == 15) echo "selected";
-echo " value=15 >depuis Quinze jours</option>";
+echo " value=15 >depuis Quinze jours</option>\n";
 echo "<option ";
 if ($duree2 == 30) echo "selected";
-echo " value=30>depuis Un mois</option>";
+echo " value=30>depuis Un mois</option>\n";
 echo "<option ";
 if ($duree2 == 60) echo "selected";
-echo " value=60>depuis Deux mois</option>";
+echo " value=60>depuis Deux mois</option>\n";
 echo "<option ";
 if ($duree2 == 183) echo "selected";
-echo " value=183>depuis Six mois</option>";
+echo " value=183>depuis Six mois</option>\n";
 echo "<option ";
 if ($duree2 == 365) echo "selected";
-echo " value=365>depuis Un an</option>";
+echo " value=365>depuis Un an</option>\n";
 echo "<option ";
 if ($duree2 == 'all') echo "selected";
-echo " value='all'>depuis Le début</option>";
-echo "</select>";
-echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form>";
+echo " value='all'>depuis Le début</option>\n";
+echo "</select>\n";
+echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />\n";
+echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
+echo "</form>\n";
 
-echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center;'>";
+echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center;'>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?mode=csv";
-echo "'>CSV</a>";
+echo "'>CSV</a>\n";
 echo "</div>\n";
 
 ?>
 
+<a name='tab_connexions'></a>
 <table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0">
-    <tr>
+    <!--tr>
         <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
         <th class="col">Début session</th>
@@ -529,15 +595,59 @@ echo "</div>\n";
         <th class="col">Adresse IP et nom de la machine cliente</th>
         <th class="col">Navigateur</th>
         <th class="col">Provenance</th>
+    </tr-->
+
+    <tr>
+        <!--th class="col"><a href='gestion_connect.php?order_by=statut'>Statut</a></th>
+		<th class="col"><a href='gestion_connect.php?order_by=login'>Identifiant</a></th-->
+        <th class="col">Statut</th>
+		<th class="col">Identifiant</th>
+        <th class="col">Début session</th>
+        <th class="col">Fin session</th>
+        <th class="col"><a href='gestion_connect.php?order_by=ip<?php if(isset($duree2)){echo "&amp;duree2=$duree2";}?>#tab_connexions'>Adresse IP et nom de la machine cliente</a></th>
+        <th class="col">Navigateur</th>
+        <th class="col">Provenance</th>
     </tr>
+
 <?php
 $requete = '';
 $requete1 = '';
 if ($duree2 != 'all') {$requete = "where l.START > now() - interval " . $duree2 . " day";}
 if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='';}
+/*
 $sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
  l.AUTOCLOSE, l.END, u.email, u.statut
 from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by START desc ".$requete1;
+*/
+$sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
+ l.AUTOCLOSE, l.END, u.email, u.statut
+from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete;
+
+$sql.=" order by ";
+if(isset($_GET['order_by'])) {
+	$order_by=$_GET['order_by'];
+	/*
+	// Seuls les tris sur la table 'log' peuvent fonctionner étant donnée la requête ci-dessus...
+	// ... sinon, il faudrait passer par un tableau PHP intermédiaire ou revoir complètement la requête...
+	if($order_by=='statut') {
+		$sql.="u.statut, ";
+	}
+	elseif($order_by=='login') {
+		$sql.="u.login, ";
+	}
+	elseif($order_by=='ip') {
+	*/
+	if($order_by=='ip') {
+		$sql.="l.REMOTE_ADDR, ";
+	}
+	else {
+		unset($order_by);
+	}
+}
+$sql.="START desc ".$requete1;
+
+//echo "<tr><td colspan='7'>$sql</td></tr>\n";
+//flush();
 
 // $row[0] : log.LOGIN
 // $row[1] : USER
@@ -591,7 +701,14 @@ if ($res) {
 
         echo "<tr>\n";
 		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10].$temp2."</span></td>\n";
-        echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br /><a href=\"mailto:" .$row[9]. "\">".$row[1] . "</a>".$temp2."</span></td>\n";
+        echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br />";
+		if($row[9]!='') {
+			echo "<a href=\"mailto:" .$row[9]. "\">".$row[1]."</a>";
+		}
+		else {
+			echo $row[1];
+		}
+		echo $temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$date_debut.$temp2."</span></td>\n";
 
 		//$ligne_csv[$nb_ligne] = "$row[10];$row[0];$date_debut;";
