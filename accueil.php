@@ -934,8 +934,16 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_S
 $chemin[] = "/visualisation/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/prepa_conseil/index1.php";
 if ($conditions_moyennes) $chemin[] = "/prepa_conseil/index2.php";
-if ($conditions_bulsimples)
+if ($conditions_bulsimples) {
 	$chemin[] = "/prepa_conseil/index3.php";
+}
+elseif(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
+	$test_pp=mysql_num_rows(mysql_query($sql));
+	if($test_pp>0) {
+		$chemin[] = "/prepa_conseil/index3.php";
+	}
+}
 
 $titre = array();
 //===========================
@@ -956,8 +964,14 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     else
         $titre[] =  "Visualiser les moyennes et appréciations des bulletins ";
 if ($conditions_moyennes) $titre[] = "Visualiser toutes les moyennes d'une classe";
-if ($conditions_bulsimples)
+if ($conditions_bulsimples) {
 	$titre[] = "Visualiser les bulletins simplifiés";
+}
+elseif(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
+	if($test_pp>0) {
+		$titre[] = "Visualiser les bulletins simplifiés";
+	}
+}
 
 $expli = array();
 //===========================
@@ -980,8 +994,16 @@ if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur'))
     else
         $expli[] = "Tableau récapitulatif des moyennes et/ou appréciations figurant dans les bulletins avec affichage de statistiques utiles pour le remplissage des livrets scolaires.";
 if ($conditions_moyennes) $expli[] = "Tableau récapitulatif des moyennes d'une classe.";
-if ($conditions_bulsimples)
+if ($conditions_bulsimples) {
 	$expli[] = "Bulletins simplifiés d'une classe.";
+}
+elseif(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."';";
+	$test_pp=mysql_num_rows(mysql_query($sql));
+	if($test_pp>0) {
+		$expli[] = "Bulletins simplifiés d'une classe.";
+	}
+}
 
 
 $call_data = mysql_query("SELECT * FROM aid_config WHERE display_bulletin = 'y' OR bull_simplifie = 'y' ORDER BY nom");

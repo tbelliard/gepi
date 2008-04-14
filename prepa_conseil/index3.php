@@ -93,12 +93,29 @@ if (isset($id_classe)) {
 	//echo "\getSettingValue(\"GepiAccesBulletinSimpleProfToutesClasses\")=".getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")."<br />";
 
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
-		if ($test == "0") {
-			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
-			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
-			require ("../lib/footer.inc.php");
-			die();
+
+		//echo "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')<br />";
+
+		if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+			$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+			if ($test == "0") {
+				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+				require ("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+			//echo "\$gepi_prof_suivi=$gepi_prof_suivi<br/>";
+
+			$test = mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_classes jec, j_eleves_professeurs jep WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe = '".$id_classe."')"));
+			if ($test == "0") {
+				tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'est pas $gepi_prof_suivi, sans en avoir l'autorisation.");
+				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas $gepi_prof_suivi!";
+				require ("../lib/footer.inc.php");
+				die();
+			}
 		}
 	}
 }
@@ -152,8 +169,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	//elseif(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiAccesReleveProf")=='yes')){
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes"){
+
 		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" n'est pas donné
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		//$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+		if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		}
+		elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
+			$sql="SELECT DISTINCT c.* FROM classes c,
+											j_eleves_classes jec,
+											j_eleves_professeurs jep
+									WHERE jec.id_classe=c.id AND
+											jep.login=jec.login AND
+											jep.professeur='".$_SESSION['login']."'
+									ORDER BY c.classe;";
+		}
+		else {
+			tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
+			echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+			require "../lib/footer.inc.php";
+			die();
+		}
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") == "yes") {
 		// C'est un prof et l'accès "a accès aux bulletins simples des élèves de toutes les classes" est donné
@@ -216,14 +253,35 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// ====================
 
     if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-	    echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
+	    //echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
 
 		// Ajout lien classe précédente / classe suivante
 		if($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
 		elseif($_SESSION['statut']=='professeur'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+			//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+
+			if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+			}
+			elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
+												j_eleves_classes jec,
+												j_eleves_professeurs jep
+										WHERE jec.id_classe=c.id AND
+												jep.login=jec.login AND
+												jep.professeur='".$_SESSION['login']."'
+										ORDER BY c.classe;";
+			}
+			else {
+				tentative_intrusion(1, "Tentative d'accès aux bulletins simplifiés sans autorisation.");
+				echo "<p>Vous n'êtes pas autorisé à visualiser cette page.</p>";
+				require "../lib/footer.inc.php";
+				die();
+			}
+
 		}
 		elseif($_SESSION['statut']=='cpe'){
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
@@ -253,6 +311,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				if($temoin_tmp==0){
 					$id_class_prec=$lig_class_tmp->id;
 				}
+			}
+			if(mysql_num_rows($res_class_tmp)>1){
+				echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
 			}
 		}
 		// =================================

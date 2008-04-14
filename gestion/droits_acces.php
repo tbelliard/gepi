@@ -606,6 +606,16 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestPhotoElevesProfP !";
 	}
 
+
+	if (isset($_POST['GepiAccesBulletinSimplePP'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesBulletinSimplePP", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimplePP !";
+	}
+
 }
 
 // Load settings
@@ -740,6 +750,11 @@ require_once("../lib/header.inc");
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesRestrAccesAppProfP" id="GepiAccesRestrAccesAppProfP" value="yes" <?php if (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesRestrAccesAppProfP' style='cursor: pointer;'> a accès au paramétrage des accès parents/élèves aux appréciations/avis des classes dont il est <?php echo getSettingValue("gepi_prof_suivi"); ?></label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesBulletinSimplePP" id="GepiAccesBulletinSimplePP" value="yes" <?php if (getSettingValue("GepiAccesBulletinSimplePP")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesBulletinSimplePP' style='cursor: pointer;'> a accès aux bulletins simples des élèves dont il est <?php echo getSettingValue("gepi_prof_suivi");?></label></td>
 			</tr>
 
 			<tr valign='top'>
