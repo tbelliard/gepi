@@ -7,6 +7,10 @@
 
 function bulletin_classe($total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
+
+//global $avec_rapport_effectif;
+$avec_rapport_effectif="y";
+
 // données requises :
 //- $total : nombre total d'élèves
 //- $periode1 : numéro de la première période à afficher
@@ -101,6 +105,10 @@ if($affiche_coef=='y'){
 	if ($test_coef != 0) echo "<td width=\"$larg_col2\" align=\"center\"><p class='bull_simpl'>Coef.</p></td>\n";
 }
 //====================
+
+if($avec_rapport_effectif=="y") {
+	echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Effectif</td>\n";
+}
 
 echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
 //echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl'>&Eacute;lève</td>\n";
@@ -278,6 +286,7 @@ while ($j < $nombre_groupes) {
             $cn_nom[$nb][$n] = mysql_result($test_cn, $n, 'c.nom_court');
             $n++;
         }
+
 		//echo "\$nb=$nb<br />\n";
         $nb++;
 
@@ -291,6 +300,7 @@ while ($j < $nombre_groupes) {
 		//echo "\$current_grp_appreciation[$nb]=$current_grp_appreciation[$nb]<br />\n";
 		$nb++;
 	}
+
 
 	/*
     // Maintenant on regarde si l'élève suit bien cette matière ou pas
@@ -365,6 +375,11 @@ while ($j < $nombre_groupes) {
                 	if ($test_coef != 0) $nb_total_cols++;
                 }
 				//====================
+				if($avec_rapport_effectif=='y'){
+                	$nb_total_cols++;
+                }
+				//====================
+
 				//if ($affiche_rang == 'y')  $nb_total_cols++;
 
                 // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
@@ -410,6 +425,25 @@ while ($j < $nombre_groupes) {
 		}
 		//====================
 
+		/*
+		if($avec_rapport_effectif=="y") {
+			$nb=$periode1;
+			$print_tr = 'no';
+			while ($nb < $periode2+1) {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_eleves_groupes jeg,
+									j_groupes_classes jgc
+								WHERE jec.id_classe='$id_classe' AND
+										jec.periode='$nb' AND
+										jec.periode=jeg.periode AND
+										jec.login=jeg.login AND
+										jeg.id_groupe='".$current_group["id"]."';";
+				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Effectif</td>\n";
+				$nb++;
+			}
+		}
+		*/
+
         $nb=$periode1;
         $print_tr = 'no';
         while ($nb < $periode2+1) {
@@ -432,6 +466,37 @@ while ($j < $nombre_groupes) {
 				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 			}
 			//=========================
+
+
+			if($avec_rapport_effectif=="y") {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_eleves_groupes jeg,
+									j_groupes_classes jgc
+								WHERE jec.id_classe='$id_classe' AND
+										jec.periode='$nb' AND
+										jec.periode=jeg.periode AND
+										jec.login=jeg.login AND
+										jeg.id_groupe=jgc.id_groupe AND
+										jeg.id_groupe='".$current_group["id"]."';";
+				$res_effectif=mysql_query($sql);
+				$effectif_grp_classe=mysql_num_rows($res_effectif);
+
+				$sql="SELECT 1=1 FROM j_eleves_groupes jeg
+								WHERE jeg.periode='$nb' AND
+										jeg.id_groupe='".$current_group["id"]."';";
+				$res_effectif_tot=mysql_query($sql);
+				$effectif_grp_total=mysql_num_rows($res_effectif_tot);
+
+				echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>";
+				if($effectif_grp_classe==$effectif_grp_total) {
+					echo $effectif_grp_classe.' él.';
+				}
+				else {
+					echo "$effectif_grp_classe él./$effectif_grp_total";
+				}
+				echo "</td>\n";
+			}
+
 
             echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n";
             $note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
@@ -599,6 +664,13 @@ if($display_moy_gen=="y") {
 			echo " align=\"center\">-</td>\n";
 		}
 		//====================
+		/*
+		if($avec_rapport_effectif=="y") {
+			echo "<td";
+			if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
+			echo " align=\"center\">-</td>\n";
+		}
+		*/
 
 		$nb=$periode1;
 		$print_tr = 'no';
@@ -625,6 +697,17 @@ if($display_moy_gen=="y") {
 				$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 			}
 			//=========================
+
+			if($avec_rapport_effectif=="y") {
+				$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$nb' AND id_classe='$id_classe';";
+				$res_eff_classe=mysql_query($sql);
+
+				echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+				//echo "$sql<br />";
+				echo mysql_num_rows($res_eff_classe).' él.';
+				echo "</td>\n";
+			}
+
 
 			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
 			if ($total_points_classe[$nb] != 0) {
