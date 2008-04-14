@@ -107,6 +107,7 @@ else {
 	unset($_SESSION['classe']);
 }
 
+$coefficients_a_1 = $_SESSION['coefficients_a_1'];
 $periode = $_SESSION['periode'];
 $periode_ferme = $_SESSION['periode_ferme'];
 // le modèle sélectionné dans le menu deroulant :
@@ -656,8 +657,6 @@ if(!empty($model_bulletin)) {
 		$reserve_periode_num=$periode_num;
 	}
 
-	$coefficients_a_1="non";
-
 	//$periode_num=1;
 
 	//echo "count(\$tab_id_classe)=".count($tab_id_classe)."<br />";
@@ -1172,6 +1171,16 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '0';
 			$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '0';
 
+			// mettre le coefficients à 1 si l'utilisateur la demandé
+			if ( $coefficients_a_1 === 'oui' )
+			{
+
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '1';
+				$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '1';
+
+			}
+			/* ***************************** */
+
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
 				and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {
 				$total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
@@ -1343,15 +1352,28 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				}
 			//}
 
-			$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
+
+			// mettre le coefficients à 1 si l'utilisateur la demandé
+			if ( $coefficients_a_1 === 'oui' )
+			{
+
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '1';
+				$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '1';
+
+			}
+			else
+			{
+
+				$test_coef_eleve = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .
 					"login = '".$login_eleve_select."' AND " .
 					"id_groupe = '".$groupe_matiere."' AND " .
 					"name = 'coef')");
-			// ==================================================
-			if (mysql_num_rows($test_coef_eleve) > 0) {
-				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = mysql_result($test_coef_eleve, 0);
-			}
+				// ==================================================
+				if (mysql_num_rows($test_coef_eleve) > 0) {
+					$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = mysql_result($test_coef_eleve, 0);
+				}
 
+			}
 
 
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
@@ -1518,6 +1540,16 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			// connaitre le coefficient de la matière
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '0';
 			$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '0';
+
+			// mettre le coefficients à 1 si l'utilisateur la demandé
+			if ( $coefficients_a_1 === 'oui' )
+			{
+
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'] = '1';
+				$coef_matiere[$id_classe][$groupe_matiere]['coef'] = '1';
+
+			}
+			/* ***************************** */
 
 			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != ''
 				and $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-') {

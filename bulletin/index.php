@@ -54,6 +54,9 @@ if (!checkAccess()) {
 	if (empty($_GET['type_bulletin']) and empty($_POST['type_bulletin'])) {$type_bulletin="";}
 	    else { if (isset($_GET['type_bulletin'])) {$type_bulletin=$_GET['type_bulletin'];} if (isset($_POST['type_bulletin'])) {$type_bulletin=$_POST['type_bulletin'];} }
 
+	if (empty($_GET['coefficients_a_1']) and empty($_POST['coefficients_a_1'])) {$coefficients_a_1 = '';}
+	    else { if (isset($_GET['coefficients_a_1'])) {$coefficients_a_1=$_GET['coefficients_a_1'];} if (isset($_POST['coefficients_a_1'])) {$coefficients_a_1=$_POST['coefficients_a_1'];} }
+
 	$bulletin_pass = 'non';
 
 	//ajout Eric pour impression triée par Etab d'origine
@@ -126,6 +129,8 @@ if (!checkAccess()) {
 		$_SESSION['periode'] = $periode;
 		$_SESSION['periode_ferme'] = $periode_ferme;
 		$_SESSION['type_bulletin'] = $type_bulletin;
+		$_SESSION['coefficients_a_1'] = $coefficients_a_1;
+
 
 		$_SESSION['tri_par_etab_origine'] = $tri_par_etab_origine;
 
@@ -183,7 +188,31 @@ if (!checkAccess()) {
 $titre_page = "Edition des bulletins";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+?>
 
+<script type='text/javascript' language='javascript'>
+
+// fonction permettant d'afficher ou cacher un div
+function affichercacher(a) {
+
+	c = a.substr(4);
+	var b = document.getElementById(a);
+
+	var f = "img_"+c+"";
+
+	if (b.style.display == "none" || b.style.display == "") {
+		b.style.display = "block";
+		document.images[f].src="../images/fleche_a.gif";
+	}
+	else
+	{
+		b.style.display = "none";
+		document.images[f].src="../images/fleche_na.gif";
+	}
+}
+</script>
+
+<?php
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")!='yes') {
    die("Droits insuffisants pour effectuer cette opération");
 }
@@ -212,6 +241,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		  		 	<input type="hidden" name="periode_ferme" value="<?php echo $periode_ferme; ?>" />
 		  		 	<input type="hidden" name="type_bulletin" value="<?php echo $type_bulletin; ?>" />
 		  		 	<input type="hidden" name="tri_par_etab_origine" value="<?php echo $tri_par_etab_origine; ?>" />
+		  		 	<input type="hidden" name="coefficients_a_1" value="<?php echo $coefficients_a_1; ?>" />
 		  		 	<input type="hidden" name="bull_pdf_debug" value="<?php echo $bull_pdf_debug; ?>" />
 		  		 	<input type="hidden" name="format" value="<?php echo $format; ?>" />
 		  			<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Télécharger le PDF" /></center>
@@ -330,24 +360,30 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		}
 ?>
 
-		  <br /><br />
+		<br />
 
-		  <input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" /><label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br /><br />
+		<div style="text-align: left;"><a href="#ao" onclick="affichercacher('div_1')" style="cursor: pointer;"><img style="border: 0px solid ; width: 13px; height: 13px; border: none; padding:2px; margin:2px; float: left;" name="img_1" alt="" title="Information" src="../images/fleche_na.gif" align="middle" />Autres options</a></div>
+		<a name="ao"></a>
+		<div style="text-align: left;">
+			<div id="div_1" style="display: <?php if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $active_entete_regroupement != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% Verdana, Helvetica, sans-serif;"><!--a name="ao"></a-->
+			  <span style="font-family: Arial;">
+				<input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" <?php if ( isset($tri_par_etab_origine) and $tri_par_etab_origine === 'oui' ) { ?>checked="checked"<?php } ?> />
+				&nbsp;<label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br />
+				<input type="checkbox" name="coefficients_a_1" id="coefficients_a_1" value="oui" <?php if ( isset($coefficients_a_1) and $coefficients_a_1 === 'oui' ) { ?>checked="checked"<?php } ?> />
+				&nbsp;<label for="coefficients_a_1" style="cursor: pointer;">Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label><br />
+			  	<input type="checkbox" name="bull_pdf_debug" id="bull_pdf_debug" value="oui" <?php if ( isset($bull_pdf_debug) and $bull_pdf_debug === 'oui' ) { ?>checked="checked"<?php } ?> />
+		  		&nbsp;<label for="bull_pdf_debug" style="cursor: pointer;">Activer le debug pour afficher les variables perturbant la génération de PDF.</label><br />
+			  </span>
+			</div>
+			<br />
+		</div>
 
-			<?php
-				//==========================
-				// AJOUT: boireaus: 20080102
-			?>
-		  <input type="checkbox" name="bull_pdf_debug" id="bull_pdf_debug" value="oui" /><label for="bull_pdf_debug" style="cursor: pointer;">Activer le debug pour afficher les variables perturbant la génération de PDF.</label><br /><br />
-			<?php
-				//==========================
-			?>
 
-	 	  <input type="hidden" name="format" value="<?php echo $format; ?>" />
-		  <input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
-		  </center>
-		  </fieldset>
-		</form>
+	 	<input type="hidden" name="format" value="<?php echo $format; ?>" />
+		<input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
+		</center>
+		</fieldset>
+	   </form>
 
 <!-- TEXTE EXPLICATIF-->
 <br />
