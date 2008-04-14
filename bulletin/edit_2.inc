@@ -64,12 +64,13 @@
 		    echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Max</span></td>\n";
 		    echo "</tr>\n";
 	    }
+		/*
 		else{
 		  // Min/Classe/Max en une seule colonne
 		  echo "<tr>\n";
 		  echo "</tr>\n";
 	    }
-
+		*/
     echo "</thead>\n";
 
         // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"

@@ -64,12 +64,13 @@
 		    echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Max</span></td>\n";
 		    echo "</tr>\n";
 	    }
+		/*
 		else{
 		  // Min/Classe/Max en une seule colonne
 		  echo "<tr>\n";
 		  echo "</tr>\n";
 	    }
-
+		*/
     echo "</thead>\n";
 
         // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
@@ -175,7 +176,11 @@
 
 
         	if($min_max_moyclas!=1){
-				$nb_total_cols = 5;
+				//========================
+				// Modif boireaus 20080413
+				//$nb_total_cols = 5;
+				$nb_total_cols = 6;
+				//========================
 				//Eric Modif
 				$nb_first_cols = 1;
 				//$nb_first_cols = 3;

@@ -155,7 +155,7 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
         $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
         $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7'></td>\n";
+        echo "<td style=\"text-align: center; \"><img height=40 width=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&amp;temp1=$quartile1_classe&amp;temp2=$quartile2_classe&amp;temp3=$quartile3_classe&amp;temp4=$quartile4_classe&amp;temp5=$quartile5_classe&amp;temp6=$quartile6_classe&amp;nb_data=7' /></td>\n";
      } else
       echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
     }
@@ -324,7 +324,7 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
         $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
         $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7'></td>\n";
+        echo "<td style=\"text-align: center; \"><img height=40 width=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&amp;temp1=$quartile1_classe&amp;temp2=$quartile2_classe&amp;temp3=$quartile3_classe&amp;temp4=$quartile4_classe&amp;temp5=$quartile5_classe&amp;temp6=$quartile6_classe&amp;nb_data=7' /></td>\n";
      } else
       echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
     }
@@ -500,7 +500,7 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
         $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
         $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
         $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7'></td>\n";
+        echo "<td style=\"text-align: center; \"><img height=40 width=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&amp;temp1=$quartile1_classe&amp;temp2=$quartile2_classe&amp;temp3=$quartile3_classe&amp;temp4=$quartile4_classe&amp;temp5=$quartile5_classe&amp;temp6=$quartile6_classe&amp;nb_data=7' /></td>\n";
      } else
       echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
     }
