@@ -105,6 +105,12 @@ calc_moy_debug("\$nombre_groupes=$nombre_groupes\n");
 // Initialisation des tableaux liés aux calculs des moyennes générales
 $current_group = array();
 $current_coef = array();
+
+//======================================
+// Ajout: boireaus 20080408
+$current_coef_eleve=array();
+//======================================
+
 $moy_gen_classe = array();
 $moy_gen_eleve = array();
 $moy_cat_eleve = array();
@@ -128,6 +134,11 @@ while ($i < $nombre_eleves) {
     //$total_coef[$i] = 0;
     $total_coef_classe[$i] = 0;
     $total_coef_eleve[$i] = 0;
+
+	//======================================
+	// Ajout: boireaus 20080408
+	$current_coef_eleve[$i]=array();
+	//======================================
 
     $moy_gen_eleve[$i] = 0;
     $moy_gen_classe[$i] = 0;
@@ -193,8 +204,29 @@ while ($j < $nombre_groupes) {
 	calc_moy_debug("\$current_classe_matiere_moyenne[$j]=$current_classe_matiere_moyenne[$j]\n");
     // Calcul de la moyenne des élèves et de la moyenne de la classe
     $i=0;
+	//======================================
+	// Ajout: boireaus 20080408
+	//$current_coef_eleve=array();
+
+	$sql="SELECT MIN(note) note_min, MAX(note) note_max FROM matieres_notes
+		WHERE (
+		periode='$periode_num' AND
+		id_groupe='".$current_group[$j]["id"]."' AND
+		statut=''
+		)";
+	$res_note_min_max=mysql_query($sql);
+	$moy_min_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_min");
+	$moy_max_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_max");
+
+	//======================================
     while ($i < $nombre_eleves) {
         $current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
+
+		//======================================
+		// Ajout: boireaus 20080408
+		//$current_coef_eleve[$i]=array();
+		//======================================
+
         // Maintenant on regarde si l'élève suit bien cette matière ou pas
         if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
         	//$count[$j][$i] == "0"
@@ -243,6 +275,17 @@ while ($j < $nombre_groupes) {
 					$coef_eleve = $current_coef[$j];
 				}
 			}
+
+			//======================================
+			// Ajout: boireaus 20080408
+			$current_coef_eleve[$i][$j]=$coef_eleve;
+
+			if ((isset($affiche_rang))&&($affiche_rang=='y')) {
+				$current_eleve_rang[$j][$i] = @mysql_result($current_eleve_note_query, 0, "rang");
+			}
+
+			//======================================
+
 			calc_moy_debug("\$coef_eleve=$coef_eleve\n");
             if ($coef_eleve != 0) {
                if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
@@ -365,5 +408,42 @@ $moy_generale_classe = number_format($moy_generale_classe,1, ',', ' ');
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
   $moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i],1, ',', ' ');
 }
+
+// On fournit en entrée:
+//     - $id_classe : la classe concernée
+//     - $periode_num : la période concernée
+// On récupère en sortie:
+//     - $moy_gen_eleve[$i]
+//     - $moy_gen_classe[$i]
+//     - $moy_generale_classe
+//     - $moy_max_classe
+//     - $moy_min_classe
+
+// A VERIFIER, mais s'il n'y a pas de coef spécifique pour un élève, on devrait avoir
+//             $moy_gen_classe[$i] == $moy_generale_classe
+
+//     - $moy_cat_classe[$i][$cat]
+//     - $moy_cat_eleve[$i][$cat]
+
+// Là le positionnement au niveau moyenne générale:
+//     - $quartile1_classe_gen
+//       à
+//     - $quartile6_classe_gen
+//     - $place_eleve_classe[$i]
+
+// On a récupéré en intermédiaire les
+//     - $current_eleve_login[$i]
+//     - $current_group[$j]
+//     - $current_eleve_note[$j][$i]
+//     - $current_eleve_statut[$j][$i]
+//     - $current_coef[$j] (qui peut être différent du $coef_eleve pour une matière spécifique)
+//     - $categories -> id
+//     - $current_classe_matiere_moyenne[$j] (moyenne de la classe dans la matière)
+
+// AJOUTé:
+//     - $current_coef_eleve[$i][$j]
+//     - $moy_min_classe_grp[$j]
+//     - $moy_max_classe_grp[$j]
+//     - $current_eleve_rang[$j][$i] sous réserve que $affiche_rang=='y'
 
 ?>
