@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -46,7 +46,7 @@ if (isset($_GET['action'])) {
 	switch ($_GET['action']) {
 		case "activer":
 			$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE (login = '".$_GET['user_login']."')");
-			break;	
+			break;
 		case "desactiver":
 			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$_GET['user_login']."')");
 			break;
@@ -61,7 +61,7 @@ if (isset($_GET['action'])) {
 			break;
 		case "archiver":
 			$res = mysql_query("UPDATE tentatives_intrusion SET statut = '' WHERE (statut = 'new')");
-			break;	
+			break;
 	}
 	if (!$res) echo mysql_error();
 }
@@ -70,9 +70,18 @@ if (isset($_GET['action'])) {
 $titre_page = "Sécurité Gepi";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | <a href='security_panel_archives.php'>Historique des alertes sécurités</a></p>";
+echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | ";
+$sql="SELECT 1=1 FROM tentatives_intrusion WHERE statut='';";
+$test_arch=mysql_query($sql);
+if(mysql_num_rows($test_arch)>0) {
+	echo "<a href='security_panel_archives.php'>Historique des alertes sécurités</a>";
+}
+else {
+	echo "Historique des alertes sécurités";
+}
+echo "</p>\n";
 
-echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulés'). Pour remettre à zéro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>";
+echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulés'). Pour remettre à zéro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>\n";
 
 echo "<table class='menu' style='width: 90%;'>\n";
 echo "<tr>\n";
@@ -80,14 +89,41 @@ echo "<th colspan='5'>Alertes récentes (<a href='security_panel.php?action=archi
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td style='width: 20%;'>Utilisateur</td>";
-echo "<td>Date</td>";
-echo "<td>Niv.</td>";
-echo "<td>Description</td>";
+echo "<td style='width: 20%;'>\n";
+echo "<a href='".$_SERVER['PHP_SELF']."?order_by=login' style='display:inline;'>Utilisateur</a>";
+echo "/";
+echo "<a href='".$_SERVER['PHP_SELF']."?order_by=ip' style='display:inline;'>IP</a>";
+echo "</td>\n";
+echo "<td>\n";
+// Le tri par date est le mode standard... pas besoin de paramètre
+echo "<a href='".$_SERVER['PHP_SELF']."' style='display:inline;'>Date</a>";
+echo "</td>\n";
+echo "<td>\n";
+echo "<a href='".$_SERVER['PHP_SELF']."?order_by=niveau' style='display:inline;'>Niv</a>";
+echo "</td>\n";
+echo "<td>Description</td>\n";
 echo "<td style='width: 20%;'>Actions</td>\n";
-echo "</tr>";
+echo "</tr>\n";
 
-$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY t.date DESC");
+//$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY t.date DESC");
+$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY ";
+if(isset($_GET['order_by'])) {
+	$order_by=$_GET['order_by'];
+	if($order_by=='login') {
+		$sql.="t.login, ";
+	}
+	elseif($order_by=='ip') {
+		$sql.="t.adresse_ip, ";
+	}
+	elseif($order_by=='niveau') {
+		$sql.="t.niveau DESC, ";
+	}
+	else {
+		unset($order_by);
+	}
+}
+$sql.="t.date DESC";
+$req = mysql_query($sql);
 if (!$req) echo mysql_error();
 while ($row = mysql_fetch_object($req)) {
 	echo "<tr>\n";
@@ -98,15 +134,17 @@ while ($row = mysql_fetch_object($req)) {
 		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
 		$user = mysql_fetch_object($user_req);
 	}
-	
+
 	if (!empty($user)) {
 		echo $user->login ." - ".$row->adresse_ip."<br/>";
 		echo "<b>".$user->prenom . " " . $user->nom."</b>";
 		echo "<br/>".$user->statut;
 		if ($user->etat == "actif") {
-			echo " (compte actif)";
+			//echo " (compte actif)";
+			echo " (<span style='color:green;'>compte actif</span>)";
 		} else {
-			echo " (compte désactivé)";
+			//echo " (compte désactivé)";
+			echo " (<span style='color:red;'>compte désactivé</span>)";
 		}
 		echo "<br/>Score cumulé : ".$user->niveau_alerte;
 	} else {
