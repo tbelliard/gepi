@@ -1432,14 +1432,14 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <?php
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin1' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
-		echo " /> Choix 1<br />";
+		echo " /> <label for='choix_bulletin1' style='cursor: pointer;'>Choix 1</label><br />";
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin2' value='2'";
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
-		echo " /> Choix 2<br />";
+		echo " /> <label for='choix_bulletin2' style='cursor: pointer;'>Choix 2</label><br />";
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin3' value='3'";
 		//echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '3') echo " checked";
-		echo " /> Choix 3<br />";
+		echo " /> <label for='choix_bulletin3' style='cursor: pointer;'>Choix 3</label><br />";
         ?>
         </td>
     </tr>
