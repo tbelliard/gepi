@@ -24,41 +24,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-	//Connexion LDAP (connect)
-	$ds = ldap_connect("ent-ldap.ac-bordeaux.fr");
+//Connexion LDAP (connect)
+$ds = ldap_connect("ent-ldap.ac-bordeaux.fr");
 
-	if ($ds){
+if ($ds){
 
-		$sr = ldap_bind($ds); // connexion anonyme, typique
-		// pour un accès en lecture seule.
+	$sr = ldap_bind($ds); // connexion anonyme, typique
+	// pour un accès en lecture seule.
 
-		$dn = "o=personne,dc=ac-bordeaux,dc=fr, c=fr";
-		//$uid = "uid=".phpCAS::getUser();
-		$uid = "uid=".$login;
-		$filter = "(|(uid=$uid))";
-		$justthese = array( "ou," );
+	$dn = "o=personne,dc=ac-bordeaux,dc=fr, c=fr";
+	//$uid = "uid=".phpCAS::getUser();
+	$uid = "uid=".$login;
 
-		//Interrogation LDAP (ldapsearch)
-		$sr = ldap_search($ds, "ou=personnes,dc=ac-bordeaux,dc=fr",$uid) ;
-		$info = ldap_get_entries($ds, $sr);
+	//Interrogation LDAP (ldapsearch)
+	$sr = ldap_search($ds, "ou=personnes,dc=ac-bordeaux,dc=fr", $uid) ;
+	$info = ldap_get_entries($ds, $sr);
 
-		// DEBUG
-		//print_r($info);
-		$RNE = $info[0]["ou"][0];
+	// DEBUG
+	//print_r($info);
+	$RNE = $info[0]["ou"][0];
 
 
-		//Fermeture connexion LDAP
-		ldap_close($ds);
+	//Fermeture connexion LDAP
+	ldap_close($ds);
 
-		/*/fabrication url de redirection avec ticket, status (teacher ou student), rne
-		// exemple : http://194.199.33.3/educhorus/servlet/com.bloobyte.girafe.DoLogin?ticket=&status=teacher&rne=0330135T
-		// url de redieection http://194.199.33.3/educhorus/servlet/com.bloobyte.girafe.DoLogin
-		$urlRedirectBase = 'http://194.199.33.3/educhorus/servlet/com.bloobyte.girafe.DoLogin?' ;
-		$urlRedirect = $urlRedirectBase . 'ticket=' . $HTTP_GET_VARS['ticket'] . '&status=' . $info[0]["edupersonaffiliation"][0] . '&rne=' . $info[0]["ou"][0] ;
-        	header ("Location: ".$urlRedirect);
-*/
-	}else{
+}else{
 
-		echo '<h4>Impossible de se connecter au serveur LDAP.</h4>';
-	}
+	echo '<h4>Impossible de se connecter au serveur LDAP.</h4>';
+
+}
 ?>

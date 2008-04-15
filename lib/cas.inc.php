@@ -45,7 +45,7 @@ phpCAS::setLang('french');
 phpCAS::forceAuthentication();
 
 // A ce stade, l'utilisateur est authentifié
-$user=phpCAS::getUser();
-$login=phpCAS::getUser();
+$user  = phpCAS::getUser();
+$login = phpCAS::getUser();
 
 ?>

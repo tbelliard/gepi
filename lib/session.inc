@@ -334,6 +334,7 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
     $_SESSION['start'] = $row[5];
     $_SESSION['matiere'] = $matiere_princ;
     $_SESSION['maxLength'] = getSettingValue("sessionMaxLength");
+    $_SESSION['rne'] = 'RNE';
 
     // It's a new connection, insert into log
     $sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
