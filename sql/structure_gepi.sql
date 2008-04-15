@@ -56,7 +56,7 @@ CREATE TABLE `j_professeurs_matieres` ( `id_professeur` varchar(50) NOT NULL def
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` ( `LOGIN` varchar(50) NOT NULL default '', `START` datetime NOT NULL default '0000-00-00 00:00:00', `SESSION_ID` varchar(64) NOT NULL default '', `REMOTE_ADDR` varchar(16) NOT NULL default '', `USER_AGENT` varchar(64) NOT NULL default '', `REFERER` varchar(64) NOT NULL default '', `AUTOCLOSE` enum('0','1','2','3','4') NOT NULL default '0', `END` datetime NOT NULL default '0000-00-00 00:00:00', PRIMARY KEY  (`SESSION_ID`,`START`));
 DROP TABLE IF EXISTS `matieres`;
-CREATE TABLE `matieres` ( `matiere` varchar(255) NOT NULL default '', `nom_complet` varchar(200) NOT NULL default '', `priority` smallint(6) NOT NULL default '0', `categorie_id` INT NOT NULL default '1', PRIMARY KEY  (`matiere`));
+CREATE TABLE `matieres` ( `matiere` varchar(255) NOT NULL default '', `nom_complet` varchar(200) NOT NULL default '', `priority` smallint(6) NOT NULL default '0', `categorie_id` INT NOT NULL default '1', matiere_aid CHAR(1) NOT NULL default 'n', matiere_atelier CHAR(1) NOT NULL default 'n', PRIMARY KEY  (`matiere`));
 DROP TABLE IF EXISTS `matieres_appreciations`;
 CREATE TABLE `matieres_appreciations` ( `login` varchar(50) NOT NULL default '', `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`));
 DROP TABLE IF EXISTS `matieres_appreciations_tempo`;
