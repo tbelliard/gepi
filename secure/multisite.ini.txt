@@ -20,7 +20,7 @@ nombase		= essai2
 pathname	= /gepi
 
 ;
-; @version $Id: multisite.ini 1709 2008-04-15 11:56:54Z jjocal $
+; @version $Id$
 ;
 ; Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
 ;
