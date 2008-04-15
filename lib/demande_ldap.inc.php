@@ -47,6 +47,8 @@ if ($ds){
 
 	//Fermeture connexion LDAP
 	ldap_close($ds);
+	// On relance le login.php mais avec le RNE de l'établissement et le ticket CAS
+	header("Location: login.php?rne=".$RNE."&ticket=".$_GET["ticket"]."");
 
 }else{
 
