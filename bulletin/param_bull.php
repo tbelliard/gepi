@@ -602,12 +602,12 @@ if (isset($_POST['bull_police_avis'])) {
 $tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 if (isset($_POST['bull_font_style_avis'])) {
 	if((!in_array($_POST['bull_font_style_avis'],$tab_styles_avis))&&($_POST['bull_font_style_avis']!='')){
-		$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
+		$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis ! (police invalide)";
 		$reg_ok = 'no';
 	}
 	else{
 		if (!saveSetting("bull_font_style_avis", $_POST['bull_font_style_avis'])) {
-			$msg .= "Erreur lors de l'enregistrement de bull_police_avis !";
+			$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis !";
 			$reg_ok = 'no';
 		}
 	}
