@@ -2147,7 +2147,8 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 				if($doublement[$i]!="") {
 					$rdbt = " ; ".$doublement[$i];
 				}
-			if($dp[$i]!="") {
+			//if($dp[$i]!="") {
+			if(isset($dp[$i])) {
 				$pdf->Cell(90,4, $dp[$i].$rdbt,0,2,'');
 			} else {
 			  $pdf->Cell(90,4,$rdbt,0,2,'');
