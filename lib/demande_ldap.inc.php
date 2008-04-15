@@ -42,6 +42,9 @@ if ($ds){
 
 	// DEBUG
 	//print_r($info);
+
+	// Il faudra faire attention au cas où un utilisateur a plusieurs établissements
+	// Le nombre de RNE se trouve dans $info[0]["ou"][count]
 	$RNE = $info[0]["ou"][0];
 
 
