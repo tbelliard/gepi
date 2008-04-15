@@ -349,15 +349,20 @@ onclick="javascript:MetVal('pour')" />
 <br />
 <?php
 
-    echo "<table border=1 cellpadding=2 cellspacing=2>";
+    echo "<table border=1 class='boireaus' cellpadding=2 cellspacing=2>";
     echo "<tr>
-<td><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></td>
-<td><p class=\"small\">Identifiant de la classe</p></td>
-<td><p class=\"small\">Nom complet</p></td>
-<td><p class=\"small\">Nom apparaissant au bas du bulletin</p></td>
-<td><p class=\"small\">formule au bas du bulletin</p></td>
-<td><p class=\"small\">Nombres de périodes</p></td></tr>\n";
+<th><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></th>
+<th><p class=\"small\">Identifiant de la classe</p></th>
+<th><p class=\"small\">Nom complet</p></th>
+<th><p class=\"small\">Nom apparaissant au bas du bulletin</p></th>
+<th><p class=\"small\">formule au bas du bulletin</p></th>
+<th><p class=\"small\">Nombres de périodes</p></th></tr>\n";
+	$num_id1=1;
+	$num_id2=$nb+1;
+	$num_id3=2*$nb+1;
+	$alt=1;
     while ($i < $nb) {
+		$alt=$alt*(-1);
         $classe_id = mysql_result($call_data, $i, "classe");
         $test_classe_exist = mysql_query("SELECT * FROM classes WHERE classe='$classe_id'");
         $nb_test_classe_exist = mysql_num_rows($test_classe_exist);
@@ -376,20 +381,20 @@ onclick="javascript:MetVal('pour')" />
             $suivi_par = mysql_result($test_classe_exist, 0, 'suivi_par');
             $formule = mysql_result($test_classe_exist, 0, 'formule');
         }
-        echo "<tr>\n";
+        echo "<tr class='lig$alt'>\n";
         echo "<td><center><input type=\"checkbox\" /></center></td>\n";
         echo "<td>\n";
         echo "<p align='center'><b>$nom_court</b></p>\n";
         //echo "";
         echo "</td>\n";
         echo "<td>\n";
-        echo "<input type=text name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\" /> \n";
+        echo "<input type=text id=\"n".$num_id1."\" onKeyDown=\"clavier(this.id,event);\" name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\" /> \n";
         echo "</td>\n";
         echo "<td>\n";
-        echo "<input type=text name='reg_suivi[$classe_id]' value=\"".$suivi_par."\" />\n";
+        echo "<input type=text id=\"n".$num_id2."\" onKeyDown=\"clavier(this.id,event);\" name='reg_suivi[$classe_id]' value=\"".$suivi_par."\" />\n";
         echo "</td>\n";
         echo "<td>\n";
-        echo "<input type=text name='reg_formule[$classe_id]' value=\"".$formule."\" />\n";
+        echo "<input type=text id=\"n".$num_id3."\" onKeyDown=\"clavier(this.id,event);\" name='reg_formule[$classe_id]' value=\"".$formule."\" />\n";
         echo "</td>\n";
         echo "<td>\n";
         echo "<select size=1 name='reg_periodes_num[$classe_id]'>\n";
@@ -401,14 +406,18 @@ onclick="javascript:MetVal('pour')" />
         echo "</select>\n";
         echo "</td></tr>\n";
         $i++;
+		$num_id1++;
+		$num_id2++;
+		$num_id3++;
     }
     echo "</table>\n";
     echo "<input type=hidden name='step2' value='y' />\n";
-    echo "<center><input type='submit' value='Enregistrer les données' /></center>\n";
+    echo "<p align='center'><input type='submit' value='Enregistrer les données' /></p>\n";
     echo "</form>\n";
 }
 
 ?>
+<p><br /></p>
 </div>
 </body>
 </html>

@@ -158,11 +158,13 @@ else {
     //echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>F_ELE.DBF</b> ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>";
     echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (ND pour \"non défini\") dans le fichier <b>eleves.csv</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>\n";
     echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>\n";
-    echo "<table border=1 cellpadding=2 cellspacing=2>\n";
+    echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
     //echo "<tr><td><p class=\"small\">N° GEP</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>";
-    echo "<tr><td><p class=\"small\">N° INE</p></td><td><p class=\"small\">Identifiant</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td><p class=\"small\">Sexe</p></td><td><p class=\"small\">Date de naiss.</p></td><td><p class=\"small\">Régime</p></td><td><p class=\"small\">Doublant</p></td><td><p class=\"small\">Classe</p></td><td><p class=\"small\">Etablissement d'origine</p></td></tr>\n";
+    echo "<tr><th><p class=\"small\">N° INE</p></th><th><p class=\"small\">Identifiant</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th><p class=\"small\">Sexe</p></th><th><p class=\"small\">Date de naiss.</p></th><th><p class=\"small\">Régime</p></th><th><p class=\"small\">Doublant</p></th><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Etablissement d'origine</p></th></tr>\n";
+	$alt=1;
     $max_lignes_pb = 0;
     while ($i < $nb) {
+		$alt=$alt*(-1);
         $ligne_pb = 'no';
         $no_gep = mysql_result($call_data, $i, "ELENONAT");
         $reg_nom = mysql_result($call_data, $i, "ELENOM");
@@ -346,7 +348,8 @@ else {
         if (!isset($affiche)) $affiche = 'tout';
         // On affiche la ligne du tableau
         if (($affiche != 'partiel') or (($affiche == 'partiel') and ($ligne_pb == 'yes'))) {
-            echo "<tr><td><p class=\"small\">$no_gep_aff</p></td>\n";
+			echo "<tr class='lig$alt'>\n";
+            echo "<td><p class=\"small\">$no_gep_aff</p></td>\n";
             echo "<td><p class=\"small\">$login_eleve</p></td>\n";
             echo "<td><p class=\"small\">$reg_nom_aff</p></td>\n";
             echo "<td><p class=\"small\">$reg_prenom_aff</p></td>\n";
@@ -355,7 +358,8 @@ else {
             echo "<td><p class=\"small\">$reg_regime_aff</p></td>\n";
             echo "<td><p class=\"small\">$reg_doublant_aff</p></td>\n";
             echo "<td><p class=\"small\">$classe_aff</p></td>\n";
-            echo "<td><p class=\"small\">$reg_etab_aff</p></td></tr>\n";
+            echo "<td><p class=\"small\">$reg_etab_aff</p></td>\n";
+			echo "</tr>\n";
         }
 
         // Si la ligne comportait un problème, on incrémente max_lignes_pb

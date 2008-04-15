@@ -220,7 +220,7 @@
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<p>Veuillez fournir le fichier XML: \n";
-			echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\" />\n";
+			echo "<p><input type=\"file\" size=\"65\" name=\"xml_file\" />\n";
 			echo "<p><input type=\"hidden\" name=\"step\" value=\"0\" />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "</p>\n";
@@ -447,14 +447,16 @@
 
 							echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier CSV, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
 
-							echo "<table border=1 cellpadding=2 cellspacing=2>\n";
+							echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
 
-							echo "<tr><td><p class=\"small\">Identifiant de la matière</p></td><td><p class=\"small\">Nom complet</p></td></tr>\n";
+							echo "<tr><th><p class=\"small\">Identifiant de la matière</p></th><th><p class=\"small\">Nom complet</p></th></tr>\n";
 
 							$i=0;
 							//$nb_err=0;
 							$nb_reg_no=0;
 							//$stat=0;
+
+							$alt=1;
 							while($i<count($matiere)){
 								$sql="select matiere, nom_complet from matieres where matiere='".$matiere[$i]['code_gestion']."';";
 								$verif=mysql_query($sql);
@@ -467,11 +469,15 @@
 										echo mysql_error();
 									}
 									else {
-										echo "<tr><td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+										$alt=$alt*(-1);
+										echo "<tr class='lig$alt'>\n";
+										echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
 									}
 								} else {
 									$nom_complet = mysql_result($verif,0,'nom_complet');
-									echo "<tr><td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'>\n";
+									echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
 								}
 
 								$i++;

@@ -207,15 +207,15 @@ if (!isset($is_posted)) {
 	echo "<br />\n";
 
 	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>\n";
-	echo "<input type='radio' name='sso' value='no' checked /> Non\n";
-	echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera généré)\n";
+	echo "<input type='radio' name='sso' id='sso_n' value='no' checked /> <label for='sso_n' style='cursor: pointer;'>Non</label>\n";
+	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes' /> <label for='sso_y' style='cursor: pointer;'>Oui (aucun mot de passe ne sera généré)</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
 
 	echo "<p>Dans le cas où la réponse à la question précédente est Non, voulez-vous:</p>\n";
-	echo "<p><input type=\"radio\" name=\"mode_mdp\" value=\"alea\" checked /> Générer un mot de passe aléatoire pour chaque professeur.<br />\n";
-	echo "<input type=\"radio\" name=\"mode_mdp\" value=\"date\" /> Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>).</p>\n";
+	echo "<p><input type=\"radio\" name=\"mode_mdp\" id='mode_mdp_alea' value=\"alea\" checked /> <label for='mode_mdp_alea' style='cursor: pointer;'>Générer un mot de passe aléatoire pour chaque professeur</label>.<br />\n";
+	echo "<input type=\"radio\" name=\"mode_mdp\" id='mode_mdp_date' value=\"date\" /> <label for='mode_mdp_date' style='cursor: pointer;'>Utiliser plutôt la date de naissance au format 'aaaammjj' comme mot de passe initial (<i>il devra être modifié au premier login</i>)</label>.</p>\n";
 	echo "<br />\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -499,8 +499,8 @@ else {
 
 
 	echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
-	echo "<table border=1 cellpadding=2 cellspacing=2>\n";
-	echo "<tr><td><p class=\"small\">Identifiant du professeur</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Prénom</p></td><td>Mot de passe *</td></tr>\n";
+	echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
+	echo "<tr><th><p class=\"small\">Identifiant du professeur</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th>Mot de passe *</th></tr>\n";
 
 	srand();
 
@@ -524,6 +524,7 @@ else {
 				}
 	*/
 
+	$alt=1;
 	for($k=0;$k<count($prof);$k++){
 		if(isset($prof[$k]["fonction"])){
 			if($prof[$k]["fonction"]=="ENS"){
@@ -749,14 +750,20 @@ else {
 
 					if(!$res){$nb_reg_no++;}
 					$res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof."', '"."P".$prof[$k]["id"]."')");
-					echo "<tr><td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
+
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 				} else {
 // 					//$res = mysql_query("UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
 					// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
 					$res = mysql_query("UPDATE utilisateurs set etat='actif', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', numind='P".$prof[$k]["id"]."' where login = '".$login_prof_gepi."'");
 					if(!$res) $nb_reg_no++;
 					$res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '"."P".$prof[$k]["id"]."')");
-					echo "<tr><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$prof[$k]["prenom"]."</p></td><td>Inchangé</td></tr>\n";
+
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$prof[$k]["prenom"]."</p></td><td>Inchangé</td></tr>\n";
 				}
 			}
 		}
