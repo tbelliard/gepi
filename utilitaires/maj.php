@@ -5935,6 +5935,22 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	$result .= "<br />&nbsp;->Contrôle/Mise à jour du dispositif Notanet/Fiches Brevet<br />";
 	$temoin_notanet_err=0;
 
+	$sql="CREATE TABLE IF NOT EXISTS notanet (
+			login varchar(50) NOT NULL default '',
+			ine text NOT NULL,
+			id_mat tinyint(4) NOT NULL,
+			notanet_mat varchar(255) NOT NULL,
+			matiere varchar(50) NOT NULL,
+			note varchar(4) NOT NULL default '',
+			note_notanet varchar(4) NOT NULL,
+			id_classe smallint(6) NOT NULL default '0'
+			);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
 	$sql="SHOW COLUMNS FROM notanet LIKE 'note_notanet';";
 	$test1 = mysql_num_rows(mysql_query($sql));
 
@@ -5967,7 +5983,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
+		$result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
