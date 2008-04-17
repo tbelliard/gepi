@@ -194,7 +194,8 @@ else {
 
 	//if(!isset($_POST['choix_matieres'])){
 
-		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type n WHERE n.login=jec.login ORDER BY id_classe";
+		//$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type n WHERE n.login=jec.login ORDER BY id_classe";
+		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE net.login=jec.login AND net.type_brevet='$type_brevet' ORDER BY id_classe";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
 			echo "<p>Aucun élève n'est encore associé à ce type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";

@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','V','F','F','V','Notanet: Saisie des appréciations','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','F','F','F','F','Notanet: Saisie des appréciations','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -130,7 +130,7 @@ $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 change = 'no';
 </script>
 
-<p class=bold><a href="accueil.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
+<p class=bold><a href="../accueil.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
 
 <?php
 
