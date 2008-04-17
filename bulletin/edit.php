@@ -908,87 +908,10 @@ while ($i < $nombre_eleves2) {
     // Impression d'une page de garde
     $affiche_page_garde = $page_garde_imprime;
     if ( $affiche_page_garde == 'yes' OR $affiche_adresse == 'y') {
-/*
-        $ereno = '';
-        $ereno = @mysql_result($appel_liste_eleves, $i, "ereno");
-	//echo "\$ereno=$ereno<br />";
-        if ($ereno!='') {
-		//echo "1<br />";
-		$call_resp = @mysql_query("SELECT * FROM responsables WHERE ereno = '$ereno'");
-		if(mysql_num_rows($call_resp)==0){
-			$nom1="";
-			$prenom1="";
-			$adr1="";
-			$adr1_comp="";
-			$commune1="";
-			$cp1="";
-			$nom2="";
-			$prenom2="";
-			$adr2="";
-			$adr2_comp="";
-			$commune2="";
-			$cp2="";
-		}
-		else{
-			$nom1 = @mysql_result($call_resp , 0, "nom1");
-			$prenom1 = @mysql_result($call_resp , 0, "prenom1");
-			$adr1 = @mysql_result($call_resp , 0, "adr1");
-			$adr1_comp = @mysql_result($call_resp , 0, "adr1_comp");
-			$commune1 = @mysql_result($call_resp , 0, "commune1");
-			$cp1 = @mysql_result($call_resp , 0, "cp1");
-			$nom2 = @mysql_result($call_resp , 0, "nom2");
-			$prenom2 = @mysql_result($call_resp , 0, "prenom2");
-			$adr2 = @mysql_result($call_resp , 0, "adr2");
-			$adr2_comp = @mysql_result($call_resp , 0, "adr2_comp");
-			$commune2 = @mysql_result($call_resp , 0, "commune2");
-			$cp2 = @mysql_result($call_resp , 0, "cp2");
-		}
-		if ($nom1 == '') {
-			$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
-			$ligne2 = "";
-			$ligne3 = "";
-		} else {
-			$ligne1 = $nom1." ".$prenom1;
-			$ligne2 = $adr1;
-			if ($adr1_comp != '') $ligne2 .= "<br />".$adr1_comp;
-			$ligne3 = $cp1." ".$commune1;
-		}
-        } else {
-		//echo "2<br />";
-		$nom1="";
-		$prenom1="";
-		$adr1="";
-		$adr1_comp="";
-		$commune1="";
-		$cp1="";
-		$nom2="";
-		$prenom2="";
-		$adr2="";
-		$adr2_comp="";
-		$commune2="";
-		$cp2="";
-
-		$ligne1 = "<font color='red'><b>ADRESSE MANQUANTE</b></font>";
-		$ligne2 = "";
-		$ligne3 = "";
-        }
-	//echo "\$ligne1=$ligne1<br />";
-*/
 
         $ele_id='';
         $ele_id = @mysql_result($appel_liste_eleves, $i, "ele_id");
         if ($ele_id!='') {
-		/*
-		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
-					WHERE r.ele_id='$ele_id' AND
-						rp.adr_id=ra.adr_id AND
-						r.pers_id=rp.pers_id");
-
-		$call_resp=@mysql_query("SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
-					WHERE r.ele_id='$ele_id' AND
-						rp.adr_id=ra.adr_id AND
-						r.pers_id=rp.pers_id");
-		*/
 		$sql="SELECT rp.nom, rp.prenom, rp.civilite, ra.* FROM responsables2 r, resp_pers rp, resp_adr ra
 					WHERE r.ele_id='$ele_id' AND
 						rp.adr_id=ra.adr_id AND
@@ -1036,27 +959,6 @@ while ($i < $nombre_eleves2) {
 			$ligne3="";
 		}
 		else{
-			/*
-			if($civilite_resp[1]!=""){
-				$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
-			}
-			else{
-				$ligne1=$nom_resp[1]." ".$prenom_resp[1];
-			}
-			echo "<!-- \$ligne1=$ligne1 -->\n";
-			$ligne2=$adr1_resp[1];
-			if($adr2_resp[1]!=""){
-				$ligne2.="<br />\n".$adr2_resp[1];
-			}
-			if($adr3_resp[1]!=""){
-				$ligne2.="<br />\n".$adr3_resp[1];
-			}
-			if($adr4_resp[1]!=""){
-				$ligne2.="<br />\n".$adr4_resp[1];
-			}
-			$ligne3=$cp_resp[1]." ".$commune_resp[1];
-			*/
-
 
 			if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 				if((
@@ -1132,41 +1034,16 @@ while ($i < $nombre_eleves2) {
 		$ligne3 = "";
 	}
 
-		$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
+	$info_eleve_page_garde="Elève: $current_eleve_nom $current_eleve_prenom, $current_classe";
 
 
-        if ($affiche_page_garde == "yes") {
-            include "./page_garde.php";
-            // Saut de page
-            echo "<p class='saut'>&nbsp;</p>\n";
+	if ($affiche_page_garde == "yes") {
+		include "./page_garde.php";
+		// Saut de page
+		echo "<p class='saut'>&nbsp;</p>\n";
 
-/*
-            //====================================================================
-            // MODIF: boireaus
-            // On n'affiche pas les deux pages de garde à la suite...
-            // ... on intercale le bulletin pour permettre un recto-verso.
-
-            // Impression d'une deuxième page de garde s'il y a un deuxième responsable
-            if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2))
-                and ($adr2 != '') ) {
-                $ligne1 = $nom2." ".$prenom2;
-                $ligne2 = $adr2;
-                if ($adr2_comp != '') $ligne2 .= "<br />".$adr2_comp;
-                $ligne3 = $cp2." ".$commune2;
-                include "./page_garde.php";
-                // Saut de page
-                echo "<p class='saut'>&nbsp;</p>";
-
-            }
-            //====================================================================
-*/
-        }
-        //determination du nombre de bulletins à imprimer
-/*
-        if ((substr($adr1, 0, strlen($adr1)-1) != substr($adr2, 0, strlen($adr1)-1) or ($cp1 != $cp2) or ($commune1 != $commune2)) and ($adr2 != '') ) {
-            $nb_bulletins = 2;
-        }
-*/
+	}
+	//determination du nombre de bulletins à imprimer
 	if((isset($adr1_resp[2]))&&(isset($adr2_resp[2]))&&(isset($adr3_resp[2]))&&(isset($cp_resp[2]))&&(isset($commune_resp[2]))) {
 		if((
 		(substr($adr1_resp[1],0,strlen($adr1_resp[1])-1)!=substr($adr1_resp[2],0,strlen($adr1_resp[2])-1))
