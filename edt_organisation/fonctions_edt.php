@@ -910,7 +910,7 @@ function construction_tab_edt($heure, $heuredeb_dec){
 				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[2], $type_edt, $heuredeb_dec))."\n"
 				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[3], $type_edt, $heuredeb_dec))."\n"
 				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[4], $type_edt, $heuredeb_dec))."\n"
-				.(contenu_enseignement($req_type_login, $heure, $jour_semaine_tab[5], $type_edt, $heuredeb_dec))."\n</tr>\n";
+				.(contenu_enseignement($req_type_login, $heure, $jour_sem_tab[5], $type_edt, $heuredeb_dec))."\n</tr>\n";
 	}
 }
 
