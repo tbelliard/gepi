@@ -451,6 +451,13 @@ if (!$current_group) {
         $nb_col++;
         $ligne1[$nb_col] = "Moyenne";
         $ligne1_csv[$nb_col] = "Moyenne";
+		/*
+		if($aff_rang=="y") {
+			$nb_col++;
+			$ligne1[$nb_col] = "Rang";
+			$ligne1_csv[$nb_col] = "Rang";
+		}
+		*/
     }
     $i = 0;
     $nb_lignes = '0';
@@ -601,7 +608,7 @@ if (!$current_group) {
                 if ($col[$nb_col][$nb_lignes] != '') {
                     // moyenne de chaque élève
                     $temp = round($col[$nb_col][$nb_lignes]/$nb_note[$nb_lignes],1);
-                    $col[$nb_col][$nb_lignes] = number_format($temp,1,',','');
+                    $col[$nb_col][$nb_lignes] = "<center>".number_format($temp,1,',','')."</center>";
 					$col_csv[$nb_col][$nb_lignes] = number_format($temp,1,',','');
                     // Total des moyennes de chaque élève
                     $total_notes += $temp;
@@ -618,8 +625,62 @@ if (!$current_group) {
             }
             $nb_lignes++;
         }
+
+		$rg[$i]=$i;
+
         $i++;
     }
+
+	//==============================================
+	// AJOUT: boireaus 20080418
+	// Calculs pour la colonne RANG sur la moyenne des périodes
+	if(($stat=="yes")&&($aff_rang=="y")) {
+		//$tmp_tab=$col[$nb_col];
+		//for($loop=0;$loop<count($tmp_tab);$loop++) {
+			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
+		for($loop=0;$loop<count($col[$nb_col]);$loop++) {
+			//$tmp_tab[$loop]=$col[$nb_col][$loop];
+			$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
+			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
+		}
+
+		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+		/*
+		echo "count(\$rg)=".count($rg)."<br />";
+		for($loop=0;$loop<count($rg);$loop++) {
+			echo "\$rg[$loop]=".$rg[$loop]."<br />";
+		}
+		*/
+
+		$i=0;
+		$rang_prec = 1;
+		$note_prec='';
+		while ($i < $nombre_eleves) {
+			$ind = $rg[$i];
+			if ($tmp_tab[$i] == "-") {
+				//$rang_gen = '0';
+				$rang_gen = '-';
+			}
+			else {
+				if ($tmp_tab[$i] == $note_prec) {
+					$rang_gen = $rang_prec;
+				}
+				else {
+					$rang_gen = $i+1;
+				}
+				$note_prec = $tmp_tab[$i];
+				$rang_prec = $rang_gen;
+			}
+
+			//$col[$nb_col+1][$ind]="ind=$ind, i=$i et rang_gen=$rang_gen";
+			$col[$nb_col+1][$ind]="<center>".$rang_gen."</center>";
+			$col_csv[$nb_col+1][$ind]=$rang_gen;
+
+			$i++;
+		}
+	}
+	//==============================================
+
     //
     // On teste s'il y a des moyennes, min et max à calculer :
     //
@@ -718,17 +779,20 @@ if (!$current_group) {
         if ($stat == "yes") {
             // moyenne générale de la classe
             if ($total_notes != 0) {
-				$col[$nb_col][$nb_lignes] = number_format(round($total_notes/$nb_notes,1),1,',','') ;
+				$col[$nb_col][$nb_lignes] ="<center>".number_format(round($total_notes/$nb_notes,1),1,',','')."</center>";
+				$col_csv[$nb_col][$nb_lignes] =number_format(round($total_notes/$nb_notes,1),1,',','');
 			}
 			else {
-				$col[$nb_col][$nb_lignes] = '-';
+				$col[$nb_col][$nb_lignes] = "<center>-</center>";
+				$col_csv[$nb_col][$nb_lignes] = "-";
 			}
-			$col_csv[$nb_col][$nb_lignes]=$col[$nb_col][$nb_lignes];
+			//$col_csv[$nb_col][$nb_lignes]=$col[$nb_col][$nb_lignes];
 
-            $moy_gen = $col[$nb_col][$nb_lignes];
-            $col[$nb_col][$nb_lignes+1] = $min_notes;
+            //$moy_gen = $col[$nb_col][$nb_lignes];
+            $moy_gen = $col_csv[$nb_col][$nb_lignes];
+            $col[$nb_col][$nb_lignes+1] = "<center>".$min_notes."</center>";
             $col_csv[$nb_col][$nb_lignes+1] = $min_notes;
-            $col[$nb_col][$nb_lignes+2] = $max_notes;
+            $col[$nb_col][$nb_lignes+2] = "<center>".$max_notes."</center>";
             $col_csv[$nb_col][$nb_lignes+2] = $max_notes;
 		if($nb_notes!=0){
 			$pourcent_se8_ie12 = number_format(($nb_notes-$pourcent_se12-$pourcent_i8)*100/$nb_notes,1,',','');
@@ -743,9 +807,9 @@ if (!$current_group) {
         }
     }
     if ($test == 1) {
-        $col[1][$nb_lignes] = '<b>Moyenne</b>';
-        $col[1][$nb_lignes+1] = '<b>Min.</b>';
-        $col[1][$nb_lignes+2] = '<b>Max.</b>';
+        $col[1][$nb_lignes] = '<center><b>Moyenne</b></center>';
+        $col[1][$nb_lignes+1] = '<center><b>Min.</b></center>';
+        $col[1][$nb_lignes+2] = '<center><b>Max.</b></center>';
 
         $col_csv[1][$nb_lignes] = 'Moyenne';
         $col_csv[1][$nb_lignes+1] = 'Min.';
@@ -761,6 +825,24 @@ if (!$current_group) {
         }
         $nb_lignes = $nb_lignes + 3;
     }
+
+	//==============================================
+	// AJOUT: boireaus 20080418
+	// Affichage de la colonne RANG sur la moyenne des périodes
+	if(($stat=="yes")&&($aff_rang=="y")) {
+
+		$nb_col++;
+		$ligne1[$nb_col] = "Rang";
+		$ligne1_csv[$nb_col] = "Rang";
+
+        $col[$nb_col][$nb_lignes-1] = "<center>-</center>";
+        $col[$nb_col][$nb_lignes-2] = "<center>-</center>";
+        $col[$nb_col][$nb_lignes-3] = "<center>-</center>";
+        $col_csv[$nb_col][$nb_lignes-1] = '-';
+        $col_csv[$nb_col][$nb_lignes-2] = '-';
+        $col_csv[$nb_col][$nb_lignes-3] = '-';
+	}
+	//==============================================
 
     //
     // Affichage du tableau
