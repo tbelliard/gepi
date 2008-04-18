@@ -2894,7 +2894,9 @@ else{
 						echo "<tr><td>CPE responsable: </td><td><select name='cpe_resp'>\n";
 						echo "<option value=''>---</option>\n";
 						while($lig_cpe=mysql_fetch_object($res_cpe)){
-							echo "<option value='$lig_cpe->login'>$lig_cpe->nom $lig_cpe->prenom</option>\n";
+							echo "<option value='$lig_cpe->login'";
+							if(mysql_num_rows($res_cpe)==1) {echo " selected";}
+							echo ">$lig_cpe->nom $lig_cpe->prenom</option>\n";
 						}
 						echo "</select>\n";
 						echo "</td>\n";
@@ -2906,10 +2908,11 @@ else{
 												jep.professeur=u.login
 										ORDER BY u.nom, u.prenom;";
 					$res_pp=mysql_query($sql);
-					if(mysql_num_rows($res_cpe)>0){
+					if(mysql_num_rows($res_pp)>0){
 						echo "<tr><td>".ucfirst(getSettingValue('gepi_prof_suivi')).": </td><td><select name='pp_resp'>\n";
 						echo "<option value=''>---</option>\n";
 						while($lig_pp=mysql_fetch_object($res_pp)){
+							if(mysql_num_rows($res_pp)==1) {echo " selected";}
 							echo "<option value='$lig_pp->login'>$lig_pp->nom $lig_pp->prenom</option>\n";
 						}
 						echo "</select>\n";
@@ -5114,7 +5117,98 @@ else{
 							echo $chaine_adr1;
 							echo " <font color='red'>-&gt;</font><br />\n";
 						}
-						else{
+						elseif(($adr_id1!="")&&($lig_pers2->adr_id!="")&&($adr_id1!=$lig_pers2->adr_id)) {
+							echo " class='modif'>";
+
+							// Mettre une infobulle pour détailler la situation:
+							$titre="Modification adresse";
+							$texte="<div style='text-align:center; font-size:small;'>\n";
+							$texte.="<b>Adresse actuelle:</b><br />\n";
+
+							$sql="SELECT * FROM resp_pers WHERE adr_id='$adr_id1' AND pers_id!='$pers_id';";
+							$test_adr_id=mysql_query($sql);
+							if(mysql_num_rows($test_adr_id)>0) {
+								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
+								//$texte.="$civilite1 $nom1 $prenom1 partageait l'adresse suivante avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom:<br />\n";
+								$infos_adresse="Partagée avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom";
+							}
+							else {
+								//$texte.="$civilite1 $nom1 $prenom1 avait l'adresse:<br />\n";
+								$infos_adresse="Adresse non partagée";
+							}
+							$texte.="<table class='boireaus' border='1'>
+<tr>
+	<th>Adr_id</th>
+	<th>Adr1</th>
+	<th>Adr2</th>
+	<th>Adr3</th>
+	<th>Adr4</th>
+	<th>CP</th>
+	<th>Commune</th>
+	<th>Pays</th>
+	<th>Infos</th>
+</tr>
+<tr>
+	<td>$lig_pers1->adr_id</td>
+	<td>$adr1_1</td>
+	<td>$adr2_1</td>
+	<td>$adr3_1</td>
+	<td>$adr4_1</td>
+	<td>$cp1</td>
+	<td>$commune1</td>
+	<td>$pays1</td>
+	<td>$infos_adresse</td>
+</tr>
+</table>";
+							$texte.="<br />\n";
+							$texte.="<b>Nouvelle adresse:</b><br />\n";
+
+							$sql="SELECT * FROM temp_resp_pers_import WHERE adr_id='$lig_pers2->adr_id' AND pers_id!='$pers_id';";
+							$test_adr_id=mysql_query($sql);
+							if(mysql_num_rows($test_adr_id)>0) {
+								$lig_autre_resp_adr_partagee=mysql_fetch_object($test_adr_id);
+								//$texte.="$civilite1 $nom1 $prenom1 partageait l'adresse suivante avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom:<br />\n";
+								$infos_adresse="Partagée avec $lig_autre_resp_adr_partagee->civilite $lig_autre_resp_adr_partagee->nom $lig_autre_resp_adr_partagee->prenom";
+							}
+							else {
+								//$texte.="$civilite1 $nom1 $prenom1 avait l'adresse:<br />\n";
+								$infos_adresse="Adresse non partagée";
+							}
+							$texte.="<table class='boireaus' border='1'>
+<tr>
+	<th>Adr_id</th>
+	<th>Adr1</th>
+	<th>Adr2</th>
+	<th>Adr3</th>
+	<th>Adr4</th>
+	<th>CP</th>
+	<th>Commune</th>
+	<th>Pays</th>
+	<th>Infos</th>
+</tr>
+<tr>
+	<td>$lig_pers2->adr_id</td>
+	<td>$adr1_2</td>
+	<td>$adr2_2</td>
+	<td>$adr3_2</td>
+	<td>$adr4_2</td>
+	<td>$cp2</td>
+	<td>$commune2</td>
+	<td>$pays2</td>
+	<td>$infos_adresse</td>
+</tr>
+</table>";
+
+							$texte.="</div>\n";
+
+							$tabdiv_infobulle[]=creer_div_infobulle('chgt_adr_'.$cpt,$titre,"",$texte,"",40,0,'y','y','n','n');
+
+							echo "<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							echo "<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
+							echo "</a> ";
+
+						}
+						else {
 							//echo "'>";
 							echo ">";
 						}

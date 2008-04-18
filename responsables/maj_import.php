@@ -78,6 +78,7 @@ else{
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
 		echo "<th>Identifiant<br />'ele_id'</th>\n";
+		echo "<th>Identifiant<br />'elenoet'</th>\n";
 		echo "<th>Login</th>\n";
 		echo "<th>Nom</th>\n";
 		echo "<th>Prénom</th>\n";
@@ -88,6 +89,7 @@ else{
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->ele_id."</td>\n";
+			echo "<td>".$lig->elenoet."</td>\n";
 			echo "<td>".$lig->login."</td>\n";
 			echo "<td>".strtoupper($lig->nom)."</td>\n";
 			echo "<td>".ucfirst(strtolower($lig->prenom))."</td>\n";
