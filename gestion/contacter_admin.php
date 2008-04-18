@@ -118,7 +118,7 @@ case "envoi":
 	."X-Mailer: PHP/" . phpversion());
 
 	if ($envoi) {
-		echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>\n";
+		echo "<br /><br /><br /><P style=\"text-align: center\">Votre message a été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>\n";
 	} else {
 		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>\n";
 	}
@@ -144,7 +144,14 @@ default://formulaire d'envoi
 	<input type="hidden" name="action" value="envoi" />
 	<textarea name="message" cols="50" rows="5">Contenu du message : </textarea><br />
 	E-mail pour la réponse : <?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") echo "(facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail)";?><br/>
-	<input type="text" name="email_reponse" size="40" maxlength="256" /><br/>
+	<input type="text" name="email_reponse" size="40" maxlength="256" <?php
+$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+$res_mail=mysql_query($sql);
+if(mysql_num_rows($res_mail)>0) {
+	$lig_mail=mysql_fetch_object($res_mail);
+	echo "value='$lig_mail->email' ";
+}
+?>/><br/>
 	<?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") { ?>
 	Ou numéro de votre casier en salle des professeurs pour la réponse :
 	<input type="text" name="casier" size="40" maxlength="256" value="Casier N°" /><br/><br/>
