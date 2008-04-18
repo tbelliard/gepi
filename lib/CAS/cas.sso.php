@@ -23,8 +23,8 @@
 
  // Paramétrage du serveur CAS
 
- $serveurSSO = "ent-auth.ac-bordeaux.fr"; // l'hôte du serveur CAS
- $serveurSSOPort = 443; // Le port
- $serveurSSORacine = '';
+ $serveurSSO = "localhost"; // l'hôte du serveur CAS
+ $serveurSSOPort = 8443; // Le port
+ $serveurSSORacine = 'cas';
 
 ?>
