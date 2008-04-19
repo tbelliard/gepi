@@ -661,6 +661,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 					echo " (<i><small>".$chaine_coef.$coef_devoir."</small></i>)";
 					//echo " \$affiche_coef=$affiche_coef";
 				}
+				//echo "<br />\$eleve_display_app=$eleve_display_app<br />";
 				if(($avec_appreciation_devoir=="oui") and ($eleve_display_app=="1")) {
 				  echo " - Appréciation : ";
           if ($eleve_app!="")
@@ -1470,13 +1471,13 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	//=========================
 
     echo "<a name=\"calend\"></a>";
-	echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"0\" checked /><label for='choix_periode_dates' style='cursor: pointer;'> \nDe la date : ";
+	echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"0\" checked /><label for='choix_periode_dates' style='cursor: pointer;'> \nDe la date : </label>";
     echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" />";
-    echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+    echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
-    echo "&nbsp;à la date : ";
+    echo "&nbsp;à la date : </label>";
     echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" />";
-    echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+    echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
     echo " (Veillez à respectez le format jj/mm/aaaa)</label>";
 
