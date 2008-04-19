@@ -27,6 +27,8 @@ require_once("../lib/initialisations.inc.php");
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
+$info_eleve_page_garde="Elève: Durand Camille, 3 A2";
+
 $ligne1 = "Durand Albert";
 $ligne2 = "1, Avenue de l'Europe";
 $ligne3 = "75000 Paris";
