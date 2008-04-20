@@ -6,8 +6,16 @@
 	//echo "\$test_coef=$test_coef<br />\n";
         // On initialise le tableau des notes et appréciations :
         echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
-    echo "<thead>\n";
-        echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\" rowspan=\"2\">
+        echo "<thead>\n";
+
+		if($min_max_moyclas!=1) {
+			$chaine_rowspan=" rowspan='2'";
+		}
+		else{
+			$chaine_rowspan="";
+		}
+
+        echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\"$chaine_rowspan>
         <span class='bulletin'><font size=\"1\">";
         if ($bull_affiche_numero == 'yes'){
             echo "Bulletin N° ".$k."/".$nombre_eleves;
@@ -17,12 +25,12 @@
         }
         echo "</font></span></td>\n";
         if ($test_coef != 0 and $affiche_coef == "y"){
-            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"> <span class='bulletin'>Coef.</span></td>\n";
+            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan> <span class='bulletin'>Coef.</span></td>\n";
         }
     //========================================
     // AJOUT:boireaus
     if($affiche_nbdev=="y"){
-        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Nb.dev</span></td>\n";
+        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Nb.dev</span></td>\n";
     }
     //========================================
 	if($min_max_moyclas!=1){
@@ -37,22 +45,22 @@
 	}
 	else{
 		// Min/Classe/Max en une seule colonne
-		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Classe m/C/M</span></td>\n";
+		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Classe m/C/M</span></td>\n";
 	}
 
-        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>&Eacute;lève</span></td>\n";
+        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>&Eacute;lève</span></td>\n";
         if ($affiche_graph == 'y')  {
             //echo"</td>\n<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
-            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
+            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
         }
         if ($affiche_rang == 'y'){
-            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\" rowspan=\"2\"><span class='bulletin'><i>Rang</i></span></td>\n";
+            echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'><i>Rang</i></span></td>\n";
         }
 
         // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
         if ($bull_affiche_appreciations == 'y'){
             //echo "<td colspan=\"2\"><span class='bulletin'>Appréciation/Conseils</span></td>\n";
-            echo "<td colspan=\"2\" rowspan=\"2\"><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
+            echo "<td colspan=\"2\"$chaine_rowspan><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
         }
         echo "</tr>\n";
 
