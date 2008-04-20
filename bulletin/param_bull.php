@@ -1505,7 +1505,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='addressblock_padding_text' style='cursor: pointer;'>Espace en mm entre le bloc "adresse" et le bloc des résultats :</label>
+        <label for='addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats :</label>
         </td>
         <td><input type="text" name="addressblock_padding_text" id="addressblock_padding_text" size="20" value="<?php echo(getSettingValue("addressblock_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
@@ -1580,7 +1580,8 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font> :
+        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font> :<br />
+		<span style='font-size:x-small;'>Il faut ajuster les paramètres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenêtre du navigateur à l'aide de la souris pour comprendre les éventuelles abérrations de présentation pour certaines combinaisons de valeurs</i>).</span>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_debug")){
@@ -1590,7 +1591,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 			$addressblock_debug=getSettingValue("addressblock_debug");
 		}
 	?>
-        <td><input type="radio" id="addressblock_debugy" name="addressblock_debug" value="y" <?php if($addressblock_debug=="y"){echo "checked";}?> /><label for='addressblock_debugy' style='cursor: pointer;'> Oui</label> <input type="radio" id="addressblock_debugn" name="addressblock_debug" value="n" <?php if($addressblock_debug=="n"){echo "checked";}?> /><label for='addressblock_debugn' style='cursor: pointer;'> Non</label>
+        <td valign='top'><input type="radio" id="addressblock_debugy" name="addressblock_debug" value="y" <?php if($addressblock_debug=="y"){echo "checked";}?> /><label for='addressblock_debugy' style='cursor: pointer;'> Oui</label> <input type="radio" id="addressblock_debugn" name="addressblock_debug" value="n" <?php if($addressblock_debug=="n"){echo "checked";}?> /><label for='addressblock_debugn' style='cursor: pointer;'> Non</label>
         </td>
     </tr>
 </table>
