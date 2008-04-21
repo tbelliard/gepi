@@ -163,11 +163,16 @@ if ($etape != NULL) {
 		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la même procédure pour l\'étape n° '.$prochaine_etape.'</a>';
 
 	}else{
+		if (file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
+			// On efface le fichier csv
+			unlink("../temp/".$tempdir."/g_edt_2.csv");
+		}
+
 		// On affiche un lien pour revenir à la page de départ
 		echo '
 		<a href="edt_init_csv2.php">Retour</a>';
 	}
-} // on a finit de bosser
+} // on a terminé le travail de concordances
 
 ?>
 </body>
