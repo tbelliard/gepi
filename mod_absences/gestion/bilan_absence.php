@@ -38,7 +38,7 @@ Header('Pragma: public');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
-// Pour le contourner, on ajoutez la ligne suivante avant session_start() :
+// Pour le contourner, on ajoute la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
 
@@ -301,16 +301,7 @@ class bilan_PDF extends FPDF
         	$tableau[$cpt]['motif'] = tronquer_texte($motif_texte[$motif_abrege], '20')." (".$donnee['type_absence_eleve'].")";
 
 			// horodatage
-			// début
-			$tableau[$cpt]['debut'] = date_fr($donnee['d_date_absence_eleve']);
-			if ( !empty($donnee['d_heure_absence_eleve']) )
-			{
-
-				$tableau[$cpt]['debut'] .= " à ".heure($donnee['d_heure_absence_eleve']);
-
-			}
-
-			// fin
+			$tableau[$cpt]['debut'] = date_fr($donnee['d_date_absence_eleve'])." à ".heure($donnee['d_heure_absence_eleve']);
             if ( $donnee['a_heure_absence_eleve'] == "" or $donnee['a_heure_absence_eleve'] == "00:00:00" or $donnee['a_heure_absence_eleve'] == $donnee['d_heure_absence_eleve'] )
         	{
 
@@ -320,13 +311,7 @@ class bilan_PDF extends FPDF
         	else
         	{
 
-            	$tableau[$cpt]['fin'] = date_fr($donnee['a_date_absence_eleve']);
-            	if ( !empty($donnee['a_heure_absence_eleve']) )
-            	{
-
-            		$tableau[$cpt]['fin'] .= " à ".heure($donnee['a_heure_absence_eleve']);
-
-				}
+            	$tableau[$cpt]['fin'] = date_fr($donnee['a_date_absence_eleve'])." à ".heure($donnee['a_heure_absence_eleve']);
 
         	}
 
@@ -469,7 +454,7 @@ while ( $page < $nb_page )
 $datation_fichier = date("Ymd_Hi");
 $nom_fichier = 'Bilan_absence_' . $datation_fichier . '.pdf';
 
-// générer la sotie PDF
+// générer la sortie PDF
 $pdf->Output($nom_fichier,'I');
 
 /* FIN - Génération du PDF */
