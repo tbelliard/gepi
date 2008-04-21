@@ -264,8 +264,11 @@ if (!$current_group) {
 	//==========================================
 	// MODIF: boireaus 20080407
 	// Le rang doit-il être affiché
+	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
+	// Et le calcul des rangs est effectué après soumission du formulaire si l'option rang est cochée
 	$aff_rang="y";
 	$affiche_categories="n";
+	/*
 	for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
 		$sql="SELECT display_rang FROM classes WHERE id='".$current_group["classes"]["list"][$i]."';";
 		$test_rang=mysql_query($sql);
@@ -287,6 +290,7 @@ if (!$current_group) {
 			break;
 		}
 	}
+	*/
 	if($aff_rang=="y") {
 	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' /><label for='afficher_rang' style='cursor: pointer;'>Afficher le rang des élèves.</label></p>\n";
 	}
@@ -331,16 +335,18 @@ if (!$current_group) {
 	//==========================================
 	// MODIF: boireaus 20080407
 	// Le rang doit-il être affiché
-	$aff_rang="n";
+	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
+	//$aff_rang="n";
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		$aff_rang="y";
 		$affiche_categories="n";
 		for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
+			/*
 			$sql="SELECT display_rang FROM classes WHERE id='".$current_group["classes"]["list"][$i]."';";
 			$test_rang=mysql_query($sql);
 			$lig_rang=mysql_fetch_object($test_rang);
 			if($lig_rang->display_rang=="y") {
-				/*
+			*/
 				$id_classe=$current_group["classes"]["list"][$i];
 
 				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
@@ -351,12 +357,13 @@ if (!$current_group) {
 					$periode_num=$lig_per->num_periode;
 					include("../lib/calcul_rang.inc.php");
 				}
-				*/
+			/*
 			}
 			else {
 				$aff_rang="n";
 				break;
 			}
+			*/
 		}
 	}
 	//==========================================
