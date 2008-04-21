@@ -768,8 +768,23 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$req_classe = mysql_query("SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
 		$rep_classe = mysql_fetch_array($req_classe);
 
+		// On récupère la période active en passant d'abord par le calendrier
+		$query_cal = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
+														debut_calendrier_ts <= '".date("U")."'
+														AND fin_calendrier_ts >= '".date("U")."'
+														AND numero_periode != '0'
+														AND classe_concerne_calendrier LIKE '%".$rep_id_classe['id_classe']."%'")
+									OR trigger_error('Impossible de lire le calendrier.', E_USER_NOTICE);
+		$p_c = mysql_fetch_array($query_cal);
+
+		$query_periode = mysql_query("SELECT num_periode FROM periodes WHERE verouiller = 'N' OR verouiller = 'P'")
+									OR trigger_error('Impossible de récupérer la bonne période.', E_USER_NOTICE);
+		$p = mysql_fetch_array($query_periode);
+
+		$per = isset($p_c["numero_periode"]) ? $p_c["numero_periode"] : (isset($p["num_periode"]) ? $p["num_periode"] : "1");
+
 		// On compte le nombre d'élèves
-		$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = 1 AND id_groupe ='".$enseignement."'");
+		$req_compter_eleves = mysql_query("SELECT COUNT(*) FROM j_eleves_groupes WHERE periode = '".$per."' AND id_groupe ='".$enseignement."'");
 		$rep_compter_eleves = mysql_fetch_array($req_compter_eleves);
 		$aff_nbre_eleve = $rep_compter_eleves[0];
 
@@ -778,8 +793,9 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 			$current_group = get_group($enseignement);
 
 			$contenu="";
-			// 1 étant le numéro de la période
-			foreach ($current_group["eleves"][1]["users"] as $eleve_login) {
+
+			// $per étant le numéro de la période
+			foreach ($current_group["eleves"][$per]["users"] as $eleve_login) {
 				$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
 			}
 			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";

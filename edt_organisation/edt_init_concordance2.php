@@ -87,8 +87,11 @@ if ($etape != NULL) {
 					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')")
 					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 		// On récupère le nombre de valeurs enregistrées et on affiche
-
-		echo '<p>'.$nbre_lignes.' lignes ont été enregistrées dans la base.</p>';
+		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
+			echo '<p>Aucun enregistrement, passez à l\'étape suivante.</p>';
+		}else{
+			echo '<p>'.$nbre_lignes.' lignes ont été enregistrées dans la base.</p>';
+		}
 
 	}elseif($etape == 5){
 			$enre = $deja = 0;
@@ -102,8 +105,21 @@ if ($etape != NULL) {
 				$deja++;
 			}
 		}
+		// Les genres et nombres
+		if ($enre >= 2) {
+			$s = 's';
+			$ont = 'ont';
+		}else{
+			$s = '';
+			$ont = 'a';
+		}
+		if ($deja >= 2) {
+			$en = 'en';
+		}else{
+			$en = '';
+		}
 		echo '
-		<p>'.$enre.' nouvelles salles ont été enregistrées et '.$deja.' existaient déjà.</p>';
+		<p>'.$enre.' nouvelle'.$s.' salle'.$s.' '.$ont.' été enregistrée'.$s.' et '.$deja.' existai'.$en.'t déjà.</p>';
 
 	}elseif($etape == 12){
 

@@ -60,7 +60,7 @@ require_once("../lib/header.inc");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
-$_SESSION["retour"] = "edt_init_csv";
+$_SESSION["retour"] = "edt_init_csv2";
 // +++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
 
 ?>
@@ -80,14 +80,26 @@ $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : null;
 $recommencer = isset($_POST["recommencer"]) ? $_POST["recommencer"] : null;
 $etape = null;
 $aff_etape = null;
+$exist = NULL;
+
+// On récupère le répertoire temporaire de l'admin
+$tempdir = get_user_temp_directory();
+
 // Si l'utilisateur veut recommencer, on efface toutes les entrées de l'étape qu'il a demandée
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
     // On efface toutes les entrées de cette étape (les étapes vont de 0 à 12)
+    if ($recommencer == '0' AND file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
+    	// On efface le fichier
+    	unlink("../temp/".$tempdir."/g_edt_2.csv");
+    	$_SESSION["explications"] = "oui";
+    }
+
     $supprimer = mysql_query("DELETE FROM edt_init WHERE ident_export >= '" . $recommencer . "' AND ident_export != 'fichierTexte2'")
     OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . mysql_error(), E_USER_ERROR);
     $modifier = mysql_query("UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
     OR trigger_error('Erreur dans le retour en arrière : ' . mysql_error(), E_USER_ERROR);
 }
+
 
 // On garde en mémoire les deux coches pour effacer la table de cours et afficher les informations quand on enregistre les cours
 $referer = explode("/", $_SERVER['HTTP_REFERER']);
@@ -101,6 +113,7 @@ if ($truncate_cours == "oui" OR ($referer[5] == "edt_init_concordance2.php" AND 
 } else {
     $_SESSION["effacer_cours"] = '';
 }
+
 
 // On teste d'abord pour savoir à quelle étape on est
 $query = mysql_query("SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
@@ -131,14 +144,36 @@ if ($query) {
 }
 echo '<div id="divCsv2">';
 echo $aff_etape;
+
+
+// On vérifie si un fichier de ce type n'existe pas déjà
+	if (file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
+	 	// On peut continuer la concordance
+	 	$action = "upload_file";
+	 	$exist = "oui";
+	 }
+
 // On commence le travail sur le fichier
 if ($action == "upload_file") {
+
+	// et on enregistre le fichier si nécessaire
+	if ($exist != "oui") {
+		if (strtolower($csv_file['name']) == "g_edt_2.csv") {
+			$source_file = ($csv_file['tmp_name']);
+			$dest_file = "../temp/".$tempdir."/g_edt_2.csv";
+			$res_copy = copy("$source_file" , "$dest_file");
+		}else{
+			echo "Ce n'est pas le bon nom de fichier.";
+			die();
+		}
+	}
+
     // On vérifie le nom du fichier...
-    if (strtolower($csv_file['name']) == "g_edt_2.csv") {
+    if (file_exists("../temp/".$tempdir."/g_edt_2.csv") === TRUE) {
         // plus besoin d'afficher les explications
         $_SESSION["explications"] = "non";
         // Le nom est ok. On ouvre le fichier
-        $fp = fopen($csv_file['tmp_name'], "r");
+        $fp = fopen("../temp/".$tempdir."/g_edt_2.csv", "r");
 
         if (!$fp) {
             // Prob sur l'ouverture du fichier
@@ -171,6 +206,7 @@ if ($action == "upload_file") {
 
             echo '<p>' . $titre[$etape] . '</p>';
             if ($etape != 12) {
+            	$aff_enregistrer = 'Enregistrer ces concordances';
                 while ($tab = fgetcsv($fp, 1024, ";")) {
                     if (in_array($tab[$etape], $tableau) === false) {
                         // Puisque la valeur du champ n'est pas encore dans $tableau, on l'insère pour éviter les doublons
@@ -196,24 +232,27 @@ if ($action == "upload_file") {
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
 					<label for="nomGepi' . $l . '"><b>' . $val . '</b></label>
 					';
-					// Pour les salles, on annonce celles qui existent déjà
-					if (salleifexists($valeur)== "oui") {
-						echo '<span style="font-style: italic; color: green; font-size: 0.8em;">Salle existante, non créée !</span>';
-					}else{
-						echo '<span style="font-style: italic; color: red; font-size: 0.8em;">Salle à créer !</span>';
-					}
-                    // On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
+
+					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
                         $test_selected = explode(" ", $val);
                     } else {
                         $test_selected[0] = $val;
                     }
 
+					// Pour les salles, on annonce celles qui existent déjà
+					if (salleifexists($valeur) == "oui" AND $etape == 5) {
+						echo '<span style="font-style: italic; color: green; font-size: 0.8em;">Salle existante, non créée !</span>';
+					}elseif (salleifexists($valeur) != "oui" AND $etape == 5){
+						echo '<span style="font-style: italic; color: red; font-size: 0.8em;">Salle à créer !</span>';
+					}
+
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
                     if ($etape == 4) {
                     	// Pour les prof, on met tout en majuscule
                     	$nom_selected = strtoupper($test_selected[0]);
                     	// et on enlève tous les accents
+                    	//$nom_selected = str_replace(, , );
 
                     }else{
 						$nom_selected = $test_selected[0]; // pour le selected du helper
@@ -231,7 +270,11 @@ if ($action == "upload_file") {
                     echo '</p>';
                     $l++;
                 }
-                $aff_enregistrer = 'concordances';
+                if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
+                	$aff_enregistrer = 'Passer à l\'étape suivante (aucun enregistrement)';
+                }elseif($etape == 5){
+					$aff_enregistrer = 'Enregistrer ces salles';
+				}
             } elseif ($etape == 12) {
                 echo '
 				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
@@ -254,7 +297,7 @@ if ($action == "upload_file") {
                     $b++; // on incrémente le compteur pour le name
                 }
                 echo 'Votre fichier comporte ' . $nbre_lignes . ' cours.';
-                $aff_enregistrer = 'cours';
+                $aff_enregistrer = 'Enregistrer ces cours';
             } else {
                 // rien pour le moment
             }
@@ -263,7 +306,7 @@ if ($action == "upload_file") {
 					<input type="hidden" name="etape" value="' . $etape . '" />
 					<input type="hidden" name="aff_infos" value="' . $aff_infos . '" />
 					<input type="hidden" name="concord_csv2" value="ok" />
-					<input type="submit" name="enregistrer" value="Enregistrer ces ' . $aff_enregistrer . '" />
+					<input type="submit" name="enregistrer" value="' . $aff_enregistrer . '" />
 				</form>';
         }
     } else {
@@ -276,7 +319,7 @@ if ($action == "upload_file") {
 echo '</div>'; // fin du div id="DivCsv2"
 
 if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
-    echo '<!--';
+    echo '<div style="display: none;">';
 }
 
 ?>
@@ -307,12 +350,7 @@ la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eac
 	<li>Freq</li>
 	<li>Aire</li>
 </ol>
-<?php
-if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
-    echo '-->';
-}
 
-?>
 	<p>Veuillez préciser le nom complet du fichier <b>g_edt_2.csv</b>.</p>
 		<form enctype="multipart/form-data" action="edt_init_csv2.php" method="post">
 
@@ -327,7 +365,19 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 ?> /></p>
 
 			<p><input type="file" size="80" name="csv_file" /></p>
+			<p><input type="submit" value="Valider" /></p>
+		</form>
+<?php
+if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
+    echo '</div>';
+}
 
+?>
+<br /><br />
+	<div style="border: 2px solid grey;">
+		<h3>Attention, le "select" suivant permet de recommencer &agrave; une &eacute;tape ant&eacute;rieure.
+		Si vous demandez l'&eacute;tape 0, il faudra fournir de nouveau le fichiier csv.</h3>
+		<form name="refaire" action="edt_init_csv2.php" method="post">
 			<p><label for="">Vous pouvez recommencer depuis l'&eacute;tape : </label>
 			<select name="recommencer">
 				<option value="non">non</option>
@@ -344,10 +394,11 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 				<option value="10">10</option>
 				<option value="11">11</option>
 				<option value="12">12</option>
-			</select></p>
-
-			<p><input type="submit" value="Valider" /></p>
+			</select>
+			<input type="submit" value="Valider" />
+			</p>
 		</form>
+	</div>
 	</div>
 <?php
 // inclusion du footer
