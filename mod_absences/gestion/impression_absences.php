@@ -55,12 +55,17 @@ die();
 		$_SESSION['classe_multiple'] = $classe_multiple;
 		$_SESSION['eleve_multiple'] = $eleve_multiple;
 
+
+	$form_pdf_lettre = 'cache';
 // redirection vers la création des courrier en pdf
 if($id_lettre_suivi[0] != '' and $lettre_action === 'originaux')
 {
-	$_SESSION['id_lettre_suivi'] = $id_lettre_suivi;
-	$_SESSION['lettre_action'] = $lettre_action;
-	header("Location: lettre_pdf.php");
+//	$_SESSION['id_lettre_suivi'] = $id_lettre_suivi;
+//	$_SESSION['lettre_action'] = $lettre_action;
+//	header("Location: lettre_pdf.php");
+
+	// ajout du form de validation du PDF
+	$form_pdf_lettre = 'affiche';
 }
 
 
@@ -559,11 +564,41 @@ affichercacher('div_1');
 <a href="gestion_absences.php?choix=lemessager&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Le messager</a> |
 <a href="alert_suivi.php?choix=alert&amp;year=<?php echo $year; ?>&amp;month=<?php echo $month; ?>&amp;day=<?php echo $day; ?>">Système d'alerte</a>
 </p>
-<div class="norme_absence centre">[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> | <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> | <a href="impression_absences.php?type_impr=bpc">Bilan pour les conseils</a> | <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> | <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
+<div class="norme_absence centre">
+	[ <a href="impression_absences.php?type_impr=laf">Lettres aux familles</a> |
+	 <a href="impression_absences.php?type_impr=bda">Bilan des absences</a> |
+	 <a href="impression_absences.php?type_impr=bpc">Bilan conseils</a> |
+	 <a href="impression_absences.php?type_impr=bj">Bilan journalier</a> |
+	 <a href="impression_absences.php?type_impr=fic">Fiches récapitulatives</a> |
+	 <a href="impression_absences.php?type_impr=eti">Etiquettes</a> ]</div><br />
 
 <?php if($type_impr == "laf") { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
+
+	<?php
+
+	/* ******************************************************************* */
+	/* DEBUT - Bloc form pour la génération du PDF des lettres aux parents */
+	if ( $form_pdf_lettre === 'affiche' )
+	{
+
+		?>
+		<form method="post" action="lettre_pdf.php" name="imprime_pdf_ok" target="_blank">
+	  		<fieldset style="width: 90%; margin: auto;"><legend>Votre sélection</legend>
+	  		 	<input type="hidden" name="id_lettre_suivi" value='<?php echo serialize($id_lettre_suivi); ?>' />
+	  		 	<input type="hidden" name="lettre_action" value="<?php echo $lettre_action; ?>" />
+	  		 	<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Générer le fichier PDF" /></center>
+			</fieldset>
+		</form>
+		<?php
+
+	}
+	/* FIN - Bloc form pour la génération du PDF des lettres aux parents */
+	/* ***************************************************************** */
+
+	?>
+
     <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form1">
       <fieldset style="width: 460px; margin: auto; padding: 4px" class="couleur_ligne_3">
          <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
@@ -722,7 +757,7 @@ affichercacher('div_1');
 		<input type="hidden" name="lettre_type" value="<?php echo $lettre_type; ?>" />
 		<input type="hidden" name="uid_post" value="<?php echo ereg_replace(' ','%20',$uid); ?>" />
 
-                <input type="submit" name="Submit3" value="Composer" />
+                <input type="submit" name="Submit3" value="Sélectionner" />
               </td>
             </tr>
 	  </tbody>
@@ -877,8 +912,31 @@ affichercacher('div_1');
 <?php } ?>
 
 
+<?php
+if ( $type_impr == "bj" ) { ?>
+<? /* div de centrage du tableau pour ie5 */ ?>
+<div style="text-align: center;">
+   <form method="post" action="bilan_absences_quotidien_pdf.php" name="form95">
+      <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
+         <legend class="legend_texte">&nbsp;Sélection&nbsp;</legend>
+            <div class="titre_tableau_gestion">Bilan journalier général</div>
+            <div class="norme_absence" style="text-align: left;">
+            <br />
+            du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_3->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
+			&nbsp;
+			<input type="submit" name="Submit2" value="Générer le PDF" /></div>
+			<br />
+            </div>
+      </fieldset>
+    </form>
+<? /* fin du div de centrage du tableau pour ie5 */ ?>
+</div>
+<?php } ?>
+
+
+
 <?php // fiche récapitulative des absences
-      if($type_impr === 'fic') { ?>
+ if($type_impr === 'fic') { ?>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
    <form method="post" action="impression_absences.php?type_impr=<?php echo $type_impr; ?>" name="form3">
@@ -1214,7 +1272,7 @@ if($sous_rubrique === 'gb') { ?>
 		</optgroup>
 		<optgroup label="Courrier">
 		   <option value="[courrier_demande_par]">courrier demandé par</option><?php echo "\n"; ?>
-		   <option value="[raison]">raison du courrier</option><?php echo "\n"; ?>
+		   <option value="[remarque_eleve]">raison du courrier</option><?php echo "\n"; ?>
 		   <option value="[courrier_signe_par_fonction]">courrier signé par fonct.</option><?php echo "\n"; ?>
 		   <option value="[courrier_signe_par]">courrier signé par</option><?php echo "\n"; ?>
 		</optgroup>
@@ -1229,8 +1287,8 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[liste_ret]">Liste des retards</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="Responsable">
-		   <option value="[civilitee_court_responsable]">Civilité court</option><?php echo "\n"; ?>
-		   <option value="[civilitee_long_responsable]">Civilité long</option><?php echo "\n"; ?>
+		   <option value="[civilite_court_responsable]">Civilité court</option><?php echo "\n"; ?>
+		   <option value="[civilite_long_responsable]">Civilité long</option><?php echo "\n"; ?>
 		   <option value="[nom_responsable]">Nom</option><?php echo "\n"; ?>
 		   <option value="[prenom_responsable]">Prénom</option><?php echo "\n"; ?>
 		   <option value="[adresse_responsable]">Adresse</option><?php echo "\n"; ?>
@@ -1238,8 +1296,8 @@ if($sous_rubrique === 'gb') { ?>
 		   <option value="[ville_responsable]">Ville</option><?php echo "\n"; ?>
 		</optgroup>
 		<optgroup label="CPE en charge de l'élève">
-		   <option value="[civilitee_court_cpe]">Civilité court</option><?php echo "\n"; ?>
-		   <option value="[civilitee_long_cpe]">Civilité long</option><?php echo "\n"; ?>
+		   <option value="[civilite_court_cpe]">Civilité court</option><?php echo "\n"; ?>
+		   <option value="[civilite_long_cpe]">Civilité long</option><?php echo "\n"; ?>
 		   <option value="[nom_cpe]">Nom</option><?php echo "\n"; ?>
 		   <option value="[prenom_cpe]">Prénom</option><?php echo "\n"; ?>
 		</optgroup>
@@ -1282,6 +1340,7 @@ if($sous_rubrique === 'gb') { ?>
 <?php if($type_impr === 'laf') { ?>
 <div style="text-align: center;">
 <br /><br />[ <a href='../gestion/impression_absences.php?type_impr=crea_lettre'>Gestion de la création des types de lettre</a> ]
+
 <? /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php } ?>

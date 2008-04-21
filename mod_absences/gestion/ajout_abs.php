@@ -108,6 +108,7 @@ $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM ".$pre
 
 
 // permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
+/*
 function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve)
 {
 
@@ -130,9 +131,12 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve)
 	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 		}
 }
-
+*/
 if($action_sql == "ajouter" or $action_sql == "modifier")
 {
+
+	include "../lib/function_abs.php";
+
     $total = '0';
     $j = '0';
 
@@ -167,6 +171,7 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                   }
 
           $eleve_absent[$total] = $eleve_absence_eleve ;
+
 
     if($active_absence_eleve === 'oui')
      {
@@ -235,6 +240,42 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
                                } else { $verification = '8'; $erreur='1'; $texte_erreur="La date  du debut doit &ecirc;tre plus petit que la date de fin..."; }
                         } else { $verification = '5'; $erreur = '1'; $texte_erreur="la date de fin n'est pas correcte"; }
                  } else { $verification = '4'; $erreur = '1'; $texte_erreur="La date de debut n'est pas correcte"; }
+
+
+
+        /* ******************************************** */
+        /* gestion de l'ajout dans la table absences_rb */
+        /* gerer_absence($id,$eleve_id,$retard_absence,$groupe_id='',$edt_id='',$jour_semaine='',$creneau_id='',$debut_ts,$fin_ts,$date_saisie,$login_saisie) */
+
+			$explode_heuredeb = explode(":", $d_heure_absence_eleve_ins);
+			$explode_heurefin = explode(":", $a_heure_absence_eleve_ins);
+			$explode_date_debut = explode("/", date_fr($d_date_absence_eleve_ins));
+			$explode_date_fin = explode("/", date_fr($a_date_absence_eleve_ins));
+			$debut_ts = mktime($explode_heuredeb[0], $explode_heuredeb[1], 0, $explode_date_debut[1], $explode_date_debut[0], $explode_date_debut[2]);
+			$fin_ts = mktime($explode_heurefin[0], $explode_heurefin[1], 0, $explode_date_fin[1], $explode_date_fin[0], $explode_date_fin[2]);
+			$date_saisie = mktime(date("H"), date("i"), 0, date("m"), date("d"), date("Y"));
+			$login_saisie = $_SESSION['login'];
+			$action = 'ajouter';
+
+			if ( $action_sql === "ajouter" )
+			{
+
+				gerer_absence('',$eleve_absence_eleve,'A','','','','',$debut_ts,$fin_ts,$date_saisie,$login_saisie,$action);
+
+			}
+
+			if ( $action_sql === "modifier" )
+			{
+
+				modifier_absences_rb($id,$debut_ts,$fin_ts);
+
+			}
+
+        /*                                              */
+        /* ******************************************** */
+
+
+
 
 // on vérifie si une absences est déjas définie
 
@@ -511,21 +552,29 @@ if($action_sql == "ajouter" or $action_sql == "modifier")
 if ($action === 'supprimer')
 {
 
+	include "../lib/function_abs.php";
+
 	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
 	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
 
-        $id_absence_eleve = $_GET['id'];
-      // si une réponse à un courrier expédié à était reçus alors on ne peut supprimer l'absences
-      $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%' AND (statu_lettre_suivi = 'recus' OR envoye_date_lettre_suivi != '0000-00-00')"),0);
-      if( $cpt_lettre_recus === '0' ) {
+    $id_absence_eleve = $_GET['id'];
+    // si une réponse à un courrier expédié à était reçus alors on ne peut supprimer l'absences
+    $cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%' AND (statu_lettre_suivi = 'recus' OR envoye_date_lettre_suivi != '0000-00-00')"),0);
+
+    if( $cpt_lettre_recus === '0' ) {
 
         // Vérification des champs
-          if($id_absence_eleve != "")
+          if ( $id_absence_eleve != '' )
           {
-              //Requete d'insertion MYSQL
-              $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
-              // Execution de cette requete
-              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
+			// suppression dans la table absence_rb
+       		suppr_absences_rb($id_absence_eleve);
+
+
+            //Requete d'insertion MYSQL
+            $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
+            // Execution de cette requete
+            mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
 
 		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
 		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
@@ -700,9 +749,10 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
                      /* if ($mode=="groupe") { ?><strong><?php echo $data_id['nom_groupe']; ?></strong><br /><?php $id_groupe = $data_id['id_groupe']; ?><br /><?php } */
                    }
                    if (getSettingValue("active_module_trombinoscopes")=='y') {
+                   	  $nom_photo = '';
                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      if ($nom_photo != "") $photo = "../../photos/eleves/".$nom_photo;
-                      if ((!(file_exists($photo))) or ($nom_photo == "")) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                      $photo = "../../photos/eleves/".$nom_photo;
+                      if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       $valeur=redimensionne_image($photo);
                       ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
                    }

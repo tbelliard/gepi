@@ -102,6 +102,9 @@ $requete_liste_motif = "SELECT init_motif_absence, def_motif_absence FROM absenc
 
 if($action_sql === 'ajouter' or $action_sql === 'modifier')
 {
+
+	include "../lib/function_abs.php";
+
   $j = '0';
 
   while ($total < $nb_i)
@@ -144,9 +147,42 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
 		$texte_eleve_erreur[$j] = $texte_erreur;
                 $j = $j + 1;
              } else {
+
+        				/* ******************************************** */
+        				/* gestion de l'ajout dans la table absences_rb */
+				        /* gerer_absence($id,$eleve_id,$retard_absence,$groupe_id='',$edt_id='',$jour_semaine='',$creneau_id='',$debut_ts,$fin_ts,$date_saisie,$login_saisie) */
+
+						$explode_heuredeb = explode(":", $d_heure_absence_eleve_form);
+						$explode_heurefin = explode(":", $d_heure_absence_eleve_form);
+						$explode_date_debut = explode("/", date_fr($d_date_absence_eleve_form));
+						$explode_date_fin = explode("/", date_fr($d_date_absence_eleve_form));
+						$debut_ts = mktime($explode_heuredeb[0], $explode_heuredeb[1], 0, $explode_date_debut[1], $explode_date_debut[0], $explode_date_debut[2]);
+						$fin_ts = mktime($explode_heurefin[0], $explode_heurefin[1], 0, $explode_date_fin[1], $explode_date_fin[0], $explode_date_fin[2]);
+						$date_saisie = mktime(date("H"), date("i"), 0, date("m"), date("d"), date("Y"));
+						$login_saisie = $_SESSION['login'];
+						$action = 'ajouter';
+
+						if ( $action_sql === "ajouter" )
+						{
+
+							gerer_absence('',$id_absence_eleve_form,'R','','','','',$debut_ts,$fin_ts,$date_saisie,$login_saisie,$action);
+
+						}
+
+						if ( $action_sql === "modifier" )
+						{
+
+							modifier_absences_rb($id,$debut_ts,$fin_ts);
+
+						}
+
+        				/*                                              */
+        				/* ******************************************** */
+
                       if ( $action_sql === "ajouter" ) { $requete="INSERT INTO absences_eleves (type_absence_eleve,eleve_absence_eleve,justify_absence_eleve,info_justify_absence_eleve,motif_absence_eleve,d_date_absence_eleve,a_date_absence_eleve,d_heure_absence_eleve,saisie_absence_eleve) values ('R','$id_absence_eleve_form','$justify_absence_eleve_form','$info_justify_absence_eleve_form','$motif_absence_eleve_form','$d_date_absence_eleve_form','$a_date_absence_eleve_form','$d_heure_absence_eleve_form','".$_SESSION['login']."')"; }
                       if ( $action_sql === "modifier" ) { $requete="UPDATE absences_eleves SET justify_absence_eleve = '$justify_absence_eleve_form', info_justify_absence_eleve = '$info_justify_absence_eleve_form', motif_absence_eleve = '$motif_absence_eleve_form', d_date_absence_eleve = '$d_date_absence_eleve_form', a_date_absence_eleve = '$a_date_absence_eleve_form', d_heure_absence_eleve = '$d_heure_absence_eleve_form', saisie_absence_eleve = '".$_SESSION['login']."' WHERE eleve_absence_eleve = '".$id_absence_eleve_form."' and id_absence_eleve = '".$id."'"; }
                       $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
                    }
             $total = $total + 1;
         }
@@ -167,19 +203,29 @@ if($action_sql === 'ajouter' or $action_sql === 'modifier')
 if ($action === "supprimer")
 {
 
+	include "../lib/function_abs.php";
+
 	if (empty($_GET['date_ce_jour']) and empty($_POST['date_ce_jour'])) { $date_ce_jour = ''; }
 	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
 
-        $id_absence_eleve = $_GET['id'];
-        // Vérification des champs
-          if($id_absence_eleve != "")
-          {
-              //Requete d'insertion MYSQL
-              $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
-              // Execution de cette requete
-              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-              header('Location:gestion_absences.php?type=R&date_ce_jour='.$date_ce_jour);
-          }
+    $id_absence_eleve = $_GET['id'];
+
+    // Vérification des champs
+    if ( $id_absence_eleve != '' )
+    {
+
+		// suppression dans la table absence_rb
+		suppr_absences_rb($id_absence_eleve);
+
+        //Requete d'insertion MYSQL
+        $requete = "DELETE FROM ".$prefix_base."absences_eleves WHERE id_absence_eleve ='".$id_absence_eleve."'";
+        // Execution de cette requete
+        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+
+        header('Location:gestion_absences.php?type=R&date_ce_jour='.$date_ce_jour);
+
+    }
+
 }
 
 $i = '0';
@@ -291,9 +337,10 @@ while(empty($eleve_absent[$i])== false or empty($id_absence_eleve_erreur[$i])== 
              $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                       WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='R'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
+                  	  $nom_photo = '';
                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      if ($nom_photo != "") $photo = "../../photos/eleves/".$nom_photo;
-                      if ((!(file_exists($photo))) or ($nom_photo == "")) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                      $photo = "../../photos/eleves/".$nom_photo;
+                      if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       $valeur=redimensionne_image_petit($photo);
                       ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
                    }

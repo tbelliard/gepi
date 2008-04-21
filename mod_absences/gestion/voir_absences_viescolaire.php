@@ -65,12 +65,31 @@ require_once("../../lib/header.inc");
 $aff_aid_absences = "";
 $nbre_rep = "";
 if (isset($choix_creneau)) {
-		// On transforme les horaires du créneau en timestamp UNIX sur la date du jour
-		$ex_horaire = explode(":", $choix_creneau);
-		$abs_deb_ts = mktime($ex_horaire[0], $ex_horaire[1], 0, date("m"), date("d"), date("Y"));
-		$abs_fin_ts = mktime($ex_horaire[3], $ex_horaire[4], 0, date("m"), date("d"), date("Y"));
-	$sql = "SELECT DISTINCT id, eleve_id, retard_absence, groupe_id FROM absences_rb WHERE (debut_ts = '".$abs_deb_ts."' OR fin_ts = '".$abs_fin_ts."') ORDER BY eleve_id";
-	$req = mysql_query($sql) OR DIE('Impossible de lister les absents.');
+	// On transforme les horaires du créneau en timestamp UNIX sur la date du jour
+	$ex_horaire = explode(":", $choix_creneau);
+	$abs_deb_ts = mktime($ex_horaire[0], $ex_horaire[1], 0, date("m"), date("d"), date("Y"));
+	$abs_fin_ts = mktime($ex_horaire[3], $ex_horaire[4], 0, date("m"), date("d"), date("Y"));
+
+	// Cette requête permet de suivre une absence d'une durée supérieure à un seul créneau
+	$sql = "SELECT DISTINCT id, eleve_id, retard_absence, groupe_id
+					FROM absences_rb
+					WHERE
+					(
+		      			(
+						debut_ts BETWEEN '" . $abs_deb_ts . "' AND '" . $abs_fin_ts . "'
+						AND fin_ts BETWEEN '" . $abs_deb_ts . "' AND '" . $abs_fin_ts . "'
+       		  			)
+       		  			OR
+       		  			(
+						'" . $abs_deb_ts . "' BETWEEN debut_ts AND fin_ts
+						OR '" . $abs_fin_ts . "' BETWEEN debut_ts AND fin_ts
+       		  			)
+       		  			AND debut_ts != '" . $abs_fin_ts . "'
+         	  			AND fin_ts != '" . $abs_deb_ts . "'
+         	  		)
+			  		ORDER BY eleve_id";
+
+	$req = mysql_query($sql) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
 	//$rep_absences = mysql_fetch_array($req);
 	$nbre_rep = mysql_num_rows($req);
 	for($a=0; $a<$nbre_rep; $a++){

@@ -133,6 +133,12 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// si aucune date de demandé alors on met celle du jour au format jj/mm/aaaa
 	if (empty($_GET['date_choisie']) and empty($_POST['date_choisie'])) { $date_choisie = date("d/m/Y"); }
 	  else { if (isset($_GET['date_choisie'])) { $date_choisie = $_GET['date_choisie']; } if (isset($_POST['date_choisie'])) { $date_choisie = $_POST['date_choisie']; } }
+	if (empty($_GET['du']) and empty($_POST['du'])) { $du = ''; }
+	  else { if (isset($_GET['du'])) { $du = $_GET['du']; } if (isset($_POST['du'])) { $du = $_POST['du']; } }
+
+	if ( $du != '' ) { $date_choisie = $du; }
+
+
 
 /* ******************************************** */
 
@@ -240,13 +246,53 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 		      AND jec.id_classe = c.id
 		      AND jec.login = e.login
 		      AND eleve_id != 'appel'
-		      AND debut_ts >= '" . $time_actu_deb . "'
-		      AND fin_ts <= '" . $time_actu_fin . "' )
+		      AND
+		      (
+		      (
+				debut_ts BETWEEN '" . $time_actu_deb . "' AND '" . $time_actu_fin . "'
+				AND fin_ts BETWEEN '".$time_actu_deb . "' AND '" . $time_actu_fin . "'
+       		  )
+       		  OR
+       		  (
+				'" . $time_actu_deb . "' BETWEEN debut_ts AND fin_ts
+				OR '" . $time_actu_fin . "' BETWEEN debut_ts AND fin_ts
+       		  )
+       		  AND debut_ts != '" . $time_actu_fin . "'
+         	  AND fin_ts != '" . $time_actu_deb . "'
+         	  )
+		    )
 		    GROUP BY ar.id
-		    ORDER BY id_classe ASC, eleve_id ASC";
+		    ORDER BY c.nom_complet ASC, eleve_id ASC";
+
+	// on insère toute les classes dans un tableau
+	// initialisation du tableau
+	$tab_classe = '';
+
+	// requete de liste des classes présente dans la base de donnée
+	$requete_classes = "SELECT nom_complet
+		    			FROM " . $prefix_base . "classes
+		    			ORDER BY nom_complet ASC";
+
+	// compteur de classe temporaire
+	$cpt_classe = 0;
+
+	$execution_classes = mysql_query($requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.mysql_error());
+	while ( $donnee_classes = mysql_fetch_array($execution_classes) )
+	{
+
+		$tab_classe[$cpt_classe] = $donnee_classes['nom_complet'];
+
+		// incrémentation du compteur
+		$cpt_classe = $cpt_classe + 1;
+
+	}
+
 
 	// compteur temporaire pour la boucle ci-dessous
-	$i = 0; $ic = 0;
+	// compteur élève et classe
+	$i = 0;
+	// compteur des classes passé
+	$ic = 0;
 
 	// nom de l'élève précédent
 	$eleve_precedent = '';
@@ -256,22 +302,49 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	while ( $donnee = mysql_fetch_array($execution))
 	{
 
-		// si la classe précedent et différent de celle que nous traiton
-		// est différent de rien alors on incrément notre tableau de donnée
-		if ( $classe_precedent != $donnee['nom_complet'] and $classe_precedent != '' )
+		$passe = 0;
+		// si l'enregistrement sélectionner correspond ne correspond pas à la $ic classe
+		while ( $tab_classe[$ic] != $donnee['nom_complet'] )
 		{
+
+			$tab_donnee[$i]['classe'] = $tab_classe[$ic];
+			$tab_donnee[$i]['ident_eleve'] = '';
+
+			// type A ou R -- absence ou retard
+			$type = 'entete_classe';
+
+			$i = $i + 1;
 			$ic = $ic + 1;
+			$passe = 1;
+
 		}
 
 		// si l'élève précedent et différent de celui que nous traiton et que la variable de l'élève précédent
 		// est différent de rien alors on incrément notre tableau de donnée
-		if ( $eleve_precedent != $donnee['login'] and $eleve_precedent != '' )
+		if ( $eleve_precedent != $donnee['login'] and $eleve_precedent != '' and $passe != 1)
 		{
 			$i = $i + 1;
 		}
 
 		if ( $eleve_precedent != $donnee['login'] )
 		{
+
+			if ( $classe_precedent != $donnee['nom_complet'] )
+			{
+
+				// on insère les informations sur la classe de l'élève
+				$tab_donnee[$i]['classe'] = $donnee['nom_complet'];
+				$tab_donnee[$i]['ident_eleve'] = '';
+
+				$classe_precedent = $donnee['nom_complet'];
+
+				// on incrémente le tableau principal
+				$i = $i + 1;
+
+			}
+
+			// on incrémente le compteur de classe
+			//$ic = $ic + 1;
 
 			// nom de l'élève et prénom
 			$tab_donnee[$i]['classe'] = $donnee['nom_complet'];
@@ -287,7 +360,8 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 				$heure_fin = $heure_fin['heure'];
 
 			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
-			$periode = periode_actuel_nom($heure_debut, $heure_fin);
+			$periode = '';
+			$periode = creneau_absence_du_jour($donnee['login'],$date_choisie,$type);
 
 			// si des période existe
 			if ( $periode != '' )
@@ -332,7 +406,9 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 				$heure_fin = $heure_fin['heure'];
 
 			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
-			$periode = periode_actuel_nom($heure_debut, $heure_fin);
+			//$periode = periode_active_nom($heure_debut, $heure_fin);
+			$periode = '';
+			$periode = creneau_absence_du_jour($donnee['login'],$date_choisie,$type);
 
 			// si des période existe
 			if ( $periode != '' )
@@ -362,8 +438,28 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 		}
 
-
 	}
+
+		// si l'enregistrement sélectionner correspond ne correspond pas à la $ic classe
+		$ic = $ic + 1;
+
+		// on fait une boucle s'il reste des classes
+		while ( !empty($tab_classe[$ic]) )
+		{
+
+			// on incrément le compteur du tableau général
+			$i = $i + 1;
+
+			$tab_donnee[$i]['classe'] = $tab_classe[$ic];
+			$tab_donnee[$i]['ident_eleve'] = '';
+
+			// type A ou R -- absence ou retard
+			$type = 'entete_classe';
+
+			// on incrémente le compteur de classe
+			$ic = $ic + 1;
+
+		}
 
 
 	// nombre d'entrée total
@@ -378,8 +474,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	};
 
 	// nombre de page à créer, arrondit au nombre supérieur
-	$nb_page_total = ceil( ( $nb_d_entree_total + $ic ) / $nb_ligne_parpage );
-
+	$nb_page_total = ceil( $nb_d_entree_total / $nb_ligne_parpage );
 
 
 /* ******************************************** */
@@ -661,7 +756,6 @@ while ($nb_page_traite < $nb_page_total)
 /* ENTETE TITRE - FIN */
 
 
-
 /* ENTETE TABLEAU - DEBUT */
 
 	//Sélection de la police
@@ -719,9 +813,9 @@ while ($nb_page_traite < $nb_page_total)
 		if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
-			// Si c'est des élèves d'une classe différente
+			// Si c'est un typdes $tab_donnee[$nb_ligne_passe]['ident_eleve'] vide
 			// alors on n'affiche l'entête de la classe
-			if ( $classe_pass != $tab_donnee[$nb_ligne_passe]['classe'] )
+			if ( $tab_donnee[$nb_ligne_passe]['ident_eleve'] === '' )
 			{
 
 				// initialisation du point X et Y de la ligne du nom des classes
@@ -737,123 +831,127 @@ while ($nb_page_traite < $nb_page_total)
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
 
 			}
-
-			// initialisation du point X et Y de la ligne des données
-			$pdf->SetXY($x_tab, $y_dernier);
-
-			// colonne vide pour le décalage des classes
-			$pdf->Cell($lar_col_classe, $hau_donnee, '', 0, 0, '');
-
-			// colonne du nom et prénom de l'élève
-			$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['ident_eleve'], 1, 0, '');
-
-			// variable qui contient le point Y suivant pour la ligne suivante
-			$y_dernier = $y_dernier + $hau_donnee;
-
-			// compteur temporaire pour la boucle ci-dessous
-			$k = 0;
-
-			// passage des creneaux en revus
-			while ( $nb_creneaux > $k )
+			else
 			{
 
-				// nom du creneau sur lequelle nous travaillons actuellement
-				$nom_creneau = $creneaux[$k];
+				// initialisation du point X et Y de la ligne des données
+				$pdf->SetXY($x_tab, $y_dernier);
 
-				if ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']))
+				// colonne vide pour le décalage des classes
+				$pdf->Cell($lar_col_classe, $hau_donnee, '', 0, 0, '');
+
+				// colonne du nom et prénom de l'élève
+				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['ident_eleve'], 1, 0, '');
+
+				// variable qui contient le point Y suivant pour la ligne suivante
+				$y_dernier = $y_dernier + $hau_donnee;
+
+				// compteur temporaire pour la boucle ci-dessous
+				$k = 0;
+
+				// passage des creneaux en revus
+				while ( $nb_creneaux > $k )
 				{
 
-					// si la couleur à était demandé alors on l'initialise
-					if ( $couleur_fond === '1' )
+					// nom du creneau sur lequelle nous travaillons actuellement
+					$nom_creneau = $creneaux[$k];
+
+					if ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']))
 					{
 
-						// couleur de caractère
-						$pdf->SetTextColor(255, 0, 0);
-						// couleur du fond de cellule
-						$pdf->SetFillColor(255, 223, 223);
+						// si la couleur à était demandé alors on l'initialise
+						if ( $couleur_fond === '1' )
+						{
+
+							// couleur de caractère
+							$pdf->SetTextColor(255, 0, 0);
+							// couleur du fond de cellule
+							$pdf->SetFillColor(255, 223, 223);
+
+						}
+
+						// construction de la cellule du tableau
+						$pdf->Cell($largeur_1_creneau, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
+
+						// remise de la couleur du caractère à noir
+						$pdf->SetTextColor(0, 0, 0);
+
+					}
+					elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) )
+					{
+
+						// si la couleur à était demandé alors on l'initialise
+						if ( $couleur_fond === '1' )
+						{
+
+							// couleur de caractère
+							$pdf->SetTextColor(33, 223, 0);
+							// couleur du fond de cellule
+							$pdf->SetFillColor(228, 255, 223);
+
+						}
+
+						// construction de la cellule du tableau
+						$pdf->Cell($largeur_1_creneau, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
+
+						// remise de la couleur du caractère à noir
+						$pdf->SetTextColor(0, 0, 0);
+
+					}
+					elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' )
+					{
+
+						// si la couleur à était demandé alors on l'initialise
+						if ( $couleur_fond === '1' )
+						{
+
+							// couleur de caractère
+							$pdf->SetTextColor(255, 0, 0);
+							// couleur du fond de cellule
+							$pdf->SetFillColor(255, 223, 223);
+
+						}
+
+						// construction de la cellule du tableau pour l'absence
+						$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
+
+						// si la couleur à était demandé alors on l'initialise
+						if ( $couleur_fond === '1' )
+						{
+
+							// couleur de caractère
+							$pdf->SetTextColor(33, 223, 0);
+							// couleur du fond de cellule
+							$pdf->SetFillColor(228, 255, 223);
+
+						}
+
+						// construction de la cellule du tableau pour le retard
+						$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
+
+						// remise de la couleur du caractère à noir
+						$pdf->SetTextColor(0, 0, 0);
+
+					}
+					else
+					{
+
+						$pdf->Cell($largeur_1_creneau, $hau_donnee, '', 1, 0, 'C');
 
 					}
 
-					// construction de la cellule du tableau
-					$pdf->Cell($largeur_1_creneau, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
-
-					// remise de la couleur du caractère à noir
-					$pdf->SetTextColor(0, 0, 0);
-
-				}
-				elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) )
-				{
-
-					// si la couleur à était demandé alors on l'initialise
-					if ( $couleur_fond === '1' )
-					{
-
-						// couleur de caractère
-						$pdf->SetTextColor(33, 223, 0);
-						// couleur du fond de cellule
-						$pdf->SetFillColor(228, 255, 223);
-
-					}
-
-					// construction de la cellule du tableau
-					$pdf->Cell($largeur_1_creneau, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
-
-					// remise de la couleur du caractère à noir
-					$pdf->SetTextColor(0, 0, 0);
-
-				}
-				elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' )
-				{
-
-					// si la couleur à était demandé alors on l'initialise
-					if ( $couleur_fond === '1' )
-					{
-
-						// couleur de caractère
-						$pdf->SetTextColor(255, 0, 0);
-						// couleur du fond de cellule
-						$pdf->SetFillColor(255, 223, 223);
-
-					}
-
-					// construction de la cellule du tableau pour l'absence
-					$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
-
-					// si la couleur à était demandé alors on l'initialise
-					if ( $couleur_fond === '1' )
-					{
-
-						// couleur de caractère
-						$pdf->SetTextColor(33, 223, 0);
-						// couleur du fond de cellule
-						$pdf->SetFillColor(228, 255, 223);
-
-					}
-
-					// construction de la cellule du tableau pour le retard
-					$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
-
-					// remise de la couleur du caractère à noir
-					$pdf->SetTextColor(0, 0, 0);
-
-				}
-				else
-				{
-
-					$pdf->Cell($largeur_1_creneau, $hau_donnee, '', 1, 0, 'C');
+					// compteur de passage pour les créneaux
+					$k = $k + 1;
 
 				}
 
-				// compteur de passage pour les créneaux
-				$k = $k + 1;
+				// on incrémente le nombre de ligne passé sur la page
+				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
 
 			}
 
-			// on incrémente le nombre de ligne passé sur la page
-			$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
-
-			// on incrémente le nombre de ligne traité dans le tableau des données
-			$nb_ligne_passe = $nb_ligne_passe + 1;
+				// on incrémente le nombre de ligne traité dans le tableau des données
+				$nb_ligne_passe = $nb_ligne_passe + 1;
 
 		}
 		else

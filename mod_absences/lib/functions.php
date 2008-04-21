@@ -174,11 +174,14 @@ function date_sql($var)
         }
 
 function date_fr($var)
-        {
+{
+
         $var = explode("-",$var);
         $var = $var[2]."/".$var[1]."/".$var[0];
+
         return($var);
-        }
+
+}
 
 function date_frl($var)
         {
@@ -943,11 +946,19 @@ function periode_actuel($heure_choix)
 
 // fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
 // s'il y en a plusieurs alors il retourne sous cette forme M1;M2;M3
-function periode_actuel_nom($heure_debut, $heure_fin) {
+function periode_actuel_nom($heure_debut, $heure_fin)
+{
+
 	// si aucune heure on prend l'heure actuelle
-	if ( $heure_debut == '' or $heure_fin == ''){
+	if ( $heure_debut == '' or $heure_fin == '')
+	{
+
 		$nom_periode = '';
-	}else{
+
+	}
+	else
+	{
+
 		// initilalisation de la variable du nom de la periode
 		$nom_periode = '';
 
@@ -960,6 +971,359 @@ function periode_actuel_nom($heure_debut, $heure_fin) {
        				       	)
        				    AND heuredebut_definie_periode != "'.$heure_fin .'"
          			    AND heurefin_definie_periode != "'.$heure_debut .'"
+				        AND suivi_definie_periode = "1"
+				        AND type_creneaux != "pause"'
+						);
+
+		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		while($data_periode = mysql_fetch_array ($resultat_periode))
+		{
+
+			if ( $nom_periode == '' )
+			{
+
+				$nom_periode = $data_periode['nom_definie_periode'];
+
+			}
+			else
+			{
+
+				$nom_periode = $nom_periode.';'.$data_periode['nom_definie_periode'];
+
+			}
+
+		}
+
+	}
+
+	return $nom_periode;
+}
+
+
+/* liste les créneaux d'ouverture d'un jour donnée */
+function creneau_du_jour($id_eleve,$date_choisie)
+{
+
+	global $prefix_base;
+
+
+	// nous connaisson
+		// la date du jour
+		// l'id de l'élève
+
+	// on peut donc en déduire
+		// les créneaux du jour
+
+	// on renvoie donc la liste des créneaus du jour M1;M2;M3....
+
+	/*
+	 *
+	 * $id_eleve -> login de l'élève
+ 	 * $Date -> JJ/MM/AAAA
+ 	 *
+ 	 */
+
+ /* tout cela seras utils quand nous ferons la différence entre les jours
+
+	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	$choix_date = explode("/", $date_choisie);
+
+	// on créer un timestamp de cette date
+	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
+
+	// On récupère les créneau du jour
+	if ( date("w", $date_choisie_ts) == getSettingValue("creneau_different") )
+	{
+
+		$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode
+								  FROM absences_creneaux_bis
+								 WHERE id_definie_periode = '".$creneau_id."'
+							 ");
+
+	}
+	else
+	{
+
+		$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode
+								  FROM absences_creneaux
+								 WHERE id_definie_periode = '".$creneau_id."'
+						     ");
+
+	}
+	*
+	*/
+
+	$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode
+						    FROM " . $prefix_base ."absences_creneaux
+						  	ORDER BY heuredebut_definie_periode ASC
+						 ");
+
+	$tableau_perdiode = '';
+	while ( $donnee = mysql_fetch_array($req_sql) )
+	{
+
+		if ( $tableau_perdiode === '' )
+		{
+
+			$tableau_perdiode = $donnee["nom_definie_periode"];
+
+		}
+		else
+		{
+
+			$tableau_perdiode = $tableau_perdiode . ';' . $donnee["nom_definie_periode"];
+
+		}
+
+	}
+
+	// on renvoie les periodes selectionné séparer par des ;
+	return ($tableau_perdiode);
+
+}
+
+/* élève absence periode */
+function absence_sur_creneau($id_eleve,$date_choisie,$heure_debut,$heure_fin,$type='')
+{
+
+	global $prefix_base;
+
+	// nous connaisson
+		// la date du jour
+		// l'id de l'élève
+		// l'heure de début
+		// l'heure de fin
+
+	// on peut donc en déduire
+		// les créneaux du jour
+		// savoir si l'élève à était absent
+		// et quelle type d'absence
+
+	// on renvoi le type d'absence s'il y a une
+
+	/*
+	 *
+	 * $id_eleve -> login de l'élève
+ 	 * $Date -> JJ/MM/AAAA
+ 	 * $heuredebut -> 00:00
+ 	 * $heurefin -> 00:00
+ 	 *
+ 	 */
+
+	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	$choix_date = explode("/", $date_choisie);
+
+	// on créer un timestamp du debut et de la fin
+	$heuredeb = explode(":", $heure_debut);
+	$heurefin = explode(":", $heure_fin);
+
+	$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
+	$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
+
+	// on recherche si l'élève à était absence et en retard par rapport au donner de la table absences_rb
+	if ( $type != '' )
+	{
+
+	$req = mysql_query("SELECT id, retard_absence
+						FROM absences_rb
+						WHERE eleve_id = '" . $id_eleve . "'
+						AND retard_absence = '" . $type . "'
+						AND
+						(
+							(
+							debut_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+						    AND fin_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+						    )
+							OR
+							(
+			         		'" . $ts_heuredeb . "' BETWEEN debut_ts AND fin_ts
+			         		OR '" . $ts_heurefin . "' BETWEEN debut_ts AND fin_ts
+   				 	   		)
+							AND debut_ts != '" . $ts_heurefin . "'
+							AND fin_ts != '" . $ts_heuredeb . "'
+						)
+					  ");
+
+	}
+	else
+	{
+
+	$req = mysql_query("SELECT id, retard_absence
+						FROM absences_rb
+						WHERE eleve_id = '" . $id_eleve . "'
+						AND
+						(
+							(
+							debut_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+						    AND fin_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+						    )
+							OR
+							(
+			         		'" . $ts_heuredeb . "' BETWEEN debut_ts AND fin_ts
+			         		OR '" . $ts_heurefin . "' BETWEEN debut_ts AND fin_ts
+   				 	   		)
+							AND debut_ts != '" . $ts_heurefin . "'
+							AND fin_ts != '" . $ts_heuredeb . "'
+						)
+					  ");
+
+	}
+
+	$type_absence = '';
+	while ( $donnee = mysql_fetch_array($req) )
+	{
+
+		$type_absence = $donnee['retard_absence'];
+
+	}
+
+	// on renvoi le type d'absence s'il y a une
+	return ($type_absence);
+
+}
+
+/* liste les créneaux d'ouverture d'un jour donnée */
+function creneau_absence_du_jour($id_eleve,$date_choisie,$type='')
+{
+
+	global $prefix_base;
+
+	// nous connaisson
+		// la date du jour
+		// l'id de l'élève
+
+	// on peut donc en déduire
+		// les créneaux du jour
+
+	// on renvoie donc la liste des créneaus du jour M1;M2;M3....
+
+	/*
+	 *
+	 * $id_eleve -> login de l'élève
+ 	 * $Date -> JJ/MM/AAAA
+ 	 *
+ 	 */
+
+ /* tout cela seras utils quand nous ferons la différence entre les jours
+
+	// on créer un tableau avec le jour, le moi, l'année de la date choisi
+	$choix_date = explode("/", $date_choisie);
+
+	// on créer un timestamp de cette date
+	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
+
+	// On récupère les créneau du jour
+	if ( date("w", $date_choisie_ts) == getSettingValue("creneau_different") )
+	{
+
+		$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode
+								  FROM absences_creneaux_bis
+								 WHERE id_definie_periode = '".$creneau_id."'
+							 ");
+
+	}
+	else
+	{
+
+		$req_sql = mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode
+								  FROM absences_creneaux
+								 WHERE id_definie_periode = '".$creneau_id."'
+						     ");
+
+	}
+	*
+	*/
+
+	$req_sql = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
+						    FROM " . $prefix_base ."absences_creneaux
+						  	ORDER BY heuredebut_definie_periode ASC
+						 ");
+
+	$tableau_perdiode = '';
+	while ( $donnee = mysql_fetch_array($req_sql) )
+	{
+
+		if ( $tableau_perdiode === '' )
+		{
+
+			$type_var = '';
+			$type_var = absence_sur_creneau($id_eleve,$date_choisie,$donnee["heuredebut_definie_periode"],$donnee["heurefin_definie_periode"],$type);
+			if ( $type_var != '' )
+			{
+
+				$tableau_perdiode = $donnee["nom_definie_periode"];
+
+			}
+
+		}
+		else
+		{
+
+			$type_var = '';
+			$type_var = absence_sur_creneau($id_eleve,$date_choisie,$donnee["heuredebut_definie_periode"],$donnee["heurefin_definie_periode"],$type);
+			if ( $type_var != '' )
+			{
+
+				$tableau_perdiode = $tableau_perdiode . ';' . $donnee["nom_definie_periode"];
+
+			}
+
+		}
+
+	}
+
+	// on renvoie les periodes selectionné séparer par des ;
+	return ($tableau_perdiode);
+
+}
+
+
+/* fonction qui permet de savoir si un courrier à était expédié pour une absences donné */
+function lettre_absence_envoye($id_absence_eleve)
+{
+
+	global $prefix_base;
+
+	// requête pour compte le nombre de lettre envoyé pour une absence donnée.
+	$cpt_lettre_recus = 0;
+	$cpt_lettre_recus = mysql_result(mysql_query("SELECT count(*)
+													FROM " . $prefix_base . "lettres_suivis
+												   WHERE partde_lettre_suivi = 'absences_eleves'
+												     AND type_lettre_suivi = '6'
+												     AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'
+												     AND ( statu_lettre_suivi = 'recus'
+												        OR envoye_date_lettre_suivi != '0000-00-00')
+												 "),0);
+
+	return($cpt_lettre_recus);
+
+}
+
+// fonction permettant de connaitre le nom de la période dans laquelle se trouve l'heure
+// s'il y en a plusieurs alors il retourne sous cette forme M1;M2;M3
+function periode_active_nom($heure_debut, $heure_fin) {
+	// si aucune heure on prend l'heure actuelle
+	if ( $heure_debut == '' or $heure_fin == ''){
+		$nom_periode = '';
+	}else{
+		// initilalisation de la variable du nom de la periode
+		$nom_periode = '';
+
+		//on liste dans un tableau les périodes existante
+		$requete_periode = ('SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode
+				     FROM absences_creneaux
+				     WHERE (
+				        heuredebut_definie_periode BETWEEN "'.$heure_debut .'" AND "'.$heure_fin .'"
+				        AND heurefin_definie_periode BETWEEN "'.$heure_debut .'" AND "'.$heure_fin .'"
+       				    )
+       				    OR
+       				    (
+				         "'.$heure_debut .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+				         OR "'.$heure_fin .'" BETWEEN heuredebut_definie_periode AND heurefin_definie_periode
+       				    )
+       				    AND heuredebut_definie_periode != "'.$heure_fin .'"
+         			    AND heurefin_definie_periode != "'.$heure_debut .'"
+
 				        AND suivi_definie_periode = "1"
 				        AND type_creneaux != "pause"'
 						);
@@ -984,6 +1348,7 @@ function periode_actuel_nom($heure_debut, $heure_fin) {
 	return $nom_periode;
 }
 
+
 //connaitre l'heure du début soit de la fin d'une période
 // ex: periode_heure($id_periode) > [0]11:00:00 [1]11:55:00
 function periode_heure($periode)
@@ -991,6 +1356,20 @@ function periode_heure($periode)
 	$debut = ''; $fin = '';
       // on recherche les informations sur la périodes sélectionné
       $requete_periode = ('SELECT * FROM absences_creneaux WHERE id_definie_periode = "'.$periode.'"');
+      $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+      while($data_periode = mysql_fetch_array ($resultat_periode)) {
+          $debut = $data_periode['heuredebut_definie_periode'];
+          $fin   = $data_periode['heurefin_definie_periode'];
+      }
+
+      return array('debut'=> $debut, 'fin'=>$fin);
+}
+
+function periode_heure_parnom($periode)
+{
+	$debut = ''; $fin = '';
+      // on recherche les informations sur la périodes sélectionné
+      $requete_periode = ('SELECT * FROM absences_creneaux WHERE nom_definie_periode = "'.$periode.'"');
       $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
       while($data_periode = mysql_fetch_array ($resultat_periode)) {
           $debut = $data_periode['heuredebut_definie_periode'];
@@ -1625,7 +2004,7 @@ function tel_responsable($ele_id)
 {
     global $prefix_base;
 
-	$nombre_de_responsable = 0; $tel_pers_responsable = '';
+	$nombre_de_responsable = 0; $tel_pers_responsable = ''; $tel_responsable = '';
 	$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND r.resp_legal = '1' )"),0);
 	if($nombre_de_responsable != 0)
 	{

@@ -272,9 +272,10 @@ $i = 0;
                   $compte = mysql_result(mysql_query("SELECT COUNT(*) FROM ".$prefix_base."absences_eleves
                                                    WHERE eleve_absence_eleve='".$id_eleve."' AND type_absence_eleve='I'"),0);
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
+                  	  $nom_photo = '';
                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      if ($nom_photo != "") $photo = "../../photos/eleves/".$nom_photo;
-                      if ((!(file_exists($photo))) or ($nom_photo == "")) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                      $photo = "../../photos/eleves/".$nom_photo;
+                      if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       $valeur=redimensionne_image($photo);
                       ?><img src="<?php echo $photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><br /><?php
                    }

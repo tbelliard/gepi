@@ -71,7 +71,23 @@ $nb_creneaux = count($creneaux);
 		$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		// On teste si l'élève était absent ou en retard le cours du créneau (on ne teste que le début du créneau)
-		$req = mysql_query("SELECT id, retard_absence FROM absences_rb WHERE eleve_id = '".$eleve_id."' AND debut_ts = '".$ts_heuredeb."'");
+		$req = mysql_query("SELECT id, retard_absence FROM absences_rb
+								WHERE eleve_id = '".$eleve_id."' AND
+								(
+									(
+										debut_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+										AND fin_ts BETWEEN '" . $ts_heuredeb . "' AND '" . $ts_heurefin . "'
+							        )
+									OR
+									(
+					    	     		'" . $ts_heuredeb . "' BETWEEN debut_ts AND fin_ts
+					        	 		OR '" . $ts_heurefin . "' BETWEEN debut_ts AND fin_ts
+									)
+									AND debut_ts != '" . $ts_heurefin . "'
+									AND fin_ts != '" . $ts_heuredeb . "'
+								)");
+
+
 		$rep = mysql_fetch_array($req);
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
@@ -169,7 +185,22 @@ for($i = 0; $i < $nbre; $i++) {
 		</tr>
 		';
 	// On traite alors l'affichage de tous les élèves de chaque classe
-	$req_absences = mysql_query("SELECT DISTINCT eleve_id FROM absences_rb WHERE eleve_id != 'appel' AND debut_ts >= '".$time_actu_deb."' AND fin_ts <= '".$time_actu_fin."' ORDER BY eleve_id");
+	$req_absences = mysql_query("SELECT DISTINCT eleve_id FROM absences_rb
+									WHERE eleve_id != 'appel' AND
+									(
+										(
+										debut_ts BETWEEN '" . $time_actu_deb . "' AND '" . $time_actu_fin . "'
+										AND fin_ts BETWEEN '".$time_actu_deb . "' AND '" . $time_actu_fin . "'
+       		  							)
+										OR
+       		  							(
+										'" . $time_actu_deb . "' BETWEEN debut_ts AND fin_ts
+										OR '" . $time_actu_fin . "' BETWEEN debut_ts AND fin_ts
+       		  							)
+										AND debut_ts != '" . $time_actu_fin . "'
+         	  							AND fin_ts != '" . $time_actu_deb . "'
+									) ORDER BY eleve_id");
+
 	$nbre_a = mysql_num_rows($req_absences);
 
 	for($b = 0; $b < $nbre_a; $b++){
@@ -189,10 +220,10 @@ for($i = 0; $i < $nbre; $i++) {
 				if (date("w") == getSettingValue("creneau_different")) {
 					$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause'");
 				}else {
-					$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause'");
+					$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 				}
 			}else {
-				$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause'");
+				$req_creneaux = mysql_query("SELECT id_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 			}
 			$nbre_creneaux = mysql_num_rows($req_creneaux);
 			for($a=0; $a<$nbre_creneaux; $a++){

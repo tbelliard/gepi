@@ -97,37 +97,83 @@ function redimensionne_logo($photo, $L_max, $H_max)
          return $chaineTmp;
  }
 
+
   $date_ce_jour = date('d/m/Y');
+  $date_ce_jour_sql = date('Y-m-d');
     if (empty($_GET['lettre_type']) and empty($_POST['lettre_type'])) { $lettre_type = ''; }
      else { if (isset($_GET['lettre_type'])) { $lettre_type=$_GET['lettre_type']; } if (isset($_POST['lettre_type'])) { $lettre_type=$_POST['lettre_type']; } }
     if (empty($_GET['lettre_action']) and empty($_POST['lettre_action'])) { $lettre_action = ''; }
      else { if (isset($_GET['lettre_action'])) { $lettre_action=$_GET['lettre_action']; } if (isset($_POST['lettre_action'])) { $lettre_action=$_POST['lettre_action']; } }
     if (empty($_GET['id_lettre_suivi']) and empty($_POST['id_lettre_suivi'])) { $id_lettre_suivi = ''; }
      else { if (isset($_GET['id_lettre_suivi'])) { $id_lettre_suivi=$_GET['id_lettre_suivi']; } if (isset($_POST['id_lettre_suivi'])) { $id_lettre_suivi=$_POST['id_lettre_suivi']; } }
+    if (empty($_GET['mode']) and empty($_POST['mode'])) { $mode = ''; }
+     else { if (isset($_GET['mode'])) { $mode=$_GET['mode']; } if (isset($_POST['mode'])) { $mode=$_POST['mode']; } }
 
+/*
 // si session on cherche
   if(!empty($_SESSION['id_lettre_suivi'][0]) and $_SESSION['id_lettre_suivi'] != "")
    { $id_lettre_suivi = $_SESSION['id_lettre_suivi']; } else { unset($_SESSION["id_lettre_suivi"]); }
   if(!empty($_SESSION['lettre_action'][0]) and $_SESSION['lettre_action'] != "")
    { $lettre_action = $_SESSION['lettre_action']; }
+*/
 
+$id_lettre_suivi = unserialize(stripslashes($id_lettre_suivi));
 
+//if ( $lettre_action === 'test' ) {
+if ( $mode === 'apercus' )
+{
 
-if ( $lettre_action === 'test' ) {
-//importation des informations de présentation de la lettre type
-	   $i_cadre = '0';
-           $requete_structure ="SELECT * FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_cadres, ".$prefix_base."lettres_tcs WHERE id_lettre_type = '".$lettre_type."' AND id_lettre_type = type_lettre_tc AND id_lettre_cadre = cadre_lettre_tc ORDER BY y_lettre_tc ASC, x_lettre_tc ASC";
-           $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
-           while ( $donne_structure = mysql_fetch_array($execution_structure))
+	// on considère qu'il y a 1 élève de sélectionné
+	$id_eleve[0] = 'Test';
+	$lettre_type_selectionne[0] = $lettre_type;
+	$civilite_responsable[0][0] = 'M.';
+	$cpe_de_l_eleve[0] = 'Mme';
+	$sexe_eleve[0] = 'Mlle';
+	$nom_eleve[0] = 'test';
+	$prenom_eleve[0] = 'test';
+	$naissance_eleve[0] = '12/12/2000';
+	$classe_eleve[0] = '6ème 1';
+	$nom_responsable[0][0] = 'Tartampion';
+	$prenom_responsable[0][0] = 'mozard';
+	$adresse_responsable[0][0] = 'rue alber';
+	$cp_responsable[0][0] = '54385';
+	$commune_responsable[0][0] = 'lacommune';
+	$remarque[0] = 'aucun';
+	$date_debut[0] = '12/12/2000';
+	$heure_debut[0] = '12:00';
+	$date_fin[0] = '12/12/2000';
+	$heure_fin[0] = '12:00';
+	$liste_abs[0] = '';
+	$signature_status[0] = 'Madame';
+	$signature[0] = '';
+	$cpe_de_l_eleve[0]['civilite'] = 'Mme';
+	$cpe_de_l_eleve[0]['nom'] = 'test';
+	$cpe_de_l_eleve[0]['prenom'] = 'test';
+
+	//importation des informations de présentation de la lettre type
+	$i_cadre = '0';
+        $requete_structure ="SELECT *
+                               FROM ".$prefix_base."lettres_types, ".$prefix_base."lettres_cadres, ".$prefix_base."lettres_tcs
+                              WHERE id_lettre_type = '".$lettre_type."'
+                                AND id_lettre_type = type_lettre_tc
+                                AND id_lettre_cadre = cadre_lettre_tc
+                           ORDER BY y_lettre_tc ASC, x_lettre_tc ASC";
+        $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
+
+        while ( $donne_structure = mysql_fetch_array($execution_structure))
 	    {
-		$x_cadre[$i_cadre] = $donne_structure['x_lettre_tc'];
-		$y_cadre[$i_cadre] = $donne_structure['y_lettre_tc'];
-		$l_cadre[$i_cadre] = $donne_structure['l_lettre_tc'];
-		$h_cadre[$i_cadre] = $donne_structure['h_lettre_tc'];
-		$encadre_cadre[$i_cadre] = $donne_structure['encadre_lettre_tc'];
-		$text_cadre[$i_cadre] = $donne_structure['texte_lettre_cadre'];
-		$i_cadre = $i_cadre + 1;
+
+			$x_cadre[$lettre_type][$i_cadre] = $donne_structure['x_lettre_tc'];
+			$y_cadre[$lettre_type][$i_cadre] = $donne_structure['y_lettre_tc'];
+			$l_cadre[$lettre_type][$i_cadre] = $donne_structure['l_lettre_tc'];
+			$h_cadre[$lettre_type][$i_cadre] = $donne_structure['h_lettre_tc'];
+			$encadre_cadre[$lettre_type][$i_cadre] = $donne_structure['encadre_lettre_tc'];
+			$text_cadre[$lettre_type][$i_cadre] = $donne_structure['texte_lettre_cadre'];
+
+			$i_cadre = $i_cadre + 1;
+
 	    }
+
 }
 
 if ( $lettre_action === 'originaux' ) {
@@ -167,7 +213,7 @@ if ( $lettre_action === 'originaux' ) {
 			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
 			while ($donner_parents = mysql_fetch_array($requete_parents))
 			{
-				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
+				$civilite_responsable[$cpt_parents][$i] = $donner_parents['civilite']; // civilité du responsable
 			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom']; // nom du responsable
 				$prenom_responsable[$cpt_parents][$i] = $donner_parents['prenom']; // prénom du responsable
 				$adresse_responsable[$cpt_parents][$i] = $donner_parents['adr1']; // adresse du responsable
@@ -177,7 +223,7 @@ if ( $lettre_action === 'originaux' ) {
 				$cpt_parents = $cpt_parents + 1;
 			}
 		} else {
-				$civilitee_responsable[0][$i] = ''; // civilité du responsable
+				$civilite_responsable[0][$i] = ''; // civilité du responsable
 			        $nom_responsable[0][$i] = ''; // nom du responsable
 				$prenom_responsable[0][$i] = ''; // prénom du responsable
 				$adresse_responsable[0][$i] = ''; // adresse du responsable
@@ -196,7 +242,7 @@ if ( $lettre_action === 'originaux' ) {
 			if(!isset($signature_qui[$t2])) { $signature[$i] = qui($donne_persone['quienvoi_lettre_suivi']); }
 
 		// information sur le/la cpe qui suit l'élève
-		$cpe_de_l_eleve[$i] = cpe_eleve($id_eleve[$i]);		
+		$cpe_de_l_eleve[$i] = cpe_eleve($id_eleve[$i]);
 
 		//information complémentaire pour la lettre
 			$remarque[$i] = ''; $date_debut[$i] = ''; $heure_debut[$i] = ''; $date_fin[$i] = ''; $heure_fin[$i] = '';
@@ -345,7 +391,7 @@ $type_lettre = $lettre_type_selectionne[$i];
 		$L_max_logo='75'; // Longeur maxi du logo
 		$H_max_logo='75'; // hauteur maxi du logo
 		$logo = '../../images/'.getSettingValue('logo_etab');
-		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.')); 
+		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 		if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
 		 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
@@ -355,39 +401,39 @@ $type_lettre = $lettre_type_selectionne[$i];
 		 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 		 //logo
 	         $pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
-		} else { 
+		} else {
 			  $X_etab = $X_entete_etab; $Y_etab = $Y_entete_etab;
 		       }
 
 // BLOC ADRESSE ETABLISSEMENT
 		$caractere_utilse='arial';
 		$affiche_logo_etab='1'; // affiché le logo de l'établissement
-		$entente_mel='0'; // afficher dans l'entête le mel de l'établissement
-		$entente_tel='0'; // afficher dans l'entête le téléphone de l'établissement
-		$entente_fax='0'; // afficher dans l'entête le fax de l'établissement
+		$entente_mel='1'; // afficher dans l'entête le mel de l'établissement
+		$entente_tel='1'; // afficher dans l'entête le téléphone de l'établissement
+		$entente_fax='1'; // afficher dans l'entête le fax de l'établissement
 	 	 $pdf->SetXY($X_etab,$Y_etab);
 	 	 $pdf->SetFont($caractere_utilse,'',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
-		 $pdf->Cell(90,7, $gepiSchoolName,0,2,''); 
+		 $pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 		 $pdf->SetFont($caractere_utilse,'',10);
 	   	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
 		 $pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
 		  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolAdress2,0,2,'');
 		  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 		  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
-		 $pdf->Cell(90,5, $entete_communic,0,2,''); 
+		 $pdf->Cell(90,5, $entete_communic,0,2,'');
 		}
 		if($entente_mel==='1') {
 		  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
-		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,''); 
+		 $pdf->Cell(90,5, $gepiSchoolEmail,0,2,'');
 		}
 
 while($cpt_i_cadre<$i_cadre)
@@ -397,11 +443,11 @@ while($cpt_i_cadre<$i_cadre)
 
 
 
-	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilitee_court_responsable>", "<civilitee_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilitee_court_cpe>", "<civilitee_long_cpe>", "<nom_cpe>", "<prenom_cpe>");
-		$civilitee_long_responsable = 'Madame, Monsieur';
+	$variable = array("<sexe>", "<nom_eleve>", "<prenom_eleve>", "<date_naissance>", "<classe_eleve>", "<civilite_court_responsable>", "<civilite_long_responsable>", "<nom_responsable>", "<prenom_responsable>", "<adresse_responsable>", "<cp_responsable>", "<commune_responsable>", "<remarque_eleve>", "<date_debut>", "<heure_debut>", "<date_fin>", "<heure_fin>", "<liste>", "<courrier_signe_par_fonction>", "<courrier_signe_par>", "<civilite_court_cpe>", "<civilite_long_cpe>", "<nom_cpe>", "<prenom_cpe>", "<date_court>", "<date_long>");
+		$civilite_long_responsable = 'Madame, Monsieur';
 	if( !isset($adresse_responsable[1][$i]) or $adresse_responsable[0][$i] != $adresse_responsable[1][$i]) {
-		if($civilitee_responsable[0][$i] === 'M.') { $civilitee_long_responsable = 'Monsieur'; }
-		if($civilitee_responsable[0][$i] === 'Mme') { $civilitee_long_responsable = 'Madame'; }
+		if($civilite_responsable[0][$i] === 'M.') { $civilite_long_responsable = 'Monsieur'; }
+		if($civilite_responsable[0][$i] === 'Mme') { $civilite_long_responsable = 'Madame'; }
 	}
 
 		$civilite_long_cpe = '';
@@ -409,7 +455,9 @@ while($cpt_i_cadre<$i_cadre)
 		if($cpe_de_l_eleve[$i]['civilite'] === 'Mme') { $civilite_long_cpe = 'Madame'; }
 
 
-	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilitee_responsable[0][$i], $civilitee_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i], $cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom']);
+	$remplacer_par = array($sexe_eleve[$i], strtoupper($nom_eleve[$i]), ucfirst($prenom_eleve[$i]), $naissance_eleve[$i], $classe_eleve[$i], $civilite_responsable[0][$i], $civilite_long_responsable, $nom_responsable[0][$i], $prenom_responsable[0][$i], $adresse_responsable[0][$i], $cp_responsable[0][$i], $commune_responsable[0][$i], $remarque[$i], $date_debut[$i], $heure_debut[$i], $date_fin[$i], $heure_fin[$i], $liste_abs[$i], $signature_status[$i], $signature[$i], $cpe_de_l_eleve[$i]['civilite'], $civilite_long_cpe, $cpe_de_l_eleve[$i]['nom'], $cpe_de_l_eleve[$i]['prenom'], $date_ce_jour, date_frl($date_ce_jour_sql));
+	//print_r($remplacer_par);
+
 	$text = str_replace($variable, $remplacer_par, $text);
 
 	$pdf->MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], $text, $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');

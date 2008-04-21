@@ -62,7 +62,7 @@ date_default_timezone_set ('Europe/Paris');
 			}*/
 	$date_act = date('Y-m-d');
 
-// Variable non définit
+// Variable non d�finit
 	if (empty($_GET['donnee_titre']) and empty($_POST['donnee_titre'])) { $donnee_titre = ''; }
 	   else { if (isset($_GET['donnee_titre'])) { $donnee_titre = $_GET['donnee_titre']; } if (isset($_POST['donnee_titre'])) { $donnee_titre = $_POST['donnee_titre']; } }
 	if (empty($_GET['echelle_x']) and empty($_POST['echelle_x'])) { $echelle_x = ''; }
@@ -84,12 +84,13 @@ date_default_timezone_set ('Europe/Paris');
       'Dimanche'
    );
 
-$graph = new Graph(388, 200);
-   
+//$graph = new Graph(388, 200);
+$graph = new Graph(370, 200);
+
    // définition des couleur bleu et rouge
    $bleu = new Color(0, 0, 200);
    $rouge = new Color(200, 0, 0);
-   
+
    $group = new PlotGroup;
    // padding du graphique
    $group->setPadding(40, 40);
@@ -107,7 +108,7 @@ $graph = new Graph(388, 200);
 //   $x = array('jan.', 'fev.', 'mar.', 'avr.', 'mai', 'jui.', 'juil.', 'aou.', 'sep.', 'oct.', 'nov.', 'dec.');
 	$x = $_SESSION['axe_x'];
 
-   
+
    // les absences
    $plot = new LinePlot($values_absences);
    $plot->setColor($rouge);
@@ -117,7 +118,7 @@ $graph = new Graph(388, 200);
 
 	// point rouge sur le graphique
 	$plot->mark->setFill($rouge);
-	$plot->mark->setType(MARK_SQUARE);   
+	$plot->mark->setType(MARK_SQUARE);
 
    $group->add($plot);
 	// pas de chiffre après la virgule
@@ -156,7 +157,7 @@ $graph = new Graph(388, 200);
     * const int BOOK := 11
 
 */
-   
+
    $group->add($plot);
 	// pas de chiffre après la virgule
 	   $group->axis->right->setLabelPrecision(1);
@@ -167,7 +168,7 @@ $graph = new Graph(388, 200);
 // AXE X
 
 	// donnée de l'axe X
-	$group->axis->bottom->setLabelText($x); 
+	$group->axis->bottom->setLabelText($x);
         // police de caractère de l'axe X
 	$group->axis->bottom->label->setFont(new Tuffy(8));
 	// rotation du texte de l'axe X en degré
