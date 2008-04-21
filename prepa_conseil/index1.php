@@ -1162,9 +1162,16 @@ if (!$current_group) {
 		$j = 1;
 		while($j < $nb_col+1) {
 			echo "<th class='small'>";
-			echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
-			if(eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
-			echo "document.forms['formulaire_tri'].submit();\">".$ligne1[$j]."</a>";
+			if(!eregi("Appréciation",$ligne1[$j])) {
+				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
+				if(eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
+				echo "document.forms['formulaire_tri'].submit();\">";
+				echo $ligne1[$j];
+				echo "</a>";
+			}
+			else {
+				echo $ligne1[$j];
+			}
 			echo "</th>\n";
 			$j++;
 		}
