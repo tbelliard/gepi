@@ -5947,7 +5947,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
+		$result .= "Erreur sur la création de la table 'notanet': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -5961,8 +5961,8 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	$test3 = mysql_num_rows(mysql_query($sql));
 
 	if(($test1 == 0)||($test2 == 0)||($test3 == 0)) {
-		$result .= "<br />Suppression de l'ancienne table 'notanet': ";
-		$query3 = mysql_query("");
+		$result .= "Suppression de l'ancienne table 'notanet': ";
+		$query3 = mysql_query("DROP TABLE notanet;");
 		if ($query3) {
 			$result .= "<font color=\"green\">Ok !</font><br />";
 		} else {
@@ -5983,7 +5983,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la table 'notanet': ".$result_inter."<br />";
+		$result .= "Erreur sur la création de la table 'notanet': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -5997,7 +5997,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la table 'notanet_app': ".$result_inter."<br />";
+          $result .= "Erreur sur la crétion de la table 'notanet_app': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6012,7 +6012,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la table 'notanet_corresp': ".$result_inter."<br />";
+          $result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_corresp': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6049,7 +6049,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la table 'notanet_ele_type': ".$result_inter."<br />";
+		$result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_ele_type': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6060,7 +6060,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la table 'notanet_verrou': ".$result_inter."<br />";
+		$result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_verrou': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
