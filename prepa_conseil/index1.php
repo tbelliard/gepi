@@ -336,7 +336,7 @@ if (!$current_group) {
 	// MODIF: boireaus 20080407
 	// Le rang doit-il être affiché
 	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
-	//$aff_rang="n";
+	$aff_rang="n";
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		$aff_rang="y";
 		$affiche_categories="n";
@@ -688,6 +688,17 @@ if (!$current_group) {
 	}
 	//==============================================
 
+
+
+	//=========================
+	// MODIF: boireaus 20080421
+	// Pour permettre de trier autrement...
+	//if(isset($_POST['col_tri'])) {echo "\$_POST['col_tri']=".$_POST['col_tri']."<br />";}
+	//=========================
+
+
+
+
     //
     // On teste s'il y a des moyennes, min et max à calculer :
     //
@@ -858,6 +869,14 @@ if (!$current_group) {
     if (!isset($bord)) {$bord = 1;}
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
     if ($en_tete == "yes") echo "<p class=bold><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+
+	//=========================
+	// MODIF: boireaus 20080421
+	// Pour permettre de trier autrement...
+	//echo "<input type=\"button\" value=\"Visualiser sans l'en-tête et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\"/><br />\n";
+    //echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
+	//=========================
+
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
     if ($stat == "yes") echo "<input type='hidden' name='stat' value='yes' />\n";
@@ -917,7 +936,7 @@ if (!$current_group) {
 
 	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 	echo "<input type='hidden' name='mode' value='csv' />\n";
-	echo "<input type='submit' value='Générer un CSV' />\n";
+	if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
     echo "</form>\n";
     echo "</div>\n";
 	//=======================================================
