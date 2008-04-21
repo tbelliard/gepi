@@ -61,45 +61,24 @@ if (!checkAccess()) {
 	die();
 }
 
-//=======================
-// AJOUT: chapel 20071019
-function date_fr_dh($var) {
+
+// fonction qui recoit une date heure est recompose la date en français
+function date_fr_dh($var)
+{
+
 	$var = explode(" ",$var);
 	$var = explode("-",$var[0]);
 	$var = $var[2]."/".$var[1]."/".$var[0];
+
 	return($var);
+
 }
-//=======================
-
-// variable de session
-//nombre d'élève par page
-$nb_releve_par_page = $_SESSION['type'];
-$avec_adresse_responsable = $_SESSION['avec_adresse_responsable'];
-
-// ajout Eric 16022008
-//Quelles adresses imprimer ?
-$choix_adr_parent = $_SESSION['choix_adr_parent'];
-//fin ajout Eric
-
-
-// élève sélectionné
-if(!empty($_SESSION['eleve'][0]) and $_SESSION['eleve'] != "")
-{ $id_eleve = $_SESSION['eleve']; unset($_SESSION["classe"]); } else { unset($_SESSION["eleve"]); }
-// classe sélectionné
-if(!empty($_SESSION['classe'][0]) and $_SESSION['classe'][0] != "")
-{ $id_classe = $_SESSION['classe']; } else { unset($_SESSION["classe"]); }
-// date de début et de un de sélection
-$date_debut = $_SESSION['date_debut_exp'];
-$date_fin = $_SESSION['date_fin_exp'];
-//si trie par regroupement
-if(!empty($_SESSION['active_entete_regroupement']) and $_SESSION['active_entete_regroupement'] != "")
-{ $active_entete_regroupement = $_SESSION['active_entete_regroupement']; }
-
 
 // fonction pour mettre la date en français
 function date_frc($var)
 {
-		$var = explode("/",$var);
+
+	$var = explode("/",$var);
 	$date = "$var[0],$var[1],$var[2]";
 	$tab_mois = array('01'=>"Jan.", '02'=>"Fev.", '03'=>"Mar.", '04'=>"Avr.", '05'=>"Mai", '06'=>"Juin", '07'=>"Juil.", '08'=>"Août", '09'=>"Sept.", '10'=>"Oct.", '11'=>"Nov.", '12'=>"Dec.");
 	//$tab_jour = array("Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.");
@@ -119,20 +98,26 @@ function date_frc($var)
 	// $date = ($tab_jour[$jour]." ".$tab_date[0]." ".$tab_mois[$tab_date[1]]." ".$tab_date[2]);
 	$date = ($tab_date[0]." ".$tab_mois[$tab_date[1]]." ".$tab_date[2]);
 	$var = $date;
+
 	return($var);
+
 }
 
-function unhtmlentities($chaineHtml) {
+function unhtmlentities($chaineHtml)
+{
+
 		$tmp = get_html_translation_table(HTML_ENTITIES);
 		$tmp = array_flip ($tmp);
 		$chaineTmp = strtr ($chaineHtml, $tmp);
 
 		return $chaineTmp;
+
 }
 
 // fonction de redimensionnement d'image
 function redimensionne_image($photo, $L_max, $H_max)
 {
+
 	// prendre les informations sur l'image
 	$info_image = getimagesize($photo);
 	// largeur et hauteur de l'image d'origine
@@ -156,8 +141,32 @@ function redimensionne_image($photo, $L_max, $H_max)
 	$nouvelle_hauteur = $nouvelle_hauteur / 2.8346;
 
 	return array($nouvelle_largeur, $nouvelle_hauteur);
+
 }
 
+// variable de session
+
+	// nombre d'élève par page
+	$nb_releve_par_page = $_SESSION['type'];
+	// afficher les adresses des responsables
+	$avec_adresse_responsable = $_SESSION['avec_adresse_responsable'];
+	// choix des adresse à affiché
+	$choix_adr_parent = $_SESSION['choix_adr_parent'];
+	// élève sélectionné
+	if(!empty($_SESSION['eleve'][0]) and $_SESSION['eleve'] != "")
+	{ $id_eleve = $_SESSION['eleve']; unset($_SESSION["classe"]); } else { unset($_SESSION["eleve"]); }
+	// classe sélectionné
+	if(!empty($_SESSION['classe'][0]) and $_SESSION['classe'][0] != "")
+	{ $id_classe = $_SESSION['classe']; } else { unset($_SESSION["classe"]); }
+	// date de début et de un de sélection
+	$date_debut = $_SESSION['date_debut_exp'];
+	$date_fin = $_SESSION['date_fin_exp'];
+	//si trie par regroupement
+	if(!empty($_SESSION['active_entete_regroupement']) and $_SESSION['active_entete_regroupement'] != "")
+	{ $active_entete_regroupement = $_SESSION['active_entete_regroupement']; }
+
+
+// class rel_PDF
 class rel_PDF extends FPDF
 {
 
@@ -364,6 +373,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 }
 // fin de la class
 
+
 // variable de la création du document
 
 	// entête
@@ -400,161 +410,205 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	// cadre des signature
 	$hauteur_cachet = '30'; // hauteur des signatures
 
-	//=======================
-	// MODIF: chapel 20071019
-	//$affiche_signature_parent='1'; // affiche le cadre signatures des parents
-	//$affiche_cachet_pp='0'; // affiche la signature du professeur principal
 	// affiche le cadre signatures des parents
-	 if(isset($_SESSION['avec_sign_parent']) and $_SESSION['avec_sign_parent'] === '1' ) {
+	if(isset($_SESSION['avec_sign_parent']) and $_SESSION['avec_sign_parent'] === '1' ) {
 	   $affiche_signature_parent = '1';
-	 } else { $affiche_signature_parent = '0'; }
+	} else { $affiche_signature_parent = '0'; }
 	// affiche la signature du professeur principal
-	 if(isset($_SESSION['avec_sign_pp']) and $_SESSION['avec_sign_pp'] === '1' ) {
+	if(isset($_SESSION['avec_sign_pp']) and $_SESSION['avec_sign_pp'] === '1' ) {
 	   $affiche_cachet_pp = '1';
-	 } else { $affiche_cachet_pp = '0'; }
-	 if(isset($_SESSION['avec_bloc_obser']) and $_SESSION['avec_bloc_obser'] === '1' ) {
+	} else { $affiche_cachet_pp = '0'; }
+	// affiche le bloc d'observation
+	if(isset($_SESSION['avec_bloc_obser']) and $_SESSION['avec_bloc_obser'] === '1' ) {
 	   $affiche_bloc_observation = '1';
-	 } else { $affiche_bloc_observation = '0'; }
-	//=======================
+	} else { $affiche_bloc_observation = '0'; }
+	// affichage de la classe
+	if(isset($_SESSION['aff_classe_nom']) and !empty($_SESSION['aff_classe_nom']) ) {
+	  $aff_classe_nom = $_SESSION['aff_classe_nom'];
+	} else { $aff_classe_nom = '1'; }
+	// affichage des appréciations par devoir si le professeurs à choisi de l'affiché
+	if(isset($_SESSION['avec_appreciation_devoir']) and !empty($_SESSION['avec_appreciation_devoir']) ) {
+	  $avec_appreciation_devoir = $_SESSION['avec_appreciation_devoir'];
+	} else { $avec_appreciation_devoir = ''; }
 
-	//=======================
-	// AJOUT: chapel 20071026
-	// cadre eleve
-		// affichage de la classe
-		if(isset($_SESSION['aff_classe_nom']) and !empty($_SESSION['aff_classe_nom']) ) {
-		  $aff_classe_nom = $_SESSION['aff_classe_nom'];
-		} else { $aff_classe_nom = '1'; }
-	//=======================
 
-//recherche d'information de la sélection
+	//recherche d'information de la sélection
 	$cpt_i='1';
+
 	//requête des classes sélectionné
-	if (isset($id_classe[0])) {
-	$o=0; $prepa_requete = "";
+	if (isset($id_classe[0]))
+	{
+
+		$o=0; $prepa_requete = "";
 		while(!empty($id_classe[$o]))
 		{
-		if($o == "0") { $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'"'; }
-		if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'" '; }
-		$o = $o + 1;
-			}
+
+			if($o == "0") { $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'"'; }
+			if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'j_eleves_classes.id_classe = "'.$id_classe[$o].'" '; }
+			$o = $o + 1;
+
+		}
+
 	}
+
 	//requête des élèves sélectionné
-	if (!empty($id_eleve[0])) {
-	$o=0; $prepa_requete = "";
+	if (!empty($id_eleve[0]))
+	{
+		$o=0; $prepa_requete = "";
 		while(!empty($id_eleve[$o]))
 		{
-		if($o == "0") { $prepa_requete = $prefix_base.'eleves.login = "'.$id_eleve[$o].'"'; }
-		if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'eleves.login = "'.$id_eleve[$o].'" '; }
-		$o = $o + 1;
-			}
+
+			if($o == "0") { $prepa_requete = $prefix_base.'eleves.login = "'.$id_eleve[$o].'"'; }
+			if($o != "0") { $prepa_requete = $prepa_requete.' OR '.$prefix_base.'eleves.login = "'.$id_eleve[$o].'" '; }
+			$o = $o + 1;
+
+		}
+
 	}
 
 	//tableau des données élève
 		if (isset($id_classe[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
 		if (isset($id_eleve[0])) { $call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'); }
 		//on compte les élèves sélectionné
-			$nb_eleves = mysql_num_rows($call_eleve);
-			while ( $donner = mysql_fetch_array( $call_eleve ))
+		$nb_eleves = mysql_num_rows($call_eleve);
+		while ( $donner = mysql_fetch_array( $call_eleve ))
+		{
+
+			// information élèves
+			$login[$cpt_i] = $donner['login'];
+			$sexe[$cpt_i] = $donner['sexe'];
+
+			$sql="SELECT * FROM j_eleves_regime WHERE login='".$donner['login']."';";
+			$regime_doublant_eleve = mysql_query($sql);
+			if(mysql_num_rows($regime_doublant_eleve)>0)
 			{
-				$login[$cpt_i] = $donner['login'];
-				//====================================================
-				$sexe[$cpt_i] = $donner['sexe'];
 
-				$sql="SELECT * FROM j_eleves_regime WHERE login='".$donner['login']."';";
-				$regime_doublant_eleve = mysql_query($sql);
-				if(mysql_num_rows($regime_doublant_eleve)>0){
-					$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
-					$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
-				}
-				else{
-					$current_eleve_regime = "ext.";
-					$current_eleve_doublant = "-";
-				}
+				$current_eleve_regime = mysql_result($regime_doublant_eleve, 0, "regime");
+				$current_eleve_doublant = mysql_result($regime_doublant_eleve, 0, "doublant");
 
-				if ($current_eleve_regime == "d/p") {$regime[$cpt_i]="demi-pensionnaire";}
-				if ($current_eleve_regime == "ext.") {$regime[$cpt_i]="externe";}
-				if ($current_eleve_regime == "int.") {$regime[$cpt_i]="interne";}
-				if ($current_eleve_regime == "i-e"){
-					if ($donner['sexe'] == "M"){
-						$regime[$cpt_i]="interne externé";
-					}
-					else{
-						$regime[$cpt_i]="interne externée";
-					}
-				}
+			}
+			else
+			{
 
-				if ($current_eleve_doublant == 'R'){
-					$redoublant[$cpt_i]="redoublant";
-					if ($donner['sexe'] == "F"){
-						$redoublant[$cpt_i]="redoublant";
-					}
-					else{
-						$redoublant[$cpt_i]="redoublant";
-					}
-				}
-				else{
-					$redoublant[$cpt_i]="";
-				}
-				//====================================================
+				$current_eleve_regime = "ext.";
+				$current_eleve_doublant = "-";
 
-				$ele_id_eleve[$cpt_i] = $donner['ele_id'];
-				$nom[$cpt_i] = $donner['nom'];
-				$prenom[$cpt_i] = $donner['prenom'];
-				$naissance[$cpt_i] = $donner['naissance'];
-				$classe[$cpt_i] = $donner['nom_complet'];
-				$classe_nom_court[$cpt_i] = $donner['classe'];
-				$classe_id_eleve[$cpt_i] = $donner['id'];
-				$ident_eleve_sel1=$login[$cpt_i];
+			}
 
-				//les responsables
-				$nombre_de_responsable = 0;
-				//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
-				$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
-				if($nombre_de_responsable != 0)
+			if ($current_eleve_regime == "d/p") {$regime[$cpt_i]="demi-pensionnaire";}
+			if ($current_eleve_regime == "ext.") {$regime[$cpt_i]="externe";}
+			if ($current_eleve_regime == "int.") {$regime[$cpt_i]="interne";}
+			if ($current_eleve_regime == "i-e")
+			{
+				if ($donner['sexe'] == "M")
 				{
-					$cpt_parents = 0;
-					//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-					$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
-					while ($donner_parents = mysql_fetch_array($requete_parents))
-					{
-						$civilite_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['civilite'];
-							$nom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['nom'];
-							$prenom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['prenom'];
-							$adresse1_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr1'];
-							$adresse2_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr2'];
-							$ville_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['commune'];
-							$cp_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['cp'];
-						$cpt_parents = $cpt_parents + 1;
-						
-					}
-					
-					if ($nombre_de_responsable == 1) {
-					    $nom_parents[$ident_eleve_sel1][1] = '';
-						$prenom_parents[$ident_eleve_sel1][1] = '';
-						$adresse1_parents[$ident_eleve_sel1][1] = '';
-						$adresse2_parents[$ident_eleve_sel1][1] = '';
-						$ville_parents[$ident_eleve_sel1][1] = '';
-						$cp_parents[$ident_eleve_sel1][1] = '';
-					}
-					
-				} else {
-					$civilite_parents[$ident_eleve_sel1][0] = '';
-					$nom_parents[$ident_eleve_sel1][0] = '';
-					$prenom_parents[$ident_eleve_sel1][0] = '';
-					$adresse1_parents[$ident_eleve_sel1][0] = '';
-					$adresse2_parents[$ident_eleve_sel1][0] = '';
-					$ville_parents[$ident_eleve_sel1][0] = '';
-					$cp_parents[$ident_eleve_sel1][0] = '';
-					$nom_parents[$ident_eleve_sel1][1] = '';
+
+						$regime[$cpt_i]="interne externé";
+
+				}
+				else
+				{
+
+						$regime[$cpt_i]="interne externée";
+
+				}
+
+			}
+
+			if ($current_eleve_doublant == 'R')
+			{
+
+				$redoublant[$cpt_i]="redoublant";
+				if ($donner['sexe'] == "F")
+				{
+
+					$redoublant[$cpt_i]="redoublant";
+
+				}
+				else
+				{
+
+					$redoublant[$cpt_i]="redoublant";
+
+				}
+
+			}
+			else
+			{
+
+				$redoublant[$cpt_i]="";
+
+			}
+			$ele_id_eleve[$cpt_i] = $donner['ele_id'];
+			$nom[$cpt_i] = $donner['nom'];
+			$prenom[$cpt_i] = $donner['prenom'];
+			$naissance[$cpt_i] = $donner['naissance'];
+			$classe[$cpt_i] = $donner['nom_complet'];
+			$classe_nom_court[$cpt_i] = $donner['classe'];
+			$classe_id_eleve[$cpt_i] = $donner['id'];
+			$ident_eleve_sel1=$login[$cpt_i];
+			//====================================================
+
+			//les responsables
+			$nombre_de_responsable = 0;
+			//$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+			$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2'))"),0);
+			if($nombre_de_responsable != 0)
+			{
+
+				$cpt_parents = 0;
+				//$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+				$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$ele_id_eleve[$cpt_i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY resp_legal ASC");
+				while ($donner_parents = mysql_fetch_array($requete_parents))
+				{
+
+					$civilite_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['civilite'];
+					$nom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['nom'];
+					$prenom_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['prenom'];
+					$adresse1_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr1'];
+					$adresse2_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['adr2'];
+					$ville_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['commune'];
+					$cp_parents[$ident_eleve_sel1][$cpt_parents] = $donner_parents['cp'];
+					$cpt_parents = $cpt_parents + 1;
+
+				}
+
+				if ($nombre_de_responsable == 1)
+				{
+
+				    $nom_parents[$ident_eleve_sel1][1] = '';
 					$prenom_parents[$ident_eleve_sel1][1] = '';
 					$adresse1_parents[$ident_eleve_sel1][1] = '';
 					$adresse2_parents[$ident_eleve_sel1][1] = '';
 					$ville_parents[$ident_eleve_sel1][1] = '';
 					$cp_parents[$ident_eleve_sel1][1] = '';
+
 				}
-				$cpt_i = $cpt_i + 1;
+
 			}
-// fin de recherche d'information de la sélection
+			else
+			{
+
+				$civilite_parents[$ident_eleve_sel1][0] = '';
+				$nom_parents[$ident_eleve_sel1][0] = '';
+				$prenom_parents[$ident_eleve_sel1][0] = '';
+				$adresse1_parents[$ident_eleve_sel1][0] = '';
+				$adresse2_parents[$ident_eleve_sel1][0] = '';
+				$ville_parents[$ident_eleve_sel1][0] = '';
+				$cp_parents[$ident_eleve_sel1][0] = '';
+				$nom_parents[$ident_eleve_sel1][1] = '';
+				$prenom_parents[$ident_eleve_sel1][1] = '';
+				$adresse1_parents[$ident_eleve_sel1][1] = '';
+				$adresse2_parents[$ident_eleve_sel1][1] = '';
+				$ville_parents[$ident_eleve_sel1][1] = '';
+				$cp_parents[$ident_eleve_sel1][1] = '';
+
+			}
+
+			$cpt_i = $cpt_i + 1;
+
+		}
+	// fin de recherche d'information de la sélection
 
 // rechercher maintenant les information par eleve sur leurs notes dans chaques matières
 
@@ -562,25 +616,15 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$nb_eleves_i='1';
 	while($nb_eleves_i <= $nb_eleves)
 	{
+
 		// système de classement par ordre
 		if(!isset($active_entete_regroupement)) { $active_entete_regroupement = '0'; }
 		if(!isset($active_regroupement_cote)) { $active_regroupement_cote = '0'; }
-			/*
-			$systeme_de_classement=''.$prefix_base.'matieres.nom_complet ASC';
-			if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' '.$prefix_base.'j_matieres_categories_classes.priority ASC, '.$prefix_base.'j_groupes_classes.priorite ASC, '.$prefix_base.'matieres_categories.id ASC,'.$systeme_de_classement; }
-			if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' '.$prefix_base.'j_groupes_classes.priorite ASC, '.$systeme_de_classement; }
-			*/
-			$systeme_de_classement='m.nom_complet ASC';
-			if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' jmcc.priority ASC, jgc.priorite ASC, mc.id ASC,'.$systeme_de_classement; }
-			if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' jgc.priorite ASC, '.$systeme_de_classement; }
+		$systeme_de_classement='m.nom_complet ASC';
+		if($active_regroupement_cote==='1' or $active_entete_regroupement==='1') { $systeme_de_classement = ' jmcc.priority ASC, jgc.priorite ASC, mc.id ASC,'.$systeme_de_classement; }
+		if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' jgc.priorite ASC, '.$systeme_de_classement; }
 
 		// requête dans la base
-		/*
-		$base_complete_information = mysql_query('SELECT * FROM '.$prefix_base.'cn_devoirs, '.$prefix_base.'cn_notes_devoirs, '.$prefix_base.'cn_cahier_notes, '.$prefix_base.'groupes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'j_groupes_classes, '.$prefix_base.'matieres, '.$prefix_base.'.j_matieres_categories_classes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_classes.id_classe="'.$classe_id_eleve[$nb_eleves_i].'" AND '.$prefix_base.'.j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.$prefix_base.'.j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'.j_matieres_categories_classes.categorie_id AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'cn_notes_devoirs.login = "'.$login[$nb_eleves_i].'" AND ('.$prefix_base.'cn_devoirs.date >=  "'.$date_debut.'" AND '.$prefix_base.'cn_devoirs.date <= "'.$date_fin.'" ) AND '.$prefix_base.'cn_notes_devoirs.id_devoir = '.$prefix_base.'cn_devoirs.id AND '.$prefix_base.'cn_devoirs.id_racine = '.$prefix_base.'cn_cahier_notes.id_cahier_notes AND '.$prefix_base.'cn_cahier_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'cn_devoirs.display_parents = "1" ORDER BY '.$systeme_de_classement.', '.$prefix_base.'matieres.nom_complet ASC , '.$prefix_base.'groupes.id ASC, '.$prefix_base.'cn_devoirs.date ASC');
-		*/
-		/*
-		$sql='SELECT * FROM '.$prefix_base.'cn_devoirs, '.$prefix_base.'cn_notes_devoirs, '.$prefix_base.'cn_cahier_notes, '.$prefix_base.'groupes, '.$prefix_base.'j_groupes_matieres, '.$prefix_base.'j_groupes_classes, '.$prefix_base.'matieres, '.$prefix_base.'.j_matieres_categories_classes, '.$prefix_base.'matieres_categories WHERE '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_classes.id_classe="'.$classe_id_eleve[$nb_eleves_i].'" AND '.$prefix_base.'.j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.$prefix_base.'.j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id AND '.$prefix_base.'matieres.categorie_id='.$prefix_base.'.j_matieres_categories_classes.categorie_id AND '.$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.$prefix_base.'cn_notes_devoirs.login = "'.$login[$nb_eleves_i].'" AND ('.$prefix_base.'cn_devoirs.date >=  "'.$date_debut.'" AND '.$prefix_base.'cn_devoirs.date <= "'.$date_fin.'" ) AND '.$prefix_base.'cn_notes_devoirs.id_devoir = '.$prefix_base.'cn_devoirs.id AND '.$prefix_base.'cn_devoirs.id_racine = '.$prefix_base.'cn_cahier_notes.id_cahier_notes AND '.$prefix_base.'cn_cahier_notes.id_groupe = '.$prefix_base.'groupes.id AND '.$prefix_base.'cn_devoirs.display_parents = "1" ORDER BY '.$systeme_de_classement.', '.$prefix_base.'matieres.nom_complet ASC , '.$prefix_base.'groupes.id ASC, '.$prefix_base.'cn_devoirs.date ASC';
-		*/
 		$sql = 'SELECT * FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
 				 WHERE jgc.id_groupe = g.id
 				   AND jgc.id_classe = "'.$classe_id_eleve[$nb_eleves_i].'"
@@ -598,64 +642,6 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 				   AND cd.display_parents = "1"
 				 ORDER BY '.$systeme_de_classement.', m.nom_complet ASC , g.id ASC, cd.date ASC';
 
-		/*
-		$sql='SELECT * FROM '.$prefix_base.'cn_devoirs, '.
-							$prefix_base.'cn_notes_devoirs, '.
-							$prefix_base.'cn_cahier_notes, '.
-							$prefix_base.'groupes, '.
-							$prefix_base.'j_groupes_matieres, '.
-							$prefix_base.'j_groupes_classes, '.
-							$prefix_base.'matieres, '.
-							$prefix_base.'.j_matieres_categories_classes, '.
-							$prefix_base.'matieres_categories
-					WHERE '.$prefix_base.'j_groupes_classes.id_groupe='.$prefix_base.'groupes.id AND '.
-							$prefix_base.'j_groupes_classes.id_classe="'.$classe_id_eleve[$nb_eleves_i].'" AND '.
-							$prefix_base.'.j_matieres_categories_classes.classe_id='.$prefix_base.'j_groupes_classes.id_classe AND '.
-							$prefix_base.'.j_matieres_categories_classes.categorie_id='.$prefix_base.'matieres_categories.id AND '.
-							$prefix_base.'matieres.categorie_id='.$prefix_base.'.j_matieres_categories_classes.categorie_id AND '.
-							$prefix_base.'j_groupes_matieres.id_groupe='.$prefix_base.'groupes.id AND '.
-							$prefix_base.'j_groupes_matieres.id_matiere='.$prefix_base.'matieres.matiere AND '.
-							$prefix_base.'cn_notes_devoirs.login = "'.$login[$nb_eleves_i].'" AND
-							('.$prefix_base.'cn_devoirs.date >=  "'.$date_debut.'" AND '.
-							$prefix_base.'cn_devoirs.date <= "'.$date_fin.'" ) AND '.
-							$prefix_base.'cn_notes_devoirs.id_devoir = '.$prefix_base.'cn_devoirs.id AND '.
-							$prefix_base.'cn_devoirs.id_racine = '.$prefix_base.'cn_cahier_notes.id_cahier_notes AND '.
-							$prefix_base.'cn_cahier_notes.id_groupe = '.$prefix_base.'groupes.id AND '.
-							$prefix_base.'cn_devoirs.display_parents = "1"
-					ORDER BY '.$systeme_de_classement.', '.$prefix_base.'matieres.nom_complet ASC , '.
-							$prefix_base.'groupes.id ASC, '.$prefix_base.'cn_devoirs.date ASC';
-		*/
-		/*
-		$sql="SELECT * FROM cn_devoirs,
-							cn_notes_devoirs,
-							cn_cahier_notes,
-							groupes,
-							j_groupes_matieres,
-							j_groupes_classes,
-							matieres,
-							.j_matieres_categories_classes,
-							matieres_categories,
-							j_eleves_groupes
-					WHERE j_groupes_classes.id_groupe=groupes.id AND
-							j_groupes_classes.id_classe='$classe_id_eleve[$nb_eleves_i]' AND
-							j_matieres_categories_classes.classe_id=j_groupes_classes.id_classe AND
-							j_matieres_categories_classes.categorie_id=matieres_categories.id AND
-							matieres.categorie_id=.j_matieres_categories_classes.categorie_id AND
-							j_groupes_matieres.id_groupe=groupes.id AND
-							j_groupes_matieres.id_matiere=matieres.matiere AND
-							j_eleves_groupes.id_groupe=groupes.id AND
-							j_eleves_groupes.login='$login[$nb_eleves_i]' AND
-							cn_notes_devoirs.login = '$login[$nb_eleves_i]' AND
-							(cn_devoirs.date >=  '$date_debut' AND
-							cn_devoirs.date <= '$date_fin' ) AND
-							cn_notes_devoirs.id_devoir = cn_devoirs.id AND
-							cn_devoirs.id_racine = cn_cahier_notes.id_cahier_notes AND
-							cn_cahier_notes.id_groupe = groupes.id AND
-							cn_devoirs.display_parents = '1'
-					GROUP BY j_eleves_groupes.login,j_eleves_groupes.id_groupe
-					ORDER BY $systeme_de_classement, matieres.nom_complet ASC ,
-							groupes.id ASC, cn_devoirs.date ASC";
-		*/
 		//echo $sql."<br />";
 
 		$base_complete_information = mysql_query($sql);
@@ -668,51 +654,85 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		$regroupement_passer='';
 		while($donne_requete = mysql_fetch_array($base_complete_information))
 		{
-			//===========================
-			// MODIF: chapel 20071026 ???
-			//$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
-			//$test_eleve_grp=mysql_query($sql);
+
 			$sql_groupe = "SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='".$donne_requete['id_groupe']."' AND login='".$donne_requete['login']."';";
 			$test_eleve_grp=mysql_query($sql_groupe);
-			//===========================
-			if(mysql_num_rows($test_eleve_grp)>0){
+
+			if ( mysql_num_rows($test_eleve_grp)>0 )
+			{
+
 				if($donne_requete['login']!=$login_passe) { $nb_matiere_cpt='1'; }
+
 				//on vérifie si c'est le même id de groupe pour mettre toutes les notes d'un groupe en même temps puis compter le nombre de groupe
-				if($donne_requete['id_groupe']!=$id_groupe_avant) {
+				if($donne_requete['id_groupe']!=$id_groupe_avant)
+				{
+
 					$id_groupe_selectionne=$donne_requete['id_groupe'];
 					$id_classe=$donne_requete['id_classe'];
 					$groupe_select[$eleve_select][$nb_matiere_cpt]=$donne_requete['id_groupe'];
 					$name[$eleve_select][$nb_matiere_cpt] = $donne_requete[30]; //$donner_toute_matier['name']
-					if(isset($_SESSION['avec_nom_devoir']) and $_SESSION['avec_nom_devoir'] == 'oui') {
-						$nom_devoir_oui = " (".$donne_requete[3].")";
-					}
-					else {
-						$nom_devoir_oui='';
-					}
 
+					// si nom des devoirs
+					if(isset($_SESSION['avec_nom_devoir']) and $_SESSION['avec_nom_devoir'] == 'oui')
+					{
+
+						$nom_devoir_oui = " (".$donne_requete[3].")";
+
+					}
+					else
+					{
+
+						$nom_devoir_oui='';
+
+					}
 					//=======================
-					// AJOUT: chapel 20071019
+
 					// si coef
-						//=======================
-						// AJOUT: chapel 20071026
-						$coef_oui = '';
-						//=======================
-					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
-						//if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; }
-						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[9] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[9].")"; } else { $coef_oui = ''; } }
+					$coef_oui = '';
+					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') )
+					{
+
 						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
 						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+
 					}
-					else {
+					else
+					{
+
 						$coef_oui='';
+
 					}
+					//=======================
+
 					// si date devoir
-					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' ) {
+					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' )
+					{
+
 						$date_devoir_oui = " (".date_fr_dh($donne_requete['date']).") ";
+
 					}
-					else {
+					else
+					{
+
 						$date_devoir_oui='';
+
 					}
+					//=======================
+
+					// si affiché l'appréciation
+					if ( $avec_appreciation_devoir == 'oui' )
+					{
+
+						$appdevoir_chaine = str_replace("&#039;", "'", unhtmlentities($donne_requete['comment']));
+						$appdevoir = ' - ' . $appdevoir_chaine;
+
+					}
+					else
+					{
+
+						$appdevoir = '';
+
+				 	}
 					//=======================
 
 					// =======================================
@@ -721,34 +741,55 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					// gestion de la notation si statut est défini alors on l'affiche à la place de la note
 					// si le statut est égale = - alors on considère que l'élève n'a pas participé au devoir donc il ne sera pas affiché sur son relevé.
 					//=================
-					// MODIF: chapel 20071019
-					if ( $donne_requete['note'] == '0.0' ) {
-						if ( $donne_requete['statut'] != '' ) {
-							//if ( $donne_requete['statut'] != 'v' ) {
-							if ( $donne_requete['statut'] != '-' and $donne_requete['statut'] != 'v' ) {
+					if ( $donne_requete['note'] == '0.0' )
+					{
+
+						if ( $donne_requete['statut'] != '' )
+						{
+
+							if ( $donne_requete['statut'] != '-' and $donne_requete['statut'] != 'v' )
+							{
+
 								$notes[$eleve_select][$nb_matiere_cpt]=$donne_requete['statut'];
+
 							}
-							else{
+							else
+							{
+
 								// Si c'est vide 'v', on ne met rien...
 								// Faudrait-il indiquer 'Non Noté'?
 								$notes[$eleve_select][$nb_matiere_cpt]="";
-							}
-						}
-						else {
-							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
-						}
-					}
-					//if ( $donne_requete['note'] != '0.0' ) {
-					else{
-						$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
-					}
 
-					//$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui;
+							}
+
+						}
+						else
+						{
+
+							$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+
+						}
+
+					}
+					else
+					{
+
+						// si différent de 0
+						$notes[$eleve_select][$nb_matiere_cpt] = $donne_requete['note'];
+
+					}
+					//=======================
+
 					// si une note est validé
-					if ( $notes[$eleve_select][$nb_matiere_cpt] != '' ) {
-						$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui;
+					if ( $notes[$eleve_select][$nb_matiere_cpt] != '' )
+					{
+
+						// on affiche sur le relevé
+						$notes[$eleve_select][$nb_matiere_cpt] = $notes[$eleve_select][$nb_matiere_cpt]."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui."".$appdevoir;
+
 					}
 					//=================
+
 					// =======================================
 					$nom_regroupement[$eleve_select][$nb_matiere_cpt]=$donne_requete['nom_complet'];
 					if($nom_regroupement[$eleve_select][$nb_matiere_cpt]!=$regroupement_passer) {
@@ -758,84 +799,159 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					$regroupement_passer=$nom_regroupement[$eleve_select][$nb_matiere_cpt];
 
 					// autre requete pour rechercher les professeur responsable de la matière sélectionné
-					if(empty($prof_groupe[$id_groupe_selectionne][0])) {
+					if(empty($prof_groupe[$id_groupe_selectionne][0]))
+					{
+
 						$call_profs = mysql_query('SELECT u.login FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe="'.$id_groupe_selectionne.'") ORDER BY j.ordre_prof');
 						$nombre_profs = mysql_num_rows($call_profs);
 						$k = 0;
-						while ($k < $nombre_profs) {
+
+						while ($k < $nombre_profs)
+						{
+
 							$current_matiere_professeur_login[$k] = mysql_result($call_profs, $k, "login");
 							$prof_groupe[$id_groupe_selectionne][$k]=affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe);
 							$k++;
+
 						}
+
 					}
 
 					$nb_matiere[$eleve_select]=$nb_matiere_cpt;
 					$nb_num_matiere_passe=$nb_matiere_cpt;
 					$nb_matiere_cpt = $nb_matiere_cpt + 1;
-				} else {
-					if($_SESSION['avec_nom_devoir'] == 'oui') {
+
+				}
+				else
+				{
+
+					// si nom de devoir
+					if($_SESSION['avec_nom_devoir'] == 'oui')
+					{
+
 						$nom_devoir_oui = " (".$donne_requete[3].")";
+
 					}
 					//=======================
-					// AJOUT: chapel 20071024
+
 					// si coef
 					$coef_oui = '';
-					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') ) {
+					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') )
+					{
+
 						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
 						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+
 					}
-					else {
+					else
+					{
+
 						$coef_oui = '';
-					}
-					// si date devoir
-					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' ) {
-						$date_devoir_oui = " (".date_fr_dh($donne_requete['date']).") ";
-					}
-					else {
-						$date_devoir_oui='';
+
 					}
 					//=======================
+
+					// si date devoir
+					if(isset($_SESSION['avec_date_devoir']) and $_SESSION['avec_date_devoir'] == '1' )
+					{
+
+						$date_devoir_oui = " (".date_fr_dh($donne_requete['date']).") ";
+
+					}
+					else
+					{
+
+						$date_devoir_oui='';
+
+					}
+					//=======================
+
+					// si affiché l'appréciation
+					if ( $avec_appreciation_devoir == 'oui' )
+					{
+
+						$appdevoir_chaine = str_replace("&#039;", "'", unhtmlentities($donne_requete['comment']));
+						$appdevoir = ' - ' . $appdevoir_chaine;
+						//$appdevoir = ' - ' . unhtmlentities($donne_requete['comment']);
+
+					}
+					else
+					{
+
+						$appdevoir = '';
+
+				 	}
+					//=======================
+
 					// =======================================
 					// Modif: boireaus d'après C.Chapel
-					//$notes[$eleve_select][$nb_num_matiere_passe] = $notes[$eleve_select][$nb_num_matiere_passe]." - ".$donne_requete['note']."".$nom_devoir_oui;
-					if ( $donne_requete['note'] === '0.0' ) {
-						if ( $donne_requete['statut'] != '' ) {
-							if ( $donne_requete['statut'] != 'v' ) {
+
+					if ( $donne_requete['note'] === '0.0' )
+					{
+
+						if ( $donne_requete['statut'] != '' )
+						{
+
+							if ( $donne_requete['statut'] != 'v' )
+							{
+
 								$notes_actif=$donne_requete['statut'];
+
 							}
-							else{
+							else
+							{
+
 								// Si c'est vide 'v', on ne met rien...
 								// Faudrait-il indiquer 'Non Noté'?
 								$notes_actif="";
+
 							}
+
 						}
-						else {
+						else
+						{
+
 							$notes_actif = $donne_requete['note'];
+
 						}
+
 					}
-					//if ( $donne_requete['note'] != '0.0' ) {
-					else{
+					else
+					{
+
+						// si note différent de 0
 						$notes_actif = $donne_requete['note'];
+
 					}
 
 					// On n'ajoute que si il y a eu une saisie au devoir et pas un statut 'v'.
-					if($notes_actif!=""){
-						if($notes[$eleve_select][$nb_num_matiere_passe]!=""){
+					if($notes_actif!="")
+					{
+
+						if($notes[$eleve_select][$nb_num_matiere_passe]!="")
+						{
+
 							$notes[$eleve_select][$nb_num_matiere_passe].=" - ";
+
 						}
-						//=========================
-						// MODIF: chapel 20071019
-						//$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui;
-						$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui;
-						//=========================
+
+						// information sur le relevé
+						$notes[$eleve_select][$nb_num_matiere_passe].=$notes_actif."".$nom_devoir_oui."".$coef_oui."".$date_devoir_oui."".$appdevoir;
+
 					}
 					// =======================================
+
 				}
+
 			}
+
 			$id_groupe_avant = $donne_requete['id_groupe'];
 			$login_passe=$donne_requete['login'];
+
 		}
+
 		$nb_eleves_i=$nb_eleves_i+1;
+
 	}
 
 
@@ -850,9 +966,6 @@ $pdf->SetAutoPageBreak(true, BottomMargin);
 $pdf->SetDrawColor(0,0,0);
 
 // Caractéres utilisée
-//$pdf->AddFont('Alakob','','Alakob.php');
-//$pdf->AddFont('cursif','','cursif.php');
-//$pdf->AddFont('bvrondno','','bvrondno.php');
 $caractere_utilse = 'arial';
 
 // on appelle une nouvelle page pdf
@@ -884,54 +997,54 @@ $nb_boucle = 0; //compteur de boucle à faire pour R1 et R2 != R1
 while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle <= $nb_boucle_a_faire))
 {
 
-//cas N°4 uniquement les responsables 2 différent de responsable 1 
+//cas N°4 uniquement les responsables 2 différent de responsable 1
 // et Cas N°2 lors de la 2ème boucle
 if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
     ((($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '2')) and ($nb_boucle == 1)) )	{
-	
+
 	//test si les adresses sont identiques
 
-	$temoin = true;  	
+	$temoin = true;
 	//tant que l'on ne trouve pas 2 adresses différentes on boucle et on incrément le compteur $nb_eleves_i
 	while ($temoin) {
 	  $ident_eleve=$login[$nb_eleves_i];
-	  
+
 	  if (($adresse1_parents[$ident_eleve][0] != $adresse1_parents[$ident_eleve][1]) or
 		  ($adresse2_parents[$ident_eleve][0] != $adresse2_parents[$ident_eleve][1]) or
 		  ($ville_parents[$ident_eleve][0] != $ville_parents[$ident_eleve][1]) or
 		  ($cp_parents[$ident_eleve][0] != $cp_parents[$ident_eleve][1]) ) {
-             
-			 $adresse2_vide = false;	      
+
+			 $adresse2_vide = false;
 		     //si l'adresse N°2 est vide, (pas de nom de famille)
-			 if ($nom_parents[$ident_eleve][1] == '') { 
+			 if ($nom_parents[$ident_eleve][1] == '') {
 			     /*($adresse1_parents[$ident_eleve][1] == '') and
 				 ($adresse2_parents[$ident_eleve][1] == '') and
-				 ($ville_parents[$ident_eleve][1] == '') and 
+				 ($ville_parents[$ident_eleve][1] == '') and
 				 ($cp_parents[$ident_eleve][1] == '') ) { */
-				 
+
 			   $nb_eleves_i++;
 			   $adresse2_vide = true;
-			   
+
 			 } else {
 		       $temoin=false;
 			 }
-		 
+
 		 if (!$adresse2_vide) {$temoin=false;}
-		    
-	  } else {	     
+
+	  } else {
           // R1 et R2 sont différentes
 	      $nb_eleves_i++;
 	  }
-	  
+
 	  if ($nb_eleves_i > $nb_eleves) {
 		$temoin = false;
 		$nb_eleves_i = $nb_eleves_i - 1;
-		
+
 		//si on dépase le nombre d'élèves, on clos le fichier PDF
 		// sortie PDF sur écran
 		$nom_releve=date("Ymd_Hi");
 		$nom_releve = 'Releve_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_releve,'I'); 
+		$pdf->Output($nom_releve,'I');
 		die();
 	  }
 	} // while temoin
@@ -966,10 +1079,7 @@ if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
 			if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}
 			$pdf->Cell(90,5,'Né'.$e_au_feminin.' le '.affiche_date_naissance($naissance[$nb_eleves_i]).', '.$regime[$nb_eleves_i],0,2,'');
 			$pdf->Cell(90,5,'',0,2,'');
-			//==================
-			// MODIF: chapel 20071026
-			//$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
-			//$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
+
 			if ( $aff_classe_nom === '1' or $aff_classe_nom === '3' ) {
 				$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($classe[$nb_eleves_i]).'<B>');
 			}
@@ -979,7 +1089,7 @@ if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
 			if ( $aff_classe_nom === '3' ) {
 				$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($classe_nom_court[$nb_eleves_i]).')');
 			}
-			//==================
+
 			$pdf->Cell(90,5,$classe_aff,0,2,'');
 			$pdf->SetX($X_cadre_eleve);
 			$pdf->SetFont($caractere_utilse,'',10);
@@ -999,6 +1109,7 @@ if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
 			} else {
 				$X_etab = $X_entete_etab; $Y_etab = $Y_entete_etab;
 				}
+
 		// BLOC ADRESSE ETABLISSEMENT
 			$pdf->SetXY($X_etab,$Y_etab);
 			$pdf->SetFont($caractere_utilse,'',14);
@@ -1319,14 +1430,14 @@ if (($active_bloc_adresse_parent == '1') and ($choix_adr_parent == '4') or
 		$passage_i=$passage_i+1;
 		$nb_eleves_i = $nb_eleves_i + 1;
 		}
-		
+
   // on prépare la 2ème boucle pour faire R1 et R2 != R1 si nécessaire
   if ($nb_eleves_i > $nb_eleves) { // dans ce cas on a fait la première boucle, on prépare la 2éme pour les R2 != à R1
     $nb_boucle++;
     $responsable_place = 1;
 	$nb_eleves_i = 1;
   }
-		
+
 }
 
 // vider les variables de session
