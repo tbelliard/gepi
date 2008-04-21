@@ -689,14 +689,119 @@ if (!$current_group) {
 	//==============================================
 
 
-
 	//=========================
 	// MODIF: boireaus 20080421
 	// Pour permettre de trier autrement...
-	//if(isset($_POST['col_tri'])) {echo "\$_POST['col_tri']=".$_POST['col_tri']."<br />";}
+	if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
+		//echo "\$_POST['col_tri']=".$_POST['col_tri']."<br />";
+		$col_tri=$_POST['col_tri'];
+
+		$nb_colonnes=$nb_col;
+		if(($stat=="yes")&&($aff_rang=="y")) {
+			$nb_colonnes=$nb_col+1;
+		}
+
+		// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
+		if((strlen(ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+			//echo "<table>";
+			//echo "<tr><td valign='top'>";
+			unset($tmp_tab);
+			for($loop=0;$loop<count($col[$col_tri]);$loop++) {
+				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
+				$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+				//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
+			}
+			/*
+			echo "</td>";
+			echo "<td valign='top'>";
+
+			$i=0;
+			while($i < $nombre_eleves) {
+				echo $col_csv[1][$i]."<br />";
+				$i++;
+			}
+			echo "</td>";
+			echo "<td valign='top'>";
+			*/
+
+			$i=0;
+			while($i < $nombre_eleves) {
+				$rg[$i]=$i;
+				$i++;
+			}
+
+			// Tri du tableau avec stockage de l'ordre dans $rg d'après $tmp_tab
+			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+
+			/*
+			$i=0;
+			while($i < $nombre_eleves) {
+				echo "\$rg[$i]=".$rg[$i]."<br />";
+				$i++;
+			}
+			echo "</td>";
+			echo "<td valign='top'>";
+			*/
+
+			// On utilise des tableaux temporaires le temps de la réaffectation dans l'ordre
+			$tmp_col=array();
+			$tmp_col_csv=array();
+
+			$i=0;
+			$rang_prec = 1;
+			$note_prec='';
+			while ($i < $nombre_eleves) {
+				$ind = $rg[$i];
+				if ($tmp_tab[$i] == "-") {
+					//$rang_gen = '0';
+					$rang_gen = '-';
+				}
+				else {
+					if ($tmp_tab[$i] == $note_prec) {
+						$rang_gen = $rang_prec;
+					}
+					else {
+						$rang_gen = $i+1;
+					}
+					$note_prec = $tmp_tab[$i];
+					$rang_prec = $rang_gen;
+				}
+
+				//$col[$nb_col+1][$ind]="ind=$ind, i=$i et rang_gen=$rang_gen";
+				for($m=1;$m<=$nb_colonnes;$m++) {
+					/*
+					echo "\$tmp_col[$m][$ind]=\$col[$m][$i]=".$col[$m][$i]."<br />";
+					$tmp_col[$m][$ind]="<center>".$col[$m][$i]."</center>";
+					$tmp_col_csv[$m][$ind]=$rang_gen;
+					*/
+					//echo "\$tmp_col[$m][$i]=\$col[$m][$ind]=".$col[$m][$ind]."<br />";
+					$tmp_col[$m][$i]=$col[$m][$ind];
+					$tmp_col_csv[$m][$ind]=$col_csv[$m][$ind];
+
+				}
+				$i++;
+			}
+			//echo "</td></tr>";
+			//echo "</table>";
+
+			// On réaffecte les valeurs dans le tableau initial à l'aide du tableau temporaire
+			if((isset($_POST['sens_tri']))&&($_POST['sens_tri']=="inverse")) {
+				for($m=1;$m<=$nb_colonnes;$m++) {
+					for($i=0;$i<$nombre_eleves;$i++) {
+						$col[$m][$i]=$tmp_col[$m][$nombre_eleves-1-$i];
+						$col_csv[$m][$i]=$tmp_col_csv[$m][$nombre_eleves-1-$i];
+					}
+				}
+			}
+			else {
+				for($m=1;$m<=$nb_colonnes;$m++) {
+					$col[$m]=$tmp_col[$m];
+					$col_csv[$m]=$tmp_col_csv[$m];
+				}
+			}
+		}
+	}
 	//=========================
-
-
 
 
     //
@@ -825,9 +930,12 @@ if (!$current_group) {
         }
     }
     if ($test == 1) {
-        $col[1][$nb_lignes] = '<center><b>Moyenne</b></center>';
-        $col[1][$nb_lignes+1] = '<center><b>Min.</b></center>';
-        $col[1][$nb_lignes+2] = '<center><b>Max.</b></center>';
+        //$col[1][$nb_lignes] = '<center><b>Moyenne</b></center>';
+        //$col[1][$nb_lignes+1] = '<center><b>Min.</b></center>';
+        //$col[1][$nb_lignes+2] = '<center><b>Max.</b></center>';
+        $col[1][$nb_lignes] = '<b>Moyenne</b>';
+        $col[1][$nb_lignes+1] = '<b>Min.</b>';
+        $col[1][$nb_lignes+2] = '<b>Max.</b>';
 
         $col_csv[1][$nb_lignes] = 'Moyenne';
         $col_csv[1][$nb_lignes+1] = 'Min.';
@@ -867,13 +975,24 @@ if (!$current_group) {
     //
     if (!isset($larg_tab)) {$larg_tab = 680;}
     if (!isset($bord)) {$bord = 1;}
+	echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
-    if ($en_tete == "yes") echo "<p class=bold><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+    //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"";
+    if ($en_tete == "yes") {
+		//echo " target=\"_blank\">\n";
 
+		echo "<p class=bold><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+	}
+	/*
+	else {
+		echo ">\n";
+	}
+	*/
 	//=========================
 	// MODIF: boireaus 20080421
 	// Pour permettre de trier autrement...
-	//echo "<input type=\"button\" value=\"Visualiser sans l'en-tête et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\"/><br />\n";
+	// Ligne de test:
+	// echo "<input type=\"button\" value=\"Visualiser sans l'en-tête et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\" /><br />\n";
     //echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
 	//=========================
 
@@ -892,8 +1011,16 @@ if (!$current_group) {
             $temp2 = $_POST[$name2];
             echo "<input type='hidden' name='$name2' value='$temp2' />\n";
         }
+
         $i++;
     }
+	//=========================
+	// MODIF: boireaus 20080421
+	// Pour avoir le rang sur le tableau sans entête
+	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+	}
+	//=========================
     echo "<input type='hidden' name='en_tete' value='no' />\n";
     echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
     echo "<input type='hidden' name='bord' value='$bord' />\n";
@@ -906,6 +1033,55 @@ if (!$current_group) {
 
 
 	//=======================================================
+	// MODIF: boireaus 20080421
+	// Pour permettre de trier autrement...
+	echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquée -->\n";
+    echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire_tri\">\n";
+
+    echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
+    echo "<input type='hidden' name='sens_tri' id='sens_tri' value='' />\n";
+
+    echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+    echo "<input type='hidden' name='choix_visu' value='yes' />\n";
+    if ($stat == "yes") echo "<input type='hidden' name='stat' value='yes' />\n";
+    $i="1";
+    while ($i < $nb_periode) {
+        $name1 = "visu_note_".$i;
+        if (isset($_POST[$name1])) {
+            $temp1 = $_POST[$name1];
+            echo "<input type='hidden' name='$name1' value='$temp1' />\n";
+        }
+        $name2 = "visu_app_".$i;
+        if (isset($_POST[$name2])) {
+            $temp2 = $_POST[$name2];
+            echo "<input type='hidden' name='$name2' value='$temp2' />\n";
+        }
+
+        $i++;
+    }
+	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+	}
+    if ($en_tete == "yes") {
+		echo "<input type='hidden' name='en_tete' value='yes' />\n";
+	}
+	else {
+		echo "<input type='hidden' name='en_tete' value='no' />\n";
+	}
+    echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
+    echo "<input type='hidden' name='bord' value='$bord' />\n";
+
+	if(isset($order_by)){
+		echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
+	}
+
+    echo "</form>\n";
+	//=======================================================
+
+
+
+	//=======================================================
+	echo "\n<!-- Formulaire pour l'export CSV -->\n";
     echo "<div style='width:10em;float:right;'>\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_csv\" target='_blank'>\n";
 
@@ -936,12 +1112,14 @@ if (!$current_group) {
 
 	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 	echo "<input type='hidden' name='mode' value='csv' />\n";
+	// On ne met le bouton que pour l'affichage avec entête
 	if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
     echo "</form>\n";
     echo "</div>\n";
 	//=======================================================
 
 
+	echo "\n<!-- Formulaire pour ... -->\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire2\">\n";
     if ($en_tete == "yes")
         parametres_tableau($larg_tab, $bord);
@@ -971,7 +1149,51 @@ if (!$current_group) {
 
 
 
-    if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
+    //if (isset($col)) affiche_tableau($nb_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
+
+	//function affiche_tableau_index1($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
+
+    if (isset($col)) {
+		$couleur_alterne="";
+		$col1_centre=0;
+		$col_centre=0;
+		echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+		echo "<tr>\n";
+		$j = 1;
+		while($j < $nb_col+1) {
+			echo "<th class='small'>";
+			echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
+			if(eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
+			echo "document.forms['formulaire_tri'].submit();\">".$ligne1[$j]."</a>";
+			echo "</th>\n";
+			$j++;
+		}
+		echo "</tr>\n";
+		$i = "0";
+		$bg_color = "";
+		$flag = "1";
+		while($i < $nb_lignes) {
+			if ($couleur_alterne) {
+				if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
+			}
+
+			echo "<tr>\n";
+			$j = 1;
+			while($j < $nb_col+1) {
+				if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
+					echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+				} else {
+					echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+				}
+				$j++;
+			}
+			echo "</tr>\n";
+			if ($flag == "1") $flag = "0"; else $flag = "1";
+			$i++;
+		}
+		echo "</table>\n";
+	}
+
     if ($test == 1 and  $stat == "yes") {
         echo "<br /><table border=\"$bord\" cellpadding=\"5\" cellspacing=\"1\" width=\"$larg_tab\"><tr><td>
         <b>Moyenne générale de la classe : ".$moy_gen."</b>
