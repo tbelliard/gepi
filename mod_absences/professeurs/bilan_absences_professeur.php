@@ -114,17 +114,19 @@ $creneaux = retourne_creneaux();
 	</tr>
 </table>
 	</form>
-<p>Bilan des absences que vous avez saisies - Vous pouvez modifier les dates</p>
+<p>Bilan des absences que vous avez saisies.</p>
 <table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 
 	<tr>
 	<td>
+<!--
 		<table border="0" cellspacing="0" cellpadding="1">
 		<tr>
 		<td style="background-color: #d7ffd4; width: 15px; color: green;"><b>R</b></td><td> Retard</td><td></td>
 		<td style="background-color: #ffd4d4; width: 15px; color: red;"><b>A</b></td><td> Absence</td>
 		</tr>
 		</table>
+-->
 	</td>
 	</tr>
 
