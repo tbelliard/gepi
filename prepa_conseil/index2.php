@@ -197,14 +197,18 @@ if (isset($id_classe)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
+		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."';");
 		// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 		$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
 			echo "<tr>\n";
-			echo "<td><input type=\"checkbox\" name=\"aff_rang\" checked /></td>\n";
-			echo "<td>Afficher le rang des élèves</td>\n";
+			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" checked /></td>\n";
+			echo "<td>\n";
+			echo "<label for='aff_rang' style='cursor:pointer;'>\n";
+			echo "Afficher le rang des élèves\n";
+			echo "</label>\n";
+			echo "</td>\n";
 			echo "</tr>\n";
 		}
 
