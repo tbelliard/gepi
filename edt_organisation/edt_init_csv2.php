@@ -84,6 +84,13 @@ $exist = NULL;
 
 // On récupère le répertoire temporaire de l'admin
 $tempdir = get_user_temp_directory();
+if (!$tempdir) {
+	// On crée alors le répertoire adéquat
+	$creer_rep = check_user_temp_directory();
+	if (!$creer_rep) {
+		trigger_error('Impossible d\'enregistrer le fichier sur le serveur, veuillez vérifier les droits en écriture sur le répertoire /temp', E_USER_ERROR);
+	}
+}
 
 // Si l'utilisateur veut recommencer, on efface toutes les entrées de l'étape qu'il a demandée
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
