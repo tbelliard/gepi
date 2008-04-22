@@ -89,6 +89,8 @@ $aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] : (isset($_GET['aff_reg'
 $aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] : (isset($_GET['aff_doub']) ? $_GET['aff_doub'] : NULL);
 $aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] : (isset($_GET['aff_rang']) ? $_GET['aff_rang'] : NULL);
 
+//echo "\$aff_rang=$aff_rang<br />";
+
 //============================
 //$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  NULL;
 $aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] : (isset($_GET['aff_date_naiss']) ? $_GET['aff_date_naiss'] : NULL);
@@ -279,6 +281,7 @@ while($j < $nb_lignes_tableau) {
             ");
         if (($rang == 0) or ($rang == -1)) $rang = "-";
         $col[$ind][$j+$ligne_supl] = $rang;
+		//echo "\$col[$ind][$j+$ligne_supl])=".$col[$ind][$j+$ligne_supl]."<br />";
         $ind++;
     }
 
@@ -591,20 +594,23 @@ while($i < $lignes_groupes){
         }
     }
     if ($temp != '') {
-        $col[$k][$nb_lignes_tableau+$ligne_supl] = $temp;
+        //$col[$k][$nb_lignes_tableau+$ligne_supl] = $temp;
+        $col[$k][$nb_lignes_tableau+$ligne_supl] = number_format($temp,1, ',', ' ');
     } else {
         $col[$k][$nb_lignes_tableau+$ligne_supl] = '-';
     }
     if ($referent == "une_periode") {
         $temp = @mysql_result($call_min, 0, "note_min");
         if ($temp != '') {
-            $col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
+            //$col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
+            $col[$k][$nb_lignes_tableau+1+$ligne_supl] = number_format($temp,1, ',', ' ');
         } else {
             $col[$k][$nb_lignes_tableau+1+$ligne_supl] = '-';
         }
         $temp = @mysql_result($call_max, 0, "note_max");
         if ($temp != '') {
-            $col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
+            //$col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
+            $col[$k][$nb_lignes_tableau+2+$ligne_supl] = number_format($temp,1, ',', ' ');
         } else {
             $col[$k][$nb_lignes_tableau+2+$ligne_supl] = '-';
         }
