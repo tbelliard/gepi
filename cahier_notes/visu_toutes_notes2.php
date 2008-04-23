@@ -889,7 +889,8 @@ while($i < $lignes_groupes){
 		}
 	}
 	if ($temp != '') {
-		$col[$k][$nb_lignes_tableau+$ligne_supl] = $temp;
+		//$col[$k][$nb_lignes_tableau+$ligne_supl] = $temp;
+		$col[$k][$nb_lignes_tableau+$ligne_supl] = number_format($temp,1, ',', ' ');
 	}
 	else {
 		$col[$k][$nb_lignes_tableau+$ligne_supl] = '-';
@@ -897,14 +898,16 @@ while($i < $lignes_groupes){
 	if ($referent == "une_periode") {
 		$temp = @mysql_result($call_min, 0, "note_min");
 		if($temp != ''){
-			$col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
+			//$col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
+			$col[$k][$nb_lignes_tableau+1+$ligne_supl] = number_format($temp,1, ',', ' ');
 		}
 		else{
 			$col[$k][$nb_lignes_tableau+1+$ligne_supl] = '-';
 		}
 		$temp=@mysql_result($call_max, 0, "note_max");
 		if ($temp != '') {
-			$col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
+			//$col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
+			$col[$k][$nb_lignes_tableau+2+$ligne_supl] = number_format($temp,1, ',', ' ');
 		}
 		else {
 			$col[$k][$nb_lignes_tableau+2+$ligne_supl] = '-';
