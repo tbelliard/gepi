@@ -1169,8 +1169,12 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 			echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
-			echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
-
+			if($_SESSION['statut']=="scolarite") {
+				echo "en vous rendant dans [<a href='../responsables/index.php'>Gestion des fiches responsables élèves</a>]</p>\n";
+			}
+			else{
+				echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
+			}
 
 			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
@@ -1945,7 +1949,13 @@ if(isset($eleve_login)){
 			else{
 				echo "<p>Si le responsable légal ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
 				echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
-				echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
+
+				if($_SESSION['statut']=="scolarite") {
+					echo "en vous rendant dans [<a href='../responsables/index.php'>Gestion des fiches responsables élèves</a>]</p>\n";
+				}
+				else{
+					echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
+				}
 			}
 		}
 	}
