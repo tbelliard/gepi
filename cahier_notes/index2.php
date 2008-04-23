@@ -93,15 +93,21 @@ if (isset($id_classe)) {
 	include "../lib/periodes.inc.php";
 	$i="1";
 	while ($i < $nb_periode) {
-		echo "<br />\n<input type=\"radio\" name=\"num_periode\" value=\"$i\" ";
+		echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_$i' value=\"$i\" ";
 		if ($i == 1) echo "checked ";
-		echo "/>&nbsp;".ucfirst($nom_periode[$i]);
+		echo "/>&nbsp;";
+		echo "<label for='num_periode_$i' style='cursor:pointer;'>\n";
+		echo ucfirst($nom_periode[$i]);
+		echo "</label>\n";
 		$i++;
 	}
-	echo "<br />\n<input type=\"radio\" name=\"num_periode\" value=\"annee\" />&nbsp;Année entière";
-	echo "\n</td><td valign=\"top\">";
+	echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_annee' value=\"annee\" />&nbsp;";
+	echo "<label for='num_periode_annee' style='cursor:pointer;'>\n";
+	echo "Année entière";
+	echo "</label>\n";
+	echo "</td>\n";
 
-
+	echo "<td valign=\"top\">\n";
     echo "<b>Paramètres d'affichage</b><br />\n";
 	echo "<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
 
@@ -119,8 +125,12 @@ if (isset($id_classe)) {
 		echo "<td><input type=text name=bord size=3 value=\"1\" /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td>Couleurs de fond des lignes alternées : </td>\n";
-		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" checked /></td>\n";
+		echo "<td>\n";
+		echo "<label for='couleur_alterne' style='cursor:pointer;'>\n";
+		echo "Couleurs de fond des lignes alternées : \n";
+		echo "</label>\n";
+		echo "</td>\n";
+		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" checked /></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
@@ -129,16 +139,28 @@ if (isset($id_classe)) {
 
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_abs\" checked /></td>\n";
-		echo "<td>Afficher les absences</td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" checked /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_abs' style='cursor:pointer;'>\n";
+		echo "Afficher les absences";
+		echo "</label>\n";
+		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_reg\" checked /></td>\n";
-		echo "<td>Afficher le régime</td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" checked /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_reg' style='cursor:pointer;'>\n";
+		echo "Afficher le régime\n";
+		echo "</label>\n";
+		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_doub\" checked /></td>\n";
-		echo "<td>Afficher la mention doublant</td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_doub\" id=\"aff_doub\" checked /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_doub' style='cursor:pointer;'>\n";
+		echo "Afficher la mention doublant\n";
+		echo "</label>\n";
+		echo "</td>\n";
 		echo "</tr>\n";
 
 		$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
@@ -147,14 +169,22 @@ if (isset($id_classe)) {
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
 			echo "<tr>\n";
-			echo "<td><input type=\"checkbox\" name=\"aff_rang\" checked /></td>\n";
-			echo "<td>Afficher le rang des élèves</td>\n";
+			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" checked /></td>\n";
+			echo "<td>\n";
+			echo "<label for='aff_rang' style='cursor:pointer;'>\n";
+			echo "Afficher le rang des élèves\n";
+			echo "</label>\n";
+			echo "</td>\n";
 			echo "</tr>\n";
 		}
 
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_date_naiss\" /></td>\n";
-		echo "<td>Afficher la date de naissance des élèves</td>\n";
+		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_date_naiss' style='cursor:pointer;'>\n";
+		echo "Afficher la date de naissance des élèves\n";
+		echo "</label>\n";
+		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
