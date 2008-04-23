@@ -510,6 +510,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 */
 	echo "<p><b>Choisissez la période : </b></p>\n";
 	include "../lib/periodes.inc.php";
+
 	$i="1";
 	//echo "<form name='choix' action='edit.php' target='bull' method='post'>\n";
 	echo "<form name='choix' action='edit.php' target='_blank' method='post'>\n";
@@ -533,8 +534,9 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 			if($nb_per_close==0){
 				echo " checked";
 			}
+			echo " onchange='colore_checked();'";
 			echo " /> </td>\n";
-			echo "<td><label for='periode_num_$i' style='cursor: pointer;'><b>".ucfirst($nom_periode[$i])."</b>";
+			echo "<td id='td_periode_$i'><label for='periode_num_$i' style='cursor: pointer;'><b>".ucfirst($nom_periode[$i])."</b>";
 			if ($ver_periode[$i] == "P"){echo " (<i>Période partiellement close, seule la saisie des avis du conseil de classe est possible</i>)";}
 			if ($ver_periode[$i] == "O"){echo " (<i>Période entièrement close, plus aucune saisie/modification n'est possible</i>)";}
 			echo "</label></td>\n";
@@ -545,6 +547,24 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 		$i++;
 	}
 	echo "</table>\n";
+
+	echo "<script type='text/javascript'>
+	function colore_checked(){
+		for(i=1;i<=$nb_periode;i++) {
+			if(document.getElementById('periode_num_'+i)) {
+				if(document.getElementById('periode_num_'+i).checked==true) {
+					document.getElementById('td_periode_'+i).style.backgroundColor='white';
+					document.getElementById('td_periode_'+i).style.border='1px solid black';
+				}
+				else {
+					document.getElementById('td_periode_'+i).style.backgroundColor='';
+					document.getElementById('td_periode_'+i).style.border='';
+				}
+			}
+		}
+	}
+	colore_checked();
+</script>\n";
 
 /*
 // Je ne parviens pas à cocher la dernière période close (si elle existe)...
