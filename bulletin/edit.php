@@ -81,6 +81,7 @@ if (isset($_POST['periode_num'])) {
     $periode_num = $_POST['periode_num'];
 } else die();
 
+
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
@@ -107,6 +108,9 @@ if ($ver_periode[$periode_num] == "N") {
     die();
 }
 
+
+// Stockage de la période par défaut pour les bulletins pour les impressions suivantes dans la même session
+$_SESSION['periode_par_defaut_bulletin']=$periode_num;
 
 
 // Récupération des variables concernant la liste des élèves et le bulletin unique par famille:

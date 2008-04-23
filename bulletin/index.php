@@ -519,6 +519,9 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	echo "<table border='0'>\n";
 	$num_per_close=0;
 	$nb_per_close=0;
+
+	$periode_par_defaut_bulletin=isset($_SESSION['periode_par_defaut_bulletin']) ? $_SESSION['periode_par_defaut_bulletin'] : NULL;
+
 	while ($i < $nb_periode) {
 		echo "<tr>\n";
 		if ($ver_periode[$i] == "N") {
@@ -531,7 +534,10 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i' /> </td>\n";
 			//echo "<td align='center'><input type='radio' name='periode_num' id='id_periode_num' value='$i'";
 			echo "<td align='center'><input type='radio' name='periode_num' id='periode_num_$i' value='$i'";
-			if($nb_per_close==0){
+			if(isset($periode_par_defaut_bulletin)) {
+				if($periode_par_defaut_bulletin==$i) {echo " checked";}
+			}
+			elseif($nb_per_close==0){
 				echo " checked";
 			}
 			echo " onchange='colore_checked();'";
