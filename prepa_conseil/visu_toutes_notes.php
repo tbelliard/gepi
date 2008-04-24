@@ -683,8 +683,15 @@ if ($ligne_supl == 1) {
     if ($affiche_categories) {
 		foreach($displayed_categories as $cat_id) {
 			$nb_col++;
-			$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
+			//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
+
+			$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
+				"document.forms['formulaire_tri'].submit();\">".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"".$cat_names[$cat_id]."\" />".
+				"</a>";
+
 			$ligne1_csv[$nb_col] = "Moyenne : " . $cat_names[$cat_id];
+
 			$j = '0';
 			while($j < $nb_lignes_tableau) {
 				//if ($total_cat_coef[$j+$ligne_supl][$cat_id] > 0) {
