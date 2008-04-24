@@ -1162,7 +1162,8 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     echo "<tr>\n";
     $j = 1;
     while($j < $nb_col+1) {
-        echo "<th class='small'>$ligne1[$j]</th>\n";
+        //echo "<th class='small'>$ligne1[$j]</th>\n";
+        echo "<th class='small' id='td_ligne1_$j'>$ligne1[$j]</th>\n";
         $j++;
     }
     echo "</tr>\n";

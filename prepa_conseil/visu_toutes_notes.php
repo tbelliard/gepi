@@ -75,6 +75,14 @@ if (isset($id_classe)) {
 }
 
 
+function my_echo($texte) {
+	$debug=0;
+	if($debug!=0) {
+		echo $texte;
+	}
+}
+
+
 $larg_tab = isset($_POST['larg_tab']) ? $_POST['larg_tab'] :  NULL;
 $bord = isset($_POST['bord']) ? $_POST['bord'] :  NULL;
 
@@ -288,7 +296,12 @@ while($j < $nb_lignes_tableau) {
     $j++;
 }
 // Etiquettes des premières colonnes
-$ligne1[1] = "Nom ";
+//$ligne1[1] = "Nom ";
+$ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1';".
+			"document.forms['formulaire_tri'].submit();\"".
+			" style='text-decoration:none; color:black;'>".
+			"Nom ".
+			"</a>";
 $ligne1_csv[1] = "Nom ";
 //if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Régime&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"régime\">";
 //if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"doublant\">";
@@ -310,11 +323,30 @@ if($aff_doub){
 	$ligne1_csv[]="Redoublant";
 }
 if ($aff_abs){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />";
+	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />";
+	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
+				"document.forms['formulaire_tri'].submit();\">".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />".
+				"</a>";
+
 	$ligne1_csv[]="1/2 journées d'absence";
 }
 if (($aff_rang) and ($referent=="une_periode")){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />";
+	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />";
+	/*
+	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
+	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
+    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+	$ligne1[$nb_col].="</a>";
+	*/
+	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
+				"document.getElementById('sens_tri').value='inverse';".
+				"document.forms['formulaire_tri'].submit();\">".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />".
+				"</a>";
+	//echo count($ligne1);
+
 	$ligne1_csv[]="Rang de l'élève";
 }
 
@@ -635,7 +667,13 @@ while($i < $lignes_groupes){
 	$nom_complet_coupe_csv=ereg_replace(";","",$nom_complet_coupe_csv);
 
     //$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
-    $ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+    //$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+
+	$ligne1[$k]="<a href='#' onclick=\"document.getElementById('col_tri').value='$k';";
+	$ligne1[$k].="document.forms['formulaire_tri'].submit();\">";
+	$ligne1[$k] .= "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+	$ligne1[$k].="</a>";
+
     $ligne1_csv[$k] = "$nom_complet_coupe_csv";
     $i++;
 }
@@ -682,7 +720,12 @@ if ($ligne_supl == 1) {
     $nb_col++;
     //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Moyenne générale&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
     //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
-    $ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+    //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
+	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
+    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+	$ligne1[$nb_col].="</a>";
     $ligne1_csv[$nb_col] = "Moyenne générale";
     $j = '0';
     while($j < $nb_lignes_tableau) {
@@ -721,14 +764,14 @@ if ($ligne_supl == 1) {
 	if (($aff_rang) and ($referent!="une_periode")) {
 		// Calculer le rang dans le cas année entière
 		//$nb_col++;
-
+		/*
 		function my_echo($texte) {
 			$debug=0;
 			if($debug!=0) {
 				echo $texte;
 			}
 		}
-
+		*/
 		// Préparatifs
 
 		// Initialisation d'un tableau pour les rangs et affectation des valeurs réindexées dans un tableau temporaire
@@ -811,6 +854,145 @@ if ($ligne_supl == 1) {
 
 }
 
+//===============================
+// A FAIRE: 20080424
+// INTERCALER ICI un dispositif analogue à celui de index1.php pour trier autrement
+
+if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
+	// Pour activer my_echo à des fins de debug, passer $debug à 1 dans la déclaration de la fonction plus haut dans la page
+	my_echo("\$_POST['col_tri']=".$_POST['col_tri']."<br />");
+	$col_tri=$_POST['col_tri'];
+
+	$nb_colonnes=$nb_col;
+
+	// if ($test_coef != 0) $col[1][0] = "Coefficient";
+
+	// Ajout d'une ligne de décalage si il y a une ligne de coeff
+	if($col[1][0]=="Coefficient") {
+		//$b_inf=1;
+		//$b_sup=$nb_lignes_tableau+1;
+		$corr=1;
+	}
+	else {
+		//$b_inf=0;
+		//$b_sup=$nb_lignes_tableau;
+		$corr=0;
+	}
+
+	// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
+	if((strlen(ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+		my_echo("<table>");
+		my_echo("<tr><td valign='top'>");
+		unset($tmp_tab);
+		for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
+		//for($loop=$b_inf;$loop<$b_sup;$loop++) {
+			// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
+			//$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
+			$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
+			//$tmp_tab[$loop]=ereg_replace(",",".",$col[$col_tri][$loop]);
+			my_echo("\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />");
+		}
+
+		my_echo("</td>");
+		my_echo("<td valign='top'>");
+
+		$i=0;
+		while($i < $nb_lignes_tableau) {
+		//$i=$b_inf;
+		//while($i < $b_sup) {
+			//my_echo($col_csv[1][$i]."<br />");
+			my_echo($col[1][$i+$corr]."<br />");
+			$i++;
+		}
+		my_echo("</td>");
+		my_echo("<td valign='top'>");
+
+
+		//$i=0;
+		//while($i < $nb_lignes_tableau) {
+		$i=0;
+		while($i < $nb_lignes_tableau) {
+			$rg[$i]=$i;
+			$i++;
+		}
+
+		// Tri du tableau avec stockage de l'ordre dans $rg d'après $tmp_tab
+		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+
+
+		$i=0;
+		while($i < $nb_lignes_tableau) {
+			my_echo("\$rg[$i]=".$rg[$i]."<br />");
+			$i++;
+		}
+		my_echo("</td>");
+		my_echo("<td valign='top'>");
+
+
+		// On utilise des tableaux temporaires le temps de la réaffectation dans l'ordre
+		$tmp_col=array();
+		//$tmp_col_csv=array();
+
+		$i=0;
+		$rang_prec = 1;
+		$note_prec='';
+		while ($i < $nb_lignes_tableau) {
+			$ind = $rg[$i];
+			if ($tmp_tab[$i] == "-") {
+				//$rang_gen = '0';
+				$rang_gen = '-';
+			}
+			else {
+				if ($tmp_tab[$i] == $note_prec) {
+					$rang_gen = $rang_prec;
+				}
+				else {
+					$rang_gen = $i+1;
+				}
+				$note_prec = $tmp_tab[$i];
+				$rang_prec = $rang_gen;
+			}
+
+			//$col[$nb_col+1][$ind]="ind=$ind, i=$i et rang_gen=$rang_gen";
+			for($m=1;$m<=$nb_colonnes;$m++) {
+				my_echo("\$tmp_col[$m][$i]=\$col[$m][$ind+$corr]=".$col[$m][$ind+$corr]."<br />");
+				$tmp_col[$m][$i]=$col[$m][$ind+$corr];
+				//$tmp_col_csv[$m][$ind]=$col_csv[$m][$ind];
+
+			}
+			$i++;
+		}
+		my_echo("</td></tr>");
+		my_echo("</table>");
+
+		// On réaffecte les valeurs dans le tableau initial à l'aide du tableau temporaire
+		if((isset($_POST['sens_tri']))&&($_POST['sens_tri']=="inverse")) {
+			for($m=1;$m<=$nb_colonnes;$m++) {
+				for($i=0;$i<$nb_lignes_tableau;$i++) {
+					$col[$m][$i+$corr]=$tmp_col[$m][$nb_lignes_tableau-1-$i];
+					//$col_csv[$m][$i]=$tmp_col_csv[$m][$nombre_eleves-1-$i];
+				}
+			}
+		}
+		else {
+			for($m=1;$m<=$nb_colonnes;$m++) {
+				//$col[$m]=$tmp_col[$m];
+				//$col_csv[$m]=$tmp_col_csv[$m];
+				// Pour ne pas perdre les lignes de moyennes de classe
+				for($i=0;$i<$nb_lignes_tableau;$i++) {
+					$col[$m][$i+$corr]=$tmp_col[$m][$i];
+					//$col_csv[$m][$i]=$tmp_col_csv[$m][$i];
+				}
+			}
+		}
+	}
+}
+//=========================
+
+//===============================
+
+
 $nb_lignes_tableau = $nb_lignes_tableau + 3 + $ligne_supl;
 
 
@@ -891,6 +1073,9 @@ if(isset($_GET['mode'])){
 //**************** EN-TETE *****************
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
+
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 // Lien pour générer un CSV
@@ -928,6 +1113,51 @@ if ($referent == "une_periode") {
 affiche_tableau($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
 
 echo "<p><br /></p>\n";
+
+
+
+//=======================================================
+// MODIF: boireaus 20080424
+// Pour permettre de trier autrement...
+echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquée -->\n";
+echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" name=\"formulaire_tri\">\n";
+
+echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
+echo "<input type='hidden' name='sens_tri' id='sens_tri' value='' />\n";
+
+echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
+
+if(isset($_POST['aff_abs'])) {
+	echo "<input type='hidden' name='aff_abs' value='".$_POST['aff_abs']."' />\n";
+}
+if(isset($_POST['aff_reg'])) {
+	echo "<input type='hidden' name='aff_reg' value='".$_POST['aff_reg']."' />\n";
+}
+if(isset($_POST['aff_doub'])) {
+	echo "<input type='hidden' name='aff_doub' value='".$_POST['aff_doub']."' />\n";
+}
+if(isset($_POST['aff_rang'])) {
+	echo "<input type='hidden' name='aff_rang' value='".$_POST['aff_rang']."' />\n";
+}
+if(isset($_POST['aff_date_naiss'])) {
+	echo "<input type='hidden' name='aff_date_naiss' value='".$_POST['aff_date_naiss']."' />\n";
+}
+
+echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
+echo "<input type='hidden' name='bord' value='$bord' />\n";
+echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
+
+echo "</form>\n";
+
+if(isset($col_tri)) {
+	echo "<script type='text/javascript'>
+	if(document.getElementById('td_ligne1_$col_tri')) {
+		document.getElementById('td_ligne1_$col_tri').style.backgroundColor='white';
+	}
+</script>\n";
+}
+//=======================================================
 
 require("../lib/footer.inc.php");
 ?>
