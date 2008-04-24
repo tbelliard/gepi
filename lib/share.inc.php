@@ -918,10 +918,22 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 function checkAccess() {
     global $gepiPath;
     $url = parse_url($_SERVER['REQUEST_URI']);
-    $sql = "select " . $_SESSION['statut'] . "
-    from droits
-    where id = '" . substr($url['path'], strlen($gepiPath)) . "'
-    ;";
+    if ($_SESSION["statut"] == 'autre') {
+
+    	$sql = "SELECT autorisation
+	    from droits_speciaux
+    	where nom_fichier = '" . substr($url['path'], strlen($gepiPath)) . "'
+		AND id_statut = '" . $_SESSION['special_id'] . "'";
+
+    }else{
+
+		$sql = "select " . $_SESSION['statut'] . "
+	    from droits
+    	where id = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	;";
+
+	}
+
     $dbCheckAccess = sql_query1($sql);
     if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
         tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
