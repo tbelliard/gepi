@@ -336,6 +336,21 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
     $_SESSION['maxLength'] = getSettingValue("sessionMaxLength");
     $_SESSION['rne'] = 'RNE';
 
+    // Ajout pour les statuts privés
+    if ($_SESSION['statut'] == 'autre') {
+
+    	// On charge aussi le statut spécial
+    	$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+										WHERE du.login_user = '".$_SESSION['login']."'
+										AND du.id_statut = ds.id";
+		$query = mysql_query($sql);
+		$result = mysql_fetch_array($query);
+
+		$_SESSION["special"] = $result["nom_statut"];
+		$_SESSION["special_id"] = $result["id"];
+
+    }
+
     // It's a new connection, insert into log
     $sql = "insert into log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
                 '" . $_SESSION['login'] . "',

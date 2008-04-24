@@ -281,7 +281,14 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
 }
 ?>
  | <a href="tab_profs_matieres.php">Affecter les matières aux professeurs</a>
- | <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a></p>
+ | <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>
+ <?php
+if (getSettingValue("statuts_prives") == "y") {
+	echo '
+	&nbsp;|&nbsp;<a href="./creer_statut.php">Statuts priv&eacute;s</a>';
+}
+?>
+</p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table border=0>

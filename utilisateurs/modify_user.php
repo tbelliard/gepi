@@ -25,6 +25,8 @@
 $variables_non_protegees = 'yes';
 
 // Initialisations files
+$affiche_connexion = 'yes';
+$niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -608,18 +610,26 @@ if (!(isset($user_login)) or ($user_login=='')) {
 ?>
 <br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name=reg_statut size=1 onchange="changement()">
 <?php if (!isset($user_statut)) $user_statut = "professeur"; ?>
-<option value=professeur <?php if ($user_statut == "professeur") { echo "selected";}?>>Professeur
-<option value=administrateur <?php if ($user_statut == "administrateur") { echo "selected";}?>>Administrateur
-<option value=cpe <?php if ($user_statut == "cpe") { echo "selected";}?>>C.P.E.
-<option value=scolarite <?php if ($user_statut == "scolarite") { echo "selected";}?>>Scolarité
-<option value=secours <?php if ($user_statut == "secours") { echo "selected";}?>>Secours
+<option value="professeur" <?php if ($user_statut == "professeur") { echo ' selected="selected"';}?>>Professeur</option>
+<option value="administrateur" <?php if ($user_statut == "administrateur") { echo ' selected="selected"';}?>>Administrateur</option>
+<option value="cpe" <?php if ($user_statut == "cpe") { echo ' selected="selected"';}?>>C.P.E.</option>
+<option value="scolarite" <?php if ($user_statut == "scolarite") { echo ' selected="selected"';}?>>Scolarité</option>
+<option value="secours" <?php if ($user_statut == "secours") { echo ' selected="selected"';}?>>Secours</option>
+<?php
+if (getSettingValue("statuts_prives") == "y") {
+	if ($user_statut == "autre") { $sel = ' selected="selected"';}else{ $sel = '';}
+	echo '
+	<option value="autre"'.$sel.'>Autre</option>';
+}
+?>
+
 </select>
 <br />
 
-<br />Etat :<select name=reg_etat size=1 onchange="changement()">
+<br />Etat :<select name="reg_etat" size="1" onchange="changement()">
 <?php if (!isset($user_etat)) $user_etat = "actif"; ?>
-<option value=actif <?php if ($user_etat == "actif") { echo "selected";}?>>Actif
-<option value=inactif <?php if ($user_etat == "inactif") { echo "selected";}?>>Inactif
+<option value="actif" <?php if ($user_etat == "actif") { echo "selected";}?>>Actif</option>
+<option value="inactif" <?php if ($user_etat == "inactif") { echo "selected";}?>>Inactif</option>
 </select>
 <br />
 
