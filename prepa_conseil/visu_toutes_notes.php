@@ -847,7 +847,14 @@ if ($ligne_supl == 1) {
 		}
 
 		// Remplissage de la ligne de titre
-        $ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Rang de l'élève\" />";
+        //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Rang de l'élève\" />";
+
+		$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
+				"document.getElementById('sens_tri').value='inverse';".
+				"document.forms['formulaire_tri'].submit();\">".
+				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />".
+				"</a>";
+
         $ligne1_csv[$nb_col] = "Rang de l'élève";
 
 		// Remplissage de la ligne coefficients
