@@ -647,7 +647,8 @@ if (!$current_group) {
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 		for($loop=0;$loop<count($col[$nb_col]);$loop++) {
 			//$tmp_tab[$loop]=$col[$nb_col][$loop];
-			$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
+			//$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
+			$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$nb_col][$loop]);
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 		}
 
