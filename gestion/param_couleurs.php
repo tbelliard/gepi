@@ -306,6 +306,10 @@ fieldset#login_box div#header {
 	margin:0;
 	width: 25em;
 }
+
+#essaiMenu {
+	background: #$degrade_bas;
+}
 ");
 
 /*
