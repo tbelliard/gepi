@@ -38,8 +38,31 @@ include("../lib/header.inc");
 // ========================================= Variables ============================
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $nouveau_statut = isset($_POST["nouveau_statut"]) ? $_POST["nouveau_statut"] : NULL;
-$msg = NULL;
+$login_user = isset($_POST["login_user"]) ? $_POST["login_user"] : NULL;
+$statut_user = isset($_POST["statut_user"]) ? $_POST["statut_user"] : NULL;
+$msg = $msg2 = NULL;
 
+// Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
+$values_b = '';
+// droits généraux et communs à tous les utilisateurs
+$autorise = array('/accueil.php',
+				'/utilisateurs/mon_compte.php',
+				'/gestion/contacter_admin.php',
+				'/gestion/info_gepi.php');
+// droits spécifiques sur les pages relatives aux droits possibles
+$notes = array('/cahier_notes/visu_releve_notes.php');
+$bull_simp = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
+$voir_absences = array('/mod_absences/gestion/voir_absences_viescolaire.php',
+						'/mod_absences/gestion/bilan_absences_quotidien.php',
+						'/mod_absences/gestion/bilan_absences_classe.php',
+						'/mod_absences/gestion/bilan_absences_quotidien_pdf.php',
+						'/mod_absences/lib/tableau.php',
+						'/mod_absences/lib/export_csv.php');
+$saisir_absences = array('/mod_absences/gestion/select.php',
+						'/mod_absences/gestion/ajout_abs.php',
+						'/mod_absences/lib/liste_absences.php');
+$cdt = array('cahier_texte/see_all.php');
+$edt = array('/edt_organisation/index_edt.php');
 
 if ($action == 'ajouter') {
 
@@ -63,8 +86,26 @@ if ($action == 'ajouter') {
 
 		$sql = "INSERT INTO droits_statut (id, nom_statut) VALUES ('', '".$insert_statut."')";
 		$enregistre = mysql_query($sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
+		$cherche_id = mysql_query("SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
+		$last_id = mysql_result($cherche_id, "id");
+
 		if ($enregistre) {
-			$msg .= "<h3 class='green'>Ce statut est enregistr&eacute !</h3>";
+
+			// On enregistre les droits généraux adéquats
+			for($a = 0 ; $a < 4 ; $a ++){
+				$values_b .= '("", "'.$last_id.'", "'.$autorise[$a].'", "V")';
+				if ($a <= 2) {
+					$values_b .= ', ';
+				}
+			}
+
+ 			$autorise_b = mysql_query("INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
+			 										OR trigger_error('Impossible d\'enregistrer : '.$values.' : '.mysql_error(), E_USER_WARNING);
+
+			if ($autorise_b) {
+				$msg .= "<h3 class='green'>Ce statut est enregistr&eacute !</h3>";
+			}
+
 		}
 
 	}
@@ -101,16 +142,14 @@ if ($action == 'modifier') {
 	}
 }
 
+
 // On récupère tous les statuts nouveaux qui existent
-$aff_tableau = $aff_select = $aff_users = '';
+$aff_tableau = $aff_select = $aff_users = $selected = '';
 $sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 $query = mysql_query($sql);
 
 if ($query) {
 	while($rep = mysql_fetch_array($query)){
-
-	$aff_select .= '
-		<option value="'.$rep["id"].'">'.$rep["nom_statut"].'</option>';
 
 	$aff_tableau .= '
 	<tr style="border: 1px solid lightblue; text-align: center;">
@@ -131,37 +170,69 @@ if ($query) {
 // On traite la partie sur les utilisateurs 'autre' pour leur définir le bon statut
 
 	// On traite les demandes de l'admin sur la définition des statuts des utilisateurs 'autre'
-	/*if ($action == "defStatut") {
+	if ($action == "defStatut") {
 		// On vérifie si cet utilisateur existe déjà
-		$query_v2 = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'");
-		if ($query_v2) {
-			if () {
-
-			}
+		$query_v2 = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'")
+									OR trigger_error('Impossible de vérifier le statut privé de cet utilisateur.', E_USER_WARNING);
+		$verif_v2 = mysql_num_rows($query_v2);
+		if ($verif_v2 >= 1) {
+			// alors le statut de cet utilisateur existe, on va donc le mettre à jour
+			$sql_d = "UPDATE droits_utilisateurs SET id_statut = '".$statut_user."' WHERE login_user = '".$login_user."'";
+		}else{
+			$sql_d = "INSERT INTO droits_utilisateurs (id, id_statut, login_user) VALUES ('', '".$statut_user."', '".$login_user."')";
 		}
+
+		$query_statut = mysql_query($sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.mysql_error(), E_USER_WARNING);
+
+		if ($query_statut) {
+			$msg2 .= '<h4 style="color: green;">Modification enregistrée.</h4>';
+		}
+
 	}
-*/
+
 	// On récupère les utilisateurs qui ont un statut 'autre'
-	$sql_u = "SELECT * FROM utilisateurs WHERE statut = 'autre' AND etat = 'actif'";
+	$sql_u = "SELECT nom, prenom, login  FROM utilisateurs
+											WHERE statut = 'autre'
+											AND etat = 'actif'";
 	$query_u = mysql_query($sql_u);
 
-	// On affiche la liste des utilisateurs avec un select des nouveaux statuts
-
+	// On affiche la liste des utilisateurs avec un select des statuts privés
+	$i = 1;
 	while($tab = mysql_fetch_array($query_u)){
+
+		// On récupère son statut s'il existe
+		$query_s = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
+		$statut = mysql_result($query_s, "id_statut");
 
 		$aff_users .= '
 		<tr>
 			<td>'.$tab["nom"].' '.$tab["prenom"].'</td>
 			<td>
-		<form action="creer_statut.php" method="post">
+		<form name="form'.$i.'" action="creer_statut.php" method="post">
 			<input type="hidden" name="action" value="defStatut" />
 			<input type="hidden" name="login_user" value="'.$tab["login"].'" />
-			<select name="statut_user">
-				<option value="rien">Choix du statut</option>
-				'.$aff_select.'
+
+			<select name="statut_user" onchange=\'document.form'.$i.'.submit();\'>
+				<option value="rien">Choix du statut</option>';
+
+		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
+		$query = mysql_query($sql);
+		while($rep = mysql_fetch_array($query)){
+			if ($statut == $rep["id"]) {
+				$selected = ' selected="selected"';
+			}else{
+				$selected = '';
+			}
+			$aff_users .= '
+				<option value="'.$rep["id"].'"'.$selected.'>'.$rep["nom_statut"].'</option>';
+		}
+
+		$aff_users .= '
 			</select>
 		</form>
 		</td></tr>';
+
+		$i++;
 
 	}
 
@@ -240,10 +311,13 @@ if ($query) {
 
 <div id="userStatut" style="border: 5px solid silver; width: 20em;">
 
+	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts priv&eacute;s</p>
+
 	<table>
+
 		<?php echo $aff_users; ?>
 	</table>
-
+		<?php echo $msg2; ?>
 </div>
 
 <?php
