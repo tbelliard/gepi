@@ -58,7 +58,8 @@ $cible2 = isset($_POST["cible2"]) ? $_POST["cible2"] :NULL;
 $cible3 = isset($_POST["cible3"]) ? $_POST["cible3"] :NULL;
 $k = isset($_POST["k"]) ? $_POST["k"] :(isset($_GET["k"]) ? $_GET["k"] :NULL);
 
-if (!PeutEffectuerActionSuppression($_SESSION["login"],$action,$liste_cible1,$liste_cible2,$liste_cible3)) {
+//if (!PeutEffectuerActionSuppression($_SESSION["login"],$action,$liste_cible1,$liste_cible2,$liste_cible3)) {
+if (!PeutEffectuerActionSuppression($_SESSION["login"],$action,$liste_cible,$liste_cible2,$liste_cible3)) {
     header("Location: ../logout.php?auto=1");
     die();
 }
@@ -316,8 +317,10 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $req[8] = "DELETE FROM avis_conseil_classe WHERE login='$cible1'";
 
     $mess[9] = "Table de jointure élève/établissement :";
-    $test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
-    $req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
+    //$test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
+    //$req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible1'";
+    $test_nb[9] = "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$cible2'";
+    $req[9] = "DELETE FROM j_eleves_etablissements WHERE id_eleve ='$cible2'";
 
     $mess[10] = "Table des notes du carnet de notes :";
     $test_nb[10] = "SELECT * FROM cn_notes_devoirs WHERE login='$cible1'";

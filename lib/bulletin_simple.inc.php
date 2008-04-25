@@ -119,10 +119,12 @@ $current_eleve_prenom = mysql_result($data_eleve, 0, "prenom");
 $current_eleve_sexe = mysql_result($data_eleve, 0, "sexe");
 $current_eleve_naissance = mysql_result($data_eleve, 0, "naissance");
 $current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
+$current_eleve_elenoet = mysql_result($data_eleve, 0, "elenoet");
 $data_profsuivi = mysql_query("SELECT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login='$current_eleve_login' AND j.professeur = u.login AND j.id_classe='$id_classe') ");
 $current_eleve_profsuivi_login = @mysql_result($data_profsuivi, 0, "login");
 
-$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_login' AND e.id = j.id_etablissement) ");
+//$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_login' AND e.id = j.id_etablissement) ");
+$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_elenoet' AND e.id = j.id_etablissement) ");
 $current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
 $current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
 $current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");

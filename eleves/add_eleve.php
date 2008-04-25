@@ -299,18 +299,24 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 					}
 
 					// Régime et établissement d'origine:
-					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
-					$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
-					$count2 = mysql_num_rows($call_test);
-					if ($count2 == "0") {
-						if ($reg_etab != "(vide)") {
-							$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
-						}
-					} else {
-						if ($reg_etab != "(vide)") {
-							$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
+					$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p';");
+					if ($reg_no_gep != '') {
+						//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
+						$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_no_gep';");
+						$count2 = mysql_num_rows($call_test);
+						if ($count2 == "0") {
+							if ($reg_etab != "(vide)") {
+								//$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
+								$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_no_gep','$reg_etab');");
+							}
 						} else {
-							$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
+							if ($reg_etab != "(vide)") {
+								//$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
+								$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_no_gep';");
+							} else {
+								//$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
+								$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep';");
+							}
 						}
 					}
 					if ((!$reg_data1) or (!$reg_data3)) {
@@ -347,17 +353,23 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 			}
 		}
 
-		$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
-		$count = mysql_num_rows($call_test);
-		if ($count == "0") {
-			if ($reg_etab != "(vide)") {
-				$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$eleve_login','$reg_etab')");
-			}
-		} else {
-			if ($reg_etab != "(vide)") {
-				$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$eleve_login'");
+		if ($reg_no_gep != '') {
+			//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$eleve_login'");
+			$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_no_gep';");
+			$count = mysql_num_rows($call_test);
+			if ($count == "0") {
+				if ($reg_etab != "(vide)") {
+					//$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$eleve_login','$reg_etab')");
+					$reg_data = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_no_gep','$reg_etab');");
+				}
 			} else {
-				$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
+				if ($reg_etab != "(vide)") {
+					//$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$eleve_login'");
+					$reg_data = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_no_gep';");
+				} else {
+					//$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'");
+					$reg_data = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep';");
+				}
 			}
 		}
 
@@ -998,6 +1010,8 @@ if (isset($eleve_login)) echo "<input type=hidden name=eleve_login value=\"$elev
 if (isset($mode)) echo "<input type=hidden name=mode value=\"$mode\" />\n";
 echo "<center><input type=submit value=Enregistrer /></center>\n";
 echo "</form>\n";
+echo "<p><b>Attention</b>: L'enregistrement de l'établissement d'origine est conditionnée par la saisie d'un identifiant SCONET/GEP (<i>Elenoet</i>)</p>\n";
+
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

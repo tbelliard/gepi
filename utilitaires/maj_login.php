@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 09/03/2005
+ * $Id$
  *
  * Cette procédure spéciale de mise à jour de la base MySql permet de régler les problèmes liés
  * à la présence dans certains identifiants d'élèves du caractère \"-\".
@@ -144,11 +144,22 @@ while ($i < $nb_lignes) {
     $temp = mysql_result($req, $i, 'id_eleve');
     $pos = strpos($temp, "-");
     if ($pos >=1) {
-        $up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$tempo."' where id_eleve ='".$temp."'");
-        if ($affiche == 'yes') {
-            $message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
-            $affiche = 'no';
-        }
+		// A ce stade, la table 'eleves' a déjà été mise à jour
+		$sql="SELECT elenoet FROM eleves WHERE login='$tempo';";
+		$res_elenoet=mysql_query($sql);
+		if(mysql_num_rows($res_elenoet)>0) {
+			$lig_elenoet=mysql_fetch_object($res_elenoet);
+			$reg_no_gep=$lig_elenoet->elenoet;
+			if($reg_no_gep!="") {
+				//$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$tempo."' where id_eleve ='".$temp."'");
+				$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$res_elenoet."' where id_eleve ='".$temp."'");
+				if ($affiche == 'yes') {
+					//$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
+					$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$res_elenoet."<br>";
+					$affiche = 'no';
+				}
+			}
+		}
     }
     $i++;
 }

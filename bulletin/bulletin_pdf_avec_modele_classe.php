@@ -615,12 +615,14 @@ if(!empty($model_bulletin)) {
     switch ($tri_par_etab_origine) {
 	case "oui" :
 		if (isset($id_classe[0])) {
-			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
+			//$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
+			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.elenoet AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC';
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
 		if (isset($id_eleve[0])) {
-			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
+			//$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.login AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
+			$requete = 'SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime, '.$prefix_base.'j_eleves_etablissements WHERE '.$prefix_base.'j_eleves_etablissements.id_etablissement != \''.$RneEtablissement.' \' AND '.$prefix_base.'j_eleves_etablissements.id_eleve = '.$prefix_base.'eleves.elenoet AND '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id AND ('.$prepa_requete.') AND '.$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_regime.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_etablissements.id_etablissement ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC' ;
 			//echo $requete;
 			$call_eleve = mysql_query($requete);
 		}
@@ -718,6 +720,7 @@ if(!empty($model_bulletin)) {
 		$eleve_id_classe[$cpt_i]=$donner['id'];
 		$ident_eleve[$cpt_i] = $donner['login'];
 		$ident_eleve_sel1 = $ident_eleve[$cpt_i];
+		$elenoet_eleve[$cpt_i] = $donner['elenoet'];
 		$ele_id_eleve[$cpt_i] = $donner['ele_id'];
 		$nom_eleve[$cpt_i] = $donner['nom'];
 		$prenom_eleve[$cpt_i] = $donner['prenom'];
@@ -756,9 +759,11 @@ if(!empty($model_bulletin)) {
 		// etablissement d'origine
 		// on vérifie si l'élève a un établissement d'origine
 		if ( !isset($etablissement_origine) ) {	$etablissement_origine = ''; }
-		$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id"),0);
+		//$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id"),0);
+		$cpt_etab_origine = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id"),0);
 		if($cpt_etab_origine != 0) {
-			$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id";
+			//$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id";
+			$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id";
 			$execution_etablissement_origine = mysql_query($requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.mysql_error());
 			while ($donnee_etablissement_origine = mysql_fetch_array($execution_etablissement_origine))
 			{

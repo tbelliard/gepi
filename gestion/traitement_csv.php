@@ -173,22 +173,39 @@ for ($row=1; $row<$nb_row; $row++) {
         $reg_data2 = 'ok';
     }
 
-    $call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$reg_login'");
-    $test = mysql_num_rows($call_test);
-    if ($test == 0) {
-        if ($reg_etab != '-') {
-        $reg_data4 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve ='$reg_login',id_etablissement= '$reg_etab'");
-        } else {
-            $reg_data4 = 'ok';
-        }
 
-    } else {
-        if ($reg_etab != '-') {
-            $reg_data4 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
-        } else {
-            $reg_data4 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
-        }
-    }
+    $call_elenoet = mysql_query("SELECT elenoet FROM eleves WHERE login='$reg_login';");
+    if(mysql_num_rows($call_test)>0) {
+		$lig_elenoet=mysql_fetch_object($call_elenoet);
+		if($lig_elenoet->elenoet=='') {
+			// On initialise à OK $reg_data4 pour ne pas provoquer une erreur sous prétexte qu'il n'y a pas d'elenoet
+			$reg_data4 = 'ok';
+		}
+		else {
+			//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$reg_login'");
+			$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$lig_elenoet->elenoet';");
+			$test = mysql_num_rows($call_test);
+			if ($test == 0) {
+				if ($reg_etab != '-') {
+					//$reg_data4 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve ='$reg_login',id_etablissement= '$reg_etab'");
+					$reg_data4 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve ='$lig_elenoet->elenoet',id_etablissement= '$reg_etab';");
+				} else {
+					$reg_data4 = 'ok';
+				}
+
+			} else {
+				if ($reg_etab != '-') {
+					//$reg_data4 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
+					$reg_data4 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$lig_elenoet->elenoet';");
+				} else {
+					//$reg_data4 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
+					$reg_data4 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig_elenoet->elenoet';");
+				}
+			}
+		}
+	}
+
+
 
     if ((!isset($reg_data1)) or (!isset($reg_data2)) or (!isset($reg_data3)) or (!isset($reg_data4)) or (!isset($reg_data5))) {
         if ($reg_statut == "nouveau") {

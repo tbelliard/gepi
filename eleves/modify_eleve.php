@@ -209,51 +209,64 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	}
 
 
-
+	//debug_var();
 
 	// Validation d'un choix d'établissement d'origine
 	if((isset($eleve_login))&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
+	//if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
 
-		if($reg_etab==""){
-			$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
-			$suppr=mysql_query($sql);
-			if($suppr){
-				$msg="Suppression de l'association de l'élève avec un établissement réussie.";
-			}
-			else{
-				$msg="Echec de la suppression l'association de l'élève avec un établissement.";
-			}
-		}
-		else{
-			$sql="SELECT 1=1 FROM etablissements WHERE id='$reg_etab'";
-			//echo "$sql<br />";
-			$test=mysql_query($sql);
-
-			if(mysql_num_rows($test)==0){
-				$msg="Erreur: L'établissement choisi (<i>$reg_etab</i>) n'existe pas dans la table 'etablissement'.";
-			}
-			else{
-				$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
-				$test=mysql_query($sql);
-
-				if(mysql_num_rows($test)==0){
-					$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$eleve_login', id_etablissement='$reg_etab'";
-					$insert=mysql_query($sql);
-					if($insert){
-						$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
+		$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
+		$res_elenoet=mysql_query($sql);
+		if(mysql_num_rows($res_elenoet)>0) {
+			$lig_elenoet=mysql_fetch_object($res_elenoet);
+			$reg_no_gep=$lig_elenoet->elenoet;
+			if($reg_no_gep!="") {
+				if($reg_etab==""){
+					//$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
+					$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep'";
+					$suppr=mysql_query($sql);
+					if($suppr){
+						$msg="Suppression de l'association de l'élève avec un établissement réussie.";
 					}
 					else{
-						$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
+						$msg="Echec de la suppression l'association de l'élève avec un établissement.";
 					}
 				}
 				else{
-					$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$eleve_login'";
-					$update=mysql_query($sql);
-					if($update){
-						$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
+					$sql="SELECT 1=1 FROM etablissements WHERE id='$reg_etab'";
+					//echo "$sql<br />";
+					$test=mysql_query($sql);
+
+					if(mysql_num_rows($test)==0){
+						$msg="Erreur: L'établissement choisi (<i>$reg_etab</i>) n'existe pas dans la table 'etablissement'.";
 					}
 					else{
-						$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
+						//$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
+						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep'";
+						$test=mysql_query($sql);
+
+						if(mysql_num_rows($test)==0){
+							//$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$eleve_login', id_etablissement='$reg_etab'";
+							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_no_gep', id_etablissement='$reg_etab'";
+							$insert=mysql_query($sql);
+							if($insert){
+								$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
+							}
+							else{
+								$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
+							}
+						}
+						else{
+							//$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$eleve_login'";
+							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_no_gep'";
+							$update=mysql_query($sql);
+							if($update){
+								$msg="Association de l'élève avec l'établissement $reg_etab réussie.";
+							}
+							else{
+								$msg="Echec de l'association de l'élève avec l'établissement $reg_etab.";
+							}
+						}
 					}
 				}
 			}
@@ -906,8 +919,12 @@ if (isset($eleve_login)) {
     //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
-    $call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
-    $id_etab = @mysql_result($call_etab, "0", "id");
+    //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
+    $id_etab=0;
+	if($reg_no_gep!="") {
+		$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$reg_no_gep' and e.id = j.id_etablissement)");
+	    $id_etab = @mysql_result($call_etab, "0", "id");
+	}
 
 	//echo "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)<br />";
 
@@ -1206,6 +1223,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			echo "<p>Choix de l'établissement d'origine pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
 			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
+			//echo "<input type='hidden' name='reg_no_gep' value='$reg_no_gep' />\n";
 			echo "<input type='hidden' name='definir_etab' value='y' />\n";
 
 			$sql="SELECT * FROM etablissements ORDER BY ville,nom";
@@ -1213,7 +1231,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			$nombreligne = mysql_num_rows($call_etab);
 			if ($nombreligne != 0) {
 				echo "<p align='center'><input type='submit' name='valider_choix_etab' value='Valider' /></p>\n";
-				echo "<table align='center' border='1'>\n";
+				echo "<table align='center' class='boireaus' border='1'>\n";
 				echo "<tr>\n";
 				echo "<td><input type='radio' name='reg_etab' value='' /></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>RNE</b></td>\n";
@@ -1225,9 +1243,12 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 				echo "</tr>\n";
 
 				$cpt=1;
+				$alt=1;
 				while($lig_etab=mysql_fetch_object($call_etab)){
-					if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
-					echo "<tr>\n";
+					//if($cpt%2==0){$couleur="silver";}else{$couleur="white";}
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					/*
 					echo "<td style='text-align:center; background-color:$couleur;'><input type='radio' name='reg_etab' value='$lig_etab->id' ";
 					if($lig_etab->id==$id_etab){
 						echo "checked ";
@@ -1239,6 +1260,18 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 					echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->nom</td>\n";
 					echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->cp</td>\n";
 					echo "<td style='text-align:center; background-color:$couleur;'>$lig_etab->ville</td>\n";
+					*/
+					echo "<td><input type='radio' name='reg_etab' value='$lig_etab->id' ";
+					if($lig_etab->id==$id_etab){
+						echo "checked ";
+					}
+					echo "onchange='changement();' /></td>";
+					echo "<td><a href='../etablissements/modify_etab.php?id=$lig_etab->id' target='_blank'>$lig_etab->id</a></td>\n";
+					echo "<td>$lig_etab->niveau</td>\n";
+					echo "<td>$lig_etab->type</td>\n";
+					echo "<td>$lig_etab->nom</td>\n";
+					echo "<td>$lig_etab->cp</td>\n";
+					echo "<td>$lig_etab->ville</td>\n";
 
 					echo "</tr>\n";
 					$cpt++;
@@ -1585,7 +1618,7 @@ echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
    //echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro GEP. Vous ne pourrez pas importer les absences à partir des fichiers GEP pour cet élèves.</font>\n";
-   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (<i>elenoet</i>). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
+   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (<i>elenoet</i>). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.<br />Vous ne pourrez pas définir l'établissement d'origine de l'élève.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
@@ -1963,20 +1996,23 @@ if(isset($eleve_login)){
 
 
 
-if(isset($eleve_login)){
+//if(isset($eleve_login)){
+if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 
 	echo "<br />\n";
 	echo "<hr />\n";
 
 	echo "<h3>Etablissement d'origine</h3>\n";
 
-	$sql="SELECT * FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
+	//$sql="SELECT * FROM j_eleves_etablissements WHERE id_eleve='$eleve_login'";
+	$sql="SELECT * FROM j_eleves_etablissements WHERE id_eleve='$reg_no_gep'";
 	$res_etab=mysql_query($sql);
 	if(mysql_num_rows($res_etab)==0) {
 		echo "<p>L'établissement d'origine de l'élève n'est pas renseigné.";
 		if($_SESSION['statut']!="professeur") {
 			echo "<br />\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+			//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 			if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 			if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 			if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
@@ -1993,6 +2029,7 @@ if(isset($eleve_login)){
 			}
 			else{
 				echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+				//echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 				if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 				if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 				if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
@@ -2009,6 +2046,7 @@ if(isset($eleve_login)){
 					echo "<br />\n";
 
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
@@ -2036,6 +2074,7 @@ if(isset($eleve_login)){
 				if($_SESSION['statut']!="professeur") {
 					echo "<br />\n";
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
+					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}

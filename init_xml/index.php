@@ -87,6 +87,17 @@ require_once("../lib/header.inc");
 	<p>Elèves: <a href='lecture_xml_sconet.php'>Générer les fichiers CSV à partir des exports XML de Sconet</a>.</p>
 </li>
 <li>
+
+	<?php
+	//==================================
+	// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+	//==================================
+	if($gepiSchoolRne=="") {
+		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	}
+	?>
+
 	<p>Pour procéder aux importations:</p>
 	<ul>
 		<li><p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves,  de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>ELEVES.CSV</b> est requis.</p></li>

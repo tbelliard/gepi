@@ -308,7 +308,8 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
     $tab["j_eleves_etablissements"][1] = "etablissements"; // 2ème table
     $tab["j_eleves_etablissements"][2] = "id_eleve"; // nom du champ de la table de liaison lié à la première table
     $tab["j_eleves_etablissements"][3] = "id_etablissement";  // nom du champ de la table de liaison lié à la deuxième table
-    $tab["j_eleves_etablissements"][4] = "login";  // nom du champ de la première table lié à la table de liaison
+    //$tab["j_eleves_etablissements"][4] = "login";  // nom du champ de la première table lié à la table de liaison
+    $tab["j_eleves_etablissements"][4] = "elenoet";  // nom du champ de la première table lié à la table de liaison
     $tab["j_eleves_etablissements"][5] = "id";  // nom du champ de la deuxième table lié à la table de liaison
 
     $tab["j_eleves_regime"][0] = "eleves"; //1ère table

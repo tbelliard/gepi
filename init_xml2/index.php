@@ -71,6 +71,17 @@ require_once("../lib/header.inc");
 		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers 'ElevesAvecAdresses.xml', 'Nomenclature.xml' et 'ResponsablesAvecAdresses.xml'.</p>
 		<p>Le dernier, 'sts_emp_RNE_ANNEE.xml', doit être récupéré depuis l'application STS/web.<br />
 		Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer le parcours suivant: 'Mise à jour/Exports/Emplois du temps'</p>
+
+		<?php
+		//==================================
+		// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+		$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+		//==================================
+		if($gepiSchoolRne=="") {
+			echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+		}
+		?>
+
 		<ul>
 			<li>
 				<p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves, de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>) et le fichier <b>Nomenclature.xml</b> sont requis.<br />

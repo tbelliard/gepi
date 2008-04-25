@@ -125,18 +125,21 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		$nombreligne = mysql_num_rows($calldata);
 		$i = 0;
 		$liste_cible = '';
+		$liste_cible2 = '';
 		while ($i < $nombreligne){
 			$eleve_login = mysql_result($calldata, $i, "login");
+			$eleve_elenoet = mysql_result($calldata, $i, "elenoet");
 			$delete_login = 'delete_'.$eleve_login;
 			$del_eleve = isset($_POST[$delete_login])?$_POST[$delete_login]:NULL;
 			if ($del_eleve == 'yes') {
 				$liste_cible = $liste_cible.$eleve_login.";";
+				$liste_cible2 = $liste_cible2.$eleve_elenoet.";";
 			}
 		$i++;
 		}
 		//header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&amp;action=del_eleve");
 		if($liste_cible!=''){
-			header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&action=del_eleve");
+			header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&liste_cible2=$liste_cible2&action=del_eleve");
 		}
 	}
 }

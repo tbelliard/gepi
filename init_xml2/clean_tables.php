@@ -204,6 +204,33 @@ echo "</form>\n";
 	if ($sup == 'no') {
 		echo "<p>Aucun responsable n'a été supprimé !</p>\n";
 	}
+
+	//Suppression des données inutiles dans la table j_eleves_etablissements
+	echo "<h3 class='gepi'>Vérification des données concernant l'établissement d'origine des élèves</h3>\n";
+
+	//SELECT e.* FROM eleves e LEFT JOIN j_eleves_etablissements jec ON jec.id_eleve=e.elenoet WHERE jec.id_eleve is NULL;
+	//SELECT jec.* FROM j_eleves_etablissements jec LEFT JOIN eleves e ON jec.id_eleve=e.elenoet WHERE e.elenoet IS NULL;
+	$sql="SELECT jec.* FROM j_eleves_etablissements jec
+			LEFT JOIN eleves e ON jec.id_eleve=e.elenoet
+			WHERE e.elenoet IS NULL;";
+	$res_jee=mysql_query($sql);
+	if(mysql_num_rows($res_jee)==0) {
+		echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
+	}
+	else {
+		$cpt_suppr_jee=0;
+		while($lig_jee=mysql_fetch_object($res_jee)) {
+			$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
+			$suppr=mysql_query($sql);
+			if($suppr) {
+				$cpt_suppr_jee++;
+			}
+		}
+		echo "<p>$cpt_suppr_jee association(s) élève/établissement a(ont) été supprimée(s).<br />(<i>pour des élèves qui ne sont plus dans l'établissement</i>).</p>\n";
+	}
+
+
+	echo "<p><br /></p>\n";
 	//echo "<p>Fin de la procédure !</p>";
 	echo "<p>Fin de la procédure d'importation!</p>\n";
 

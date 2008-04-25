@@ -1403,8 +1403,11 @@ echo "'>\n";
 
 		//echo "getSettingValue(\"activer_photo_bulletin\")=".getSettingValue("activer_photo_bulletin")."<br />";
 		//echo "getSettingValue(\"active_module_trombinoscopes\")=".getSettingValue("active_module_trombinoscopes")."<br />";
+
+		$current_eleve_elenoet=mysql_result($appel_liste_eleves, $i, "elenoet");
 		if (getSettingValue("activer_photo_bulletin")=='y' and getSettingValue("active_module_trombinoscopes")=='y') {
-			$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
+			//$current_eleve_idphoto=mysql_result($appel_liste_eleves, $i, "elenoet");
+			$current_eleve_idphoto=$current_eleve_elenoet;
 			//$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
 			$photo=nom_photo($current_eleve_idphoto);
 			//echo "$photo";
@@ -1483,7 +1486,8 @@ echo "'>\n";
 		}
 
 		if($bull_affiche_etab=="y"){
-			$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
+			//$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement) ");
+			$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_elenoet."' AND e.id = j.id_etablissement) ");
 			$current_eleve_etab_id = @mysql_result($data_etab, 0, "id");
 			$current_eleve_etab_nom = @mysql_result($data_etab, 0, "nom");
 			$current_eleve_etab_niveau = @mysql_result($data_etab, 0, "niveau");

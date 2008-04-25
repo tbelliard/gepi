@@ -6143,6 +6143,75 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 
 	//==========================================================
 
+	$result .= "<br />Contrôle de la conversion de la table 'j_eleves_etablissements': ";
+
+	$sql="SELECT 1=1 FROM setting WHERE name='conversion_j_eleves_etablissements';";
+	$test_conv=mysql_query($sql);
+	if(mysql_num_rows($test_conv)>0) {
+		$result .= "<font color=\"blue\">Déjà effectuée !</font><br />";
+		//echo "<p>La conversion a déjà été effectuée.</p>\n";
+	}
+	else {
+		$cpt_correction_ok=0;
+		$cpt_correction_err=0;
+		$cpt_nettoyage_ok=0;
+		$cpt_nettoyage_err=0;
+
+		$result .= "<br />Remplacement du LOGIN par l'ELENOET dans la table 'j_eleves_etablissements': ";
+
+		$sql="SELECT id_eleve FROM j_eleves_etablissements;";
+		$res_ele_etab=mysql_query($sql);
+		if(mysql_num_rows($res_ele_etab)>0) {
+			while($lig_ee=mysql_fetch_object($res_ele_etab)) {
+				$sql="SELECT elenoet FROM eleves WHERE login='$lig_ee->id_eleve';";
+				$test_ele=mysql_query($sql);
+				if(mysql_num_rows($test_ele)>0) {
+					$lig_ele=mysql_fetch_object($test_ele);
+					if($lig_ele->elenoet!="") {
+						$sql="UPDATE j_eleves_etablissements SET id_eleve='$lig_ele->elenoet' WHERE id_eleve='$lig_ee->id_eleve';";
+						$correction=mysql_query($sql);
+						if($correction) {
+							$cpt_correction_ok++;
+						}
+						else {
+							$cpt_correction_err++;
+						}
+					}
+				}
+				else {
+					// On a une scorie: élève qui n'est plus dans la table 'eleves'
+					$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig_ee->id_eleve';";
+					$nettoyage=mysql_query($sql);
+					if($nettoyage) {
+						$cpt_nettoyage_ok++;
+					}
+					else {
+						$cpt_nettoyage_err++;
+					}
+				}
+			}
+		}
+
+		$result .= "<p>Résultat des conversions:</p>\n";
+		$result .= "<table class='boireaus' border='1'>\n";
+		$result .= "<tr><th>&nbsp;</th><th>Succès</th><th>Echec</th></tr>\n";
+		$result .= "<tr><th>Conversion</th><td>$cpt_correction_ok</td><td>$cpt_correction_err</td></tr>\n";
+		$result .= "<tr><th>Suppression de scories</th><td>$cpt_nettoyage_ok</td><td>$cpt_nettoyage_err</td></tr>\n";
+		$result .= "</table>\n";
+
+		$sql="INSERT INTO setting SET name='conversion_j_eleves_etablissements', value='effectuee';";
+		$res_temoin=mysql_query($sql);
+		if($res_temoin) {
+			$result .= "<p>Mise en place d'un témoin indiquant que la conversion est effectuée.</p>\n";
+		}
+		else {
+			$result .= "<p>ECHEC de la mise en place d'un témoin indiquant que la conversion est effectuée.</p>\n";
+		}
+
+	}
+
+	//==========================================================
+
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
