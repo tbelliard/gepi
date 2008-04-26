@@ -123,11 +123,14 @@ $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['st
 
 //$style_specifique="responsables/maj_import2";
 
+$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 if(isset($step)) {
 	if(($step==0)||
@@ -1350,8 +1353,44 @@ else{
 										e.no_gep!=t.ELENONAT
 									)
 									AND e.ele_id='$tab_ele_id[$i]';";
+				//echo "$sql<br />";
+				//$reserve_sql=$sql;
 				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0){
+
+				$temoin_chgt_ancien_etab="n";
+				if ($gepiSchoolRne!="") {
+					// Ancien établissement précédemment enregistré
+					$sql="SELECT id_etablissement FROM j_eleves_etablissements jee, eleves e WHERE jee.id_eleve=e.elenoet AND e.elenoet!='' AND e.ele_id='".$tab_ele_id[$i]."';";
+					//echo "$sql<br />";
+					$test_ee=mysql_query($sql);
+					if(mysql_num_rows($test_ee)>0) {
+						$lig_ee=mysql_fetch_object($test_ee);
+						$rne_ancien_etab=$lig_ee->id_etablissement;
+					}
+					else {
+						$rne_ancien_etab="";
+					}
+
+					// Test de modification de l'ancien établissement
+					$sql="SELECT ETOCOD_EP FROM temp_gep_import2 t WHERE t.ELE_ID='".$tab_ele_id[$i]."' AND t.ETOCOD_EP!='';";
+					//echo "$sql<br />";
+					$test_nouvel_ancien_etb=mysql_query($sql);
+					if(mysql_num_rows($test_nouvel_ancien_etb)>0) {
+						$lig_nee=mysql_fetch_object($test_nouvel_ancien_etb);
+						$rne_ancien_etab2=$lig_nee->ETOCOD_EP;
+					}
+					else {
+						$rne_ancien_etab2="";
+					}
+
+					if((strtolower($rne_ancien_etab)!=strtolower($rne_ancien_etab2))&&(strtolower($rne_ancien_etab2)!=strtolower($gepiSchoolRne))) {
+						$temoin_chgt_ancien_etab="y";
+						//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
+					}
+				}
+
+				//if(mysql_num_rows($test)>0) {
+				if((mysql_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")) {
 					if($cpt==0){
 						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 						echo "<br />\n";
@@ -1360,9 +1399,15 @@ else{
 					else{
 						echo ", ";
 					}
-					$lig=mysql_fetch_object($test);
-					echo "<input type='hidden' name='tab_ele_id_diff[]' value='$lig->ele_id' />\n";
-					echo $lig->ele_id;
+					// $lig->ele_id n'est pas affecté dans le cas où on n'a repéré qu'un changement dans l'établissement précédent.
+					//if(mysql_num_rows($test)>0) {$lig=mysql_fetch_object($test);}
+					//echo "<input type='hidden' id='c' name='tab_ele_id_diff[]' value='$lig->ele_id' />\n";
+					//echo $lig->ele_id;
+					echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+					echo $tab_ele_id[$i];
+
+					//echo "$reserve_sql<br/>";
+					//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
 					flush();
 					$cpt++;
 				}
@@ -1554,7 +1599,11 @@ else{
 					}
 				}
 
+				// Dédoublonnage
+				//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
 				$tab_ele_id_diff=array_unique($tab_ele_id_diff);
+				//echo "<p>Après array_unique():<br />";
+				//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
 
 				/*
 				if(!isset($parcours_diff)){
@@ -1562,7 +1611,7 @@ else{
 				}
 				*/
 				$nblignes=min($eff_tranche,count($tab_ele_id_diff));
-
+				//echo "\$nblignes=$nblignes<br />";
 
 
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
@@ -1592,7 +1641,7 @@ else{
 				//echo "<tr style='background-color: rgb(150, 200, 240);'>\n";
 				echo "<tr>\n";
 				//echo "<td style='text-align: center; font-weight: bold;'>Enregistrer<br />\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Modifier<br />\n";
+				echo "<th>Modifier<br />\n";
 
 				echo "<a href=\"javascript:modifcase('coche')\">";
 				echo "<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
@@ -1600,19 +1649,20 @@ else{
 				echo "<a href=\"javascript:modifcase('decoche')\">";
 				echo "<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
-				echo "</td>\n";
+				echo "</th>\n";
 
-				echo "<td style='text-align: center; font-weight: bold;'>Statut</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>elenoet</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>ele_id</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Nom</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Prénom</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Sexe</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Naissance</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Doublement</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>N°NAT</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Régime</td>\n";
-				echo "<td style='text-align: center; font-weight: bold;'>Classe</td>\n";
+				echo "<th>Statut</th>\n";
+				echo "<th>elenoet</th>\n";
+				echo "<th>ele_id</th>\n";
+				echo "<th>Nom</th>\n";
+				echo "<th>Prénom</th>\n";
+				echo "<th>Sexe</th>\n";
+				echo "<th>Naissance</th>\n";
+				echo "<th>Doublement</th>\n";
+				echo "<th>N°NAT</th>\n";
+				echo "<th>Régime</th>\n";
+				echo "<th>Classe</th>\n";
+				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
 				$cpt=0;
 				$cpt_modif=0;
@@ -1628,7 +1678,7 @@ else{
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
-						echo "<tr><td>ele_id=$tab_ele_id_diff[$w] non trouvé dans 'temp_gep_import2' ???</td></tr>\n";
+						echo "<tr><td colspan='13' style='text-align:left;'>ele_id=\$tab_ele_id_diff[$w]='$tab_ele_id_diff[$w]' non trouvé dans 'temp_gep_import2' ???</td></tr>\n";
 					}
 					else{
 						$lig=mysql_fetch_object($res1);
@@ -1645,6 +1695,8 @@ else{
 						$affiche[7]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELENONAT))));
 						$affiche[8]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEREG))));
 						$affiche[9]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->DIVCOD))));
+
+						$affiche[10]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ETOCOD_EP))));
 
 						//if(trim($ligne)!=""){
 							//$tabligne=explode(";",$ligne);
@@ -1773,6 +1825,23 @@ else{
 								// Rechercher s'il y a un changement de classe?
 
 
+								// Rechercher s'il y a un changement dans l'établissement d'origine
+								$sql="SELECT id_etablissement FROM j_eleves_etablissements jee WHERE jee.id_eleve='$lig_ele->elenoet';";
+								$res_ee=mysql_query($sql);
+								if(mysql_num_rows($res_ee)>0) {
+									$lig_ee=mysql_fetch_object($res_ee);
+									$rne_etab_prec=$lig_ee->id_etablissement;
+								}
+								else {
+									$rne_etab_prec="";
+								}
+
+								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+									if(strtolower($affiche[10])!=strtolower($rne_etab_prec)) {
+										$temoin_modif='y';
+										$cpt_modif++;
+									}
+								}
 							}
 							else{
 								$temoin_nouveau='y';
@@ -1785,6 +1854,7 @@ else{
 								// TRANSMETTRE VIA UN FORMULAIRE POUR PROCEDER AUX AJOUTS, ET POUR LES eleves ENCHAINER AVEC LE CHOIX DE CLASSE ET D'OPTIONS
 							}
 
+							//echo "<tr><td>$k</td><td>\$temoin_modif=$temoin_modif</td><td>\$temoin_nouveau=$temoin_nouveau</td></tr>";
 
 							if($temoin_modif=='y'){
 								//echo "<tr style='background-color:green;'>\n";
@@ -1959,6 +2029,44 @@ else{
 								echo "$affiche[9]";
 								echo "</td>\n";
 
+
+
+
+								$sql="SELECT id_etablissement FROM j_eleves_etablissements WHERE id_eleve='$lig_ele->elenoet';";
+								$res_ee=mysql_query($sql);
+								if(mysql_num_rows($res_ee)) {
+									$lig_ee=mysql_fetch_object($res_ee);
+									$rne_ancien_etab=$lig_ee->id_etablissement;
+								}
+								else {
+									$rne_ancien_etab="";
+								}
+
+								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+									echo "<td";
+									if($rne_ancien_etab!=$affiche[10]){
+										echo " class='modif'>";
+										if($rne_ancien_etab!=''){
+											echo "$rne_ancien_etab <font color='red'>-&gt;</font>\n";
+										}
+									}
+									else{
+										echo ">";
+									}
+									echo "$affiche[10]";
+									echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
+									echo "</td>\n";
+								}
+								else {
+									echo "<td>";
+									//echo "$affiche[10]";
+									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
+									echo "&nbsp;";
+									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='' />\n";
+									echo "</td>\n";
+								}
+
+
 								echo "</tr>\n";
 							}
 							elseif($temoin_nouveau=='y'){
@@ -2081,6 +2189,19 @@ else{
 								echo "<td style='text-align: center;'>";
 								echo "$affiche[9]";
 								echo "</td>\n";
+
+
+								echo "<td style='text-align: center;'>";
+								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+									echo "$affiche[10]";
+									echo "<input type='hidden' name='new_".$cpt."_id_etab' value='$affiche[10]' />\n";
+								}
+								else {
+									echo "&nbsp;";
+									//echo "<input type='hidden' name='new_".$cpt."_id_etab' value='' />\n";
+								}
+								echo "</td>\n";
+
 
 								echo "</tr>\n";
 							}
@@ -2234,6 +2355,25 @@ else{
 					if(!$res2){
 						echo " <span style='color:red;'>(*)</span>";
 						$erreur++;
+					}
+
+					if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
+						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+						$test_ee=mysql_query($sql);
+						if(mysql_num_rows($test_ee)>0) {
+							if($lig->ETOCOD_EP!="") {
+								$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
+								$update_ee=mysql_query($sql);
+							}
+							else {
+								$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
+								$del_ee=mysql_query($sql);
+							}
+						}
+						else {
+							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$lig->ELENOET', id_etablissement='$lig->ETOCOD_EP';";
+							$insert_ee=mysql_query($sql);
+						}
 					}
 
 					$cpt++;

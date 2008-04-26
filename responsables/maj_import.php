@@ -57,6 +57,15 @@ echo "<li><a href='maj_import1.php'>Ancienne méthode</a>: En générant des fichie
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 
+//==================================
+// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+//==================================
+if($gepiSchoolRne=="") {
+	echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	echo "<p><br /></p>\n";
+}
+
 $sql="SELECT 1=1 FROM eleves;";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0){
