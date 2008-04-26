@@ -65,6 +65,16 @@ require_once("../lib/header.inc");
 	</ul>
 </li>
 <li>
+	<?php
+	//==================================
+	// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+	//==================================
+	if($gepiSchoolRne=="") {
+		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	}
+	?>
+
 	<p>L'initialisation s'effectue en quatre phases, chacune nécessitant un fichier GEP particulier <b>ou des CSV</b>:</p>
 	<ul>
 		<li><p>Vous devez disposer des fichiers F_ELE.DBF et F_ERE.DBF générés par l'AutoSco.<br />
