@@ -56,7 +56,18 @@ require_once("../lib/header.inc");
 - les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
 - Les données relatives aux différents types d'AID.<br />&nbsp;</p></li>
 
-<li><p>L'initialisation s'effectue en plusieurs phases successives, chacune nécessitant un fichier CSV spécifique, que vous devrez fournir au bon format :</p>
+<li>
+	<?php
+	//==================================
+	// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+	//==================================
+	if($gepiSchoolRne=="") {
+		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	}
+	?>
+
+	<p>L'initialisation s'effectue en plusieurs phases successives, chacune nécessitant un fichier CSV spécifique, que vous devrez fournir au bon format :</p>
     <ul>
     <li><p><a href='eleves.php'>Procéder à la première phase</a> d'importation des élèves. <b>g_eleves.csv</b> est requis.
     	<br/>Il doit contenir, dans l'ordre les champs suivants :

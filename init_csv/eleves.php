@@ -62,7 +62,11 @@ $liste_tables_del = array(
 "j_aid_utilisateurs",
 "j_aid_utilisateurs_gest",
 "j_eleves_classes",
-"j_eleves_etablissements",
+//==========================
+// On ne vide plus la table chaque année
+// Problème avec Sconet qui récupère seulement l'établissement de l'année précédente qui peut être l'établissement courant
+//"j_eleves_etablissements",
+//==========================
 "j_eleves_professeurs",
 "j_eleves_regime",
 "j_eleves_groupes",
@@ -93,6 +97,12 @@ $liste_tables_del = array(
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+//==================================
+// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+//==================================
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -273,12 +283,61 @@ if (!isset($_POST["action"])) {
                     $total++;
 
                     // On enregistre l'établissement d'origine, le régime, et si l'élève est redoublant
-                    $insert2 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve = '" . $reg_login . "', id_etablissement = '" . $reg_etab_prec . "'");
+					//============================================
+					if (($reg_etab_prec != '')&&($reg_id_int != '')) {
+						/*
+							$insert2 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve = '" . $reg_login . "', id_etablissement = '" . $reg_etab_prec . "'");
 
-                    if (!$insert2) {
-                        $error++;
-                        echo mysql_error();
-                    }
+							if (!$insert2) {
+								$error++;
+								echo mysql_error();
+							}
+						*/
+
+						if($gepiSchoolRne!="") {
+							if($gepiSchoolRne!=$reg_etab_prec) {
+								$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_id_int';";
+								$test_etab=mysql_query($sql);
+								if(mysql_num_rows($test_etab)==0){
+									$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_id_int', id_etablissement='$reg_etab_prec';";
+									$insert_etab=mysql_query($sql);
+									if (!$insert_etab) {
+										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+										$error++;
+										echo mysql_error();
+									}
+								}
+								else {
+									$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab_prec' WHERE id_eleve='$reg_id_int';";
+									$update_etab=mysql_query($sql);
+									if (!$update_etab) {
+										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+										$error++;
+										echo mysql_error();
+									}
+								}
+							}
+						}
+						else {
+							// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
+							// Il suffira de faire un
+							//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
+							// une fois le RNE renseigné.
+							$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_id_int';";
+							$test_etab=mysql_query($sql);
+							if(mysql_num_rows($test_etab)==0){
+								$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_id_int', id_etablissement='$reg_etab_prec';";
+								$insert_etab=mysql_query($sql);
+								if (!$insert_etab) {
+									//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
+									$error++;
+									echo mysql_error();
+								}
+							}
+						}
+
+					}
+					//============================================
 
                     if ($reg_double == "OUI") {
                         $reg_double = "R";
