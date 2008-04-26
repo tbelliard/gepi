@@ -2340,46 +2340,143 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 function debug_var(){
 	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
-	echo "<p>Variables envoyées en POST:</p>\n";
+
+	$cpt_debug=0;
+
+	echo "<p><b>Variables transmises en POST, GET, SESSION,...</b> (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)</p>\n";
+
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
+
+	echo "<p>Variables envoyées en POST: ";
+	if(count($_POST)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
 	echo "<blockquote>\n";
-	echo "<table>";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
+
+	echo "<script type='text/javascript'>
+	tab_etat_debug_var=new Array();
+
+	function affiche_debug_var(id,mode) {
+		if(document.getElementById(id)) {
+			if(mode==1) {
+				document.getElementById(id).style.display='';
+			}
+			else {
+				document.getElementById(id).style.display='none';
+			}
+		}
+	}
+</script>\n";
+
+	echo "<table>\n";
 	foreach($_POST as $post => $val){
 		//echo "\$_POST['".$post."']=".$val."<br />\n";
-		echo "<tr><td>\$_POST['".$post."']=</td><td>".$val."</td></tr>\n";
+		//echo "<tr><td>\$_POST['".$post."']=</td><td>".$val."</td></tr>\n";
+		echo "<tr><td valign='top'>\$_POST['".$post."']=</td><td>".$val;
+
+		if(is_array($_POST[$post])) {
+			echo " (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+			echo "<table id='container_debug_var_$cpt_debug'>\n";
+			foreach($_POST[$post] as $key => $value) {
+				echo "<tr><td>\$_POST['$post'][$key]=</td><td>$value</td></tr>\n";
+			}
+			echo "</table>\n";
+			//echo "<script type='text/javascript'>affiche_debug_var('debug_var_$post',tab_etat_debug_var[$cpt_debug]);</script>\n";
+			$cpt_debug++;
+		}
+
+		echo "</td></tr>\n";
 	}
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</blockquote>\n";
 
-	echo "<p>Variables envoyées en GET:</p>\n";
+
+	echo "<p>Variables envoyées en GET: ";
+	if(count($_GET)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
 	echo "<blockquote>\n";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
 	echo "<table>";
 	foreach($_GET as $get => $val){
 		//echo "\$_GET['".$get."']=".$val."<br />\n";
 		echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
 	}
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</blockquote>\n";
 
-	echo "<p>Variables envoyées en SESSION:</p>\n";
+
+	echo "<p>Variables envoyées en SESSION: ";
+	if(count($_SESSION)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
 	echo "<blockquote>\n";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
 	echo "<table>";
 	foreach($_SESSION as $variable => $val){
 		//echo "\$_SESSION['".$variable."']=".$val."<br />\n";
 		echo "<tr><td>\$_SESSION['".$variable."']=</td><td>".$val."</td></tr>\n";
 	}
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</blockquote>\n";
 
-	echo "<p>Variables envoyées en SERVER:</p>\n";
+
+	echo "<p>Variables envoyées en SERVER: ";
+	if(count($_SERVER)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
 	echo "<blockquote>\n";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
 	echo "<table>";
 	foreach($_SERVER as $variable => $valeur){
 		//echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
 		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";
 	}
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</blockquote>\n";
 
+
+	echo "<script type='text/javascript'>
+	// On masque le cadre de debug au chargement:
+	//affiche_debug_var('container_debug_var',var_debug_var_etat);
+
+	//for(i=0;i<tab_etat_debug_var.length;i++) {
+	for(i=0;i<$cpt_debug;i++) {
+		if(document.getElementById('container_debug_var_'+i)) {
+			affiche_debug_var('container_debug_var_'+i,-1);
+		}
+		// Variable destinée à alterner affichage/masquage
+		tab_etat_debug_var[i]=-1;
+	}
+</script>\n";
+
+	echo "</div>\n";
 	echo "</div>\n";
 }
 
