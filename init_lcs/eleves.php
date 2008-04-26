@@ -59,7 +59,11 @@ $liste_tables_del = array(
 "j_aid_utilisateurs",
 "j_aid_utilisateurs_gest",
 "j_eleves_classes",
-"j_eleves_etablissements",
+//==========================
+// On ne vide plus la table chaque année
+// Problème avec Sconet qui récupère seulement l'établissement de l'année précédente qui peut être l'établissement courant
+//"j_eleves_etablissements",
+//==========================
 "j_eleves_professeurs",
 "j_eleves_regime",
 //"j_professeurs_matieres",
