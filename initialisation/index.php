@@ -60,7 +60,18 @@ require_once("../lib/header.inc");
 - les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
 - Les données relatives aux différents types d'AID.<br />&nbsp;</p></li>
 
-<li><p>L'initialisation s'effectue en quatre phases, chacune nécessitant un fichier GEP particulier :</p>
+<li>
+	<?php
+	//==================================
+	// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+	$gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+	//==================================
+	if($gepiSchoolRne=="") {
+		echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	}
+	?>
+
+	<p>L'initialisation s'effectue en quatre phases, chacune nécessitant un fichier GEP particulier :</p>
     <ul>
     <li><p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves,  de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>F_ELE.DBF</b> est requis.<br />&nbsp;</p></li>
     <li><p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>F_ERE.DBF</b> est requis.<br />&nbsp;</p></li>

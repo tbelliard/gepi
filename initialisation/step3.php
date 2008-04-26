@@ -112,9 +112,47 @@ if (isset($is_posted) and ($is_posted == "yes")) {
             $j++;
         }
 
-        if ($reg_etab != '') {
-            $register = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve='$reg_login',id_etablissement='$reg_etab'");
-            if (!$register) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.";
+        //if ($reg_etab != '') {
+        if (($reg_etab != '')&&($reg_elenoet != '')) {
+            //$register = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve='$reg_login',id_etablissement='$reg_etab'");
+            //if (!$register) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+
+			if($gepiSchoolRne!="") {
+				if($gepiSchoolRne!=$reg_etab) {
+					$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
+					$test_etab=mysql_query($sql);
+					if(mysql_num_rows($test_etab)==0){
+						$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
+						$insert_etab=mysql_query($sql);
+						if (!$insert_etab) {
+							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+						}
+					}
+					else {
+						$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
+						$update_etab=mysql_query($sql);
+						if (!$update_etab) {
+							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+						}
+					}
+				}
+			}
+			else {
+				// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
+				// Il suffira de faire un
+				//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
+				// une fois le RNE renseigné.
+				$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
+				$test_etab=mysql_query($sql);
+				if(mysql_num_rows($test_etab)==0){
+					$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
+					$insert_etab=mysql_query($sql);
+					if (!$insert_etab) {
+						echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+					}
+				}
+			}
+
         }
         $i++;
     }
