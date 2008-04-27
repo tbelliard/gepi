@@ -230,7 +230,7 @@ if (isset($_POST['addressblock_padding_text'])) {
 if (isset($_POST['addressblock_length'])) {
 
     if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_length']))) {
-        $_POST['addressblock_padding_text'] = 0;
+        $_POST['addressblock_length'] = 0;
     }
     if (!saveSetting("addressblock_length", $_POST['addressblock_length'])) {
         $msg .= "Erreur lors de l'enregistrement de addressblock_length !";
