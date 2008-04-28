@@ -289,14 +289,14 @@ if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
     $tab["j_aid_utilisateurs"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
     $tab["j_aid_utilisateurs"][4] = "id";  // nom du champ de la première table lié à la table de liaison
     $tab["j_aid_utilisateurs"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
-
+if (getSettingValue("active_version152")=="y") {
     $tab["j_aid_utilisateurs_gest"][0] = "aid"; //1ère table
     $tab["j_aid_utilisateurs_gest"][1] = "utilisateurs"; // 2ème table
     $tab["j_aid_utilisateurs_gest"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
     $tab["j_aid_utilisateurs_gest"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
     $tab["j_aid_utilisateurs_gest"][4] = "id";  // nom du champ de la première table lié à la table de liaison
     $tab["j_aid_utilisateurs_gest"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
-
+}
     $tab["j_aidcateg_utilisateurs"][0] = "aid_config"; //1ère table
     $tab["j_aidcateg_utilisateurs"][1] = "utilisateurs"; // 2ème table
     $tab["j_aidcateg_utilisateurs"][2] = "indice_aid"; // nom du champ de la table de liaison lié à la première table
