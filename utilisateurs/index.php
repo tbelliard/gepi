@@ -326,7 +326,8 @@ $calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
 		"statut = 'professeur' OR " .
 		"statut = 'scolarite' OR " .
 		"statut = 'cpe' OR " .
-		"statut = 'secours') " .
+		"statut = 'secours' OR " .
+		"statut = 'autre') " .
 		"ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
 $i = 0;
@@ -467,24 +468,34 @@ while ($i < $nombreligne){
 	    echo "<tr class='lig$alt' style='background-color: slategray'>\n";
 	}
 
-	echo "<td><p class=small><span class=bold>{$col[$i][1]}</span></p></td>\n";
+	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span></p></td>\n";
 	if ($col[$i][7] == "professeur") {
-		echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
+		echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
 		//echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
 		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' title='Créer un remplaçant' /></a>";
 		echo "</td>\n";
 	} else {
-	  echo "<td><p class=small><span class=bold><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
+	  echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
 	}
-    echo "<td><p class=small><span class=bold>{$col[$i][3]}</span></p></td>\n";
-    echo "<td><p class=small><span class=bold>{$col[$i][4]}</span></p></td>\n";
-    echo "<td><p class=small><span class=bold>{$col[$i][5]}</span></p></td>\n";
+    echo "<td><p class='small'><span class='bold'>{$col[$i][3]}</span></p></td>\n";
+    // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut privé
+    if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
+    	// On récupère son statut privé
+		$query_s = mysql_query("SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
+		$special = mysql_result($query_s, "nom_statut");
+
+		echo "<td><p class='small'><span class='bold'>Statut privé : ".$special."</span></p></td>\n";
+    }else{
+	    echo "<td><p class='small'><span class='bold'>{$col[$i][4]}</span></p></td>\n";
+	}
+
+    echo "<td><p class='small'><span class='bold'>{$col[$i][5]}</span></p></td>\n";
     // Affichage de la classe suivie
-    echo "<td><p class=small><span class=bold>{$col[$i][6]}</span></p></td>\n";
+    echo "<td><p class='small'><span class='bold'>{$col[$i][6]}</span></p></td>\n";
     // Affichage du lien 'supprimer'
-    echo "<td><p class=small><span class=bold><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
+    echo "<td><p class='small'><span class='bold'><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
     // Affichage du lien pour l'impression des paramètres
-    echo "<td><p class=small><span class=bold><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
+    echo "<td><p class='small'><span class='bold'><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
 
     // Affichage du téléchargement pour la photo si le module trombi est activé
 	if (getSettingValue("active_module_trombinoscopes")=='y') {

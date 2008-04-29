@@ -40,29 +40,53 @@ $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
 $nouveau_statut = isset($_POST["nouveau_statut"]) ? $_POST["nouveau_statut"] : NULL;
 $login_user = isset($_POST["login_user"]) ? $_POST["login_user"] : NULL;
 $statut_user = isset($_POST["statut_user"]) ? $_POST["statut_user"] : NULL;
-$msg = $msg2 = NULL;
+$msg = $msg2 = $msg3 = NULL;
 
 // Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
 $values_b = '';
 // droits généraux et communs à tous les utilisateurs
-$autorise = array('/accueil.php',
+$autorise[0] = array('/accueil.php',
 				'/utilisateurs/mon_compte.php',
 				'/gestion/contacter_admin.php',
 				'/gestion/info_gepi.php');
 // droits spécifiques sur les pages relatives aux droits possibles
-$notes = array('/cahier_notes/visu_releve_notes.php');
-$bull_simp = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
-$voir_absences = array('/mod_absences/gestion/voir_absences_viescolaire.php',
+$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
+$autorise[2] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
+$autorise[3] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
 						'/mod_absences/gestion/bilan_absences_quotidien.php',
 						'/mod_absences/gestion/bilan_absences_classe.php',
 						'/mod_absences/gestion/bilan_absences_quotidien_pdf.php',
 						'/mod_absences/lib/tableau.php',
 						'/mod_absences/lib/export_csv.php');
-$saisir_absences = array('/mod_absences/gestion/select.php',
+$autorise[4] = array('/mod_absences/gestion/select.php',
 						'/mod_absences/gestion/ajout_abs.php',
 						'/mod_absences/lib/liste_absences.php');
-$cdt = array('cahier_texte/see_all.php');
-$edt = array('/edt_organisation/index_edt.php');
+$autorise[5] = array('cahier_texte/see_all.php');
+$autorise[6] = array('/edt_organisation/index_edt.php');
+$autorise[7] = array('/tous_les_edt');
+
+//print_r($autorise);
+
+// Fonction qui permet d'afficher  le selected de l'affichage
+function verifChecked($id){
+
+	global $autorise;
+
+	for($i = 1 ; $i < 8 ; $i++){
+		// On récupère les droits de ce statut privé
+		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
+		$query_ds = mysql_query($sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
+		$rep = mysql_result($query_ds, "autorisation");
+
+		if ($rep == 'V') {
+			$retour[$i] = ' checked="checked"';
+		}else{
+			$retour[$i] = '';
+		}
+	}
+
+	return $retour;
+}
 
 if ($action == 'ajouter') {
 
@@ -91,10 +115,29 @@ if ($action == 'ajouter') {
 
 		if ($enregistre) {
 
-			// On enregistre les droits généraux adéquats
-			for($a = 0 ; $a < 4 ; $a ++){
-				$values_b .= '("", "'.$last_id.'", "'.$autorise[$a].'", "V")';
-				if ($a <= 2) {
+			// On enregistre les droits généraux adéquats avec la virgule qui va bien entre chaque value
+			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
+			// Pour ajouter des droits, il suffit d'ajouter des braches au tableau $autorise plus haut avec tous les fichiers utiles
+
+			for($a = 0 ; $a < 8 ; $a++){
+				$nbre = count($autorise[$a]);
+				// On met V pour les autorisations de base mais F pour les autres
+				if ($a != 0) {
+					$vf = 'F';
+				}else{
+					$vf = 'V';
+				}
+				for($c = 0 ; $c < $nbre ; $c++){
+
+					$values_b .= '("", "'.$last_id.'", "'.$autorise[$a][$c].'", "'.$vf.'")';
+
+					if ($c <= ($nbre - 2)) {
+						$values_b .= ', ';
+					}
+
+				}
+				// On ajoute une virgule entre chaque droit sauf à la fin
+				if ($a <= 6) {
 					$values_b .= ', ';
 				}
 			}
@@ -103,44 +146,81 @@ if ($action == 'ajouter') {
 			 										OR trigger_error('Impossible d\'enregistrer : '.$values.' : '.mysql_error(), E_USER_WARNING);
 
 			if ($autorise_b) {
-				$msg .= "<h3 class='green'>Ce statut est enregistr&eacute !</h3>";
+				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
 			}
 
 		}
 
 	}
 
-
 } // if ($action == 'ajouter')
 
 if ($action == 'modifier') {
 	// On initialise toutes les variables envoyées
 	$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
-	$query = mysql_query($sql);
+	$query = mysql_query($sql) OR trigger_error('Erreur '.$sql, E_USER_ERROR);
 	$nbre = mysql_num_rows($query);
 
 	for($a = 0; $a < $nbre; $a++){
 
 		$b = mysql_result($query, $a, "id");
 
-		$suppr[$a] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
-		$ne[$a] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
-		$bs[$a] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
-		$va[$a] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
-		$sa[$a] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
-		$cdt[$a] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
-		$ee[$a] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
-		$te[$a] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
+		$test[0][$a] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
+		$test[1][$a] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
+		$test[2][$a] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
+		$test[3][$a] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
+		$test[4][$a] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
+		$test[5][$a] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
+		$test[6][$a] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
+		$test[7][$a] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
+
+		//echo $ne[$a].$suppr[$a].'|a'.$a.'|b'.$b;
 
 		// On assure les différents traitements traitements
-		if ($suppr[$a] == 'on') {
+		if ($test[0][$a] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut : '.mysql_error(), E_USER_NOTICE);
-		}
 
+			// Il faut aussi effacer toutes les références à ce statut dans les autres tables
+			$sql_d = "DELETE FROM droits_utilisateurs WHERE id_statut = '".$b."'";
+			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.mysql_error(), E_USER_NOTICE);
+
+			$sql_d = "DELETE FROM droits_speciaux WHERE id_statut = '".$b."'";
+			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.mysql_error(), E_USER_NOTICE);
+
+		}else{
+			// On va vérifier les droits un par un
+			// ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
+			// cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
+
+			for($m = 1 ; $m < 8 ; $m++){
+
+				$nbre2 = count($autorise[$m]);
+				// On vérifie si le droit est coché ou non
+				if ($test[$m][$a] == 'on') {
+					$vf = 'V';
+				}else{
+					$vf = 'F';
+				}
+					// On n'oublie pas de mettre à jour tous les fichiers adéquats
+					for($i = 0 ; $i < $nbre2 ; $i++){
+						$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+						$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+
+						if (!$query_maj) {
+							$msg3 .= '<span class="red">Erreur</span>';
+						}
+					}
+			}
+		}
+	}
+	// On assure un message de confirmation si les modifications se sont bien passées
+	if ($msg3 === NULL) {
+		$msg3 .= '<p style="color: green">Les modifications sont bien enregistrées.</p>';
 	}
 }
+
 
 
 // On récupère tous les statuts nouveaux qui existent
@@ -151,16 +231,19 @@ $query = mysql_query($sql);
 if ($query) {
 	while($rep = mysql_fetch_array($query)){
 
+		// On vérifie s'il faut le cocher par défaut ou pas
+		$checked = verifChecked($rep["id"]);
+
 	$aff_tableau .= '
 	<tr style="border: 1px solid lightblue; text-align: center;">
 		<td style="font-weight: bold; color: red;">'.$rep["nom_statut"].'</td>
-		<td><input type="checkbox" name="ne|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="bs|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="va|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="sa|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="cdt|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="ee|'.$rep["id"].'" /></td>
-		<td><input type="checkbox" name="te|'.$rep["id"].'" /></td>
+		<td><input type="checkbox" name="ne|'.$rep["id"].'"'.$checked[1].' /></td>
+		<td><input type="checkbox" name="bs|'.$rep["id"].'"'.$checked[2].' /></td>
+		<td><input type="checkbox" name="va|'.$rep["id"].'"'.$checked[3].' /></td>
+		<td><input type="checkbox" name="sa|'.$rep["id"].'"'.$checked[4].' /></td>
+		<td><input type="checkbox" name="cdt|'.$rep["id"].'"'.$checked[5].' /></td>
+		<td><input type="checkbox" name="ee|'.$rep["id"].'"'.$checked[6].' /></td>
+		<td><input type="checkbox" name="te|'.$rep["id"].'"'.$checked[7].' /></td>
 		<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>
 	</tr>
 	<tr style="background-color: white;"><td colspan="9"></td></tr>';
@@ -242,7 +325,11 @@ if ($query) {
 <!-- Début de la page sur les statut privés -->
 
 <br />
-<?php echo $essai; ?>
+
+<p class="bold">
+<a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
+
 <?php echo $msg; ?>
 <p>Pour pouvoir donner un statut priv&eacute; &agrave; un utilisateur, il faut qu'il soit enregistrer avec le statut Gepi 'autre' lors de sa cr&eacute;ation
 (<a href="./modify_user.php">CREER UN UTILISATEUR</a>).
@@ -276,7 +363,7 @@ if ($query) {
 		<tr style="background-color: white;"><td colspan="9"></td></tr>
 	</tbody>
 	<tfoot>
-		<tr><td colspan="8"><input type="submit" name="modifier" value="Enregistrer et mettre &agrave; jour" /></td></tr>
+		<tr><td colspan="4"><?php echo $msg3; ?></td><td>-</td><td colspan="4"><input type="submit" name="modifier" value="Enregistrer et mettre &agrave; jour" /></td></tr>
 	</tfoot>
 </table>
 
