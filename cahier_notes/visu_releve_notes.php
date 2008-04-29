@@ -862,6 +862,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
 			}
 			tab_liste($tab_txt,$tab_lien,3);
+
+
+
+			echo "<p>Ou <a href='visu_releve_notes_bis.php'>accéder au nouveau dispositif des relevés de notes (<i>HTML</i>)</a></p>\n";
 		}
 // rajout christian
 	}

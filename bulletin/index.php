@@ -459,6 +459,10 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 		}
 
 		tab_liste($txt_classe,$lien_classe,3);
+
+
+
+		echo "<p>Ou <a href='bull_index.php'>accéder au nouveau dispositif des bulletins (<i>HTML</i>)</a></p>\n";
 	}
 	/*
 	$nb_class_par_colonne=round($nombreligne/3);
