@@ -171,8 +171,8 @@ if ( $etape === '1' ) {
 
 
 	<span style="font-weight: bold; color: #FF0000;">Attention</span>
-	<ul><li style="color: #FF0000;">l'importation seras terminée quand vous aurez cliquer sur "Enregistrer".</li>
-	<li style="color: #FF0000;">Après avoir cliquer sur "Enregistrer" ces donnée écraserons les données qui aurais déjas était saisie pour cette période.</li></ul>
+	<ul><li style="color: #FF0000;">l'importation sera terminée quand vous aurez cliqué sur "Enregistrer".</li>
+	<li style="color: #FF0000;">Après avoir cliqué sur "Enregistrer" ces données écraseront les données qui auraient déja été saisies pour cette période.</li></ul>
 
 	<table style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" cellspacing="1" cellpadding="0">
 	<tr>
