@@ -1004,6 +1004,10 @@ $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+echo "<div align='center'>
+	<div id='message_target_blank' style='color:red;'></div>
+</div>\n";
+
 /*
 if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
@@ -1933,7 +1937,7 @@ if(isset($eleve_login)){
 					if($_SESSION['statut']!="professeur") {
 						echo "<td>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						echo "</td>\n";
 					}
 				}
@@ -2052,7 +2056,7 @@ if(isset($eleve_login)){
 					if($_SESSION['statut']!="professeur") {
 						echo "<td>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
 							if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
 								echo "<br />";
@@ -2072,6 +2076,12 @@ if(isset($eleve_login)){
 		}
 		if($temoin_tableau=="oui"){echo "</table>\n";$temoin_tableau="non";}
 
+
+		echo "<script type='text/javascript'>
+	function affiche_message_raffraichissement() {
+		document.getElementById('message_target_blank').innerHTML=\"Pensez à rafraichir la page après modification de l'adresse responsable.\";
+	}
+</script>\n";
 
 
 		if("$chaine_adr2"!=""){
