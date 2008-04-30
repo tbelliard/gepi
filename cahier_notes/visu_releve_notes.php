@@ -337,7 +337,14 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	$current_eleve_sexe = mysql_result($data_eleve, 0, "sexe");
 	$current_eleve_naissance = mysql_result($data_eleve, 0, "naissance");
 	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
-	$call_classe = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $current_eleve_login . "' ORDER BY periode DESC");
+
+	//$choix_periode
+	if($choix_periode==0) {
+		$call_classe = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $current_eleve_login . "' ORDER BY periode DESC");
+	}
+	else {
+		$call_classe = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $current_eleve_login . "' AND periode='$choix_periode'");
+	}
 	$id_classe = mysql_result($call_classe, 0, "id_classe");
 	$classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 	$current_eleve_classe = mysql_result($classe_eleve, 0, "classe");
@@ -755,6 +762,8 @@ require_once("../lib/header.inc");
 <script type='text/javascript' language='javascript'>
 function active(num) {
  document.form_choix_edit.choix_edit[num].checked=true;
+ //document.getElementById('choix_edit_'+num).checked=true;
+ //alert('num='+num);
 }
 
 //=======================
@@ -1275,10 +1284,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	        echo "<p class='grand'>Classe de $nom_classe</p>\n";
 	        echo "<form enctype=\"multipart/form-data\" action=\"visu_releve_notes.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 	        echo "<table><tr>\n";
-	        echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"1\" checked /></td>\n";
+	        echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" checked /></td>\n";
 //echo "<input type='hidden' name='choix_periode' value='".$choix_periode. "'/>";
 
-	        echo "<td>Les relevés de notes de tous les élèves de la classe</td></tr>\n";
+	        echo "<td><label for='choix_edit_1' style='cursor:pointer;'>Les relevés de notes de tous les élèves de la classe</label></td></tr>\n";
 	    } else {
 	        echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='visu_releve_notes.php'>Choisir un autre groupe</a></p>\n";
 	        echo "<p class='grand'>Groupe : " . $current_group["description"] . " (" . $current_group["classlist_string"] .")</p>\n";
@@ -1300,6 +1309,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	            echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"3\" /></td>\n";
 	            echo "<td>Uniquement les relevés de notes des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :";
 	            echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
+	            //echo "<select size=\"1\" name=\"login_prof\" onchange=\"active(1)\" onfocus=\"active(1)\">\n";
 	            $i=0;
 	            while ($i < $nb_lignes) {
 	                $login_pr = mysql_result($call_suivi,$i,"professeur");
@@ -1319,9 +1329,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 	    }
 
 
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" value=\"2\" /></td>\n";
-	    echo "<td>Uniquement le relevé de notes de l'élève sélectionné ci-contre : \n";
+	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_2' value=\"2\" /></td>\n";
+	    echo "<td><label for='choix_edit_2' style='cursor:pointer;'>Uniquement le relevé de notes de l'élève sélectionné ci-contre : </label>\n";
 	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
+	    //echo "<select size=\"1\" name=\"login_eleve\" onchange=\"active(".$indice.")\" onfocus=\"active(".$indice.")\">\n";
 
 	    if (!$current_group) {
 	        $call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
