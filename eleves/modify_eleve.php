@@ -1218,7 +1218,93 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		if(!isset($valider_choix_etab)){
 			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
+
+			//====================================================
+			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+			$afficher_tous_les_etab=isset($_POST['afficher_tous_les_etab']) ? $_POST['afficher_tous_les_etab'] : "n";
+			//$critere_recherche=ereg_replace("[^0-9a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ -]", "", $critere_recherche);
+			$critere_recherche=ereg_replace("[^0-9a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸_ %-]", "", ereg_replace(" ","%",$critere_recherche));
+			// Saisir un espace ou % pour plusieurs portions du champ de recherche ou pour une apostrophe
+			$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : "nom";
+			$tab_champs_recherche_autorises=array('nom','cp','ville');
+			if(!in_array($champ_rech,$tab_champs_recherche_autorises)) {$champ_rech="nom";}
+
+			/*
+			if($critere_recherche==""){
+				$critere_recherche=substr($eleve_nom,0,3);
+			}
+			*/
+
+			$nb_etab=isset($_POST['nb_etab']) ? $_POST['nb_etab'] : 20;
+			if(strlen(ereg_replace("[0-9]","",$nb_etab))!=0) {
+				$nb_etab=20;
+			}
+			$num_premier_etab_rech=isset($_POST['num_premier_etab_rech']) ? $_POST['num_premier_etab_rech'] : 0;
+			if(strlen(ereg_replace("[0-9]","",$num_premier_etab_rech))!=0) {
+				$num_premier_etab_rech=0;
+			}
+
+			echo "<div align='center'>\n";
+			echo "<div style='width:90%; border: 1px solid black;'>\n";
+			echo "<!-- Formulaire de recherche/filtrage parmi les Ètablissements -->\n";
 			echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
+
+			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
+			echo "<input type='hidden' name='definir_etab' value='$definir_etab' />\n";
+			echo "<table border='0'>\n";
+			echo "<tr>\n";
+			echo "<td valign='top'>\n";
+			//echo "<p align='center'>";
+			echo "<input type='submit' name='filtrage' value='Afficher' /> les ";
+			echo "<input type='text' name='nb_etab' value='$nb_etab' size='3' />\n";
+			echo " Ètablissements dont ";
+			echo "</td>\n";
+			echo "<td valign='top'>\n";
+
+			echo "<input type='radio' name='champ_rech' id='champ_rech_nom' value='nom' ";
+			if($champ_rech=="nom") {echo "checked ";}
+			echo "/> <label for='champ_rech_nom' style='cursor: pointer;'>le <b>nom</b></label><br />\n";
+
+			echo "<input type='radio' name='champ_rech' id='champ_rech_cp' value='cp' ";
+			if($champ_rech=="cp") {echo "checked ";}
+			echo "/> <label for='champ_rech_cp' style='cursor: pointer;'>le <b>code postal</b></label><br />\n";
+
+			echo "<input type='radio' name='champ_rech' id='champ_rech_ville' value='ville' ";
+			if($champ_rech=="ville") {echo "checked ";}
+			echo "/> <label for='champ_rech_ville' style='cursor: pointer;'>la <b>ville</b></label>\n";
+
+			echo "</td>\n";
+			echo "<td valign='top'>\n";
+			echo " contient: ";
+			echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+			echo "<br />\n";
+			echo "&nbsp;&nbsp;&nbsp;‡ partir de l'enregistrement ";
+			echo "<input type='text' name='num_premier_etab_rech' value='$num_premier_etab_rech' size='4' />\n";
+			//echo "</p>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+
+
+			if (isset($order_type)) echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
+			if (isset($quelles_classes)) echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";
+			if (isset($motif_rech)) echo "<input type=hidden name=motif_rech value=\"$motif_rech\" />\n";
+
+
+			echo "<input type='hidden' name='afficher_tous_les_etab' id='afficher_tous_les_etab' value='n' />\n";
+			echo "<p align='center'>";
+
+			echo "<input type='submit' name='filtrage2' value='Afficher la sÈlection' /> ou ";
+
+			echo "<input type='button' name='afficher_tous' value='Afficher tous les Ètablissements' onClick=\"document.getElementById('afficher_tous_les_etab').value='y'; document.form_rech.submit();\" /></p>\n";
+			echo "</form>\n";
+			echo "</div>\n";
+			echo "</div>\n";
+			//====================================================
+
+
+			echo "<!-- Formulaire de choix de l'Ètablissement -->\n";
+			echo "<form enctype='multipart/form-data' name='form_choix_etab' action='modify_eleve.php' method='post'>\n";
 
 			echo "<p>Choix de l'Ètablissement d'origine pour <b>".ucfirst(strtolower($eleve_prenom))." ".strtoupper($eleve_nom)."</b></p>\n";
 
@@ -1226,7 +1312,20 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			//echo "<input type='hidden' name='reg_no_gep' value='$reg_no_gep' />\n";
 			echo "<input type='hidden' name='definir_etab' value='y' />\n";
 
-			$sql="SELECT * FROM etablissements ORDER BY ville,nom";
+
+			//$sql="SELECT * FROM etablissements ORDER BY ville,nom";
+			$sql="SELECT * FROM etablissements e";
+			if($afficher_tous_les_etab!='y'){
+				if($critere_recherche!=""){
+					$sql.=" WHERE e.$champ_rech LIKE '%".$critere_recherche."%'";
+				}
+			}
+			$sql.=" ORDER BY ville,nom";
+			if($afficher_tous_les_etab!='y'){
+				$sql.=" LIMIT $num_premier_etab_rech, $nb_etab";
+			}
+			//echo "$sql<br />";
+
 			$call_etab=mysql_query($sql);
 			$nombreligne = mysql_num_rows($call_etab);
 			if ($nombreligne != 0) {
@@ -1241,6 +1340,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 				echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Code postal</b></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><b>Ville</b></td>\n";
 				echo "</tr>\n";
+
+				$temoin_checked="n";
 
 				$cpt=1;
 				$alt=1;
@@ -1264,8 +1365,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 					echo "<td><input type='radio' name='reg_etab' value='$lig_etab->id' ";
 					if($lig_etab->id==$id_etab){
 						echo "checked ";
+						$temoin_checked="y";
 					}
-					echo "onchange='changement();' /></td>";
+					echo "onchange='changement();' /></td>\n";
 					echo "<td><a href='../etablissements/modify_etab.php?id=$lig_etab->id' target='_blank'>$lig_etab->id</a></td>\n";
 					echo "<td>$lig_etab->niveau</td>\n";
 					echo "<td>$lig_etab->type</td>\n";
@@ -1275,6 +1377,28 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 					echo "</tr>\n";
 					$cpt++;
+				}
+
+				if(($temoin_checked=="n")&&($id_etab!=0)) {
+					$sql="SELECT * FROM etablissements WHERE id='$id_etab';";
+					$res_etab=mysql_query($sql);
+					if(mysql_num_rows($res_etab)>0) {
+						$lig_etab=mysql_fetch_object($res_etab);
+
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td><input type='radio' name='reg_etab' value='$lig_etab->id' ";
+						echo "checked ";
+						echo "onchange='changement();' /></td>\n";
+						echo "<td><a href='../etablissements/modify_etab.php?id=$lig_etab->id' target='_blank'>$lig_etab->id</a></td>\n";
+						echo "<td>$lig_etab->niveau</td>\n";
+						echo "<td>$lig_etab->type</td>\n";
+						echo "<td>$lig_etab->nom</td>\n";
+						echo "<td>$lig_etab->cp</td>\n";
+						echo "<td>$lig_etab->ville</td>\n";
+
+						echo "</tr>\n";
+					}
 				}
 
 				echo "</table>\n";
