@@ -169,7 +169,7 @@ echo "</p></td>";
 echo "</tr></table>";
 if ($current_group) {
     if ($current_imprime=='n') {
-    if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe") {
+    if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
     	echo "<a href='see_all.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> - ";
     	if ($_SESSION["statut"] == "professeur") {
     		echo "<a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes cahiers de textes</a> - ";

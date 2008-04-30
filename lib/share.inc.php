@@ -2485,7 +2485,7 @@ function param_edt($statut){
 		$verif = "";
 	if ($statut == "administrateur") {
 		$verif = getSettingValue("autorise_edt_admin");
-	} elseif ($statut == "professeur" OR $statut == "scolarite" OR $statut == "cpe" OR $statut == "secours") {
+	} elseif ($statut == "professeur" OR $statut == "scolarite" OR $statut == "cpe" OR $statut == "secours" OR $statut == "autre") {
 		$verif = getSettingValue("autorise_edt_tous");
 	} elseif ($statut = "eleve" OR $statut = "responsable") {
 		$verif = getSettingValue("autorise_edt_eleve");

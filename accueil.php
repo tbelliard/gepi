@@ -1381,6 +1381,18 @@ if (getSettingValue("active_inscription")=='y') {
 // include('inc_special.php');
 //=================================
 
+// ========================== Statut AUTRE =============================
+if ($_SESSION["statut"] == 'autre') {
+	// On récupère la liste des droits qu'il a en fonction de son statut
+	$sql_d = "SELECT nom_fichier FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND autorisation = 'V' ORDER BY id";
+	$query_d = mysql_query($sql_d) OR trigger_error('Impossible de récupérer vos droits, '.mysql_error(), E_USER_ERROR);
+	while($aff_menu = mysql_fetch_array($query_d)){
+		echo '<a href="'.$gepiPath.$aff_menu["nom_fichier"].'">LIEN</a><br />';
+	}
+
+}
+// ========================== fin Statut AUTRE =============================
+
 ?>
 </center>
 </div>

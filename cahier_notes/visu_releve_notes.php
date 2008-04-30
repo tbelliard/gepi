@@ -792,6 +792,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
     if (
     	(($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
     	OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))
+    	OR ($_SESSION["statut"] == 'autre')
     	) {
 
         //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -805,8 +806,12 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         $nombreligne = mysql_num_rows($calldata);
 //        echo "<b><a href='../accueil.php'>Accueil</a> | Total : ".$nombreligne." classes</b>\n";
 // rajout christian
-	?><b><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <?php if(empty($format)) { ?><a href='visu_releve_notes.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='visu_releve_notes.php?format='>Impression au format HTML</a><?php } ?> | Total : <?php echo $nombreligne; ?> classes</b><?php
-	if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))) AND empty($format))
+	?><b><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> |
+	<?php if(empty($format) AND ($_SESSION["statut"] != 'autre')) { ?><a href='visu_releve_notes.php?format=pdf'>Impression au format PDF</a><?php } else { ?><a href='visu_releve_notes.php?format='>Impression au format HTML</a><?php } ?> | Total : <?php echo $nombreligne; ?> classes</b><?php
+	if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
+		OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))
+		OR ($_SESSION['statut'] == 'autre')
+		) AND empty($format))
 	{
 // fin rajout christian
         //echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les relevés de notes :</p>\n";
@@ -864,8 +869,10 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 			tab_liste($tab_txt,$tab_lien,3);
 
 
+			if ($_SESSION["statut"] != 'autre') {
+				echo "<p>Ou <a href='visu_releve_notes_bis.php'>accéder au nouveau dispositif des relevés de notes (<i>HTML</i>)</a></p>\n";
+			}
 
-			echo "<p>Ou <a href='visu_releve_notes_bis.php'>accéder au nouveau dispositif des relevés de notes (<i>HTML</i>)</a></p>\n";
 		}
 // rajout christian
 	}

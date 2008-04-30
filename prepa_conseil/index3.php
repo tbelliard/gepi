@@ -197,7 +197,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
 	}
 	//elseif(($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiAccesReleveCpe")=='yes')){
-	elseif($_SESSION['statut'] == 'cpe'){
+	elseif($_SESSION['statut'] == 'cpe' OR $_SESSION['statut'] == 'autre'){
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 	}
 	//echo "$sql<br />\n";
@@ -291,6 +291,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				jecpe.e_login=jec.login AND
 				jecpe.cpe_login='".$_SESSION['login']."'
 				ORDER BY classe";
+		}
+		elseif($_SESSION['statut'] == 'autre'){
+
+			// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+			$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+
 		}
 		//echo "$sql<br />\n";
 		$res_class_tmp=mysql_query($sql);
