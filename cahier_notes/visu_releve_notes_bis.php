@@ -951,7 +951,8 @@ document.getElementById('div_param_releve').style.display='none';
 												WHERE (
 														jeg.id_groupe=jgp.id_groupe AND
 														jeg.login='".$lig_ele->login."' AND
-														jgp.login='".$_SESSION['login']."'
+														jgp.login='".$_SESSION['login']."' AND
+														jeg.periode='".$tab_periode_num[$j]."'
 														);";
 								$test_ele_grp=mysql_query($sql);
 								if(mysql_num_rows($test_ele_grp)==0) {
@@ -986,14 +987,23 @@ document.getElementById('div_param_releve').style.display='none';
 								echo "/></td>\n";
 							}
 							else {
-								// L'utilisateur connecté n'est pas un prof
-								echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
-								// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-								$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
-								if(in_array($lig_ele->login,$tab_selection_eleves)) {
-									echo "checked ";
+								$sql="SELECT 1=1 FROM j_eleves_classes jec
+												WHERE (jec.id_classe='".$tab_id_classe[$i]."' AND
+														jec.login='".$lig_ele->login."' AND
+														jec.periode='".$tab_periode_num[$j]."');";
+								$test_ele_grp=mysql_query($sql);
+								if(mysql_num_rows($test_ele_grp)==0) {
+									echo "<td>-</td>\n";
 								}
-								echo "/></td>\n";
+								else {
+									echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
+									// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
+									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
+									if(in_array($lig_ele->login,$tab_selection_eleves)) {
+										echo "checked ";
+									}
+									echo "/></td>\n";
+								}
 							}
 						}
 					}
