@@ -72,6 +72,21 @@ function displaydd($numero){
 		//return "";
 	}
 }
+function statutAutreSetting(){
+	// On cherche quel est le droit dont dispose cet utilisateur 'autre'
+	if ($_SESSION["statut"] == 'autre') {
+		$query = mysql_query("SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND nom_fichier = '/tous_les_edt'");
+		$rep = mysql_result($query, "autorisation");
+
+		if ($rep["autorisation"] == 'V') {
+			return 'oui';
+		}else{
+			return 'non';
+		}
+	}else{
+		return 'oui';
+	}
+}
 ?>
 <!-- On affiche le menu edt -->
 
@@ -88,9 +103,15 @@ function displaydd($numero){
 
 			<dd id="sEdTmenu1"<?php echo displaydd("1"); ?>>
 				<ul>
-					<li><a href="index_edt.php?visioedt=prof1">Professeur</a></li>
+					<?php if (statutAutreSetting() == 'oui') {
+						echo '
+					<li><a href="index_edt.php?visioedt=prof1">Professeur</a></li>';
+					}?>
 					<li><a href="index_edt.php?visioedt=classe1">Classe</a></li>
-					<li><a href="index_edt.php?visioedt=salle1">Salle</a></li>
+					<?php if (statutAutreSetting() == 'oui') {
+						echo '
+					<li><a href="index_edt.php?visioedt=salle1">Salle</a></li>';
+					}?>
 					<li><a href="index_edt.php?visioedt=eleve1">El&egrave;ve</a></li>
 				</ul>
 			</dd>

@@ -44,26 +44,8 @@ $msg = $msg2 = $msg3 = NULL;
 
 // Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
 $values_b = '';
-// droits généraux et communs à tous les utilisateurs
-$autorise[0] = array('/accueil.php',
-				'/utilisateurs/mon_compte.php',
-				'/gestion/contacter_admin.php',
-				'/gestion/info_gepi.php');
-// droits spécifiques sur les pages relatives aux droits possibles
-$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
-$autorise[2] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
-$autorise[3] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
-						'/mod_absences/gestion/bilan_absences_quotidien.php',
-						'/mod_absences/gestion/bilan_absences_classe.php',
-						'/mod_absences/gestion/bilan_absences_quotidien_pdf.php',
-						'/mod_absences/lib/tableau.php',
-						'/mod_absences/lib/export_csv.php');
-$autorise[4] = array('/mod_absences/gestion/select.php',
-						'/mod_absences/gestion/ajout_abs.php',
-						'/mod_absences/lib/liste_absences.php');
-$autorise[5] = array('/cahier_texte/see_all.php');
-$autorise[6] = array('/edt_organisation/index_edt.php');
-$autorise[7] = array('/tous_les_edt');
+// La liste des fichiers à traiter
+require_once('creer_statut_autorisation.php');
 
 //print_r($autorise);
 
