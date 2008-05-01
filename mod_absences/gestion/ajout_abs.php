@@ -682,7 +682,20 @@ if(document.forms[form_action].elements[input_check_id].checked) { document.form
  // -->
 </script>
 
-<p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?><?php if($fiche === 'oui') { ?>&amp;select_fiche_eleve=<?php echo $eleve_absent[0]; } ?>'>Retour</a>|
+<?php // on gère le retour en fonction du statut
+if ($_SESSION["statut"] == 'autre') {
+	$retour = './select.php?type=A';
+}else{
+	if($fiche === 'oui') {
+		$aff_fiche = '&amp;select_fiche_eleve='.$eleve_absent[0];
+	}else{
+		$aff_fiche = '';
+	}
+	$retour = 'gestion_absences.php?type='.$type.$aff_fiche;
+}
+?>
+
+<p class=bold>|<a href='<?php echo $retour; ?>'>Retour</a>|
 </p><?php
 
 //si un élève est sélectionné ou modifier

@@ -1387,7 +1387,9 @@ if ($_SESSION["statut"] == 'autre') {
 	require_once("./utilisateurs/creer_statut_autorisation.php");
 	$nbre = count($autorise);
 
-	echo '<table>';
+	echo '<br />
+		<table class="menu">
+			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th>';
 
 	for($a = 1 ; $a < $nbre ; $a++){
 		// On récupère le droit sur le fichier
@@ -1396,25 +1398,27 @@ if ($_SESSION["statut"] == 'autre') {
 		$rep_f = mysql_result($query_f, "autorisation");
 
 		if ($rep_f == 'V') {
+			if ($autorise[$a][0] == "/tous_les_edt") {
+				// rien, la vérification se fait dans le module EdT
+			}else{
+				if($a == 4){
+					// Dans le cas de la saisie des absences, il faut ajouter une variable pour le GET
+					$var = '?type=A';
+				}else{
+					$var = '';
+				}
 			echo '
 				<tr>
-					<td><a href="'.$autorise[$a][0].'">'.$menu_accueil[$a][0].'</a></td>
+					<td><a href="'.$gepiPath.$autorise[$a][0].$var.'">'.$menu_accueil[$a][0].'</a></td>
 					<td>'.$menu_accueil[$a][1].'</td>
 				</tr>
 			';
+			}
 		}
 
 	}
 
 	echo '</table>';
-	/*/ On récupère la liste des droits qu'il a en fonction de son statut
-	$sql_d = "SELECT nom_fichier FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND autorisation = 'V' ORDER BY id";
-	$query_d = mysql_query($sql_d) OR trigger_error('Impossible de récupérer vos droits, '.mysql_error(), E_USER_ERROR);
-	while($aff_menu = mysql_fetch_array($query_d)){
-		if ($aff_menu["nom_fichier"] != '/tous_les_edt' AND $aff_menu["nom_fichier"] != '/prepa_conseil/edit_limite.php') {
-			echo '<a href="'.$gepiPath.$aff_menu["nom_fichier"].'">LIEN</a><br />';
-		}
-	}*/
 }
 // ========================== fin Statut AUTRE =============================
 

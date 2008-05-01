@@ -70,8 +70,15 @@ else  {
 }
 
 $date_ce_jour = date('d/m/Y');
+
+// On paramètre le retour pour le statut 'autre'
+if ($_SESSION["statut"] == 'autre') {
+	$retour = '../../accueil.php';
+}else{
+	$retour = './gestion_absences.php?type='.$type;
+}
 ?>
-<p class=bold><a href='./gestion_absences.php?type=<?php echo $type; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
+<p class=bold><a href='<?php echo $retour; ?>'><img src="../../images/icons/back.png" alt="Retour" title="Retour" class="back_link" /> Retour</a>
 </p>
 <? /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
