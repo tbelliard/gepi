@@ -426,6 +426,10 @@ if ($nombreligne == '0') {
 		// AJOUT: boireaus 20071010
 		echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";
 		//=========================
+
+		$ancre_login_eleve=ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
+		echo "<a name='$ancre_login_eleve'></a>\n";
+
 		echo "<br /><b><a href='eleve_options.php?login_eleve=".$login_eleve."&amp;id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Matières suivies</a></b>";
 		echo "</p></td>\n";
 		echo "<td style='padding: 0;'>\n";
@@ -549,7 +553,22 @@ if ($nombreligne == '0') {
 				//echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
 				echo "<td><p align='center'><input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes'";
 				echo " onchange='changement()'";
-				echo " /></p></td>\n";
+				echo " />";
+
+				if($_SESSION['statut']=='administrateur') {
+					// Tester s'il y a des notes/app dans le bulletin
+					$sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$i."';";
+					$verif=mysql_query($sql);
+					$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$i."';";
+					$verif2=mysql_query($sql);
+
+					if((mysql_num_rows($verif)==0)&&(mysql_num_rows($verif2)==0)) {
+						echo "<br />\n";
+						echo "<span style='font-size:x-small'><a href='changement_eleve_classe.php?login_eleve=$login_eleve&amp;id_classe=$id_classe&amp;periode_num=$i'>Changer de classe</a></span>";
+					}
+				}
+
+				echo "</p></td>\n";
 				//=========================
 			} else {
 				$call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
