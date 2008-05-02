@@ -118,7 +118,25 @@ case "envoi":
 	."X-Mailer: PHP/" . phpversion());
 
 	if ($envoi) {
-		echo "<br /><br /><br /><P style=\"text-align: center\">Votre message a été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>\n";
+		echo "<br /><br /><br />\n";
+		echo "<p style=\"text-align: center\">Votre message a été envoyé";
+
+		if($email_reponse!="") {
+			echo ", vous recevrez rapidement<br />une réponse dans votre boîte aux lettres électronique, veuillez la consulter régulièrement.";
+		}
+		else {
+			if($_SESSION['statut']=='professeur') {
+				echo ", vous recevrez rapidement<br />une réponse dans votre casier, veuillez le consulter régulièrement.";
+			}
+			else {
+				//echo ".";
+				echo ", l'administrateur va le prendre en compte rapidement, mais ne pourra pas vous
+				répondre par courrier électronique car vous n'avez pas complété d'adresse courriel/email.";
+			}
+		}
+		echo "<br /><br /><br />\n";
+		echo "<a href=\"javascript:self.close();\">Fermer</a></p>\n";
+
 	} else {
 		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>\n";
 	}
@@ -143,23 +161,72 @@ default://formulaire d'envoi
 	<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
 	<input type="hidden" name="action" value="envoi" />
 	<textarea name="message" cols="50" rows="5">Contenu du message : </textarea><br />
-	E-mail pour la réponse : <?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") echo "(facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail)";?><br/>
-	<input type="text" name="email_reponse" size="40" maxlength="256" <?php
-$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
-$res_mail=mysql_query($sql);
-if(mysql_num_rows($res_mail)>0) {
-	$lig_mail=mysql_fetch_object($res_mail);
-	echo "value='$lig_mail->email' ";
-}
-?>/><br/>
-	<?php if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") { ?>
-	Ou numéro de votre casier en salle des professeurs pour la réponse :
-	<input type="text" name="casier" size="40" maxlength="256" value="Casier N°" /><br/><br/>
-	<?php } ?>
-	<input type="submit" value="Envoyer le message" />
 
-	</form>
 	<?php
+
+	echo "E-mail pour la réponse : ";
+	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
+		echo "(<i>facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail</i>)";
+	}
+	echo "<br />\n";
+
+	echo "<input type='text' name='email_reponse' id='email_reponse' size='40' maxlength='256' ";
+
+	$sql="SELECT email FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+	$res_mail=mysql_query($sql);
+	if(mysql_num_rows($res_mail)>0) {
+		$lig_mail=mysql_fetch_object($res_mail);
+		echo "value='$lig_mail->email' ";
+	}
+	echo "/>\n";
+	echo "<br />\n";
+
+	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
+		echo "Ou numéro de votre casier en salle des professeurs pour la réponse :";
+
+		echo "<input type='text' name='casier' size='40' maxlength='256' value='Casier N°' />\n";
+		echo "<br />\n";
+	}
+
+	echo "<p align='center'>";
+	//echo "<input type='submit' value='Envoyer le message' />\n";
+	echo "<input type='button' value='Envoyer le message' onClick='verif_et_valide_envoi();' />\n";
+	echo "</p>\n";
+
+	echo "</form>\n";
+
+	echo "<script type='text/javascript'>
+	function verif_et_valide_envoi() {
+		if(document.getElementById('email_reponse')) {
+			email=document.getElementById('email_reponse').value;
+
+			if(email=='') {
+				confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+
+				if(confirmation) {
+					document.forms['doc'].submit();
+				}
+			}
+			else {
+				var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+				if (verif.exec(email) == null) {
+					confirmation=confirm('L adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
+
+					if(confirmation) {
+						document.forms['doc'].submit();
+					}
+				}
+				else {
+					document.forms['doc'].submit();
+				}
+			}
+		}
+		else {
+			document.forms['doc'].submit();
+		}
+	}
+</script>\n";
+
 	break;
 }
 require("../lib/footer.inc.php");
