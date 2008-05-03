@@ -206,7 +206,8 @@
 					echo "</p>\n";
 					*/
 
-					$source_file=stripslashes($xml_file['tmp_name']);
+					//$source_file=stripslashes($xml_file['tmp_name']);
+					$source_file=$xml_file['tmp_name'];
 					$dest_file="../temp/".$tempdir."/eleves.xml";
 					$res_copy=copy("$source_file" , "$dest_file");
 
@@ -1114,7 +1115,8 @@
 					echo "</p>\n";
 					*/
 
-					$source_file=stripslashes($xml_file['tmp_name']);
+					//$source_file=stripslashes($xml_file['tmp_name']);
+					$source_file=$xml_file['tmp_name'];
 					$dest_file="../temp/".$tempdir."/nomenclature.xml";
 					$res_copy=copy("$source_file" , "$dest_file");
 

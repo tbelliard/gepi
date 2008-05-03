@@ -274,7 +274,8 @@
 
 					echo "<p>Le fichier a été uploadé.</p>\n";
 
-					$source_file=stripslashes($xml_file['tmp_name']);
+					//$source_file=stripslashes($xml_file['tmp_name']);
+					$source_file=$xml_file['tmp_name'];
 					$dest_file="../temp/".$tempdir."/responsables.xml";
 					$res_copy=copy("$source_file" , "$dest_file");
 
