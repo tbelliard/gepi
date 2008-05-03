@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -539,13 +539,24 @@ if(isset($associer_eleve)) {
 	}
 	else {
 		if (!isset($pers_id)) {
-			echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
+			//echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a></p>\n";
+
+		echo "<script type='text/javascript'>
+	function refresh_opener() {
+		ad=window.opener.location.href;
+		window.opener.location.href=ad;
+	}
+</script>\n";
+			echo "<p class=bold><a href=\"#\" onclick=\"refresh_opener();confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+
 			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
 		//if($_SESSION['statut']=="administrateur"){
+			//echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
+			// window.opener.location.href='../eleves/modify_eleve.php?var=rien&v
 			echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
 		/*
 		}
@@ -630,7 +641,18 @@ if(!isset($quitter_la_page)){
 }
 else {
 	//if($_SESSION['statut']=="administrateur"){
-		echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+		//echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+		echo "<script type='text/javascript'>
+	function refresh_opener() {
+		ad=window.opener.location.href;
+		var verif = /modify_eleve.php/
+		if (verif.exec(ad) != null) {
+			window.opener.location.href=ad;
+		}
+	}
+</script>\n";
+		echo "<p class=bold><a href=\"#\" onclick=\"refresh_opener();confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
+
 	/*
 	}
 	else{
