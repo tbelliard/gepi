@@ -64,6 +64,9 @@ $user_status = isset($_POST["user_status"]) ? $_POST["user_status"] : (isset($_G
 $user_classe = isset($_POST["user_classe"]) ? $_POST["user_classe"] : (isset($_GET["user_classe"]) ? $_GET["user_classe"] : false);
 
 
+// REMARQUE:
+// C'est un peu le bazar: on a un '$user_status' et un '$user_statut' extrait plus loin dans la boucle sur la liste des utilisateurs
+
 // Il faut être sûr que l'on ne fait pas de réinitialisation accidentelle de tous les utilisateurs...
 // On bloque donc l'opération si jamais un des trois paramètres n'a pas été passé correctement, pour une raison ou une autre.
 
@@ -125,6 +128,15 @@ if ($user_login) {
 	mysql>
 	*/
 
+	// On a fourni un login... on peut retrouver le statut dans utilisateurs:
+	$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
+	//echo "$sql<br />";
+	$res_statut=mysql_query($sql);
+	if(mysql_num_rows($res_statut)>0) {
+		$lig_statut=mysql_fetch_object($res_statut);
+		$user_status=$lig_statut->statut;
+		//echo "\$user_status=$user_status<br />";
+	}
 
 	if ($user_status == "responsable") {
 		/*
@@ -158,7 +170,7 @@ if ($user_login) {
 						)";
 
 		/*
-								 AND
+								AND
 								(re.resp_legal='1' OR re.resp_legal='2')
 		*/
 
@@ -320,8 +332,8 @@ while ($p < $nb_users) {
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
-	    $resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
-        $resp_civilite= mysql_result($call_user_info, $p, "civilite");
+		$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
+		$resp_civilite= mysql_result($call_user_info, $p, "civilite");
 		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 		$resp_adr2=mysql_result($call_user_info, $p, "adr2");
@@ -448,15 +460,15 @@ while ($p < $nb_users) {
 			$temoin_user_deja_traite="y";
 		}
 		else{
-      $new_password = pass_gen();
+			$new_password = pass_gen();
 			$tab_password[$user_login]=$new_password;
 
-		  if (isset($_GET['sso'])) {
-		      // Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
-			    $save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
-		  } else {
- 			    $save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
-      }
+			if (isset($_GET['sso'])) {
+				// Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
+					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+			} else {
+					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+			}
 		}
 	}
 	// =====================
@@ -477,8 +489,11 @@ while ($p < $nb_users) {
 		$i++;
 	}
 
-	//echo "\$user_login=$user_login<br />";
-	//echo "\$mode_impression=$mode_impression<br />";
+	/*
+	echo "\$user_login=$user_login<br />";
+	echo "\$user_status=$user_status<br />";
+	echo "\$mode_impression=$mode_impression<br />";
+	*/
 
 	// Ajout Eric
 	switch ($mode_impression) {
@@ -503,7 +518,7 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-    echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
 		//if($cas_traite!=0){
 		if ($user_statut == "responsable") {
 			echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
@@ -577,7 +592,7 @@ while ($p < $nb_users) {
 					$donnees_personne_csv['classe'][$p] = $classe_resp;
 
 					$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
-                    $resp_civilite= mysql_result($call_user_info, $p, "civilite");
+					$resp_civilite= mysql_result($call_user_info, $p, "civilite");
 					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
 					$resp_adr2=mysql_result($call_user_info, $p, "adr2");
@@ -666,12 +681,43 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-	  if (isset($_GET['sso'])) {
-		      // Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
-         echo "<tr><td>Le mot de passe de cet utilisateur a été supprimé.</td></tr>\n";
-    } else {
-         echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
-    }
+		if (isset($_GET['sso'])) {
+			// Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
+			echo "<tr><td>Le mot de passe de cet utilisateur a été supprimé.</td></tr>\n";
+		}
+		else {
+			echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+		}
+
+		if ($user_statut == "responsable") {
+			echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
+			if($liste_elv_resp==""){
+				echo "&nbsp;";
+			}
+			else{
+				echo $liste_elv_resp;
+			}
+
+			//echo "<br />".$classe_resp;
+
+			echo "</span></td></tr>\n";
+		}
+		//else{
+		elseif ($user_statut == "eleve") {
+			echo "<tr><td>Classe : </td><td><span class = \"bold\">";
+			if(count($tab_tmp_classe)>0){
+				$chaine="";
+				foreach ($tab_tmp_classe as $key => $value){
+					//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+					$chaine.=", $value";
+				}
+				$chaine=substr($chaine,2);
+				echo $chaine;
+			}
+			echo "</span></td></tr>\n";
+		}
+
+		/*
 		echo "<tr><td>Classe : </td><td><span class = \"bold\">";
 		if(count($tab_tmp_classe)>0){
 			$chaine="";
@@ -683,6 +729,8 @@ while ($p < $nb_users) {
 			echo $chaine;
 		}
 		echo "</span></td></tr>\n";
+		*/
+
 		echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
 		echo "</table>";
 

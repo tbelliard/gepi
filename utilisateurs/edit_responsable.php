@@ -201,7 +201,9 @@ require_once("../lib/header.inc");
 	//  echo " | <a href=\"reset_passwords.php?user_status=responsable\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs ayant le statut \'responsable\' et marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\">Réinitialiser mots de passe</a>";
 	}
 
-	$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
+	//$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
+	// On veut juste savoir s'il y en a... pour le reste, la requête $quels_parents est reformatée plus bas
+	$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom LIMIT 1");
 	if(mysql_num_rows($quels_parents)==0){
 		echo "<p>Aucun compte responsable n'existe encore.<br />Vous pouvez ajouter des comptes responsables à l'aide du lien ci-dessus.</p>\n";
 		require("../lib/footer.inc.php");
@@ -237,6 +239,7 @@ require_once("../lib/header.inc");
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
+	//flush();
 	echo "</select>\n";
 
 	echo "<br />\n";
@@ -265,7 +268,7 @@ require_once("../lib/header.inc");
 	$critere_recherche_login=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche_login);
 
 	//====================================
-	
+
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<table style='border:1px solid black;'>\n";
 	echo "<tr>\n";
@@ -328,7 +331,7 @@ if($afficher_tous_les_resp!='y'){
 $sql.=") ORDER BY u.nom,u.prenom";
 
 // Effectif sans login avec filtrage sur le nom:
-$nb1 = mysql_num_rows(mysql_query($sql));
+//$nb1 = mysql_num_rows(mysql_query($sql));
 
 if($afficher_tous_les_resp!='y'){
 	if($critere_recherche==""){
@@ -337,6 +340,10 @@ if($afficher_tous_les_resp!='y'){
 }
 
 $quels_parents = mysql_query($sql);
+
+// Effectif sans login avec filtrage sur le nom:
+$nb1 = mysql_num_rows($quels_parents);
+
 $alt=1;
 while ($current_parent = mysql_fetch_object($quels_parents)) {
 	$alt=$alt*(-1);

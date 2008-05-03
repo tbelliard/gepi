@@ -57,10 +57,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucune association avec un élève n'a été trouvée !<br/>";
 		} else {
-			$quels_parents = mysql_query("SELECT r.* FROM resp_pers r, responsables2 re WHERE (" .
+			//$quels_parents = mysql_query("SELECT r.* FROM resp_pers r, responsables2 re WHERE (" .
+			//$sql="SELECT DISTINCT(r.*) FROM resp_pers r, responsables2 re WHERE (" .
+			$sql="SELECT DISTINCT r.* FROM resp_pers r, responsables2 re WHERE (" .
 				"r.login = '' AND " .
 				"r.pers_id = re.pers_id AND " .
-				"re.pers_id = '" . $_POST['pers_id'] ."')");
+				"re.pers_id = '" . $_POST['pers_id'] ."')";
+			//echo "$sql<br />";
+			$quels_parents = mysql_query($sql);
 		}
 	} else {
 		// On est en mode 'classe'
@@ -118,7 +122,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			// Création du compte utilisateur pour le responsable considéré
 			$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 			$reg = true;
-			$reg = mysql_query("INSERT INTO utilisateurs SET " .
+			$sql="INSERT INTO utilisateurs SET " .
 					"login = '" . $reg_login . "', " .
 					"nom = '" . addslashes($current_parent->nom) . "', " .
 					"prenom = '". addslashes($current_parent->prenom) ."', " .
@@ -127,7 +131,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"email = '" . $current_parent->mel . "', " .
 					"statut = 'responsable', " .
 					"etat = 'actif', " .
-					"change_mdp = 'n'");
+					"change_mdp = 'n'";
+			//echo "$sql<br />";
+			$reg = mysql_query($sql);
 
 			if (!$reg) {
 				$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
@@ -147,8 +153,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
 		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO.
 		// Cas particlulier de LCS : les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Dans ce cas, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI."
-    if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "ldap_scribe") {
-    	if ($create_mode == "individual") {
+		if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "ldap_scribe") {
+			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
 			} else {
@@ -159,16 +165,21 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				if ($_POST['classe'] == "all") {
 				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+
+					$msg.="<br/>";
+
 				} elseif (is_numeric($_POST['classe'])) {
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
 					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+
+					$msg.="<br/>";
 				}
 				// =====================
 			}
 			// =====================
 			// MODIF: boireaus 20071102
 			//$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
-			$msg .= "<br/>Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+			$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 			// =====================
 		}
 	}
