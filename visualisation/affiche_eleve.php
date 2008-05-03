@@ -1556,33 +1556,47 @@ function eleve_suivant(){
 		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
 	) {
 
-		if ($_POST['choix_periode']=="periode") {
+		$droit_saisie_avis="y";
+		// Contrôler si le prof est PP de l'élève
+		if($_SESSION['statut']=='professeur') {
+			$droit_saisie_avis="n";
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$eleve1."' AND id_classe='$id_classe';";
+			$verif_pp=mysql_query($sql);
+			if(mysql_num_rows($verif_pp)>0) {
+				$droit_saisie_avis="y";
+			}
+		}
 
-			// $num_periode_choisie
-			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode_choisie';";
-			//echo "$sql<br />";
-			$test_verr_per=mysql_query($sql);
-			$lig_verr_per=mysql_fetch_object($test_verr_per);
-			if($lig_verr_per->verouiller!='O') {
-				echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
 
-				$current_eleve_avis="";
-				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
+		if($droit_saisie_avis=="y") {
+			//if ($_POST['choix_periode']=="periode") {
+			if ($choix_periode=="periode") {
+
+				// $num_periode_choisie
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode_choisie';";
 				//echo "$sql<br />";
-				$res_avis=mysql_query($sql);
-				if(mysql_num_rows($res_avis)>0) {
-					$lig_avis=mysql_fetch_object($res_avis);
-					$current_eleve_avis=$lig_avis->avis;
-				}
+				$test_verr_per=mysql_query($sql);
+				$lig_verr_per=mysql_fetch_object($test_verr_per);
+				if($lig_verr_per->verouiller!='O') {
+					echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
 
-				echo "<div style='display:none;'>
+					$current_eleve_avis="";
+					$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
+					//echo "$sql<br />";
+					$res_avis=mysql_query($sql);
+					if(mysql_num_rows($res_avis)>0) {
+						$lig_avis=mysql_fetch_object($res_avis);
+						$current_eleve_avis=$lig_avis->avis;
+					}
+
+					echo "<div style='display:none;'>
 <textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='20' wrap='virtual' onchange=\"changement()\">$current_eleve_avis</textarea>
 <input type='hidden' name='num_periode_saisie' value='$num_periode_choisie' />
 <input type='hidden' name='eleve_saisie_avis' value='$eleve1' />
 <input type='hidden' name='enregistrer_avis' id='enregistrer_avis' value='' />
 </div>\n";
 
-				echo "<script type='text/javascript'>
+					echo "<script type='text/javascript'>
 	function save_avis(mode) {
 		document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 		document.getElementById('enregistrer_avis').value='y';
@@ -1595,61 +1609,62 @@ function eleve_suivant(){
 	}
 </script>\n";
 
-				$titre="Avis du conseil de classe: $lig_verr_per->nom_periode";
+					$titre="Avis du conseil de classe: $lig_verr_per->nom_periode";
 
-				//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-				$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-				$texte.="<div style='text-align:center;'>\n";
-				$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
-				//$texte.="\n";
-				$texte.="$current_eleve_avis";
-				$texte.="</textarea>\n";
+					//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+					$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+					$texte.="<div style='text-align:center;'>\n";
+					$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+					//$texte.="\n";
+					$texte.="$current_eleve_avis";
+					$texte.="</textarea>\n";
 
-				//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
-				$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-				if($suivant<$nombreligne+1){
-					$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+					//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+					$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+					if($suivant<$nombreligne+1){
+						$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+					}
+
+					// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+
+					$texte.="</div>\n";
+					$texte.="</form>\n";
+
+					$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 				}
-
-				// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-
-				$texte.="</div>\n";
-				$texte.="</form>\n";
-
-				$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
 			}
-		}
-		elseif($_POST['choix_periode']=="toutes_periodes") {
-			// On doit trouver quelle période est ouverte en saisie d'avis.
+			//elseif($_POST['choix_periode']=="toutes_periodes") {
+			elseif($choix_periode=="toutes_periodes") {
+				// On doit trouver quelle période est ouverte en saisie d'avis.
 
-			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND verouiller!='O';";
-			$res_verr_per=mysql_query($sql);
-			if(mysql_num_rows($res_verr_per)==1) {
-				// On ne propose la saisie d'avis que si une seule période est ouverte en saisie (N ou P)
-				// ... pour le moment.
-				$lig_per=mysql_fetch_object($res_verr_per);
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND verouiller!='O';";
+				$res_verr_per=mysql_query($sql);
+				if(mysql_num_rows($res_verr_per)==1) {
+					// On ne propose la saisie d'avis que si une seule période est ouverte en saisie (N ou P)
+					// ... pour le moment.
+					$lig_per=mysql_fetch_object($res_verr_per);
 
-				$num_periode_choisie=$lig_per->num_periode;
+					$num_periode_choisie=$lig_per->num_periode;
 
-				echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
+					echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
 
-				$current_eleve_avis="";
-				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
-				//echo "$sql<br />";
-				$res_avis=mysql_query($sql);
-				if(mysql_num_rows($res_avis)>0) {
-					$lig_avis=mysql_fetch_object($res_avis);
-					$current_eleve_avis=$lig_avis->avis;
-				}
+					$current_eleve_avis="";
+					$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
+					//echo "$sql<br />";
+					$res_avis=mysql_query($sql);
+					if(mysql_num_rows($res_avis)>0) {
+						$lig_avis=mysql_fetch_object($res_avis);
+						$current_eleve_avis=$lig_avis->avis;
+					}
 
-				echo "<div style='display:none;'>
+					echo "<div style='display:none;'>
 <textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='20' wrap='virtual' onchange=\"changement()\">$current_eleve_avis</textarea>
 <input type='hidden' name='num_periode_saisie' value='$num_periode_choisie' />
 <input type='hidden' name='eleve_saisie_avis' value='$eleve1' />
 <input type='hidden' name='enregistrer_avis' id='enregistrer_avis' value='' />
 </div>\n";
 
-				echo "<script type='text/javascript'>
+					echo "<script type='text/javascript'>
 	function save_avis(mode) {
 		document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 		document.getElementById('enregistrer_avis').value='y';
@@ -1662,32 +1677,32 @@ function eleve_suivant(){
 	}
 </script>\n";
 
-				$titre="Avis du conseil de classe: $lig_per->nom_periode";
+					$titre="Avis du conseil de classe: $lig_per->nom_periode";
 
-				//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-				$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
-				$texte.="<div style='text-align:center;'>\n";
-				$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
-				//$texte.="\n";
-				$texte.="$current_eleve_avis";
-				$texte.="</textarea>\n";
+					//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+					$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+					$texte.="<div style='text-align:center;'>\n";
+					$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+					//$texte.="\n";
+					$texte.="$current_eleve_avis";
+					$texte.="</textarea>\n";
 
-				//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
-				$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-				if($suivant<$nombreligne+1){
-					$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+					//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
+					$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
+					if($suivant<$nombreligne+1){
+						$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+					}
+
+					// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
+
+					$texte.="</div>\n";
+					$texte.="</form>\n";
+
+					$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
+
 				}
 
-				// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
-
-				$texte.="</div>\n";
-				$texte.="</form>\n";
-
-				$tabdiv_infobulle[]=creer_div_infobulle('saisie_avis',$titre,"",$texte,"",35,0,'y','y','n','n');
-
 			}
-
-
 		}
 	}
 
