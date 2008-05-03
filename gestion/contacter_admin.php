@@ -123,6 +123,11 @@ case "envoi":
 
 		if($email_reponse!="") {
 			echo ", vous recevrez rapidement<br />une réponse dans votre boîte aux lettres électronique, veuillez la consulter régulièrement.";
+
+			if(!ereg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}",$email_reponse)) {
+				echo "</p>\n";
+				echo "<p style=\"text-align: center\">L'adresse <span style='color:red'>$email_reponse</span> ne semble pas correctement formatée.<br />Si l'adresse est correcte, ne tenez pas compte de cette remarque.<br />Sinon, vous ne pourrez pas obtenir de réponse par courriel/email.\n";
+			}
 		}
 		else {
 			if($_SESSION['statut']=='professeur') {
@@ -208,7 +213,11 @@ default://formulaire d'envoi
 				}
 			}
 			else {
-				var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+				//var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+				//var verif2 = /^[a-zA-Z0-9_-]{1,}[.][a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+				//if (verif.exec(email) == null) {
+				//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
+				var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
 				if (verif.exec(email) == null) {
 					confirmation=confirm('L adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
 
