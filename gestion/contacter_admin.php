@@ -143,7 +143,7 @@ case "envoi":
 		echo "<a href=\"javascript:self.close();\">Fermer</a></p>\n";
 
 	} else {
-		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>\n";
+		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font></p>\n";
 	}
 	break;
 default://formulaire d'envoi
@@ -206,7 +206,8 @@ default://formulaire d'envoi
 			email=document.getElementById('email_reponse').value;
 
 			if(email=='') {
-				confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+				//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+				confirmation=confirm('Vous n\\'avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
 
 				if(confirmation) {
 					document.forms['doc'].submit();
@@ -219,7 +220,7 @@ default://formulaire d'envoi
 				//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
 				var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
 				if (verif.exec(email) == null) {
-					confirmation=confirm('L adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
+					confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
 
 					if(confirmation) {
 						document.forms['doc'].submit();
