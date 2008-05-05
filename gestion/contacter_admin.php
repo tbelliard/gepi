@@ -207,7 +207,7 @@ default://formulaire d'envoi
 
 			if(email=='') {
 				//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
-				confirmation=confirm('Vous n\\'avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+				confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
 
 				if(confirmation) {
 					document.forms['doc'].submit();
