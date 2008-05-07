@@ -104,7 +104,7 @@ if (!isset($is_posted)) {
 	}
 
 	if(!file_exists("../temp/$tempdir/f_div.csv")){
-		echo "<p>Le fichier f_div.csv n'est pas présent dans votre dossier temporaire.<br />Auriez-vous suaté l'étape de l'importation des professeurs???</p>\n";
+		echo "<p>Le fichier f_div.csv n'est pas présent dans votre dossier temporaire.<br />Auriez-vous sauté l'étape de l'importation des professeurs???</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
