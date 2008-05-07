@@ -159,7 +159,7 @@ if ($action == "ajouter_gr") {
 	if (is_numeric($id_gr)) {
 		// On peut alors effacer ce groupe EdT
 		$query_del = mysql_query("DELETE FROM edt_gr_nom WHERE id = '".$id_gr."' LIMIT 1") OR trigger_error('Erreur lors de la suppression ', E_USER_NOTICE);
-		$msg_gr_del = 'op !';
+
 	}else{
 
 		$msg_gr_del = '<p>Impossible d\'effacer ce groupe car son identifiant n\'existe pas.</p>';
@@ -179,11 +179,16 @@ $query_g = mysql_query($sql_g) OR trigger_error('Impossible de lire les tables d
 $a = 0;
 while($gr = mysql_fetch_array($query_g)){
 	// On formate l'affichage des groupes de l'EdT
+	//<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'changer_nom\')" title="Modifier le nom">'.$gr["nom"].'</td>
+	//
 
+	$gr_nom_long = (isset($gr["nom_long"]) AND $gr["nom_long"] != '') ? $gr["nom_long"] : '-';
 	$aff_liste_gr .= '
 		<tr>
-			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'changer_nom\')" title="Modifier le nom">'.$gr["nom"].'</td>
-			<td>'.$gr["nom_long"].'</td>
+			<td style="cursor: pointer;" id="id00_'.$gr["id"].'">
+				<p onclick="classeEdtAjax(\'id00_'.$gr["id"].'\', \''.$gr["nom"].'\', \'nom_gr\');" title="Modifier ce nom">'.$gr["nom"].'</p></td>
+			<td style="cursor: pointer;" id="id000_'.$gr["id"].'">
+				<p onclick="classeEdtAjax(\'id000_'.$gr["id"].'\', \''.$gr_nom_long.'\', \'nom_gr2\');" title="Modifier ce nom long">'.$gr_nom_long.'</p></td>
 			<td style="cursor: pointer;" id="id2_'.$gr["id"].'">
 				<p onClick="classeEdtAjax(\'id2_'.$gr["id"].'\', \''.$gr["subdivision_type"].'\', \'type\');" title="Modifier le type">'.$gr["subdivision_type"].'</p>
 			</td>
@@ -208,7 +213,7 @@ while($gr = mysql_fetch_array($query_g)){
 
 	$aff_liste_gr .= '
 			</td>
-			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_e\');">Liste</td>
+			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_e\');">Afficher</td>
 			<td><p><a href="./edt_aff_gr.php?action=effacer_gr&amp;id_gr='.$gr["id"].'"><img src="../images/icons/delete.png" />'.$msg_gr_del.'</a></p></td>
 		</tr>
 	';
@@ -246,7 +251,8 @@ echo '
 // +++++++++++++++++++++ fin du header ++++++++++++++++++++++++
 ?>
 
-<p><a href="../edt_organisation/index_edt.php"><img src="../images/icons/back.png" />Retour</a></p>
+<h4><a href="../edt_organisation/index_edt.php"><img src="../images/icons/back.png" alt='Retour' class='back_link' />Retour</a>&nbsp;|&nbsp;
+<span class="gepi">Cliquez sur l'&eacute;l&eacute;ment &agrave; modifier.</span></h4>
 <br />
 
 <!-- Liste des gr -->

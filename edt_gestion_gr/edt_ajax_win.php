@@ -52,6 +52,8 @@ $classe = isset($_GET["classe"]) ? $_GET["classe"] : NULL;
 $action = isset($_GET["action"]) ? $_GET["action"] : NULL;
 $id = isset($id_gr) ? substr($id_gr, 3) : NULL;
 $id2 = isset($id_gr) ? substr($id_gr, 4) : NULL;
+$id3 = isset($id_gr) ? substr($id_gr, 5) : NULL;
+$id4 = isset($id_gr) ? substr($id_gr, 6) : NULL;
 
 // ==========================fin des variables ==================
 
@@ -97,15 +99,97 @@ if ($action == 'modifier') {
 	echo '
 		<select name="">
 			<option value="rien">Type de subdivision</option>
-			<option value="plusieurs" onclick="classeEdtAjax(\''.$id_gr.'\', \'plusieurs\', \'type_en\');">Plusieurs classes</option>
+			<option value="autre" onclick="classeEdtAjax(\''.$id_gr.'\', \'autre\', \'type_en\');">Plusieurs classes</option>
 			<option value="classe" onclick="classeEdtAjax(\''.$id_gr.'\', \'classe\', \'type_en\');">Une classe (ent.)</option>
 			<option value="demi" onclick="classeEdtAjax(\''.$id_gr.'\', \'demi\', \'type_en\');">Subdivision d\'une classe</option>
 		</select>';
 
 }elseif($action == 'type_en'){
 
+	$type = $classe; // car on garde la variable du début (c'est plus simple)
 	// On enregistre les modifications
-	echo 'RAS : '.$classe;
+
+	$sql_type = "UPDATE edt_gr_nom SET subdivision_type = '".$type."' WHERE id = '".$id2."'";
+	$query_type = mysql_query($sql_type);
+
+	if ($query_type) {
+		// et on renvoie ce qu'il faut pour l'affichage
+		echo '
+		<p onClick="classeEdtAjax(\'id2_'.$id2.'\', \''.$type.'\', \'type\');" title="Modifier le type">'.$type.'&nbsp;
+			<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
+	}else{
+		echo '
+		<p title="'.$sql_type.'" style="color: red;">Erreur !</p>';
+	}
+
+}elseif($action == "nom_gr"){
+	// On vérifie quelques petits trucs
+	if (is_numeric($id3)) {
+
+		$infos =  ($classe) ? urldecode($classe) : NULL; // car on garde la variable du début
+		// On envoie alors le bon input qui permet d'afficher le nom cours et le nom long
+
+		echo '
+			<input type="text" id="fr_'.$id3.'" value="'.$infos.'" onblur="classeEdtAjax(\'id00_'.$id3.'\', \'fr_'.$id3.'\', \'nom_en\');" />
+		';
+
+	}
+}elseif($action == "nom_gr2"){
+
+	// On vérifie quelques petits trucs
+	if (is_numeric($id4)) {
+
+		$infos = (isset($classe) AND $classe != "-") ? urldecode($classe) : NULL; // car on garde la variable du début
+
+		// On envoie alors le bon input qui permet d'afficher le nom cours et le nom long
+
+		echo '
+			<input type="text" id="fra_'.$id4.'" value="'.$infos.'" onblur="classeEdtAjax(\'id000_'.$id4.'\', \'fra_'.$id4.'\', \'nom_en2\');" />
+		';
+
+	}
+
+}elseif($action == "nom_en"){
+
+	if (is_numeric($id3)) {
+
+		$nom =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
+		// On enregistre la modification
+		$sql_nom = "UPDATE edt_gr_nom SET nom = '".utf8_decode($nom)."' WHERE id = '".$id3."'";
+		$query_nom = mysql_query($sql_nom);
+
+		if ($query_nom) {
+			echo '
+			<p onClick="classeEdtAjax(\'id00_'.$id3.'\', \''.$nom.'\', \'nom_gr\');" title="Modifier le nom">'.$nom.'&nbsp;
+				<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
+		}else{
+
+			echo '
+			<p title="'.$sql_nom.'" style="color: red;">Erreur !</p>';
+
+		}
+
+	}
+
+}elseif($action == "nom_en2"){
+
+	if (is_numeric($id4)) {
+
+		$nom_lg =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
+		// On enregistre la modification
+		$sql_nom_lg = "UPDATE edt_gr_nom SET nom_long = '".utf8_decode($nom_lg)."' WHERE id = '".$id4."'";
+		$query_nom_lg = mysql_query($sql_nom_lg);
+
+		if ($query_nom_lg) {
+			echo '
+		<p onClick="classeEdtAjax(\'id000_'.$id4.'\', \''.$nom_lg.'\', \'nom_gr2\');" title="Modifier le nom long">'.$nom_lg.'&nbsp;
+			<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
+		}else{
+			echo '
+			<p title="'.$sql_nom_lg.'" style="color: red;">Erreur !</p>';'
+		}
+
+	}
 
 }
 ?>

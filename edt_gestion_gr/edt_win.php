@@ -139,7 +139,7 @@ if ($action == "modifier_gr") {
 	$query_m = mysql_query($sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.mysql_error(), E_USER_ERROR);
 	if ($query_m) {
 		// On ferme la fenêtre
-		echo '<html><body onload="window.close();"></body></html>';
+		echo '<html><body><p>La modification a bien été enregistrée, vous pouvez fermer cette fenêtre et rafraichir votre navigateur.</p></body></html>';
 		trigger_error('Impossible d\'aller plus loin.', E_USER_ERROR);
 	}
 }
