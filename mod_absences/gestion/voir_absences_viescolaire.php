@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
-die();
+	die();
 }
 
 // Initialisation des variables
@@ -73,14 +73,35 @@ require_once("../../lib/header.inc");
 	}
 
 
+// Choix de la bonne table
+if (date("w") == getSettingValue("creneau_different")){
+	$table_ab = 'absences_creneaux_bis';
+}else{
+	$table_ab = 'absences_creneaux';
+}
 
 
 	// Préparation de la requête quand un créneau est choisi
 $aff_aid_absences = "";
 $nbre_rep = "";
 if (isset($choix_creneau)) {
-	// On transforme les horaires du créneau en timestamp UNIX sur la date du jour
-	$ex_horaire = explode(":", $choix_creneau);
+	if (is_numeric($choix_creneau)) {
+		// On vient d'envoyer l'id du créneau qu'il faut donc récupérer
+		$creneaux = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode, heurefin_definie_periode FROM ".$table_ab." WHERE id_definie_periode = '".$choix_creneau."'"));
+		$explode1 = explode(":", $creneaux["heuredebut_definie_periode"]);
+		$explode2 = explode(":", $creneaux["heurefin_definie_periode"]);
+		$ex_horaire[0] = $explode1[0];
+		$ex_horaire[1] = $explode1[1];
+		$ex_horaire[3] = $explode2[0];
+		$ex_horaire[4] = $explode2[1];
+
+	}else{
+
+		// On transforme les horaires du créneau en timestamp UNIX sur la date du jour
+		$ex_horaire = explode(":", $choix_creneau);
+
+	}
+
 	$abs_deb_ts = mktime($ex_horaire[0], $ex_horaire[1], 0, date("m"), date("d"), date("Y"));
 	$abs_fin_ts = mktime($ex_horaire[3], $ex_horaire[4], 0, date("m"), date("d"), date("Y"));
 
@@ -198,19 +219,23 @@ for($i = 0; $i < $nbre_rep; $i++) {
 <?php
 		// test sur le jour pour voir les créneaux
 	if (date("w") == getSettingValue("creneau_different")) {
-		$req_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	else {
-		$req_creneaux = mysql_query("SELECT nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+		$req_creneaux = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	}
 	$nbre_creneaux = mysql_num_rows($req_creneaux);
 	for($a=0; $a<$nbre_creneaux; $a++) {
 		$aff_creneaux[$a]["nom"] = mysql_result($req_creneaux, $a, "nom_definie_periode");
+		$aff_creneaux[$a]["id"] = mysql_result($req_creneaux, $a, "id_definie_periode");
 		$aff_creneaux[$a]["heure_debut"] = mysql_result($req_creneaux, $a, "heuredebut_definie_periode");
 		$aff_creneaux[$a]["heure_fin"] = mysql_result($req_creneaux, $a, "heurefin_definie_periode");
 
+		//echo '
+		//<option value="'.$aff_creneaux[$a]["heure_debut"].':'.$aff_creneaux[$a]["heure_fin"].'">'.$aff_creneaux[$a]["nom"].'</option>
+		//';
 		echo '
-		<option value="'.$aff_creneaux[$a]["heure_debut"].':'.$aff_creneaux[$a]["heure_fin"].'">'.$aff_creneaux[$a]["nom"].'</option>
+		<option value="'.$aff_creneaux[$a]["id"].'">'.$aff_creneaux[$a]["nom"].'</option>
 		';
 	}
 ?>
@@ -219,8 +244,8 @@ for($i = 0; $i < $nbre_rep; $i++) {
 </form>
 <?php
 if (isset($choix_creneau)) {
-	$aff_horaires = explode(":", $choix_creneau);
-	echo ' Voir les absences de <span style="color: blue;">'.$aff_horaires[0].':'.$aff_horaires[1].'</span> à <span style="color: blue;">'.$aff_horaires[3].':'.$aff_horaires[4].'</span>.';
+	//$aff_horaires = explode(":", $choix_creneau);
+	echo ' Voir les absences de <span style="color: blue;">'.$explode1[0].':'.$explode1[1].'</span> à <span style="color: blue;">'.$explode2[0].':'.$explode2[1].'</span>.';
 }
 ?>
 <br />
