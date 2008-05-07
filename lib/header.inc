@@ -149,6 +149,17 @@ $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
 	 	// On affiche le lien qui charge scriptaculous
 	 	echo '<script type="text/javascript" src="'.$gepiPath.'/lib/scriptaculous.js?load='.$script_effet.'"></script>'."\n";
 	 }
+// Utilisation de windows.js
+$windows = isset($utilisation_win) ? $utilisation_win : NULL;
+if ($windows == 'oui') {
+ 	echo '
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/effects.js"> </script>
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window.js"> </script>
+	<script type="text/javascript" src="'.$gepiPath.'/edt_effets/javascripts/window_effects.js"> </script>
+	<link href="'.$gepiPath.'/edt_effets/themes/default.css" rel="stylesheet" type="text/css"/>
+	<link href="'.$gepiPath.'/edt_effets/themes/alphacube.css" rel="stylesheet" type="text/css"/>
+	 ';
+ }
 // js spécifique
 if(isset($javascript_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
