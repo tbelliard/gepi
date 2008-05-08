@@ -536,6 +536,11 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/edt_param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Régler les couleurs des matières (EdT)', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/edt_organisation/ajax_edtcouleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier les couleurs des affichages des emplois du temps.', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/creer_statut.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter et gérer des statuts privés', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_gestion_gr/edt_aff_gr.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_gestion_gr/edt_ajax_win.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_gestion_gr/edt_liste_eleves.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/edt_gestion_gr/edt_win.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');";
+
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_sconet.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');";
 
@@ -4707,6 +4712,78 @@ if (isset ($_POST['maj'])) {
 			$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
 		}
 
+
+		$result .= "&nbsp;->Création de la table 'edt_gr_nom'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_nom'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_gr_nom` (
+									`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+									`nom` VARCHAR( 50 ) NOT NULL ,
+									`nom_long` VARCHAR( 200 ) NOT NULL ,
+									`subdivision_type` VARCHAR( 20 ) NOT NULL DEFAULT 'autre',
+									`subdivision` VARCHAR( 50 ) NOT NULL ,
+									PRIMARY KEY ( `id` ));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Création de la table 'edt_gr_eleves'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_eleves'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_gr_eleves` (
+									`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+									`id_gr_nom` INT( 11 ) NOT NULL ,
+									`id_eleve` INT( 11 ) NOT NULL ,
+									PRIMARY KEY ( `id` ));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+        $result .= "&nbsp;->Création de la table 'edt_gr_profs'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_profs'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_gr_profs` (
+									`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+									`id_gr_nom` INT( 11 ) NOT NULL ,
+									`id_utilisateurs` VARCHAR( 50 ) NOT NULL ,
+									PRIMARY KEY ( `id` ));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+		$result .= "&nbsp;->Création de la table 'edt_gr_classes'<br />";
+        $test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_classes'"));
+        if ($test1 == 0) {
+            $query1 = mysql_query("CREATE TABLE `edt_gr_classes` (
+									`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+									`id_gr_nom` INT( 11 ) NOT NULL ,
+									`id_classe` INT( 11 ) NOT NULL ,
+									PRIMARY KEY ( `id` ));");
+            if ($query1) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+        }
+
+
 	    $result .= "&nbsp;->Ajout (si besoin) du paramètre 'nom_creneaux_s' à la table 'edt_setting'<br/>";
         $req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'nom_creneaux_s'");
         $res_test = mysql_num_rows($req_test);
@@ -4908,6 +4985,20 @@ if (isset ($_POST['maj'])) {
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
             $query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
+       	$result .= "&nbsp;->Ajout (si besoin) du paramètre 'mod_edt_gr' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'mod_edt_gr'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('mod_edt_gr', 'n');");
             if ($query3) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
             } else {

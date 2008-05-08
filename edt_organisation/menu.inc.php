@@ -156,7 +156,14 @@ if ($_SESSION['statut'] == "administrateur") {
 
 			<dd id="sEdTmenu4"'.displaydd("4").'>
 				<ul>
-					<li><a href="voir_groupe.php">Les groupes</a></li>
+					<li style="font-size: 0.9em;"><a href="voir_groupe.php">Les enseignements</a></li>';
+
+if (getSettingValue("mod_edt_gr") == "y") {
+	echo '
+	<li><a href="../edt_gestion_gr/edt_aff_gr.php">Les groupes</a></li>';
+}
+
+	echo '
 					<li><a href="ajouter_salle.php">Les Salles</a></li>
 					<li><a href="edt_initialiser.php">Initialiser</a></li>
 					<li><a href="edt_parametrer.php">Paramétrer</a></li>
