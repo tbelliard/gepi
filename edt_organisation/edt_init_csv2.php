@@ -195,7 +195,7 @@ if ($action == "upload_file") {
             $tableau = array();
             // On affiche le tire pour chaque étape
             $titre = array('Les jours de la semaine',
-                'Les créneaux : vous devez faire la concordance sur les créneaux de début de cours <br />&nbsp;&nbsp;&nbsp;-> <span style="font-style: italic;">Précisez le créneau de début pour tous les créneaux</span>.',
+                'Les créneaux : vous devez faire la concordance sur les créneaux de début de cours <br />&nbsp;&nbsp;&nbsp;-> <span style="font-style: italic;">Précisez le créneau de début pour tous les créneaux (si le cours commence au milieu du créneau M1, il faut donc choisir le créneau M1).</span>.',
                 'Les divisions : le nom des classes',
                 'Les matières enseignées : ',
                 'Les professeurs : ',
@@ -232,8 +232,9 @@ if ($action == "upload_file") {
                 //for($l = 0; $l < $nbre_lignes; $l++)
                 $l = 0; // comme itérateur
 				foreach ($tableau as $key => $val) {
-                	// On enlève les guillemets et les apostrophes
-                	$valeur = ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $val));
+                	// On enlève les guillemets et les apostrophes et les accents
+                	//$valeur = ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $val));
+                	$valeur = remplace_accents($val, 'all');
                     echo '
 					<p>
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
@@ -242,10 +243,13 @@ if ($action == "upload_file") {
 
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
-                        $test_selected = explode(" ", $val);
-                    } else {
-                        $test_selected[0] = $val;
-                    }
+                        $test_selected = explode(" ", $valeur);
+                    } elseif ($etape == 0) {
+                    	// Pour les jours, on enlève l'espace devant
+                        $test_selected[0] = trim($valeur);
+                    }else{
+						$test_selected[0] = $valeur;
+					}
 
 					// Pour les salles, on annonce celles qui existent déjà
 					if (salleifexists($valeur) == "oui" AND $etape == 5) {
@@ -255,15 +259,14 @@ if ($action == "upload_file") {
 					}
 
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
-                    if ($etape == 4) {
+                    //if ($etape == 4) {
                     	// Pour les prof, on met tout en majuscule
                     	$nom_selected = strtoupper($test_selected[0]);
-                    	// et on enlève tous les accents
-                    	//$nom_selected = str_replace(, , );
 
-                    }else{
-						$nom_selected = $test_selected[0]; // pour le selected du helper
-					}
+
+                    //}else{
+					//	$nom_selected = $test_selected[0]; // pour le selected du helper
+					//}
                     $nom_id_select = 'nomGepi' . $l; // pour le id du select (en mettre en liaison avec le for du label ci-dessus)
                     $style_select = ' style="text-align: center;"';
                     // On appelle le bon helper
@@ -382,27 +385,27 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 ?>
 <br /><br />
 	<div style="border: 2px solid grey;">
-		<h3>Attention, le "select" suivant permet de recommencer &agrave; une &eacute;tape ant&eacute;rieure.
-		Si vous demandez l'&eacute;tape 0, il faudra fournir de nouveau le fichiier csv.</h3>
+		<h3>Attention, l'option ci-dessous permet de recommencer &agrave; une &eacute;tape ant&eacute;rieure.
+		Si vous demandez l'&eacute;tape 0, il faudra fournir de nouveau le fichier csv.</h3>
 		<form name="refaire" action="edt_init_csv2.php" method="post">
 			<p><label for="">Vous pouvez recommencer depuis l'&eacute;tape : </label>
 			<select name="recommencer">
 				<option value="non">non</option>
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
+				<option value="0">0&nbsp;:&nbsp;Les jours</option>
+				<option value="1">1&nbsp;:&nbsp;les cr&eacute;neaux</option>
+				<option value="2">2&nbsp;:&nbsp;les classes</option>
+				<option value="3">3&nbsp;:&nbsp;les mati&egrave;res</option>
+				<option value="4">4&nbsp;:&nbsp;Les professeurs</option>
+				<option value="5">5&nbsp;:&nbsp;Les salles</option>
 				<option value="6">6</option>
-				<option value="7">7</option>
+				<option value="7">7&nbsp;:&nbsp;les regroupements</option>
 				<option value="8">8</option>
 				<option value="9">9</option>
-				<option value="10">10</option>
+				<option value="10">10&nbsp;:&nbsp;Les fr&eacute;quences</option>
 				<option value="11">11</option>
-				<option value="12">12</option>
+				<option value="12">12&nbsp;:&nbsp;Les cours</option>
 			</select>
-			<input type="submit" value="Valider" />
+			<input type="submit" value="Recommencer" />
 			</p>
 		</form>
 	</div>

@@ -39,7 +39,7 @@ $query = mysql_query("SELECT * FROM horaires_etablissement LIMIT 0, 7")
 
 while($jours = mysql_fetch_array($query)){
 	// le selected
-	if ($nom_selected == ucfirst($jours["jour_horaire_etablissement"])) {
+	if (strtoupper($jours["jour_horaire_etablissement"]) == $nom_selected) {
 		$selected = ' selected="selected"';
 	}else{
 		$selected = '';

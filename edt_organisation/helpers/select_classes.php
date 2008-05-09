@@ -31,8 +31,10 @@ echo '
 	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
 	$nbre = mysql_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
+
 		$classe[$i] = mysql_result($query, $i, "id");
-		$nom[$i] = mysql_result($query, $i, "classe");
+		$nom[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "classe"), 'all'));
+
 		// On détermine le selected si c'est possible
 		if ($nom[$i] == $classe_selected) {
 			$selected = ' selected="selected"';

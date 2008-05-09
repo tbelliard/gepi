@@ -40,6 +40,11 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
+// Sécurité
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
 
 // Initialisation des variables
 $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
@@ -54,10 +59,18 @@ $msg_enreg = '';
 <html lang="fr">
 <head>
 	<title>Enregistrer les concordances(2) pour l'import de l'EdT</title>
+	<link rel="stylesheet" type="text/css" href="../style.css" />
 	<LINK REL="SHORTCUT ICON" href="/gepi_trunk/favicon.ico" />
 </head>
 <body>
 <?php
+echo "<div id='header'>
+	<br />
+	<p style='text-align: center;'>Concordances</p>
+	<br />
+
+</div>
+";
 // traitement des données qui arrivent
 
 if ($etape != NULL) {

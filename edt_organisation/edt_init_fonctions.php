@@ -459,11 +459,14 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 	// Il reste à déterminer le groupe
 	if ($regroupement != '') {
+
 		$groupe_e = renvoiConcordances($regroupement, 7);
+
 		if ($groupe_e == 'erreur') {
 			$regrp = '';
 			$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
 		}
+
 	}else{
 		// On recherche le groupe
 		$regrp = '';
