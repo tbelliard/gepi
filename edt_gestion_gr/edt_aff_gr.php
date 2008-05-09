@@ -30,45 +30,21 @@ edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 	- nom et nom_long permettent de préciser deux niveaux (deux longueurs de noms)
 	- subdivision_type peut être de trois types : classe, demi ou autre
 	- subdivision précise l'id de la classe dans les cas où subdivision_type = classe ou demi. Sinon 'plusieurs'
-	 CREATE TABLE `edt_gr_nom` (
-`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-`nom` VARCHAR( 50 ) NOT NULL ,
-`nom_long` VARCHAR( 200 ) NOT NULL ,
-`subdivision_type` VARCHAR( 20 ) NOT NULL DEFAULT 'autre',
-`subdivision` VARCHAR( 50 ) NOT NULL ,
-PRIMARY KEY ( `id` )
-) ENGINE = InnoDB
+
 edt_gr_eleves (id, id_gr_nom, id_eleve)
 	- id entier autoincrémenté
 	- id_gr_nom renvoie à l'id de la table edt_gr_nom
 	- id_eleve renvoie à l'id_eleve de la table eleves
- CREATE TABLE `edt_gr_eleves` (
-`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-`id_gr_nom` INT( 11 ) NOT NULL ,
-`id_eleve` INT( 11 ) NOT NULL ,
-PRIMARY KEY ( `id` )
-) ENGINE = InnoDB
+
 edt_gr_profs (id, id_gr_nom, id_utilisateurs)
 	- id entier autoincrémenté
 	- id_gr_nom renvoie à l'id de la table edt_gr_nom
 	- id_utilisateurs renvoie au login de la table utilisateurs (professeurs ou 'autre' uniquement).
- CREATE TABLE `edt_gr_profs` (
-`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-`id_gr_nom` INT( 11 ) NOT NULL ,
-`id_utilisateurs` VARCHAR( 50 ) NOT NULL ,
-PRIMARY KEY ( `id` )
-) ENGINE = InnoDB
+
 edt_gr_classes (id, id_gr_nom, id_classe)
 	- id entier autoincrémenté
 	- id_gr_nom renvoie à l'id de la table edt_gr_nom
 	- id_classe renvoie l'id de la table classes.
- CREATE TABLE `edt_gr_classes` (
-`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-`id_gr_nom` INT( 11 ) NOT NULL ,
-`id_classe` INT( 11 ) NOT NULL ,
-PRIMARY KEY ( `id` )
-) ENGINE = InnoDB
-
 */
 
 // ========== Initialisation =============
@@ -90,11 +66,11 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*/ Sécurité
+// Sécurité
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
-}*/
+}
 
 // ===================== fin de l'initialisation ================
 
@@ -271,7 +247,7 @@ echo '
 
 	</table>
 		<input type="hidden" name="action" value="modifier" />
-		<input type="submit" name="modifier" value="Enregistrer les modifications" />
+		<!--<input type="submit" name="modifier" value="Enregistrer les modifications" />-->
 	</form>
 
 </div>

@@ -320,3 +320,11 @@ table {
 	padding: 0 .5em 0 0;
 	line-height: 1.8;
 }
+.edt_lien {
+	border: 1px solid grey;
+	background: #FFFFFF;
+	width: 200px;
+	text-align: center;
+	cursor: pointer;
+	margin-left: 100px;
+}

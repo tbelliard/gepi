@@ -1847,6 +1847,10 @@ function ouvrirWin(id, var2){
 	var win = new Window({className: "alphacube", title: "Gestion des groupes EdT", top:170, left:200, width:400, height:200, url: "http://localhost/gepi/edt_gestion_gr/edt_win.php?var="+id+"&var2="+var2, showEffectOptions: {duration:0.5}, opacity:0.95});
 	win.show();
 }
+function ouvrirWin2(id){
+	var win = new Window({className: "alphacube", title: "Gestion des groupes EdT", top:100, left:200, width:800, height:600, url: "http://localhost/gepi/edt_organisation/edt_initialiser_manuel.php?var="+id, showEffectOptions: {duration:0.5}, opacity:0.99});
+	win.show();
+}
 function ajaxWin(id){
 	Dialog.alert({url: "../edt_gestion_gr/edt_ajax_win.php?var="+id, options: {method: 'get'}}, {className: "alphacube", width:540, okLabel: "Close"});
 }

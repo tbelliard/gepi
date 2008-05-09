@@ -5,6 +5,9 @@ cursor: pointer; font-weight: bold; color: green;
 #ajoutGr2 p {
 width: 30em; text-align: right;
 }
+#ajoutGr2 fieldset {
+border: 1px solid grey; width: 400px;
+}
 #ajoutGr2 legend {
 border: 1px solid grey;
 }

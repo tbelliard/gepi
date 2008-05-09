@@ -54,6 +54,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
 }
 // CSS et js particulier à l'EdT
+$utilisation_win = 'oui';
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
@@ -88,9 +89,10 @@ if ($aff_reglages == "oui") {
 	echo "
 	<p style=\"font-weight: bold;\">Avant de commencer la création des cours dans l'emploi du temps, il faut préparer le logiciel.</p>
 
-	<p>Une partie de l'initialisation est commune avec le module absences : <a href=\"../mod_absences/admin/admin_periodes_absences.php?action=visualiser\">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e,
-	 <a href=\"../mod_absences/admin/admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...) et
-	 <a href=\"../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
+	<p>Une partie de l'initialisation est commune avec le module absences :
+	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_periodes_absences.php?action=visualiser\">les diff&eacute;rents cr&eacute;neaux</a> de la journ&eacute;e.
+	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...).
+	<br />&nbsp;-&nbsp;<a href=\"../mod_absences/admin/admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
 
 <hr />
 
@@ -101,386 +103,20 @@ if ($aff_reglages == "oui") {
 <hr />
 	<p>
 	Pour entrer des informations dans l'emploi du temps de Gepi, il y a plusieurs possibilit&eacute;s.
-	<br />
-Pour les entr&eacute;es simples, la saisie manuelle est possible.
-Elle vous permettra de rentrer heure par heure des informations
-en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
-<p>Nous vous conseillons pour cela de saisir les emplois du temps des professeurs directement sur leur affichage.
- Pour cela, cliquez sur [Visionner], [Professeur], puis vous choisissez le professeur dans la liste déroulante.
-  En cliquant ensuite sur (-+-), une fenêtre apparait où vous pouvez saisir les cours. Un module de vérification
-  des cours est présent mais ne peut se substituer à un véritable logiciel de fabrication des emplois du temps.</p>
-<br />
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vous pouvez utiliser une initialisation venue d'un logiciel de construction des emplois du temps (voir ci-dessous).</p>
+	<br /><br />
+	<p onclick=\"ouvrirWin2('id_manuel'); return false;\" style=\"float: left; border: 1px solid grey; background: #FFFFFF; width: 200px; text-align: center; cursor: pointer;\">
+	Méthode manuelle</p>
 
-	<h5 class=\"red\">Attention ! seuls les enseignements
-d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps.</h5>
-<br />";
+	<p onclick=\"changerDisplayDiv('edt_init_import'); return false;\" style=\"position: relative; margin-left: 350px; border: 1px solid grey; background: #FFFFFF; width: 200px; text-align: center; cursor: pointer;\">
+	Importation</p>
+	";
 }
-else {
-
-}
-	// Saisie manuelle de l'emploi du temps
-echo '
-	<span class="legend">Vous ne devriez utiliser ce menu que pour de rares occasions car il n\'est pas aussi
-	performant que la méthode décrite plus haut.</span>
-		<form action="edt_initialiser.php" name="choix_prof" method="post">
-	<fieldset id="init_edt1">
-		<legend>Saisie manuelle</legend>
-
-		<select name="prof" onchange=\'document.choix_prof.submit();\'>
-			<option value="rien">Choix du professeur</option>
-	';
-
-	$tab_select = renvoie_liste("prof");
-
-	echo "	\n";
-for($i=0;$i<count($tab_select);$i++) {
-	if(isset($choix_prof)){
-		if($choix_prof==$tab_select[$i]["login"]){
-			$selected=" selected='selected'";
-		}
-		else{
-			$selected="";
-		}
-	}
-	else{
-		$selected="";
-	}
-	echo "
-			<option value='".$tab_select[$i]["login"]."'".$selected.">".$tab_select[$i]["nom"].' '.$tab_select[$i]["prenom"]."</option>\n";
-}
-
-echo '
- 		</select>
-			<input type="hidden" name="initialiser" value="ok" />
-	</fieldset>
-		</form>
-	<br />';
-
-	// Ensuite, on propose la liste des enseignements de ce professeur associés à la matière
-if (isset($choix_prof)) {
-	echo '
-			<form action="edt_initialiser.php" name="choix_enseignement" method="post">
-	<fieldset id="init_edt2">
-		<legend>Choix du cours</legend>
-
-<table border="0" cellspacing="4" cellpadding="0">
-	<tr>
-		<td>
-
-			<select name="enseignement">';
-	echo "\n";
-
-		$tab_enseignements = get_groups_for_prof($choix_prof);
-	echo "
-				<option value=\"rien\">Choix de l'enseignement</option>\n";
-
-	// On détermine le selected
-	for($i=0; $i<count($tab_enseignements); $i++) {
-		if(isset($enseignement)){
-			if($enseignement == $tab_enseignements[$i]["id"]){
-				$selected = ' selected="selected"';
-			}else{
-				$selected = '';
-			}
-		}else{
-			$selected = '';
-		}
-			echo "
-				<option value=\"".$tab_enseignements[$i]["id"]."\"".$selected.">".$tab_enseignements[$i]["classlist_string"]." : ".$tab_enseignements[$i]["description"]."</option>\n";
-	}
-
-	// On ajoute sa liste des aid
-		$tab_aid = renvoieAid("prof", $choix_prof);
-	for($i = 0; $i < count($tab_aid); $i++) {
-		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
-		echo '
-				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$nom_aid["nom"].'</option>
-		';
-	}
-
-	echo '
-			</select>
-
-			<input type="hidden" name="initialiser" value="ok" />
-			<input type="hidden" name="prof" value="'.$choix_prof.'" />
-		</td>
-		<td>
-			<select name="ch_jour_semaine">
-				<option value="rien">Jour</option>';
-	echo "\n";
-
-	// On propose aussi le choix du jour
-
-	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
-	$rep_jour = mysql_fetch_array($req_jour);
-
-	$tab_select_jour = array();
-
-	for($a=0; $a<=count($rep_jour); $a++) {
-		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
-		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
-		if(isset($ch_jour_semaine)){
-			if($ch_jour_semaine==$tab_select_jour[$a]["jour_sem"]){
-				$selected=" selected='selected'";
-			}else{
-				$selected="";
-			}
-		}else{
-			$selected="";
-		}
-		echo "
-		<option value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</option>\n";
-	}
-	echo '
-			</select>
-		</td>
-
-		<td>
-			<select name="ch_heure">
-				<option value="rien">Horaire</option>';
-	echo "\n";
-	// On propose aussi le choix de l'horaire
-
-	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
-	$rep_heure = mysql_num_rows($req_heure);
-	$tab_select_heure = array();
-
-	for($b=0; $b<$rep_heure; $b++) {
-
-		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
-		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
-		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
-		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
-		if(isset($ch_heure)){
-			if($ch_heure==$tab_select_heure[$b]["id_heure"]){
-				$selected=" selected='selected'";
-			}else{
-				$selected="";
-			}
-		}else{
-			$selected="";
-		}
-		echo "
-		<option value='".$tab_select_heure[$b]["id_heure"]."'".$selected.">".$tab_select_heure[$b]["creneaux"]." : ".$tab_select_heure[$b]["heure_debut"]." - ".$tab_select_heure[$b]["heure_fin"]."</option>\n";
-
-	}
-	echo '
-			</select>
-		</td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<select name="heure_debut">
-				<option value="0">Le cours commence au début d\'un créneau</option>
-				<option value="0.5">Le cours commence au milieu d\'un créneau</option>
-			</select>
-		</td>';
-
-	// On propose aussi le choix du type de semaine et l'heure de début du cours
-
-	echo '
-		<td>
-			<select name="duree">
-				<option value="2">1 heure</option>
-				<option value="3">1.5 heure</option>
-				<option value="4">2 heures</option>
-				<option value="5">2.5 heures</option>
-				<option value="6">3 heures</option>
-				<option value="7">3.5 heures</option>
-				<option value="8">4 heures</option>
-				<option value="0.5">1/2 heure</option>
-			</select>
-		</td>
-		<td>
-			<select name="choix_semaine">
-				<option value="0">Toutes les semaines</option>
-		';
-	// on récupère les types de semaines
-				//<option value="2">Semaines paires</option>
-				//<option value="1">Semaines impaires</option>
-	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
-	//mysql_query("SELECT type_edt_semaine FROM edt_semaines");
-	//mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
-	$nbre_semaines = mysql_num_rows($req_semaines);
-
-	for ($s=0; $s<$nbre_semaines; $s++) {
-			$rep_semaines[$s]["type_edt_semaine"] = mysql_result($req_semaines, $s, "type_edt_semaine");
-		echo '
-				<option value="'.$rep_semaines[$s]["type_edt_semaine"].'">Semaine '.$rep_semaines[$s]["type_edt_semaine"].'</option>
-		';
-	}
-
-	echo '
-			</select>
-		</td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<select  name="login_salle">
-				<option value="rien">Salle</option>
-	';
-	// Choix de la salle
-	$tab_select_salle = renvoie_liste("salle");
-
-	for($c=0;$c<count($tab_select_salle);$c++) {
-		if(isset($login_salle)){
-			if($login_salle==$tab_select_salle[$c]["id_salle"]){
-				$selected=" selected='selected'";
-			}else{
-				$selected="";
-			}
-		}else{
-			$selected="";
-		}
-		echo "
-				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
-	}
-	echo '
-			</select>
-		</td>
-		<td>
-			<select name="periode_calendrier">
-				<option value="rien">Année entière</option>
-	';
-	// Choix de la période définie dans le calendrier
-	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
-	$nbre_calendrier = mysql_num_rows($req_calendrier);
-		for ($a=0; $a<$nbre_calendrier; $a++) {
-			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
-			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
-			echo '
-				<option value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</option>
-			'."\n";
-		}
-
-	echo '
-			</select>
-		</td>
-		<td>
-			<input type="submit" name="Valider" value="Valider" />
-		</td>
-		<td>
-		</td>
-	</tr>
-	</table>
-	</fieldset>
-	</form>';
-
-	// Traitement et enregistrement des entrées manuelles de l'EdT
-
-	if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
-		echo '
-	<p class="refus">Vous devez renseigner tous les champs !</p><br />';
-	}else {
-		if (isset($choix_prof) AND $enseignement != NULL) {
-			//echo "<font color=\"green\">OK Tout Est OK !</font>";
-
-
-			// Vérification que la salle est libre à ce jour cette heure
-			$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE
-						id_salle ='".$login_salle."' AND
-						jour_semaine = '".$ch_jour_semaine."' AND
-						id_definie_periode = '".$ch_heure."' AND
-						(id_semaine = '0' OR id_semaine = '".$choix_semaine."')")
-							 or die ('Erreur dans la verif salle');
-			$rep_verif_s = mysql_fetch_array($verif_salle);
-
-			$nbre_verif_s = mysql_num_rows($verif_salle);
-			if ($nbre_verif_s != 0) {
-				$req_present_s = mysql_query("SELECT id_groupe FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
-				$rep_present_s = mysql_fetch_array($req_present_s);
-				// On vérifie si ce n'est pas une AID
-				if (retourneAid($rep_present_s["id_groupe"]) != "non") {
-					$aid = retourneAid($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
-				}else{
-					$tab_present_s = get_group($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
-				}
-
-			}
-
-			// Vérification que ce prof n'a pas déjà cours à ce moment là
-			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE
-									edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
-									edt_cours.id_definie_periode = '".$ch_heure."' AND
-									(edt_cours.id_semaine = '".$choix_semaine."' OR edt_cours.id_semaine = '0') AND
-									edt_cours.id_groupe = j_groupes_professeurs.id_groupe AND
-									login = '".$choix_prof."' AND
-									edt_cours.heuredeb_dec = '".$heure_debut."' AND
-									edt_cours.login_prof = '".$choix_prof."'")
-										or die('erreur verif prof !');
-			$rep_verif_prof = mysql_fetch_array($verif_prof);
-			$nbre_verif_prof = mysql_num_rows($verif_prof);
-			if ($nbre_verif_prof != 0) {
-				// On vérifie si ce n'est pas une AID
-				if (retourneAid($rep_verif_prof["id_groupe"]) != "non") {
-					$aid = retourneAid($rep_verif_prof["id_groupe"]);
-					echo "<p class=\"refus\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
-				}else{
-					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-					echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
-				}
-			}
-
-			// Si c'est bon, on enregistre le cours dans l'EdT
-			if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
-				$insert_edt = mysql_query("INSERT INTO edt_cours
-				(id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt, login_prof)
-					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0', '".$choix_prof."')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
-
-				// et on affiche les infos sur le cours enregistré
-					$contenu = "";
-				if (retourneAid($enseignement) != "non") {
-					// c'est une AID et donc on récupère les infos de cette AID
-					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".retourneAid($enseignement)."'");
-					$rep_aid = mysql_fetch_array($query1);
-					$tab_infos["classlist_string"] = $rep_aid["nom"];
-					// puis le nom de l'AID
-					$rep_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
-					$tab_infos["description"] = $rep_nom_aid["nom"];
-					// $contenu est la liste des élèves
-					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".retourneAid($enseignement)."'");
-					$nbre = mysql_num_rows($query);
-					for($a = 0; $a < $nbre; $a++){
-						$nom[$a] = mysql_result($query, $a, "login");
-						// On récupère ses nom et prénom
-						$query_n = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
-						$contenu .= $query_n["nom"].' '.$query_n["prenom"].'<br />';
-					}
-
-				}else {
-					// C'est un enseignement de la table GROUPES
-					$tab_infos = get_group($enseignement);
-
-					foreach ($tab_infos["eleves"][1]["users"] as $eleve_login) {
-						$contenu .= $eleve_login['nom']." ".$eleve_login['prenom']."<br />";
-					}
-				}
-
-				$titre_listeleve = "Liste des élèves";
-
-				$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>
-					".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
-				echo "<p>Ce cours est enregistré :<font color=\"green\" size=\"1\">
-					Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
-			}
-		}
-	}
-}else {
-//echo '
-//		</fieldset>';
-}
-
-
+// ============================= c'est là que j'ai sorti la partie manuelle ==================
 
 	// une fois initialisé, la partie suivante peut être verrouillée
 			// Pour déverrouiller, le traitement se fait ici là
+
+echo '<div id="edt_init_import" style="display: none;">';
 
 if (isset($init) AND $init == "ok") {
 	$req_reprendre_init = mysql_query("UPDATE edt_setting SET valeur = 'oui' WHERE reglage = 'edt_aff_init_infos2'");
@@ -499,15 +135,16 @@ if ($aff_reglages2 == "oui") {
 	<h5>Pour l\'initialisation du d&eacute;but d\'ann&eacute;e, les diff&eacute;rents logiciels de conception des emplois
  	du temps ne permettent pas d\'avoir une seule proc&eacute;dure. Il convient donc de bien d&eacute;terminer ce
 	 qui est possible. Avant de vous lancer dans cette initialisation, vous devez vous assurer d\'avoir param&eacute;tr&eacute;
- 	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement. En suivant les instructions suivantes
- 	tout devrait bien se passer.</h5>
- 	<h4 class="red">Toutes les proc&eacute;dures d\'initialisation par csv ou xml effacent l\'emploi du temps déjà créé,
-	 sauf si vous leur demandez de ne pas le faire.</h4>
+ 	l\'ensemble des informations relatives aux horaires de l\'&eacute;tablissement.</h5>
 
- 	<div id="lien">
-		<p><a href="./edt_init_csv.php">Cliquer ici pour une initialisation par fichiers csv (csv construit manuellement)</a></p>
-		<p><a href="./edt_init_csv2.php">Cliquer ici pour un autre type d\'initialisation par fichiers csv (export depuis UnDeuxTemps).</a></p>
-		<p><a href="./edt_init_texte.php">Cliquer ici pour une initialisation avec un fichier texte (export type Charlemagne).</a></p>
+ 	<h4 class="red">Pour les procédures suivantes, vous pouvez demander à Gepi d\'effacer les cours existants ou décider de les conserver.</h4>
+
+ 	<div id="lien" style="background: #fefefe; margin-left: 200px; width: 400px;">
+ 		<br />
+		<p class="edt_lien"><a href="./edt_init_csv.php">Fichiers csv construit manuellement.</a></p>
+		<p class="edt_lien"><a href="./edt_init_csv2.php">Export depuis UnDeuxTemps.</a></p>
+		<p class="edt_lien"><a href="./edt_init_texte.php">Export type Charlemagne, IndexEducation.</a></p>
+		<br />
 	</div>
  		';
 
@@ -525,7 +162,7 @@ else {
 		';
 
 }
-
+echo '</div>';
 ?>
 
 	</div>

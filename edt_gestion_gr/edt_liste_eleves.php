@@ -43,11 +43,11 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*/ Sécurité
+// Sécurité
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
-}*/
+}
 
 // ===================== fin de l'initialisation ================
 
