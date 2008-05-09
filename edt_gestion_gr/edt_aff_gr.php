@@ -76,7 +76,7 @@ if (!checkAccess()) {
 
 // ============================== VARIABLES ===============================
 
-$aff_liste_gr = $msg_gr = $msg_gr_del = $style_nom_gr = $aff_select_classes = NULL;
+$aff_liste_gr = $msg_gr = $msg_gr_del = $style_nom_gr = $aff_select_classes = $aff_select_profs = NULL;
 $auto = 'oui';
 $style_fieldset = ' style="display: none;"';
 $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : NULL);
@@ -85,6 +85,7 @@ $nom_long_gr = isset($_POST["nom_long_gr"]) ? $_POST["nom_long_gr"] : NULL;
 $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $choix_classe = isset($_POST["choix_classe"]) ? $_POST["choix_classe"] : NULL;
 $id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : NULL;
+$choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 
 // ============================= fin des VARIABLES ========================
@@ -128,6 +129,15 @@ if ($action == "ajouter_gr") {
 			$sql_e = "INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 									VALUES ('', '".$nom_gr."', '".$nom_long_gr."', '".$type."', '".$choix_classe."')";
 			$query_e = mysql_query($sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.mysql_error(), E_USER_WARNING);
+			$id_gr_nom = mysql_insert_id($query_e);
+
+			if ($choix_prof != NULL AND $choix_prof != 'plusieurs') {
+				// On ajoute aussi une ligne pour le/les professeurs de ce edt_gr
+				$sql_p = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilidateurs)
+									VALUES ('', '".$id_gr_nom."', '".$choix_prof."');";
+				$query_p = mysql_query($sql_p) OR trigger_error("Impossible d'enregistrer le nom du professeur.", E_USER_ERROR);
+
+			}
 		}
 	}
 }elseif($action == "effacer_gr"){
@@ -154,9 +164,8 @@ $query_g = mysql_query($sql_g) OR trigger_error('Impossible de lire les tables d
 
 $a = 0;
 while($gr = mysql_fetch_array($query_g)){
+
 	// On formate l'affichage des groupes de l'EdT
-	//<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'changer_nom\')" title="Modifier le nom">'.$gr["nom"].'</td>
-	//
 
 	$gr_nom_long = (isset($gr["nom_long"]) AND $gr["nom_long"] != '') ? $gr["nom_long"] : '-';
 	$aff_liste_gr .= '
@@ -190,6 +199,7 @@ while($gr = mysql_fetch_array($query_g)){
 	$aff_liste_gr .= '
 			</td>
 			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_e\');">Afficher</td>
+			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_p\');">Afficher</td>
 			<td><p><a href="./edt_aff_gr.php?action=effacer_gr&amp;id_gr='.$gr["id"].'"><img src="../images/icons/delete.png" />'.$msg_gr_del.'</a></p></td>
 		</tr>
 	';
@@ -214,6 +224,30 @@ while($gr = mysql_fetch_array($query_g)){
 			<option value="'.$classes[$i].'">'.$nom[$i].'</option>';
 		}
 		$aff_select_classes .= '</select>'."\n";
+
+// La liste des professeurs pour la création de nouveaux groupes :
+
+	$query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
+						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
+	$nbre_p = mysql_num_rows($query_p);
+
+
+	$aff_select_profs .= '
+	<select name="choix_prof">
+		<option value="plusieurs">Plusieurs professeurs</option>
+	';
+
+	for($i = 0 ; $i < $nbre_p ; $i++){
+
+		$login_p[$i] = mysql_result($query_p, "login");
+		$nom_p[$i] = mysql_result($query_p, "nom");
+		$prenom_p[$i] = mysql_result($query_p, "prenom");
+
+		$aff_select_profs .= '
+		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';
+
+	}
+	$aff_select_profs .= '</select>';
 
 
 // ++++++++++++++++++++++ Header +++++++++++++++++++++++++++++++++++++
@@ -241,6 +275,7 @@ echo '
 			<th>Type de subdivision</th>
 			<th>Classes concern&eacute;es</th>
 			<th>Liste des &eacute;l&egrave;ves</th>
+			<th>Liste des professeurs</th>
 			<th>Supprimer ce groupe</th>
 		</tr>
 	<?php echo $aff_liste_gr; ?>
@@ -269,6 +304,12 @@ echo '
 				<?php echo $aff_select_classes; ?>
 
 			</div>
+			<div id="ajoutGr4" style="Display: none;">
+				Liste des professeurs (s'il y a qu'un seul professeur qui effectue ce cours)
+				<br />
+				<?php echo $aff_select_profs; ?>
+
+			</div>
 
 			<p>
 			<label for="nomGr" title="Tel qu'il doit apparaitre dans l'EdT">Nom</label>
@@ -290,6 +331,15 @@ echo '
 			<p>
 			<label for="typeD" title="Ce groupe correspond &agrave; une partie d'une seule classe">Subdivision d'une classe</label>
 			<input type="radio" id="typeD" name="type" value="demi" onclick="versShow('ajoutGr3');" />
+			</p>
+
+			<p>
+			<label for="unprof">Un seul professeur</label>
+			<input type="radio" id="unprof" name="prof" value="unseul" onclick="versShow('ajoutGr4');" />
+			</p>
+			<p>
+			<label for="profs">Un seul professeur</label>
+			<input type="radio" id="profs" name="prof" value="plusieurs" onClick="versHide('ajoutGr4');" />
 			</p>
 
 			<input type="submit" name="enregistrer" value="Ajouter ce groupe EdT" />

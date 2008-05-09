@@ -14,6 +14,9 @@ border: 1px solid grey;
 #ajoutGr3 {
 position: absolute; margin-left: 32em;
 }
+#ajoutGr4 {
+position: absolute; margin-left: 32em; margin-top: 5em;
+}
 #listeGr p {
 cursor: pointer;
 }
