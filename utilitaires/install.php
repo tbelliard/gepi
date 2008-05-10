@@ -189,6 +189,8 @@ if ($etape == 4) {
 			//$gepipath = "/".$pathgepi[1];
 			$gepipath = substr($url['path'], 0, -24);
 			$conn = "<"."?php\n";
+			$conn .= "# La ligne suivante est à modifier si vous voulez utiliser le multisite\n";
+			$conn .= "\$multisite = 'n';\n";
 			$conn .= "# Les cinq lignes suivantes sont à modifier selon votre configuration\n";
 			$conn .= "# Pensez à renommer ce fichier connect.cfg.php en connect.inc.php\n";
 			$conn .= "#\n";
