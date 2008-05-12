@@ -598,6 +598,11 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'PAramètres du relevé de notes', '1');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/changement_eleve_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F','F', 'Changement de classe pour un élève', '1');";
+
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_avis.php','V','F','F','F','F','F','F','F','Notanet: Saisie avis chef etablissement','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/param_fiche_brevet.php','V','F','F','F','F','F','F','F','Notanet: Paramètres d impression','');";
+
+
 	//$tab_req[] = "";
 
 
@@ -6304,6 +6309,38 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= "<p>ECHEC de la mise en place d'un témoin indiquant que la conversion est effectuée.</p>\n";
 		}
 
+
+	}
+
+
+
+	$result .= "<br />&nbsp;->Ajout du champ 'lieu_naissance' à la table 'eleves'<br />";
+	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'lieu_naissance'"));
+	if ($test1 == 0) {
+		$query3 = mysql_query("ALTER TABLE eleves ADD lieu_naissance VARCHAR( 50 ) NOT NULL AFTER naissance ;");
+		if ($query3) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+		} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+		}
+	} else {
+		$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+	}
+
+	$test = sql_query1("SHOW TABLES LIKE 'communes'");
+	if ($test == -1) {
+		$result .= "<br />Création de la table 'communes'. ";
+		$sql="CREATE TABLE IF NOT EXISTS communes (
+		code_commune_insee VARCHAR( 50 ) NOT NULL ,
+		departement VARCHAR( 50 ) NOT NULL ,
+		commune VARCHAR( 255 ) NOT NULL ,
+		PRIMARY KEY ( code_commune_insee )
+		);";
+		$result_inter = traite_requete($sql);
+		if ($result_inter != '') {
+			$result .= "<br />Erreur sur la Erreur sur la crétion de la table 'communes': ".$result_inter."<br />";
+			$temoin_notanet_err++;
+		}
 	}
 
 	//==========================================================

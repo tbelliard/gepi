@@ -43,6 +43,7 @@ if (!checkAccess()) {
     die();
 }
 
+$ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
 function extr_valeur($lig){
 	unset($tabtmp);
@@ -84,6 +85,26 @@ function maj_ini_prenom($prenom){
 	}
 	return $prenom2;
 }
+
+
+
+function get_commune($code_commune_insee,$mode){
+	$retour="";
+
+	$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		if($mode==0) {
+			$retour=$lig->commune;
+		}
+		else {
+			$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+		}
+	}
+	return $retour;
+}
+
 
 // Etape...
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
@@ -383,6 +404,7 @@ else{
 				else{
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
+					/*
 					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 					`ID_TEMPO` varchar(40) NOT NULL default '',
 					`LOGIN` varchar(40) NOT NULL default '',
@@ -409,6 +431,39 @@ else{
 					`ELEOPT10` varchar(40) NOT NULL default '',
 					`ELEOPT11` varchar(40) NOT NULL default '',
 					`ELEOPT12` varchar(40) NOT NULL default ''
+					);";
+					*/
+
+					$sql="DROP TABLE IF EXISTS temp_gep_import2;";
+					$suppr_table = mysql_query($sql);
+
+					$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
+					`ID_TEMPO` varchar(40) NOT NULL default '',
+					`LOGIN` varchar(40) NOT NULL default '',
+					`ELENOM` varchar(40) NOT NULL default '',
+					`ELEPRE` varchar(40) NOT NULL default '',
+					`ELESEXE` varchar(40) NOT NULL default '',
+					`ELEDATNAIS` varchar(40) NOT NULL default '',
+					`ELENOET` varchar(40) NOT NULL default '',
+					`ELE_ID` varchar(40) NOT NULL default '',
+					`ELEDOUBL` varchar(40) NOT NULL default '',
+					`ELENONAT` varchar(40) NOT NULL default '',
+					`ELEREG` varchar(40) NOT NULL default '',
+					`DIVCOD` varchar(40) NOT NULL default '',
+					`ETOCOD_EP` varchar(40) NOT NULL default '',
+					`ELEOPT1` varchar(40) NOT NULL default '',
+					`ELEOPT2` varchar(40) NOT NULL default '',
+					`ELEOPT3` varchar(40) NOT NULL default '',
+					`ELEOPT4` varchar(40) NOT NULL default '',
+					`ELEOPT5` varchar(40) NOT NULL default '',
+					`ELEOPT6` varchar(40) NOT NULL default '',
+					`ELEOPT7` varchar(40) NOT NULL default '',
+					`ELEOPT8` varchar(40) NOT NULL default '',
+					`ELEOPT9` varchar(40) NOT NULL default '',
+					`ELEOPT10` varchar(40) NOT NULL default '',
+					`ELEOPT11` varchar(40) NOT NULL default '',
+					`ELEOPT12` varchar(40) NOT NULL default '',
+					`LIEU_NAISSANCE` varchar(50) NOT NULL default ''
 					);";
 					$create_table = mysql_query($sql);
 
@@ -628,6 +683,7 @@ else{
 				//Compteur élève:
 				$i=-1;
 
+				/*
 				$tab_champs_eleve=array("ID_NATIONAL",
 				"ELENOET",
 				"NOM",
@@ -641,6 +697,22 @@ else{
 				"CODE_SEXE",
 				"DATE_SORTIE"
 				);
+				*/
+
+				$tab_champs_eleve=array("ID_NATIONAL",
+				"ELENOET",
+				"NOM",
+				"PRENOM",
+				"DATE_NAISS",
+				"DOUBLEMENT",
+				"DATE_SORTIE",
+				"CODE_REGIME",
+				"DATE_ENTREE",
+				"CODE_MOTIF_SORTIE",
+				"CODE_SEXE",
+				"CODE_COMMUNE_INSEE_NAISS"
+				);
+
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
 				"CODE_RNE",
@@ -849,6 +921,9 @@ else{
 							$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
 							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
 							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
+
+							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
+
 							$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
@@ -1342,7 +1417,25 @@ else{
 
 			$cpt=0;
 			for($i=0;$i<min(20,count($tab_ele_id));$i++){
-				$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
+
+				// AJOUTER SELON LA VALEUR DE ele_lieu_naissance
+				// LE TEST DE DIFFERENCE SUR lieu_naissance
+				if($ele_lieu_naissance=="y") {
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
+							WHERE e.ele_id=t.ELE_ID AND
+									e.ele_id=t2.col1 AND
+									(
+										e.nom!=t.ELENOM OR
+										e.prenom!=t.ELEPRE OR
+										e.sexe!=t.ELESEXE OR
+										e.naissance!=t2.col2 OR
+										e.lieu_naissance!=t.LIEU_NAISSANCE OR
+										e.no_gep!=t.ELENONAT
+									)
+									AND e.ele_id='$tab_ele_id[$i]';";
+				}
+				else {
+					$sql="SELECT e.ele_id FROM eleves e, temp_gep_import2 t, tempo2 t2
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
@@ -1353,6 +1446,7 @@ else{
 										e.no_gep!=t.ELENONAT
 									)
 									AND e.ele_id='$tab_ele_id[$i]';";
+				}
 				//echo "$sql<br />";
 				//$reserve_sql=$sql;
 				$test=mysql_query($sql);
@@ -1676,6 +1770,7 @@ else{
 
 					$w=$k-1;
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
+					//echo "<tr><td colspan='13'>$sql</td></tr>\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
 						echo "<tr><td colspan='13' style='text-align:left;'>ele_id=\$tab_ele_id_diff[$w]='$tab_ele_id_diff[$w]' non trouvé dans 'temp_gep_import2' ???</td></tr>\n";
@@ -1698,6 +1793,10 @@ else{
 
 						$affiche[10]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ETOCOD_EP))));
 
+						if($ele_lieu_naissance=="y") {
+							$affiche[11]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->LIEU_NAISSANCE))));
+						}
+
 						//if(trim($ligne)!=""){
 							//$tabligne=explode(";",$ligne);
 							//$affiche=array();
@@ -1707,6 +1806,7 @@ else{
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
+							//echo "<tr><td colspan='13'>$sql</td></tr>\n";
 							$res1=mysql_query($sql);
 							if(mysql_num_rows($res1)>0){
 								//$sql="UPDATE eleves SET ele_id='$affiche[5]' WHERE elenoet='$affiche[4]'";
@@ -1733,20 +1833,37 @@ else{
 								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
 
 								// Des stripslashes() pour les apostrophes dans les noms
-								if((stripslashes($lig_ele->nom)!=stripslashes($affiche[0]))||
-								(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1]))||
-								($lig_ele->sexe!=$affiche[2])||
-								($lig_ele->naissance!=$new_date)||
-								($lig_ele->no_gep!=$affiche[7])){
-									$temoin_modif='y';
-									$cpt_modif++;
-								}
-								else{
-									if($lig_ele->ele_id!=$affiche[5]){
-										// GROS PROBLEME SI LES elenoet et ele_id ne sont plus des clés primaires
+								if($ele_lieu_naissance=="y") {
+									if((stripslashes($lig_ele->nom)!=stripslashes($affiche[0]))||
+									(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1]))||
+									($lig_ele->sexe!=$affiche[2])||
+									($lig_ele->naissance!=$new_date)||
+									($lig_ele->lieu_naissance!=$affiche[11])||
+									($lig_ele->no_gep!=$affiche[7])){
+										$temoin_modif='y';
+										$cpt_modif++;
+									}
+									else{
+										if($lig_ele->ele_id!=$affiche[5]){
+											// GROS PROBLEME SI LES elenoet et ele_id ne sont plus des clés primaires
+										}
 									}
 								}
-
+								else {
+									if((stripslashes($lig_ele->nom)!=stripslashes($affiche[0]))||
+									(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1]))||
+									($lig_ele->sexe!=$affiche[2])||
+									($lig_ele->naissance!=$new_date)||
+									($lig_ele->no_gep!=$affiche[7])){
+										$temoin_modif='y';
+										$cpt_modif++;
+									}
+									else{
+										if($lig_ele->ele_id!=$affiche[5]){
+											// GROS PROBLEME SI LES elenoet et ele_id ne sont plus des clés primaires
+										}
+									}
+								}
 								// TESTER DANS j_eleves_regime pour doublant et regime
 								//	table -> $affiche[]
 								//	ext. -> 0
@@ -1945,21 +2062,50 @@ else{
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
-								echo "<td";
-								if($lig_ele->naissance!=$new_date){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
-									if($lig_ele->naissance!=''){
-										echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
+
+
+								if($ele_lieu_naissance=="y") {
+									echo "<td";
+									if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=$affiche[11])) {
+										//echo " background-color:lightgreen;'>";
+										echo " class='modif'>";
+										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
+											if($lig_ele->naissance!='') {
+												echo "$lig_ele->naissance ";
+											}
+											if($lig_ele->lieu_naissance!='') {
+												echo "à ".get_commune($lig_ele->lieu_naissance,1)." ";
+											}
+											echo "<font color='red'>-&gt;</font>\n";
+										}
 									}
+									else{
+										//echo "'>";
+										echo ">";
+									}
+									echo "$new_date";
+									if($affiche[11]!="") {echo " à ".get_commune($affiche[11],1);}
+									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
+									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value='".$affiche[11]."' />\n";
+									echo "</td>\n";
 								}
-								else{
-									//echo "'>";
-									echo ">";
+								else {
+									echo "<td";
+									if($lig_ele->naissance!=$new_date){
+										//echo " background-color:lightgreen;'>";
+										echo " class='modif'>";
+										if($lig_ele->naissance!=''){
+											echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
+										}
+									}
+									else{
+										//echo "'>";
+										echo ">";
+									}
+									echo "$new_date";
+									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
+									echo "</td>\n";
 								}
-								echo "$new_date";
-								echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
-								echo "</td>\n";
 
 								//echo "<td style='text-align: center;'>$affiche[6]</td>\n";
 								//echo "<td style='text-align: center;";
@@ -2120,6 +2266,10 @@ else{
 								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
 								echo "$new_date";
+								if($ele_lieu_naissance=="y") {
+									echo " à ".get_commune($affiche[11],1);
+									echo "<input type='hidden' name='new_".$cpt."_lieu_naissance' value='".$affiche[11]."' />\n";
+								}
 								echo "<input type='hidden' name='new_".$cpt."_naissance' value='$new_date' />\n";
 								echo "</td>\n";
 
@@ -2322,6 +2472,10 @@ else{
 											naissance='".$naissance."',
 											no_gep='".$lig->ELENONAT."'";
 
+					if($ele_lieu_naissance=="y") {
+						$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
+					}
+
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
@@ -2475,7 +2629,11 @@ else{
 												naissance='".$naissance."',
 												no_gep='".$lig->ELENONAT."',
 												elenoet='".$lig->ELENOET."',
-												ele_id='".$lig->ELE_ID."';";
+												ele_id='".$lig->ELE_ID."'";
+						if($ele_lieu_naissance=="y") {
+							$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
+						}
+						$sql.=";";
 						$insert=mysql_query($sql);
 						if($insert){
 							echo "\n<span style='color:blue;'>";
