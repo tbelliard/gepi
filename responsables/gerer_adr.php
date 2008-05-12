@@ -136,7 +136,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$afficher_toutes_les_adr=isset($_POST['afficher_toutes_les_adr']) ? $_POST['afficher_toutes_les_adr'] : "n";
 
 	$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : "commune";
-	if(($champ_rech!='commune')&&($champ_rech!='cp')&&($champ_rech!='adrX')) {$champ_rech="commune";}
+	if(($champ_rech!='commune')&&($champ_rech!='cp')&&($champ_rech!='adrX')&&($champ_rech!='non_assoc')) {$champ_rech="commune";}
 
 	$nb_adr=isset($_POST['nb_adr']) ? $_POST['nb_adr'] : 20;
 	if(strlen(ereg_replace("[0-9]","",$nb_adr))!=0) {
@@ -149,10 +149,10 @@ if(!getSettingValue('conv_new_resp_table')){
 
 
 
-	$sql_tot="SELECT COUNT(adr_id) AS nb_tot_adr_id FROM resp_adr";
+	$sql_tot="SELECT COUNT(resp_adr.adr_id) AS nb_tot_adr_id FROM resp_adr";
 
 	//$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
-	$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr";
+	$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,resp_adr.adr_id FROM resp_adr";
 	if($critere_recherche!=""){
 		if($champ_rech=='adrX') {
 			$sql.=" WHERE (adr1 like '%".$critere_recherche."%' OR adr2 like '%".$critere_recherche."%' OR adr3 like '%".$critere_recherche."%' OR adr4 like '%".$critere_recherche."%')";
@@ -167,6 +167,16 @@ if(!getSettingValue('conv_new_resp_table')){
 			$sql_tot.=" WHERE (commune like '%".$critere_recherche."%')";
 		}
 	}
+	//elseif($champ_rech=='non_assoc') {
+	if($champ_rech=='non_assoc') {
+/*
+	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
+		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
+		WHERE r.pers_id is NULL";
+*/
+		$sql.=" LEFT JOIN resp_pers ON resp_pers.adr_id=resp_adr.adr_id WHERE resp_pers.adr_id IS NULL";
+		$sql_tot.=" LEFT JOIN resp_pers ON resp_pers.adr_id=resp_adr.adr_id WHERE resp_pers.adr_id IS NULL";
+	}
 	$sql.=" ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 	if($afficher_toutes_les_adr!="y") {
 		$sql.=" LIMIT $num_premier_adr_rech,$nb_adr;";
@@ -174,9 +184,11 @@ if(!getSettingValue('conv_new_resp_table')){
 	//echo "$sql<br />\n";
 
 
-	$res_tot=mysql_query($sql_tot);
-	$lig_tot=mysql_fetch_object($res_tot);
-	$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
+	//if($champ_rech!='non_assoc') {
+		$res_tot=mysql_query($sql_tot);
+		$lig_tot=mysql_fetch_object($res_tot);
+		$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
+	//}
 
 
 	echo "<form enctype='multipart/form-data' name='form_rech' action='gerer_adr.php' method='post'>\n";
@@ -218,6 +230,18 @@ if(!getSettingValue('conv_new_resp_table')){
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "ou ";
+	echo "</td>\n";
+	echo "<td valign='top' colspan='2'>\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_nonAssoc' value='non_assoc' ";
+	if($champ_rech=="non_assoc") {echo "checked ";}
+	echo "/><label for='champ_rech_nonAssoc' style='cursor:pointer;'>  non associées.";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "</table>\n";
 
 	echo "<input type='hidden' name='afficher_toutes_les_adr' id='afficher_toutes_les_adr' value='n' />\n";
