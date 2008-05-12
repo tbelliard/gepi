@@ -1886,7 +1886,8 @@ if(isset($eleve_login)){
 				}
 				else{
 					//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1' target='_blank'>";
-					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">";
+					//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">";
+					echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">";
 					echo ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom);
 					echo "</a>";
 				}
@@ -1916,7 +1917,8 @@ if(isset($eleve_login)){
 					}
 					else{
 						//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
-						echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
+						//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
+						echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
 					}
 					echo "</td>\n";
 					$adr_id_1er_resp="";
@@ -1938,7 +1940,8 @@ if(isset($eleve_login)){
 						echo "<td>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
 						echo "</td>\n";
 					}
 				}
@@ -2000,7 +2003,8 @@ if(isset($eleve_login)){
 				}
 				else{
 					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
+					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
+					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 
 					//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
 					echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
@@ -2025,7 +2029,8 @@ if(isset($eleve_login)){
 					}
 					else{
 						//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
-						echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
+						//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
+						echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
 					}
 					echo "</td>\n";
 				}
@@ -2058,7 +2063,8 @@ if(isset($eleve_login)){
 						echo "<td>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
 						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
 						if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
 							if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
 								echo "<br />";
