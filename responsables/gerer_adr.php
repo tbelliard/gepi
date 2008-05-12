@@ -123,10 +123,137 @@ if(!getSettingValue('conv_new_resp_table')){
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
+	//debug_var();
+	/*
+	$sql="SELECT COUNT(adr_id) AS nb_tot_adr_id FROM resp_adr;";
+	$res_tot=mysql_query($sql);
+	$lig_tot=mysql_fetch_object($res_tot);
+	$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
+	*/
+
+	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+	$critere_recherche=ereg_replace("[^a-zA-Z¿ƒ¬…» ÀŒœ‘÷Ÿ€‹Ωº«Á‡‰‚ÈËÍÎÓÔÙˆ˘˚¸0-9_ -]", "", $critere_recherche);
+	$afficher_toutes_les_adr=isset($_POST['afficher_toutes_les_adr']) ? $_POST['afficher_toutes_les_adr'] : "n";
+
+	$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : "commune";
+	if(($champ_rech!='commune')&&($champ_rech!='cp')&&($champ_rech!='adrX')) {$champ_rech="commune";}
+
+	$nb_adr=isset($_POST['nb_adr']) ? $_POST['nb_adr'] : 20;
+	if(strlen(ereg_replace("[0-9]","",$nb_adr))!=0) {
+		$nb_adr=20;
+	}
+	$num_premier_adr_rech=isset($_POST['num_premier_adr_rech']) ? $_POST['num_premier_adr_rech'] : 0;
+	if(strlen(ereg_replace("[0-9]","",$num_premier_adr_rech))!=0) {
+		$num_premier_adr_rech=0;
+	}
+
+
+
+	$sql_tot="SELECT COUNT(adr_id) AS nb_tot_adr_id FROM resp_adr";
+
+	//$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+	$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr";
+	if($critere_recherche!=""){
+		if($champ_rech=='adrX') {
+			$sql.=" WHERE (adr1 like '%".$critere_recherche."%' OR adr2 like '%".$critere_recherche."%' OR adr3 like '%".$critere_recherche."%' OR adr4 like '%".$critere_recherche."%')";
+			$sql_tot.=" WHERE (adr1 like '%".$critere_recherche."%' OR adr2 like '%".$critere_recherche."%' OR adr3 like '%".$critere_recherche."%' OR adr4 like '%".$critere_recherche."%')";
+		}
+		elseif($champ_rech=='cp') {
+			$sql.=" WHERE (cp like '%".$critere_recherche."%')";
+			$sql_tot.=" WHERE (cp like '%".$critere_recherche."%')";
+		}
+		elseif($champ_rech=='commune') {
+			$sql.=" WHERE (commune like '%".$critere_recherche."%')";
+			$sql_tot.=" WHERE (commune like '%".$critere_recherche."%')";
+		}
+	}
+	$sql.=" ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+	if($afficher_toutes_les_adr!="y") {
+		$sql.=" LIMIT $num_premier_adr_rech,$nb_adr;";
+	}
+	//echo "$sql<br />\n";
+
+
+	$res_tot=mysql_query($sql_tot);
+	$lig_tot=mysql_fetch_object($res_tot);
+	$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
+
+
+	echo "<form enctype='multipart/form-data' name='form_rech' action='gerer_adr.php' method='post'>\n";
+
+	echo "<div align='center' style='border:1px solid black;'>\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top' colspan='3'>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les ";
+	echo "<input type='text' name='nb_adr' id='nb_adr' value='$nb_adr' size='3' />\n";
+	echo " premiËres adresses ";
+	echo " ‡ partir de l'enregistrement ";
+
+	echo "<input type='button' name='prec' value='<<' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.max(0,document.getElementById('num_premier_adr_rech').value-document.getElementById('nb_adr').value);document.form_rech.submit();\" />\n";
+	echo "<input type='text' name='num_premier_adr_rech' id='num_premier_adr_rech' value='$num_premier_adr_rech' size='4' />\n";
+	echo "<input type='button' name='prec' value='>>' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.min($nb_tot_adr_id,document.getElementById('num_premier_adr_rech').value+document.getElementById('nb_adr').value);document.form_rech.submit();\" />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "dont ";
+	echo "</td>\n";
+
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_commune' value='commune' ";
+	if($champ_rech=="commune") {echo "checked ";}
+	echo "/><label for='champ_rech_commune' style='cursor:pointer;'> le champ <b>commune</b></label><br />\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_cp' value='cp' ";
+	if($champ_rech=="cp") {echo "checked ";}
+	echo "/><label for='champ_rech_cp' style='cursor:pointer;'> le champ <b>code postal</b></label><br />\n";
+	echo "<input type='radio' name='champ_rech' id='champ_rech_adrX' value='adrX' ";
+	if($champ_rech=="adrX") {echo "checked ";}
+	echo "/><label for='champ_rech_adrX' style='cursor:pointer;'> l'un des champs <b>adrX</b></label>\n";
+	echo "</td>\n";
+
+	echo "<td valign='top'>\n";
+	echo " contient: ";
+	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<input type='hidden' name='afficher_toutes_les_adr' id='afficher_toutes_les_adr' value='n' />\n";
+	echo "<p align='center'>ou <input type='button' name='afficher_toutes' value='Afficher toutes les adresses' onClick=\"document.getElementById('afficher_toutes_les_adr').value='y'; document.form_rech.submit();\" /></p>\n";
+
+	echo "</div>\n";
+	echo "</form>\n";
+
+
+
+
+
+/*
 echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 //echo "<center><input type='button' value='Valider' onClick='reporter_valeur()' /></center>\n";
 
-$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+//$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr";
+if($critere_recherche!=""){
+	if($champ_rech=='adrX') {
+		$sql.=" WHERE (adr1 like '%".$critere_recherche."%' OR adr2 like '%".$critere_recherche."%' OR adr3 like '%".$critere_recherche."%' OR adr4 like '%".$critere_recherche."%')";
+	}
+	elseif($champ_rech=='cp') {
+		$sql.=" WHERE (cp like '%".$critere_recherche."%')";
+	}
+	elseif($champ_rech=='commune') {
+		$sql.=" WHERE (commune like '%".$critere_recherche."%')";
+	}
+}
+$sql.=" ORDER BY commune,cp,adr1,adr2,adr3,adr4";
+if($afficher_toutes_les_adr!="y") {
+	$sql.=" LIMIT $num_premier_adr_rech,$nb_adr;";
+}
+echo "$sql<br />\n";
+*/
+
 $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> SÈlectionner une adresse existante.";
@@ -172,7 +299,7 @@ if(mysql_num_rows($res_adr)>0){
 	$cpt=0;
 	$alt=1;
 	while($lig_adr=mysql_fetch_object($res_adr)){
-		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
+		//if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
 
 			if($cpt%10==0){
 				echo $ligne_titre;
@@ -267,7 +394,7 @@ if(mysql_num_rows($res_adr)>0){
 			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ad[]' id='suppr_$cpt' value='$lig_adr->adr_id' /></td>\n";
 			echo "</tr>\n";
 			$cpt++;
-		}
+		//}
 	}
 
 	echo "</table>\n";
@@ -378,7 +505,9 @@ if(mysql_num_rows($res_adr)>0){
 */
 }
 else{
-	echo "<p>Aucune adresse dans la table 'resp_adr'.</p>\n";
+	echo "<p>Aucune adresse dans la table 'resp_adr'";
+	if($critere_recherche!="") {echo " pour la recherche";}
+	echo ".</p>\n";
 }
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
