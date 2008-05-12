@@ -1,7 +1,7 @@
 <?php
 	@set_time_limit(0);
 
-	// $Id: step1.php 1790 2008-05-03 09:05:23Z crob $
+	// $Id$
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -221,6 +221,7 @@
 					else{
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
+						/*
 						$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 						`ID_TEMPO` varchar(40) NOT NULL default '',
 						`LOGIN` varchar(40) NOT NULL default '',
@@ -247,6 +248,38 @@
 						`ELEOPT10` varchar(40) NOT NULL default '',
 						`ELEOPT11` varchar(40) NOT NULL default '',
 						`ELEOPT12` varchar(40) NOT NULL default ''
+						);";
+						*/
+						$sql="DROP TABLE IF EXISTS temp_gep_import2;";
+						$suppr_table = mysql_query($sql);
+
+						$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
+						`ID_TEMPO` varchar(40) NOT NULL default '',
+						`LOGIN` varchar(40) NOT NULL default '',
+						`ELENOM` varchar(40) NOT NULL default '',
+						`ELEPRE` varchar(40) NOT NULL default '',
+						`ELESEXE` varchar(40) NOT NULL default '',
+						`ELEDATNAIS` varchar(40) NOT NULL default '',
+						`ELENOET` varchar(40) NOT NULL default '',
+						`ELE_ID` varchar(40) NOT NULL default '',
+						`ELEDOUBL` varchar(40) NOT NULL default '',
+						`ELENONAT` varchar(40) NOT NULL default '',
+						`ELEREG` varchar(40) NOT NULL default '',
+						`DIVCOD` varchar(40) NOT NULL default '',
+						`ETOCOD_EP` varchar(40) NOT NULL default '',
+						`ELEOPT1` varchar(40) NOT NULL default '',
+						`ELEOPT2` varchar(40) NOT NULL default '',
+						`ELEOPT3` varchar(40) NOT NULL default '',
+						`ELEOPT4` varchar(40) NOT NULL default '',
+						`ELEOPT5` varchar(40) NOT NULL default '',
+						`ELEOPT6` varchar(40) NOT NULL default '',
+						`ELEOPT7` varchar(40) NOT NULL default '',
+						`ELEOPT8` varchar(40) NOT NULL default '',
+						`ELEOPT9` varchar(40) NOT NULL default '',
+						`ELEOPT10` varchar(40) NOT NULL default '',
+						`ELEOPT11` varchar(40) NOT NULL default '',
+						`ELEOPT12` varchar(40) NOT NULL default '',
+						`LIEU_NAISSANCE` varchar(50) NOT NULL default ''
 						);";
 						$create_table = mysql_query($sql);
 
@@ -505,6 +538,7 @@
 					//Compteur élève:
 					$i=-1;
 
+					/*
 					$tab_champs_eleve=array("ID_NATIONAL",
 					"ELENOET",
 					"NOM",
@@ -516,6 +550,20 @@
 					"DATE_ENTREE",
 					"CODE_MOTIF_SORTIE",
 					"CODE_SEXE",
+					);
+					*/
+					$tab_champs_eleve=array("ID_NATIONAL",
+					"ELENOET",
+					"NOM",
+					"PRENOM",
+					"DATE_NAISS",
+					"DOUBLEMENT",
+					"DATE_SORTIE",
+					"CODE_REGIME",
+					"DATE_ENTREE",
+					"CODE_MOTIF_SORTIE",
+					"CODE_SEXE",
+					"CODE_COMMUNE_INSEE_NAISS"
 					);
 
 					$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
@@ -685,164 +733,188 @@
 							}
 							*/
 
-							$sql="UPDATE temp_gep_import2 SET ";
-							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
-							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-							$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-							$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
-							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
-							$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
-							$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
-							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
-							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
-							$sql=substr($sql,0,strlen($sql)-2);
-							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-							affiche_debug("$sql<br />\n");
-							$res_insert=mysql_query($sql);
-							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
-								$nb_err++;
-								flush();
-							}
-							else{
-								$stat++;
+
+							$temoin_date_sortie="n";
+							if(isset($eleves[$i]['date_sortie'])) {
+								echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
+
+								$tmp_tab_date=explode("/",$eleves[$i]['date_sortie']);
+								if(checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
+									$timestamp_sortie=mktime(0,0,0,$tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2]);
+									$timestamp_instant=time();
+									if($timestamp_instant>$timestamp_sortie){
+										$temoin_date_sortie="y";
+									}
+								}
 							}
 
+							if($temoin_date_sortie=="y") {
+								$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+								$nettoyage=mysql_query($sql);
+							}
+							else {
 
-							// Insertion des informations de l'établissement précédent dans une table temporaire:
-							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-								$sql="INSERT INTO temp_etab_import SET ";
-								$cpt_debut_requete=0;
+								$sql="UPDATE temp_gep_import2 SET ";
+								$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
+								if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+								$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
+								$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+								$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+								$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
+								$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
+								if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
+								if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
+
+								if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
+
+								$sql=substr($sql,0,strlen($sql)-2);
+								$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysql_query($sql);
+								if(!$res_insert){
+									echo "Erreur lors de la requête $sql<br />\n";
+									$nb_err++;
+									flush();
+								}
+								else{
+									$stat++;
+								}
 
 
-								if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
+								// Insertion des informations de l'établissement précédent dans une table temporaire:
+								if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+									$sql="INSERT INTO temp_etab_import SET ";
+									$cpt_debut_requete=0;
 
-									// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
-									if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
-										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
-										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-											$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
-											$cpt_debut_requete++;
-										}
+									if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
 
-										/*
-										// NOM
-										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
-											if($cpt_debut_requete>0){
-												$sql.=", ";
+										// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
+										if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
+											$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
+
+											if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+												$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
+												$cpt_debut_requete++;
 											}
-											$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-											$cpt_debut_requete++;
-										}
-										*/
 
-										// NIVEAU
-										$chaine="";
-										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												$chaine="ecole";
+											/*
+											// NOM
+											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
+												$cpt_debut_requete++;
 											}
-											elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												$chaine="college";
-											}
-											elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													$chaine="lprof";
+											*/
+
+											// NIVEAU
+											$chaine="";
+											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													$chaine="ecole";
+												}
+												elseif(ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													$chaine="college";
+												}
+												elseif(ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													if(ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+														$chaine="lprof";
+													}
+													else{
+														$chaine="lycee";
+													}
 												}
 												else{
-													$chaine="lycee";
+													$chaine="";
 												}
+
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												$sql.="niveau='".$chaine."'";
+												$cpt_debut_requete++;
+											}
+
+
+											// NOM
+											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
+												if($nom_etab=="") {
+													$nom_etab=ucfirst(strtolower($chaine));
+												}
+												//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
+												$sql.="nom='".addslashes($nom_etab)."'";
+												$cpt_debut_requete++;
 											}
 											else{
-												$chaine="";
-											}
-
-											if($cpt_debut_requete>0){
 												$sql.=", ";
-											}
-											$sql.="niveau='".$chaine."'";
-											$cpt_debut_requete++;
-										}
-
-
-										// NOM
-										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
-											if($cpt_debut_requete>0){
-												$sql.=", ";
-											}
-											$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
-											if($nom_etab=="") {
 												$nom_etab=ucfirst(strtolower($chaine));
+												$sql.="nom='".addslashes($nom_etab)."'";
+												$cpt_debut_requete++;
 											}
-											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-											$sql.="nom='".addslashes($nom_etab)."'";
-											$cpt_debut_requete++;
-										}
-										else{
-											$sql.=", ";
-											$nom_etab=ucfirst(strtolower($chaine));
-											$sql.="nom='".addslashes($nom_etab)."'";
-											$cpt_debut_requete++;
-										}
 
 
-										// TYPE
-										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-											if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												$chaine="prive";
+											// TYPE
+											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													$chaine="prive";
+												}
+												else{
+													$chaine="public";
+												}
+
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												$sql.="type='".$chaine."'";
+												$cpt_debut_requete++;
+											}
+
+											// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
+											//              Ca y est, il a été ajouté.
+											// ***************************************
+											// ERREUR: code_commune_insee!=code_postal
+											// ***************************************
+											// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
+											if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												// *****************************************
+												// PROBLEME: code_commune_insee!=code_postal
+												// *****************************************
+												$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
+												$cpt_debut_requete++;
+											}
+
+											// COMMUNE
+											if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
+												if($cpt_debut_requete>0){
+													$sql.=", ";
+												}
+												$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
+												$cpt_debut_requete++;
+											}
+
+											//echo "$sql<br />";
+
+											$res_insert_etab=mysql_query($sql);
+											if(!$res_insert_etab){
+												echo "Erreur lors de la requête $sql<br />\n";
+												$nb_err_etab++;
+												flush();
 											}
 											else{
-												$chaine="public";
+												$stat_etab++;
 											}
-
-											if($cpt_debut_requete>0){
-												$sql.=", ";
-											}
-											$sql.="type='".$chaine."'";
-											$cpt_debut_requete++;
-										}
-
-										// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
-										//              Ca y est, il a été ajouté.
-										// ***************************************
-										// ERREUR: code_commune_insee!=code_postal
-										// ***************************************
-										// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
-										if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
-											if($cpt_debut_requete>0){
-												$sql.=", ";
-											}
-											// *****************************************
-											// PROBLEME: code_commune_insee!=code_postal
-											// *****************************************
-											$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
-											$cpt_debut_requete++;
-										}
-
-										// COMMUNE
-										if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
-											if($cpt_debut_requete>0){
-												$sql.=", ";
-											}
-											$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
-											$cpt_debut_requete++;
-										}
-
-										//echo "$sql<br />";
-
-										$res_insert_etab=mysql_query($sql);
-										if(!$res_insert_etab){
-											echo "Erreur lors de la requête $sql<br />\n";
-											$nb_err_etab++;
-											flush();
-										}
-										else{
-											$stat_etab++;
 										}
 									}
 								}
-
 							}
 						}
 					}

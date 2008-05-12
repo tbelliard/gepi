@@ -2,7 +2,7 @@
 
 @set_time_limit(0);
 /*
-* $Id: init_pp.php 1715 2008-04-15 17:46:32Z crob $
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
