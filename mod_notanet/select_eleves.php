@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/select_eleves.php','V','F','F','F','F','F','F','Sélection des élèves par type de brevet','');
+// INSERT INTO droits VALUES('/mod_notanet/select_eleves.php','V','F','F','F','F','F','F','F','Sélection des élèves par type de brevet','');
 // Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");

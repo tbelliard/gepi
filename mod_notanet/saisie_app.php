@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','F','F','F','F','Notanet: Saisie des appréciations','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','V','V','F','F','F','F','F','F','Notanet: Saisie des appréciations','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -197,7 +197,7 @@ if(!isset($id_groupe)) {
 	*/
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre groupe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon(this, change, '$themessage')\">Choisir un autre groupe</a>\n";
 	echo "</p>\n";
 
 	$liste_eleves = $current_group["eleves"]["all"]["list"];

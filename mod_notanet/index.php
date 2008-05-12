@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','Accès à l accueil Notanet','');
+// INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F','Accès à l accueil Notanet','');
 // Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -113,6 +113,23 @@ verrouillage CHAR( 1 ) NOT NULL
 );";
 $create_table=mysql_query($sql);
 
+$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
+login VARCHAR( 50 ) NOT NULL ,
+b2i ENUM( 'MS', 'ME', 'MN', 'AB' ) NOT NULL ,
+a2 ENUM( 'MS', 'ME', 'AB' ) NOT NULL ,
+lv VARCHAR( 50 ) NOT NULL ,
+PRIMARY KEY ( login )
+);";
+$create_table=mysql_query($sql);
+
+$sql="CREATE TABLE IF NOT EXISTS notanet_avis (
+login VARCHAR( 50 ) NOT NULL ,
+favorable ENUM( 'O', 'N' ) NOT NULL ,
+avis TEXT NOT NULL ,
+PRIMARY KEY ( login )
+);";
+$create_table=mysql_query($sql);
+
 echo "<p>Voulez-vous: ";
 //echo "<br />\n";
 echo "</p>\n";
@@ -123,11 +140,15 @@ if($_SESSION['statut']=="administrateur") {
 
 	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/Matières</a>  (<i>en précisant le statut: imposées et options</i>)</li>\n";
 
+	echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+
 	echo "<li><a href='extract_moy.php'>Effectuer une extraction des moyennes, affichage et traitement des cas particuliers</a></li>\n";
 
 	echo "<li><a href='choix_generation_csv.php?extract_mode=tous'>Générer un export Notanet</a> pour tous les élèves de telle(s) ou telle(s) classe(s) ou juste une sélection (cf. select_eleves.php)</li>\n";
 
 	echo "<li><a href='verrouillage_saisie_app.php'>Verrouiller/déverrouiller la saisie des appréciations pour les fiches brevet</a><br />La saisie n'est possible pour les professeurs que si l'extraction des moyennes a été effectuée.</li>\n";
+
+	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 
 	echo "<li><a href='fiches_brevet.php'>Générer les fiches brevet</a></li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";

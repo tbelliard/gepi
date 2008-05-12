@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','Extraction des moyennes pour Notanet','');
+// INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','F','Extraction des moyennes pour Notanet','');
 // Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -419,27 +419,95 @@ else {
 								unset($tabvalautorisees);
 								$tabvalautorisees=explode(" ",$tabmatieres[$j][-3]);
 
-								$temoin_moyenne=0;
-								// On passe en revue les différentes options d'une même matière (LV1($j): AGL1 ou ALL1($k))
-								for($k=0;$k<count($id_matiere[$j]);$k++){
+								if($tabmatieres[$j]['socle']=='n') {
 
-									// Récupération des moyennes postées via le formulaire
-									//$moy[$j][$k]=$_POST['moy_'.$j.'_'.$k];
+									$temoin_moyenne=0;
+									// On passe en revue les différentes options d'une même matière (LV1($j): AGL1 ou ALL1($k))
+									for($k=0;$k<count($id_matiere[$j]);$k++){
+
+										// Récupération des moyennes postées via le formulaire
+										//$moy[$j][$k]=$_POST['moy_'.$j.'_'.$k];
+										$moy[$j][$k]=isset($_POST['moy_'.$j.'_'.$k]) ? $_POST['moy_'.$j.'_'.$k] : NULL;
+
+										//if($moy[$j][$k][$m]!=""){
+										if((isset($moy[$j][$k][$m]))&&($moy[$j][$k][$m]!="")) {
+											$temoin_moyenne++;
+
+
+											// L'élève fait-il ALL1 ou AGL1 parmi les options de LV1
+											$tab_opt_matiere_eleve[$j]=$id_matiere[$j][$k];
+
+
+											// A EFFECTUER: Contrôle des valeurs
+											//...
+											//if(($moy[$j][$k][$m]!="AB")&&($moy[$j][$k][$m]!="DI")&&($moy[$j][$k][$m]!="NN")){
+											// Il faudrait pour chaque matière ($j) contrôler les valeurs autorisées pour la matière...
+											$test_valeur_speciale_autorisee="non";
+											for($n=0;$n<count($tabvalautorisees);$n++){
+												if($moy[$j][$k][$m]==$tabvalautorisees[$n]){
+													$test_valeur_speciale_autorisee="oui";
+												}
+											}
+											if($test_valeur_speciale_autorisee!="oui"){
+												if(strlen(ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
+													echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
+													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													echo "<br />\n";
+													$erreur="oui";
+												}
+												else{
+													// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
+													if(($j!=101)||($k!=0)){
+														echo " - ";
+													}
+													// On affiche la correspondance AGL1=12.0,...
+													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+													$moy_NOTANET[$j]=round($moy[$j][$k][$m]*2)/2;
+												}
+											}
+											else{
+												// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
+												if(($j!=101)||($k!=0)){
+													echo " - ";
+												}
+												echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
+												$moy_NOTANET[$j]=$moy[$j][$k][$m];
+											}
+										}
+									}
+
+									if($temoin_moyenne==0){
+										if($statut_matiere[$j]=="imposee"){
+											//echo "<br /><span style='color:red'>ERREUR</span>: Pas de moyenne à une matière non optionnelle.";
+											echo "<br /><span style='color:red'>ERREUR</span>: Pas de moyenne à une matière non optionnelle: ".$id_matiere[$j][0]."<br />(<i>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</i>)";
+											echo "<br />\n";
+											$erreur="oui";
+										}
+									}
+									else{
+										if($temoin_moyenne==1){
+											// OK!
+											// On n'a pas d'erreur jusque là...
+										}
+										else{
+											echo "<br /><span style='color:red'>ERREUR</span>: Il y a plus d'une moyenne à deux options d'une même matière: ";
+											for($k=0;$k<count($id_matiere[$j]);$k++){
+												if($moy[$j][$k][$m]!=""){
+													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m]." -\n";
+												}
+											}
+											echo "<br />\n";
+											$erreur="oui";
+										}
+									}
+								}
+								else {
+									// SOCLES B2I ET A2
+									$k=0;
 									$moy[$j][$k]=isset($_POST['moy_'.$j.'_'.$k]) ? $_POST['moy_'.$j.'_'.$k] : NULL;
 
-									//if($moy[$j][$k][$m]!=""){
 									if((isset($moy[$j][$k][$m]))&&($moy[$j][$k][$m]!="")) {
-										$temoin_moyenne++;
 
-
-										// L'élève fait-il ALL1 ou AGL1 parmi les options de LV1
-										$tab_opt_matiere_eleve[$j]=$id_matiere[$j][$k];
-
-
-										// A EFFECTUER: Contrôle des valeurs
-										//...
-										//if(($moy[$j][$k][$m]!="AB")&&($moy[$j][$k][$m]!="DI")&&($moy[$j][$k][$m]!="NN")){
-										// Il faudrait pour chaque matière ($j) contrôler les valeurs autorisées pour la matière...
 										$test_valeur_speciale_autorisee="non";
 										for($n=0;$n<count($tabvalautorisees);$n++){
 											if($moy[$j][$k][$m]==$tabvalautorisees[$n]){
@@ -449,7 +517,7 @@ else {
 										if($test_valeur_speciale_autorisee!="oui"){
 											if(strlen(ereg_replace("[0-9.]","",$moy[$j][$k][$m]))!=0){
 												echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
-												echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
+												echo $tabmatieres[$j][0]."=".$moy[$j][$k][$m];
 												echo "<br />\n";
 												$erreur="oui";
 											}
@@ -468,35 +536,13 @@ else {
 											if(($j!=101)||($k!=0)){
 												echo " - ";
 											}
-											echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
+											echo "<span style='color:purple;'>".$tabmatieres[$j][0]."=".$moy[$j][$k][$m]."</span>";
 											$moy_NOTANET[$j]=$moy[$j][$k][$m];
 										}
-									}
-								}
 
-								if($temoin_moyenne==0){
-									if($statut_matiere[$j]=="imposee"){
-										//echo "<br /><span style='color:red'>ERREUR</span>: Pas de moyenne à une matière non optionnelle.";
-										echo "<br /><span style='color:red'>ERREUR</span>: Pas de moyenne à une matière non optionnelle: ".$id_matiere[$j][0]."<br />(<i>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</i>)";
-										echo "<br />\n";
-										$erreur="oui";
 									}
-								}
-								else{
-									if($temoin_moyenne==1){
-										// OK!
-										// On n'a pas d'erreur jusque là...
-									}
-									else{
-										echo "<br /><span style='color:red'>ERREUR</span>: Il y a plus d'une moyenne à deux options d'une même matière: ";
-										for($k=0;$k<count($id_matiere[$j]);$k++){
-											if($moy[$j][$k][$m]!=""){
-												echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m]." -\n";
-											}
-										}
-										echo "<br />\n";
-										$erreur="oui";
-									}
+
+
 								}
 							}
 						}
@@ -514,36 +560,44 @@ else {
 
 										$note_notanet="";
 
-										switch($tabmatieres[$j][-1]){
-											case "POINTS":
-												if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
-													$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2])."|";
-													$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
-													$note_notanet=formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2]);
-												}
-												else{
-													$ligne_NOTANET=$ligne_NOTANET."|".$moy_NOTANET[$j]."|";
-													$note_notanet=$moy_NOTANET[$j];
-												}
-												break;
-											case "PTSUP":
-												$ptsup=$moy_NOTANET[$j]-10;
-												if($ptsup>0){
-													$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
-													//$TOT=$TOT+$ptsup;
-													$TOT=$TOT+round($ptsup*2)/2;
-													$note_notanet=formate_note_notanet($ptsup);
-												}
-												else{
-													$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
-													$note_notanet=formate_note_notanet(0);
-												}
-												break;
-											case "NOTNONCA":
-												$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
-												$note_notanet=formate_note_notanet($moy_NOTANET[$j]);
-												break;
+										if($tabmatieres[$j]['socle']=='n') {
+											switch($tabmatieres[$j][-1]){
+												case "POINTS":
+													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2])."|";
+														$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
+														$note_notanet=formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2]);
+													}
+													else{
+														$ligne_NOTANET=$ligne_NOTANET."|".$moy_NOTANET[$j]."|";
+														$note_notanet=$moy_NOTANET[$j];
+													}
+													break;
+												case "PTSUP":
+													$ptsup=$moy_NOTANET[$j]-10;
+													if($ptsup>0){
+														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
+														//$TOT=$TOT+$ptsup;
+														$TOT=$TOT+round($ptsup*2)/2;
+														$note_notanet=formate_note_notanet($ptsup);
+													}
+													else{
+														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
+														$note_notanet=formate_note_notanet(0);
+													}
+													break;
+												case "NOTNONCA":
+													$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
+													$note_notanet=formate_note_notanet($moy_NOTANET[$j]);
+													break;
+											}
 										}
+										else {
+											$ligne_NOTANET=$ligne_NOTANET."|".$moy_NOTANET[$j]."|";
+											$note_notanet=$moy_NOTANET[$j];
+										}
+
+
 										echo "<input type='hidden' name='lig_notanet[]' value=\"$ligne_NOTANET\" />\n";
 										echo colore_ligne_notanet($ligne_NOTANET)."<br />\n";
 										$tabnotanet[]=$ligne_NOTANET;
@@ -565,7 +619,8 @@ else {
 												//$sql.="mat='".$tab_opt_matiere_eleve[$j]."',";
 												$sql.="matiere='".$tab_opt_matiere_eleve[$j]."',";
 											}
-											if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+											//if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+											if(($moy_NOTANET[$j]!="MS")&&($moy_NOTANET[$j]!="ME")&&($moy_NOTANET[$j]!="MN")&&($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
 												$sql.="note='".formate_note_notanet($moy_NOTANET[$j])."',";
 											}
 											else{

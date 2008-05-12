@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','Notanet: Association Types de brevet/Matières','');
+// INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','F','Notanet: Association Types de brevet/Matières','');
 // Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -95,28 +95,33 @@ if((isset($choix_matieres))&&(isset($type_brevet))) {
 		$cpt_enr=0;
 		// Enregistrement des choix de matières dans 'notanet_corresp'
 		for($j=101;$j<=122;$j++){
+			//if($tabmatieres[$j][0]!=''){
+			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 			if($tabmatieres[$j][0]!=''){
-				if(isset($id_matiere[$j])){
-					for($i=0;$i<count($id_matiere[$j]);$i++){
+				//if(($tabmatieres[$j]['socle']=='n') {
+					if(isset($id_matiere[$j])){
+						for($i=0;$i<count($id_matiere[$j]);$i++){
+							$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
+																	matiere='".$id_matiere[$j][$i]."',
+																	statut='".$statut_matiere[$j]."',
+																	id_mat='$j',
+																	type_brevet='$type_brevet';";
+							$res_insert=mysql_query($sql);
+							if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
+						}
+					}
+					else{
+						// Cas de matières non dispensées...
 						$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
-																matiere='".$id_matiere[$j][$i]."',
+																matiere='',
 																statut='".$statut_matiere[$j]."',
 																id_mat='$j',
 																type_brevet='$type_brevet';";
 						$res_insert=mysql_query($sql);
 						if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
 					}
-				}
-				else{
-					// Cas de matières non dispensées...
-					$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
-															matiere='',
-															statut='".$statut_matiere[$j]."',
-															id_mat='$j',
-															type_brevet='$type_brevet';";
-					$res_insert=mysql_query($sql);
-					if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
-				}
+				//else {
+				//}
 			}
 		}
 
@@ -257,9 +262,10 @@ else {
 		$alt=1;
 		for($j=101;$j<=122;$j++){
 			if($tabmatieres[$j][0]!=''){
+			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td>".$tabmatieres[$j][0]."</td>\n";
+				echo "<td>".strtoupper($tabmatieres[$j][0])."</td>\n";
 
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
 				$res_notanet_corresp=mysql_query($sql);
@@ -292,18 +298,24 @@ else {
 				}
 
 				echo "<td>\n";
-				echo "<select multiple='true' size='4' name='id_matiere".$j."[]'>\n";
-				echo "<option value=''>&nbsp;</option>\n";
-				for($k=0;$k<$cpt;$k++){
-					echo "<option value='$tab_mat_classes[$k]'";
-					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND matiere='".$tab_mat_classes[$k]."' AND type_brevet='$type_brevet';";
-					$res_test=mysql_query($sql);
-					if(mysql_num_rows($res_test)>0){
-						echo " selected='true'";
+				//echo "\$type_brevet=$type_brevet \$tabmatieres[$j]['socle']";
+				if($tabmatieres[$j]['socle']=='n') {
+					echo "<select multiple='true' size='4' name='id_matiere".$j."[]'>\n";
+					echo "<option value=''>&nbsp;</option>\n";
+					for($k=0;$k<$cpt;$k++){
+						echo "<option value='$tab_mat_classes[$k]'";
+						$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND matiere='".$tab_mat_classes[$k]."' AND type_brevet='$type_brevet';";
+						$res_test=mysql_query($sql);
+						if(mysql_num_rows($res_test)>0){
+							echo " selected='true'";
+						}
+						echo ">$tab_mat_classes[$k]</option>\n";
 					}
-					echo ">$tab_mat_classes[$k]</option>\n";
+					echo "</select>\n";
 				}
-				echo "</select>\n";
+				else {
+					echo "<input type='hidden' name='id_matiere".$j."[]' value='' />\n";
+				}
 				echo "</td>\n";
 
 				echo "</tr>\n";
@@ -323,6 +335,8 @@ else {
 		//echo "<li><p></p></li>\n";
 		echo "<li><p>Il est possible de sélectionner plusieurs matières pour une option (<i>ex.: AGL1 et ALL1 pour la Langue vivante 1</i>) en utilisant CTRL+clic avec la souris.<br />
 		(<i>on parle de sélection multiple</i>)</p></li>\n";
+		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
+		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
 		echo "</ul>\n";
 
 		if($type_brevet==2){

@@ -38,8 +38,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','Génération du CSV pour Notanet','');
-// Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
+// INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','F','Génération du CSV pour Notanet','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();

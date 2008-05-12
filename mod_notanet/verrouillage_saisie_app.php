@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-//INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','Notanet: (Dé)Verrouillage des saisies','');
+//INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F','Notanet: (Dé)Verrouillage des saisies','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
