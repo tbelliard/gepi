@@ -85,6 +85,7 @@ $nom_long_gr = isset($_POST["nom_long_gr"]) ? $_POST["nom_long_gr"] : NULL;
 $type = isset($_POST["type"]) ? $_POST["type"] : NULL;
 $choix_classe = isset($_POST["choix_classe"]) ? $_POST["choix_classe"] : NULL;
 $id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : NULL;
+$prof = isset($_POST["prof"]) ? $_POST["prof"] : NULL;
 $choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 
@@ -129,13 +130,17 @@ if ($action == "ajouter_gr") {
 			$sql_e = "INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 									VALUES ('', '".$nom_gr."', '".$nom_long_gr."', '".$type."', '".$choix_classe."')";
 			$query_e = mysql_query($sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.mysql_error(), E_USER_WARNING);
-			$id_gr_nom = mysql_insert_id($query_e);
+			//$id_gr_nom = mysql_insert_id($query_e);
+			// Avec une connexion permanente à la base, impossible de récupérer l'id
+			$select_id = mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
+			$id_gr_nom = mysql_result($select_id, "id");
 
-			if ($choix_prof != NULL AND $choix_prof != 'plusieurs') {
+			if ($choix_prof != NULL AND $choix_prof != 'plusieurs' AND $prof != 'plusieurs') {
 				// On ajoute aussi une ligne pour le/les professeurs de ce edt_gr
-				$sql_p = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilidateurs)
-									VALUES ('', '".$id_gr_nom."', '".$choix_prof."');";
-				$query_p = mysql_query($sql_p) OR trigger_error("Impossible d'enregistrer le nom du professeur.", E_USER_ERROR);
+				$sql_p = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs)
+									VALUES ('', '".$id_gr_nom."', '".$choix_prof."')";
+				//$query_p = mysql_query($sql_p) OR trigger_error("Impossible d'enregistrer le nom du professeur.".$sql_p, E_USER_NOTICE);
+				$query_p = mysql_query($sql_p) OR DIE('ERREUR'.$sql_p);
 
 			}
 		}
@@ -200,7 +205,7 @@ while($gr = mysql_fetch_array($query_g)){
 			</td>
 			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_e\');">Afficher</td>
 			<td style="cursor: pointer;" onclick="ouvrirWin(\''.$gr["id"].'\', \'liste_p\');">Afficher</td>
-			<td><p><a href="./edt_aff_gr.php?action=effacer_gr&amp;id_gr='.$gr["id"].'"><img src="../images/icons/delete.png" />'.$msg_gr_del.'</a></p></td>
+			<td><p><a href="./edt_aff_gr.php?action=effacer_gr&amp;id_gr='.$gr["id"].'"><img src="../images/icons/delete.png" alt="effacer ce groupe" title="Effacer ce groupe" />'.$msg_gr_del.'</a></p></td>
 		</tr>
 	';
 	$a++;
@@ -239,9 +244,9 @@ while($gr = mysql_fetch_array($query_g)){
 
 	for($i = 0 ; $i < $nbre_p ; $i++){
 
-		$login_p[$i] = mysql_result($query_p, "login");
-		$nom_p[$i] = mysql_result($query_p, "nom");
-		$prenom_p[$i] = mysql_result($query_p, "prenom");
+		$login_p[$i] = mysql_result($query_p, $i, "login");
+		$nom_p[$i] = mysql_result($query_p, $i, "nom");
+		$prenom_p[$i] = mysql_result($query_p, $i, "prenom");
 
 		$aff_select_profs .= '
 		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';
@@ -268,7 +273,7 @@ echo '
 <!-- Liste des gr -->
 <div id="listeGr">
 	<form action="edt_aff_gr.php" method="post">
-	<table>
+	<table summary="Liste des groupes">
 		<tr>
 			<th>Nom</th>
 			<th>Nom long</th>
@@ -338,7 +343,7 @@ echo '
 			<input type="radio" id="unprof" name="prof" value="unseul" onclick="versShow('ajoutGr4');" />
 			</p>
 			<p>
-			<label for="profs">Un seul professeur</label>
+			<label for="profs">Plusieurs professeurs</label>
 			<input type="radio" id="profs" name="prof" value="plusieurs" onClick="versHide('ajoutGr4');" />
 			</p>
 

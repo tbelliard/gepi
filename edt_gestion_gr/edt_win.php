@@ -132,8 +132,26 @@ if ($var2 == "changer_nom") {
 	}
 
 
+}elseif($var2 == "liste_p"){
+	// On travaille sur la liste des professeurs
+
+	$sql_p = "SELECT login, nom, prenom FROM edt_gr_profs egp, utilisateurs u
+										WHERE egp.id_utilisateurs = u.login
+										AND id_gr_nom = '".$var."'
+										ORDER BY nom, prenom";
+	$query_p = mysql_query($sql_p) OR trigger_error("Impossible de récupérer la liste des professeurs de ce groupe : ", E_USER_ERROR);
+
+	$aff_modif .= '<p style="text-align: right;"><a href="./edt_liste_profs.php?id_gr='.$var.'" target="_blank">Modifier cette liste</a></p>';
+
+	while($rep = mysql_fetch_array($query_p)){
+
+		$aff_modif .= '<br />'.$rep["nom"].' '.$rep["prenom"];
+
+	}
 }
-// On traite la modification si elle est demandée
+
+
+// On traite la modification si elle est demandée (liste d'élèves : obsolète)
 if ($action == "modifier_gr") {
 	$sql_m = "UPDATE edt_gr_nom SET nom = '".$nom_gr."', nom_long = '".$nom_long_gr."' WHERE id = '".$var."'";
 	$query_m = mysql_query($sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.mysql_error(), E_USER_ERROR);
