@@ -554,7 +554,8 @@ $debg = NULL;
 		}
 		// On envoie le lien si et seulement si c'est un administrateur ou un scolarite
 		if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") AND $type_edt == "prof") {
-			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,285,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>(-+-)</a>';
+			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,285,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
+			<img src="../images/icons/ico_plus.png" /></a>';
 		}else{
 			$creer_cours = "-";
 		}

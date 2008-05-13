@@ -50,17 +50,29 @@ if (!checkAccess()) {
 }
 
 // ======================= Initialisation des variables ================
-$id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : NULL;
+$id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : (isset($_POST["id_gr"]) ? $_POST["id_gr"] : NULL);
 $classe_e = isset($_GET["cla"]) ? $_GET["cla"] : NULL;
+$action = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : (isset($_GET["choix_prof"]) ? $_GET["choix_prof"] : NULL);
+$msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
 // ============================ Traitement des données ========================== //
+
+	// Les renseignements sur cet edt_gr
+	$sql_t = "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'";
+	$query_t = mysql_query($sql_t) OR trigger_error('Erreur lors du traitement de cet edt_gr.', E_USER_ERROR);
+	$rep = mysql_fetch_array($query_t);
+
+	$titre .= '<p>EDT : '.$rep["nom"].'&nbsp;('.$rep["nom_long"].')&nbsp;-&nbsp;Liste des professeurs.</p>';
+
+	// La liste des professeurs de l'établissement
 $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
 	$nbre_p = mysql_num_rows($query_p);
 
 
 	$aff_select_profs .= '
-	<select name="choix_prof" onchange="">
+	<select name="choix_prof" onchange=\'document.ch_profs.submit();\'>
 		<option value="plusieurs">Plusieurs professeurs</option>
 	';
 
@@ -76,6 +88,29 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	}
 	$aff_select_profs .= '</select>';
 
+	// On ajoute un prof si c'est demandé
+	if ($action == "ajouter") {
+
+	}
+
+	// On enlève un prof si c'est demandé
+	if ($action == "effacer") {
+
+	}
+
+	// La liste des profs de cet edt_gr
+	$sql_l = "SELECT login, nom, prenom FROM utilisateurs u, edt_gr_profs egp
+										WHERE u.login = egp.id_utilisateurs
+										AND egp.id_gr_nom = '".$id_gr."'
+										ORDER BY nom, prenom";
+	$query_l = mysql_query($sql_l) OR trigger_error('Impossible de lister les professeurs de ce groupe', E_USER_WARNING);
+
+	while($rep = mysql_fetch_array($query_l)){
+
+		$aff_liste_profs .= '<br /><a href="./edt_liste_profs.php?action=effacer&amp;choix_prof='.$rep["login"].'&amp;id_gr='.$id_gr.'">
+		<img src="../images/icons/delete.png" />'.$rep["nom"].' '.$rep["prenom"].'</a>'."\n";
+
+	}
 
 
 // =========================== Fin du traitement des données ==================== //
@@ -94,25 +129,34 @@ require_once("../lib/header.inc");
 ?>
 
 <hr />
-
+<?php echo $titre; ?>
 
 <hr />
 
-<form name="ch_profs" action="edt_liste_profs.php" metho="post">
+<div id="liste_p">
 
-	<fieldset id="choix_prof">
+	<?php echo $aff_liste_profs; ?>
+<br /><br />
+
+</div>
+
+<form name="ch_profs" action="edt_liste_profs.php" method="post">
+
+	<fieldset id="choix_prof" style="width: 600px;">
 
 		<legend>Ajouter un professeur</legend>
 
 			<input type="hidden" name="action" value="ajouter" />
+			<input type="hidden" name="id_gr" value="<?php echo $id_gr; ?>" />
 
-			<?php echo $affselect_profs; ?>
+			<?php echo $aff_select_profs; ?>
 
 	</fieldset>
+		<?php echo $msg; ?>
 
 </form>
 
 <?php
 // Inclusion du bas de page
-require_once("./lib/footer.inc.php");
+require_once("../lib/footer.inc.php");
 ?>
