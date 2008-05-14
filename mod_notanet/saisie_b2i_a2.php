@@ -62,53 +62,104 @@ if (isset($_POST['is_posted'])) {
 		// Vérifier si l'élève est bien dans la classe?
 		// Inutile si seul l'admin accède et qu'on ne limite pas l'accès à telle ou telle classe
 
-		if((isset($b2i[$i]))||(isset($b2i[$i]))||(isset($b2i[$i]))) {
+		if((isset($b2i[$i]))||(isset($a2[$i]))||(isset($lv[$i]))) {
+			//echo "<p>Traitement de ".$ele_login[$i]." avec \$b2i[$i]=".$b2i[$i].", \$a2[$i]=".$a2[$i]." et \$lv[$i]=".$lv[$i]."<br />\n";
+
 			$sql="SELECT 1=1 FROM notanet_socles WHERE login='".$ele_login[$i]."';";
 			$res_ele=mysql_query($sql);
 			if(mysql_num_rows($res_ele)==0) {
 				$sql="INSERT INTO notanet_socles SET login='".$ele_login[$i]."'";
 
-				if(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB')) {
+				if((isset($b2i[$i]))&&(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB'))) {
 					$sql.=",b2i='".$b2i[$i]."'";
 				}
-
-				if(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB')) {
-					$sql.=",a2='".$a2[$i]."'";
+				else {
+					$sql.=",b2i=''";
 				}
 
-				if($lv[$i]!='') {
+				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+					$sql.=",a2='".$a2[$i]."'";
+				}
+				else {
+					$sql.=",a2=''";
+				}
+
+				if((isset($lv[$i]))&&($lv[$i]!='')) {
 					$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
 					$res_mat_suivie=mysql_query($sql2);
 					if(mysql_num_rows($res_mat_suivie)!=0) {
 						$sql.=",lv='".$lv[$i]."'";
 					}
+					else {
+						$sql.=",lv=''";
+					}
+				}
+				else {
+					$sql.=",lv=''";
 				}
 				$sql.=";";
 			}
 			else {
 				$sql="UPDATE notanet_socles SET ";
 
+				/*
 				$temoin_b2i="n";
-				if(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB')) {
-					$sql.="b2i='".$b2i[$i]."'";
-					$temoin_b2i="y";
+				if(isset($b2i[$i])) {
+					if(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB')) {
+						$sql.="b2i='".$b2i[$i]."'";
+						$temoin_b2i="y";
+					}
 				}
 
 				$temoin_a2="n";
-				if(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB')) {
-					if($temoin_b2i=="y") {$sql.=",";}
-					$sql.="a2='".$a2[$i]."'";
-					$temoin_a2="y";
+				if(isset($a2[$i])) {
+					if(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB')) {
+						if($temoin_b2i=="y") {$sql.=",";}
+						$sql.="a2='".$a2[$i]."'";
+						$temoin_a2="y";
+					}
 				}
 
-				if($lv[$i]!='') {
+				if(isset($lv[$i])) {
+					if($lv[$i]!='') {
+						$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
+						$res_mat_suivie=mysql_query($sql2);
+						if(mysql_num_rows($res_mat_suivie)!=0) {
+							if(($temoin_b2i=="y")||($temoin_a2=="y")) {$sql.=",";}
+							$sql.="lv='".$lv[$i]."'";
+						}
+					}
+				}
+				*/
+
+				if((isset($b2i[$i]))&&(($b2i[$i]=='MS')||($b2i[$i]=='ME')||($b2i[$i]=='MN')||($b2i[$i]=='AB'))) {
+					$sql.="b2i='".$b2i[$i]."'";
+				}
+				else {
+					$sql.="b2i=''";
+				}
+
+				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+					$sql.=",a2='".$a2[$i]."'";
+				}
+				else {
+					$sql.=",a2=''";
+				}
+
+				if((isset($lv[$i]))&&($lv[$i]!='')) {
 					$sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jeg.login='".$ele_login[$i]."' AND jeg.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$lv[$i]."');";
 					$res_mat_suivie=mysql_query($sql2);
 					if(mysql_num_rows($res_mat_suivie)!=0) {
-						if(($temoin_b2i=="y")||($temoin_a2=="y")) {$sql.=",";}
-						$sql.="lv='".$lv[$i]."'";
+						$sql.=",lv='".$lv[$i]."'";
+					}
+					else {
+						$sql.=",lv=''";
 					}
 				}
+				else {
+					$sql.=",lv=''";
+				}
+
 				$sql.=" WHERE login='".$ele_login[$i]."';";
 			}
 			//echo "$sql<br />";

@@ -6173,7 +6173,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la crétion de la table 'notanet_app': ".$result_inter."<br />";
+          $result .= "Erreur sur la création de la table 'notanet_app': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6188,7 +6188,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_corresp': ".$result_inter."<br />";
+          $result .= "Erreur sur la Erreur sur la création de la table 'notanet_corresp': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6225,7 +6225,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_ele_type': ".$result_inter."<br />";
+		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_ele_type': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6236,7 +6236,20 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la Erreur sur la crétion de la table 'notanet_verrou': ".$result_inter."<br />";
+		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_verrou': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
+	$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
+		login VARCHAR( 50 ) NOT NULL ,
+		b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
+		a2 ENUM( 'MS', 'ME', 'AB', '' ) NOT NULL ,
+		lv VARCHAR( 50 ) NOT NULL ,
+		PRIMARY KEY ( login )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_socles': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6339,7 +6352,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		);";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "<br />Erreur sur la Erreur sur la crétion de la table 'communes': ".$result_inter."<br />";
+			$result .= "<br />Erreur sur la Erreur sur la création de la table 'communes': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 	}
