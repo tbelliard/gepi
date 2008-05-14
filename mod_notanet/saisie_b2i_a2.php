@@ -259,8 +259,8 @@ else {
 
 	$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 		login VARCHAR( 50 ) NOT NULL ,
-		b2i ENUM( 'MS', 'ME', 'MN', 'AB' ) NOT NULL ,
-		a2 ENUM( 'MS', 'ME', 'AB' ) NOT NULL ,
+		b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
+		a2 ENUM( 'MS', 'ME', 'AB', '' ) NOT NULL ,
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
 		);";
