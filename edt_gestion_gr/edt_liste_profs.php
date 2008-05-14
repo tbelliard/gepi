@@ -50,9 +50,9 @@ if (!checkAccess()) {
 }
 
 // ======================= Initialisation des variables ================
-$id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : (isset($_POST["id_gr"]) ? $_POST["id_gr"] : NULL);
+$id_gr = (isset($_GET["id_gr"]) AND is_numeric($_GET["id_gr"])) ? $_GET["id_gr"] : (isset($_POST["id_gr"]) ? $_POST["id_gr"] : NULL);
 $classe_e = isset($_GET["cla"]) ? $_GET["cla"] : NULL;
-$action = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : NULL);
 $choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : (isset($_GET["choix_prof"]) ? $_GET["choix_prof"] : NULL);
 $msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
@@ -91,10 +91,66 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	// On ajoute un prof si c'est demandé
 	if ($action == "ajouter") {
 
+		// On vérifie si ce prof existe et si il n'est pas déjà membre de ce edt_gr
+		$verif_exist = mysql_query("SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
+		$test1 = mysql_result($verif_exist, "etat");
+
+		if ($test1) {
+
+			// On vérifie alors s'il n'est pas déjà membre de cet edt_gr
+			$query_v = mysql_query("SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
+			$test2 = mysql_result($query_v, "id");
+
+			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
+
+				$msg .= '<p style="color: red;">Ce professeur n\'a pas été enregistré car il est déjà membre de cet edt_gr.</p>';
+
+			}else{
+
+				// On peut alors insérer cet utilisateur dans la table
+				$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
+				$query_insert = mysql_query($sql_insert);
+
+				if ($query_insert) {
+
+					$msg .= '<p style="color: green;">Ce professeur a bien été enregistré.</p>';
+
+				}else{
+
+					// On peut alors insérer cet utilisateur dans la table
+					$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
+					$query_insert = mysql_query($sql_insert);
+
+					if ($query_insert) {
+
+						$msg .= '<p style="color: green;">Ce professeur n\'a pas été enregistré : '.$sql_insert.'</p>';
+
+					}
+				}
+			}
+		}else{
+
+			$msg .= '<p style="color: red;">Ce professeur n\'a pas été enregistré car il n\'existe pas dans la base.</p>';
+
+		}
 	}
 
 	// On enlève un prof si c'est demandé
 	if ($action == "effacer") {
+
+		// On efface le prof car c'est demandé ;)
+		$sql_del = "DELETE FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'";
+		$query_del = mysql_query($sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
+
+		if ($query_del) {
+
+			$msg .= '<p style="color: green;">Ce professeur a été effacé de cet edt_gr.</p>';
+
+		}else{
+
+			$msg .= '<p style="color: red;">Impossible d\'effacer ce professeur de cet edt_gr.</p>';
+
+		}
 
 	}
 
@@ -108,7 +164,7 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	while($rep = mysql_fetch_array($query_l)){
 
 		$aff_liste_profs .= '<br /><a href="./edt_liste_profs.php?action=effacer&amp;choix_prof='.$rep["login"].'&amp;id_gr='.$id_gr.'">
-		<img src="../images/icons/delete.png" />'.$rep["nom"].' '.$rep["prenom"].'</a>'."\n";
+		<img src="../images/icons/delete.png" alt="Effacer un professeur : '.$rep["nom"].'" />'.$rep["nom"].' '.$rep["prenom"].'</a>'."\n";
 
 	}
 
@@ -119,14 +175,15 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "oui";
 $utilisation_jsdivdrag = "non";
-$javascript_specifique = "edt_gestion_gr/script/fonctions_edt2.js";
-$style_specifique = "edt_gestion_gr/style2_edt.css";
+$javascript_specifique = "edt_gestion_gr/script/fonctions_edt2";
+$style_specifique = "edt_gestion_gr/style2_edt";
 
 // ===================== entete Gepi ======================================//
 require_once("../lib/header.inc");
 // ===================== fin entete =======================================//
 
 ?>
+<p onclick="window.opener.location.href='./edt_win.php?var=<?php echo $id_gr; ?>&amp;var2=liste_p'; window.close();" style="cursor: pointer;">FERMER</p>
 
 <hr />
 <?php echo $titre; ?>
@@ -152,7 +209,6 @@ require_once("../lib/header.inc");
 			<?php echo $aff_select_profs; ?>
 
 	</fieldset>
-		<?php echo $msg; ?>
 
 </form>
 
