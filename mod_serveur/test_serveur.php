@@ -92,13 +92,13 @@ echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
 	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test->listeExtension().'
 	<hr />
 	<h4>Les réglages php : </h4>
-	- La mémoire maximale allouée à php est de '.$test->memoryLimit().'.
+	- La mémoire maximale allouée à php est de '.$test->memoryLimit().' (<i>memory_limit</i>).
 	<br />
-	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().'.
+	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().' (<i>post_max_size</i>).
 	<br />
-	- Le temps maximum alloué à php pour traiter une requête est de '.$test->maxExecution().' secondes'.$warning_maxExec.'.
+	- Le temps maximum alloué à php pour traiter une requête est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
 	<br />
-	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().'.';
+	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).';
 
 echo '<br /><br /><br />';
 
