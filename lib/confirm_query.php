@@ -489,12 +489,15 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         if (isset($message)) echo "<p>$message</p>";
         echo "<p>Requête(s) à effectuer : <br /><br />";
         for ($c=0; $c<$nombre_req; $c++) {
-            $call = mysql_query($test_nb[$c]);
-            $nb_lignes = mysql_num_rows($call);
-            if ($nb_lignes != 0) {
-                echo "<span class='bold'>$mess[$c] : </span><br />";
-                echo "<span class='small'>--> $req[$c] ($nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo ")</span><br /><br />";
-            }
+            $call = @mysql_query($test_nb[$c]);
+			//echo "\$test_nb[$c]=".$test_nb[$c]."<br />";
+            if($call) {
+				$nb_lignes = mysql_num_rows($call);
+				if ($nb_lignes != 0) {
+					echo "<span class='bold'>$mess[$c] : </span><br />";
+					echo "<span class='small'>--> $req[$c] ($nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo ")</span><br /><br />";
+				}
+			}
         }
         echo "</p>";
         ?>
@@ -521,33 +524,37 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         $succes = 'yes';
         if ($_POST['confirm'] == "Oui") {
             for ($c=0; $c<$nombre_req; $c++) {
-                $call = mysql_query($test_nb[$c]);
-                $nb_lignes = mysql_num_rows($call);
-                if ($nb_lignes != 0) {
-                    $tab_action = explode(";", $req[$c]);
-                    $nbligne = count($tab_action);
-                    for ($i = 0; $i < $nbligne; $i++) {
-                        $do = mysql_query($tab_action[$i]);
-                    }
-                }
+                $call = @mysql_query($test_nb[$c]);
+				if($call) {
+					$nb_lignes = mysql_num_rows($call);
+					if ($nb_lignes != 0) {
+						$tab_action = explode(";", $req[$c]);
+						$nbligne = count($tab_action);
+						for ($i = 0; $i < $nbligne; $i++) {
+							$do = mysql_query($tab_action[$i]);
+						}
+					}
+				}
             }
             //Vérification
             for ($c=0; $c<$nombre_req; $c++) {
-                $call = mysql_query($test_nb[$c]);
-                $nb_lignes = mysql_num_rows($call);
-                if ($nb_lignes != 0) {
-                    $succes = 'no';
-                    //**************** EN-TETE *****************
-                    $titre_page = "page de confirmation";
-                    require_once("../lib/header.inc");
-                    //**************** FIN EN-TETE *****************
+                //$call = mysql_query($test_nb[$c]);
+                $call = @mysql_query($test_nb[$c]);
+				if($call) {
+					$nb_lignes = mysql_num_rows($call);
+					if ($nb_lignes != 0) {
+						$succes = 'no';
+						//**************** EN-TETE *****************
+						$titre_page = "page de confirmation";
+						require_once("../lib/header.inc");
+						//**************** FIN EN-TETE *****************
 
-                    echo "<p><span class='bold'>$mess[$c] : </span><br />";
-                    echo "Il y a eu un problème lors de l'exécution de la requête :<br />";
-                    echo "$req[$c]<br />";
-                    echo "Il reste $nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo " à supprimer !<br /></p>";
-                }
-
+						echo "<p><span class='bold'>$mess[$c] : </span><br />";
+						echo "Il y a eu un problème lors de l'exécution de la requête :<br />";
+						echo "$req[$c]<br />";
+						echo "Il reste $nb_lignes "; if ($nb_lignes == 1) { echo "enregistrement"; } else { echo "enregistrements";} echo " à supprimer !<br /></p>";
+					}
+				}
             }
             $k++;
         } else {
