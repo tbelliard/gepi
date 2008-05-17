@@ -143,7 +143,7 @@ if ($etape != NULL) {
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
 			//echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
-			$var = explode("|", $ligne);
+			$tab = explode("|", $ligne);
 			// Toutes les infos sont envoyées en brut
 			for($v = 0; $v < 12; $v++){
 				if (!isset($tab[$v])) {

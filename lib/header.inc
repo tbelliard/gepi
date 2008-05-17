@@ -273,7 +273,7 @@ if (isset($titre_page)) {
 	echo "<div id='c_header1'";
 	if($_SESSION['cacher_header']=="n"){echo " style='display:none;'";}
 	echo ">\n";
-	echo "<table border='0' width='100%'>\n";
+	echo "<table border='0' width='100%' summary='haut de la page'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
 	echo "<a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n', '".$gepiPath."');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
@@ -316,10 +316,10 @@ if (isset($titre_page)) {
 			$degrade_entete="darkfade";
 		}
 
-		echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/$degrade_entete.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
+		echo "<table id='table_header' summary='haut de la page' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/$degrade_entete.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
 	}
 	else{
-		echo "<table id='table_header' border='0' width='100%'>\n";
+		echo "<table id='table_header' border='0' width='100%' summary='haut de la page'>\n";
 	}
 
 	//echo "<tr height='20px'>\n";
