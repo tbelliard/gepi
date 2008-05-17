@@ -498,7 +498,8 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 							login_prof = '".$prof_e."'")
 							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
 
-		$retour["msg_erreur"] .= $ifexists;
+		$erreur_report = mysql_fetch_array($ifexists);
+		$retour["msg_erreur"] .= 'Ce cours existe déjà ('.$erreur_report["id_cours"].').';
 
 		if (mysql_num_rows($ifexists) < 1) {
 			// On enregistre la ligne

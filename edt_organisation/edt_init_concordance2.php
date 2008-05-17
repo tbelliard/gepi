@@ -51,6 +51,7 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $concord_csv2 = isset($_POST["concord_csv2"]) ? $_POST["concord_csv2"] : NULL;
 $nbre_lignes = isset($_POST["nbre_lignes"]) ? $_POST["nbre_lignes"] : NULL;
 $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
+$debug = NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 $msg_enreg = '';
 
@@ -153,10 +154,11 @@ if ($etape != NULL) {
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé
-				if ($aff_infos == 'oui') {
+				$debug = 'ok';
+				if ($aff_infos == 'oui' OR $debug == 'ok') {
 					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
 				}
-			}elseif($enregistre["reponse"] == 'non'){
+			}elseif($enregistre["reponse"] == 'non' OR $debug == 'ok'){
 				if ($aff_infos == 'oui') {
 					$msg_enreg .= 'La ligne '.$i.' n\'a pas été enregistrée.'.$enregistre["msg_erreur"].'<br />';
 				}
@@ -178,7 +180,7 @@ if ($etape != NULL) {
 	}else{
 		if (file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
 			// On efface le fichier csv
-			unlink("../temp/".$tempdir."/g_edt_2.csv");
+			//unlink("../temp/".$tempdir."/g_edt_2.csv");
 		}
 
 		// On affiche un lien pour revenir à la page de départ
