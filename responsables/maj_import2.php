@@ -3210,8 +3210,9 @@ else{
 						echo "<tr><td>".ucfirst(getSettingValue('gepi_prof_suivi')).": </td><td><select name='pp_resp'>\n";
 						echo "<option value=''>---</option>\n";
 						while($lig_pp=mysql_fetch_object($res_pp)){
+							echo "<option value='$lig_pp->login'";
 							if(mysql_num_rows($res_pp)==1) {echo " selected";}
-							echo "<option value='$lig_pp->login'>$lig_pp->nom $lig_pp->prenom</option>\n";
+							echo ">$lig_pp->nom $lig_pp->prenom</option>\n";
 						}
 						echo "</select>\n";
 						echo "</td>\n";
