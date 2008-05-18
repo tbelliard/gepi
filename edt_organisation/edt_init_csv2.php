@@ -234,7 +234,7 @@ if ($action == "upload_file") {
 				foreach ($tableau as $key => $val) {
                 	// On enlève les guillemets et les apostrophes et les accents
                 	//$valeur = ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $val));
-                	$valeur = remplace_accents($val, 'all');
+                	$valeur = remplace_accents($val, 'all_nospace');
                     echo '
 					<p>
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
@@ -299,6 +299,7 @@ if ($action == "upload_file") {
 
                         // On élimine les guillemets et l'apostrophe qui mettent la pagaille
                         $toutelaligne .= ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $tab[$t])) . '|';
+                        //$toutelaligne .= remplace_accents($tab[$t], 'all'). '|';
 
                     }
 

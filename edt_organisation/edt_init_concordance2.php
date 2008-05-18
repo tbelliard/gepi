@@ -147,20 +147,29 @@ if ($etape != NULL) {
 			// Toutes les infos sont envoyées en brut
 			for($v = 0; $v < 12; $v++){
 				if (!isset($tab[$v])) {
+
 					$tab[$v] = '';
+				}else{
+
+					$tab[$v] = ereg_replace("wkzx", "'", ereg_replace("zxwk", '"', $tab[$v]));
+
 				}
 			}
 
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
+
+				$debug = 'ok';
+
 			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé
-				$debug = 'ok';
+
 				if ($aff_infos == 'oui' OR $debug == 'ok') {
 					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
 				}
-			}elseif($enregistre["reponse"] == 'non' OR $debug == 'ok'){
-				if ($aff_infos == 'oui') {
-					$msg_enreg .= 'La ligne '.$i.' n\'a pas été enregistrée.'.$enregistre["msg_erreur"].'<br />';
+			}elseif($enregistre["reponse"] == 'non'){
+
+				if ($aff_infos == 'oui' OR $debug == 'ok') {
+					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été enregistrée.'.$enregistre["msg_erreur"].'</p>';
 				}
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
@@ -178,14 +187,17 @@ if ($etape != NULL) {
 		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la même procédure pour l\'étape n° '.$prochaine_etape.'</a>';
 
 	}else{
+		$tempdir = get_user_temp_directory();
 		if (file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
 			// On efface le fichier csv
 			//unlink("../temp/".$tempdir."/g_edt_2.csv");
+			echo '
+			<p style="color: green;">Le fichier est conservé dans le répertoire de l\'administrateur.</p>';
 		}
 
 		// On affiche un lien pour revenir à la page de départ
 		echo '
-		<a href="edt_init_csv2.php">Retour</a>';
+		<a href="edt_init_csv2.php" style="border: 1px solid black;">Retour</a>';
 	}
 } // on a terminé le travail de concordances
 

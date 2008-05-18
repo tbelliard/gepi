@@ -40,13 +40,14 @@ echo '
 
 		$utilisateur[$i] = mysql_result($query, $i, "login");
 		$nom[$i] = mysql_result($query, $i, "nom");
-		$nom_m[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "nom"), 'all'));
+		$nom_m[$i] = strtoupper(remplace_accents(mysql_result($query, $i, "nom"), 'all_nospace'));
 		$prenom[$i] = mysql_result($query, $i, "prenom");
 
 		//Pour les noms composés, on ajoute un test
 		$test = explode(" ", $nom_m[$i]);
 		// On détermine le selected si c'est possible
 		if ($nom_m[$i] == $nom_selected) {
+
 			$verif++; // on crée une marque pour afficher un couleur si il y a une interrogation sur le résultat
 			$selected = ' selected="selected"';
 		}elseif ($test[0] == $nom_selected) {
