@@ -227,31 +227,33 @@ If ($max_periode <= 0) {
 echo "Aucune classe comportant des périodes n'a été définie.";
 die();
 }
-echo "<FORM METHOD=post ACTION=\"classes_param.php\">";
-echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <INPUT TYPE=SUBMIT VALUE='Enregistrer' /></p>";
+echo "<form action=\"classes_param.php\" method='post'>\n";
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
 echo "<script language='javascript' type='text/javascript'>
 function checkAll(){
 	champs_input=document.getElementsByTagName('input');
+	//alert('champs_input.length='+champs_input.length)
 	for(i=0;i<champs_input.length;i++){
-	type=champs_input[i].getAttribute('type');
-	//if(type==\"checkbox\"){
-	name=champs_input[i].getAttribute('name');
-	if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
-		champs_input[i].checked=true;
+		type=champs_input[i].getAttribute('type');
+		//if(type==\"checkbox\"){
+		name=champs_input[i].getAttribute('name');
+		//alert('name='+name+'\\ntype='+type)
+		if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
+			champs_input[i].checked=true;
+		}
 	}
-	}
-	alert(champs_input[i-1])
+	//alert(champs_input[i-1])
 }
 function UncheckAll(){
 	champs_input=document.getElementsByTagName('input');
 	for(i=0;i<champs_input.length;i++){
-	type=champs_input[i].getAttribute('type');
-	//if(type==\"checkbox\"){
-	name=champs_input[i].getAttribute('name');
-	if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
-		champs_input[i].checked=false;
-	}
+		type=champs_input[i].getAttribute('type');
+		//if(type==\"checkbox\"){
+		name=champs_input[i].getAttribute('name');
+		if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
+			champs_input[i].checked=false;
+		}
 	}
 }
 </script>\n";
@@ -281,45 +283,96 @@ while ($per < $max_periode) {
 	If ($nb != 0) {
 		echo "<center><p class='grand'>Classes ayant ".$per." période";
 		if ($per > 1) echo "s";
-		echo "</p></center>";
+		echo "</p></center>\n";
 		// S'il existe des classe ayant un nombre de periodes égal = $per :
 		$nb_ligne = intval($nb/3)+1;
-		echo "<table width = 100% border=1>";
+		echo "<table width = 100% class='boireaus' border='1'>\n";
+
 		$i ='0';
 		while ($i < $nb_ligne) {
-			echo "<tr>";
+			echo "<tr>\n";
 			$j = 0;
 			while ($j < 3) {
 				unset($nom_case);
 				$nom_classe = '';
 				if (isset($tab_id_classe[$i+$j*$nb_ligne])) $nom_case = "case_".$tab_id_classe[$i+$j*$nb_ligne];
 				if (isset($tab_nom_classe[$i+$j*$nb_ligne])) $nom_classe = $tab_nom_classe[$i+$j*$nb_ligne];
-				echo "<td>";
-				if ($nom_classe != '') echo "<input type=\"checkbox\" name=\"".$nom_case."\" checked />&nbsp;".$nom_classe;
-				echo "</td>";
+				echo "<td>\n";
+				if ($nom_classe != '') {echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$i."_".$j."' checked /><label for='case_".$i."_".$j."' style='cursor:pointer;'>&nbsp;".$nom_classe."</label>\n";}
+				echo "</td>\n";
+
 				$j++;
 			}
-			echo "</tr>";
+
+			echo "<th>";
+			echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "</th>\n";
+
+			echo "</tr>\n";
 			$i++;
 		}
-		echo "</table>";
+
+		echo "<tr>\n";
+		$j=0;
+		while ($j < 3) {
+			echo "<th>\n";
+			echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "</th>\n";
+			$j++;
+		}
+		echo "<td>&nbsp;</td>\n";
+		echo "</tr>\n";
+
+		echo "</table>\n";
+
+
+
+		echo "<script type='text/javascript' language='javascript'>
+	function modif_case(rang,type,statut){
+		// type: col ou lig
+		// rang: le numéro de la colonne ou de la ligne
+		// statut: true ou false
+		if(type=='col'){
+			for(k=0;k<$nb_ligne;k++){
+				if(document.getElementById('case_'+k+'_'+rang)){
+					document.getElementById('case_'+k+'_'+rang).checked=statut;
+				}
+			}
+		}
+		else{
+			for(k=0;k<3;k++){
+				if(document.getElementById('case_'+rang+'_'+k)){
+					document.getElementById('case_'+rang+'_'+k).checked=statut;
+				}
+			}
+		}
+		changement();
+	}
+</script>\n";
+
+
+
 		?>
 		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus : </p>
 		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
-		<table width=100% border=2 cellspacing=1  cellpadding=3>
+		<table width=100% border=2 cellspacing=1  cellpadding=3 class='boireaus'>
 		<tr>
-		<td>&nbsp;</td>
-		<td>Nom de la période</td>
+		<th>&nbsp;</th>
+		<th>Nom de la période</th>
 		</tr>
 
 		<?php
 		$k = '1';
+		$alt=1;
 		While ($k < $per+1) {
-			echo "<tr>";
-			echo "<td>Période ".$k."</td>";
-			echo "<td><INPUT TYPE=TEXT NAME='nb_".$per."_".$k."' VALUE=\"\" SIZE=30 /></td>";
-			echo"</tr>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<th>Période ".$k."</th>\n";
+			echo "<td><input type='text' name='nb_".$per."_".$k."' value=\"\" size='30' /></td>\n";
+			echo"</tr>\n";
 			$k++;
 		}
 
@@ -594,7 +647,7 @@ while ($per < $max_periode) {
 
 ?>
 
-<center><INPUT TYPE=SUBMIT VALUE='Enregistrer' /></center>
-<input type=hidden name=is_posted value="yes" />
-</FORM>
+<center><input type='submit' name='enregistrer2' value='Enregistrer' /></center>
+<input type=hidden name='is_posted' value="yes" />
+</form>
 <?php require("../lib/footer.inc.php");?>
