@@ -6189,7 +6189,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-          $result .= "Erreur sur la Erreur sur la création de la table 'notanet_corresp': ".$result_inter."<br />";
+          $result .= "Erreur sur la création de la table 'notanet_corresp': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6226,7 +6226,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_ele_type': ".$result_inter."<br />";
+		$result .= "Erreur sur la création de la table 'notanet_ele_type': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6237,7 +6237,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_verrou': ".$result_inter."<br />";
+		$result .= "Erreur sur la création de la table 'notanet_verrou': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6250,7 +6250,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		);";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "Erreur sur la Erreur sur la création de la table 'notanet_socles': ".$result_inter."<br />";
+		$result .= "Erreur sur la création de la table 'notanet_socles': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
 
@@ -6353,10 +6353,28 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		);";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "<br />Erreur sur la Erreur sur la création de la table 'communes': ".$result_inter."<br />";
+			$result .= "<br />Erreur sur la création de la table 'communes': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 	}
+
+	$test = sql_query1("SHOW TABLES LIKE 'commentaires_types'");
+	if ($test == -1) {
+		$result .= "<br />Création de la table 'commentaires_types'. ";
+		$sql="CREATE TABLE IF NOT EXISTS commentaires_types (
+		id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		commentaire TEXT NOT NULL ,
+		num_periode INT NOT NULL ,
+		id_classe INT NOT NULL
+		);";
+		$result_inter = traite_requete($sql);
+		if ($result_inter != '') {
+			$result .= "<br />Erreur sur la création de la table 'commentaires_types': ".$result_inter."<br />";
+			$temoin_notanet_err++;
+		}
+	}
+
+
 
 	//==========================================================
 
