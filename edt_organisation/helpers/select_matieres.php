@@ -31,7 +31,7 @@ $nbre = mysql_num_rows($query);
 for($i = 0; $i < $nbre; $i++) {
     $matiere[$i] = mysql_result($query, $i, "matiere");
     $nom[$i] = mysql_result($query, $i, "nom_complet");
-    if (strtoupper(trim(remplace_accents($nom[$i]))) == $matiere_selected OR strtoupper(trim(remplace_accents($matiere[$i], 'all'))) == $matiere_selected) {
+    if (strtoupper(trim(remplace_accents($nom[$i], 'all_nospace'))) == $matiere_selected OR strtoupper(trim(remplace_accents($matiere[$i], 'all_nospace'))) == $matiere_selected) {
         $selected = ' selected="selected"';
     } else {
         $selected = '';
