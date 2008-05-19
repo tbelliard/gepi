@@ -216,12 +216,12 @@ function renvoiConcordances($chiffre, $etape){
 	}
 
 	if ($query) {
-		$reponse = mysql_result($query, "nom_gepi")
+		$reponse = mysql_fetch_array($query)
 			OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
-		if ($reponse == '') {
+		if ($reponse["nom_gepi"] == '') {
 			$retour = "inc";
 		}else{
-			$retour = $reponse;
+			$retour = $reponse["nom_gepi"];
 		}
 	}else{
 		$retour = "erreur";
