@@ -737,12 +737,13 @@
 					// On affiche seulement les intitulés et le total des barèmes...
 					echo "<tr>\n";
 
-					echo "<td style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
+					echo "<td colsapn='4' style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
 					echo "<p class='discipline'>";
 					echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
 					echo "</p>";
 					echo "</td>\n";
 
+					/*
 					echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					echo "&nbsp;";
 					echo "</td>\n";
@@ -754,6 +755,7 @@
 					echo "<td style='border: 1px solid black; text-align:center;'>\n";
 					echo "&nbsp;";
 					echo "</td>\n";
+					*/
 
 					if($num_lig==0){
 						$nb_info=$temoin_NOTNONCA;
@@ -807,6 +809,12 @@
 
 						//$num_lig++;
 					}
+
+					// Appréciation
+					echo "<td style='border: 1px solid black; text-align:center;'>\n";
+					echo "&nbsp;";
+					echo "</td>\n";
+
 					$num_lig++;
 
 					echo "</tr>\n";
