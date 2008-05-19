@@ -482,9 +482,24 @@ while ($i < $nombreligne){
     if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
     	// On récupère son statut privé
 		$query_s = mysql_query("SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
-		$special = mysql_result($query_s, "nom_statut");
+		if ($query_s) {
 
-		echo "<td><p class='small'><span class='bold'>Statut privé : ".$special."</span></p></td>\n";
+			$special = mysql_fetch_array($query_s);//mysql_result($query_s, "nom_statut");
+
+		}else{
+
+			$special = '';
+
+		}
+
+		if ($special["nom_statut"] == '') {
+
+			$special["nom_statut"] = '<span style="color: red; font-style: italic;">inc.</span>';
+
+		}
+
+		echo "<td><p class='small'><span class='bold'>Statut privé : ".$special["nom_statut"]."</span></p></td>\n";
+
     }else{
 	    echo "<td><p class='small'><span class='bold'>{$col[$i][4]}</span></p></td>\n";
 	}

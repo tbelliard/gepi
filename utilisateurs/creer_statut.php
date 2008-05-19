@@ -267,7 +267,7 @@ if ($query) {
 
 		// On récupère son statut s'il existe
 		$query_s = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
-		$statut = mysql_result($query_s, "id_statut");
+		$statut = mysql_fetch_array($query_s);
 
 		$aff_users .= '
 		<tr>
@@ -283,7 +283,7 @@ if ($query) {
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 		$query = mysql_query($sql);
 		while($rep = mysql_fetch_array($query)){
-			if ($statut == $rep["id"]) {
+			if ($statut["id_statut"] == $rep["id"]) {
 				$selected = ' selected="selected"';
 			}else{
 				$selected = '';
