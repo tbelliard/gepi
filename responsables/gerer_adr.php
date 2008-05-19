@@ -238,7 +238,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	echo "<td valign='top' colspan='2'>\n";
 	echo "<input type='radio' name='champ_rech' id='champ_rech_nonAssoc' value='non_assoc' ";
 	if($champ_rech=="non_assoc") {echo "checked ";}
-	echo "/><label for='champ_rech_nonAssoc' style='cursor:pointer;'>  non associées.";
+	echo "/><label for='champ_rech_nonAssoc' style='cursor:pointer;'> non associées.</label>";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -282,6 +282,12 @@ $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
 
+	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo "<input type='hidden' name='nb_adr' value='$nb_adr' />\n";
+	echo "<input type='hidden' name='num_premier_adr_rech' value='$num_premier_adr_rech' />\n";
+	echo "<input type='hidden' name='champ_rech' value='$champ_rech' />\n";
+	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "<input type='hidden' name='afficher_toutes_les_adr' value='$afficher_toutes_les_adr' />\n";
 
 	echo "<div id='div_ad_existante'>\n";
 
