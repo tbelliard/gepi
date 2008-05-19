@@ -230,6 +230,7 @@ die();
 echo "<form action=\"classes_param.php\" method='post'>\n";
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
+/*
 echo "<script language='javascript' type='text/javascript'>
 function checkAll(){
 	champs_input=document.getElementsByTagName('input');
@@ -258,6 +259,7 @@ function UncheckAll(){
 }
 </script>\n";
 echo "<p><a href='javascript:checkAll();'>Cocher toutes les classes</a> / <a href='javascript:UncheckAll();'>Tout décocher</a></p>\n";
+*/
 
 // Première boucle sur le nombre de periodes
 $per = 0;
@@ -298,15 +300,15 @@ while ($per < $max_periode) {
 				if (isset($tab_id_classe[$i+$j*$nb_ligne])) $nom_case = "case_".$tab_id_classe[$i+$j*$nb_ligne];
 				if (isset($tab_nom_classe[$i+$j*$nb_ligne])) $nom_classe = $tab_nom_classe[$i+$j*$nb_ligne];
 				echo "<td>\n";
-				if ($nom_classe != '') {echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$i."_".$j."' checked /><label for='case_".$i."_".$j."' style='cursor:pointer;'>&nbsp;".$nom_classe."</label>\n";}
+				if ($nom_classe != '') {echo "<input type=\"checkbox\" name=\"".$nom_case."\" id='case_".$per."_".$i."_".$j."' checked /><label for='case_".$per."_".$i."_".$j."' style='cursor:pointer;'>&nbsp;".$nom_classe."</label>\n";}
 				echo "</td>\n";
 
 				$j++;
 			}
 
 			echo "<th>";
-			echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href='javascript:modif_case($per,$i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href='javascript:modif_case($per,$i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 			echo "</th>\n";
 
 			echo "</tr>\n";
@@ -317,12 +319,18 @@ while ($per < $max_periode) {
 		$j=0;
 		while ($j < 3) {
 			echo "<th>\n";
-			echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "<a href='javascript:modif_case($per,$j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href='javascript:modif_case($per,$j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 			echo "</th>\n";
 			$j++;
 		}
-		echo "<td>&nbsp;</td>\n";
+		//echo "<td>&nbsp;</td>\n";
+		echo "<th>";
+
+			echo "<a href='javascript:tout_cocher($per,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+			echo "<a href='javascript:tout_cocher($per,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+
+		echo "</th>\n";
 		echo "</tr>\n";
 
 		echo "</table>\n";
@@ -330,25 +338,35 @@ while ($per < $max_periode) {
 
 
 		echo "<script type='text/javascript' language='javascript'>
-	function modif_case(rang,type,statut){
+	function modif_case(per,rang,type,statut){
 		// type: col ou lig
 		// rang: le numéro de la colonne ou de la ligne
 		// statut: true ou false
 		if(type=='col'){
 			for(k=0;k<$nb_ligne;k++){
-				if(document.getElementById('case_'+k+'_'+rang)){
-					document.getElementById('case_'+k+'_'+rang).checked=statut;
+				if(document.getElementById('case_'+per+'_'+k+'_'+rang)){
+					document.getElementById('case_'+per+'_'+k+'_'+rang).checked=statut;
 				}
 			}
 		}
 		else{
 			for(k=0;k<3;k++){
-				if(document.getElementById('case_'+rang+'_'+k)){
-					document.getElementById('case_'+rang+'_'+k).checked=statut;
+				if(document.getElementById('case_'+per+'_'+rang+'_'+k)){
+					document.getElementById('case_'+per+'_'+rang+'_'+k).checked=statut;
 				}
 			}
 		}
 		changement();
+	}
+
+	function tout_cocher(per,statut){
+		for(kk=0;kk<=3;kk++){
+			for(k=0;k<=$nb_ligne;k++){
+				if(document.getElementById('case_'+per+'_'+k+'_'+kk)){
+					document.getElementById('case_'+per+'_'+k+'_'+kk).checked=statut;
+				}
+			}
+		}
 	}
 </script>\n";
 
