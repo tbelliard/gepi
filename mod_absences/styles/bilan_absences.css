@@ -22,6 +22,15 @@
 	height: 1000px;
 	font: normal normal 15pt Verdana, sans-serif;
 }
+div#aff_tab_abs {
+background-color: #66FF99; overflow: auto; width: 100%;
+}
+div#aff_tab_abs th {
+background-color: #DDDDDD; color: grey; font-style: italic; text-align: right;
+}
 #aff_abs td {
 border: 1px solid silver; text-align: center;
+}
+table#aff_abs {
+ margin: 2 2 2 2; padding: 2 2 2 2; font-size: 0.6em;
 }

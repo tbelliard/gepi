@@ -163,7 +163,7 @@ for($i=0; $i<$nbre; $i++){
 	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
-			<td><a href="bilan_absences_classe2.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
+			<td><a href="bilan_absences_classe.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
 			<td colspan="2"></td>
 		</tr>
 		';
