@@ -637,7 +637,9 @@ foreach ($liste_eleves as $eleve_login) {
 				//==================================
 				// Rétablissement: boireaus 20080219
 				// Pour revenir au champ suivant après validation/enregistrement:
-				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
+				// MODIF: boireaus 20080520
+				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
+				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
 				//==================================
 
 				$mess[$k].=">".$eleve_app."</textarea>\n";
@@ -746,9 +748,7 @@ foreach ($liste_eleves as $eleve_login) {
 }
 
 echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
-
 ?>
-
 <input type="hidden" name="is_posted" value="yes" />
 <input type="hidden" name="id_groupe" value="<?php echo "$id_groupe";?>" />
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
@@ -757,8 +757,17 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
 <div id='decompte'></div>
 
+<?php
+	//============================================
+	// AJOUT: boireaus 20080520
+	// Dispositif spécifique: décommenter la ligne pour l'activer
+	if(getSettingValue('ctp')=='y') {include('ctp.php');}
+	//============================================
+?>
+
 <!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
-<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
+<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
+<input type='hidden' id='focus_courant' name='focus_courant' value='' />
 </div></center>
 </form>
 
