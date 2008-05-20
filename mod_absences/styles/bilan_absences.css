@@ -22,3 +22,6 @@
 	height: 1000px;
 	font: normal normal 15pt Verdana, sans-serif;
 }
+#aff_abs td {
+border: 1px solid silver; text-align: center;
+}

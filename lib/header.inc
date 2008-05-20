@@ -456,7 +456,8 @@ if (isset($titre_page)) {
 
 	echo "</div>\n";
 // ==========> On ajoute la barre de menu <========================= //
-if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur") {
+if (!isset($nobar)) { $nobar = "non"; }
+if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {

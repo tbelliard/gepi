@@ -89,7 +89,7 @@ $creneaux = retourne_creneaux();
 
 ?>
 	<form name="autre_date" method="post" action="bilan_absences_professeur.php">
-<table>
+<table summary="Mise en page du haut (d&eacute;sol&eacute;)">
 	<tr>
 		<td>
 			<a href="prof_ajout_abs.php">Retour</a>
@@ -115,7 +115,7 @@ $creneaux = retourne_creneaux();
 </table>
 	</form>
 <p>Bilan des absences que vous avez saisies.</p>
-<table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
+<table summary="Bilan des absences saisies par le professeur" style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 
 	<tr>
 	<td>
@@ -163,7 +163,7 @@ for($i=0; $i<$nbre; $i++){
 	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
-			<td><a href="bilan_absences_classe.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
+			<td><a href="bilan_absences_classe2.php?id_classe='.$rep_classe[$i]["id"].'">'.$rep_classe[$i]["classe"].'</a></td>
 			<td colspan="2"></td>
 		</tr>
 		';
