@@ -390,6 +390,27 @@
 
 
 
+	//===============================================
+	echo "<tr><td colspan='2' style='font-weight:bold;'>Images</td></tr>\n";
+	echo "<tr><td colspan='2'>Il peut arriver avec certains navigateurs que la transparence des PNG pose des problèmes lors de l'impression.<br />Un jeu de fichiers alternatifs avec un fond blanc est proposé pour résoudre ce problème.</td></tr>\n";
+
+	$fb_modele_img=getSettingValue("fb_modele_img");
+	if($fb_modele_img=="") {$fb_modele_img=1;}
+	$alt=$alt*(-1);
+	echo "<tr";
+	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
+	echo ">\n";
+	echo "<td valign='top'>Modèle d'image: </td>\n";
+	echo "<td>\n";
+	echo "<input type='radio' name='fb_modele_img' id='fb_modele_img_std' value='1' ";
+	if($fb_modele_img==1) {echo "checked ";}
+	echo "/><label for='fb_modele_img_std' style='cursor:pointer;'> standard</label><br />\n";
+	echo "<input type='radio' name='fb_modele_img' id='fb_modele_img_alt' value='2' ";
+	if($fb_modele_img==2) {echo "checked ";}
+	echo "/><label for='fb_modele_img_alt' style='cursor:pointer;'> alternatif</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 
 
 	echo "</table>\n";

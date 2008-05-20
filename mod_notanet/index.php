@@ -150,7 +150,12 @@ if($_SESSION['statut']=="administrateur") {
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 
-	echo "<li><a href='fiches_brevet.php'>Générer les fiches brevet</a></li>\n";
+	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
+	<ul>
+		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
+		<li><a href='rouen/fiches_brevet.php'>Rouen</a></li>
+	</ul>
+</li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";

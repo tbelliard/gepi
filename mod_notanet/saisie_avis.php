@@ -297,10 +297,16 @@ else {
 
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
 	echo "<input type='hidden' name='nb_tot_eleves' value='$cpt' />\n";
-	echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
-	echo "<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+
+	echo "<center><div id='fixe'><input type='submit' value='Enregistrer' /><br />
+
+<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
 <div id='decompte'></div>
+</div>
+</center>
+
 
 <!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 <input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />

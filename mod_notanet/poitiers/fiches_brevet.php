@@ -22,16 +22,17 @@
 
 
 // Initialisations files
-require_once("../lib/initialisations.inc.php");
+$niveau_arbo = 2;
+require_once("../../lib/initialisations.inc.php");
 
 
 // Resume session
 $resultat_session = resumeSession();
 if ($resultat_session == 'c') {
-	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
+	header("Location: ../../logout.php?auto=1");
 	die();
 };
 
@@ -46,7 +47,7 @@ if ($resultat_session == 'c') {
 // Pour GEPI 1.5.x
 // INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','F','Accès à l export NOTANET','');
 if (!checkAccess()) {
-	header("Location: ../logout.php?auto=1");
+	header("Location: ../../logout.php?auto=1");
 	die();
 }
 //======================================================================================
@@ -284,6 +285,16 @@ if (isset($_POST['enregistrer_param'])) {
 		}
 	}
 
+	if (isset($_POST['fb_modele_img'])) {
+		if (($_POST['fb_modele_img']!=1)&&($_POST['fb_modele_img']!=2)) {
+			$_POST['fb_modele_img'] = 1;
+		}
+		if (!saveSetting("fb_modele_img", $_POST['fb_modele_img'])) {
+			$msg .= "Erreur lors de l'enregistrement de fb_modele_img !";
+		}
+	}
+
+
 
 /*
 	if (isset($_POST['sessionMaxLength'])) {
@@ -301,36 +312,12 @@ if (isset($_POST['enregistrer_param'])) {
 
 
 
-
-
-
-
-function get_commune($code_commune_insee,$mode){
-	$retour="";
-
-	$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
-		if($mode==0) {
-			$retour=$lig->commune;
-		}
-		else {
-			$retour=$lig->commune." (<i>".$lig->departement."</i>)";
-		}
-	}
-	return $retour;
-}
-
-
-
-
 //echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css">';
 
 //**************** EN-TETE *****************
 $titre_page = "Fiches Brevet";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -359,8 +346,8 @@ $avec_app=isset($_POST['avec_app']) ? $_POST['avec_app'] : "n";
 if (isset($_GET['parametrer'])) {
 	// Paramétrage des tailles de police, dimensions, nom d'académie, de département,...
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
-	echo " | <a href='index.php'>Accueil Notanet</a>";
+	echo "<p class='bold'><a href='../../accueil.php'>Accueil</a>";
+	echo " | <a href='../index.php'>Accueil Notanet</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
 	echo "</p>\n";
 	echo "</div>\n";
@@ -371,7 +358,7 @@ if (isset($_GET['parametrer'])) {
 
 	// FIN DU PARAMETRAGE
 
-	require("../lib/footer.inc.php");
+	require("../../lib/footer.inc.php");
 	die();
 
 }
@@ -389,9 +376,9 @@ if(mysql_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Aucune association élève/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a></p>\n";
+	echo "<p>Aucune association élève/type de brevet n'a encore été réalisée.<br />Commencez par <a href='../select_eleves.php'>sélectionner les élèves</a></p>\n";
 
-	require("../lib/footer.inc.php");
+ require("../../lib/footer.inc.php");
 	die();
 }
 
@@ -403,19 +390,19 @@ if($nb_type_brevet==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Aucune association matières/type de brevet n'a encore été réalisée.<br />Commencez par <a href='select_matieres.php'>sélectionner les matières</a></p>\n";
+	echo "<p>Aucune association matières/type de brevet n'a encore été réalisée.<br />Commencez par <a href='../select_matieres.php'>sélectionner les matières</a></p>\n";
 
-	require("../lib/footer.inc.php");
+ require("../../lib/footer.inc.php");
 	die();
 }
 
 // Bibliothèque pour Notanet et Fiches brevet
-include("lib_brevets.php");
+include("../lib_brevets.php");
 
 if(!isset($type_brevet)) {
 
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Accueil Notanet</a>";
+	echo "<p class='bold'><a href='../../accueil.php'>Accueil</a> | <a href='../index.php'>Accueil Notanet</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramètrer</a>";
 	echo "</p>\n";
 	echo "</div>\n";
@@ -426,7 +413,7 @@ if(!isset($type_brevet)) {
 	}
 	echo "</ul>\n";
 
-	require("../lib/footer.inc.php");
+ require("../../lib/footer.inc.php");
 	die();
 }
 
@@ -437,8 +424,8 @@ if(!isset($type_brevet)) {
 if (!isset($id_classe)) {
 	// Choix de la classe:
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
-	echo " | <a href='index.php'>Accueil Notanet</a>";
+	echo "<p class='bold'><a href='../../accueil.php'>Accueil</a>";
+	echo " | <a href='../index.php'>Accueil Notanet</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramètrer</a>";
 	echo "</p>\n";
 	echo "</div>\n";
@@ -449,9 +436,9 @@ if (!isset($id_classe)) {
 	$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe AND n.login=net.login AND net.type_brevet='$type_brevet' ORDER BY classe");
 	if(!$call_data){
 		//echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas mené la procédure notanet à son terme.<br />Cette procédure renseigne des tables requises pour générer les fiches brevet.<br />Effectuez la <a href='notanet.php'>procédure notanet</a>.</p>\n";
-		echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas mené la procédure notanet à son terme.<br />Cette procédure renseigne des tables requises pour générer les fiches brevet.<br />Effectuez la <a href='index.php'>procédure notanet</a>.</p>\n";
+		echo "<p><font color='red'>Attention:</font> Il semble que vous n'ayez pas mené la procédure notanet à son terme.<br />Cette procédure renseigne des tables requises pour générer les fiches brevet.<br />Effectuez la <a href='../index.php'>procédure notanet</a>.</p>\n";
 
-		require("../lib/footer.inc.php");
+  require("../../lib/footer.inc.php");
 		die();
 	}
 	$nombre_lignes = mysql_num_rows($call_data);
@@ -495,8 +482,8 @@ if (!isset($id_classe)) {
 else {
 	// DEBUT DE L'AFFICHAGE DES FICHES BREVET POUR LES CLASSES CHOISIES ET POUR LE TYPE_BREVET CHOISI
 	echo "<div class='noprint'>\n";
-	echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
-	echo " | <a href='index.php'>Accueil Notanet</a>";
+	echo "<p class='bold'><a href='../../accueil.php'>Accueil</a>";
+	echo " | <a href='../index.php'>Accueil Notanet</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Type de brevet</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet'>Choix des classes</a>";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramètrer</a>";
@@ -637,6 +624,12 @@ else {
 		$fb_largeur_coche_b2i=5;
 	}
 
+	$fb_modele_img=getSettingValue("fb_modele_img");
+	if($fb_modele_img==""){
+		$fb_modele_img=1;
+	}
+
+	if($fb_modele_img==1) {$img_alt="";} else {$img_alt="2";}
 
 	echo "<style type='text/css'>
 
@@ -911,7 +904,7 @@ else {
 					echo "<p class='info_ele'>\n";
 					echo "oui ";
 					echo "<img src='";
-					if($doublant=='y') {echo "case_cochee.png";} else {echo "case_non_cochee.png";}
+					if($doublant=='y') {echo "case_cochee".$img_alt.".png";} else {echo "case_non_cochee".$img_alt.".png";}
 					echo "' width='17' height='16' alt='case à cocher' />\n";
 					//file:///home/steph/2008_04_25/gepi/images/case_cochee.png
 					// 17 16
@@ -922,7 +915,7 @@ else {
 					echo "<p class='info_ele'>\n";
 					echo "non ";
 					echo "<img src='";
-					if($doublant=='y') {echo "case_non_cochee.png";} else {echo "case_cochee.png";}
+					if($doublant=='y') {echo "case_non_cochee".$img_alt.".png";} else {echo "case_cochee".$img_alt.".png";}
 					echo "' width='17' height='16' alt='case à cocher' />\n";
 					echo "</p>\n";
 					echo "</td>\n";
@@ -1592,10 +1585,10 @@ else {
 				echo "</td>\n";
 				echo "<td width='".$fb_largeur_coche_b2i."%' style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='MS') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1622,24 +1615,24 @@ else {
 
 					echo "<p>";
 					if($def_fav=="O") {
-						echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' />";
+						echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' />";
 					}
 					else {
-						echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' />";
+						echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' />";
 					}
 					echo " avis favorable</p>\n";
 					echo "<br />\n";
 
 					echo "<p>";
 					if($def_fav=="N") {
-						echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' />";
+						echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' />";
 					}
 					else {
-						echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' />";
+						echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' />";
 					}
 					echo " avis défavorable<br />\n";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<img src='fleche_evidee.png' width='16' height='19' alt='Flèche' /> avis motivé :<br />\n";
+					echo "<img src='fleche_evidee".$img_alt.".png' width='16' height='19' alt='Flèche' /> avis motivé :<br />\n";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 					if($def_avis=="") {
@@ -1662,10 +1655,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='ME') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1676,10 +1669,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='MN') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1708,10 +1701,10 @@ else {
 				echo "</td>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='MS') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1723,10 +1716,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='ME') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1737,10 +1730,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='MN') {
-					echo "<img src='case_cochee.png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
 				}
 				else {
-					echo "<img src='case_non_cochee.png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1827,5 +1820,5 @@ else {
 }
 // Fermeture du DIV container initialisé dans le header.inc
 //echo "</div>\n";
-require("../lib/footer.inc.php");
+require("../../lib/footer.inc.php");
 ?>

@@ -583,7 +583,10 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/acces_appreciations.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Configuration de la restriction d accès aux appréciations pour les élèves et responsables', '');";
 
 
-	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès aux fiches brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/rouen/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès aux fiches brevet','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/poitiers/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès aux fiches brevet','');";
+
+
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','F', 'Gestion du module NOTANET','');";
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F', 'Notanet: Accueil','');";
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','F', 'Notanet: Extraction des moyennes','');";
@@ -601,7 +604,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/classes/changement_eleve_classe.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F','F', 'Changement de classe pour un élève', '1');";
 
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_avis.php','V','F','F','F','F','F','F','F','Notanet: Saisie avis chef etablissement','');";
-	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/param_fiche_brevet.php','V','F','F','F','F','F','F','F','Notanet: Paramètres d impression','');";
+	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/poitiers/param_fiche_brevet.php','V','F','F','F','F','F','F','F','Notanet: Paramètres d impression','');";
 	$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_b2i_a2.php','V','F','F','F','F','F','F','F','Notanet: Saisie socles B2i et A2','');";
 
 

@@ -673,7 +673,6 @@ INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');
 INSERT INTO setting VALUES ('multisite', 'n');
 INSERT INTO setting VALUES ('statuts_prives', 'n');
 INSERT INTO setting VALUES ('mod_edt_gr', 'n');
-INSERT INTO droits VALUES('/mod_notanet/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès à l export NOTANET','');
 INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','F', 'Gestion du module NOTANET','');
 INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F', 'Notanet: Accueil','');
 INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','F', 'Notanet: Extraction des moyennes','');
@@ -694,5 +693,7 @@ INSERT INTO droits VALUES ('/edt_gestion_gr/edt_liste_eleves.php', 'V', 'F', 'F'
 INSERT INTO droits VALUES ('/edt_gestion_gr/edt_liste_profs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');
 INSERT INTO droits VALUES ('/edt_gestion_gr/edt_win.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Gérer les groupes du module EdT', '');
 INSERT INTO droits VALUES('/mod_notanet/saisie_avis.php','V','F','F','F','F','F','F','F','Notanet: Saisie avis chef etablissement','');
-INSERT INTO droits VALUES('/mod_notanet/param_fiche_brevet.php','V','F','F','F','F','F','F','F','Notanet: Paramètres d impression','');
 INSERT INTO droits VALUES('/mod_notanet/saisie_b2i_a2.php','V','F','F','F','F','F','F','F','Notanet: Saisie socles B2i et A2','');
+INSERT INTO droits VALUES('/mod_notanet/poitiers/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès à l export NOTANET','');
+INSERT INTO droits VALUES('/mod_notanet/poitiers/param_fiche_brevet.php','V','F','F','F','F','F','F','F','Notanet: Paramètres d impression','');
+INSERT INTO droits VALUES('/mod_notanet/rouen/fiches_brevet.php','V','F','F','F','F','F','F','F', 'Accès à l export NOTANET','');

@@ -45,6 +45,22 @@ function accent_maj($texte){
 	return strtr($texte,"âäàáãåçêëèéîïìíñôöòóõûüùúıÿ","ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕÛÜÙÚİ¾");
 }
 
+function get_commune($code_commune_insee,$mode){
+	$retour="";
+
+	$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		if($mode==0) {
+			$retour=$lig->commune;
+		}
+		else {
+			$retour=$lig->commune." (<i>".$lig->departement."</i>)";
+		}
+	}
+	return $retour;
+}
 
 function tabmatieres($type_brevet){
 	//====================
