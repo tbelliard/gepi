@@ -38,9 +38,9 @@ include("../lib/header.inc");
 
 // ========================================= Variables ============================
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
-$nouveau_statut = isset($_POST["nouveau_statut"]) ? $_POST["nouveau_statut"] : NULL;
-$login_user = isset($_POST["login_user"]) ? $_POST["login_user"] : NULL;
-$statut_user = isset($_POST["statut_user"]) ? $_POST["statut_user"] : NULL;
+$nouveau_statut = isset($_POST["news"]) ? $_POST["news"] : NULL;
+$login_user = isset($_POST["userid"]) ? $_POST["userid"] : NULL;
+$statut_user = isset($_POST["userstat"]) ? $_POST["userstat"] : NULL;
 $msg = $msg2 = $msg3 = NULL;
 
 // Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
@@ -276,9 +276,9 @@ if ($query) {
 			<td>
 		<form name="form'.$i.'" action="creer_statut.php" method="post">
 			<input type="hidden" name="action" value="defStatut" />
-			<input type="hidden" name="login_user" value="'.$tab["login"].'" />
+			<input type="hidden" name="userid" value="'.$tab["login"].'" />
 
-			<select name="statut_user" onchange=\'document.form'.$i.'.submit();\'>
+			<select name="userstat" onchange=\'document.form'.$i.'.submit();\'>
 				<option value="rien">Choix du statut</option>';
 
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
@@ -362,7 +362,7 @@ if ($query) {
 	<form name="formNew" action="creer_statut.php" method="post">
 		<p>
 		<label for="new">Nom du nouveau statut</label>
-		<input type="text" id="new" name="nouveau_statut" value="" />
+		<input type="text" id="new" name="news" value="" />
 		<input type="hidden" name="action" value="ajouter" />
 
 		<input type="submit" name="Ajouter" value="Ajouter" />
