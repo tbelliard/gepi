@@ -32,6 +32,7 @@ if (getSettingValue("statuts_prives") != "y") {
 
 //	include("utilisateurs.class.php");
 $titre_page = 'Gestion des nouveaux statuts';
+$style_specifique = "utilisateurs/style_statut";
 include("../lib/header.inc");
 
 
@@ -45,7 +46,7 @@ $msg = $msg2 = $msg3 = NULL;
 // Ces tableaux définissent les différents fichiers à autoriser en fonction du statut
 $values_b = '';
 // La liste des fichiers à traiter
-require_once('creer_statut_autorisation.php');
+require_once('./creer_statut_autorisation.php');
 
 //print_r($autorise);
 
@@ -355,13 +356,13 @@ if ($query) {
 
 <br />
 
-<p style="cursor: pointer;" onClick="changementDisplay('ajoutStatut', '');">Ajouter un statut priv&eacute;</p>
+<p class="ajoutSt" onClick="changementDisplay('ajoutStatut', '');">Ajouter un statut priv&eacute;</p>
 <div id="ajoutStatut" style="display: none;">
 
-	<form method="post" action="creer_statut.php">
+	<form name="formNew" action="creer_statut.php" method="post">
 		<p>
 		<label for="new">Nom du nouveau statut</label>
-		<input type="text" name="nouveau_statut" value="" />
+		<input type="text" id="new" name="nouveau_statut" value="" />
 		<input type="hidden" name="action" value="ajouter" />
 
 		<input type="submit" name="Ajouter" value="Ajouter" />
