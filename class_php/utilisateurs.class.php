@@ -51,7 +51,7 @@ class user{
 
 		}else{
 			return '';
-			trigger_error('Erreur dans user() : ', E_USER_ERROR);
+			trigger_error('Erreur dans __construct() : ', E_USER_ERROR);
 		}
 	}
 
