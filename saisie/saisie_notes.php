@@ -553,6 +553,11 @@ $alt=1;
 foreach ($liste_eleves as $eleve_login) {
 	$alt=$alt*(-1);
 
+	//==================
+	// AJOUT boireaus 20080523
+	$temoin_num_id="n";
+	//==================
+
 	$k=1;
 	while ($k < $nb_periode) {
 
@@ -680,10 +685,16 @@ foreach ($liste_eleves as $eleve_login) {
 				// Affichage de la colonne 'note'
 				if ($periode_cn == $k){
 
+					//==================
+					// AJOUT boireaus 20080523
+					$temoin_num_id="y";
+					//==================
+
 					// ========================
 					// MODIF: boireaus 20071010
 					$mess[$k].="<td id=\"td_".$k.$num_id."\" ".$temp."><center>\n";
 					$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
+
 					$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
 					// ========================
 
@@ -704,6 +715,7 @@ foreach ($liste_eleves as $eleve_login) {
 						}
 						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 					}
+
 					$mess[$k].="</center></td>\n";
 				}
 				else{
@@ -761,7 +773,13 @@ foreach ($liste_eleves as $eleve_login) {
 		$k++;
 	}
 	if ($display_eleve=='yes') {
-		$num_id++;
+		//==================
+		// MODIF boireaus 20080523
+		if($temoin_num_id=='y') {
+			$num_id++;
+		}
+		//==================
+
 		if ($order_by == "nom" OR $prev_classe == $eleve_classe OR $prev_classe == null) {
 			//echo "<tr><td>$eleve_nom $eleve_prenom</td>";
 			echo "<tr class='lig$alt'><td style='text-align:left;'>$eleve_nom $eleve_prenom</td>";
