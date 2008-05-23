@@ -26,12 +26,15 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+
+//debug_var();
+
 if (getSettingValue("statuts_prives") != "y") {
 	trigger_error('Impossible d\'accéder à ce module de Gepi.', E_USER_ERROR);
 }
 
 //	include("utilisateurs.class.php");
-$titre_page = 'Gestion des nouveaux statuts';
+$titre_page = 'Gestion des statuts personnalis&eacute;s';
 $style_specifique = "utilisateurs/style_statut";
 include("../lib/header.inc");
 
@@ -314,13 +317,12 @@ if ($query) {
 </p>
 
 <?php echo $msg; ?>
-<p>Pour pouvoir donner un statut priv&eacute; &agrave; un utilisateur, il faut qu'il soit enregistrer avec le statut Gepi 'autre' lors de sa cr&eacute;ation
-(<a href="./modify_user.php">CREER UN UTILISATEUR</a>).
- Vous pourrez ensuite d&eacute;finir des statuts priv&eacute;s et leur donner des droits. Pour terminer, il suffira de faire le lien entre les stauts priv&eacute;s et les utilisateurs
- en bas de cette page.</p>
+<p>Vous pouvez définir des statuts personnalisés, ayant une combinaison particulière de droits.
+ Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre" (<a href="./modify_user.php">CREER UN UTILISATEUR</a>).</p>
+
 
 <div style="background-color: lightblue;">
-<p style="color: grey; text-align: right; font-style: italic;">Gestion des droits des statuts priv&eacute;s&nbsp;&nbsp;</p>
+<p style="color: grey; text-align: right; font-style: italic;">Gestion des droits des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
 
 <form action="creer_statut.php" method="post">
 	<input type="hidden" name="action" value="modifier" />
@@ -356,7 +358,7 @@ if ($query) {
 
 <br />
 
-<p class="ajoutSt" onClick="changementDisplay('ajoutStatut', '');">Ajouter un statut priv&eacute;</p>
+<p class="ajoutSt" onClick="changementDisplay('ajoutStatut', '');">Ajouter un statut personnalis&eacute;</p>
 <div id="ajoutStatut" style="display: none;">
 
 	<form name="formNew" action="creer_statut.php" method="post">
@@ -368,7 +370,7 @@ if ($query) {
 		<input type="submit" name="Ajouter" value="Ajouter" />
 		</p>
 
-		<p style="color: grey; font-style: italic; margin-left: 10em;">Il vaut mieux ne mettre que des lettres. Longueur maximum : 12 caract&egrave;res.</p>
+		<p style="color: grey; font-style: italic; margin-left: 10em;">Lettres et chiffres uniquement. Longueur maximum : 12 caract&egrave;res.</p>
 
 	</form>
 
@@ -381,7 +383,7 @@ if ($query) {
 
 <div id="userStatut" style="border: 5px solid silver; width: 20em;">
 
-	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts priv&eacute;s</p>
+	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
 
 	<table>
 

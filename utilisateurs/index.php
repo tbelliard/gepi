@@ -285,7 +285,7 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
  <?php
 if (getSettingValue("statuts_prives") == "y") {
 	echo '
-	&nbsp;|&nbsp;<a href="./creer_statut.php">Statuts priv&eacute;s</a>';
+	&nbsp;|&nbsp;<a href="./creer_statut.php">Statuts personnalis&eacute;s</a>';
 }
 ?>
 </p>
@@ -494,7 +494,7 @@ while ($i < $nombreligne){
 
 		if ($special["nom_statut"] == '') {
 
-			$special["nom_statut"] = '<span style="color: red; font-style: italic;">inc.</span>';
+			$special["nom_statut"] = '<span style="color: red; font-style: italic;">non d&eacute;fini.</span>';
 
 		}
 
