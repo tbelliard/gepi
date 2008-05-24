@@ -6247,7 +6247,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 		login VARCHAR( 50 ) NOT NULL ,
 		b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
-		a2 ENUM( 'MS', 'ME', 'AB', '' ) NOT NULL ,
+		a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
 		);";
@@ -6256,6 +6256,36 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		$result .= "Erreur sur la création de la table 'notanet_socles': ".$result_inter."<br />";
 		$temoin_notanet_err++;
 	}
+
+
+	$result .= "<br />Contrôle des valeurs du champ 'b2i' de 'notanet_socles': ";
+	$query3 = mysql_query("ALTER TABLE notanet_socles CHANGE b2i b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL;");
+	if ($query3) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+		$temoin_notanet_err++;
+	}
+
+	$result .= "<br />Contrôle des valeurs du champ 'a2' de 'notanet_socles': ";
+	$query3 = mysql_query("ALTER TABLE notanet_socles CHANGE a2 a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL;");
+	if ($query3) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+		$temoin_notanet_err++;
+	}
+
+	$result .= "<br />Contrôle des valeurs du champ 'favorable' de 'notanet_avis': ";
+	$query3 = mysql_query("ALTER TABLE notanet_avis CHANGE favorable favorable ENUM( 'O', 'N', '' ) NOT NULL;");
+	if ($query3) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+		$temoin_notanet_err++;
+	}
+
+
 
 	if($temoin_notanet_err==0) {$result .= "<font color=\"green\">Ok !</font><br />";}
 
