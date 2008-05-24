@@ -321,7 +321,8 @@ if ($query) {
 
 <?php echo $msg; ?>
 <p>Vous pouvez définir des statuts personnalisés, ayant une combinaison particulière de droits.
- Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre" (<a href="./modify_user.php">CREER UN UTILISATEUR</a>).</p>
+ Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre"
+ (<a href="./index.php?mode=personnels">CREER/MODIFIER un personnel</a>).</p>
 
 
 <div style="background-color: lightblue;">
