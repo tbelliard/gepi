@@ -426,11 +426,11 @@ while ($k < $nb_periode) {
 		$moyenne_t[$k]="&nbsp;";
 	}
 
-	$mess[$k] = '';
-	$mess[$k]="<td>".$moyenne_t[$k]."</td>\n";
+	$mess[$k]="";
+	$mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
 	$mess[$k].="<td>\n";
 	if ($current_group["classe"]["ver_periode"]['all'][$k] == 0){
-		echo htmlentities(nl2br($app_grp[$k]));
+		$mess[$k].=htmlentities(nl2br($app_grp[$k]));
 	}
 	else {
 		$mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
