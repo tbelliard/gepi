@@ -134,7 +134,8 @@ function tabmatieres($type_brevet){
 			$tabmatieres[113][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
 
 
 			// Colonnes pour les fiches brevet:
@@ -257,7 +258,8 @@ function tabmatieres($type_brevet){
 			$tabmatieres[113][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
 
 
 			// Colonnes pour les fiches brevet:
@@ -508,7 +510,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 			// Colonnes pour les fiches brevet:
@@ -631,7 +635,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[111][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 			// Colonnes pour les fiches brevet:
@@ -737,7 +743,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[110][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 
@@ -859,7 +867,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 			// Colonnes pour les fiches brevet:
@@ -962,7 +972,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[110][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 			// Colonnes pour les fiches brevet:
@@ -1059,7 +1071,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[109][-3]='AB DI';
 
 			$tabmatieres[114][-3]='MS ME MN AB';
-			$tabmatieres[115][-3]='MS ME AB';
+			//$tabmatieres[115][-3]='MS ME AB';
+			$tabmatieres[115][-3]='MS ME MN AB';
+
 
 
 			// Colonnes pour les fiches brevet:
@@ -1524,7 +1538,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					echo "<td>&nbsp;</td>\n";
 
 					//if($note_a2!="") {
-					if(($note_a2=="MS")||($note_a2=="ME")||($note_a2=="AB")) {
+					//if(($note_a2=="MS")||($note_a2=="ME")||($note_a2=="AB")) {
+					if(($note_a2=="MS")||($note_a2=="ME")||($note_a2=="MN")||($note_a2=="AB")) {
 						$moy_NOTANET[$j]=$note_a2;
 						echo "<td style='font-weight:bold;'>".$note_a2."</td>\n";
 					}

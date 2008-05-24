@@ -4307,11 +4307,14 @@ else {
 				//echo "<p style='min-height:20em;'>\n";
 				echo "<b>Avis et signature du chef d'établissement:</b>";
 
-				$sql="SELECT avis FROM notanet_avis WHERE login='$lig1->login';";
+				//$sql="SELECT avis FROM notanet_avis WHERE login='$lig1->login';";
+				$sql="SELECT * FROM notanet_avis WHERE login='$lig1->login';";
 				$res_avis=mysql_query($sql);
 				if(mysql_num_rows($res_avis)>0) {
 					echo "<br />\n";
 					$lig_avis=mysql_fetch_object($res_avis);
+					if($lig_avis->favorable=="O") {echo "Avis favorable.<br />";}
+					elseif($lig_avis->favorable=="N") {echo "Avis défavorable.<br />";}
 					echo htmlentities($lig_avis->avis);
 				}
 				//for($k=0;$k<=$fb_nblig_avis_chef;$k++){

@@ -115,8 +115,8 @@ $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 login VARCHAR( 50 ) NOT NULL ,
-b2i ENUM( 'MS', 'ME', 'MN', 'AB' ) NOT NULL ,
-a2 ENUM( 'MS', 'ME', 'AB' ) NOT NULL ,
+b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
+a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 lv VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( login )
 );";
@@ -124,7 +124,7 @@ $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS notanet_avis (
 login VARCHAR( 50 ) NOT NULL ,
-favorable ENUM( 'O', 'N' ) NOT NULL ,
+favorable ENUM( 'O', 'N', '' ) NOT NULL ,
 avis TEXT NOT NULL ,
 PRIMARY KEY ( login )
 );";

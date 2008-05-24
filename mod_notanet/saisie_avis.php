@@ -99,6 +99,29 @@ if (isset($_POST['is_posted'])) {
 				$pb_record = 'yes';
 			}
 		}
+		else {
+			// Si on ne coche pas l'avis favorable... pour ne pas perdre les saisies...
+			$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$ele_login[$i]."';";
+			$res_ele=mysql_query($sql);
+			if(mysql_num_rows($res_ele)==0) {
+				$sql="INSERT INTO notanet_avis SET login='".$ele_login[$i]."'";
+				//$sql.=",favorable='".$favorable[$i]."'";
+				$sql.=",favorable=''";
+				$sql.=",avis='".$app."'";
+				$sql.=";";
+			}
+			else {
+				//$sql="UPDATE notanet_avis SET favorable='".$favorable[$i]."', avis='".$app."' WHERE login='".$ele_login[$i]."';";
+				$sql="UPDATE notanet_avis SET favorable='', avis='".$app."' WHERE login='".$ele_login[$i]."';";
+			}
+			//echo "$sql<br />";
+			$register=mysql_query($sql);
+			if (!$register) {
+				$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+				//echo "ERREUR<br />";
+				$pb_record = 'yes';
+			}
+		}
 	}
 
 	if ($pb_record == 'no') {
@@ -220,7 +243,8 @@ else {
 			echo "<tr>\n";
 			echo "<th rowspan='3'>Elève</th>\n";
 			echo "<th colspan='2'>Avis favorable</th>\n";
-			echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
+			//echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
+			echo "<th rowspan='3'>Motivation de l'avis</th>\n";
 			echo "</tr>\n";
 			//===========================
 			echo "<tr>\n";

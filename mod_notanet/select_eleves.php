@@ -73,6 +73,7 @@ if(($type_brevet!=0)&&
 
 $choix_eleves=isset($_POST['choix_eleves']) ? $_POST['choix_eleves'] : NULL;
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : NULL;
+$coche_ele_login=isset($_POST['coche_ele_login']) ? $_POST['coche_ele_login'] : NULL;
 
 if(!isset($msg)) {$msg="";}
 
@@ -91,28 +92,60 @@ PRIMARY KEY ( login )
 		$nb_err=0;
 		$cpt_enr=0;
 		for($i=0;$i<count($ele_login);$i++) {
-			$sql="SELECT 1=1 FROM notanet_ele_type WHERE login='$ele_login[$i]';";
+			$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='$ele_login[$i]';";
 			$res1=mysql_query($sql);
+
 			if(mysql_num_rows($res1)==0) {
-				$sql="INSERT INTO notanet_ele_type SET login='$ele_login[$i]', type_brevet='$type_brevet';";
-				$res2=mysql_query($sql);
-				if(!$res2) {
-					$msg.="ERREUR lors de l'insertion de l'association pour $ele_login[$i].<br />";
-					$nb_err++;
-				}
-				else {
-					$cpt_enr++;
+				if(isset($coche_ele_login[$i])) {
+					$sql="INSERT INTO notanet_ele_type SET login='$ele_login[$i]', type_brevet='$type_brevet';";
+					$res2=mysql_query($sql);
+					if(!$res2) {
+						$msg.="ERREUR lors de l'insertion de l'association pour $ele_login[$i].<br />";
+						$nb_err++;
+					}
+					else {
+						$cpt_enr++;
+					}
 				}
 			}
 			else {
-				$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
-				$res2=mysql_query($sql);
-				if(!$res2) {
-					$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
-					$nb_err++;
+				$lig1=mysql_fetch_object($res1);
+				if($lig1->type_brevet==$type_brevet) {
+					if(isset($coche_ele_login[$i])) {
+						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
+						$res2=mysql_query($sql);
+						if(!$res2) {
+							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
+							$nb_err++;
+						}
+						else {
+							$cpt_enr++;
+						}
+					}
+					else {
+						$sql="DELETE FROM notanet_ele_type WHERE login='$ele_login[$i]';";
+						$res2=mysql_query($sql);
+						if(!$res2) {
+							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
+							$nb_err++;
+						}
+						else {
+							$cpt_enr++;
+						}
+					}
 				}
 				else {
-					$cpt_enr++;
+					if(isset($coche_ele_login[$i])) {
+						$sql="UPDATE notanet_ele_type SET type_brevet='$type_brevet' WHERE login='$ele_login[$i]';";
+						$res2=mysql_query($sql);
+						if(!$res2) {
+							$msg.="ERREUR lors de la mise à jour de l'association pour $ele_login[$i].<br />";
+							$nb_err++;
+						}
+						else {
+							$cpt_enr++;
+						}
+					}
 				}
 			}
 		}
@@ -271,6 +304,9 @@ else {
 		}
 		echo "</p>\n";
 
+		if(count($id_classe)>1) {
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet' onclick='tout_cocher();return false;'>Cocher tous les élèves de toutes les classes</a><br /><a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet' onclick='tout_decocher();return false;'>Décocher tous les élèves de toutes les classes</a></p>\n";
+		}
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
@@ -309,7 +345,10 @@ else {
 					echo "<tr class='lig$alt'>\n";
 					echo "<td><label for='ele_$cpt' style='cursor: pointer;'>".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom))."</label></td>\n";
 					echo "<td>";
-					echo "<input type='checkbox' name='ele_login[]' id='ele_$cpt' value=\"$lig->login\" ";
+
+					//echo "<input type='checkbox' name='ele_login[]' id='ele_$cpt' value=\"$lig->login\" ";
+					echo "<input type='hidden' name='ele_login[$cpt]' value=\"$lig->login\" />\n";
+					echo "<input type='checkbox' name='coche_ele_login[$cpt]' id='ele_$cpt' value=\"$lig->login\" ";
 
 					/*
 					$sql="SELECT 1=1 FROM notanet_ele_type WHERE login='$lig->login' AND type_brevet='$type_brevet';";
@@ -348,8 +387,11 @@ else {
 		}
 
 		if($cpt>0) {
-			echo "<p align='center'><input type='submit' name='choix_eleves' value='Enregistrer' /></p>\n";
+			echo "<input type='hidden' name='choix_eleves' value='Enregistrer' />\n";
+			echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 			echo "<p><br /></p>\n";
+
+			echo "<div id='fixe'><input type='submit' value='Enregistrer' /></div>\n";
 		}
 		echo "</form>\n";
 
@@ -369,6 +411,14 @@ function decoche(i,j) {
 			document.getElementById('ele_'+k).checked = false;
 		}
 	}
+}
+
+function tout_cocher() {
+	coche(0,$cpt2);
+}
+
+function tout_decocher() {
+	decoche(0,$cpt2);
 }
 
 </script>

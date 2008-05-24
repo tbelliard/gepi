@@ -77,7 +77,8 @@ if (isset($_POST['is_posted'])) {
 					$sql.=",b2i=''";
 				}
 
-				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+				//if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='MN')||($a2[$i]=='AB'))) {
 					$sql.=",a2='".$a2[$i]."'";
 				}
 				else {
@@ -139,7 +140,8 @@ if (isset($_POST['is_posted'])) {
 					$sql.="b2i=''";
 				}
 
-				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+				//if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='AB'))) {
+				if((isset($a2[$i]))&&(($a2[$i]=='MS')||($a2[$i]=='ME')||($a2[$i]=='MN')||($a2[$i]=='AB'))) {
 					$sql.=",a2='".$a2[$i]."'";
 				}
 				else {
@@ -260,7 +262,7 @@ else {
 	$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 		login VARCHAR( 50 ) NOT NULL ,
 		b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
-		a2 ENUM( 'MS', 'ME', 'AB', '' ) NOT NULL ,
+		a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
 		);";
@@ -291,7 +293,8 @@ else {
 			$sql="SELECT DISTINCT id_matiere FROM j_groupes_classes jgc, j_groupes_matieres jgm, notanet_corresp nc WHERE (jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND nc.matiere=jgm.id_matiere AND notanet_mat LIKE 'LANGUE VIVANTE %') ORDER BY id_matiere;";
 			$res_mat=mysql_query($sql);
 
-			$nb_colspan_mat=3+mysql_num_rows($res_mat);
+			//$nb_colspan_mat=3+mysql_num_rows($res_mat);
+			$nb_colspan_mat=4+mysql_num_rows($res_mat);
 
 			echo "<tr>\n";
 			echo "<th rowspan='3'>Elève</th>\n";
@@ -353,6 +356,14 @@ else {
 			echo "</th>\n";
 
 			echo "<th>";
+			echo "<a href='#' onmouseover=\"afficher_div('MN','y',-20,20);\"";
+			echo " onmouseout=\"cacher_div('MN')\" onclick=\"return false;\"";
+			echo ">";
+			echo "MN";
+			echo "</a>\n";
+			echo "</th>\n";
+
+			echo "<th>";
 			echo "<a href='#' onmouseover=\"afficher_div('AB','y',-20,20);\"";
 			echo " onmouseout=\"cacher_div('AB')\" onclick=\"return false;\"";
 			echo ">";
@@ -401,6 +412,10 @@ else {
 
 			echo "<th>";
 			echo "<a href=\"javascript:CocheColonne('a2_ME_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_ME_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "</th>\n";
+
+			echo "<th>";
+			echo "<a href=\"javascript:CocheColonne('a2_MN_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('a2_MN_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 			echo "</th>\n";
 
 			echo "<th>";
@@ -457,6 +472,9 @@ else {
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_ME_".$cpt."_".$i."' value='ME' onchange='changement();' ";
 				if($def_a2=='ME') {echo "checked ";}
+				echo "/></td>\n";
+				echo "<td><input type='radio' name='a2[$cpt]' id='a2_MN_".$cpt."_".$i."' value='MN' onchange='changement();' ";
+				if($def_a2=='MN') {echo "checked ";}
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_AB_".$cpt."_".$i."' value='AB' onchange='changement();' ";
 				if($def_a2=='AB') {echo "checked ";}
