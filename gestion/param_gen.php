@@ -222,6 +222,24 @@ if (isset($_POST['longmin_pwd'])) {
 		$msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
 	}
 }
+
+if (isset($_POST['mode_generation_pwd_majmin'])) {
+	if (!saveSetting("mode_generation_pwd_majmin", $_POST['mode_generation_pwd_majmin'])) {
+		$msg .= "Erreur lors de l'enregistrement du paramètre Min/Maj sur les mots de passe !";
+	}
+}
+
+if (isset($_POST['mode_generation_pwd_excl'])) {
+	if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
+		$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+	}
+}
+else{
+	if (!saveSetting("mode_generation_pwd_excl", 'n')) {
+		$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+	}
+}
+
 if (isset($_POST['gepi_prof_suivi'])) {
 	if (!saveSetting("gepi_prof_suivi", $_POST['gepi_prof_suivi'])) {
 		$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
@@ -479,6 +497,29 @@ require_once("../lib/header.inc");
 	</select>
 	</td>
 	</tr>
+
+
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		Mode de génération des mots de passe :<br />(<i>Jeu de caractères à utiliser en plus des caractères numériques</i>)</td>
+	<td valign='top'>
+		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
+		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
+
+		<table border='0'>
+		<tr>
+		<td valign='top'>
+		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> />
+		</td>
+		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractères prêtant à confusion (<i>i, 1, l, L, 0, O, o</i>)</label><br />
+		</td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+
+
+
 	<tr>
 		<td style="font-variant: small-caps;">
 		Feuille de style à utiliser :</td>
