@@ -78,11 +78,14 @@ if ($action == 'ajouter') {
 
 	// on fait quelques vérifications sur le nom du statut (si il existe déjà, longueur du nom, enlever les ' et les ",...)
 	// On ne garde que les 12 premières lettres
-	$stat_1 = substr($nouveau_statut, 0, 12);
-	// On enlève les accents
-	$stat_2 = strtr($stat_1, "éèêëîïôöâàäùûüç", "eeeeiiooaaauuuc");
-	// On enlève les apostrophes et les guillemets
-	$insert_statut = htmlentities($stat_2, ENT_QUOTES);
+	$stat_1 = substr(trim($nouveau_statut), 0, 12);
+	// On enlève les accents, les apostrophes et les guillemets
+	$stat_2 = str_replace("\\", "", $stat_1);
+	$stat_2b = str_replace('"', '', $stat_2);
+	$stat_3 = remplace_accents($stat_2b, "all");
+
+	// On efait une ultime vérification
+	$insert_statut = htmlentities($stat_3, ENT_QUOTES);
 
 	// On ajoute le statut privé après avoir vérifié qu'il n'existe pas déjà
 	$query_v = mysql_query("SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
