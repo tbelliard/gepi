@@ -979,7 +979,12 @@ while ($i < $nombre_eleves2) {
 					//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
 					//if($nom_resp[1]!=$nom_resp[2]){
 					if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
-						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+						//$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+						$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+						//$ligne1.=" et ";
+						$ligne1.="<br />\n";
+						$ligne1.="et ";
+						$ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
 					}
 					else{
 						if(($civilite_resp[1]!="")&&($civilite_resp[2]!="")) {
@@ -1215,7 +1220,12 @@ while ($i < $nombre_eleves2) {
 						//echo "\$nom_resp[1]=$nom_resp[1] \$nom_resp[2]=$nom_resp[2] ";
 						//if($nom_resp[1]!=$nom_resp[2]){
 						if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
-							$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+							//$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1]." et ".$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
+							$ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
+							//$ligne1.=" et ";
+							$ligne1.="<br />\n";
+							$ligne1.="et ";
+							$ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
 						}
 						else{
 							//$ligne1="M. et Mme ".$nom_resp[1]." ".$prenom_resp[1];
