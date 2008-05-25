@@ -345,6 +345,14 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	else {
 		$call_classe = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $current_eleve_login . "' AND periode='$choix_periode'");
 	}
+
+	if(mysql_num_rows($call_classe)==0) {
+		// L'élève n'est dans aucune classe pour la période choisie
+		echo "<p><b><span class=\"bull_simpl_g\">$current_eleve_nom $current_eleve_prenom</span></b> n'est plus dans aucune classe sur la période choisie.</p>\n";
+
+		exit();
+	}
+
 	$id_classe = mysql_result($call_classe, 0, "id_classe");
 	$classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
 	$current_eleve_classe = mysql_result($classe_eleve, 0, "classe");
@@ -758,6 +766,9 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 if (!isset($_POST['display_entete'])) $titre_page = "Visualisation des relevés de notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
+
+//echo "\$choix_edit=$choix_edit<br />";
+debug_var();
 ?>
 <script type='text/javascript' language='javascript'>
 function active(num) {
@@ -1790,6 +1801,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
         $jourf = strftime("%d");
     }
 
+	//echo "\$choix_periode=$choix_periode<br />";
 
     if ($choix_edit == '2') {
         releve_notes($login_eleve,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf);
@@ -1797,11 +1809,20 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 
     if ($choix_edit != '2') {
         if ($choix_edit == '1') {
-            if ($current_group) {
-                $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE (jeg.id_groupe='$id_groupe' AND e.login = jeg.login) ORDER BY e.nom,e.prenom");
-            } else {
-                $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='$id_classe' AND e.login = jec.login) ORDER BY e.nom,e.prenom");
-            }
+			if($choix_periode!=0) {
+				if ($current_group) {
+					$appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE (jeg.id_groupe='$id_groupe' AND e.login = jeg.login AND jeg.periode='$choix_periode') ORDER BY e.nom,e.prenom");
+				} else {
+					$appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='$id_classe' AND e.login = jec.login AND jec.periode='$choix_periode') ORDER BY e.nom,e.prenom");
+				}
+			}
+			else {
+				if ($current_group) {
+					$appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE (jeg.id_groupe='$id_groupe' AND e.login = jeg.login) ORDER BY e.nom,e.prenom");
+				} else {
+					$appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='$id_classe' AND e.login = jec.login) ORDER BY e.nom,e.prenom");
+				}
+			}
         } else {
             $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p WHERE (c.id_classe='$id_classe' AND e.login = c.login AND p.login=c.login AND p.professeur='$login_prof') ORDER BY e.nom,e.prenom");
         }
