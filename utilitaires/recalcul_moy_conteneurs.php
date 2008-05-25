@@ -106,7 +106,7 @@ if(!isset($_POST['recalculer'])){
 				echo " Période $lig_per->num_periode</label><br />\n";
 			}
 
-			echo "<input type=\"submit\" name='suite' value=\"suite\" style=\"font-variant: small-caps;\" /></p>\n";
+			echo "<p><input type=\"submit\" name='suite' value=\"suite\" style=\"font-variant: small-caps;\" /></p>\n";
 			echo "</form>\n";
 		}
 	}
@@ -152,8 +152,8 @@ if(!isset($_POST['recalculer'])){
 
 				//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
 				//echo "Classe : $classe </span><br />\n";
-				echo "<label for='$temp' style='cursor: pointer;'>";
-				echo "<input type='checkbox' name='id_classe[]' id='$temp' value='$id_classe' />";
+				echo "<label for='tab_id_classe_".$i."' style='cursor: pointer;'>";
+				echo "<input type='checkbox' name='id_classe[]' id='tab_id_classe_".$i."' value='$id_classe' />";
 				echo "Classe : $classe</label><br />\n";
 				$i++;
 			}
@@ -161,8 +161,21 @@ if(!isset($_POST['recalculer'])){
 			echo "</tr>\n";
 			echo "</table>\n";
 
-			echo "<input type=\"submit\" name='recalculer' value=\"Recalculer\" style=\"font-variant: small-caps;\" /></p>\n";
+			echo "<p><input type=\"submit\" name='recalculer' value=\"Recalculer\" style=\"font-variant: small-caps;\" /></p>\n";
 			echo "</form>\n";
+
+			echo "<p><a href='#' onClick='ModifCase(true)'>Cocher toutes les classes</a> / <a href='#' onClick='ModifCase(false)'>Décocher toutes les classes</a></p>\n";
+
+			echo "<script type='text/javascript'>
+	function ModifCase(mode) {
+		for (var k=0;k<$i;k++) {
+			if(document.getElementById('tab_id_classe_'+k)){
+				document.getElementById('tab_id_classe_'+k).checked = mode;
+			}
+		}
+	}
+</script>\n";
+
 		}
 	}
 }
@@ -220,11 +233,11 @@ else{
 					//echo "<td>Moyenne recalculée</td>\n";
 					echo "<td style='font-weight:bold; text-align:center;' width='34%'>Différences</td>\n";
 					*/
-					echo "<th width='33%'>Classe(s)</td>\n";
-					echo "<th width='33%'>Groupe</td>\n";
+					echo "<th width='33%'>Classe(s)</th>\n";
+					echo "<th width='33%'>Groupe</th>\n";
 					//echo "<td>Moyenne initiale</td>\n";
 					//echo "<td>Moyenne recalculée</td>\n";
-					echo "<th width='34%'>Différences</td>\n";
+					echo "<th width='34%'>Différences</th>\n";
 					echo "</tr>\n";
 					while($ligne=mysql_fetch_object($resultat)){
 						$id_groupe=$ligne->id_groupe;
