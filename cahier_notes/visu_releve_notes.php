@@ -768,7 +768,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE ****************************
 
 //echo "\$choix_edit=$choix_edit<br />";
-debug_var();
+//debug_var();
 ?>
 <script type='text/javascript' language='javascript'>
 function active(num) {
