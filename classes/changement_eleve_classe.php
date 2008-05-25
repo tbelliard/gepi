@@ -103,6 +103,32 @@ function affiche_debug($texte) {
 }
 
 
+function recherche_enfant($id_parent_tmp, $current_group, $periode_num, $id_racine){
+	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
+	//echo "<!-- $sql -->\n";
+	$res_enfant=mysql_query($sql);
+	if(mysql_num_rows($res_enfant)>0){
+		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
+			/*
+			echo "<!-- nom_court=$lig_conteneur_enfant->nom_court -->\n";
+			echo "<!-- nom_complet=$lig_conteneur_enfant->nom_complet -->\n";
+			echo "<!-- id=$lig_conteneur_enfant->id -->\n";
+			echo "<!-- parent=$lig_conteneur_enfant->parent -->\n";
+			echo "<!-- recherche_enfant($lig_conteneur_enfant->id); -->\n";
+			*/
+			recherche_enfant($lig_conteneur_enfant->id, $current_group, $periode_num, $id_racine);
+		}
+	}
+	else{
+		$arret = 'no';
+		$id_conteneur_enfant=$id_parent_tmp;
+		//echo "<!-- mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret); -->\n";
+		mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
+		//echo "<!-- ========================================== -->\n";
+	}
+}
+
+
 //$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //**************** EN-TETE **************************************
@@ -587,10 +613,15 @@ Evitez les 'fantaisies';o).</p>
 				if(mysql_num_rows($res_ccn)>0) {
 					// Provoquer le recalcul des moyennes de conteneurs sur l'ancienne et la nouvelle classe
 					$arret = 'no';
+					affiche_debug("Ancien: mise_a_jour_moyennes_conteneurs($group, $periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);<br />");
 					mise_a_jour_moyennes_conteneurs($group, $periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);
-					if($id_grp_fut[$i]=='') {
+					recherche_enfant($lig_ccn->id_cahier_notes, $group, $periode_num, $lig_ccn->id_cahier_notes);
+
+					if($id_grp_fut[$i]!='') {
 						$arret = 'no';
+						affiche_debug("Futur: mise_a_jour_moyennes_conteneurs($group_fut, $periode_num,$id_racine_fut,$id_racine_fut,$arret);<br />");
 						mise_a_jour_moyennes_conteneurs($group_fut, $periode_num,$id_racine_fut,$id_racine_fut,$arret);
+						recherche_enfant($id_racine_fut, $group_fut, $periode_num, $id_racine_fut);
 					}
 				}
 			}
