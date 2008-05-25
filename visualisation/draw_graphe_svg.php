@@ -2,72 +2,9 @@
 /*
  $Id$
 */
-	//header("Content-type:image/png");
 	header("Content-type: image/svg+xml");
-	//echo '<?xml version="1.0" encoding="iso-8859-1"      >';
-	//echo "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n";
-
 	echo '<?xml version="1.0" encoding="iso-8859-1"?>';
-
-
-?>
-
-<!--?xml version="1.0" standalone="no"?-->
-<!--DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
-	<rect x="30" y="30" width="150" height="100" style="fill:blue; stroke-width:1; stroke:black" />
-</svg-->
-
-
-<?php
-	//die();
-
-	// IL NE FAUT PAS LA LIGNE <?xml... sinon cela foire.
-
-	//echo "<?xml version=\"1.0\" standalone=\"no\"      >\n";
-	//echo "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n";
-
-/*
-header("Content-type : image/svg+xml") ;
-echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
-< !DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-"http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns :xlink="http://www.w3.org/1999/xlink" width="300" height="450">
-*/
-
-
-		//echo "<?";
-	?>
-	<!--
-	xml version="1.0" standalone="no" ?>
-	-->
-
-
-	<!--!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"-->
-
-	<!--!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd"-->
-	<?php
-
-//	<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-
-
-	/*
-	$largeurTotale=600;
-	$hauteurTotale=400;
-
-	//echo "<svg xml:space=\"default\" width=\"$largeurTotale\" height=\"$hauteurTotale\">\n";
-	echo "<svg width=\"$largeurTotale\" height=\"$hauteurTotale\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
-
-	$x1=30;
-	$hauteurMoy=50;
-	$largeurMat=40;
-	echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"$hauteurMoy\" style=\"fill:red; stroke-width:1; stroke:black\" />\n";
-	//echo "<rect x=\"5\" y=\"15\" width=\"50\" height=\"100\" style=\"fill:red; stroke-width:1; stroke:black\" />\n";
-
-	echo "</svg>\n";
-
-	die();
-	*/
+	echo "\n";
 
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
@@ -570,9 +507,11 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 
 	//echo "<rect x=\"5\" y=\"15\" width=\"50\" height=\"200\" style=\"fill:yellow; stroke-width:1; stroke:black\" />";
 
+	echo "\n<!-- Bordure de l'image -->\n";
 	echo "<rect x=\"0\" y=\"0\" width=\"$largeurTotale\" height=\"$hauteurTotale\" style=\"fill:$fond; stroke-width:1; stroke:black\" />\n";
 
 	//===========================================
+	echo "\n<!-- Bandes verticales -->\n";
 	if((!isset($seriemin))||(!isset($seriemax))){
 		//Bandes verticales alternées:
 		for($i=1;$i<$nbMat+1;$i++){
@@ -580,7 +519,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 			$x2=round($largeurGrad+$i*$largeurMat);
 			if($i-2*Floor($i/2)==0){
 				//imageFilledRectangle($img,$x1,$hauteurMoy,$x2,$hauteur+$hauteurMoy,$bande1);
-				echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"".$hauteur."\" style=\"fill:$bande2; stroke-width:1; stroke:$fond\" />";
+				echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"".$hauteur."\" style=\"fill:$bande2; stroke-width:1; stroke:$fond\" />\n";
 				//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"200\" style=\"fill:blue; stroke-width:1; stroke:black\" />";
 			}
 			/*
@@ -634,6 +573,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 	//=============================================================================
 	//Tracé des graduations et des axes:
 	//Graduations:
+	echo "\n<!-- Graduations -->\n";
 	$pas=2; //Prendre un diviseur non nul de 20.
 	for($i=0;$i<21;$i=$i+$pas){
 
@@ -679,6 +619,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 	//imagesetthickness($img,$epaisseur_axes);
 
 	//Axe des abscisses:
+	echo "\n<!-- Axe des abscisses -->\n";
 	//imageLine($img,$largeurGrad,$hauteurMoy+$hauteur,round($largeur+$largeurGrad+$largeurBandeDroite/2),$hauteurMoy+$hauteur,$axes);
 	$xtmp1=$largeurGrad;
 	$ytmp1=$hauteurMoy+$hauteur;
@@ -687,6 +628,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 	echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:$axes; stroke-width:$epaisseur_axes\"/>\n";
 
 	//Axe des ordonnées:
+	echo "\n<!-- Axe des ordonnées -->\n";
 	//imageLine($img,$largeurGrad,round($hauteurMoy/2),$largeurGrad,$hauteur+$hauteurMoy,$axes);
 	$xtmp1=$largeurGrad;
 	$ytmp1=round($hauteurMoy/2);
@@ -695,6 +637,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 	echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:$axes; stroke-width:$epaisseur_axes\"/>\n";
 
 	//Barre de la moyenne:
+	echo "\n<!-- Barre de la moyenne -->\n";
 	//imageLine($img,$largeurGrad,round($hauteurMoy+$hauteur/2),round($largeur+$largeurGrad+$largeurBandeDroite/2),round($hauteurMoy+$hauteur/2),$axes);
 	$xtmp1=$largeurGrad;
 	$ytmp1=round($hauteurMoy+$hauteur/2);
@@ -748,6 +691,7 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 
 	//===================================================================================
 	//Affichage des matières et des valeurs de moyenne:
+	echo "\n<!-- Noms de matières et moyennes -->\n";
 	for($i=1;$i<$nbMat+1;$i++){
 	//for($i=0;$i<$nbMat+1;$i++){
 
@@ -840,11 +784,11 @@ echo ?< ?? ; ?>xml version="1.0" standalone="no" ?>
 			// Les & posent problème...
 			// ... peut-être d'autres caractères aussi?
 			echo "<g transform=\"translate($xtmp,$ytmp)\">
-<g transform=\"rotate(30)\">
-<text x=\"0\" y=\"0\" font-size=\"$fontsizetext\" fill=\"$axes\" >
-".ereg_replace("&"," et ",$matiere_nom_long[$i])."
-</text>
-</g>
+   <g transform=\"rotate(30)\">
+      <text x=\"0\" y=\"0\" font-size=\"$fontsizetext\" fill=\"$axes\" >
+         ".ereg_replace("&"," et ",$matiere_nom_long[$i])."
+      </text>
+   </g>
 </g>\n";
 
 /*
@@ -879,6 +823,7 @@ BLA
 			echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$axes."; font-size:$fontsizetext;\">".$matiere_tronquee."</text>\n";
 
 		}
+		echo "\n";
 		//===========================================================================
 
 
@@ -916,6 +861,7 @@ BLA
 
 
 	if($mgen[1]!=""){
+		echo "\n<!-- Colonne moyenne générale -->\n";
 		$ytmp=20;
 
 		$largeur_texte = strlen("M.GEN") * $l_txt_px;
@@ -981,6 +927,7 @@ BLA
 	// On positionne les noms d'élèves en haut de l'image: y=5
 	// Pour en bas, ce serait: y=$hauteur+$hauteurMoy+25
 
+	echo "\n<!-- Informations du haut de l'image -->\n";
 
 	if($legendy[2]=='Toutes_les_périodes'){
 		$chaine=$nom_periode;
@@ -1042,9 +989,12 @@ BLA
 	//=====================================================================
 	//Tracé des courbes:
 
+	echo "\n<!-- Tracé des courbes -->\n";
 
 	//for($k=1;$k<=$nb_series;$k++){
 	for($k=1;$k<=$nb_series_bis;$k++){
+		echo "\n<!-- Courbe de la série $k -->\n";
+
 		//Placement des points de la courbe:
 		for($i=1;$i<$nbMat+1;$i++){
 			$x1=$x[$i];
