@@ -806,7 +806,8 @@ echo "<td valign='top'>\n";
 if(isset($pers_id)){
 	// Enfants/élèves à charge:
 	//$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$pers_id'";
-	$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom";
+	//$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom;";
+	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
 	$res1=mysql_query($sql);
 	if(mysql_num_rows($res1)==0){
@@ -831,12 +832,12 @@ if(isset($pers_id)){
 		while($lig_ele=mysql_fetch_object($res1)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' />".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</td>\n";
+			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."'>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</a></td>\n";
 
 			$resp_legal1=$lig_ele->resp_legal;
 
 			// Y a-t-il un deuxième responsable?
-			$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2')";
+			$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2'));";
 			//echo "$sql<br />\n";
 			$res_resp=mysql_query($sql);
 
