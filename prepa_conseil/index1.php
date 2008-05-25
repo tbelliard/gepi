@@ -482,6 +482,10 @@ if (!$current_group) {
                     $col_csv[1][$nb_lignes] = $current_group["eleves"][$k]["users"][$login_eleve[$i]]["prenom"] . " " . $current_group["eleves"][$k]["users"][$login_eleve[$i]]["nom"];
                     if ($multiclasses) $col[2][$nb_lignes] = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$login_eleve[$i]]["classe"]]["classe"];
                     if ($multiclasses) $col_csv[2][$nb_lignes] = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$login_eleve[$i]]["classe"]]["classe"];
+
+
+					//echo "<p>\$col_csv[1][$nb_lignes]=".$col_csv[1][$nb_lignes]."<br />";
+
                     break;
                 }
             }
@@ -550,7 +554,8 @@ if (!$current_group) {
 						$col_csv[$j][$nb_lignes] = "-";
                     } else {
                         if ($_statut != '') {
-                            $col[$j][$nb_lignes] = $_statut;
+                            //$col[$j][$nb_lignes] = $_statut;
+                            $col[$j][$nb_lignes] = "<center>".$_statut."</center>";
 							$col_csv[$j][$nb_lignes] = $_statut;
 						} else {
                             if ($note != '') {
@@ -568,6 +573,9 @@ if (!$current_group) {
                             }
                         }
                     }
+
+					//echo "\$col_csv[$j][$nb_lignes]=".$col_csv[$j][$nb_lignes]."<br />";
+
                 }
                 $temp = "visu_app_".$k;
                 if (isset($_POST[$temp]) or isset($_GET[$temp])) {
@@ -576,34 +584,34 @@ if (!$current_group) {
                     $app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
                     $app = @mysql_result($app_query, 0, "appreciation");
 
-				//++++++++++++++++++++++++
-				// Modif d'après F.Boisson
-				// notes dans appreciation
-        	    $sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$login_eleve[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
-	            $result_nbct=mysql_query($sql);
-			    $string_notes='';
-				if ($result_nbct ) {
-					while ($snnote =  mysql_fetch_assoc($result_nbct)) {
-						if ($string_notes != '') $string_notes .= ", ";
-						$string_notes .= $snnote['note'];
+					//++++++++++++++++++++++++
+					// Modif d'après F.Boisson
+					// notes dans appreciation
+					$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$login_eleve[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group["id"]."' AND ccn.periode='$k' AND cnd.statut='';";
+					$result_nbct=mysql_query($sql);
+					$string_notes='';
+					if ($result_nbct ) {
+						while ($snnote =  mysql_fetch_assoc($result_nbct)) {
+							if ($string_notes != '') $string_notes .= ", ";
+							$string_notes .= $snnote['note'];
+						}
 					}
-				}
-				$app = str_replace('@@Notes', $string_notes,$app);
-				//++++++++++++++++++++++++
+					$app = str_replace('@@Notes', $string_notes,$app);
+					//++++++++++++++++++++++++
 
 
                     if ($app != '') {
-			// =========================================
-			// MODIF: boireaus
-                        //$col[$j][$nb_lignes] = $app;
-			if((strstr($app,">"))||(strstr($app,"<"))){
-				$col[$j][$nb_lignes] = $app;
-			}
-			else{
-				$col[$j][$nb_lignes] = nl2br($app);
-			}
-			$col_csv[$j][$nb_lignes] = $app;
-			// =========================================
+						// =========================================
+						// MODIF: boireaus
+									//$col[$j][$nb_lignes] = $app;
+						if((strstr($app,">"))||(strstr($app,"<"))){
+							$col[$j][$nb_lignes] = $app;
+						}
+						else{
+							$col[$j][$nb_lignes] = nl2br($app);
+						}
+						$col_csv[$j][$nb_lignes] = $app;
+						// =========================================
                     } else {
                         $col[$j][$nb_lignes] = '-';
 						$col_csv[$j][$nb_lignes] = "-";
@@ -626,7 +634,8 @@ if (!$current_group) {
                     if ($temp < 8) $pourcent_i8++;
                     if ($temp >= 12) $pourcent_se12++;
                 } else {
-                    $col[$nb_col][$nb_lignes] = '-' ;
+                    //$col[$nb_col][$nb_lignes] = '-' ;
+                    $col[$nb_col][$nb_lignes] = '<center>-</center>' ;
                     $col_csv[$nb_col][$nb_lignes] = '-' ;
                 }
             }
@@ -707,7 +716,8 @@ if (!$current_group) {
 			//echo "<table>";
 			//echo "<tr><td valign='top'>";
 			unset($tmp_tab);
-			for($loop=0;$loop<count($col[$col_tri]);$loop++) {
+			//for($loop=0;$loop<count($col[$col_tri]);$loop++) {
+			for($loop=0;$loop<count($col_csv[1]);$loop++) {
 				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
 				$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$col_tri][$loop]);
 				//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
@@ -726,11 +736,15 @@ if (!$current_group) {
 			*/
 
 			$i=0;
-			while($i < $nombre_eleves) {
+			unset($rg);
+			//while($i < $nombre_eleves) {
+			while($i < count($col_csv[1])) {
 				$rg[$i]=$i;
 				$i++;
 			}
 
+			//echo "count(\$rg)=".count($rg)."<br />";
+			//echo "count(\$tmp_tab)=".count($tmp_tab)."<br />";
 			// Tri du tableau avec stockage de l'ordre dans $rg d'après $tmp_tab
 			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
 
@@ -751,7 +765,8 @@ if (!$current_group) {
 			$i=0;
 			$rang_prec = 1;
 			$note_prec='';
-			while ($i < $nombre_eleves) {
+			//while ($i < $nombre_eleves) {
+			while ($i < count($col_csv[1])) {
 				$ind = $rg[$i];
 				if ($tmp_tab[$i] == "-") {
 					//$rang_gen = '0';
@@ -788,9 +803,12 @@ if (!$current_group) {
 			// On réaffecte les valeurs dans le tableau initial à l'aide du tableau temporaire
 			if((isset($_POST['sens_tri']))&&($_POST['sens_tri']=="inverse")) {
 				for($m=1;$m<=$nb_colonnes;$m++) {
-					for($i=0;$i<$nombre_eleves;$i++) {
-						$col[$m][$i]=$tmp_col[$m][$nombre_eleves-1-$i];
-						$col_csv[$m][$i]=$tmp_col_csv[$m][$nombre_eleves-1-$i];
+					//for($i=0;$i<$nombre_eleves;$i++) {
+					for($i=0;$i<count($col_csv[1]);$i++) {
+						//$col[$m][$i]=$tmp_col[$m][$nombre_eleves-1-$i];
+						//$col_csv[$m][$i]=$tmp_col_csv[$m][$nombre_eleves-1-$i];
+						$col[$m][$i]=$tmp_col[$m][count($col_csv[1])-1-$i];
+						$col_csv[$m][$i]=$tmp_col_csv[$m][count($col_csv[1])-1-$i];
 					}
 				}
 			}
