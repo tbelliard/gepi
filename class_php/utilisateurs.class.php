@@ -2,18 +2,12 @@
 if (!isset($_SESSION["login"])) {
 	Die();
 }
-/**
- *
- *
- * @version $Id$
- * @copyright 2008
- */
 
 /**
  * Fichier qui définit la classe utilisateur permettant de créer de nouveaux profils dans Gepi
  *
  */
-class user{
+class prof{
 
 	public $login ;
 	public $nom ;
@@ -55,7 +49,7 @@ class user{
 		}
 	}
 
-	function user($login_user){
+	function prof($login_user){
 		// On initialise en récupérant toutes les infos
 		$sql = "SELECT nom, prenom, civilite, email, statut, etat, change_mdp, niveau_alerte FROM utilisateurs WHERE login = '".$login_user."'";
 		$query = mysql_query($sql);
@@ -95,5 +89,6 @@ class user{
 
 		}
 	}
+
 }
 ?>
