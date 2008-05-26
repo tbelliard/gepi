@@ -336,7 +336,10 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 ?>
 <h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'un export csv d'un logiciel propri&eacute;taire.</h3>
 
-<p style="font-weight: bold;">Vous pouvez obtenir un csv valide sur UnDeuxTemps en passant par UDT/admin > Recherche > Emploi du temps > toutes options par défaut.</p>
+<p style="font-weight: bold;">UDT(profil concepteur) > Recherche > Emploi du temps > Rechercher.
+(en laissant l'option "cours" cochée par défaut, et en laissant
+a priori toutes les divisions/professeurs/matières/salles/...,
+sauf si on ne veut extraire qu'une partie de l'EdT)</p>
 
 <p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier csv 12 fois et
 la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez faire la derni&egrave;re
