@@ -340,10 +340,12 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 (en laissant l'option "cours" cochée par défaut, et en laissant
 a priori toutes les divisions/professeurs/matières/salles/...,
 sauf si on ne veut extraire qu'une partie de l'EdT)</p>
-
+<p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car Excell fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
+<p>Il faut enlever la ligne d'ent&ecirc;te.</p>
+<br />
 <p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier csv 12 fois et
 la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez faire la derni&egrave;re
- &eacute;tape (importation des cours eux-m&ecirc;mes autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
+ &eacute;tape (importation des cours eux-m&ecirc;mes) autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
 	<p>Attention, l'&eacute;tape 12 n'efface pas les donn&eacute;es d&eacute;j&agrave; existantes pour les cours sauf si vous cochez le bouton.</p>
 	<p><span class="red">Attention</span> de respecter au mieux les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute;s auparavant,
 	l'initialisation de l'emploi du temps en sera simplifi&eacute;e.</p>

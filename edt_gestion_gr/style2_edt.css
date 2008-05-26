@@ -1,6 +1,6 @@
 /* Fichier css pour la gestion gr du module EdT de Gepi */
 #ajoutGr .p {
-cursor: pointer; font-weight: bold; color: green;
+cursor: pointer; font-weight: bold; color: blue;
 }
 #ajoutGr2 p {
 width: 30em; text-align: right;
