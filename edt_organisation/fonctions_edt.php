@@ -782,6 +782,13 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 
 			$aff_matiere = $aff_gr["nom"];
 			$classe_js = $aff_gr["nom_long"];
+
+			$query_p = mysql_query("SELECT nom, civilite FROM edt_gr_profs egp, utilisateurs u
+																WHERE u.login = egp.id_utilisateurs
+																AND egp.id_gr_nom = '".$analyse[1]."'") OR trigger_error('Erreur ', E_USER_ERROR);
+			$rep_nom_prof = mysql_fetch_array($query_p);
+print_r($rep_nom_prof);
+
 			$aff_nbre_eleve = '0';
 			$aff_sem = NULL;
 			$rep_salle = NULL;
