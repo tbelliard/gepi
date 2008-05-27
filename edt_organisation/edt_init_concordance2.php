@@ -51,7 +51,7 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : NULL;
 $concord_csv2 = isset($_POST["concord_csv2"]) ? $_POST["concord_csv2"] : NULL;
 $nbre_lignes = isset($_POST["nbre_lignes"]) ? $_POST["nbre_lignes"] : NULL;
 $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : NULL;
-$debug = NULL;
+$debug = NULL; $aff_create = NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 $msg_enreg = '';
 
@@ -144,7 +144,7 @@ if ($etape != NULL) {
 			//echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
 			$tab = explode("|", $ligne);
-			// Toutes les infos sont envoyées en brut
+			/*/ Toutes les infos sont envoyées en brut
 			for($v = 0; $v < 12; $v++){
 				if (!isset($tab[$v])) {
 
@@ -154,7 +154,7 @@ if ($etape != NULL) {
 					$tab[$v] = ereg_replace("wkzx", "'", ereg_replace("zxwk", '"', $tab[$v]));
 
 				}
-			}
+			}*/
 
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 
@@ -168,8 +168,33 @@ if ($etape != NULL) {
 				}
 			}elseif($enregistre["reponse"] == 'non'){
 
-				if ($aff_infos == 'oui' OR $debug == 'ok') {
-					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été enregistrée.'.$enregistre["msg_erreur"].'</p>';
+				if ($aff_infos == 'oui' OR getSettingValue("mod_edt_gr") == 'y' OR $debug == 'ok') {
+
+					// On teste le message d'erreur
+					$test_e = strpos($enregistre["msg_erreur"], "Ce");
+
+					if (getSettingValue("mod_edt_gr") == 'y' AND $test_e === FALSE) {
+
+						$essai = gestion_edt_gr($tab);
+
+						if ($essai == 'non') {
+							// On a terminé
+							$aff_create = 'Pas d\'enregistrement.';
+						}else{
+
+							$tab[7] = 'EDT|'.$essai;
+							$enregistre2 = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
+							if ($enregistre2["reponse"] == 'ok') {
+
+								$aff_create = 'Le cours est enregistré avec un edt_gr.';
+
+							}
+
+						}
+
+					} // if (getSettingValue("mod_edt_gr") == 'y'
+
+					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été reconnue.'.$enregistre["msg_erreur"].''.$aff_create.'</p>'."\n";
 				}
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';

@@ -2024,9 +2024,10 @@ function remplace_accents($chaine,$mode){
 		$retour=strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 	}
 	elseif($mode == 'all_nospace'){
-		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1 = strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","_AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		$retour = ereg_replace('"', '=', $retour1);
+		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
+		$retour1 = strtr(ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		// On enlève aussi les guillemets
+		$retour = ereg_replace('"', '', $retour1);
 	}
 	else{
 		// On remplace les caractères accentués par leurs équivalents non accentués.

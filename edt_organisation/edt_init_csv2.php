@@ -62,7 +62,7 @@ require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
 $_SESSION["retour"] = "edt_init_csv2";
 // +++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
-
+debug_var();
 ?>
 
 
@@ -78,9 +78,11 @@ $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : null;
 $truncate_cours = isset($_POST["truncate_cours"]) ? $_POST["truncate_cours"] : null;
 $aff_infos = isset($_POST["aff_infos"]) ? $_POST["aff_infos"] : null;
 $recommencer = isset($_POST["recommencer"]) ? $_POST["recommencer"] : null;
+$module_gr = isset($_POST["module_gr"]) ? $_POST["module_gr"] : NULL;
 $etape = null;
 $aff_etape = null;
 $exist = NULL;
+$msg_gr = NULL;
 
 // On récupère le répertoire temporaire de l'admin
 $tempdir = get_user_temp_directory();
@@ -92,8 +94,33 @@ if (!$tempdir) {
 	}
 }
 
+// On vérifie que l'utilisateur utilise ou pas le module edt_gr
+if ($action == "modgr") {
+	if ($module_gr == 'y') {
+		$value = 'y';
+	}else{
+		$value = 'n';
+	}
+
+	// On met à jour le setting
+	$save = saveSetting('mod_edt_gr', $value);
+	if ($save) {
+		$msg_gr = '<span style="color: green;">Modification enregistrée</span>';
+	}else{
+		$msg_gr = '<span class="red">Impossible d\'enregistrer</span>';
+	}
+}
+// on règle le checked
+if (getSettingValue('mod_edt_gr') == "y") {
+	$checked_gr = ' checked="checked"';
+}else{
+	$checked_gr = '';
+}
+
 // Si l'utilisateur veut recommencer, on efface toutes les entrées de l'étape qu'il a demandée
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
+
+
     // On efface toutes les entrées de cette étape (les étapes vont de 0 à 12)
     if ($recommencer == '0' AND file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
     	// On efface le fichier
@@ -105,6 +132,19 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
     OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . mysql_error(), E_USER_ERROR);
     $modifier = mysql_query("UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
     OR trigger_error('Erreur dans le retour en arrière : ' . mysql_error(), E_USER_ERROR);
+
+	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
+	if ($truncate_cours == "oui") {
+		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+    }
+
+}elseif($recommencer == 'non' AND is_numeric($recommencer)){
+
+	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
+	if ($truncate_cours == "oui") {
+		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+    }
+
 }
 
 
@@ -298,8 +338,8 @@ if ($action == "upload_file") {
                     for($t = 0; $t < 12; $t++) {
 
                         // On élimine les guillemets et l'apostrophe qui mettent la pagaille
-                        $toutelaligne .= ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $tab[$t])) . '|';
-                        //$toutelaligne .= remplace_accents($tab[$t], 'all'). '|';
+                        //$toutelaligne .= ereg_replace("'", "wkzx", ereg_replace('"', "zxwk", $tab[$t])) . '|';
+                        $toutelaligne .= remplace_accents($tab[$t], 'all_nospace'). '|';
 
                     }
 
@@ -343,6 +383,7 @@ sauf si on ne veut extraire qu'une partie de l'EdT)</p>
 <p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car Excell fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
 <p>Il faut enlever la ligne d'ent&ecirc;te.</p>
 <br />
+
 <p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier csv 12 fois et
 la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eacute;tapes seront conserv&eacute;es par Gepi et vous pourrez faire la derni&egrave;re
  &eacute;tape (importation des cours eux-m&ecirc;mes) autant de fois que vous le d&eacute;sirez (en effa&ccedil;ant les anciens cours ou non).</p>
@@ -350,7 +391,7 @@ la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eac
 	<p><span class="red">Attention</span> de respecter au mieux les heures, jour, nom de mati&egrave;re,... de Gepi que vous avez pr&eacute;cis&eacute;s auparavant,
 	l'initialisation de l'emploi du temps en sera simplifi&eacute;e.</p>
 	<p>
-	Vous devez fournir un fichier csv dont les champs suivants 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s
+	Vous devez fournir un fichier csv dont les champs suivants doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s
 	par un point-virgule et encadr&eacute;s par des guillemets ""</b> <span style="color: green; font-weight: bold;">(sans ligne d'ent&ecirc;te)</span> :</p>
 <ol>
 	<li>Jour</li>
@@ -373,12 +414,9 @@ la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eac
 			<input type="hidden" name="action" value="upload_file" />
 			<input type="hidden" name="initialiser" value="ok" />
 
-			<p><label for="truncateCours">Effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
-			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui"<?php echo $_SESSION["effacer_cours"];
-?> />
+			<p>
 			<label for="affInfosEdt">Afficher l'enregistrement de tous les cours</label>
-			<input type="checkbox" id="affInfosEdT" name="aff_infos" value="oui"<?php echo $_SESSION["afficher_infos"];
-?> /></p>
+			<input type="checkbox" id="affInfosEdT" name="aff_infos" value="oui"<?php echo $_SESSION["afficher_infos"]; ?> /></p>
 
 			<p><input type="file" size="80" name="csv_file" /></p>
 			<p><input type="submit" value="Valider" /></p>
@@ -390,12 +428,38 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 
 ?>
 <br /><br />
-	<div style="border: 2px solid grey;">
-		<h3>Attention, l'option ci-dessous permet de recommencer &agrave; une &eacute;tape ant&eacute;rieure.
-		Si vous demandez l'&eacute;tape 0, il faudra fournir de nouveau le fichier csv.</h3>
+
+	<div class="mode_gr">
+	<p>Voulez-vous que Gepi cr&eacute;e tous les cours qu'il ne reconnait pas ?</p>
+	<p> Si vous utilisez ce mode, vous pourrez ensuite v&eacute;rifier et compl&eacute;ter les professeurs et les &eacute;l&egrave;ves dans le lien [Les groupes] du menu &agrave; gauche.</p>
+
+	<form name="formGr" action="./edt_init_csv2.php" method="post">
+
+		<input type="hidden" name="action" value="modgr" />
+		<p>
+		<label for="moduleGr">Actionner le module de cr&eacute;ation des groupes_edt</label>
+		<input type="checkbox" id="moduleGr" name="module_gr" value="y" onclick="document.formGr.submit();"<?php echo $checked_gr; ?> />
+		<?php echo $msg_gr; ?>
+		</p>
+
+	</form>
+	</div>
+<br />
+	<div class="mode_gr">
+
 		<form name="refaire" action="edt_init_csv2.php" method="post">
-			<p><label for="">Vous pouvez recommencer depuis l'&eacute;tape : </label>
-			<select name="recommencer">
+
+			<p style="font-weight: bold;" title="Cochez pour effacer tous les cours (mais pas les concordances)">
+			<label for="truncateCours">Effacer les cours d&eacute;j&agrave; cr&eacute;&eacute;s </label>
+			<input type="checkbox" id="truncateCours" name="truncate_cours" value="oui"<?php echo $_SESSION["effacer_cours"]; ?> />
+			&nbsp;&nbsp;<input type="submit" name="recommencer2" value="Recommencer" />
+			</p>
+
+			<h3 class="gepi">Attention, l'option ci-dessous permet de recommencer &agrave; une &eacute;tape ant&eacute;rieure.
+			Si vous demandez l'&eacute;tape 0, il faudra fournir de nouveau le fichier csv.</h3>
+
+			<p><label for="recom">Vous pouvez recommencer depuis l'&eacute;tape : </label>
+			<select name="recommencer" id="recom">
 				<option value="non">non</option>
 				<option value="0">0&nbsp;:&nbsp;Les jours</option>
 				<option value="1">1&nbsp;:&nbsp;les cr&eacute;neaux</option>
@@ -411,7 +475,7 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 				<option value="11">11</option>
 				<option value="12">12&nbsp;:&nbsp;Les cours</option>
 			</select>
-			<input type="submit" value="Recommencer" />
+			<input type="submit" name="recommencer3" value="Recommencer" />
 			</p>
 		</form>
 	</div>

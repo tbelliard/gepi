@@ -92,6 +92,7 @@ legend {
 
 label {
 	font-size: 1em;
+	cursor: pointer;
 }
 
 #edt_popup_lecorps {
@@ -327,4 +328,7 @@ table {
 	text-align: center;
 	cursor: pointer;
 	margin-left: 100px;
+}
+div.mode_gr {
+border: 2px solid grey; padding: 2 2 2 2;
 }

@@ -755,12 +755,46 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$rep_nom_prof['nom'] = "<span style='font-size: 0.8em;'>Cours en groupe</span>";
 
 	}elseif($analyse[0] == '' OR $analyse[0] == 'inc'){
+
 		// le groupe n'est pas renseigné, donc, on affiche en fonction
 		$aff_matiere = 'inc.';
 		$classe_js = NULL;
 		$aff_nbre_eleve = '0';
 		$aff_sem = NULL;
 		$rep_salle = NULL;
+
+	}elseif($analyse[0] == 'EDT'){
+
+		// le groupe est un edt_gr donc on cherche les infos qui vont bien
+		if ($analyse[1] != '') {
+			/*/ on récupère les infos de cet edt_gr
+			$edt_gr = mysql_query("SELECT egn.nom, egn.nom_long, egc.id_classe, ege.id_eleve
+												FROM edt_gr_nom egn, edt_gr_classes egc, edt_gr_eleves ege
+												WHERE egn.id = '".$analyse[1]."'
+												AND egn.id = egc.id_gr_nom
+												AND egn.id = ege.id_gr_nom
+												ORDER BY ege.id_eleve LIMIT 1")
+											OR trigger_error('Erreur', E_USER_WARNING);
+			*/
+			$edt_gr = mysql_query("SELECT nom, nom_long FROM edt_gr_nom WHERE id = '".$analyse[1]."'")
+											OR trigger_error('Erreur', E_USER_WARNING);
+			$aff_gr = mysql_fetch_array($edt_gr);
+
+			$aff_matiere = $aff_gr["nom"];
+			$classe_js = $aff_gr["nom_long"];
+			$aff_nbre_eleve = '0';
+			$aff_sem = NULL;
+			$rep_salle = NULL;
+
+		}else{
+
+			$aff_matiere = 'inc.';
+			$classe_js = NULL;
+			$aff_nbre_eleve = '0';
+			$aff_sem = NULL;
+			$rep_salle = NULL;
+		}
+
 	}else {
 
 		// on récupère le nom court de la classe en question

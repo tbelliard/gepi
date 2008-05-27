@@ -209,7 +209,9 @@ function renvoiConcordances($chiffre, $etape){
 	// 2=Classe 3=GROUPE 4=PARTIE 5=Matières pour IndexEducation
 	// 1=créneaux 2=classe 3=matière 4=professeurs 7=regroupements 10=fréquence pour UDT de OMT
 	if ($chiffre != '') {
-		$sql = "SELECT nom_gepi FROM edt_init WHERE nom_export = '".$chiffre."' AND ident_export = '".$etape."'";
+		$sql = "SELECT nom_gepi FROM edt_init WHERE
+								(nom_export = '".$chiffre."' OR nom_export = '".remplace_accents($chiffre, 'all_nospace')."')
+								AND ident_export = '".$etape."'";
 		$query = mysql_query($sql);
 	}else{
 		$query = NULL;
@@ -232,7 +234,7 @@ function renvoiConcordances($chiffre, $etape){
 
 // L'id_groupe
 function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt, $type_import){
-	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autresinfos ne sont pas encore "concordés"
+	// $prof est le login du prof tel qu'il existe dans Gepi, alors que les autres infos ne sont pas encore "concordés"
 
 	if ($type_import == 'texte') {
 		// On se préoccupe de la partie qui arrive de edt_init_texte.php et edt_init_concordance.php
@@ -451,7 +453,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	$classe_e = renvoiConcordances($classe, 2);
 	$matiere_e = renvoiConcordances($matiere, 3);
 	$prof_e = renvoiConcordances($prof, 4);
-	$salle_e = $salle; // on peut se le permettre puisque le travail sur les salles a déjà été effectué
+	$salle_e = renvoiIdSalle($salle); // on peut se le permettre puisque le travail sur les salles a déjà été effectué
 	$type_semaine = renvoiConcordances($frequence, 10);
 	if ($type_semaine == '' OR $type_semaine == 'erreur') {
 		$type_semaine = '0';
@@ -460,11 +462,21 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	// Il reste à déterminer le groupe
 	if ($regroupement != '') {
 
-		$groupe_e = renvoiConcordances($regroupement, 7);
+		$test = explode("|", $regroupement);
 
-		if ($groupe_e == 'erreur') {
-			$regrp = '';
-			$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
+		if ($test[0] == 'EDT') {
+
+			$groupe_e = $regroupement;
+
+		}else{
+
+			$groupe_e = renvoiConcordances($regroupement, 7);
+
+			if ($groupe_e == 'erreur') {
+				$regrp = '';
+				$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
+			}
+
 		}
 
 	}else{
@@ -540,5 +552,81 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		}
 	}
 	return $retour;
+}
+
+// fonction qui permet de vérifier si on doit / peut créer un edt_gr pour les emplois de temps
+function gestion_edt_gr($tab){
+
+	$retour = '';
+// On va regarder si on peut créer un edt_gr avec pour nom $tab[7] et pour nom long $tab[3]
+if ($tab[4] != '') {
+	// le professeur est précisé, donc il s'agit d'un cours
+	if ($tab[8] == 'CG') {
+
+		$type_sub = 'classe';
+		$subdivision = renvoiConcordances($tab[2], 2);
+		$nom = $tab[7];
+
+	}elseif($tab[8] == 'TP' OR $tab[8] == 'TD'){
+
+		$type_sub = 'demi';
+		$subdivision = renvoiConcordances($tab[2], 2);
+		// On vérifie que les regroupements soient bien précisé sinon, c'est le groupe qui est choisi
+		if ($tab[7] != '') {
+			$nom = $tab[7];
+		}else{
+			$nom = $tab[6];
+		}
+
+	}else{
+		$type_sub = 'autre';
+		$subdivision = 'plusieurs';
+		$nom = $tab[7];
+	}
+
+	$nom_long = $tab[3];
+
+	// On vérifie si ce edt_gr n'existe pas déjà... s'il existe, on précise que le type de subdivision passe à 'autre'
+	// et on passe subdivision à 'plusieurs'
+	$query_verif = mysql_query("SELECT id FROM edt_gr_nom
+										WHERE nom = '".$nom."'
+										AND nom_long = '".$nom_long."'
+										AND (subdivision_type = '".$type_sub."' OR subdivision_type = 'autre')");
+	$nbre = mysql_num_rows($query_verif);
+
+	if ($nbre >= 1) {
+
+		// alors il existe déjà, on le met à jour et on s'en va
+		$rep_id = mysql_result($query_verif, "id");
+		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id."'");
+
+		$retour = $rep_id;
+
+	}else{
+
+		// on crée cet edt_gr
+		$query_create = mysql_query("INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
+												VALUES ('', '".$nom."', '".$nom_long."', '".$type_sub."', '".$subdivision."')");
+		// On récupère son id
+		$query_id = mysql_query("SELECT id FROM edt_gr_nom
+												WHERE nom = '".$nom."'
+												AND nom_long = '".$nom_long."'
+												AND subdivision_type = '".$type_sub."'
+												AND subdivision = '".$subdivision."");
+		$recup_id = mysql_result($query_id, "id");
+		$create_prof = mysql_query("INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
+																				VALUES('', '".$recup_id."', '".renvoiConcordances($tab[4], 4)."')");
+		$retour = $recup_id;
+
+	}
+
+}else{
+
+	// on n'a pas créé de edt_gr donc on renvoie 'non
+	$retour = 'non';
+}
+
+	return $retour;
+
 }
 ?>

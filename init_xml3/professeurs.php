@@ -203,6 +203,7 @@ if (!isset($is_posted)) {
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' /> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' /> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' /> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
+	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_non' value='non' /><label for='login_gen_type_non'  style='cursor: pointer;'>Le login est récupéré par un fchier externe</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -701,6 +702,11 @@ else {
 						$prenom = $prof[$k]["prenom"];
 						$prenom1 = $prof[$k]["prenom"]{0};
 						$temp1 = $prenom1 . $nom1;
+					} elseif($_POST['login_gen_type'] == "non"){
+
+						// Dans ce cas, on ne crée pas le login, on le récupère dans un csv ou une table temporaire
+						// la ligne existe sous cette appellation : $prof[$k][]
+
 					}
 					$login_prof = $temp1;
 					// On teste l'unicité du login que l'on vient de créer
@@ -743,7 +749,15 @@ else {
 
 					//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='P".$prof[$k]["id"]."'";
+					$sql="INSERT INTO utilisateurs SET login='$login_prof',
+														nom='".$prof[$k]["nom_usage"]."',
+														prenom='$premier_prenom',
+														civilite='$civilite',
+														password='$pwd',
+														statut='professeur',
+														etat='actif',
+														change_mdp='y',
+														numind='P".$prof[$k]["id"]."'";
 					$res = mysql_query($sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";
