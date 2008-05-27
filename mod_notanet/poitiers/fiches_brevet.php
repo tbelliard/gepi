@@ -809,7 +809,7 @@ else {
 					echo "<table border='0'>\n";
 					echo "<tr>\n";
 					echo "<td valign='top' style='font-size:".$fb_taille_etab."pt; margin: $fb_marg_etab;'>\n";
-					echo "Etablissement : ";
+					echo "Etablissement&nbsp;: ";
 					echo "</td>\n";
 					echo "<td style='font-size:".$fb_taille_etab."pt; margin: $fb_marg_etab;'>\n";
 					//echo "</div>\n";
@@ -848,7 +848,7 @@ else {
 					echo "<tr>\n";
 					echo "<td colspan='3' style='text-align:left;'>\n";
 					echo "<p class='info_ele'>\n";
-					echo "NOM: ".$lig1->nom."\n";
+					echo "NOM&nbsp;: ".$lig1->nom."\n";
 					echo "</p>\n";
 					echo "</td>\n";
 					echo "</tr>\n";
@@ -856,7 +856,7 @@ else {
 					echo "<tr>\n";
 					echo "<td colspan='3' style='text-align:left;'>\n";
 					echo "<p class='info_ele'>\n";
-					echo "Prénom: ".$lig1->prenom."\n";
+					echo "Prénom&nbsp;: ".$lig1->prenom."\n";
 					echo "</p>\n";
 					echo "</td>\n";
 					echo "</tr>\n";
@@ -885,7 +885,7 @@ else {
 					echo "<p class='info_ele'>\n";
 					echo "redoublant";
 					if($lig1->sexe=='F'){echo "e";}
-					echo " : \n";
+					echo "&nbsp;: \n";
 					echo "</p>\n";
 					echo "</td>\n";
 
@@ -1585,10 +1585,10 @@ else {
 				echo "</td>\n";
 				echo "<td width='".$fb_largeur_coche_b2i."%' style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='MS') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1611,7 +1611,7 @@ else {
 					echo "<table border='0' width='100%'>\n";
 					echo "<tr>\n";
 					echo "<td style='text-align:left;border:0px;'>\n";
-					echo "<b>Avis du chef d'établissement</b> :";
+					echo "<b>Avis du chef d'établissement</b>&nbsp;:";
 
 					echo "<p>";
 					if($def_fav=="O") {
@@ -1632,7 +1632,7 @@ else {
 					}
 					echo " avis défavorable<br />\n";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<img src='fleche_evidee".$img_alt.".png' width='16' height='19' alt='Flèche' /> avis motivé :<br />\n";
+					echo "<img src='fleche_evidee".$img_alt.".png' width='16' height='19' alt='Flèche' /> avis motivé&nbsp;:<br />\n";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 					if($def_avis=="") {
@@ -1655,10 +1655,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='ME') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1669,10 +1669,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_b2i=='MN') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1691,7 +1691,7 @@ else {
 				else {
 					echo "(*)";
 				}
-				echo "</b><br />Langue vivante :<br />";
+				echo "</b><br />Langue vivante&nbsp;:<br />";
 				if($lv_a2=="") {
 					echo ".......................";
 				}
@@ -1701,10 +1701,10 @@ else {
 				echo "</td>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='MS') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MS&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1716,10 +1716,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='ME') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> ME&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
@@ -1730,10 +1730,10 @@ else {
 				echo "<tr>\n";
 				echo "<td style='font-size:".$fb_textetab."pt; border-right:0px;'>\n";
 				if($note_a2=='MN') {
-					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN&nbsp;: \n";
 				}
 				else {
-					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN : \n";
+					echo "<img src='case_non_cochee".$img_alt.".png' width='17' height='16' alt='case à cocher' /> MN&nbsp;: \n";
 				}
 				echo "</td>\n";
 				echo "<td colspan='5' style='font-size:".$fb_textetab."pt; text-align:left; border-left:0px;'>\n";
