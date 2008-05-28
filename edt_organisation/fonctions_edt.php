@@ -1239,4 +1239,15 @@ function renvoieAid($statut, $nom){
 	}
 
 }
+
+// Fonction qui renvoie l'edt d'une classe sur un créneau précis
+function afficherCoursClasse($nom_classe, $choix_creneau){
+
+	// On récupère l'id de la classe et on cherche
+	$query_c = mysql_query("SELECT id FROM classes WHERE nom = '".$nom_classe."' LIMIT 1");
+	$id_classe = mysql_result($query_c, "id");
+	$cours = cree_tab_general($id_classe, $choix_creneau, $jour, 'classe', 'O');
+
+	return $cours;
+}
 ?>

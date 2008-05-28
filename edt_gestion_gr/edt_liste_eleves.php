@@ -76,6 +76,7 @@ if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
 	// On vérifie s'il s'agit de la classe entière
 	if ($id_eleve == "tous") {
 		// la classe $classe_e doit alors être entrée entièrement dans ce groupe
+		echo 'Cette fonctionnalité n\'est pas encore prête, désolé';
 
 	}else{
 
@@ -85,7 +86,31 @@ if ($id_eleve != NULL AND $action != 'del_eleve_gr') {
 			$sql_el = "INSERT INTO edt_gr_eleves (id, id_gr_nom, id_eleve) VALUES ('', '".$id_gr."', '".$id_eleve."')";
 			$query_el = mysql_query($sql_el) OR trigger_error('Impossible d\'enregistrer cet élève.', E_USER_ERROR);
 			//echo $sql_el;
+			// On vérifie si sa classe est déjà enregistrée dans la base sinon on l'enregistre
+			$id_classe_ele = get_class_from_ele_login(get_login_eleve($id_eleve));
+			$test = mysql_query("SELECT id_classe, id FROM edt_gr_classes WHERE id_gr_nom = '".$id_gr."' LIMIT 1");
+			if (mysql_num_rows($test) >= 1) {
+				// On ajoute une classe dans la ligne ci-dessus
+				$classes = mysql_fetch_array($test);
+				$test2 = explode("|", $classes["id_classe"]);
+				$up = 'oui';
 
+				for($a = 0; $a < count($test2); $a++){
+					if ($test2[$a] == $id_classe_ele["id0"]) {
+						$up = 'non';
+
+					}
+				}
+				if ($up == 'oui') {
+					$ajout = $classes["id_classe"].$id_classe_ele["id0"].'|';
+					$update = mysql_query("UPDATE edt_gr_classes SET id_classe = '".$ajout."' WHERE id = '".$test["id"]."'");
+				}
+
+			}else{
+
+				$enregistre = mysql_query("INSERT INTO edt_gr_classes (id, id_gr_nom, id_classe) VALUES ('', '".$id_gr."', '".$id_classe_ele["id0"]."|')");
+
+			}
 		}
 
 	}

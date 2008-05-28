@@ -56,6 +56,7 @@ $date_mysql = date("Y-m-d");
 $heure_mysql = date("H:i:s");
 
 $style_specifique = "edt_organisation/style_edt";
+$javascript_specifique = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absents du jour.";
 require_once("../../lib/header.inc");
@@ -263,9 +264,14 @@ for($a = 0; $a < $nbre_classe; $a++){
 	// On détermine si sur deux colonnes, le compte tombe juste
 	$calc = $nbre_classe / 2;
 	$modulo = $nbre_classe % 2;
+	$num_id = 'id'.remplace_accents($aff_classe[$a], 'all');
 	echo '
 	<tr>
-		<td><h4 style="color: red;">'.$aff_classe[$a].'</h4></td>
+		<td>
+			<h4 style="color: red;"><a href="#" onclick="changerDisplayDiv(\''.$num_id.'\'); return false;">'.$aff_classe[$a].'</a></h4>
+			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white;">
+			'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
+		</td>
 		<td style="width: 250px;">'.$td_classe[$a].'</td>';
 	if ($a == ($nbre_classe - 1) AND $modulo == 1) {
 		// c'est qu'on est arrivé à la dernière ligne et que le nombre de classes est impair
@@ -275,8 +281,13 @@ for($a = 0; $a < $nbre_classe; $a++){
 		</tr>';
 	}else{
 		$a++; // on passe à la colonne suivante
+		$num_id = 'id'.remplace_accents($aff_classe[$a], 'all');
 		echo '
-			<td><h4 style="color: red;">'.$aff_classe[$a].'</h4></td>
+			<td>
+				<h4 style="color: red;"><a href="#" onclick="changerDisplayDiv(\''.$num_id.'\'); return false;">'.$aff_classe[$a].'</a></h4>
+				<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white;">
+				'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
+			</td>
 			<td style="width: 250px;">'.$td_classe[$a].'</td>
 		</tr>';
 	}

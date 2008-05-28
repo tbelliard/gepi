@@ -48,11 +48,12 @@ function renvoiIdSalle($chiffre){
 	$cherche = substr($chiffre, 0, 10);
 	$query = mysql_query("SELECT id_salle FROM salle_cours WHERE numero_salle = '".$cherche."'");
 	if ($query) {
-		$reponse = mysql_result($query, "id_salle");
-		if ($reponse == '') {
+		//$reponse = mysql_result($query, "id_salle");
+		$reponse = mysql_fetch_array($query);
+		if ($reponse["id_salle"] == '') {
 			$retour = "inc";
 		}else{
-			$retour = $reponse;
+			$retour = $reponse["id_salle"];
 		}
 	}else{
 		$retour = 'erreur_salle';
@@ -597,10 +598,11 @@ if ($tab[4] != '') {
 	if ($nbre >= 1) {
 
 		// alors il existe déjà, on le met à jour et on s'en va
-		$rep_id = mysql_result($query_verif, "id");
-		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id."'");
+		//$rep_id = mysql_result($query_verif, "id");
+		$rep_id = mysql_fetch_array($query_verif);
+		$maj = mysql_query("UPDATE edt_gr_nom SET subdivision_type = 'autre', subdivision = 'plusieurs' WHERE id = '".$rep_id["id"]."'");
 
-		$retour = $rep_id;
+		$retour = $rep_id["id"];
 
 	}else{
 
@@ -613,10 +615,11 @@ if ($tab[4] != '') {
 												AND nom_long = '".$nom_long."'
 												AND subdivision_type = '".$type_sub."'
 												AND subdivision = '".$subdivision."");
-		$recup_id = mysql_result($query_id, "id");
+		//$recup_id = mysql_result($query_id, "id");
+		$recup_id = mysql_fetch_array($query_id);
 		$create_prof = mysql_query("INSERT INTO edt_gr_prof (id, id_gr_nom, id_utilisateurs)
-																				VALUES('', '".$recup_id."', '".renvoiConcordances($tab[4], 4)."')");
-		$retour = $recup_id;
+																				VALUES('', '".$recup_id["id"]."', '".renvoiConcordances($tab[4], 4)."')");
+		$retour = $recup_id["id"];
 
 	}
 
