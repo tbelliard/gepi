@@ -133,47 +133,96 @@ include "../lib/periodes.inc.php";
 
 // =================================
 // AJOUT: boireaus
+$chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
 $res_class_tmp=mysql_query($sql);
 if(mysql_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
+
+    $cpt_classe=0;
+	$num_classe=-1;
+
 	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 		if($lig_class_tmp->id==$id_classe){
+			// Index de la classe dans les <option>
+			$num_classe=$cpt_classe;
+
+			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 			$temoin_tmp=1;
 			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				$id_class_suiv=$lig_class_tmp->id;
 			}
 			else{
 				$id_class_suiv=0;
 			}
 		}
+		else {
+			$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+		}
+
 		if($temoin_tmp==0){
 			$id_class_prec=$lig_class_tmp->id;
 		}
+
+		$cpt_classe++;
 	}
 }
 // =================================
 
 
-
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Gestion des périodes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 ?>
 
-
-<form enctype="multipart/form-data" method="post" action="periodes.php">
 <?php
+
+echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
 if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>\n";}
+if($chaine_options_classes!="") {
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+
+	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo $chaine_options_classes;
+	echo "</select>\n";
+}
 if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>\n";}
+
+echo "</p>\n";
+echo "</form>\n";
 ?>
-</p>
+
+<form enctype="multipart/form-data" method="post" action="periodes.php">
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
 <p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
@@ -187,6 +236,7 @@ $verif=mysql_query($sql);
 if(mysql_num_rows($verif)>0) {
 	$temp = $nb_periode - 1;
 	echo "<b>".$temp."</b>";
+	echo "<input type='hidden' name='nombre_periode' value='$temp' />\n";
 }
 else {
 	echo "<select size=1 name='nombre_periode'";
