@@ -499,7 +499,10 @@ else {
 	$req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
 
-	echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
+	echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI.
+		les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br />
+		<br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement
+		cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
 	echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
 	echo "<tr><th><p class=\"small\">Identifiant du professeur</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th>Mot de passe *</th></tr>\n";
 
@@ -706,6 +709,44 @@ else {
 
 						// Dans ce cas, on ne crée pas le login, on le récupère dans un csv ou une table temporaire
 						// la ligne existe sous cette appellation : $prof[$k][]
+						// Les informations utiles sont la date de naissance et le nom/prénom
+						// $prof[$k]["nom_usage"] est son nom, $prenom = $prof[$k]["prenom"]; est son prénom
+						// et $prof[$k]["date_naissance"] sa date de naissance : aaaa-mm-jj
+						// le plug-in Gepi est de cette forme
+						// RNE;CATEGORIE;Login;INE;N° Interne;Nom;Prénom;Date de naissance;Sexe;Civilité;Classes;Groupes;Langues;Disciplines
+						// 0331667H;ENSEIGNANT;jul.jocal;;;JOCAL;JULIEN;16/05/74;;M.;6EME5|6EME4|6EME3|6EME2|3EME4|3EME3|3EME2;;;histoire-géographie
+						$test_d = explode("-", $prof[$k]["date_naissance"]);
+						$date_v = $test_d[2].'/'.$test_d[1].'/'.substr($test_d[0], 2, 3);
+
+						// Eléments d'authentification LDAP
+						$ldaprdn  = 'uname';     // DN ou RDN LDAP
+						$ldappass = 'password';  // Mot de passe associé
+
+						// Connexion au serveur LDAP
+						$ldapconn = ldap_connect("ldap.example.com")
+    						or die("Impossible de se connecter au serveur LDAP.");
+
+						if ($ldapconn) {
+
+							// Connexion au serveur LDAP
+						    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+							// Vérification de l'authentification
+							if ($ldapbind) {
+
+						        echo "Connexion LDAP réussie...";
+
+    						} else {
+
+        						echo "Connexion LDAP échouée...";
+
+    						}
+
+						}
+
+
+
+// ======================================= $temp1 est le login renvoyé =================================================
 
 					}
 					$login_prof = $temp1;

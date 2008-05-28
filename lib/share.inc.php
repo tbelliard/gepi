@@ -2036,14 +2036,32 @@ function remplace_accents($chaine,$mode){
 	return $retour;
 }
 
+// Fonction qui renvoie le login d'un élève en échange de son ele_id
+function get_login_eleve($id_eleve){
+
+	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
+	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
+	if ($query) {
+		$retour = mysql_result($query, "login");
+	}else{
+		$retour = 'erreur';
+	}
+	return $retour;
+
+}
+
+// fonction qui renvoie le nom de la classe d'un élève pour chaque période
 function get_class_from_ele_login($ele_login){
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
 	$res_class=mysql_query($sql);
-
+	$a = 0;
 	$tab_classe=array();
 	if(mysql_num_rows($res_class)>0){
 		while($lig_tmp=mysql_fetch_object($res_class)){
+
 			$tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+			$tab_classe['id'.$a] = $lig_tmp->id_classe;
+			$a = $a++;
 		}
 	}
 	return $tab_classe;
