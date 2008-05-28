@@ -185,6 +185,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 }
 
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des classes | Modifier les paramètres";
 require_once("../lib/header.inc");
@@ -196,36 +197,87 @@ $id_class_suiv=0;
 if (isset($id_classe)) {
 	// =================================
 	// AJOUT: boireaus
+	$chaine_options_classes="";
 	$sql="SELECT id, classe FROM classes ORDER BY classe";
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
 		$temoin_tmp=0;
+
+		$cpt_classe=0;
+		$num_classe=-1;
+
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
+				// Index de la classe dans les <option>
+				$num_classe=$cpt_classe;
+
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
 					$id_class_suiv=0;
 				}
 			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+
 			if($temoin_tmp==0){
 				$id_class_prec=$lig_class_tmp->id;
 			}
+
+			$cpt_classe++;
 		}
 	}
 	// =================================
 }
 
+echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
-if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+
+if($chaine_options_classes!="") {
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+
+	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo $chaine_options_classes;
+	echo "</select>\n";
+}
+
+if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+
+echo "</p>\n";
+echo "</form>\n";
 ?>
 
-</p>
 <p><b>Remarque : </b>Connectez vous avec un compte ayant le statut "scolarité" pour éditer les bulletins et avoir accès à d'autres paramètres d'affichage.</p>
 
 <?php
@@ -233,6 +285,9 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 if (isset($id_classe)) {
 
 	$call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
+
+
+
 	$classe = mysql_result($call_nom_class, 0, 'classe');
 	$nom_complet = mysql_result($call_nom_class, 0, 'nom_complet');
 	$suivi_par = mysql_result($call_nom_class, 0, 'suivi_par');
@@ -289,35 +344,35 @@ if (isset($id_classe)) {
 
 ?>
 <form enctype="multipart/form-data" action="modify_nom_class.php" method=post>
-<p>Nom court de la classe : <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" /></p>
-<p>Nom complet de la classe : <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>" /></p>
-<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>" /></p>
-<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>" /></p>
+<p>Nom court de la classe : <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
+<p>Nom complet de la classe : <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
+<p>Prénom et nom du chef d'établissement ou de son représentant apparaissant en bas de chaque bulletin : <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus :<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
 <p><b>Formatage de l'identité des professeurs pour les bulletins :</b>
 <br /><br />
-<input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (Durand A.)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
 <br />
-<input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?>/>
+<input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked "; ?> onchange='changement()' />
 <label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (M. Durand A.)</label>
 
 <input type=hidden name=is_posted value=1 />
@@ -336,7 +391,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps;">
     <label for='display_mat_cat' style='cursor: pointer;'>Afficher les catégories de matières sur le bulletin (HTML), les relevés de notes (HTML), et les outils de visualisation :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_mat_cat" id="display_mat_cat"  <?php   if ($display_mat_cat=="y") echo " checked "; ?> onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -369,7 +424,7 @@ if (isset($id_classe)) {
 			echo "<tr>\n";
 			echo "<td style='padding: 5px;'>".$row["nom_court"]."</td>\n";
 			echo "<td style='padding: 5px; text-align: center;'>\n";
-					echo "<select name='priority_".$row["id"]."' size='1'>\n";
+					echo "<select name='priority_".$row["id"]."' size='1' onchange='changement()'>\n";
 					for ($i=0;$i<11;$i++) {
 						echo "<option value='$i'";
 						if ($current_priority == $i) echo " SELECTED";
@@ -380,7 +435,7 @@ if (isset($id_classe)) {
 			echo "<td style='padding: 5px; text-align: center;'>\n";
 				echo "<input type='checkbox' name='moyenne_".$row["id"]."'";
 				if ($current_affiche_moyenne == '1') echo " CHECKED";
-				echo " />\n";
+				echo " onchange='changement()' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -399,7 +454,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps; width: 35%;">
     <label for='display_rang' style='cursor: pointer;'>Afficher sur le bulletin le rang de chaque élève&nbsp;:</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_rang" id="display_rang"  <?php   if ($display_rang=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -407,7 +462,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps;">
     <label for='display_address' style='cursor: pointer;'>Afficher le bloc adresse du responsable de l'élève :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_address" id="display_address"  <?php   if ($display_address=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -415,7 +470,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps;">
     <label for='display_coef' style='cursor: pointer;'>Afficher les coefficients des matières (uniquement si au moins un coef différent de 0) :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_coef" id="display_coef"  <?php   if ($display_coef=="y") echo " checked "; ?>  onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -423,7 +478,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps;">
     <label for='display_moy_gen' style='cursor: pointer;'>Afficher les moyennes générales sur les bulletins (uniquement si au moins un coef différent de 0) :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked "; ?> onchange='changement()' />
     </td>
 </tr>
 <tr>
@@ -431,7 +486,7 @@ if (isset($id_classe)) {
     <td style="font-variant: small-caps;">
     <label for='display_nbdev' style='cursor: pointer;'>Afficher le nombre de devoirs sur le bulletin :</label>
     </td>
-    <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> />
+    <td><input type="checkbox" value="y" name="display_nbdev" id="display_nbdev"  <?php   if ($display_nbdev=="y") echo " checked "; ?> onchange='changement()' />
     </td>
 </tr>
 <!-- ========================================= -->
@@ -445,12 +500,12 @@ if (isset($id_classe)) {
 	<td style="font-variant: small-caps;">
 	   Sélectionner le modèle de bulletin pour l'impression en PDF :
 	</td>
-	<td><?PHP
+	<td><?php
 	    // Pour la classe, quel est le modèle de bulletin déja selectionné
 	    $quel_modele=$modele_bulletin_pdf;
 
 		//echo $quel_modele;
-		echo "<select tabindex=\"5\" name=\"modele_bulletin\">";
+		echo "<select tabindex=\"5\" name=\"modele_bulletin\" onchange='changement()'>";
 		if ($quel_modele == NULL) {
 		   echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
 		}
@@ -491,56 +546,56 @@ Afficher une case pour la signature du chef d'établissement
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_nomdev' style='cursor: pointer;'>Afficher le nom des devoirs :</label></td>
-    <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_toutcoefdev' style='cursor: pointer;'>Afficher tous les coefficients des devoirs :</label></td>
-    <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_toutcoefdev" id="rn_toutcoefdev"  <?php   if ($rn_toutcoefdev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_coefdev_si_diff' style='cursor: pointer;'>Afficher les coefficients des devoirs si des coefficients différents sont présents :</label></td>
-    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_coefdev_si_diff" id="rn_coefdev_si_diff"  <?php   if ($rn_coefdev_si_diff=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_datedev' style='cursor: pointer;'>Afficher les dates des devoirs :</label></td>
-    <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_datedev" id="rn_datedev"  <?php   if ($rn_datedev=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td>Formule/Message à insérer sous le relevé de notes :</td>
-	<td><input type=text size=40 name="rn_formule" value="<?php echo $rn_formule; ?>" /></td>
+	<td><input type=text size=40 name="rn_formule" value="<?php echo $rn_formule; ?>" onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_chefetab' style='cursor: pointer;'>Afficher une case pour la signature du chef d'établissement :</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_chefetab" id="rn_sign_chefetab"  <?php   if ($rn_sign_chefetab=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_pp' style='cursor: pointer;'>Afficher une case pour la signature du prof principal :</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_pp" id="rn_sign_pp"  <?php   if ($rn_sign_pp=="y") echo " checked "; ?> onchange='changement()' /></td>
 </tr>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">
 	<label for='rn_sign_resp' style='cursor: pointer;'>Afficher une case pour la signature des parents/responsables :</label></td>
-    <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?> /></td>
+    <td><input type="checkbox" value="y" name="rn_sign_resp" id="rn_sign_resp"  <?php   if ($rn_sign_resp=="y") echo " checked "; ?>  onchange='changement()' /></td>
 </tr>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
     <td style="font-variant: small-caps;">Nombre de lignes pour la signature :</td>
-    <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" /></td>
+    <td><input type="text" name="rn_sign_nblig" value="<?php echo $rn_sign_nblig;?>" onchange='changement()' /></td>
 </tr>
 
 </table>
