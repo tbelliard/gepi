@@ -114,7 +114,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
 				if (!is_numeric($reg_priority)) $reg_priority = 0;
 				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
-				$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+
+				//$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+
+				$res_test=mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')");
+				$test = mysql_result($res_test, 0);
+
 				if ($test == 0) {
 					// Pas d'entrée... on créé
 					$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
@@ -286,7 +291,11 @@ if (isset($id_classe)) {
 
 	$call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 
-
+	if(mysql_num_rows($call_nom_class)==0) {
+		echo "<p>L'identifiant de classe '$id_classe' est inconnu.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 	$classe = mysql_result($call_nom_class, 0, 'classe');
 	$nom_complet = mysql_result($call_nom_class, 0, 'nom_complet');
