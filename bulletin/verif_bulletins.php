@@ -113,6 +113,7 @@ if (!(isset($id_classe))) {
 
 	//echo "</td><td></td></table>";
 } else if (!(isset($per))){
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	//echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
@@ -138,6 +139,8 @@ if (!(isset($id_classe))) {
 			ORDER BY classe";
 	}
 	*/
+
+	$chaine_options_classes="";
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
@@ -145,14 +148,20 @@ if (!(isset($id_classe))) {
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
 					$id_class_suiv=0;
 				}
 			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+
 			if($temoin_tmp==0){
 				$id_class_prec=$lig_class_tmp->id;
 			}
@@ -162,9 +171,15 @@ if (!(isset($id_classe))) {
 	if(isset($id_class_prec)){
 		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>\n";}
 	}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
 	if(isset($id_class_suiv)){
 		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>\n";}
 	}
+	echo "</form>\n";
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
 
@@ -351,6 +366,7 @@ if (!(isset($id_classe))) {
 		$mode="tout";
 	}
 
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
@@ -374,6 +390,7 @@ if (!(isset($id_classe))) {
 			ORDER BY classe";
 	}
 	*/
+	$chaine_options_classes="";
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
@@ -381,14 +398,20 @@ if (!(isset($id_classe))) {
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
 					$id_class_suiv=0;
 				}
 			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+
 			if($temoin_tmp==0){
 				$id_class_prec=$lig_class_tmp->id;
 			}
@@ -398,9 +421,17 @@ if (!(isset($id_classe))) {
 	if(isset($id_class_prec)){
 		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode'>Classe précédente</a>\n";}
 	}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+		echo "<input type='hidden' name='per' value='$per' />\n";
+		echo "<input type='hidden' name='mode' value='$mode' />\n";
+	}
 	if(isset($id_class_suiv)){
 		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode'>Classe suivante</a>\n";}
 	}
+	echo "</form>\n";
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
 
@@ -409,7 +440,7 @@ if (!(isset($id_classe))) {
 	$bulletin_rempli = 'yes';
 	$call_classe = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = mysql_result($call_classe, "0", "classe");
-	echo "Classe : $classe - $nom_periode[$per] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
+	echo "<p>Classe : $classe - $nom_periode[$per] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
 
 	//
 	// Vérification de paramètres généraux
