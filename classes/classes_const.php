@@ -266,25 +266,41 @@ if (isset($is_posted)) {
 
 // =================================
 // AJOUT: boireaus
+$chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
 $res_class_tmp=mysql_query($sql);
 if(mysql_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
+
+	$cpt_classe=0;
+	$num_classe=-1;
+
 	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 		if($lig_class_tmp->id==$id_classe){
+			// Index de la classe dans les <option>
+			$num_classe=$cpt_classe;
+
+			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 			$temoin_tmp=1;
 			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				$id_class_suiv=$lig_class_tmp->id;
 			}
 			else{
 				$id_class_suiv=0;
 			}
 		}
+		else {
+			$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+		}
+
 		if($temoin_tmp==0){
 			$id_class_prec=$lig_class_tmp->id;
 		}
+
+		$cpt_classe++;
 	}
 }
 // =================================
@@ -299,8 +315,8 @@ require_once("../lib/header.inc");
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 
+//debug_var();
 ?>
-<form enctype="multipart/form-data" action="classes_const.php" method=post>
 
 <?php
 
@@ -308,21 +324,90 @@ $classe = mysql_result($call_classe, "0", "classe");
 // MODIF: boireaus
 
 if(!isset($quitter_la_page)){
-	echo "<p class='bold'>";
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo "<p class='bold'>\n";
 	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+
+	if($chaine_options_classes!="") {
+
+		echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+
+		echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 	echo "</p>\n";
+	echo "</form>\n";
+
+	echo "<form enctype='multipart/form-data' action='classes_const.php' method='post'>\n";
 }
 else{
 	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
 	// Après modification éventuelle, il faut quitter cette page.
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'>";
 	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+
+	if($chaine_options_classes!="") {
+
+		echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+
+		echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 	echo "</p>\n";
+	echo "</form>\n";
 
+	echo "<form enctype='multipart/form-data' action='classes_const.php' method='post'>\n";
 	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
 	// Il va falloir faire en sorte que la page destination tienne compte de la variable...
 }
