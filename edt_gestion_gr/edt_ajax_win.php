@@ -186,7 +186,7 @@ if ($action == 'modifier') {
 			<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
 		}else{
 			echo '
-			<p title="'.$sql_nom_lg.'" style="color: red;">Erreur !</p>';'
+			<p title="'.$sql_nom_lg.'" style="color: red;">Erreur !</p>';
 		}
 
 	}
