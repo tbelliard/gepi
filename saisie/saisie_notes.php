@@ -441,6 +441,9 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\
 
 	echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
 
+	echo "<div id='info_recopie' class='infobulle_corps' style='float:right; width:20em; border: 1px solid black; display:none;'></div>\n";
+	//echo "<div style='clear:both;'></div>\n";
+
 	echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus'>\n";
 	//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
 	echo "<tr>\n";
@@ -550,6 +553,8 @@ $prev_classe = null;
 $i=0;
 //=========================
 $alt=1;
+unset($tab_recopie_vide);
+$tab_recopie_vide=array();
 foreach ($liste_eleves as $eleve_login) {
 	$alt=$alt*(-1);
 
@@ -704,8 +709,10 @@ foreach ($liste_eleves as $eleve_login) {
 							$mess[$k] = $mess[$k]."\"".@mysql_result($moyenne_query, 0, "note")."\"";
 						} else {
 							$mess[$k] = $mess[$k]."\"\"";
+							$tab_recopie_vide[]="$eleve_nom $eleve_prenom";
 						}
-						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></td>\n";
+						//$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></td>\n";
+						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 					} else {
 						//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
 						if ($eleve_statut != '') {
@@ -848,7 +855,7 @@ while ($k < $nb_periode) {
 		if ($moy_moy != '') {
 			$affiche_moy = $moy_moy;
 		} else {
-		$affiche_moy = "&nbsp;";
+			$affiche_moy = "&nbsp;";
 		}
 
 		if ($periode_cn == $k) {
@@ -893,6 +900,20 @@ $k++;
 </tr>
 </table>
 <?php
+
+if(count($tab_recopie_vide)>0) {
+	$chaine_js="<p style='text-align:center'>Pas de moyenne recopiée pour:<br />";
+	for($i=0;$i<count($tab_recopie_vide);$i++) {
+		$chaine_js.="<b>".$tab_recopie_vide[$i]."</b><br />";
+	}
+	$chaine_js.="Il faudra saisir manuellement Absent (<b>a</b>), Dispensé (<b>d</b>) ou Non noté (<b>-</b>).</p>";
+
+	echo "<script type='text/javascript'>
+	document.getElementById('info_recopie').innerHTML=\"$chaine_js\";
+	document.getElementById('info_recopie').style.display='';
+</script>\n";
+}
+
 if ($is_posted == 'bascule') {
 ?>
 	<script type="text/javascript" language="javascript">
