@@ -103,7 +103,11 @@ class edt{
 		$rep["type"] = mysql_result($query_s, "type_edt_semaine");
 
 		$query_se = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE num_semaines_etab = '".$sem."' LIMIT 1");
-		$rep["etab"] = mysql_result($query_se, "type_edt_semaine");
+		$compter = mysql_num_rows($query_se);
+		if ($compter >= 1) {
+			$rep["etab"] = mysql_result($query_se, "type_edt_semaine");
+		}
+		$rep["etab"] = '';
 
 		return $rep;
 	}

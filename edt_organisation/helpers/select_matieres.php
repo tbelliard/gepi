@@ -21,25 +21,33 @@ if ($analyse[4] == "select_matieres.php") {
 
 $increment = isset($nom_select) ? $nom_select : "liste_matieres";
 $matiere_selected = isset($nom_matiere) ? strtoupper($nom_matiere) : (isset($nom_selected) ? strtoupper($nom_selected) : null);
+$options = NULL;
 
-echo '
-	<select name ="' . $increment . '">
-		<option value="aucun">Liste des matières</option>';
 // on recherche la liste des matières
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
 $nbre = mysql_num_rows($query);
+
+$warning = ' style="background-color: orange;"'; // si il ne trouve pas de correspondance, on modifie le fond
+
 for($i = 0; $i < $nbre; $i++) {
     $matiere[$i] = mysql_result($query, $i, "matiere");
     $nom[$i] = mysql_result($query, $i, "nom_complet");
     if (strtoupper(trim(remplace_accents($nom[$i], 'all_nospace'))) == $matiere_selected OR strtoupper(trim(remplace_accents($matiere[$i], 'all_nospace'))) == $matiere_selected) {
         $selected = ' selected="selected"';
+        $warning = ''; // il a trouvé une correspondance, donc on enlève le fond.
     } else {
         $selected = '';
     }
 
-    echo '
+    $options .= '
 		<option value="' . $matiere[$i] . '"' . $selected . '>' . $nom[$i] . '</option>';
 }
+echo '
+	<select name ="' . $increment . '"'.$warning .'>
+		<option value="aucun">Liste des matières</option>';
+
+echo $options;
+
 echo '</select>';
 
 ?>
