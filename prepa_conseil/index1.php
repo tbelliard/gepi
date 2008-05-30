@@ -118,6 +118,9 @@ include "../lib/periodes.inc.php";
 if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et appréciations";
 require_once("../lib/header.inc");
     //**************** FIN EN-TETE *****************
+
+//debug_var();
+
 if (isset($_SESSION['chemin_retour'])) $retour = $_SESSION['chemin_retour'] ; else $retour = "index1.php";
 
 if ($en_tete!="yes"){
@@ -307,6 +310,7 @@ if (!$current_group) {
     echo "</form>\n";
 } else {
     $nombre_eleves = count($current_group["eleves"]["all"]["list"]);
+	//echo "\$nombre_eleves=$nombre_eleves<br />";
 
     // On commence par mettre la liste dans l'ordre souhaité
     if ($order_by != "classe") {
@@ -322,7 +326,9 @@ if (!$current_group) {
         foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
             $classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
             $tab_classes[$classe][] = $eleve_login;
+			//echo "$eleve_login ";
         }
+		//echo "<br />";
         // On met tout ça à la suite
         $liste_eleves = array();
         foreach($current_group["classes"]["list"] as $classe_id) {
@@ -334,6 +340,7 @@ if (!$current_group) {
 
 	//==========================================
 	// MODIF: boireaus 20080407
+	$nb_eleves_avant_include=$nombre_eleves;
 	// Le rang doit-il être affiché
 	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
 	$aff_rang="n";
@@ -366,6 +373,7 @@ if (!$current_group) {
 			*/
 		}
 	}
+	$nombre_eleves=$nb_eleves_avant_include;
 	//==========================================
 
 
@@ -404,6 +412,7 @@ if (!$current_group) {
             }
             $k++;
         }
+		//echo "$eleve_login : \$affiche_ligne[$i]=$affiche_ligne[$i]<br />";
         $i++;
     }
     //
@@ -411,8 +420,11 @@ if (!$current_group) {
     //
     $ligne1[1] = "Nom Prénom";
     $ligne1_csv[1] = "Nom Prénom";
-    if ($multiclasses) $ligne1[2] = "Classe";
-    $k = 1;
+    if ($multiclasses) {
+		$ligne1[2] = "Classe";
+		$ligne1_csv[2] = "Classe";
+    }
+	$k = 1;
 //    if (isset($_POST['stat']) or isset($_GET['stat'])) $only_stats = 'yes'; else $only_stats = 'no';
     while ($k < $nb_periode) {
 
@@ -469,6 +481,7 @@ if (!$current_group) {
     $i = 0;
     $nb_lignes = '0';
     $nb_notes = '0';
+	//echo "\$nombre_eleves=$nombre_eleves<br />\n";
     while($i < $nombre_eleves) {
         if ($affiche_ligne[$i] == 'yes') {
             // Calcul de la moyenne
@@ -1162,6 +1175,7 @@ if (!$current_group) {
         }
         $i++;
     }
+	if(isset($order_by)) {echo "<input type='hidden' name='order_by' value='$order_by' />\n";}
     echo "</form>\n";
 //    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
 //    $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
