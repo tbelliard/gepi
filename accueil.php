@@ -1395,7 +1395,13 @@ if ($_SESSION["statut"] == 'autre') {
 		// On récupère le droit sur le fichier
 		$sql_f = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND nom_fichier = '".$autorise[$a][0]."' ORDER BY id";
 		$query_f = mysql_query($sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
-		$rep_f = mysql_result($query_f, "autorisation");
+		$nbre = mysql_num_rows($query_f);
+		if ($nbre >= 1) {
+			$rep_f = mysql_result($query_f, "autorisation");
+		}else{
+			$rep_f = '';
+		}
+
 
 		if ($rep_f == 'V') {
 			if ($autorise[$a][0] == "/tous_les_edt") {

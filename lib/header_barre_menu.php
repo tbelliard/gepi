@@ -56,6 +56,10 @@ if (!checkAccess()) {
 		$edt = '<li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
 	}else{$edt = '';}
 
+	// Module notanet
+	if (getSettingValue("active_notanet") == "y") {
+		$notanet = '<li><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
+	}else{ $notanet = '';}
 
 
 	echo '
@@ -65,6 +69,7 @@ if (!checkAccess()) {
 		'.$textes.'
 		'.$note.'
 		'.$edt.'
+		'.$notanet.'
 		<li><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
 	</ol>
 	';
