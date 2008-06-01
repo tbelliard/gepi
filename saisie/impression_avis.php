@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 //INSERT INTO droits VALUES ('/saisie/impression_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F','Impression des avis trimestrielles des conseils de classe.', '');
 
 // Initialisations files
@@ -61,14 +61,14 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 echo " | <a href='../impression/parametres_impression_pdf_avis.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
-if ($_SESSION['statut'] == 'scolarite') { // Scolarite 
+if ($_SESSION['statut'] == 'scolarite') { // Scolarite
 
 echo "<h3>Liste des classes : </h3>\n"; //modele imprime PDF
 
 // Pourle compte scolarite, possibilité d'imprimer les avis en synthèse (pour ses classes)
 echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
 
-	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";	
+	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	$result_classes=mysql_query($sql);
 	$nb_classes = mysql_num_rows($result_classes);
 
@@ -83,14 +83,14 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 		$cpt=0;
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
 		echo "<td>\n";
-		echo "<table border='0'>\n";
+		echo "<table border='1' class='boireaus'>\n";
 		while($lig_class=mysql_fetch_object($result_classes)){
 			if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
 				echo "</table>\n";
 				echo "</td>\n";
 				//echo "<td style='padding: 0 10px 0 10px'>\n";
 				echo "<td>\n";
-				echo "<table border='0'>\n";
+				echo "<table border='1' class='boireaus'>\n";
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
@@ -103,9 +103,11 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 			}
 			else{
 				echo "<tr>\n";
-				echo "<td>$lig_class->classe</td>\n";
+				echo "<th>$lig_class->classe</th>\n";
+				$alt=1;
 				while($lig_per=mysql_fetch_object($res_per)){
-					echo "<td> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+					$alt=$alt*(-1);
+					echo "<td class='lig$alt'> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 				}
 				echo "</tr>\n";
 			}
@@ -115,9 +117,9 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-	}	
-	
-echo "<br />\n";	
+	}
+
+echo "<br />\n";
 if ($id_choix_periode != 0) {
   $periode = "Période N°".$id_choix_periode;
   echo "<h3>".$periode;
@@ -158,12 +160,12 @@ echo "<div style=\"text-align: center;\">\n
 					                     FROM `periodes`, `classes` , `j_scol_classes` jsc
 										 WHERE (jsc.login='$login_scolarite'
 										 AND jsc.id_classe=classes.id
-										 AND `periodes`.`num_periode` = ".$id_choix_periode." 
+										 AND `periodes`.`num_periode` = ".$id_choix_periode."
 										 AND `classes`.`id` = `periodes`.`id_classe`)
 										 ORDER BY `nom_complet` ASC";
                     } else {
-					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC"; 
-					}					
+					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
+					}
 					$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
 					echo "		<optgroup label=\"-- Les classes --\">\n";
 					While ( $data_classe = mysql_fetch_array ($resultat_classe)) {
@@ -183,10 +185,10 @@ echo "<div style=\"text-align: center;\">\n
 	 }
    echo "</fieldset>\n
  </div>";
-	
-	
+
+
 // Module toutes les classes scolarité
-	
+
 } else { // appel pour un prof
     echo "<br />";
     $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
@@ -203,10 +205,10 @@ echo "<div style=\"text-align: center;\">\n
             include "../lib/periodes.inc.php";
             $k="1";
             while ($k < $nb_periode) {
-               
+
                    echo "<br /><b>$classe_suivi </b>- ";
                    echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k'>".ucfirst($nom_periode[$k])."</a>";
-               
+
                $k++;
             }
             echo "<br />";
