@@ -56,10 +56,13 @@ function acces_appreciations($periode1, $periode2, $id_classe) {
   return $tab_acces_app;
 } // function
 
-function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
+//function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories) {
+function bulletin($current_eleve_login,$compteur,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
 //echo "\$test_coef=$test_coef<br />";
+
+$alt=1;
 
 //=========================
 // AJOUT: boireaus 20080316
@@ -463,7 +466,13 @@ while ($j < $nombre_groupes) {
 				echo "</tr>\n";
 			}
 		}
-		echo "<tr>\n";
+		if($couleur_lignes=='y') {
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+		}
+		else {
+			echo "<tr>\n";
+		}
 		echo "<td ";
 		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
