@@ -433,6 +433,8 @@ while ($k < $nb_periode) {
 		$mess[$k].=htmlentities(nl2br($app_grp[$k]));
 	}
 	else {
+		if(!isset($id_premier_textarea)) {$id_premier_textarea=$k.$num_id;}
+
 		$mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
 		$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' wrap='virtual' onchange=\"changement()\"";
 		// onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"
@@ -809,6 +811,10 @@ if(isset($_POST['champ_info_focus'])){
 	document.getElementById('n".$_POST['champ_info_focus']."').focus();
 \n";
 	}
+}
+elseif(isset($id_premier_textarea)) {
+	echo "if(document.getElementById('n".$id_premier_textarea."')) {document.getElementById('n".$id_premier_textarea."').focus();}
+if(document.getElementById('focus_courant')) {document.getElementById('focus_courant').value='$id_premier_textarea';}";
 }
 
 echo "</script>\n";
