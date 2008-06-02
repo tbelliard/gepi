@@ -481,8 +481,10 @@ if (!$current_group) {
     $i = 0;
     $nb_lignes = '0';
     $nb_notes = '0';
+	$rg=array();
 	//echo "\$nombre_eleves=$nombre_eleves<br />\n";
     while($i < $nombre_eleves) {
+		//echo "\$login_eleve[$i]=$login_eleve[$i] et \$affiche_ligne[$i]=$affiche_ligne[$i]<br />";
         if ($affiche_ligne[$i] == 'yes') {
             // Calcul de la moyenne
             if ($stat == "yes") {
@@ -653,6 +655,8 @@ if (!$current_group) {
                 }
             }
             $nb_lignes++;
+
+			//$rg[]=$i;
         }
 
 		$rg[$i]=$i;
@@ -667,11 +671,16 @@ if (!$current_group) {
 		//$tmp_tab=$col[$nb_col];
 		//for($loop=0;$loop<count($tmp_tab);$loop++) {
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
+
+		unset($rg);
+
 		for($loop=0;$loop<count($col[$nb_col]);$loop++) {
 			//$tmp_tab[$loop]=$col[$nb_col][$loop];
 			//$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
 			$tmp_tab[$loop]=ereg_replace(",",".",$col_csv[$nb_col][$loop]);
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
+
+			$rg[$loop]=$loop;
 		}
 
 		array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
@@ -685,7 +694,8 @@ if (!$current_group) {
 		$i=0;
 		$rang_prec = 1;
 		$note_prec='';
-		while ($i < $nombre_eleves) {
+		//while ($i < $nombre_eleves) {
+		while($i < count($col_csv[1])) {
 			$ind = $rg[$i];
 			if ($tmp_tab[$i] == "-") {
 				//$rang_gen = '0';
