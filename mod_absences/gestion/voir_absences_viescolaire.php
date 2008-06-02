@@ -49,6 +49,9 @@ $choix_creneau = isset($_POST["choix_creneau"]) ? $_POST["choix_creneau"] : (iss
 $vers_absence = isset($_GET["vers_absence"]) ? $_GET["vers_absence"] : NULL;
 $vers_retard = isset($_GET["vers_retard"]) ? $_GET["vers_retard"] : NULL;
 
+function afficherCoursClasse($d, $c){
+	return '';
+}
 
 //======Quelques variables utiles===========
 $date_jour = date("d/m/Y");
