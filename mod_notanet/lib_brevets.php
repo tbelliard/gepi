@@ -514,7 +514,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[115][-3]='MS ME MN AB';
 
 
-
 			// Colonnes pour les fiches brevet:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j]['fb_col'][1]=20;
@@ -639,7 +638,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[115][-3]='MS ME MN AB';
 
 
-
 			// Colonnes pour les fiches brevet:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j]['fb_col'][1]=20;
@@ -745,7 +743,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			$tabmatieres[115][-3]='MS ME MN AB';
-
 
 
 
@@ -871,7 +868,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[115][-3]='MS ME MN AB';
 
 
-
 			// Colonnes pour les fiches brevet:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j]['fb_col'][1]=20;
@@ -976,7 +972,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[115][-3]='MS ME MN AB';
 
 
-
 			// Colonnes pour les fiches brevet:
 			for($j=101;$j<=122;$j++){
 				$tabmatieres[$j]['fb_col'][1]=20;
@@ -1073,7 +1068,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			$tabmatieres[115][-3]='MS ME MN AB';
-
 
 
 			// Colonnes pour les fiches brevet:
@@ -1216,6 +1210,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		// Compteur destiné à repérer des matières pour lesquelles l'élève aurait des notes dans plus d'une option.
 		// On ne sait alors pas quelle valeur retenir
 		$cpt=0;
+		// Témoin de la liste des matières trouvées pour une même matière notanet
+		// Utile pour repérer les matières Notanet associées à deux matières Gepi pour lesquelles l'élève a une note
+		$liste_matieres_gepi="";
 		//if($tabmatieres[$j][0]!=''){
 		if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
 
@@ -1369,6 +1366,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					}
 					if($nbnotes>0){
 						$cpt++;
+						$liste_matieres_gepi.=" ".$id_matiere[$j][$k];
 						$moyenne=round($total/$nbnotes,1);
 						//echo "<td style='font-weight:bold; text-align:center;'>$total/$nbnotes = $moyenne</td>\n";
 						echo "<td style='font-weight:bold; text-align:center;'>$moyenne</td>\n";
@@ -1564,11 +1562,11 @@ function tab_extract_moy($tab_ele,$id_clas) {
 			// Un élève a des notes dans deux options d'un même choix NOTANET (par exemple AGL1 et ALL1)
 			if($info_erreur==""){
 				//$info_erreur="Plusieurs options d'une même matière.";
-				$info_erreur="Plusieurs options d'une même matière.<br />";
+				$info_erreur="Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)";
 			}
 			else{
 				//$info_erreur=$info_erreur." - Plusieurs options d'une même matière.";
-				$info_erreur=$info_erreur."Plusieurs options d'une même matière.<br />";
+				$info_erreur=$info_erreur."Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)";
 			}
 		}
 	}
