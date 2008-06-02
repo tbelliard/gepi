@@ -60,6 +60,10 @@ if (count($current_group["classes"]["list"]) > 1) {
 }
 
 
+if((isset($_POST['col_tri']))&&($_POST['col_tri']==1)) {
+	$order_by = "nom";
+}
+
 //=====================================================
 if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
@@ -114,10 +118,10 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
 
 include "../lib/periodes.inc.php";
-    //**************** EN-TETE *****************
+//**************** EN-TETE *****************
 if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et appréciations";
 require_once("../lib/header.inc");
-    //**************** FIN EN-TETE *****************
+//**************** FIN EN-TETE *****************
 
 //debug_var();
 
@@ -1071,6 +1075,13 @@ if (!$current_group) {
 		echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
 	}
 
+	if(isset($sens_tri)){
+		echo "<p><input type='hidden' name='sens_tri' value='$sens_tri' />\n";
+	}
+	if(isset($col_tri)){
+		echo "<p><input type='hidden' name='col_tri' value='$col_tri' />\n";
+	}
+
     echo "</form>\n";
 
 
@@ -1114,7 +1125,7 @@ if (!$current_group) {
     echo "<input type='hidden' name='bord' value='$bord' />\n";
 
 	if(isset($order_by)){
-		echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
+		echo "<p><input type='hidden' name='order_by' id='order_by' value='$order_by' />\n";
 	}
 
     echo "</form>\n";
@@ -1186,6 +1197,11 @@ if (!$current_group) {
         $i++;
     }
 	if(isset($order_by)) {echo "<input type='hidden' name='order_by' value='$order_by' />\n";}
+
+	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+	}
+
     echo "</form>\n";
 //    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
 //    $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
@@ -1208,6 +1224,8 @@ if (!$current_group) {
 			if(!eregi("Appréciation",$ligne1[$j])) {
 				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
 				if(eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
+				if($ligne1[$j]=="Classe") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='classe';}";}
+				if($ligne1[$j]=="Nom Prénom") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='nom';}";}
 				echo "document.forms['formulaire_tri'].submit();\">";
 				echo $ligne1[$j];
 				echo "</a>";
