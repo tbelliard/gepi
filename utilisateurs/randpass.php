@@ -57,7 +57,7 @@ function alphabet($innum) {
 if (LOWER_AND_UPPER) {
 	if(EXCLURE_CARACT_CONFUS) {
 		$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 	}
 	else {
 		$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -80,7 +80,7 @@ $a = 0;
 while ($a < NUM_TEXT_CHARS) {
 	if (LOWER_AND_UPPER) {
 		if(EXCLURE_CARACT_CONFUS) {
-			$random_char[$a] = alphabet(rand(0,45));
+			$random_char[$a] = alphabet(rand(0,46));
 		}
 		else {
 			$random_char[$a] = alphabet(rand(0,51));
@@ -97,7 +97,7 @@ while ($a < NUM_TEXT_CHARS) {
 }
 while ($a < (NUM_TEXT_CHARS + NUM_NUMERIC_CHARS)) {
 	if(EXCLURE_CARACT_CONFUS) {
-		$random_char[$a] = rand(1,9);
+		$random_char[$a] = rand(2,9);
 	}
 	else {
 		$random_char[$a] = rand(0,9);
