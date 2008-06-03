@@ -511,7 +511,7 @@ require_once("../lib/header.inc");
 		<td valign='top'>
 		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> />
 		</td>
-		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractères prêtant à confusion (<i>i, 1, l, L, 0, O, o</i>)</label><br />
+		<td valign='top'> <label for='mode_generation_pwd_excl' style='cursor: pointer;'>Exclure les caractères prêtant à confusion (<i>i, 1, l, I, 0, O, o</i>)</label><br />
 		</td>
 		</tr>
 		</table>
