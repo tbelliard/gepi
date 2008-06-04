@@ -217,7 +217,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
     for ($i = 0; $i <= $delai; $i++) {
         //$aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
-        $jour = mktime(0, 0, 0, date('m',$aujourhui), (date('d',$aujourhui) + $i), date('Y',$aujourhui) );
+        $jour = mktime(0, 0, 0, date('m',$aujourdhui), (date('d',$aujourdhui) + $i), date('Y',$aujourdhui) );
         if (is_numeric($id_classe) AND $id_classe > 0) {
 	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
