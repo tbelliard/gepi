@@ -512,6 +512,7 @@ while ($p < $nb_users) {
 			$nb_fiches = getSettingValue("ImpressionNombre");
 		}
 
+		//echo "get_class_from_ele_login($user_login)=".get_class_from_ele_login($user_login)."<br />";
 		$tab_tmp_classe=get_class_from_ele_login($user_login);
 
 		echo "<table border='0'>\n";
@@ -539,8 +540,12 @@ while ($p < $nb_users) {
 			if(count($tab_tmp_classe)>0){
 				$chaine="";
 				foreach ($tab_tmp_classe as $key => $value){
-					//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
-					$chaine.=", $value";
+					//echo "\$key=$key et \$value=$value et ereg_replace(\"[0-9]\",\"\",$key)=".ereg_replace("[0-9]","",$key)."<br />";
+					// Avant il n'y avait qu'un $key=$id_classe... maintenant, on a aussi $key=id$id_classe dans get_class_from_ele_login() (de /lib/share.inc.php)
+					if(strlen(ereg_replace("[0-9]","",$key))==0) {
+						//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+						$chaine.=", $value";
+					}
 				}
 				$chaine=substr($chaine,2);
 				echo $chaine;
