@@ -37,12 +37,12 @@ if ($resultat_session == 'c') {
 	die();
 };
 
-
+/*
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
-
+*/
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 2";

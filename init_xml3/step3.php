@@ -25,6 +25,7 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 extract($_POST, EXTR_OVERWRITE);
+extract($_GET, EXTR_OVERWRITE);
 
 // Resume session
 $resultat_session = resumeSession();
@@ -36,12 +37,12 @@ if ($resultat_session == 'c') {
     die();
 };
 
-
+/*
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
+*/$bx = 'oui';
 
 // MODIF A FAIRE:
 // ALTER TABLE `eleves` ADD `ele_id` VARCHAR( 10 ) NOT NULL ;
@@ -64,14 +65,28 @@ echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation 
 echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et affectation des élèves dans les classes</h3></center>\n";
 
 if (isset($is_posted) and ($is_posted == "yes")) {
+
+	if (isset($bx) AND $bx == 'oui'){
+		// On ferme la connexion vers le ldap
+		ldap_close($ds);
+	}
+
+
     //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ERENO,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import ORDER BY DIVCOD,ELENOM,ELEPRE");
     //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
     $i = "0";
     while ($i < $nb) {
-        $req = mysql_query("select col2 from tempo2 where col1 = '$i'");
-        $reg_login = @mysql_result($req, 0, 'col2');
+
+
+    // ======================= C'est là pour le login des élèves ==============
+    	$reg_login = @mysql_result($call_data, $i, "LOGIN");
+    	if ($reg_login == '') {
+    		$req = mysql_query("select col2 from tempo2 where col1 = '$i'");
+        	$reg_login = @mysql_result($req, 0, 'col2');
+    	}
+
 
 
         $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
@@ -99,10 +114,10 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         //$reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ereno='$reg_ereno'");
 
         //$reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'");
+		$sql_e = "INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'";
+        $reg_eleve = mysql_query($sql_e);
 
-        $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
-
-        if (!$reg_eleve) echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";
+        if (!$reg_eleve) echo "<p title=\"$sql_e\">Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";
 
 		//=========================
 		// MODIF: boireaus 20071024
@@ -198,6 +213,12 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 	die();
 }
 else {
+
+if (isset($bx) AND $bx == 'oui') {
+	// On ouvre la connexion vers le ldap
+	$ds = ldap_connect("ent-ldap.ac-bordeaux.fr");
+}
+
     // on vide la table tempo2 qui va nous servir à stocker les login temporaires des élèves
     $del = @mysql_query("DELETE FROM tempo2");
 
@@ -291,6 +312,26 @@ else {
             $temp2 = strtr($temp2, " '-", "___");
             $temp2 = substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
+
+// ================================= LOGIN ELEVE ==============================
+//$bx = 'oui';
+if (isset($bx) AND $bx == 'oui') {
+	//require("../lib/demande_ldap_el.php");
+	if ($ds){
+
+		$sr = ldap_bind($ds); // connexion anonyme, typique
+		$dn = "o=personne,dc=ac-bordeaux,dc=fr, c=fr";
+		$uid = "employeenumber=".$no_gep."";
+
+		//Interrogation LDAP (ldapsearch)
+		$sr = ldap_search($ds, "ou=personnes,dc=ac-bordeaux,dc=fr", $uid) ;
+		$info = ldap_get_entries($ds, $sr);
+
+		$RNE = $info[0]["ou"][0];
+
+		$login_eleve = $info[0]["uid"][0];
+	}
+}
 
             // On teste l'unicité du login que l'on vient de créer
             $k = 2;

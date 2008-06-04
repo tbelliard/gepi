@@ -203,7 +203,6 @@ if (!isset($is_posted)) {
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' /> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' /> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' /> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_non' value='non' /><label for='login_gen_type_non'  style='cursor: pointer;'>Le login est récupéré par un fchier externe</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -499,10 +498,7 @@ else {
 	$req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
 
-	echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI.
-		les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br />
-		<br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement
-		cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
+	echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>\n";
 	echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
 	echo "<tr><th><p class=\"small\">Identifiant du professeur</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th>Mot de passe *</th></tr>\n";
 
@@ -705,51 +701,24 @@ else {
 						$prenom = $prof[$k]["prenom"];
 						$prenom1 = $prof[$k]["prenom"]{0};
 						$temp1 = $prenom1 . $nom1;
-					} elseif($_POST['login_gen_type'] == "non"){
-
-						// Dans ce cas, on ne crée pas le login, on le récupère dans un csv ou une table temporaire
-						// la ligne existe sous cette appellation : $prof[$k][]
-						// Les informations utiles sont la date de naissance et le nom/prénom
-						// $prof[$k]["nom_usage"] est son nom, $prenom = $prof[$k]["prenom"]; est son prénom
-						// et $prof[$k]["date_naissance"] sa date de naissance : aaaa-mm-jj
-						// le plug-in Gepi est de cette forme
-						// RNE;CATEGORIE;Login;INE;N° Interne;Nom;Prénom;Date de naissance;Sexe;Civilité;Classes;Groupes;Langues;Disciplines
-						// 0331667H;ENSEIGNANT;jul.jocal;;;JOCAL;JULIEN;16/05/74;;M.;6EME5|6EME4|6EME3|6EME2|3EME4|3EME3|3EME2;;;histoire-géographie
-						$test_d = explode("-", $prof[$k]["date_naissance"]);
-						$date_v = $test_d[2].'/'.$test_d[1].'/'.substr($test_d[0], 2, 3);
-
-						// Eléments d'authentification LDAP
-						$ldaprdn  = 'uname';     // DN ou RDN LDAP
-						$ldappass = 'password';  // Mot de passe associé
-
-						// Connexion au serveur LDAP
-						$ldapconn = ldap_connect("ldap.example.com")
-    						or die("Impossible de se connecter au serveur LDAP.");
-
-						if ($ldapconn) {
-
-							// Connexion au serveur LDAP
-						    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
-
-							// Vérification de l'authentification
-							if ($ldapbind) {
-
-						        echo "Connexion LDAP réussie...";
-
-    						} else {
-
-        						echo "Connexion LDAP échouée...";
-
-    						}
-
-						}
-
-
-
-// ======================================= $temp1 est le login renvoyé =================================================
-
 					}
 					$login_prof = $temp1;
+
+if (isset($bx) AND $bx == 'oui') {
+	// On va chercher le login de l'utilisateur
+	$sql_p = "SELECT login_u FROM ldap_bx
+						WHERE nom_u = '".strtoupper($prof[$k]["nom_usage"])."'
+						AND prenom_u = '".strtoupper($prof[$k]["prenom"])."'
+						AND statut_u = 'teacher'";
+	$query_p = mysql_query($sql_p);
+	$nbre = mysql_num_rows($query_p);
+	if ($nbre >= 1) {
+		$login_prof = mysql_result($query_p, "login_u");
+	}else{
+		$login_prof = "erreur_".$k;
+	}
+}
+
 					// On teste l'unicité du login que l'on vient de créer
 					$m = 2;
 					$test_unicite = 'no';
@@ -790,15 +759,7 @@ else {
 
 					//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$sql="INSERT INTO utilisateurs SET login='$login_prof',
-														nom='".$prof[$k]["nom_usage"]."',
-														prenom='$premier_prenom',
-														civilite='$civilite',
-														password='$pwd',
-														statut='professeur',
-														etat='actif',
-														change_mdp='y',
-														numind='P".$prof[$k]["id"]."'";
+					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='P".$prof[$k]["id"]."'";
 					$res = mysql_query($sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";

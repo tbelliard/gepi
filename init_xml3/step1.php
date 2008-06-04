@@ -15,12 +15,12 @@
 		header("Location: ../logout.php?auto=1");
 		die();
 	};
-
+/*
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
 		die();
 	}
-
+*/
 	//**************** EN-TETE *****************
 	$titre_page = "Outil d'initialisation de l'année : Importation des élèves";
 	require_once("../lib/header.inc");
