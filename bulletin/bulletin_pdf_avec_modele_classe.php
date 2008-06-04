@@ -65,6 +65,18 @@ La génération du PDF va échouer parce qu'on affiche ces informations de debuggag
 mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
 </p>\n";
 }
+
+
+
+//============================
+// AJOUT: boireaus 20080604
+// Conditionnement de l'affichage de la moyenne générale à la présence d'au moins une note réelle
+// (pour éviter une moyenne de zéro pour un élève absent à tous les devoirs)
+// Si le dispositif posait problème, pour le désactiver, passer à 'y' la variable ci-dessous:
+$desactivation_modif_20080604="n";
+//============================
+
+
 //================================
 // Inclusion des librairies spécifiques pour la génération du pdf
 
@@ -1152,6 +1164,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$donner_aid["note"] = '-';
 				}
 			}
+			//=========================
+			// AJOUT: boireaus 20080604
+			if($donner_aid['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
+			//=========================
 			// par défaut :
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
 
@@ -1306,6 +1322,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				$note_rang = array("note" => "-", "rang" => "-");
 			}
 
+			//=========================
+			// AJOUT: boireaus 20080604
+			if($note_rang['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
+			//=========================
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $note_rang['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
 			//echo "\$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']=".$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']."<br />";
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = $note_rang['rang']; // rang de l'élève pour une matière donnée dans une périodes données
@@ -1523,6 +1543,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				}
 			}
 			// par défaut :
+			//=========================
+			// AJOUT: boireaus 20080604
+			if($donner_aid['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
+			//=========================
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
 
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = '-'; // rang de l'élève pour une matière donnée dans une périodes données
@@ -3253,7 +3277,19 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 					$utilise_couleur = 1;
 				}
 
-				$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C',$utilise_couleur);
+				//=========================
+				// MODIF: boireaus 20080604
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C',$utilise_couleur);
+				if(((isset($matiere[$ident_eleve_aff][$id_periode]['au_moins_une_moyenne']))&&
+					($matiere[$ident_eleve_aff][$id_periode]['au_moins_une_moyenne']="y"))||
+					($desactivation_modif_20080604=='y')) {
+					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C',$utilise_couleur);
+				}
+				else {
+					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C',$utilise_couleur);
+				}
+				//=========================
+
 
 				//if($active_reperage_eleve==='1' and $couleur_moy_general==='1') { $couleur_moy_general = 0; }
 				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
