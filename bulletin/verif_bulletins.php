@@ -54,6 +54,8 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 die("Droits insuffisants pour effectuer cette opération");
 }
 
+//debug_var();
+
 // Selection de la classe
 if (!(isset($id_classe))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
@@ -169,7 +171,10 @@ if (!(isset($id_classe))) {
 	}
 	// =================================
 	if(isset($id_class_prec)){
-		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>\n";}
+		if($id_class_prec!=0){
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+			echo "'>Classe précédente</a>\n";
+		}
 	}
 	if($chaine_options_classes!="") {
 		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -177,7 +182,10 @@ if (!(isset($id_classe))) {
 		echo "</select>\n";
 	}
 	if(isset($id_class_suiv)){
-		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>\n";}
+		if($id_class_suiv!=0){
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+			echo "'>Classe suivante</a>\n";
+		}
 	}
 	echo "</form>\n";
 	//fin ajout lien classe précédente / classe suivante
@@ -361,7 +369,7 @@ if (!(isset($id_classe))) {
 
 } else {
 
-	$mode=isset($_GET['mode']) ? $_GET['mode'] : "";
+	$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
 	if(($mode!='note_app')&&($mode!='abs')&&($mode!='avis')){
 		$mode="tout";
 	}
