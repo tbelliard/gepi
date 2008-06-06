@@ -950,29 +950,41 @@ if (!$current_group) {
             if ($total_notes != 0) {
 				$col[$nb_col][$nb_lignes] ="<center>".number_format(round($total_notes/$nb_notes,1),1,',','')."</center>";
 				$col_csv[$nb_col][$nb_lignes] =number_format(round($total_notes/$nb_notes,1),1,',','');
+
+				$col[$nb_col][$nb_lignes+1] = "<center>".number_format($min_notes,1,',','')."</center>";
+				$col_csv[$nb_col][$nb_lignes+1] = number_format($min_notes,1,',','');
+				$col[$nb_col][$nb_lignes+2] = "<center>".number_format($max_notes,1,',','')."</center>";
+				$col_csv[$nb_col][$nb_lignes+2] = number_format($max_notes,1,',','');
 			}
 			else {
 				$col[$nb_col][$nb_lignes] = "<center>-</center>";
 				$col_csv[$nb_col][$nb_lignes] = "-";
+
+				$col[$nb_col][$nb_lignes+1] = "<center>-</center>";
+				$col_csv[$nb_col][$nb_lignes+1] = "-";
+				$col[$nb_col][$nb_lignes+2] = "<center>-</center>";
+				$col_csv[$nb_col][$nb_lignes+2] = "-";
 			}
 			//$col_csv[$nb_col][$nb_lignes]=$col[$nb_col][$nb_lignes];
 
             //$moy_gen = $col[$nb_col][$nb_lignes];
             $moy_gen = $col_csv[$nb_col][$nb_lignes];
-            $col[$nb_col][$nb_lignes+1] = "<center>".$min_notes."</center>";
-            $col_csv[$nb_col][$nb_lignes+1] = $min_notes;
-            $col[$nb_col][$nb_lignes+2] = "<center>".$max_notes."</center>";
-            $col_csv[$nb_col][$nb_lignes+2] = $max_notes;
-		if($nb_notes!=0){
-			$pourcent_se8_ie12 = number_format(($nb_notes-$pourcent_se12-$pourcent_i8)*100/$nb_notes,1,',','');
-			if ($pourcent_i8 != '-') $pourcent_i8 = number_format(round($pourcent_i8*100/$nb_notes,1),1,',','');
-			if ($pourcent_se12 != '-') $pourcent_se12 = number_format(round($pourcent_se12*100/$nb_notes,1),1,',','');
-		}
-		else{
-			$pourcent_se8_ie12="-";
-			$pourcent_i8='-';
-			$pourcent_se12='-';
-		}
+
+            //$col[$nb_col][$nb_lignes+1] = "<center>".$min_notes."</center>";
+            //$col_csv[$nb_col][$nb_lignes+1] = $min_notes;
+            //$col[$nb_col][$nb_lignes+2] = "<center>".$max_notes."</center>";
+            //$col_csv[$nb_col][$nb_lignes+2] = $max_notes;
+
+			if($nb_notes!=0){
+				$pourcent_se8_ie12 = number_format(($nb_notes-$pourcent_se12-$pourcent_i8)*100/$nb_notes,1,',','');
+				if ($pourcent_i8 != '-') $pourcent_i8 = number_format(round($pourcent_i8*100/$nb_notes,1),1,',','');
+				if ($pourcent_se12 != '-') $pourcent_se12 = number_format(round($pourcent_se12*100/$nb_notes,1),1,',','');
+			}
+			else{
+				$pourcent_se8_ie12="-";
+				$pourcent_i8='-';
+				$pourcent_se12='-';
+			}
         }
     }
     if ($test == 1) {
