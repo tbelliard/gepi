@@ -923,6 +923,7 @@ $chemin = array();
 //===========================
 // AJOUT:boireaus
 $chemin[] = "/groupes/visu_profs_class.php";
+$chemin[] = "/eleves/visu_eleve.php";
 $chemin[] = "/impression/impression_serie.php";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$chemin[] = "/saisie/impression_avis.php";
@@ -949,6 +950,7 @@ $titre = array();
 //===========================
 // AJOUT:boireaus
 $titre[] = "Visualisation des équipes pédagogiques";
+$titre[] = "Consultation d'un élève";
 $titre[] = "Impression PDF de listes";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$titre[] = "Impression PDF des avis du conseil de classe";
@@ -977,6 +979,7 @@ $expli = array();
 //===========================
 // AJOUT:boireaus
 $expli[] = "Ceci vous permet de connaître tous les enseignants des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.";
+$expli[] = "Ce menu vous permet de consulter dans une même page les informations concernant un élève (<i>enseignements suivis, bulletins, relevés de notes, responsables,...</i>). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.";
 $expli[] = "Ceci vous permet d'imprimer en PDF des listes d'élèves à l'unité ou en série. L'apparence des listes est paramétrable.";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$expli[] = "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.";

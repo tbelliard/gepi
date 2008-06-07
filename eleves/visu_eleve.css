@@ -1,0 +1,66 @@
+/*
+$Id$
+*/
+
+.t_onglet {
+	float:left;
+	margin-bottom:-1px;
+	border: 1px solid black;
+	border-bottom-color: black;
+
+	border-radius: 6px 20px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 20px;
+
+	padding: 0.2em 0.2em 0 0.2em;
+	z-index:100;
+}
+
+.t_onglet a {
+	text-decoration: none;
+	color: black;
+}
+
+.onglet {
+	border: 1px solid black;
+	border-top: 0px;
+	border-right: 0px;
+	/*
+	border-top-color: white;
+	border-right-color: white;
+	*/
+	padding: 3px;
+}
+
+/*
+Quelques couleurs pour tester
+=================
+mintcream
+lemonchiffon
+papayawhip
+whitesmoke
+
+lavenderblush
+lightgoldenrodyellow
+lightyellow
+
+khaki
+greenyellow
+lavenderblush
+lemonchiffon
+lightgoldenrodyellow
+lightyellow
+linen
+mintcream
+mistyrose
+moccasin
+navajowhite
+palegoldenrod
+papayawhip
+peachpuff
+seashell
+snow
+wheat
+white
+whitesmoke
+*/
