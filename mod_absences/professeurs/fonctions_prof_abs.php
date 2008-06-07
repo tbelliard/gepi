@@ -50,20 +50,34 @@ function suivi_absence($creneau_id, $eleve_id){
 		$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, date("m"), date("d"), date("Y"));
 
 		// On teste si l'élève était absent ou en retard le cours du créneau (on ne teste que le début du créneau)
+		//$req = mysql_query("SELECT id, retard_absence FROM absences_rb WHERE
+		//		eleve_id = '".$eleve_id."' AND
+		//		debut_ts = '".$ts_heuredeb."'");
 		$req = mysql_query("SELECT id, retard_absence FROM absences_rb WHERE
-				eleve_id = '".$eleve_id."' AND
-				debut_ts = '".$ts_heuredeb."'");
+								eleve_id = '".$eleve_id."'
+								AND retard_absence = 'A'
+								AND (debut_ts <= '".$ts_heuredeb."'
+								AND fin_ts >= '".$ts_heurefin."')");
 		$rep = mysql_fetch_array($req);
 			// S'il est marqué absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
 			return " style=\"background-color: red;\"";
-		}
+		//}
 			// S'il est marqué en retard R -> fond vert
-		else if ($rep["retard_absence"] == "R") {
-			return " style=\"background-color: green;\"";
+			//else if ($rep["retard_absence"] == "R") {
 		}
-		else
-		return "";
+		else{
+			$req = mysql_query("SELECT id, retard_absence FROM absences_rb WHERE
+				eleve_id = '".$eleve_id."'
+				AND retard_absence = 'R'
+				AND debut_ts = '".$ts_heuredeb."'");
+			$rep = mysql_fetch_array($req);
+			if ($rep["retard_absence"] == "R") {
+				return " style=\"background-color: green;\"";
+			}else{
+				return "";
+			}
+		}
 	}
 
 //================ Début du rajout des fonctions du jour différent =============

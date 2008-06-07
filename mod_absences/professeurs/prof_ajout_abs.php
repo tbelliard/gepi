@@ -364,6 +364,33 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 				}
 			}
 		}
+		if (isset($active_retard_eleve[$a])) {
+			if ($active_retard_eleve[$a] == 1){
+				// On récupère le nom et le prénom de l'élève
+				$req_noms = mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_absent[$a]."'");
+				$noms = mysql_fetch_array($req_noms);
+
+				// On vérifie que ce retard ne correspond pas à une absence ou n'a pas été encore saisie (login élève a la date et heure du début de l'absence
+				$cherche_ret = mysql_query("SELECT id FROM absences_rb WHERE eleve_id = '".$eleve_absent[$a]."' AND debut_ts = '".$ts_debut."'");
+				$nbr_cherche = mysql_num_rows($cherche_ret);
+				if ($nbr_cherche == 0) {
+
+					// On insère alors le retard dans la base
+					$saisie_sql = "INSERT INTO absences_rb (eleve_id, retard_absence, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('".$eleve_absent[$a]."', 'R', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')";
+
+					$insere_abs = mysql_query($saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysql_error());//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+					$echo .= '<h3 style="color: green;">Le retard de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</h3>';
+				}else {
+					// On modifie l'absence pour un retard
+					// l'absence en question est mysql_result($cherche_ret, "id");
+					$id_abs = mysql_result($cherche_ret, "id");
+					$update = mysql_query("UPDATE absences_rb SET retard_absence = 'R'
+															WHERE id = '".$id_abs."'");
+					$echo .='<h3 style="color: orange;">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a été modifiée en retard ! </h3>';
+				}
+
+			}
+		}
 	} // for $a
 
 		// Le cas où il n'y a pas d'absent
