@@ -20,6 +20,18 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+//==============================
+// PREPARATIFS boireaus 20080422
+// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$mode_commentaire_20080422="";
+//$mode_commentaire_20080422="no_anti_inject";
+
+if($mode_commentaire_20080422=="no_anti_inject") {
+	$variables_non_protegees = 'yes';
+}
+//==============================
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -190,7 +202,9 @@ if (isset($_POST['is_posted'])) {
 	// AJOUT: boireaus 20071010
 	$log_eleve=$_POST['log_eleve'];
 	$note_eleve=$_POST['note_eleve'];
-	$comment_eleve=$_POST['comment_eleve'];
+	if($mode_commentaire_20080422!="no_anti_inject") {
+		$comment_eleve=$_POST['comment_eleve'];
+	}
 	//=========================
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
@@ -205,7 +219,36 @@ if (isset($_POST['is_posted'])) {
 				if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
 					$note=$note_eleve[$i];
 					$elev_statut='';
-					$comment=$comment_eleve[$i];
+
+					//==============================
+					// PREPARATIFS boireaus 20080422
+					// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
+					if($mode_commentaire_20080422!="no_anti_inject") {
+						// Problème: les accents sont codés en HTML...
+						$comment=$comment_eleve[$i];
+						//$comment=traitement_magic_quotes(corriger_caracteres($comment));
+						//$comment=html_entity_decode($comment);
+						//$comment=addslashes(ereg_replace("&#039;","'",html_entity_decode($comment)));
+						//$comment=addslashes(ereg_replace("\r\n",'<br />',ereg_replace("&#039;","'",html_entity_decode($comment))));
+						//$comment=addslashes(ereg_replace("\r\n",'<br />',stripslashes(ereg_replace("&#039;","'",html_entity_decode($comment)))));
+						//$comment=addslashes(nl2br(ereg_replace("&#039;","'",html_entity_decode($comment))));
+						//$comment=addslashes(ereg_replace('(\\\r\\\n)+',"<br />",ereg_replace("&#039;","'",html_entity_decode($comment))));
+						// Cela fonctionne chez moi avec cette correction (accents, apostrophes et retours à la ligne):
+						$comment=addslashes(ereg_replace('(\\\r\\\n)+',"\r\n",ereg_replace("&#039;","'",html_entity_decode($comment))));
+					}
+					else {
+						if (isset($NON_PROTECT["comment_eleve".$i])){
+							$comment = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["comment_eleve".$i]));
+						}
+						else{
+							$comment = "";
+						}
+						//echo "$i: $comment<br />";
+						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+						$comment=ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
+					}
+					//==============================
+
 
 					if (($note == 'disp')) {
 						$note = '0';
@@ -533,6 +576,11 @@ if ($order_by != "classe") {
 
 $prev_classe = null;
 
+//=========================
+// AJOUT: boireaus 20080607
+$tab_graph=array();
+//=========================
+
 foreach ($liste_eleves as $eleve) {
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
@@ -585,6 +633,11 @@ foreach ($liste_eleves as $eleve) {
 				if ($eleve_note != '') {
 					$mess_note[$i][$k] =$mess_note[$i][$k].number_format($eleve_note,1, ',', ' ');
 					$mess_note_pdf[$i][$k] = number_format($eleve_note,1, ',', ' ');
+
+					//=========================
+					// AJOUT: boireaus 20080607
+					$tab_graph[$k][]=number_format($eleve_note,1, '.', ' ');
+					//=========================
 				} else {
 					$mess_note[$i][$k] =$mess_note[$i][$k]."&nbsp;";
 					$mess_note_pdf[$i][$k] = "";
@@ -627,6 +680,11 @@ foreach ($liste_eleves as $eleve) {
 				} else {
 					$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_note;
 					$mess_note_pdf[$i][$k] = number_format($eleve_note,1, ',', ' ');
+
+					//=========================
+					// AJOUT: boireaus 20080607
+					$tab_graph[$k][]=number_format($eleve_note,1, '.', ' ');
+					//=========================
 				}
 			}
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
@@ -640,7 +698,17 @@ foreach ($liste_eleves as $eleve) {
 				// ========================
 				// MODIF: boireaus 20071010
 				//$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='".$eleve_login_comment."' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
-				$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+				//==============================
+				// PREPARATIFS boireaus 20080422
+				// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
+				if($mode_commentaire_20080422!="no_anti_inject") {
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+				}
+				else {
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+				}
+				//==============================
+
 				// ========================
 			}
 			else{
@@ -935,6 +1003,102 @@ if ($id_devoir==0)  {
 
 echo "</tr>\n";
 
+//========================
+// AJOUT boireaus 20080607
+$graphe_largeurTotale=200;
+$graphe_hauteurTotale=150;
+$graphe_titre="Répartition des notes";
+$graphe_taille_police=3;
+$graphe_epaisseur_traits=2;
+$graphe_largeur=4;
+
+//for($k=0;$k<count($tab_graph);$k++) {
+
+$n_dev_0=0;
+$n_dev_fin=$nb_dev;
+if($id_devoir>0) {
+	for($k=0;$k<$nb_dev;$k++) {
+		//echo "<!-- \$id_dev[$k]=$id_dev[$k] -->\n";
+		if($id_dev[$k]==$id_devoir) {
+			$n_dev_0=$k;
+			$n_dev_fin=$k+1;
+			break;
+		}
+	}
+	echo "<tr>\n";
+	echo "<td>Répartition des notes";
+	echo "</td>\n";
+	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
+}
+elseif($nb_sous_cont==0) {
+	echo "<tr>\n";
+	echo "<td>Répartition des notes";
+	echo "</td>\n";
+	if ($multiclasses) {echo "<td>&nbsp;</td>\n";}
+}
+
+if(($id_devoir>0)||($nb_sous_cont==0)) {
+	//echo "<!-- $n_dev_0 -->\n";
+	for($k=$n_dev_0;$k<$n_dev_fin;$k++) {
+		//$tab_graph[$k]
+
+		echo "<td>";
+		//echo "aaa";
+		if(isset($tab_graph[$k])) {
+			//echo "bbbb";
+			$graphe_serie="";
+			for($l=0;$l<count($tab_graph[$k]);$l++) {
+				if($l>0) {$graphe_serie.="|";}
+				$graphe_serie.=$tab_graph[$k][$l];
+			}
+
+			//$titre="Répartition des notes de ".$nom_dev[$k];
+			//$titre="<center>".$nom_dev[$k]."</center>";
+			$titre=$nom_dev[$k];
+
+			$texte="<div align='center'><object data='../lib/graphe_svg.php?";
+			$texte.="serie=$graphe_serie";
+			$texte.="&amp;largeur=$graphe_largeur";
+			$texte.="&amp;titre=$graphe_titre";
+			$texte.="&amp;v_legend1=Notes";
+			$texte.="&amp;v_legend2=Effectif";
+			$texte.="&amp;largeurTotale=$graphe_largeurTotale";
+			$texte.="&amp;hauteurTotale=$graphe_hauteurTotale";
+			$texte.="&amp;taille_police=$graphe_taille_police";
+			$texte.="&amp;epaisseur_traits=$graphe_epaisseur_traits";
+			$texte.="'";
+			$texte.=" width='$graphe_largeurTotale' height='$graphe_hauteurTotale'";
+			$texte.=" type=\"image/svg+xml\"></object></div>\n";
+
+			$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_'.$k,$titre,"",$texte,"",14,0,'y','y','n','n');
+
+			echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_$k','y',-100,20);\"";
+			echo ">";
+			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
+			echo "</a>";
+		}
+		else {
+			echo "&nbsp;";
+		}
+		echo "</td>\n";
+		if($nocomment[$k]=='no') {
+			echo "<td>&nbsp;</td>\n";
+		}
+	}
+	if($id_devoir==0) {
+		// Colonne Moyenne de l'élève
+		echo "<td>";
+		//echo "&nbsp;";
+		echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_moyenne','y',-100,20);\"";
+		echo ">";
+		echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
+		echo "</a>";
+		echo "</td>\n";
+	}
+	echo "</tr>\n";
+}
+//========================
+
 //
 // Affichage des lignes "elèves"
 //
@@ -944,126 +1108,96 @@ $pointer = 0;
 $tot_data_pdf = 1;
 $nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
 while($i < $nombre_lignes) {
-		$pointer++;
-		$tot_data_pdf++;
-		$data_pdf[$pointer][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
-		if ($multiclasses) $data_pdf[$pointer][] = $eleve_classe[$i];
-		$alt=$alt*(-1);
-		//echo "<tr>";
-		echo "<tr class='lig$alt'>\n";
-		if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
-			//echo "<td class=cn style='border-top: 2px solid blue;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-			echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-			if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
-			echo "\n";
-		} else {
-			//echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-			echo "<td class=cn style='text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
-			if ($multiclasses) echo "<td>$eleve_classe[$i]</td>";
-			echo "\n";
-		}
-		$prev_classe = $eleve_classe[$i];
-		$k=0;
-		while ($k < $nb_dev) {
-			// En mode saisie, on n'affiche que le devoir à saisir
-			if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
-				echo $mess_note[$i][$k];
-				$data_pdf[$pointer][] = $mess_note_pdf[$i][$k];
-				if ((($nocomment[$k]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$k] == $id_devoir)) {
-					echo $mess_comment[$i][$k];
-					$data_pdf[$pointer][] = $mess_comment_pdf[$i][$k];
-				}
+	$pointer++;
+	$tot_data_pdf++;
+	$data_pdf[$pointer][] = $eleve_nom[$i]." ".$eleve_prenom[$i];
+	if ($multiclasses) $data_pdf[$pointer][] = $eleve_classe[$i];
+	$alt=$alt*(-1);
+	//echo "<tr>";
+	echo "<tr class='lig$alt'>\n";
+	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
+		//echo "<td class=cn style='border-top: 2px solid blue;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		if ($multiclasses) echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
+		echo "\n";
+	} else {
+		//echo "<td class=cn>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		echo "<td class=cn style='text-align:left;'>$eleve_nom[$i] $eleve_prenom[$i]</td>";
+		if ($multiclasses) echo "<td>$eleve_classe[$i]</td>";
+		echo "\n";
+	}
+	$prev_classe = $eleve_classe[$i];
+	$k=0;
+	while ($k < $nb_dev) {
+		// En mode saisie, on n'affiche que le devoir à saisir
+		if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
+			echo $mess_note[$i][$k];
+			$data_pdf[$pointer][] = $mess_note_pdf[$i][$k];
+			if ((($nocomment[$k]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$k] == $id_devoir)) {
+				echo $mess_comment[$i][$k];
+				$data_pdf[$pointer][] = $mess_comment_pdf[$i][$k];
 			}
-			$k++;
 		}
-		//
-		// Affichage de la moyenne de tous les sous-conteneurs
-		//
+		$k++;
+	}
+	//
+	// Affichage de la moyenne de tous les sous-conteneurs
+	//
 
-		// on affiche les sous-conteneurs et les devoirs des sous-conteneurs si on n'est pas en mode saisie ($id_devoir == 0)
-		if ($id_devoir==0) {
-			$k=0;
-			while ($k < $nb_sous_cont) {
-				if ($_SESSION['affiche_tous'] == 'yes') {
-					$m = 0;
-					while ($m < $nb_dev_s_cont[$k]) {
-						$temp = $id_s_dev[$k][$m];
-						$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
-						// ===================================
-						// AJOUT: boireaus 20071101
-						// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
-						if($note_query){
-							$eleve_statut = @mysql_result($note_query, 0, "statut");
-							$eleve_note = @mysql_result($note_query, 0, "note");
-							if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-								$tmp = $eleve_statut;
-								$data_pdf[$pointer][] = $eleve_statut;
-							} else if ($eleve_statut == 'v') {
-								$tmp = "&nbsp;";
-								$data_pdf[$pointer][] = "";
-							} else {
-								if ($eleve_note != '') {
-									$tmp = number_format($eleve_note,1, ',', ' ');
-									$data_pdf[$pointer][] = number_format($eleve_note,1, ',', ' ');
-								} else {
-									$tmp = "&nbsp;";
-									$data_pdf[$pointer][] = "";
-								}
-							}
-						}
-						else{
-							$eleve_statut = "";
-							$eleve_note = "";
+	// on affiche les sous-conteneurs et les devoirs des sous-conteneurs si on n'est pas en mode saisie ($id_devoir == 0)
+	if ($id_devoir==0) {
+		$k=0;
+		while ($k < $nb_sous_cont) {
+			if ($_SESSION['affiche_tous'] == 'yes') {
+				$m = 0;
+				while ($m < $nb_dev_s_cont[$k]) {
+					$temp = $id_s_dev[$k][$m];
+					$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
+					// ===================================
+					// AJOUT: boireaus 20071101
+					// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
+					if($note_query){
+						$eleve_statut = @mysql_result($note_query, 0, "statut");
+						$eleve_note = @mysql_result($note_query, 0, "note");
+						if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+							$tmp = $eleve_statut;
+							$data_pdf[$pointer][] = $eleve_statut;
+						} else if ($eleve_statut == 'v') {
 							$tmp = "&nbsp;";
 							$data_pdf[$pointer][] = "";
+						} else {
+							if ($eleve_note != '') {
+								$tmp = number_format($eleve_note,1, ',', ' ');
+								$data_pdf[$pointer][] = number_format($eleve_note,1, ',', ' ');
+							} else {
+								$tmp = "&nbsp;";
+								$data_pdf[$pointer][] = "";
+							}
 						}
-						// ===================================
-						echo "<td class='cn' bgcolor='$couleur_devoirs'><center><b>$tmp</b></center></td>\n";
-
-						$m++;
 					}
-				}
-
-				$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
-				// ===================================
-				// AJOUT: boireaus 20071101
-				// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
-				if($moyenne_query){
-					$statut_moy = @mysql_result($moyenne_query, 0, "statut");
-					if ($statut_moy == 'y') {
-						$moy = @mysql_result($moyenne_query, 0, "note");
-						$moy = number_format($moy,1, ',', ' ');
-						$data_pdf[$pointer][] = $moy;
-					} else {
-						$moy = '&nbsp;';
+					else{
+						$eleve_statut = "";
+						$eleve_note = "";
+						$tmp = "&nbsp;";
 						$data_pdf[$pointer][] = "";
 					}
+					// ===================================
+					echo "<td class='cn' bgcolor='$couleur_devoirs'><center><b>$tmp</b></center></td>\n";
+
+					$m++;
 				}
-				else{
-					$statut_moy = "";
-					$moy = '&nbsp;';
-					$data_pdf[$pointer][] = "";
-				}
-				// ===================================
-				echo "<td class='cn' bgcolor='$couleur_moy_sous_cont'><center>$moy</center></td>\n";
-				$k++;
 			}
-		}
-		//
-		// affichage des moyennes du conteneur
-		//
-		// En mode saisie, on n'affiche que le devoir à saisir
-		if ($id_devoir==0)  {
-			$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
+
+			$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
 			// ===================================
 			// AJOUT: boireaus 20071101
 			// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
 			if($moyenne_query){
 				$statut_moy = @mysql_result($moyenne_query, 0, "statut");
 				if ($statut_moy == 'y') {
-				$moy = @mysql_result($moyenne_query, 0, "note");
-				$moy = number_format($moy,1, ',', ' ');
-				$data_pdf[$pointer][] = $moy;
+					$moy = @mysql_result($moyenne_query, 0, "note");
+					$moy = number_format($moy,1, ',', ' ');
+					$data_pdf[$pointer][] = $moy;
 				} else {
 					$moy = '&nbsp;';
 					$data_pdf[$pointer][] = "";
@@ -1075,12 +1209,81 @@ while($i < $nombre_lignes) {
 				$data_pdf[$pointer][] = "";
 			}
 			// ===================================
-			echo "<td class='cn' bgcolor='$couleur_moy_cont'><center><b>$moy</b></center></td>\n";
+			echo "<td class='cn' bgcolor='$couleur_moy_sous_cont'><center>$moy</center></td>\n";
+			$k++;
 		}
-		echo "</tr>\n";
+	}
+	//
+	// affichage des moyennes du conteneur
+	//
+	// En mode saisie, on n'affiche que le devoir à saisir
+	if ($id_devoir==0)  {
+		$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
+		// ===================================
+		// AJOUT: boireaus 20071101
+		// Ajout d'un test pour se prémunir du bug rencontré par certains chez Free avec les @mysql_result
+		if($moyenne_query){
+			$statut_moy = @mysql_result($moyenne_query, 0, "statut");
+			if ($statut_moy == 'y') {
+				$moy = @mysql_result($moyenne_query, 0, "note");
+				$moy = number_format($moy,1, ',', ' ');
+				$data_pdf[$pointer][] = $moy;
+
+				//=========================
+				// AJOUT: boireaus 20080607
+				$tab_graph_moy[]=number_format($moy,1, '.', ' ');
+				//=========================
+
+			} else {
+				$moy = '&nbsp;';
+				$data_pdf[$pointer][] = "";
+			}
+		}
+		else{
+			$statut_moy = "";
+			$moy = '&nbsp;';
+			$data_pdf[$pointer][] = "";
+		}
+		// ===================================
+		echo "<td class='cn' bgcolor='$couleur_moy_cont'><center><b>$moy</b></center></td>\n";
+	}
+	echo "</tr>\n";
 
 	$i++;
 }
+
+
+//=========================
+// AJOUT: boireaus 20080607
+// Génération de l'infobulle pour $tab_graph_moy[]
+if($id_devoir==0) {
+	$graphe_serie="";
+	for($l=0;$l<count($tab_graph_moy);$l++) {
+		if($l>0) {$graphe_serie.="|";}
+		$graphe_serie.=$tab_graph_moy[$l];
+	}
+
+	//$titre="Répartition des notes de ".$nom_dev[$k];
+	//$titre="<center>".$nom_dev[$k]."</center>";
+	$titre="Moyenne";
+
+	$texte="<div align='center'><object data='../lib/graphe_svg.php?";
+	$texte.="serie=$graphe_serie";
+	$texte.="&amp;largeur=$graphe_largeur";
+	$texte.="&amp;titre=$graphe_titre";
+	$texte.="&amp;v_legend1=Notes";
+	$texte.="&amp;v_legend2=Effectif";
+	$texte.="&amp;largeurTotale=$graphe_largeurTotale";
+	$texte.="&amp;hauteurTotale=$graphe_hauteurTotale";
+	$texte.="&amp;taille_police=$graphe_taille_police";
+	$texte.="&amp;epaisseur_traits=$graphe_epaisseur_traits";
+	$texte.="'";
+	$texte.=" width='$graphe_largeurTotale' height='$graphe_hauteurTotale'";
+	$texte.=" type=\"image/svg+xml\"></object></div>\n";
+
+	$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_moyenne',$titre,"",$texte,"",14,0,'y','y','n','n');
+}
+//=========================
 
 
 //
