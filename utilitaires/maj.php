@@ -6080,6 +6080,21 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
       $result .= "<font color=\"blue\">Le paramètre GepiAccesRestrAccesAppProfP existe déjà dans la table setting.</font><br />";
     }
 
+	// ================ modif jjocal ===============
+       	$result .= "&nbsp;->Ajout (si besoin) du paramètre 'use_ent' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'use_ent'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('use_ent', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
 
 	//==========================================================
     // Modification Delineau

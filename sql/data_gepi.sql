@@ -673,6 +673,7 @@ INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');
 INSERT INTO setting VALUES ('multisite', 'n');
 INSERT INTO setting VALUES ('statuts_prives', 'n');
 INSERT INTO setting VALUES ('mod_edt_gr', 'n');
+INSERT INTO setting VALUES ('use_ent', 'n');
 INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','F', 'Gestion du module NOTANET','');
 INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F', 'Notanet: Accueil','');
 INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','F', 'Notanet: Extraction des moyennes','');

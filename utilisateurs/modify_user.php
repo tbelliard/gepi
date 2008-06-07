@@ -116,6 +116,10 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		else {
 			$is_pwd = 'y';
 		}
+	}elseif(getSettingValue("use_sso") == 'cas'){
+
+		$is_pwd = 'n';
+
 	}
 	else {
 		$is_pwd = "y";
@@ -600,10 +604,16 @@ if (!(isset($user_login)) or ($user_login=='')) {
 		echo "<br /><i><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</i>\n";
 		echo "<br /><br />\n";
 	}
+	// Modification jjocal pour créer des utilisateurs dans le cas où on passe par CAS (pas de mdp dans la table utilisateurs).
+	if (getSettingValue("use_sso") == "cas") {
+		echo '<p class="red">Votre mode d\'authentification passe par un serveur CAS, il n\'y a donc pas de mot de passe enregistré.</p>';
+	}else{
+
 	echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 onchange=\"changement()\" /></td></tr>\n";
 	echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 onchange=\"changement()\" /></td></tr></table>\n";
 	echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>\n";
 	echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />\n";
+	}
 	if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>\n";
 
 }
