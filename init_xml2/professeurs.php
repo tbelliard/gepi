@@ -203,12 +203,27 @@ if (!isset($is_posted)) {
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' /> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' /> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
 	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' /> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
+	if (getSettingValue("use_ent") == "y") {
+		echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />
+			<label for='login_gen_type_ent'  style='cursor: pointer;'>
+			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
+
+	}
 	echo "<br />\n";
 	echo "<br />\n";
 
+	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
+	if (getSettingValue("use_sso") == "cas") {
+		$checked1 = ' checked="checked"';
+		$checked0 = '';
+	}else{
+		$checked1 = '';
+		$checked0 = ' checked="checked"';
+	}
+
 	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>\n";
-	echo "<input type='radio' name='sso' id='sso_n' value='no' checked /> <label for='sso_n' style='cursor: pointer;'>Non</label>\n";
-	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes' /> <label for='sso_y' style='cursor: pointer;'>Oui (aucun mot de passe ne sera généré)</label>\n";
+	echo "<input type='radio' name='sso' id='sso_n' value='no'".$checked0." /> <label for='sso_n' style='cursor: pointer;'>Non</label>\n";
+	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes'".$checked1." /> <label for='sso_y' style='cursor: pointer;'>Oui (aucun mot de passe ne sera généré)</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -701,7 +716,32 @@ else {
 						$prenom = $prof[$k]["prenom"];
 						$prenom1 = $prof[$k]["prenom"]{0};
 						$temp1 = $prenom1 . $nom1;
+					}elseif($_POST['login_gen_type'] == 'ent'){
+
+						if (getSettingValue("use_ent") == "y") {
+							// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
+							// le code suivant n'est qu'une méthode proposée pour relier Gepi à un ENT
+							$bx = 'oui';
+							if (isset($bx) AND $bx == 'oui') {
+								// On va chercher le login de l'utilisateur dans la table créée
+								$sql_p = "SELECT login_u FROM ldap_bx
+											WHERE nom_u = '".strtoupper($prof[$k]["nom_usage"])."'
+											AND prenom_u = '".strtoupper($prof[$k]["prenom"])."'
+											AND statut_u = 'teacher'";
+								$query_p = mysql_query($sql_p);
+								$nbre = mysql_num_rows($query_p);
+								if ($nbre >= 1 AND $nbre < 2) {
+									$login_prof = mysql_result($query_p, "login_u");
+								}else{
+									// Il faudrait alors proposer une alternative à ce cas
+									$login_prof = "erreur_".$k;
+								}
+							}
+						}else{
+							Die('Vous n\'avez pas autorisé Gepi à utiliser un ENT');
+						}
 					}
+
 					$login_prof = $temp1;
 					// On teste l'unicité du login que l'on vient de créer
 					$m = 2;

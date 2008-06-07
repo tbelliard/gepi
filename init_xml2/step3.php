@@ -291,6 +291,23 @@ else {
             $temp2 = substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
 
+			// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
+			if (getSettingValue("use_ent") == 'y') {
+				// On a récupéré les informations dans la table ldap_bx
+				// voir aussi les explications de la ligne 710 du fichiers professeurs.php
+				$sql_p = "SELECT login_u FROM ldap_bx
+										WHERE identite_u = '".$no_gep."'";
+				$query_p = mysql_query($sql_p);
+				$nbre = mysql_num_rows($query_p);
+				if ($nbre >= 1) {
+					// On considère que l'information est bonne puisqu'elle a été construite avec la même source sconet
+					$login_eleve = mysql_result($query_p, "login_u");
+				}else{
+					// Il faudra trouver une solution dans ce cas là (même s'il ne doit pas être très fréquent
+					$login_eleve = "erreur_".$i;
+				}
+			}
+
             // On teste l'unicité du login que l'on vient de créer
             $k = 2;
             $test_unicite = 'no';

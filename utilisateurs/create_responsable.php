@@ -119,8 +119,36 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	if (!$error) {
 		$nb_comptes = 0;
 		while ($current_parent = mysql_fetch_object($quels_parents)) {
-			// Création du compte utilisateur pour le responsable considéré
-			$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
+
+			// Dans le cas où Gepi est intégré dans un ENT, on va chercher les logins
+			if (getSettingValue("use_ent") == "y") {
+				// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
+				// le code suivant n'est qu'une méthode proposée pour relier Gepi à un ENT
+				$bx = 'oui';
+				if (isset($bx) AND $bx == 'oui') {
+					// On va chercher le login de l'utilisateur dans la table créée
+					// C'est à ce niveau qu'il faut faire les modifications
+
+					$sql_p = "SELECT login_u FROM ldap_bx
+											WHERE nom_u = '".strtoupper($prof[$k]["nom_usage"])."'
+											AND prenom_u = '".strtoupper($prof[$k]["prenom"])."'
+											AND statut_u = 'teacher'";
+
+					$query_p = mysql_query($sql_p);
+					$nbre = mysql_num_rows($query_p);
+
+					if ($nbre >= 1 AND $nbre < 2) {
+						$reg_login = mysql_result($query_p, "login_u");
+					}else{
+						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
+						$reg_login = "erreur_".$k;
+					}
+				}
+			}else{
+				// Création du compte utilisateur pour le responsable considéré
+				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
+			}
+
 			$reg = true;
 			$sql="INSERT INTO utilisateurs SET " .
 					"login = '" . $reg_login . "', " .
