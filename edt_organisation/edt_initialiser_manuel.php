@@ -161,22 +161,23 @@ if (isset($choix_prof)) {
 
 	// On propose aussi le choix du jour
 
-	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
+	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 	$rep_jour = mysql_fetch_array($req_jour);
+	$nbre = mysql_num_rows($req_jour);
 
 	$tab_select_jour = array();
 
-	for($a=0; $a<=count($rep_jour); $a++) {
+	for($a = 0; $a < $nbre; $a++) {
 		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
 		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
 		if(isset($ch_jour_semaine)){
-			if($ch_jour_semaine==$tab_select_jour[$a]["jour_sem"]){
-				$selected=" selected='selected'";
+			if($ch_jour_semaine == $tab_select_jour[$a]["jour_sem"]){
+				$selected = " selected='selected'";
 			}else{
-				$selected="";
+				$selected = "";
 			}
 		}else{
-			$selected="";
+			$selected = "";
 		}
 		echo "
 		<option value='".$tab_select_jour[$a]["jour_sem"]."'".$selected.">".$tab_select_jour[$a]["jour_sem"]."</option>\n";
@@ -202,7 +203,7 @@ if (isset($choix_prof)) {
 		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
 		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
 		if(isset($ch_heure)){
-			if($ch_heure==$tab_select_heure[$b]["id_heure"]){
+			if($ch_heure == $tab_select_heure[$b]["id_heure"]){
 				$selected=" selected='selected'";
 			}else{
 				$selected="";

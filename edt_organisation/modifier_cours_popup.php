@@ -275,12 +275,12 @@ echo '
 
 	// On propose aussi le choix du jour
 
-	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement");
+	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 	$rep_jour = mysql_fetch_array($req_jour);
-
+	$nbre = mysql_num_rows($req_jour);
 	$tab_select_jour = array();
 
-	for($a=0; $a<=count($rep_jour); $a++) {
+	for($a=0; $a < $nbre; $a++) {
 		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
 		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
 
@@ -289,11 +289,11 @@ echo '
 				$selected=" selected='selected'";
 			}
 			else{
-				$selected="";
+				$selected = "";
 			}
 		}
 		else{
-		$selected="";
+			$selected = "";
 		}
 		echo '
 		<option value="'.$tab_select_jour[$a]["jour_sem"].'"'.$selected.'>'.$tab_select_jour[$a]["jour_sem"].'</option>
@@ -311,7 +311,7 @@ echo '
 	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM absences_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 	$rep_heure = mysql_num_rows($req_heure);
 
-	for($b=0; $b<$rep_heure; $b++) {
+	for($b = 0; $b < $rep_heure; $b++) {
 
 		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
 		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");

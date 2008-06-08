@@ -89,7 +89,9 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($ouvert[$i]) and !empty($ouvert[$i]) )
 		{
-        	        $test_jour = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'"),0);
+        	$test_jour = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+												WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
+												date_horaire_etablissement = '0000-00-00'"),0);
 			$date_horaire_etablissement = '';
 			$jour_horaire_etablissement = $tab_sem[$i];
 			$ouverture_horaire_etablissement = $ouverture[$i];
@@ -97,9 +99,33 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 			$pause_horaire_etablissement = $pause[$i];
 			$ouvert_horaire_etablissement = $ouvert[$i];
 
-			if ( $test_jour === '0' ) { $requete = "INSERT INTO ".$prefix_base."horaires_etablissement (date_horaire_etablissement, jour_horaire_etablissement, ouverture_horaire_etablissement, fermeture_horaire_etablissement, pause_horaire_etablissement, ouvert_horaire_etablissement) VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."')"; }
-			if ( $test_jour != '0' ) { $requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'"; }
-	                mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			if ( $test_jour === '0' ) {
+				$requete = "INSERT INTO ".$prefix_base."horaires_etablissement
+									(date_horaire_etablissement, jour_horaire_etablissement, ouverture_horaire_etablissement, fermeture_horaire_etablissement, pause_horaire_etablissement, ouvert_horaire_etablissement)
+									VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."')";
+			}
+			if ( $test_jour != '0' ) {
+				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
+			}
+	        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		}else{
+			// On teste si le jour en question existe et on passe à 0 le dernier champ
+			$test = mysql_query("SELECT * FROM horaires_etablissement
+										WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1");
+			$test_c = mysql_num_rows($test);
+
+			if ($test_c == 1) {
+				$rep = mysql_fetch_array($test);
+				$requete = "UPDATE ".$prefix_base."horaires_etablissement
+									SET date_horaire_etablissement = '".$rep["date_horaire_etablissement"]."',
+									ouverture_horaire_etablissement = '".$ouverture[$i]."',
+									fermeture_horaire_etablissement = '".$fermeture[$i]."',
+									pause_horaire_etablissement = '".$pause[$i]."',
+									ouvert_horaire_etablissement = '0'
+								WHERE jour_horaire_etablissement = '".$tab_sem[$i]."'
+								AND date_horaire_etablissement = '0000-00-00'";
+				mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+			}
 		}
 
 	$i = $i + 1;
@@ -115,7 +141,7 @@ if ( $action === 'visualiser' )
         $requete = "SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
         $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
         while ( $donnee = mysql_fetch_array ($resultat))
-	{
+		{
 		$jour = $donnee['jour_horaire_etablissement'];
 		$i = $tab_sem_inv[$jour];
 		if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) { $ouverture[$i] = $donnee['ouverture_horaire_etablissement']; } else { $ouverture[$i] = ''; }

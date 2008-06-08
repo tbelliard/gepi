@@ -916,7 +916,7 @@ function premiere_ligne_tab_edt(){
 	echo("<tr>\n");
 	echo("<th>Horaires</th>\n");
 
-	$compter_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
+	$compter_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 	while ($jour_semaine = mysql_fetch_array($compter_colonnes)) {
 
 	printf("<th>".$jour_semaine["jour_horaire_etablissement"]."</th>\n");
@@ -941,10 +941,10 @@ function construction_tab_edt($heure, $heuredeb_dec){
 		$type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
 	}
 	// On détermine le nombre de jours à afficher
-	$compter_nbre_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
+	$compter_nbre_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 	$compter_colonnes = mysql_num_rows($compter_nbre_colonnes);
 
-	$req_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement");
+	$req_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
 		$jour_sem_tab = array();
 		while($data_sem_tab = mysql_fetch_array($req_colonnes)) {
 			$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
