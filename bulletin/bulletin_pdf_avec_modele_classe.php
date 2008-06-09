@@ -1456,14 +1456,24 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			//on cherche s'il faut affiche des sous matière pour cette matière
 			$test_cn = mysql_query('SELECT cnc.note, cnc.statut, c.nom_court, c.id from '.$prefix_base.'cn_cahier_notes cn, '.$prefix_base.'cn_conteneurs c, '.$prefix_base.'cn_notes_conteneurs cnc WHERE cnc.login="'.$login_eleve_select.'" AND cn.periode="'.$id_periode.'" AND cn.id_groupe="'.$id_groupe_aff.'" AND cn.id_cahier_notes = c.id_racine AND c.id_racine!=c.id AND c.display_bulletin="1" AND cnc.id_conteneur=c.id');
-				$nb_ligne_cn = mysql_num_rows($test_cn);
-				$n = 0;
+			$nb_ligne_cn = mysql_num_rows($test_cn);
+			$n = 0;
 			$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff]['nb']=$nb_ligne_cn;
-				while ($n < $nb_ligne_cn) {
-			$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['titre']=mysql_result($test_cn, $n, 'c.nom_court');
-			$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']=mysql_result($test_cn, $n, 'cnc.note');
-					$n++;
-					}
+			while ($n < $nb_ligne_cn) {
+				$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['titre']=mysql_result($test_cn, $n, 'c.nom_court');
+				//$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']=mysql_result($test_cn, $n, 'cnc.note');
+				//=========================
+				// MODIF: boireaus 20080609
+				$tmp_cnc_statut=mysql_result($test_cn, $n, 'cnc.statut');
+				if($tmp_cnc_statut=='y') {
+					$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']=mysql_result($test_cn, $n, 'cnc.note');
+				}
+				else {
+					$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']='-';
+				}
+				//=========================
+				$n++;
+			}
 
 			$nombre_de_matiere = $nombre_de_matiere + 1;
 
