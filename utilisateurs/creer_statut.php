@@ -84,7 +84,7 @@ if ($action == 'ajouter') {
 	$stat_2b = str_replace('"', '', $stat_2);
 	$stat_3 = remplace_accents($stat_2b, "all");
 
-	// On efait une ultime vérification
+	// On refait une ultime vérification
 	$insert_statut = htmlentities($stat_3, ENT_QUOTES);
 
 	// On ajoute le statut privé après avoir vérifié qu'il n'existe pas déjà
@@ -106,7 +106,7 @@ if ($action == 'ajouter') {
 
 			// On enregistre les droits généraux adéquats avec la virgule qui va bien entre chaque value
 			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
-			// Pour ajouter des droits, il suffit d'ajouter des braches au tableau $autorise plus haut avec tous les fichiers utiles
+			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise du fichier creer_statut_autorisation avec tous les fichiers utiles
 
 			for($a = 0 ; $a < 8 ; $a++){
 				$nbre = count($autorise[$a]);
@@ -165,7 +165,7 @@ if ($action == 'modifier') {
 
 		//echo $ne[$a].$suppr[$a].'|a'.$a.'|b'.$b;
 
-		// On assure les différents traitements traitements
+		// On assure les différents traitements
 		if ($test[0][$a] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
@@ -265,7 +265,8 @@ if ($query) {
 	// On récupère les utilisateurs qui ont un statut 'autre'
 	$sql_u = "SELECT nom, prenom, login  FROM utilisateurs
 											WHERE statut = 'autre'
-											AND etat = 'actif'";
+											AND etat = 'actif'
+											ORDER BY nom, prenom";
 	$query_u = mysql_query($sql_u);
 
 	// On affiche la liste des utilisateurs avec un select des statuts privés
