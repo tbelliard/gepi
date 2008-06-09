@@ -219,12 +219,14 @@ while($lig4=mysql_fetch_object($res4)) {
 				$lig_verrou=mysql_fetch_object($res_test);
 				$verrou=$lig_verrou->verrouillage;
 			}
-			echo "O <input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='O' ";
+			//echo "O <input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='O' ";
+			echo "O <input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' value='O' ";
 			if($verrou=="O") {
 				echo "checked ";
 			}
 			echo "/>\n";
-			echo "<input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='N' ";
+			//echo "<input type='radio' name='verrouiller_".$lig4->id."_".$i."' value='N' ";
+			echo "<input type='radio' name='verrouiller_".$lig4->id."_".$type_brevet[$i]."' value='N' ";
 			if($verrou=="N") {
 				echo "checked ";
 			}
