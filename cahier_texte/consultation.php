@@ -78,7 +78,7 @@ if ($login_eleve) {
 if ($_SESSION['statut'] == 'eleve') {
 	// On enregistre si un élève essaie de voir le cahier de texte d'un autre élève
 	if ($selected_eleve) {
-		if (strtolower($selected_eleve->login) != strtolower($_SESSION['login'])) tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");
+		if (strtolower($selected_eleve->login) != strtolower($_SESSION['login'])) {tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");}
 	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
@@ -103,7 +103,7 @@ if ($_SESSION['statut'] == 'eleve') {
 		// associés à l'utilisateur au statut 'responsable'
 		$ok = false;
 		while($test = mysql_fetch_object($get_eleves)) {
-			if ($test->login == $selected_eleve->login) $ok = true;
+			if (strtolower($test->login) == strtolower($selected_eleve->login)) {$ok = true;}
 		}
 		if (!$ok) {
 			// Si on est là, ce qu'un utilisateur au statut 'responsable' a essayé
@@ -143,6 +143,7 @@ require_once("../lib/header.inc");
 
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
 //echo "<p>id_classe=$id_classe</p>";
+//echo "<p>\$today=$today</p>";
 if($selected_eleve_login!=""){
 	$sql="SELECT * FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC";
 	$res_ele_classe=mysql_query($sql);
@@ -228,7 +229,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "ct.date_ct = '$jour')");
 
         } elseif ($selected_eleve) {
-	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -239,7 +240,9 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "jec.periode = '1' and " .
                 "ct.contenu != '' and " .
-                "ct.date_ct = '$jour')");
+                "ct.date_ct = '$jour')";
+		//echo "$sql<br />";
+		$appel_devoirs_cahier_texte = mysql_query($sql);
         }
         $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
@@ -301,7 +304,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	require("../lib/footer.inc.php");
 	die();
 }
-
+//echo "______________";
 // Affichage des comptes rendus et des travaux à faire.
 echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 
