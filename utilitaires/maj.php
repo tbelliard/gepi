@@ -5040,6 +5040,21 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
+        //Débuts du dispositif sur les rss dans le cdt
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'rss_cdt_eleve' à la table 'setting'<br/>";
+        $req_test = mysql_query("SELECT value FROM setting WHERE name = 'rss_cdt_eleve'");
+        $res_test = mysql_num_rows($req_test);
+        if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('rss_cdt_eleve', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+        } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+        }
+
 		// statuts dynamiques
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'statuts_prives' à la table 'setting'<br/>";
         $req_test = mysql_query("SELECT value FROM setting WHERE name = 'statuts_prives'");
