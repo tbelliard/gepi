@@ -147,6 +147,7 @@ else {
 	$tab_couleur['bulletin']="lemonchiffon";
 	$tab_couleur['releves']="papayawhip";
 	$tab_couleur['releve']="seashell";
+	$tab_couleur['cdt']="linen";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -157,6 +158,33 @@ else {
 		echo "<p>L'élève dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else{
+		//================================
+		unset($day);
+		$day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
+		unset($month);
+		$month = isset($_POST["month"]) ? $_POST["month"] : (isset($_GET["month"]) ? $_GET["month"] : date("m"));
+		unset($year);
+		$year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["year"] : date("Y"));
+		// Vérification
+		settype($month,"integer");
+		settype($day,"integer");
+		settype($year,"integer");
+		$minyear = strftime("%Y", getSettingValue("begin_bookings"));
+		$maxyear = strftime("%Y", getSettingValue("end_bookings"));
+		if ($day < 1) $day = 1;
+		if ($day > 31) $day = 31;
+		if ($month < 1) $month = 1;
+		if ($month > 12) $month = 12;
+		if ($year < $minyear) $year = $minyear;
+		if ($year > $maxyear) $year = $maxyear;
+		# Make the date valid if day is more then number of days in month
+		while (!checkdate($month, $day, $year)) $day--;
+		$today=mktime(0,0,0,$month,$day,$year);
+		//================================
+		// Dates pour l'extraction des cahiers de textes: 2j avant et 7j après
+		$date_ct1=$today-2*24*3600;
+		$date_ct2=$today+7*24*3600;
+		//================================
 
 		// A FAIRE:
 		// Contrôler si la personne connectée a le droit de consulter les infos sur cet élève
@@ -340,6 +368,14 @@ else {
 			}
 		}
 
+		// A REVOIR par la suite
+		$active_cahiers_texte=getSettingValue("active_cahiers_texte");
+		if($active_cahiers_texte=='y') {
+			$acces_cdt="y";
+		}
+		else {
+			$acces_cdt="n";
+		}
 
 		//===========================================
 		// Extraction de quelques données sur l'établissement
@@ -396,6 +432,8 @@ else {
 		text-align:left;
 	}\n";
 		*/
+
+		$active_cahiers_texte=getSettingValue("active_cahiers_texte") ? getSettingValue("active_cahiers_texte") : "n";
 
 		// Récupération des variables du bloc adresses:
 		// Liste de récupération à extraire de la boucle élèves pour limiter le nombre de requêtes... A FAIRE
@@ -584,6 +622,21 @@ else {
 			echo "background-color: ".$tab_couleur['releves']."; ";
 			echo "'>";
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onClick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
+			echo "</div>\n";
+		}
+
+		// Onglet Cahier de textes
+		if($acces_cdt=="y") {
+			echo "<div id='t_cdt' class='t_onglet' style='";
+			if($onglet=='cdt') {
+				echo "border-bottom-color: ".$tab_couleur['cdt']."; ";
+			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['cdt']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onClick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
 			echo "</div>\n";
 		}
 		//=====================================================================================
@@ -1103,6 +1156,47 @@ else {
 
 			echo "</div>\n";
 		}
+
+
+		if($acces_cdt=="y") {
+			echo "<div id='cdt' class='onglet' style='";
+			if($onglet!="cdt") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['cdt']."; ";
+			echo "'>";
+			echo "<h2>Cahier de textes de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			echo "Du ".date("D d/m/Y",$date_ct1)." au ".date("D d/m/Y",$date_ct2)."<br />";
+
+			for($j=0;$j<count($tab_ele['cdt']);$j++) {
+				echo "<div style='border:1px solid black; padding:2px;'>\n";
+				if(isset($tab_ele['cdt'][$j]['dev'])) {
+					for($k=0;$k<count($tab_ele['cdt'][$j]['dev']);$k++) {
+						echo "<div style='border:1px solid black; background-color: lightyellow; margin:1px; display:block; width:40%;'>\n";
+						echo "Groupe ".$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']."<br />\n";
+						echo "Prof ".$tab_ele['cdt'][$j]['dev'][$k]['id_login']."<br />\n";
+						echo "Date ".$tab_ele['cdt'][$j]['dev'][$k]['date_ct']."<br />\n";
+						echo $tab_ele['cdt'][$j]['dev'][$k]['contenu'];
+						echo "</div>\n";
+					}
+				}
+
+				if(isset($tab_ele['cdt'][$j]['dev'])) {
+					for($k=0;$k<count($tab_ele['cdt'][$j]['entry']);$k++) {
+						echo "<div style='border:1px solid black; background-color: lightgreen; margin:1px; display:block; width:40%;'>\n";
+						echo "Groupe ".$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']."<br />\n";
+						echo "Prof ".$tab_ele['cdt'][$j]['entry'][$k]['id_login']."<br />\n";
+						echo "Date ".$tab_ele['cdt'][$j]['entry'][$k]['date_ct']."<br />\n";
+						echo $tab_ele['cdt'][$j]['entry'][$k]['contenu'];
+						echo "</div>\n";
+					}
+				}
+
+				echo "</div>\n";
+			}
+
+			echo "</div>\n";
+		}
+
 		//===================================================
 
 		//=====================================================================================
@@ -1112,7 +1206,7 @@ else {
 		//========================
 
 		// Liste des onglets de niveau 1
-		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins');
+		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt');
 		$chaine_tab_onglets="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets);$i++) {
 			if($i>0) {$chaine_tab_onglets.=", ";}
