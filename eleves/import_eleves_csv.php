@@ -29,15 +29,15 @@ $resultat_session = resumeSession();
 
 if ($resultat_session == 'c') {
 
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 
-die();
+	die();
 
 } else if ($resultat_session == '0') {
 
     header("Location: ../logout.php?auto=1");
 
-die();
+	die();
 
 };
 
@@ -50,13 +50,25 @@ if (!checkAccess()) {
 
     header("Location: ../logout.php?auto=1");
 
-die();
+	die();
 
 }
 
+$rss = isset($_GET["rss"]) ? $_GET["rss"] : NULL;
+// Seul l'admin peut récupérer l'URI des rss des élèves
+if ($rss == "y") {
 
+	if ($_SESSION["statut"] != "administrateur") {
+		Die();
+	}
 
-$nom_fic = "base_eleves_gepi.csv";
+	$nom_fic = "eleves_gepi_rss.csv";
+
+}else{
+
+	$nom_fic = "base_eleves_gepi.csv";
+
+}
 
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 
@@ -105,6 +117,14 @@ while ($i < $nb_classes) {
         $eleve_prenom = mysql_result($appel_donnees_eleves, $j, "prenom");
         //$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe."\n";
         $eleve_elenoet = mysql_result($appel_donnees_eleves, $j, "elenoet");
+
+        // Dispositif pour les URI des rss
+        if ($rss == "y") {
+        	// On récupère l'URI de cet élève
+        	$uri = mysql_query("SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
+        	$eleve_elenoet = mysql_result($uri, "user_uri");
+        }
+
         $fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe.";".$eleve_elenoet."\n";
         $j++;
     }

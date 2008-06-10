@@ -1,0 +1,231 @@
+<?php
+
+/**
+ *
+ * @version $Id$
+ *
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+$titre_page = "Parametrer les flux rss du cahier de textes";
+$affiche_connexion = "oui";
+$niveau_arbo = 1;
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// fonctions complémentaires et/ou librairies utiles
+
+
+// Resume session
+$resultat_session = resumeSession();
+if ($resultat_session == "c") {
+   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+   die();
+} else if ($resultat_session == "0") {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+// Sécurité
+//
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=2");
+    die();
+}
+
+// ======================== Initialisation des données ==================== //
+$action = isset($_POST["action"]) ? $_POST["action"] : NULL;
+$rss_cdt_ele = isset($_POST["rss_cdt_ele"]) ? $_POST["rss_cdt_ele"] : NULL;
+$rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL;
+$genereflux = isset($_GET["genereflux"]) ? $_GET["genereflux"] : NULL;
+$generefluxcsv = isset($_GET["generefluxcsv"]) ? $_GET["generefluxcsv"] : NULL;
+$msg = $result = NULL;
+
+
+
+
+// ======================== Traitement des données ======================== //
+if ($action == "modifier") {
+
+	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
+	if ($save) {
+		$msg .= '<p style="color: green;">La modification a été enregistrée.</p>'."\n";
+	}else{
+		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
+	}
+
+}
+if (isset($rss_acces_ele)) {
+	$save_d = saveSetting("rss_acces_ele", $rss_acces_ele);
+	if ($save_d) {
+		$msg .= '<p style="color: green;">La modification a été enregistrée.</p>';
+	}else{
+		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
+	}
+}
+
+// On teste si l'admin veut autoriser les flux pour créer la table adéquate
+	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
+	if ($test_table == 0) {
+
+		if (getSettingValue("rss_cdt_eleve") == "y") {
+
+			$lien_generateflux = '
+			<a href="rss_cdt_admin.php?genereflux=y">
+			Générer les adresses personnelles (<acronym title="identifiant de ressource sur un réseau">URI</acronym>) pour chaque élève
+			</a>'."\n";
+
+		}else{
+
+			$lien_generateflux = '';
+
+		}
+
+	}elseif ($test_table == 1){
+
+		$themessage = "Êtes-vous certain de vouloir générer de nouveau ces URI ? Tous les élèves qui utilisaient déjà une URI devront adopter la nouvelle.";
+		$lien_generateflux = '
+		La table existe et les URI sont en place.&nbsp;&nbsp;
+		<a href="'.$gepiPath.'/cahier_texte_admin/rss_cdt_admin.php?genereflux=y"'.insert_confirm_abandon().'>
+		Re-Générer les <acronym title="identifiant de ressource sur un réseau">URI</acronym></a>'."\n";
+
+	}else{
+
+		$lien_generateflux = '';
+
+	}
+
+if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
+	$suivant = "non";
+	// on teste si la table existe déjà et on la crée le cas échéant
+	$result .= '<p>Gepi vérifie si la table nécessaire est bien dans la base.</p>';
+
+    if ($test_table == 0) {
+		$query1 = mysql_query("CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
+        if ($query1) {
+            $result .= "<font color=\"green\">La table nécessaire est bien créée !</font><br />";
+            $suivant = "oui";
+        } else {
+			$result .= "<font color=\"red\">Erreur lors de la création de la table.</font><br />";
+		}
+	} else {
+		$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+		$suivant = "oui";
+	}
+
+	// ICI, on remplit la table
+	// Mais on la vide avant de la re-remplir (ou de la remplir).
+	$truncate = mysql_query("TRUNCATE TABLE `rss_users`");
+
+	$select_el = mysql_query("SELECT DISTINCT login FROM eleves ORDER BY nom, prenom");
+	$erreur = '';
+
+	while($rep_el = mysql_fetch_array($select_el)){
+
+		// On produit une URI pour chaque utilisateur à partir du login, du RNE et d'un nombre aléatoire
+		$uri_el = md5($rep_el["login"].getSettingValue("gepiSchoolRne").mt_rand());
+		$insert = mysql_query("INSERT INTO rss_users (id, user_login, user_uri) VALUES ('', '".$rep_el["login"]."', '".$uri_el."')");
+		if (!$insert) {
+			$erreur .= 'Erreur sur '.$rep_el["login"].'<br />';
+		}
+
+	}
+
+	if ($erreur == '') {
+		$msg .= 'La table des URI est remplie.<br />';
+	}
+
+
+	// On envoie le csv si l'admin le demande
+	if (getSettingValue("rss_acces_ele") == "csv") {
+		// le code nécessaire à générer le csv "classe";"nom";"prenom";"login";"uri de la ressource"
+		$msg .= 'le csv est disponible : <a href="../eleves/import_eleves_csv.php?rss=y">Télécharger le csv</a>';
+	}
+
+}
+
+
+// On vérifie les checked
+// et on définit si on doit afficher le div qui suit ou pas
+if (getSettingValue("rss_cdt_eleve") == "y") {
+	$checked_ele = ' checked="checked"';
+	$style_ele = ' style="Display: block;"';
+}else{
+	$checked_ele = '';
+	$style_ele = ' style="Display: none;"';
+}
+
+if (getSettingValue("rss_acces_ele") == "direct") {
+	$style_ele_dir = ' checked="checked"';
+	$style_ele_csv = '';
+}else{
+	$style_ele_dir = '';
+	$style_ele_csv = ' checked="checked"';
+}
+
+
+// ======================== CSS et js particuliers ========================
+$utilisation_win = "oui";
+$utilisation_jsdivdrag = "non";
+$javascript_specifique = "";
+$style_specifique = "";
+
+// ===================== entete Gepi ======================================//
+require_once("../lib/header.inc");
+// ===================== fin entete =======================================//
+
+echo "<!-- page Parametrer_les_flux_rss_du_cahier_de_textes.-->";
+
+?>
+<h3>Cet outil permet d'autoriser la g&eacute;n&eacute;ration de flux <acronym title="Appel&eacute; aussi syndication">rss</acronym> 2.0 des cahiers de textes de Gepi. </h3>
+
+<p style="font-weight: bold; color: green;"><?php echo $lien_generateflux; ?>&nbsp;</p>
+
+<form name="form_rss" action="rss_cdt_admin.php" method="post">
+		<input type="hidden" name="action" value="modifier" />
+
+	<p>
+		<input type="checkbox" id="autoRssCdt" name="rss_cdt_ele" value="y" onclick="changementDisplay('accesEle', '');" onchange='document.form_rss.submit();'<?php echo $checked_ele; ?> />
+		<label for="autoRssCdt">&nbsp;Les &eacute;l&egrave;ves peuvent utiliser le flux rss de leur cahier de textes</label>
+	</p>
+</form>
+<br />
+	<div id="accesEle"<?php echo $style_ele; ?>>
+
+<form name="form_rss_ele" action="rss_cdt_admin.php" method="post">
+	<p>
+		<input type="radio" id="rssAccesEle" name="rss_acces_ele" value="direct" onchange='document.form_rss_ele.submit();'<?php echo $style_ele_dir; ?> />
+		<label for="rssAccesEle">Les &eacute;l&egrave;ves r&eacute;cup&egrave;rent l'adresse (url) d'abonnement directement par leur acc&egrave;s &agrave; Gepi</label>
+	</p>
+	<p>
+		<input type="radio" id="rssAccesEle2" name="rss_acces_ele" value="csv" onchange='document.form_rss_ele.submit();'<?php echo $style_ele_csv; ?> />
+		<label for="rssAccesEle2">L'admin r&eacute;cup&egrave;re un fichier csv de ces adresses (une par &eacute;l&egrave;ve)</label>
+	</p>
+</form>
+
+	</div>
+
+
+
+
+<?php
+// Inclusion du bas de page
+require_once("../lib/footer.inc.php");
+?>
