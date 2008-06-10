@@ -12,11 +12,11 @@
 	// Initialisations files
 	//require_once("../lib/initialisations.inc.php");
 
-if (!$_SESSION["statut"] OR $_SESSION["statut"] != 'autre') {
-	if ($_SESSION["statut"] != 'administrateur') {
+if (!$_SESSION["statut"] OR ($_SESSION["statut"] != 'autre' AND $_SESSION["statut"] != 'administrateur')) {
+
 		//tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
 		trigger_error('Vous avez procédé à une lecture de fichier interdit', E_USER_ERROR);
-	}
+
 }
 
 // droits généraux et communs à tous les utilisateurs

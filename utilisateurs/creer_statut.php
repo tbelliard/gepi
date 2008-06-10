@@ -154,19 +154,17 @@ if ($action == 'modifier') {
 
 		$b = mysql_result($query, $a, "id");
 
-		$test[0][$a] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
-		$test[1][$a] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
-		$test[2][$a] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
-		$test[3][$a] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
-		$test[4][$a] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
-		$test[5][$a] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
-		$test[6][$a] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
-		$test[7][$a] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
-
-		//echo $ne[$a].$suppr[$a].'|a'.$a.'|b'.$b;
+		$test[$a][0] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
+		$test[$a][1] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
+		$test[$a][2] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
+		$test[$a][3] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
+		$test[$a][4] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
+		$test[$a][5] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
+		$test[$a][6] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
+		$test[$a][7] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
 
 		// On assure les différents traitements
-		if ($test[0][$a] == 'on') {
+		if ($test[$a][0] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
 			$query_d = mysql_query($sql_d) OR trigger_error('Impossible de supprimer ce statut : '.mysql_error(), E_USER_NOTICE);
@@ -187,7 +185,7 @@ if ($action == 'modifier') {
 
 				$nbre2 = count($autorise[$m]);
 				// On vérifie si le droit est coché ou non
-				if ($test[$m][$a] == 'on') {
+				if ($test[$a][$m] == 'on') {
 					$vf = 'V';
 				}else{
 					$vf = 'F';
@@ -204,6 +202,7 @@ if ($action == 'modifier') {
 			}
 		}
 	}
+//print_r($test);
 	// On assure un message de confirmation si les modifications se sont bien passées
 	if ($msg3 === NULL) {
 		$msg3 .= '<p style="color: green">Les modifications sont bien enregistrées.</p>';
@@ -385,8 +384,9 @@ if ($query) {
 <hr />
 <br />
 <!-- Quel statut pour quelle personne ? -->
-
-<div id="userStatut" style="border: 5px solid silver; width: 20em;">
+<div style="width: 350px; -moz-border-radius: 20px; background-color: lightblue; padding: 5px;">
+<center>
+<div id="userStatut" style="border: 5px solid silver; width: 22em; margin: 5px 5px 5px 5px;">
 
 	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
 
@@ -395,6 +395,8 @@ if ($query) {
 		<?php echo $aff_users; ?>
 	</table>
 		<?php echo $msg2; ?>
+</div>
+</center>
 </div>
 
 <?php

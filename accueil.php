@@ -1387,14 +1387,18 @@ if (getSettingValue("active_inscription")=='y') {
 // ========================== Statut AUTRE =============================
 if ($_SESSION["statut"] == 'autre') {
 	// On récupère la liste des fichiers à autoriser
-	require_once("./utilisateurs/creer_statut_autorisation.php");
-	$nbre = count($autorise);
+	require_once("utilisateurs/creer_statut_autorisation.php");
+	$nbre_a = count($autorise);
 
 	echo '<br />
 		<table class="menu">
-			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th>';
+			<tr>
+			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th></tr>';
 
-	for($a = 1 ; $a < $nbre ; $a++){
+	//for($a = 1 ; $a < $nbre ; $a++){
+	$a = 1;
+	while($a < $nbre_a){
+
 		// On récupère le droit sur le fichier
 		$sql_f = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND nom_fichier = '".$autorise[$a][0]."' ORDER BY id";
 		$query_f = mysql_query($sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
@@ -1404,7 +1408,6 @@ if ($_SESSION["statut"] == 'autre') {
 		}else{
 			$rep_f = '';
 		}
-
 
 		if ($rep_f == 'V') {
 			if ($autorise[$a][0] == "/tous_les_edt") {
@@ -1424,7 +1427,7 @@ if ($_SESSION["statut"] == 'autre') {
 			';
 			}
 		}
-
+		$a++;
 	}
 
 	echo '</table>';
