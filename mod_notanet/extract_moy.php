@@ -141,8 +141,8 @@ else {
 		if($extract_mode=="tous") {
 
 			$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec,
-													notanet_ele_type n,
-													notanet_corresp nc
+							notanet_ele_type n,
+							notanet_corresp nc
 						WHERE n.login=jec.login AND
 							n.type_brevet=nc.type_brevet
 						ORDER BY id_classe";
@@ -227,8 +227,8 @@ else {
 		}
 		else {
 			$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec,
-													notanet_ele_type n,
-													notanet_corresp nc
+							notanet_ele_type n,
+							notanet_corresp nc
 						WHERE n.login=jec.login AND
 							n.type_brevet=nc.type_brevet AND
 							n.type_brevet='$extract_mode'
@@ -249,6 +249,42 @@ else {
 					$cpt++;
 				}
 			}
+
+
+			$tabmatieres=tabmatieres($extract_mode);
+			$cpt_non_assoc=0;
+			for($i=101;$i<=122;$i++) {
+				//echo "\$tabmatieres[$i][0]=".$tabmatieres[$i][0]."<br />";
+				if(($tabmatieres[$i][0]!="")&&($tabmatieres[$i]['socle']=='n')) {
+					$temoin_assoc="n";
+
+					$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$extract_mode' AND notanet_mat='".$tabmatieres[$i][0]."';";
+					//echo "$sql<br />";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						// Ce devrait toujours être le cas
+						while($lig=mysql_fetch_object($test)) {
+							if((($lig->statut=='imposee')||($lig->statut=='optionnelle'))&&($lig->matiere!='')) {
+								$temoin_assoc="y";
+							}
+							elseif($lig->statut=='non dispensee dans l etablissement') {
+								$temoin_assoc="y";
+							}
+						}
+					}
+
+					if($temoin_assoc=='n') {
+						//echo "<span style='color:red;'>La matière Notanet ".$tabmatieres[$i][0]." n'est associée à aucune matière Gepi. Avez-vous correctement effectué l'<a href='select_matieres.php?type_brevet=$extract_mode'>étape 2</a>&nbsp;?</span><br />\n";
+						echo "<span style='color:red;'>La matière Notanet ".$tabmatieres[$i][0]." n'est associée à aucune matière Gepi.</span><br />\n";
+						$cpt_non_assoc++;
+					}
+				}
+			}
+			if($cpt_non_assoc>0) {
+				echo "<span style='color:red;'>Avez-vous correctement effectué l'<a href='select_matieres.php?type_brevet=$extract_mode'>étape 2</a>&nbsp;?</span><br />\n";
+			}
+			unset($tabmatieres);
+
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
 
