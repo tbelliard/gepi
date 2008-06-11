@@ -306,7 +306,9 @@ else {
 				echo "<textarea id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$cpt."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
 				//==================================
 				// Pour revenir au champ suivant après validation/enregistrement:
-				echo " onfocus=\"focus_suivant(".$cpt.");\"";
+				echo " onfocus=\"focus_suivant(".$cpt.");";
+				echo " document.getElementById('focus_courant').value='".$cpt."';";
+				echo "\"";
 				//==================================
 				echo ">".$def_avis."</textarea>\n";
 				echo "</td>\n";
@@ -324,7 +326,13 @@ else {
 	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
 
-	echo "<center><div id='fixe'><input type='submit' value='Enregistrer' /><br />
+	echo "<center><div id='fixe'>";
+
+	if(getSettingValue('notanet_dfsp')=='y') {
+		// INSERT INTO setting SET name='notanet_dfsp', value='y';
+		echo "<a href=\"#\" onClick=\"document.getElementById('n'+document.getElementById('focus_courant').value).value=document.getElementById('n'+document.getElementById('focus_courant').value).value+'Doit faire ses preuves';document.getElementById('n'+document.getElementById('focus_courant').value).focus();return false;\">Dfsp</a><br />\n";
+	}
+	echo "<input type='submit' value='Enregistrer' /><br />
 
 <!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
 <div id='decompte'></div>
@@ -334,6 +342,7 @@ else {
 
 <!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 <input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />
+<input type='hidden' id='focus_courant' name='focus_courant' value='' size='3' />
 ";
 
 	echo "</form>\n";
