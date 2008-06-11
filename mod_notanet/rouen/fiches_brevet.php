@@ -1503,8 +1503,9 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo " rowspan='2'";
 								}
+								//echo " class='fb'";
 								echo ">\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
@@ -1541,6 +1542,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								echo "style='border: 1px solid black; text-align:center;'>\n";
 								if($fb_mode_moyenne==1){
 									echo $moy_classe[$j];
@@ -1570,6 +1572,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								echo "style='border: 1px solid black; text-align:center;'>\n";
 								//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 								$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -1591,6 +1594,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								//echo "style='border: 1px solid black; text-align:center;'>\n";
 								echo "style='border: 1px solid black; text-align:left;'>\n";
 
@@ -1674,6 +1678,7 @@ else {
 
 
 								echo "<td ";
+								echo " class='fb' ";
 								//echo "style='border: 1px solid black; text-align:right;'>\n";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
@@ -1728,6 +1733,7 @@ else {
 
 								//echo "style='border: 1px solid black; text-align:center;'>\n";
 								echo "<td ";
+								echo " class='fb' ";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "<b>Points > à 10</b>";
@@ -1830,11 +1836,15 @@ else {
 									}
 									*/
 									if($num_fb_col==1){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
-										echo "<td style='border: 1px solid black; text-align:right;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:right;'>\n";
 										echo "&nbsp;";
 										//$note="&nbsp;";
 									}
@@ -1849,11 +1859,15 @@ else {
 									//echo "<td>\n";
 									//echo "&nbsp;";
 									if($num_fb_col==2){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
-										echo "<td style='border: 1px solid black; text-align:right;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:right;'>\n";
 										echo "&nbsp;";
 										//$note="&nbsp;";
 									}
@@ -1887,7 +1901,7 @@ else {
 
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
@@ -1903,7 +1917,9 @@ else {
 								echo "</td>\n";
 
 								// Appréciation
-								echo "<td style='border: 1px solid black; text-align:left;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:left;'>\n";
 								//echo "&nbsp;";
 								//echo "</td>\n";
 								//echo "style='border: 1px solid black; text-align:left;'>\n";
@@ -1933,7 +1949,9 @@ else {
 								echo "&nbsp;";
 								echo "</td>\n";
 
-								echo "<td style='border: 1px solid black; text-align:right;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:right;'>\n";
 								echo "&nbsp;";
 								echo " / ".$tabmatieres[$j]['fb_col'][2];
 								echo "</td>\n";
@@ -1961,7 +1979,9 @@ else {
 						// ON TRAITE LES MATIERES NOTNONCA
 						echo "<tr>\n";
 
-						echo "<td colspan='4' style='border: 1px solid black; text-align:center; font-weight:bold;'>\n";
+						echo "<td colspan='4' ";
+						echo " class='fb' ";
+						echo "style='border: 1px solid black; text-align:center; font-weight:bold;'>\n";
 						echo "A titre indicatif";
 						echo "</td>\n";
 
@@ -1985,13 +2005,15 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
 									echo "</p>";
 									echo "</td>\n";
 
 									// Moyenne de la classe
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									//echo $moy_classe[$j];
 									if($fb_mode_moyenne==1){
 										echo $moy_classe[$j];
@@ -2018,7 +2040,9 @@ else {
 									echo "</td>\n";
 
 									// Moyenne de l'élève
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 									$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 									$res_note=mysql_query($sql);
@@ -2032,7 +2056,9 @@ else {
 									echo "</td>\n";
 
 									// Appréciation
-									echo "<td style='border: 1px solid black; text-align:left;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:left;'>\n";
 									//echo "&nbsp;";
 									//echo "</td>\n";
 									//echo "style='border: 1px solid black; text-align:left;'>\n";
@@ -2064,24 +2090,32 @@ else {
 
 										//echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
 										if($num_fb_col==1){
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 240";
 											echo " / ".$SUR_TOTAL[2];
 											echo "</td>\n";
 										}
 										else{
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 220";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[2];
@@ -2107,20 +2141,26 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "&nbsp;";
 									echo "</td>\n";
 
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "&nbsp;";
 									echo "</td>\n";
 
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "&nbsp;";
 									echo "</td>\n";
 
@@ -2150,24 +2190,32 @@ else {
 										*/
 										//echo "</td>\n";
 										if($num_fb_col==1){
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 240";
 											echo " / ".$SUR_TOTAL[2];
 											echo "</td>\n";
 										}
 										else{
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 220";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[2];
@@ -2274,7 +2322,9 @@ else {
 					echo "<tr>\n";
 
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					echo "<td colspan='2' style='font-weight:bold;'>\n";
+					echo "<td colspan='2' ";
+					echo " class='fb' ";
+					echo "style='font-weight:bold;'>\n";
 					echo "3ème à option";
 					echo "</td>\n";
 
@@ -2288,13 +2338,17 @@ else {
 					// La colonne appréciation est dans le rowspan de la ligne précédente.
 
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					echo "<td width='".$fb_largeur_col_opt."%' style='font-weight:bold;'>\n";
+					echo "<td ";
+					echo " class='fb' ";
+					echo "width='".$fb_largeur_col_opt."%' style='font-weight:bold;'>\n";
 					//echo "LV2";
 					//echo $fb_intitule_col[1];
 					echo $tabmatieres["fb_intitule_col"][1];
 					echo "</td>\n";
 
-					echo "<td width='".$fb_largeur_col_opt."%' style='font-weight:bold; line-height: ".$fb_txttab_lineheight."pt;'>\n";
+					echo "<td ";
+					echo " class='fb' ";
+					echo "width='".$fb_largeur_col_opt."%' style='font-weight:bold; line-height: ".$fb_txttab_lineheight."pt;'>\n";
 					//echo "A module découverte professionnelle<br />6 heures";
 					//echo $fb_intitule_col[2];
 					echo $tabmatieres["fb_intitule_col"][2];
@@ -2348,7 +2402,7 @@ else {
 									echo " rowspan='2'";
 								}
 								echo ">\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
@@ -2384,6 +2438,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								echo "style='border: 1px solid black; text-align:center;'>\n";
 								if($fb_mode_moyenne==1){
 									echo $moy_classe[$j];
@@ -2413,6 +2468,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								echo "style='border: 1px solid black; text-align:center;'>\n";
 								//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 								$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -2434,6 +2490,7 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
+								echo " class='fb' ";
 								echo "style='border: 1px solid black; text-align:left;'>\n";
 								//echo "&nbsp;";
 								//echo "DEBUG: $TOTAL";
@@ -2529,6 +2586,7 @@ else {
 
 
 								echo "<td ";
+								echo " class='fb' ";
 								//echo "style='border: 1px solid black; text-align:right;'>\n";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
@@ -2577,6 +2635,7 @@ else {
 
 								//echo "style='border: 1px solid black; text-align:center;'>\n";
 								echo "<td ";
+								echo " class='fb' ";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "<b>Points > à 10</b>";
@@ -2673,11 +2732,15 @@ else {
 									}
 									*/
 									if($num_fb_col==1){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
-										echo "<td style='border: 1px solid black; text-align:right;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:right;'>\n";
 										echo "&nbsp;";
 										//$note="&nbsp;";
 									}
@@ -2688,11 +2751,15 @@ else {
 									//echo "<td>\n";
 									//echo "&nbsp;";
 									if($num_fb_col==2){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
-										echo "<td style='border: 1px solid black; text-align:right;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:right;'>\n";
 										echo "&nbsp;";
 										//$note="&nbsp;";
 									}
@@ -2727,7 +2794,7 @@ else {
 
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
@@ -2743,7 +2810,9 @@ else {
 								echo "</td>\n";
 
 								// Appréciation
-								echo "<td style='border: 1px solid black; text-align:left;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:left;'>\n";
 								//echo "&nbsp;";
 								//echo "</td>\n";
 								//echo "style='border: 1px solid black; text-align:left;'>\n";
@@ -2773,7 +2842,9 @@ else {
 								echo "&nbsp;";
 								echo "</td>\n";
 
-								echo "<td style='border: 1px solid black; text-align:right;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:right;'>\n";
 								echo "&nbsp;";
 								echo " / ".$tabmatieres[$j]['fb_col'][2];
 								echo "</td>\n";
@@ -2883,7 +2954,7 @@ else {
 					// Discipline
 					echo "<td";
 					echo ">\n";
-					echo "<p class='discipline'>";
+					echo "<p class='discipline fb'>";
 					//echo "GRRRRRRRRR";
 					echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
 					echo "</p>\n";
@@ -2891,18 +2962,24 @@ else {
 
 					// Moyenne classe
 					echo "<td ";
+					echo " class='fb' ";
+					echo "";
 					echo "style='border: 1px solid black; text-align:center;'>\n";
 					echo $tmp_moy;
 					echo "</td>\n";
 
 					// Moyenne élève
 					echo "<td ";
+					echo " class='fb' ";
+					echo "";
 					echo "style='border: 1px solid black; text-align:center;'>\n";
 					echo $tmp_note;
 					echo "</td>\n";
 
 					// Appréciation
 					echo "<td ";
+					echo " class='fb' ";
+					echo "";
 					echo "style='border: 1px solid black; text-align:left;'>\n";
 					//echo "&nbsp;";
 					//echo "DEBUG: $TOTAL";
@@ -2930,6 +3007,8 @@ else {
 					}
 
 					echo "<td ";
+					echo " class='fb' ";
+					echo "";
 					echo "style='border: 1px solid black;";
 					if($num_fb_col==1){
 						echo " text-align:center;";
@@ -2954,6 +3033,8 @@ else {
 
 
 					echo "<td ";
+					echo " class='fb' ";
+					echo "";
 					//echo "style='border: 1px solid black; text-align:right;'>\n";
 					echo "style='border: 1px solid black;";
 					if($num_fb_col==2){
@@ -3005,7 +3086,7 @@ else {
 									echo " rowspan='2'";
 								}
 								echo ">\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
@@ -3038,6 +3119,8 @@ else {
 
 								// Moyenne classe
 								echo "<td ";
+								echo " class='fb' ";
+								echo "";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
@@ -3067,6 +3150,8 @@ else {
 
 								// Moyenne élève
 								echo "<td ";
+								echo " class='fb' ";
+								echo "";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
@@ -3088,6 +3173,8 @@ else {
 
 								// Appréciation
 								echo "<td ";
+								echo " class='fb' ";
+								echo "";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
@@ -3184,6 +3271,8 @@ else {
 
 
 								echo "<td ";
+								echo " class='fb' ";
+								echo "";
 								//echo "style='border: 1px solid black; text-align:right;'>\n";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
@@ -3232,6 +3321,8 @@ else {
 
 								//echo "style='border: 1px solid black; text-align:center;'>\n";
 								echo "<td ";
+								echo " class='fb' ";
+								echo "";
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "style='border: 1px solid black; text-align:center;'>\n";
 									echo "<b>Points > à 10</b>";
@@ -3335,7 +3426,9 @@ else {
 									}
 									*/
 									if($num_fb_col==1){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
@@ -3350,7 +3443,9 @@ else {
 									//echo "<td>\n";
 									//echo "&nbsp;";
 									if($num_fb_col==2){
-										echo "<td style='border: 1px solid black; text-align:center;'>\n";
+										echo "<td ";
+										echo " class='fb' ";
+										echo "style='border: 1px solid black; text-align:center;'>\n";
 										echo "$valeur_tmp";
 									}
 									else{
@@ -3389,7 +3484,7 @@ else {
 
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
@@ -3405,7 +3500,9 @@ else {
 								echo "</td>\n";
 
 								// Appréciation
-								echo "<td style='border: 1px solid black; text-align:left;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:left;'>\n";
 								//echo "&nbsp;";
 								//echo "</td>\n";
 								//echo "style='border: 1px solid black; text-align:left;'>\n";
@@ -3435,7 +3532,9 @@ else {
 								echo "&nbsp;";
 								echo "</td>\n";
 
-								echo "<td style='border: 1px solid black; text-align:right;'>\n";
+								echo "<td ";
+								echo " class='fb' ";
+								echo "style='border: 1px solid black; text-align:right;'>\n";
 								echo "&nbsp;";
 								echo " / ".$tabmatieres[$j]['fb_col'][2];
 								echo "</td>\n";
@@ -3461,7 +3560,9 @@ else {
 						// ON TRAITE LES MATIERES NOTNONCA
 						echo "<tr>\n";
 
-						echo "<td colspan='4' style='border: 1px solid black; text-align:center; font-weight:bold;'>\n";
+						echo "<td colspan='4' ";
+						echo " class='fb' ";
+						echo "style='border: 1px solid black; text-align:center; font-weight:bold;'>\n";
 						echo "A titre indicatif";
 						echo "</td>\n";
 
@@ -3484,13 +3585,15 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
 									// Moyenne de la classe
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									//echo $moy_classe[$j];
 									if($fb_mode_moyenne==1){
 										echo $moy_classe[$j];
@@ -3516,7 +3619,9 @@ else {
 									echo "</td>\n";
 
 									// Moyenne de l'élève
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:center;'>\n";
 									//$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
 									$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 									$res_note=mysql_query($sql);
@@ -3530,7 +3635,9 @@ else {
 									echo "</td>\n";
 
 									// Appréciation
-									echo "<td style='border: 1px solid black; text-align:left;'>\n";
+									echo "<td ";
+									echo " class='fb' ";
+									echo "style='border: 1px solid black; text-align:left;'>\n";
 									//echo "&nbsp;";
 									//echo "</td>\n";
 									//echo "style='border: 1px solid black; text-align:left;'>\n";
@@ -3562,24 +3669,32 @@ else {
 
 										//echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
 										if($num_fb_col==1){
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td ";
+											echo " class='fb' ";
+											echo "rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 240";
 											echo " / ".$SUR_TOTAL[2];
 											echo "</td>\n";
 										}
 										else{
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 220";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[2];
@@ -3604,7 +3719,7 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
@@ -3647,24 +3762,32 @@ else {
 										*/
 										//echo "</td>\n";
 										if($num_fb_col==1){
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 240";
 											echo " / ".$SUR_TOTAL[2];
 											echo "</td>\n";
 										}
 										else{
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:right;'>\n";
 											//echo "/ 220";
 											echo " / ".$SUR_TOTAL[1];
 											echo "</td>\n";
 
-											echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
+											echo "<td rowspan='$nb_info' ";
+											echo " class='fb' ";
+											echo "style='border: 1px solid black; text-align:center;'>\n";
 											//echo "$TOTAL / 220";
 											echo "$TOTAL";
 											echo " / ".$SUR_TOTAL[2];
@@ -3814,7 +3937,7 @@ else {
 									echo " rowspan='2'";
 								}
 								echo ">\n";
-								echo "<p class='discipline'>";
+								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
@@ -4157,7 +4280,7 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
@@ -4257,7 +4380,7 @@ else {
 									echo "<tr>\n";
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
-									echo "<p class='discipline'>";
+									echo "<p class='discipline fb'>";
 									echo ucfirst(strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
@@ -4302,7 +4425,9 @@ else {
 				}
 
 				echo "<tr>\n";
-				echo "<td colspan='4' rowspan='2' valign='top' style='border: 1px solid black; text-align:left;'>\n";
+				echo "<td colspan='4' rowspan='2' ";
+				echo " class='fb' ";
+				echo "valign='top' style='border: 1px solid black; text-align:left;'>\n";
 				echo "<p style='min-height:".$fb_nblig_avis_chef_em."em;'>\n";
 				//echo "<p style='min-height:20em;'>\n";
 				echo "<b>Avis et signature du chef d'établissement:</b>";

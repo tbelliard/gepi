@@ -29,7 +29,7 @@
 	echo "<tr>\n";
 
 	echo "<td style='border: 1px solid black; text-align:left; font-weight:bold;'>\n";
-	echo "<p class='discipline'>";
+	echo "<p class='discipline fb'>";
 	echo "Socle B2i";
 	echo "</p>";
 	echo "</td>\n";
@@ -38,7 +38,9 @@
 	echo "&nbsp;";
 	echo "</td>\n";
 
-	echo "<td style='border: 1px solid black; text-align:center;'>\n";
+	echo "<td ";
+	echo " class='fb' ";
+	echo "style='border: 1px solid black; text-align:center;'>\n";
 	if($num_fb_col==1){
 		echo $note_b2i;
 	}
@@ -47,7 +49,9 @@
 	}
 	echo "</td>\n";
 
-	echo "<td style='border: 1px solid black; text-align:center;'>\n";
+	echo "<td ";
+	echo " class='fb' ";
+	echo "style='border: 1px solid black; text-align:center;'>\n";
 	if($num_fb_col==2){
 		echo $note_b2i;
 	}
@@ -61,7 +65,7 @@
 	echo "<tr>\n";
 
 	echo "<td style='border: 1px solid black; text-align:left; font-weight:bold;'>\n";
-	echo "<p class='discipline'>";
+	echo "<p class='discipline fb'>";
 	echo "Socle Niveau A2 de langue";
 	echo "</p>";
 	echo "</td>\n";
@@ -70,7 +74,9 @@
 	echo "&nbsp;";
 	echo "</td>\n";
 
-	echo "<td style='border: 1px solid black; text-align:center;'>\n";
+	echo "<td ";
+	echo " class='fb' ";
+	echo "style='border: 1px solid black; text-align:center;'>\n";
 	if($num_fb_col==1){
 		echo $note_a2;
 	}
@@ -79,7 +85,9 @@
 	}
 	echo "</td>\n";
 
-	echo "<td style='border: 1px solid black; text-align:center;'>\n";
+	echo "<td ";
+	echo " class='fb' ";
+	echo "style='border: 1px solid black; text-align:center;'>\n";
 	if($num_fb_col==2){
 		echo $note_a2;
 	}
