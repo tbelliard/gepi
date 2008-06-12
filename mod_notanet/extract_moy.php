@@ -163,7 +163,7 @@ else {
 				}
 			}
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 
 			// Boucle élèves:
 			$num_eleve=0;
@@ -220,7 +220,7 @@ else {
 			}
 		}
 		elseif($extract_mode=="select") {
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 
 			// A FAIRE...
 
@@ -286,7 +286,7 @@ else {
 			unset($tabmatieres);
 
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 
 			// Boucle élèves:
 			$num_eleve=0;
