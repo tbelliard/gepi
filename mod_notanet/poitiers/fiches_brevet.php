@@ -313,6 +313,7 @@ if (isset($_POST['enregistrer_param'])) {
 
 
 //echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css">';
+//echo '<link rel="stylesheet" type="text/css" href="../mod_notanet.css">';
 
 //**************** EN-TETE *****************
 $titre_page = "Fiches Brevet";
@@ -1197,8 +1198,31 @@ else {
 								if($tabmatieres[$j][-1]=='PTSUP'){
 									echo "rowspan='2' ";
 								}
-								echo "style='border: 1px solid black; text-align:center;'>\n";
-								echo "&nbsp;";
+								//echo "style='border: 1px solid black; text-align:center;'>\n";
+								//echo "&nbsp;";
+
+								echo "style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
+
+								if($avec_app=="y") {
+									$sql="SELECT appreciation FROM notanet_app na,
+																	notanet_corresp nc
+																WHERE na.login='$lig1->login' AND
+																	nc.notanet_mat='".$tabmatieres[$j][0]."' AND
+																	nc.matiere=na.matiere;";
+									//echo "$sql<br />";
+									$res_app=mysql_query($sql);
+									if(mysql_num_rows($res_app)>0){
+										$lig_app=mysql_fetch_object($res_app);
+										echo "$lig_app->appreciation";
+									}
+									else{
+										echo "&nbsp;";
+									}
+								}
+								else {
+									echo "&nbsp;";
+								}
+
 								echo "</td>\n";
 
 
@@ -1474,8 +1498,31 @@ else {
 									echo "</td>\n";
 
 									// Appréciation
-									echo "<td style='border: 1px solid black; text-align:center;'>\n";
-									echo "&nbsp;";
+									echo "<td ";
+									//style='border: 1px solid black; text-align:center;'>\n";
+
+									echo "style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
+
+									if($avec_app=="y") {
+										$sql="SELECT appreciation FROM notanet_app na,
+																		notanet_corresp nc
+																	WHERE na.login='$lig1->login' AND
+																		nc.notanet_mat='".$tabmatieres[$j][0]."' AND
+																		nc.matiere=na.matiere;";
+										//echo "$sql<br />";
+										$res_app=mysql_query($sql);
+										if(mysql_num_rows($res_app)>0){
+											$lig_app=mysql_fetch_object($res_app);
+											echo "$lig_app->appreciation";
+										}
+										else{
+											echo "&nbsp;";
+										}
+									}
+									else {
+										echo "&nbsp;";
+									}
+
 									echo "</td>\n";
 
 									// Colonne total des lignes calculées (non NOTNONCA)...
