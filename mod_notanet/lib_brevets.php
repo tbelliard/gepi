@@ -1139,6 +1139,15 @@ function formate_note_notanet($chaine){
 function tab_extract_moy($tab_ele,$id_clas) {
 	global $num_eleve, $classe, $tab_mat;
 
+
+
+
+	$affiche_enregistrements_precedents="y";
+	//global $affiche_enregistrements_precedents;
+
+
+
+
 	//echo "\$tab_ele['type_brevet']=".$tab_ele['type_brevet']."<br />";
 	$tabmatieres=tabmatieres($tab_ele['type_brevet']);
 	//echo "count(\$tabmatieres)=".count($tabmatieres)."<br />";
@@ -1184,10 +1193,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 	//$TOT=0;
 	//echo "<table border='1'>\n";
-	echo "<table class='boireaus'>\n";
 	$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
-	//echo "<td>$sql</td>";
+	//echo "$sql<br />";
 	$resultat_periodes=mysql_query($sql);
+	echo "<table class='boireaus'>\n";
 	echo "<tr style='font-weight: bold; text-align:center;'>\n";
 	echo "<th>Id</th>\n";
 	echo "<th>Matière</th>\n";
@@ -1197,6 +1206,11 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	}
 	echo "<th>Moyenne</th>\n";
 	echo "<th>Correction</th>\n";
+	if($affiche_enregistrements_precedents=="y") {
+		echo "<th>\n";
+		echo "Enregistré<br />auparavant";
+		echo "</th>\n";
+	}
 	echo "</tr>\n";
 
 	$alt=1;
@@ -1457,6 +1471,22 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					}
 					*/
 
+
+					if($affiche_enregistrements_precedents=="y") {
+						echo "<td>\n";
+						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND matiere='".$id_matiere[$j][$k]."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
+						$enr=mysql_query($sql);
+						if(mysql_num_rows($enr)>0) {
+							$lig_enr=mysql_fetch_object($enr);
+							echo $lig_enr->note;
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+
+
 					echo "</tr>\n";
 				}
 				/*
@@ -1520,6 +1550,22 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					}
 					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_b2i' size='6' /></td>\n";
 
+
+					if($affiche_enregistrements_precedents=="y") {
+						echo "<td>\n";
+						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
+						$enr=mysql_query($sql);
+						if(mysql_num_rows($enr)>0) {
+							$lig_enr=mysql_fetch_object($enr);
+							echo $lig_enr->note;
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+
+
 					echo "</tr>\n";
 
 				}
@@ -1547,6 +1593,20 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						$temoin_notanet_eleve="ERREUR";
 					}
 					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_a2' size='6' /></td>\n";
+
+					if($affiche_enregistrements_precedents=="y") {
+						echo "<td>\n";
+						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
+						$enr=mysql_query($sql);
+						if(mysql_num_rows($enr)>0) {
+							$lig_enr=mysql_fetch_object($enr);
+							echo $lig_enr->note;
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
 
 					echo "</tr>\n";
 
