@@ -24,6 +24,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+function jour_en_fr($en){
+	if(substr(strtolower($en),0,3)=='mon') {
+		return 'lundi';
+	}
+	elseif(substr(strtolower($en),0,3)=='tue') {
+		return 'mardi';
+	}
+	elseif(substr(strtolower($en),0,3)=='wed') {
+		return 'mercredi';
+	}
+	elseif(substr(strtolower($en),0,3)=='thu') {
+		return 'jeudi';
+	}
+	elseif(substr(strtolower($en),0,3)=='fri') {
+		return 'vendredi';
+	}
+	elseif(substr(strtolower($en),0,3)=='sat') {
+		return 'samedi';
+	}
+	elseif(substr(strtolower($en),0,3)=='sun') {
+		return 'dimanche';
+	}
+	else {return "";}
+}
+
 function get_commune($code_commune_insee,$mode){
 	$retour="";
 
@@ -310,6 +335,8 @@ function info_eleve($ele_login) {
 				$tab_ele['groupes'][$cpt]['description']=$lig_grp->description;
 				$tab_ele['groupes'][$cpt]['matiere_nom_complet']=$lig_grp->nom_complet;
 
+				$tab_ele['index_grp'][$lig_grp->id]=$cpt;
+
 				$sql="SELECT periode FROM j_eleves_groupes WHERE login='$ele_login' AND id_groupe='".$lig_grp->id."' ORDER BY periode;";
 				$res_per2=mysql_query($sql);
 				if(mysql_num_rows($res_per2)>0) {
@@ -323,12 +350,18 @@ function info_eleve($ele_login) {
 				$res_prof=mysql_query($sql);
 				if(mysql_num_rows($res_prof)>0) {
 					$tab_ele['groupes'][$cpt]['prof']=array();
+					$tab_ele['groupes'][$cpt]['prof_liste']="";
 					$cpt2=0;
 					while($lig_prof=mysql_fetch_object($res_prof)) {
+						if($cpt2>0) {$tab_ele['groupes'][$cpt]['prof_liste'].=", ";}
+
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['prof_login']=$lig_prof->login;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['nom']=$lig_prof->nom;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['prenom']=$lig_prof->prenom;
 						$tab_ele['groupes'][$cpt]['prof'][$cpt2]['civilite']=$lig_prof->civilite;
+
+						$tab_ele['groupes'][$cpt]['prof_liste'].=$lig_prof->civilite." ".$lig_prof->nom." ".substr($lig_prof->prenom,0,1).".";
+
 						$cpt2++;
 					}
 				}
@@ -492,15 +525,15 @@ function info_eleve($ele_login) {
 		//echo "$sql<br />";
 		$res_ct=mysql_query($sql);
 		if(mysql_num_rows($res_ct)>0) {
-			$cpt=0;
+			$cpt1=0;
 			while($lig_ct=mysql_fetch_object($res_ct)) {
-				$tab_ele['cdt_entry'][$cpt]=array();
-				$tab_ele['cdt_entry'][$cpt]['id_ct']=$lig_ct->id_ct;
-				$tab_ele['cdt_entry'][$cpt]['heure_entry']=$lig_ct->heure_entry;
-				$tab_ele['cdt_entry'][$cpt]['id_groupe']=$lig_ct->id_groupe;
-				$tab_ele['cdt_entry'][$cpt]['date_ct']=$lig_ct->date_ct;
-				$tab_ele['cdt_entry'][$cpt]['id_login']=$lig_ct->id_login;
-				$tab_ele['cdt_entry'][$cpt]['contenu']=$lig_ct->contenu;
+				$tab_ele['cdt_entry'][$cpt1]=array();
+				$tab_ele['cdt_entry'][$cpt1]['id_ct']=$lig_ct->id_ct;
+				$tab_ele['cdt_entry'][$cpt1]['heure_entry']=$lig_ct->heure_entry;
+				$tab_ele['cdt_entry'][$cpt1]['id_groupe']=$lig_ct->id_groupe;
+				$tab_ele['cdt_entry'][$cpt1]['date_ct']=$lig_ct->date_ct;
+				$tab_ele['cdt_entry'][$cpt1]['id_login']=$lig_ct->id_login;
+				$tab_ele['cdt_entry'][$cpt1]['contenu']=$lig_ct->contenu;
 				/*
 				echo "<p>\n";
 				foreach($tab_ele['cdt_entry'][$cpt] as $key => $value) {
@@ -509,7 +542,7 @@ function info_eleve($ele_login) {
 				echo "</p>\n";
 				*/
 				$tab_date_ct[]=$lig_ct->date_ct;
-				$cpt++;
+				$cpt1++;
 			}
 		}
 
@@ -517,16 +550,16 @@ function info_eleve($ele_login) {
 		//echo "$sql<br />";
 		$res_ct=mysql_query($sql);
 		if(mysql_num_rows($res_ct)>0) {
-			$cpt=0;
+			$cpt2=0;
 			while($lig_ct=mysql_fetch_object($res_ct)) {
-				$tab_ele['cdt_dev'][$cpt]=array();
-				$tab_ele['cdt_dev'][$cpt]['id_ct']=$lig_ct->id_ct;
-				$tab_ele['cdt_dev'][$cpt]['id_groupe']=$lig_ct->id_groupe;
-				$tab_ele['cdt_dev'][$cpt]['date_ct']=$lig_ct->date_ct;
-				$tab_ele['cdt_dev'][$cpt]['id_login']=$lig_ct->id_login;
-				$tab_ele['cdt_dev'][$cpt]['contenu']=$lig_ct->contenu;
+				$tab_ele['cdt_dev'][$cpt2]=array();
+				$tab_ele['cdt_dev'][$cpt2]['id_ct']=$lig_ct->id_ct;
+				$tab_ele['cdt_dev'][$cpt2]['id_groupe']=$lig_ct->id_groupe;
+				$tab_ele['cdt_dev'][$cpt2]['date_ct']=$lig_ct->date_ct;
+				$tab_ele['cdt_dev'][$cpt2]['id_login']=$lig_ct->id_login;
+				$tab_ele['cdt_dev'][$cpt2]['contenu']=$lig_ct->contenu;
 				$tab_date_ct[]=$lig_ct->date_ct;
-				$cpt++;
+				$cpt2++;
 			}
 		}
 
@@ -534,27 +567,35 @@ function info_eleve($ele_login) {
 		$tmp_tab_date_ct=$tab_date_ct;
 		unset($tab_date_ct);
 		$tab_date_ct=array_unique($tmp_tab_date_ct);
-		array_unique($tab_date_ct);
+		//array_unique($tab_date_ct);
 
+		$cpt1_2=$cpt1+$cpt2;
 		$cpt=0;
-		for($i=0;$i<count($tab_date_ct);$i++) {
-			for($j=0;$j<count($tab_ele['cdt_dev']);$j++) {
-				if($tab_ele['cdt_dev'][$j]['date_ct']==$tab_date_ct[$i]) {
-					$tab_ele['cdt'][$cpt]['dev'][]=$tab_ele['cdt_dev'][$j];
+		//for($i=0;$i<count($tab_date_ct);$i++) {
+		//for($i=0;$i<max($cpt1,$cpt2);$i++) {
+		for($i=0;$i<$cpt1_2;$i++) {
+			//echo "\$tab_date_ct[$i]=".$tab_date_ct[$i]."<br />";
+			//if($tab_date_ct[$i]!="") {
+			if((isset($tab_date_ct[$i]))&&($tab_date_ct[$i]!="")) {
+				$tab_ele['cdt'][$cpt]['date_ct']=$tab_date_ct[$i];
+				for($j=0;$j<count($tab_ele['cdt_dev']);$j++) {
+					if($tab_ele['cdt_dev'][$j]['date_ct']==$tab_date_ct[$i]) {
+						$tab_ele['cdt'][$cpt]['dev'][]=$tab_ele['cdt_dev'][$j];
+					}
+					elseif($tab_ele['cdt_dev'][$j]['date_ct']>$tab_date_ct[$i]) {
+						break;
+					}
 				}
-				elseif($tab_ele['cdt_dev'][$j]['date_ct']>$tab_date_ct[$i]) {
-					break;
+				for($j=0;$j<count($tab_ele['cdt_entry']);$j++) {
+					if($tab_ele['cdt_entry'][$j]['date_ct']==$tab_date_ct[$i]) {
+						$tab_ele['cdt'][$cpt]['entry'][]=$tab_ele['cdt_entry'][$j];
+					}
+					elseif($tab_ele['cdt_entry'][$j]['date_ct']>$tab_date_ct[$i]) {
+						break;
+					}
 				}
+				$cpt++;
 			}
-			for($j=0;$j<count($tab_ele['cdt_entry']);$j++) {
-				if($tab_ele['cdt_entry'][$j]['date_ct']==$tab_date_ct[$i]) {
-					$tab_ele['cdt'][$cpt]['entry'][]=$tab_ele['cdt_entry'][$j];
-				}
-				elseif($tab_ele['cdt_entry'][$j]['date_ct']>$tab_date_ct[$i]) {
-					break;
-				}
-			}
-			$cpt++;
 		}
 	}
 

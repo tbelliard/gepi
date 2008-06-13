@@ -181,9 +181,17 @@ else {
 		while (!checkdate($month, $day, $year)) $day--;
 		$today=mktime(0,0,0,$month,$day,$year);
 		//================================
-		// Dates pour l'extraction des cahiers de textes: 2j avant et 7j après
-		$date_ct1=$today-2*24*3600;
+		// Dates pour l'extraction des cahiers de textes: 1j avant et 7j après
+		$date_ct1=$today-1*24*3600;
 		$date_ct2=$today+7*24*3600;
+
+		$j_sem_prec=date("d",$today-7*24*3600);
+		$m_sem_prec=date("m",$today-7*24*3600);
+		$y_sem_prec=date("Y",$today-7*24*3600);
+
+		$j_sem_suiv=date("d",$today+7*24*3600);
+		$m_sem_suiv=date("m",$today+7*24*3600);
+		$y_sem_suiv=date("Y",$today+7*24*3600);
 		//================================
 
 		// A FAIRE:
@@ -1165,36 +1173,91 @@ else {
 			echo "'>";
 			echo "<h2>Cahier de textes de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-			echo "Du ".date("D d/m/Y",$date_ct1)." au ".date("D d/m/Y",$date_ct2)."<br />";
+			echo "<p align='center'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
+			echo "Du ".jour_en_fr(date("D",$date_ct1))." ".date("d/m/Y",$date_ct1)." au ".jour_en_fr(date("D",$date_ct2))." ".date("d/m/Y",$date_ct2);
+			echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_suiv&amp;month=$m_sem_suiv&amp;year=$y_sem_suiv'><img src='../images/icons/forward.png' width='16' height='16' alt='Semaine suivante' /></a>";
+			echo "</p>\n";
+
+			$couleur_dev="#FFCCCF";
+			$couleur_entry="#C7FF99";
+
+			echo "<table class='boireaus' border='1'>\n";
+			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
 
 			for($j=0;$j<count($tab_ele['cdt']);$j++) {
-				echo "<div style='border:1px solid black; padding:2px;'>\n";
+
+				echo "<tr>\n";
+				echo "<td>\n";
+				//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['date_ct'])."<br />\n";
+				echo ucfirst(jour_en_fr(date("D",$tab_ele['cdt'][$j]['date_ct'])))." ".date("d/m/Y",$tab_ele['cdt'][$j]['date_ct'])."<br />\n";
+				echo "</td>\n";
+
+				//echo "<td valign='top' style='padding:3px;'>\n";
+				echo "<td valign='top'>\n";
+				//echo "<div style='border:1px solid black; padding:2px;'>\n";
 				if(isset($tab_ele['cdt'][$j]['dev'])) {
 					for($k=0;$k<count($tab_ele['cdt'][$j]['dev']);$k++) {
-						echo "<div style='border:1px solid black; background-color: lightyellow; margin:1px; display:block; width:40%;'>\n";
-						echo "Groupe ".$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']."<br />\n";
-						echo "Prof ".$tab_ele['cdt'][$j]['dev'][$k]['id_login']."<br />\n";
-						echo "Date ".$tab_ele['cdt'][$j]['dev'][$k]['date_ct']."<br />\n";
-						echo $tab_ele['cdt'][$j]['dev'][$k]['contenu'];
-						echo "</div>\n";
+						//echo "<div style='border:1px solid black; background-color: lightyellow; margin:1px; display:block; width:40%;'>\n";
+						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;'>\n";
+						echo "<tr style='background-color:$couleur_dev;'>\n";
+						echo "<td>\n";
+						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['name'].")</span>";
+						echo "</td>\n";
+
+						echo "<td>\n";
+						//echo "Prof ".$tab_ele['cdt'][$j]['dev'][$k]['id_login']."<br />\n";
+						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['prof_liste']."<br />\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr style='background-color:$couleur_dev;'>\n";
+						echo "<td colspan='2' style='text-align:left;'>\n";
+						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
+						echo nl2br($tab_ele['cdt'][$j]['dev'][$k]['contenu']);
+						//echo "</div>\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+						echo "</table>\n";
 					}
 				}
+				echo "</td>\n";
 
-				if(isset($tab_ele['cdt'][$j]['dev'])) {
+				//echo "<td valign='top' style='padding:3px;'>\n";
+				echo "<td valign='top'>\n";
+				if(isset($tab_ele['cdt'][$j]['entry'])) {
 					for($k=0;$k<count($tab_ele['cdt'][$j]['entry']);$k++) {
-						echo "<div style='border:1px solid black; background-color: lightgreen; margin:1px; display:block; width:40%;'>\n";
-						echo "Groupe ".$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']."<br />\n";
-						echo "Prof ".$tab_ele['cdt'][$j]['entry'][$k]['id_login']."<br />\n";
-						echo "Date ".$tab_ele['cdt'][$j]['entry'][$k]['date_ct']."<br />\n";
-						echo $tab_ele['cdt'][$j]['entry'][$k]['contenu'];
-						echo "</div>\n";
+						//echo "<div style='border:1px solid black; background-color: lightgreen; margin:1px; display:block; width:40%;'>\n";
+						//echo "Groupe ".$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']."<br />\n";
+						//echo "Prof ".$tab_ele['cdt'][$j]['entry'][$k]['id_login']."<br />\n";
+						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
+						//echo $tab_ele['cdt'][$j]['entry'][$k]['contenu'];
+						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;'>\n";
+						echo "<tr style='background-color:$couleur_entry;'>\n";
+						echo "<td>\n";
+						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['name'].")</span>";
+						echo "</td>\n";
+
+						echo "<td>\n";
+						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['prof_liste']."<br />\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr style='background-color:$couleur_entry;'>\n";
+						echo "<td colspan='2' style='text-align:left;'>\n";
+						echo nl2br($tab_ele['cdt'][$j]['entry'][$k]['contenu']);
+						echo "</td>\n";
+						echo "</tr>\n";
+						echo "</table>\n";
 					}
 				}
 
-				echo "</div>\n";
+				//echo "</div>\n";
+				echo "</tr>\n";
 			}
 
-			echo "</div>\n";
+			//echo "</div>\n";
+			echo "</table>\n";
 		}
 
 		//===================================================
