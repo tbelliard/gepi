@@ -606,7 +606,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo $n
 
 					<?php
 					// seul la personne qui avait saisi peut modifier
-					if ( $etatpar_alert_eleve === $_SESSION['login'] or $etatpar_alert_eleve === '' ) { ?>
+					if ( strtoupper($etatpar_alert_eleve) === strtoupper($_SESSION['login']) or $etatpar_alert_eleve === '' ) { ?>
 					<form name="form3" method="post" action="alert_suivi.php#ea">
 				               	<input type="radio" name="etat_alert_eleve" id="eae1" value="1" onClick="javascript:document.form3.submit()" <?php  if ( $etat_alert_eleve === '1' ) { ?>checked="checked"<?php } ?> /><label for="eae1" style="cursor: pointer;">Convocation de l'élève.</label><br />
 				               	<input type="radio" name="etat_alert_eleve" id="eae2" value="2" onClick="javascript:document.form3.submit()" <?php  if ( $etat_alert_eleve === '2' ) { ?>checked="checked"<?php } ?> /><label for="eae2" style="cursor: pointer;">Ne pas tenir compte de cette alerte.</label><br />
