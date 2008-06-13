@@ -100,7 +100,8 @@ if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"
 }
 
 echo "<p class='grand'>Changement du mot de passe</p>\n";
-if ($user_login != $_SESSION['login']) {
+//if ($user_login != $_SESSION['login']) {
+if (strtoupper($user_login) != strtoupper($_SESSION['login'])) {
     if ($user_statut == 'professeur')
         // Mot de passe comportant des lettres et des chiffres
         $flag = 0;

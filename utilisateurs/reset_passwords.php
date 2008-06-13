@@ -70,7 +70,7 @@ $user_classe = isset($_POST["user_classe"]) ? $_POST["user_classe"] : (isset($_G
 // Il faut être sûr que l'on ne fait pas de réinitialisation accidentelle de tous les utilisateurs...
 // On bloque donc l'opération si jamais un des trois paramètres n'a pas été passé correctement, pour une raison ou une autre.
 
-if ($user_login AND $user_login == $_SESSION['login']) {
+if ($user_login AND strtoupper($user_login) == strtoupper($_SESSION['login'])) {
 	$user_login = false;
 	echo "<p>ERREUR ! Utilisez l'interface 'Gérer mon compte' pour changer votre mot de passe !</p>";
 	echo "</div></body></html>";
