@@ -81,7 +81,7 @@ if ($_SESSION['statut'] == "responsable") {
 }
 
 // Et une autre...
-if ($_SESSION['statut'] == "eleve" AND $_SESSION['login'] != $login_eleve) {
+if ($_SESSION['statut'] == "eleve" AND strtoupper($_SESSION['login']) != strtoupper($login_eleve)) {
     tentative_intrusion(3, "Tentative d'un élève de visualiser un bulletin simplifié d'un autre élève.");
     echo "Vous ne pouvez visualiser que vos bulletins simplifiés.\n";
     require("../lib/footer.inc.php");
@@ -222,8 +222,10 @@ if ($choix_edit != '2') {
 	    }
 	} else {
 	    // On sélectionne sans restriction
-	    //if ($choix_edit == '1') {
-	    if (($choix_edit == '1')||(!isset($login_prof))) {
+
+		// A REVOIR: l'ajout de !isset($login_prof) est destiné à éviter une erreur en compte scolarité... il me semble
+	    if ($choix_edit == '1') {
+	    //if (($choix_edit == '1')||(!isset($login_prof))) {
 	        $appel_liste_eleves = mysql_query("SELECT DISTINCT e.* " .
 	        		"FROM eleves e, j_eleves_classes c " .
 	        		"WHERE (" .
