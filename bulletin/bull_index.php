@@ -76,6 +76,57 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
+//============== ENTETE BULLETIN HTML ================
+elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
+	//=============================================
+	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
+	//$intercaler_releve_notes="y";
+	if(isset($intercaler_releve_notes)) {
+		// On n'extrait les relevés de notes que pour la/les périodes choisies pour les bulletins
+		$choix_periode='periode';
+		// REVOIR LE HEADER POUR PDF
+		include("../cahier_notes/initialisations_header_releves_html.php");
+	}
+	//=============================================
+
+	include("header_bulletin_pdf.php");
+/*
+	//=========================================
+	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+	$pdf=new bul_PDF('p', 'mm', 'A4');
+	$nb_eleve_aff = 1;
+	$categorie_passe = '';
+	$categorie_passe_count = 0;
+	$pdf->SetCreator($gepiSchoolName);
+	$pdf->SetAuthor($gepiSchoolName);
+	$pdf->SetKeywords('');
+	$pdf->SetSubject('Bulletin');
+	$pdf->SetTitle('Bulletin');
+	$pdf->SetDisplayMode('fullwidth', 'single');
+	$pdf->SetCompression(TRUE);
+	$pdf->SetAutoPageBreak(TRUE, 5);
+
+	$pdf->AddPage(); //ajout d'une page au document
+	$pdf->SetFont('Arial');
+
+	if ( !isset($X_etab) or empty($X_etab) ) {
+		$X_etab = '5';
+		$Y_etab = '5';
+	}
+	$pdf->SetXY($X_etab,$Y_etab);
+	$pdf->SetFont('Arial','',14);
+	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
+	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
+
+
+	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
+	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
+	$pdf->Output($nom_bulletin,'I');
+	die();
+	//=========================================
+*/
+}
+//============ FIN ENTETE BULLETIN HTML ==============
 
 //echo "microtime()=".microtime()."<br />";
 //echo "time()=".time()."<br />";
@@ -84,13 +135,14 @@ $debug="n";
 $tab_instant=array();
 include("bull_func.lib.php");
 
-//==============================
-$motif="Duree_totale";
-//decompte_debug($motif,"Témoin de $motif initialisation");
-decompte_debug($motif,"");
-flush();
-//==============================
-
+if((!isset($_POST['mode_bulletin']))||($_POST['mode_bulletin']!='pdf')) {
+	//==============================
+	$motif="Duree_totale";
+	//decompte_debug($motif,"Témoin de $motif initialisation");
+	decompte_debug($motif,"");
+	flush();
+	//==============================
+}
 
 $tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
 $tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : NULL;
@@ -330,13 +382,73 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>\n";
 
 	//=======================================
+
 	// A remplacer par la suite par un choix:
-	echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
+	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
+	echo "<table border='0'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf()' checked /> ";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<label for='mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	$test = sql_query1("SHOW TABLES LIKE 'commentaires_types'");
+	if ($test == -1) {
+		echo "Les modèles PDF utilisent une table 'modele_bulletin' qui semble absente.<br />Visitez la page de <a href='test_modele_bull.php'>création de cette table</a> d'après l'ancienne table 'model_bulletin' pour permettre l'impression de bulletins PDF.";
+	}
+	else {
+		echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf()' /> ";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
+
+		echo "<br />\n";
+		echo "<span id='div_modele_bulletin_pdf'>\n";
+			echo "Choisir le modèle de bulletin<br/>";
+			// sélection des modèles des bulletins PDF
+			//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
+			$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
+			//echo "$sql<br />";
+			$requete_modele = mysql_query($sql);
+			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
+			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
+				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
+			}
+				while($donner_modele = mysql_fetch_array($requete_modele)) {
+					echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
+					echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
+				}
+			echo "</select>\n";
+		echo "</span>\n";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<script type='text/javascript'>
+	function display_div_modele_bulletin_pdf() {
+		if(document.getElementById('div_modele_bulletin_pdf')) {
+			if(document.getElementById('mode_bulletin_pdf').checked==true) {
+				document.getElementById('div_modele_bulletin_pdf').style.display='';
+			}
+			else {
+				document.getElementById('div_modele_bulletin_pdf').style.display='none';
+			}
+		}
+	}
+
+	display_div_modele_bulletin_pdf();
+</script>\n";
+
+
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
 	//=======================================
 	echo "<input type='hidden' name='choix_periode_num' value='fait' />\n";
-
-
 
 	//=======================================
 	//echo "<div style='float:right; width:40%'>\n";
@@ -586,13 +698,13 @@ function display_param_releve() {
 		}
 	}
 	// On donne l'accès aux liens de pliage/dépliage des paramètres du relevé de notes
-	document.getElementById('pliage_param_releve').style.display='';
+	if(document.getElementById('pliage_param_releve')) {document.getElementById('pliage_param_releve').style.display='';}
 }
 display_param_releve();
 
 // On cache l'accès aux liens de pliage/dépliage des paramètres du relevé de notes
 // jusqu'à ce que la case d'insertion des relevés de notes entre les bulletins ait été cochée (au moins une fois)
-document.getElementById('pliage_param_releve').style.display='none';
+if(document.getElementById('pliage_param_releve')) {document.getElementById('pliage_param_releve').style.display='none';}
 
 </script>\n";
 
@@ -633,7 +745,9 @@ else {
 </style>\n";
 	*/
 
-	echo "<div id='infodiv'>
+
+	if($mode_bulletin=="html") {
+		echo "<div id='infodiv'>
 <p id='titre_infodiv' style='font-weight:bold; text-align:center; border:1px solid black;'></p>
 <table class='boireaus' width='100%'>
 <tr>
@@ -651,7 +765,7 @@ else {
 </tr>
 </table>
 </div>\n";
-
+	}
 
 	//=============================================
 	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
@@ -665,13 +779,15 @@ else {
 	//=============================================
 
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin=="html") {
+		echo "<script type='text/javascript'>
 	document.getElementById('titre_infodiv').innerHTML='Bulletins';
 	document.getElementById('td_info').innerHTML='Préparatifs';
 	document.getElementById('td_classe').innerHTML='';
 	document.getElementById('td_periode').innerHTML='';
 	document.getElementById('td_ele').innerHTML='';
 </script>\n";
+	}
 
 	//========================================
 
@@ -782,13 +898,195 @@ else {
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
 		//==============================
-		$motif="Temoin_classe";
-		decompte_debug($motif,"$motif classe $loop_classe");
-		flush();
-		echo "<script type='text/javascript'>
+		if($mode_bulletin=="html") {
+			$motif="Temoin_classe";
+			decompte_debug($motif,"$motif classe $loop_classe");
+			flush();
+			echo "<script type='text/javascript'>
 	document.getElementById('td_classe').innerHTML='".get_class_from_id($tab_id_classe[$loop_classe])."';
 </script>\n";
+		}
 		//==============================
+
+
+		// Remplissage des paramètres du modèle de bulletin PDF:
+		if($mode_bulletin=="pdf") {
+
+			// information d'activation des différentes parties du bulletin
+			$tab_modele_pdf["affiche_filigrame"][$tab_id_classe[$loop_classe]]='1'; // affiche un filigramme
+			$tab_modele_pdf["texte_filigrame"][$tab_id_classe[$loop_classe]]='DUPLICATA INTERNET'; // texte du filigrame
+			$tab_modele_pdf["affiche_logo_etab"][$tab_id_classe[$loop_classe]]='1';
+			$tab_modele_pdf["nom_etab_gras"][$tab_id_classe[$loop_classe]]='0';
+			$tab_modele_pdf["entente_mel"][$tab_id_classe[$loop_classe]]='1'; // afficher l'adresse mel dans l'entête
+			$tab_modele_pdf["entente_tel"][$tab_id_classe[$loop_classe]]='1'; // afficher le numéro de téléphone dans l'entête
+			$tab_modele_pdf["entente_fax"][$tab_id_classe[$loop_classe]]='1'; // afficher le numéro de fax dans l'entête
+			$tab_modele_pdf["L_max_logo"][$tab_id_classe[$loop_classe]]=75; $tab_modele_pdf["H_max_logo"][$tab_id_classe[$loop_classe]]=75; //dimension du logo
+			$tab_modele_pdf["active_bloc_datation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les informations de datation du bulletin
+			$tab_modele_pdf["taille_texte_date_edition"][$tab_id_classe[$loop_classe]] = '8'; // définit la taille de la date d'édition du bulletin
+			$tab_modele_pdf["active_bloc_eleve"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les informations sur l'élève
+			$tab_modele_pdf["active_bloc_adresse_parent"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher l'adresse des parents
+			$tab_modele_pdf["active_bloc_absence"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les absences de l'élève
+			$tab_modele_pdf["active_bloc_note_appreciation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les notes et appréciations
+			$tab_modele_pdf["active_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les avis du conseil de classe
+			$tab_modele_pdf["active_bloc_chef"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la signature du chef
+			$tab_modele_pdf["active_photo"][$tab_id_classe[$loop_classe]] = '0'; // fait - afficher la photo de l'élève
+			$tab_modele_pdf["active_coef_moyenne"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le coéficient des moyenne par matière
+			$active_coef_sousmoyene = '1'; // fait - afficher le coéficient des moyenne par matière
+			$tab_modele_pdf["active_nombre_note"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nombre de note par matière sous la moyenne de l'élève
+			$tab_modele_pdf["active_nombre_note_case"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nombre de note par matière
+			$tab_modele_pdf["active_moyenne"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes
+			$tab_modele_pdf["active_moyenne_eleve"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la moyenne de l'élève
+			$tab_modele_pdf["active_moyenne_classe"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes de la classe
+			$tab_modele_pdf["active_moyenne_min"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes minimum
+			$tab_modele_pdf["active_moyenne_max"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes maximum
+			$tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le nom des regroupement sur le coté
+			$tab_modele_pdf["active_entete_regroupement"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les entête des regroupement
+			$tab_modele_pdf["active_moyenne_regroupement"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les moyennes des regroupement
+			$tab_modele_pdf["active_moyenne_general"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher la moyenne général sur le bulletin
+			$tab_modele_pdf["active_rang"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le rang de l'élève
+			$tab_modele_pdf["active_graphique_niveau"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le graphique des niveaux
+			$tab_modele_pdf["active_appreciation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les appréciations des professeurs
+
+			$tab_modele_pdf["affiche_doublement"][$tab_id_classe[$loop_classe]] = '1'; // affiche si l'élève à doubler
+			$tab_modele_pdf["affiche_date_naissance"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date de naissance de l'élève
+			$tab_modele_pdf["affiche_dp"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'état de demi pension ou extern
+			$tab_modele_pdf["affiche_nom_court"][$tab_id_classe[$loop_classe]] = '1'; // affiche le nom court de la classe
+			$tab_modele_pdf["affiche_effectif_classe"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'effectif de la classe
+			$tab_modele_pdf["affiche_numero_impression"][$tab_id_classe[$loop_classe]] = '1'; // affiche le numéro d'impression des bulletins
+			$tab_modele_pdf["affiche_etab_origine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'établissement d'origine
+
+			$tab_modele_pdf["toute_moyenne_meme_col"][$tab_id_classe[$loop_classe]]='0'; // afficher les information moyenne classe/min/max sous la moyenne général de l'élève
+			$active_coef_sousmoyene = '1'; //afficher le coeficent en dessous de la moyenne de l'élève
+
+			$tab_modele_pdf["entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; //choix du type d'entete des moyennes
+			$tab_modele_pdf["ordre_entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; // ordre des entêtes tableau du bulletin
+
+			// information paramétrage
+			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'Arial';
+			// cadre identitée parents
+			$tab_modele_pdf["X_parent"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_parent"][$tab_id_classe[$loop_classe]]=40;
+			$tab_modele_pdf["imprime_pour"][$tab_id_classe[$loop_classe]] = 1;
+			// cadre identitée eleve
+			$tab_modele_pdf["X_eleve"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_eleve"][$tab_id_classe[$loop_classe]]=40;
+			$tab_modele_pdf["cadre_eleve"][$tab_id_classe[$loop_classe]]=1;
+			// cadre de datation du bulletin
+			$tab_modele_pdf["X_datation_bul"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_datation_bul"][$tab_id_classe[$loop_classe]]=5;
+			$tab_modele_pdf["cadre_datation_bul"][$tab_id_classe[$loop_classe]]=1;
+			// si les catégorie son affiché avec moyenne
+			$tab_modele_pdf["hauteur_info_categorie"][$tab_id_classe[$loop_classe]]=5;
+			// cadre des notes et app
+			$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72; $tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200; $tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
+			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') { $tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5; $tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]; $tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]-5; $tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]; }
+			//coef des matiere
+			$tab_modele_pdf["largeur_coef_moyenne"][$tab_id_classe[$loop_classe]] = 8;
+			//nombre de note par matière
+			$tab_modele_pdf["largeur_nombre_note"][$tab_id_classe[$loop_classe]] = 8;
+			//champ des moyennes
+			$tab_modele_pdf["largeur_d_une_moyenne"][$tab_id_classe[$loop_classe]] = 10;
+			//graphique de niveau
+			$tab_modele_pdf["largeur_niveau"][$tab_id_classe[$loop_classe]] = 18;
+			//rang de l'élève
+			$tab_modele_pdf["largeur_rang"][$tab_id_classe[$loop_classe]] = 8;
+			//autres infos
+			$tab_modele_pdf["active_reperage_eleve"][$tab_id_classe[$loop_classe]] = '1';
+			$tab_modele_pdf["couleur_reperage_eleve1"][$tab_id_classe[$loop_classe]] = '255';
+			$tab_modele_pdf["couleur_reperage_eleve2"][$tab_id_classe[$loop_classe]] = '255';
+			$tab_modele_pdf["couleur_reperage_eleve3"][$tab_id_classe[$loop_classe]] = '207';
+			$tab_modele_pdf["couleur_categorie_cote"][$tab_id_classe[$loop_classe]] = '1';
+			$tab_modele_pdf["couleur_categorie_cote1"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_categorie_cote2"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_categorie_cote3"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_categorie_entete"][$tab_id_classe[$loop_classe]] = '1';
+			$tab_modele_pdf["couleur_categorie_entete1"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_categorie_entete2"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_categorie_entete3"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_moy_general"][$tab_id_classe[$loop_classe]] = '1';
+			$tab_modele_pdf["couleur_moy_general1"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_moy_general2"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["couleur_moy_general3"][$tab_id_classe[$loop_classe]]='239';
+			$tab_modele_pdf["titre_entete_matiere"][$tab_id_classe[$loop_classe]]='Matière';
+			$active_coef_sousmoyene = '1'; $tab_modele_pdf["titre_entete_coef"][$tab_id_classe[$loop_classe]]='coef.';
+			$tab_modele_pdf["titre_entete_nbnote"][$tab_id_classe[$loop_classe]]='nb. n.';
+			$tab_modele_pdf["titre_entete_rang"][$tab_id_classe[$loop_classe]]='rang';
+			$titre_entete_appreciation='Appréciation/Conseils';
+			// cadre absence
+			$tab_modele_pdf["X_absence"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_absence"][$tab_id_classe[$loop_classe]]=246.3;
+			// entete du bas contient les moyennes gérnéral
+			$tab_modele_pdf["hauteur_entete_moyenne_general"][$tab_id_classe[$loop_classe]] = 5;
+			// cadre des Avis du conseil de classe
+			$tab_modele_pdf["X_avis_cons"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_avis_cons"][$tab_id_classe[$loop_classe]]=250; $tab_modele_pdf["longeur_avis_cons"][$tab_id_classe[$loop_classe]]=130; $tab_modele_pdf["hauteur_avis_cons"][$tab_id_classe[$loop_classe]]=37;
+			$tab_modele_pdf["cadre_avis_cons"][$tab_id_classe[$loop_classe]]=1;
+			// cadre signature du chef
+			$tab_modele_pdf["X_sign_chef"][$tab_id_classe[$loop_classe]]=138; $tab_modele_pdf["Y_sign_chef"][$tab_id_classe[$loop_classe]]=250; $tab_modele_pdf["longeur_sign_chef"][$tab_id_classe[$loop_classe]]=67; $tab_modele_pdf["hauteur_sign_chef"][$tab_id_classe[$loop_classe]]=37;
+			$tab_modele_pdf["cadre_sign_chef"][$tab_id_classe[$loop_classe]]=0;
+			//les moyennes
+			$tab_modele_pdf["arrondie_choix"][$tab_id_classe[$loop_classe]]='0.01'; //arrondie de la moyenne
+			$tab_modele_pdf["nb_chiffre_virgule"][$tab_id_classe[$loop_classe]]='1'; //nombre de chiffre après la virgule
+			$tab_modele_pdf["chiffre_avec_zero"][$tab_id_classe[$loop_classe]]='1'; // si une moyenne se termine par ,00 alors on supprimer les zero
+
+			$tab_modele_pdf["autorise_sous_matiere"][$tab_id_classe[$loop_classe]] = '1'; //autorise l'affichage des sous matière
+			$tab_modele_pdf["affichage_haut_responsable"][$tab_id_classe[$loop_classe]] = '1'; //affiche le nom du haut responsable de la classe
+
+			$tab_modele_pdf["largeur_matiere"][$tab_id_classe[$loop_classe]] = '40'; // largeur de la colonne matiere
+
+			$tab_modele_pdf["taille_texte_matiere"][$tab_id_classe[$loop_classe]] = '10'; //taille du texte des matières
+
+			$tab_modele_pdf["titre_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = 'Avis du Conseil de classe:'; // titre du bloc avis du conseil de classe
+			$tab_modele_pdf["taille_titre_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '10'; // taille du titre du bloc avis du conseil
+			$tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte prof principal du bloc avis conseil de classe
+			$tab_modele_pdf["affiche_fonction_chef"][$tab_id_classe[$loop_classe]] = '1'; // affiche la fonction du chef
+			$tab_modele_pdf["taille_texte_fonction_chef"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte de la fonction du chef
+			$tab_modele_pdf["taille_texte_identitee_chef"][$tab_id_classe[$loop_classe]] = '10'; // taille du texte du nom du chef
+
+			$tab_modele_pdf["cadre_adresse"][$tab_id_classe[$loop_classe]] = ''; // cadre sur l'adresse
+
+			$tab_modele_pdf["centrage_logo"][$tab_id_classe[$loop_classe]] = '0'; // centrer le logo de l'établissement
+			$tab_modele_pdf["Y_centre_logo"][$tab_id_classe[$loop_classe]] = '18'; // centre du logo sur la page
+			$tab_modele_pdf["ajout_cadre_blanc_photo"][$tab_id_classe[$loop_classe]] = '0'; // ajouter un cadre blanc pour la photo de l'élève.
+
+			$tab_modele_pdf["affiche_moyenne_mini_general"][$tab_id_classe[$loop_classe]] = '1'; // permet l'affichage de la moyenne général mini
+			$tab_modele_pdf["affiche_moyenne_maxi_general"][$tab_id_classe[$loop_classe]] = '1'; // permet l'affichage de la moyenne général maxi
+
+			$tab_modele_pdf["affiche_date_edition"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date d'édition
+			$tab_modele_pdf["affiche_ine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'INE de l'élève
+
+
+			//================================
+			//================================
+			//================================
+
+			// Modèle de bulletin PDF
+			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : 1;
+			// CONTROLER SI type_bulletin EST BIEN UN ENTIER éventuellement -1
+			if(isset($type_bulletin)) {
+				if ($type_bulletin == -1) {
+					// cas modèle par classe
+					$sql="SELECT modele_bulletin_pdf FROM classes WHERE id='".$tab_id_classe[$loop_classe]."';";
+					$res_model=mysql_query($sql);
+					$lig_mb=mysql_fetch_object($res_model);
+
+					$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$lig_mb->modele_bulletin_pdf."';";
+				} else {
+					$sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='".$type_bulletin."';";
+				}
+			}
+
+			//$type_bulletin=3;
+			//$sql='SELECT * FROM modele_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
+			//echo "$sql<br />";
+			$requete_model = mysql_query($sql);
+			if(mysql_num_rows($requete_model)>0) {
+				$cpt=0;
+				while($lig_model=mysql_fetch_object($requete_model)) {
+					$tab_modele_pdf["$lig_model->nom"][$tab_id_classe[$loop_classe]]=$lig_model->valeur;
+				}
+			}
+
+			//================================
+			//================================
+			//================================
+		}
+
 
 		//$id_classe=2;
 		$id_classe=$tab_id_classe[$loop_classe];
@@ -856,12 +1154,14 @@ else {
 			}
 
 			//==============================
-			$motif="Temoin_periode";
-			decompte_debug($motif,"$motif classe $loop_classe période $periode_num");
-			flush();
-			echo "<script type='text/javascript'>
+			if($mode_bulletin=="html") {
+				$motif="Temoin_periode";
+				decompte_debug($motif,"$motif classe $loop_classe période $periode_num");
+				flush();
+				echo "<script type='text/javascript'>
 	document.getElementById('td_periode').innerHTML='".$periode_num."';
 </script>\n";
+			}
 			//==============================
 
 			//============================
@@ -915,6 +1215,7 @@ else {
 			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode_num';";
 			$res_per=mysql_query($sql);
 			$lig_per=mysql_fetch_object($res_per);
+			$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
 			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
 			$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 
@@ -983,6 +1284,7 @@ else {
 
 			$tab_bulletin[$id_classe][$periode_num]['id_classe']=$lig_classe->id;
 			$tab_bulletin[$id_classe][$periode_num]['classe']=$lig_classe->classe;
+			$tab_bulletin[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->nom_complet;
 			$tab_bulletin[$id_classe][$periode_num]['formule']=$lig_classe->formule;
 			$tab_bulletin[$id_classe][$periode_num]['suivi_par']=$lig_classe->suivi_par;
 
@@ -990,9 +1292,11 @@ else {
 			$classe_nom_complet=$lig_classe->nom_complet;
 
 			//==============================
-			$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
-			decompte_debug($motif,"$motif avant");
-			flush();
+			if($mode_bulletin=="html") {
+				$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif avant");
+				flush();
+			}
 			//==============================
 			//========================================
 			include("../lib/calcul_moy_gen.inc.php");
@@ -1000,9 +1304,11 @@ else {
 			// Voir en fin du fichier calcul_moy_gen.inc.php la liste des infos récupérées
 			//========================================
 			//==============================
-			$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
-			decompte_debug($motif,"$motif après");
-			flush();
+			if($mode_bulletin=="html") {
+				$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif après");
+				flush();
+			}
 			//==============================
 
 			/*
@@ -1044,6 +1350,7 @@ else {
 
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableaux d'indices [$j][$i] (groupe, élève)
+			// A VéRIFIER: Tableaux d'indices [$i][$j] (élève, groupe)
 			$tab_bulletin[$id_classe][$periode_num]['note']=$current_eleve_note;
 			$tab_bulletin[$id_classe][$periode_num]['statut']=$current_eleve_statut;
 			if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
@@ -1165,13 +1472,15 @@ else {
 					// ++++++++++++++++++++++++++++++++++++++
 
 					//==============================
-					$motif="Temoin_eleve".$id_classe."_".$periode_num;
-					decompte_debug($motif,"$motif élève $i: ".$current_eleve_login[$i]);
-					flush();
 
-					echo "<script type='text/javascript'>
+					if($mode_bulletin=="html") {
+						$motif="Temoin_eleve".$id_classe."_".$periode_num;
+						decompte_debug($motif,"$motif élève $i: ".$current_eleve_login[$i]);
+						flush();
+						echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$current_eleve_login[$i]."';
 </script>\n";
+					}
 					//==============================
 
 					// Récup des infos sur l'élève, les responsables, le PP, le CPE,...
@@ -1333,9 +1642,11 @@ else {
 					// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 					if ($bull_affiche_aid == 'y') {
 						//==============================
-						$motif="Temoin_eleve".$id_classe."_".$periode_num."_".$i;
-						decompte_debug($motif,"$motif élève $i (".$current_eleve_login[$i].") avant AID");
-						flush();
+						if($mode_bulletin=="html") {
+							$motif="Temoin_eleve".$id_classe."_".$periode_num."_".$i;
+							decompte_debug($motif,"$motif élève $i (".$current_eleve_login[$i].") avant AID");
+							flush();
+						}
 						//==============================
 
 						// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
@@ -1599,9 +1910,11 @@ else {
 						}
 
 						//==============================
-						$motif="Temoin_eleve".$id_classe."_".$periode_num."_".$i;
-						decompte_debug($motif,"$motif élève $i (".$current_eleve_login[$i].") après AID");
-						flush();
+						if($mode_bulletin=="html") {
+							$motif="Temoin_eleve".$id_classe."_".$periode_num."_".$i;
+							decompte_debug($motif,"$motif élève $i (".$current_eleve_login[$i].") après AID");
+							flush();
+						}
 						//==============================
 					}
 
@@ -1786,6 +2099,8 @@ else {
 		}
 	}
 
+
+
 	//========================================================================
 	// A CE STADE LE TABLEAU $tab_bulletin EST RENSEIGNé
 	// PLUS AUCUNE REQUETE NE DEVRAIT ETRE NECESSAIRE
@@ -1796,38 +2111,71 @@ else {
 	// POUR CHAQUE ELEVE.
 	//========================================================================
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin=="html") {
+		echo "<script type='text/javascript'>
 	document.getElementById('td_info').innerHTML='Affichage';
 </script>\n";
+	}
+
+	if($mode_bulletin=="pdf") {
+		// définition d'une variable
+		$hauteur_pris = 0;
+
+		/*****************************************
+		* début de la génération du fichier PDF  *
+		* ****************************************/
+
+		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+		$pdf=new bul_PDF('p', 'mm', 'A4');
+		$nb_eleve_aff = 1;
+		$categorie_passe = '';
+		$categorie_passe_count = 0;
+		$pdf->SetCreator($gepiSchoolName);
+		$pdf->SetAuthor($gepiSchoolName);
+		$pdf->SetKeywords('');
+		$pdf->SetSubject('Bulletin');
+		$pdf->SetTitle('Bulletin');
+		$pdf->SetDisplayMode('fullwidth', 'single');
+		$pdf->SetCompression(TRUE);
+		$pdf->SetAutoPageBreak(TRUE, 5);
+
+		$responsable_place = 0;
+	}
 
 	$compteur=0;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
 		$classe=get_class_from_id($id_classe);
 
-		echo "<script type='text/javascript'>
+		if($mode_bulletin=="html") {
+			echo "<script type='text/javascript'>
 	document.getElementById('td_classe').innerHTML='".$classe."';
 </script>\n";
+		}
 
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			//==============================
-			$motif="Classe_".$id_classe."_".$periode_num;
-			decompte_debug($motif,"$motif avant");
-			flush();
-			echo "<script type='text/javascript'>
+			if($mode_bulletin=="html") {
+				$motif="Classe_".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif avant");
+				flush();
+				echo "<script type='text/javascript'>
 	document.getElementById('td_periode').innerHTML='".$periode_num."';
 </script>\n";
+			}
 			//==============================
 
-			echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
-			echo "<h2>Classe de ".$classe."</h2>\n";
-			echo "<p><b>Période $periode_num</b></p>\n";
+			if($mode_bulletin=="html") {
+				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+				echo "<h2>Classe de ".$classe."</h2>\n";
+				echo "<p><b>Période $periode_num</b></p>\n";
 
-			echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
-			echo "</div>\n";
+				echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
+				echo "</div>\n";
+			}
 
 			//$compteur=0;
 			//for($i=0;$i<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$i++) {
@@ -1850,43 +2198,58 @@ else {
 							// ++++++++++++++++++++++++++++++++++++++
 							// ++++++++++++++++++++++++++++++++++++++
 
-							echo "<script type='text/javascript'>
+							if($mode_bulletin=="html") {
+								echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']."';
 </script>\n";
+							}
 
-							$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-							decompte_debug($motif,"$motif élève $i avant");
-							flush();
 
-							// Saut de page si jamais ce n'est pas le premier bulletin
-							if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+							if($mode_bulletin=="html") {
+								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+								decompte_debug($motif,"$motif élève $i avant");
+								flush();
 
-							// Génération du bulletin de l'élève
-							//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
-							bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+								// Saut de page si jamais ce n'est pas le premier bulletin
+								if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 
-							$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-							decompte_debug($motif,"$motif élève $i après");
-							flush();
+								// Génération du bulletin de l'élève
+								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
+								bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+
+								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+								decompte_debug($motif,"$motif élève $i après");
+								flush();
+							}
+							else {
+								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+							}
+
 
 							//==============================================================================================
 							// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
 							//==============================================================================================
 
-							echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+							if($mode_bulletin=="html") {
+								echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+							}
 
 							$compteur++;
 
-							flush();
+							if($mode_bulletin=="html") {
+								flush();
+							}
 						}
 					}
 				}
 			}
 
 			//==============================
-			$motif="Classe_".$id_classe."_".$periode_num;
-			decompte_debug($motif,"$motif après");
-			flush();
+			if($mode_bulletin=="html") {
+				$motif="Classe_".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif après");
+				flush();
+			}
 			//==============================
 
 		}
@@ -1918,20 +2281,24 @@ else {
 </style>\n";
 */
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin=="html") {
+		echo "<script type='text/javascript'>
 	document.getElementById('infodiv').style.display='none';
 </script>\n";
-
+	}
 }
 
 //==============================
-$motif="Duree_totale";
-//decompte_debug($motif,"$motif après");
-decompte_debug($motif,"$motif");
-flush();
+if($mode_bulletin=="html") {
+	$motif="Duree_totale";
+	//decompte_debug($motif,"$motif après");
+	decompte_debug($motif,"$motif");
+	flush();
+}
 //==============================
 
-echo "<div id='remarques_bas_de_page'>
+if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
+	echo "<div id='remarques_bas_de_page'>
 <p><br /></p>
 <p>A REVOIR:</p>
 <ul>
@@ -1942,5 +2309,12 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes,.
 </ul>
 </div>\n";
 
-require("../lib/footer.inc.php");
+	require("../lib/footer.inc.php");
+}
+elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
+	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
+	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
+	$pdf->Output($nom_bulletin,'I');
+}
+
 ?>
