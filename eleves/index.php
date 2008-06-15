@@ -306,10 +306,10 @@ require_once("../lib/header.inc");
 	<?php
 		// Test d'existence de PMV... utilisé ici pour le file_exists() des photos
 		if(getSettingValue("gepi_pmv")!="n"){
-			echo "document.formulaire.quelles_classes[7].checked = true;";
+			echo "document.formulaire.quelles_classes[8].checked = true;";
 		}
 		else{
-			echo "document.formulaire.quelles_classes[6].checked = true;";
+			echo "document.formulaire.quelles_classes[7].checked = true;";
 		}
 	?>
 	}
