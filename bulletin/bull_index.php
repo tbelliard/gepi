@@ -1261,6 +1261,15 @@ else {
 			} else {
 				$affiche_categories = false;
 			}
+
+			if($mode_bulletin=="pdf") {
+				if(($tab_modele_pdf["active_entete_regroupement"][$id_classe]==1)||($tab_modele_pdf["active_regroupement_cote"][$id_classe]==1)) {
+					$affiche_categories = true;
+				}
+				else {
+					$affiche_categories = false;
+				}
+			}
 			//========================================
 
 
