@@ -431,7 +431,13 @@ if (isset($titre_page)) {
 
 		echo "<!-- Contact -->\n";
 		$prefix = '';
-		if (!isset($niveau_arbo)) $prefix = "../" ; else if ($niveau_arbo==2) $prefix = "../../";
+		if (!isset($niveau_arbo)) {
+			$prefix = "../";
+		}elseif($niveau_arbo==1){
+			$prefix = "../";
+		}elseif ($niveau_arbo==2){
+			$prefix = "../../";
+		}
 
 		echo "<span style='border-top: 1px dotted orange;'>\n";
 		if ($_SESSION['statut'] == 'administrateur') {
