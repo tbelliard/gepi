@@ -1256,7 +1256,27 @@ else {
 
 
 			$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
+			if($mode_bulletin=="pdf") {
+				if($tab_modele_pdf["active_rang"][$id_classe]==1) {
+					$affiche_rang="y";
+				}
+				else {
+					$affiche_rang="n";
+				}
+			}
+
+
 			$affiche_nbdev=sql_query1("SELECT display_nbdev FROM classes WHERE id='".$id_classe."'");
+			if($mode_bulletin=="pdf") {
+				if(($tab_modele_pdf["active_nombre_note"][$id_classe]==1)||($tab_modele_pdf["active_nombre_note_case"][$id_classe]==1)) {
+					$affiche_nbdev="y";
+				}
+				else {
+					$affiche_nbdev="n";
+				}
+			}
+
+
 
 			// On teste si on affiche les graphiques
 			if (getSettingValue("bull_affiche_graphiques") == 'yes'){$affiche_graph = 'y';}else{$affiche_graph = 'n';}
@@ -1438,29 +1458,34 @@ else {
 			// j_matieres_categories_classes(categorie_id,classe_id,priority,affiche_moyenne)
 			// matieres(matiere,nom_complet,priority,categorie_id,matiere_aid,matiere_atelier)
 			for($j=0;$j<count($current_group);$j++) {
-				$sql="SELECT mc.id,
-							mc.nom_court,
-							mc.nom_complet,
-							jmcc.priority,
-							jmcc.affiche_moyenne
-						FROM j_matieres_categories_classes jmcc,
-							matieres_categories mc,
-							matieres m
-						WHERE jmcc.classe_id='$id_classe' AND
-							jmcc.categorie_id=m.categorie_id AND
-							jmcc.categorie_id=mc.id AND
-							m.matiere='".$current_group[$j]['matiere']['matiere']."'
-						ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
-				$res_cat=mysql_query($sql);
+				//echo "\$current_group[$j]['id']=".$current_group[$j]['id']."<br />";
+				//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
+				//echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
+				if(isset($current_group[$j]['matiere']['matiere'])) {
+					$sql="SELECT mc.id,
+								mc.nom_court,
+								mc.nom_complet,
+								jmcc.priority,
+								jmcc.affiche_moyenne
+							FROM j_matieres_categories_classes jmcc,
+								matieres_categories mc,
+								matieres m
+							WHERE jmcc.classe_id='$id_classe' AND
+								jmcc.categorie_id=m.categorie_id AND
+								jmcc.categorie_id=mc.id AND
+								m.matiere='".$current_group[$j]['matiere']['matiere']."'
+							ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
+					$res_cat=mysql_query($sql);
 
-				if(mysql_num_rows($res_cat)>0) {
-					$lig_cat=mysql_fetch_object($res_cat);
+					if(mysql_num_rows($res_cat)>0) {
+						$lig_cat=mysql_fetch_object($res_cat);
 
-					$tab_bulletin[$id_classe][$periode_num]['cat_id'][$j]=$lig_cat->id;
-					$tab_bulletin[$id_classe][$periode_num]['nom_cat_court'][$j]=$lig_cat->nom_court;
-					$tab_bulletin[$id_classe][$periode_num]['nom_cat_complet'][$j]=$lig_cat->nom_complet;
-					$tab_bulletin[$id_classe][$periode_num]['priority'][$j]=$lig_cat->priority;
-					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne'][$j]=$lig_cat->affiche_moyenne;
+						$tab_bulletin[$id_classe][$periode_num]['cat_id'][$j]=$lig_cat->id;
+						$tab_bulletin[$id_classe][$periode_num]['nom_cat_court'][$j]=$lig_cat->nom_court;
+						$tab_bulletin[$id_classe][$periode_num]['nom_cat_complet'][$j]=$lig_cat->nom_complet;
+						$tab_bulletin[$id_classe][$periode_num]['priority'][$j]=$lig_cat->priority;
+						$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne'][$j]=$lig_cat->affiche_moyenne;
+					}
 				}
 			}
 
@@ -2077,9 +2102,14 @@ else {
 							// Récup appréciation
 							$sql="SELECT appreciation FROM matieres_appreciations WHERE id_groupe='".$current_group[$j]['id']."' AND periode='$periode_num' AND login='".$current_eleve_login[$i]."';";
 							$res_app=mysql_query($sql);
-							$lig_app=mysql_fetch_object($res_app);
-							$current_eleve_app[$j][$i]=$lig_app->appreciation;
-							if($current_eleve_app[$j][$i]=="") {$current_eleve_app[$j][$i]="-";}
+							if(mysql_num_rows($res_app)>0) {
+								$lig_app=mysql_fetch_object($res_app);
+								$current_eleve_app[$j][$i]=$lig_app->appreciation;
+								if($current_eleve_app[$j][$i]=="") {$current_eleve_app[$j][$i]="-";}
+							}
+							else {
+								$current_eleve_app[$j][$i]="-";
+							}
 							//================================
 
 							// Nombre de contrôles

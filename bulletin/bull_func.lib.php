@@ -1587,6 +1587,16 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 	// Préparation des lignes d'adresse
 
+	// Initialisation:
+	for($loop=0;$loop<=1;$loop++) {
+		$tab_adr_ligne1[$loop]="";
+		$tab_adr_ligne2[$loop]="";
+		$tab_adr_ligne3[$loop]="";
+		$tab_adr_ligne4[$loop]="";
+		$tab_adr_ligne5[$loop]="";
+		$tab_adr_ligne6[$loop]="";
+	}
+
 	// ON N'UTILISE PAS LE CHAMP adr4 DE L'ADRESSE DANS resp_adr
 	// IL FAUDRA VOIR COMMENT LE RECUPERER
 
@@ -1783,6 +1793,22 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	for($num_resp_bull=0;$num_resp_bull<$nb_bulletins;$num_resp_bull++) {
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('Arial');
+
+
+		// A VERIFIER: CETTE VARIABLE NE DOIT PAS ETRE UTILE
+		// SI LES VALEURS AFFICHEES PROVIENNENT DE L'EXTRACTION HORS DE LA FONCTION
+		$total_coef_en_calcul=0;
+
+		// quand on change d'élève on vide les variables suivantes
+		$categorie_passe = '';
+		$total_moyenne_classe_en_calcul = 0;
+		$total_moyenne_min_en_calcul = 0;
+		$total_moyenne_max_en_calcul = 0;
+		$total_coef_en_calcul = 0;
+
+		// ...
+		$hauteur_pris=0;
+
 
 		//=========================================
 
@@ -3095,10 +3121,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, $tab_bull['coef_eleve'][$i][$m],1,0,'C');
 						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 					}
-						//permet le calcul total des coefficients
-						// if(empty($moyenne_min[$id_classe][$id_periode])) {
+
+					//permet le calcul total des coefficients
+					// if(empty($moyenne_min[$id_classe][$id_periode])) {
 						$total_coef_en_calcul=$total_coef_en_calcul+$tab_bull['coef_eleve'][$i][$m];
-						//}
+					//}
 
 					// nombre de note
 					if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
@@ -3258,7 +3285,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 							// A REVOIR: J'AI l'EFFECTIF DU GROUPE, mais faut-il compter les élèves ABS, DISP,...?
-							$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $tab_bull['rang'][$i][$m].'/'.$tab_bull['groupe'][$j]['effectif'],1,0,'C');
+							if((isset($tab_bull['rang'][$i][$m]))&&(isset($tab_bull['groupe'][$m]['effectif']))) {
+								$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $tab_bull['rang'][$i][$m].'/'.$tab_bull['groupe'][$m]['effectif'],1,0,'C');
+							}
+							else {
+								$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, '',1,0,'C');
+							}
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_rang"][$classe_id];
 						}
 
