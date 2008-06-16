@@ -409,13 +409,14 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 		echo "<br />\n";
 		echo "<span id='div_modele_bulletin_pdf'>\n";
-			echo "Choisir le modèle de bulletin<br/>";
+			echo "Choisir le modèle de bulletin<br />\n";
 			// sélection des modèles des bulletins PDF
 			//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
 			$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
 			//echo "$sql<br />";
 			$requete_modele = mysql_query($sql);
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
+			$option_modele_bulletin=getSettingValue("option_modele_bulletin");
 			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
 				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
 			}

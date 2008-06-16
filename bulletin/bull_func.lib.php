@@ -2634,7 +2634,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			//emplacement des blocs matière et note et appréciation
 
-			//si catégorie activé il faut conmpte le nombre de catégorie
+			//si catégorie activé il faut compter le nombre de catégories
 			$nb_categories_select=0;
 			$categorie_passe_for='';
 
@@ -3104,7 +3104,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-						$valeur = $tab_bull['nbct'][$m][$i] . "/" . $tab_bull['nbct'][$m]['nbct'];
+						$valeur = $tab_bull['nbct'][$m][$i] . "/" . $tab_bull['groupe'][$m]['nbct'];
 						$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $espace_entre_matier, $valeur,1,0,'C');
 						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_nombre_note"][$classe_id];
 					}
@@ -3186,7 +3186,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if ($tab_bull['nbct'][$m][$i]!= 0 ) {
 									$valeur1 = $tab_bull['nbct'][$m][$i].' note';
 									if($tab_bull['nbct'][$m][$i]>1){$valeur1.='s';}
-									$valeur2 = 'sur '.$tab_bull['nbct'][$m]['nbct'];
+									$valeur2 = 'sur '.$tab_bull['groupe'][$m]['nbct'];
 								}
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur1, 'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
