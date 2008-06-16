@@ -51,6 +51,9 @@ if (!checkAccess()) {
 
 $intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : NULL;
 
+$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
+
+
 //====================================================
 //=============== ENTETE STANDARD ====================
 if (!isset($_POST['valide_select_eleves'])) {
@@ -397,35 +400,59 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	$test = sql_query1("SHOW TABLES LIKE 'commentaires_types'");
+	$test = sql_query1("SHOW TABLES LIKE 'modele_bulletin';");
 	if ($test == -1) {
-		echo "Les modèles PDF utilisent une table 'modele_bulletin' qui semble absente.<br />Visitez la page de <a href='test_modele_bull.php'>création de cette table</a> d'après l'ancienne table 'model_bulletin' pour permettre l'impression de bulletins PDF.";
+		echo "&nbsp;</td>\n";
+		echo "<td valign='top'>\n";
+		echo "Les modèles PDF utilisent une table 'modele_bulletin' qui semble absente.<br />\n";
+		if($_SESSION['statut']=='administrateur') {
+			echo "Visitez la page de <a href='test_modele_bull.php'>création de cette table</a> d'après l'ancienne table 'model_bulletin' pour permettre l'impression de bulletins PDF.";
+		}
+		else {
+			echo "Le remplissage de la table doit être effectué en admin.";
+		}
 	}
 	else {
-		echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf()' /> ";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
-
-		echo "<br />\n";
-		echo "<span id='div_modele_bulletin_pdf'>\n";
-			echo "Choisir le modèle de bulletin<br />\n";
-			// sélection des modèles des bulletins PDF
-			//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
-			$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
-			//echo "$sql<br />";
-			$requete_modele = mysql_query($sql);
-			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
-			$option_modele_bulletin=getSettingValue("option_modele_bulletin");
-			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
-				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
+		$sql="SELECT 1=1 FROM modele_bulletin LIMIT 1;";
+		//echo "$sql<br />";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			echo "&nbsp;</td>\n";
+			echo "<td valign='top'>\n";
+			echo "Les modèles PDF utilisent une table 'modele_bulletin' qui semble absente.<br />\n";
+			if($_SESSION['statut']=='administrateur') {
+				echo "Visitez la page de <a href='test_modele_bull.php'>création de cette table</a> d'après l'ancienne table 'model_bulletin' pour permettre l'impression de bulletins PDF.";
 			}
-				while($donner_modele = mysql_fetch_array($requete_modele)) {
-					echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
-					echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
+			else {
+				echo "Le remplissage de la table doit être effectué en admin.";
+			}
+		}
+		else {
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf()' /> ";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
+
+			echo "<br />\n";
+			echo "<span id='div_modele_bulletin_pdf'>\n";
+				echo "Choisir le modèle de bulletin<br />\n";
+				// sélection des modèles des bulletins PDF
+				//$sql='SELECT id_model_bulletin, nom_model_bulletin FROM modele_bulletin ORDER BY modele_bulletin.nom_model_bulletin ASC';
+				$sql="SELECT DISTINCT id_model_bulletin,valeur FROM modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY id_model_bulletin ASC";
+				//echo "$sql<br />";
+				$requete_modele = mysql_query($sql);
+				echo "<select tabindex=\"5\" name=\"type_bulletin\">";
+				$option_modele_bulletin=getSettingValue("option_modele_bulletin");
+				if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
+					echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>\n";
 				}
-			echo "</select>\n";
-		echo "</span>\n";
+					while($donner_modele = mysql_fetch_array($requete_modele)) {
+						echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
+						echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
+					}
+				echo "</select>\n";
+			echo "</span>\n";
+		}
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
