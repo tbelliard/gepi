@@ -519,6 +519,7 @@ function info_eleve($ele_login) {
 	}
 
 	if($active_cahiers_texte=="y") {
+		$cpt1=0; // pour initialiser la variable
 		$tab_date_ct=array();
 		// Un DISTINCT pour éviter les trois exemplaires dûs à j_eleves_groupes
 		$sql="SELECT DISTINCT cte.* FROM  ct_entry cte, j_eleves_groupes jeg WHERE cte.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND cte.date_ct>=$date_ct1 AND cte.date_ct<=$date_ct2 ORDER BY cte.date_ct, cte.id_groupe;";
@@ -578,7 +579,8 @@ function info_eleve($ele_login) {
 			//if($tab_date_ct[$i]!="") {
 			if((isset($tab_date_ct[$i]))&&($tab_date_ct[$i]!="")) {
 				$tab_ele['cdt'][$cpt]['date_ct']=$tab_date_ct[$i];
-				for($j=0;$j<count($tab_ele['cdt_dev']);$j++) {
+				$nbre_cdt_dev = isset($tab_ele['cdt_dev']) ? count($tab_ele['cdt_dev']) : 0;
+				for($j=0;$j<$nbre_cdt_dev;$j++) {
 					if($tab_ele['cdt_dev'][$j]['date_ct']==$tab_date_ct[$i]) {
 						$tab_ele['cdt'][$cpt]['dev'][]=$tab_ele['cdt_dev'][$j];
 					}
