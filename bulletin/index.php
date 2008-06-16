@@ -462,7 +462,7 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 
 
-		echo "<p>Ou <a href='bull_index.php'>accéder au nouveau dispositif des bulletins (<i>HTML</i>)</a></p>\n";
+		echo "<p>Ou <a href='bull_index.php'>accéder au nouveau dispositif des bulletins (<i>HTML et PDF</i>)</a></p>\n";
 	}
 	/*
 	$nb_class_par_colonne=round($nombreligne/3);
