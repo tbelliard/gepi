@@ -1185,7 +1185,14 @@ else {
 			echo "<table class='boireaus' border='1'>\n";
 			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
 
-			for($j=0;$j<count($tab_ele['cdt']);$j++) {
+			// On compte les entrées du cdt
+			if (isset($tab_ele['cdt'])) {
+				$nbre_cdt = count($tab_ele['cdt']);
+			}else{
+				$nbre_cdt = 0;
+			}
+
+			for($j=0;$j<$nbre_cdt;$j++) {
 
 				echo "<tr>\n";
 				echo "<td>\n";
