@@ -245,7 +245,7 @@ echo '	<!-- Fin des styles -->'."\n\n";
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onLoad="show_message_deconnexion()">
+<body onload="show_message_deconnexion()">
 
 <?php
 
@@ -282,7 +282,7 @@ if (isset($titre_page)) {
 	echo "<table border='0' width='100%' summary='haut de la page'>\n";
 	echo "<tr>\n";
 	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n', '".$gepiPath."');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
+	echo "<a href=\"#\" onclick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n', '".$gepiPath."');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
 	echo "$titre_page";
@@ -339,7 +339,7 @@ if (isset($titre_page)) {
 		echo "<!-- Page title, access rights -->\n";
 		echo "<td id='td_headerLeft' rowspan='2'>\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onClick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y', '".$gepiPath."');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
+		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onclick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y', '".$gepiPath."');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
 
 		// Pour empêcher de trop réduire la taille de la cellule de gauche
 		echo "<div style='width:380px;'></div>\n";
