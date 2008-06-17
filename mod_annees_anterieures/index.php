@@ -79,6 +79,39 @@ http://www.cnil.fr/index.php?id=1232 pour plus d'informations.</pre>\n";
 echo "<p><br /></p>\n";
 
 
+	$sql="CREATE TABLE IF NOT EXISTS `annees_anterieures` (
+`id` int(11) NOT NULL auto_increment,
+`annee` varchar(255) NOT NULL,
+`INE` varchar(255) NOT NULL,
+`nom` varchar(255) NOT NULL,
+`prenom` varchar(255) NOT NULL,
+`naissance` date NOT NULL,
+`classe` varchar(255) NOT NULL,
+`doublant` enum('-','R') NOT NULL,
+`num_periode` tinyint(4) NOT NULL,
+`nom_periode` varchar(255) NOT NULL,
+`special` varchar(255) NOT NULL,
+`matiere` varchar(255) NOT NULL,
+`prof` varchar(255) NOT NULL,
+`note` varchar(255) NOT NULL,
+`moymin` varchar(255) NOT NULL,
+`moymax` varchar(255) NOT NULL,
+`moyclasse` varchar(255) NOT NULL,
+`rang` tinyint(4) NOT NULL,
+`appreciation` text NOT NULL,
+`nb_absences` int(11) NOT NULL,
+`non_justifie` int(11) NOT NULL,
+`nb_retards` int(11) NOT NULL,
+PRIMARY KEY  (`id`)
+)";
+$creation_table=mysql_query($sql);
+if(!$creation_table){
+	echo "<p style='color:red;'>Erreur lors de la création de la table 'annees_anterieures'</p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
+
+
 echo "<p>Au menu:</p>\n";
 echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
