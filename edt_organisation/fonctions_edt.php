@@ -679,7 +679,7 @@ $debg = NULL;
 				}
 				// dans le nom du div, on prévoit beaucoup d'infos pour éviter que deux div aient le même nom
 			$id_div = "ens_".$id_creneaux."_".$jour_semaine.$ens_tab[$z];
-			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
+			$case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\"><a href='#' onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">VOIR</a>".creer_div_infobulle($id_div, "Liste des enseignements", "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n")."</td>\n";
 		}
 		else {
 		// AJOUT: boireaus
@@ -703,7 +703,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 	$effacer_cours = "";
 	if (($_SESSION["statut"] == "scolarite" AND GetSettingEdt('scolarite_modif_cours') == "y") OR $_SESSION["statut"] == "administrateur") {
 		$effacer_cours = '
-					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onClick="return confirm(\'Confirmez-vous cette suppression ?\')">
+					<a href="./effacer_cours.php?supprimer_cours='.$req_recup_id["id_cours"].'&amp;type_edt='.$type_edt.'&amp;identite='.$req_type_login.'" onclick="return confirm(\'Confirmez-vous cette suppression ?\')">
 					<img src="../images/icons/delete.png" title="Effacer" alt="Effacer" /></a>
 				';
 	}else {
@@ -744,7 +744,7 @@ function contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_ed
 		$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 		$id_div_p = $jour_semaine.$rep_nom_aid["nom"].$id_creneaux.$enseignement;
 		$id_div = strtr($id_div_p, " -|/", "www");
-		$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
+		$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_nom_aid["nom"]."</a>
 			".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 		// On dresse la liste des noms de prof (on n'affiche que le premier)
 		$noms_prof = mysql_fetch_array(mysql_query("SELECT nom, civilite FROM j_aid_utilisateurs jau, utilisateurs u WHERE
@@ -845,7 +845,7 @@ print_r($rep_nom_prof);
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux;
 			$id_div = strtr($id_div_p, " ", "_");
-			$classe_js = "<a href=\"#\" onClick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
+			$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
 				".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
 		}
 		// On récupère le nom et la civilite du prof en question

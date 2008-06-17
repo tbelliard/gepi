@@ -180,7 +180,7 @@ while($gr = mysql_fetch_array($query_g)){
 			<td style="cursor: pointer;" id="id000_'.$gr["id"].'">
 				<p onclick="classeEdtAjax(\'id000_'.$gr["id"].'\', \''.$gr_nom_long.'\', \'nom_gr2\');" title="Modifier ce nom long">'.$gr_nom_long.'</p></td>
 			<td style="cursor: pointer;" id="id2_'.$gr["id"].'">
-				<p onClick="classeEdtAjax(\'id2_'.$gr["id"].'\', \''.$gr["subdivision_type"].'\', \'type\');" title="Modifier le type">'.$gr["subdivision_type"].'</p>
+				<p onclick="classeEdtAjax(\'id2_'.$gr["id"].'\', \''.$gr["subdivision_type"].'\', \'type\');" title="Modifier le type">'.$gr["subdivision_type"].'</p>
 			</td>
 			<td style="cursor: pointer;" id="id_'.$gr["id"].'">
 	';
@@ -327,7 +327,7 @@ echo '
 
 			<p>
 			<label for="typeI">Plusieurs classes</label>
-			<input type="radio" id="typeI" name="type" value="autre" checked="checked" onClick="versHide('ajoutGr3');" />
+			<input type="radio" id="typeI" name="type" value="autre" checked="checked" onclick="versHide('ajoutGr3');" />
 			</p>
 			<p>
 			<label for="typeC" title="Ce groupe correspond &agrave; l'&eacute;ffectif complet d'une classe">Classe enti&egrave;re</label>
@@ -344,7 +344,7 @@ echo '
 			</p>
 			<p>
 			<label for="profs">Plusieurs professeurs</label>
-			<input type="radio" id="profs" name="prof" value="plusieurs" onClick="versHide('ajoutGr4');" />
+			<input type="radio" id="profs" name="prof" value="plusieurs" onclick="versHide('ajoutGr4');" />
 			</p>
 
 			<input type="submit" name="enregistrer" value="Ajouter ce groupe EdT" />

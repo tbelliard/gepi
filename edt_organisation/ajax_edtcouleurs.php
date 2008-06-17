@@ -78,19 +78,19 @@ if ($nouvelle_couleur == "non") {
 	<form id="choixCouleur" method="get" action="">
 		<select id="selectColeur" name="couleur">
 			<option value="rien">Couleurs...</option>
-			<option value="blue" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'blue\');">Bleu</option>
-			<option value="fuchsia" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'fuchsia\');">Fushia</option>
-			<option value="lime" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'lime\');">Vert citron</option>
-			<option value="maroon" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'maroon\');">Brun</option>
-			<option value="purple" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'purple\');">Mauve</option>
-			<option value="red" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'red\');">Rouge</option>
-			<option value="white" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'white\');">Blanc</option>
-			<option value="yellow" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'yellow\');">Jaune</option>
-			<option value="aqua" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'aqua\');">Bleu clair</option>
-			<option value="grey" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'grey\');">Gris</option>
-			<option value="green" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'green\');">Vert</option>
-			<option value="olive" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'olive\');">Vert olive</option>
-			<option value="teal" onClick="couleursEdtAjax(\''.$M_couleur.'\', \'teal\');">Turquoise</option>
+			<option value="blue" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'blue\');">Bleu</option>
+			<option value="fuchsia" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'fuchsia\');">Fushia</option>
+			<option value="lime" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'lime\');">Vert citron</option>
+			<option value="maroon" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'maroon\');">Brun</option>
+			<option value="purple" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'purple\');">Mauve</option>
+			<option value="red" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'red\');">Rouge</option>
+			<option value="white" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'white\');">Blanc</option>
+			<option value="yellow" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'yellow\');">Jaune</option>
+			<option value="aqua" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'aqua\');">Bleu clair</option>
+			<option value="grey" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'grey\');">Gris</option>
+			<option value="green" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'green\');">Vert</option>
+			<option value="olive" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'olive\');">Vert olive</option>
+			<option value="teal" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'teal\');">Turquoise</option>
 		</select>
 	</form>
 </td>

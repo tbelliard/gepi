@@ -115,7 +115,7 @@ if ($action == 'modifier') {
 	if ($query_type) {
 		// et on renvoie ce qu'il faut pour l'affichage
 		echo '
-		<p onClick="classeEdtAjax(\'id2_'.$id2.'\', \''.$type.'\', \'type\');" title="Modifier le type">'.$type.'&nbsp;
+		<p onclick="classeEdtAjax(\'id2_'.$id2.'\', \''.$type.'\', \'type\');" title="Modifier le type">'.$type.'&nbsp;
 			<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
 	}else{
 		echo '
@@ -160,7 +160,7 @@ if ($action == 'modifier') {
 
 		if ($query_nom) {
 			echo '
-			<p onClick="classeEdtAjax(\'id00_'.$id3.'\', \''.$nom.'\', \'nom_gr\');" title="Modifier le nom">'.$nom.'&nbsp;
+			<p onclick="classeEdtAjax(\'id00_'.$id3.'\', \''.$nom.'\', \'nom_gr\');" title="Modifier le nom">'.$nom.'&nbsp;
 				<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
 		}else{
 
@@ -182,7 +182,7 @@ if ($action == 'modifier') {
 
 		if ($query_nom_lg) {
 			echo '
-		<p onClick="classeEdtAjax(\'id000_'.$id4.'\', \''.$nom_lg.'\', \'nom_gr2\');" title="Modifier le nom long">'.$nom_lg.'&nbsp;
+		<p onclick="classeEdtAjax(\'id000_'.$id4.'\', \''.$nom_lg.'\', \'nom_gr2\');" title="Modifier le nom long">'.$nom_lg.'&nbsp;
 			<span style="color: green; font-size:0.5em;">(ok !)</span></p>';
 		}else{
 			echo '

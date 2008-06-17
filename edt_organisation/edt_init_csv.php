@@ -408,7 +408,7 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 	 doivent &ecirc;tre pr&eacute;sents, dans l'ordre, <b>s&eacute;par&eacute;s par un point-virgule et encadr&eacute;s par des guillemets ""</b> (sans ligne d'ent&ecirc;te) :</p>
 <!-- AIDE init csv -->
 
-<a href="#ancre1" onClick="javascript:changerDisplayDiv('aide_initcsv');" name="ancre1">
+<a href="#ancre1" onclick="javascript:changerDisplayDiv('aide_initcsv');" name="ancre1">
 	<img src="../images/info.png" alt="Plus d'infos..." Title="Cliquez pour plus d'infos..." />
 </a>
 	<div style="display: none;" id="aide_initcsv">

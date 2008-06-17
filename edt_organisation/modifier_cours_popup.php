@@ -511,7 +511,7 @@ echo '
 	}
 		echo '
 		<input type="submit" name="Enregistre" value="Enregistrer" />
-		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" onClick=\'javascript:window.close();\' />
+		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" onclick=\'javascript:window.close();\' />
 
 			</td>
 
