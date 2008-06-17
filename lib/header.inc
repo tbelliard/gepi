@@ -55,18 +55,21 @@ function last_connection() {
 }
 
 ?>
-
+<!--correction Regis html xmlns + majuscules -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="fr">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-<meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-<META HTTP-EQUIV="Expires" CONTENT="0" />
-<meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
+<!--fin correction Regis html xmlns + majuscules -->
+
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
 
-<script type="text/javascript" language="javascript">
+<!--correction Regis javascript -->
+<script type="text/javascript">
 <?php if (isset($affiche_message) and ($affiche_message == 'yes')) { ?>
 <!--
 alert("<?php echo $message_enregistrement; ?>");
@@ -91,7 +94,8 @@ Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
 </style>
 
 <!-- Gestion de l'expiration des session - Patrick Duthilleul -->
-<script type="text/javascript" language="JavaScript">
+<!--correction Regis javascript -->
+<script type="text/javascript">
 <!--
 var debut=new Date()
 function show_message_deconnexion(){
@@ -116,7 +120,8 @@ function show_message_deconnexion(){
 </script>
 
 <!-- christian -->
-<script type='text/javascript' language='JavaScript'>
+<!--correction Regis javascript -->
+<script type="text/javascript">
     function ouvre_popup(url){
         eval("window.open('<?php echo($gepiPath); ?>/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
         fen.focus();
@@ -127,8 +132,9 @@ function show_message_deconnexion(){
 
 
 // ====================== Affichage du favicon ========================
+// correction Regis LINK REL -> link rel
 echo '
-<LINK REL="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
+<link rel="SHORTCUT ICON" href="'.$gepiPath.'/favicon.ico" />
 	'."\n";
 // ====================== Fin affichage favicon =======================
 
