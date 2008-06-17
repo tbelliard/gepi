@@ -550,8 +550,9 @@ function info_eleve($ele_login) {
 		$sql="SELECT DISTINCT ctde.* FROM ct_devoirs_entry ctde, j_eleves_groupes jeg WHERE ctde.id_groupe=jeg.id_groupe AND jeg.login='".$ele_login."' AND ctde.date_ct>=$date_ct1 AND ctde.date_ct<=$date_ct2 ORDER BY ctde.date_ct, ctde.id_groupe;";
 		//echo "$sql<br />";
 		$res_ct=mysql_query($sql);
+		$cpt2=0;
 		if(mysql_num_rows($res_ct)>0) {
-			$cpt2=0;
+			//$cpt2=0;
 			while($lig_ct=mysql_fetch_object($res_ct)) {
 				$tab_ele['cdt_dev'][$cpt2]=array();
 				$tab_ele['cdt_dev'][$cpt2]['id_ct']=$lig_ct->id_ct;
