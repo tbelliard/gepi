@@ -2968,5 +2968,28 @@ function decompte_debug($motif,$texte) {
 	}
 }
 
+// Fonction qui retourne l'URI des élèves pour les flux rss
+function retourneUri($eleve, $https, $type){
 
+	global $gepiPath;
+
+	$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
+	$query = mysql_query($sql);
+	$nbre = mysql_num_rows($query);
+	if ($nbre == 1) {
+		$uri = mysql_fetch_array($query);
+		if ($https == 'y') {
+			$web = 'https://';
+		}else{
+			$web = 'http://';
+		}
+		if ($type == 'cdt') {
+			$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+		}
+
+	}else{
+		return 'erreur1';
+	}
+	return $rep;
+}
 ?>

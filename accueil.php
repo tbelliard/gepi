@@ -51,6 +51,13 @@ if (!checkAccess()) {
 }
 
 unset ($_SESSION['order_by']);
+$test_https = 'y'; // pour ne pas avoir à refaire le test si on a besoin de l'URL complète (rss)
+if (!isset($_SERVER['HTTPS'])
+    OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+    OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+{
+	$test_https = 'n';
+}
 
 
 if($_SESSION['statut']=='professeur'){
@@ -202,6 +209,7 @@ if ($force_ref) {
     	OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
     	) {
             echo "<br/><font color='red'>Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)</font>\n";
+            $test_https = 'n';
     }
 
     if (ini_get("register_globals") == "1") {
@@ -1373,6 +1381,40 @@ if (getSettingValue("active_inscription")=='y') {
       }
       echo "</table>";
   }
+}
+
+// Lien vers les flux rss pour les élèves s'ils sont activés
+if (getSettingValue("rss_cdt_eleve") == 'y') {
+	// Les flux rss sont ouverts pour les élèves
+	echo "
+		<table class='menu'>
+			<tr>
+				<th colspan='2'>
+					<img src='./images/icons/rss.png' alt='flux rss' class='link'/>
+					 - Votre flux rss (syndication)
+				</th>
+			</tr>\n";
+	// A vérifier pour les cdt
+	if (getSettingValue("rss_acces_ele") == 'direct') {
+		echo '
+			<tr>
+				<td title="A utiliser avec un lecteur de flux rss" style="cursor: pointer; color: blue;" onclick="changementDisplay(\'divuri\', \'divexpli\');">Votre uri pour les cahiers de textes</td>
+				<td>
+					<div id="divuri" style="display: none;">'.retourneUri($_SESSION["login"], $test_https, 'cdt').'</div>
+					<div id="divexpli" style="display: block;">En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI.</div>
+				</td>
+			</tr>
+		';
+	}elseif(getSettingValue("rss_acces_ele") == 'csv'){
+		echo '
+			<tr>
+				<td>Votre uri pour les cahiers de textes</td>
+				<td>Veuillez la demander à l\'administration de votre établissement</td>
+			</tr>
+		';
+	}
+
+	echo '</table>';
 }
 
 
