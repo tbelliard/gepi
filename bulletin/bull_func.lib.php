@@ -3043,7 +3043,16 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						$hauteur_caractere_matiere = $tab_modele_pdf["taille_texte_matiere"][$classe_id];
 					}
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
-					$val = $pdf->GetStringWidth($tab_bull['groupe'][$m]['matiere']['nom_complet']);
+
+					// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+					if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+					}
+
+					$val = $pdf->GetStringWidth($info_nom_matiere);
 					$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
 					$grandeur_texte='test';
 					while($grandeur_texte!='ok') {
@@ -3051,14 +3060,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						{
 							$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
-							$val = $pdf->GetStringWidth($tab_bull['groupe'][$m]['matiere']['nom_complet']);
+							$val = $pdf->GetStringWidth($info_nom_matiere);
 						}
 						else {
 							$grandeur_texte='ok';
 						}
 					}
 					$grandeur_texte='test';
-					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, $tab_bull['groupe'][$m]['matiere']['nom_complet'],'LR',1,'L');
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, $info_nom_matiere,'LR',1,'L');
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
