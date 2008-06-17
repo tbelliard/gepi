@@ -88,6 +88,7 @@ if ($force_msj) $chemin[] = "/mod_miseajour/admin/index.php";
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $chemin[] = "/mod_notanet/notanet_admin.php";
 $chemin[] = "/mod_inscription/inscription_admin.php";
+$chemin[] = "/cahier_texte_admin/rss_cdt_admin.php";
 
 $titre = array(
 "Cahier de textes",
@@ -98,6 +99,7 @@ if ($force_msj) $titre[] = "Mise à jour automatisée";
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
 $titre[] = "Inscription";
+$titre[] = "<img src=\"images/icons/rss.png\" />&nbsp;-&nbsp;Flux rss";
 
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
@@ -108,6 +110,7 @@ if ($force_msj) $expli[] = "Pour gérer le module de mise à jour de GEPI";
 $expli[] = "Pour gérer le module trombinoscope";
 $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $expli[] = "Pour gérer simplement les inscriptions des professeurs par exemple à des stages ou bien des interventions dans les collèges";
+$expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
 
 // Années antérieures
 $chemin[] = "/mod_annees_anterieures/admin.php";

@@ -1384,7 +1384,7 @@ if (getSettingValue("active_inscription")=='y') {
 }
 
 // Lien vers les flux rss pour les élèves s'ils sont activés
-if (getSettingValue("rss_cdt_eleve") == 'y') {
+if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") {
 	// Les flux rss sont ouverts pour les élèves
 	echo "
 		<table class='menu'>
@@ -1409,7 +1409,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y') {
 		echo '
 			<tr>
 				<td>Votre uri pour les cahiers de textes</td>
-				<td>Veuillez la demander à l\'administration de votre établissement</td>
+				<td>Veuillez la demander à l\'administration de votre établissement.</td>
 			</tr>
 		';
 	}

@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-$titre_page = "Parametrer les flux rss du cahier de textes";
+$titre_page = "Paramétrer les flux rss du cahier de textes";
 $affiche_connexion = "oui";
 $niveau_arbo = 1;
 
@@ -194,6 +194,8 @@ require_once("../lib/header.inc");
 echo "<!-- page Parametrer_les_flux_rss_du_cahier_de_textes.-->";
 
 ?>
+<p class="bold"><a href="../accueil_modules.php"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
+
 <h3>Cet outil permet d'autoriser la g&eacute;n&eacute;ration de flux <acronym title="Appel&eacute; aussi syndication">rss</acronym> 2.0 des cahiers de textes de Gepi. </h3>
 
 <p style="font-weight: bold; color: green;"><?php echo $lien_generateflux; ?>&nbsp;</p>
