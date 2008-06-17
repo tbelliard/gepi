@@ -31,8 +31,8 @@
 
 
 	function writinfo($chemin,$type,$chaine){
-		$debug=1;
-		//$debug=0;
+		//$debug=1;
+		$debug=0;
 		if($debug==1){
 			$fich=fopen($chemin,$type);
 			fwrite($fich,$chaine);
