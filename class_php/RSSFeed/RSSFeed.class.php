@@ -8,19 +8,19 @@
  * @author : Hugo 'Emacs' HAMON
  * @email : webmaster[at]apprendre-php[dot]com
  * @version : 1.0
- * @changelog : 
+ * @changelog :
  ***************************************************/
- 
+
  // Loading necessary classes
  require_once(dirname(__FILE__).'/RSSFeedBase.class.php');
- 
+
  // Start of class
  class RSSFeed extends RSSFeedBase
  {
 	// Attributes
 	private static $_protectString = false;
 	private static $_weekDays = array('sunday','monday','tuesday','wednesday','thursday','friday','saturday');
-	
+
 	private $_feddCloud = array();
 	private $_feedImage = array();
 	private $_feedItems = array();
@@ -28,7 +28,7 @@
 	private $_feedSkipDays = array();
 	private $_feedSkipHours = array();
 	private $_feedWebMaster = array();
-	
+
 	private $_copyright = '';
 	private $_docs = '';
 	private $_encoding = '';
@@ -37,12 +37,12 @@
 	private $_lastBuildDate = '';
 	private $_rating = '';
 	private $_ttl = '';
-	
+
 	private $_finalFeed = '';
-	
+
 	// Constants
 	const RSS_ENCODING_UTF8='utf-8';
-	
+
 	// Autoloader
 	/****************************************************
 	 * @function : __autoload
@@ -58,9 +58,9 @@
 		require_once(dirname(__FILE__).'/RSSFeedTools.class.php');
 		require_once(dirname(__FILE__).'/RSSFeedItem.class.php');
  	}
- 			
+
  	// Constructor
- 			
+
 	/****************************************************
 	 * @function : __construct
 	 * @aim : create the instance of the class
@@ -76,7 +76,7 @@
  	}
 
  	// Destructor
- 			
+
 	/****************************************************
 	* @function : __destruct
 	* @aim : delete the instance from the memory
@@ -86,9 +86,9 @@
 	* @return : void
 	***************************************************/
 	public function __destruct() {}
- 			
+
 	// GET methods
-	
+
 	/****************************************************
 	* @function : _getIndentationNumber
 	* @aim : retun the number of indentation before for a tag
@@ -104,22 +104,22 @@
 			case 'channel' :
 				$indentationNumber = 2;
 			break;
-			
+
 			case 'item' :
 				$indentationNumber = 3;
 			break;
-			
+
 			default :
 				$indentationNumber = 0;
 			break;
 		}
-		
+
 		// Return the indentation number
 		return $indentationNumber;
 	}
- 			
+
 	// SET Methods
-	
+
 	/****************************************************
 	* @function : setCloud
 	* @aim : set the feed cloud
@@ -134,10 +134,10 @@
 	***************************************************/
 	public function setCloud($domain, $port, $path, $registerProcedure, $protocol)
 	{
-		if(!empty($domain) 
-			&& is_numeric($port) 
-			&& !empty($path) 
-			&& !empty($registerProcedure) 
+		if(!empty($domain)
+			&& is_numeric($port)
+			&& !empty($path)
+			&& !empty($registerProcedure)
 			&& !empty($protocol))
 		{
 			$this->_feedCloud['domain'] = $domain;
@@ -147,7 +147,7 @@
 			$this->_feedCloud['protocol'] = $protocol;
 		}
 	}
- 			
+
 	/****************************************************
 	* @function : setCopyright
 	* @aim : set the feed copyright
@@ -160,7 +160,7 @@
 	{
 		$this->_copyright = $copyright;
 	}
- 			
+
 	/****************************************************
 	* @function : setDocs
 	* @aim : set the feed docs
@@ -186,7 +186,7 @@
 	{
 		$this->_generator = $generator;
 	}
- 
+
 	/****************************************************
 	* @function : setImage
 	* @aim : set the feed image
@@ -206,16 +206,16 @@
 		$this->_feedImage['url'] = $url;
 		$this->_feedImage['title'] = $title;
 		$this->_feedImage['link'] = RSSFeedTools::checkUrl($link);
-		
+
 		// Check the image description
-		if(!empty($description)) 
+		if(!empty($description))
 			$this->_image['description'] = $description;
-				
+
 		// Check the image width
 		if(!empty($width) && is_numeric($width))
 		{
 			$width = intval($width);
-			
+
 			if($width>0 && $width<=144)
 			{
 				$this->_feedImage['width'] = $width;
@@ -225,12 +225,12 @@
 				throw new RSSFeedException('The feed image width must be lower than 144px', __CLASS__, __METHOD__);
 			}
 		}
-				
+
 		// Check the image height
 		if(!empty($height) && is_numeric($height))
 		{
 			$height = intval($height);
-			
+
 			if($height>0 && $height<=400)
 			{
 				$this->_feedImage['height'] = $height;
@@ -257,7 +257,7 @@
 			$this->_language = $language;
 		}
 	}
-	
+
 	/****************************************************
 	* @function : setLastBuildDate
 	* @aim : set the lastBuildDate element of the feed / item
@@ -270,7 +270,7 @@
 	{
 		$this->_lastBuildDate = RSSFeedTools::prepareFeedDate($lastBuildDate);
 	}
- 			
+
 	/****************************************************
 	* @function : setManagingEditor
 	* @aim : set the managing editor
@@ -286,7 +286,7 @@
 		$this->_feedManagingEditor['email'] = RSSFeedTools::checkEmail($email);
 		$this->_feedManagingEditor['name'] = $name;
 	}
- 			
+
 	/****************************************************
 	* @function : setProtectString
 	* @aim : set the protect string policy
@@ -302,7 +302,7 @@
 			self::$_protectString = $protectString;
 		}
 	}
- 			
+
 	/****************************************************
 	* @function : setRating
 	* @aim : set the feed rating
@@ -315,7 +315,7 @@
 	{
 		$this->_rating = $rating;
 	}
- 			
+
 	/****************************************************
 	* @function : setSkipDay
 	* @aim : set a feed skip day
@@ -324,16 +324,16 @@
 	* @param : int $day
 	* @return : void
 	***************************************************/
-	public function setSkipDay($day) 
+	public function setSkipDay($day)
 	{
 		$day = strtolower($day);
-		
+
 		if(in_array($day, self::$_weekDays) && !in_array($day, $this->_feedSkipDays))
 		{
 			$this->_feedSkipDays[] = ucfirst($day);
 		}
 	}
-			 
+
 	/****************************************************
 	* @function : setSkipHour
 	* @aim : set a feed skip hour
@@ -342,17 +342,17 @@
 	* @param : int $hour
 	* @return : void
 	***************************************************/
-	public function setSkipHour($hour) 
+	public function setSkipHour($hour)
 	{
-		if(is_numeric($hour) 
-			&& is_int($hour) 
-			&& ($hour>=0) 
+		if(is_numeric($hour)
+			&& is_int($hour)
+			&& ($hour>=0)
 			&& ($hour<=23))
 		{
 			$this->_feedSkipHours[] = intval($hour);
 		}
 	}
- 			
+
 	/****************************************************
 	* @function : setTimeToLive
 	* @aim : set the feed time to live
@@ -396,7 +396,7 @@
 	}
 
 	// Other methods
-	
+
 	/****************************************************
 	* @function : appendItem
 	* @aim : set a new feed item
@@ -416,7 +416,7 @@
 			throw new RSSFeedException('The $rssFeedItem parameter of '. __CLASS__ .'::'. __METHOD__ .' has to be a RSSFeedItem instance', __CLASS__, __METHOD__);
 		}
 	}
- 				
+
 	/****************************************************
 	* @function : display
 	* @aim : display the generated feed
@@ -429,7 +429,7 @@
 	{
 		if(empty($this->_finalFeed))
 			$this->_generate();
-		
+
 		echo $this->_finalFeed;
 	}
 
@@ -446,7 +446,7 @@
 		$this->_generate();
 	}
 
-	
+
 	/****************************************************
 	* @function : save
 	* @aim : save the feed on the server
@@ -459,19 +459,19 @@
 	{
 		$fp = null;
 		$this->_generate();
-		
+
 		if(empty($xmlFileName) || ('xml' !== pathinfo($xmlFileName, PATHINFO_EXTENSION)))
 			$xmlFileName = 'feed-'. time() .'.xml';
 
 		// Try to open the file in writting mode
 		if($fp = fopen($xmlFileName, 'w')) {
-		
+
 			// Try to write the file
 			if(!fwrite($fp, $this->_finalFeed)) {
-			
+
 				throw new RSSFeedException('Can\'t write the xml feed code in '. $xmlFileName .' !', __CLASS__, __METHOD__);
 			}
-			
+
 			// Close the file resource
 			fclose($fp);
 		}
@@ -479,13 +479,13 @@
 		{
 			throw new RSSFeedException('Can\'t manage to open the file '. $xmlFileName .' in writting mode !', __CLASS__, __METHOD__);
 		}
-		
+
 		return true;
 	}
- 			
+
 	/****************************************************
 	* @function : _checkNecessaryElements
-	* @aim : check if the feed can be minimal before 
+	* @aim : check if the feed can be minimal before
 	*							 its generation
 	* @access : private
 	* @static : no
@@ -497,7 +497,7 @@
 		if(empty($this->_title)) 		throw new RSSFeedException('The feed title is not defined', __CLASS__, __METHOD__);
 		if(empty($this->_description)) 	throw new RSSFeedException('The feed description is not defined', __CLASS__, __METHOD__);
 		if(empty($this->_link)) 		throw new RSSFeedException('The feed link is not defined', __CLASS__, __METHOD__);
-					
+
 		// Is there at least one item ?
 		if(0 === sizeof($this->_feedItems))
 		{
@@ -512,22 +512,22 @@
 				$itemTitle = $item->getTitle();
 				$itemDescription = $item->getDescription();
 				$itemLink = $item->getLink();
-				
+
 				if(empty($itemTitle))
 					throw new RSSFeedException('The feed item #'. $feedRank .' has no title', __CLASS__, __METHOD__);
-				
+
 				if(empty($itemDescription))
 					throw new RSSFeedException('The feed item #'. $feedRank .' has no description', __CLASS__, __METHOD__);
-				
+
 				if(empty($itemLink))
 					throw new RSSFeedException('The feed item #'. $feedRank .' has no linked url', __CLASS__, __METHOD__);
-			 	
+
 			 	$feedRank++;
 			}
 		}
 		return true;
 	}
- 			
+
 	/****************************************************
 	* @function : _generate
 	* @aim : generate the RSS feed
@@ -540,7 +540,7 @@
 	{
 		// Local data structures
 		$parentNode = 'channel';
-		
+
 		// Check the necessary elements for a minimal feed
 		if(true === $this->_checkNecessaryElements())
 		{
@@ -565,13 +565,13 @@
 			$this->_finalFeed.= $this->_generateDocs();
 			$this->_finalFeed.= $this->_generateSkipDays();
 			$this->_finalFeed.= $this->_generateSkipHours();
-			$this->_finalFeed.= $this->_generateCloud();
+			//$this->_finalFeed.= $this->_generateCloud();
 			$this->_finalFeed.= $this->_generateItems();
 			$this->_finalFeed.= "\t".'</channel>'."\n";
 			$this->_finalFeed.= '</rss>';
 		}
 	}
- 			
+
 	/****************************************************
 	* @function : _generateAuthor
 	* @aim : generate the item author element
@@ -585,21 +585,21 @@
 		// Local data structures
 		$author = '';
 		$arrayAuthor = $item->getAuthor();
-		
+
 		if(sizeof($arrayAuthor)>0)
 		{
 			$author.= str_repeat("\t", 3).'<author>'. $arrayAuthor['email'];
-			
+
 			if(!empty($arrayAuthor['name']))
-				$author.= ' ('. $this->_protectString($arrayAuthor['name']) .')';			
-			
+				$author.= ' ('. $this->_protectString($arrayAuthor['name']) .')';
+
 			$author.= '</author>'."\n";
 		}
-		
+
 		// Return the generated string
 		return $author;
 	}
- 			
+
 	/****************************************************
 	* @function : _generateCategories
 	* @aim : generate the feed / item category elements
@@ -614,7 +614,7 @@
 		// Local data structures
 		$xmlCategories = '';
 		$indentNumber = self::_getIndentationNumber($parentNode);
-		
+
 		if(sizeof($categories)>0)
 		{
 			foreach($categories as $categorie)
@@ -625,11 +625,11 @@
 				$xmlCategories.= '</category>'."\n";
 			}
 		}
-		
+
 		// Return category elements
 		return $xmlCategories;
 	}
- 			
+
 	/****************************************************
 	* @function : _generateCloud
 	* @aim : generate the RSS feed cloud element
@@ -642,23 +642,23 @@
 	{
 		// Local data structures
 		$cloud = '';
-		
+
 		if(5 === sizeof($this->_feedCloud))
 		{
 			$cloud = str_repeat("\t", 2).'<cloud ';
-			
+
 			foreach($this->_feedCloud as $attribut => $valeur)
 			{
 				$cloud.= $attribut.'="'. $this->_protectString($valeur) .'" ';
 			}
-			
+
 			$cloud.= '/>'."\n";
 		}
-		
+
 		// Return the cloud element
 		return $cloud;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateComments
 	* @aim : generate the item comments element
@@ -672,16 +672,16 @@
 		// Local data structures
 		$comments = '';
 		$itemComments = $item->getComments();
-	
+
 		if(!empty($itemComments))
 		{
 			$comments.= str_repeat("\t", 3).'<comments>'. $this->_protectString($itemComments) .'</comments>'."\n";
 		}
-		
+
 		// Return the generated string
 		return $comments;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateCopyright
 	* @aim : generate the RSS feed copyright element
@@ -694,16 +694,16 @@
 	{
 		// Local data structures
 		$copyright = '';
-		
+
 		if(!empty($this->_copyright))
 		{
 			$copyright = str_repeat("\t", 2).'<copyright>'. $this->_protectString($this->_copyright) .'</copyright>'."\n";
 		}
-		
+
 		// Return the generator element
 		return $copyright;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateDescription
 	* @aim : generate the feed / item description
@@ -718,13 +718,13 @@
 		// Local data structures
 		$xmlDescription = '';
 		$indentNumber = self::_getIndentationNumber($parentNode);
-		
+
 		$xmlDescription = str_repeat("\t", $indentNumber).'<description>'. $this->_protectString($description) .'</description>'."\n";
-		
+
 		// Return the generated string
 		return $xmlDescription;
 	}
- 			
+
 	/****************************************************
 	* @function : _generateEnclosure
 	* @aim : generate the item enclosure element
@@ -738,22 +738,22 @@
 		// Local data structures
 		$enclosure = '';
 		$arrayEnclosure = $item->getEnclosure();
-		
+
 		if(sizeof($arrayEnclosure)>0)
 		{
 			$enclosure.= str_repeat("\t", 3).'<enclosure';
-		
+
 			foreach($arrayEnclosure as $attribute => $value)
 			{
-				$enclosure.= ' '. $attribute .'="'. $this->_protectString($value) .'"';			 					
+				$enclosure.= ' '. $attribute .'="'. $this->_protectString($value) .'"';
 			}
 			$enclosure.= ' />'."\n";
 		}
-		
+
 		// Return the generated string
 		return $enclosure;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateGenerator
 	* @aim : generate the RSS feed generator element
@@ -766,12 +766,12 @@
 	{
 		// Local data structures
 		$generator = '';
-		
+
 		if(!empty($this->_generator))
 		{
 			$generator = str_repeat("\t", 2).'<generator>'. $this->_protectString($this->_generator) .'</generator>'."\n";
 		}
-		
+
 		// Return the generator element
 		return $generator;
 	}
@@ -788,16 +788,16 @@
 	{
 		// Local data structures
 		$docs = '';
-		
+
 		if(!empty($this->_docs))
 		{
 			$docs = str_repeat("\t", 2).'<docs>'. $this->_protectString($this->_docs) .'</docs>'."\n";
 		}
-		
+
 		// Return the docs element
 		return $docs;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateGuid
 	* @aim : generate the item guid element
@@ -811,16 +811,16 @@
 		// Local data structures
 		$guid = '';
 		$arrayGuid = $item->getGuid();
-		
+
 		if(sizeof($arrayGuid)>0)
 		{
 			$guid.= str_repeat("\t", 3).'<guid isPermaLink="'. $arrayGuid['isPermaLink'] .'">'. $this->_protectString($arrayGuid['content']) .'</guid>'."\n";
 		}
-		
+
 		// Return the generated string
 		return $guid;
 	}
- 			
+
 	/****************************************************
 	* @function : _generateImage
 	* @aim : generate the RSS feed image element
@@ -833,30 +833,30 @@
 	{
 		// Local data structures
 		$image = '';
-		
+
 		if(sizeof($this->_feedImage)>0)
 		{
 			$image = str_repeat("\t", 2).'<image>'."\n";
 			$image.= str_repeat("\t", 3).'<url>'. $this->_protectString($this->_feedImage['url']) .'</url>'."\n";
 			$image.= str_repeat("\t", 3).'<title>'. $this->_protectString($this->_feedImage['title']) .'</title>'."\n";
 			$image.= str_repeat("\t", 3).'<link>'. $this->_protectString($this->_feedImage['link']) .'</link>'."\n";
-			
+
 			if(!empty($this->_feedImage['width']))
 				$image.= str_repeat("\t", 3).'<width>'. $this->_feedImage['width'] .'</width>'."\n";
-			
+
 			if(!empty($this->_feedImage['height']))
 				$image.= str_repeat("\t", 3).'<height>'. $this->_feedImage['height'] .'</height>'."\n";
-			
+
 			if(!empty($this->_feedImage['description']))
 				$image.= str_repeat("\t", 3).'<description>'. $this->_protectString($this->_feedImage['description']) .'</description>'."\n";
-			
+
 			$image.= str_repeat("\t", 2).'</image>'."\n";
 		}
-		
+
 		// Return the image element
 		return $image;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateItems
 	* @aim : generate the RSS feed item elements
@@ -870,7 +870,7 @@
 		// Local data structures
 		$items = '';
 		$parentNode = 'item';
-		
+
 		// Generate items
 		foreach($this->_feedItems as $item)
 		{
@@ -887,11 +887,11 @@
 			$items.= $this->_generateSource($item);
 			$items.= "\t\t".'</item>'."\n";
 		}
-		
+
 		// Return item elements
 		return $items;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateLanguage
 	* @aim : generate the RSS feed language element
@@ -904,16 +904,16 @@
 	{
 		// Local data structures
 		$language = '';
-		
+
 		if(!empty($this->_language))
 		{
 			$language = str_repeat("\t", 2).'<language>'. $this->_language .'</language>'."\n";
 		}
-		
+
 		// Return the language element
 		return $language;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateLastBuildDate
 	* @aim : generate the RSS feed lastBuildDate element
@@ -926,16 +926,16 @@
 	{
 		// Local data structures
 		$lastBuildDate = '';
-		
+
 		if(!empty($this->_lastBuildDate))
 		{
 			$lastBuildDate = str_repeat("\t", 2).'<lastBuildDate>'. $this->_lastBuildDate .'</lastBuildDate>'."\n";
 		}
-		
+
 		// Return the lastBuildDate element
 		return $lastBuildDate;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateLink
 	* @aim : generate the feed / item link
@@ -950,13 +950,13 @@
 		// Local data structures
 		$xmlLink = '';
 		$indentNumber = self::_getIndentationNumber($parentNode);
-		
+
 		$xmlLink = str_repeat("\t", $indentNumber).'<link>'. $this->_protectString($link) .'</link>'."\n";
-		
+
 		// Return the generated string
 		return $xmlLink;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateManagingEditor
 	* @aim : generate the RSS feed managingEditor element
@@ -969,16 +969,16 @@
 	{
 		// Local data structures
 		$managingEditor = '';
-		
+
 		if(!empty($this->_managingEditor))
 		{
 			$managingEditor = str_repeat("\t", 2).'<managingEditor>'. $this->_managingEditor .'</managingEditor>'."\n";
 		}
-		
+
 		// Return the managingEditor element
 		return $managingEditor;
 	}
-			 
+
 	/****************************************************
 	* @function : _generatePubDate
 	* @aim : generate the RSS feed pubDate element
@@ -993,16 +993,16 @@
 		// Local data structures
 		$xmlPubDate = '';
 		$indentNumber = self::_getIndentationNumber($parentNode);
-		
+
 		if(!empty($pubDate))
 		{
 			$xmlPubDate = str_repeat("\t", $indentNumber).'<pubDate>'. $pubDate .'</pubDate>'."\n";
 		}
-		
+
 		// Return the pubDate element
 		return $xmlPubDate;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateRating
 	* @aim : generate the RSS feed rating element
@@ -1015,16 +1015,16 @@
 	{
 		// Local data structures
 		$rating = '';
-		
+
 		if(!empty($this->_rating))
 		{
 			$rating = str_repeat("\t", 2).'<rating>'. $this->_rating .'</rating>'."\n";
 		}
-		
+
 		// Return the rating element
 		return $rating;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateSkipDays
 	* @aim : generate the RSS feed skipDay element
@@ -1038,7 +1038,7 @@
 		// Local data structures
 		$skipDays = '';
 		$daysNumber = sizeof($this->_feedSkipDays);
-		
+
 		if($daysNumber > 0)
 		{
 			if(7 === $daysNumber)
@@ -1055,11 +1055,11 @@
 				$skipDays.= str_repeat("\t", 2).'</skipDays>'."\n";
 			}
 		}
-		
+
 		// Return skipDays elements
 		return $skipDays;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateSkipHours
 	* @aim : generate the RSS feed skipHour element
@@ -1072,24 +1072,24 @@
 	{
 		// Local data structures
 		$skipHours = '';
-		
+
 		if(sizeof($this->_feedSkipHours)>0)
 		{
 			sort($this->_feedSkipHours);
 			$skipHours.= str_repeat("\t", 2).'<skipHours>'."\n";
-		
+
 			foreach($this->_feedSkipHours as $skipHour)
 			{
 				$skipHours.= str_repeat("\t", 3).'<hour>'. $skipHour .'</hour>'."\n";
 			}
-		
+
 			$skipHours.= str_repeat("\t", 2).'</skipHours>'."\n";
 		}
-		
+
 		// Return skipHours elements
 		return $skipHours;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateSource
 	* @aim : generate the item source element
@@ -1103,16 +1103,16 @@
 		// Local data structures
 		$source = '';
 		$arraySource = $item->getSource();
-		
+
 		if(sizeof($arraySource)>0)
 		{
 			$source.= str_repeat("\t", 3).'<source url="'. $arraySource['url'] .'">'. $this->_protectString($arraySource['content']) .'</source>'."\n";
 		}
-		
+
 		// Return the generated string
 		return $source;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateTimeToLive
 	* @aim : generate the feed / item ttl
@@ -1125,7 +1125,7 @@
 	{
 		// Local data structures
 		$ttl = str_repeat("\t", 2).'<ttl>'. $this->_protectString($this->_ttl) .'</ttl>'."\n";
-		
+
 		// Return the generated string
 		return $ttl;
 	}
@@ -1144,13 +1144,13 @@
 		// Local data structures
 		$xmlTitle = '';
 		$indentNumber = self::_getIndentationNumber($parentNode);
-		
+
 		$xmlTitle = str_repeat("\t", $indentNumber).'<title>'. $this->_protectString($title) .'</title>'."\n";
-		
+
 		// Return the generated string
 		return $xmlTitle;
 	}
-			 
+
 	/****************************************************
 	* @function : _generateWebmaster
 	* @aim : generate the RSS feed webMaster element
@@ -1163,26 +1163,26 @@
 	{
 		// Local data structures
 		$webMaster = '';
-		
+
 		if(sizeof($this->_feedWebMaster)>0)
 		{
 			$webMaster = str_repeat("\t", 2).'<webMaster>'. $this->_feedWebMaster['email'];
-		
+
 			if(!empty($this->_feedWebMaster['name']))
 			{
 				$webMaster.= ' ('. $this->_protectString($this->_feedWebMaster['name']) .')';
 			}
-		
+
 			$webMaster.= '</webMaster>'."\n";
 		}
-		
+
 		// Return the managingEditor element
 		return $webMaster;
 	}
-			 
+
 	/****************************************************
 	* @function : _protectString
-	* @aim : protect the content of an html element if 
+	* @aim : protect the content of an html element if
 	*							 it is requested
 	* @access : private
 	* @static : no
@@ -1193,11 +1193,11 @@
 	{
 		if(true === self::$_protectString)
 			$htmlContent = htmlspecialchars(strip_tags($htmlContent));
-		
+
 		// Return the html content
 		return $htmlContent;
 	}
-	
+
 	// END OF CLASS
  }
 
