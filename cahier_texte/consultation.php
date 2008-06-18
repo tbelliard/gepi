@@ -160,17 +160,18 @@ if ($today < getSettingValue("begin_bookings")) {
 } else if ($today > getSettingValue("end_bookings")) {
    $today = getSettingValue("end_bookings");
 }
-echo "<script type=\"text/javascript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
+echo "<script type=\"text/javascript\" src=\"../lib/clock_fr.js\"></script>";
 //-----------------------------------------------------------------------------------
-echo "<table width=\"98%\" cellspacing=0 align=\"center\"><tr>";
-echo "<td valign='top'>";
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+echo "<table width=\"98%\" cellspacing=\"0\" align=\"center\">\n<tr>\n";
+echo "<td valign='top'>\n";
+echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+echo "</p>\n";
 echo "<p>Nous sommes le :&nbsp;<br />\n";
 echo "<script type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->";
-echo "</SCRIPT></p>\n";
+echo "</script></p>\n";
 
 // On gère la sélection de l'élève
 if ($_SESSION['statut'] == 'responsable') {
@@ -200,8 +201,8 @@ echo "</p></td>\n";
 echo "<td align=\"right\">\n";
 echo "<form action=\"./consultation.php\" method=\"post\" style=\"width: 100%;\">\n";
 genDateSelector("", $day, $month, $year,'');
-echo "<input type=hidden name=id_groupe value=$id_groupe />\n";
-echo "<input type=hidden name=id_classe value=$id_classe />\n";
+echo "<input type=\"hidden\" name=\"id_groupe\" value=\"$id_groupe\" />\n";
+echo "<input type=\"hidden\" name=\"id_classe\" value=\"$id_classe\" />\n";
 echo "<input type=\"submit\" value=\"OK\" /></form>\n";
 //Affiche le calendrier
 minicals($year, $month, $day, $id_groupe, 'consultation.php?');
@@ -306,7 +307,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 }
 //echo "______________";
 // Affichage des comptes rendus et des travaux à faire.
-echo "<table width=\"98%\" border = 0 align=\"center\">\n";
+echo "<table width=\"98%\" border=\"0\" align=\"center\">\n";
 
 // Première colonne : affichage du 'travail à faire' à venir
 echo "<tr><td width = \"30%\" valign=\"top\">\n";
