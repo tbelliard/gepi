@@ -1447,7 +1447,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 
 {
   $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Classe :</i></b><br />
-  <select name=\"classe\" onChange=\"classe_go()\">";
+  <select name=\"classe\" onchange=\"classe_go()\">";
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
   $sql = "select DISTINCT c.id, c.classe from classes c, j_groupes_classes jgc, ct_entry ct WHERE (c.id = jgc.id_classe and jgc.id_groupe = ct.id_groupe) order by classe";
@@ -1484,17 +1484,17 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	// pour l'élève en question
 
   $out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
-  <select name=\"matiere\" onChange=\"matiere_go()\">\n";
+  <select name=\"matiere\" onchange=\"matiere_go()\">\n";
 
   if (is_numeric($id_ref)) {
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)";
+  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
 	        "jgc.id_classe='".$id_ref."' and " .
 	        "g.id = jgc.id_groupe and " .
 	        "jgc.id_groupe = ct.id_groupe" .
 	        ") order by g.name";
   } else {
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)";
+  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 	        "jec.login='".$id_ref."' and " .
 	        "g.id = jec.id_groupe and " .
@@ -1535,7 +1535,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
   </script>
 
   <noscript>
-  <input type=submit value=\"OK\" />
+  <input type=\"submit\" value=\"OK\" />
   </noscript>
   </form>\n";
 
@@ -1563,7 +1563,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	} else {
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
 	  $out_html = "<form name=\"eleve\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Elève :</i></b><br />
-	  <select name=\"eleve\" onChange=\"eleve_go()\">\n";
+	  <select name=\"eleve\" onchange=\"eleve_go()\">\n";
 	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
