@@ -6279,6 +6279,18 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		$temoin_notanet_err++;
 	}
 
+	$sql="CREATE TABLE IF NOT EXISTS notanet_avis (
+	login VARCHAR( 50 ) NOT NULL ,
+	favorable ENUM( 'O', 'N', '' ) NOT NULL ,
+	avis TEXT NOT NULL ,
+	PRIMARY KEY ( login )
+	);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "Erreur sur la création de la table 'notanet_avis': ".$result_inter."<br />";
+		$temoin_notanet_err++;
+	}
+
 	$sql="CREATE TABLE IF NOT EXISTS notanet_socles (
 		login VARCHAR( 50 ) NOT NULL ,
 		b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
