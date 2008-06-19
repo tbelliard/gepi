@@ -81,18 +81,21 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //====================================================
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
+
+	include("header_bulletin_pdf.php");
+
 	//=============================================
 	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
 	//$intercaler_releve_notes="y";
 	if(isset($intercaler_releve_notes)) {
 		// On n'extrait les relevés de notes que pour la/les périodes choisies pour les bulletins
 		$choix_periode='periode';
-		// REVOIR LE HEADER POUR PDF
-		include("../cahier_notes/initialisations_header_releves_html.php");
+		// REVOIR LE HEADER POUR PDF: QUE FAUT-IL EXTRAIRE COMME PARAMETRES SPECIFIQUES AU PDF
+		//include("../cahier_notes/initialisations_header_releves_html.php");
+		include("header_releve_pdf.php");
 	}
 	//=============================================
 
-	include("header_bulletin_pdf.php");
 /*
 	//=========================================
 	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4

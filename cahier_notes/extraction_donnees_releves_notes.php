@@ -1,14 +1,15 @@
 <?php
 	//========================================
 
-	echo "<script type='text/javascript'>
+	if($mode_bulletin!='pdf') {
+		echo "<script type='text/javascript'>
 	document.getElementById('titre_infodiv').innerHTML='Relevés de notes';
 	document.getElementById('td_info').innerHTML='Préparatifs';
 	document.getElementById('td_classe').innerHTML='';
 	document.getElementById('td_periode').innerHTML='';
 	document.getElementById('td_ele').innerHTML='';
 </script>\n";
-
+	}
 	//========================================
 
 	// Tableau destiné à stocker toutes les infos
@@ -67,10 +68,12 @@
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
 		//==============================
-		echo "<script type='text/javascript'>
+		if($mode_bulletin!='pdf') {
+			echo "<script type='text/javascript'>
 	document.getElementById('td_classe').innerHTML='".get_class_from_id($tab_id_classe[$loop_classe])."';
 </script>\n";
-		flush();
+			flush();
+		}
 		//==============================
 
 		//$id_classe=2;
@@ -121,10 +124,12 @@
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			//==============================
-			echo "<script type='text/javascript'>
+			if($mode_bulletin!='pdf') {
+				echo "<script type='text/javascript'>
 	document.getElementById('td_periode').innerHTML='".$periode_num."';
 </script>\n";
-			flush();
+				flush();
+			}
 			//==============================
 
 
@@ -222,6 +227,7 @@
 
 			$tab_releve[$id_classe][$periode_num]['id_classe']=$lig_classe->id;
 			$tab_releve[$id_classe][$periode_num]['classe']=$lig_classe->classe;
+			$tab_releve[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->nom_complet;
 			// Formule du bulletin:
 			//$tab_releve[$id_classe][$periode_num]['formule']=$lig_classe->formule;
 			$tab_releve[$id_classe][$periode_num]['suivi_par']=$lig_classe->suivi_par;
@@ -271,11 +277,13 @@
 				$tab_ele=array();
 
 				//==============================
-				echo "<script type='text/javascript'>
+				if($mode_bulletin!='pdf') {
+					echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$current_eleve_login[$i]."';
 </script>\n";
-				//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
-				flush();
+					//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
+					flush();
+				}
 				//==============================
 
 				//++++++++++++++++++++++++++++++
@@ -453,7 +461,8 @@
 									d.date >= '".$date_debut."' and
 									d.date <= '".$date_fin."'
 									)";
-								} else {
+								}
+								else {
 									$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 									nd.login = '".$current_eleve_login[$i]."' and
 									nd.id_devoir = d.id and
