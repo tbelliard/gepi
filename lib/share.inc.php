@@ -401,15 +401,17 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     if($day   == 0) $day = date("d");
     if($month == 0) $month = date("m");
     if($year  == 0) $year = date("Y");
+	// correction w3c : SELECT NAME -> select name
+    echo "<select name=\"${prefix}day\">\n";
 
-    echo "<SELECT NAME=\"${prefix}day\">\n";
-
+	// correction w3c : OPTION -> option + =\"selected\
     for($i = 1; $i <= 31; $i++)
-        echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i</option>\n";
+        echo "<option" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
         //echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i\n";
 
-    echo "</SELECT>\n";
-    echo "<SELECT NAME=\"${prefix}month\">\n";
+	// correction w3c : SELECT NAME -> select name
+    echo "</select>\n";
+    echo "<select name=\"${prefix}month\">\n";
 
     for($i = 1; $i <= 12; $i++)
     {
@@ -419,11 +421,13 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
         // Si problème avec l'encodage, essayer la ligne suivante
         //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">".iconv('UTF-8','ISO-8859-1', $m)."</option>\n";
-        echo "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m</option>\n";
+	// correction w3c : OPTION VALUE -> option value + =\"selected\
+        echo "<option value=\"$i\"" . ($i == $month ? " selected=\"selected\"" : "") . ">$m</option>\n";
     }
 
-    echo "</SELECT>\n";
-    echo "<SELECT NAME=\"${prefix}year\">\n";
+	// correction w3c : SELECT NAME -> select name
+    echo "</select>\n";
+    echo "<select name=\"${prefix}year\">\n";
 
     $min = strftime("%Y", getSettingValue("begin_bookings"));
     if ($option == "more_years") $min = date("Y") - 5;
@@ -432,10 +436,12 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     if ($option == "more_years") $max = date("Y") + 5;
 
     for($i = $min; $i <= $max; $i++)
-        print "<OPTION" . ($i == $year ? " SELECTED" : "") . ">$i</option>\n";
+	// correction w3c : OPTION SELECTED -> option selected + =\"selected\
+        print "<option" . ($i == $year ? " selected=\"selected\"" : "") . ">$i</option>\n";
         //print "<OPTION" . ($i == $year ? " SELECTED" : "") . ">$i\n";
 
-    echo "</SELECT>\n";
+	// correction w3c : SELECT -> select
+    echo "</select>\n";
 }
 
 
@@ -1448,6 +1454,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 {
   $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Classe :</i></b><br />
   <select name=\"classe\" onchange=\"classe_go()\">";
+	// correction W3C : onChange = onchange
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
   $sql = "select DISTINCT c.id, c.classe from classes c, j_groupes_classes jgc, ct_entry ct WHERE (c.id = jgc.id_classe and jgc.id_groupe = ct.id_groupe) order by classe";
@@ -1483,9 +1490,11 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	// pour la classe, soit le login d'un élève, auquel cas on affiche tous les groupes
 	// pour l'élève en question
 
+	// correction W3C : onChange = onchange
   $out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
   <select name=\"matiere\" onchange=\"matiere_go()\">\n";
 
+	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
   if (is_numeric($id_ref)) {
   	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
@@ -1494,6 +1503,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	        "jgc.id_groupe = ct.id_groupe" .
 	        ") order by g.name";
   } else {
+	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
   	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 	        "jec.login='".$id_ref."' and " .
@@ -1520,7 +1530,8 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    } else {
    		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]";
    }
-   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine;
+	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    }
   $out_html .= "\n</select>
   <script type=\"text/javascript\">
@@ -1538,7 +1549,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
   <input type=\"submit\" value=\"OK\" />
   </noscript>
   </form>\n";
-
+	// correction W3C : ajout de \" pour encadrer submit ci-dessus
   return $out_html;
 }
 
@@ -1562,6 +1573,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 		$out_html = "<p class='bold'>Elève : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
 	} else {
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
+	// correction W3C : onChange = onchange
 	  $out_html = "<form name=\"eleve\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Elève :</i></b><br />
 	  <select name=\"eleve\" onchange=\"eleve_go()\">\n";
 	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";
@@ -2967,6 +2979,7 @@ function decompte_debug($motif,$texte) {
 		$tab_instant[$motif]=$instant;
 	}
 }
+
 
 // Fonction qui retourne l'URI des élèves pour les flux rss
 function retourneUri($eleve, $https, $type){
