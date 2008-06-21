@@ -160,7 +160,7 @@ if ($today < getSettingValue("begin_bookings")) {
 } else if ($today > getSettingValue("end_bookings")) {
    $today = getSettingValue("end_bookings");
 }
-echo "<script type=\"text/javascript\" src=\"../lib/clock_fr.js\"></script>";
+echo "<script type=\"text/javascript\" src=\"../lib/clock_fr.js\"></script>\n";
 //-----------------------------------------------------------------------------------
 echo "<table width=\"98%\" cellspacing=\"0\" align=\"center\">\n<tr>\n";
 echo "<td valign='top'>\n";
@@ -310,7 +310,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 echo "<table width=\"98%\" border=\"0\" align=\"center\">\n";
 
 // Première colonne : affichage du 'travail à faire' à venir
-echo "<tr><td width = \"30%\" valign=\"top\">\n";
+echo "<tr><td width=\"30%\" valign=\"top\">\n";
 // ?????????????????????????????????????????????????????????
 echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a><br /><br />\n";
 // Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
@@ -414,7 +414,7 @@ echo "</td>\n";
 // Début de la deuxième colonne
 echo "<td valign=\"top\">";
 
-echo "<table border=0 width = 100%>";
+echo "<table border=\"0\" width=\"100%\">\n";
 // Première ligne
 echo "<tr><td style=\"width:50%\"><b>" . strftime("%A %d %B %Y", $today) . "</b>";
 #y? sont les année, mois et jour précédents
@@ -427,12 +427,12 @@ $i= mktime(0,0,0,$month,$day+1,$year);
 $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
-echo "</td><td><a title=\"Aller au jour précédent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/back.png' alt='Jour précédent'></a></td><td align=center><a href=\"consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"consultation.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/forward.png' alt='Jour suivant'></a></td></tr>\n";
+echo "</td>\n<td><a title=\"Aller au jour précédent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/back.png' alt='Jour précédent'></a></td>\n<td align=\"center\"><a href=\"consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td>\n<td align=\"right\"><a title=\"Aller au jour suivant\" href=\"consultation.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/forward.png' alt='Jour suivant'></a></td>\n</tr>\n";
 // affichage du texte
-echo "<tr><td colspan=\"4\">\n";
-echo "<center><b>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</b></center></td></tr>\n";
+echo "<tr>\n<td colspan=\"4\">\n";
+echo "<center><b>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</b></center></td>\n</tr>\n";
 //echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background: rgb(199, 255, 153); padding: 2px; margin: 2px;\">";
-echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\">\n";
+echo "<tr>\n<td colspan=\"4\" style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\">\n";
 
 
 
@@ -509,14 +509,14 @@ while (true) {
     <tr>
     <td style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule_gen."; padding: 0.5px 10px 0.5px 10px; margin: 0px;\">".$html."</td>
     </tr>
-    </table><br />\n";
+    </table>\n<br />\n";
 
     if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
 
 
-echo "</td></tr>";
-echo "</table>";
-echo "</td></tr></table>";
+echo "</td>\n</tr>\n";
+echo "</table>\n";
+echo "</td>\n</tr>\n</table>\n";
 require("../lib/footer.inc.php");
 ?>
