@@ -2757,7 +2757,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->SetXY($X_bloc_matiere, $Y_decal);
 
 				fich_debug_bull("\n");
-				fich_debug_bull("\$categorie_passe=$categorie_passe\n");
+				fich_debug_bull("Catégorie précédente: \$categorie_passe=$categorie_passe\n");
+				fich_debug_bull("Catégorie courante :  \$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
 				fich_debug_bull("\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']."\n");
 				fich_debug_bull("\$X_bloc_matiere=$X_bloc_matiere\n");
 				fich_debug_bull("\$Y_decal=$Y_decal\n");
@@ -2794,6 +2795,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 						$grandeur_texte='test';
 						$pdf->SetFillColor($tab_modele_pdf["couleur_categorie_entete1"][$classe_id], $tab_modele_pdf["couleur_categorie_entete2"][$classe_id], $tab_modele_pdf["couleur_categorie_entete3"][$classe_id]);
+
+						fich_debug_bull("On écrit $tt_catego à \$Y_decal=$Y_decal\n");
+
 						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], $tt_catego,'TLB',0,'L',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 						$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
@@ -3002,9 +3006,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					*/
 					if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe) {
 						$categorie_passe_count=0;
-						//PB:
-						//On repart de zéro, mais si pour la première matière rencontrée au changement de catégorie,
-						//l'élève ne suit pas le groupe, à la matière suivante de la catégorie, on passera à //$categorie_passe_count=1.
+
+						$Y_categ_cote=$Y_decal;
 					}
 					/*
 					else {
@@ -3053,7 +3056,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						$tmp_val=$Y_decal-$hauteur_regroupement+$espace_entre_matier;
 						fich_debug_bull("\$Y_decal-\$hauteur_regroupement+\$espace_entre_matier=".$Y_decal."-".$hauteur_regroupement."+".$espace_entre_matier."=".$tmp_val."\n");
 
-						$pdf->SetXY($X_bloc_matiere-5,$Y_decal-$hauteur_regroupement+$espace_entre_matier);
+						//$pdf->SetXY($X_bloc_matiere-5,$Y_decal-$hauteur_regroupement+$espace_entre_matier);
+						$pdf->SetXY($X_bloc_matiere-5,$Y_categ_cote);
+
 
 						$pdf->SetFillColor($tab_modele_pdf["couleur_categorie_cote1"][$classe_id], $tab_modele_pdf["couleur_categorie_cote2"][$classe_id], $tab_modele_pdf["couleur_categorie_cote3"][$classe_id]);
 						if($tab_modele_pdf["couleur_categorie_cote"][$classe_id] === '1') {
@@ -4732,7 +4737,7 @@ function fich_debug_bull($texte){
 	$fichier_debug="/tmp/bulletin_pdf.txt";
 
 	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
-	$local_debug="y";
+	$local_debug="n";
 	if($local_debug=="y") {
 		$fich=fopen($fichier_debug,"a+");
 		fwrite($fich,$texte);
