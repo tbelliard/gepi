@@ -30,6 +30,13 @@ $quartile4_classe_gen = 0;
 $quartile5_classe_gen = 0;
 $quartile6_classe_gen = 0;
 
+$quartile1_grp=array();
+$quartile2_grp=array();
+$quartile3_grp=array();
+$quartile4_grp=array();
+$quartile5_grp=array();
+$quartile6_grp=array();
+
 // On appelle la liste des élèves de la classe
 /*
 $appel_liste_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c
@@ -217,6 +224,52 @@ while ($j < $nombre_groupes) {
 	$res_note_min_max=mysql_query($sql);
 	$moy_min_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_min");
 	$moy_max_classe_grp[$j]= @mysql_result($res_note_min_max, 0, "note_max");
+	//======================================
+
+	$sql="SELECT COUNT(note) as quartile1 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note>=15)";
+	//echo "$sql<br />";
+	$quartile1_grp[$j]=sql_query1($sql);
+	$sql="SELECT COUNT(note) as quartile2 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note>=12 AND
+								note<15)";
+	//echo "$sql<br />";
+	$quartile2_grp[$j]=sql_query1($sql);
+	$sql="SELECT COUNT(note) as quartile3 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note>=10 AND
+								note<12)";
+	//echo "$sql<br />";
+	$quartile3_grp[$j]=sql_query1($sql);
+	//echo "\$quartile3_grp[$j]=".$quartile3_grp[$j]."<br />";
+	$sql="SELECT COUNT(note) as quartile4 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note>=8 AND
+								note<10)";
+	//echo "$sql<br />";
+	$quartile4_grp[$j]=sql_query1($sql);
+	//echo "\$quartile4_grp[$j]=".$quartile4_grp[$j]."<br />";
+	$sql="SELECT COUNT(note) as quartile5 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note>=5 AND
+								note<8)";
+	//echo "$sql<br />";
+	$quartile5_grp[$j]=sql_query1($sql);
+	//echo "\$quartile5_grp[$j]=".$quartile5_grp[$j]."<br />";
+	$sql="SELECT COUNT(note) as quartile6 FROM matieres_notes WHERE (periode='$periode_num' AND
+								id_groupe='".$current_group[$j]["id"]."' AND
+								statut='' AND
+								note<5)";
+	//echo "$sql<br />";
+	$quartile6_grp[$j]=sql_query1($sql);
+	//echo "\$quartile6_grp[$j]=".$quartile6_grp[$j]."<br />";
 
 	//======================================
     while ($i < $nombre_eleves) {
@@ -285,6 +338,28 @@ while ($j < $nombre_groupes) {
 			}
 
 			//======================================
+
+			if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
+				if($current_eleve_note[$j][$i]>=15) {
+					$place_eleve_grp[$j][$i]=1;
+				}
+				elseif(($current_eleve_note[$j][$i]>=12)&&($current_eleve_note[$j][$i]<15)) {
+					$place_eleve_grp[$j][$i]=2;
+				}
+				elseif(($current_eleve_note[$j][$i]>=10)&&($current_eleve_note[$j][$i]<12)) {
+					$place_eleve_grp[$j][$i]=3;
+				}
+				elseif(($current_eleve_note[$j][$i]>=8)&&($current_eleve_note[$j][$i]<12)) {
+					$place_eleve_grp[$j][$i]=4;
+				}
+				elseif(($current_eleve_note[$j][$i]>=5)&&($current_eleve_note[$j][$i]<8)) {
+					$place_eleve_grp[$j][$i]=5;
+				}
+				elseif($current_eleve_note[$j][$i]<5) {
+					$place_eleve_grp[$j][$i]=6;
+				}
+			}
+
 
 			calc_moy_debug("\$coef_eleve=$coef_eleve\n");
             if ($coef_eleve != 0) {
@@ -445,5 +520,7 @@ for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
 //     - $moy_min_classe_grp[$j]
 //     - $moy_max_classe_grp[$j]
 //     - $current_eleve_rang[$j][$i] sous réserve que $affiche_rang=='y'
+//     - $quartile1_grp[$j] à $quartile6_grp[$j]
+//     - $place_eleve_grp[$j][$i]
 
 ?>

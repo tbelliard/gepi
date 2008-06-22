@@ -1467,6 +1467,15 @@ else {
 				$tab_bulletin[$id_classe][$periode_num]['quartile6_grp'][$j]=0;
 			}
 
+			$tab_bulletin[$id_classe][$periode_num]['place_eleve']=$place_eleve_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile1_grp']=$quartile1_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile2_grp']=$quartile2_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile3_grp']=$quartile3_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile4_grp']=$quartile4_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile5_grp']=$quartile5_grp;
+			$tab_bulletin[$id_classe][$periode_num]['quartile6_grp']=$quartile6_grp;
+			//for($kl=0;$kl<count($quartile1_grp);$kl++) {echo "\$quartile1_grp[$kl]=".$quartile1_grp[$kl]."<br />";}
+
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableaux d'indices [$i][$cat] (où $i: eleve et $cat: $categorie_id)
 			$tab_bulletin[$id_classe][$periode_num]['moy_cat_classe']=$moy_cat_classe;
@@ -2049,8 +2058,8 @@ else {
 
 						// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
 						if(isset($current_eleve_note[$j][$i])) {
-
 							// Quartiles
+							/*
 							if($current_eleve_note[$j][$i]!="") {
 								if($current_eleve_note[$j][$i]>=15) {
 									$tab_bulletin[$id_classe][$periode_num]['quartile1_grp'][$j]++;
@@ -2077,7 +2086,7 @@ else {
 									$tab_bulletin[$id_classe][$periode_num]['place_eleve'][$j][$i]=6;
 								}
 							}
-
+							*/
 
 							//================================
 							// Notes des boites/conteneurs/sous-matieres
