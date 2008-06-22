@@ -207,8 +207,19 @@ while ($j < $nombre_groupes) {
 	calc_moy_debug("$sql\n");
 	$current_classe_matiere_moyenne_query = mysql_query($sql);
 
-    $current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+	$current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+/*
+	if(mysql_num_rows($current_classe_matiere_moyenne_query)>0) {
+		//$current_classe_matiere_moyenne[$j] = mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
+		$lig_tmp=mysql_fetch_object($current_classe_matiere_moyenne_query);
+		$current_classe_matiere_moyenne[$j]=$lig_tmp->moyenne;
+	}
+	else {
+		$current_classe_matiere_moyenne[$j]="-";
+	}
+*/
 	calc_moy_debug("\$current_classe_matiere_moyenne[$j]=$current_classe_matiere_moyenne[$j]\n");
+
     // Calcul de la moyenne des élèves et de la moyenne de la classe
     $i=0;
 	//======================================
@@ -280,6 +291,8 @@ while ($j < $nombre_groupes) {
 		//$current_coef_eleve[$i]=array();
 		//======================================
 
+		//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
+
         // Maintenant on regarde si l'élève suit bien cette matière ou pas
         if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
         	//$count[$j][$i] == "0"
@@ -298,12 +311,28 @@ while ($j < $nombre_groupes) {
             id_groupe='".$current_group[$j]["id"]."'
             )";
 			calc_moy_debug("$sql\n");
+			//echo "$sql<br />";
 			$current_eleve_note_query = mysql_query($sql);
 
-            $current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
-			calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
-            $current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
-			calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
+			//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
+			if(mysql_num_rows($current_eleve_note_query)>0) {
+				$lig_tmp=mysql_fetch_object($current_eleve_note_query);
+				//$current_eleve_note[$j][$i] = @mysql_result($current_eleve_note_query, 0, "note");
+				$current_eleve_note[$j][$i]=$lig_tmp->note;
+				calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
+
+				//$current_eleve_statut[$j][$i] = @mysql_result($current_eleve_note_query, 0, "statut");
+				$current_eleve_statut[$j][$i]=$lig_tmp->statut;
+				calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
+
+				//echo "\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."<br />";
+				//echo "\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."<br />";
+			}
+			else {
+				$current_eleve_note[$j][$i]="-";
+				$current_eleve_statut[$j][$i]="";
+			}
+
             // On teste si l'élève a un coef spécifique pour cette matière
             /*
 			$test_coef = mysql_query("SELECT value FROM eleves_groupes_settings WHERE (" .

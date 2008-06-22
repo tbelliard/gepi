@@ -2101,7 +2101,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 
-					$titre_entete_appreciation=$bull_intitule_app;
+					//$titre_entete_appreciation=$bull_intitule_app;
+					$titre_entete_appreciation=$tab_modele_pdf['titre_entete_appreciation'][$classe_id];
 
 					$pdf->Cell($largeur_appreciation, $hauteur_entete, $titre_entete_appreciation,'LRB',0,'C');
 					$largeur_utilise = $largeur_utilise + $largeur_appreciation;
@@ -2623,9 +2624,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						{
 							// calcul de la hauteur du caractère du prof
 							$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count];
+							/*
 							$text_prof=$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["civilite"];
 							$text_prof.=" ".$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["nom"];
 							$text_prof.=" ".substr($tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["prenom"],0,1);
+							*/
+							$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
 
 							if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
 							elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
@@ -2857,7 +2861,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								if (($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=12) and ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']<15)) { $place_eleve=1;}
 								if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=15) { $place_eleve=0;}
 								*/
-								$place_eleve=$tab_bull['place_eleve'][$m][$i];
+								if(isset($tab_bull['place_eleve'][$m][$i])) {
+									$place_eleve=$tab_bull['place_eleve'][$m][$i];
+								}
 							}
 							$data_grap[0]=$tab_bull['quartile1_grp'][$m];
 							$data_grap[1]=$tab_bull['quartile2_grp'][$m];
@@ -3274,7 +3280,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pp_classe[$i]="";
 				if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
 					//echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
-					$pp_classe[$i]=affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
+					//$pp_classe[$i]=affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
+					$pp_classe[$i]=ucfirst($gepi_prof_suivi)." ".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
 				}
 				else {
 					$pp_classe[$i]="";

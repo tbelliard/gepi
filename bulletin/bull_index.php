@@ -1428,6 +1428,13 @@ else {
 			// A VéRIFIER: Tableaux d'indices [$i][$j] (élève, groupe)
 			$tab_bulletin[$id_classe][$periode_num]['note']=$current_eleve_note;
 			$tab_bulletin[$id_classe][$periode_num]['statut']=$current_eleve_statut;
+			/*
+			for($j=0;$j<count($current_eleve_statut);$j++) {
+				for($i=0;$i<count($current_eleve_statut[$j]);$i++) {
+					echo "\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."<br />";
+				}
+			}
+			*/
 			if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
 			$tab_bulletin[$id_classe][$periode_num]['coef_eleve']=$current_coef_eleve;
 
@@ -1441,6 +1448,7 @@ else {
 			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe']=$moy_min_classe;
 			$tab_bulletin[$id_classe][$periode_num]['moy_generale_classe']=$moy_generale_classe;
 			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe']=$moy_max_classe;
+
 			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;
 			$tab_bulletin[$id_classe][$periode_num]['moy_classe_grp']=$current_classe_matiere_moyenne;
 			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;
