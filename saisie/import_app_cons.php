@@ -53,6 +53,8 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
    die("Droits insuffisants pour effectuer cette opération");
 }
 
+
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des appréciations du conseil | Importation";
 require_once("../lib/header.inc");
@@ -60,7 +62,113 @@ require_once("../lib/header.inc");
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
-echo "<p class='bold'><a href='saisie_avis.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post' name='form1'>\n";
+echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
+
+echo "<p class='bold'><a href='saisie_avis.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+
+// ===========================================
+// Ajout lien classe précédente / classe suivante
+if($_SESSION['statut']=='scolarite'){
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+}
+elseif($_SESSION['statut']=='professeur'){
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+}
+elseif($_SESSION['statut']=='cpe'){
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+		p.id_classe = c.id AND
+		jec.id_classe=c.id AND
+		jec.periode=p.num_periode AND
+		jecpe.e_login=jec.login AND
+		jecpe.cpe_login='".$_SESSION['login']."'
+		ORDER BY classe";
+}
+
+$cpt_classe=0;
+$num_classe=-1;
+$chaine_options_classes="";
+$res_class_tmp=mysql_query($sql);
+if(mysql_num_rows($res_class_tmp)>0){
+	$id_class_prec=0;
+	$id_class_suiv=0;
+	$temoin_tmp=0;
+	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+		if($lig_class_tmp->id==$id_classe){
+			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+
+			$num_classe=$cpt_classe;
+
+			$temoin_tmp=1;
+			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				$id_class_suiv=$lig_class_tmp->id;
+			}
+			else{
+				$id_class_suiv=0;
+			}
+		}
+		else {
+			$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+		}
+
+		if($temoin_tmp==0){
+			$id_class_prec=$lig_class_tmp->id;
+		}
+		$cpt_classe++;
+	}
+}
+// =================================
+if(isset($id_class_prec)){
+	if($id_class_prec!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;periode_num=$periode_num'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Classe précédente</a>\n";
+	}
+}
+if($chaine_options_classes!="") {
+	echo " | <select name='id_classe' id='form1_id_classe'";
+	//echo " onchange=\"document.forms['form1'].submit();\"";
+	echo " onchange=\"confirm_changement_classe(change, '$themessage');\"";
+	echo ">\n";
+	echo $chaine_options_classes;
+	echo "</select>\n";
+}
+if(isset($id_class_suiv)){
+	if($id_class_suiv!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;periode_num=$periode_num'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Classe suivante</a>\n";
+	}
+}
+echo "</p>\n";
+echo "</form>\n";
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('form1_id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+//fin ajout lien classe précédente / classe suivante
+// ===========================================
+
 
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
@@ -76,10 +184,10 @@ if (!isset($is_posted)) {
     <input type='checkbox' name="en_tete" value="yes" checked /></p>
     <input type='hidden' name='is_posted' value='1' />
     <?php
-    echo "<input type='hidden' name=id_classe value= $id_classe />\n";
-    echo "<input type='hidden' name=periode_num value= $periode_num />\n";
+    echo "<input type='hidden' name='id_classe' value=\"$id_classe\" />\n";
+    echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
     ?>
-    </FORM>
+    </form>
     <?php
     echo "<p>Vous avez décidé d'importer directement un fichier d'appréciations. Le fichier d'importation doit être au format csv (séparateur : point-virgule) et doit contenir les deux champs suivants :<br />\n";
     echo "--> <B>IDENTIFIANT</B> : L'identifiant GEPI de l'élève (<b>voir les explications plus bas</b>).<br />\n";
@@ -101,7 +209,7 @@ if (!isset($is_posted)) {
 if (isset($is_posted ) and ($is_posted==1)) {
     $non_def = 'no';
     $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-    echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post' >\n";
+    echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post'>\n";
     if($csv_file['tmp_name'] != "") {
         echo "<p><b>Attention</b>, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
 
@@ -162,7 +270,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                 $eleve_classe = @mysql_result($classe_eleve, 0, "classe");
                                 $eleve_id_classe = @mysql_result($classe_eleve, 0, "id");
                                 if ($eleve_classe == '') {
-                                   $eleve_classe = '<font color = red>???</font>';
+                                   $eleve_classe = "<font color='red'>???</font>";
                                    $valid = 0;
                                 }
 
@@ -185,14 +293,14 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                 if (($test_suivi != "0") and ($eleve_id_classe == $id_classe))  {
                                     echo "<td><p>$data[$c]</p>\n";
                                     $stat = "OK";
-                                    echo "<input type='hidden' name='$reg_ok' value = 'yes' />\n";
+                                    echo "<input type='hidden' name='$reg_ok' value='yes' />\n";
 									echo "</td>\n";
 
                                 } else {
-                                    echo "<td><p><font color = red>* $data[$c] (non valide) *</font></p>\n";
+                                    echo "<td><p><font color='red'>* $data[$c] (non valide) *</font></p>\n";
                                     $valid = 0;
-                                    $stat = "<font color = red>Non valide</font>";
-                                    echo "<input type='hidden' name='$reg_ok' value = 'no' />\n";
+                                    $stat = "<font color='red'>Non valide</font>";
+                                    echo "<input type='hidden' name='$reg_ok' value='no' />\n";
 									echo "</td>\n";
 
                                 }
@@ -203,12 +311,12 @@ if (isset($is_posted ) and ($is_posted==1)) {
                                 echo "<input type='hidden' name='$reg_login' value = $data_login />\n";
 								echo "</td>\n";
                             } else {
-                                echo "<td><font color = red>???</font></td>\n";
-                                echo "<td><font color = red>???</font></td>\n";
-                                echo "<td><font color = red>???</font></td>\n";
-                                echo "<td><font color = red>???</font>\n";
+                                echo "<td><font color='red'>???</font></td>\n";
+                                echo "<td><font color='red'>???</font></td>\n";
+                                echo "<td><font color='red'>???</font></td>\n";
+                                echo "<td><font color='red'>???</font>\n";
                                 $valid = 0;
-                                $stat = "<font color = red>Non valide</font>";
+                                $stat = "<font color='red'>Non valide</font>";
 								echo "<input type='hidden' name='$reg_ok' value = 'no' />\n";
 								echo "</td>\n";
 
@@ -217,7 +325,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
                         case 1:
                             // Appréciation
                             if ($data[$c] == "") {
-                                $col3 = "<font color = green>ND</font>";
+                                $col3 = "<font color='green'>ND</font>";
                                 $non_def = 'yes';
                                 $data_app = '';
                             } else {
@@ -232,7 +340,7 @@ if (isset($is_posted ) and ($is_posted==1)) {
 
                     //echo "<td>".$stat."</td>\n";
                     echo "<td>".$stat;
-                    echo "<input type='hidden' name='$reg_app' value = $data_app />\n";
+                    echo "<input type='hidden' name='$reg_app' value=\"$data_app\" />\n";
 					echo "</td>\n";
                     echo "</tr>\n";
                 // fin de la condition "if ($num == 2)"
@@ -244,10 +352,10 @@ if (isset($is_posted ) and ($is_posted==1)) {
             echo "</table>\n";
             echo "<p>Première phase de l'importation : $row entrées détectées !</p>\n";
             if ($row > 0) {
-                echo "<input type='hidden' name='nb_row' value = $row />\n";
-                echo "<input type='hidden' name='id_classe' value= $id_classe />\n";
-                echo "<input type='hidden' name='periode_num' value= $periode_num />\n";
-                echo "<input type='hidden' name='is_posted' value=2 />\n";
+                echo "<input type='hidden' name='nb_row' value=\"$row\" />\n";
+                echo "<input type='hidden' name='id_classe' value=\"$id_classe\" />\n";
+                echo "<input type='hidden' name='periode_num' value=\"$periode_num\" />\n";
+                echo "<input type='hidden' name='is_posted' value=\"2\" />\n";
                 echo "<input type='submit' value='Enregistrer les données' />\n";
                 echo "</form>";
                 if ($valid != '1') {
@@ -258,12 +366,18 @@ if (isset($is_posted ) and ($is_posted==1)) {
                     echo "<p class='bold'>Les symboles <font color=green>ND</font> signifient que le champ en question sera ignoré. Il n'y aura donc pas modification de la donnée existante dans la base de GEPI.<br /></p>\n";
                 }
                 ?>
-                <script type="text/javascript" language="javascript">
+                <script type="text/javascript">
                 <!--
                 alert("Attention, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !");
                 //-->
                 </script>
                 <?php
+
+
+				//if() {
+					echo "<script type='text/javascript'>changement();</script>\n";
+				//}
+
 
             } else {
                 echo "<p>L'importation a échoué !</p>\n";
@@ -331,7 +445,7 @@ if (isset($is_posted ) and ($is_posted==2)) {
             }
 
             if (!$reg_data) {
-                echo "<font color=red>Erreur lors de la modification de l'appréciation de l'utilisateur $reg_login !</font><br />\n";
+                echo "<font color='red'>Erreur lors de la modification de l'appréciation de l'utilisateur $reg_login !</font><br />\n";
             } else {
                 echo "L'appréciation de l'utilisateur $reg_login a été modifiée avec succès !<br />\n";
             }
