@@ -843,31 +843,73 @@ else{
 
 
 	echo "<h3 class='gepi'>Précision du calcul de la moyenne de $nom_court : </h3>\n";
-	echo "<table>\n<tr><td>";
+	echo "<table>\n";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_s1' value='s1' "; if ($arrondir=='s1') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_s1' style='cursor: pointer;'>";
 	echo "Arrondir au dixième de point supérieur";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_s1' value='s1' "; if ($arrondir=='s1') echo "checked"; echo " /></td></tr>\n<tr><td>";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_s5' value='s5' "; if ($arrondir=='s5') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_s5' style='cursor: pointer;'>";
 	echo "Arrondir au demi-point supérieur";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_s5' value='s5' "; if ($arrondir=='s5') echo "checked"; echo " /></td></tr>\n<tr><td>";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_se' value='se' "; if ($arrondir=='se') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_se' style='cursor: pointer;'>";
 	echo "Arrondir au point entier supérieur";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_se' value='se' "; if ($arrondir=='se') echo "checked"; echo " /></td></tr>\n<tr><td>";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_p1' value='p1' "; if ($arrondir=='p1') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_p1' style='cursor: pointer;'>";
 	echo "Arrondir au dixième de point le plus proche";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_p1' value='p1' "; if ($arrondir=='p1') echo "checked"; echo " /></td></tr>\n<tr><td>";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_p5' value='p5' "; if ($arrondir=='p5') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_p5' style='cursor: pointer;'>";
 	echo "Arrondir au demi-point le plus proche";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_p5' value='p5' "; if ($arrondir=='p5') echo "checked"; echo " /></td></tr>\n<tr><td>";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='radio' name='precision' id='precision_pe' value='pe' "; if ($arrondir=='pe') echo "checked"; echo " />\n";
+	echo "</td>\n";
+	echo "<td>\n";
 	echo "<label for='precision_pe' style='cursor: pointer;'>";
 	echo "Arrondir au point entier le plus proche";
-	echo "</label>";
-	echo "</td><td><input type='radio' name='precision' id='precision_pe' value='pe' "; if ($arrondir=='pe') echo "checked"; echo " /></td></tr>\n</table>\n";
+	echo "</label>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
 
 
@@ -882,21 +924,41 @@ else{
 	if ($parent != 0) {
 		//s'il s'agit d'une boite à l'intérieur du conteneur principal, on laisse la possibilité d'afficher la note de la boite sur le bulletin.
 		echo "<h3 class='gepi'>Affichage de la moyenne de $nom_court :</h3>\n";
-		echo "<table>\n<tr><td>";
+		echo "<table>\n";
+		echo "<tr>\n";
 
+		echo "<td valign='top'>\n";
+		echo "<input type='checkbox' name='display_parents' id='display_parents' "; if ($display_parents == 1) echo " checked";
+		echo " />\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
 		echo "<label for='display_parents' style='cursor: pointer;'>";
 		echo "Faire apparaître la moyenne sur le relevé de notes destiné aux parents";
 		echo "</label>";
-		echo "</td><td><input type='checkbox' name='display_parents' id='display_parents' "; if ($display_parents == 1) echo " checked"; echo " /></td></tr>\n<tr><td>";
+		echo "</td>\n";
 
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+
+		echo "<td valign='top'>\n";
+		echo "<input type='checkbox' name='display_bulletin' id='display_bulletin'";
+		if ($display_bulletin == 1) echo " checked"; echo " />\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
 		echo "<label for='display_bulletin' style='cursor: pointer;'>";
 		echo "Faire apparaître la moyenne sur le bulletin scolaire.";
 		echo "<br /><i>Si la case ci-contre est cochée, la moyenne de ce";
 		if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "tte";}
 		echo " ".strtolower(getSettingValue("gepi_denom_boite"))." apparaît sur le bulletin scolaire, en plus de la moyenne générale, à titre d'information.</i>";
 		echo "</label>";
+		echo "</td>\n";
 
-		echo "</td><td><input type='checkbox' name='display_bulletin' id='display_bulletin'"; if ($display_bulletin == 1) echo " checked"; echo " /></td></tr>\n</table>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
 	} else {
 		echo "<input type='hidden' name='display_bulletin' value='yes' />\n";
 	}
