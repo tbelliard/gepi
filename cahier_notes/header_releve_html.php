@@ -28,6 +28,9 @@
 	// Portion des styles et initialisations à reprendre dans le cas d'une insertion des relevés de notes entre les bulletins
 	include("initialisations_header_releves_html.php");
 
+	echo "<!-- Styles du relevé HTML -->\n";
+	echo $style_releve_notes_html;
+
 	//======================================
 	// Portion des styles pouvant entrer en concurrence avec ceux du bulletin HTML dans le cas d'une insertion des relevés de notes entre les bulletins
 

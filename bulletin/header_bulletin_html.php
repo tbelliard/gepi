@@ -303,6 +303,10 @@
 	}
 </style>\n";
 
+	if(isset($style_releve_notes_html)) {
+		echo "<!-- Styles du relevé HTML -->\n";
+		echo $style_releve_notes_html;
+	}
 
 	echo "</head>\n";
 	echo "<body>\n";

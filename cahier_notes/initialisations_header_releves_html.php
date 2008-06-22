@@ -5,7 +5,8 @@
 	$releve_textsize=getSettingValue("releve_textsize") ? getSettingValue("releve_textsize") : 10;
 	$releve_titlesize=getSettingValue("releve_titlesize") ? getSettingValue("releve_titlesize") : 16;
 
-	echo "<style type='text/css'>
+
+	$style_releve_notes_html="<style type='text/css'>
 .releve_grand {
 	color: #000000;
 	font-size: ".$releve_titlesize."pt;
@@ -17,12 +18,12 @@
 	font-size: ".$releve_textsize."pt;
 	font-style: normal;\n";
 	if($p_releve_margin!=""){
-		echo "      margin-top: ".$p_releve_margin."pt;\n";
-		echo "      margin-bottom: ".$p_releve_margin."pt;\n";
+		$style_releve_notes_html.="      margin-top: ".$p_releve_margin."pt;\n";
+		$style_releve_notes_html.="      margin-bottom: ".$p_releve_margin."pt;\n";
 	}
-	echo "}\n";
+	$style_releve_notes_html.="}\n";
 
-	echo "td.releve_empty{
+	$style_releve_notes_html.="td.releve_empty{
 	width:auto;
 	padding-right: 20%;
 }
@@ -130,5 +131,5 @@
 	$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes") ? getSettingValue("active_module_trombinoscopes") : "n";
 
 
-	echo "</style>\n";
+	$style_releve_notes_html.="</style>\n";
 ?>
