@@ -1575,6 +1575,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// Paramètre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
 
+		$compteur_bulletins,
+
 		// Datation du bulletin (paramètre initié dans l'entête du bulletin PDF)
 		$date_bulletin,
 
@@ -2524,7 +2526,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$cpt_ordre = 0;
 			$chapeau_moyenne = 'non';
 			while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
-				$categorie_passe_count = 0;
+
+				// Je ne saisis pas pourquoi cette variable est initialisée à ce niveau???
+				//$categorie_passe_count = 0;
+
 				// le chapeau des moyennes
 				$ajout_espace_au_dessus = 4;
 				if ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '1' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' or $ordre_moyenne[$cpt_ordre] === 'eleve' ) and $chapeau_moyenne === 'non' and $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] != '3' )
@@ -2671,7 +2676,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			//si catégorie activé il faut compter le nombre de catégories
 			$nb_categories_select=0;
-			$categorie_passe_for='';
+			//$categorie_passe_for='';
 
 			if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				/* A CONVERTIR AVEC $tab_bull
@@ -2686,6 +2691,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$nb_categories_select=count(array_count_values($tab_bull['cat_id']));
 			}
 
+			fich_debug_bull("======================\n");
+			fich_debug_bull("Elève ".$tab_bull['eleve'][$i]['login']."\n");
+			fich_debug_bull("\$nb_categories_select=$nb_categories_select\n");
 
 			//$nb_matiere=count($tab_bull['eleve'][$i][]);
 			/*
@@ -2721,6 +2729,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$espace_entre_matier = $hauteur_bloc_matiere/$nb_matiere;
 			}
 
+			fich_debug_bull("\$hauteur_bloc_matiere=$hauteur_bloc_matiere\n");
+			fich_debug_bull("\$nb_matiere=$nb_matiere\n");
+			fich_debug_bull("\$espace_entre_matier=$espace_entre_matier\n");
+
 			/*
 			//++++++++++++++++
 			// Pour debug:
@@ -2733,10 +2745,22 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->SetXY($X_bloc_matiere, $Y_bloc_matiere);
 			$Y_decal = $Y_bloc_matiere;
 
+			fich_debug_bull("\$Y_decal=$Y_decal\n");
+
+
+			// Compteur du nombre de matières dans la catégorie
+			$categorie_passe_count=0;
+
 			//for($m=0; $m<$nb_matiere; $m++)
 			for($m=0; $m<count($tab_bull['groupe']); $m++)
 			{
 				$pdf->SetXY($X_bloc_matiere, $Y_decal);
+
+				fich_debug_bull("\n");
+				fich_debug_bull("\$categorie_passe=$categorie_passe\n");
+				fich_debug_bull("\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']."\n");
+				fich_debug_bull("\$X_bloc_matiere=$X_bloc_matiere\n");
+				fich_debug_bull("\$Y_decal=$Y_decal\n");
 
 				// si on affiche les catégories
 				if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
@@ -2954,23 +2978,51 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 				}
 
+				fich_debug_bull("Après les catégories\n");
+				fich_debug_bull("\$Y_decal=$Y_decal\n");
 
 				//============================
 				// Modif: boireaus 20070828
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 					//if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']===$categorie_passe) {
-					if($tab_bull['nom_cat_complet'][$m]===$categorie_passe) {
-						$categorie_passe_count=$categorie_passe_count+1;
+					/*
+					if(isset($tab_bull['note'][$m][$i])) {
+						if($tab_bull['nom_cat_complet'][$m]===$categorie_passe) {
+							$categorie_passe_count=$categorie_passe_count+1;
+						}
+						else {
+							$categorie_passe_count=0;
+						}
+
+						//if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe) {
+						if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe) {
+							$categorie_passe_count=$categorie_passe_count+1;
+						}
 					}
-					else {
-						$categorie_passe_count=0;
-					}
-					//if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe) {
+					*/
 					if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe) {
-						$categorie_passe_count=$categorie_passe_count+1;
+						$categorie_passe_count=0;
+						//PB:
+						//On repart de zéro, mais si pour la première matière rencontrée au changement de catégorie,
+						//l'élève ne suit pas le groupe, à la matière suivante de la catégorie, on passera à //$categorie_passe_count=1.
+					}
+					/*
+					else {
+						$categorie_passe_count++;
+					}
+					if(!isset($tab_bull['note'][$m][$i])) {
+						$categorie_passe_count--;
+					}
+					*/
+
+					if(isset($tab_bull['note'][$m][$i])) {
+						$categorie_passe_count++;
 					}
 					// fin des moyen par catégorie
 				}
+
+				fich_debug_bull("\$categorie_passe_count=$categorie_passe_count\n");
+
 				//============================
 
 				// si on affiche les catégories sur le côté
@@ -2981,14 +3033,25 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') {
-					if($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m] and $categorie_passe!='')
+					if($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m+1] and $categorie_passe!='')
 					{
 						//hauteur du regroupement hauteur des matier * nombre de matier de la catégorie
+						//$hauteur_regroupement=$espace_entre_matier*($categorie_passe_count+1);
 						$hauteur_regroupement=$espace_entre_matier*$categorie_passe_count;
 
+						fich_debug_bull("\$espace_entre_matier=$espace_entre_matier\n");
+						fich_debug_bull("\$categorie_passe_count=$categorie_passe_count\n");
+						fich_debug_bull("\$hauteur_regroupement=$hauteur_regroupement\n");
+
 						//placement du cadre
-						if($nb_eleve_aff===0) { $enplus = 5; }
-						if($nb_eleve_aff!=0) { $enplus = 0; }
+						//if($nb_eleve_aff===0) { $enplus = 5; }
+						//if($nb_eleve_aff!=0) { $enplus = 0; }
+						//if($compteur_bulletins===0) { $enplus = 5; }
+						//if($compteur_bulletins!=0) { $enplus = 0; }
+
+						fich_debug_bull("Poisition du cadre $categorie_passe\n");
+						$tmp_val=$Y_decal-$hauteur_regroupement+$espace_entre_matier;
+						fich_debug_bull("\$Y_decal-\$hauteur_regroupement+\$espace_entre_matier=".$Y_decal."-".$hauteur_regroupement."+".$espace_entre_matier."=".$tmp_val."\n");
 
 						$pdf->SetXY($X_bloc_matiere-5,$Y_decal-$hauteur_regroupement+$espace_entre_matier);
 
@@ -3042,6 +3105,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 				}
 
+				fich_debug_bull("Après les catégories sur le côté\n");
+				fich_debug_bull("\$Y_decal=$Y_decal\n");
+
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 					// fin d'affichage catégorie sur le coté
 					$categorie_passe=$tab_bull['nom_cat_complet'][$m];
@@ -3091,6 +3157,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
 					$pdf->SetXY($X_bloc_matiere, $Y_decal);
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+
+					fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
+					fich_debug_bull("\$Y_decal=$Y_decal\n");
 
 					// nom des professeurs
 
@@ -4657,6 +4726,18 @@ $pdf->Output($nom_releve,'I');
 // Le PDF n'est généré qu'en fin de boucle sur les bulletins
 */
 
+}
+
+function fich_debug_bull($texte){
+	$fichier_debug="/tmp/bulletin_pdf.txt";
+
+	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
+	$local_debug="y";
+	if($local_debug=="y") {
+		$fich=fopen($fichier_debug,"a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
 }
 
 ?>

@@ -1007,7 +1007,14 @@ else {
 			$tab_modele_pdf["hauteur_info_categorie"][$tab_id_classe[$loop_classe]]=5;
 			// cadre des notes et app
 			$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72; $tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200; $tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
-			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') { $tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5; $tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]; $tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]-5; $tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]; }
+			/*
+			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
+				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
+				$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]];
+				$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]-5;
+				$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]];
+			}
+			*/
 			//coef des matiere
 			$tab_modele_pdf["largeur_coef_moyenne"][$tab_id_classe[$loop_classe]] = 8;
 			//nombre de note par matière
@@ -1111,6 +1118,14 @@ else {
 				while($lig_model=mysql_fetch_object($requete_model)) {
 					$tab_modele_pdf["$lig_model->nom"][$tab_id_classe[$loop_classe]]=$lig_model->valeur;
 				}
+			}
+
+
+			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
+				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
+				$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]];
+				$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]-5;
+				$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]];
 			}
 
 			//================================
@@ -2212,7 +2227,7 @@ else {
 		$responsable_place = 0;
 	}
 
-	$compteur=0;
+	$compteur_bulletins=0;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
 		$classe=get_class_from_id($id_classe);
@@ -2281,7 +2296,7 @@ else {
 								flush();
 
 								// Saut de page si jamais ce n'est pas le premier bulletin
-								if($compteur>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+								if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 
 								// Génération du bulletin de l'élève
 								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
@@ -2304,7 +2319,7 @@ else {
 								echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
 							}
 
-							$compteur++;
+							$compteur_bulletins++;
 
 							if($mode_bulletin=="html") {
 								flush();
