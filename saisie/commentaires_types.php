@@ -654,6 +654,7 @@ else{
 					echo "<p>Aucune période n'est encore définie pour cette classe...</p>\n";
 				}
 				else{
+					/*
 					$ligne_num_periode=mysql_fetch_object($resultat_num_periode);
 					$sql="select * from periodes where num_periode='$ligne_num_periode->num_periode'";
 					$resultat_periode=mysql_query($sql);
@@ -669,6 +670,14 @@ else{
 						//echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
 						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 					}
+					*/
+					$cpt_per=0;
+					while($ligne_num_periode=mysql_fetch_object($resultat_num_periode)){
+						if($cpt_per>0) {echo " &nbsp;&nbsp;&nbsp;- ";}
+						echo "<input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_num_periode->num_periode."' value='$ligne_num_periode->num_periode' /><label for='num_periode_".$ligne_num_periode->num_periode."' style='cursor: pointer;'> $ligne_num_periode->nom_periode</label>\n";
+						$cpt_per++;
+					}
+
 					echo "<br />\n";
 					echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 				}
