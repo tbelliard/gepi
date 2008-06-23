@@ -1451,6 +1451,12 @@ else {
 
 			$tab_bulletin[$id_classe][$periode_num]['moy_min_classe_grp']=$moy_min_classe_grp;
 			$tab_bulletin[$id_classe][$periode_num]['moy_classe_grp']=$current_classe_matiere_moyenne;
+			/*
+			for($kl=0;$kl<count($current_classe_matiere_moyenne);$kl++) {
+				echo "\$current_group[$kl]['name']=".$current_group[$kl]['name']." ";
+				echo "\$current_classe_matiere_moyenne[$kl]='".$current_classe_matiere_moyenne[$kl]."'<br />";
+			}
+			*/
 			$tab_bulletin[$id_classe][$periode_num]['moy_max_classe_grp']=$moy_max_classe_grp;
 
 			// Variables récupérées de calcul_moy_gen.inc.php

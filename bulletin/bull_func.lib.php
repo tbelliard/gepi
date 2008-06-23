@@ -2726,7 +2726,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								// On affiche toutes les moyennes dans la même colonne
 								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
 								if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') {
-									if ($tab_bull['moy_classe_grp'][$m]=="-") {
+									//if ($tab_bull['moy_classe_grp'][$m]=="-") {
+									if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
 										$valeur = "-";
 									}
 									else {
@@ -2735,7 +2736,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 								if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') {
-									if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
+									//if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
+									if (($tab_bull['moy_min_classe_grp'][$m]=="-")||($tab_bull['moy_min_classe_grp'][$m]=="")) {
 										$valeur = "-";
 									} else {
 										$valeur = present_nombre($tab_bull['moy_min_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -2743,7 +2745,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 								if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1') {
-									if ($tab_bull['moy_max_classe_grp'][$m]=="-") {
+									//if ($tab_bull['moy_max_classe_grp'][$m]=="-") {
+									if (($tab_bull['moy_max_classe_grp'][$m]=="-")||($tab_bull['moy_max_classe_grp'][$m]=="")) {
 										$valeur = "-";
 									} else {
 										$valeur = present_nombre($tab_bull['moy_max_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -2776,7 +2779,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//classe
 						if( $tab_modele_pdf["active_moyenne_classe"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							if ($tab_bull['moy_classe_grp'][$m]=="-") {
+							//if ($tab_bull['moy_classe_grp'][$m]=="-") {
+							if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -2794,7 +2798,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
-							if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
+							//if ($tab_bull['moy_min_classe_grp'][$m]=="-") {
+							if (($tab_bull['moy_min_classe_grp'][$m]=="-")||($tab_bull['moy_min_classe_grp'][$m]=="")) {
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_min_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
@@ -2811,7 +2816,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						//max
 						if( $tab_modele_pdf["active_moyenne_max"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-							if ($tab_bull['moy_max_classe_grp'][$m]== "-") {
+							//if ($tab_bull['moy_max_classe_grp'][$m]== "-") {
+							if (($tab_bull['moy_max_classe_grp'][$m]=="-")||($tab_bull['moy_max_classe_grp'][$m]=="")) {
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_max_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
