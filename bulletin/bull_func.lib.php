@@ -3211,7 +3211,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 				}
 				*/
-				$info_absence = $info_absence." du suivi : ".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe']).")";
+				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
 
 
