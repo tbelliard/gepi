@@ -3313,7 +3313,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
 					//echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
 					//$pp_classe[$i]=affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
-					$pp_classe[$i]=ucfirst($gepi_prof_suivi)." ".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
+					//$pp_classe[$i]=ucfirst($gepi_prof_suivi)." ".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe']);
+					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> <i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 				}
 				else {
 					$pp_classe[$i]="";
