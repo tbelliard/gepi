@@ -287,6 +287,7 @@ else{
 					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
 				}
 				else{
+					/*
 					$ligne_num_periode=mysql_fetch_object($resultat_num_periode);
 					$sql="select * from periodes where num_periode='$ligne_num_periode->num_periode'";
 					$resultat_periode=mysql_query($sql);
@@ -302,6 +303,14 @@ else{
 						//echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' value='$ligne_periode->num_periode'> $ligne_periode->nom_periode\n";
 						echo " &nbsp;&nbsp;&nbsp;- <input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_periode->num_periode."' value='$ligne_periode->num_periode' /><label for='num_periode_".$ligne_periode->num_periode."' style='cursor: pointer;'> $ligne_periode->nom_periode</label>\n";
 					}
+					*/
+					$cpt_per=0;
+					while($ligne_num_periode=mysql_fetch_object($resultat_num_periode)){
+						if($cpt_per>0) {echo " &nbsp;&nbsp;&nbsp;- ";}
+						echo "<input type='checkbox' name='num_periode[]' id='num_periode_".$ligne_num_periode->num_periode."' value='$ligne_num_periode->num_periode' /><label for='num_periode_".$ligne_num_periode->num_periode."' style='cursor: pointer;'> $ligne_num_periode->nom_periode</label>\n";
+						$cpt_per++;
+					}
+
 					echo "<br />\n";
 				}
 				echo "</p>\n";
@@ -424,18 +433,20 @@ else{
 				if(mysql_num_rows($resultat_commentaires)!=0){
 					echo "<p>Voici la liste des commentaires-type existants pour la classe et la/les période(s) choisie(s):</p>\n";
 					echo "<blockquote>\n";
-					echo "<table border='1'>\n";
+					echo "<table class='boireaus' border='1'>\n";
 					echo "<tr style='text-align:center;'>\n";
-					echo "<td style='font-weight:bold;'>Commentaire</td>\n";
-					echo "<td style='font-weight:bold;'>Supprimer</td>\n";
+					echo "<th>Commentaire</th>\n";
+					echo "<th>Supprimer</th>\n";
 					echo "</tr>\n";
 
 					$precedent_commentaire="";
 
 					//$cpt=1;
+					$alt=1;
 					while($ligne_commentaire=mysql_fetch_object($resultat_commentaires)){
 						if("$ligne_commentaire->commentaire"!="$precedent_commentaire"){
-							echo "<tr style='text-align:center;'>\n";
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt' style='text-align:center;'>\n";
 
 							echo "<td>";
 							//echo "<textarea name='commentaire[$cpt]' cols='60'>".stripslashes($ligne_commentaire->commentaire)."</textarea>";
@@ -455,12 +466,16 @@ else{
 				echo "<p>Saisie d'un nouveau commentaire:</p>";
 				echo "<blockquote>\n";
 				//echo "<textarea name='commentaire[$cpt]' cols='60'></textarea><br />\n";
-				echo "<textarea name='no_anti_inject_commentaire_".$cpt."' cols='60' onchange='changement()'></textarea><br />\n";
+				echo "<textarea name='no_anti_inject_commentaire_".$cpt."' id='no_anti_inject_commentaire_".$cpt."' cols='60' onchange='changement()'></textarea><br />\n";
 
 				echo "<input type='hidden' name='compteur_nb_commentaires' value='$cpt' />\n";
 
 				echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 				echo "</blockquote>\n";
+
+				echo "<script type='text/javascript'>
+	document.getElementById('no_anti_inject_commentaire_".$cpt."').focus();
+</script>\n";
 			}
 		}
 	}
