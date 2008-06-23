@@ -255,6 +255,16 @@ div#lien_cahier_texte {
 	font-weight: bold;
 	letter-spacing: 0.1em;
 }
+/* Correction Régis login.php : h2 doit suivre h1 */
+#div_login_entete h1 {
+	color: white;
+	margin:0;
+	padding: 0;
+	font-size: 11pt;
+	font-family: Verdana;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
 
 #div_login_entete p.annee {
 	position: relative;

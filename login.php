@@ -207,12 +207,13 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="fr">
+<!-- correction Regis html xmlns + majuscules -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-<META HTTP-EQUIV="Expires" CONTENT="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves | Identifiez vous...</title>
 <?php
@@ -220,7 +221,7 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 	if (empty($style)) $style = "style";
 	?>
 <link rel="stylesheet" type="text/css" href="./<?php echo $style;?>.css" />
-<script src="lib/functions.js" type="text/javascript" language="javascript"></script>
+<script src="lib/functions.js" type="text/javascript"></script>
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
 <?php
@@ -269,12 +270,16 @@ echo "<div id='new_div_login' class='center'>\n";
 	if (getSettingValue("multisite") == "y" AND isset($_GET["rne"]) AND $_GET["rne"] != '') {
 		echo '	<input type="hidden" name="rne" value="'.$_GET["rne"].'" />';
 	}
-	echo "<div align='center'>\n";
+	// correction Regis : align='center' invalide en Strict
+	// echo "<div align='center'>\n";
+	echo "<div style='width:400px;margin-right:auto;margin-left:auto'>\n";
 
 		echo "<div id='div_login'>\n";
 
 			echo "<div id='div_login_entete'>\n";
-				echo "<h2>".getSettingValue("gepiSchoolName")."</h2>\n";
+				//echo "<h2>".getSettingValue("gepiSchoolName")."</h2>\n";
+				// Correction Régis login.php : h2 doit suivre h1
+				echo "<h1>".getSettingValue("gepiSchoolName")."</h1>\n";
 				echo "<p class='annee'>".getSettingValue("gepiYear")."</p>\n";
 			echo "</div>\n";
 
@@ -333,7 +338,7 @@ echo "<div id='new_div_login' class='center'>\n";
 
 	?>
 
-	<script language="javascript" type="text/javascript">
+	<script type="text/javascript">
 	<!--
 		//function mel(destinataire){
 		//	chaine_mel = "mailto:"+destinataire+"?subject=[GEPI]";
