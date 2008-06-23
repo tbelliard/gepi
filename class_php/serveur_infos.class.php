@@ -49,12 +49,11 @@ class infos{
 		return $retour;
 	}
 	function versionGd(){
-		if (gd_info()) {
-			$gd = gd_info() OR trigger_error('Le module gd n\'est pas disponible sur le serveur ', E_USER_WARNING);
+		if (function_exists("gd_info")) {
+			$gd = gd_info();
 		}else{
-			$gd["GD Version"] = 'aucune';
+			$gd["GD Version"] = false;
 		}
-		$gd = gd_info();
 		return $gd["GD Version"];
 	}
 	function versionMysql(){

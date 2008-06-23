@@ -85,9 +85,13 @@ echo '
 	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>';
 
 echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
-	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>
-	<p>Votre version du module GD est la '.$test->versionGd().'&nbsp;(indispensable pour toutes les images).</p>
-	<br />
+	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>';
+if ($test->versionGd()) {
+	echo '<p>Votre version du module GD est la '.$test->versionGd().'&nbsp;(indispensable pour toutes les images).</p>';
+} else {
+	echo '<p class="red">GD n\'est pas installé (le module GD est indispensable pour les images)';
+}
+	echo '<br />
 	<hr />
 	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test->listeExtension().'
 	<hr />
