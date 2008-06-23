@@ -2986,23 +2986,31 @@ function retourneUri($eleve, $https, $type){
 
 	global $gepiPath;
 
-	$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
-	$query = mysql_query($sql);
-	$nbre = mysql_num_rows($query);
-	if ($nbre == 1) {
-		$uri = mysql_fetch_array($query);
-		if ($https == 'y') {
-			$web = 'https://';
-		}else{
-			$web = 'http://';
-		}
-		if ($type == 'cdt') {
-			$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-		}
+	// on vérifie que la table e nquestion existe déjà
+	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
+	if ($test_table >= 1) {
 
+		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
+		$query = mysql_query($sql);
+		$nbre = mysql_num_rows($query);
+		if ($nbre == 1) {
+			$uri = mysql_fetch_array($query);
+			if ($https == 'y') {
+				$web = 'https://';
+			}else{
+				$web = 'http://';
+			}
+			if ($type == 'cdt') {
+				$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+			}
+
+		}else{
+			return 'erreur1';
+		}
 	}else{
-		return 'erreur1';
+		return 'Demandez à votre administrateur de générer les URI.';
 	}
+
 	return $rep;
 }
 ?>

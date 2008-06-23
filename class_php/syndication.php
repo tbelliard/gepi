@@ -42,7 +42,9 @@ $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 if ($type_rss == "cdt") {
  	$items = retourneDevoirs($eleve_l);
  	function get_prof_login($prof_l){
- 		// permet de construire le nom du prof avec la bonne civilité
+ 		/*
+ 		 * permet de construire le nom du prof avec la bonne civilité
+ 		*/
  		$sql = "SELECT nom, civilite FROM utilisateurs WHERE login = '".$prof_l."' AND statut = 'professeur'";
  		$query = mysql_query($sql);
  		$test = mysql_num_rows($query);

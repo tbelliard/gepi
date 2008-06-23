@@ -122,7 +122,11 @@ while ($i < $nb_classes) {
         if ($rss == "y") {
         	// On récupère l'URI de cet élève
         	$uri = mysql_query("SELECT user_uri FROM rss_users WHERE user_login = '".$eleve_login."' LIMIT 1");
-        	$eleve_elenoet = mysql_result($uri, "user_uri");
+        	$nb_uri = mysql_num_rows($uri);
+        	if ($nb_uri == 1) {
+        		$eleve_uri = mysql_result($uri, "user_uri");
+        		$eleve_elenoet = 'class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&uri='.$eleve_uri.'&ele_l='.$eleve_login;
+        	}
         }
 
         $fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$classe.";".$eleve_elenoet."\n";
