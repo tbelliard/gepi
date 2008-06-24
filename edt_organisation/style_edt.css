@@ -332,3 +332,19 @@ table {
 div.mode_gr {
 border: 2px solid grey; padding: 2 2 2 2;
 }
+.creneau {
+height: 55px; text-align: center; vertical-align: middle; border-right: 1px dotted #99C; position: absolute; margin-top: 5px; border-bottom: 2px solid grey;
+}
+.creneau_d {
+height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px; border-bottom: 2px solid grey;
+}
+.prem {
+border-bottom: 2px dotted silver;
+}
+.creneauB {
+height: 55px; text-align: center; vertical-align: middle; border-right: 1px dotted #99C; position: absolute; margin-top: 5px;
+}
+.creneau_dB {
+height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px;
+border: 0px;
+}

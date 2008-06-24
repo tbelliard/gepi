@@ -23,7 +23,7 @@ $utilisateur = new prof($_SESSION["login"]);
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 	<title>Essais edt</title>
 
-	<link rel="stylesheet" type="text/css" href="./style_essai.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath; ?>/edt_organisation/style_edt.css" />
 </head>
 
 <body>
@@ -45,67 +45,24 @@ echo '<p>'.$sem["type"].'</p>';
 */
 $cours = new edtAfficher();
 //$edt2 = $cours->edt_jour('lundi', $_SESSION["login"]);
+	//$cours->largeur_creneau = 50;
+	//$cours->type_edt = 'eleve';
+	$cours->entete_creneaux('noms');
+	//$cours->aff_jour = 'cache';
 
 
-echo '
-<div style="width: 880px; height: 60px; border-top: 2px dotted silver;">
+	$cours->afficher_cours_jour('lundi', $_SESSION["login"]);
+//$cours->type_edt = 'eleve';
+	$aff = $cours->afficher_cours_jour('mardi', $_SESSION["login"]);
 
-<div class="creneau" class="prem">&nbsp;</div>
-<div class="creneau" style="margin-left: 80px;">M1</div>
-<div class="creneau" style="margin-left: 160px;">M2</div>
-<div class="creneau" style="margin-left: 240px;">M3</div>
-<div class="creneau" style="margin-left: 320px;">M4</div>
-<div class="creneau" style="margin-left: 400px;">M5</div>
-<div class="creneau" style="margin-left: 480px;">M6</div>
-<div class="creneau" style="margin-left: 560px;">M7</div>
-<div class="creneau" style="margin-left: 640px;">M8</div>
-<div class="creneau" style="margin-left: 720px;">M9</div>
-<div class="creneau_d" style="margin-left: 800px;">M10</div>
+	$aff = $cours->afficher_cours_jour('mercredi', $_SESSION["login"]);
 
-</div>
+	$aff = $cours->afficher_cours_jour('jeudi', $_SESSION["login"]);
 
-<div style="width: 880px; height: 100px; border-bottom: 2px dotted silver;">';
+	$aff = $cours->afficher_cours_jour('vendredi', $_SESSION["login"]);
 
-	$aff = $cours->afficher_cours('lundi', $_SESSION["login"]);
-
-echo '</div>
-<div style="width: 880px; height: 100px; border-bottom: 2px dotted silver;">';
-
-	$aff = $cours->afficher_cours('mardi', $_SESSION["login"]);
-
-echo '</div>
-<div style="width: 880px; height: 100px; border-bottom: 2px dotted silver;">';
-
-	$aff = $cours->afficher_cours('mercredi', $_SESSION["login"]);
-
-echo '</div>
-<div style="width: 880px; height: 100px; border-bottom: 2px dotted silver;">';
-
-	$aff = $cours->afficher_cours('jeudi', $_SESSION["login"]);
-
-echo '</div>
-<div style="width: 880px; height: 100px; border-bottom: 2px solid grey;">';
-
-	$aff = $cours->afficher_cours('vendredi', $_SESSION["login"]);
-
-echo '</div>
-
-<div style="width: 880px; height: 60px; border-top: 2px dotted silver;">
-
-<div class="creneauB" class="prem">&nbsp;</div>
-<div class="creneauB" style="margin-left: 80px;">M1</div>
-<div class="creneauB" style="margin-left: 160px;">M2</div>
-<div class="creneauB" style="margin-left: 240px;">M3</div>
-<div class="creneauB" style="margin-left: 320px;">M4</div>
-<div class="creneauB" style="margin-left: 400px;">M5</div>
-<div class="creneauB" style="margin-left: 480px;">M6</div>
-<div class="creneauB" style="margin-left: 560px;">M7</div>
-<div class="creneauB" style="margin-left: 640px;">M8</div>
-<div class="creneauB" style="margin-left: 720px;">M9</div>
-<div class="creneau_dB" style="margin-left: 800px;">M10</div>
-
-</div>';
+//echo $cours->entete_creneaux('noms');
 
 ?>
-
+<br /><br />
 </body></html>
