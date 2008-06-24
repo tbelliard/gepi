@@ -243,7 +243,7 @@ echo "<div id='new_div_login' class='center'>\n";
 	//On vérifie si le module est activé
 	if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes" and getSettingValue("disable_login")!='yes') {
 		echo "<div style='margin-top:3em;'><a href=\"./public/index.php?id_classe=-1\">\n";
-		echo "<img src='./images/icons/cahier_texte.png' alt='Cahier de texte' class='link' /> Consulter les cahiers de texte</a> (accès public)\n";
+		echo "<img src='./images/icons/cahier_texte.png' alt='' class='link' /> Consulter les cahiers de texte</a> (accès public)\n";
 		echo "</div>\n";
 
 		// Ajout d'un espace vertical
@@ -387,7 +387,7 @@ echo "<div id='new_div_login' class='center'>\n";
 	</script>
 
 	<div class="center" style="margin-bottom: 32px;">
-	<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='Vie privée' class='link' /> Informations vie privée</a></p>
+	<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='' class='link' /> Informations vie privée</a></p>
 
 	<?php
 		if(getSettingValue("gepiAdminAdressPageLogin")!='n'){
