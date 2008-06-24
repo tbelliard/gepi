@@ -163,7 +163,7 @@ if ($action == "upload_file") {
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_prof = $tab[2]; // pour le selected
-							include("helpers\select_professeurs.php");
+							include("helpers/select_professeurs.php");
 							echo '<br />'."\n";
 						}
 					}elseif($etape == 2){
@@ -177,7 +177,7 @@ if ($action == "upload_file") {
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_classe = $tab[1]; // pour le selected
-							include("helpers\select_classes.php");
+							include("helpers/select_classes.php");
 							echo '<br />'."\n";
 						}
 					}elseif($etape == 3){
@@ -190,7 +190,7 @@ if ($action == "upload_file") {
 							echo 'Numéro : '.$tab[0].' groupe :<b>'.$tab[1].'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero;
-							include("helpers\select_aid_groupes.php");
+							include("helpers/select_aid_groupes.php");
 							echo '<br />'."\n";
 						}
 					}elseif($etape == 4){
@@ -215,7 +215,7 @@ if ($action == "upload_file") {
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
 							$nom_matiere = $tab[1]; // pour le selected
-							include("helpers\select_matieres.php");
+							include("helpers/select_matieres.php");
 							echo '<br />'."\n";
 						}
 					}elseif($etape == 6){

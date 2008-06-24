@@ -72,7 +72,7 @@ $verif_couleur = GetSettingEdt($M_couleur);
 
 if ($nouvelle_couleur == "non") {
 	echo '
-<td>'.$aff_matiere_long.'</td>
+<td>'.htmlentities($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td style="background-color: '.$couleur.';">
 	<form id="choixCouleur" method="get" action="">
@@ -96,16 +96,21 @@ if ($nouvelle_couleur == "non") {
 </td>
 	';
 } else {
-// On vérifie si le réglage existe et on le met à jour, sinon on le crée
-$sql = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = '".$M_couleur."'");
-$nbre_rep = mysql_num_rows($sql);
+	// On vérifie si le réglage existe et on le met à jour, sinon on le crée
+	$sql = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = '".$M_couleur."'");
+	$nbre_rep = mysql_num_rows($sql);
+
 	if ($nbre_rep !== 0) {
-		$miseajour = mysql_query("UPDATE edt_setting SET valeur = '".$nouvelle_couleur."' WHERE reglage = '".$M_couleur."'") OR DIE ('Impossible de mettre à jour la table edt_setting');
+		$miseajour = mysql_query("UPDATE edt_setting SET valeur = '".$nouvelle_couleur."'
+													WHERE reglage = '".$M_couleur."'")
+												OR DIE ('Impossible de mettre à jour la table edt_setting');
 	} else {
-		$create = mysql_query("INSERT INTO edt_setting (`id`, `reglage`, `valeur`) VALUES ('', '$M_couleur', '$nouvelle_couleur')");
+		$create = mysql_query("INSERT INTO edt_setting (`id`, `reglage`, `valeur`)
+												VALUES ('', '$M_couleur', '$nouvelle_couleur')");
 	}
+
 	echo '
-<td>'.$aff_matiere_long.'</td>
+<td>'.htmlentities($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td style="background-color: '.$nouvelle_couleur.';">
 	<p onclick="couleursEdtAjax(\''.$M_couleur.'\', \'non\');">Modifier</p>

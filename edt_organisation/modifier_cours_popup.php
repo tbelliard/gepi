@@ -192,7 +192,7 @@ if ($autorise == "oui") {
 
 	// On insère alors le message d'erreur s'il existe
 	if (isset($message)) {
-		$affmessage = $message;
+		//$affmessage = $message;
 	}else {
 		$affmessage = "";
 	}
