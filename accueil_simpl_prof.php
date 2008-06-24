@@ -178,7 +178,7 @@ while ($ind < $nb_messages) {
     $ind++;
 }
 if ($affiche_messages == 'yes') {
-    echo "<table id='messagerie'>\n";
+    echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
     echo "<tr><td>".$texte_messages;
     echo "</td></tr></table>\n";
 }
@@ -444,7 +444,7 @@ if($colspan>0){
 
 
 //echo "<table border='1'>\n";
-echo "<table class='contenu'>\n";
+echo "<table class='contenu' summary=\"Tableau de la liste des enseignements avec les liens vers le Carnet de notes, les bulletins, les graphes,...\">\n";
 echo "<tr>\n";
 echo "<th";
 if($colspan>0){echo " rowspan='3'";}
