@@ -214,6 +214,9 @@ if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
+<!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves | Identifiez vous...</title>
 <?php
