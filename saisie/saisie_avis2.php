@@ -274,7 +274,8 @@ if (isset($fiche)) {
 		$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$current_eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
 
 		echo "<td valign='top'>\n";
-		echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+		//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+		echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
 		echo ">";
 		echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
 		echo "</a>";
@@ -308,6 +309,9 @@ if (isset($fiche)) {
     <!--br /-->
 	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
     <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" /><br /><br />&nbsp;
+
+	<div id="debug_fixe" style="position: fixed; bottom: 20%; right: 5%;"></div>
+
     </form>
     <?php
 

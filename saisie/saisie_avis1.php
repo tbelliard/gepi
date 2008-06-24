@@ -272,7 +272,8 @@ function focus_suivant(num){
 		// AJOUT: boireaus 20071115
 		// Lien photo...
 		if($temoin_photo=="y"){
-			echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+			//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
+			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
 			echo ">";
 			echo "<img src='../images/icons/buddy.png' alt='$current_eleve_nom $current_eleve_prenom' />";
 			echo "</a>";
@@ -416,5 +417,6 @@ decompte(cpt);
 }
 
 ?>
+<div id="debug_fixe" style="position: fixed; bottom: 20%; right: 5%;"></div>
 </form>
 <?php require("../lib/footer.inc.php");?>

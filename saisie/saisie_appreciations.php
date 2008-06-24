@@ -703,7 +703,8 @@ foreach ($liste_eleves as $eleve_login) {
 		// AJOUT: boireaus 20071115
 		// Lien photo...
 		if($temoin_photo=="y"){
-			echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
+			//echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
+			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,10,10);\"";
 			echo ">";
 			echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
 			echo "</a>";
