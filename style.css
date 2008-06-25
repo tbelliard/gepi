@@ -231,7 +231,7 @@ div#lien_cahier_texte {
 #div_login {
 	width: 25em;
 	border: 1px solid black;
-	-moz-border-radius: 10px;
+	/*-moz-border-radius: 10px;*/
 }
 
 #div_login_entete {
@@ -243,7 +243,7 @@ div#lien_cahier_texte {
 	padding:0;
 	margin:0;
 	width: 25em;
-	-moz-border-radius: 10px;
+	/*-moz-border-radius: 10px;*/
 }
 
 #div_login_entete h2 {
