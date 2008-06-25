@@ -40,6 +40,8 @@ function retourneDevoirs($ele_login){
 			$cpt2++;
 		}
 			$tab_ele['cdt_dev']['count'] = $cpt2;
+	}else{
+		$tab_ele['cdt_dev']['count'] = 0;
 	}
 	return $tab_ele;
 }

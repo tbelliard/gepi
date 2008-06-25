@@ -87,29 +87,66 @@ $oRssFeed->setCopyright('(L) - GEPI 151');
 $oRssFeed->setGenerator('Généré par RSSFeed Class de Hugo "Emacs" HAMON - http://www.apprendre-php.com');
 $oRssFeed->setLanguage('fr');
 
- // Ajout des news au flux
-for($a = 0; $a < $items["cdt_dev"]["count"] ; $a++)
-{
+// Ajout des news au flux
+if ($items["cdt_dev"]["count"] != 0) {
+	for($a = 0; $a < $items["cdt_dev"]["count"] ; $a++)
+	{
 
-	// On récupère des données
-	$donnees = get_group($items["cdt_dev"][$a]["id_groupe"]);
-	$prof = get_prof_login($items["cdt_dev"][$a]["id_login"]);
+		// On récupère des données
+		$donnees = get_group($items["cdt_dev"][$a]["id_groupe"]);
+		$prof = get_prof_login($items["cdt_dev"][$a]["id_login"]);
+
+		// Récupération de l'email
+		$sEmail = getSettingValue("gepiSchoolEmail");
+		$oRssItem = new RSSFeedItem();
+		$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
+		$oRssItem->setDescription('-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"]);
+		$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+		$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+		if(!empty($sEmail))
+		{
+			$oRssItem->setAuthor($sEmail, 'ADMIN');
+		}
+		$oRssItem->setPubDate(date("Y-m-d h:i:s", $items["cdt_dev"][$a]["date_ct"]));
+		$oRssFeed->appendItem($oRssItem);
+		$oRssItem = null;
+	}
+}elseif($items["cdt_dev"]["count"] == 0){
 
 	// Récupération de l'email
 	$sEmail = getSettingValue("gepiSchoolEmail");
 	$oRssItem = new RSSFeedItem();
-	$oRssItem->setTitle($donnees["description"].' - Pour le '.date("d-m-Y", $items["cdt_dev"][$a]["date_ct"]));
-	$oRssItem->setDescription('-> Travail donné par '.$prof.' : '.$items["cdt_dev"][$a]["contenu"]);
+	$oRssItem->setTitle('Le cahier de textes est vide');
+	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours revoir les le&ccedil;ons du jour.');
 	$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
 	$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 	if(!empty($sEmail))
 	{
 		$oRssItem->setAuthor($sEmail, 'ADMIN');
 	}
-	$oRssItem->setPubDate(date("Y-m-d h:i:s", $items["cdt_dev"][$a]["date_ct"]));
+	$oRssItem->setPubDate(date("Y-m-d h:i:s"));
 	$oRssFeed->appendItem($oRssItem);
 	$oRssItem = null;
+
+}else{
+
+	// Récupération de l'email
+	$sEmail = getSettingValue("gepiSchoolEmail");
+	$oRssItem = new RSSFeedItem();
+	$oRssItem->setTitle('ERREUR sur le CDT');
+	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours revoir les le&ccedil;ons du jour.');
+	$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
+	$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
+	if(!empty($sEmail))
+	{
+		$oRssItem->setAuthor($sEmail, 'ADMIN');
+	}
+	$oRssItem->setPubDate(date("Y-m-d h:i:s"));
+	$oRssFeed->appendItem($oRssItem);
+	$oRssItem = null;
+
 }
+
  // Sauvegarde du flux RSS
 $oRssFeed->save('../temp/rss-news.xml');
 // Affichage sur la sortie standard

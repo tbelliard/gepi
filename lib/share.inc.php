@@ -3001,7 +3001,7 @@ function retourneUri($eleve, $https, $type){
 				$web = 'http://';
 			}
 			if ($type == 'cdt') {
-				$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
+				$rep = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
 			}
 
 		}else{
