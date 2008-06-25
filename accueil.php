@@ -1396,11 +1396,14 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 			</tr>\n";
 	// A vérifier pour les cdt
 	if (getSettingValue("rss_acces_ele") == 'direct') {
+
+		$uri_el = retourneUri($_SESSION["login"], $test_https, 'cdt');
 		echo '
 			<tr>
 				<td title="A utiliser avec un lecteur de flux rss" style="cursor: pointer; color: blue;" onclick="changementDisplay(\'divuri\', \'divexpli\');">Votre uri pour les cahiers de textes</td>
 				<td>
-					<div id="divuri" style="display: none;">'.retourneUri($_SESSION["login"], $test_https, 'cdt').'</div>
+					<div id="divuri" style="display: none;">
+						<a href="'.$uri_el.'" target="_blank">'.$uri_el.'</a></div>
 					<div id="divexpli" style="display: block;">En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI.</div>
 				</td>
 			</tr>
