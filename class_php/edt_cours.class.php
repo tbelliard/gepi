@@ -260,6 +260,8 @@ class edt{
 
 			if ($verif == 1) {
 				$couleur = mysql_result($query2, "valeur");
+			}else{
+				$couleur = 'silver';
 			}
 
 		}else{

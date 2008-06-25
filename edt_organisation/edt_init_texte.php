@@ -162,7 +162,7 @@ if ($action == "upload_file") {
 							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
-							$nom_prof = $tab[2]; // pour le selected
+							$nom_prof = strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
 							include("helpers/select_professeurs.php");
 							echo '<br />'."\n";
 						}
