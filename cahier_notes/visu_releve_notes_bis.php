@@ -299,7 +299,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
-	echo "<table width='100%'>\n";
+	echo "<table width='100%' summary='Tableau de choix des classes'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
 	$cpt = 0;
@@ -437,7 +437,7 @@ elseif(!isset($choix_periode)) {
 	//=======================
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary='Tableau de choix des périodes'>\n";
 	echo "<tr valign='top'>\n";
 	echo "<td>\n";
     echo "<a name=\"calend\"></a>";
@@ -505,7 +505,7 @@ elseif(!isset($choix_periode)) {
 
 		$tab_nom_periode=array();
 
-		echo "<table class='boireaus' border='1'>\n";
+		echo "<table class='boireaus' border='1' summary='Tableau de choix des périodes'>\n";
 		echo "<tr>\n";
 		echo "<th>Classe</th>\n";
 		for($j=1;$j<=$max_per;$j++) {
@@ -717,7 +717,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<div id='div_param_releve'>\n";
 
 		if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
-			echo "<table border='0'>\n";
+			echo "<table border='0' summary='Tableau de paramètres'>\n";
 			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 			echo "</table>\n";
 		}
@@ -803,7 +803,7 @@ document.getElementById('div_param_releve').style.display='none';
 
 		echo "<p class='bold'>Classe de ".get_class_from_id($tab_id_classe[$i])."</p>\n";
 
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus' summary='Tableau de choix des élèves'>\n";
 		echo "<tr>\n";
 		echo "<th>Elèves</th>\n";
 
@@ -1409,7 +1409,7 @@ else {
 
 	echo "<div id='infodiv'>
 <p id='titre_infodiv' style='font-weight:bold; text-align:center; border:1px solid black;'></p>
-<table class='boireaus' width='100%'>
+<table class='boireaus' width='100%' summary=\"Tableau de déroulement de l'extraction/génération\">
 <tr>
 <th colspan='3' id='td_info'></th>
 </tr>

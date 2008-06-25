@@ -303,6 +303,7 @@ if (isset($_POST['releve_addressblock_debug'])) {
 }
 //==================================
 
+/*
 if (isset($NON_PROTECT['releve_formule_bas'])) {
     $imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
     if (!saveSetting("releve_formule_bas", $imp)) {
@@ -310,7 +311,7 @@ if (isset($NON_PROTECT['releve_formule_bas'])) {
         $reg_ok = 'no';
     }
 }
-
+*/
 if (isset($_POST['releve_mention_nom_court'])) {
 
     if (!saveSetting("releve_mention_nom_court", $_POST['releve_mention_nom_court'])) {
@@ -996,12 +997,18 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
     </tr>
 
-    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;" colspan="2">
-        <label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé :</label>
-        <input type="text" name="no_anti_inject_releve_formule_bas" id="no_anti_inject_releve_formule_bas" size="100" value="<?php echo(getSettingValue("releve_formule_bas")); ?>" />
-        </td>
-    </tr>
+	<?php
+	/*
+    echo "<tr";
+	if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;
+	echo ">\n";
+    echo "<td style='font-variant: small-caps;' colspan='2'>\n";
+	echo "<label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé :</label>\n";
+	echo "<input type='text' name='no_anti_inject_releve_formule_bas' id='no_anti_inject_releve_formule_bas' size='100' value=\"".getSettingValue("releve_formule_bas")."\" />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	*/
+	?>
 
 </table>
 <hr />

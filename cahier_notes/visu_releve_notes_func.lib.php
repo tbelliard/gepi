@@ -507,6 +507,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			echo "<table";
 			if($releve_addressblock_debug=="y"){echo " border='1'";}
+			echo " summary='Tableau des informations établissement'";
 			echo ">\n";
 			echo "<tr>\n";
 
@@ -643,6 +644,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			// Tableau contenant le nom de la classe, l'année et la période.
 			echo "<table width='".$releve_addressblock_autre_prop."%' ";
 			if($releve_addressblock_debug=="y"){echo "border='1' ";}
+			echo "summary=\"Tableau de l'entête\" ";
 			echo "cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
 			echo "<tr>\n";
 			echo "<td class='releve_empty'>\n";
@@ -675,7 +677,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			// sans bloc adresse responsable
 			//-------------------------------
 
-			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
+			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'";
+			echo " summary=\"Tableau de l'entête\"";
+			echo ">\n";
 
 			echo "<tr>\n";
 			echo "<td style=\"width: 30%;\">\n";
@@ -840,7 +844,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		$larg_col1 = $releve_col_matiere_largeur;
 		$larg_col2 = $larg_tab - $larg_col1;
 		//echo "<table width=\"$larg_tab\" class='boireaus' border=1 cellspacing=3 cellpadding=3>\n";
-		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'>\n";
+		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'";
+		echo "summary=\"Tableau des notes\" ";
+		echo ">\n";
 		echo "<tr>\n";
 		echo "<td width=\"$larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
 		echo "<td width=\"$larg_col2\" class='releve'>Notes sur 20</td>\n";
@@ -1072,7 +1078,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			}
 			$largeur_case=round($releve_largeurtableau/$nb_cases);
 
-			echo "<table$releve_class_bordure border='1' width='$releve_largeurtableau'>\n";
+			echo "<table$releve_class_bordure border='1' width='$releve_largeurtableau'";
+			echo " summary=\"Tableau des signatures\"";
+			echo ">\n";
 			echo "<tr>\n";
 
 			if($tab_rel['rn_sign_chefetab']=='y'){
@@ -1107,13 +1115,23 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		}
 
 		if($tab_rel['rn_formule']!=""){
-			echo "<p>".htmlentities($tab_rel['rn_formule'])."</p>\n";
+			//echo "<p>".htmlentities($tab_rel['rn_formule'])."</p>\n";
+			//echo "<p>".$tab_rel['rn_formule']."</p>\n";
+
+			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Formule du bas de relevé de notes'>\n";
+			echo "<tr>";
+			echo "<td><p align='center' class='bulletin'>".$tab_rel['rn_formule']."</p></td>\n";
+			echo "</tr></table>";
+
 		}
 		//================================
 
 
 		//================================
+		/*
 		// Affichage de la formule de bas de page
+		//echo "\$releve_formule_bas=$releve_formule_bas<br />";
+		//echo "\$releve_affiche_formule=$releve_affiche_formule<br />";
 		if (($releve_formule_bas != '') and ($releve_affiche_formule == 'y')) {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
@@ -1121,6 +1139,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "<td><p align='center' class='bulletin'>".$releve_formule_bas."</p></td>\n";
 			echo "</tr></table>";
 		}
+		*/
 		//================================
 
 
