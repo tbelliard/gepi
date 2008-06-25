@@ -697,7 +697,22 @@ affichercacher('div_1');
                   ?>
 	<?php /*     <tr class="<?php echo $couleur_cellule; ?>" onmouseover="this.className='td_tableau_sel';" onmouseout="this.className='<?php echo $couleur_cellule; ?>';" id="tr<?php echo $i; ?>">*/ ?>
 	    <tr id="tr<?php echo $i; ?>" class="<?php echo $couleur_cellule; ?>" onmouseover="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" onmouseout="document.getElementById('tr<?php echo $i; ?>').className='<?php echo $couleur_cellule; ?>';">
-	      <td align="center" nowrap="nowrap" valign="middle"><a name="n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"></a><?php if ( $donner_liste_courrier['statu_lettre_suivi'] != 'recus' ) { ?><input type="checkbox" name="id_lettre_suivi[]" id="sel<?php echo $i; ?>" value="<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"  onclick="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" /><?php $varcoche = $varcoche."'sel".$i."',"; ?><?php } else { ?><input type="hidden" name="id_lettre_suivi[]" /><?php } ?></td>
+	      <td align="center" nowrap="nowrap" valign="middle">
+	      	<a name="n<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"></a>
+	      	<?php
+	      		if ( $donner_liste_courrier['statu_lettre_suivi'] != 'recus' )
+	      		{
+
+	      			?><input type="checkbox" name="id_lettre_suivi[]" id="sel<?php echo $i; ?>" value="<?php echo $donner_liste_courrier['id_lettre_suivi']; ?>"  onclick="document.getElementById('tr<?php echo $i; ?>').className='td_tableau_sel';" />
+	      			<?php $varcoche = $varcoche."'sel".$i."',"; ?>
+	      <?php }
+	      		else
+	      		{
+
+	      			/* ?><input type="hidden" name="id_lettre_suivi[]" /><?php */
+
+	      		} ?>
+	      </td>
 	      <td align="center" nowrap="nowrap" valign="middle" style="text-align: left;"><label for="sel<?php echo $i; ?>"><?php echo '<strong>'.$donner_liste_courrier['nom'].' '.$donner_liste_courrier['prenom'].'</strong> ('.classe_de($donner_liste_courrier['login']).')'; ?></label></td>
 	      <td align="center" nowrap="nowrap" valign="middle"><small><?php echo lettre_type($donner_liste_courrier['type_lettre_suivi']); ?></small></td>
 	      <td align="center" nowrap="nowrap" valign="middle"><?php $datation = date_frl($donner_liste_courrier['emis_date_lettre_suivi']).' à '.heure_texte_court($donner_liste_courrier['emis_heure_lettre_suivi']).' par: '.qui_court($donner_liste_courrier['quiemet_lettre_suivi']); echo '<span title="'.$datation.'">'.date_fr($donner_liste_courrier['emis_date_lettre_suivi']).'</span>'; ?></td>
