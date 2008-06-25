@@ -134,7 +134,7 @@ if ($items["cdt_dev"]["count"] != 0) {
 	$sEmail = getSettingValue("gepiSchoolEmail");
 	$oRssItem = new RSSFeedItem();
 	$oRssItem->setTitle('ERREUR sur le CDT');
-	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours revoir les le&ccedil;ons du jour.');
+	$oRssItem->setDescription('Rien &agrave; afficher -> Il faut toujours apprendre les le&ccedil;ons du jour.');
 	$oRssItem->setLink('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php');
 	$oRssItem->setGuid('http://'.$_SERVER["SERVER_NAME"].$gepiPath.'/login.php', true);
 	if(!empty($sEmail))
