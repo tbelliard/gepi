@@ -32,7 +32,14 @@ function renvoiLoginProf($numero){
 	// on cherche dans la base
 	$query = mysql_query("SELECT nom_gepi FROM edt_init WHERE nom_export = '".$numero."' AND ident_export = '1'");
 	if ($query) {
-		$retour = mysql_result($query, "nom_gepi");
+
+		$test = mysql_num_rows($query);
+		if ($test >= 1) {
+			$retour = mysql_result($query, "nom_gepi");
+		}else{
+			$retour = 'erreur_prof';
+		}
+
 	}else{
 		$retour = 'erreur_prof';
 	}
@@ -126,7 +133,13 @@ function renvoiIdCreneau($heure_brute, $jour){
 					heurefin_definie_periode > '".$heuredebut."'")
 						OR DIE('Erreur renvoiIdCreneau : '.mysql_error());
 	if ($query) {
-		$retour = mysql_result($query, "id_definie_periode");
+		$nbre = msql_num_rows($query);
+		if ($nbre >= 1) {
+			$retour = mysql_result($query, "id_definie_periode");
+		}else{
+			$retour = '0';
+		}
+
 	}else{
 		$retour = 'erreur_creneau';
 	}
@@ -219,8 +232,14 @@ function renvoiConcordances($chiffre, $etape){
 	}
 
 	if ($query) {
-		$reponse = mysql_fetch_array($query)
-			OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
+		$test = mysql_num_rows($query);
+		if ($test >= 1) {
+			$reponse = mysql_fetch_array($query)
+				OR trigger_error('Erreur dans le $reponse pour le '.$chiffre.'<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> sur la requête '.$sql, E_USER_WARNING);
+		}else{
+			$reponse["nom_gepi"] = '';
+		}
+
 		if ($reponse["nom_gepi"] == '') {
 			$retour = "inc";
 		}else{
