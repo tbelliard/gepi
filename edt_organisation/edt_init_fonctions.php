@@ -133,7 +133,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 					heurefin_definie_periode > '".$heuredebut."'")
 						OR DIE('Erreur renvoiIdCreneau : '.mysql_error());
 	if ($query) {
-		$nbre = msql_num_rows($query);
+		$nbre = mysql_num_rows($query);
 		if ($nbre >= 1) {
 			$retour = mysql_result($query, "id_definie_periode");
 		}else{
