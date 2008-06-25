@@ -345,6 +345,8 @@ border-bottom: 2px dotted silver;
 height: 55px; text-align: center; vertical-align: middle; border-right: 1px dotted #99C; position: absolute; margin-top: 5px;
 }
 .creneau_dB {
-height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px;
-border: 0px;
+height: 55px; text-align: center; vertical-align: middle; position: absolute; margin-top: 5px; border: 0px;
+}
+.affedtcours {
+position: absolute; border: 1px solid black; -moz-border-radius: 10px; overflow: hidden; padding: 2px;
 }

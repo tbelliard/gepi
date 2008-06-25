@@ -45,7 +45,7 @@ echo '<p>'.$sem["type"].'</p>';
 */
 $cours = new edtAfficher();
 //$edt2 = $cours->edt_jour('lundi', $_SESSION["login"]);
-	//$cours->largeur_creneau = 50;
+	$cours->hauteur_creneau = 80;
 	//$cours->type_edt = 'eleve';
 	$cours->entete_creneaux('noms');
 	//$cours->aff_jour = 'cache';

@@ -185,8 +185,11 @@ class edt{
 		$matiere = NULL;
 		if ($this->type_gr($this->edt_gr) == "ENS") {
 			// C'est donc un 'groupe'
-			// $sql = "SELECT .....";
-			// A TERMINER ICI
+			$sql = "SELECT * FROM groupes WHERE id = '".$this->edt_gr."'";
+			$query = mysql_query($sql);
+
+			$matiere = mysql_fetch_array($query);
+
 		}elseif($this->type_gr($this->edt_gr) == "AID"){
 			// C'est donc une AID
 
@@ -274,7 +277,8 @@ class edt{
  */
 class edtAfficher{
 
-	public $largeur_creneau = 80;
+	public $largeur_creneau = 90;
+	public $largeur_jour = 60;
 	public $hauteur_entete = 60;
 	public $hauteur_creneau = 100;
 	public $aff_jour = 'gauche'; // peut être modifiée pour enlever le jour à gauche du div
@@ -315,7 +319,7 @@ class edtAfficher{
 
 		$rep = "\n".'
 			<div style="width: '.($this->largeur_creneau + 1) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_entete.'px; border-top: 2px dotted silver;">
-				<div class="creneau prem" style="width: '.$this->largeur_creneau.'px;">&nbsp;</div>';
+				<div class="creneau prem" style="width: '.$this->largeur_jour.'px;">&nbsp;</div>';
 
 		for($a = 0 ; $a < $liste_creneaux["nbre"] ; $a++){
 
@@ -331,7 +335,13 @@ class edtAfficher{
 				$class = 'creneau_d';
 			}
 
-			$rep .= "\n".'<div class="'.$class.'" style="margin-left: '.($this->largeur_creneau * ($a + 1)).'px; width: '.$this->largeur_creneau.'px;">'.$cren.'</div>';
+			if ($a == 0) {
+				$margin_left = $this->largeur_jour;
+			}else{
+				$margin_left = ($this->largeur_creneau * ($a + 1)) - ($this->largeur_creneau - $this->largeur_jour);
+			}
+
+			$rep .= "\n".'<div class="'.$class.'" style="margin-left: '.$margin_left.'px; width: '.$this->largeur_creneau.'px;">'.$cren.'</div>';
 
 		}
 
@@ -367,7 +377,7 @@ class edtAfficher{
 		echo '<div style="width: '.($largeur) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_creneau.'px; border-bottom: 2px dotted silver;">';
 
 		if ($aff_jour_gauche == 'oui') {
-			echo '<div style="width: '.$this->largeur_creneau.'px; height: '.($this->hauteur_creneau - 1).'px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
+			echo '<div style="width: '.$this->largeur_jour.'px; height: '.($this->hauteur_creneau - 1).'px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
 			'.$jour.'</div>';
 		}
 
@@ -379,7 +389,7 @@ class edtAfficher{
 			$ou = $this->placer_cours($cours);
 
 			echo '
-			<div style="'.$ou["margin"].' '.$ou["width"].' height: '.($this->hauteur_creneau - 1).'px; background: '.$cours->couleur_cours().'; position: absolute; border: 1px solid black;">';
+			<div class="affedtcours" style="'.$ou["margin"].' '.$ou["width"].' height: '.($this->hauteur_creneau - 1).'px; background: '.$cours->couleur_cours().';">';
 
 			$this->contenu_cours($cours);
 
@@ -407,12 +417,18 @@ class edtAfficher{
 		// $cours doit être une instance de la classe edt... Il faudra peut-être vérifier cela
 		$test = $this->ordre_creneau($cours);
 
-		if ($cours->edt_debut == '0') {
-			$rep["margin"] = 'margin-left: '.((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau).'px;';
-		}elseif($cours->edt_debut == '0.5'){
-			$rep["margin"] = 'margin-left: '.((((($test - 1) * 2) - 1) * ($this->largeur_creneau / 2)) + $this->largeur_creneau).'px;';
+		if ($test == 1) {
+			$rep["margin"] = 'margin-left: '.$this->largeur_jour.'px;';
 		}else{
-			$rep["margin"] = 'Il manque une info.';
+
+			if ($cours->edt_debut == '0') {
+				$rep["margin"] = 'margin-left: '.(((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau) - ($this->largeur_creneau - $this->largeur_jour)).'px;';
+			}elseif($cours->edt_debut == '0.5'){
+				$rep["margin"] = 'margin-left: '.((((($test - 1) * 2) - 1) * ($this->largeur_creneau / 2)) + $this->largeur_creneau - ($this->largeur_creneau - $this->largeur_jour)).'px;';
+			}else{
+				$rep["margin"] = 'Il manque une info.';
+			}
+
 		}
 
 		$rep["width"] = 'width: '.($cours->edt_duree * ($this->largeur_creneau / 2)).'px;';
@@ -471,8 +487,13 @@ class edtAfficher{
 		// Le professeur
 
 		$prof = $cours->prof();
-		echo $prof["nom"].' '.$prof["prenom"].'<br />';
-		//echo $cours["id_cours"].'<br />'.$cours["type_groupe"];
+		$matiere = $cours->matiere();
+
+		echo '<center>'.
+			$prof["civilite"].$prof["nom"].' '.substr($prof["prenom"], 0, 1).'.<br />'.
+			$matiere["name"].'<br /><i>salle&nbsp;'.$cours->edt_salle.'</i>
+			</center>';
+
 	}
 
 	public function aujourdhui(){
