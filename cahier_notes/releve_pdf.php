@@ -625,7 +625,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 		if($active_regroupement_cote!='1' and $active_entete_regroupement!='1') { $systeme_de_classement = ' jgc.priorite ASC, '.$systeme_de_classement; }
 
 		// requête dans la base
-		$sql = 'SELECT * FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
+		$sql = 'SELECT *,m.nom_complet AS matiere_nom_complet,cd.nom_court AS nom_devoir,cd.coef AS coef_devoir,mc.nom_complet AS mat_cat_nom_complet FROM '.$prefix_base.'cn_devoirs cd, '.$prefix_base.'cn_notes_devoirs cnd, '.$prefix_base.'cn_cahier_notes ccn, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'matieres m, '.$prefix_base.'.j_matieres_categories_classes jmcc, '.$prefix_base.'matieres_categories mc
 				 WHERE jgc.id_groupe = g.id
 				   AND jgc.id_classe = "'.$classe_id_eleve[$nb_eleves_i].'"
 				   AND jmcc.classe_id = jgc.id_classe
@@ -670,13 +670,18 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					$id_groupe_selectionne=$donne_requete['id_groupe'];
 					$id_classe=$donne_requete['id_classe'];
 					$groupe_select[$eleve_select][$nb_matiere_cpt]=$donne_requete['id_groupe'];
-					$name[$eleve_select][$nb_matiere_cpt] = $donne_requete[30]; //$donner_toute_matier['name']
+					//$name[$eleve_select][$nb_matiere_cpt] = $donne_requete[30]; //$donner_toute_matier['name']
+					//$name[$eleve_select][$nb_matiere_cpt] = $donne_requete[31]; //$donner_toute_matier['name']
+					//$name[$eleve_select][$nb_matiere_cpt] = $donne_requete['nom_complet']; //$donner_toute_matier['name']
+					$name[$eleve_select][$nb_matiere_cpt] = $donne_requete['matiere_nom_complet']; //$donner_toute_matier['name']
 
 					// si nom des devoirs
 					if(isset($_SESSION['avec_nom_devoir']) and $_SESSION['avec_nom_devoir'] == 'oui')
 					{
 
-						$nom_devoir_oui = " (".$donne_requete[3].")";
+						//$nom_devoir_oui = " (".$donne_requete[3].")";
+						//$nom_devoir_oui = " (".$donne_requete[3].")";
+						$nom_devoir_oui= " (".$donne_requete['nom_devoir'].")";
 
 					}
 					else
@@ -691,9 +696,12 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					$coef_oui = '';
 					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') )
 					{
+						//if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
+						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
 
-						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
-						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+						$tmp_coef_devoir=$donne_requete['coef_devoir'];
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
 
 					}
 					else
@@ -791,7 +799,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					//=================
 
 					// =======================================
-					$nom_regroupement[$eleve_select][$nb_matiere_cpt]=$donne_requete['nom_complet'];
+					//$nom_regroupement[$eleve_select][$nb_matiere_cpt]=$donne_requete['nom_complet'];
+					$nom_regroupement[$eleve_select][$nb_matiere_cpt]=$donne_requete['mat_cat_nom_complet'];
 					if($nom_regroupement[$eleve_select][$nb_matiere_cpt]!=$regroupement_passer) {
 						if(empty($nb_regroupement[$eleve_select])) { $nb_regroupement[$eleve_select] = 0; }
 						$nb_regroupement[$eleve_select]=$nb_regroupement[$eleve_select]+1;
@@ -829,7 +838,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					if($_SESSION['avec_nom_devoir'] == 'oui')
 					{
 
-						$nom_devoir_oui = " (".$donne_requete[3].")";
+						//$nom_devoir_oui = " (".$donne_requete[3].")";
+						$nom_devoir_oui = " (".$donne_requete['nom_devoir'].")";
 
 					}
 					//=======================
@@ -839,8 +849,12 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 					if(isset($_SESSION['avec_coef']) and ( $_SESSION['avec_coef'] == 'oui1' or $_SESSION['avec_coef'] == 'oui2') )
 					{
 
-						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
-						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+						//if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; }
+						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
+
+						$tmp_coef_devoir=$donne_requete['coef_devoir'];
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
 
 					}
 					else
