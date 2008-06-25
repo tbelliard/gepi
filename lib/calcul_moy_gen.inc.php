@@ -62,29 +62,30 @@ calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 
 // On appelle la liste des matières de la classe
 if ($affiche_categories) {
-		// On utilise les valeurs spécifiées pour la classe en question
-		/*
-		$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
-		"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-		"WHERE ( " .
-		"jgc.categorie_id = jmcc.categorie_id AND " .
-		"jgc.id_classe='".$id_classe."' AND " .
-		"jgm.id_groupe=jgc.id_groupe AND " .
-		"m.matiere = jgm.id_matiere" .
-		") " .
-		"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
-		*/
-		$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
-		"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-		"WHERE ( " .
-		"jgc.categorie_id = jmcc.categorie_id AND " .
-		"jgc.id_classe='".$id_classe."' AND " .
-		"jgm.id_groupe=jgc.id_groupe AND " .
-		"m.matiere = jgm.id_matiere" .
-		") " .
-		"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
-		calc_moy_debug($sql."\n");
-		$appel_liste_groupes = mysql_query($sql);
+	// On utilise les valeurs spécifiées pour la classe en question
+	/*
+	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+	"WHERE ( " .
+	"jgc.categorie_id = jmcc.categorie_id AND " .
+	"jgc.id_classe='".$id_classe."' AND " .
+	"jgm.id_groupe=jgc.id_groupe AND " .
+	"m.matiere = jgm.id_matiere" .
+	") " .
+	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
+	*/
+	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+	"WHERE ( " .
+	"jgc.categorie_id = jmcc.categorie_id AND " .
+	"jgc.id_classe=jmcc.classe_id AND " .
+	"jgc.id_classe='".$id_classe."' AND " .
+	"jgm.id_groupe=jgc.id_groupe AND " .
+	"m.matiere = jgm.id_matiere" .
+	") " .
+	"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
+	calc_moy_debug($sql."\n");
+	$appel_liste_groupes = mysql_query($sql);
 } else {
 	/*
 	$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
