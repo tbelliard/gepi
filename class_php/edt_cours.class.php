@@ -322,7 +322,7 @@ class edtAfficher{
 		$liste_creneaux = $this->liste_creneaux();
 
 		$rep .= "\n".'
-			<div style="width: '.($this->largeur_creneau + 1) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_entete.'px; border-top: 2px dotted silver;">
+			<div style="width: '.(($this->largeur_creneau * $liste_creneaux["nbre"]) + $this->largeur_jour).'px; height: '.$this->hauteur_entete.'px; border-top: 2px dotted silver;">
 				<div class="creneau prem" style="width: '.$this->largeur_jour.'px;">&nbsp;</div>';
 
 		for($a = 0 ; $a < $liste_creneaux["nbre"] ; $a++){

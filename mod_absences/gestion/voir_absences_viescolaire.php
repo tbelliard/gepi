@@ -290,7 +290,7 @@ for($a = 0; $a < $nbre_classe; $a++){
 	<tr>
 		<td>
 			<h4 style="color: red;"><a href="#" onclick="changerDisplayDiv(\''.$num_id.'\'); return false;">'.$aff_classe[$a].'</a></h4>
-			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white;">
+			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
 			'.afficherCoursClasse($aff_classe[$a], $choix_creneau).'</div>
 		</td>
 		<td style="width: 250px;">'.$td_classe[$a].'</td>';

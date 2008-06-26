@@ -56,14 +56,16 @@ if ($type_rss == "cdt") {
  			}else{
 			 	$civilite = "";
 			}
-			$rep = $civilite.$prof["nom"];
+			$rep = $civilite.'&nbsp;'.$prof["nom"];
  		}else{
 			$rep = 'Erreur dans la reconnaissance de l\'enseignant';
 		}
 		return $rep;
  	}
+ 	$noms["nom"] = $noms["prenom"] = NULL;
+ 	$noms = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$eleve_l."' LIMIT 1"));
  	$title_rss = 'Cahier de textes - '.getSettingValue("gepiSchoolName").' ('.getSettingValue("gepiYear").').';
- 	$description_rss = 'Les devoirs à faire';
+ 	$description_rss = 'Les devoirs à faire de '.$noms["nom"].' '.$noms["prenom"];
 }
 // =========================fin des cahiers de textes ===========================
 
