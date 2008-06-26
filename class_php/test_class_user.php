@@ -45,13 +45,13 @@ echo '<p>'.$sem["type"].'</p>';
 */
 $cours = new edtAfficher();
 //$edt2 = $cours->edt_jour('lundi', $_SESSION["login"]);
-	$cours->hauteur_creneau = 80;
+	$cours->hauteur_creneau = 60;
 	//$cours->type_edt = 'eleve';
-	$cours->entete_creneaux('noms');
+	echo $cours->entete_creneaux('noms');
 	//$cours->aff_jour = 'cache';
 
 
-	$cours->afficher_cours_jour('lundi', $_SESSION["login"]);
+echo	$cours->afficher_cours_jour('lundi', $_SESSION["login"]);
 //$cours->type_edt = 'eleve';
 	$aff = $cours->afficher_cours_jour('mardi', $_SESSION["login"]);
 

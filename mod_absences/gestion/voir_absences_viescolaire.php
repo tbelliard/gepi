@@ -49,14 +49,24 @@ $choix_creneau = isset($_POST["choix_creneau"]) ? $_POST["choix_creneau"] : (iss
 $vers_absence = isset($_GET["vers_absence"]) ? $_GET["vers_absence"] : NULL;
 $vers_retard = isset($_GET["vers_retard"]) ? $_GET["vers_retard"] : NULL;
 
-function afficherCoursClasse($d, $c){
-	return '';
-}
-
 //======Quelques variables utiles===========
 $date_jour = date("d/m/Y");
 $date_mysql = date("Y-m-d");
 $heure_mysql = date("H:i:s");
+
+// ++== Traitements des données == ++
+require_once("../../class_php/edt_cours.class.php");
+function afficherCoursClasse($d, $c){
+	$rep = '';
+	$cours = new edtAfficher();
+	$cours->hauteur_creneau = 70;
+	$cours->type_edt = 'classe';
+	$jour = $cours->aujourdhui();
+		$rep .= $cours->entete_creneaux('noms');
+		$rep .= $cours->afficher_cours_jour($jour, $d);
+	return $rep;
+}
+
 
 $style_specifique = "edt_organisation/style_edt";
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
@@ -183,8 +193,11 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	// On vérifie l'état de la saisie absence ou retard ou sans absent (signifier que l'appel a bien été effectué
 	if ($rep_absences[$i]["eleve_id"] == "appel") {
 		// On récupère le nom de la matière
+		$nom_prof = remplace_accents($rep_prof["nom"], 'all');
 		$rep_matiere = mysql_fetch_array(mysql_query("SELECT description FROM groupes WHERE id = '".$rep_absences[$i]["groupe_id"]."'"));
-		$etat = "<span style=\"color: brown; font-style: bold;\" title=\"Par".$rep_prof["nom"]." ".$rep_prof["prenom"]."\">L'appel a bien été effectué en ".$rep_matiere["description"].".</span>";
+		$etat = "<span style=\"color: brown; font-style: bold;\" onmouseover=\"changementDisplay('".$nom_prof.$i."', '');\" onmouseout=\"changementDisplay('".$nom_prof.$i."', '');\">
+					L'appel a bien été effectué en ".$rep_matiere["description"].".</span>
+					<div id=\"".$nom_prof.$i."\" class=\"abs_appear\" style=\"display: none;\">Par ".$rep_prof["nom"]." ".$rep_prof["prenom"]."</div>";
 		$modif = "";
 		$modif_f = "";
 	} else if ($rep_absences[$i]["retard_absence"] == "R") {
@@ -244,8 +257,13 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	}
 ?>
 	</select>
+	&nbsp;-&nbsp;<span style="cursor: pointer; color: blue;" onclick="changementDisplay('id4_aide', '');">Aide sommaire</span>
 	</p>
+		<div id="id4_aide" class="abs_appear" style="display: none; margin-left: 400px;">
+	Pour voir le nom du prof qui a fait l'appel quand il n'y a pas d'absent, il suffit de passer la souris sur le texte de droite.<br />
+	Pour voir l'emploi du temps de la classe, il suffit de cliquer sur le nom de la classe.</div>
 </form>
+
 <?php
 if (isset($choix_creneau)) {
 	//$aff_horaires = explode(":", $choix_creneau);

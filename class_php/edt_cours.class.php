@@ -317,9 +317,11 @@ class edtAfficher{
 
 	public function entete_creneaux($reglage){
 
+		$rep = '';
+
 		$liste_creneaux = $this->liste_creneaux();
 
-		$rep = "\n".'
+		$rep .= "\n".'
 			<div style="width: '.($this->largeur_creneau + 1) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_entete.'px; border-top: 2px dotted silver;">
 				<div class="creneau prem" style="width: '.$this->largeur_jour.'px;">&nbsp;</div>';
 
@@ -351,12 +353,19 @@ class edtAfficher{
 
 		$entete = $rep;
 
-		echo $entete;
+		return $entete;
 	}
 
 	public function afficher_cours_jour($jour, $prof){
 
+		$retour = '';
+
 		$liste_cours = $this->edt_jour($jour, $prof);
+		// petite verif sur le contenu
+		if (!is_array($liste_cours) AND substr($liste_cours, 0, 7) == 'Ce_mode') {
+			return $liste_cours;
+			exit;
+		}
 
 		$liste_creneaux = $this->liste_creneaux();
 
@@ -376,10 +385,10 @@ class edtAfficher{
 			exit();
 		}
 
-		echo '<div style="width: '.($largeur) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_creneau.'px; border-bottom: 2px dotted silver;">';
+		$retour .= '<div style="width: '.($largeur) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_creneau.'px; border-bottom: 2px dotted silver;">';
 
 		if ($aff_jour_gauche == 'oui') {
-			echo '<div style="width: '.$this->largeur_jour.'px; height: '.($this->hauteur_creneau - 1).'px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
+			$retour .= '<div style="width: '.$this->largeur_jour.'px; height: '.($this->hauteur_creneau - 1).'px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
 			'.$jour.'</div>';
 		}
 
@@ -390,15 +399,17 @@ class edtAfficher{
 
 			$ou = $this->placer_cours($cours);
 
-			echo '
+			$retour .= '
 			<div class="affedtcours" style="'.$ou["margin"].' '.$ou["width"].' height: '.($this->hauteur_creneau - 1).'px; background: '.$cours->couleur_cours().';">';
 
-			$this->contenu_cours($cours);
+			$retour .= $this->contenu_cours($cours);
 
-			echo '</div>
+			$retour .= '</div>
 			';
 		}
-		echo('</div>'."\n");
+		$retour .=('</div>'."\n");
+
+		return $retour;
 	}
 
 	protected function ordre_creneau(edt $cours){
@@ -450,21 +461,33 @@ class edtAfficher{
 
 		if ($this->type_edt == 'prof') {
 
-			$sql = "SELECT id_cours FROM edt_cours
-							WHERE login_prof = '".$user_login."'
-							AND jour_semaine = '".$jour."'
-							AND (id_semaine = '".$sem["type"]."' OR id_semaine = '0')
+			$sql = "SELECT id_cours FROM edt_cours WHERE
+								login_prof = '".$user_login."'
+								AND jour_semaine = '".$jour."'
+								AND (id_semaine = '".$sem["type"]."' OR id_semaine = '0')
 							ORDER BY id_definie_periode";
 
 		}elseif($this->type_edt == 'eleve'){
 
 			$sql = "SELECT id_cours FROM edt_cours, j_eleves_groupes WHERE
-								edt_cours.jour_semaine = '".$jour."' AND
-								edt_cours.id_groupe = j_eleves_groupes.id_groupe AND
-								login = '".$user_login."'
+								edt_cours.jour_semaine = '".$jour."'
+								AND edt_cours.id_groupe = j_eleves_groupes.id_groupe
+								AND login = '".$user_login."'
 								AND (id_semaine = '".$sem["type"]."' OR id_semaine = '0')
-								ORDER BY edt_cours.id_semaine";
+							ORDER BY edt_cours.id_semaine";
 
+		}elseif($this->type_edt == 'classe'){
+
+			$sql = "SELECT * FROM edt_cours, j_groupes_classes, classes WHERE
+								edt_cours.jour_semaine = '".$jour."'
+								AND edt_cours.id_groupe = j_groupes_classes.id_groupe
+								AND j_groupes_classes.id_classe = classes.id
+								AND classes.classe = '".$user_login."'
+								AND (id_semaine = '".$sem["type"]."' OR id_semaine = '0')
+							ORDER BY edt_cours.id_groupe";
+
+		}else{
+			return 'Ce_mode '.$this->type_edt.' n\'est pas encore disponible';
 		}
 
 		$query = mysql_query($sql);
@@ -487,15 +510,17 @@ class edtAfficher{
 		*/
 		// $cours doit être une instance de la classe edt... Il faudra peut-être vérifier cela
 		// Le professeur
+		$contenu = '';
 
 		$prof = $cours->prof();
 		$matiere = $cours->matiere();
 
-		echo '<center>'.
+		$contenu .= '<center>'.
 			$prof["civilite"].$prof["nom"].' '.substr($prof["prenom"], 0, 1).'.<br />'.
 			$matiere["name"].'<br /><i>salle&nbsp;'.$cours->edt_salle.'</i>
 			</center>';
 
+		return $contenu;
 	}
 
 	public function aujourdhui(){
@@ -503,7 +528,8 @@ class edtAfficher{
 		* méthode qui donne le jour d'aujourd'hui en toute lettre et en Français
 		*
 		*/
-		$jour_num = date("N");
+		$jour_num = date("N") - 1;
+
 		$jours_semaine = array('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche');
 
 		return $jours_semaine[$jour_num];

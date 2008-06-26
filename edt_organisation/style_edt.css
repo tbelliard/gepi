@@ -350,3 +350,6 @@ height: 55px; text-align: center; vertical-align: middle; position: absolute; ma
 .affedtcours {
 position: absolute; border: 1px solid black; -moz-border-radius: 10px; overflow: hidden; padding: 2px;
 }
+.abs_appear {
+position: absolute; background-color: yellow; border: 1px solid silver;
+}
