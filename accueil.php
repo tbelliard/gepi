@@ -133,9 +133,12 @@ function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
     if (acces($chemin_,$statut_)==1)  {
         $temp = substr($chemin_,1);
         echo "<tr>\n";
-        echo "<td width=\"30%\" align=\"left\" style='border-right: none;'><a href=$temp>$titre_</a>";
+	// Correction Regis ajout de \" pour encadrer $temp
+        //echo "<td width=\"30%\" align=\"left\" style='border-right: none;'><a href=\"$temp\">$titre_</a>";
+        echo "<td class='menu_gauche'><a href=\"$temp\">$titre_</a>";
         echo "</td>\n";
-        echo "<td align=\"left\">$expli_</td>\n";
+        //echo "<td align=\"left\">$expli_</td>\n";
+        echo "<td class='menu_droit'>$expli_</td>\n";
         echo "</tr>\n";
     }
 }
@@ -176,6 +179,7 @@ if ($_SESSION['statut'] == "administrateur") {
 
     if ((getSettingValue("disable_login"))!='no'){
 		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
+		// correction Régis balise <center> invalide (à faire)
 		echo "<font color=\"red\"><center>Attention : le site est en cours de maintenance et temporairement inaccessible.</center></font>\n";
 	}
 
@@ -246,8 +250,8 @@ if($_SESSION['statut']=="professeur"){
 	echo "</p>\n";
 }
 
-
-echo "<center>\n";
+// correction Régis balise <center> invalide, remplacée par des données dans table.menu dans style.css
+//echo "<center>\n";
 
 //Affichage des messages
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
@@ -285,7 +289,7 @@ while ($ind < $nb_messages) {
     $ind++;
 }
 if ($affiche_messages == 'yes') {
-    echo "<table id='messagerie'>\n";
+    echo "<table id='messagerie' summary=\"Panneau d'affichage\">\n";
     echo "<tr><td>".$texte_messages;
     echo "</td></tr></table>\n";
 }
@@ -320,7 +324,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Outils d'administration\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/configure.png' alt='Admin' class='link'/> - Administration</th>\n";
     echo "</tr>\n";
@@ -434,7 +438,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Outils de gestion\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/document.png' alt='Bulletins' class='link'/> - Bulletins scolaires</th>\n";
     echo "</tr>\n";
@@ -524,7 +528,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Saisie\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/saisie.png' alt='Saisie' class='link'/> - Saisie</th>\n";
     echo "</tr>\n";
@@ -636,7 +640,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Absences\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/vie_privee.png' alt='Consultation' class='link'/> - Consultation</th>\n";
     echo "</tr>\n";
@@ -700,7 +704,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Outils de relevés de notes\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/releve.png' alt='Relevés' class='link'/> - Relevés de notes</th>\n";
     echo "</tr>\n";
@@ -738,7 +742,7 @@ if (getSettingValue("active_module_absence")=='y') {
     }
     if ($affiche=='yes') {
           //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		  echo "<table class='menu'>\n";
+		  echo "<table class='menu' summary=\"Outils de gestion des absences\">\n";
           echo "<tr>\n";
           echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
           echo "</tr>\n";
@@ -774,7 +778,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
     }
     if ($affiche=='yes') {
           //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		  echo "<table class='menu'>\n";
+		  echo "<table class='menu' summary=\"Outils de gestion des absences par les professeurs\">\n";
           echo "<tr>\n";
           echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
           echo "</tr>\n";
@@ -828,7 +832,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     }
     if ($affiche=='yes') {
           //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    	  echo "<table class='menu'>\n";
+    	  echo "<table class='menu' summary=\"Outils de gestion des trombinoscopes\">\n";
           echo "<tr>\n";
           echo "<th colspan='2'><img src='./images/icons/contact.png' alt='Trombi' class='link'/> - Trombinoscope</th>\n";
           echo "</tr>\n";
@@ -876,7 +880,7 @@ if ($nb_aid != 0) {
       if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu'>\n";
+      echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID\">\n";
       echo "<tr>\n";
       echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
       echo "</tr>\n";
@@ -1052,7 +1056,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Visualisation/Impression\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/print.png' alt='Imprimer' class='link'/> - Visualisation - Impression</th>\n";
     echo "</tr>\n";
@@ -1116,7 +1120,7 @@ if (getSettingValue("active_notanet")=='y') {
 
 	if ($affiche=='yes') {
 		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		echo "<table class='menu'>\n";
+		echo "<table class='menu' summary=\"Gestion Notanet\">\n";
 		echo "<tr>\n";
 		echo "<th colspan='2'><img src='./images/icons/document.png' alt='Notanet/Fiches Brevet' class='link'/> - Notanet/Fiches Brevet</th>\n";
 		echo "</tr>\n";
@@ -1244,7 +1248,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 	}
 	if ($affiche=='yes') {
 		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		echo "<table class='menu'>\n";
+		echo "<table class='menu' summary=\"Gestion des Années antérieures\">\n";
 		echo "<tr>\n";
 		echo "<th colspan='2'><img src='./images/icons/document.png' alt='Années antérieures' class='link'/> - Années antérieures</th>\n";
 		echo "</tr>\n";
@@ -1277,7 +1281,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Gestion du panneau d'affichage\">\n";
     echo "<tr>\n";
     //echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Messagerie</th>\n";
     echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Panneau d'affichage</th>\n";
@@ -1310,7 +1314,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
 if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary=\"Module Emploi du temps\">\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/document.png' alt='Emploi du temps' class='link'/> - Emploi du temps</th>\n";
     echo "</tr>\n";
@@ -1339,7 +1343,7 @@ if (EstAutoriseAteliers($_SESSION["login"])) {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu'>\n";
+      echo "<table class='menu' summary=\"Module Ateliers\">\n";
       echo "<tr>\n";
       echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - Module Ateliers </th>\n";
       echo "</tr>\n";
@@ -1372,7 +1376,7 @@ if (getSettingValue("active_inscription")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu'>\n";
+      echo "<table class='menu' summary=\"Module d'inscriptions\">\n";
       echo "<tr>\n";
       echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - ".getSettingValue("mod_inscription_titre")." - Inscription </th>\n";
       echo "</tr>\n";
@@ -1387,7 +1391,7 @@ if (getSettingValue("active_inscription")=='y') {
 if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") {
 	// Les flux rss sont ouverts pour les élèves
 	echo "
-		<table class='menu'>
+		<table class='menu' summary=\"Tableau des flux RSS\">
 			<tr>
 				<th colspan='2'>
 					<img src='./images/icons/rss.png' alt='flux rss' class='link'/>
@@ -1436,7 +1440,7 @@ if ($_SESSION["statut"] == 'autre') {
 	$nbre_a = count($autorise);
 
 	echo '<br />
-		<table class="menu">
+		<table class="menu" summary="Tableau du statut Autre">
 			<tr>
 			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th></tr>';
 
@@ -1480,7 +1484,8 @@ if ($_SESSION["statut"] == 'autre') {
 // ========================== fin Statut AUTRE =============================
 
 ?>
-</center>
+<!-- correction Régis balise <center> invalide, remplacée par des données dans table.menu dans style.css -->
+<!-- </center>-->
 </div>
 </body>
 </html>

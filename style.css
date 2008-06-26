@@ -231,7 +231,7 @@ div#lien_cahier_texte {
 #div_login {
 	width: 25em;
 	border: 1px solid black;
-	/*-moz-border-radius: 10px;*/
+	-moz-border-radius: 10px;
 }
 
 #div_login_entete {
@@ -243,7 +243,7 @@ div#lien_cahier_texte {
 	padding:0;
 	margin:0;
 	width: 25em;
-	/*-moz-border-radius: 10px;*/
+	-moz-border-radius: 10px;
 }
 
 #div_login_entete h2 {
@@ -474,6 +474,8 @@ p.saut {
 	page-break-after: always;
 }
 
+/* Correction Régis pour centrer les menus sans balise <center>...</center> */
+/* margin-right:auto; margin-left:auto; margin-top: 10px; margin-bottom: 10px; à la place de margin: 10px;*/
 table#messagerie {
 	width: 70%;
 	padding: 5px 5px 5px 10px;
@@ -481,16 +483,26 @@ table#messagerie {
 	/*background-image: url("./images/background/left-top-corner.jpg");*/
 	background-repeat: no-repeat;
 	background-position: 0% 0%;
-	margin: 10px;
+	/* margin: 10px;*/
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
+/* Correction Régis pour centrer les menus sans balise <center>...</center> */
+/* margin-right:auto; margin-left:auto; margin-top: 10px; margin-bottom: 10px; à la place de margin: 10px;*/
 table.menu {
 	width: 70%;
 	border-collapse: separate;
 	border-spacing: 0px;
 	border: none;
 	border-bottom: 1px solid lightgrey;
-	margin: 10px;
+	/* margin: 10px;*/
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	padding-left: 0px;
 	background-image: url("./images/background/left-top-corner.png");
 	background-repeat: no-repeat;
@@ -502,8 +514,12 @@ table.menu tr {
 }
 
 table.menu td {
+	/* Correction Régis : gestion des bordures par td.menu_gauche et td.menu_droit */
+	/* Effacer border-right quand tous les menus seront corrigés (conflit) */
+	/* border: 1px solid lightgrey;   */
 	border: 1px solid lightgrey;
 	border-bottom: none;
+	border-top: 1px solid lightgrey;
 	border-left: 1px solid lightgrey;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -675,7 +691,14 @@ img.link {
 	font-family: Verdana;
 	font-size: 14pt;
 }
-
+	/* Correction Régis : h3 doit être contenu dans h2 qui doit être contenu dans h1 */
+#td_headerLeft h1 {
+	text-align: center;
+	margin: 0px;
+	color: white;
+	font-family: Verdana;
+	font-size: 14pt;
+}
 
 #td_headerTopRight {
 	color: white;
@@ -831,4 +854,20 @@ table.boireaus {
 
 #essaiMenu a:hover {
 	color: lightblue;
+}
+
+/*
+w3c_amelioration.css
+Ce fichier est destinÃ© Ã  recevoir la mise en page qui existe dans les pages html produites
+*/
+
+td.menu_gauche {
+	width: 30%;
+	text-align:left;
+	border-right:none;
+}
+
+td.menu_droit {
+	text-align:justify;
+	border-right: 1px solid lightgrey;
 }

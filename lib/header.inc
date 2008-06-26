@@ -55,15 +55,18 @@ function last_connection() {
 }
 
 ?>
-<!--correction Regis html xmlns + majuscules -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!--correction Regis html xmlns + majuscules -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <meta http-equiv="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
+<!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <!--fin correction Regis html xmlns + majuscules -->
 
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
@@ -346,7 +349,9 @@ if (isset($titre_page)) {
 
 		//echo "<div style='border: 1px solid lime; margin-top:20px; margin-bottom:20px;'><h3>".$titre_page."</h3></div>\n";
 		//echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
-		echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
+		// Correction Régis : h3 doit être contenu dans h2 qui doit être contenu dans h1
+		//echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
+		echo "<div><h1>".$titre_page."</h1></div>\n";
 		//echo "<h3>".$titre_page."</h3>\n";
 
 
