@@ -438,7 +438,7 @@ $nb_dev_sous_cont = 0;
 if ($id_devoir == 0) {
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1\">\n";
 	echo "<fieldset style=\"padding-top: 0px; padding-bottom: 0px;  margin-left: 0px; margin-right: 100px;\">\n";
-	echo "<table><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
+	echo "<table summary='Paramètres'><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
 	</td><td><input type=\"checkbox\" name=\"affiche_comment\"  ";
 	if ($_SESSION['affiche_comment'] != 'yes') echo "checked";
 	echo " /></td><td><input type=\"submit\" name=\"ok\" value=\"OK\" /></td></tr>\n";
@@ -702,10 +702,12 @@ foreach ($liste_eleves as $eleve) {
 				// PREPARATIFS boireaus 20080422
 				// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
 				if($mode_commentaire_20080422!="no_anti_inject") {
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					//$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=30 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
 				}
 				else {
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					//$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 wrap='virtual' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
+					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 class='wrap' onchange=\"changement()\">".$eleve_comment."</textarea></td>\n";
 				}
 				//==============================
 
@@ -728,7 +730,7 @@ foreach ($liste_eleves as $eleve) {
 // Affichage du tableau
 //
 //echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
-echo "<table class='boireaus' cellspacing='2' cellpadding='1'>\n";
+echo "<table class='boireaus' cellspacing='2' cellpadding='1' summary=\"Tableau de notes\">\n";
 //
 // Première ligne
 //
@@ -1424,7 +1426,7 @@ if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
-	echo "<table><tr>\n";
+	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";
 		echo "<SELECT name='debut_import' size='1'>\n";
 	$k = 1;
@@ -1447,7 +1449,8 @@ if ($id_devoir) {
 	echo "</td><td>\n";
 	echo "Coller ci-dessous les données à importer : <br />\n";
 	if (isset($_POST['notes'])) $notes = $_POST['notes']; $notes='';
-	echo "<textarea name='notes' rows='3' cols='40' wrap='virtual'>$notes</textarea>\n";
+	//echo "<textarea name='notes' rows='3' cols='40' wrap='virtual'>$notes</textarea>\n";
+	echo "<textarea name='notes' rows='3' cols='40' class='wrap'>$notes</textarea>\n";
 	echo "</td></tr></table>\n";
 
 	echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
