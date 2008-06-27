@@ -296,12 +296,12 @@ echo "<div id='new_div_login' class='center'>\n";
 			echo "<div>&nbsp;</div>\n";
 			//echo "<table style='width: 25em; margin:0; padding-top: 10px; padding-right: 15px; padding-left: 15px; margin-left: auto;' cellpadding='3' cellspacing='0'>\n";
 			//border='1'
-			echo "<table cellpadding='3' cellspacing='0'>\n";
+			echo "<table cellpadding='3' cellspacing='0' summary=\"Saisie de compte/mot de passe\">\n";
 
 			echo "<tr>
 				<td style='text-align:center; width:80px; margin-left: 15px;'><img src='images/icons/lock.png' width='48' height='48' alt='Cadenas' /></td>
 				<td>
-					<table>
+					<table summary=\"Saisie de compte/mot de passe (bis)\">
 					<tr>
 						<td style='text-align: right; width: 50%; font-variant: small-caps;'><label for='login'>Identifiant</label></td>
 						<td style='text-align: center; width: 40%;'><input type='text' id='login' name='login' size='16' tabindex='1' /></td>
@@ -316,7 +316,7 @@ echo "<div id='new_div_login' class='center'>\n";
 			</table>\n";
 
 			//border='1'
-			echo "<table width='100%' cellpadding='3' cellspacing='0'>
+			echo "<table width='100%' cellpadding='3' cellspacing='0' summary=\"Récupération de mot de passe\">
 			<tr>
 				<!--td style='text-align: center; padding-top: 10px;'-->\n";
 				// padding-left: 15px
