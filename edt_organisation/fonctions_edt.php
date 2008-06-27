@@ -837,9 +837,12 @@ print_r($rep_nom_prof);
 			$contenu="";
 
 			// $per étant le numéro de la période
-			foreach ($current_group["eleves"][$per]["users"] as $eleve_login) {
-				$contenu .=$eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+			if (isset($current_group["eleves"][$per]["users"])) {
+				foreach ($current_group["eleves"][$per]["users"] as $eleve_login) {
+					$contenu .= $eleve_login['nom']." ".$eleve_login['prenom']."<br />";
+				}
 			}
+
 			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);

@@ -3069,7 +3069,7 @@ if (isset ($_POST['maj'])) {
 		$result .= "&nbsp;->Ajout du champ type_creneaux à la table absences_creneaux<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM absences_creneaux LIKE 'type_creneaux'"));
 		if ($test1 == 0) {
-			$query = mysql_query("ALTER TABLE `absences_creneaux` ADD `type_creneaux` VARCHAR( 15 ) NOT NULL ;");
+			$query = mysql_query("ALTER TABLE `absences_creneaux` ADD `type_creneaux` VARCHAR( 15 ) NOT NULL DEFAULT 'cours' ;");
 			if ($query) {
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			}

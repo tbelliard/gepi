@@ -151,7 +151,12 @@ require_once("../lib/header.inc");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 */
-$aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt=prof1&amp;login_edt=".$identite."&amp;type_edt_2=prof';\"";
+if (isset($modifier_cours) AND ($modifier_cours == "ok" OR $modifier_cours == "non")){
+	$aff_refresh = "onload=\"window.close();\"";
+}else{
+	$aff_refresh = "onunload=\"window.opener.location.href='./index_edt.php?visioedt=prof1&amp;login_edt=".$identite."&amp;type_edt_2=prof';\"";
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html lang="fr">
@@ -192,20 +197,20 @@ if ($autorise == "oui") {
 
 	// On insère alors le message d'erreur s'il existe
 	if (isset($message)) {
-		//$affmessage = $message;
+		$affmessage = $message;
 	}else {
 		$affmessage = "";
 	}
-
+$affmessage = NULL;
 	// On affiche les différents items du cours
 echo '
 	<fieldset>
 		<legend>Modification du cours</legend>
-		<form action="modifier_cours_popup.php" name="choix_prof" method="post">
+		<form action="modifier_cours_popup.php" method="post">
 
 			<h2>'.$rep_prof["prenom"].' '.$rep_prof["nom"].' ('.$id_cours.') '.$affmessage.'</h2>
 
-	<table id="edt_modif">
+	<table id="edt_modif" summary="Choisir les informations du cours">
 		<tr class="ligneimpaire">
 			<td>
 			<select name="enseignement">';
@@ -511,7 +516,7 @@ echo '
 	}
 		echo '
 		<input type="submit" name="Enregistre" value="Enregistrer" />
-		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" onclick=\'javascript:window.close();\' />
+		<input type="submit" name="Enregistrer" value="Enregistrer et fermer" />
 
 			</td>
 
