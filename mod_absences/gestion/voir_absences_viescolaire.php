@@ -48,6 +48,8 @@ if (!checkAccess()) {
 $choix_creneau = isset($_POST["choix_creneau"]) ? $_POST["choix_creneau"] : (isset($_GET["choix_creneau"]) ? $_GET["choix_creneau"] : NULL);
 $vers_absence = isset($_GET["vers_absence"]) ? $_GET["vers_absence"] : NULL;
 $vers_retard = isset($_GET["vers_retard"]) ? $_GET["vers_retard"] : NULL;
+$aff_nbre_abs = NULL;
+$dp = $ext = $int = 0;
 
 //======Quelques variables utiles===========
 $date_jour = date("d/m/Y");
@@ -141,7 +143,10 @@ if (isset($choix_creneau)) {
 	$req = mysql_query($sql) OR trigger_error('Impossible de lister les absents.', E_USER_ERROR);
 	//$rep_absences = mysql_fetch_array($req);
 	$nbre_rep = mysql_num_rows($req);
-	for($a=0; $a<$nbre_rep; $a++){
+
+	$aff_nbre_abs = "Il y a ".$nbre_rep." absents sur ce créneau";
+
+	for($a=0; $a < $nbre_rep; $a++){
 		$rep_absences[$a]["id_abs"] = mysql_result($req, $a, "id");
 		$rep_absences[$a]["eleve_id"] = mysql_result($req, $a, "eleve_id");
 		$rep_absences[$a]["retard_absence"] = mysql_result($req, $a, "retard_absence");
@@ -168,7 +173,18 @@ for($i = 0; $i < $nbre_rep; $i++) {
 	$rep_prof = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login = '".$req_prof["login_saisie"]."'")) or die ('erreur 1b : '.mysql_error());
 
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
-		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$i]["eleve_id"]."'"));
+		$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom, regime FROM eleves e, j_eleves_regime jer
+																			 WHERE e.login = jer.login
+																			 AND e.login = '".$rep_absences[$i]["eleve_id"]."'"));
+			// traitement du régime pour dissocier les 3 états
+			if ($rep_nom["regime"] == "d/p") {
+				$dp++;
+			}elseif($rep_nom["regime"] == "ext."){
+				$ext++;
+			}elseif($rep_nom["regime"] == "int."){
+				$int++;
+			}
+
 		$req_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$i]["eleve_id"]."'"));
 		$rep_classe = mysql_fetch_array(mysql_query("SELECT classe FROM classes WHERE id = '".$req_classe[0]."'"));
 	}
@@ -272,7 +288,13 @@ if (isset($choix_creneau)) {
 ?>
 <br />
 <!-- Affichage des réponses-->
-<table class="tab_edt">
+<table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
+	<tr style="background-color: white;">
+		<td><?php echo $aff_nbre_abs; ?></td>
+		<td><?php echo $dp.'&nbsp;d/p'; ?></td>
+		<td><?php echo $ext.'&nbsp;ext.'; ?></td>
+		<td><?php echo $int.'&nbsp;int.'; ?></td>
+	</tr>
 	<tr>
 		<td>Les groupes</td>
 		<td colspan="3"><?php echo $aff_aid_absences; ?></td>
