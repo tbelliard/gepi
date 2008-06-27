@@ -871,3 +871,7 @@ td.menu_droit {
 	text-align:justify;
 	border-right: 1px solid lightgrey;
 }
+
+.wrap {
+	white-space: nowrap;
+}
