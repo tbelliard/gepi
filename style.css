@@ -3,10 +3,8 @@
 body {
 	padding: 0;
 	margin: 0;
-	/*margin: 5px;*/
 	color: #330033;
 	background: #EEEEEE;
-	/*background: #E9E9E4;*/
 	font: normal normal 11pt Verdana, sans-serif;
 }
 
@@ -27,7 +25,6 @@ body {
 }
 
 /*==================================*/
-/* Ajout: boireaus */
 .bordercolor {
 	border: 2px outset #330033;
 	border-spacing: 1px;
@@ -48,22 +45,6 @@ body {
 
 
 /*==================================*/
-/*
-table.uneligne {
-border-style:solid;
-border-width:1px;
-border-color:black;
-border-collapse:collapse;
-font-size: 8pt;
-}
-
-td.uneligne {
-border-style:solid;
-border-width:1px;
-border-color:black;
-font-size: 8pt;
-}
-*/
 table.uneligne {
 	border-style:solid;
 	border-width:1px;
@@ -97,8 +78,6 @@ table.normal td {
 
 /*==================================*/
 /* Styles généraux */
-
-
 p {
 	font: normal normal 11pt Verdana, sans-serif;
 	letter-spacing: -0.05em;
@@ -231,7 +210,6 @@ div#lien_cahier_texte {
 #div_login {
 	width: 25em;
 	border: 1px solid black;
-	-moz-border-radius: 10px;
 }
 
 #div_login_entete {
@@ -243,7 +221,6 @@ div#lien_cahier_texte {
 	padding:0;
 	margin:0;
 	width: 25em;
-	-moz-border-radius: 10px;
 }
 
 #div_login_entete h2 {
@@ -255,7 +232,7 @@ div#lien_cahier_texte {
 	font-weight: bold;
 	letter-spacing: 0.1em;
 }
-/* Correction Régis login.php : h2 doit suivre h1 */
+
 #div_login_entete h1 {
 	color: white;
 	margin:0;
@@ -277,9 +254,7 @@ div#lien_cahier_texte {
 }
 
 #div_login table {
-	/*width: 25em;*/
 	margin:0;
-	/*padding-top: 10px;*/
 	padding-right: 15px;
 	padding-left: 15px;
 	margin-left: auto;
@@ -293,28 +268,20 @@ div#lien_cahier_texte {
 	font-size: x-small;
 }
 /*==================================*/
-
-/*
-	Début - header
-*/
-
+/*Début - header*/
 div#version_gepi {
 	position: absolute;
 	top: 0;
 	left: 0;
 	padding-top: 2px;
 	padding-left: 10px;
-	/*color: grey;*/
 	color: red;
 }
 div#header {
 	width: 100%;
-	/*height: 100px;*/
 	margin: 0;
 	padding: 0;
 	color: white;
-	/*background-image: url("./images/background/darkfade.png");*/
-	/* Couleur pour le débordement du tableau...*/
 	background-color: #4a4a59;
 }
 
@@ -394,11 +361,7 @@ div.headerMessage {
 	text-align: center;
 }
 
-
-/*
-	Fin - header
-*/
-
+/*Fin - header*/
 h1 {
 	font: normal small-caps 20pt Verdana;
 	line-height: 300%;
@@ -423,7 +386,6 @@ h2.gepi {
 	text-decoration: underline;
 	line-height: 200%;
 }
-
 
 h3 {
 	font: normal small-caps normal 14pt Verdana;
@@ -475,30 +437,24 @@ p.saut {
 }
 
 /* Correction Régis pour centrer les menus sans balise <center>...</center> */
-/* margin-right:auto; margin-left:auto; margin-top: 10px; margin-bottom: 10px; à la place de margin: 10px;*/
-table#messagerie {
+ table#messagerie {
 	width: 70%;
 	padding: 5px 5px 5px 10px;
 	border: 1px dashed #0000AA;
-	/*background-image: url("./images/background/left-top-corner.jpg");*/
 	background-repeat: no-repeat;
 	background-position: 0% 0%;
-	/* margin: 10px;*/
 	margin-right:auto;
 	margin-left:auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-/* Correction Régis pour centrer les menus sans balise <center>...</center> */
-/* margin-right:auto; margin-left:auto; margin-top: 10px; margin-bottom: 10px; à la place de margin: 10px;*/
 table.menu {
 	width: 70%;
 	border-collapse: separate;
 	border-spacing: 0px;
 	border: none;
 	border-bottom: 1px solid lightgrey;
-	/* margin: 10px;*/
 	margin-right:auto;
 	margin-left:auto;
 	margin-top: 10px;
@@ -506,7 +462,6 @@ table.menu {
 	padding-left: 0px;
 	background-image: url("./images/background/left-top-corner.png");
 	background-repeat: no-repeat;
-	/*background-position: 16% 1%;    */
 	background-position: -1px 0%;
 }
 
@@ -514,9 +469,6 @@ table.menu tr {
 }
 
 table.menu td {
-	/* Correction Régis : gestion des bordures par td.menu_gauche et td.menu_droit */
-	/* Effacer border-right quand tous les menus seront corrigés (conflit) */
-	/* border: 1px solid lightgrey;   */
 	border: 1px solid lightgrey;
 	border-bottom: none;
 	border-top: 1px solid lightgrey;
@@ -655,13 +607,8 @@ img.link {
 
 #table_header{
 	color: white;
-	/*
-	Ca ne fonctionne pas! Pas pris en compte???
-	J'ai remis cette partie directement dans la page si on est en gepi_style=style.
-	*/
 	background-image: url("./images/background/darkfade.png");
 	background-repeat: repeat-x;
-	/*background-color: red;*/
 	margin: 0;
 	padding: 0;
 }
@@ -679,8 +626,6 @@ img.link {
 #td_headerLeft{
 	vertical-align: middle;
 	font-size: 10pt;
-
-	/* Ajout pour que les dernières connexions apparaissent aussi en blanc et ressortent bien sur le bandeau sombre de l'entête */
 	color: white;
 }
 
@@ -710,17 +655,6 @@ img.link {
 	font-size: 10pt;
 }
 
-/*
-#td_headerBottomLeft{
-	vertical-align: bottom;
-	min-height: 15px;
-	margin: 0px;
-	padding-left: 5px;
-	font-size: 10pt;
-	text-align: left;
-}
-*/
-
 #td_headerBottomRight{
 	vertical-align: bottom;
 	text-align: right;
@@ -732,7 +666,6 @@ img.link {
 	padding-right: 0.7%;
 	color: grey;
 	font-size: 10pt;
-	/*border-top: 1px dotted orange;*/
 }
 
 #td_headerBottomRight img {
@@ -742,18 +675,7 @@ img.link {
 	bottom: -3px;
 }
 
-/*
-#td_headerBottomRight a {
-	color: #999999;
-}
-*/
-
 .gestion_temp_dir th {
-	/*
-		vert: #aae6aa
-		bleu: #96c8f0
-		jaune: #fafabe
-	*/
 	background-color: #aae6aa;
 	font-weight:bold;
 	text-align:center;
@@ -774,7 +696,6 @@ img.link {
 	background-color: #4a4a59;
 }
 .infobulle_corps {
-	/*background-color: #EAEAEA;*/
 	background-color: #DFDFDF;
 }
 /* ===================== */
@@ -786,16 +707,9 @@ table.boireaus {
 }
 
 .boireaus th {
-	/*
-		vert: #aae6aa
-		bleu: #96c8f0
-		jaune: #fafabe
-	*/
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
-	/*background-color: #fafabe;*/
-	/*background-color: #F5F59A;*/
 	background-color: khaki;
 	font-weight:bold;
 	text-align:center;
@@ -811,19 +725,15 @@ table.boireaus {
 }
 
 .boireaus .lig-1 {
-	/*background-color: honeydew;*/
 	background-color: #C8FFC8;
 }
 .boireaus .lig1 {
-	/*background-color: papayawhip;*/
 	background-color: #FFE6AA;
 }
 .boireaus .nouveau {
 	background-color: #96c8f0;
 }
 .boireaus .modif {
-	/*background-color: #aae6aa;*/
-	/*background-color: plum;*/
 	background-color: #eeaaff;
 }
 /* ===================== */
@@ -848,18 +758,12 @@ table.boireaus {
 }
 
 #essaiMenu a {
-	/*color: #D4EC84;*/
 	color: white;
 }
 
 #essaiMenu a:hover {
 	color: lightblue;
 }
-
-/*
-w3c_amelioration.css
-Ce fichier est destinÃ© Ã  recevoir la mise en page qui existe dans les pages html produites
-*/
 
 td.menu_gauche {
 	width: 30%;

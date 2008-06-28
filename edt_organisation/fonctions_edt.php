@@ -846,7 +846,7 @@ print_r($rep_nom_prof);
 			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
-			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux;
+			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
 			$id_div = strtr($id_div_p, " ", "_");
 			$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
 				".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
