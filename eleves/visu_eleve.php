@@ -70,7 +70,7 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 //if(!isset($ele_login)) {
 if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
@@ -115,7 +115,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
 	echo "Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
-	echo "<input type='button' name='Recherche' value='Rechercher' onClick='cherche_eleves()' />\n";
+	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
 	echo "</form>\n";
 
 	echo "<div id='liste_eleves'></div>\n";
@@ -568,7 +568,7 @@ else {
 		}
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
-		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve' onClick=\"affiche_onglet('eleve');return false;\">";
+		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve' onclick=\"affiche_onglet('eleve');return false;\">";
 		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>".$tab_ele['liste_classes']."</i>)</b>";
 		echo "</a>";
 		echo "</div>\n";
@@ -584,7 +584,7 @@ else {
 			}
 			echo "background-color: ".$tab_couleur['responsables']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=responsables' onClick=\"affiche_onglet('responsables');return false;\">Responsables</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=responsables' onclick=\"affiche_onglet('responsables');return false;\">Responsables</a>";
 			echo "</div>\n";
 		}
 
@@ -599,7 +599,7 @@ else {
 			}
 			echo "background-color: ".$tab_couleur['enseignements']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=enseignements' onClick=\"affiche_onglet('enseignements');return false;\">Enseignements</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=enseignements' onclick=\"affiche_onglet('enseignements');return false;\">Enseignements</a>";
 			echo "</div>\n";
 		}
 
@@ -614,7 +614,7 @@ else {
 			}
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins' onClick=\"affiche_onglet('bulletins');return false;\">Bulletins</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins' onclick=\"affiche_onglet('bulletins');return false;\">Bulletins</a>";
 			echo "</div>\n";
 		}
 
@@ -629,7 +629,7 @@ else {
 			}
 			echo "background-color: ".$tab_couleur['releves']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onClick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onclick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
 			echo "</div>\n";
 		}
 
@@ -644,7 +644,7 @@ else {
 			}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onClick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onclick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
 			echo "</div>\n";
 		}
 		//=====================================================================================
@@ -955,7 +955,7 @@ else {
 					echo "background-color: ".$tab_couleur['bulletin']."; ";
 					echo "'>";
 
-					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onClick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
+					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
 					echo "Période $periode1";
 					echo "</a>";
 					echo "</div>\n";
@@ -1092,7 +1092,7 @@ else {
 				}
 				echo "background-color: ".$tab_couleur['releve']."; ";
 				echo "'>";
-				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onClick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
+				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
 				echo "Période $periode1";
 				echo "</a>";
 				echo "</div>\n";
