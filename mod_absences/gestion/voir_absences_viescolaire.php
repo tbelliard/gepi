@@ -57,11 +57,18 @@ $date_mysql = date("Y-m-d");
 $heure_mysql = date("H:i:s");
 
 // ++== Traitements des données == ++
-require_once("../../class_php/edt_cours.class.php");
-function afficherCoursClasse($d, $c){
-	// On teste php pour voir si c'est en php5 ou pas
 	$test = phpversion();
 		$version = substr($test, 0, 1);
+	if ($version != 5) {
+		// rien à faire
+	}else{
+		require_once("../../class_php/edt_cours.class.php");
+	}
+
+function afficherCoursClasse($d, $c){
+	// On teste php pour voir si c'est en php5 ou pas
+	global $version;
+
 	if ($version != 5) {
 		return '';
 	}
