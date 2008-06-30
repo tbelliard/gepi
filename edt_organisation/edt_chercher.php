@@ -192,7 +192,11 @@ if ($auto_aff_2 === 1) {
 	$salles_libres = aff_salles_vides($ch_heure, $ch_jour_semaine);
 		// On affiche le nom des salles vides
 		foreach($salles_libres as $tab_salib){
-			echo("".nom_salle($tab_salib)."<br />\n");
+			if (nom_salle($tab_salib) == '') {
+				echo("".numero_salle($tab_salib)."<br />\n");
+			}else{
+				echo("".nom_salle($tab_salib)."<br />\n");
+			}
 		}
 	echo "</fieldset>\n";
 }

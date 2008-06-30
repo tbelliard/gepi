@@ -1180,6 +1180,14 @@ function nom_salle($id_salle_r){
 
 	return $nom_salle_r;
 }
+// Retourne le nom de la salle
+function numero_salle($id_salle_r){
+	$req_nom_salle = mysql_query("SELECT numero_salle FROM salle_cours WHERE id_salle = '".$id_salle_r."'");
+	$reponse = mysql_fetch_array($req_nom_salle);
+		$nom_salle_r = $reponse["numero_salle"];
+
+	return $nom_salle_r;
+}
 
 // Fonction qui renvoie la couleur de fond de cellule pour une matière
 function couleurCellule($enseignement){
