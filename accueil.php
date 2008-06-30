@@ -162,7 +162,7 @@ if ($_SESSION['statut'] == "administrateur") {
 	*/
 
     if (!check_user_temp_directory()) {
-        echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
+        echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.</p> \n";
 		//if($_SESSION['statut']=='administrateur'){
 			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
 		/*
@@ -180,7 +180,7 @@ if ($_SESSION['statut'] == "administrateur") {
     if ((getSettingValue("disable_login"))!='no'){
 		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
 		// correction Régis balise <center> invalide (à faire)
-		echo "<font color=\"red\"><center>Attention : le site est en cours de maintenance et temporairement inaccessible.</center></font>\n";
+		echo "<p style=\"text-align: center; color: red;\">Attention : le site est en cours de maintenance et temporairement inaccessible.</p>\n";
 	}
 
     // * affichage du nombre de connecté *
@@ -194,7 +194,7 @@ if ($_SESSION['statut'] == "administrateur") {
 	// Lien vers le panneau de contrôle de sécurité
 	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
 	if (empty($alert_sums)) $alert_sums = "0";
-	echo "<br/>Alertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)";
+	echo "<br />Alertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)";
 
 // christian : demande d'enregistrement
 if ($force_ref) {
@@ -212,12 +212,12 @@ if ($force_ref) {
     	OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
     	OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
     	) {
-            echo "<br/><font color='red'>Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)</font>\n";
+            echo "<p style=\"color: red;\">Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)</p>\n";
             $test_https = 'n';
     }
 
     if (ini_get("register_globals") == "1") {
-            echo "<br/><font color='red'>PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.</font>\n";
+            echo "<p style=\"color: red;\">PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.</p>\n";
     }
 
     echo "</div>\n";
@@ -225,14 +225,14 @@ if ($force_ref) {
 elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")||($_SESSION['statut']=="secours")){
     if (!check_user_temp_directory()) {
         echo "<div>\n";
-		echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire temp. \n";
+		echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.</p> \n";
 		/*
 		if($_SESSION['statut']=='administrateur'){
 			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
 		}
 		else{
 		*/
-			echo "Veuillez contacter l'administrateur pour résoudre ce problème.<br/>\n";
+			echo "Veuillez contacter l'administrateur pour résoudre ce problème.<br />\n";
 			$_SESSION['user_temp_directory']='n';
 		//}
         echo "</div>\n";

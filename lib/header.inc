@@ -22,6 +22,7 @@
  */
 
 function last_connection() {
+	global $gepiPath;
    $sql = "select START, AUTOCLOSE, REMOTE_ADDR from log where LOGIN = '".$_SESSION['login']."' and SESSION_ID != '".session_id()."' order by START desc";
    $res = sql_query($sql);
    $r = '';
@@ -35,7 +36,7 @@ function last_connection() {
       $secondes_b = substr($row[0],17,2);
       if ($row[0]  != '') {
           if ($row[1]  == "4") {
-              $r = "<span style=\"color: red\"><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></span> (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "<span style=\"color: red\"><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
               // On compte le nombre de tentatives infructueuses successives
               $nb_tentative = 0;
               $flag = 0;
@@ -48,7 +49,7 @@ function last_connection() {
               }
               if ($nb_tentative > 1) $r .= "<br><b>Nombre de tentatives de connexion successives : ".$nb_tentative.".</b></font>";
           } else
-              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
       }
     }
     return $r;
