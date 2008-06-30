@@ -35,7 +35,7 @@ function last_connection() {
       $secondes_b = substr($row[0],17,2);
       if ($row[0]  != '') {
           if ($row[1]  == "4") {
-              $r = "<font color = 'red'><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></font> (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "<span style=\"color: red\"><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></span> (<a href='utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
               // On compte le nombre de tentatives infructueuses successives
               $nb_tentative = 0;
               $flag = 0;
