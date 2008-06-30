@@ -33,6 +33,12 @@ if (isset($use_cas) and ($use_cas)) {
     die();
 }
 
+// Ajout pour le multisite
+	if (isset($_COOKIE["RNE"])) {
+		unset($_COOKIE['RNE']);
+		setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
+	}
+
     $message = "<h1 class='gepi'>Déconnexion</h1>";
 	$message .= "<img src='./images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
     if (!$_GET['auto']) {

@@ -382,22 +382,11 @@ function openSession($_login, $_password, $_sso_login = '', $lcs_tab_login=array
 function resumeSession()
 {
     global $use_sso;
-    global $multisite;
 
-    if ($multisite == 'y'){
-    	// Cas du multisite avec un Gepi pour plusieurs bases
-		if ($_SERVER["SCRIPT_NAME"] == '/login.php' AND !isset($_SESSION['login'])) {
-			// Resuming session
-    		session_name("GEPI");
-    		session_start();
-		}else{
-			// le session_start() est appelé dans le connect.inc.php
-		}
-	}else{
 		// Resuming session
     	session_name("GEPI");
     	session_start();
-	}
+
     if ((!isset($_SESSION)) or (!isset($_SESSION['login']))){
         tentative_intrusion(1, "Tentative d'accès à une page sans être logué (peut provenir d'un timeout de session).");
         return "0";
