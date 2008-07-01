@@ -201,7 +201,7 @@ if ($etape != NULL) {
 		// On envoie toutes les requêtes d'un coup
 		echo $values;
 		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
-					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
+					VALUES ".$values." ('', ".$etape.", 'fin', 'fin')") OR DIE ('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 
 		// si l'envoi est une réussite alors on passe à l'étape suivante
 		if ($envoie) {

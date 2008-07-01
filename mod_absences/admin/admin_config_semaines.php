@@ -100,6 +100,7 @@ if ( $action === 'visualiser' )
 }
 
 // Gestion propre des retours vers absences ou EdT
+	$retour = '';
 	if (isset($_SESSION["retour"]) AND $_SESSION["retour"] !== "") {
 		$retour = "<a href=\"../../edt_organisation/".$_SESSION["retour"].".php\">";
 	}else{

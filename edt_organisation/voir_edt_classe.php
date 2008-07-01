@@ -25,7 +25,7 @@
 /* Fichier pour visionner les EdT des classes */
 
 echo '
-	<form action="index_edt.php" name="liste_classe" method="post">
+	<form action="index_edt.php" id="liste_classe_id" method="post">
 	';
 
 	$tab_select = renvoie_liste("classe");
@@ -54,7 +54,7 @@ if($indice_classe_select != -1){
 
 echo '
 	<p>
-		<select name="login_edt" onchange=\'document.liste_classe.submit();\'>
+		<select name="login_edt" onchange=\'document.getElementById("liste_classe_id").submit();\'>
 			<option value="rien">Choix de la classe</option>
 	';
 
