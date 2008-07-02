@@ -13,13 +13,13 @@
 
 	if($nb_ele==0){
 		// On ne devrait pas arriver là.
-		echo "<p>Aucun nom d'élève ne contient la chaine $rech_nom.</p>\n";
+		echo "<p>Aucun nom d'&eacute;l&egrave;ve ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
-		echo "<p>La recherche a retourné <b>$nb_ele</b> réponse(s):</p>\n";
+		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse(s):</p>\n";
 		echo "<table border='1' class='boireaus'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
+		echo "<th>El&egrave;ve</th>\n";
 		echo "<th>Classe(s)</th>\n";
 		echo "</tr>\n";
 		$alt=1;
