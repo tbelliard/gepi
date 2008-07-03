@@ -120,10 +120,10 @@ class Calendar
         $prevMonth = $this->getCalendarLink($this->month - 1 >   0 ? $this->month - 1 : 12, $this->month - 1 >   0 ? $this->year : $this->year - 1, $this->id_classe, $this->type);
         $nextMonth = $this->getCalendarLink($this->month + 1 <= 12 ? $this->month + 1 :  1, $this->month + 1 <= 12 ? $this->year : $this->year + 1, $this->id_classe, $this->type);
 
-        $s .= "<table class=\"calendar\" style=\"margin:auto\"border=1>\n";
-        $s .= "<tr><td class=\"calendarcol1\" align=right valign=top></td>\n";
-        $s .= "<td align=center valign=top class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\">&lt;&lt;</a>")  . "</td>\n";
-        $s .= "<td align=center valign=top class=\"calendarHeader\" colspan=5>";
+        $s .= "<table class=\"calendar\" style=\"margin:auto\" border=\"1\" summary=\"Tableau calendrier\">\n";
+        $s .= "<tr><td class=\"calendarcol1\" align='right' valign='top'></td>\n";
+        $s .= "<td align='center' valign='top' class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\">&lt;&lt;</a>")  . "</td>\n";
+        $s .= "<td align='center' valign='top' class=\"calendarHeader\" colspan='5'>";
 
     if ($this->dmy!='gestion_absences') {
         $s .= "<a href=\"month.php?year=$this->year&month=$this->month&day=1&id_classe=$this->id_classe&type=$this->type\">$monthName&nbsp;$this->year</a>";

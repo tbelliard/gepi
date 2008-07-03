@@ -469,7 +469,7 @@ class Calendrier {
         echo "\t</select>\n";
         echo "\t".'<input type="hidden" name="change_date" value="1"/>'."\n";
         echo "\t</form>\n\n";
-        echo "\t".'<table id="calendar">'."\n";
+        echo "\t".'<table id="calendar" summary="Tableau calendrier">'."\n";
         echo "\t\t<tr>\n";
         /**
          * Affichage du nom des jours

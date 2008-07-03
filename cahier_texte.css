@@ -1,0 +1,170 @@
+/*
+Cahier_texte.css
+Mise en page du module cahier de texte
+*/
+
+/* consultation.php rev 2039*/
+/* Modifications dans consultation.php - share.inc.php - cahier_texte.css - header.inc*/
+
+/* --- Cahier de texte : consultation.php --- */
+/* --- Mise en page choix de l'enseignement + calendrier --- */
+/* 3 colonnes équilibrées*/
+table.centre_table {
+	width: 100%;
+}
+td.ct_col_gauche {
+	width: 34%;
+	text-align:left;
+}
+td.ct_col_centre{
+	width: 32%;
+	text-align:center;
+}
+td.ct_col_droit{
+	width: 34%;
+	text-align:right;
+} 
+/* place le tableau de droite à droite */
+.ct_col_droit table {
+	margin-left: auto;
+	text-align:right;
+}
+ 
+/* --- Mise en page affichage du contenu de cahier de texte --- */
+table.centre_cont_text {
+	width;98%;
+	border:0;
+	text-align:center;
+}
+td.cct_gauche {
+	width:30%;
+	vertical-align:top;
+}
+td.cct_droit {
+	vertical-align;top;
+}
+.bleu {
+	color:blue;
+	font-variant: small-caps;
+}
+ 
+/* --- Mise en page affichage des travaux personnel de cahier de texte --- */
+/*centre le texte*/
+.txt_centre {
+	text-align:center;
+}
+/* centre le texte et le met en petite capitale grasse*/
+.txt_centre_pt_cap {
+	text-align:center;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+/* 	--- Travaux à faire "futurs" ---
+	--- Données récupérées dans global.inc ---
+$color_fond_notices["f"] = "#FFFF80";
+$couleur_cellule["f"] = "#FFFFDF";
+$color_police_travaux = "#FF4444";
+$color_police_matieres = "green";
+$couleur_bord_tableau_notice = "#6F6968";
+$couleur_cellule_gen = "#F6F7EF";		*/
+td.cel_trav_futur {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFF80;
+	padding: 2px;
+}
+.titre_a_faire {
+	color: #FF4444;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+.matiere_a_faire {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFFDF;
+	padding: 2px;
+	margin: 1px;
+	color: green;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+.souligne {
+	text-decoration: underline;
+	font-size: smaller; 
+}
+table.a_faire_gauche {
+	border-style:solid;
+	border-width:0px;
+	border-color: #6F6968;
+	width:100%;
+	padding:2px;
+	margin-bottom:20px;
+}
+.a_faire_gauche td {
+	border-style:solid;
+	border-width:1px;
+	border-color:#6F6968;
+	background-color:#FFFF80;
+	color:#FF4444;
+	font-variant: small-caps;
+	text-align: center;
+	font-weight: bold;
+}
+.a_faire_fond {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFFDF;
+	padding: 2px;
+	margin: 1px;
+}
+.a_faire_titre {
+	color: green;
+	font-variant: small-caps;
+	text-align: left;
+	text-decoration: underline;
+	font-size: smaller; 
+}
+.txt_gauche {
+	text-align: left;
+}
+/*// Notice informations générales
+	--- Données récupérées dans global.inc ---
+$color_fond_notices["i"] = "#ACACFF";
+$couleur_entete_fond["i"] = "#EFEFFF";
+$couleur_cellule["i"]="#EFEFFF";
+$couleur_cellule_alt["i"] = "#C8C8FF";
+$couleur_bord_tableau_notice = "#6F6968";*/
+.ct_info_generale {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #ACACFF;
+	padding: 2px;
+	margin: 2px;
+	width: 100%;
+}
+.tr_info_generale {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #EFEFFF;
+	padding: 2px;
+	margin: 2px;
+}
+.centre_texte {
+	text-align: center;
+}
+.droite_texte {
+	text-align: right;
+}
+.ct_jour {
+	border-style:solid;
+	border-width:0px;
+	border-color:#6F6968;
+	padding: 2px;
+	margin: 2px;
+}
+

@@ -341,7 +341,7 @@ require_once("../lib/header.inc");
 echo "<script type=\"text/javascript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
 //-----------------------------------------------------------------------------------
 
-echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
+echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entête\">\n";
 
 // Première ligne du tableau
 echo "<tr>\n";
@@ -573,7 +573,7 @@ echo "</tr></table>\n";
 echo "<hr />";
 */ // ============================== fin modif
 // Début tableau d'affichage des notices
-echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">\n";
+echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\" summary=\"Tableau d'affichage des notices\">\n";
 echo "<tr>\n";
 
 // Début colonne de gauche
@@ -719,7 +719,7 @@ while (true) {
         );
     }
     $html_balise .= '</div>';
-    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$html_balise$html</td>\n</tr>\n</table>\n<br/>\n");
+    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$html_balise$html</td>\n</tr>\n</table>\n<br/>\n");
     if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
 
@@ -749,7 +749,7 @@ include "../lib/transform.php";
 echo "<b>Informations Générales</b>\n";
 if ($id_ctexte == $id_ct) echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";
 $html_balise = "<div style=\"margin: 0px; float: right;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
-echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n<br />";
+echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n<br />";
 
 // Fin de la colonne de gauche
 echo "</td>";
@@ -832,7 +832,7 @@ else if (isset($edit_devoir)) {
 } else {
     $temp = strftime("%A %d %B %Y", $today);
 } ?>
-<table border="0" width="100%">
+<table border="0" width="100%" summary="Tableau de saisie de notice">
 <tr>
 <td style="width:60%"><b><?php echo $temp; ?></b>&nbsp;
 <input type="submit" value="Enregistrer la notice" style="font-variant: small-caps;" />
@@ -876,7 +876,7 @@ if (isset($id_ct)) {
     $res = sql_query($sql);
     if (($res) and (sql_count($res)!=0)) {
         // Affichage des documents joints
-        echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=1>\n";
+        echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
         echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
         $nb_doc = 0;
         $id_document = array();
@@ -914,7 +914,7 @@ if (isset($_GET['info']) or isset($_POST['info']))
 <input type="hidden" name="uid_post" value="<?php echo $uid; ?>" />
 
 
-<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1">
+<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
 <tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
 <td style="font-weight: bold; text-align: center; width: 20%">Titre (facultatif)</td>
 <td style="font-weight: bold; text-align: center; width: 60%">Emplacement</td>
@@ -959,7 +959,7 @@ if ($last_date != "-1") {
 	echo "<br />";
     echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
     echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Suppression de notices</legend>";
-    echo "<table border=0 width = 100%>";
+    echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
     echo "<tr><td>";
     echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">";
 

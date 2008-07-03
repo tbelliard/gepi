@@ -53,7 +53,7 @@ class Calendar
         $day=1;
         return $this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login";
     }
-	// correction w3c : ajout de \" pour encadrer le lien 
+	// correction w3c : ajout de \" pour encadrer le lien
    function getDateLink($day, $month, $year) {
       global $id_classe;
       global $selected_eleve_login;
@@ -131,7 +131,7 @@ class Calendar
         $prevMonth = $this->getCalendarLink($this->month - 1 >   0 ? $this->month - 1 : 12, $this->month - 1 >   0 ? $this->year : $this->year - 1, $this->id_groupe);
         $nextMonth = $this->getCalendarLink($this->month + 1 <= 12 ? $this->month + 1 :  1, $this->month + 1 <= 12 ? $this->year : $this->year + 1, $this->id_groupe);
 	// correction w3c : \" pour encadrer la valeur de border, align, valign, colspan
-        $s .= "<table class=\"calendar\" border=\"1\">\n";
+        $s .= "<table class=\"calendar\" border=\"1\" summary=\"Tableau calendrier\">\n";
         $s .= "<tr><td class=\"calendarcol1\" align=\"right\" valign=\"top\"></td>\n";
         $s .= "<td align=\"center\" valign=\"top\" class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\"><img src='".$gepiPath."/images/icons/back.png' alt='Mois précédent' /></a>")  . "</td>\n";
         $s .= "<td align=\"center\" valign=\"top\" class=\"calendarHeader\" colspan=\"5\">";

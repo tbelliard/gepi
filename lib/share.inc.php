@@ -395,23 +395,35 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
   }
 }
 
+	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+	//						  Création d'un label pour passer les tests WAI
+	//						  Ajout de balises <p>...</p> pour encadrer <select>...
+/*$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+  <p> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label> <select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";*/
 
 function genDateSelector($prefix, $day, $month, $year, $option)
 {
     if($day   == 0) $day = date("d");
     if($month == 0) $month = date("m");
     if($year  == 0) $year = date("Y");
-	// correction w3c : SELECT NAME -> select name
-    echo "<select name=\"${prefix}day\">\n";
+
+	// correction w3c : SELECT NAME -> select name + label + <span>
+	 echo "\n<label for=\"jour\"><span style='display:none;'>Jour</span></label>\n";
+    echo "<select id=\"jour\" name=\"${prefix}day\">\n";
 
 	// correction w3c : OPTION -> option + =\"selected\
     for($i = 1; $i <= 31; $i++)
-        echo "<option" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
+        //echo "<option" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
+        echo "<option value = \"$i\"" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
+
         //echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i\n";
 
 	// correction w3c : SELECT NAME -> select name
     echo "</select>\n";
-    echo "<select name=\"${prefix}month\">\n";
+
+	// correction w3c : SELECT NAME -> select name + label + <span>
+	 echo "\n<label for=\"mois\"><span style='display:none;'>Mois</span></label>\n";
+    echo "<select id=\"mois\" name=\"${prefix}month\">\n";
 
     for($i = 1; $i <= 12; $i++)
     {
@@ -427,7 +439,11 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
 	// correction w3c : SELECT NAME -> select name
     echo "</select>\n";
-    echo "<select name=\"${prefix}year\">\n";
+
+    //echo "<select name=\"${prefix}year\">\n";
+	// correction w3c : SELECT NAME -> select name + label + <span>
+	 echo "\n<label for=\"annee\"><span style='display:none;'>Année</span></label>\n";
+    echo "<select id=\"annee\" name=\"${prefix}year\">\n";
 
     $min = strftime("%Y", getSettingValue("begin_bookings"));
     if ($option == "more_years") $min = date("Y") - 5;
@@ -1163,7 +1179,7 @@ return $email;
 
 }
 function parametres_tableau($larg_tab, $bord) {
-    echo "<table border='1' width='680' cellspacing='1' cellpadding='1'>\n";
+    echo "<table border='1' width='680' cellspacing='1' cellpadding='1' summary=\"Tableau de paramètres\">\n";
     echo "<tr><td><span class=\"norme\">largeur en pixel : <input type=\"text\" name=\"larg_tab\" size=\"3\" value=\"".$larg_tab."\" />\n";
     echo "bords en pixel : <input type=\"text\" name=\"bord\" size=\"3\" value=\"".$bord."\" />\n";
     echo "<input type=\"submit\" value=\"Valider\" />\n";
@@ -1176,7 +1192,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     // $col_centre = 0 --> toutes les autres colonnes sont alignées.
     // $couleur_alterne --> les couleurs de fond des lignes sont alternés
 
-    echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+    echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
     echo "<tr>\n";
     $j = 1;
     while($j < $nb_col+1) {
@@ -1491,12 +1507,20 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	// pour l'élève en question
 
 	// correction W3C : onChange = onchange
-  $out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
-  <select name=\"matiere\" onchange=\"matiere_go()\">\n";
+	//						  Ajout de balises <p>...</p> pour pouvoir mettre en forme le texte
+	//						  Création d'un label pour passer les tests WAI
+	//						  Ajout de balises <p>...</p> pour encadrer <select>...
+	/*
+	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
+	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
+	*/
+	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+  <p> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label> <select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
 
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
   if (is_numeric($id_ref)) {
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
+  	  //$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
+  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
 	        "jgc.id_classe='".$id_ref."' and " .
 	        "g.id = jgc.id_groupe and " .
@@ -1504,7 +1528,8 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	        ") order by g.name";
   } else {
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
+  	  //$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
+  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
 	  $sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 	        "jec.login='".$id_ref."' and " .
 	        "g.id = jec.id_groupe and " .
@@ -1524,13 +1549,15 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    //$chaine .= ")";
 
 
-   $selected = ($row[0] == $current) ? "selected" : "";
+   //$selected = ($row[0] == $current) ? "selected" : "";
+   $selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
    if (is_numeric($id_ref)) {
    		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]";
    } else {
    		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]";
    }
 	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+   //$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    }
   $out_html .= "\n</select>
@@ -1546,10 +1573,12 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
   </script>
 
   <noscript>
+	<p>
   <input type=\"submit\" value=\"OK\" />
+	</p>
   </noscript>
   </form>\n";
-	// correction W3C : ajout de \" pour encadrer submit ci-dessus
+	// correction W3C : ajout de \" pour encadrer submit ci-dessus et de <p>...</p> pour encadrer <input...>
   return $out_html;
 }
 
@@ -1759,7 +1788,7 @@ function tab_liste($tab_txt,$tab_lien,$nbcol){
 	// Nombre de lignes dans chaque colonne:
 	$nb_class_par_colonne=round($nombreligne/$nbcol);
 
-	echo "<table width='100%'>\n";
+	echo "<table width='100%' summary=\"Tableau de choix\">\n";
 	echo "<tr valign='top' align='center'>\n";
 	echo "<td align='left'>\n";
 
@@ -2411,7 +2440,7 @@ function debug_var(){
 	}
 </script>\n";
 
-	echo "<table>\n";
+	echo "<table summary=\"Tableau de debug\">\n";
 	foreach($_POST as $post => $val){
 		//echo "\$_POST['".$post."']=".$val."<br />\n";
 		//echo "<tr><td>\$_POST['".$post."']=</td><td>".$val."</td></tr>\n";
@@ -2419,7 +2448,7 @@ function debug_var(){
 
 		if(is_array($_POST[$post])) {
 			echo " (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
-			echo "<table id='container_debug_var_$cpt_debug'>\n";
+			echo "<table id='container_debug_var_$cpt_debug' summary=\"Tableau de debug\">\n";
 			foreach($_POST[$post] as $key => $value) {
 				echo "<tr><td>\$_POST['$post'][$key]=</td><td>$value</td></tr>\n";
 			}
@@ -2446,7 +2475,7 @@ function debug_var(){
 	echo "<blockquote>\n";
 	echo "<div id='container_debug_var_$cpt_debug'>\n";
 	$cpt_debug++;
-	echo "<table>";
+	echo "<table summary=\"Tableau de debug sur GET\">";
 	foreach($_GET as $get => $val){
 		//echo "\$_GET['".$get."']=".$val."<br />\n";
 		echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
@@ -2467,7 +2496,7 @@ function debug_var(){
 	echo "<blockquote>\n";
 	echo "<div id='container_debug_var_$cpt_debug'>\n";
 	$cpt_debug++;
-	echo "<table>";
+	echo "<table summary=\"Tableau de debug sur SESSION\">";
 	foreach($_SESSION as $variable => $val){
 		//echo "\$_SESSION['".$variable."']=".$val."<br />\n";
 		echo "<tr><td>\$_SESSION['".$variable."']=</td><td>".$val."</td></tr>\n";
@@ -2488,7 +2517,7 @@ function debug_var(){
 	echo "<blockquote>\n";
 	echo "<div id='container_debug_var_$cpt_debug'>\n";
 	$cpt_debug++;
-	echo "<table>";
+	echo "<table summary=\"Tableau de debug sur SERVER\">";
 	foreach($_SERVER as $variable => $valeur){
 		//echo "\$_SERVER['".$variable."']=".$valeur."<br />\n";
 		echo "<tr><td>\$_SERVER['".$variable."']=</td><td>".$valeur."</td></tr>\n";

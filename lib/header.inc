@@ -242,6 +242,10 @@ if(isset($style_screen_ajout)){
 		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 }
+
+// Voir si on restreint l'usage aux pages du module cahier de textes
+echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/cahier_texte.css' />\n";
+
 echo '	<!-- Fin des styles -->'."\n\n";
 // ============================== FIN des feuilles de style =======================
 ?>
