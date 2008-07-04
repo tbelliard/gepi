@@ -135,7 +135,7 @@ if ($action == "upload_file") {
 			// On ouvre alors le fichier ligne par ligne
 				$numero = 0;
 			while($tab = fgetcsv($fp, 1024, "	")) {
-
+				$nom_selected = $nom_select = NULL;
 				if ($tab[0] == $neuf_etapes[$etape - 1]) {
 					// On commence l'étape demandée et on autorise donc à récupérer les données utiles
 					$autorise = "continue";
@@ -162,7 +162,8 @@ if ($action == "upload_file") {
 							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
-							$nom_prof = strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
+							$nom_selected = strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
+							echo $nom_selected;
 							include("helpers/select_professeurs.php");
 							echo '<br />'."\n";
 						}

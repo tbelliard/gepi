@@ -263,6 +263,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 		$matiere = renvoiConcordances($matiere_txt, 5);
 		$partie = $partie_txt; //renvoiConcordances($partie_txt, 4);
 		$grp = renvoiConcordances($grp_txt, 3);
+		//echo $classe.'|'.$matiere.'|'.$prof.'&nbsp;&nbsp;->&nbsp;&nbsp;';
 	}elseif($type_import == 'csv2'){
 		// On se préoccupe de la partie csv2 venant de edt_init_csv2.php et edt_init_concordance2.php
 		$classe = $classe_txt;
@@ -278,10 +279,21 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 
 
 	// On commence par le groupe. S'il existe, on le renvoie tout de suite
-	if ($grp != "aucun" AND $grp != '' AND $grp != "inc") {
+	if($type_import == 'texte'
+		AND $grp != "erreur"
+		AND $grp != "aucun"
+		AND $grp != ''
+		AND $grp != "inc"){
+
 		return $grp;
-	//}elseif($partie != "aucun" AND $partie != ''){
-		// Pour le moment, on n'utilise pas ça
+
+	}elseif ($grp != "aucun"
+		AND $grp != ''
+		AND $grp != "inc"
+		AND $type_import != 'texte') {
+
+		return $grp;
+
 	}else{
 		// On récupère la classe, la matière et le professeur
 		// et on cherche un enseignement qui pourrait correspondre avec
@@ -293,6 +305,8 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 						jgp.id_groupe = jgm.id_groupe");
 
     	$rep_groupe = mysql_fetch_array($req_groupe);
+			//print_r($rep_groupe);
+			//echo '<br />';
     	$nbre_rep = mysql_num_rows($req_groupe);
     	// On vérifie ce qu'il y a dans la réponse
     	if ($nbre_rep == 0) {
