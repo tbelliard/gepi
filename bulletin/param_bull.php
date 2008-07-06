@@ -1652,9 +1652,12 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
     <?php
     $impression = getSettingValue("page_garde_texte");
-    echo "<td valign=\"top\"  style=\"font-variant: small-caps;\">Texte de la page de garde apparaissant à la suite de l'adresse : </td>";
-    echo "<td><div class='small'>";
-    echo "<i>Mise en forme du message :</i>";
+    echo "<td colspan=\"2\" valign=\"top\"  style=\"font-variant: small-caps;\">Texte de la page de garde apparaissant à la suite de l'adresse : </td>
+	</tr>";
+    // Modif : on utilise toute la largeur de la page pour afficher l'éditeur de textes
+    echo "
+	<tr><td colspan=\"2\" ><div class='small'>
+		<i>Mise en forme du message :</i>";
 
     $oFCKeditor = new FCKeditor('no_anti_inject_page_garde_texte') ;
     $oFCKeditor->BasePath = '../fckeditor/' ;
@@ -1662,13 +1665,15 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
     $oFCKeditor->ToolbarSet = 'Basic' ;
     $oFCKeditor->Value      = $impression ;
     $oFCKeditor->Create() ;
-
-    echo "</div></td></tr>";
 ?>
+
+		</div>
+	</td></tr>
 
 </table>
 
-
-<hr /><center><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></center>
+<hr />
+<p style="text-align: center;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
 </form>
+
 <?php require("../lib/footer.inc.php");
