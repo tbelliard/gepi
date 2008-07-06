@@ -555,9 +555,15 @@ $debg = NULL;
 		// On envoie le lien si et seulement si c'est un administrateur ou un scolarite
 		if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") AND $type_edt == "prof") {
 			$creer_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,285,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
-			<img src="../images/icons/ico_plus.png" /></a>';
+			<img src="../images/icons/ico_plus.png" title="Cr&eacute;er un cours" alt="Cr&eacute;er un cours" /></a>';
 		}else{
 			$creer_cours = "-";
+		}
+		if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite") AND $type_edt == "prof") {
+			$ajouter_cours = '<a href=\'javascript:centrerpopup("modifier_cours_popup.php?cours=aucun&amp;identite='.$req_type_login.'&amp;horaire='.$jour_semaine.'|'.$id_creneaux.'|'.$deb.'",700,285,"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no")\'>
+			<img src="../images/icons/ico_plus.png" title="Ajouter un cours" alt="Ajouter un cours" /></a>';
+		}else{
+			$ajouter_cours = "";
 		}
 
 	// On envoie l'affichage en fonction du nombre de réponses à la requête du nombre de cours
@@ -603,7 +609,7 @@ $debg = NULL;
 			if (renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0]) == "n") {
 				$case_tab = "<!--rien3 ".$aff1.$aff2.$aff3.$aff4.$aff4b.$aff5.$aff6."-->";
 			}
-			else $case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\" style=\"background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0])."</td>\n";
+			else $case_tab = "<td rowspan=\"".renvoie_duree($id_creneaux, $jour_semaine, $ens_tab[0])."\" style=\"background-color: ".couleurCellule($ens_tab[0]).";\">".contenu_creneaux($req_type_login, $id_creneaux, $jour_semaine, $type_edt, $ens_tab[0]).$ajouter_cours."</td>\n";
 		}
 	// Cas avec deux enseignements
 		elseif ($nbre_ens == 2) {
