@@ -188,7 +188,7 @@ if ($etape != NULL) {
 	}else{
 		// C'est le cas général pour enregistrer les concordances entre le fichier txt et Gepi
 		// On réceptionne les données et on les rentre dans la base
-		for($a = 0; $a < $nbre_ligne; $a++){
+		for($a = 1; $a < ($nbre_ligne + 1); $a++){
 
 			$nom_gepi[$a] = isset($_POST["nom_gepi_".$a]) ? $_POST["nom_gepi_".$a] : NULL;
 			$numero_texte[$a] = isset($_POST["numero_texte_".$a]) ? $_POST["numero_texte_".$a] : NULL;
