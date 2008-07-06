@@ -437,7 +437,8 @@ class edtAfficher{
 			if ($cours->edt_debut == '0') {
 				$rep["margin"] = 'margin-left: '.(((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau) - ($this->largeur_creneau - $this->largeur_jour)).'px;';
 			}elseif($cours->edt_debut == '0.5'){
-				$rep["margin"] = 'margin-left: '.((((($test - 1) * 2) - 1) * ($this->largeur_creneau / 2)) + $this->largeur_creneau - ($this->largeur_creneau - $this->largeur_jour)).'px;';
+				// C'est le même calcul que sur le précédent mais on y ajoute un demi-créneau
+				$rep["margin"] = 'margin-left: '.(((($test - 1) * $this->largeur_creneau) + $this->largeur_creneau) - ($this->largeur_creneau - $this->largeur_jour) + ($this->largeur_creneau / 2)).'px;';
 			}else{
 				$rep["margin"] = 'Il manque une info.';
 			}
