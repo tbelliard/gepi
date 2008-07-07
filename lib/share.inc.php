@@ -1561,7 +1561,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    //$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
    }
-  $out_html .= "\n</select>
+  $out_html .= "\n</select>\n</p>\n
   <script type=\"text/javascript\">
   <!--
   function matiere_go()
