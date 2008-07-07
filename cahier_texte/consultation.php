@@ -339,7 +339,7 @@ echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_
 // ?????????????????????????????????????????????????????????
 
 // Affichage des devoirs
-if ($delai == "") die("Erreur : Délai de visualisation des devois non défini. Contactez l'administrateur de GEPI de votre établissement.");
+if ($delai == "") die("Erreur : Délai de visualisation des devoirs non défini. Contactez l'administrateur de GEPI de votre établissement.");
 // Si l'affichage des devoirs est activée, on affiche les devoirs
 if ($delai != 0) {
 // Affichage de la semaine en cours
