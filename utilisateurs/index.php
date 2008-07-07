@@ -291,7 +291,7 @@ if (getSettingValue("statuts_prives") == "y") {
 </p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
-<table border=0>
+<table border='0' summary='Tableau de choix'>
 <tr>
 <td><p>Afficher : </p></td>
 <td><p><label for='display_tous' style='cursor: pointer;'>tous les utilisateurs</label> <input type="radio" name="display" id='display_tous' value='tous' <?php if ($display=='tous') {echo " checked";} ?> /></p></td>
@@ -308,7 +308,7 @@ if (getSettingValue("statuts_prives") == "y") {
 <?php
 // Affichage du tableau
 //echo "<table border=1 cellpadding=3>\n";
-echo "<table class='boireaus' cellpadding=3>\n";
+echo "<table class='boireaus' cellpadding='3' summary='Tableau des utilisateurs'>\n";
 echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></th>\n";
