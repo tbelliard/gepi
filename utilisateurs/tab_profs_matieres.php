@@ -57,7 +57,8 @@ if(isset($_POST['user_login'])){
 	//echo "<!--\n";
 
 	for($i=0;$i<count($user_login);$i++){
-		$check_matiere=$_POST['c_'.$i.'_'];
+		//$check_matiere=$_POST['c_'.$i.'_'];
+		$check_matiere=isset($_POST['c_'.$i.'_']) ? $_POST['c_'.$i.'_'] : NULL;
 
 		//echo "$user_login[$i]\n";
 		for($j=0;$j<count($tab_matiere);$j++){
@@ -169,6 +170,13 @@ if($msg!=""){
 		}
 	}
 
+	function survol_colore_matiere(colonne) {
+		for(i=0;i<".$nombreligne.";i=i+10){
+			idcellule='col_tit_'+i+'_'+colonne;
+			eval('document.getElementById(\''+idcellule+'\').style.background=\'lightblue\'');
+		}
+	}
+
 	function retablit_couleurs(ligne){
 		for(i=0;i<".count($tab_matiere).";i++){
 			idcellule='td_'+ligne+'_'+i;
@@ -185,7 +193,19 @@ if($msg!=""){
 					document.getElementById(idcellule).style.background='white';
 				}
 			}
+
+			for(j=0;j<".$nombreligne.";j=j+10){
+				idcellule='col_tit_'+j+'_'+i;
+
+				if(i%2==0){
+					document.getElementById(idcellule).style.background='silver';
+				}
+				else{
+					document.getElementById(idcellule).style.background='white';
+				}
+			}
 		}
+
 	}
 
 	function masquage(colonne){
@@ -232,7 +252,7 @@ if($msg!=""){
 		echo "<input type='hidden' name='tab_matiere[$i]' value='$tab_matiere[$i]' />\n";
 	}
 
-	echo "<table border='1'>\n";
+	echo "<table border='1' summary='Tableau des professeurs et matières'>\n";
 	echo "<tr style='text-align:center; background: white;'>\n";
 	echo "<td>Masquage</td>\n";
 	for($i=0;$i<count($tab_matiere);$i++){
@@ -247,7 +267,7 @@ if($msg!=""){
 			echo "<tr valign='top'>\n";
 			echo "<th>Professeur</th>\n";
 			for($i=0;$i<count($tab_matiere);$i++){
-				echo "<th style='".$cell_style[$i%2]."'><div id='d_titre_".$cpt."_".$i."'>".aff_vertical($tab_matiere[$i])."</div></th>\n";
+				echo "<th style='".$cell_style[$i%2]."' id='col_tit_".$cpt."_".$i."'><div id='d_titre_".$cpt."_".$i."'>".aff_vertical($tab_matiere[$i])."</div></th>\n";
 			}
 			echo "</tr>\n";
 		}
@@ -277,7 +297,8 @@ if($msg!=""){
 				$couleur=$cell_style[$j%2];
 			}
 
-			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
+			//echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
+			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j)' onMouseOut='retablit_couleurs($cpt);'>\n";
 			echo "<div id='d_".$cpt."_".$j."'>\n";
 			echo "<input type='checkbox' id='c_".$cpt."_".$j."' name='c_".$cpt."_[".$j."]' value='oui' onchange='colore(\"td_".$cpt."_".$j."\",\"c_".$cpt."_".$j."\")' $checked_ou_pas />\n";
 			echo "</div>\n";

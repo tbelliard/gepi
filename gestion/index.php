@@ -48,7 +48,7 @@ require_once("../lib/header.inc");
 ?>
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <center>
-<table class='menu'>
+<table class='menu' summary='Menu sécurité'>
 <tr>
 	<th colspan='2'><img src='../images/icons/securite.png' alt='Sécurité' class='link'/> - Sécurité</th>
 </tr>
@@ -73,7 +73,7 @@ require_once("../lib/header.inc");
 </tr>
 </table>
 
-<table class='menu'>
+<table class='menu' summary='Menu général'>
 <tr>
 	<th colspan='2'><img src='../images/icons/configure.png' alt='Configuration' class='link'/> - Général</th>
 </tr>
@@ -107,7 +107,7 @@ require_once("../lib/header.inc");
 </tr>
 </table>
 
-<table class='menu'>
+<table class='menu' summary='Menu gestion des BDD'>
 <tr>
 	<th colspan='2'><img src='../images/icons/database.png' alt='Gestion bases de données' class='link'/> - Gestion des bases de données </th>
 </tr>
@@ -143,7 +143,7 @@ require_once("../lib/header.inc");
 
 </table>
 
-<table class='menu'>
+<table class='menu' summary='Menu initialisation'>
 <tr>
 <th colspan='2'><img src='../images/icons/package.png' alt='Initialisation' class='link'/> - Outils d'initialisation</th>
 </tr>

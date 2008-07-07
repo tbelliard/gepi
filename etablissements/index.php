@@ -78,7 +78,7 @@ if ($nombre_lignes == 0) {
 }
 
 ?>
-<table width = '100%' class='boireaus' cellpadding = '5'>
+<table width='100%' class='boireaus' cellpadding='5' summary='Etablissements'>
 <tr>
     <?php
     echo "<th><p class='bold'><a href='index.php?order_by=id'>Identifiant</a></p></th>\n";
