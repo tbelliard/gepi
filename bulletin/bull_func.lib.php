@@ -632,7 +632,7 @@ width:".$largeur1."%;\n";
 			// Tableau contenant le nom de la classe, l'année et la période.
 			echo "<table width='".$largeur2."%' ";
 			if($addressblock_debug=="y"){echo "border='1' ";}
-			echo "cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			echo "cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des nom de classe, année et période'>\n";
 			echo "<tr>\n";
 			echo "<td class='empty'>\n";
 			echo "&nbsp;\n";
@@ -665,7 +665,7 @@ width:".$largeur1."%;\n";
 			// sans bloc adresse responsable
 			//-------------------------------
 
-			echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des données élève et établissement'>\n";
 
 			echo "<tr>\n";
 			echo "<td style=\"width: 30%;\">\n";
@@ -831,7 +831,7 @@ width:".$largeur1."%;\n";
 		if($bull_affiche_absences=='y') {
 			echo "\n<!-- Début de l'affichage du tableau des absences du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
 
-            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences'>\n";
 			echo "<tr>\n";
 			echo "<td style='vertical-align: top;'>\n";
 			echo "<p class='bulletin'>";
@@ -877,7 +877,7 @@ width:".$largeur1."%;\n";
 			echo "\n<!-- Début de l'affichage du tableau de l'avis du conseil/signature du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
 
 			// Tableau de l'avis des conseil de classe
-			echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary=\"Tableau de l'avis du conseil de classe\">\n";
 			echo "<tr>\n";
 		}
 
@@ -955,7 +955,7 @@ width:".$largeur1."%;\n";
 
 		if (($bull_formule_bas != '') and ($bull_affiche_formule == 'y')) {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-			echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+			echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'  summary='Formule de bas de page'>\n";
 			echo "<tr>";
 			echo "<td><p align='center' class='bulletin'>".$bull_formule_bas."</p></td>\n";
 			echo "</tr></table>";

@@ -6,7 +6,7 @@
 //$min_max_moyclas=1;
 
 // On initialise le tableau des notes et appréciations :
-echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
 echo "<thead>\n";
 echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\">
 <span class='bulletin'><font size=\"1\">";

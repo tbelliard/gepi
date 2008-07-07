@@ -4,7 +4,7 @@
  */
 
         // On initialise le tableau des notes et appréciations :
-        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
     echo "<thead>\n";
 
 		if($min_max_moyclas!=1) {
@@ -421,7 +421,7 @@
 			} else {
 				$note = '-';
 			}
-			echo "<span class='bullminclasmax'>$note<br />\n";
+			echo "<span class='bullminclasmax'>$note</span><br />\n";
 
 			// Ligne moyenne classe:
 			if ($current_classe_matiere_moyenne[$j] != '') {
@@ -429,7 +429,7 @@
 			} else {
 				$note = '-';
 			}
-			echo "$note<br />\n";
+			echo "<span class='bullminclasmax'>$note</span><br />\n";
 
 
 			// Ligne Moyenne maximale:
@@ -438,7 +438,7 @@
 			} else {
 				$note = '-';
 			}
-			echo "$note</span>";
+			echo "<span class='bullminclasmax'>$note</span>";
 			echo "</td>\n";
 		}
     }
@@ -555,9 +555,9 @@
 				} else {
 				    //Eric Ajout colonne min classe max une seule cellule
 				    echo "<td style=\"text-align: center;\">";
-				    echo "<span class='bullminclasmax'>$moy_min_classe<br />\n";
-					echo "<span class='bullminclasmax'>$moy_generale_classe<br />\n";
-					echo "<span class='bullminclasmax'>$moy_max_classe<br />\n";
+				    echo "<span class='bullminclasmax'>$moy_min_classe</span><br />\n";
+					echo "<span class='bullminclasmax'>$moy_generale_classe</span><br />\n";
+					echo "<span class='bullminclasmax'>$moy_max_classe</span><br />\n";
 					echo "</td>\n";
 				}
 

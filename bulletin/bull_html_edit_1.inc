@@ -6,7 +6,7 @@
 //$min_max_moyclas=1;
 
 // On initialise le tableau des notes et appréciations :
-echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
 echo "<thead>\n";
 if($min_max_moyclas!=1) {
 	$chaine_rowspan=" rowspan='2'";
@@ -267,6 +267,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		if($min_max_moyclas!=1) {
 			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_min_classe_grp'][$j]."</span></td>\n";
 			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_classe_grp'][$j]."</span></td>\n";
+			//echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>\$tab_bull['moy_classe_grp'][$j]=".$tab_bull['moy_classe_grp'][$j]."</span></td>\n";
 			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['moy_max_classe_grp'][$j]."</span></td>\n";
 		}
 		else {

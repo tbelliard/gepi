@@ -560,25 +560,27 @@ ORDER BY e.nom, e.prenom");
 $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 if (($affiche_rang != 'y') and ($test_coef==0)) {
     if ($affiche_categories) {
-            // On utilise les valeurs spécifiées pour la classe en question
-            $appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
-            "FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-            "WHERE ( " .
-            "jgc.categorie_id = jmcc.categorie_id AND " .
-            "jgc.id_classe='".$id_classe."' AND " .
-            "jgm.id_groupe=jgc.id_groupe AND " .
-            "m.matiere = jgm.id_matiere" .
-            ") " .
-            "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
+		// On utilise les valeurs spécifiées pour la classe en question
+		$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id ".
+		"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+		"WHERE ( " .
+		"jgc.categorie_id = jmcc.categorie_id AND " .
+		"jgc.id_classe='".$id_classe."' AND " .
+		"jgm.id_groupe=jgc.id_groupe AND " .
+		"m.matiere = jgm.id_matiere" .
+		") " .
+		"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
     } else {
-        $appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef
+        $sql="SELECT DISTINCT jgc.id_groupe, jgc.coef
         FROM j_groupes_classes jgc, j_groupes_matieres jgm
         WHERE (
         jgc.id_classe='".$id_classe."' AND
         jgm.id_groupe=jgc.id_groupe
         )
-        ORDER BY jgc.priorite,jgm.id_matiere");
+        ORDER BY jgc.priorite,jgm.id_matiere";
     }
+	//echo "$sql<br />";
+	$appel_liste_groupes = mysql_query($sql);
     $nombre_groupes = mysql_num_rows($appel_liste_groupes);
 }
 
@@ -1361,7 +1363,7 @@ width:".$largeur1."%;\n";
 if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
 echo "'>\n";
 
-		echo "<table";
+		echo "<table summary='Tableau du logo et infos établissement'";
 		if($addressblock_debug=="y"){echo " border='1'";}
 		echo ">\n";
 		echo "<tr>\n";
@@ -1538,7 +1540,7 @@ echo "'>\n";
 
 
 		// Tableau contenant le nom de la classe, l'année et la période.
-		echo "<table width='".$largeur2."%' ";
+		echo "<table width='".$largeur2."%' summary='Tableau des nom de classe, année et période' ";
 		if($addressblock_debug=="y"){echo "border='1' ";}
 		echo "cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 		echo "<tr>\n";
@@ -1572,7 +1574,7 @@ echo "'>\n";
 		// Maintenant, on affiche l'en-tête : Les données de l'élève, et l'adresse du lycée.
 		//-------------------------------
 
-		echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+		echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des données élève et établissement'>\n";
 		//echo "<table width='$largeurtableau' border='1' cellspacing='".getSettingValue("cellspacing")."' cellpadding='".getSettingValue("cellpadding")."'>\n";
 
 		echo "<tr>\n";
@@ -1758,7 +1760,7 @@ echo "'>\n";
             //echo "<table style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 			// style='margin-left:5px; margin-right:5px;'
 			// class='uneligne'
-            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences et retards'>\n";
             echo "<tr>\n<td style=\"vertical-align: top;\"><p class='bulletin'>";
             if ($current_eleve_absences == '0') {
                 echo "<i>Aucune demi-journée d'absence</i>.";
@@ -1802,7 +1804,7 @@ echo "'>\n";
             // Tableau de l'avis des conseil de classe
             //echo "<table $class_bordure style='margin-left:5px; margin-right:5px;' width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
 			// style='margin-left:5px; margin-right:5px;'
-            echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary=\"Tableau de l'avis du conseil de classe\">\n";
             echo "<tr>\n";
         }
         //=============================================
@@ -1871,6 +1873,7 @@ echo "'>\n";
             //
             echo "<td width=\"30%\" valign=\"top\">\n";
             echo "<span class='bulletin'><b>$current_classe_formule&nbsp;</b><br /><i>$current_classe_suivi_par</i></span>";
+            //echo "<p class='bulletin'><b>$current_classe_formule&nbsp;</b><br /><i>$current_classe_suivi_par</i></p>";
             //echo "</td>\n";
             // Fin du tableau
             //echo "</tr>\n</table>\n";
@@ -1893,7 +1896,7 @@ echo "'>\n";
 
         if (($bull_formule_bas != '') and ($bull_affiche_formule == 'y')) {
             // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-            echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'>\n";
+            echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau de la formule de bas de page'>\n";
             echo "<tr>";
             echo "<td><p align='center' class='bulletin'>".$bull_formule_bas."</p></td>\n";
             echo "</tr></table>";

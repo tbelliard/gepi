@@ -213,7 +213,7 @@ if(!isset($tab_id_classe)) {
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
-	echo "<table width='100%'>\n";
+	echo "<table width='100%' summary='Choix des classes'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
 	$cpt = 0;
@@ -321,7 +321,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 
 
 
-	echo "<table class='boireaus'>\n";
+	echo "<table class='boireaus' summary='Choix des périodes'>\n";
 	echo "<tr>\n";
 	echo "<th>Classe</th>\n";
 	for($i=1;$i<=$max_per;$i++) {
@@ -391,7 +391,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	// A remplacer par la suite par un choix:
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
 	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf()' checked /> ";
@@ -484,7 +484,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//=======================================
 	//echo "<div style='float:right; width:40%'>\n";
 	echo "<div id='div_parametres'>\n";
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary='Tableau des paramètres'>\n";
 	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
 	// A FAIRE:
@@ -606,7 +606,7 @@ function ToutDeCocher() {
 
 		echo "<p class='bold'>Classe de ".get_class_from_id($tab_id_classe[$i])."</p>\n";
 
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus' summary='Choix des élèves'>\n";
 		echo "<tr>\n";
 		echo "<th>Elèves</th>\n";
 		for($j=0;$j<count($tab_periode_num);$j++) {
@@ -780,7 +780,7 @@ else {
 	if($mode_bulletin=="html") {
 		echo "<div id='infodiv'>
 <p id='titre_infodiv' style='font-weight:bold; text-align:center; border:1px solid black;'></p>
-<table class='boireaus' width='100%'>
+<table class='boireaus' width='100%' summary='Tableau de progression'>
 <tr>
 <th colspan='3' id='td_info'></th>
 </tr>
@@ -1006,7 +1006,10 @@ else {
 			// si les catégorie son affiché avec moyenne
 			$tab_modele_pdf["hauteur_info_categorie"][$tab_id_classe[$loop_classe]]=5;
 			// cadre des notes et app
-			$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=5; $tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72; $tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200; $tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
+			$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=5;
+			$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72;
+			$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200;
+			$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
 			/*
 			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
 				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
@@ -1616,6 +1619,7 @@ else {
 
 					//$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement);";
 					$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
+					//echo "$sql<br />";
 					$data_etab = mysql_query($sql);
 					if(mysql_num_rows($data_etab)>0) {
 						$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
