@@ -53,7 +53,7 @@ if($indice_classe_select != -1){
 }
 
 echo '
-	<p>
+	
 		<select name="login_edt" onchange=\'document.getElementById("liste_classe_id").submit();\'>
 			<option value="rien">Choix de la classe</option>
 	';
@@ -75,9 +75,9 @@ if(isset($login_edt)){
 
 
 echo '
-		</select></p><p>
+		</select>
 			<input type="hidden" name="type_edt_2" value="classe" />
-			<input type="hidden" name="visioedt" value="classe1" /></p>
+			<input type="hidden" name="visioedt" value="classe1" />
 	';
 
 if($indice_classe_select != -1){
