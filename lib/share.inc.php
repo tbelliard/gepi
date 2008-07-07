@@ -193,7 +193,8 @@ function affiche_utilisateur($login,$id_classe) {
     if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) and ($prenom != '')) {
         $temp = explode("-", $prenom);
         $i = substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= ".-".substr($temp[1], 0, 1);
+        //if (isset($temp[1]) and ($temp[1] != '')) $i .= ".-".substr($temp[1], 0, 1);
+        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".substr($temp[1], 0, 1);
         $i .= ". ";
     }
     switch( $format ) {
