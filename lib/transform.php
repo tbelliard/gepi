@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 09/03/2005
+ * $Id$
  *
 */
 $InlineImages = "png|jpg|gif";
@@ -56,7 +56,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $oldn = $ntokens;
   $tmpline = tokenize($tmpline, '\[.+?\]', $replacements, $ntokens);
   while ($oldn < $ntokens) {
-    $link = ParseAndLink($replacements[$oldn]);    
+    $link = ParseAndLink($replacements[$oldn]);
     $replacements[$oldn] = $link['link'];
     $oldn++;
   }
@@ -140,7 +140,10 @@ for ($index = 0; $index < $numlines; $index++) {
   //} elseif (preg_match('/^%{3,}\s*(.*?)\s*$/', $tmpline, $matches)) {
   //    $html .= SetHTMLOutputMode('', "0", 0) . "<br />\n";
   } else {
-     $html .= SetHTMLOutputMode('p', "0", 0);
+	//$html .= SetHTMLOutputMode('p', "0", 0);
+	//correction Régis, enlever p pour ne plus injecter les balises <p>
+	$html = preg_replace("|(<u>)(.*?)(</u>)|", "<ins>\\2</ins>", $html);
+	$html .= SetHTMLOutputMode('', "0", 0);
   }
   for ($indice = 0; $indice < $ntokens; $indice++)
      $tmpline = str_replace($FieldSeparator.$FieldSeparator.$indice.$FieldSeparator, $replacements[$indice], $tmpline);
