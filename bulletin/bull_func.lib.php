@@ -493,7 +493,7 @@ width:".$largeur1."%;\n";
 			if($addressblock_debug=="y"){echo "border: 1px solid green;\n";}
 			echo "'>\n";
 
-			echo "<table";
+			echo "<table summary='Tableau du logo et infos établissement'";
 			if($addressblock_debug=="y"){echo " border='1'";}
 			echo ">\n";
 			echo "<tr>\n";
@@ -933,8 +933,9 @@ width:".$largeur1."%;\n";
 			// Case de droite : paraphe du proviseur
 			//
 			echo "<td style='vertical-align: top; text-align: left;' width='30%'>\n";
-			echo "<span class='bulletin'><b>".$tab_bull['formule']."</b>:</span><br />";
-			echo "<span class='bulletin'><i>".$tab_bull['suivi_par']."</i></span>";
+			echo "<!-- Case: paraphe du proviseur -->\n";
+			if($tab_bull['formule']!='') {echo "<span class='bulletin'><b>".$tab_bull['formule']."</b>:</span><br />";}
+			if($tab_bull['suivi_par']!='') {echo "<span class='bulletin'><i>".$tab_bull['suivi_par']."</i></span>";}
 		}
 
         // Si une des deux variables 'bull_affiche_avis' ou 'bull_affiche_signature' est à 'y', il faut fermer le tableau
@@ -955,7 +956,7 @@ width:".$largeur1."%;\n";
 
 		if (($bull_formule_bas != '') and ($bull_affiche_formule == 'y')) {
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-			echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."'  summary='Formule de bas de page'>\n";
+			echo "<table width='$largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Formule de bas de page'>\n";
 			echo "<tr>";
 			echo "<td><p align='center' class='bulletin'>".$bull_formule_bas."</p></td>\n";
 			echo "</tr></table>";

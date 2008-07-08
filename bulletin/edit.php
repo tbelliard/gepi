@@ -1372,7 +1372,7 @@ echo "'>\n";
 		$nom_fic_logo_c = "../images/".$nom_fic_logo;
 
 		if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-			echo "<td style=\"text-align: left;\"><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=\"0\" ALT=\"Logo\" /></td>\n";
+			echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
 		}
 		/*
 		else {
@@ -1443,7 +1443,7 @@ echo "'>\n";
 				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 			//Eric Ajout
-			echo "<BR />";
+			echo "<br />";
 			if ($current_eleve_regime == "d/p") {echo "Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo "Externe";}
 			if ($current_eleve_regime == "int.") {echo "Interne";}
@@ -1453,17 +1453,17 @@ echo "'>\n";
 			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
-				echo "<BR />";
+				echo "<br />";
 				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
 				}
 			}
 
 			if ($bull_mention_nom_court == 'no') {
 				//Eric Ajout et supp
-				//echo "<BR />";
+				//echo "<br />";
 				//echo ", $current_classe";
 			} else {
-			    echo "<BR />";
+			    echo "<br />";
 				echo "$current_classe";
 			}
 
@@ -1604,7 +1604,7 @@ echo "'>\n";
 				echo "Née&nbsp;le&nbsp;$current_eleve_naissance";
 			}
 			//Eric Ajout
-			echo "<BR />";
+			echo "<br />";
 			if ($current_eleve_regime == "d/p") {echo "Demi-pensionnaire";}
 			if ($current_eleve_regime == "ext.") {echo "Externe";}
 			if ($current_eleve_regime == "int.") {echo "Interne";}
@@ -1614,17 +1614,17 @@ echo "'>\n";
 			//Eric Ajout
 			if ($bull_mention_doublant == 'yes'){
 				if ($current_eleve_doublant == 'R'){
-				echo "<BR />";
+				echo "<br />";
 				if ($current_eleve_sexe == "M"){echo "Redoublant";}else{echo "Redoublante";}
 				}
 			}
 
 			if ($bull_mention_nom_court == 'no') {
 				//Eric Ajout et supp
-				//echo "<BR />";
+				//echo "<br />";
 				//echo ", $current_classe";
 			} else {
-			    echo "<BR />";
+			    echo "<br />";
 				echo "$current_classe";
 			}
 
@@ -1872,7 +1872,10 @@ echo "'>\n";
             // Case de droite : paraphe du proviseur
             //
             echo "<td width=\"30%\" valign=\"top\">\n";
-            echo "<span class='bulletin'><b>$current_classe_formule&nbsp;</b><br /><i>$current_classe_suivi_par</i></span>";
+			if($current_classe_formule!='') {
+	            echo "<span class='bulletin'><b>$current_classe_formule&nbsp;</b></span><br />\n";
+			}
+			echo "<span class='bulletin'><i>$current_classe_suivi_par</i></span>";
             //echo "<p class='bulletin'><b>$current_classe_formule&nbsp;</b><br /><i>$current_classe_suivi_par</i></p>";
             //echo "</td>\n";
             // Fin du tableau
