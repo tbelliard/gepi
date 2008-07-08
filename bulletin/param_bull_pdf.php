@@ -37,12 +37,12 @@ if ($resultat_session == 'c') {
 	die();
 };
 
-/*
+
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-*/
+
 
 // réglage pour le utf8
 $decode = isset($_POST["decode"]) ? $_POST["decode"] : 'n';
