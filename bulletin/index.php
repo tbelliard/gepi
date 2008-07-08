@@ -346,13 +346,17 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		    echo "<br />Choisir le modèle de bulletin<br/>";
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
 			// sélection des modèle des bulletins.
-			$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+			//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
+			$sql="SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC";
+			//echo "$sql<br />";
+			$requete_modele = mysql_query($sql);
 			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
 				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>";
 			}
 				while($donner_modele = mysql_fetch_array($requete_modele)) {
 					echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
-					echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+					//echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+					echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
 				}
 			echo "</select>\n";
 		} else { // on utilise le modèle définie dans les paramètres de la classe.

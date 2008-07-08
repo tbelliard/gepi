@@ -29,7 +29,7 @@ $titre_page = "Test";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
-echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>";
+echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>\n";
 
 $sql="SELECT * FROM model_bulletin;";
 $res_model=mysql_query($sql);
@@ -50,15 +50,15 @@ if(mysql_num_rows($res_model)>0) {
 	for($i=0;$i<count($tab_model);$i++) {
 		if(!empty($tab_model[$i])) {
 			//echo "<p>\$tab_model[$i]</p>";
-			echo "<p>Enregistrement \$tab_model[$i] de l'ancienne table 'model_bulletin'.</p>";
-			echo "<table border='1'>";
+			echo "<p>Enregistrement \$tab_model[$i] de l'ancienne table 'model_bulletin'.</p>\n";
+			echo "<table border='1'>\n";
 			foreach($tab_model[$i] as $key => $value) {
-				echo "<tr>";
-				echo "<th>$key</th>";
-				echo "<td>$value</td>";
-				echo "</tr>";
+				echo "<tr>\n";
+				echo "<th>$key</th>\n";
+				echo "<td>$value</td>\n";
+				echo "</tr>\n";
 			}
-			echo "</table>";
+			echo "</table>\n";
 		}
 	}
 
@@ -75,7 +75,7 @@ if(mysql_num_rows($res_model)>0) {
 		);";
 	$res_model=mysql_query($sql);
 	if(!$res_model) {
-		echo "<p>ERREUR sur $sql</p>";
+		echo "<p>ERREUR sur $sql</p>\n";
 	}
 	else {
 		for($i=0;$i<count($tab_model);$i++) {
@@ -97,15 +97,15 @@ if(mysql_num_rows($res_model)>0) {
 					}
 					$cpt++;
 				}
-				echo "</p>";
+				echo "</p>\n";
 			}
 		}
 	}
 }
 
-echo "<p><br /></p>";
+echo "<p><br /></p>\n";
 
-echo "<p><b>Test:</b><br />";
+echo "<p><b>Test:</b><br />\n";
 $num=1;
 $sql="SELECT * FROM modele_bulletin WHERE id_model_bulletin='$num';";
 $res=mysql_query($sql);
@@ -113,14 +113,14 @@ $res=mysql_query($sql);
 while($lig=mysql_fetch_object($res)) {
    $nom=$lig->nom;
    $$nom=$lig->valeur;
-   echo "$nom=".$$nom."<br />";
+   echo "$nom=".$$nom."<br />\n";
 }
 
 echo "<p><b>Vérification de la bonne affectation des variables/valeurs:</b><br />
 cadre_adresse=$cadre_adresse<br />
-largeur_matiere=$largeur_matiere</p>";
+largeur_matiere=$largeur_matiere</p>\n";
 
-echo "<p><br /></p>";
+echo "<p><br /></p>\n";
 
 echo "<p><b>NOTES:</b> Pour les modifications à effectuer ensuite:</p>
 <ul>
@@ -152,11 +152,11 @@ foreach(\$_POST as \$key => \$value) {
 </pre>
 </li>
 <!--li></li-->
-</ul>";
+</ul>\n";
 
 //echo "ereg_replace('^reg_','','reg_truc_reg_machin')=".ereg_replace('^reg_','','reg_truc_reg_machin')."<br />";
 
-echo "<p><br /></p>";
+echo "<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
 ?>

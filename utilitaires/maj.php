@@ -150,7 +150,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 ?>
     <fieldset style="padding-top: 8px; padding-bottom: 8px; width: 40%; margin-left: auto; margin-right: auto;">
     <legend style="font-variant: small-caps;">Identifiez-vous</legend>
-    <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="0">
+    <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="0" summary="Tableau d'identification">
     <tr>
     <td style="text-align: right; width: 40%; font-variant: small-caps;"><label for="login">Identifiant</label></td>
     <td style="text-align: center; width: 60%;"><input type="text" name="login" size="16" /></td>
@@ -6389,7 +6389,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 		}
 
 		$result .= "<p>Résultat des conversions:</p>\n";
-		$result .= "<table class='boireaus' border='1'>\n";
+		$result .= "<table class='boireaus' border='1' summary='Compte-rendu'>\n";
 		$result .= "<tr><th>&nbsp;</th><th>Succès</th><th>Echec</th></tr>\n";
 		$result .= "<tr><th>Conversion</th><td>$cpt_correction_ok</td><td>$cpt_correction_err</td></tr>\n";
 		$result .= "<tr><th>Suppression de scories</th><td>$cpt_nettoyage_ok</td><td>$cpt_nettoyage_err</td></tr>\n";
@@ -6455,6 +6455,79 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	}
 
 
+	$test = sql_query1("SHOW TABLES LIKE 'modele_bulletin'");
+	if ($test == -1) {
+		$sql="SELECT * FROM model_bulletin;";
+		$res_model=mysql_query($sql);
+		if(mysql_num_rows($res_model)>0) {
+			$cpt=0;
+			while($tab_model[$cpt]=mysql_fetch_assoc($res_model)) {
+				$id_model[$cpt]=$tab_model[$cpt]['id_model_bulletin'];
+				//echo "\$id_model[$cpt]=\$tab_model[$cpt]['id_model_bulletin']=".$tab_model[$cpt]['id_model_bulletin']."<br />";
+				$cpt++;
+			}
+			/*
+			for($i=0;$i<count($tab_model);$i++) {
+				if(!empty($tab_model[$i])) {
+					//echo "<p>\$tab_model[$i]</p>";
+					echo "<p>Enregistrement \$tab_model[$i] de l'ancienne table 'model_bulletin'.</p>\n";
+					echo "<table border='1'>\n";
+					foreach($tab_model[$i] as $key => $value) {
+						echo "<tr>\n";
+						echo "<th>$key</th>\n";
+						echo "<td>$value</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+				}
+			}
+			*/
+			//$sql="DROP TABLE modele_bulletin;";
+			//$nettoyage=mysql_query($sql);
+
+			$result .= "<br />Création de latable 'modele_bulletin'<br />";
+			$sql="CREATE TABLE IF NOT EXISTS modele_bulletin (
+				id_model_bulletin INT( 11 ) NOT NULL ,
+				nom VARCHAR( 255 ) NOT NULL ,
+				valeur VARCHAR( 255 ) NOT NULL
+				);";
+			$res_model=mysql_query($sql);
+			if(!$res_model) {
+				$result .= "<font color=\"red\">Erreur</font><br />";
+				//echo "<p>ERREUR sur $sql</p>\n";
+			}
+			else {
+				for($i=0;$i<count($tab_model);$i++) {
+					$cpt=0;
+					//if(isset($tab_model[$i])) {
+					if(!empty($tab_model[$i])) {
+						//echo "<p>\$tab_model[$i]: ";
+						$result .= "Enregistrements d'après \$tab_model[$i] dans la nouvelle table 'modele_bulletin': ";
+						foreach($tab_model[$i] as $key => $value) {
+							if($cpt>0) {$result .= ", ";}
+
+							$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$id_model[$i]."', nom='".$key."', valeur='".$value."';";
+							$insert=mysql_query($sql);
+							if($insert) {
+								$result .= "<span style='color:green;'>$key:$value</span> ";
+							}
+							else {
+								$result .= "<span style='color:red;'>$key:$value</span> ";
+							}
+							$cpt++;
+						}
+						$result .= "<br />\n";
+					}
+				}
+			}
+		}
+		else {
+			$result .= "<br /><span style='color:red;'>Erreur:</span> L'ancienne table 'model_bulletin' semble absente???<br />";
+		}
+	}
+	else {
+		$result .= "<br />La table 'modele_bulletin' existe déjà.<br />";
+	}
 
 	//==========================================================
 
@@ -6555,7 +6628,7 @@ if ($pb_maj_bd != 'yes') {
 }
 echo "<hr />";
 if (isset ($result)) {
-    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
+    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
 
 	if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM responsables";

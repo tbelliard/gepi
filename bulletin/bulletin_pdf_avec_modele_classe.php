@@ -42,11 +42,12 @@ if ($resultat_session == 'c') {
 	die();
 };
 
-
+/*
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+*/
 //================================
 
 //================================
@@ -65,18 +66,6 @@ La génération du PDF va échouer parce qu'on affiche ces informations de debuggag
 mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
 </p>\n";
 }
-
-
-
-//============================
-// AJOUT: boireaus 20080604
-// Conditionnement de l'affichage de la moyenne générale à la présence d'au moins une note réelle
-// (pour éviter une moyenne de zéro pour un élève absent à tous les devoirs)
-// Si le dispositif posait problème, pour le désactiver, passer à 'y' la variable ci-dessous:
-$desactivation_modif_20080604="n";
-//============================
-
-
 //================================
 // Inclusion des librairies spécifiques pour la génération du pdf
 
@@ -91,6 +80,11 @@ require_once("../class_php/gepi_pdf.class.php");
 require_once("bulletin_fonctions.php");
 // Ensemble des données communes
 require_once("bulletin_donnees.php");
+
+
+// Tableau de la liste des champs des modèles de bulletins:
+require_once("bulletin_pdf.inc.php");
+
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','5');
@@ -144,6 +138,8 @@ $gepiSchoolPays=getSettingValue("gepiSchoolPays");
 
 $option_modele_bulletin = getSettingValue("option_modele_bulletin");
 
+//echo "\$model_bulletin=$model_bulletin<br />";
+
 if(!empty($model_bulletin)) {
 
 	//on compte le nombre de classes sélectionnées
@@ -164,25 +160,37 @@ if(!empty($model_bulletin)) {
 		}
 		$classe_id = $la_classe;
 
+
+		// Initialisation à blanc des champs pour éviter des noms de paramètres absents:
+		for($loop_bpdf=0;$loop_bpdf<count($champ_bull_pdf);$loop_bpdf++) {
+			//$tab_modele_pdf["$champ_bull_pdf[$loop_bpdf]"][$classe_id]='';
+			$tab_modele_pdf["$champ_bull_pdf[$loop_bpdf]"][$classe_id]=$val_defaut_champ_bull_pdf["$champ_bull_pdf[$loop_bpdf]"];
+		}
+
 		// la requete à modifier en fonction de $option_modele_bulletin
 		switch ($option_modele_bulletin) {
 			case 1 : //uniquement avec modèle classe
-				$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
+				//$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
+				$sql='SELECT * FROM '.$prefix_base.'modele_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
 				break;
 			case 2 : //modèle par classe et choix possible
 				if ($type_bulletin == -1) {
 					// cas modèle par classe
-					$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
+					//$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
+					$sql='SELECT * FROM '.$prefix_base.'modele_bulletin WHERE id_model_bulletin="'.$model_bulletin.'"';
 				} else {
 					//ici on recopie le même modèle pour chaque classe
-					$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
+					//$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
+					$sql='SELECT * FROM '.$prefix_base.'modele_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
 				}
 				break;
 			case 3 : //choix d'un modèle
 				//ici on recopie le même modèle pour chaque classe
-				$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
+				//$sql='SELECT * FROM '.$prefix_base.'model_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
+				$sql='SELECT * FROM '.$prefix_base.'modele_bulletin WHERE id_model_bulletin="'.$type_bulletin.'"';
 				break;
 		}
+		//echo "$sql<br />";
 		$requete_model = mysql_query($sql);
 
 
@@ -195,6 +203,61 @@ if(!empty($model_bulletin)) {
 		* du paramètre correspondant au modèle de bulletin de la classe.
 		************************************************/
 
+		//echo "$sql<br />";
+		//echo "\$classe_id=$classe_id<br />\n";
+
+		$cpt=0;
+		//unset($tab_modele_nom_champ);
+		//unset($tab_modele_valeur);
+		while($lig_model=mysql_fetch_object($requete_model)) {
+			/*
+			$nom_champ=$lig_model->nom;
+			echo "\$nom_champ=$nom_champ<br />\n";
+			echo "Valeur=$lig_model->valeur<br />\n";
+			//$$nom_champ[$classe_id]=$lig_model->valeur;
+			//echo "\$$nom_champ[$classe_id]=".$$nom_champ[$classe_id]."<br />";
+			$tab_modele["$nom_champ"][$classe_id]=$lig_model->valeur;
+			echo "\$tab_modele[\"$nom_champ\"][$classe_id]=".$tab_modele["$nom_champ"][$classe_id]."<br />";
+			$tab_modele["$nom_champ"]['nom_champ']=$nom_champ;
+
+			$tab[$cpt]['nom_champ']=$lig_model->nom;
+			$tab[$cpt]['valeur']=$lig_model->valeur;
+
+			$tab_modele_nom_champ[$cpt]=$lig_model->nom;
+			$tab_modele_valeur[$cpt][$classe_id]=$lig_model->valeur;
+			$cpt++;
+			*/
+			$tab_modele_pdf["$lig_model->nom"][$classe_id]=$lig_model->valeur;
+			//echo "\$tab_modele_pdf[\"$lig_model->nom\"][$classe_id]=$lig_model->valeur<br />";
+		}
+
+		$titre_entete_appreciation = unhtmlentities($tab_modele_pdf['titre_entete_appreciation'][$classe_id]);
+
+		if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') {
+			$tab_modele_pdf["X_note_app"][$classe_id]=$tab_modele_pdf["X_note_app"][$classe_id]+5;
+			$tab_modele_pdf["Y_note_app"][$classe_id]=$tab_modele_pdf["Y_note_app"][$classe_id];
+			$tab_modele_pdf["longeur_note_app"][$classe_id]=$tab_modele_pdf["longeur_note_app"][$classe_id]-5;
+			$tab_modele_pdf["hauteur_note_app"][$classe_id]=$tab_modele_pdf["hauteur_note_app"][$classe_id];
+		}
+
+
+		/*
+		foreach($tab_modele as $tableau) {
+			$$tableau=$tab_modele["$tableau"];
+			echo "\$\$tableau=\$tab_modele[\"$tableau\"] soit \$$tableau=\$tab_modele[\"$tableau\"] et \$tab_modele[\"$tableau\"][$classe_id]=".$tab_modele["$tableau"][$classe_id]."<br />";
+
+			$nom_champ="";
+		}
+
+		for($loop=0;$loop<$cpt;$loop++) {
+			//$nom_champ=$tab[$cpt]['nom_champ'];
+			$nom_champ=$tab_modele_nom_champ[$loop];
+			$$nom_champ=$tab_modele_valeur[$loop];
+		}
+		*/
+
+
+		/*
 		while($donner_model = mysql_fetch_array($requete_model)) {
 			$affiche_filigrame[$classe_id]=$donner_model['affiche_filigrame'];
 			$texte_filigrame[$classe_id]=$donner_model['texte_filigrame'];
@@ -351,11 +414,164 @@ if(!empty($model_bulletin)) {
 			$affiche_ine[$classe_id] = $donner_model['affiche_ine']; // affiche l'INE de l'élève
 
 		} //while($donner_model = mysql_fetch_array($requete_model)
+		*/
 	} // for ($z=0;$z<$nb_classes_selectionnees;$z++)
 
 } else {
 	$classe_id=0;
 
+	//==============================
+	// A FAIRE: boireaus 20080501
+	// CONVERTIR LES VALEURS AVEC:
+	// $tab_modele_pdf["$lig_model->nom"][$classe_id]=$lig_model->valeur;
+	//==============================
+
+	// Initialisation à blanc des champs pour éviter des noms de paramètres absents:
+	for($loop_bpdf=0;$loop_bpdf<count($champ_bull_pdf);$loop_bpdf++) {
+		//$tab_modele_pdf["$champ_bull_pdf[$loop_bpdf]"][$classe_id]='';
+		$tab_modele_pdf["$champ_bull_pdf[$loop_bpdf]"][$classe_id]=$val_defaut_champ_bull_pdf["$champ_bull_pdf[$loop_bpdf]"];
+	}
+
+	// information d'activation des différentes parties du bulletin
+	$tab_modele_pdf["affiche_filigrame"][$classe_id]='1'; // affiche un filigramme
+	$tab_modele_pdf["texte_filigrame"][$classe_id]='DUPLICATA INTERNET'; // texte du filigrame
+	$tab_modele_pdf["affiche_logo_etab"][$classe_id]='1';
+	$tab_modele_pdf["nom_etab_gras"][$classe_id]='0';
+	$tab_modele_pdf["entente_mel"][$classe_id]='1'; // afficher l'adresse mel dans l'entête
+	$tab_modele_pdf["entente_tel"][$classe_id]='1'; // afficher le numéro de téléphone dans l'entête
+	$tab_modele_pdf["entente_fax"][$classe_id]='1'; // afficher le numéro de fax dans l'entête
+	$tab_modele_pdf["L_max_logo"][$classe_id]=75; $tab_modele_pdf["H_max_logo"][$classe_id]=75; //dimension du logo
+	$tab_modele_pdf["active_bloc_datation"][$classe_id] = '1'; // fait - afficher les informations de datation du bulletin
+	$tab_modele_pdf["taille_texte_date_edition"][$classe_id] = '8'; // définit la taille de la date d'édition du bulletin
+	$tab_modele_pdf["active_bloc_eleve"][$classe_id] = '1'; // fait - afficher les informations sur l'élève
+	$tab_modele_pdf["active_bloc_adresse_parent"][$classe_id] = '1'; // fait - afficher l'adresse des parents
+	$tab_modele_pdf["active_bloc_absence"][$classe_id] = '1'; // fait - afficher les absences de l'élève
+	$tab_modele_pdf["active_bloc_note_appreciation"][$classe_id] = '1'; // fait - afficher les notes et appréciations
+	$tab_modele_pdf["active_bloc_avis_conseil"][$classe_id] = '1'; // fait - afficher les avis du conseil de classe
+	$tab_modele_pdf["active_bloc_chef"][$classe_id] = '1'; // fait - afficher la signature du chef
+	$tab_modele_pdf["active_photo"][$classe_id] = '0'; // fait - afficher la photo de l'élève
+	$tab_modele_pdf["active_coef_moyenne"][$classe_id] = '1'; // fait - afficher le coéficient des moyenne par matière
+	$active_coef_sousmoyene = '1'; // fait - afficher le coéficient des moyenne par matière
+	$tab_modele_pdf["active_nombre_note"][$classe_id] = '1'; // fait - afficher le nombre de note par matière sous la moyenne de l'élève
+	$tab_modele_pdf["active_nombre_note_case"][$classe_id] = '1'; // fait - afficher le nombre de note par matière
+	$tab_modele_pdf["active_moyenne"][$classe_id] = '1'; // fait - afficher les moyennes
+	$tab_modele_pdf["active_moyenne_eleve"][$classe_id] = '1'; // fait - afficher la moyenne de l'élève
+	$tab_modele_pdf["active_moyenne_classe"][$classe_id] = '1'; // fait - afficher les moyennes de la classe
+	$tab_modele_pdf["active_moyenne_min"][$classe_id] = '1'; // fait - afficher les moyennes minimum
+	$tab_modele_pdf["active_moyenne_max"][$classe_id] = '1'; // fait - afficher les moyennes maximum
+	$tab_modele_pdf["active_regroupement_cote"][$classe_id] = '1'; // fait - afficher le nom des regroupement sur le coté
+	$tab_modele_pdf["active_entete_regroupement"][$classe_id] = '1'; // fait - afficher les entête des regroupement
+	$tab_modele_pdf["active_moyenne_regroupement"][$classe_id] = '1'; // fait - afficher les moyennes des regroupement
+	$tab_modele_pdf["active_moyenne_general"][$classe_id] = '1'; // fait - afficher la moyenne général sur le bulletin
+	$tab_modele_pdf["active_rang"][$classe_id] = '1'; // fait - afficher le rang de l'élève
+	$tab_modele_pdf["active_graphique_niveau"][$classe_id] = '1'; // fait - afficher le graphique des niveaux
+	$tab_modele_pdf["active_appreciation"][$classe_id] = '1'; // fait - afficher les appréciations des professeurs
+
+	$tab_modele_pdf["affiche_doublement"][$classe_id] = '1'; // affiche si l'élève à doubler
+	$tab_modele_pdf["affiche_date_naissance"][$classe_id] = '1'; // affiche la date de naissance de l'élève
+	$tab_modele_pdf["affiche_dp"][$classe_id] = '1'; // affiche l'état de demi pension ou extern
+	$tab_modele_pdf["affiche_nom_court"][$classe_id] = '1'; // affiche le nom court de la classe
+	$tab_modele_pdf["affiche_effectif_classe"][$classe_id] = '1'; // affiche l'effectif de la classe
+	$tab_modele_pdf["affiche_numero_impression"][$classe_id] = '1'; // affiche le numéro d'impression des bulletins
+	$tab_modele_pdf["affiche_etab_origine"][$classe_id] = '0'; // affiche l'établissement d'origine
+
+	$tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]='0'; // afficher les information moyenne classe/min/max sous la moyenne général de l'élève
+	$active_coef_sousmoyene = '1'; //afficher le coeficent en dessous de la moyenne de l'élève
+
+	$tab_modele_pdf["entete_model_bulletin"][$classe_id] = '1'; //choix du type d'entete des moyennes
+	$tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] = '1'; // ordre des entêtes tableau du bulletin
+
+	// information paramétrage
+	$tab_modele_pdf["caractere_utilse"][$classe_id] = 'Arial';
+	// cadre identitée parents
+	$tab_modele_pdf["X_parent"][$classe_id]=110; $tab_modele_pdf["Y_parent"][$classe_id]=40;
+	$tab_modele_pdf["imprime_pour"][$classe_id] = 1;
+	// cadre identitée eleve
+	$tab_modele_pdf["X_eleve"][$classe_id]=5; $tab_modele_pdf["Y_eleve"][$classe_id]=40;
+	$tab_modele_pdf["cadre_eleve"][$classe_id]=1;
+	// cadre de datation du bulletin
+	$tab_modele_pdf["X_datation_bul"][$classe_id]=110; $tab_modele_pdf["Y_datation_bul"][$classe_id]=5;
+	$tab_modele_pdf["cadre_datation_bul"][$classe_id]=1;
+	// si les catégorie son affiché avec moyenne
+	$tab_modele_pdf["hauteur_info_categorie"][$classe_id]=5;
+	// cadre des notes et app
+	$tab_modele_pdf["X_note_app"][$classe_id]=5; $tab_modele_pdf["Y_note_app"][$classe_id]=72; $tab_modele_pdf["longeur_note_app"][$classe_id]=200; $tab_modele_pdf["hauteur_note_app"][$classe_id]=175;
+	if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') { $tab_modele_pdf["X_note_app"][$classe_id]=$tab_modele_pdf["X_note_app"][$classe_id]+5; $tab_modele_pdf["Y_note_app"][$classe_id]=$tab_modele_pdf["Y_note_app"][$classe_id]; $tab_modele_pdf["longeur_note_app"][$classe_id]=$tab_modele_pdf["longeur_note_app"][$classe_id]-5; $tab_modele_pdf["hauteur_note_app"][$classe_id]=$tab_modele_pdf["hauteur_note_app"][$classe_id]; }
+	//coef des matiere
+	$tab_modele_pdf["largeur_coef_moyenne"][$classe_id] = 8;
+	//nombre de note par matière
+	$tab_modele_pdf["largeur_nombre_note"][$classe_id] = 8;
+	//champ des moyennes
+	$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id] = 10;
+	//graphique de niveau
+	$tab_modele_pdf["largeur_niveau"][$classe_id] = 18;
+	//rang de l'élève
+	$tab_modele_pdf["largeur_rang"][$classe_id] = 8;
+	//autres infos
+	$tab_modele_pdf["active_reperage_eleve"][$classe_id] = '1';
+	$tab_modele_pdf["couleur_reperage_eleve1"][$classe_id] = '255';
+	$tab_modele_pdf["couleur_reperage_eleve2"][$classe_id] = '255';
+	$tab_modele_pdf["couleur_reperage_eleve3"][$classe_id] = '207';
+	$tab_modele_pdf["couleur_categorie_cote"][$classe_id] = '1';
+	$tab_modele_pdf["couleur_categorie_cote1"][$classe_id]='239';
+	$tab_modele_pdf["couleur_categorie_cote2"][$classe_id]='239';
+	$tab_modele_pdf["couleur_categorie_cote3"][$classe_id]='239';
+	$tab_modele_pdf["couleur_categorie_entete"][$classe_id] = '1';
+	$tab_modele_pdf["couleur_categorie_entete1"][$classe_id]='239';
+	$tab_modele_pdf["couleur_categorie_entete2"][$classe_id]='239';
+	$tab_modele_pdf["couleur_categorie_entete3"][$classe_id]='239';
+	$tab_modele_pdf["couleur_moy_general"][$classe_id] = '1';
+	$tab_modele_pdf["couleur_moy_general1"][$classe_id]='239';
+	$tab_modele_pdf["couleur_moy_general2"][$classe_id]='239';
+	$tab_modele_pdf["couleur_moy_general3"][$classe_id]='239';
+	$tab_modele_pdf["titre_entete_matiere"][$classe_id]='Matière';
+	$active_coef_sousmoyene = '1'; $tab_modele_pdf["titre_entete_coef"][$classe_id]='coef.';
+	$tab_modele_pdf["titre_entete_nbnote"][$classe_id]='nb. n.';
+	$tab_modele_pdf["titre_entete_rang"][$classe_id]='rang';
+	$titre_entete_appreciation='Appréciation/Conseils';
+	// cadre absence
+	$tab_modele_pdf["X_absence"][$classe_id]=5; $tab_modele_pdf["Y_absence"][$classe_id]=246.3;
+	// entete du bas contient les moyennes gérnéral
+	$tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id] = 5;
+	// cadre des Avis du conseil de classe
+	$tab_modele_pdf["X_avis_cons"][$classe_id]=5; $tab_modele_pdf["Y_avis_cons"][$classe_id]=250; $tab_modele_pdf["longeur_avis_cons"][$classe_id]=130; $tab_modele_pdf["hauteur_avis_cons"][$classe_id]=37;
+	$tab_modele_pdf["cadre_avis_cons"][$classe_id]=1;
+	// cadre signature du chef
+	$tab_modele_pdf["X_sign_chef"][$classe_id]=138; $tab_modele_pdf["Y_sign_chef"][$classe_id]=250; $tab_modele_pdf["longeur_sign_chef"][$classe_id]=67; $tab_modele_pdf["hauteur_sign_chef"][$classe_id]=37;
+	$tab_modele_pdf["cadre_sign_chef"][$classe_id]=0;
+	//les moyennes
+	$tab_modele_pdf["arrondie_choix"][$classe_id]='0.01'; //arrondie de la moyenne
+	$tab_modele_pdf["nb_chiffre_virgule"][$classe_id]='1'; //nombre de chiffre après la virgule
+	$tab_modele_pdf["chiffre_avec_zero"][$classe_id]='1'; // si une moyenne se termine par ,00 alors on supprimer les zero
+
+	$tab_modele_pdf["autorise_sous_matiere"][$classe_id] = '1'; //autorise l'affichage des sous matière
+	$tab_modele_pdf["affichage_haut_responsable"][$classe_id] = '1'; //affiche le nom du haut responsable de la classe
+
+	$tab_modele_pdf["largeur_matiere"][$classe_id] = '40'; // largeur de la colonne matiere
+
+	$tab_modele_pdf["taille_texte_matiere"][$classe_id] = '10'; //taille du texte des matières
+
+	$tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id] = 'Avis du Conseil de classe:'; // titre du bloc avis du conseil de classe
+	$tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] = '10'; // taille du titre du bloc avis du conseil
+	$tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] = '10'; // taille du texte prof principal du bloc avis conseil de classe
+	$tab_modele_pdf["affiche_fonction_chef"][$classe_id] = '1'; // affiche la fonction du chef
+	$tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] = '10'; // taille du texte de la fonction du chef
+	$tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] = '10'; // taille du texte du nom du chef
+
+	$tab_modele_pdf["cadre_adresse"][$classe_id] = ''; // cadre sur l'adresse
+
+	$tab_modele_pdf["centrage_logo"][$classe_id] = '0'; // centrer le logo de l'établissement
+	$tab_modele_pdf["Y_centre_logo"][$classe_id] = '18'; // centre du logo sur la page
+	$tab_modele_pdf["ajout_cadre_blanc_photo"][$classe_id] = '0'; // ajouter un cadre blanc pour la photo de l'élève.
+
+	$tab_modele_pdf["affiche_moyenne_mini_general"][$classe_id] = '1'; // permet l'affichage de la moyenne général mini
+	$tab_modele_pdf["affiche_moyenne_maxi_general"][$classe_id] = '1'; // permet l'affichage de la moyenne général maxi
+
+	$tab_modele_pdf["affiche_date_edition"][$classe_id] = '1'; // affiche la date d'édition
+	$tab_modele_pdf["affiche_ine"][$classe_id] = '0'; // affiche l'INE de l'élève
+
+
+	/*
 	// information d'activation des différentes parties du bulletin
 	$affiche_filigrame[$classe_id]='1'; // affiche un filigramme
 	$texte_filigrame[$classe_id]='DUPLICATA INTERNET'; // texte du filigrame
@@ -493,7 +709,8 @@ if(!empty($model_bulletin)) {
 
 	$affiche_date_edition[$classe_id] = '1'; // affiche la date d'édition
 	$affiche_ine[$classe_id] = '0'; // affiche l'INE de l'élève
-	}
+	*/
+}
 
 
 // information à retenir pour la construction des bulletins
@@ -677,14 +894,16 @@ if(!empty($model_bulletin)) {
 	for($ii=0;$ii<count($tab_id_classe);$ii++) {
 		$id_classe=$tab_id_classe[$ii];
 
-		if($active_moyenne_regroupement[$id_classe]=='1') {
+		//if($active_moyenne_regroupement[$id_classe]=='1') {
+		if($tab_modele_pdf["active_moyenne_regroupement"][$id_classe]=='1') {
 			$affiche_categories=true;
 		}
 		else{
 			$affiche_categories=false;
 		}
 
-		if($active_graphique_niveau[$id_classe]=='1') {
+		//if($active_graphique_niveau[$id_classe]=='1') {
+		if($tab_modele_pdf["active_graphique_niveau"][$id_classe]=='1') {
 			$affiche_graph="y";
 		}
 		else{
@@ -744,7 +963,7 @@ if(!empty($model_bulletin)) {
 		}
 
 		$INE_eleve[$cpt_i] = $donner['no_gep'];
-
+		//echo "\$INE_eleve[$cpt_i]=$INE_eleve[$cpt_i]<br />";
 
 		$classe_tableau_id[$cpt_i] = $donner['id'];
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
@@ -883,8 +1102,11 @@ if(!empty($model_bulletin)) {
 		$nb_bulletin_parent[$ident_eleve_sel1] = 1;
 		if ( isset($adresse1_parents[$ident_eleve_sel1][1]) )
 		{
-			if ( $imprime_pour[$classe_id] === '1' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
-			if ( $imprime_pour[$classe_id] === '2' ) {
+
+			//if ( $imprime_pour[$classe_id] === '1' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
+			if ( $tab_modele_pdf["imprime_pour"][$classe_id] === '1' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
+			//if ( $imprime_pour[$classe_id] === '2' ) {
+			if ( $tab_modele_pdf["imprime_pour"][$classe_id] === '2' ) {
 				/*
 				if ( ($adresse1_parents[$ident_eleve_sel1][0] != $adresse1_parents[$ident_eleve_sel1][1]) and
 					($adresse1_parents[$ident_eleve_sel1][1] != '') ) {
@@ -917,8 +1139,11 @@ if(!empty($model_bulletin)) {
 				// Si le nom du deuxième parent n'est pas rempli, on n'imprime que pour le 1er responsable
 				if ( $nom_parents[$ident_eleve_sel1][0] === '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
 			}
-			if ( $imprime_pour[$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] != '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 2; }
-			if ( $imprime_pour[$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] === '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
+
+			//if ( $imprime_pour[$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] != '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 2; }
+			if ( $tab_modele_pdf["imprime_pour"][$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] != '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 2; }
+			//if ( $imprime_pour[$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] === '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
+			if ( $tab_modele_pdf["imprime_pour"][$classe_id] === '3' and $nom_parents[$ident_eleve_sel1][1] === '' ) { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
 		} else { $nb_bulletin_parent[$ident_eleve_sel1] = 1; }
 
 
@@ -941,7 +1166,9 @@ if(!empty($model_bulletin)) {
 		//on recherche les donne élève par élève
 
 	// Avant toute chose, on s'assure que les rangs sont recalculés si nécessaire
-	if ($active_rang[$classe_id] === '1') {
+
+	//if ($active_rang[$classe_id] === '1') {
+	if ($tab_modele_pdf["active_rang"][$classe_id] === '1') {
 		$tab_classes = array_unique($classe_tableau_id);
 		$affiche_categories = false;
 		$test_coef = "1";
@@ -991,7 +1218,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 		$matiere[$ident_eleve[$cpt_info_eleve]][$id_periode]=array();
 		//=====================
 
-		if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+		//if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+		if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 			// Requête pour le classement par catégories de matières
 			//$requete_toute_matier = mysql_query("SELECT " .
 			$sql="SELECT " .
@@ -1132,8 +1360,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min'] = $moyenne_general_groupe[$groupe_matiere][1]; // moyenne minimal du groupe
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max'] = $moyenne_general_groupe[$groupe_matiere][2]; //moyenne maximal du groupe
 
+
 			//calcule du nombre de note dans une période donner pour un groupe
-			if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
+			//if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
+			if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1' or $tab_modele_pdf["active_nombre_note_case"][$classe_id] === '1') {
 			// Nombre total de devoirs
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = '';
 			// Nombre de devoir de l'élève
@@ -1164,10 +1394,6 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$donner_aid["note"] = '-';
 				}
 			}
-			//=========================
-			// AJOUT: boireaus 20080604
-			if($donner_aid['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
-			//=========================
 			// par défaut :
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
 
@@ -1207,8 +1433,10 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				$total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 			}
 
+
 			//calcul des moyennes par catégorie
-			if($active_entete_regroupement[$classe_id]==='1') {
+			//if($active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
 				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
 					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '-';
@@ -1239,7 +1467,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 
 			// gestion des graphique de niveau par matière
-			if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			//if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			if ($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
 								$data_grap[$id_periode][$id_groupe_aff][0] = sql_query1("SELECT COUNT( note ) as quartile1 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=15)");
 								$data_grap[$id_periode][$id_groupe_aff][1] = sql_query1("SELECT COUNT( note ) as quartile2 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=12 AND note<15)");
 								$data_grap[$id_periode][$id_groupe_aff][2] = sql_query1("SELECT COUNT( note ) as quartile3 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=10 AND note<12)");
@@ -1265,7 +1494,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 
 			//============================
 			// Modif: boireaus 20070828
-			if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			//if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'] = $donner_toute_matier['nom_categorie']; // nom de la catégorie de la matière
 			}
 			//============================
@@ -1285,14 +1515,15 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max'] = $moyenne_general_groupe[$groupe_matiere][2]; //moyenne maximale du groupe
 
 			//calcul du nombre de notes dans une période donnée pour un groupe
-			if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
-			// Nombre total de devoirs
-			$sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE (cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."');";
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = mysql_num_rows(mysql_query($sql));
-			//$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere']=mysql_result(mysql_query('SELECT count(*) FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (nd.login = "'.$login_eleve_select.'" and nd.id_devoir = d.id and d.display_parents="1" and cn.id_groupe = "'.$id_groupe_aff.'" and d.id_racine = cn.id_cahier_notes AND cn.periode="1")'),0);
-			// Nombre de devoirs de l'élève
-			$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login='".$login_eleve_select."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."' AND cnd.statut='');";
-			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = mysql_num_rows(mysql_query($sql));
+			//if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
+			if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1' or $tab_modele_pdf["active_nombre_note_case"][$classe_id] === '1') {
+				// Nombre total de devoirs
+				$sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE (cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."');";
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = mysql_num_rows(mysql_query($sql));
+				//$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere']=mysql_result(mysql_query('SELECT count(*) FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (nd.login = "'.$login_eleve_select.'" and nd.id_devoir = d.id and d.display_parents="1" and cn.id_groupe = "'.$id_groupe_aff.'" and d.id_racine = cn.id_cahier_notes AND cn.periode="1")'),0);
+				// Nombre de devoirs de l'élève
+				$sql="SELECT cnd.note FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login='".$login_eleve_select."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$id_groupe_aff."' AND ccn.periode='".$id_periode."' AND cnd.statut='');";
+				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_notes_matiere'] = mysql_num_rows(mysql_query($sql));
 			}
 
 			// autre requete pour rechercher les professeurs responsables de la matière sélectionnée
@@ -1322,10 +1553,6 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				$note_rang = array("note" => "-", "rang" => "-");
 			}
 
-			//=========================
-			// AJOUT: boireaus 20080604
-			if($note_rang['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
-			//=========================
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $note_rang['note']; // moyenne de l'élève pour une matière donnée dans une périodes données
 			//echo "\$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']=".$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']."<br />";
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = $note_rang['rang']; // rang de l'élève pour une matière donnée dans une périodes données
@@ -1407,36 +1634,37 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			}
 			//$total_coef = $total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 
-			//calcule des moyennes par catégorie
-			if($active_entete_regroupement[$classe_id]==='1') {
-			$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
-				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0';
-			}
+			//calcul des moyennes par catégorie
+			//if($active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
+				$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '0';
+				}
 
-			//echo "\$coef_matiere[$id_classe][$groupe_matiere]['coef']=".$coef_matiere[$id_classe][$groupe_matiere]['coef']."<br />";
+				//echo "\$coef_matiere[$id_classe][$groupe_matiere]['coef']=".$coef_matiere[$id_classe][$groupe_matiere]['coef']."<br />";
 
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
 
-			//			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
+				//			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_eleve]+1;
 
-			if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
-			if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			}
-			if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) {
-				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0';
-				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0';
-				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0';
-			}
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']."<br />";
+				if(empty($matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'])) { $matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego'] = 0; }
+				if ($matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] != '-' ) {
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['coef_tt_catego']+$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				}
+				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']) ) {
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min'] = '0';
+					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max'] = '0';
+				}
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_classe']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_classe']."<br />";
 
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']."<br />";
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_min']."<br />";
 
-			$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
-			//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']."<br />";
+				$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max']*$coef_matiere[$id_classe][$groupe_matiere]['coef'];
+				//echo "\$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']=".$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_max']."<br />";
 
 //			 $matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_classe]=$matiere[$login_eleve_select][$id_periode][$categorie_passage][nb_moy_classe]+1;
 			}
@@ -1445,7 +1673,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$moy_general_eleve = $moy_general_eleve+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve']*$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 
 			// gestion des graphique de niveau par matière
-			if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			//if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			if ($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
 								$data_grap[$id_periode][$id_groupe_aff][0] = sql_query1("SELECT COUNT( note ) as quartile1 FROM matieres_notes WHERE (periode='".$id_periode."' AND id_groupe='".$id_groupe_aff."' AND statut ='' AND note>=15)");
 								$data_grap[$id_periode][$id_groupe_aff][1] = sql_query1("SELECT COUNT( note ) as quartile2 FROM matieres_notes WHERE (periode='".$id_periode."' AND id_groupe='".$id_groupe_aff."' AND statut ='' AND note>=12 AND note<15)");
 								$data_grap[$id_periode][$id_groupe_aff][2] = sql_query1("SELECT COUNT( note ) as quartile3 FROM matieres_notes WHERE (periode='".$id_periode."' AND id_groupe='".$id_groupe_aff."' AND statut ='' AND note>=10 AND note<12)");
@@ -1461,6 +1690,7 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff]['nb']=$nb_ligne_cn;
 			while ($n < $nb_ligne_cn) {
 				$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['titre']=mysql_result($test_cn, $n, 'c.nom_court');
+
 				//$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']=mysql_result($test_cn, $n, 'cnc.note');
 				//=========================
 				// MODIF: boireaus 20080609
@@ -1472,12 +1702,13 @@ while($cpt_info_eleve<=$nb_eleve_total)
 					$sous_matiere[$login_eleve_select][$id_periode][$id_groupe_aff][$n]['moyenne']='-';
 				}
 				//=========================
+
 				$n++;
 			}
 
 			$nombre_de_matiere = $nombre_de_matiere + 1;
 
-		$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
+			$cpt_info_eleve_matiere=$cpt_info_eleve_matiere+1;
 		}
 		// FIN information ENSEIGNEMENT sur le bulletin
 
@@ -1521,8 +1752,9 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_min'] = $moyenne_general_groupe[$groupe_matiere][1]; // moyenne minimal du groupe
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_max'] = $moyenne_general_groupe[$groupe_matiere][2]; //moyenne maximal du groupe
 
-			//calcule du nombre de note dans une période donner pour un groupe
-			if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
+			//calcul du nombre de note dans une période donner pour un groupe
+			//if($active_nombre_note[$classe_id]==='1' or $active_nombre_note_case[$classe_id] === '1') {
+			if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1' or $tab_modele_pdf["active_nombre_note_case"][$classe_id] === '1') {
 				// Nombre total de devoirs
 				$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['nb_total_notes_matiere'] = '';
 				// Nombre de devoir de l'élève
@@ -1553,10 +1785,6 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				}
 			}
 			// par défaut :
-			//=========================
-			// AJOUT: boireaus 20080604
-			if($donner_aid['note']!='-') {$matiere[$login_eleve_select][$id_periode]['au_moins_une_moyenne']="y";}
-			//=========================
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['moy_eleve'] = $donner_aid['note'];
 
 			$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['rang'] = '-'; // rang de l'élève pour une matière donnée dans une périodes données
@@ -1595,8 +1823,9 @@ while($cpt_info_eleve<=$nb_eleve_total)
 				$total_coef =$total_coef+$matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['coef'];
 			}
 
-			//calcule des moyennes par catégorie
-			if($active_entete_regroupement[$classe_id]==='1') {
+			//calcul des moyennes par catégorie
+			//if($active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				$categorie_passage = $matiere[$login_eleve_select][$id_periode][$cpt_info_eleve_matiere]['categorie'];
 				if ( !isset($matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve']) ) {
 					$matiere[$login_eleve_select][$id_periode][$categorie_passage]['moy_eleve'] = '-';
@@ -1628,7 +1857,8 @@ while($cpt_info_eleve<=$nb_eleve_total)
 			} // Sinon, on ne l'ajoute pas.
 
 			// gestion des graphiques de niveau par matière
-			if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			//if ($active_graphique_niveau[$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
+			if ($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and empty($data_grap[$id_periode][$id_groupe_aff][0])) {
 				$data_grap[$id_periode][$id_groupe_aff][0] = sql_query1("SELECT COUNT( note ) as quartile1 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=15)");
 				$data_grap[$id_periode][$id_groupe_aff][1] = sql_query1("SELECT COUNT( note ) as quartile2 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=12 AND note<15)");
 				$data_grap[$id_periode][$id_groupe_aff][2] = sql_query1("SELECT COUNT( note ) as quartile3 FROM aid_appreciations WHERE (periode='".$id_periode."' AND indice_aid='".$id_groupe_aff."' AND statut ='' AND note>=10 AND note<12)");
@@ -1784,19 +2014,23 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 	// ==================== DEBUT ENTETE BULLETIN ====================
 		//Affiche le filigrame
-		if($affiche_filigrame[$classe_id]==='1'){
+		//if($affiche_filigrame[$classe_id]==='1'){
+		if($tab_modele_pdf["affiche_filigrame"][$classe_id]==='1'){
 			$pdf->SetFont('Arial','B',50);
 			$pdf->SetTextColor(255,192,203);
-			$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			$pdf->TextWithRotation(40,190,$tab_modele_pdf["texte_filigrame"][$classe_id],45);
 			$pdf->SetTextColor(0,0,0);
 		}
 
 		//bloc identification etablissement
 		$logo = '../images/'.getSettingValue('logo_etab');
 		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
-		if($affiche_logo_etab[$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
+		//if($affiche_logo_etab[$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
+		if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 		{
-			$valeur=redimensionne_image($logo, $L_max_logo[$classe_id], $H_max_logo[$classe_id]);
+			//$valeur=redimensionne_image($logo, $L_max_logo[$classe_id], $H_max_logo[$classe_id]);
+			$valeur=redimensionne_image($logo, $tab_modele_pdf["L_max_logo"][$classe_id], $tab_modele_pdf["H_max_logo"][$classe_id]);
 			$X_logo = 5;
 			$Y_logo = 5;
 			$L_logo = $valeur[0];
@@ -1804,13 +2038,17 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			$X_etab = $X_logo + $L_logo + 1;
 			$Y_etab = $Y_logo;
 
-			if ( !isset($centrage_logo[$classe_id]) or empty($centrage_logo[$classe_id]) ) {
-				$centrage_logo[$classe_id] = '0';
+			//if ( !isset($centrage_logo[$classe_id]) or empty($centrage_logo[$classe_id]) ) {
+			if ( !isset($tab_modele_pdf["centrage_logo"][$classe_id]) or empty($tab_modele_pdf["centrage_logo"][$classe_id]) ) {
+				//$centrage_logo[$classe_id] = '0';
+				$tab_modele_pdf["centrage_logo"][$classe_id] = '0';
 			}
-			if ( $centrage_logo[$classe_id] === '1' ) {
+			//if ( $centrage_logo[$classe_id] === '1' ) {
+			if ( $tab_modele_pdf["centrage_logo"][$classe_id] === '1' ) {
 				// centrage du logo
 				$centre_du_logo = ( $H_logo / 2 );
-				$Y_logo = $Y_centre_logo[$classe_id] - $centre_du_logo;
+				//$Y_logo = $Y_centre_logo[$classe_id] - $centre_du_logo;
+				$Y_logo = $tab_modele_pdf["Y_centre_logo"][$classe_id] - $centre_du_logo;
 			}
 
 			//logo
@@ -1823,15 +2061,19 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			$Y_etab = '5';
 		}
 		$pdf->SetXY($X_etab,$Y_etab);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',14);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',14);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',14);
 
 		// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
-		if ( $nom_etab_gras[$classe_id] === '1' ) {
-			$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+		//if ( $nom_etab_gras[$classe_id] === '1' ) {
+		if ( $tab_modele_pdf["nom_etab_gras"][$classe_id] === '1' ) {
+			//$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
 		}
 		$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 
 		if ( $gepiSchoolAdress1 != '' ) {
 			$pdf->Cell(90,5, $gepiSchoolAdress1,0,2,'');
@@ -1848,20 +2090,26 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		$x_telecom = $pdf->GetX();
 		$y_telecom = $pdf->GetY();
 
-		if( $entente_tel[$classe_id]==='1' ) {
+		//if( $entente_tel[$classe_id]==='1' ) {
+		if( $tab_modele_pdf["entente_tel"][$classe_id]==='1' ) {
 			$grandeur = ''; $text_tel = '';
-			if ( $tel_image[$classe_id] != '' ) {
+			//if ( $tel_image[$classe_id] != '' ) {
+			if ( $tab_modele_pdf["tel_image"][$classe_id] != '' ) {
 				$a = $pdf->GetX();
 				$b = $pdf->GetY();
-				$ima = '../images/imabulle/'.$tel_image[$classe_id].'.jpg';
+				//$ima = '../images/imabulle/'.$tel_image[$classe_id].'.jpg';
+				$ima = '../images/imabulle/'.$tab_modele_pdf["tel_image"][$classe_id].'.jpg';
 				$valeurima=redimensionne_image($ima, 15, 15);
 				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
 				$text_tel = '      '.$gepiSchoolTel;
 				$grandeur = $pdf->GetStringWidth($text_tel);
 				$grandeur = $grandeur + 2;
 			}
-			if ( $tel_texte[$classe_id] != '' and $tel_image[$classe_id] === '' ) {
-				$text_tel = $tel_texte[$classe_id].''.$gepiSchoolTel;
+
+			//if ( $tel_texte[$classe_id] != '' and $tel_image[$classe_id] === '' ) {
+			if ( $tab_modele_pdf["tel_texte"][$classe_id] != '' and $tab_modele_pdf["tel_image"][$classe_id] === '' ) {
+				//$text_tel = $tel_texte[$classe_id].''.$gepiSchoolTel;
+				$text_tel = $tab_modele_pdf["tel_texte"][$classe_id].''.$gepiSchoolTel;
 				$grandeur = $pdf->GetStringWidth($text_tel);
 			}
 
@@ -1870,38 +2118,48 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 		$passealaligne = '2';
 		// entête fax
-		if( $entente_fax[$classe_id]==='1' ) {
+		//if( $entente_fax[$classe_id]==='1' ) {
+		if( $tab_modele_pdf["entente_fax"][$classe_id]==='1' ) {
 			$text_fax = '';
-			if ( $fax_image[$classe_id] != '' ) {
+			//if ( $fax_image[$classe_id] != '' ) {
+			if ( $tab_modele_pdf["fax_image"][$classe_id] != '' ) {
 				$a = $pdf->GetX();
 				$b = $pdf->GetY();
-				$ima = '../images/imabulle/'.$fax_image[$classe_id].'.jpg';
+				//$ima = '../images/imabulle/'.$fax_image[$classe_id].'.jpg';
+				$ima = '../images/imabulle/'.$tab_modele_pdf["fax_image"][$classe_id].'.jpg';
 				$valeurima=redimensionne_image($ima, 15, 15);
 				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
 				$text_fax = '      '.$gepiSchoolFax;
 			}
-			if ( $fax_texte[$classe_id] != '' and $fax_image[$classe_id] === '' ) {
-				$text_fax = $fax_texte[$classe_id].''.$gepiSchoolFax;
+			//if ( $fax_texte[$classe_id] != '' and $fax_image[$classe_id] === '' ) {
+			if ( $tab_modele_pdf["fax_texte"][$classe_id] != '' and $tab_modele_pdf["fax_image"][$classe_id] === '' ) {
+				//$text_fax = $fax_texte[$classe_id].''.$gepiSchoolFax;
+				$text_fax = $tab_modele_pdf["fax_texte"][$classe_id].''.$gepiSchoolFax;
 			}
 			$pdf->Cell(90,5, $text_fax,0,$passealaligne,'');
 		}
 
-		if($entente_mel[$classe_id]==='1') {
+		//if($entente_mel[$classe_id]==='1') {
+		if($tab_modele_pdf["entente_mel"][$classe_id]==='1') {
 			$text_mel = '';
 			$y_telecom = $y_telecom + 5;
 			$pdf->SetXY($x_telecom,$y_telecom);
 
 			$text_mel = $gepiSchoolEmail;
-			if ( $courrier_image[$classe_id] != '' ) {
+			//if ( $courrier_image[$classe_id] != '' ) {
+			if ( $tab_modele_pdf["courrier_image"][$classe_id] != '' ) {
 				$a = $pdf->GetX();
 				$b = $pdf->GetY();
-				$ima = '../images/imabulle/'.$courrier_image[$classe_id].'.jpg';
+				//$ima = '../images/imabulle/'.$courrier_image[$classe_id].'.jpg';
+				$ima = '../images/imabulle/'.$tab_modele_pdf["courrier_image"][$classe_id].'.jpg';
 				$valeurima=redimensionne_image($ima, 15, 15);
 				$pdf->Image($ima, $a, $b, $valeurima[0], $valeurima[1]);
 				$text_mel = '      '.$gepiSchoolEmail;
 			}
-			if ( $courrier_texte[$classe_id] != '' and $courrier_image[$classe_id] === '' ) {
-				$text_mel = $courrier_texte[$classe_id].' '.$gepiSchoolEmail;
+			//if ( $courrier_texte[$classe_id] != '' and $courrier_image[$classe_id] === '' ) {
+			if ( $tab_modele_pdf["courrier_texte"][$classe_id] != '' and $tab_modele_pdf["courrier_image"][$classe_id] === '' ) {
+				//$text_mel = $courrier_texte[$classe_id].' '.$gepiSchoolEmail;
+				$text_mel = $tab_modele_pdf["courrier_texte"][$classe_id].' '.$gepiSchoolEmail;
 			}
 			$pdf->Cell(90,5, $text_mel,0,2,'');
 		}
@@ -1922,8 +2180,10 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 		// style pour la case appréciation générale
 		// identité du professeur principal
-		if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
-			$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+		//if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
+		if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
+			//$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+			$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
 		} else {
 			$taille = '10';
 		}
@@ -1931,16 +2191,22 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
 
 		// bloc affichage de l'adresse des parents
-		if($active_bloc_adresse_parent[$classe_id]==='1') {
-			$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
+		//if($active_bloc_adresse_parent[$classe_id]==='1') {
+		if($tab_modele_pdf["active_bloc_adresse_parent"][$classe_id]==='1') {
+			//$pdf->SetXY($X_parent[$classe_id],$Y_parent[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_parent"][$classe_id],$tab_modele_pdf["Y_parent"][$classe_id]);
 			// définition des Lageur - hauteur
-			if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) {
-				$longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id];
+			//if ( $largeur_bloc_adresse[$classe_id] != '' and $largeur_bloc_adresse[$classe_id] != '0' ) {
+			if ( $tab_modele_pdf["largeur_bloc_adresse"][$classe_id] != '' and $tab_modele_pdf["largeur_bloc_adresse"][$classe_id] != '0' ) {
+				//$longeur_cadre_adresse = $largeur_bloc_adresse[$classe_id];
+				$longeur_cadre_adresse = $tab_modele_pdf["largeur_bloc_adresse"][$classe_id];
 			} else {
 				$longeur_cadre_adresse = '90';
 			}
-			if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) {
-				$hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id];
+			//if ( $hauteur_bloc_adresse[$classe_id] != '' and $hauteur_bloc_adresse[$classe_id] != '0' ) {
+			if ( $tab_modele_pdf["hauteur_bloc_adresse"][$classe_id] != '' and $tab_modele_pdf["hauteur_bloc_adresse"][$classe_id] != '0' ) {
+				//$hauteur_cadre_adresse = $hauteur_bloc_adresse[$classe_id];
+				$hauteur_cadre_adresse = $tab_modele_pdf["hauteur_bloc_adresse"][$classe_id];
 			} else {
 				$hauteur_cadre_adresse = '1';
 			}
@@ -2010,14 +2276,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 			$texte_1_responsable = trim($texte_1_responsable);
 			$hauteur_caractere=12;
-			$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte != 'ok') {
 				if($taille_texte < $val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte = 'ok';
@@ -2027,14 +2295,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 			$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
@@ -2044,14 +2314,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 			$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
@@ -2064,14 +2336,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 			$texte_1_responsable = $adresse3_parents[$ident_eleve_aff][$responsable_place];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
@@ -2081,14 +2355,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 			$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
 			$hauteur_caractere=10;
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
 			$taille_texte = $longeur_cadre_adresse;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val){
 					$hauteur_caractere = $hauteur_caractere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($texte_1_responsable);
 				} else {
 					$grandeur_texte='ok';
@@ -2101,14 +2377,16 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			if((strtolower($gepiSchoolPays)!=strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
 				$texte_1_responsable = $pays_parents[$ident_eleve_aff][$responsable_place];
 				$hauteur_caractere=10;
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 				$val = $pdf->GetStringWidth($texte_1_responsable);
 				$taille_texte = $longeur_cadre_adresse;
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 					if($taille_texte<$val){
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($texte_1_responsable);
 					} else {
 						$grandeur_texte='ok';
@@ -2119,53 +2397,73 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			//============================
 
 			$texte_1_responsable = '';
-			if ( $cadre_adresse[$classe_id] != 0 ) {
-				$pdf->Rect($X_parent[$classe_id], $Y_parent[$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
+			//if ( $cadre_adresse[$classe_id] != 0 ) {
+			if ( $tab_modele_pdf["cadre_adresse"][$classe_id] != 0 ) {
+				//$pdf->Rect($X_parent[$classe_id], $Y_parent[$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
+				$pdf->Rect($tab_modele_pdf["X_parent"][$classe_id], $tab_modele_pdf["Y_parent"][$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
 			}
 		} // if($active_bloc_adresse_parent[$classe_id]==='1')
 
 
 	// bloc affichage information sur l'élèves
-	if($active_bloc_eleve[$classe_id]==='1') {
-		$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
+	//if($active_bloc_eleve[$classe_id]==='1') {
+	if($tab_modele_pdf["active_bloc_eleve"][$classe_id]==='1') {
+		//$pdf->SetXY($X_eleve[$classe_id],$Y_eleve[$classe_id]);
+		$pdf->SetXY($tab_modele_pdf["X_eleve"][$classe_id],$tab_modele_pdf["Y_eleve"][$classe_id]);
 		// définition des Lageur - hauteur
-		if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) {
-			$longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id];
+		//if ( $largeur_bloc_eleve[$classe_id] != '' and $largeur_bloc_eleve[$classe_id] != '0' ) {
+		if ( $tab_modele_pdf["largeur_bloc_eleve"][$classe_id] != '' and $tab_modele_pdf["largeur_bloc_eleve"][$classe_id] != '0' ) {
+			//$longeur_cadre_eleve = $largeur_bloc_eleve[$classe_id];
+			$longeur_cadre_eleve = $tab_modele_pdf["largeur_bloc_eleve"][$classe_id];
 		} else {
 			$longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$i]." ".$prenom_eleve[$i]); $rajout_cadre_eleve = 100-$longeur_cadre_eleve; $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve;
 		}
-		if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) {
-			$hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id];
+		//if ( $hauteur_bloc_eleve[$classe_id] != '' and $hauteur_bloc_eleve[$classe_id] != '0' ) {
+		if ( $tab_modele_pdf["hauteur_bloc_eleve"][$classe_id] != '' and $tab_modele_pdf["hauteur_bloc_eleve"][$classe_id] != '0' ) {
+			//$hauteur_cadre_eleve = $hauteur_bloc_eleve[$classe_id];
+			$hauteur_cadre_eleve = $tab_modele_pdf["hauteur_bloc_eleve"][$classe_id];
 		} else {
 			$nb_ligne = 5;
 			$hauteur_ligne = 6;
 			$hauteur_cadre_eleve = $nb_ligne*$hauteur_ligne;
 		}
 
-		$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'B',14);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',14);
 
-		if($cadre_eleve[$classe_id]!=0) {
-			$pdf->Rect($X_eleve[$classe_id], $Y_eleve[$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D');
+		//if($cadre_eleve[$classe_id]!=0) {
+		if($tab_modele_pdf["cadre_eleve"][$classe_id]!=0) {
+			//$pdf->Rect($X_eleve[$classe_id], $Y_eleve[$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D');
+			$pdf->Rect($tab_modele_pdf["X_eleve"][$classe_id], $tab_modele_pdf["Y_eleve"][$classe_id], $longeur_cadre_eleve, $hauteur_cadre_eleve, 'D');
 		}
-		$X_eleve_2 = $X_eleve[$classe_id]; $Y_eleve_2=$Y_eleve[$classe_id];
+
+		//$X_eleve_2 = $X_eleve[$classe_id]; $Y_eleve_2=$Y_eleve[$classe_id];
+		$X_eleve_2 = $tab_modele_pdf["X_eleve"][$classe_id]; $Y_eleve_2=$tab_modele_pdf["Y_eleve"][$classe_id];
 
 		//photo de l'élève
-		if ( !isset($ajout_cadre_blanc_photo[$classe_id]) or empty($ajout_cadre_blanc_photo[$classe_id]) ) {
-			$ajout_cadre_blanc_photo[$classe_id] = '0';
+		//if ( !isset($ajout_cadre_blanc_photo[$classe_id]) or empty($ajout_cadre_blanc_photo[$classe_id]) ) {
+		if ( !isset($tab_modele_pdf["ajout_cadre_blanc_photo"][$classe_id]) or empty($tab_modele_pdf["ajout_cadre_blanc_photo"][$classe_id]) ) {
+			//$ajout_cadre_blanc_photo[$classe_id] = '0';
+			$tab_modele_pdf["ajout_cadre_blanc_photo"][$classe_id] = '0';
 		}
-		if ( $ajout_cadre_blanc_photo[$classe_id] === '1' ) {
+		//if ( $ajout_cadre_blanc_photo[$classe_id] === '1' ) {
+		if ( $tab_modele_pdf["ajout_cadre_blanc_photo"][$classe_id] === '1' ) {
 			$ajouter = '1';
 		} else {
 			$ajouter = '0';
 		}
-		if($active_photo[$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
+		//if($active_photo[$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
+		if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
 			$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
 			$H_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
 			$valeur=redimensionne_image($photo[$i], $L_photo_max, $H_photo_max);
-			$X_photo = $X_eleve[$classe_id]+ 0.20 + $ajouter;
-			$Y_photo = $Y_eleve[$classe_id]+ 0.25 + $ajouter;
+			//$X_photo = $X_eleve[$classe_id]+ 0.20 + $ajouter;
+			$X_photo = $tab_modele_pdf["X_eleve"][$classe_id]+ 0.20 + $ajouter;
+			//$Y_photo = $Y_eleve[$classe_id]+ 0.25 + $ajouter;
+			$Y_photo = $tab_modele_pdf["Y_eleve"][$classe_id]+ 0.25 + $ajouter;
 			$L_photo = $valeur[0]; $H_photo = $valeur[1];
-			$X_eleve_2 = $X_eleve[$classe_id] + $L_photo + $ajouter + 1;
+			//$X_eleve_2 = $X_eleve[$classe_id] + $L_photo + $ajouter + 1;
+			$X_eleve_2 = $tab_modele_pdf["X_eleve"][$classe_id] + $L_photo + $ajouter + 1;
 			$Y_eleve_2 = $Y_photo;
 			$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
 			$longeur_cadre_eleve = $longeur_cadre_eleve - ( $valeur[0] + $ajouter );
@@ -2173,16 +2471,20 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 		$pdf->SetXY($X_eleve_2,$Y_eleve_2);
 		$pdf->Cell(90,7, $nom_eleve[$i]." ".$prenom_eleve[$i],0,2,'');
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-		if($affiche_date_naissance[$classe_id]==='1') {
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		//if($affiche_date_naissance[$classe_id]==='1') {
+		if($tab_modele_pdf["affiche_date_naissance"][$classe_id]==='1') {
 			if($date_naissance[$i]!="") {
 				$pdf->Cell(90,5, $date_naissance[$i],0,2,'');
 			}
 		}
 
 		$rdbt = '';
-		if($affiche_dp[$classe_id]==='1') {
-		    if($affiche_doublement[$classe_id]==='1') {
+		//if($affiche_dp[$classe_id]==='1') {
+		if($tab_modele_pdf["affiche_dp"][$classe_id]==='1') {
+		    //if($affiche_doublement[$classe_id]==='1') {
+		    if($tab_modele_pdf["affiche_doublement"][$classe_id]==='1') {
 				if($doublement[$i]!="") {
 					$rdbt = " ; ".$doublement[$i];
 				}
@@ -2194,7 +2496,8 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			}
 			}
 		} else {
-			if($affiche_doublement[$classe_id]==='1') {
+			//if($affiche_doublement[$classe_id]==='1') {
+			if($tab_modele_pdf["affiche_doublement"][$classe_id]==='1') {
 				if($doublement[$i]!="") {
 					$pdf->Cell(90,4.5, $doublement[$i],0,2,'');
 				}
@@ -2202,7 +2505,8 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		}
 
 		// affiche le nom court de la classe
-		if ( $affiche_nom_court[$classe_id] === '1' )
+		//if ( $affiche_nom_court[$classe_id] === '1' )
+		if ( $tab_modele_pdf["affiche_nom_court"][$classe_id] === '1' )
 		{
 
 			if($classe_nomcour[$i]!="")
@@ -2210,7 +2514,9 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 				// si l'affichage du numéro INE est activé alors on ne passe pas
 				$passe_a_la_ligne = 0;
-				if ( $affiche_ine[$classe_id] != '1' or $INE_eleve[$i] == '' )
+				//if ( $affiche_ine[$classe_id] != '1' or $INE_eleve[$i] == '' )
+				//if ( $tab_modele_pdf["affiche_ine"][$classe_id] != '1' or $tab_modele_pdf["INE_eleve"][$i] == '' )
+				if ( $tab_modele_pdf["affiche_ine"][$classe_id] != '1' or $INE_eleve[$i] == '' )
 				{
 						$passe_a_la_ligne = 1;
 
@@ -2224,7 +2530,8 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 
 
 		// affiche l'INE de l'élève
-		if ( $affiche_ine[$classe_id] === '1' )
+		//if ( $affiche_ine[$classe_id] === '1' )
+		if ( $tab_modele_pdf["affiche_ine"][$classe_id] === '1' )
 		{
 
 			if ( $INE_eleve[$i] != '' )
@@ -2239,8 +2546,10 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 		// Affichage du numéro d'impression
 		$pdf->SetX($X_eleve_2);
 
-		if($affiche_effectif_classe[$classe_id]==='1') {
-			if($affiche_numero_impression[$classe_id]==='1') {
+		//if($affiche_effectif_classe[$classe_id]==='1') {
+		if($tab_modele_pdf["affiche_effectif_classe"][$classe_id]==='1') {
+			//if($affiche_numero_impression[$classe_id]==='1') {
+			if($tab_modele_pdf["affiche_numero_impression"][$classe_id]==='1') {
 				$pass_ligne = '0';
 			} else {
 				$pass_ligne = '2';
@@ -2249,22 +2558,27 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 				$pdf->Cell(45,4.5, 'Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves',0,$pass_ligne,'');
 			}
 		}
-		if($affiche_numero_impression[$classe_id]==='1') {
+		//if($affiche_numero_impression[$classe_id]==='1') {
+		if($tab_modele_pdf["affiche_numero_impression"][$classe_id]==='1') {
 			$num_ordre = $i;
 			$pdf->Cell(45,4, 'Bulletin N° '.$num_ordre,0,2,'');
 		}
+
 		// Affichage de l'établissement d'origine
-		if($affiche_etab_origine[$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
+		//if($affiche_etab_origine[$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
+		if($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
 			$pdf->SetX($X_eleve_2);
 			$hauteur_caractere_etaborigine = '10';
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
 			$val = $pdf->GetStringWidth('Etab. Origine : '.$etablissement_origine[$i]);
 			$taille_texte = $longeur_cadre_eleve-3;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val) {
 					$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_etaborigine);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
 					$val = $pdf->GetStringWidth('Etab. Origine : '.$etablissement_origine[$i]);
 				} else {
 					$grandeur_texte='ok';
@@ -2272,60 +2586,83 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 			}
 			$grandeur_texte='test';
 			$pdf->Cell(90,4, 'Etab. Origine : '.$etablissement_origine[$i],0,2);
-			$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 		}
 	} // fin du bloc affichage information sur l'élèves
 
 	// bloc affichage datation du bulletin
-	if($active_bloc_datation[$classe_id]==='1') {
-		$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
+	//if($active_bloc_datation[$classe_id]==='1') {
+	if($tab_modele_pdf["active_bloc_datation"][$classe_id]==='1') {
+		//$pdf->SetXY($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id]);
+		$pdf->SetXY($tab_modele_pdf["X_datation_bul"][$classe_id], $tab_modele_pdf["Y_datation_bul"][$classe_id]);
 		// définition des Largeur - hauteur
-		if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) {
-			$longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id];
+		//if ( $largeur_bloc_datation[$classe_id] != '' and $largeur_bloc_datation[$classe_id] != '0' ) {
+		if ( $tab_modele_pdf["largeur_bloc_datation"][$classe_id] != '' and $tab_modele_pdf["largeur_bloc_datation"][$classe_id] != '0' ) {
+			//$longeur_cadre_datation_bul = $largeur_bloc_datation[$classe_id];
+			$longeur_cadre_datation_bul = $tab_modele_pdf["largeur_bloc_datation"][$classe_id];
 		} else {
 			$longeur_cadre_datation_bul = '95';
 		}
-		if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) {
-			$hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id];
+		//if ( $hauteur_bloc_datation[$classe_id] != '' and $hauteur_bloc_datation[$classe_id] != '0' ) {
+		if ( $tab_modele_pdf["hauteur_bloc_datation"][$classe_id] != '' and $tab_modele_pdf["hauteur_bloc_datation"][$classe_id] != '0' ) {
+			//$hauteur_cadre_datation_bul = $hauteur_bloc_datation[$classe_id];
+			$hauteur_cadre_datation_bul = $tab_modele_pdf["hauteur_bloc_datation"][$classe_id];
 		} else {
 			$nb_ligne_datation_bul = 3;
 			$hauteur_ligne_datation_bul = 6;
 			$hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul;
 		}
 
-		if($cadre_datation_bul[$classe_id]!=0) {
-			$pdf->Rect($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id], $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D');
+		//if($cadre_datation_bul[$classe_id]!=0) {
+		if($tab_modele_pdf["cadre_datation_bul"][$classe_id]!=0) {
+			//$pdf->Rect($X_datation_bul[$classe_id], $Y_datation_bul[$classe_id], $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D');
+			$pdf->Rect($tab_modele_pdf["X_datation_bul"][$classe_id], $tab_modele_pdf["Y_datation_bul"][$classe_id], $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D');
 		}
 		$taille_texte = '14'; $type_texte = 'B';
-		if ( $taille_texte_classe[$classe_id] != '' and $taille_texte_classe[$classe_id] != '0' ) {
-			$taille_texte = $taille_texte_classe[$classe_id];
+		//if ( $taille_texte_classe[$classe_id] != '' and $taille_texte_classe[$classe_id] != '0' ) {
+		if ( $tab_modele_pdf["taille_texte_classe"][$classe_id] != '' and $tab_modele_pdf["taille_texte_classe"][$classe_id] != '0' ) {
+			//$taille_texte = $taille_texte_classe[$classe_id];
+			$taille_texte = $tab_modele_pdf["taille_texte_classe"][$classe_id];
 		} else {
 			$taille_texte = '14';
 		}
-		if ( $type_texte_classe[$classe_id] != '' ) {
-			if ( $type_texte_classe[$classe_id] === 'N' ) {
+		//if ( $type_texte_classe[$classe_id] != '' ) {
+		if ( $tab_modele_pdf["type_texte_classe"][$classe_id] != '' ) {
+			//if ( $type_texte_classe[$classe_id] === 'N' ) {
+			if ( $tab_modele_pdf["type_texte_classe"][$classe_id] === 'N' ) {
 				$type_texte = '';
 			} else {
-				$type_texte = $type_texte_classe[$classe_id];
+				//$type_texte = $type_texte_classe[$classe_id];
+				$type_texte = $tab_modele_pdf["type_texte_classe"][$classe_id];
 			}
 		} else {
 			$type_texte = 'B';
 		}
-		$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+		//$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
 		$pdf->Cell(90,7, "Classe de ".unhtmlentities($classe_nomlong[$i]),0,2,'C');
 		$taille_texte = '12'; $type_texte = '';
-		if ( $taille_texte_annee[$classe_id] != '' and $taille_texte_annee[$classe_id] != '0') {
-			$taille_texte = $taille_texte_annee[$classe_id];
+		//if ( $taille_texte_annee[$classe_id] != '' and $taille_texte_annee[$classe_id] != '0') {
+		if ( $tab_modele_pdf["taille_texte_annee"][$classe_id] != '' and $tab_modele_pdf["taille_texte_annee"][$classe_id] != '0') {
+			//$taille_texte = $taille_texte_annee[$classe_id];
+			$taille_texte = $tab_modele_pdf["taille_texte_annee"][$classe_id];
 		} else {
 			$taille_texte = '12';
 		}
-	if ( $type_texte_annee[$classe_id] != '' ) { if ( $type_texte_annee[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_annee[$classe_id]; } } else { $type_texte = ''; }
-	$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+
+	//if ( $type_texte_annee[$classe_id] != '' ) { if ( $type_texte_annee[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_annee[$classe_id]; } } else { $type_texte = ''; }
+	if ( $tab_modele_pdf["type_texte_annee"][$classe_id] != '' ) { if ( $tab_modele_pdf["type_texte_annee"][$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $tab_modele_pdf["type_texte_annee"][$classe_id]; } } else { $type_texte = ''; }
+	//$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
 	$pdf->Cell(90,5, "Année scolaire ".$annee_scolaire,0,2,'C');
 	$taille_texte = '10'; $type_texte = '';
-	if ( $taille_texte_periode[$classe_id] != '' and $taille_texte_periode[$classe_id] != '0' ) { $taille_texte = $taille_texte_periode[$classe_id]; } else { $taille_texte = '10'; }
-	if ( $type_texte_periode[$classe_id] != '' ) { if ( $type_texte_periode[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_periode[$classe_id]; } } else { $type_texte = ''; }
-	$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+	//if ( $taille_texte_periode[$classe_id] != '' and $taille_texte_periode[$classe_id] != '0' ) { $taille_texte = $taille_texte_periode[$classe_id]; } else { $taille_texte = '10'; }
+	if ( $tab_modele_pdf["taille_texte_periode"][$classe_id] != '' and $tab_modele_pdf["taille_texte_periode"][$classe_id] != '0' ) { $taille_texte = $tab_modele_pdf["taille_texte_periode"][$classe_id]; } else { $taille_texte = '10'; }
+	//if ( $type_texte_periode[$classe_id] != '' ) { if ( $type_texte_periode[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_periode[$classe_id]; } } else { $type_texte = ''; }
+	if ( $tab_modele_pdf["type_texte_periode"][$classe_id] != '' ) { if ( $tab_modele_pdf["type_texte_periode"][$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $tab_modele_pdf["type_texte_periode"][$classe_id]; } } else { $type_texte = ''; }
+	//$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
 		//connaître le nom de la période
 		if(empty($nom_periode[$id_classe_selection][$id_periode])) {
 		$requete_periode = mysql_query('SELECT * FROM '.$prefix_base.'periodes WHERE id_classe="'.$id_classe_selection.'" AND num_periode="'.$id_periode.'"');
@@ -2334,49 +2671,72 @@ while(!empty($nom_eleve[$nb_eleve_aff])) {
 	$pdf->Cell(90,5, "Bulletin du ".unhtmlentities($nom_periode[$id_classe_selection][$id_periode]),0,2,'C');
 	$taille_texte = '8'; $type_texte = '';
 
-	if ( $affiche_date_edition[$classe_id] === '1' ) {
-	  if ( $taille_texte_date_edition[$classe_id] != '' and $taille_texte_date_edition[$classe_id] != '0' ) { $taille_texte = $taille_texte_date_edition[$classe_id]; } else { $taille_texte = '8'; }
-	  if ( $type_texte_date_datation[$classe_id] != '' ) { if ( $type_texte_date_datation[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_date_datation[$classe_id]; } } else { $type_texte = ''; }
-	  $pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+	//if ( $affiche_date_edition[$classe_id] === '1' ) {
+	if ( $tab_modele_pdf["affiche_date_edition"][$classe_id] === '1' ) {
+	  //if ( $taille_texte_date_edition[$classe_id] != '' and $taille_texte_date_edition[$classe_id] != '0' ) { $taille_texte = $taille_texte_date_edition[$classe_id]; } else { $taille_texte = '8'; }
+	  if ( $tab_modele_pdf["taille_texte_date_edition"][$classe_id] != '' and $tab_modele_pdf["taille_texte_date_edition"][$classe_id] != '0' ) { $taille_texte = $tab_modele_pdf["taille_texte_date_edition"][$classe_id]; } else { $taille_texte = '8'; }
+	  //if ( $type_texte_date_datation[$classe_id] != '' ) { if ( $type_texte_date_datation[$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $type_texte_date_datation[$classe_id]; } } else { $type_texte = ''; }
+	  if ( $tab_modele_pdf["type_texte_date_datation"][$classe_id] != '' ) { if ( $tab_modele_pdf["type_texte_date_datation"][$classe_id] === 'N' ) { $type_texte = ''; } else { $type_texte = $tab_modele_pdf["type_texte_date_datation"][$classe_id]; } } else { $type_texte = ''; }
+	  //$pdf->SetFont($caractere_utilse[$classe_id], $type_texte, $taille_texte);
+	  $pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id], $type_texte, $taille_texte);
 	  $pdf->Cell(95,7, $date_bulletin,0,2,'R');
 	}
 
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+	//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 	}
 
 	// bloc note et appréciation
 	//nombre de matiere à afficher
 	$nb_matiere = $info_bulletin[$ident_eleve_aff][$id_periode]['nb_matiere'];
-	if($active_bloc_note_appreciation[$classe_id]==='1' and $nb_matiere!='0') {
-	$pdf->Rect($X_note_app[$classe_id], $Y_note_app[$classe_id], $longeur_note_app[$classe_id], $hauteur_note_app[$classe_id], 'D');
+	//if($active_bloc_note_appreciation[$classe_id]==='1' and $nb_matiere!='0') {
+	if($tab_modele_pdf["active_bloc_note_appreciation"][$classe_id]==='1' and $nb_matiere!='0') {
+		//$pdf->Rect($X_note_app[$classe_id], $Y_note_app[$classe_id], $longeur_note_app[$classe_id], $hauteur_note_app[$classe_id], 'D');
+		$pdf->Rect($tab_modele_pdf["X_note_app"][$classe_id], $tab_modele_pdf["Y_note_app"][$classe_id], $tab_modele_pdf["longeur_note_app"][$classe_id], $tab_modele_pdf["hauteur_note_app"][$classe_id], 'D');
 		//entête du tableau des note et app
-		$nb_entete_moyenne = $active_moyenne_eleve[$classe_id]+$active_moyenne_classe[$classe_id]+$active_moyenne_min[$classe_id]+$active_moyenne_max[$classe_id]; //min max classe eleve
+		//$nb_entete_moyenne = $active_moyenne_eleve[$classe_id]+$active_moyenne_classe[$classe_id]+$active_moyenne_min[$classe_id]+$active_moyenne_max[$classe_id]; //min max classe eleve
+		$nb_entete_moyenne = $tab_modele_pdf["active_moyenne_eleve"][$classe_id]+$tab_modele_pdf["active_moyenne_classe"][$classe_id]+$tab_modele_pdf["active_moyenne_min"][$classe_id]+$tab_modele_pdf["active_moyenne_max"][$classe_id]; //min max classe eleve
 		$hauteur_entete = 8;
 		$hauteur_entete_pardeux = $hauteur_entete/2;
-		$pdf->SetXY($X_note_app[$classe_id], $Y_note_app[$classe_id]);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		//$pdf->SetXY($X_note_app[$classe_id], $Y_note_app[$classe_id]);
+		$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id], $tab_modele_pdf["Y_note_app"][$classe_id]);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 		// $largeur_matiere[$classe_id] = 40;
-		$pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete, $titre_entete_matiere[$classe_id],1,0,'C');
-		$largeur_utilise = $largeur_matiere[$classe_id];
+		//$pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete, $titre_entete_matiere[$classe_id],1,0,'C');
+		$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_matiere"][$classe_id],1,0,'C');
+		//$largeur_utilise = $largeur_matiere[$classe_id];
+		$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
-		// coéfficient matière
-		if($active_coef_moyenne[$classe_id]==='1') {
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-		$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_entete, $titre_entete_coef[$classe_id],'LRB',0,'C');
-		$largeur_utilise = $largeur_utilise + $largeur_coef_moyenne[$classe_id];
+		// coefficient matière
+		//if($active_coef_moyenne[$classe_id]==='1') {
+		if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+			//$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_entete, $titre_entete_coef[$classe_id],'LRB',0,'C');
+			$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_coef"][$classe_id],'LRB',0,'C');
+			//$largeur_utilise = $largeur_utilise + $largeur_coef_moyenne[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 		}
 
-		// nombre de note
-		if($active_nombre_note_case[$classe_id]==='1') {
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-		$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_entete, $titre_entete_nbnote[$classe_id],'LRB',0,'C');
-		$largeur_utilise = $largeur_utilise + $largeur_nombre_note[$classe_id];
+		// nombre de notes
+		//if($active_nombre_note_case[$classe_id]==='1') {
+		if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+			//$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_entete, $titre_entete_nbnote[$classe_id],'LRB',0,'C');
+			$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_nbnote"][$classe_id],'LRB',0,'C');
+			//$largeur_utilise = $largeur_utilise + $largeur_nombre_note[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_nombre_note"][$classe_id];
 		}
 
 // eleve | min | classe | max | rang | niveau | appreciation |
-if ( $ordre_entete_model_bulletin[$classe_id] === '1' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '1' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '1' ) {
 	$ordre_moyenne[0] = 'eleve';
 	$ordre_moyenne[1] = 'min';
 	$ordre_moyenne[2] = 'classe';
@@ -2387,7 +2747,8 @@ if ( $ordre_entete_model_bulletin[$classe_id] === '1' ) {
 }
 
 // min | classe | max | eleve | niveau | rang | appreciation |
-if ( $ordre_entete_model_bulletin[$classe_id] === '2' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '2' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '2' ) {
 	$ordre_moyenne[0] = 'min';
 	$ordre_moyenne[1] = 'classe';
 	$ordre_moyenne[2] = 'max';
@@ -2399,7 +2760,8 @@ if ( $ordre_entete_model_bulletin[$classe_id] === '2' ) {
 
 
 // eleve | niveau | rang | appreciation | min | classe | max
-if ( $ordre_entete_model_bulletin[$classe_id] === '3' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '3' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '3' ) {
 	$ordre_moyenne[0] = 'eleve';
 	$ordre_moyenne[1] = 'niveau';
 	$ordre_moyenne[2] = 'rang';
@@ -2410,7 +2772,8 @@ if ( $ordre_entete_model_bulletin[$classe_id] === '3' ) {
 }
 
 // eleve | classe | min | max | rang | niveau | appreciation |
-if ( $ordre_entete_model_bulletin[$classe_id] === '4' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '4' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '4' ) {
 	$ordre_moyenne[0] = 'eleve';
 	$ordre_moyenne[1] = 'classe';
 	$ordre_moyenne[2] = 'min';
@@ -2421,7 +2784,8 @@ if ( $ordre_entete_model_bulletin[$classe_id] === '4' ) {
 }
 
 // eleve | min | classe | max | niveau | rang | appreciation |
-if ( $ordre_entete_model_bulletin[$classe_id] === '5' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '5' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '5' ) {
 	$ordre_moyenne[0] = 'eleve';
 	$ordre_moyenne[1] = 'min';
 	$ordre_moyenne[2] = 'classe';
@@ -2432,7 +2796,8 @@ if ( $ordre_entete_model_bulletin[$classe_id] === '5' ) {
 }
 
 // min | classe | max | eleve | rang | niveau | appreciation |
-if ( $ordre_entete_model_bulletin[$classe_id] === '6' ) {
+//if ( $ordre_entete_model_bulletin[$classe_id] === '6' ) {
+if ( $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '6' ) {
 	$ordre_moyenne[0] = 'min';
 	$ordre_moyenne[1] = 'classe';
 	$ordre_moyenne[2] = 'max';
@@ -2475,22 +2840,29 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 		$categorie_passe_count = 0;
 		// le chapeau des moyennes
 			$ajout_espace_au_dessus = 4;
-			if ( $entete_model_bulletin[$classe_id] === '1' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' or $ordre_moyenne[$cpt_ordre] === 'eleve' ) and $chapeau_moyenne === 'non' and $ordre_entete_model_bulletin[$classe_id] != '3' )
+			//if ( $entete_model_bulletin[$classe_id] === '1' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' or $ordre_moyenne[$cpt_ordre] === 'eleve' ) and $chapeau_moyenne === 'non' and $ordre_entete_model_bulletin[$classe_id] != '3' )
+			if ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '1' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' or $ordre_moyenne[$cpt_ordre] === 'eleve' ) and $chapeau_moyenne === 'non' and $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] != '3' )
 			{
-				$largeur_moyenne = $largeur_d_une_moyenne[$classe_id] * $nb_entete_moyenne;
+				//$largeur_moyenne = $largeur_d_une_moyenne[$classe_id] * $nb_entete_moyenne;
+				$largeur_moyenne = $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id] * $nb_entete_moyenne;
 				$text_entete_moyenne = 'Moyenne';
-				$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+				//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 				$pdf->Cell($largeur_moyenne, $hauteur_entete_pardeux, $text_entete_moyenne,1,0,'C');
 				$chapeau_moyenne = 'oui';
 			}
 
-			if ( ($entete_model_bulletin[$classe_id] === '2' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' ) and $chapeau_moyenne === 'non' ) or ( $entete_model_bulletin[$classe_id] === '1' and $ordre_entete_model_bulletin[$classe_id] === '3' and $chapeau_moyenne === 'non' and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' )  ) )
+			//if ( ($entete_model_bulletin[$classe_id] === '2' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' ) and $chapeau_moyenne === 'non' ) or ( $entete_model_bulletin[$classe_id] === '1' and $ordre_entete_model_bulletin[$classe_id] === '3' and $chapeau_moyenne === 'non' and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' )  ) )
+			if ( ($tab_modele_pdf["entete_model_bulletin"][$classe_id] === '2' and $nb_entete_moyenne > 1 and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' ) and $chapeau_moyenne === 'non' ) or ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '1' and $tab_modele_pdf["ordre_entete_model_bulletin"][$classe_id] === '3' and $chapeau_moyenne === 'non' and ( $ordre_moyenne[$cpt_ordre] === 'classe' or $ordre_moyenne[$cpt_ordre] === 'min' or $ordre_moyenne[$cpt_ordre] === 'max' )  ) )
 			{
-				$largeur_moyenne = $largeur_d_une_moyenne[$classe_id] * ( $nb_entete_moyenne - 1 );
+				//$largeur_moyenne = $largeur_d_une_moyenne[$classe_id] * ( $nb_entete_moyenne - 1 );
+				$largeur_moyenne = $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id] * ( $nb_entete_moyenne - 1 );
 				$text_entete_moyenne = 'Pour la classe';
-				$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+				//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 				$hauteur_caractere=10;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 					$val = $pdf->GetStringWidth($text_entete_moyenne);
 					$taille_texte = $largeur_moyenne;
 					$grandeur_texte='test';
@@ -2498,7 +2870,8 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 					if($taille_texte<$val)
 					{
 						$hauteur_caractere = $hauteur_caractere-0.3;
-						$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
 						$val = $pdf->GetStringWidth($text_entete_moyenne);
 					} else { $grandeur_texte='ok'; }
 						}
@@ -2507,95 +2880,149 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			}
 
 			//eleve
-			if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+			//if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+			if($tab_modele_pdf["active_moyenne_eleve"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 			$ajout_espace_au_dessus = 4;
 			$hauteur_de_la_cellule = $hauteur_entete_pardeux;
-				if ( $entete_model_bulletin[$classe_id] === '2' and $active_moyenne_eleve[$classe_id] === '1' and $nb_entete_moyenne > 1 )
+				//if ( $entete_model_bulletin[$classe_id] === '2' and $active_moyenne_eleve[$classe_id] === '1' and $nb_entete_moyenne > 1 )
+				if ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '2' and $tab_modele_pdf["active_moyenne_eleve"][$classe_id] === '1' and $nb_entete_moyenne > 1 )
 				{
 				$hauteur_de_la_cellule = $hauteur_entete;
 				$ajout_espace_au_dessus = 0;
 				}
-			$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+$ajout_espace_au_dessus);
-			$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
-			$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_de_la_cellule, "Elève",1,0,'C',$active_reperage_eleve[$classe_id]);
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+$ajout_espace_au_dessus);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+$ajout_espace_au_dessus);
+			//$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
+			//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_de_la_cellule, "Elève",1,0,'C',$active_reperage_eleve[$classe_id]);
+			$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_de_la_cellule, "Elève",1,0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 			$pdf->SetFillColor(0, 0, 0);
-			$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+			//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 			//classe
-			if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
-			$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+			//if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+			if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+				//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 				$hauteur_caractere = '8.5';
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-			$text_moy_classe = 'Classe';
-			if ( $entete_model_bulletin[$classe_id] === '2' ) { $text_moy_classe = 'Moy.'; }
-			$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, $text_moy_classe,1,0,'C');
-			$X_moyenne_classe = $X_note_app[$classe_id]+$largeur_utilise;
-			$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+				$text_moy_classe = 'Classe';
+				//if ( $entete_model_bulletin[$classe_id] === '2' ) { $text_moy_classe = 'Moy.'; }
+				if ( $tab_modele_pdf["entete_model_bulletin"][$classe_id] === '2' ) { $text_moy_classe = 'Moy.'; }
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, $text_moy_classe,1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, $text_moy_classe,1,0,'C');
+				//$X_moyenne_classe = $X_note_app[$classe_id]+$largeur_utilise;
+				$X_moyenne_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 			//min
-			if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
-			$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+			//if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+			if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+				//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 				$hauteur_caractere = '8.5';
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-			$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, "Min.",1,0,'C');
-			$X_min_classe = $X_note_app[$classe_id]+$largeur_utilise;
-			$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, "Min.",1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, "Min.",1,0,'C');
+				//$X_min_classe = $X_note_app[$classe_id]+$largeur_utilise;
+				$X_min_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 			//max
-			if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
-			$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+			//if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+			if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+				//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+				$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
 				$hauteur_caractere = '8.5';
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-			$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, "Max.",1,0,'C');
-			$X_max_classe = $X_note_app[$classe_id]+$largeur_utilise;
-			$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_pardeux, "Max.",1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $hauteur_entete_pardeux, "Max.",1,0,'C');
+				//$X_max_classe = $X_note_app[$classe_id]+$largeur_utilise;
+				$X_max_classe = $tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 
 		// rang de l'élève
-		if( $active_rang[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-		$pdf->Cell($largeur_rang[$classe_id], $hauteur_entete, $titre_entete_rang[$classe_id],'LRB',0,'C');
-		$largeur_utilise = $largeur_utilise + $largeur_rang[$classe_id];
+		//if( $active_rang[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
+		if( $tab_modele_pdf["active_rang"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_rang"][$classe_id],'LRB',0,'C');
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+
+			//$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $hauteur_entete, $tab_modele_pdf["titre_entete_rang"][$classe_id],'LRB',0,'C');
+
+			//$largeur_utilise = $largeur_utilise + $largeur_rang[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_rang"][$classe_id];
 		}
 
 		// graphique de niveau
-		if( $active_graphique_niveau[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
-				$hauteur_caractere = '10';
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		$pdf->Cell($largeur_niveau[$classe_id], $hauteur_entete_pardeux, "Niveau",'LR',0,'C');
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-		$pdf->Cell($largeur_niveau[$classe_id], $hauteur_entete_pardeux, "ABC+C-DE",'LRB',0,'C');
-		$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+		//if( $active_graphique_niveau[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+		if( $tab_modele_pdf["active_graphique_niveau"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
+			$hauteur_caractere = '10';
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+			//$pdf->Cell($largeur_niveau[$classe_id], $hauteur_entete_pardeux, "Niveau",'LR',0,'C');
+			$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $hauteur_entete_pardeux, "Niveau",'LR',0,'C');
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]+4);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]+4);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+			//$pdf->Cell($largeur_niveau[$classe_id], $hauteur_entete_pardeux, "ABC+C-DE",'LRB',0,'C');
+			$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $hauteur_entete_pardeux, "ABC+C-DE",'LRB',0,'C');
+			//$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+			$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 		}
 
 		//appreciation
-				$hauteur_caractere = '10';
-				$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
-		if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
-		$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+		$hauteur_caractere = '10';
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
+		//if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+		if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+			//$pdf->SetXY($X_note_app[$classe_id]+$largeur_utilise, $Y_note_app[$classe_id]);
+			$pdf->SetXY($tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise, $tab_modele_pdf["Y_note_app"][$classe_id]);
 			if ( !empty($ordre_moyenne[$cpt_ordre+1]) ) {
 				$cpt_ordre_sous = $cpt_ordre + 1;
 				$largeur_appret = 0;
 				while ( !empty($ordre_moyenne[$cpt_ordre_sous]) ) {
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'eleve' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'rang' ) { $largeur_appret = $largeur_appret + $largeur_rang[$classe_id]; }
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'niveau' ) { $largeur_appret = $largeur_appret + $largeur_niveau[$classe_id]; }
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'min' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'classe' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
-					if ( $ordre_moyenne[$cpt_ordre_sous] === 'max' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
-				$cpt_ordre_sous = $cpt_ordre_sous + 1;
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'eleve' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'eleve' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id]; }
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'rang' ) { $largeur_appret = $largeur_appret + $largeur_rang[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'rang' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_rang"][$classe_id]; }
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'niveau' ) { $largeur_appret = $largeur_appret + $largeur_niveau[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'niveau' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_niveau"][$classe_id]; }
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'min' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'min' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id]; }
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'classe' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'classe' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id]; }
+					//if ( $ordre_moyenne[$cpt_ordre_sous] === 'max' ) { $largeur_appret = $largeur_appret + $largeur_d_une_moyenne[$classe_id]; }
+					if ( $ordre_moyenne[$cpt_ordre_sous] === 'max' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id]; }
+					$cpt_ordre_sous = $cpt_ordre_sous + 1;
 				}
-				$largeur_appreciation = $longeur_note_app[$classe_id] - $largeur_utilise - $largeur_appret;
-		} else { $largeur_appreciation = $longeur_note_app[$classe_id]-$largeur_utilise; }
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-		$pdf->Cell($largeur_appreciation, $hauteur_entete, $titre_entete_appreciation,'LRB',0,'C');
+				//$largeur_appreciation = $longeur_note_app[$classe_id] - $largeur_utilise - $largeur_appret;
+				$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id] - $largeur_utilise - $largeur_appret;
+			//} else { $largeur_appreciation = $longeur_note_app[$classe_id]-$largeur_utilise; }
+			} else { $largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise; }
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+			$pdf->Cell($largeur_appreciation, $hauteur_entete, $titre_entete_appreciation,'LRB',0,'C');
 			$largeur_utilise = $largeur_utilise + $largeur_appreciation;
 		}
 $cpt_ordre = $cpt_ordre + 1;
@@ -2611,7 +3038,16 @@ $cpt_ordre = $cpt_ordre + 1;
 
 		//============================
 		// Modif: boireaus 20070828
-		if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//A POURSUIVRE... EN FAISANT UNE RECHERCHE SUR $classe_id
+// 20080501
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+		//if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+		if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 			for($x=0;$x<$nb_matiere;$x++) {
 				if($matiere[$ident_eleve_aff][$id_periode][$x]['categorie']!=$categorie_passe_for) {
 					$nb_categories_select=$nb_categories_select+1;
@@ -2621,19 +3057,35 @@ $cpt_ordre = $cpt_ordre + 1;
 		}
 		//============================
 
-		$X_bloc_matiere=$X_note_app[$classe_id]; $Y_bloc_matiere=$Y_note_app[$classe_id]+$hauteur_entete; $longeur_bloc_matiere=$longeur_note_app[$classe_id];
+		//+++++++++++++++++
+		//+++++++++++++++++
+		//+++++++++++++++++
+		// REPERE: 20080614
+		//+++++++++++++++++
+		//+++++++++++++++++
+		//+++++++++++++++++
+
+		//$X_bloc_matiere=$X_note_app[$classe_id]; $Y_bloc_matiere=$Y_note_app[$classe_id]+$hauteur_entete; $longeur_bloc_matiere=$longeur_note_app[$classe_id];
+		$X_bloc_matiere=$tab_modele_pdf["X_note_app"][$classe_id]; $Y_bloc_matiere=$tab_modele_pdf["Y_note_app"][$classe_id]+$hauteur_entete;
+		$longeur_bloc_matiere=$tab_modele_pdf["longeur_note_app"][$classe_id];
 		// calcule de la hauteur total que peut prendre le cadre matière dans sa globalité
-		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' )
+		//if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' )
+		if ( $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne_general"][$classe_id] === '1' )
 		{
 			// si les moyennes et la moyenne général sont activé alors on les ajoute à ceux qui vaudras soustraire au cadre global matiere
-			$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id];
+			//$hauteur_toute_entete = $hauteur_entete + $hauteur_entete_moyenne_general[$classe_id];
+			$hauteur_toute_entete = $hauteur_entete + $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id];
 		} else { $hauteur_toute_entete = $hauteur_entete; }
 
-		$hauteur_bloc_matiere=$hauteur_note_app[$classe_id]-$hauteur_toute_entete;
-		$X_note_moy_app = $X_note_app[$classe_id]; $Y_note_moy_app = $Y_note_app[$classe_id]+$hauteur_note_app[$classe_id]-$hauteur_entete;
+		//$hauteur_bloc_matiere=$hauteur_note_app[$classe_id]-$hauteur_toute_entete;
+		$hauteur_bloc_matiere=$tab_modele_pdf["hauteur_note_app"][$classe_id]-$hauteur_toute_entete;
+		//$X_note_moy_app = $X_note_app[$classe_id]; $Y_note_moy_app = $Y_note_app[$classe_id]+$hauteur_note_app[$classe_id]-$hauteur_entete;
+		$X_note_moy_app = $tab_modele_pdf["X_note_app"][$classe_id];
+		$Y_note_moy_app = $tab_modele_pdf["Y_note_app"][$classe_id]+$tab_modele_pdf["hauteur_note_app"][$classe_id]-$hauteur_entete;
 
-			if($active_entete_regroupement[$classe_id]==='1') {
-		$espace_entre_matier = ($hauteur_bloc_matiere-($nb_categories_select*5))/$nb_matiere;
+		//if($active_entete_regroupement[$classe_id]==='1') {
+		if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
+			$espace_entre_matier = ($hauteur_bloc_matiere-($nb_categories_select*5))/$nb_matiere;
 		} else { $espace_entre_matier = $hauteur_bloc_matiere/$nb_matiere; }
 		$pdf->SetXY($X_bloc_matiere, $Y_bloc_matiere);
 		$Y_decal = $Y_bloc_matiere;
@@ -2642,45 +3094,61 @@ $cpt_ordre = $cpt_ordre + 1;
 		{
 			$pdf->SetXY($X_bloc_matiere, $Y_decal);
 
-			// si on affiche les catégorie
-			if($active_entete_regroupement[$classe_id]==='1') {
+			// si on affiche les catégories
+			//if($active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				//si on affiche les moyenne des catégorie
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$categorie_passe)
 				{
 					$hauteur_caractere_catego = '10';
-					if ( $taille_texte_categorie[$classe_id] != '' and $taille_texte_categorie[$classe_id] != '0' ) { $hauteur_caractere_catego = $taille_texte_categorie[$classe_id]; } else { $hauteur_caractere_catego = '10'; }
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_catego);
+					//if ( $taille_texte_categorie[$classe_id] != '' and $taille_texte_categorie[$classe_id] != '0' ) { $hauteur_caractere_catego = $taille_texte_categorie[$classe_id]; } else { $hauteur_caractere_catego = '10'; }
+					if ( $tab_modele_pdf["taille_texte_categorie"][$classe_id] != '' and $tab_modele_pdf["taille_texte_categorie"][$classe_id] != '0' ) { $hauteur_caractere_catego = $tab_modele_pdf["taille_texte_categorie"][$classe_id]; } else { $hauteur_caractere_catego = '10'; }
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_catego);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_catego);
 					$tt_catego = unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']);
 					$val = $pdf->GetStringWidth($tt_catego);
-					$taille_texte = ($largeur_matiere[$classe_id]);
+					//$taille_texte = ($largeur_matiere[$classe_id]);
+					$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 					$grandeur_texte='test';
 					while($grandeur_texte!='ok') {
 						if($taille_texte<$val)
 						{
 							$hauteur_caractere_catego = $hauteur_caractere_catego-0.3;
-							$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_catego);
+							//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_catego);
+							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_catego);
 							$val = $pdf->GetStringWidth($tt_catego);
 						} else { $grandeur_texte='ok'; }
 					}
 					$grandeur_texte='test';
-					$pdf->SetFillColor($couleur_categorie_entete1[$classe_id], $couleur_categorie_entete2[$classe_id], $couleur_categorie_entete3[$classe_id]);
-					$pdf->Cell($largeur_matiere[$classe_id], $hauteur_info_categorie[$classe_id], $tt_catego,'TLB',0,'L',$couleur_categorie_entete[$classe_id]);
-					$largeur_utilise = $largeur_matiere[$classe_id];
+					//$pdf->SetFillColor($couleur_categorie_entete1[$classe_id], $couleur_categorie_entete2[$classe_id], $couleur_categorie_entete3[$classe_id]);
+					$pdf->SetFillColor($tab_modele_pdf["couleur_categorie_entete1"][$classe_id], $tab_modele_pdf["couleur_categorie_entete2"][$classe_id], $tab_modele_pdf["couleur_categorie_entete3"][$classe_id]);
+					//$pdf->Cell($largeur_matiere[$classe_id], $hauteur_info_categorie[$classe_id], $tt_catego,'TLB',0,'L',$couleur_categorie_entete[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], $tt_catego,'TLB',0,'L',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+					//$largeur_utilise = $largeur_matiere[$classe_id];
+					$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 					// coefficient matière
-					if($active_coef_moyenne[$classe_id]==='1') {
+					//if($active_coef_moyenne[$classe_id]==='1') {
+					if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-						$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-						$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C',$couleur_categorie_entete[$classe_id]);
-						$largeur_utilise = $largeur_utilise+$largeur_coef_moyenne[$classe_id];
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						//$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C',$couleur_categorie_entete[$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+						//$largeur_utilise = $largeur_utilise+$largeur_coef_moyenne[$classe_id];
+						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 					}
 
 					// nombre de note
-					if($active_nombre_note_case[$classe_id]==='1') {
+					//if($active_nombre_note_case[$classe_id]==='1') {
+					if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-						$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-						$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C',$couleur_categorie_entete[$classe_id]);
-						$largeur_utilise = $largeur_utilise+$largeur_nombre_note[$classe_id];
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						//$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C',$couleur_categorie_entete[$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+						//$largeur_utilise = $largeur_utilise+$largeur_nombre_note[$classe_id];
+						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_nombre_note"][$classe_id];
 					}
 					$pdf->SetFillColor(0, 0, 0);
 
@@ -2691,9 +3159,11 @@ $cpt_ordre = $cpt_ordre + 1;
 					$chapeau_moyenne = 'non';
 					while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 						//eleve
-						if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+						//if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+						if($tab_modele_pdf["active_moyenne_eleve"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-							if($active_moyenne_regroupement[$classe_id]==='1') {
+							//if($active_moyenne_regroupement[$classe_id]==='1') {
+							if($tab_modele_pdf["active_moyenne_regroupement"][$classe_id]==='1') {
 								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
 								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 								{
@@ -2702,28 +3172,37 @@ $cpt_ordre = $cpt_ordre + 1;
 										$valeur = "-";
 									} else {
 										$calcule_moyenne_eleve_categorie[$categorie_passage]=$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['moy_eleve']/$matiere[$ident_eleve_aff][$id_periode][$categorie_passage]['coef_tt_catego'];
-										$valeur = present_nombre($calcule_moyenne_eleve_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+										//$valeur = present_nombre($calcule_moyenne_eleve_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+										$valeur = present_nombre($calcule_moyenne_eleve_categorie[$categorie_passage], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 									}
-									$pdf->SetFont($caractere_utilse[$classe_id],'B',8);
-									$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id],$valeur,1,0,'C',$active_reperage_eleve[$classe_id]);
+									//$pdf->SetFont($caractere_utilse[$classe_id],'B',8);
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
+									//$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+									$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id],$valeur,1,0,'C',$active_reperage_eleve[$classe_id]);
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id],$valeur,1,0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									$pdf->SetFillColor(0, 0, 0);
 									$valeur = "";
 								} else {
 									$pdf->SetFillColor(255, 255, 255);
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','TL',0,'C',$active_reperage_eleve[$classe_id]);
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','TL',0,'C',$active_reperage_eleve[$classe_id]);
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TL',0,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								}
 							} else {
-								$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+								//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
 							}
 
-							$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							//$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 						}
-							//classe
-						if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+						//classe
+						//if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+						if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 							//$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
 							$pdf->SetXY($X_moyenne_classe, $Y_decal);
-							if($active_moyenne_regroupement[$classe_id]==='1') {
+							//if($active_moyenne_regroupement[$classe_id]==='1') {
+							if($tab_modele_pdf["active_moyenne_regroupement"][$classe_id]==='1') {
 								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
 								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 								{
@@ -2739,22 +3218,30 @@ $cpt_ordre = $cpt_ordre + 1;
 									}
 									$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
 									//================================================
-									$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),'TLR',0,'C');
 								} else {
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
 								}
 							} else {
-								$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+								//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
 							}
-						$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							//$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 						}
 
-						$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-							//min
-						if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						//min
+						//if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+						if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 							$pdf->SetXY($X_min_classe, $Y_decal);
-							if($active_moyenne_regroupement[$classe_id]==='1') {
+							//if($active_moyenne_regroupement[$classe_id]==='1') {
+							if($tab_modele_pdf["active_moyenne_regroupement"][$classe_id]==='1') {
 								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
 								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 								{
@@ -2772,21 +3259,28 @@ $cpt_ordre = $cpt_ordre + 1;
 									//================================================
 
 									$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
-									$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),'TLR',0,'C');
 								} else {
-										$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-										}
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+								}
 							} else {
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-										}
-						$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+							}
+							//$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 						}
 
 						//max
-						if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+						//if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+						if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 							$pdf->SetXY($X_max_classe, $Y_decal);
-							if($active_moyenne_regroupement[$classe_id]==='1') {
+							//if($active_moyenne_regroupement[$classe_id]==='1') {
+							if($tab_modele_pdf["active_moyenne_regroupement"][$classe_id]==='1') {
 								$categorie_passage=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
 								if($matiere[$ident_eleve_aff][$id_periode][$m]['affiche_moyenne']==='1')
 								{
@@ -2804,15 +3298,20 @@ $cpt_ordre = $cpt_ordre + 1;
 									//================================================
 
 									$calcule_moyenne_classe_categorie[$categorie_passage]=$calcule_moyenne_classe_categorie[$categorie_passage];
-									$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),'TLR',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], present_nombre($calcule_moyenne_classe_categorie[$categorie_passage], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),'TLR',0,'C');
 								} else {
-										$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-										}
+									//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+								}
 							} else {
-									$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-										}
-						$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+								//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+							}
+							//$largeur_utilise = $largeur_utilise+$largeur_d_une_moyenne[$classe_id];
+							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 						}
 					$cpt_ordre = $cpt_ordre + 1;
 					}
@@ -2820,23 +3319,32 @@ $cpt_ordre = $cpt_ordre + 1;
 					// fin de boucle d'ordre
 
 					// rang de l'élève
-					if($active_rang[$classe_id]==='1') {
-					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-					$pdf->Cell($largeur_rang[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-					$largeur_utilise = $largeur_utilise+$largeur_rang[$classe_id];
+					//if($active_rang[$classe_id]==='1') {
+					if($tab_modele_pdf["active_rang"][$classe_id]==='1') {
+						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+						//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+						//$pdf->Cell($largeur_rang[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+						$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+						//$largeur_utilise = $largeur_utilise+$largeur_rang[$classe_id];
+						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_rang"][$classe_id];
 					}
 					// graphique de niveau
-					if($active_graphique_niveau[$classe_id]==='1') {
-					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					$pdf->Cell($largeur_niveau[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
-					$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+					//if($active_graphique_niveau[$classe_id]==='1') {
+					if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1') {
+						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+						//$pdf->Cell($largeur_niveau[$classe_id], $hauteur_info_categorie[$classe_id], '','T',0,'C');
+						$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','T',0,'C');
+						//$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+						$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 					}
 					//appreciation
-					if($active_appreciation[$classe_id]==='1') {
-					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
-					$pdf->Cell($largeur_appreciation, $hauteur_info_categorie[$classe_id], '','TB',0,'C');
-					$largeur_utilise=0;
+					//if($active_appreciation[$classe_id]==='1') {
+					if($tab_modele_pdf["active_appreciation"][$classe_id]==='1') {
+						$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
+						//$pdf->Cell($largeur_appreciation, $hauteur_info_categorie[$classe_id], '','TB',0,'C');
+						$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TB',0,'C');
+						$largeur_utilise=0;
 					}
 					$Y_decal = $Y_decal + 5;
 
@@ -2846,7 +3354,8 @@ $cpt_ordre = $cpt_ordre + 1;
 
 			//============================
 			// Modif: boireaus 20070828
-			if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			//if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']===$categorie_passe) {
 					$categorie_passe_count=$categorie_passe_count+1;
 				}
@@ -2864,7 +3373,8 @@ $cpt_ordre = $cpt_ordre + 1;
 
 			if(!isset($matiere[$ident_eleve_aff][$id_periode][$m+1]['categorie'])) { $matiere[$ident_eleve_aff][$id_periode][$m+1]['categorie']=''; }
 
-			if($active_regroupement_cote[$classe_id]==='1') {
+			//if($active_regroupement_cote[$classe_id]==='1') {
+			if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') {
 				if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']!=$matiere[$ident_eleve_aff][$id_periode][$m+1]['categorie'] and $categorie_passe!='')
 				{
 					//hauteur du regroupement hauteur des matier * nombre de matier de la catégorie
@@ -2876,13 +3386,17 @@ $cpt_ordre = $cpt_ordre + 1;
 
 						$pdf->SetXY($X_bloc_matiere-5,$Y_decal-$hauteur_regroupement+$espace_entre_matier);
 
-						$pdf->SetFillColor($couleur_categorie_cote1[$classe_id], $couleur_categorie_cote2[$classe_id], $couleur_categorie_cote3[$classe_id]);
-					if($couleur_categorie_cote[$classe_id] === '1') { $mode_choix_c = '2'; } else { $mode_choix_c = '1'; }
+						//$pdf->SetFillColor($couleur_categorie_cote1[$classe_id], $couleur_categorie_cote2[$classe_id], $couleur_categorie_cote3[$classe_id]);
+						$pdf->SetFillColor($tab_modele_pdf["couleur_categorie_cote1"][$classe_id], $tab_modele_pdf["couleur_categorie_cote2"][$classe_id], $tab_modele_pdf["couleur_categorie_cote3"][$classe_id]);
+					//if($couleur_categorie_cote[$classe_id] === '1') { $mode_choix_c = '2'; } else { $mode_choix_c = '1'; }
+					if($tab_modele_pdf["couleur_categorie_cote"][$classe_id] === '1') { $mode_choix_c = '2'; } else { $mode_choix_c = '1'; }
 					$pdf->drawTextBox("", 5, $hauteur_regroupement, 'C', 'T', $mode_choix_c);
 					//texte à afficher
 					$hauteur_caractere_vertical = '8';
-					if ( $taille_texte_categorie_cote[$classe_id] != '' and $taille_texte_categorie_cote[$classe_id] != '0') { $hauteur_caractere_vertical = $taille_texte_categorie_cote[$classe_id]; } else { $hauteur_caractere_vertical = '8'; }
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+					//if ( $taille_texte_categorie_cote[$classe_id] != '' and $taille_texte_categorie_cote[$classe_id] != '0') { $hauteur_caractere_vertical = $taille_texte_categorie_cote[$classe_id]; } else { $hauteur_caractere_vertical = '8'; }
+					if ( $tab_modele_pdf["taille_texte_categorie_cote"][$classe_id] != '' and $tab_modele_pdf["taille_texte_categorie_cote"][$classe_id] != '0') { $hauteur_caractere_vertical = $tab_modele_pdf["taille_texte_categorie_cote"][$classe_id]; } else { $hauteur_caractere_vertical = '8'; }
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
 					$text_s = unhtmlentities($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']);
 					$longeur_test_s = $pdf->GetStringWidth($text_s);
 
@@ -2893,7 +3407,8 @@ $cpt_ordre = $cpt_ordre + 1;
 						if($taille_texte < $longeur_test_s)
 						{
 							$hauteur_caractere_vertical = $hauteur_caractere_vertical-0.3;
-							$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+							//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
 							$longeur_test_s = $pdf->GetStringWidth($text_s);
 						} else { $grandeur_texte = 'ok'; }
 					}
@@ -2906,16 +3421,19 @@ $cpt_ordre = $cpt_ordre + 1;
 
 					//place le texte dans le cadre
 					$placement = $Y_decal+$espace_entre_matier-$deca;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_vertical);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_vertical);
 					$pdf->TextWithDirection($X_bloc_matiere-1,$placement,unhtmlentities($text_s),'U');
-					$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-						$pdf->SetFillColor(0, 0, 0);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+					$pdf->SetFillColor(0, 0, 0);
 				}
 			}
 
 			//============================
 			// Modif: boireaus 20070828
-			if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			//if($active_regroupement_cote[$classe_id]==='1' or $active_entete_regroupement[$classe_id]==='1') {
+			if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 				// fin d'affichage catégorie sur le coté
 				$categorie_passe=$matiere[$ident_eleve_aff][$id_periode][$m]['categorie'];
 				// fin de gestion de catégorie
@@ -2927,27 +3445,34 @@ $cpt_ordre = $cpt_ordre + 1;
 
 			// calcul la taille du titre de la matière
 			$hauteur_caractere_matiere=10;
-			if ( $taille_texte_matiere[$classe_id] != '' and $taille_texte_matiere[$classe_id] != '0' and $taille_texte_matiere[$classe_id] < '11' )
+			//if ( $taille_texte_matiere[$classe_id] != '' and $taille_texte_matiere[$classe_id] != '0' and $taille_texte_matiere[$classe_id] < '11' )
+			if ( $tab_modele_pdf["taille_texte_matiere"][$classe_id] != '' and $tab_modele_pdf["taille_texte_matiere"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_matiere"][$classe_id] < '11' )
 			{
-				$hauteur_caractere_matiere = $taille_texte_matiere[$classe_id];
+				//$hauteur_caractere_matiere = $taille_texte_matiere[$classe_id];
+				$hauteur_caractere_matiere = $tab_modele_pdf["taille_texte_matiere"][$classe_id];
 			}
-			$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere_matiere);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere_matiere);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
 			$val = $pdf->GetStringWidth($matiere[$ident_eleve_aff][$id_periode][$m]['matiere']);
-			$taille_texte = $largeur_matiere[$classe_id] - 2;
+			//$taille_texte = $largeur_matiere[$classe_id] - 2;
+			$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;
 			$grandeur_texte='test';
 			while($grandeur_texte!='ok') {
 				if($taille_texte<$val)
 				{
 					$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere_matiere);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'B',$hauteur_caractere_matiere);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
 					$val = $pdf->GetStringWidth($matiere[$ident_eleve_aff][$id_periode][$m]['matiere']);
 				} else { $grandeur_texte='ok'; }
 			}
 			$grandeur_texte='test';
-			$pdf->Cell($largeur_matiere[$classe_id], $espace_entre_matier/2, $matiere[$ident_eleve_aff][$id_periode][$m]['matiere'],'LR',1,'L');
+			//$pdf->Cell($largeur_matiere[$classe_id], $espace_entre_matier/2, $matiere[$ident_eleve_aff][$id_periode][$m]['matiere'],'LR',1,'L');
+			$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier/2, $matiere[$ident_eleve_aff][$id_periode][$m]['matiere'],'LR',1,'L');
 			$Y_decal = $Y_decal+($espace_entre_matier/2);
 			$pdf->SetXY($X_bloc_matiere, $Y_decal);
-			$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 
 			// nom des professeurs
 
@@ -2969,38 +3494,48 @@ $cpt_ordre = $cpt_ordre + 1;
 					if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
 					elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
 					elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
 					$val = $pdf->GetStringWidth($text_prof);
-					$taille_texte = ($largeur_matiere[$classe_id]);
+					//$taille_texte = ($largeur_matiere[$classe_id]);
+					$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
 					$grandeur_texte='test';
 					while($grandeur_texte!='ok') {
 						if($taille_texte<$val)
 						{
 							$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
-							$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+							//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_prof);
+							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
 							$val = $pdf->GetStringWidth($text_prof);
 						} else { $grandeur_texte='ok'; }
 					}
 					$grandeur_texte='test';
 					$pdf->SetX($X_bloc_matiere);
 					if( empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-						$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
+						//$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, $text_prof,'LRB',1,'L');
 					}
 					if( !empty($matiere[$ident_eleve_aff][$id_periode][$m]['prof'][$nb_pass_count+1]) ) {
-						$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
+						//$pdf->Cell($largeur_matiere[$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
+						$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, $text_prof,'LR',1,'L');
 					}
 					$nb_pass_count = $nb_pass_count + 1;
 				}
 			}
 			//$pdf->Cell($largeur_matiere[$classe_id], $espace_entre_matier/3, $matiere[$ident_eleve_aff][$id_periode][$m]['prof'],'LRB',0,'L');
-			$largeur_utilise = $largeur_matiere[$classe_id];
+			//$largeur_utilise = $largeur_matiere[$classe_id];
+			$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 			// coefficient matière
-			if($active_coef_moyenne[$classe_id]==='1') {
+			//if($active_coef_moyenne[$classe_id]==='1') {
+			if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-				$pdf->Cell($largeur_coef_moyenne[$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['coef'],1,0,'C');
-				$largeur_utilise = $largeur_utilise+$largeur_coef_moyenne[$classe_id];
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+				//$pdf->Cell($largeur_coef_moyenne[$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['coef'],1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['coef'],1,0,'C');
+				//$largeur_utilise = $largeur_utilise+$largeur_coef_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 			}
 				//permet le calcul total des coefficients
 				// if(empty($moyenne_min[$id_classe][$id_periode])) {
@@ -3008,22 +3543,29 @@ $cpt_ordre = $cpt_ordre + 1;
 				//}
 
 			// nombre de note
-			if($active_nombre_note_case[$classe_id]==='1') {
+			//if($active_nombre_note_case[$classe_id]==='1') {
+			if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$valeur = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] . "/" . $matiere[$ident_eleve_aff][$id_periode][$m]['nb_total_notes_matiere'];
-				$pdf->Cell($largeur_nombre_note[$classe_id], $espace_entre_matier, $valeur,1,0,'C');
-				$largeur_utilise = $largeur_utilise+$largeur_nombre_note[$classe_id];
+				//$pdf->Cell($largeur_nombre_note[$classe_id], $espace_entre_matier, $valeur,1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $espace_entre_matier, $valeur,1,0,'C');
+				//$largeur_utilise = $largeur_utilise+$largeur_nombre_note[$classe_id];
+				$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_nombre_note"][$classe_id];
 			}
 
 			// les moyennes eleve, classe, min, max
 			$cpt_ordre = 0;
 			while (!empty($ordre_moyenne[$cpt_ordre]) ) {
 				//eleve
-				if($active_moyenne_eleve[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+				//if($active_moyenne_eleve[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+				if($tab_modele_pdf["active_moyenne_eleve"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'B',10);
-				$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'B',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+				//$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+				$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
 
 				//calcul nombre de sous affichage
 
@@ -3031,59 +3573,80 @@ $cpt_ordre = $cpt_ordre + 1;
 				if(empty($active_coef_sousmoyene)) { $active_coef_sousmoyene = ''; }
 
 				if($active_coef_sousmoyene==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
-				if($active_nombre_note[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
-				if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_classe[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
-				if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_min[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
-				if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_max[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				//if($active_nombre_note[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+				if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
+				//if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_classe[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				//if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_min[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				//if($toute_moyenne_meme_col[$classe_id]==='1') { if($active_moyenne_max[$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
+				if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
 
 				// On filtre si la moyenne est vide, on affiche seulement un tiret
 				if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'] == "-") {
 					$valeur = "-";
 				} else {
-					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
-				$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$active_reperage_eleve[$classe_id]);
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$active_reperage_eleve[$classe_id]);
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 				$valeur = "";
 
 				if($active_coef_sousmoyene==='1') {
-				$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
-				$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$matiere[$ident_eleve_aff][$id_periode][$m]['coef'],'LR',2,'C',$active_reperage_eleve[$classe_id]);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$matiere[$ident_eleve_aff][$id_periode][$m]['coef'],'LR',2,'C',$active_reperage_eleve[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'coef. '.$matiere[$ident_eleve_aff][$id_periode][$m]['coef'],'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 				}
 
-				if($toute_moyenne_meme_col[$classe_id]==='1') {
+				//if($toute_moyenne_meme_col[$classe_id]==='1') {
+				if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') {
 					// On affiche toutes les moyennes dans la même colonne
-					$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
-					if($active_moyenne_classe[$classe_id]==='1') {
+					//$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
+					//if($active_moyenne_classe[$classe_id]==='1') {
+					if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') {
 						if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'] == "-") {
 							$valeur = "-";
 						} else {
-							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 						}
-						$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$active_reperage_eleve[$classe_id]);
+						//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$active_reperage_eleve[$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 					}
-					if($active_moyenne_min[$classe_id]==='1') {
+					//if($active_moyenne_min[$classe_id]==='1') {
+					if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') {
 						if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'] == "-") {
 							$valeur = "-";
 						} else {
-							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 						}
-						$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$active_reperage_eleve[$classe_id]);
+						//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$active_reperage_eleve[$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 					}
-					if($active_moyenne_max[$classe_id]==='1') {
+					//if($active_moyenne_max[$classe_id]==='1') {
+					if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1') {
 						if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'] == "-") {
 							$valeur = "-";
 						} else {
-							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+							$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 						}
-						$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'max.'.$valeur,'LRD',2,'C',$active_reperage_eleve[$classe_id]);
+						//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier/$nb_sousaffichage, 'max.'.$valeur,'LRD',2,'C',$active_reperage_eleve[$classe_id]);
+						$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'max.'.$valeur,'LRD',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 						$valeur = ''; // on remet à vide.
 					}
 
 				}
-				if($active_nombre_note[$classe_id]==='1') {
-					$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
+				//if($active_nombre_note[$classe_id]==='1') {
+				if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') {
+					//$pdf->SetFont($caractere_utilse[$classe_id],'I',7);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',7);
 					$espace_pour_nb_note = $espace_entre_matier/$nb_sousaffichage;
-						$espace_pour_nb_note = $espace_pour_nb_note / 2;
+					$espace_pour_nb_note = $espace_pour_nb_note / 2;
 					$valeur1 = ''; $valeur2 = '';
 					if ( $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'] != 0 ) {
 						//$valeur1 = $matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere'].' note(s)';
@@ -3091,71 +3654,95 @@ $cpt_ordre = $cpt_ordre + 1;
 						if($matiere[$ident_eleve_aff][$id_periode][$m]['nb_notes_matiere']>1){$valeur1.='s';}
 						$valeur2 = 'sur '.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_total_notes_matiere'];
 					}
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_pour_nb_note, $valeur1, 'LR',2,'C',$active_reperage_eleve[$classe_id]);
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$active_reperage_eleve[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_pour_nb_note, $valeur1, 'LR',2,'C',$active_reperage_eleve[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur1, 'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$active_reperage_eleve[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_pour_nb_note, $valeur2, 'LRB',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 					$valeur1 = ''; $valeur2 = '';
 				}
-				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$pdf->SetFillColor(0, 0, 0);
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 
 				} // Fin affichage élève
 
 				//classe
-				if( $active_moyenne_classe[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+				//if( $active_moyenne_classe[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+				if( $tab_modele_pdf["active_moyenne_classe"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 				if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'] == "-") {
 					$valeur = "-";
 				} else {
-					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
-				$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcul de la moyenne général de la classe
+				//if(empty($moyenne_classe[$id_classe][$id_periode])) { $total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
 				if(empty($moyenne_classe[$id_classe][$id_periode])) { $total_moyenne_classe_en_calcul=$total_moyenne_classe_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_classe']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 				//min
-				if( $active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+				//if( $active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+				if( $tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 				if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'] == "-") {
 					$valeur = "-";
 				} else {
-					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
-				$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 				//permet le calcul de la moyenne mini
 					if(empty($moyenne_min[$id_classe][$id_periode])) { $total_moyenne_min_en_calcul=$total_moyenne_min_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_min']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
-					$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 				//max
-				if( $active_moyenne_max[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+				//if( $active_moyenne_max[$classe_id] === '1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+				if( $tab_modele_pdf["active_moyenne_max"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 					if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'] == "-") {
 						$valeur = "-";
 					} else {
-						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+						//$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+						$valeur = present_nombre($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 					}
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 					//permet le calcul de la moyenne maxi
 					if(empty($moyenne_max[$id_classe][$id_periode])) { $total_moyenne_max_en_calcul=$total_moyenne_max_en_calcul+($matiere[$ident_eleve_aff][$id_periode][$m]['moy_max']*$matiere[$ident_eleve_aff][$id_periode][$m]['coef']); }
-					$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+					$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 				}
 //			    $largeur_utilise = $largeur_utilise+$largeur_moyenne;
 
 
 			// rang de l'élève
-			if($active_rang[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
+			//if($active_rang[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
+			if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-				$pdf->Cell($largeur_rang[$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['rang'].'/'.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_eleve_rang'],1,0,'C');
-				$largeur_utilise = $largeur_utilise+$largeur_rang[$classe_id];
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+				//$pdf->Cell($largeur_rang[$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['rang'].'/'.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_eleve_rang'],1,0,'C');
+				$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $espace_entre_matier, $matiere[$ident_eleve_aff][$id_periode][$m]['rang'].'/'.$matiere[$ident_eleve_aff][$id_periode][$m]['nb_eleve_rang'],1,0,'C');
+				//$largeur_utilise = $largeur_utilise+$largeur_rang[$classe_id];
+				$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_rang"][$classe_id];
 			}
 
 			// graphique de niveau
-			if($active_graphique_niveau[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+			//if($active_graphique_niveau[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+			if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$id_groupe_graph = $matiere[$ident_eleve_aff][$id_periode][$m]['id_groupe'];
 				// placement de l'élève dans le graphique de niveau
 				if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']!="") {
@@ -3167,27 +3754,32 @@ $cpt_ordre = $cpt_ordre + 1;
 					if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=15) { $place_eleve=0;}
 				}
 				if (array_sum($data_grap[$id_periode][$id_groupe_graph]) != 0) {
-					$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2), $largeur_niveau[$classe_id], $espace_entre_matier, $data_grap[$id_periode][$id_groupe_graph], $place_eleve);
+					//$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2), $largeur_niveau[$classe_id], $espace_entre_matier, $data_grap[$id_periode][$id_groupe_graph], $place_eleve);
+					$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2), $tab_modele_pdf["largeur_niveau"][$classe_id], $espace_entre_matier, $data_grap[$id_periode][$id_groupe_graph], $place_eleve);
 				}
 				$place_eleve=''; // on vide la variable
-				$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+				//$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+				$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 			}
 
 			//appréciation
-			if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+			//if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+			if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
 				// si on autorise l'affichage des sous matière et s'il y en a alors on les affiche
 				$id_groupe_select = $matiere[$ident_eleve_aff][$id_periode][$m]['id_groupe'];
-			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-			$X_sous_matiere = 0; $largeur_sous_matiere=0;
+				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+				$X_sous_matiere = 0; $largeur_sous_matiere=0;
 
-				if($autorise_sous_matiere[$classe_id]==='1' and !empty($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][0]['titre'])) {
+				//if($autorise_sous_matiere[$classe_id]==='1' and !empty($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][0]['titre'])) {
+				if($tab_modele_pdf["autorise_sous_matiere"][$classe_id]==='1' and !empty($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][0]['titre'])) {
 					$X_sous_matiere = $X_note_moy_app+$largeur_utilise;
 					$Y_sous_matiere = $Y_decal-($espace_entre_matier/2);
 					$n=0;
 					$largeur_texte_sousmatiere=0; $largeur_sous_matiere=0;
 					while( !empty($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['titre']) )
 					{
-					$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 					$largeur_texte_sousmatiere = $pdf->GetStringWidth($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['titre'].': '.$sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['moyenne']);
 					if($largeur_sous_matiere<$largeur_texte_sousmatiere) { $largeur_sous_matiere=$largeur_texte_sousmatiere; }
 					$n = $n + 1;
@@ -3197,7 +3789,8 @@ $cpt_ordre = $cpt_ordre + 1;
 					while( !empty($sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['titre']) )
 					{
 					$pdf->SetXY($X_sous_matiere, $Y_sous_matiere);
-					$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 					$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/$sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select]['nb'], $sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['titre'].': '.$sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select][$n]['moyenne'],1,0,'L');
 					$Y_sous_matiere = $Y_sous_matiere+$espace_entre_matier/$sous_matiere[$ident_eleve_aff][$id_periode][$id_groupe_select]['nb'];
 					$n = $n + 1;
@@ -3207,7 +3800,8 @@ $cpt_ordre = $cpt_ordre + 1;
 			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 			// calcule de la taille du texte des appréciation
 			$hauteur_caractere_appreciation = 9;
-			$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_appreciation);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_appreciation);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
 
 			//suppression des espace en début et en fin
 			$app_aff = trim($matiere[$ident_eleve_aff][$id_periode][$m]['appreciation']);
@@ -3223,95 +3817,129 @@ $cpt_ordre = $cpt_ordre + 1;
 				if($taille_texte_max < $taille_texte_total)
 				{
 					$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-					$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_appreciation);
+					//$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_appreciation);
+					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_appreciation);
 					$taille_texte_total = $pdf->GetStringWidth($app_aff);
 				} else { $grandeur_texte='ok'; }
 			}
 				$grandeur_texte='test';
 			$pdf->drawTextBox($app_aff, $largeur_appreciation2, $espace_entre_matier, 'J', 'M', 1);
-			$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 			$largeur_utilise = $largeur_utilise + $largeur_appreciation2;
 //			$largeur_utilise = 0;
 			}
 
-$cpt_ordre = $cpt_ordre + 1;
-}
-		$largeur_utilise = 0;
-// fin de boucle d'ordre
-			$Y_decal = $Y_decal+($espace_entre_matier/2);
+			$cpt_ordre = $cpt_ordre + 1;
 		}
+		$largeur_utilise = 0;
+		// fin de boucle d'ordre
+		$Y_decal = $Y_decal+($espace_entre_matier/2);
+	}
 
 
+//++++++++++++++++++++
+//++++++++++++++++++++
+//++++++++++++++++++++
+// REPERE 20080614
+//++++++++++++++++++++
+//++++++++++++++++++++
+//++++++++++++++++++++
 
 		//bas du tableau des note et app si les affichage des moyennes ne sont pas affiché le bas du tableau ne seras pas affiché
-		if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' ) {
-		$X_note_moy_app = $X_note_app[$classe_id]; $Y_note_moy_app = $Y_note_app[$classe_id]+$hauteur_note_app[$classe_id]-$hauteur_entete_moyenne_general[$classe_id];
+		//if ( $active_moyenne[$classe_id] === '1' and $active_moyenne_general[$classe_id] === '1' ) {
+		if ( $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne_general"][$classe_id] === '1' ) {
+		//$X_note_moy_app = $X_note_app[$classe_id]; $Y_note_moy_app = $Y_note_app[$classe_id]+$hauteur_note_app[$classe_id]-$hauteur_entete_moyenne_general[$classe_id];
+		$X_note_moy_app = $tab_modele_pdf["X_note_app"][$classe_id];
+		$Y_note_moy_app = $tab_modele_pdf["Y_note_app"][$classe_id]+$tab_modele_pdf["hauteur_note_app"][$classe_id]-$tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id];
 		$pdf->SetXY($X_note_moy_app, $Y_note_moy_app);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		$pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "Moyenne générale",1,0,'C', $couleur_moy_general[$classe_id]);
-		$largeur_utilise = $largeur_matiere[$classe_id];
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+		$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+		//$pdf->Cell($largeur_matiere[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "Moyenne générale",1,0,'C', $couleur_moy_general[$classe_id]);
+		$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "Moyenne générale",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+		//$largeur_utilise = $largeur_matiere[$classe_id];
+		$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 		// coefficient matière
-		if($active_coef_moyenne[$classe_id]==='1') {
-		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "",1,0,'C', $couleur_moy_general[$classe_id]);
-		$largeur_utilise = $largeur_utilise + $largeur_coef_moyenne[$classe_id];
+		//if($active_coef_moyenne[$classe_id]==='1') {
+		if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
+			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+			//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+			//$pdf->Cell($largeur_coef_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "",1,0,'C', $couleur_moy_general[$classe_id]);
+			$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+			//$largeur_utilise = $largeur_utilise + $largeur_coef_moyenne[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 		}
 
 		// nombre de note
-		if($active_nombre_note_case[$classe_id]==='1') {
-		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "",1,0,'C', $couleur_moy_general[$classe_id]);
-		$largeur_utilise = $largeur_utilise + $largeur_nombre_note[$classe_id];
+		//if($active_nombre_note_case[$classe_id]==='1') {
+		if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
+			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+			//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+			//$pdf->Cell($largeur_nombre_note[$classe_id], $hauteur_entete_moyenne_general[$classe_id], "",1,0,'C', $couleur_moy_general[$classe_id]);
+			$pdf->Cell($tab_modele_pdf["largeur_nombre_note"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+			//$largeur_utilise = $largeur_utilise + $largeur_nombre_note[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_nombre_note"][$classe_id];
 		}
 
 		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 
-$cpt_ordre = 0;
-while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
+		$cpt_ordre = 0;
+		while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 			//eleve
-			if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+			//if($active_moyenne_eleve[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
+			if($tab_modele_pdf["active_moyenne_eleve"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'eleve' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-				$pdf->SetFont($caractere_utilse[$classe_id],'B',10);
-				$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'B',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+				//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 				// On a deux paramètres de couleur qui se croisent. On utilise une variable tierce.
-				$utilise_couleur = $couleur_moy_general[$classe_id];
-				if($active_reperage_eleve[$classe_id]==='1') {
+				//$utilise_couleur = $couleur_moy_general[$classe_id];
+				$utilise_couleur = $tab_modele_pdf["couleur_moy_general"][$classe_id];
+				//if($active_reperage_eleve[$classe_id]==='1') {
+				if($tab_modele_pdf["active_reperage_eleve"][$classe_id]==='1') {
 					// Si on affiche une couleur spécifique pour les moyennes de l'élève,
 					// on utilise cette couleur ici aussi, quoi qu'il arrive
-					$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+					//$pdf->SetFillColor($couleur_reperage_eleve1[$classe_id], $couleur_reperage_eleve2[$classe_id], $couleur_reperage_eleve3[$classe_id]);
+					$pdf->SetFillColor($tab_modele_pdf["couleur_reperage_eleve1"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve2"][$classe_id], $tab_modele_pdf["couleur_reperage_eleve3"][$classe_id]);
 					$utilise_couleur = 1;
 				}
 
-				//=========================
-				// MODIF: boireaus 20080604
 				//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C',$utilise_couleur);
-				if(((isset($matiere[$ident_eleve_aff][$id_periode]['au_moins_une_moyenne']))&&
-					($matiere[$ident_eleve_aff][$id_periode]['au_moins_une_moyenne']="y"))||
-					($desactivation_modif_20080604=='y')) {
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C',$utilise_couleur);
+				//$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], present_nombre($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]),1,0,'C',$utilise_couleur);
+
+				if(($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']=="")||($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']=="-")) {
+					$val_tmp="-";
 				}
 				else {
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C',$utilise_couleur);
+					$val_tmp=present_nombre(ereg_replace(',','.',$info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']), $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 				}
-				//=========================
+
+				$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $val_tmp,1,0,'C',$utilise_couleur);
 
 
 				//if($active_reperage_eleve==='1' and $couleur_moy_general==='1') { $couleur_moy_general = 0; }
-				$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$pdf->SetFillColor(0, 0, 0);
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 			//classe
-			if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+			//if($active_moyenne_classe[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
+			if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'classe' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-				$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-				$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+				//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
 				if( $total_coef_en_calcul != 0){
 					$moyenne_classe = $total_moyenne_classe_en_calcul / $total_coef_en_calcul;
@@ -3323,23 +3951,36 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 				if ( $moyenne_classe != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					//$moyenne_classe=$tab_moy_gen_classe[$classe_id][$id_periode];
 					$moyenne_classe=$tab_moy_gen_classe[$classe_id][$id_periode];
+					/*
+					if(($moyenne_classe!="")&&($moyenne_classe!="-")) {
+						$moyenne_classe=present_nombre(ereg_replace(',','.',$moyenne_classe), $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]);
+					}
+					*/
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_classe, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_classe,1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_classe,1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $moyenne_classe,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					//=========================
 				} else {
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], '-',1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 				}
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 			//min
-			if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+			//if($active_moyenne_min[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
+			if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'min' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-				$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-				$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+				//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
-				if($total_coef_en_calcul != 0 and $affiche_moyenne_mini_general[$classe_id] === '1' ){
+				//if($total_coef_en_calcul != 0 and $affiche_moyenne_mini_general[$classe_id] === '1' ){
+				if($total_coef_en_calcul != 0 and $tab_modele_pdf["affiche_moyenne_mini_general"][$classe_id] === '1' ){
 					$moyenne_min = $total_moyenne_min_en_calcul / $total_coef_en_calcul;
 				}
 				else{
@@ -3349,23 +3990,31 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 				if ( $moyenne_min != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					//$moyenne_min=$tab_moy_min_classe[$classe_id][$id_periode];
 					$moyenne_min=$tab_moy_min_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_min, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_min,1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_min,1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $moyenne_min,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					//=========================
 				} else {
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], '-',1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 				}
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 			//max
-			if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+			//if($active_moyenne_max[$classe_id]==='1' and $active_moyenne[$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
+			if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1' and $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $ordre_moyenne[$cpt_ordre] === 'max' ) {
 				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-				$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-				$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+				//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+				$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 
-				if($total_coef_en_calcul != 0 and $affiche_moyenne_maxi_general[$classe_id] === '1' ){
+				//if($total_coef_en_calcul != 0 and $affiche_moyenne_maxi_general[$classe_id] === '1' ){
+				if($total_coef_en_calcul != 0 and $tab_modele_pdf["affiche_moyenne_maxi_general"][$classe_id] === '1' ){
 					$moyenne_max = $total_moyenne_max_en_calcul / $total_coef_en_calcul;
 				} else {
 					$moyenne_max = '-';
@@ -3374,34 +4023,45 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 				if ( $moyenne_max != '-' ) {
 					//=========================
 					// MODIF: boireaus 20080102
+					//$moyenne_max=$tab_moy_max_classe[$classe_id][$id_periode];
 					$moyenne_max=$tab_moy_max_classe[$classe_id][$id_periode];
 					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], present_nombre($moyenne_max, $arrondie_choix[$classe_id], $nb_chiffre_virgule[$classe_id], $chiffre_avec_zero[$classe_id]),1,0,'C', $couleur_moy_general[$classe_id]);
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_max,1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $moyenne_max,1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $moyenne_max,1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					//=========================
 				} else {
-					$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					//$pdf->Cell($largeur_d_une_moyenne[$classe_id], $hauteur_entete_moyenne_general[$classe_id], '-',1,0,'C', $couleur_moy_general[$classe_id]);
+					$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], '-',1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 				}
-				$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				//$largeur_utilise = $largeur_utilise + $largeur_d_une_moyenne[$classe_id];
+				$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
 			}
 
 		// rang de l'élève
-		if($active_rang[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
-		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-			$pdf->SetFont($caractere_utilse[$classe_id],'',8);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		if ($rang_eleve_classe[$ident_eleve_aff][$id_periode] != 0) {
-			$rang_a_afficher = $rang_eleve_classe[$ident_eleve_aff][$id_periode].'/'.$classe_effectif_tab[$id_classe_selection][$id_periode]['effectif'];
-		} else {
-			$rang_a_afficher = "";
-		}
-		$pdf->Cell($largeur_rang[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $rang_a_afficher ,'TLRB',0,'C', $couleur_moy_general[$classe_id]);
-		$largeur_utilise = $largeur_utilise + $largeur_rang[$classe_id];
+		//if($active_rang[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
+		if($tab_modele_pdf["active_rang"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'rang') {
+			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+			//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
+			//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+			if ($rang_eleve_classe[$ident_eleve_aff][$id_periode] != 0) {
+				$rang_a_afficher = $rang_eleve_classe[$ident_eleve_aff][$id_periode].'/'.$classe_effectif_tab[$id_classe_selection][$id_periode]['effectif'];
+			} else {
+				$rang_a_afficher = "";
+			}
+			//$pdf->Cell($largeur_rang[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $rang_a_afficher ,'TLRB',0,'C', $couleur_moy_general[$classe_id]);
+			$pdf->Cell($tab_modele_pdf["largeur_rang"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $rang_a_afficher ,'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+			//$largeur_utilise = $largeur_utilise + $largeur_rang[$classe_id];
+			$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_rang"][$classe_id];
 		}
 
 		// graphique de niveau
-		if($active_graphique_niveau[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
-		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+		//if($active_graphique_niveau[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+		if($tab_modele_pdf["active_graphique_niveau"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'niveau' ) {
+			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+			//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
 			// placement de l'élève dans le graphique de niveau
 				if ($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']!="") {
 								if ($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']<5) { $place_eleve=5;}
@@ -3411,18 +4071,23 @@ while ( !empty($ordre_moyenne[$cpt_ordre]) ) {
 								if (($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']>=12) and ($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']<15)) { $place_eleve=1;}
 								if ($info_bulletin[$ident_eleve_aff][$id_periode]['moy_general_eleve']>=15) { $place_eleve=0;}
 							}
-			$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_note_moy_app, $largeur_niveau[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $data_grap_classe[$id_periode][$id_classe_selection], $place_eleve);
+			//$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_note_moy_app, $largeur_niveau[$classe_id], $hauteur_entete_moyenne_general[$classe_id], $data_grap_classe[$id_periode][$id_classe_selection], $place_eleve);
+			$pdf->DiagBarre($X_note_moy_app+$largeur_utilise, $Y_note_moy_app, $tab_modele_pdf["largeur_niveau"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $data_grap_classe[$id_periode][$id_classe_selection], $place_eleve);
 			$place_eleve=''; // on vide la variable
-		$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+			//$largeur_utilise = $largeur_utilise+$largeur_niveau[$classe_id];
+			$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 		}
 		//appréciation
-		if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
-		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
-		$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
-		$pdf->Cell($largeur_appreciation, $hauteur_entete_moyenne_general[$classe_id], '','TLRB',0,'C', $couleur_moy_general[$classe_id]);
-		$largeur_utilise = $largeur_utilise + $largeur_appreciation;
+		//if($active_appreciation[$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+		if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+			$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+			//$pdf->SetFillColor($couleur_moy_general1[$classe_id], $couleur_moy_general2[$classe_id], $couleur_moy_general3[$classe_id]);
+			$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+			//$pdf->Cell($largeur_appreciation, $hauteur_entete_moyenne_general[$classe_id], '','TLRB',0,'C', $couleur_moy_general[$classe_id]);
+			$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], '','TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+			$largeur_utilise = $largeur_utilise + $largeur_appreciation;
 		}
-$cpt_ordre = $cpt_ordre + 1;
+	$cpt_ordre = $cpt_ordre + 1;
 }
 		$largeur_utilise = 0;
 // fin de boucle d'ordre
@@ -3430,11 +4095,23 @@ $cpt_ordre = $cpt_ordre + 1;
 		}
 	}
 
+//+++++++++++++++++++++++++
+//+++++++++++++++++++++++++
+//+++++++++++++++++++++++++
+// 20080614
+//+++++++++++++++++++++++++
+//+++++++++++++++++++++++++
+//+++++++++++++++++++++++++
+
 	// =============== bloc absence ==================
-	if($active_bloc_absence[$classe_id]==='1') {
-	$pdf->SetXY($X_absence[$classe_id], $Y_absence[$classe_id]);
-	$origine_Y_absence = $Y_absence[$classe_id];
-	$pdf->SetFont($caractere_utilse[$classe_id],'I',8);
+	//if($active_bloc_absence[$classe_id]==='1') {
+	if($tab_modele_pdf["active_bloc_absence"][$classe_id]==='1') {
+	//$pdf->SetXY($X_absence[$classe_id], $Y_absence[$classe_id]);
+	$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]);
+	//$origine_Y_absence = $Y_absence[$classe_id];
+	$origine_Y_absence = $tab_modele_pdf["Y_absence"][$classe_id];
+	//$pdf->SetFont($caractere_utilse[$classe_id],'I',8);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',8);
 	$info_absence='';
 	if($info_bulletin[$ident_eleve_aff][$id_periode]['absences'] != '?') {
 		if($info_bulletin[$ident_eleve_aff][$id_periode]['absences'] == '0')
@@ -3458,41 +4135,53 @@ $cpt_ordre = $cpt_ordre + 1;
 		$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$info_bulletin[$ident_eleve_aff][$id_periode]['absences_retards']."</b>";
 	}
 
-	$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+	//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 
-		// MODIF: boireaus
-		$info_absence = $info_absence." (C.P.E. chargé";
-		$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
-		$res_civi=mysql_query($sql);
-		if(mysql_num_rows($res_civi)>0){
-			$lig_civi=mysql_fetch_object($res_civi);
-			if($lig_civi->civilite!="M."){
-				$info_absence = $info_absence."e";
-			}
+	// MODIF: boireaus
+	$info_absence = $info_absence." (C.P.E. chargé";
+	$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
+	$res_civi=mysql_query($sql);
+	if(mysql_num_rows($res_civi)>0){
+		$lig_civi=mysql_fetch_object($res_civi);
+		if($lig_civi->civilite!="M."){
+			$info_absence = $info_absence."e";
 		}
-		$info_absence = $info_absence." du suivi : ".$cpe_eleve[$i].")";
-		$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
+	}
+	$info_absence = $info_absence." du suivi : ".$cpe_eleve[$i].")";
+	$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
 
 
-	if ( isset($Y_avis_cons_init) ) { $Y_avis_cons[$classe_id] = $Y_avis_cons_init; }
-	if ( isset($Y_sign_chef_init) ) { $Y_sign_chef[$classe_id] = $Y_sign_chef_init; }
-	if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $Y_avis_cons[$classe_id] + 0.5; }
-	if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $Y_sign_chef[$classe_id] + 0.5; }
+	//if ( isset($Y_avis_cons_init) ) { $Y_avis_cons[$classe_id] = $Y_avis_cons_init; }
+	if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
+	//if ( isset($Y_sign_chef_init) ) { $Y_sign_chef[$classe_id] = $Y_sign_chef_init; }
+	//if ( isset($Y_sign_chef_init) ) { $Y_sign_chef[$classe_id] = $Y_sign_chef_init; }
+	if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+	//if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $Y_avis_cons[$classe_id] + 0.5; }
+	if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $tab_modele_pdf["Y_avis_cons"][$classe_id] + 0.5; }
+	//if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $Y_sign_chef[$classe_id] + 0.5; }
+	if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $tab_modele_pdf["Y_sign_chef"][$classe_id] + 0.5; }
 
-	if ( isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons[$classe_id] = $hauteur_avis_cons_init; }
-	if ( isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef[$classe_id] = $hauteur_sign_chef_init; }
-	if ( !isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons_init = $hauteur_avis_cons[$classe_id] - 0.5; }
-	if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $hauteur_sign_chef[$classe_id] - 0.5; }
+	//if ( isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons[$classe_id] = $hauteur_avis_cons_init; }
+	if ( isset($hauteur_avis_cons_init) ) { $tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $hauteur_avis_cons_init; }
+	//if ( isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef[$classe_id] = $hauteur_sign_chef_init; }
+	if ( isset($hauteur_sign_chef_init) ) { $tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $hauteur_sign_chef_init; }
+	//if ( !isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons_init = $hauteur_avis_cons[$classe_id] - 0.5; }
+	if ( !isset($hauteur_avis_cons_init) ) { $hauteur_avis_cons_init = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - 0.5; }
+	//if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $hauteur_sign_chef[$classe_id] - 0.5; }
+	if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - 0.5; }
 
-		if($info_bulletin[$ident_eleve_aff][$id_periode]['absences_appreciation'] != "")
+	if($info_bulletin[$ident_eleve_aff][$id_periode]['absences_appreciation'] != "")
 	{
 
 		// supprimer les espaces
 		$text_absences_appreciation = trim(str_replace(array("\r\n","\r","\n"), ' ', unhtmlentities($info_bulletin[$ident_eleve_aff][$id_periode]['absences_appreciation'])));
 		$info_absence_appreciation = "<i>Avis CPE:</i> <b>".$text_absences_appreciation."</b>";
 		$text_absences_appreciation = '';
-		$pdf->SetXY($X_absence[$classe_id], $Y_absence[$classe_id]+4);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+		//$pdf->SetXY($X_absence[$classe_id], $Y_absence[$classe_id]+4);
+		$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',8);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
 		$pdf->MultiCellTag(200, 3, $info_absence_appreciation, '', 'J', '');
 		//$hauteur_avis_cons_init = $hauteur_avis_cons[$classe_id];
 		$val = $pdf->GetStringWidth($info_absence_appreciation);
@@ -3502,97 +4191,149 @@ $cpt_ordre = $cpt_ordre + 1;
 		$nb_ligne = ceil($val / 200);
 		$hauteur_pris = $nb_ligne * 3;
 
-		$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] + $hauteur_pris; $hauteur_avis_cons[$classe_id] = $hauteur_avis_cons[$classe_id] - ( $hauteur_pris + 0.5 );
-		$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] + $hauteur_pris; $hauteur_sign_chef[$classe_id] = $hauteur_sign_chef[$classe_id] - ( $hauteur_pris + 0.5 );
+		//$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] + $hauteur_pris; $hauteur_avis_cons[$classe_id] = $hauteur_avis_cons[$classe_id] - ( $hauteur_pris + 0.5 );
+		$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + $hauteur_pris;
+		$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - ( $hauteur_pris + 0.5 );
+		//$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] + $hauteur_pris; $hauteur_sign_chef[$classe_id] = $hauteur_sign_chef[$classe_id] - ( $hauteur_pris + 0.5 );
+		$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] + $hauteur_pris;
+		$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - ( $hauteur_pris + 0.5 );
 		$hauteur_pris = 0;
 	} else {
-			if($Y_avis_cons_init!=$Y_avis_cons[$classe_id])
-			{
-			$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] - $hauteur_pris;
-			$hauteur_avis_cons[$classe_id] = $hauteur_avis_cons[$classe_id] + $hauteur_pris;
-			$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] - $hauteur_pris;
-			$hauteur_sign_chef[$classe_id] = $hauteur_sign_chef[$classe_id] + $hauteur_pris;
+		//if($Y_avis_cons_init!=$Y_avis_cons[$classe_id])
+		if($Y_avis_cons_init!=$tab_modele_pdf["Y_avis_cons"][$classe_id])
+		{
+			//$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] - $hauteur_pris;
+			$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] - $hauteur_pris;
+			//$hauteur_avis_cons[$classe_id] = $hauteur_avis_cons[$classe_id] + $hauteur_pris;
+			$tab_modele_pdf["hauteur_avis_cons"][$classe_id] = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] + $hauteur_pris;
+			//$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] - $hauteur_pris;
+			$tab_modele_pdf["Y_sign_chef"][$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] - $hauteur_pris;
+			//$hauteur_sign_chef[$classe_id] = $hauteur_sign_chef[$classe_id] + $hauteur_pris;
+			$tab_modele_pdf["hauteur_sign_chef"][$classe_id] = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] + $hauteur_pris;
 			$hauteur_pris = 0;
-			}
 		}
+	}
 	$info_absence = '';
 	$info_absence_appreciation = '';
-	$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+	//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+	$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 	}
 
 	// si le bloc absence n'est pas activé
-	if($active_bloc_absence[$classe_id] != '1') {
-	if ( isset($Y_avis_cons_init) ) { $Y_avis_cons[$classe_id] = $Y_avis_cons_init; }
-	if ( isset($Y_sign_chef_init) ) { $Y_sign_chef[$classe_id] = $Y_sign_chef_init; }
-	if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $Y_avis_cons[$classe_id]; }
-	if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $Y_sign_chef[$classe_id]; }
+	//if($active_bloc_absence[$classe_id] != '1') {
+	if($tab_modele_pdf["active_bloc_absence"][$classe_id] != '1') {
+		//if ( isset($Y_avis_cons_init) ) { $Y_avis_cons[$classe_id] = $Y_avis_cons_init; }
+		if ( isset($Y_avis_cons_init) ) { $tab_modele_pdf["Y_avis_cons"][$classe_id] = $Y_avis_cons_init; }
+		//if ( isset($Y_sign_chef_init) ) { $Y_sign_chef[$classe_id] = $Y_sign_chef_init; }
+		if ( isset($Y_sign_chef_init) ) { $tab_modele_pdf["Y_sign_chef"][$classe_id] = $Y_sign_chef_init; }
+		//if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $Y_avis_cons[$classe_id]; }
+		if ( !isset($Y_avis_cons_init) ) { $Y_avis_cons_init = $tab_modele_pdf["Y_avis_cons"][$classe_id]; }
+		//if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $Y_sign_chef[$classe_id]; }
+		if ( !isset($Y_sign_chef_init) ) { $Y_sign_chef_init = $tab_modele_pdf["Y_sign_chef"][$classe_id]; }
 	}
 	// fin
 
-	if($Y_avis_cons_init!=$Y_avis_cons[$classe_id]) {
-		$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] + 0.5;
-		$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] + 0.5;
+	//if($Y_avis_cons_init!=$Y_avis_cons[$classe_id]) {
+	if($Y_avis_cons_init!=$tab_modele_pdf["Y_avis_cons"][$classe_id]) {
+		//$Y_avis_cons[$classe_id] = $Y_avis_cons[$classe_id] + 0.5;
+		$Y_avis_cons[$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + 0.5;
+		//$Y_sign_chef[$classe_id] = $Y_sign_chef[$classe_id] + 0.5;
+		$Y_sign_chef[$classe_id] = $tab_modele_pdf["Y_sign_chef"][$classe_id] + 0.5;
 	}
 
 // ================ bloc avis du conseil de classe =================
-	if($active_bloc_avis_conseil[$classe_id]==='1') {
-		if($cadre_avis_cons[$classe_id]!=0) {
-			$pdf->Rect($X_avis_cons[$classe_id], $Y_avis_cons[$classe_id], $longeur_avis_cons[$classe_id], $hauteur_avis_cons[$classe_id], 'D');
+	//if($active_bloc_avis_conseil[$classe_id]==='1') {
+	if($tab_modele_pdf["active_bloc_avis_conseil"][$classe_id]==='1') {
+		//if($cadre_avis_cons[$classe_id]!=0) {
+		if($tab_modele_pdf["cadre_avis_cons"][$classe_id]!=0) {
+			//$pdf->Rect($X_avis_cons[$classe_id], $Y_avis_cons[$classe_id], $longeur_avis_cons[$classe_id], $hauteur_avis_cons[$classe_id], 'D');
+			$pdf->Rect($tab_modele_pdf["X_avis_cons"][$classe_id], $tab_modele_pdf["Y_avis_cons"][$classe_id], $tab_modele_pdf["longeur_avis_cons"][$classe_id], $tab_modele_pdf["hauteur_avis_cons"][$classe_id], 'D');
 		}
-		$pdf->SetXY($X_avis_cons[$classe_id],$Y_avis_cons[$classe_id]);
-		if ( $taille_titre_bloc_avis_conseil[$classe_id] != '' and $taille_titre_bloc_avis_conseil[$classe_id] < '15' ) {
-			$taille = $taille_titre_bloc_avis_conseil[$classe_id];
+		//$pdf->SetXY($X_avis_cons[$classe_id],$Y_avis_cons[$classe_id]);
+		$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id],$tab_modele_pdf["Y_avis_cons"][$classe_id]);
+		//if ( $taille_titre_bloc_avis_conseil[$classe_id] != '' and $taille_titre_bloc_avis_conseil[$classe_id] < '15' ) {
+		if ( $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id] < '15' ) {
+			//$taille = $taille_titre_bloc_avis_conseil[$classe_id];
+			$taille = $tab_modele_pdf["taille_titre_bloc_avis_conseil"][$classe_id];
 		} else {
 			$taille = '10';
 		}
-		$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
-		if ( $titre_bloc_avis_conseil[$classe_id] != '' ) {
-			$tt_avis = $titre_bloc_avis_conseil[$classe_id];
+		//$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
+		//if ( $titre_bloc_avis_conseil[$classe_id] != '' ) {
+		if ( $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id] != '' ) {
+			//$tt_avis = $titre_bloc_avis_conseil[$classe_id];
+			$tt_avis = $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id];
 		} else {
 			$tt_avis = 'Avis du Conseil de classe:';
 		}
-		$pdf->Cell($longeur_avis_cons[$classe_id],5, $tt_avis,0,2,'');
-		$pdf->SetXY($X_avis_cons[$classe_id]+2.5,$Y_avis_cons[$classe_id]+5);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		//$pdf->Cell($longeur_avis_cons[$classe_id],5, $tt_avis,0,2,'');
+		$pdf->Cell($tab_modele_pdf["longeur_avis_cons"][$classe_id],5, $tt_avis,0,2,'');
+		//$pdf->SetXY($X_avis_cons[$classe_id]+2.5,$Y_avis_cons[$classe_id]+5);
+		$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$tab_modele_pdf["Y_avis_cons"][$classe_id]+5);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 		$texteavis = $info_bulletin[$ident_eleve_aff][$id_periode]['avis_conseil_classe'];
-		$pdf->drawTextBox($texteavis, $longeur_avis_cons[$classe_id]-5, $hauteur_avis_cons[$classe_id]-10, 'J', 'M', 0);
-		$X_pp_aff=$X_avis_cons[$classe_id]; $Y_pp_aff=$Y_avis_cons[$classe_id]+$hauteur_avis_cons[$classe_id]-5;
+		//$pdf->drawTextBox($texteavis, $longeur_avis_cons[$classe_id]-5, $hauteur_avis_cons[$classe_id]-10, 'J', 'M', 0);
+		$pdf->drawTextBox($texteavis, $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
+		//$X_pp_aff=$X_avis_cons[$classe_id]; $Y_pp_aff=$Y_avis_cons[$classe_id]+$hauteur_avis_cons[$classe_id]-5;
+		$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];
+		$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
 		$pdf->SetXY($X_pp_aff,$Y_pp_aff);
-		if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
-			$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+		//if ( $taille_profprincipal_bloc_avis_conseil[$classe_id] != '' and $taille_profprincipal_bloc_avis_conseil[$classe_id] < '15' ) {
+		if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
+			//$taille = $taille_profprincipal_bloc_avis_conseil[$classe_id];
+			$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
 		} else {
 			$taille = '10';
 		}
-		$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
 		$pdf->MultiCellTag(200, 5, $pp_classe[$i], '', 'J', '');
 	}
 
 // ======================= bloc du président du conseil de classe ================
-	if( $active_bloc_chef[$classe_id] === '1' ) {
-		if( $cadre_sign_chef[$classe_id] != 0 ) {
-			$pdf->Rect($X_sign_chef[$classe_id], $Y_sign_chef[$classe_id], $longeur_sign_chef[$classe_id], $hauteur_sign_chef[$classe_id], 'D');
+	//if( $active_bloc_chef[$classe_id] === '1' ) {
+	if( $tab_modele_pdf["active_bloc_chef"][$classe_id] === '1' ) {
+		//if( $cadre_sign_chef[$classe_id] != 0 ) {
+		if( $tab_modele_pdf["cadre_sign_chef"][$classe_id] != 0 ) {
+			//$pdf->Rect($X_sign_chef[$classe_id], $Y_sign_chef[$classe_id], $longeur_sign_chef[$classe_id], $hauteur_sign_chef[$classe_id], 'D');
+			$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $tab_modele_pdf["Y_sign_chef"][$classe_id], $tab_modele_pdf["longeur_sign_chef"][$classe_id], $tab_modele_pdf["hauteur_sign_chef"][$classe_id], 'D');
 		}
-		$pdf->SetXY($X_sign_chef[$classe_id],$Y_sign_chef[$classe_id]);
-		$pdf->SetFont($caractere_utilse[$classe_id],'',10);
-		if( $affichage_haut_responsable[$classe_id] === '1' ) {
-			if ( $affiche_fonction_chef[$classe_id] === '1' ){
-				if ( $taille_texte_fonction_chef[$classe_id] != '' and $taille_texte_fonction_chef[$classe_id] != '0' and $taille_texte_fonction_chef[$classe_id] < '15' ) {
-					$taille = $taille_texte_fonction_chef[$classe_id];
+		//$pdf->SetXY($X_sign_chef[$classe_id],$Y_sign_chef[$classe_id]);
+		$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
+		//$pdf->SetFont($caractere_utilse[$classe_id],'',10);
+		$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
+		//if( $affichage_haut_responsable[$classe_id] === '1' ) {
+		if( $tab_modele_pdf["affichage_haut_responsable"][$classe_id] === '1' ) {
+			//if ( $affiche_fonction_chef[$classe_id] === '1' ){
+			if ( $tab_modele_pdf["affiche_fonction_chef"][$classe_id] === '1' ){
+				//if ( $taille_texte_fonction_chef[$classe_id] != '' and $taille_texte_fonction_chef[$classe_id] != '0' and $taille_texte_fonction_chef[$classe_id] < '15' ) {
+				if ( $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id] < '15' ) {
+					//$taille = $taille_texte_fonction_chef[$classe_id];
+					$taille = $tab_modele_pdf["taille_texte_fonction_chef"][$classe_id];
 				} else {
 					$taille = '10';
 				}
-				$pdf->SetFont($caractere_utilse[$classe_id],'B',$taille);
-				$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['fonction_hautresponsable'],0,2,'');
+				//$pdf->SetFont($caractere_utilse[$classe_id],'B',$taille);
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$taille);
+				//$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['fonction_hautresponsable'],0,2,'');
+				$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, $info_classe[$id_classe_selection]['fonction_hautresponsable'],0,2,'');
 			}
-			if ( $taille_texte_identitee_chef[$classe_id] != '' and $taille_texte_identitee_chef[$classe_id] != '0' and $taille_texte_identitee_chef[$classe_id] < '15' ) {
-				$taille = $taille_texte_identitee_chef[$classe_id];
+			//if ( $taille_texte_identitee_chef[$classe_id] != '' and $taille_texte_identitee_chef[$classe_id] != '0' and $taille_texte_identitee_chef[$classe_id] < '15' ) {
+			if ( $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] < '15' ) {
+				//$taille = $taille_texte_identitee_chef[$classe_id];
+				$taille = $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id];
 			} else {
 				$taille_avis = '8';
 			}
-			$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
-			$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['nom_hautresponsable'],0,2,'');
+			//$pdf->SetFont($caractere_utilse[$classe_id],'I',$taille);
+			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'I',$taille);
+			//$pdf->Cell($longeur_sign_chef[$classe_id],5, $info_classe[$id_classe_selection]['nom_hautresponsable'],0,2,'');
+			$pdf->Cell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, $info_classe[$id_classe_selection]['nom_hautresponsable'],0,2,'');
 		} else {
-			$pdf->MultiCell($longeur_sign_chef[$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
+			//$pdf->MultiCell($longeur_sign_chef[$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
+			$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, "Visa du Chef d'établissement\nou de son délégué",0,2,'');
 		}
 	}
 	$cpt_info_periode = $cpt_info_periode+1;
