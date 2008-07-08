@@ -183,7 +183,8 @@ if ($_SESSION['statut'] == 'responsable') {
 if ($selected_eleve_login != "") echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
 echo "</td>\n";
 //echo "<td style=\"text-align:center;\">\n";
-echo "<td class=\"ct_col_centre\" style=\"text-align:center;\">\n";
+//echo "<td class=\"ct_col_centre\" style=\"text-align:center;\">\n";
+echo "<td class=\"ct_col_centre\">\n";
 echo "<p><span class='grand'>Cahier de textes";
 if ($current_group) echo " - $matiere_nom ($matiere_nom_court)";
 if ($id_classe != null) echo "<br />$classe_nom";
