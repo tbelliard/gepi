@@ -99,7 +99,7 @@ if ($force_msj) $titre[] = "Mise à jour automatisée";
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
 $titre[] = "Inscription";
-$titre[] = "<img src=\"images/icons/rss.png\" />&nbsp;-&nbsp;Flux rss";
+$titre[] = "<img src=\"images/icons/rss.png\" alt='rss' />&nbsp;-&nbsp;Flux rss";
 
 $expli = array(
 "Pour gérer les cahiers de texte, (configuration générale, ...)",
@@ -132,7 +132,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 if ($affiche=='yes') {
     //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu'>\n";
+    echo "<table class='menu' summary='Administration des modules'>\n";
     echo "<tr>\n";
     echo "<th colspan='2'><img src='./images/icons/control-center.png' alt='Admin modules' class='link'/> - Administration des modules</th>\n";
     echo "</tr>\n";
