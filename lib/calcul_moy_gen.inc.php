@@ -163,6 +163,17 @@ while ($i < $nombre_eleves) {
     	$total_coef_cat_eleve[$i][$cat_id] = 0;
     	$moy_cat_classe[$i][$cat_id] = 0;
     }
+
+	//=================================
+	// Pour le cas où une matière est saisie en "Aucune" catégorie dans
+	// Gestion des bases/Gestion des classes/<classe> Enseignements
+	// La catégorie "Aucune" n'existe pas dans 'matieres_categories'
+	$moy_cat_eleve[$i][0] = 0;
+	$total_coef_cat_classe[$i][0] = 0;
+	$total_coef_cat_eleve[$i][0] = 0;
+	$moy_cat_classe[$i][0] = 0;
+	//=================================
+
     $i++;
 }
 
@@ -350,6 +361,7 @@ while ($j < $nombre_groupes) {
 						"login = '".$current_eleve_login[$i]."' AND " .
 						"id_groupe = '".$current_group[$j]["id"]."' AND " .
 						"name = 'coef')";
+				//echo "$sql<br />";
 				calc_moy_debug("$sql\n");
 				$test_coef = mysql_query($sql);
 				if (mysql_num_rows($test_coef) > 0) {
@@ -404,7 +416,9 @@ while ($j < $nombre_groupes) {
 
                     //$total_coef_cat[$i][$prev_cat] += $coef_eleve;
                     $total_coef_cat_classe[$i][$prev_cat] += $current_coef[$j];
+					calc_moy_debug("\$total_coef_cat_classe[$i][$prev_cat]=".$total_coef_cat_classe[$i][$prev_cat]."\n");
                     $total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve;
+					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
 
                     //$moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
                     $moy_gen_classe[$i] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
@@ -412,11 +426,13 @@ while ($j < $nombre_groupes) {
 
                     //$moy_cat_classe[$i][$prev_cat] += $coef_eleve*$current_classe_matiere_moyenne[$j];
                     $moy_cat_classe[$i][$prev_cat] += $current_coef[$j]*$current_classe_matiere_moyenne[$j];
+					calc_moy_debug("\$moy_cat_classe[$i][$prev_cat]=".$moy_cat_classe[$i][$prev_cat]."\n");
 
                     $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
 					calc_moy_debug("\$moy_gen_eleve[$i]=$moy_gen_eleve[$i]\n");
 
                     $moy_cat_eleve[$i][$prev_cat] += $coef_eleve*$current_eleve_note[$j][$i];
+					calc_moy_debug("\$moy_cat_eleve[$i][$prev_cat]=".$moy_cat_eleve[$i][$prev_cat]."\n");
                 }
             }
         }

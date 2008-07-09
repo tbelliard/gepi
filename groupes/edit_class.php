@@ -159,7 +159,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Gestion des enseignements";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-echo "<table border='0'><tr>\n";
+echo "<table border='0' summary='Menu'><tr>\n";
 echo "<td width='40%' align='left'>";
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo "<p class='bold'>";
@@ -210,7 +210,7 @@ echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group
 //echo "<p>Ajouter un enseignement : ";
 //$query = mysql_query("SELECT matiere, nom_complet FROM matieres");
 echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-echo "<table border='0'><tr valign='top'><td>";
+echo "<table border='0' summary='Ajout d enseignement'><tr valign='top'><td>";
 echo "Ajouter un enseignement : ";
 echo "</td>";
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
@@ -268,7 +268,7 @@ if(count($groups)==0){
 <td width='30%'>Mettre tous les coefficients à <select name='coefficient_recop' id='coefficient_recopie'-->
 <!--table border='0' width='100%'><tr align='center'><td>Afficher les matières dans l'ordre <a href='javascript:ordre_alpha();'>alphabétique</a> ou <a href='javascript:ordre_defaut();'>des priorités</a>.</td-->
 
-<table border='0' width='100%'>
+<table border='0' width='100%' summary='Paramètres'>
 <tr align='center'>
 <td width='40%'>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
@@ -313,7 +313,7 @@ for($i=0;$i<10;$i++){
         $total = count($group["classes"]);
         echo "<br/>";
         echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-        echo "<table border = '0' width='100%'><tr><td width='25%'>";
+        echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>";
         echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo " -- <span class=\"norme\">";
         echo "<b>";
