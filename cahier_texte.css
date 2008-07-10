@@ -23,16 +23,16 @@ td.ct_col_centre{
 td.ct_col_droit{
 	width: 34%;
 	text-align:right;
-} 
+}
 /* place le tableau de droite à droite */
 .ct_col_droit table {
 	margin-left: auto;
 	text-align:right;
 }
- 
+
 /* --- Mise en page affichage du contenu de cahier de texte --- */
 table.centre_cont_text {
-	width;98%;
+	width:98%;
 	border:0;
 	text-align:center;
 }
@@ -41,13 +41,13 @@ td.cct_gauche {
 	vertical-align:top;
 }
 td.cct_droit {
-	vertical-align;top;
+	vertical-align:top;
 }
 .bleu {
 	color:blue;
 	font-variant: small-caps;
 }
- 
+
 /* --- Mise en page affichage des travaux personnel de cahier de texte --- */
 /*centre le texte*/
 .txt_centre {
@@ -92,7 +92,7 @@ td.cel_trav_futur {
 }
 .souligne {
 	text-decoration: underline;
-	font-size: smaller; 
+	font-size: smaller;
 }
 table.a_faire_gauche {
 	border-style:solid;
@@ -125,7 +125,7 @@ table.a_faire_gauche {
 	font-variant: small-caps;
 	text-align: left;
 	text-decoration: underline;
-	font-size: smaller; 
+	font-size: smaller;
 }
 .txt_gauche {
 	text-align: left;
