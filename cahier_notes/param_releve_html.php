@@ -499,7 +499,7 @@ $nb_ligne=1;
 
 <form name="formulaire" action="param_releve_html.php" method="post" style="width: 100%;">
 <H3>Mise en page du relevé de notes HTML</H3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des paramètres">
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
@@ -781,7 +781,7 @@ $nb_ligne=1;
 //Informations devant figurer sur le relevé de notes</H3>
 ?>
 <h3>Informations devant figurer sur le relevé de notes</h3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe :
@@ -1021,11 +1021,11 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 <hr />
 <H3>Bloc adresse</H3>
-<center><table border="1" cellpadding="10" width="90%"><tr><td>
+<center><table border="1" cellpadding="10" width="90%" summary="Tableau des paramètres bloc adresse"><tr><td>
 Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le relevé (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
 </td></tr></table></center>
 
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Paramètres du bloc adresse">
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">

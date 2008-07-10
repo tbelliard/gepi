@@ -1,5 +1,5 @@
 <?php
-	echo "<table class='boireaus' border='1'>\n";
+	echo "<table class='boireaus' border='1' summary='Tableau des items'>\n";
 	echo "<tr>\n";
 	//echo "<th width='30%'>Item</th>\n";
 	echo "<th>Item</th>\n";
@@ -141,7 +141,7 @@
 		echo "</table>\n";
 
 		echo "<p>Formule à afficher en bas de page:</p>\n";
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary='Tableau des formules de bas de page'>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<tr><td><b>".get_class_from_id($tab_id_classe[$i])."</b>: </td>";
 			echo "<td><input type='text' name='rn_formule[$i]' id='rn_formule_".$i."' size='40' value=\"";
