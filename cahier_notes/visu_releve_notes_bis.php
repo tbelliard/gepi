@@ -201,9 +201,17 @@ elseif($_SESSION['statut']=='responsable') {
 //if(!isset($tab_id_classe)) {
 // On contrôle plus haut que $id_groupe=NULL si on n'est pas prof
 if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
-	echo "<p class='bold'><a href='index.php'>Retour</a>";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo " | <a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+	echo "<p class='bold'>";
+	if($_SESSION['statut']=='professeur') {
+		echo "<a href='index.php'>Retour</a>";
+	}
+	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo " | ";
+		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+	}
+	else {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 	}
 	echo "</p>\n";
 
@@ -377,10 +385,22 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 //======================================================
 //=================CHOIX DE LA PERIODE==================
 elseif(!isset($choix_periode)) {
-	echo "<p class='bold'><a href='index.php'>Retour à l'index</a>";
-	echo "| <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo " | <a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+
+	echo "<p class='bold'>";
+	if($_SESSION['statut']=='professeur') {
+		echo "<a href='index.php'>Retour</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+	}
+	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+		echo " | ";
+		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+	}
+	else {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 	}
 	echo "</p>\n";
 
@@ -604,11 +624,25 @@ elseif(!isset($choix_periode)) {
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
 elseif(!isset($_POST['valide_select_eleves'])) {
-	echo "<p class='bold'><a href='index.php'>Retour à l'index</a>";
-	echo "| <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo " | <a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+	echo "<p class='bold'>";
+	if($_SESSION['statut']=='professeur') {
+		echo "<a href='index.php'>Retour</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
+	}
+	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
+		echo " | ";
+		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+	}
+	else {
+		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 	}
 	echo "</p>\n";
 
