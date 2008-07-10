@@ -1020,7 +1020,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<blockquote>\n";
 
 			if($affiche_mgen=='oui'){$checked=" checked='yes'";}else{$checked="";}
-			echo "<table border='0'>\n";
+			echo "<table border='0' summary='Paramètres'>\n";
 			echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
 
 			if($affiche_minmax=='oui'){$checked=" checked='yes'";}else{$checked="";}
@@ -1038,7 +1038,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// Paramètres d'affichage:
 			echo "<p><b>Graphe</b></p>\n";
 			echo "<blockquote>\n";
-			echo "<table border='0'>\n";
+			echo "<table border='0' summary='Paramètres'>\n";
 
 			// Graphe en courbe ou étoile
 			echo "<tr><td>Graphe en </td>\n";
@@ -1105,7 +1105,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// - Affichage de la photo
 			echo "<p><b>Paramètres des photos</b></p>\n";
 			echo "<blockquote>\n";
-			echo "<table border='0'>\n";
+			echo "<table border='0' summary='Paramètres des photos'>\n";
 			if(($affiche_photo=='')||($affiche_photo=='oui')){$checked=" checked='yes'";}else{$checked="";}
 			echo "<tr><td>Afficher la photo de l'élève si elle existe:</td><td><label for='affiche_photo_oui' style='cursor: pointer;'><input type='radio' name='affiche_photo' id='affiche_photo_oui' value='oui'$checked />Oui</label> / \n";
 			if($affiche_photo=='non'){$checked=" checked='yes'";}else{$checked="";}
@@ -1183,7 +1183,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "<script type='text/javascript' src='cadre_info.js'></script>\n";
 
 
-	echo "<table>\n";
+	echo "<table summary='Présentation'>\n";
 	echo "<tr valign='top'>\n";
 	//====================================================================
 	// Bande de pilotage:
@@ -1766,6 +1766,9 @@ function eleve_suivant(){
 		}
 	}
 
+
+	echo "<div id='debug_fixe' style='position: fixed; bottom: 20%; right: 5%;'></div>";
+
 	echo "</form>\n";
 
 
@@ -2154,7 +2157,8 @@ function eleve_suivant(){
 					//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
-						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">\n";
+						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">\n";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\" alt=\"\">\n";
 					}
 				}
 
@@ -2162,7 +2166,8 @@ function eleve_suivant(){
 				$x1=$largeur_graphe;
 				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 				if($temoin_avis_present=="y"){
-					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_avis_1','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\" alt=\"\">";
 				}
 
 				echo "</map>\n";
@@ -2367,7 +2372,7 @@ function eleve_suivant(){
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
 						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
-						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20,500,50,50);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
 					}
 
 				}
@@ -2812,7 +2817,7 @@ function eleve_suivant(){
 								//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 								//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 								if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
-									echo "<div onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
+									echo "<div onMouseover=\"delais_afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
 									//echo " border: 1px dashed green;";
 									echo "'></div>\n";
 								}
@@ -2823,7 +2828,7 @@ function eleve_suivant(){
 							$x1=$largeur_graphe;
 							//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 							if($temoin_avis_present=="y"){
-								echo "<div onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
+								echo "<div onMouseover=\"delais_afficher_div('div_avis_1','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
 								//echo " border: 1px dashed green;";
 								echo "'></div>\n";
 							}
@@ -3168,7 +3173,7 @@ function eleve_suivant(){
 				if(isset($info_imagemap[$i])){
 					$titre_bulle=htmlentities($matiere_nom[$i]);
 
-					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%'>\n";
+					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					for($j=1;$j<=count($num_periode);$j++){
 						if($tab_imagemap[$j][$i]!=""){
 							$texte_bulle.="<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
@@ -3213,7 +3218,7 @@ function eleve_suivant(){
 			if(mysql_num_rows($res_avis)>0){
 				$titre_bulle="Avis du Conseil de classe";
 
-				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%'>\n";
+				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Avis'>\n";
 				while($lig_avis=mysql_fetch_object($res_avis)){
 					//==========================================================
 					// AJOUT: boireaus 20080218
@@ -3255,7 +3260,7 @@ function eleve_suivant(){
 
 					if(isset($info_imagemap[$i])){
 						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$i,'affiche');\" onMouseout=\"div_info('div_matiere_',$i,'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-						echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$i."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+						echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$i."','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\" alt=\"\">";
 					}
 				}
 
@@ -3263,7 +3268,7 @@ function eleve_suivant(){
 				$x1=$largeur_graphe;
 				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 				if($temoin_avis_present=="y"){
-					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_avis_1','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\" alt=\"\">";
 				}
 				echo "</map>\n";
 			//}
@@ -3475,7 +3480,7 @@ function eleve_suivant(){
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$i."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
-					echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-10,20);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
+					echo "<area href=\"#\" onClick='return false;' onMouseover=\"delais_afficher_div('div_app_".$k."','y',-10,20,500,50,50);\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\" alt=\"\">\n";
 				}
 
 			}
@@ -3547,14 +3552,14 @@ function eleve_suivant(){
 						$x1=$x0+$largeurMat;
 
 						if(isset($info_imagemap[$i])){
-							echo "<div onMouseover=\"afficher_div('div_app_".$i."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
+							echo "<div onMouseover=\"delais_afficher_div('div_app_".$i."','y',-10,20,500,$largeurMat,10,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_app_".$i."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
 						}
 					}
 
 					$x0=$largeurGrad+($i-1)*$largeurMat;
 					$x1=$largeur_graphe;
 					if($temoin_avis_present=="y"){
-						echo "<div onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
+						echo "<div onMouseover=\"delais_afficher_div('div_avis_1','y',-10,20,500,$largeurMat,10);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
 					}
 
 

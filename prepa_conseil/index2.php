@@ -122,7 +122,7 @@ if (isset($id_classe)) {
 
 	echo " | Classe : ".$current_eleve_classe."</p>\n";
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
-	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\"><tr>";
+	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary=\"Choix de la période\"><tr>";
 	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
@@ -145,11 +145,11 @@ if (isset($id_classe)) {
 	echo "<b>Paramètres d'affichage</b><br />\n";
 	echo "<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
 
-	echo "<table border='0' width='100%'>\n";
+	echo "<table border='0' width='100%' summary=\"Paramètres du tableau\">\n";
 	echo "<tr>\n";
 	echo "<td>\n";
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary=\"Paramètres\">\n";
 		echo "<tr>\n";
 		echo "<td>Largeur en pixel du tableau : </td>\n";
 		echo "<td><input type=text name=larg_tab size=3 value=\"680\" /></td>\n";
@@ -171,7 +171,7 @@ if (isset($id_classe)) {
 	echo "</td>\n";
 	echo "<td>\n";
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary=\"Affichages supplémentaires\">\n";
 		echo "<tr>\n";
 		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" checked /></td>\n";
 		echo "<td>\n";
@@ -283,7 +283,7 @@ if (isset($id_classe)) {
 		$i = 0;
 		$nb_class_par_colonne=round($lignes/3);
 			//echo "<table width='100%' border='1'>\n";
-			echo "<table width='100%'>\n";
+			echo "<table width='100%' summary=\"Choix de la classe\">\n";
 			echo "<tr valign='top' align='center'>\n";
 			echo "<td align='left'>\n";
 		while($i < $lignes){
