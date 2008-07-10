@@ -303,48 +303,50 @@ $ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1'
 			"Nom ".
 			"</a>";
 $ligne1_csv[1] = "Nom ";
-//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Régime&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"régime\">";
-//if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"doublant\">";
-//if ($aff_abs) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=1/2 journées d'absence&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"1/2 journées d'absence\">";
-//if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'élève&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'élève\">";
-//if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+//if ($aff_reg) $ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=Régime&width=22\" width=\"22\" border=0 alt=\"régime\">";
+//if ($aff_doub) $ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" width=\"22\" border=0 alt=\"doublant\">";
+//if ($aff_abs) $ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=1/2 journées d'absence&width=22\" width=\"22\" border=0 alt=\"1/2 journées d'absence\">";
+//if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=Rang de l'élève&width=22\" width=\"22\" border=0 alt=\"Rang de l'élève\">";
+//if ($aff_reg) $ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".htmlentities("Régime")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"régime\" />";
 //=========================
 if ($aff_date_naiss){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"date de naissance\" />";
+	$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"date de naissance\" />";
 	$ligne1_csv[] = "Date de naissance";
 }
 //=========================
 if ($aff_reg){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+	$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Régime")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"régime\" />";
 	$ligne1_csv[]="Régime";
 }
 if($aff_doub){
-	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"doublant\" />";
+	$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=Redoublant&amp;width=22\" width=\"22\" border=\"0\" alt=\"doublant\" />";
 	$ligne1_csv[]="Redoublant";
 }
 if ($aff_abs){
-	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />";
+	//$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"1/2 journées d'absence\" />";
 	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />".
+				"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"1/2 journées d'absence\" />".
 				"</a>";
 
 	$ligne1_csv[]="1/2 journées d'absence";
 }
 if (($aff_rang) and ($referent=="une_periode")){
-	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />";
+	//$ligne1[] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
 	/*
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
 	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
-    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+    $ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
 	*/
 	$ligne1[] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".(count($ligne1)+1)."';".
 				"document.getElementById('sens_tri').value='inverse';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />".
+				"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />".
 				"</a>";
+	//"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode(html_entity_decode("Rang de l&apos;&eacute;l&egrave;ve"))."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />".
+
 	//echo count($ligne1);
 
 	$ligne1_csv[]="Rang de l'élève";
@@ -666,12 +668,12 @@ while($i < $lignes_groupes){
     $nom_complet_coupe_csv=(strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
 	$nom_complet_coupe_csv=ereg_replace(";","",$nom_complet_coupe_csv);
 
-    //$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
-    //$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+    //$ligne1[$k] = "<img src=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" width=\"22\" border=\"0\" />";
+    //$ligne1[$k] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"$nom_complet_coupe\" />";
 
 	$ligne1[$k]="<a href='#' onclick=\"document.getElementById('col_tri').value='$k';";
 	$ligne1[$k].="document.forms['formulaire_tri'].submit();\">";
-	$ligne1[$k] .= "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+	$ligne1[$k] .= "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"$nom_complet_coupe\" />";
 	$ligne1[$k].="</a>";
 
     $ligne1_csv[$k] = "$nom_complet_coupe_csv";
@@ -683,11 +685,11 @@ if ($ligne_supl == 1) {
     if ($affiche_categories) {
 		foreach($displayed_categories as $cat_id) {
 			$nb_col++;
-			//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
+			//$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" width=\"22\" border=\"0\" alt=\"".$cat_names[$cat_id]."\" />";
 
 			$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"".$cat_names[$cat_id]."\" />".
+				"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" width=\"22\" border=\"0\" alt=\"".$cat_names[$cat_id]."\" />".
 				"</a>";
 
 			$ligne1_csv[$nb_col] = "Moyenne : " . $cat_names[$cat_id];
@@ -725,13 +727,13 @@ if ($ligne_supl == 1) {
 
     // La moyenne générale
     $nb_col++;
-    //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Moyenne générale&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
-    //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
-    //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+    //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=Moyenne générale&width=22\" width=\"22\" border=\"0\" />";
+    //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
+    //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
 	if(eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
-    $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
+    $ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
     $ligne1_csv[$nb_col] = "Moyenne générale";
     $j = '0';
@@ -847,12 +849,12 @@ if ($ligne_supl == 1) {
 		}
 
 		// Remplissage de la ligne de titre
-        //$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Rang de l'élève\" />";
+        //$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
 
 		$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
 				"document.getElementById('sens_tri').value='inverse';".
 				"document.forms['formulaire_tri'].submit();\">".
-				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />".
+				"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />".
 				"</a>";
 
         $ligne1_csv[$nb_col] = "Rang de l'élève";
@@ -1093,7 +1095,7 @@ require_once("../lib/header.inc");
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 // Lien pour générer un CSV
-echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center;'>
+echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 7em; height: 1em; text-align: center; padding-bottom:3px;'>
 <a href='".$_SERVER['PHP_SELF']."?mode=csv&amp;id_classe=$id_classe&amp;num_periode=$num_periode";
 
 if($aff_abs){
@@ -1112,7 +1114,8 @@ if($aff_date_naiss){
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
 }
 
-echo "'>CSV</a>
+//echo "'>CSV</a>
+echo "'>Export CSV</a>
 </div>\n";
 
 
@@ -1170,6 +1173,37 @@ if(isset($col_tri)) {
 		document.getElementById('td_ligne1_$col_tri').style.backgroundColor='white';
 	}
 </script>\n";
+}
+else {
+	echo "<script type='text/javascript'>
+	if(document.getElementById('td_ligne1_1')) {
+		document.getElementById('td_ligne1_1').style.backgroundColor='white';
+	}
+</script>\n";
+
+	// Infobulle
+/*
+	echo creer_div_infobulle("div_stop","","","Ce bouton permet s'il est coché d'interrompre les passages automatiques à la page suivante","",12,0,"n","n","y","n");
+	$texte.="</div>\n";
+	$texte.="</form>\n";
+*/
+	$titre="Informations";
+	$texte="<p>Cette page affiche les moyennes des élèves de la classe de $classe</p>";
+	$texte.="<ul>";
+	$texte.="<li>Vous pouvez trier les colonnes par rang en cliquant sur l'intitulé de la colonne souhaitée.</li>";
+	$texte.="<li>Vous pouvez aussi exporter ces moyennes au format CSV.</li>";
+	$texte.="</ul>";
+	//$texte.="";
+	//$tabdiv_infobulle[]=creer_div_infobulle('div_informations',$titre,"",$texte,"",35,0,'y','y','n','n');
+	echo creer_div_infobulle('div_informations',$titre,"",$texte,"",35,0,'y','y','n','n');
+
+	echo "<script type='text/javascript'>
+	// Je ne saisis pas pourquoi la capture des mouvements ne fonctionne pas correctement ici???
+	// En fait, il y avait un problème d'initialisation de xMousePos et yMousePos (corrigé dans position.js)
+	//setTimeout(\"if(document.getElementById('div_informations')) {document.onmousemove=crob_position;afficher_div('div_informations','y',20,20);}\",1500);
+	setTimeout(\"if(document.getElementById('div_informations')) {afficher_div('div_informations','y',20,20);}\",1500);
+</script>\n";
+
 }
 //=======================================================
 
