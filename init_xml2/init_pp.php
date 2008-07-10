@@ -192,7 +192,7 @@ if (!isset($is_posted)) {
 			/*
 			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier GEP, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
 			*/
-			echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2'>\n";
+			echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des professeurs principaux'>\n";
 			echo "<tr><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Professeur principal</p></th></tr>\n";
 
 

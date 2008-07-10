@@ -292,7 +292,7 @@ if (isset($is_posted)) {
 ?>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;">
 <legend style="font-variant: small-caps;"> Aide au remplissage </legend>
-<table border="0">
+<table border="0" summary='Tableau de remplissage'>
 <tr>
   <td width="2%">&nbsp;</td>
   <td width="2%">&nbsp;</td>
@@ -353,7 +353,7 @@ onclick="javascript:MetVal('pour')" />
 <br />
 <?php
 
-    echo "<table border=1 class='boireaus' cellpadding=2 cellspacing=2>";
+    echo "<table border=1 class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des classes'>";
     echo "<tr>
 <th><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></th>
 <th><p class=\"small\">Identifiant de la classe</p></th>

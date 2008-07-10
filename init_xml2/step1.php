@@ -1451,7 +1451,7 @@
 					</style>\n";
 					*/
 
-					echo "<table class='boireaus'>\n";
+					echo "<table class='boireaus' summary='Tableau des établissements'>\n";
 					echo "<tr>\n";
 					echo "<th>\n";
 					echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
