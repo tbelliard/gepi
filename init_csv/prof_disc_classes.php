@@ -98,6 +98,9 @@ $liste_tables_del = array(
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -126,6 +129,9 @@ if (!isset($_POST["action"])) {
     echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
     echo "<input type='hidden' name='action' value='upload_file' />\n";
     echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+
     echo "<p><input type='submit' value='Valider' />\n";
     echo "</form>\n";
 
@@ -298,8 +304,10 @@ if (!isset($_POST["action"])) {
 
                 //=========================
                 // On lit une ligne pour passer la ligne d'entête:
-                $ligne = fgets($fp, 4096);
-                //=========================
+				if($en_tete=="yes") {
+	                $ligne = fgets($fp, 4096);
+                }
+				//=========================
 
                     $k = 0;
                     while (!feof($fp)) {
@@ -346,11 +354,13 @@ if (!isset($_POST["action"])) {
 
                 echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
                 echo "<input type='hidden' name='action' value='save_data' />\n";
-                echo "<table border='1'>\n";
+                echo "<table border='1' class='boireaus' summary='Prof/matière/classe/type'>\n";
                 echo "<tr><th>Login prof</th><th>Matière</th><th>Classe(s)</th><th>Type</th></tr>\n";
 
-                for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>\n";
+				$alt=1;
+				for ($i=0;$i<$k-1;$i++) {
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
                     echo "<td>\n";
                     echo $data_tab[$i]["prof"];
                     echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "' />\n";

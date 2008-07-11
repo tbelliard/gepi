@@ -98,6 +98,9 @@ $liste_tables_del = array(
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -110,7 +113,7 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
-	echo "<p>Vous allez effectuer la troisième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
+	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
 	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
 	echo "<ul><li>Identifiant (interne) de l'élève</li>\n" .
@@ -119,8 +122,11 @@ if (!isset($_POST["action"])) {
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
-	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><input type='submit' value='Valider' />\n";
+	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
+
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+
+	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 } else {
@@ -259,7 +265,9 @@ if (!isset($_POST["action"])) {
 
 				//=========================
 				// On lit une ligne pour passer la ligne d'entête:
-				$ligne = fgets($fp, 4096);
+				if($en_tete=="yes") {
+					$ligne = fgets($fp, 4096);
+				}
 				//=========================
 
 				$k = 0;
@@ -300,11 +308,13 @@ if (!isset($_POST["action"])) {
 
 				echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table border='1'>\n";
+				echo "<table border='1' class='boireaus' summary='Tableau élèves/classes'>\n";
 				echo "<tr><th>ID interne de l'élève</th><th>Classe</th></tr>\n";
 
+				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_int"];
 					echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";

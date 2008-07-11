@@ -85,6 +85,9 @@ $liste_tables_del = array(
 $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -108,6 +111,11 @@ if (!isset($_POST["action"])) {
     echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>\n";
     echo "<input type='hidden' name='action' value='upload_file' />\n";
     echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+
+	echo "<br />\n";
+    echo "<label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked />\n";
+
+
     echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?<br />\n";
     echo "<input type='radio' name='login_mode' value='name' checked /> nom";
     echo "<br />\n<input type='radio' name='login_mode' value='name8' /> nom (tronqué à 8 caractères)";
@@ -259,7 +267,9 @@ if (!isset($_POST["action"])) {
 
                 //=========================
                 // On lit une ligne pour passer la ligne d'entête:
-                $ligne = fgets($fp, 4096);
+				if($en_tete=="yes") {
+	                $ligne = fgets($fp, 4096);
+				}
                 //=========================
 
                     $k = 0;
@@ -414,11 +424,13 @@ if (!isset($_POST["action"])) {
 
                 echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>\n";
                 echo "<input type='hidden' name='action' value='save_data' />\n";
-                echo "<table border='1'>\n";
+                echo "<table border='1' class='boireaus' summary='Tableau des professeurs'>\n";
                 echo "<tr><th>Login</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Email</th></tr>\n";
 
+				$alt=1;
                 for ($i=0;$i<$k-1;$i++) {
-                    echo "<tr>\n";
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
                     if ($data_tab[$i]["prof_exists"]) {
                         echo "<td style='color: blue;'>\n";
                     } else {

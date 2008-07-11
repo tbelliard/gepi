@@ -89,6 +89,9 @@ $liste_tables_del = array(
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -116,6 +119,7 @@ if (!isset($_POST["action"])) {
 	echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
@@ -312,7 +316,9 @@ if (!isset($_POST["action"])) {
 
 				//=========================
 				// On lit une ligne pour passer la ligne d'entête:
-				$ligne = fgets($fp, 4096);
+				if($en_tete=="yes") {
+					$ligne = fgets($fp, 4096);
+				}
 				//=========================
 
 				$k = 0;
@@ -385,11 +391,13 @@ if (!isset($_POST["action"])) {
 
 				echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table>\n";
-				echo "<tr><td>ID élève</td><td>Nom</td><td>Prénom</td><td>Civilité</td><td>Ligne 1 adresse</td><td>Ligne 2 adresse</td><td>Code postal</td><td>Commune</td></tr>\n";
+				echo "<table class='boireaus' summary='Tableau des responsables'>\n";
+				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th></tr>\n";
 
+				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
 					echo "<td";
 					if($data_tab[$i]["id_eleve"]==""){
 						echo " style='color:red;'";

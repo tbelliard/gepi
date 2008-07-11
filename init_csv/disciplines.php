@@ -69,6 +69,7 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
+    echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -220,11 +221,14 @@ if (!isset($_POST["action"])) {
 
 				echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table border='1'>\n";
+				echo "<table border='1' class='boireaus' summary='Tableau des matières'>\n";
 				echo "<tr><th>Nom court (unique)</th><th>Nom long</th></tr>\n";
 
+
+				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["nom_court"];
 					echo "<input type='hidden' name='ligne".$i."_nom_court' value='" . $data_tab[$i]["nom_court"] . "' />\n";

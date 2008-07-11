@@ -46,6 +46,9 @@ if (!checkAccess()) {
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
+
+$en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
+
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -68,8 +71,11 @@ if (!isset($_POST["action"])) {
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_options.csv</b>.\n";
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
-	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><input type='submit' value='Valider' />\n";
+	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
+
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+
+	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 } else {
@@ -175,8 +181,9 @@ if (!isset($_POST["action"])) {
 			if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
 		}
 
-		if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>\n";
-		if ($total > 0) echo "<p>" . $total . " associations élèves-options ont été enregistrées.</p>\n";
+		if ($error > 0) {echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";}
+		if ($total > 0) {echo "<p>" . $total . " associations élèves-options ont été enregistrées.</p>\n";}
+		if(($error==0)&&($total==0)) {echo "<p>Aucune association élève-option n'a été enregistrée???</p>\n";}
 
 		echo "<p><a href='index.php'>Revenir à la page précédente</a></p>\n";
 
@@ -211,7 +218,9 @@ if (!isset($_POST["action"])) {
 
 				//=========================
 				// On lit une ligne pour passer la ligne d'entête:
-				$ligne = fgets($fp, 4096);
+				if($en_tete=="yes") {
+					$ligne = fgets($fp, 4096);
+				}
 				//=========================
 
 				$k = 0;
@@ -228,6 +237,8 @@ if (!isset($_POST["action"])) {
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+
+						if(!isset($tabligne[1])) {$tabligne[1]="";}
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[1]));
 						if (strlen($tabligne[1]) > 2000) $tabligne[1] = substr($tabligne[1], 0, 2000);
 
@@ -251,11 +262,13 @@ if (!isset($_POST["action"])) {
 
 				echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 				echo "<input type='hidden' name='action' value='save_data' />\n";
-				echo "<table>\n";
-				echo "<tr><td>ID interne de l'élève</td><td>Matières</td></tr>\n";
+				echo "<table class='boireaus' summary='Elèves/options'>\n";
+				echo "<tr><th>ID interne de l'élève</th><th>Matières</th></tr>\n";
 
+				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+                    echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_int"];
 					echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
@@ -269,7 +282,7 @@ if (!isset($_POST["action"])) {
 
 				echo "</table>\n";
 
-				echo "<input type='submit' value='Enregistrer' />\n";
+				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 				echo "</form>\n";
 			}
@@ -277,13 +290,14 @@ if (!isset($_POST["action"])) {
 		} else if (trim($csv_file['name'])=='') {
 
 			echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
-			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</p>\n";
 
 		} else {
 			echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
-			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			echo "<a href='eleves_options.php'>Cliquer ici </a> pour recommencer !</p>\n";
 		}
 	}
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
