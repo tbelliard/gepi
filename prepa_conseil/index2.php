@@ -65,9 +65,14 @@ $titre_page = "Visualisation des notes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>
+<!--p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a-->
 <?php
 if (isset($id_classe)) {
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
+
 	$current_eleve_classe = sql_query1("SELECT classe FROM classes WHERE id='$id_classe'");
 	echo " | <a href=\"index2.php\">Choisir une autre classe</a>";
 
@@ -89,6 +94,8 @@ if (isset($id_classe)) {
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe";
 	}
+	$chaine_options_classes="";
+
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
@@ -96,13 +103,18 @@ if (isset($id_classe)) {
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
 					$id_class_suiv=0;
 				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 			}
 			if($temoin_tmp==0){
 				$id_class_prec=$lig_class_tmp->id;
@@ -113,17 +125,23 @@ if (isset($id_classe)) {
 	if(isset($id_class_prec)){
 		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
 	}
+	if($chaine_options_classes!="") {
+		echo " | Classe : <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
 	if(isset($id_class_suiv)){
 		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
 	}
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
+	//echo " | Classe : ".$current_eleve_classe."</p>\n";
+	echo "</p>\n";
+	echo "</form>\n";
 
-
-	echo " | Classe : ".$current_eleve_classe."</p>\n";
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary=\"Choix de la période\"><tr>";
-	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";
+	echo "<td valign=\"top\"><strong>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</strong><br />\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
 	while ($i < $nb_periode) {
@@ -142,7 +160,7 @@ if (isset($id_classe)) {
 	echo "</td>\n";
 
 	echo "<td valign=\"top\">\n";
-	echo "<b>Paramètres d'affichage</b><br />\n";
+	echo "<strong>Paramètres d'affichage</strong><br />\n";
 	echo "<input type=\"hidden\" name=\"id_classe\" value=\"".$id_classe."\" />";
 
 	echo "<table border='0' width='100%' summary=\"Paramètres du tableau\">\n";
@@ -252,8 +270,11 @@ if (isset($id_classe)) {
 	}
 	echo "</td></tr>\n</table>\n</form>\n";
 } else {
-	//echo "</p><b>Visualiser les notes par classe :</b><br />";
-	echo "</p><b>Visualiser les moyennes par classe :</b><br />";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
+
+	//echo "</p><strong>Visualiser les notes par classe :</strong><br />";
+	echo "</p>\n";
+	echo "<strong>Visualiser les moyennes par classe :</strong><br />";
 	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	if($_SESSION['statut']=='scolarite'){
