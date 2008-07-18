@@ -173,19 +173,20 @@ if ($use_sso == "ldap_scribe") {
     </td>
 </tr>
 <tr>
-    <td width=200><a href="../init_dbf_sts/index.php">Initialisation des données à partir de fichiers DBF et XML</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis deux fichiers DBF et l'export XML de STS.
+    <td width=200><a href="../init_xml2/index.php">Initialisation des données à partir de fichiers XML</a></td>
+    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
+	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.
     </td>
 </tr>
 <tr>
     <td width=200><a href="../init_xml/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.
+    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
+	<i>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</i>
     </td>
 </tr>
 <tr>
-    <td width=200><a href="../init_xml2/index.php">Initialisation des données à partir de fichiers XML</a></td>
-    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les exports XML de Sconet/STS.<br />
-	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources.
+    <td width=200><a href="../init_dbf_sts/index.php">Initialisation des données à partir de fichiers DBF et XML</a> (OBSOLETE)</td>
+    <td>Permet d'importer les données élèves, classes, professeurs, matières depuis deux fichiers DBF et l'export XML de STS.
     </td>
 </tr>
 <?php
