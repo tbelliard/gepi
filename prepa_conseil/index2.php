@@ -74,7 +74,7 @@ if (isset($id_classe)) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
 
 	$current_eleve_classe = sql_query1("SELECT classe FROM classes WHERE id='$id_classe'");
-	echo " | <a href=\"index2.php\">Choisir une autre classe</a>";
+	//echo " | <a href=\"index2.php\">Choisir une autre classe</a>";
 
 
 	// ===========================================
