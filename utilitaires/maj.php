@@ -505,6 +505,7 @@ if (isset ($_POST['maj'])) {
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/popup_annee_anterieure.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Consultation des données antérieures', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Activation/désactivation du module données antérieures', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/nettoyer_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression de données antérieures', '');";
+	$tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_aid.php', 'V', 'F', 'F', 'F', 'F', 'F','F', 'F', 'Fiches projets', '1');";
 
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/maj_import1.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ('/responsables/maj_import2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');";
@@ -5135,19 +5136,6 @@ if (isset ($_POST['maj'])) {
             $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
         }
 
-        $result .= "&nbsp;->Ajout (si besoin) du paramètre 'active_annees_anterieures' à la table 'setting'<br/>";
-        $req_test = mysql_query("SELECT value FROM setting WHERE name='active_annees_anterieures'");
-        $res_test = mysql_num_rows($req_test);
-        if ($res_test == 0){
-            $query3 = mysql_query("INSERT INTO setting VALUES ('active_annees_anterieures', 'n');");
-            if ($query3) {
-                $result .= "<font color=\"green\">Ok !</font><br />";
-            } else {
-                $result .= "<font color=\"red\">Erreur</font><br />";
-            }
-        } else {
-            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
-        }
 
 		//+++++++Modif lié à longmax_login++++++++++++
         $result .= "&nbsp;->Ajout (si besoin) du paramètre 'longmax_login' à la table 'setting'<br/>";
@@ -6102,9 +6090,94 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     } else {
       $result .= "<font color=\"blue\">Le paramètre GepiAccesRestrAccesAppProfP existe déjà dans la table setting.</font><br />";
     }
+   // Module archivage
+    $result .= "<br />&nbsp;->Module archivage : ajout (si besoin) du paramètre 'active_annees_anterieures' à la table 'setting'<br/>";
+    $req_test = mysql_query("SELECT value FROM setting WHERE name='active_annees_anterieures'");
+    $res_test = mysql_num_rows($req_test);
+    if ($res_test == 0){
+            $query3 = mysql_query("INSERT INTO setting VALUES ('active_annees_anterieures', 'n');");
+            if ($query3) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+            } else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+            }
+    } else {
+            $result .= "<font color=\"blue\">Le paramètre existe déjà.</font><br />";
+    }
+    $result .= "<br />&nbsp;->Module archivage : Création des tables d'archivage<br />";
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aids'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aids` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`id_type_aid` int(11) NOT NULL default '0',`productions` varchar(100) NOT NULL default '',`resume` text NOT NULL,`famille` smallint(6) NOT NULL default '0',`mots_cles` text NOT NULL,`adresse1` varchar(255) NOT NULL default '',`adresse2` varchar(255) NOT NULL default '',`public_destinataire` varchar(50) NOT NULL default '',`contacts` text NOT NULL,`divers` text NOT NULL,`matiere1` varchar(100) NOT NULL default '',`matiere2` varchar(100) NOT NULL default '',`fiche_publique` enum('y','n') NOT NULL default 'n',`affiche_adresse1` enum('y','n') NOT NULL default 'n',`en_construction` enum('y','n') NOT NULL default 'n',`notes_moyenne` varchar(255) NOT NULL,`notes_min` varchar(255) NOT NULL,`notes_max` varchar(255) NOT NULL,`responsables` text NOT NULL,`eleves` text NOT NULL,`eleves_resp` text NOT NULL, PRIMARY KEY  (`id`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_aids a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_aids existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL,PRIMARY KEY  (`ine`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_eleves2 a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_eleves2 existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_eleves a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_eleves existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_disciplines'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_disciplines` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL,`INE` varchar(255) NOT NULL,`classe` varchar(255) NOT NULL,`num_periode` tinyint(4) NOT NULL,`nom_periode` varchar(255) NOT NULL,`special` varchar(255) NOT NULL,`matiere` varchar(255) NOT NULL,`prof` varchar(255) NOT NULL,`note` varchar(255) NOT NULL,`moymin` varchar(255) NOT NULL,`moymax` varchar(255) NOT NULL,`moyclasse` varchar(255) NOT NULL,`rang` tinyint(4) NOT NULL,`appreciation` text NOT NULL,`nb_absences` int(11) NOT NULL,`non_justifie` int(11) NOT NULL,`nb_retards` int(11) NOT NULL, PRIMARY KEY  (`id`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_disciplines a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_disciplines existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_appreciations_aid'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_appreciations_aid` (`id_eleve` varchar(255) NOT NULL,`annee` varchar(255) NOT NULL,`classe` varchar(255) NOT NULL,`id_aid` int(11) NOT NULL,`periode` int(11) NOT NULL default '0',`appreciation` text NOT NULL,`statut` varchar(10) NOT NULL default '',`note_eleve` float default NULL,`note_moyenne_classe` varchar(255) NOT NULL,`note_min_classe` varchar(255) NOT NULL,`note_max_classe` varchar(255) NOT NULL, PRIMARY KEY  (`id_eleve`,`id_aid`,`periode`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_appreciations_aid a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_appreciations_aid existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aid_eleve'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` varchar(255) NOT NULL default '0',`id_eleve` varchar(255) NOT NULL,`eleve_resp` char(1) NOT NULL default 'n',PRIMARY KEY  (`id_aid`,`id_eleve`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_aid_eleve a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_aid_eleve existe déjà.</font><br />";
+    }
+    $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_types_aid'"));
+    if ($test == 0) {
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', PRIMARY KEY  (`id`));");
+      if ($result_inter == '')
+          $result .= "<font color=\"green\">La table archivage_types_aid a été créée !</font><br />";
+      else
+          $result .= $result_inter."<br />";
+    } else {
+      $result .= "<font color=\"blue\">La table archivage_types_aid existe déjà.</font><br />";
+    }
 
 	// ================ modif jjocal ===============
-       	$result .= "&nbsp;->Ajout (si besoin) du paramètre 'use_ent' à la table 'setting'<br/>";
+       	$result .= "<br />&nbsp;->Ajout (si besoin) du paramètre 'use_ent' à la table 'setting'<br/>";
         $req_test = mysql_query("SELECT value FROM setting WHERE name = 'use_ent'");
         $res_test = mysql_num_rows($req_test);
         if ($res_test == 0){
