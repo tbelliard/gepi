@@ -50,6 +50,8 @@ $titre_page = "Outil de visualisation | Elève vis à vis de la classe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $periode = isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 $suiv = isset($_GET['suiv']) ? $_GET['suiv'] : 'no';
@@ -58,11 +60,13 @@ $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve'
 
 include "../lib/periodes.inc.php";
 ?>
-<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
+<!--p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a-->
 <?php
 
 if (!isset($id_classe)) {
-    echo "</p><p>Sélectionnez la classe :<br />\n";
+    echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a></p>\n";
+
+	echo "<p>Sélectionnez la classe :<br />\n";
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 
@@ -94,7 +98,7 @@ if (!isset($id_classe)) {
     $i = 0;
 	$nb_class_par_colonne=round($nombre_lignes/3);
         //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
+        echo "<table width='100%' summary='Choix de la classe'>\n";
         echo "<tr valign='top' align='center'>\n";
         echo "<td align='left'>\n";
     while ($i < $nombre_lignes){
@@ -113,24 +117,104 @@ if (!isset($id_classe)) {
     //echo "</p>\n";
         echo "</table>\n";
 } else {
-    echo " | <a href=\"eleve_classe.php\">Choisir une autre classe</a>\n";
+	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form1' method='post'>\n";
+
+    echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>\n";
+    //echo " | <a href=\"eleve_classe.php\">Choisir une autre classe</a>\n";
+
+	if($_SESSION['statut']=='scolarite'){
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	if($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='administrateur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	$chaine_options_classes="";
+
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+
+	if($id_class_prec!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		if(isset($periode)) {echo "&amp;periode=$periode";}
+		echo "#graph'>Classe précédente</a>";
+	}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+	if($id_class_suiv!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		if(isset($periode)) {echo "&amp;periode=$periode";}
+		echo "#graph'>Classe suivante</a>";
+	}
+
+	if(isset($periode)) {echo "<input type='hidden' name='periode' value='$periode' />";}
+	echo "</p>\n";
+	echo "</form>\n";
+
+
 
     if (!$periode) {
         $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
         $classe = mysql_result($call_classe, "0", "classe");
 
         ?>
-        </p><p><span class='grand'>Classe : <?php echo $classe; ?></span><br />
+        <p><span class='grand'>Classe : <?php echo $classe; ?></span><br />
         <br />Choisissez quelle période vous souhaitez visualiser :<br />
-        <form enctype="multipart/form-data" action="eleve_classe.php?temp=0#graph" method=post>
+        <form enctype="multipart/form-data" action="eleve_classe.php?temp=0#graph" method="post">
         <?php
         $i="1";
         while ($i < $nb_periode) {
-            echo "<input type='radio' name='periode' value='$i' "; if ($i == '1') { echo "CHECKED";} echo " />$nom_periode[$i]<br />\n";
+            echo "<input type='radio' name='periode' id='periode_$i' value='$i' ";
+			if ($i == '1') { echo "CHECKED";}
+			echo " /> <label for='periode_$i' style='cursor:pointer;'>$nom_periode[$i]</label><br />\n";
         $i++;
         }
         ?>
-        <input type='radio' name='periode' value='annee' />Année complète<br />
+        <input type='radio' id='annee_complete' name='periode' value='annee' /> <label for='annee_complete' style='cursor:pointer;'>Année complète</label><br />
         <input type='submit' value='Visualiser' />
         <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
         </form>
@@ -160,13 +244,13 @@ if (!isset($id_classe)) {
             }
         }
         ?>
-    <table border=0><tr><td><p class=bold>|<a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>">Choisir une autre période</a>|
+    <table border='0' summary='Choix'><tr><td><p class='bold'>|<a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>">Choisir une autre période</a>|
         <a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>&amp;v_eleve=<?php echo $v_eleve; ?>&amp;prec=yes&amp;periode=<?php echo $periode; ?>">Elève précédent</a>|
         <a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>&amp;suiv=yes&amp;periode=<?php echo $periode; ?>&amp;v_eleve=<?php echo $v_eleve; ?>">Elève suivant</a>|
         </p></td>
 
         <td><form enctype="multipart/form-data" action="eleve_classe.php" method=post>
-        <select size=1 name=v_eleve onchange="this.form.submit()">
+        <select size='1' name='v_eleve' onchange="this.form.submit()">
         <?php
         $i = "0" ;
         while ($i < $nombreligne) {
@@ -200,8 +284,8 @@ if (!isset($id_classe)) {
         $v_legend1 = $eleve_nom." ".$eleve_prenom;
         $v_legend2 = "Moy. ".$classe ;
         echo "<p>$eleve_nom  $eleve_prenom, classe de $classe   |  $temp</p>";
-        echo "<table  border=1 cellspacing=2 cellpadding=5>";
-        echo "<tr><td width='100'><p>Matière</p></td><td width='100'><p>Note élève</p></td><td width='100'><p>Moyenne classe</p></td><td width='100'><p>Différence</p></td></tr>";
+        echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' summary='Matières/Notes/Appréciations'>";
+        echo "<tr><th width='100'><p>Matière</p></th><th width='100'><p>Note élève</p></th><th width='100'><p>Moyenne classe</p></th><th width='100'><p>Différence</p></th></tr>";
 
         $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
         if ($affiche_categories == "y") {
@@ -241,6 +325,7 @@ if (!isset($id_classe)) {
         $compteur = 0;
         $moyenne_classe = '';
         $prev_cat_id = null;
+		$alt=1;
         while ($i < $nombre_lignes) {
             $inserligne="no";
             $group_id = mysql_result($call_groupes, $i, "id_groupe");
@@ -304,7 +389,8 @@ if (!isset($id_classe)) {
                 if ($moyenne_classe == '') {$moyenne_classe = '-';}
                 if (($note_eleve == "-") or ($moyenne_classe == "-")) {$difference = '-';} else {$difference = $note_eleve-$moyenne_classe;}
                 //echo "<tr><td><p>" . $current_group["description"] . "</p></td><td><p>$note_eleve";
-                echo "<tr><td><p>" . htmlentities($current_group["description"]) . "</p></td><td><p>$note_eleve";
+				$alt=$alt*(-1);
+                echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td><td><p>$note_eleve";
                 echo "</p></td><td><p>$moyenne_classe</p></td><td><p>$difference</p></td></tr>";
                 (ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
                 (ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");
@@ -318,11 +404,11 @@ if (!isset($id_classe)) {
         ?>
     <br />
     <a name="graph"></a>
-    <table border=0><tr><td><span class=bold>|<a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>">Choisir une autre période</a>|
+    <table border='0' summary='Choix'><tr><td><span class=bold>|<a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>">Choisir une autre période</a>|
         <a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>&amp;v_eleve=<?php echo $v_eleve; ?>&amp;prec=yes&amp;periode=<?php echo $periode; ?>#graph">Elève précédent</a>|
         <a href="eleve_classe.php?id_classe=<?php echo $id_classe; ?>&amp;suiv=yes&amp;periode=<?php echo $periode; ?>&amp;v_eleve=<?php echo $v_eleve; ?>#graph">Elève suivant</a>|</span></td>
 
-        <td><form enctype="multipart/form-data" action="eleve_classe.php?temp=0#graph" method=post>
+        <td><form enctype="multipart/form-data" action="eleve_classe.php?temp=0#graph" method="post">
         <select size=1 name=v_eleve onchange="this.form.submit()">
         <?php
         $i = "0" ;
