@@ -174,7 +174,8 @@ echo "<script type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->";
-echo "\n</script>\n</p>\n";
+echo "\n</script>\n</p>\n"; 
+echo "<noscript>\n<p>".strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 
 // On gère la sélection de l'élève
 if ($_SESSION['statut'] == 'responsable') {
@@ -312,15 +313,15 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
     die();
     //AFfichage page de garde
 } elseif ($nb_test == 0) {
-	echo "<center>";
+	//echo "<center>"; correction Régis : balise <center> dépréciée
 	if ($_SESSION['statut'] == "responsable") {
-		echo "<h3 class='gepi'>Choisissez un élève et une matière.</h3>\n";
+		echo "<div class='gepi_garde'>Choisissez un élève et une matière.</div>\n"; //correction Régis : h3 doit venir après h1 et h2
 	} elseif ($_SESSION['statut'] == "eleve") {
-		echo "<h3 class='gepi'>Choisissez une matière</h3>\n";
+		echo "<div class='gepi_garde'>Choisissez une matière</div>\n";
 	} else {
-		echo "<h3 class='gepi'>Choisissez une classe et une matière.</h3>\n";
+		echo "<div class='gepi_garde'>Choisissez une classe et une matière.</div>\n";
 	}
-	echo "</center>";
+	//echo "</center>";
 	require("../lib/footer.inc.php");
 	die();
 }

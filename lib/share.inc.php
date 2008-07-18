@@ -356,7 +356,7 @@ function make_tables_of_classes () {
 
 
 function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
-  echo "<b><i>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</i></b><br />";
+  echo "<strong><em>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</em></strong><br />";
   $appel_donnees = mysql_query("SELECT * FROM classes ORDER BY classe");
   $lignes = mysql_num_rows($appel_donnees);
   $i = 0;
@@ -379,7 +379,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
         $k++;
       }
       if ($flag2 == "yes") {
-        echo "<b>";
+        echo "<strong>";
         $display_class = mysql_result($appel_donnees, $i, "classe");
         if (($id_classe == $current_classe) and ($id_matiere == $current_matiere)) {
            echo ">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)&nbsp;";
@@ -388,7 +388,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
        echo "<a href=\"".$link."?id_classe=$id_classe&amp;id_matiere=$id_matiere&amp;year=$year&amp;month=$month&amp;day=$day\">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)</a>";
 
         }
-        echo "</b><br />";
+        echo "</strong><br />";
       }
       $j++;
     }
@@ -855,7 +855,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
         echo "$nom_conteneur ";
         //echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
         if ($ver_periode <= 1)
-            echo " (<b>".$gepiClosedPeriodLabel."</b>) ";
+            echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
         echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
         $appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
         $nb_dev  = mysql_num_rows($appel_dev);
@@ -1088,7 +1088,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
     //------
     // On affiche l'appréciation aid :
     //------
-    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><strong>$AID_NOM_COMPLET</strong><br />";
     $chaine_prof="";
     $n = '0';
     while ($n < $nb_lig) {
@@ -1096,7 +1096,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         $n++;
     }
     if($n!=0){
-	echo "<i>".$chaine_prof."</i>";
+	echo "<em>".$chaine_prof."</em>";
     }
     echo "</span></td>\n";
     if ($test_coef != 0 AND $affiche_coef == "y") echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";
@@ -1125,7 +1125,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
 	//==========================
 
 	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
-	echo "<span class='$style_bulletin'><b>";
+	echo "<span class='$style_bulletin'><strong>";
 	if ($current_eleve_aid_statut == '') {
 		echo $current_eleve_aid_note;
 	} else if ($current_eleve_aid_statut == 'other') {
@@ -1133,7 +1133,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
 	} else {
 		echo $current_eleve_aid_statut;
 	}
-	echo "</b></span></td>\n";
+	echo "</strong></span></td>\n";
     } else {
 	//==========================
 	// MODIF: boireaus
@@ -1166,7 +1166,7 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
         echo "<td style=\"\" colspan=\"2\"><span class='$style_bulletin'>";
         if (($message != '') or ($display_nom == 'y')) {
             echo "$message ";
-            if ($display_nom == 'y') {echo "<b>$aid_nom</b><br />";}
+            if ($display_nom == 'y') {echo "<strong>$aid_nom</strong><br />";}
         }
     }
     echo "$current_eleve_aid_appreciation</span></td>\n</tr>\n";
@@ -1469,7 +1469,7 @@ function html_entity_decode_all_version ($string)
 function make_classes_select_html($link, $current, $year, $month, $day)
 
 {
-  $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Classe :</i></b><br />
+  $out_html = "<form name=\"classe\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Classe :</em></strong><br />
   <select name=\"classe\" onchange=\"classe_go()\">";
 	// correction W3C : onChange = onchange
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
@@ -1493,7 +1493,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   if (destination) location.href = destination;
   }
   // -->
-  </SCRIPT>
+  </script>
   <noscript>
   <input type=submit value=\"OK\" />
   </noscript>
@@ -1512,7 +1512,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	//						  Création d'un label pour passer les tests WAI
 	//						  Ajout de balises <p>...</p> pour encadrer <select>...
 	/*
-	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Matière :</i></b><br />
+	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Matière :</em></strong><br />
 	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
 	*/
 	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
@@ -1603,20 +1603,21 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 		$out_html = "<p class='bold'>Elève : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
 	} else {
 		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
-	// correction W3C : onChange = onchange
-	  $out_html = "<form name=\"eleve\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><b><i>Elève :</i></b><br />
-	  <select name=\"eleve\" onchange=\"eleve_go()\">\n";
-	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)";
+	// correction W3C : onChange = onchange + ajout de balise <p> +fermeture balise <option>
+	  $out_html = "<form id=\"eleve\" name=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p><label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label><br />
+	  <select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
+	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
-		   	$selected = ($current_eleve->login == $current->login) ? "selected" : "";
+		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
 		   } else {
 		   	$selected = "";
 		   }
 		   $link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
 		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>\n";
 		}
-	  $out_html .= "</select>
+	// ajout de la fermeture de p </p> et de \" pour encadrer submit
+	  $out_html .= "</select></p>
 	  <script type=\"text/javascript\">
 	  <!--
 	  function eleve_go()
@@ -1626,11 +1627,13 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	    if (destination) location.href = destination;
 	  }
 	  // -->
-	  </SCRIPT>
+	  </script>
 
 	  <noscript>
-	  <input type=submit value=\"OK\" />
-	  </noscript>
+		<p>
+		<input type=\"submit\" value=\"OK\" />
+		</p>
+		</noscript>
 	  </form>\n";
 	}
 	return $out_html;
@@ -1647,7 +1650,7 @@ else
 
 $res = sql_query($sql);
   if (($res) and (sql_count($res)!=0)) {
-    $html .= "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>";
+    $html .= "<span class='petit'>Document(s) joint(s):</span>";
     //$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
     $html .= "<ul style=\"padding-left: 15px;\">";
     for ($i=0; ($row = sql_row($res,$i)); $i++) {
@@ -1655,8 +1658,9 @@ $res = sql_query($sql);
               $emplacement = $row[1];
               //$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
 			// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-              //$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"_blank\">$titre</a></li>";
-              $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" onclick=\"window.open(this.href,'_blank'); return false;\">$titre</a></li>";
+			// alternative, utiliser un javascript
+              $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
+
     }
     $html .= "</ul>";
    }
@@ -2413,7 +2417,7 @@ function debug_var(){
 
 	$cpt_debug=0;
 
-	echo "<p><b>Variables transmises en POST, GET, SESSION,...</b> (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)</p>\n";
+	echo "<p><strong>Variables transmises en POST, GET, SESSION,...</strong> (<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)</p>\n";
 
 	echo "<div id='container_debug_var_$cpt_debug'>\n";
 	$cpt_debug++;
