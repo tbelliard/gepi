@@ -209,7 +209,7 @@ $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
 //=========================
 // MODIF: boireaus 20080315
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-echo "<table width=$larg_tab class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width=$larg_tab class='boireaus' cellspacing='1' cellpadding='1' summary='Matières/Notes/Appréciations'>\n";
 //=========================
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$compteur";
 if ($total != '') {echo "/$total";}
@@ -788,7 +788,7 @@ echo "</table>\n";
 
 echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-echo "<table width=$larg_tab class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
 	$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
@@ -874,7 +874,7 @@ if ($current_eleve_profsuivi_login) {
 }
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
-echo "<table width=\"$larg_tab\" class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width=\"$larg_tab\" class='boireaus' cellspacing='1' cellpadding='1' summary='Avis du conseil de classe'>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
 
