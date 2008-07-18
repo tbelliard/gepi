@@ -380,7 +380,7 @@ echo "<div id='new_div_login' class='center'>\n";
 			chaine_mel = "mailto:"+chaine_tmp+"?subject=[GEPI]";
 			//chaine_mel += "&body=Bonjour,\r\nCordialement.\r\n";
 			//chaine_mel += "&body=Bonjour,\\r\\nCordialement.\\r\\n";
-			chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaine de caractères _CHEZ_ par un @";
+			chaine_mel += "&body=Pour que le mail parvienne à son destinataire, pensez à remplacer la chaîne de caractères _CHEZ_ par un @ dans l'adresse du destinataire.";
 			//chaine_mel += "&body=Bonjour";
 			location.href = chaine_mel;
 		}
