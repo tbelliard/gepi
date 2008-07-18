@@ -42,14 +42,17 @@ function last_connection() {
               $flag = 0;
               for ($i = 0; (($row_b = sql_row($res, $i)) and ($flag < 1)); $i++)
               {
-              if (($row_b[1]  == "2") and ($row_b[2]  == $row[2]))
-                  $nb_tentative++;
-              else
-                  $flag = 1;
+				if (($row_b[1]  == "2") and ($row_b[2]  == $row[2])) {
+					$nb_tentative++;
+				}
+				else {
+					$flag = 1;
+				}
               }
-              if ($nb_tentative > 1) $r .= "<br><b>Nombre de tentatives de connexion successives : ".$nb_tentative.".</b></font>";
-          } else
-              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              if ($nb_tentative > 1) {$r .= "<br><b>Nombre de tentatives de connexion successives : ".$nb_tentative.".</b></font>";}
+          } else {
+              $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+			}
       }
     }
     return $r;
