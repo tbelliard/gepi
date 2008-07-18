@@ -157,7 +157,7 @@ if (!$id_classe) {
 	if($_SESSION['statut']=='administrateur'){
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
-
+	/*
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
@@ -167,7 +167,7 @@ if (!$id_classe) {
 	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
-
+	*/
 	$chaine_options_classes="";
 
 	$res_class_tmp=mysql_query($sql);
