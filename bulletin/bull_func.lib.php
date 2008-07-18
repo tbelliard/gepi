@@ -3648,16 +3648,37 @@ function releve_pdf($tab_rel,$i) {
 	if($nb_releve_par_page === '1' and $active_bloc_adresse_parent === '1') { $hauteur_cadre_note_global = 205; }
 	if($nb_releve_par_page === '2') { $hauteur_cadre_note_global = 102; }
 	*/
+
+	// Pour un relevé en recto/verso avec le bulletin,
+	// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
+	// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
 	$nb_releve_par_page=1;
-	$active_bloc_adresse_parent=0;
-	$hauteur_cadre_note_global = 250;
 
-	$affiche_bloc_observation=1;
-	$affiche_cachet_pp=1;
-	$affiche_signature_parent=1;
-	$texte_observation="Blabla texte observ";
 
-	$aff_classe_nom=1;
+	//$active_bloc_adresse_parent=0;
+	$active_bloc_adresse_parent=($tab_rel['rn_adr_resp']=='y') ? 1 : 0;
+	//$hauteur_cadre_note_global = 250;
+	if($active_bloc_adresse_parent!=1) { $hauteur_cadre_note_global = 250; }
+	if($active_bloc_adresse_parent==1) { $hauteur_cadre_note_global = 205; }
+
+	// A FAIRE:
+	// Pour la hauteur, prendre en compte la saisie d'une formule $tab_rel['rn_formule'] (non vide)
+	// et le caractère vide ou non de getSettingValue("bull_formule_bas")
+
+	//$affiche_bloc_observation=1;
+	$affiche_bloc_observation=($tab_rel['rn_bloc_obs']=='y') ? 1 : 0;
+
+	//$affiche_cachet_pp=1;
+	$affiche_cachet_pp=($tab_rel['rn_sign_pp']=='y') ? 1 : 0;
+	//$affiche_signature_parent=1;
+	$affiche_signature_parent=($tab_rel['rn_sign_resp']=='y') ? 1 : 0;
+
+	if(($affiche_cachet_pp==1)||($affiche_signature_parent==1)) {$affiche_bloc_observation=1;}
+
+	$texte_observation="Observations:";
+
+	//$aff_classe_nom=1;
+	$aff_classe_nom=$tab_rel['rn_aff_classe_nom'];
 
 	// BIZARRE:
 	$hauteur_cadre_matiere=20;
@@ -3679,9 +3700,21 @@ function releve_pdf($tab_rel,$i) {
 		if($nb_releve_par_page=='2' and $passage_i == '2') { $Y_cadre_note = $Y_cadre_note+145; $Y_cadre_eleve = $Y_cadre_eleve+145; $Y_entete_etab=$Y_entete_etab+145; }
 		*/
 
+		/*
 		$Y_cadre_note = '32';
 		$Y_cadre_eleve = '5';
 		$Y_entete_etab='5';
+		*/
+		if($active_bloc_adresse_parent!='1') {
+			$Y_cadre_note = '32';
+			$Y_cadre_eleve = '5';
+			$Y_entete_etab='5';
+		}
+		else {
+			$Y_cadre_note = '75';
+			$Y_cadre_eleve = '5';
+			$Y_entete_etab='5';
+		}
 
 
 		//BLOC IDENTITE ELEVE
@@ -3712,7 +3745,17 @@ function releve_pdf($tab_rel,$i) {
 		//$classe_aff = $pdf->WriteHTML('Classe de <B>'.unhtmlentities($tab_rel['classe']).'<B>');
 		//$classe_aff = $pdf->WriteHTML(' ('.unhtmlentities($tab_rel['classe']).')');
 		// A REVOIR...
-		$classe_aff = $pdf->WriteHTML(' '.unhtmlentities($tab_rel['classe_nom_complet']).' ('.unhtmlentities($tab_rel['classe']).')');
+		//$classe_aff=$pdf->WriteHTML(' '.unhtmlentities($tab_rel['classe_nom_complet']).' ('.unhtmlentities($tab_rel['classe']).')');
+
+		if($aff_classe_nom==1) {
+			$classe_aff=$pdf->WriteHTML('Classe de '.unhtmlentities($tab_rel['classe_nom_complet']));
+		}
+		elseif($aff_classe_nom==2) {
+			$classe_aff=$pdf->WriteHTML('Classe de '.unhtmlentities($tab_rel['classe']));
+		}
+		else {
+			$classe_aff=$pdf->WriteHTML(' '.unhtmlentities($tab_rel['classe_nom_complet']).' ('.unhtmlentities($tab_rel['classe']).')');
+		}
 
 		$pdf->Cell(90,5,$classe_aff,0,2,'');
 		$pdf->SetX($X_cadre_eleve);
@@ -3723,7 +3766,8 @@ function releve_pdf($tab_rel,$i) {
 		$logo = '../images/'.getSettingValue('logo_etab');
 		$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 		//if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
-		if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
+		//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
+		if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==1 and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo=='jpg' or $format_du_logo=='png')) {
 			$valeur=redimensionne_image($logo, $L_max_logo, $H_max_logo);
 			//$X_logo et $Y_logo; placement du bloc identite de l'établissement
 			$X_logo=$X_entete_etab;
@@ -3773,7 +3817,8 @@ function releve_pdf($tab_rel,$i) {
 
 		// BLOC ADRESSE DES PARENTS
 		// Nom des variables à revoir
-		if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
+		//if($active_bloc_adresse_parent==='1' and $nb_releve_par_page==='1') {
+		if($active_bloc_adresse_parent==1 and $nb_releve_par_page==1) {
 
 			//+++++++++++++++
 			// A REVOIR
@@ -3783,7 +3828,7 @@ function releve_pdf($tab_rel,$i) {
 			//$ident_eleve_aff=$login[$nb_eleves_i];
 			$pdf->SetXY($X_parent,$Y_parent);
 			//$texte_1_responsable = $civilite_parents[$ident_eleve_aff][$responsable_place]." ".$nom_parents[$ident_eleve_aff][$responsable_place]." ".$prenom_parents[$ident_eleve_aff][$responsable_place];
-			$texte_1_responsable=$tab_adr1[$num_resp];
+			$texte_1_responsable=$tab_adr_ligne1[$num_resp];
 			$hauteur_caractere=12;
 			$pdf->SetFont($caractere_utilse,'B',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
@@ -3803,7 +3848,7 @@ function releve_pdf($tab_rel,$i) {
 
 			$pdf->SetFont($caractere_utilse,'',10);
 			//$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
-			$texte_1_responsable=$tab_adr2[$num_resp];
+			$texte_1_responsable=$tab_adr_ligne2[$num_resp];
 			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
@@ -3822,7 +3867,7 @@ function releve_pdf($tab_rel,$i) {
 
 			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 			//$texte_1_responsable = $adresse2_parents[$ident_eleve_aff][$responsable_place];
-			$texte_1_responsable=$tab_adr3[$num_resp];
+			$texte_1_responsable=$tab_adr_ligne3[$num_resp];
 			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
@@ -3842,7 +3887,7 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 			$pdf->Cell(90,5, '',0,2,'');
 			//$texte_1_responsable = $cp_parents[$ident_eleve_aff][$responsable_place]." ".$ville_parents[$ident_eleve_aff][$responsable_place];
-			$texte_1_responsable=$tab_adr5[$num_resp];
+			$texte_1_responsable=$tab_adr_ligne5[$num_resp];
 			$hauteur_caractere=10;
 			$pdf->SetFont($caractere_utilse,'',$hauteur_caractere);
 			$val = $pdf->GetStringWidth($texte_1_responsable);
@@ -3865,7 +3910,8 @@ function releve_pdf($tab_rel,$i) {
 		//Titre du tableau
 		$pdf->SetXY($X_cadre_note,$Y_cadre_note);
 		$pdf->SetFont($caractere_utilse,'B',12);
-		if($cadre_titre==='1') { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
+		//if($cadre_titre==='1') { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
+		if($cadre_titre==1) { $var_encadrement_titre='LTR'; } else { $var_encadrement_titre=''; }
 
 		//$pdf->Cell(0, $hauteur_du_titre, $titre_du_cadre.' '.date_frc($_SESSION['date_debut_aff']).' au '.date_frc($_SESSION['date_fin_aff']), $var_encadrement_titre,0,'C');
 		// A REVOIR...
@@ -3914,7 +3960,7 @@ function releve_pdf($tab_rel,$i) {
 					//MATIERE
 					$pdf->SetXY($X_cadre_note,$Y_cadre_note+$hauteur_utilise);
 
-					// on affiche les nom des regroupement
+					// on affiche les nom des regroupements
 					/*
 					if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
 					{
@@ -4050,7 +4096,8 @@ function releve_pdf($tab_rel,$i) {
 			$largeur_utilise=$largeur_cadre_matiere;
 			//=======================
 			// AJOUT: chapel 20071019
-			if ( $affiche_bloc_observation === '1' ) {
+			//if ( $affiche_bloc_observation === '1' ) {
+			if ( $affiche_bloc_observation==1) {
 				$largeur_cadre_note = $largeur_cadre_note;
 			}
 			else {
@@ -4132,18 +4179,17 @@ function releve_pdf($tab_rel,$i) {
 		}
 
 
-	// J'EN SUIS Là: 20080619
-
-
 		// BLOC OBSERVATION
 		//=======================
 		// MODIF: chapel 20071019
-		if($affiche_bloc_observation === '1')
+		//if($affiche_bloc_observation === '1')
+		if($affiche_bloc_observation==1)
 		{
 			$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
 			$largeur_restant=$largeur_cadre_note_global-$largeur_utilise;
 			$hauteur_utilise = $hauteur_du_titre;
-			if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+			//if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+			if($affiche_cachet_pp==1 or $affiche_signature_parent==1)
 			{
 				$hauteur_cadre_observation=$hauteur_cadre_note_global-$hauteur_cachet;
 			}
@@ -4158,11 +4204,14 @@ function releve_pdf($tab_rel,$i) {
 		//=======================
 
 		// BLOC SIGNATURE
-		if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+		//if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
+		if($affiche_cachet_pp==1 or $affiche_signature_parent==1)
 		{
 			$nb_col_sign = 0;
-			if($affiche_cachet_pp==='1') { $nb_col_sign=$nb_col_sign+1; }
-			if($affiche_signature_parent==='1') { $nb_col_sign=$nb_col_sign+1; }
+			//if($affiche_cachet_pp==='1') { $nb_col_sign=$nb_col_sign+1; }
+			//if($affiche_signature_parent==='1') { $nb_col_sign=$nb_col_sign+1; }
+			if($affiche_cachet_pp==1) { $nb_col_sign=$nb_col_sign+1; }
+			if($affiche_signature_parent==1) { $nb_col_sign=$nb_col_sign+1; }
 			$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
 
 			$X_signature = $X_cadre_note+$largeur_utilise;
@@ -4173,7 +4222,8 @@ function releve_pdf($tab_rel,$i) {
 			$pdf->SetFont($caractere_utilse,'',8);
 			$pdf->Rect($X_signature, $Y_signature, $largeur_cadre_signature, $hauteur_cadre_signature, 'D');
 
-			if($affiche_cachet_pp==='1')
+			//if($affiche_cachet_pp==='1')
+			if($affiche_cachet_pp==1)
 			{
 				$pdf->SetXY($X_signature, $Y_signature);
 				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signature','LTR',2,'C');
@@ -4181,7 +4231,8 @@ function releve_pdf($tab_rel,$i) {
 				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,$hauteur_cachet-8, '','LR',2,'C');
 				$X_signature = $X_signature+($largeur_restant/$nb_col_sign);
 			}
-			if($affiche_signature_parent==='1')
+			//if($affiche_signature_parent==='1')
+			if($affiche_signature_parent==1)
 			{
 				$pdf->SetXY($X_signature, $Y_signature);
 				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signatures','LTR',2,'C');
@@ -4191,10 +4242,13 @@ function releve_pdf($tab_rel,$i) {
 		}
 		//}
 
+		/*
 		//PUB ;)
 		$pdf->SetXY($X_cadre_note, $Y_cadre_note+$hauteur_cadre_note_global+$hauteur_du_titre);
 		$pdf->SetFont('arial','',8);
 		$pdf->Cell(200,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,'');
+		// CA ENTRE EN COLLISION AVEC LA FORMULE DU BULLETIN (insérée via la fonction Footer() de class_php/gepi_pdf.class.php)
+		*/
 	//}
 
 	/*

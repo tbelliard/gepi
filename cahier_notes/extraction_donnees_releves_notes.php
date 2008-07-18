@@ -55,6 +55,10 @@
 
 	$tab_rn_adr_resp=isset($_POST['rn_adr_resp']) ? $_POST['rn_adr_resp'] : array();
 
+	// Bloc observation sur la droite pour le relevé PDF:
+	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
+
+	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -179,8 +183,15 @@
 			$tab_releve[$id_classe][$periode_num]['rn_formule']=isset($tab_rn_formule[$loop_classe]) ? $tab_rn_formule[$loop_classe] : "";
 
 			$tab_releve[$id_classe][$periode_num]['rn_adr_resp']=isset($tab_rn_adr_resp[$loop_classe]) ? $tab_rn_adr_resp[$loop_classe] : "n";
+
+			// Bloc observation sur le relevé PDF
+			$tab_releve[$id_classe][$periode_num]['rn_bloc_obs']=isset($tab_rn_bloc_obs[$loop_classe]) ? $tab_rn_bloc_obs[$loop_classe] : "n";
+
+			$tab_releve[$id_classe][$periode_num]['rn_aff_classe_nom']=isset($tab_rn_aff_classe_nom[$loop_classe]) ? $tab_rn_aff_classe_nom[$loop_classe] : "n";
+
 			$affiche_adresse=$tab_releve[$id_classe][$periode_num]['rn_adr_resp'];
 			$tab_releve[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
+
 
 			//echo "\$tab_releve[$id_classe][$periode_num]['affiche_adresse']=".$tab_releve[$id_classe][$periode_num]['affiche_adresse']."<br />";
 

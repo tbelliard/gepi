@@ -25,7 +25,7 @@
 	$tab_item[]='rn_datedev';
 	$tab_traduc['rn_datedev']="Avec les dates";
 	$tab_item[]='rn_sign_chefetab';
-	$tab_traduc['rn_sign_chefetab']="Avec case pour signature du chef d'établissement";
+	$tab_traduc['rn_sign_chefetab']="Avec case pour signature du chef d'établissement (<i>relevé HTML</i>)";
 	$tab_item[]='rn_sign_pp';
 	$tab_traduc['rn_sign_pp']="Avec case pour signature du $gepiProfSuivi";
 	$tab_item[]='rn_sign_resp';
@@ -44,6 +44,32 @@
 	//++++++++++++
 
 	$alt=1;
+	// Affichage du nom de la classe Nom long  Nom court  Nom long (Nom court)
+	//$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td style='text-align:left;'>Affichage du nom de la classe (<i>relevé PDF</i>)<br />\n";
+	echo "Nom long (1) / Nom court (2) / Nom court (Nom long) (3)";
+	echo "</td>\n";
+	for($i=0;$i<count($tab_id_classe);$i++) {
+		echo "<td>\n";
+		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='1' />&nbsp;1<br />\n";
+		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='2' />&nbsp;2<br />\n";
+		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='3' />&nbsp;3<br />\n";
+		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_1' value='1' checked /><br />\n";
+		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_2' value='2' /><br />\n";
+		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_3' value='3' />\n";
+		echo "</td>\n";
+	}
+
+	echo "<td>\n";
+	//echo "&nbsp;";
+	echo "Nom long<br />\n";
+	echo "Nom court<br />\n";
+	echo "Nom court (Nom long)\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+
 	for($k=0;$k<count($tab_item);$k++) {
 		$affiche_ligne="y";
 		if ((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(ereg("^rn_sign",$tab_item[$k]))) {
@@ -82,7 +108,7 @@
 	//$tab_traduc['rn_app']="Avec l'appréciation (sous réserve d'autorisation par le professeur)";
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<td style='text-align:left;'>Avec l'appréciation (sous réserve d'autorisation par le professeur)\n";
+	echo "<td style='text-align:left;'>Avec l'appréciation (<i>sous réserve d'autorisation par le professeur</i>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
@@ -117,6 +143,21 @@
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
+		echo "<td style='text-align:left;'>Afficher le bloc observations (<i>relevé PDF</i>)\n";
+		echo "</td>\n";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "<td>\n";
+			echo "<input type='checkbox' name='rn_bloc_obs[$i]' id='rn_bloc_obs_".$i."' size='2' value='y' />\n";
+			echo "</td>\n";
+		}
+		echo "<td>\n";
+		echo "<a href=\"javascript:CocheLigne('rn_bloc_obs')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_bloc_obs')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
 		echo "<td style='text-align:left;'>Nombre de lignes pour la signature\n";
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
@@ -140,7 +181,7 @@
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		echo "<p>Formule à afficher en bas de page:</p>\n";
+		echo "<p>Formule à afficher en bas de page (<i>relevé HTML</i>):</p>\n";
 		echo "<table border='0' summary='Tableau des formules de bas de page'>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<tr><td><b>".get_class_from_id($tab_id_classe[$i])."</b>: </td>";
