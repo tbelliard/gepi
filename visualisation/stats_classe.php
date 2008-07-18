@@ -45,14 +45,16 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+//debug_var();
+
 include "../lib/periodes.inc.php";
 ?>
-<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>|
 <?php
 if (!isset($id_classe)) {
-    ?>
-    </p><p>Veuillez choisir la classe que vous souhaiter visualiser :<br />
-    <?php
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a></p>\n";
+
+    echo "<p>Veuillez choisir la classe que vous souhaiter visualiser :<br />";
+
     //$call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 	if($_SESSION['statut']=='scolarite'){
@@ -82,7 +84,7 @@ if (!isset($id_classe)) {
     $i = "0" ;
  	$nb_class_par_colonne=round($nombreligne/3);
         //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
+        echo "<table width='100%' summary='Choix de la classe'>\n";
         echo "<tr valign='top' align='center'>\n";
         echo "<td align='left'>\n";
    while ($i < $nombreligne) {
@@ -99,6 +101,83 @@ if (!isset($id_classe)) {
     //echo "</p>";
         echo "</table>\n";
  } else {
+	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form1' method='post'>\n";
+
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>\n";
+
+	if($_SESSION['statut']=='scolarite'){
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	if($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='administrateur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	$chaine_options_classes="";
+
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+
+	if($id_class_prec!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		//if(isset($periode)) {echo "&amp;periode=$periode";}
+		echo "#graph'>Classe précédente</a>";
+	}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+	if($id_class_suiv!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		//if(isset($periode)) {echo "&amp;periode=$periode";}
+		echo "#graph'>Classe suivante</a>";
+	}
+
+	//if(isset($periode)) {echo "<input type='hidden' name='periode' value='$periode' />";}
+	echo "</p>\n";
+	echo "</form>\n";
+
     $k="1";
     while ($k < $nb_periode) {
         $datay[$k] = array();
@@ -109,14 +188,16 @@ if (!isset($id_classe)) {
 
     $call_data = mysql_query("SELECT classe FROM classes WHERE id = $id_classe");
     $classe = mysql_result($call_data, 0, "classe");
-    ?><a href="stats_classe.php">Choisir une autre classe</a>|</p><?php
+
+	//echo "<a href='stats_classe.php'>Choisir une autre classe</a></p>\n";
+
     // On appelle les informations de l'utilisateur pour les afficher :
     $graph_title = "Classe de ".$classe.", évolution sur l'année";
-    echo "<table  border=1 cellspacing=2 cellpadding=5>";
-    echo "<tr><td width='100'>Matière</td>";
+    echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' summary='Matières/Notes'>\n";
+    echo "<tr><th width='100'>Matière</th>";
     $k = '1';
     while ($k < $nb_periode) {
-        echo "<td width='100'>$nom_periode[$k]</td>";
+        echo "<th width='100'>$nom_periode[$k]</th>";
         $k++;
     }
     echo "</tr>";
@@ -155,6 +236,7 @@ if (!isset($id_classe)) {
     $i = 0;
     $compteur = 0;
     $prev_cat_id = null;
+	$alt=1;
     while ($i < $nombre_lignes) {
         $group_id = mysql_result($call_groupes, $i, "id_groupe");
         $current_group = get_group($group_id);
@@ -174,20 +256,22 @@ if (!isset($id_classe)) {
                     $k++;
                 }
                 // On a toutes les infos. On affiche !
-                echo "<tr>";
+                echo "<tr>\n";
                 echo "<td colspan='" . $nb_total_cols . "'>";
-                echo "<p style='padding: 5; margin:0; font-size: 15px;'>".$cat_name."</p></td>";
-                echo "</tr>";
+                echo "<p style='padding: 5; margin:0; font-size: 15px;'>".$cat_name."</p></td>\n";
+                echo "</tr>\n";
             }
         }
 
-        echo "<tr><td>" . htmlentities($current_group["description"]) . "</td>\n";
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+        echo "<td>" . htmlentities($current_group["description"]) . "</td>\n";
         $k = '1';
         while ($k < $nb_periode) {
             $moyenne_classe_query = mysql_query("SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (periode='$k' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
             $moyenne_classe = mysql_result($moyenne_classe_query, 0, "moyenne");
             if ($moyenne_classe == '') {$moyenne_classe = '-';}
-            echo "<td>$moyenne_classe</td>";
+            echo "<td>$moyenne_classe</td>\n";
             (ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay[$k],"$moyenne_classe") : array_push($datay[$k],"0");
             if ($k == '1') {
                 //array_push($etiquette,$current_group["description"]);
