@@ -93,8 +93,12 @@ if (isset($_POST['option_modele_bulletin'])) {
 	$_SESSION['periode_ferme'] = $periode_ferme;
 	$_SESSION['type_bulletin'] = $type_bulletin;
 
-	if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) )
-	{  header("Location: buletin_pdf.php"); }
+
+	//==========================================
+	// CETTE PAGE N'EXISTE PLUS
+	//if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {  header("Location: buletin_pdf.php"); }
+	//==========================================
+
 // FIN Christian renvoye vers le fichier PDF bulletin
 //===================================================
 
