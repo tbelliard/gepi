@@ -68,6 +68,8 @@ $onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2'])
 require_once("../lib/header.inc");
 // ===================== fin entete =======================================//
 
+$page="visu_eleve.php";
+
 //debug_var();
 
 echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
@@ -81,6 +83,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 	</form>
 </noscript>\n";
@@ -95,7 +98,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 			url,
 			{
 				method: 'post',
-				postBody: 'rech_nom='+rech_nom,
+				postBody: 'rech_nom='+rech_nom+'&page=$page',
 				onComplete: affiche_eleves
 			});
 	}
@@ -115,6 +118,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
 	echo "Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
 	echo "</form>\n";
 
@@ -569,7 +573,15 @@ else {
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
 		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve' onclick=\"affiche_onglet('eleve');return false;\">";
-		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>".$tab_ele['liste_classes']."</i>)</b>";
+		//echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>".$tab_ele['liste_classes']."</i>)</b>";
+		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>";
+		if(isset($tab_ele['liste_classes'])) {
+			echo $tab_ele['liste_classes'];
+		}
+		else {
+			echo "Aucune classe";
+		}
+		echo "</i>)</b>";
 		echo "</a>";
 		echo "</div>\n";
 
@@ -667,11 +679,11 @@ else {
 		echo "'>";
 		echo "<h2>Informations sur l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
 
-			echo "<table class='boireaus'>\n";
+			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
 			echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['nom']."</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['prenom']."</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Sexe:</th><td>".$tab_ele['sexe']."</td></tr>\n";
@@ -749,68 +761,19 @@ else {
 			echo "'>";
 			echo "<h2>Responsables de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-			echo "<table border='0'>\n";
-			echo "<tr>\n";
-			$cpt_resp_legal0=0;
-			for($i=0;$i<count($tab_ele['resp']);$i++) {
-				if($tab_ele['resp'][$i]['resp_legal']!=0) {
-					echo "<td valign='top'>\n";
-					echo "<p>Responsable légal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
-
-					echo "<table class='boireaus'>\n";
-					echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
-					echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
-					echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
-					if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['mel']!='') {echo "<tr><th style='text-align: left;'>Courriel:</th><td>".$tab_ele['resp'][$i]['mel']."</td></tr>\n";}
-
-					if(!isset($tab_ele['resp'][$i]['etat'])) {
-						echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Non</td></tr>\n";
-					}
-					else {
-						echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Oui (";
-						if($tab_ele['resp'][$i]['etat']=='actif') {
-							echo "<span style='color:green;'>";
-						}
-						else{
-							echo "<span style='color:red;'>";
-						}
-						echo $tab_ele['resp'][$i]['etat'];
-						echo "</span>)\n";
-						echo "</td></tr>\n";
-					}
-
-					if($tab_ele['resp'][$i]['adr1']!='') {echo "<tr><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['adr2']!='') {echo "<tr><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['adr3']!='') {echo "<tr><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['adr4']!='') {echo "<tr><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['cp']!='') {echo "<tr><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['commune']!='') {echo "<tr><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";}
-					if($tab_ele['resp'][$i]['pays']!='') {echo "<tr><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";}
-
-					echo "</table>\n";
-					echo "</td>\n";
-				}
-				else {
-					$cpt_resp_legal0++;
-				}
+			if((!isset($tab_ele['resp']))||(count($tab_ele['resp'])==0)) {
+				echo "<p>Aucun responsable n'a été enregistré.</p>\n";
 			}
-			echo "</tr>\n";
-			echo "</table>\n";
-
-			// Simples contacts non responsables légaux
-			if($cpt_resp_legal0>0) {
-				echo "<table border='0'>\n";
+			else {
+				echo "<table border='0' summary='Infos responsables'>\n";
 				echo "<tr>\n";
+				$cpt_resp_legal0=0;
 				for($i=0;$i<count($tab_ele['resp']);$i++) {
-
-					if($tab_ele['resp'][$i]['resp_legal']==0) {
+					if($tab_ele['resp'][$i]['resp_legal']!=0) {
 						echo "<td valign='top'>\n";
-						echo "<p>Contact (<i>non responsable légal</i>)</p>\n";
+						echo "<p>Responsable légal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
 
-						echo "<table class='boireaus'>\n";
+						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
 						echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
 						echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
 						echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
@@ -846,9 +809,63 @@ else {
 						echo "</table>\n";
 						echo "</td>\n";
 					}
+					else {
+						$cpt_resp_legal0++;
+					}
 				}
 				echo "</tr>\n";
 				echo "</table>\n";
+
+				// Simples contacts non responsables légaux
+				if($cpt_resp_legal0>0) {
+					echo "<table border='0' summary='Infos responsables (0)'>\n";
+					echo "<tr>\n";
+					for($i=0;$i<count($tab_ele['resp']);$i++) {
+
+						if($tab_ele['resp'][$i]['resp_legal']==0) {
+							echo "<td valign='top'>\n";
+							echo "<p>Contact (<i>non responsable légal</i>)</p>\n";
+
+							echo "<table class='boireaus' summary='Infos resp0'>\n";
+							echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
+							echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
+							echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+							if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['mel']!='') {echo "<tr><th style='text-align: left;'>Courriel:</th><td>".$tab_ele['resp'][$i]['mel']."</td></tr>\n";}
+
+							if(!isset($tab_ele['resp'][$i]['etat'])) {
+								echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Non</td></tr>\n";
+							}
+							else {
+								echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Oui (";
+								if($tab_ele['resp'][$i]['etat']=='actif') {
+									echo "<span style='color:green;'>";
+								}
+								else{
+									echo "<span style='color:red;'>";
+								}
+								echo $tab_ele['resp'][$i]['etat'];
+								echo "</span>)\n";
+								echo "</td></tr>\n";
+							}
+
+							if($tab_ele['resp'][$i]['adr1']!='') {echo "<tr><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['adr2']!='') {echo "<tr><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['adr3']!='') {echo "<tr><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['adr4']!='') {echo "<tr><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['cp']!='') {echo "<tr><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['commune']!='') {echo "<tr><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";}
+							if($tab_ele['resp'][$i]['pays']!='') {echo "<tr><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";}
+
+							echo "</table>\n";
+							echo "</td>\n";
+						}
+					}
+					echo "</tr>\n";
+					echo "</table>\n";
+				}
 			}
 			echo "</div>\n";
 		}
@@ -866,48 +883,52 @@ else {
 			echo "'>";
 			echo "<h2>Enseignements suivis par l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-			echo "<table class='boireaus'>\n";
-			echo "<tr>\n";
-			echo "<th>Enseignement</th>\n";
-			echo "<th>Professeur(s)</th>\n";
-			for($j=0;$j<count($tab_ele['periodes']);$j++) {
-				echo "<th>\n";
-				echo $tab_ele['periodes'][$j]['nom_periode'];
-				echo "</th>\n";
+			if((!isset($tab_ele['periodes']))||(!isset($tab_ele['groupes']))) {
+				echo "<p>Aucune période ou aucun enseignement n'a été trouvé pour cet élève.</p>\n";
 			}
-			echo "</tr>\n";
-
-			$alt=1;
-			for($i=0;$i<count($tab_ele['groupes']);$i++) {
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
-				echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
-				echo "<td>\n";
-				for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
-					echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['prenom']));
-					echo " ";
-					echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
-					echo "<br />\n";
-				}
-				echo "</td>\n";
+			else {
+				echo "<table class='boireaus' summary='Enseignements'>\n";
+				echo "<tr>\n";
+				echo "<th>Enseignement</th>\n";
+				echo "<th>Professeur(s)</th>\n";
 				for($j=0;$j<count($tab_ele['periodes']);$j++) {
-					echo "<td";
-					if(in_array($tab_ele['periodes'][$j]['num_periode'],$tab_ele['groupes'][$i]['periodes'])) {
-						echo ">\n";
-						//echo "X";
-						echo $tab_ele['periodes'][$j]['classe'];
-					}
-					else {
-						echo " style='background-color: gray;";
-						echo "'>\n";
-						echo "&nbsp;";
-					}
-					echo "</td>\n";
+					echo "<th>\n";
+					echo $tab_ele['periodes'][$j]['nom_periode'];
+					echo "</th>\n";
 				}
 				echo "</tr>\n";
-			}
-			echo "</table>\n";
 
+				$alt=1;
+				for($i=0;$i<count($tab_ele['groupes']);$i++) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
+					echo "<td>\n";
+					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
+						echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['prenom']));
+						echo " ";
+						echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
+						echo "<br />\n";
+					}
+					echo "</td>\n";
+					for($j=0;$j<count($tab_ele['periodes']);$j++) {
+						echo "<td";
+						if(in_array($tab_ele['periodes'][$j]['num_periode'],$tab_ele['groupes'][$i]['periodes'])) {
+							echo ">\n";
+							//echo "X";
+							echo $tab_ele['periodes'][$j]['classe'];
+						}
+						else {
+							echo " style='background-color: gray;";
+							echo "'>\n";
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+					echo "</tr>\n";
+				}
+				echo "</table>\n";
+			}
 			echo "</div>\n";
 		}
 		//===================================================
@@ -934,107 +955,117 @@ else {
 				$periode_numero_1=$lig_per->min_per;
 				$periode_numero_2=$lig_per->max_per;
 
-				include "../lib/bulletin_simple.inc.php";
+				//echo "\$periode_numero_1=$periode_numero_1<br />";
+				//echo "\$periode_numero_2=$periode_numero_2<br />";
 
-				//$tab_onglets_bull=array();
-				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
-					$periode1=$n_per;
-					$tab_onglets_bull[]="bulletin_$periode1";
+				if(($periode_numero_1!='')&&($periode_numero_2!='')) {
 
-					echo "<div id='t_bulletin_$periode1' class='t_onglet' style='";
-					if(isset($onglet2)) {
-						if($onglet2=="bulletin_$periode1") {
-							echo "border-bottom-color: ".$tab_couleur['bulletin']."; ";
+					include "../lib/bulletin_simple.inc.php";
+
+					//$tab_onglets_bull=array();
+					for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
+						$periode1=$n_per;
+						$tab_onglets_bull[]="bulletin_$periode1";
+
+						echo "<div id='t_bulletin_$periode1' class='t_onglet' style='";
+						if(isset($onglet2)) {
+							if($onglet2=="bulletin_$periode1") {
+								echo "border-bottom-color: ".$tab_couleur['bulletin']."; ";
+							}
 						}
-					}
-					else {
-						if($n_per==$periode_numero_1) {
-							echo "border-bottom-color: ".$tab_couleur['bulletin']."; ";
+						else {
+							if($n_per==$periode_numero_1) {
+								echo "border-bottom-color: ".$tab_couleur['bulletin']."; ";
+							}
 						}
+						echo "background-color: ".$tab_couleur['bulletin']."; ";
+						echo "'>";
+
+						echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
+						echo "Période $periode1";
+						echo "</a>";
+						echo "</div>\n";
+
 					}
-					echo "background-color: ".$tab_couleur['bulletin']."; ";
-					echo "'>";
 
-					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
-					echo "Période $periode1";
-					echo "</a>";
-					echo "</div>\n";
+					//====================================
+					echo "<div style='clear:both;'></div>\n";
+					//====================================
 
+					for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
+						$periode1=$n_per;
+						$periode2=$n_per;
+
+						$index_per=-1;
+
+						for($loop=0;$loop<count($tab_ele['periodes']);$loop++) {
+							if($tab_ele['periodes'][$loop]['num_periode']==$n_per) {
+								$index_per=$loop;
+								break;
+							}
+						}
+
+						$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
+
+						// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
+						include "../lib/periodes.inc.php";
+
+
+						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
+						$nb_coef_superieurs_a_zero=$test_coef;
+
+						// On regarde si on affiche les catégories de matières
+						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
+						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
+
+						// Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
+						$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
+						if ($affiche_rang == 'y') {
+							$periode_num=$periode1;
+							while ($periode_num < $periode2+1) {
+								include "../lib/calcul_rang.inc.php";
+								$periode_num++;
+							}
+						}
+
+						$coefficients_a_1="non";
+						$affiche_graph = 'n';
+
+						unset($tab_moy_gen);
+						//unset($tab_moy_cat_classe);
+						for($loop=$periode1;$loop<=$periode2;$loop++) {
+							$periode_num=$loop;
+							include "../lib/calcul_moy_gen.inc.php";
+							$tab_moy_gen[$loop]=$moy_generale_classe;
+						}
+
+						$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
+
+						echo "<div id='bulletin_$periode1' class='onglet' style='";
+						echo " background-color: ".$tab_couleur['bulletin'].";";
+						if((isset($onglet2))&&(substr($onglet2,0,9)=='bulletin_')) {
+							if('bulletin_'.$n_per!=$onglet2) {
+								echo " display:none;";
+							}
+						}
+						else {
+							if($n_per!=$periode_numero_1) {
+								echo " display:none;";
+							}
+						}
+						echo "'>\n";
+
+						bulletin($ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
+
+						echo "</div>\n";
+					}
 				}
-
-				//====================================
-				echo "<div style='clear:both;'></div>\n";
-				//====================================
-
-				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
-					$periode1=$n_per;
-					$periode2=$n_per;
-
-					$index_per=-1;
-					for($loop=0;$loop<count($tab_ele['periodes']);$loop++) {
-						if($tab_ele['periodes'][$loop]['num_periode']==$n_per) {
-							$index_per=$loop;
-							break;
-						}
-					}
-
-					$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
-
-					// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
-					include "../lib/periodes.inc.php";
-
-
-					// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-					$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-					// Apparemment, $test_coef est réaffecté plus loin dans un des include()
-					$nb_coef_superieurs_a_zero=$test_coef;
-
-					// On regarde si on affiche les catégories de matières
-					$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
-					if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
-
-					// Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
-					$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
-					if ($affiche_rang == 'y') {
-						$periode_num=$periode1;
-						while ($periode_num < $periode2+1) {
-							include "../lib/calcul_rang.inc.php";
-							$periode_num++;
-						}
-					}
-
-					$coefficients_a_1="non";
-					$affiche_graph = 'n';
-
-					unset($tab_moy_gen);
-					//unset($tab_moy_cat_classe);
-					for($loop=$periode1;$loop<=$periode2;$loop++) {
-						$periode_num=$loop;
-						include "../lib/calcul_moy_gen.inc.php";
-						$tab_moy_gen[$loop]=$moy_generale_classe;
-					}
-
-					$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
-
-					echo "<div id='bulletin_$periode1' class='onglet' style='";
-					echo " background-color: ".$tab_couleur['bulletin'].";";
-					if((isset($onglet2))&&(substr($onglet2,0,9)=='bulletin_')) {
-						if('bulletin_'.$n_per!=$onglet2) {
-							echo " display:none;";
-						}
-					}
-					else {
-						if($n_per!=$periode_numero_1) {
-							echo " display:none;";
-						}
-					}
-					echo "'>\n";
-
-					bulletin($ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
-
-					echo "</div>\n";
+				else {
+					// Il ne faut pas proposer de bulletin
+					echo "<p>Aucun bulletin à ce jour.</p>\n";
 				}
-
 			}
 			else {
 				// Il ne faut pas proposer de bulletin
@@ -1182,7 +1213,7 @@ else {
 			$couleur_dev="#FFCCCF";
 			$couleur_entry="#C7FF99";
 
-			echo "<table class='boireaus' border='1'>\n";
+			echo "<table class='boireaus' border='1' summary='CDT'>\n";
 			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
 
 			// On compte les entrées du cdt
@@ -1206,7 +1237,7 @@ else {
 				if(isset($tab_ele['cdt'][$j]['dev'])) {
 					for($k=0;$k<count($tab_ele['cdt'][$j]['dev']);$k++) {
 						//echo "<div style='border:1px solid black; background-color: lightyellow; margin:1px; display:block; width:40%;'>\n";
-						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;'>\n";
+						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
 						echo "<tr style='background-color:$couleur_dev;'>\n";
 						echo "<td>\n";
 						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['dev'][$k]['id_groupe']]]['name'].")</span>";
@@ -1239,7 +1270,7 @@ else {
 						//echo "Prof ".$tab_ele['cdt'][$j]['entry'][$k]['id_login']."<br />\n";
 						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
 						//echo $tab_ele['cdt'][$j]['entry'][$k]['contenu'];
-						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;'>\n";
+						echo "<table class='boireaus' border='1' style='margin:3px; width:100%;' summary='CDT'>\n";
 						echo "<tr style='background-color:$couleur_entry;'>\n";
 						echo "<td>\n";
 						echo $tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['matiere_nom_complet']." <span style='font-size:x-small;'>(".$tab_ele['groupes'][$tab_ele['index_grp'][$tab_ele['cdt'][$j]['entry'][$k]['id_groupe']]]['name'].")</span>";

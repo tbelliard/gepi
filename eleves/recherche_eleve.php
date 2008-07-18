@@ -5,6 +5,13 @@
 */
 
 	$rech_nom=$_POST['rech_nom'];
+	$rech_nom=ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
+	$page=$_POST['page'];
+	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
+	if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
+		$page="../logout.php?auto=2";
+		// Remarque: Cela n'empêche pas de bricoler l'adresse destination des liens affichés...
+	}
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
 	$res_ele=mysql_query($sql);
@@ -18,8 +25,10 @@
 	}
 	else{
 		//echo "<p>La recherche a retourné <b>$nb_ele</b> réponse(s):</p>\n";
-		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse(s):</p>\n";
-		echo "<table border='1' class='boireaus'>\n";
+		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse";
+		if($nb_ele>1) {echo "s";}
+		echo ":</p>\n";
+		echo "<table border='1' class='boireaus' summary='Liste des élèves'>\n";
 		echo "<tr>\n";
 		//echo "<th>Elève</th>\n";
 		echo "<th>El&egrave;ve</th>\n";
@@ -35,7 +44,7 @@
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			//echo "<a href='visu_eleve.php?ele_login=$ele_login'>$ele_nom $ele_prenom</a>";
-			echo "<a href='visu_eleve.php?ele_login=$ele_login'>".htmlentities("$ele_nom $ele_prenom")."</a>";
+			echo "<a href='$page?ele_login=$ele_login'>".htmlentities("$ele_nom $ele_prenom")."</a>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
 			$res_clas=mysql_query($sql);
