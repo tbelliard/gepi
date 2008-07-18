@@ -127,6 +127,9 @@ $color_police_matieres = "green";
 $couleur_bord_tableau_notice = "#6F6968";
 $couleur_cellule_gen = "#F6F7EF";
 
+// Certaines couleurs sont outrepassées par le contenu du fichier /cahier_texte.css
+// Il faudra modifier le dispositif pour pouvoir ré-écrire le contenu de /cahier_texte.css
+// d'après le contenu de /lib/global.inc
 
 ##################################################################################
 #                                                                                #
