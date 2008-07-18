@@ -217,13 +217,28 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
    die("Droits insuffisants pour effectuer cette opération");
 }
 
-echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+//debug_var();
 
 //if (!isset($id_classe)) {
 
 	//modification christian pour le choix des bulletins au format PDF
-	?> | <?php if(empty($format) or $format != 'pdf') { ?><a href='index.php?format=pdf'>Impression au format PDF </a><?php } else { ?><a href='index.php?format='>Impression au format HTML </a><?php }
-	//fin de modification
+	if(!isset($id_classe)) {
+		echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+
+		//echo "format=$format<br />";
+		if((empty($format))) {
+			echo " | <a href='index.php?format=pdf'>Impression au format PDF </a>";
+		}
+		else {
+			echo " | <a href='index.php?format='>Impression au format HTML </a>";
+		}
+	}
+	//elseif(!empty($format) AND $format == 'pdf'))
+	/*
+	else {
+		echo " | <a href='index.php?format='>Impression au format HTML </a>";
+	}
+	*/
 
        //modification Christian CHAPEL
 	if($format === 'pdf' and ( empty($bt_select_periode)) or !empty($creer_pdf) and $modele ==='' and !isset($classe[0]))
@@ -255,7 +270,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		<form method="post" action="index.php" name="imprime_pdf">
 		  <fieldset style="width: 90%; margin: auto;"><legend>S&eacute;lection</legend>
 		  <center>
-			<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+			<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2" summary="Choix">
 			  <tbody>
 			    <tr>
 			      <td align="right" nowrap="nowrap" valign="middle" colspan="1" rowspan="2" >
@@ -369,7 +384,10 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 		<div style="text-align: left;"><a href="#ao" onclick="affichercacher('div_1')" style="cursor: pointer;"><img style="border: 0px solid ; width: 13px; height: 13px; border: none; padding:2px; margin:2px; float: left;" name="img_1" alt="" title="Information" src="../images/fleche_na.gif" align="middle" />Autres options</a></div>
 		<a name="ao"></a>
 		<div style="text-align: left;">
-			<div id="div_1" style="display: <?php if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $active_entete_regroupement != '' ) { ?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% Verdana, Helvetica, sans-serif;"><!--a name="ao"></a-->
+			<div id="div_1" style="display: <?php
+				//if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $active_entete_regroupement != '' ) {
+				if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $tri_par_etab_origine != '' ) {
+			?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% Verdana, Helvetica, sans-serif;"><!--a name="ao"></a-->
 			  <span style="font-family: Arial;">
 				<input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" <?php if ( isset($tri_par_etab_origine) and $tri_par_etab_origine === 'oui' ) { ?>checked="checked"<?php } ?> />
 				&nbsp;<label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br />
@@ -496,8 +514,81 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 	echo "</table>\n";
 	*/
 }
+
 if (isset($id_classe) and $format != 'pdf' and $modele === '') {
-	echo " | <a href=\"index.php\">Choisir une autre classe</a>";
+	//echo " | <a href=\"index.php\">Choisir une autre classe</a>";
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+	echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+
+	echo " | <a href='index.php?format=pdf'>Impression au format PDF</a>\n";
+
+	//echo "<p class='bold'>\n";
+
+	if($_SESSION['statut']=='scolarite'){
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	if($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='administrateur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	$chaine_options_classes="";
+
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+
+	if($id_class_prec!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		echo "#graph'>Classe précédente</a>";
+	}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+	if($id_class_suiv!=0){
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		echo "#graph'>Classe suivante</a>";
+	}
+
+	echo "</p>\n";
+
+	echo "</form>\n";
+
+
+
 /*
 	// On choisit le periode :
 	echo "<p><b>Choisissez la période : </b></p>\n";
@@ -524,7 +615,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	echo "<form name='choix' action='edit.php' target='_blank' method='post'>\n";
 	//echo "<form name='choix' action='edit.php' target='bull' method='get' >\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' /> \n";
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary='Choix'>\n";
 	$num_per_close=0;
 	$nb_per_close=0;
 
@@ -620,7 +711,7 @@ for(i=0;i<$nb_per_close;i++){
 		echo "</p>\n";
 		*/
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary='Sélection'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'><input type='radio' name='selection' id='selection_CLASSE_ENTIERE_' value='_CLASSE_ENTIERE_' onchange=\"affiche_nb_ele_select();\" checked /></td>\n";
 		echo "<td valign='top'><label for='selection_CLASSE_ENTIERE_' style='cursor: pointer;'>Classe entière</label></td>\n";
@@ -671,7 +762,7 @@ for(i=0;i<$nb_per_close;i++){
 	}
 </script>\n";
 
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary='Nombre de bulletins'>\n";
 	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
 
@@ -708,7 +799,7 @@ for(i=0;i<$nb_per_close;i++){
 	echo "<p style='text-align:center;'><input type='submit' name='Valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 
-	echo "<br />\n<center><table border=\"1\" cellpadding=\"10\" width=\"80%\"><tr><td>";
+	echo "<br />\n<center><table border=\"1\" cellpadding=\"10\" width=\"80%\" summary='Avertissement'><tr><td>";
 	echo "<center><b>Avertissement</b></center><br /><br />La mise en page des bulletins est très différente à l'écran et à l'impression.
 	Avant d'imprimer les bulletins :
 	<ul>
