@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -203,8 +203,25 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //on récupère le chemin de la page d'appel pour en faire le lien de retour
-$url_retour = parse_url($_SERVER['HTTP_REFERER']);
-echo "<p class=bold><a href='".$url_retour['path']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+if(isset($_SERVER['HTTP_REFERER'])) {
+	$url_retour = parse_url($_SERVER['HTTP_REFERER']);
+
+	if($_SERVER['PHP_SELF']==$url_retour['path']) {
+		$url_retour['path']='index.php';
+	}
+}
+else {
+	$url_retour['path']='index.php';
+}
+/*
+foreach($url_retour as $key => $value) {
+	echo "\$url_retour['$key']=$value<br />";
+}
+debug_var();
+//$_SERVER['PHP_SELF']
+*/
+
+echo "<p class='bold'><a href='".$url_retour['path']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 echo "<form action='security_policy.php' method='post'>";
 echo "<center><input type='submit' value='Enregistrer' /></center>";
@@ -228,7 +245,7 @@ echo "<h2>Seuils d'alertes</h2>";
 echo "<p>Vous pouvez définir deux seuils d'alerte et leurs actions associées. Ces seuils s'appliquent aux tentatives d'intrusion effectuées par les utilisateurs de Gepi. Chaque tentative a un niveau de gravité de 1 à 3 ; les seuils correspondent au cumul de ces niveaux de gravité pour un même utilisateur.</p>";
 echo "<p>Un utilisateur peut être placé en observation par l'administrateur, avec des seuils d'alerte distincts. Cela permet de définir une politique plus restrictive en cas de récidive.</p>";
 
-echo "<table class='normal'>";
+echo "<table class='normal' summary=\"Seuils d'alerte\">";
 echo "<tr><th>Seuil</th><th>Utilisateur sans antécédent</th><th>Utilisateur surveillé</th></tr>";
 
 // Niveau d'alerte 1
