@@ -126,6 +126,7 @@ $titre_page = "Carnet de notes - Recopie des moyennes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+/*
 echo "<div class='norme'><p class=bold><a href='../accueil.php'>Accueil</a>";
 
 $retour=isset($_GET['retour']) ? $_GET['retour'] : NULL;
@@ -138,6 +139,7 @@ if(isset($retour)){
 if(isset($_SESSION['retour'])){
 	echo " | <a href='".$_SESSION['retour']."'>Retour</a>";
 }
+*/
 
 //$choix_classe=isset($_POST['choix_classe']) ? $_POST['choix_classe'] : (isset($_GET['choix_classe']) ? $_GET['choix_classe'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -145,6 +147,20 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 //if(!isset($_POST['choix_classe'])){
 //if(!isset($choix_classe)){
 if(!isset($id_classe)){
+
+	echo "<div class='norme'><p class=bold><a href='../accueil.php'>Accueil</a>";
+
+	$retour=isset($_GET['retour']) ? $_GET['retour'] : NULL;
+	if(isset($retour)){
+		if($retour=="saisie_index"){
+			$_SESSION['retour']="index.php";
+		}
+	}
+
+	if(isset($_SESSION['retour'])){
+		echo " | <a href='".$_SESSION['retour']."'>Retour</a>";
+	}
+
 	echo "</p></div>\n";
 
 	//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
@@ -192,13 +208,29 @@ else{
 	//$num_periode=isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL;
 	$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 
+	echo "<div class='norme'>\n";
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
-	// Classe précédente/suivante
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
-	// =================================
-	// AJOUT: boireaus
-	$sql="SELECT id, classe FROM classes ORDER BY classe";
+	echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
+
+	$retour=isset($_GET['retour']) ? $_GET['retour'] : NULL;
+	if(isset($retour)){
+		if($retour=="saisie_index"){
+			$_SESSION['retour']="index.php";
+		}
+	}
+
+	if(isset($_SESSION['retour'])){
+		echo " | <a href='".$_SESSION['retour']."'>Retour</a>";
+	}
+
+	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
+
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+
+	$chaine_options_classes="";
+
 	$res_class_tmp=mysql_query($sql);
 	if(mysql_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
@@ -206,33 +238,49 @@ else{
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
 					$id_class_suiv=0;
 				}
 			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
 			if($temoin_tmp==0){
 				$id_class_prec=$lig_class_tmp->id;
 			}
 		}
-	}// =================================
-
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-	if(isset($num_periode)){
-		echo "&amp;num_periode=$num_periode";
 	}
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
-	if(isset($num_periode)){
-		echo "&amp;num_periode=$num_periode";
+	// =================================
+
+	if($id_class_prec!=0) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		if(isset($num_periode)){
+			echo "&amp;num_periode=$num_periode";
+		}
+		echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";
 	}
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+	if($chaine_options_classes!="") {
+		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select>\n";
+	}
+	if($id_class_suiv!=0) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		if(isset($num_periode)){
+			echo "&amp;num_periode=$num_periode";
+		}
+		echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";
+	}
 
-
-	echo "</p></div>\n";
+	echo "</p>\n";
+	echo "</form>\n";
+	echo "</div>\n";
 
 
 	//if(!isset($_POST['choix_periode'])){
@@ -254,7 +302,7 @@ else{
 		else{
 
 			$tmp_classe=mysql_fetch_array($res_classe);
-			echo "<table><tr><td valign='top'><p class='bold'>Choisissez une période pour la classe de $tmp_classe[0]: </p></td><td><p>\n";
+			echo "<table summary='Choix de la période'><tr><td valign='top'><p class='bold'>Choisissez une période pour la classe de $tmp_classe[0]: </p></td><td><p>\n";
 
 			//echo "<input type='hidden' name='id_classe' value='".$_POST['id_classe']."' />\n";
 			//echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
@@ -359,7 +407,7 @@ else{
 			echo "<p>Recopie des moyennes pour la classe <b>$tmp_classe[0]</b> de sur la période <b>$tmp_per[0]</b>:</p>\n";
 
 			//echo "<table border='1'>\n";
-			echo "<table class='boireaus' width='100%'>\n";
+			echo "<table class='boireaus' width='100%' summary='Comparaisons'>\n";
 			echo "<tr>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Classe</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Groupe</th>\n";
