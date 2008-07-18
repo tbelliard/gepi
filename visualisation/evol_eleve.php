@@ -50,11 +50,13 @@ $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve'
 
 include "../lib/periodes.inc.php";
 
-?>
-<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>
-<?php
+
 if (!$id_classe) {
-    echo "</p><p>Sélectionnez la classe :<br />\n";
+
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
+
+    echo "</p>\n";
+	echo "<p>Sélectionnez la classe :<br />\n";
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     //$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 
@@ -85,7 +87,7 @@ if (!$id_classe) {
     $i = 0;
 	$nb_class_par_colonne=round($nombre_lignes/3);
         //echo "<table width='100%' border='1'>\n";
-        echo "<table width='100%'>\n";
+        echo "<table width='100%' summary='Choix de la classe'>\n";
         echo "<tr valign='top' align='center'>\n";
         echo "<td align='left'>\n";
     while ($i < $nombre_lignes){
@@ -102,7 +104,8 @@ if (!$id_classe) {
     //echo "</p>";
         echo "</table>\n";
 } else {
-    echo "</p>";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
+    echo "</p>\n";
     $k="1";
     while ($k < $nb_periode) {
      $datay[$k] = array();
@@ -131,13 +134,98 @@ if (!$id_classe) {
         $i++;
         }
     }
-    ?><table><tr><td><p class=bold>|<a href="evol_eleve.php">Choisir une autre classe</a>|
-    <a href="evol_eleve.php?id_classe=<?php echo $id_classe; ?>&amp;prec=yes&amp;v_eleve=<?php echo $v_eleve; ?>">Elève précédent</a>|
-    <a href="evol_eleve.php?id_classe=<?php echo $id_classe; ?>&amp;suiv=yes&amp;v_eleve=<?php echo $v_eleve; ?>">Elève suivant</a>|
-    </p></td>
-    <td><form enctype="multipart/form-data" action="evol_eleve.php" method=post>
-    <select size='1' name='v_eleve' onchange="this.form.submit()">
-    <?php
+
+
+
+	echo "<table summary='Choix'>\n";
+	echo "<tr><td>\n";
+
+	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form1' method='post'>\n";
+
+	echo "<p class='bold'>\n";
+
+	if($_SESSION['statut']=='scolarite'){
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	if($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='administrateur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	$chaine_options_classes="";
+
+	$res_class_tmp=mysql_query($sql);
+	if(mysql_num_rows($res_class_tmp)>0){
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+		}
+	}
+	// =================================
+
+	if($id_class_prec!=0){
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		echo "#graph'>Classe précédente</a> | ";
+	}
+	if($chaine_options_classes!="") {
+		echo "<select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select> | \n";
+	}
+	if($id_class_suiv!=0){
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		echo "#graph'>Classe suivante</a> | ";
+	}
+
+	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve'>Elève précédent</a> | \n";
+	echo "<a href='evol_eleve_classe.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve'>Elève suivant</a>|\n";
+
+	echo "</p>\n";
+
+	echo "</form>\n";
+
+	echo "</td>\n";
+	echo "<td>\n";
+
+	echo "<form enctype='multipart/form-data' action='evol_eleve_classe.php' method='post'>\n";
+	echo "<select size='1' name='v_eleve' onchange='this.form.submit()'>\n";
+
+
+
     $i = "0" ;
     while ($i < $nombreligne) {
         $eleve = mysql_result($call_eleve, $i, 'login');
@@ -148,25 +236,28 @@ if (!$id_classe) {
         echo ">$nom_el  $prenom_el</option>\n";
     $i++;
     }
-    ?>
-    </select>
-    <input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
-    </form></td></tr></table>
-    <?php
+
+	echo "</select>\n";
+	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+	echo "</form>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
     // On appelle les informations de l'utilisateur pour les afficher :
     $call_eleve_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve'");
     $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
     $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
     $graph_title = $eleve_nom." ".$eleve_prenom.", ".$classe.", évolution sur l'année";
     echo "<p>$eleve_nom  $eleve_prenom, classe de $classe   |  Evolution sur l'année</p>\n";
-    echo "<table  border='1' cellspacing='2' cellpadding='5'>\n";
-    echo "<tr><td width='100'><p>Matière</p></td>\n";
+    echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' summary='Matières/Notes'>\n";
+    echo "<tr><th width='100'><p>Matière</p></th>\n";
     $k="1";
     while ($k < $nb_periode) {
-        echo "<td width='100'><p>$nom_periode[$k]</p></td>\n";
+        echo "<th width='100'><p>$nom_periode[$k]</p></th>\n";
     $k++;
     }
-    echo "</tr>";
+    echo "</tr>\n";
 
     $affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
     if ($affiche_categories == "y") {
@@ -206,6 +297,7 @@ if (!$id_classe) {
     $i = 0;
     $compteur=0;
     $prev_cat_id = null;
+	$alt=1;
     while ($i < $nombre_lignes) {
 
         $group_id = mysql_result($call_groupes, $i, "id_groupe");
@@ -227,14 +319,15 @@ if (!$id_classe) {
                         $k++;
                     }
                     // On a toutes les infos. On affiche !
-                    echo "<tr>";
+                    echo "<tr>\n";
                     echo "<td colspan='" . $nb_total_cols . "'>";
-                    echo "<p style='padding: 5; margin:0; font-size: 15px;'>".$cat_name."</p></td>";
-                    echo "</tr>";
+                    echo "<p style='padding: 5; margin:0; font-size: 15px;'>".$cat_name."</p></td>\n";
+                    echo "</tr>\n";
                 }
             }
 
-            echo "<tr><td><p>" . htmlentities($current_group["description"]) . "</p></td>\n";
+			$alt=$alt*(-1);
+            echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td>\n";
             $k="1";
             while ($k < $nb_periode) {
                 $note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$k' AND id_groupe='" . $current_group["id"] . "')");
@@ -243,7 +336,7 @@ if (!$id_classe) {
                 if ($eleve_matiere_statut != "") { $note_eleve = $eleve_matiere_statut;}
                 if ($note_eleve == '') {$note_eleve = '-';}
                 echo "<td><p>$note_eleve";
-                echo "</p></td>";
+                echo "</p></td>\n";
                  (ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay[$k],"$note_eleve") : array_push($datay[$k],"0");
                 if ($k == '1') {
                     //array_push($etiquette,$current_group["description"]);
@@ -253,17 +346,40 @@ if (!$id_classe) {
 
             $k++;
             }
-            echo "</tr>";
+            echo "</tr>\n";
 
         $compteur++;
         $i++;
     }
     echo "</table>\n";
-    echo "<a name=\"graph\"></a>";
-    echo "<table>\n";
-    echo "<tr><td><p class=bold>|<a href=\"evol_eleve.php\">Choisir une autre classe</a>|\n";
-    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve#graph\">Elève précédent</a>|\n";
-    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve#graph\">Elève suivant</a>|</p></td>\n";
+
+	echo "<a name='graph'></a>\n";
+	echo "<table summary='Choix'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+
+	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form2' method='post'>\n";
+	echo "<p class='bold'>Classe \n";
+
+	if($id_class_prec!=0){
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+		echo "#graph'>préc.</a> | ";
+	}
+	if($chaine_options_classes!="") {
+		echo "<select name='id_classe' onchange=\"document.forms['form2'].submit();\">\n";
+		echo $chaine_options_classes;
+		echo "</select> | \n";
+	}
+	if($id_class_suiv!=0){
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+		echo "#graph'>suiv.</a> | ";
+	}
+
+    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;prec=yes&amp;v_eleve=$v_eleve#graph\">Elève précédent</a> | \n";
+    echo "<a href=\"evol_eleve.php?id_classe=$id_classe&amp;suiv=yes&amp;v_eleve=$v_eleve#graph\">Elève suivant</a> | \n";
+
+	echo "</p>\n";
+	echo "</form>\n";
     ?>
     <td><form enctype="multipart/form-data" action="evol_eleve.php?temp=0#graph" method=post>
     <select size='1' name='v_eleve' onchange="this.form.submit()">
