@@ -1369,6 +1369,21 @@ else {
 			$classe=$lig_classe->classe;
 			$classe_nom_complet=$lig_classe->nom_complet;
 
+
+
+			// Récupérer l'effectif de la classe,...
+			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$periode_num';";
+			$res_eff_classe=mysql_query($sql);
+			//$lig_eff_classe=mysql_fetch_object($res_eff_classe);
+			$eff_classe=mysql_num_rows($res_eff_classe);
+			//echo "<p>Effectif de la classe: $eff_classe</p>\n";
+
+			if($eff_classe==0) {
+				echo "<p>La classe '$classe' est vide sur la période '$periode_num'.<br />Il n'est pas possible de poursuivre.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
 			//==============================
 			if($mode_bulletin=="html") {
 				$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
@@ -1377,7 +1392,9 @@ else {
 			}
 			//==============================
 			//========================================
-			include("../lib/calcul_moy_gen.inc.php");
+			//if($eff_classe>0) {
+				include("../lib/calcul_moy_gen.inc.php");
+			//}
 			// On récupère la plus grande partie des infos via calcul_moy_gen.inc.php
 			// Voir en fin du fichier calcul_moy_gen.inc.php la liste des infos récupérées
 			//========================================
@@ -1403,12 +1420,14 @@ else {
 			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
 			*/
 
+			/*
 			// Récupérer l'effectif de la classe,...
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$periode_num';";
 			$res_eff_classe=mysql_query($sql);
 			//$lig_eff_classe=mysql_fetch_object($res_eff_classe);
 			$eff_classe=mysql_num_rows($res_eff_classe);
 			//echo "<p>Effectif de la classe: $eff_classe</p>\n";
+			*/
 
 			// Variables simples
 			$tab_bulletin[$id_classe][$periode_num]['eff_classe']=$eff_classe;

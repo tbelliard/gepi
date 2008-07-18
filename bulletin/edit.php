@@ -518,6 +518,14 @@ else{
 	$affiche_coef = "n";
 }
 
+$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='$periode_num';";
+$res_test_nb_ele=mysql_query($sql);
+if(mysql_num_rows($res_test_nb_ele)==0) {
+	echo "<p>La classe ne compte aucun élève sur la période choisie.</p>\n";
+	require_once("../lib/footer.inc.php");
+	die();
+}
+
 // Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
 if ($affiche_rang == 'y'){include "../lib/calcul_rang.inc.php";}
 
