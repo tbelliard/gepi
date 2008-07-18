@@ -44,7 +44,7 @@ $titre_page = "Outil de visualisation | Evolution de l'élève et de la classe sur
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $periode = isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
