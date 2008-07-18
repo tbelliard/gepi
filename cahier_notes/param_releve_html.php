@@ -331,7 +331,7 @@ if (isset($_POST['releve_mention_doublant'])) {
 if (isset($_POST['releve_affiche_eleve_une_ligne'])) {
 
     if (!saveSetting("releve_affiche_eleve_une_ligne", $_POST['releve_affiche_eleve_une_ligne'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_mention_nom_court !";
+        $msg .= "Erreur lors de l'enregistrement de releve_affiche_eleve_une_ligne !";
         $reg_ok = 'no';
     }
 }
