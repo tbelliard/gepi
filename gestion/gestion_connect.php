@@ -252,7 +252,7 @@ echo "<p>En désactivant les connexions, vous rendez impossible la connexion au s
 
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">\n";
 
-echo "<table border='0'>\n";
+echo "<table border='0' summary='Activation/désactivation des connexions'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
@@ -324,7 +324,7 @@ echo "<p>Configuration de GEPI de manière à bloquer temporairement le compte d'u
 et/ou mettre en liste noire, la ou les adresses IP incriminées.<br /></p>";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_param_mdp\" method=\"post\">";
-echo "<table><tr>";
+echo "<table summary='Paramétrage'><tr>";
 echo "<td>Nombre maximum de tentatives de connexion infructueuses: </td>";
 echo "<td><input type=\"text\" name=\"nombre_tentatives_connexion\" value=\"".getSettingValue("nombre_tentatives_connexion")."\" size=\"20\" /></td>";
 echo "</tr><tr>";
@@ -345,7 +345,7 @@ echo "<h3 class='gepi'>Avertissement lors des connexions</h3>";
 echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous réserve que leur adresse mail soit renseignée dans Gepi (<i>information modifiable par le lien 'Gérer mon compte'</i>).<br />Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.<br />S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultéréieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'Gérer mon compte'.</p>\n";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_mail_connexion\" method=\"post\">";
-echo "<table>\n";
+echo "<table summary='Mail'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>Activer l'envoi de mail lors de la connexion: </td>\n";
 echo "<td>\n";
@@ -586,7 +586,7 @@ echo "</div>\n";
 ?>
 
 <a name='tab_connexions'></a>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0">
+<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Tableau des connexions'>
     <!--tr>
         <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
@@ -780,7 +780,7 @@ $texte="<p style='text-align:justify;'>L'organisme gérant l'espace d'adressage p
 $tabdiv_infobulle[]=creer_div_infobulle('ip_priv',"Espaces d'adressage","",$texte,"",30,0,'y','y','n','n');
 
 echo "<p>Voici les valeurs possibles pour la variable:</p>
-<table class='boireaus'>
+<table class='boireaus' summary='Valeurs de active_hostbyaddr'>
 <tr>
 	<th>Valeur</th>
 	<th>Signification</th>
