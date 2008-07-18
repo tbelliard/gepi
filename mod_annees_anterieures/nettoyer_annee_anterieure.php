@@ -49,21 +49,30 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 	die();
 }
 
-
-
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : NULL;
-
-
 
 $msg="";
 if(isset($confirmer)){
 	$nb_suppr=0;
 	$nb_err=0;
 	for($i=0;$i<count($suppr);$i++){
-		$sql="DELETE FROM annees_anterieures WHERE INE='$suppr[$i]';";
-		$res_suppr=mysql_query($sql);
-		if($res_suppr){
+    $sql="DELETE FROM archivage_eleves WHERE ine='$suppr[$i]';";
+		$res_suppr1=mysql_query($sql);
+
+		$sql="DELETE FROM archivage_eleves2 WHERE ine='$suppr[$i]';";
+		$res_suppr2=mysql_query($sql);
+
+		$sql="DELETE FROM archivage_projet_eleve WHERE id_eleve='$suppr[$i]';";
+		$res_suppr3=mysql_query($sql);
+
+		$sql="DELETE FROM archivage_appreciations_projets WHERE id_eleve='$suppr[$i]';";
+		$res_suppr4=mysql_query($sql);
+
+		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
+		$res_suppr5=mysql_query($sql);
+
+		if (($res_suppr1) or ($res_suppr2) or ($res_suppr3) or ($res_suppr4)  or ($res_suppr5) ) {
 			$nb_suppr++;
 		}
 		else{
@@ -76,7 +85,7 @@ if(isset($confirmer)){
 	}
 	if($nb_err>0){
 		if($msg!=""){$msg.="<br />";}
-		$msg.="$nb_err suppressions ont échoué.";
+		$msg.="Pour $nb_err ancien$s élève$s, des problèmes ont été rencontrés.";
 	}
 }
 
@@ -96,10 +105,10 @@ echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img sr
 echo "</div>\n";
 
 
-$sql="SELECT DISTINCT a.nom,a.prenom,a.INE,a.naissance
-			FROM annees_anterieures a
+$sql="SELECT DISTINCT a.nom,a.prenom,a.ine,a.naissance
+			FROM archivage_eleves a
 			LEFT JOIN eleves e
-			ON a.INE=e.no_gep
+			ON a.ine=e.no_gep
 			WHERE e.no_gep IS NULL;";
 $res1=mysql_query($sql);
 $nb_ele=mysql_num_rows($res1);
@@ -107,12 +116,12 @@ if($nb_ele==0){
 	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
 }
 else{
-	echo "<p>Voici la liste des élèves présents dans la table 'annees_anterieures', mais absents de la table 'eleves'.<br />
+	echo "<p>Voici la liste des élèves présents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
 	Il s'agit normalement d'élèves ayant quitté l'établissement.<br />
 	Il peut cependant arriver que des élèves dont le numéro INE n'était pas (<i>correctement</i>) rempli lors de la conservation de l'année soit proposés dans la liste ci-dessous.<br />
 	Dans ce cas, le numéro INE utilisé a un préfixe LOGIN_.<br />
 	Ce n'est pas un identifiant correct parce que le login d'un élève n'est pas nécessairement fixe d'une année sur l'autre (<i>dans le cas des doublons</i>).<br />
-	<font color='red'>Une page doit être mise au point pour vous permettre de corriger ces INE</font>.</p>\n";
+	Vous pouvez également choisir de <a href='corriger_ine.php'>corriger des INE non renseignés ou mal renseignés</a></p>\n";
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
@@ -129,13 +138,13 @@ else{
 	$cpt=0;
 	while($lig_ele=mysql_fetch_object($res1)){
 		echo "<tr style='text-align:center;' id='tr_$cpt'>\n";
-		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->INE' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
+		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
 		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
 		echo "<td>";
-		if(substr($lig_ele->INE,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
-		echo $lig_ele->INE;
-		if(substr($lig_ele->INE,0,6)=="LOGIN_"){echo "</span>";}
+		if(substr($lig_ele->ine,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
+		echo $lig_ele->ine;
+		if(substr($lig_ele->ine,0,6)=="LOGIN_"){echo "</span>";}
 		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;

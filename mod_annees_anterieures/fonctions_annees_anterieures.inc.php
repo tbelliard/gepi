@@ -22,7 +22,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		$lig_ele=mysql_fetch_object($res_ele);
 
 		// Infos élève
-		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'annees_anterieures')
+		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
 		$ine=$lig_ele->no_gep;
 		//$nom=$lig_ele->nom;
 		//$prenom=$lig_ele->prenom;
@@ -71,7 +71,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		*/
 
 		// Liste des années conservées pour l'élève choisi:
-		$sql="SELECT DISTINCT annee FROM annees_anterieures WHERE ine='$ine' ORDER BY annee";
+		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
 		$res_annees=mysql_query($sql);
 		$annee_precedente="";
 		$annee_suivante="";
@@ -80,7 +80,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			while($lig_annee=mysql_fetch_object($res_annees)){
 				if($lig_annee->annee!=$annee_scolaire){
 					$annee_precedente=$lig_annee->annee;
-					$sql="SELECT DISTINCT num_periode FROM annees_anterieures WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
+					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
 					$res_per_prec=mysql_query($sql);
 					if(mysql_num_rows($res_per_prec)>0){
 						$lig_per_prec=mysql_fetch_object($res_per_prec);
@@ -97,7 +97,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 
 		// Liste des périodes pour l'année choisie:
-		$sql="SELECT DISTINCT num_periode FROM annees_anterieures WHERE ine='$ine' AND annee='$annee_scolaire' ORDER BY num_periode";
+		$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_scolaire' ORDER BY num_periode";
 		$res_periodes=mysql_query($sql);
 
 		if(mysql_num_rows($res_periodes)==0){
@@ -159,7 +159,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "<div style='border: 1px solid black; background-color: white; padding: 3px;'>\n";
 		}
 
-		$sql="SELECT DISTINCT nom_periode FROM annees_anterieures WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
+		$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 		$res_per=mysql_query($sql);
 
 		if(mysql_num_rows($res_per)==0){
@@ -193,7 +193,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		echo "<th class='td_note_classe'>max</th>\n";
 		echo "</tr>\n";
 
-		$sql="SELECT * FROM annees_anterieures WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY matiere";
+		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY matiere";
 		//echo "$sql<br />\n";
 		$res_mat=mysql_query($sql);
 
@@ -222,7 +222,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 
 		// Affichage des absences
-		$sql="SELECT * FROM annees_anterieures WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='ABSENCES'";
+		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='ABSENCES'";
 		//echo "$sql<br />\n";
 		$res_abs=mysql_query($sql);
 
@@ -263,7 +263,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 
 		// Affichage de l'avis du conseil
-		$sql="SELECT * FROM annees_anterieures WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='AVIS_CONSEIL'";
+		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='AVIS_CONSEIL'";
 		//echo "$sql<br />\n";
 		$res_avis=mysql_query($sql);
 
@@ -314,7 +314,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 		$lig_ele=mysql_fetch_object($res_ele);
 
 		// Infos élève
-		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'annees_anterieures')
+		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
 		$ine=$lig_ele->no_gep;
 		//$nom=$lig_ele->nom;
 		//$prenom=$lig_ele->prenom;
@@ -324,7 +324,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 		//$naissance2=formate_date($lig_ele->naissance);
 
 		// Liste des années conservées pour l'élève choisi:
-		$sql="SELECT DISTINCT annee FROM annees_anterieures WHERE ine='$ine' ORDER BY annee";
+		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
 		$res_annees=mysql_query($sql);
 		$annee_precedente="";
 		$annee_suivante="";
@@ -334,7 +334,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 				if($lig_annee->annee!=$annee_scolaire){
 					$annee_precedente=$lig_annee->annee;
 					/*
-					$sql="SELECT DISTINCT num_periode FROM annees_anterieures WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
+					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
 					$res_per_prec=mysql_query($sql);
 					if(mysql_num_rows($res_per_prec)>0){
 						$lig_per_prec=mysql_fetch_object($res_per_prec);
@@ -386,7 +386,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 		echo "<p>Avis des conseils de classe pour $ele_prenom $ele_nom lors de l'année scolaire $annee_scolaire</p>\n";
 
 		// Affichage de l'avis du conseil
-		$sql="SELECT * FROM annees_anterieures WHERE annee='$annee_scolaire' AND ine='$ine' AND special='AVIS_CONSEIL' ORDER BY num_periode";
+		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND ine='$ine' AND special='AVIS_CONSEIL' ORDER BY num_periode";
 		//echo "$sql<br />\n";
 		$res_avis=mysql_query($sql);
 
@@ -404,7 +404,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 				echo "<tr>\n";
 				echo "<th>\n";
 				/*
-				$sql="SELECT DISTINCT nom_periode FROM annees_anterieures WHERE ine='$ine' AND num_periode='$lig_avis->num_periode' AND annee='$annee_scolaire'";
+				$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$lig_avis->num_periode' AND annee='$annee_scolaire'";
 				$res_per=mysql_query($sql);
 				if(mysql_num_rows($res_avis)==0){
 					echo "Aucune information sur l'avis du conseil de classe.</p>\n";
@@ -463,9 +463,9 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 		//echo "<p>Liste des années scolaires et périodes pour lesquelles des données concernant $ele_prenom $ele_nom (<i>$classe</i>) ont été conservées:</p>\n";
 
-		// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans annees_anterieures
-		//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
-		$sql="SELECT DISTINCT annee FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC";
+		// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
+		//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
+		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC";
 		$res_ant=mysql_query($sql);
 
 		if(mysql_num_rows($res_ant)==0){
@@ -492,7 +492,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 				}
 				echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
-				$sql="SELECT DISTINCT num_periode,nom_periode FROM annees_anterieures WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
+				$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
 				$res_ant2=mysql_query($sql);
 
 				if(mysql_num_rows($res_ant2)==0){
@@ -540,6 +540,86 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 			//echo "</p>\n";
 		}
 	}
+}
+function insert_eleve($login,$ine,$annee,$param) {
+  $test = sql_query1("select count(ine) from archivage_eleves where ine= '".$ine."'");
+  if ($test == 0) {
+    $sql="SELECT DISTINCT nom, prenom, no_gep, naissance, sexe FROM eleves WHERE login='".$login."'";
+    $res_ele=mysql_query($sql);
+    if(mysql_num_rows($res_ele)==0) {
+        return "<tr><td colspan='4'>Aucune donnée disponible pour l'élève dont l'identifiant est ".$login."</td></tr>";
+        die();
+    } else {
+        while($lig_ele=mysql_fetch_object($res_ele)){
+          // Infos élève
+          $nom=$lig_ele->nom;
+          $prenom=$lig_ele->prenom;
+          $naissance=$lig_ele->naissance;
+          $sexe=$lig_ele->sexe;
+          $ine=$lig_ele->no_gep;
+          if($ine=="")
+            $ine="LOGIN_".$login;
+          $sql="INSERT INTO archivage_eleves SET
+		      ine='$ine',
+          nom='".addslashes($nom)."',
+          prenom='".addslashes($prenom)."',
+          sexe='".addslashes($sexe)."',
+		      naissance='$naissance'";
+          $res_insert=mysql_query($sql);
+		      if(!$res_insert){
+            return "<tr><td colspan='4'><font color='red'>Erreur d'enregistrement des données pour l'élève dont l'identifiant est ".$login."</font></td></tr>";
+            die();
+          } else {
+            // on insère le regime et le statut doublant
+            $sql="SELECT DISTINCT regime, doublant FROM j_eleves_regime WHERE login='".$login."'";
+            $res_regime=mysql_query($sql);
+            while($lig_ele=mysql_fetch_object($res_regime)){
+                $regime=$lig_ele->regime;
+                $doublant=$lig_ele->doublant;
+            }
+            $del = sql_query1("delete from archivage_eleve2 where ine ='".$ine."'");
+            $sql="INSERT INTO archivage_eleves2 SET
+            ine='".$ine."',
+            annee = '".$annee."',
+  		      doublant='".addslashes($doublant)."',
+            regime='".addslashes($regime)."'";
+            $res_insert_regime=mysql_query($sql);
+            if ($param != 'y')
+                return "<tr><td class='small'>".$ine."</td><td class='small'>".$nom."</td><td class='small'>".$prenom."</td><td class='small'>".$naissance."</td></tr>";
+          }
+        }
+    }
+  }
+}
+
+function cree_substitut_INE_unique($login){
+    $m = '';
+    $test_unicite = '';
+    while ($test_unicite != 1) {
+      // On vérifie que le login ne figure pas déjà dans la table archivage_eleves
+      $req_test = mysql_query("SELECT nom, prenom, sexe, naissance FROM archivage_eleves WHERE (ine='".$login.$m."')");
+      $test = mysql_num_rows($req_test);
+      if ($test!=0) {
+          // un même identifiant existe déjà !
+          // s'agit-il de la même personne. On considère que oui si les noms, prénom, date de naissance et sexe correspondent
+          $nom = mysql_result($req_test,0,"nom");
+          $prenom = mysql_result($req_test,0,"prenom");
+          $sexe = mysql_result($req_test,0,"sexe");
+          $naissance = mysql_result($req_test,0,"naissance");
+          $test_unicite = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (nom='".$nom."' and prenom='".$prenom."' and sexe='".$sexe."' and naissance='".$naissance."')"));
+      } else
+          $test_unicite = 1;
+      if ($test_unicite != 1) {
+        if ($m == '') {
+            $m = 2;
+       	} else {
+            $m++;
+        }
+      } else {
+        $login = $login.$m;
+      }
+    }
+    return $login;
 }
 
 ?>

@@ -23,6 +23,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("./fonctions_annees_anterieures.inc.php");
 
 // Resume session
 $resultat_session = resumeSession();
@@ -80,45 +81,12 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-//echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
 if(!isset($annee_scolaire)){
-	echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<div class='norme'><p class=bold><a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "</p></div>\n";
 
-	$sql="CREATE TABLE IF NOT EXISTS `annees_anterieures` (
-  `id` int(11) NOT NULL auto_increment,
-  `annee` varchar(255) NOT NULL,
-  `INE` varchar(255) NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `prenom` varchar(255) NOT NULL,
-  `naissance` date NOT NULL,
-  `classe` varchar(255) NOT NULL,
-  `doublant` enum('-','R') NOT NULL,
-  `num_periode` tinyint(4) NOT NULL,
-  `nom_periode` varchar(255) NOT NULL,
-  `special` varchar(255) NOT NULL,
-  `matiere` varchar(255) NOT NULL,
-  `prof` varchar(255) NOT NULL,
-  `note` varchar(255) NOT NULL,
-  `moymin` varchar(255) NOT NULL,
-  `moymax` varchar(255) NOT NULL,
-  `moyclasse` varchar(255) NOT NULL,
-  `rang` tinyint(4) NOT NULL,
-  `appreciation` text NOT NULL,
-  `nb_absences` int(11) NOT NULL,
-  `non_justifie` int(11) NOT NULL,
-  `nb_retards` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-)";
-	$creation_table=mysql_query($sql);
-	if(!$creation_table){
-		echo "<p style='color:red;'>Erreur lors de la création de la table 'annees_anterieures'</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-
-	$sql="SELECT DISTINCT annee FROM annees_anterieures ORDER BY annee";
+	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
 	$res_annee=mysql_query($sql);
 	//if(){
 	if(mysql_num_rows($res_annee)==0){
@@ -130,7 +98,7 @@ if(!isset($annee_scolaire)){
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
 			echo "<li><b>Année $annee_scolaire:</b> ";
-			$sql="SELECT DISTINCT classe FROM annees_anterieures WHERE annee='$annee_scolaire' ORDER BY classe;";
+			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
 			$res_classes=mysql_query($sql);
 			if(mysql_num_rows($res_classes)==0){
 				echo "Aucune classe???";
@@ -167,9 +135,9 @@ if(!isset($annee_scolaire)){
 
 }
 else{
-	echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<div class='norme'><p class=bold><a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
-	$sql="SELECT DISTINCT classe FROM annees_anterieures WHERE annee='$annee_scolaire'";
+	$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire'";
 	$res_test=mysql_query($sql);
 
 	if(mysql_num_rows($res_test)>0){
@@ -354,8 +322,11 @@ else{
 
 					if($tab_eleve[$cpt]['ine']==""){
 						$tab_eleve[$cpt]['ine']="LOGIN_".$tab_eleve[$cpt]['login_eleve'];
+						$tab_eleve[$cpt]['ine'] = cree_substitut_INE_unique($tab_eleve[$cpt]['ine']);
 					}
+          // On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
 
+          $error_enregistre_eleve[$tab_eleve[$cpt]['login_eleve']] = insert_eleve($tab_eleve[$cpt]['login_eleve'],$tab_eleve[$cpt]['ine'],$annee_scolaire,'y');
 
 					// Statut de redoublant ou non:
 					$sql="SELECT * FROM j_eleves_regime WHERE login='".$tab_eleve[$cpt]['login_eleve']."'";
@@ -420,7 +391,7 @@ else{
 				// Boucle sur les élèves
 				for($j=0;$j<count($tab_eleve);$j++){
 					echo "<tr>\n";
-					echo "<td>".$tab_eleve[$j]['nom']." ".$tab_eleve[$j]['prenom']."</td>\n";
+					echo "<td id='td_0_".$j."'>".$tab_eleve[$j]['nom']." ".$tab_eleve[$j]['prenom']."</td>\n";
 					//for($i=0;$i<count($tab_periode);$i++){
 					for($i=1;$i<=count($tab_periode);$i++){
 						echo "<td id='td_".$i."_".$j."'>&nbsp;</td>\n";
@@ -435,7 +406,7 @@ else{
 
 				for($i=1;$i<=count($tab_periode);$i++){
 					// Nettoyage:
-					$sql="DELETE FROM annees_anterieures WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i'";
+					$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i'";
 					$res_nettoyage=mysql_query($sql);
 
 					if(!$res_nettoyage){
@@ -509,6 +480,12 @@ else{
 						$login_eleve=$tab_eleve[$j]['login_eleve'];
 						$doublant=$tab_eleve[$j]['doublant'];
 						$cpe=$tab_eleve[$j]['cpe'];
+						if ($error_enregistre_eleve[$login_eleve] != '')
+            echo "<script type='text/javascript'>
+  	document.getElementById('td_0_".$j."').style.backgroundColor='red';
+</script>\n";
+
+
 
 
 
@@ -530,12 +507,9 @@ else{
 							$appreciation=$lig_abs->appreciation;
 						}
 
-						$sql="INSERT INTO annees_anterieures SET
+						$sql="INSERT INTO archivage_disciplines SET
 											annee='$annee_scolaire',
 											ine='$ine',
-											nom='".addslashes($nom)."',
-											prenom='".addslashes($prenom)."',
-											naissance='$naissance',
 											classe='".addslashes($classe)."',
 											num_periode='$num_periode',
 											nom_periode='".addslashes($nom_periode)."',
@@ -579,13 +553,10 @@ else{
 							// A quoi sert le champ statut de la table avis_conseil_classe ?
 						}
 
-						// Insertion de l'avis dans annees_anterieures
-						$sql="INSERT INTO annees_anterieures SET
+						// Insertion de l'avis dans archivage_disciplines
+						$sql="INSERT INTO archivage_disciplines SET
 											annee='$annee_scolaire',
 											ine='$ine',
-											nom='".addslashes($nom)."',
-											prenom='".addslashes($prenom)."',
-											naissance='$naissance',
 											classe='".addslashes($classe)."',
 											num_periode='$num_periode',
 											nom_periode='".addslashes($nom_periode)."',
@@ -677,12 +648,13 @@ else{
 								}
 
 								// Insertion de la note, l'appréciation,... dans la matière,...
-								$sql="INSERT INTO annees_anterieures SET
+								if (!isset($moymin[$id_groupe])) $moymin[$id_groupe]="-";
+								if (!isset($moymax[$id_groupe])) $moymax[$id_groupe]="-";
+								if (!isset($moyclasse[$id_groupe])) $moyclasse[$id_groupe]="-";
+
+								$sql="INSERT INTO archivage_disciplines SET
 													annee='$annee_scolaire',
 													ine='$ine',
-													nom='".addslashes($nom)."',
-													prenom='".addslashes($prenom)."',
-													naissance='$naissance',
 													classe='".addslashes($classe)."',
 													num_periode='$num_periode',
 													nom_periode='".addslashes($nom_periode)."',
@@ -740,7 +712,7 @@ else{
 				$nom_periode=$lig_periode->nom_periode;
 
 				// Nettoyage:
-				$sql="DELETE FROM annees_anterieures WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$num_periode'";
+				$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$num_periode'";
 				$res_nettoyage=mysql_query($sql);
 
 				if(!$res_nettoyage){
@@ -877,8 +849,8 @@ else{
 							$appreciation=$lig_abs->appreciation;
 						}
 
-						// Insertion de l'absence dans annees_anterieures
-						$sql="SELECT 1=1 FROM annees_anterieures WHERE annee='$annee_scolaire' AND
+						// Insertion de l'absence dans archivage_disciplines
+						$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='$annee_scolaire' AND
 																		ine='$ine' AND
 																		num_periode='$num_periode' AND
 																		special='ABSENCES'";
@@ -908,12 +880,9 @@ else{
 
 
 						if(mysql_num_rows($res_test)==0){
-							$sql="INSERT INTO annees_anterieures SET
+							$sql="INSERT INTO archivage_disciplines SET
 												annee='$annee_scolaire',
 												ine='$ine',
-												nom='".addslashes($nom)."',
-												prenom='".addslashes($prenom)."',
-												naissance='$naissance',
 												classe='".addslashes($classe)."',
 												num_periode='$num_periode',
 												nom_periode='".addslashes($nom_periode)."',
@@ -937,10 +906,7 @@ else{
 
 						}
 						else{
-							$sql="UPDATE annees_anterieures SET
-												nom='".addslashes($nom)."',
-												prenom='".addslashes($prenom)."',
-												naissance='$naissance',
+							$sql="UPDATE archivage_disciplines SET
 												classe='".addslashes($classe)."',
 												nom_periode='".addslashes($nom_periode)."',
 												matiere='',
@@ -1013,20 +979,17 @@ else{
 
 
 
-						// Insertion de l'avis dans annees_anterieures
-						$sql="SELECT 1=1 FROM annees_anterieures WHERE annee='$annee_scolaire' AND
+						// Insertion de l'avis dans archivage_disciplines
+						$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='$annee_scolaire' AND
 																		ine='$ine' AND
 																		num_periode='$num_periode' AND
 																		special='AVIS_CONSEIL'";
 						$res_test=mysql_query($sql);
 
 						if(mysql_num_rows($res_test)==0){
-							$sql="INSERT INTO annees_anterieures SET
+							$sql="INSERT INTO archivage_disciplines SET
 												annee='$annee_scolaire',
 												ine='$ine',
-												nom='".addslashes($nom)."',
-												prenom='".addslashes($prenom)."',
-												naissance='$naissance',
 												classe='".addslashes($classe)."',
 												num_periode='$num_periode',
 												nom_periode='".addslashes($nom_periode)."',
@@ -1049,10 +1012,7 @@ else{
 
 						}
 						else{
-							$sql="UPDATE annees_anterieures SET
-												nom='".addslashes($nom)."',
-												prenom='".addslashes($prenom)."',
-												naissance='$naissance',
+							$sql="UPDATE archivage_disciplines SET
 												classe='".addslashes($classe)."',
 												nom_periode='".addslashes($nom_periode)."',
 												matiere='',
@@ -1158,19 +1118,16 @@ else{
 
 
 								// Insertion de la note, l'appréciation,... dans la matière,...
-								$sql="SELECT 1=1 FROM annees_anterieures WHERE annee='$annee_scolaire' AND
+								$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='$annee_scolaire' AND
 																				ine='$ine' AND
 																				num_periode='$num_periode' AND
 																				matiere='$matiere'";
 								$res_test=mysql_query($sql);
 
 								if(mysql_num_rows($res_test)==0){
-									$sql="INSERT INTO annees_anterieures SET
+									$sql="INSERT INTO archivage_disciplines SET
 														annee='$annee_scolaire',
 														ine='$ine',
-														nom='".addslashes($nom)."',
-														prenom='".addslashes($prenom)."',
-														naissance='$naissance',
 														classe='".addslashes($classe)."',
 														num_periode='$num_periode',
 														nom_periode='".addslashes($nom_periode)."',
@@ -1194,10 +1151,7 @@ else{
 
 								}
 								else{
-									$sql="UPDATE annees_anterieures SET
-														nom='".addslashes($nom)."',
-														prenom='".addslashes($prenom)."',
-														naissance='$naissance',
+									$sql="UPDATE archivage_disciplines SET
 														classe='".addslashes($classe)."',
 														nom_periode='".addslashes($nom_periode)."',
 														special='',

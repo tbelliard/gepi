@@ -33,7 +33,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();};
 
-// INSERT INTO droits VALUES ('/mod_annees_anterieures/corriger_ine.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction d INE dans la table annees_anterieures', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -55,13 +54,7 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
-
-$annee=isset($_POST['annee']) ? $_POST['annee'] : (isset($_GET['annee']) ? $_GET['annee'] : NULL);
 $ine=isset($_POST['ine']) ? $_POST['ine'] : (isset($_GET['ine']) ? $_GET['ine'] : NULL);
-// Avec les apostrophes qui risquent d'être échappées, on ne retient pas les nom et prénom pour l'identification
-//$nom_eleve=isset($_POST['nom_eleve']) ? $_POST['nom_eleve'] : (isset($_GET['nom_eleve']) ? $_GET['nom_eleve'] : NULL);
-//$prenom_eleve=isset($_POST['prenom_eleve']) ? $_POST['prenom_eleve'] : (isset($_GET['prenom_eleve']) ? $_GET['prenom_eleve'] : NULL);
-$naissance=isset($_POST['naissance']) ? $_POST['naissance'] : (isset($_GET['naissance']) ? $_GET['naissance'] : NULL);
 $ine_corrige=isset($_POST['ine_corrige']) ? $_POST['ine_corrige'] : (isset($_GET['ine_corrige']) ? $_GET['ine_corrige'] : NULL);
 
 $recherche1=isset($_POST['recherche1']) ? $_POST['recherche1'] : NULL;
@@ -71,16 +64,21 @@ $recherche1_prenom=isset($_POST['recherche1_prenom']) ? $_POST['recherche1_preno
 $msg="";
 if(isset($confirmer)){
 	$cpt=0;
-	if((isset($annee))&&(isset($ine))&&(isset($naissance))&&(isset($ine_corrige))){
+	if((isset($ine))&&(isset($ine_corrige))){
 		for($i=0;$i<count($ine);$i++){
 			if($ine_corrige[$i]!=''){
-				$sql="UPDATE annees_anterieures SET INE='$ine_corrige[$i]'
-												WHERE INE='$ine[$i]' AND
-													annee='$annee[$i]' AND
-													naissance='$naissance[$i]'";
-				$update=mysql_query($sql);
-				if(!$update){
-					$msg.="<b>Erreur</b> $ine[$i] -&gt; $ine_corrige[$i] ($annee[$i])<br />\n";
+				$sql="UPDATE archivage_eleves SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
+				$update1=mysql_query($sql);
+				$sql="UPDATE archivage_eleves2 SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
+				$update2=mysql_query($sql);
+				$sql="UPDATE archivage_projet_eleve SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
+				$update3=mysql_query($sql);
+				$sql="UPDATE archivage_appreciations_projets SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
+				$update4=mysql_query($sql);
+				$sql="UPDATE archivage_disciplines SET INE='$ine_corrige[$i]' WHERE INE='$ine[$i]'";
+				$update5=mysql_query($sql);
+				if ((!$update1) or (!$update2) or (!$update3) or (!$update4) or (!$update5)){
+					$msg.="<b>Erreur</b> $ine[$i] -&gt; $ine_corrige[$i]<br />\n";
 					//$msg.="$sql<br />\n";
 				}
 				else{
@@ -153,8 +151,8 @@ if(!isset($mode)){
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Il arrive que lors de la conservation des données d'une année, le numéro INE d'un élève ne soit pas (<i>correctement</i>) rempli.<br />Ce numéro est utilisé pour faire le lien entre un élève de l'année courante (<i>table 'eleves'</i>) et ses données antérieures (<i>table 'annees_anterieures'</i>).<br />Si ce numéro ne coïncide pas entre les deux tables, la consultation est perturbée.</p>\n";
-	echo "<p>Cette page est destinée à corriger des INE inscrits dans la table 'annees_anterieures'.</p>\n";
+	echo "<p>Il arrive que lors de la conservation des données d'une année, le numéro INE d'un élève ne soit pas (<i>correctement</i>) rempli.<br />Ce numéro est utilisé pour faire le lien entre un élève de l'année courante (<i>table 'eleves'</i>) et ses données antérieures.<br />Si ce numéro ne coïncide pas entre les deux tables, la consultation est perturbée.</p>\n";
+	echo "<p>Cette page est destinée à corriger des INE inscrits dans les tables d'archivage.</p>\n";
 
 	echo "<p>Voulez-vous:</p>\n";
 	echo "<ul>\n";
@@ -169,11 +167,11 @@ elseif($mode=="ine_login"){
 
 	echo "<p>Affichage des élèves dont le numéro INE n'était pas rempli lors d'une conservation des données antérieures.</p>\n";
 
-	$sql="SELECT DISTINCT annee,INE,nom,prenom,naissance FROM annees_anterieures WHERE INE LIKE 'LOGIN_%' ORDER BY annee,nom,prenom";
+	$sql="SELECT DISTINCT ine,nom,prenom,naissance FROM archivage_eleves WHERE ine LIKE 'LOGIN_%' ORDER BY nom,prenom";
 	$res1=mysql_query($sql);
 
 	if(mysql_num_rows($res1)==0){
-		echo "<p>Aucun élève dans la table 'annees_anterieures' n'a d'INE au préfixe 'LOGIN_'<br />(<i>c'est-à-dire dont l'INE était non rempli lors d'une opération de conservation des données antérieures</i>).</p>\n";
+		echo "<p>Aucun élève dans la table 'archivage_eleves' n'a d'INE au préfixe 'LOGIN_'<br />(<i>c'est-à-dire dont l'INE était non rempli lors d'une opération de conservation des données antérieures</i>).</p>\n";
 	}
 	else{
 
@@ -182,7 +180,6 @@ elseif($mode=="ine_login"){
 
 		echo "<table class='table_annee_anterieure'>\n";
 		echo "<tr style='background-color: white;'>\n";
-		echo "<th>Année scolaire</th>\n";
 		echo "<th>INE enregistré</th>\n";
 		echo "<th>Nom</th>\n";
 		echo "<th>Prénom</th>\n";
@@ -204,14 +201,9 @@ elseif($mode=="ine_login"){
 			}
 			echo "; text-align: center;'>\n";
 
-			echo "<td>";
-			echo $lig1->annee;
-			echo "<input type='hidden' name='annee[$cpt]' value=\"$lig1->annee\" />\n";
-			echo "</td>\n";
-
 			echo "<td style='color: red;'>";
-			echo $lig1->INE;
-			echo "<input type='hidden' name='ine[$cpt]' value=\"$lig1->INE\" />\n";
+			echo $lig1->ine;
+			echo "<input type='hidden' name='ine[$cpt]' value=\"$lig1->ine\" />\n";
 			echo "</td>\n";
 
 			echo "<td>";
@@ -226,7 +218,6 @@ elseif($mode=="ine_login"){
 
 			echo "<td>";
 			echo formate_date($lig1->naissance);
-			echo "<input type='hidden' name='naissance[$cpt]' value=\"$lig1->naissance\" />\n";
 			echo "</td>\n";
 
 			echo "<td>";
@@ -313,15 +304,15 @@ elseif($mode=="recherche"){
 </form>\n";
 	}
 	else{
-		$sql="SELECT DISTINCT annee,INE,nom,prenom,naissance FROM annees_anterieures
+		$sql="SELECT DISTINCT ine,nom,prenom,naissance FROM archivage_eleves
 				WHERE nom LIKE '%$recherche1_nom%' AND
 					prenom LIKE '%$recherche1_prenom%'
-				ORDER BY annee,nom,prenom";
+				ORDER BY nom,prenom";
 		//echo "$sql<br />";
 		$res1=mysql_query($sql);
 
 		if(mysql_num_rows($res1)==0){
-			echo "<p>Aucun élève dans la table 'annees_anterieures' ne remplit les critères demandés.</p>\n";
+			echo "<p>Aucun élève dans la table 'archivage_eleves' ne remplit les critères demandés.</p>\n";
 		}
 		else{
 
@@ -333,7 +324,6 @@ elseif($mode=="recherche"){
 
 			echo "<table class='table_annee_anterieure'>\n";
 			echo "<tr style='background-color: white;'>\n";
-			echo "<th>Année scolaire</th>\n";
 			echo "<th>INE enregistré</th>\n";
 			echo "<th>Nom</th>\n";
 			echo "<th>Prénom</th>\n";
@@ -355,14 +345,9 @@ elseif($mode=="recherche"){
 				}
 				echo "; text-align: center;'>\n";
 
-				echo "<td>";
-				echo $lig1->annee;
-				echo "<input type='hidden' name='annee[$cpt]' value=\"$lig1->annee\" />\n";
-				echo "</td>\n";
-
 				echo "<td style='color: red;'>";
-				echo $lig1->INE;
-				echo "<input type='hidden' name='ine[$cpt]' value=\"$lig1->INE\" />\n";
+				echo $lig1->ine;
+				echo "<input type='hidden' name='ine[$cpt]' value=\"$lig1->ine\" />\n";
 				echo "</td>\n";
 
 				echo "<td>";
@@ -377,7 +362,6 @@ elseif($mode=="recherche"){
 
 				echo "<td>";
 				echo formate_date($lig1->naissance);
-				echo "<input type='hidden' name='naissance[$cpt]' value=\"$lig1->naissance\" />\n";
 				echo "</td>\n";
 
 				echo "<td>";
@@ -456,17 +440,17 @@ die();
 
 
 $sql="SELECT DISTINCT a.nom,a.prenom,a.INE,a.naissance
-			FROM annees_anterieures a
+			FROM archivage_eleves a
 			LEFT JOIN eleves e
 			ON a.INE=e.no_gep
 			WHERE e.no_gep IS NULL;";
 $res1=mysql_query($sql);
 $nb_ele=mysql_num_rows($res1);
 if($nb_ele==0){
-	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
+	echo "<p>Tous les élèves présents dans la table 'archivage_eleves' sont dans la table 'eleves'.</p>\n";
 }
 else{
-	echo "<p>Voici la liste des élèves présents dans la table 'annees_anterieures', mais absents de la table 'eleves'.<br />
+	echo "<p>Voici la liste des élèves présents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
 	Il s'agit normalement d'élèves ayant quitté l'établissement.<br />
 	Il peut cependant arriver que des élèves dont le numéro INE n'était pas (<i>correctement</i>) rempli lors de la conservation de l'année soit proposés dans la liste ci-dessous.<br />
 	Dans ce cas, le numéro INE utilisé a un préfixe LOGIN_.<br />
