@@ -305,12 +305,15 @@ require_once("../lib/header.inc");
 	function verif1() {
 	<?php
 		// Test d'existence de PMV... utilisé ici pour le file_exists() des photos
+		/*
 		if(getSettingValue("gepi_pmv")!="n"){
 			echo "document.formulaire.quelles_classes[8].checked = true;";
 		}
 		else{
 			echo "document.formulaire.quelles_classes[7].checked = true;";
 		}
+		*/
+		echo "document.getElementById('quelles_classes_certaines').checked = true;";
 	?>
 	}
 	function verif2() {
@@ -412,6 +415,14 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		}
 	}
 }
+if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab')=='yes')) {
+	// Pour activer le dispositif:
+	// DELETE FROM setting WHERE name='exp_imp_chgt_etab';INSERT INTO setting SET name='exp_imp_chgt_etab', value='yes';
+	//echo " | ";
+	echo "<br />";
+	echo "Changement d'établissement: <a href='export_bull_eleve.php'>Export des bulletins</a>\n";
+	echo " et <a href='import_bull_eleve.php'>Import des bulletins</a>\n";
+}
 echo "</p>\n";
 
 echo "<center><p class='grand'>Visualiser \ modifier une fiche élève</p></center>\n";
@@ -453,7 +464,7 @@ if (!isset($quelles_classes)) {
 			// Affichage sur 3 colonnes
 			$nb_classes_par_colonne=round($nb_classes/2);
 
-			echo "<table width='100%'>\n";
+			echo "<table width='100%' summary='Choix des classes'>\n";
 			echo "<tr valign='top' align='center'>\n";
 
 			$cpt_i = 0;
@@ -484,7 +495,7 @@ if (!isset($quelles_classes)) {
 
 
 		echo "<form enctype='multipart/form-data' action='index.php' method='post' name='formulaire'>\n";
-		echo "<table cellpadding='5' width='100%' border='0'>\n";
+		echo "<table cellpadding='5' width='100%' border='0' summary='Choix du mode'>\n";
 
 		echo "<tr>\n";
 		echo "<td>\n";
@@ -733,7 +744,7 @@ if (!isset($quelles_classes)) {
 
 				$nb_class_par_colonne=round($nb/3);
 				//echo "<table width='100%' border='1'>\n";
-				echo "<table width='100%'>\n";
+				echo "<table width='100%' summary='Choix des classes'>\n";
 				echo "<tr valign='top' align='center'>\n";
 
 				$i = '0';
@@ -781,8 +792,12 @@ if(isset($quelles_classes)) {
 	//echo "$quelles_classes<br />";
 
 	echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	if($_SESSION['statut']=="administrateur") {
 		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.";
+	}
+	elseif($_SESSION['statut']=="scolarite") {
+		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez vous connecter en 'administrateur' et leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> Elèves.";
 	}
 	echo "</p>\n";
 
@@ -1101,7 +1116,7 @@ if(isset($quelles_classes)) {
 		}
 	}
 
-	echo "<table border='1' cellpadding='2' class='boireaus'>\n";
+	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Identifiant</p></td>\n";
 	echo "<td><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
