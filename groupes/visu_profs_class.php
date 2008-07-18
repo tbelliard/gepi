@@ -189,7 +189,7 @@ if(isset($id_classe)){
         $res_eleves_classe=mysql_query($sql);
         $nb_eleves_classe=mysql_num_rows($res_eleves_classe);
 
-        echo "<table border='0'>\n";
+        echo "<table border='0' summary='Equipe'>\n";
 
         // Liste des CPE:
         $sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
@@ -350,7 +350,7 @@ else{
     else{
         $nb_classes=mysql_num_rows($result_classes);
         $nb_class_par_colonne=round($nb_classes/3);
-        echo "<table width='100%'>\n";
+        echo "<table width='100%' summary='Choix de la classe'>\n";
         echo "<tr valign='top' align='center'>\n";
         $cpt=0;
         //echo "<td style='padding: 0 10px 0 10px'>\n";
