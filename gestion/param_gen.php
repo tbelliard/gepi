@@ -326,7 +326,7 @@ require_once("../lib/header.inc");
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="param_gen.php" method="post" name="form1" style="width: 100%;">
-<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5">
+<table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5" summary='Paramètres'>
 	<tr>
 		<td style="width: 60%;font-variant: small-caps;">
 		Année scolaire :
@@ -477,7 +477,7 @@ require_once("../lib/header.inc");
 		Désignation des boites/conteneurs/emplacements/sous-matières :</td>
 		<td>
 		<input type="text" name="gepi_denom_boite" size="20" value="<?php echo(getSettingValue("gepi_denom_boite")); ?>" /><br />
-		<table><tr valign='top'><td>Genre:</td><td>
+		<table summary='Genre'><tr valign='top'><td>Genre:</td><td>
 		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_m" value="m" <?php if(getSettingValue("gepi_denom_boite_genre")=="m"){echo 'checked';} ?> /> <label for='gepi_denom_boite_genre_m' style='cursor: pointer;'>Masculin</label><br />
 		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>Féminin</label><br />
 		</td></tr></table>
@@ -506,7 +506,7 @@ require_once("../lib/header.inc");
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>Majuscules et minuscules</label><br />
 		<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo 'checked';} ?> /> <label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>Minuscules seulement</label><br />
 
-		<table border='0'>
+		<table border='0' summary='Pass'>
 		<tr>
 		<td valign='top'>
 		<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo 'checked';} ?> />
@@ -568,7 +568,7 @@ require_once("../lib/header.inc");
 </form>
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form2" style="width: 100%;">
-<table border=0 cellpadding="5" cellspacing="5">
+<table border='0' cellpadding="5" cellspacing="5" summary='Logo'>
 <?php
 echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'établissement : </b></td></tr>\n";
 echo "<tr><td colspan=2>Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte</td></tr>\n";
@@ -591,7 +591,7 @@ echo "</tr></table></form>\n";
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form3" style="width: 100%;">
-<table border=0 cellpadding="5" cellspacing="5">
+<table border='0' cellpadding="5" cellspacing="5" summary='Pmv'>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Tester la présence du module phpMyVisite (<i>pmv.php</i>) :</td>
@@ -605,7 +605,7 @@ echo "</tr></table></form>\n";
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
 
-<table><tr><td valign='top'><i>Remarque:</i></td><td>Il arrive que ce test de présence provoque un affichage d'erreur (<i>à propos de pmv.php</i>).<br />
+<table summary='Remarque'><tr><td valign='top'><i>Remarque:</i></td><td>Il arrive que ce test de présence provoque un affichage d'erreur (<i>à propos de pmv.php</i>).<br />
 Dans ce cas, désactivez simplement le test.</td></tr></table>
 </form>
 <p><br /></p>
