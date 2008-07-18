@@ -803,7 +803,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	echo "<hr />";
 	*/
 
-	echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
+	echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Relevé de notes'>\n";
 
 	echo "<tr>\n";
 	echo "<td style=\"width: 30%;\">\n";
@@ -958,7 +958,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	$larg_tab = $releve_largeurtableau;
 	$larg_col1 = $releve_col_matiere_largeur;
 	$larg_col2 = $larg_tab - $larg_col1;
-	echo "<table width=\"$larg_tab\" class='boireaus' border='1' cellspacing=3 cellpadding=3>\n";
+	echo "<table width=\"$larg_tab\" class='boireaus' border='1' cellspacing='3' cellpadding='3' summary='Matières/notes/appréciations'>\n";
 	//echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'>\n";
 	echo "<tr>\n";
 	echo "<td width=\"$larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
@@ -1140,7 +1140,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		}
 		$largeur_case=round($releve_largeurtableau/$nb_cases);
 
-		echo "<table$releve_class_bordure border='1' width='$releve_largeurtableau'>\n";
+		echo "<table$releve_class_bordure border='1' width='$releve_largeurtableau' summary='Signatures'>\n";
 		echo "<tr>\n";
 
 		if($tab_rel['rn_sign_chefetab']=='y'){
@@ -1184,7 +1184,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	// Affichage de la formule de bas de page
 	if (($releve_formule_bas != '') and ($releve_affiche_formule == 'y')) {
 		// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-		echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'>\n";
+		echo "<table width='$releve_largeurtableau' style='margin-left:5px; margin-right:5px;' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Formule de bas de page'>\n";
 		echo "<tr>";
 		echo "<td><p align='center' class='bulletin'>".$releve_formule_bas."</p></td>\n";
 		echo "</tr></table>";
