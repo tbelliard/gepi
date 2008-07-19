@@ -125,6 +125,21 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			}
 
 			echo "</li>\n";
+
+
+
+			/*
+			if($gecko){
+				echo "<li style='display:inline; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\"); padding: 0.2em 0.2em 0 0.2em;'>";
+			}
+			else{
+				echo "<li style='display:inline; border: 1px solid black; background-color: white; padding: 0.2em 0.2em 0 0.2em;'>";
+			}
+			echo "$classe";
+			echo "</li>\n";
+			*/
+
+
 			//echo "<div style='display:block; border: 1px solid black; background-color: white; width:20%;'><b>$annee_scolaire</b></div>\n";
 			$cpt=0;
 			while($lig_periode=mysql_fetch_object($res_periodes)){
@@ -174,12 +189,12 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		echo "<h2>Antécédents de $ele_prenom $ele_nom: millésime $annee_scolaire</h2>\n";
 
 		//echo "<p>Bulletin simplifié de $prenom $nom pour la période $num_periode de l'année scolaire $annee_scolaire</p>";
-		echo "<p>Bulletin simplifié de $ele_prenom $ele_nom: $nom_periode de l'année scolaire $annee_scolaire</p>\n";
+		echo "<p>Bulletin simplifié de $ele_prenom $ele_nom: $nom_periode de l'année scolaire $annee_scolaire en <strong>$classe</strong></p>\n";
 
 		// Affichage des infos élève
 
 		// Affichage des matières
-		echo "<table class='table_annee_anterieure' width='100%'>\n";
+		echo "<table class='table_annee_anterieure' width='100%' summary='Matières/notes'>\n";
 		echo "<tr>\n";
 		echo "<th rowspan='2'>Matière</th>\n";
 		echo "<th colspan='3'>Classe</th>\n";
@@ -268,7 +283,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		$res_avis=mysql_query($sql);
 
 
-		echo "<table class='table_annee_anterieure' width='100%'>\n";
+		echo "<table class='table_annee_anterieure' width='100%' summary='Avis du conseil'>\n";
 		echo "<tr>\n";
 		echo "<td align='left'>\n";
 		echo "<p><i>Avis du Conseil de classe : </i><br />\n";
@@ -394,7 +409,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 			echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 		}
 		else{
-			echo "<table class='table_annee_anterieure' width='100%'>\n";
+			echo "<table class='table_annee_anterieure' width='100%' summary='Avis du conseil'>\n";
 			echo "<tr>\n";
 			echo "<th>Année-scolaire</th>\n";
 			echo "<th>Avis du conseil de classe</th>\n";
@@ -479,7 +494,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 			//echo "<p>Bulletins simplifiés:</p>\n";
 			//echo "<table border='0'>\n";
-			echo "<table class='table_annee_anterieure'>\n";
+			echo "<table class='table_annee_anterieure' summary='Bulletins'>\n";
 			echo "<tr>\n";
 			echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 			$cpt=0;
@@ -516,7 +531,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 			//echo "<p>Avis des conseils de classes:<br />\n";
 			//echo "<table border='0'>\n";
-			echo "<table class='table_annee_anterieure'>\n";
+			echo "<table class='table_annee_anterieure' summary='Avis des conseils'>\n";
 			echo "<tr>\n";
 			echo "<th rowspan='".$nb_annees."' valign='top'>Avis des conseils de classes:</th>";
 			$cpt=0;
