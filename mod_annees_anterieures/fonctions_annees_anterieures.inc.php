@@ -231,8 +231,18 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "</tr>\n";
 			}
 		}
-
-
+/*		// Affichage des AIds
+		$sql="SELECT * FROM archivage_appreciations_aid app, archivage_aids aid, archivage_types_aid type
+    WHERE
+    app.annee='$annee_scolaire' and
+    app.num_periode='$num_periode' and
+    app.id_eleve='$ine' and
+    app.id_aid=aid.id and
+    app.id_type_aid=type.id_type_aid and
+    type.display_bulletin='y'
+    ORDER BY type.nom, aid.nom";
+		//echo "$sql<br />\n";
+*/
 		echo "</table>\n";
 
 
@@ -558,6 +568,21 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 	}
 }
 function insert_eleve($login,$ine,$annee,$param) {
+  // on insère le regime et le statut doublant
+  $sql="SELECT DISTINCT regime, doublant FROM j_eleves_regime WHERE login='".$login."'";
+  $res_regime=mysql_query($sql);
+  while($lig_ele=mysql_fetch_object($res_regime)){
+   $regime=$lig_ele->regime;
+   $doublant=$lig_ele->doublant;
+  }
+  $del = sql_query1("delete from archivage_eleve2 where ine ='".$ine."'");
+  $sql="INSERT INTO archivage_eleves2 SET
+  ine='".$ine."',
+  annee = '".$annee."',
+  doublant='".addslashes($doublant)."',
+  regime='".addslashes($regime)."'";
+  $res_insert_regime=mysql_query($sql);
+  // on traite la table archivage_eleve
   $test = sql_query1("select count(ine) from archivage_eleves where ine= '".$ine."'");
   if ($test == 0) {
     $sql="SELECT DISTINCT nom, prenom, no_gep, naissance, sexe FROM eleves WHERE login='".$login."'";
@@ -584,22 +609,8 @@ function insert_eleve($login,$ine,$annee,$param) {
           $res_insert=mysql_query($sql);
 		      if(!$res_insert){
             return "<tr><td colspan='4'><font color='red'>Erreur d'enregistrement des données pour l'élève dont l'identifiant est ".$login."</font></td></tr>";
-            die();
+            exit();
           } else {
-            // on insère le regime et le statut doublant
-            $sql="SELECT DISTINCT regime, doublant FROM j_eleves_regime WHERE login='".$login."'";
-            $res_regime=mysql_query($sql);
-            while($lig_ele=mysql_fetch_object($res_regime)){
-                $regime=$lig_ele->regime;
-                $doublant=$lig_ele->doublant;
-            }
-            $del = sql_query1("delete from archivage_eleve2 where ine ='".$ine."'");
-            $sql="INSERT INTO archivage_eleves2 SET
-            ine='".$ine."',
-            annee = '".$annee."',
-  		      doublant='".addslashes($doublant)."',
-            regime='".addslashes($regime)."'";
-            $res_insert_regime=mysql_query($sql);
             if ($param != 'y')
                 return "<tr><td class='small'>".$ine."</td><td class='small'>".$nom."</td><td class='small'>".$prenom."</td><td class='small'>".$naissance."</td></tr>";
           }
@@ -638,4 +649,40 @@ function cree_substitut_INE_unique($login){
     return $login;
 }
 
+function suppression_donnees_eleves_inutiles(){
+    // Supprimer des données élèves qui ne servent plus à rien
+
+    $res_eleve = mysql_query("select ine from archivage_eleves");
+    $nb_eleves = mysql_num_rows($res_eleve);
+    $k = 0;
+    while($k < $nb_eleves){
+      $ine = mysql_result($res_eleve,$k,"ine");
+      $test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_aid_eleve aae
+      where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
+      $test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_appreciations_aid aa
+      where ((aa.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
+      $test3 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_disciplines ad
+      where ((ad.INE = ae.ine) and (ae.ine='".$ine."'))");
+      if (($test1==0) and ($test2==0) and ($test3==0))
+          sql_query("DELETE FROM archivage_eleves WHERE ine='".$ine."'");
+      $k++;
+    }
+
+    $res_eleve = mysql_query("select ine from archivage_eleves2");
+    $nb_eleves = mysql_num_rows($res_eleve);
+    $k = 0;
+    while($k < $nb_eleves){
+      $ine = mysql_result($res_eleve,$k,"ine");
+      $test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_aid_eleve aae
+      where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
+      $test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_appreciations_aid aa
+      where ((aa.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
+      $test3 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_disciplines ad
+      where ((ad.INE = ae.ine) and (ae.ine='".$ine."'))");
+      if (($test1==0) and ($test2==0) and ($test3==0))
+          sql_query("DELETE FROM archivage_eleves2 WHERE ine='".$ine."'");
+      $k++;
+    }
+
+}
 ?>

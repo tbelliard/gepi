@@ -40,7 +40,7 @@ if (!checkAccess()) {
     die();
 }
 
-//truncate archivage_types_aid;truncate archivage_eleves2;truncate archivage_eleves;truncate archivage_disciplines;truncate archivage_appreciations_aid;truncate archivage_aids;truncate archivage_aid_eleve;
+
 
 /*
 $prof=isset($_POST['prof']) ? $_POST['prof'] : NULL;
@@ -74,9 +74,35 @@ if(isset($enregistrer)){
 }
 */
 
+// Suppression des données archivées pour une année donnée.
+if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
+    $sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr1=mysql_query($sql);
+
+		// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
+		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+		$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
+		if ($test == 0) {
+      $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
+	  	$res_suppr2=mysql_query($sql);
+		} else $res_suppr2 = 1;
+
+    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+    suppression_donnees_eleves_inutiles();
+
+		if (($res_suppr1) and ($res_suppr2)) {
+			$msg = "La suppression des données a été correctement effectuée.";
+		} else {
+			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+		}
+
+}
+
+$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
+
 
 //**************** EN-TETE *****************
-$titre_page = "Conservation des données antérieures";
+$titre_page = "Conservation des données antérieures (autres que AID)";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -97,7 +123,7 @@ if(!isset($annee_scolaire)){
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire:</b> ";
+			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toute les données archivées pour cette année</a>) :<br /></b> ";
 			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
 			$res_classes=mysql_query($sql);
 			if(mysql_num_rows($res_classes)==0){

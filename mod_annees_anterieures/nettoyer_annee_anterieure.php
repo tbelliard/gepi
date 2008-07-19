@@ -72,7 +72,7 @@ if(isset($confirmer)){
 		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
 		$res_suppr5=mysql_query($sql);
 
-		if (($res_suppr1) or ($res_suppr2) or ($res_suppr3) or ($res_suppr4)  or ($res_suppr5) ) {
+		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) ) {
 			$nb_suppr++;
 		}
 		else{
