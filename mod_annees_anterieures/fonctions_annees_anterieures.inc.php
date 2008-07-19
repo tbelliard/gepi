@@ -480,7 +480,8 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 		// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
 		//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
-		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC";
+		//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
+		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee ASC;";
 		$res_ant=mysql_query($sql);
 
 		if(mysql_num_rows($res_ant)==0){
@@ -516,7 +517,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 				else{
 					$cpt=0;
 					while($lig_ant2=mysql_fetch_object($res_ant2)){
-						if($cpt>0){echo "<td> - </td>\n";}
+						//if($cpt>0){echo "<td> - </td>\n";}
 						echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
 						$cpt++;
 					}
