@@ -40,7 +40,7 @@ if (!checkAccess()) {
     die();
 }
 
-
+//truncate archivage_types_aid;truncate archivage_eleves2;truncate archivage_eleves;truncate archivage_disciplines;truncate archivage_appreciations_aid;truncate archivage_aids;truncate archivage_aid_eleve;
 
 /*
 $prof=isset($_POST['prof']) ? $_POST['prof'] : NULL;
@@ -192,7 +192,7 @@ else{
 		// Affichage sur 3 colonnes
 		$nb_classes_par_colonne=round($nb_classes/3);
 
-		echo "<table width='100%'>\n";
+		echo "<table width='100%' summary='Choix des classes'>\n";
 		echo "<tr valign='top' align='center'>\n";
 
 		$i = 0;
@@ -209,7 +209,7 @@ else{
 
 			$lig_classe=mysql_fetch_object($res1);
 
-			echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /> $lig_classe->classe<br />\n";
+			echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /><label for='classe".$i."' style='cursor:pointer;'> $lig_classe->classe</label><br />\n";
 
 			$i++;
 		}
@@ -268,6 +268,24 @@ else{
 			echo "</p>\n";
 		}
 
+		$temoin_encore_des_classes=0;
+		//$chaine="";
+		$chaine=get_nom_classe($id_classe[0]);
+		for($i=1;$i<count($id_classe);$i++){
+			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+			$temoin_encore_des_classes++;
+
+			$chaine.=", ".get_nom_classe($id_classe[$i]);
+		}
+		//if($chaine!=""){
+		if($temoin_encore_des_classes>0) {
+			// Pour faire sauter un "' ":
+			//echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			echo "<p>Classes restant à traiter: ".$chaine."</p>\n";
+		}
+		else {
+			echo "<p>Traitement de la dernière classe sélectionnée: <span id='annonce_fin_traitement' style='font-weight:bold;'></span></p>\n";
+		}
 		//===================================
 
 
@@ -377,7 +395,7 @@ else{
 
 
 
-				echo "<table border='1'>\n";
+				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
 
 				// Boucle sur les périodes
 				echo "<tr>\n";
@@ -389,8 +407,10 @@ else{
 				echo "</tr>\n";
 
 				// Boucle sur les élèves
+				$alt=1;
 				for($j=0;$j<count($tab_eleve);$j++){
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
 					echo "<td id='td_0_".$j."'>".$tab_eleve[$j]['nom']." ".$tab_eleve[$j]['prenom']."</td>\n";
 					//for($i=0;$i<count($tab_periode);$i++){
 					for($i=1;$i<=count($tab_periode);$i++){
@@ -1200,6 +1220,7 @@ else{
 
 		echo "<input type='hidden' name='deja_traitee_id_classe[]' value='$id_classe[0]' />\n";
 
+		/*
 		$temoin_encore_des_classes=0;
 		$chaine="";
 		for($i=1;$i<count($id_classe);$i++){
@@ -1211,6 +1232,7 @@ else{
 		if($chaine!=""){
 			echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
 		}
+		*/
 
 		if($temoin_encore_des_classes>0){
 			echo "<script type='text/javascript'>
@@ -1220,6 +1242,10 @@ else{
 		}
 		else{
 			echo "<p>Traitement terminé.</p>\n";
+			echo "<script type='text/javascript'>
+	document.getElementById('annonce_fin_traitement').innerHTML='Traitement terminé.';
+</script>\n";
+
 		}
 
 		echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
