@@ -152,6 +152,7 @@ else {
 	$tab_couleur['releves']="papayawhip";
 	$tab_couleur['releve']="seashell";
 	$tab_couleur['cdt']="linen";
+	$tab_couleur['anna']="blanchedalmond";
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
@@ -205,6 +206,9 @@ else {
 		$acces_enseignements="n";
 		$acces_releves="n";
 		$acces_bulletins="n";
+		$acces_anna="n";
+
+		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
 		if($_SESSION['statut']=='administrateur') {
 			$acces_eleve="y";
@@ -212,6 +216,9 @@ else {
 			$acces_enseignements="y";
 			$acces_releves="n";
 			$acces_bulletins="y";
+			if($active_annees_anterieures=='y') {
+				$acces_anna="y";
+			}
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
@@ -230,6 +237,21 @@ else {
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
 				$acces_releves="y";
+			}
+
+			if($active_annees_anterieures=='y') {
+				$AAScolTout=getSettingValue('AAScolTout');
+				if($AAScolTout=="yes") {
+					$acces_anna="y";
+				}
+				else {
+					$AAScolResp=getSettingValue('AAScolResp');
+					//if(()&&($AAScolResp=="yes")) {
+					// On filtre plus haut: un compte scolarité n'a accès qu'aux élèves dont il est "responsable"
+					if($AAScolResp=="yes") {
+						$acces_anna="y";
+					}
+				}
 			}
 
 			$acces_bulletins="y";
@@ -251,6 +273,21 @@ else {
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
 			if($GepiAccesReleveCpe=="yes") {
 				$acces_releves="y";
+			}
+
+			if($active_annees_anterieures=='y') {
+				$AACpeTout=getSettingValue('AACpeTout');
+				if($AACpeTout=="yes") {
+					$acces_anna="y";
+				}
+				else {
+					$AACpeResp=getSettingValue('AACpeResp');
+					//if(()&&($AACpeResp=="yes")) {
+					// On filtre plus haut: un compte cpe n'a accès qu'aux élèves dont il est "responsable"
+					if($AACpeResp=="yes") {
+						$acces_anna="y";
+					}
+				}
 			}
 
 			$acces_bulletins="y";
@@ -285,6 +322,9 @@ else {
 				$acces_releves="y";
 			}
 
+			$eleve_classe_prof="n";
+			$eleve_groupe_prof="n";
+
 			if($acces_releves=='n') {
 				$GepiAccesReleveProfToutesClasses=getSettingValue('GepiAccesReleveProfToutesClasses');
 				if($GepiAccesReleveProfToutesClasses=='yes') {
@@ -306,6 +346,8 @@ else {
 
 						if(mysql_num_rows($test)>0) {
 							$acces_releves="y";
+
+							$eleve_classe_prof="y";
 						}
 					}
 
@@ -323,6 +365,8 @@ else {
 
 							if(mysql_num_rows($test)>0) {
 								$acces_releves="y";
+
+								$eleve_groupe_prof="y";
 							}
 						}
 					}
@@ -345,34 +389,96 @@ else {
 				else {
 					$GepiAccesBulletinSimpleProfTousEleves=getSettingValue('GepiAccesBulletinSimpleProfTousEleves');
 					if($GepiAccesBulletinSimpleProfTousEleves=='yes') {
-						$sql="SELECT 1=1 FROM j_eleves_classes jec,
-											j_groupes_classes jgc,
-											j_groupes_professeurs jgp
-										WHERE jec.login='".$ele_login."' AND
-												jec.id_classe=jgc.id_classe AND
-												jgc.id_groupe=jgp.id_groupe AND
-												jgp.login='".$_SESSION['login']."';";
-						//echo "$sql<br />";
-						$test=mysql_query($sql);
-
-						if(mysql_num_rows($test)>0) {
+						if ($eleve_classe_prof=="y") {
 							$acces_bulletins="y";
 						}
-					}
-
-					if($acces_bulletins=='n') {
-						$GepiAccesBulletinSimpleProf=getSettingValue('GepiAccesBulletinSimpleProf');
-						if($GepiAccesBulletinSimpleProf=='yes') {
-							$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+						else {
+							$sql="SELECT 1=1 FROM j_eleves_classes jec,
+												j_groupes_classes jgc,
 												j_groupes_professeurs jgp
-											WHERE jeg.login='".$ele_login."' AND
-													jeg.id_groupe=jgp.id_groupe AND
+											WHERE jec.login='".$ele_login."' AND
+													jec.id_classe=jgc.id_classe AND
+													jgc.id_groupe=jgp.id_groupe AND
 													jgp.login='".$_SESSION['login']."';";
 							//echo "$sql<br />";
 							$test=mysql_query($sql);
 
 							if(mysql_num_rows($test)>0) {
 								$acces_bulletins="y";
+							}
+						}
+					}
+
+					if($acces_bulletins=='n') {
+						$GepiAccesBulletinSimpleProf=getSettingValue('GepiAccesBulletinSimpleProf');
+						if($GepiAccesBulletinSimpleProf=='yes') {
+							if ($eleve_groupe_prof=="y") {
+								$acces_bulletins="y";
+							}
+							else {
+								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+													j_groupes_professeurs jgp
+												WHERE jeg.login='".$ele_login."' AND
+														jeg.id_groupe=jgp.id_groupe AND
+														jgp.login='".$_SESSION['login']."';";
+								//echo "$sql<br />";
+								$test=mysql_query($sql);
+
+								if(mysql_num_rows($test)>0) {
+									$acces_bulletins="y";
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if($active_annees_anterieures=='y') {
+
+				$AAProfTout=getSettingValue('AAProfTout');
+				if($AAProfTout=='yes') {
+					$acces_anna="y";
+				}
+				else {
+					$AAProfClasses=getSettingValue('AAProfClasses');
+					if($AAProfClasses=='yes') {
+						if ($eleve_classe_prof=="y") {
+							$acces_anna="y";
+						}
+						else {
+							$sql="SELECT 1=1 FROM j_eleves_classes jec,
+												j_groupes_classes jgc,
+												j_groupes_professeurs jgp
+											WHERE jec.login='".$ele_login."' AND
+													jec.id_classe=jgc.id_classe AND
+													jgc.id_groupe=jgp.id_groupe AND
+													jgp.login='".$_SESSION['login']."';";
+							//echo "$sql<br />";
+							$test=mysql_query($sql);
+
+							if(mysql_num_rows($test)>0) {
+								$acces_anna="y";
+							}
+						}
+					}
+					else {
+						$AAProfGroupes=getSettingValue('AAProfGroupes');
+						if($AAProfGroupes=='yes') {
+							if ($eleve_groupe_prof=="y") {
+								$acces_anna="y";
+							}
+							else {
+								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+													j_groupes_professeurs jgp
+												WHERE jeg.login='".$ele_login."' AND
+														jeg.id_groupe=jgp.id_groupe AND
+														jgp.login='".$_SESSION['login']."';";
+								//echo "$sql<br />";
+								$test=mysql_query($sql);
+
+								if(mysql_num_rows($test)>0) {
+									$acces_anna="y";
+								}
 							}
 						}
 					}
@@ -659,6 +765,21 @@ else {
 			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onclick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
 			echo "</div>\n";
 		}
+
+		// Onglet Cahier de textes
+		if($acces_anna=="y") {
+			echo "<div id='t_anna' class='t_onglet' style='";
+			if($onglet=='anna') {
+				echo "border-bottom-color: ".$tab_couleur['anna']."; ";
+			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['anna']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=anna' onclick=\"affiche_onglet('anna');return false;\">Années ant.</a>";
+			echo "</div>\n";
+		}
 		//=====================================================================================
 
 		//====================================
@@ -684,7 +805,14 @@ else {
 		echo "<td valign='top'>\n";
 
 			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
-			echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['nom']."</td></tr>\n";
+			echo "<tr><th style='text-align: left;'>Nom:</th><td>";
+			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
+			}
+			else {
+				echo $tab_ele['nom'];
+			}
+			echo "</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['prenom']."</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Sexe:</th><td>".$tab_ele['sexe']."</td></tr>\n";
 			echo "<tr><th style='text-align: left;'>Né le:</th><td>".$tab_ele['naissance']."</td></tr>\n";
@@ -774,7 +902,16 @@ else {
 						echo "<p>Responsable légal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
 
 						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
-						echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
+						echo "<tr><th style='text-align: left;'>Nom:</th><td>";
+
+						if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+							echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."'>".$tab_ele['resp'][$i]['nom']."</a>";
+						}
+						else {
+							echo $tab_ele['resp'][$i]['nom'];
+						}
+
+						echo "</td></tr>\n";
 						echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
 						echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
 						if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
@@ -1196,6 +1333,11 @@ else {
 			echo "</div>\n";
 		}
 
+		//=============================================
+
+		//========================
+		// Onglet CAHIER DE TEXTES
+		//========================
 
 		if($acces_cdt=="y") {
 			echo "<div id='cdt' class='onglet' style='";
@@ -1213,6 +1355,7 @@ else {
 			$couleur_dev="#FFCCCF";
 			$couleur_entry="#C7FF99";
 
+			echo "<div align='center'>\n";
 			echo "<table class='boireaus' border='1' summary='CDT'>\n";
 			echo "<tr><th>Date</th><th>Travail à effectuer</th><th>Compte rendu de séance</th></tr>\n";
 
@@ -1296,8 +1439,131 @@ else {
 
 			//echo "</div>\n";
 			echo "</table>\n";
+			echo "</div>\n";
+
+			echo "</div>\n";
 		}
 
+		//===================================================
+
+		//===================================================
+
+		//========================
+		// Onglet ANNEES ANTERIEURES
+		//========================
+
+		if($acces_anna=="y") {
+			echo "<div id='anna' class='onglet' style='";
+			if($onglet!="anna") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['anna']."; ";
+			echo "'>";
+			echo "<h2>Données d'années antérieures de l'élève ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
+
+			//echo $_SERVER['HTTP_USER_AGENT']."<br />\n";
+			if(eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
+				//echo "gecko=true<br />";
+				$gecko=true;
+			}
+			else{
+				//echo "gecko=false<br />";
+				$gecko=false;
+			}
+
+
+
+			echo "<p>Liste des années scolaires et périodes pour lesquelles des données ont été conservées pour cet élève:</p>\n";
+
+			// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
+			//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
+			//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
+			$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' ORDER BY annee ASC;";
+			$res_ant=mysql_query($sql);
+
+			if(mysql_num_rows($res_ant)==0){
+				echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+			}
+			else{
+
+				unset($tab_annees);
+
+				$nb_annees=mysql_num_rows($res_ant);
+
+				//echo "<p>Bulletins simplifiés:</p>\n";
+				//echo "<table border='0'>\n";
+				echo "<table class='boireaus' summary='Bulletins'>\n";
+				$alt=1;
+				echo "<tr class='lig$alt'>\n";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
+				$cpt=0;
+				while($lig_ant=mysql_fetch_object($res_ant)){
+
+					$tab_annees[]=$lig_ant->annee;
+
+					if($cpt>0){
+						//echo "<tr>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+					}
+					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
+
+					$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					$res_ant2=mysql_query($sql);
+
+					if(mysql_num_rows($res_ant2)==0){
+						echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+					}
+					else{
+						$cpt=0;
+						while($lig_ant2=mysql_fetch_object($res_ant2)){
+							//if($cpt>0){echo "<td> - </td>\n";}
+
+							// $id_classe=$tab_ele['periodes'][$index_per]['id_classe']
+
+							echo "<td style='text-align:center;'><a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&amp;logineleve=".$ele_login."&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp' target='_blank'>$lig_ant2->nom_periode</a></td>\n";
+							$cpt++;
+						}
+					}
+					echo "</tr>\n";
+					$cpt++;
+				}
+				echo "</table>\n";
+
+				//echo "<p><br /></p>\n";
+				echo "<br />\n";
+
+				//echo "<p>Avis des conseils de classes:<br />\n";
+				//echo "<table border='0'>\n";
+				echo "<table class='boireaus' summary='Avis des conseils'>\n";
+				$alt=1;
+				echo "<tr class='lig$alt'>\n";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Avis des conseils de classes:</th>";
+				$cpt=0;
+				for($i=0;$i<count($tab_annees);$i++){
+					if($cpt>0){
+						//echo "<tr>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+					}
+					//echo "<td style='font-weight:bold;'>\n";
+					echo "<td>\n";
+
+					echo "Année-scolaire <a href='../mod_annees_anterieures/popup_annee_anterieure.php?logineleve=".$ele_login."&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
+					if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
+					echo "' target='_blank'>$tab_annees[$i]</a>";
+					//echo "<br />\n";
+
+					echo "</td>\n";
+					echo "</tr>\n";
+					$cpt++;
+				}
+				echo "</table>\n";
+				//echo "</p>\n";
+			}
+
+			echo "</div>\n";
+		}
 		//===================================================
 
 		//=====================================================================================
@@ -1307,7 +1573,7 @@ else {
 		//========================
 
 		// Liste des onglets de niveau 1
-		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt');
+		$tab_onglets=array('eleve','responsables','enseignements','releves','bulletins','cdt','anna');
 		$chaine_tab_onglets="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets);$i++) {
 			if($i>0) {$chaine_tab_onglets.=", ";}
@@ -1323,7 +1589,7 @@ else {
 		}
 		$chaine_tab_onglets_bull.=");";
 
-		// Liste des onglets dans l'onglet bulletins
+		// Liste des onglets dans l'onglet relevés de notes
 		$chaine_tab_onglets_rel="tab_onglets=new Array(";
 		for($i=0;$i<count($tab_onglets_rel);$i++) {
 			if($i>0) {$chaine_tab_onglets_rel.=", ";}
