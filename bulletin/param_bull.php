@@ -729,7 +729,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 <form name="formulaire" action="param_bull.php" method="post" style="width: 100%;">
 <H3>Mise en page du bulletin scolaire</H3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Mise en page'>
 
     <tr <?php $nb_ligne = 1; if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
@@ -1089,7 +1089,7 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 //Informations devant figurer sur le bulletin scolaire</H3>
 ?>
 <h3>Informations devant figurer sur le bulletin scolaire</h3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Informations'>
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe :
@@ -1470,11 +1470,11 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 <hr />
 <H3>Bloc adresse</H3>
-<center><table border="1" cellpadding="10" width="90%"><tr><td>
+<center><table border="1" cellpadding="10" width="90%" summary='Bloc adresse'><tr><td>
 Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le bulletin (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
 </td></tr></table></center>
 
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Bloca adresse'>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">
@@ -1605,7 +1605,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
 <hr />
 <H3>Page de garde</H3>
-<center><table border="1" cellpadding="10" width="90%"><tr><td>
+<center><table border="1" cellpadding="10" width="90%" summary='Page de garde'><tr><td>
 La page de garde contient les informations suivantes :
 <ul>
 <li>l'adresse où envoyer le bulletin. Si vous utilisez des enveloppes à fenêtre, vous pouvez régler les paramètres ci-dessous pour qu'elle apparaisse dans le cadre prévu à cet effet,</li>
@@ -1615,7 +1615,7 @@ La page de garde contient les informations suivantes :
 (Attention : la mise en page <!--des bulletins -->est très différente à l'écran et à l'impression.
 Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre compte du résultat.
 </td></tr></table></center>
-<table cellpadding="8" cellspacing="0" width="100%" border="0">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Page de garde'>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;"><label for='page_garde_imprime' style='cursor: pointer;'>Imprimer les pages de garde : </label></td>
         <td><input type="checkbox" name="page_garde_imprime" id="page_garde_imprime" value="yes" <?php if (getSettingValue("page_garde_imprime")=='yes') echo "checked"; ?>/>
