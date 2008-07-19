@@ -6117,7 +6117,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL,PRIMARY KEY  (`ine`));");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL,`display_bulletin` char(1) NOT NULL default 'y',PRIMARY KEY  (`ine`,`annee`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table archivage_eleves2 a été créée !</font><br />";
       else

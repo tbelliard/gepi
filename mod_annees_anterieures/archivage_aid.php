@@ -40,11 +40,10 @@ if (!checkAccess()) {
 }
 
 $id_type=isset($_POST['id_type']) ? $_POST['id_type'] : NULL;
-$annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : NULL;
+$annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : (isset($_GET['annee_scolaire']) ? $_GET['annee_scolaire'] : NULL);
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 $deja_traitee_id_type=isset($_POST['deja_traitee_id_type']) ? $_POST['deja_traitee_id_type'] : NULL;
-$log_error=isset($_POST['log_error']) ? "y" : "n";
-
+$log_error=isset($_POST['log_error']) ? $_POST['log_error'] : "n";
 // Si le module n'est pas activé...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	header("Location: ../logout.php?auto=1");
@@ -54,7 +53,80 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 $msg="";
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
+// Suppression des données archivées pour une année donnée.
+if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
+  	// Suppression des liens élèves/aid
+    $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."'";
+    $res=sql_query($sql);
+    $nb_lignes = mysql_num_rows($res);
+    $k=0;
+    while($k < $nb_lignes) {
+      $id = mysql_result($res,$k,"id");
+      $res_supp=mysql_query("DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+      $k++;
+    }
+    $sql="DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr2=mysql_query($sql);
 
+    $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr1=mysql_query($sql);
+
+    $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr3=mysql_query($sql);
+
+		// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
+		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+		$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
+		if ($test == 0) {
+      $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
+	  	$res_suppr4=mysql_query($sql);
+		} else $res_suppr4 = 1;
+
+    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+    suppression_donnees_eleves_inutiles();
+
+		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)) {
+			$msg = "La suppression des données a été correctement effectuée.";
+		} else {
+			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+		}
+
+}
+// Suppression des données archivées pour une année donnée.
+if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
+  	// Suppression des liens élèves/aid
+    $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."' and id_type_aid='".$_GET['type_aid_supp']."'";
+    $res=sql_query($sql);
+    $nb_lignes = mysql_num_rows($res);
+    $k=0;
+    while($k < $nb_lignes) {
+      $id = mysql_result($res,$k,"id");
+      $res_supp1=mysql_query("DELETE FROM archivage_aid_eleve WHERE id_aid='".$id."';");
+   		$res_supp2=mysql_query("DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."' and id_aid='".$id."'");
+      $k++;
+    }
+
+
+    $sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."' and id_type_aid='".$_GET['type_aid_supp']."'";
+		$res_suppr1=mysql_query($sql);
+
+    $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."' and id='".$_GET['type_aid_supp']."'";
+		$res_suppr2=mysql_query($sql);
+
+    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+    suppression_donnees_eleves_inutiles();
+
+		if (($res_suppr1) and ($res_suppr2)) {
+			$msg = "La suppression des données a été correctement effectuée.";
+		} else {
+			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+		}
+
+}
+
+
+$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données AID concernant cette année ?';
+$themessage2  = 'Etes-vous sûr de vouloir supprimer toutes les données pour cette AID ?';
 //**************** EN-TETE *****************
 $titre_page = "Archivage des AIDs";
 require_once("../lib/header.inc");
@@ -73,12 +145,11 @@ if(!isset($annee_scolaire)){
 		echo "<p>Aucune année n'est encore sauvegardée.</p>\n";
 	}
 	else{
-		echo "<p>Voici la liste des années sauvegardées:</p>\n";
+		echo "<p>Voici la liste des années sauvegardées :</p>\n";
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire:</b> ";
-			echo "</li>\n";
+			echo "<li><b>Année $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données AIDs archivées pour cette année</a></li>\n";
 		}
 		echo "</ul>\n";
 		echo "<p><br /></p>\n";
@@ -102,23 +173,21 @@ if(!isset($annee_scolaire)){
 } else {
 	echo "<div class='norme'><p class=bold><a href='archivage_aid.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
-	$sql="SELECT nom,nom_complet FROM archivage_types_aid WHERE annee='$annee_scolaire'";
+	$sql="SELECT nom,nom_complet, id FROM archivage_types_aid WHERE annee='$annee_scolaire'";
 	$res_test=sql_query($sql);
 
 	if(mysql_num_rows($res_test)>0){
     if(!isset($confirmer)){
 			echo "</p></div>\n";
+			$chaine_types_aid='<ul>';
+			while($lig_types_aid=mysql_fetch_object($res_test)){
+					$chaine_types_aid.="<li> ".$lig_types_aid->nom." (".$lig_types_aid->nom_complet.")
+          - <a href='".$_SERVER['PHP_SELF']."?action=supp_AID&amp;annee_scolaire=".$annee_scolaire."&amp;annee_supp=".$annee_scolaire."&amp;type_aid_supp=".$lig_types_aid->id."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage2')\">Supprimer toutes les données archivées de cette AID</a></li>";
+			}
 
-			$lig_types_aid=mysql_fetch_object($res_test);
-			$chaine_types_aid="<ul><li>".$lig_types_aid->nom." (".$lig_types_aid->nom_complet.")</li>";
-
-			if(mysql_num_rows($res_test)>0){
-				while($lig_types_aid=mysql_fetch_object($res_test)){
-					$chaine_types_aid.="<li> ".$lig_types_aid->nom." (".$lig_types_aid->nom_complet.")</li>";
-				}
-
-				echo "<p>Des données ont déjà été sauvegardées pour l'année $annee_scolaire. Liste des types d'AIDs sauvegardés :<br /> $chaine_types_aid</ul><p><b>ATTENTION :</b> si vous cochez les mêmes types d'AIDs, les données seront archivées une nouvelle fois et s'ajouteront aux autres données déjà archivées.</p>\n";
-  			}
+			echo "<p>Des données ont déjà été sauvegardées pour l'année $annee_scolaire. Liste des types d'AIDs sauvegardés :<br /> $chaine_types_aid</ul><p>
+      <b>ATTENTION :</b> si, à l'étape suivante, vous cochez des types d'AIDs déjà archivés, les données seront archivées une nouvelle fois et s'ajouteront aux autres données déjà archivées. S'il s'agit bien des mêmes types d'AIDS, vous risquez alors de créer des doublons.</p>\n";
+ 			echo "<p>Vous pouvez également procéder à la suppression d'AIDs archivées</p>";
 
 			echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
 
@@ -223,12 +292,18 @@ if(!isset($annee_scolaire)){
       $note_max_type  = mysql_result($res_aid,$i,"note_max");
       $type_note_type = mysql_result($res_aid,$i,"type_note");
       $outils_complementaires = mysql_result($res_aid,$i,"outils_complementaires");
-
+      $display_bulletin = mysql_result($res_aid,$i,"display_bulletin");
+      $bull_simplifie = mysql_result($res_aid,$i,"bull_simplifie");
+      if (($display_bulletin == 'y') or ($bull_simplifie=='y'))
+          $display = 'y';
+      else
+          $display = 'n';
       $sql_archiv = "insert into archivage_types_aid set
       nom='".addslashes($nom_type)."',
       nom_complet='".addslashes($nom_complet_type)."',
       note_sur='".addslashes($note_max_type)."',
       type_note='".addslashes($type_note_type)."',
+      display_bulletin='".$display."',
       annee='".$annee_scolaire."'";
       $res_insert1=sql_query($sql_archiv);
       if(!$res_insert1){
@@ -544,7 +619,7 @@ if(!isset($annee_scolaire)){
 		}
     echo "<hr />";
 		$nom_type = sql_query1("select nom from aid_config where indice_aid = '".$id_type[0]."'");
-		echo "<h2>Résultats du traitement du type d'AID : $nom_type</h2>\n";
+    echo "<h2>Résultats du traitement du type d'AID : $nom_type</h2>\n";
 
 
     echo "<h3>Enregistrement du type d'AID";
@@ -597,7 +672,6 @@ if(!isset($annee_scolaire)){
 		echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
 		echo "<input type='hidden' name='confirmer' value='ok' />\n";
 		echo "<input type='hidden' name='log_error' value='$log_error' />\n";
-
 	}
 }
 
