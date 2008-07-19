@@ -630,7 +630,7 @@ require_once("../lib/header.inc");
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="droits_acces.php" method="post" name="form1" style="width: 100%;">
-<table class='menu' style='width: 90%; margin-left: auto; margin-right: auto;' cellpadding="10">
+<table class='menu' style='width: 90%; margin-left: auto; margin-right: auto;' cellpadding="10" summary='Paramétrage des droits'>
 	<tr>
 		<th colspan="2">
 		Paramétrage des droits d'accès
@@ -639,7 +639,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">Le professeur</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Professeur'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveProf" id="GepiAccesReleveProf" value="yes" <?php if (getSettingValue("GepiAccesReleveProf")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveProf' style='cursor: pointer;'> a accès aux relevés de notes des élèves des classes dans lesquelles il enseigne</label></td>
@@ -725,7 +725,7 @@ require_once("../lib/header.inc");
 		<!-- Professeur principal-->
 		<td style="font-variant: small-caps;">Le <?php echo getSettingValue("gepi_prof_suivi"); ?></td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Professeur principal'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiRubConseilProf" id="GepiRubConseilProf" value="yes" <?php if (getSettingValue("GepiRubConseilProf")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiRubConseilProf' style='cursor: pointer;'> peut saisir les avis du conseil de classe pour sa classe</label></td>
@@ -786,7 +786,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">La scolarité</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Scolarité'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiRubConseilScol" id="GepiRubConseilScol" value="yes" <?php if (getSettingValue("GepiRubConseilScol")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiRubConseilScol' style='cursor: pointer;'> peut saisir les avis du conseil de classe</label></td>
@@ -839,7 +839,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">Le CPE</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='CPE'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveCpe" id="GepiAccesReleveCpe" value="yes" <?php if (getSettingValue("GepiAccesReleveCpe")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveCpe' style='cursor: pointer;'> a accès à tous les relevés de notes de toutes les classes</label></td>
@@ -877,7 +877,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">L'administrateur</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Administrateur'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAdminImprBulSettings" id="GepiAdminImprBulSettings" value="yes" <?php if (getSettingValue("GepiAdminImprBulSettings")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAdminImprBulSettings' style='cursor: pointer;'> a accès au paramétrage de l'impression des bulletins</label></td>
@@ -899,7 +899,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">L'élève</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Elève'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveEleve" id="GepiAccesReleveEleve" value="yes" <?php if (getSettingValue("GepiAccesReleveEleve")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveEleve' style='cursor: pointer;'> a accès à ses relevés de notes</label></td>
@@ -963,7 +963,7 @@ require_once("../lib/header.inc");
 	<tr>
 		<td style="font-variant: small-caps;">Le responsable d'élève</td>
 		<td>
-			<table border='0'>
+			<table border='0' summary='Responsable'>
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveParent" id="GepiAccesReleveParent" value="yes" <?php if (getSettingValue("GepiAccesReleveParent")=='yes') echo "checked"; ?> /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveParent' style='cursor: pointer;'> a accès aux relevés de notes des élèves dont il est responsable</label></td>
