@@ -231,18 +231,44 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "</tr>\n";
 			}
 		}
-/*		// Affichage des AIds
-		$sql="SELECT * FROM archivage_appreciations_aid app, archivage_aids aid, archivage_types_aid type
+		// Affichage des AIds
+		$sql="SELECT type.nom type_nom, aid.nom nom_aid, aid.responsables responsables, app.note_moyenne_classe moyenne_aid, app.note_min_classe min_aid, app.note_max_classe max_aid, app.note_eleve note_aid, app.appreciation appreciation,
+    type.note_sur note_sur_aid, type.type_note type_note
+    FROM archivage_appreciations_aid app, archivage_aids aid, archivage_types_aid type
     WHERE
     app.annee='$annee_scolaire' and
-    app.num_periode='$num_periode' and
+    app.periode='$num_periode' and
     app.id_eleve='$ine' and
     app.id_aid=aid.id and
-    app.id_type_aid=type.id_type_aid and
+    aid.id_type_aid=type.id and
     type.display_bulletin='y'
     ORDER BY type.nom, aid.nom";
-		//echo "$sql<br />\n";
-*/
+		$res_aid=mysql_query($sql);
+		if(mysql_num_rows($res_aid)==0){
+			// On ne devrait pas arriver là.
+			echo "<tr><td colspan='6'>Aucun résultat enregistré???</td></tr>\n";
+		}
+		else{
+			while($lig_aid=mysql_fetch_object($res_aid)){
+				echo "<tr>\n";
+				echo "<td>";
+				echo "<b>".htmlentities(stripslashes($lig_aid->type_nom))." : ".htmlentities(stripslashes($lig_aid->nom_aid))."</b><br />\n";
+				echo "<span class='info_prof'>".htmlentities(stripslashes($lig_aid->responsables))."</span>\n";
+				echo "</td>\n";
+				echo "<td class='td_note_classe'>$lig_aid->moyenne_aid</td>\n";
+				echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
+				echo "<td class='td_note_classe'>$lig_aid->max_aid</td>\n";
+				echo "<td class='td_note'>$lig_aid->note_aid";
+        echo "</td>\n";
+				echo "<td>";
+  		  if ($lig_aid->note_sur_aid != 20)
+		    echo "(note sur ".$lig_aid->note_sur_aid.") ";
+
+        echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
+				echo "</tr>\n";
+			}
+		}
+
 		echo "</table>\n";
 
 

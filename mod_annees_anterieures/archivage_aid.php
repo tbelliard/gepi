@@ -291,6 +291,8 @@ if(!isset($annee_scolaire)){
       $nom_complet_type = mysql_result($res_aid,$i,"nom_complet");
       $note_max_type  = mysql_result($res_aid,$i,"note_max");
       $type_note_type = mysql_result($res_aid,$i,"type_note");
+      $display_begin = mysql_result($res_aid,$i,"display_begin");
+      $display_end = mysql_result($res_aid,$i,"display_end");
       $outils_complementaires = mysql_result($res_aid,$i,"outils_complementaires");
       $display_bulletin = mysql_result($res_aid,$i,"display_bulletin");
       $bull_simplifie = mysql_result($res_aid,$i,"bull_simplifie");
@@ -330,7 +332,7 @@ if(!isset($annee_scolaire)){
       }
       $flag_tab2 = 0;
       $tab3 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id AID</b></td><td><b>Id élève</b></td><td><b>Elève responsable</b></td></tr>\n";
-      $tab4 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id élève</b></td><td><b>Année</b></td><td><b>Classe</b></td><td><b>Id AID</b></td><td><b>Numéro période</b></td><td><b>Appréciation</b></td><td><b>Statut note</b></td><td><b>Note élève</b></td><td><b>moyenne classe</b></td><td><b>Min classe</b></td><td><b>Max classe</b></td></tr>\n";
+      $tab4 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id élève</b></td><td><b>Année</b></td><td><b>Classe</b></td><td><b>Id AID</b></td><td><b>Numéro période</b></td><td><b>Appréciation</b></td><td><b>Note élève</b></td><td><b>moyenne classe</b></td><td><b>Min classe</b></td><td><b>Max classe</b></td></tr>\n";
       $tab5 = "<table class='table_annee_anterieure' border = \"1\">\n<tr><td><b>Id élève</b></td><td><b>Nom</b></td><td><b>Prénom</b></td><td><b>Date de naisance</b></td></tr>\n";
       $flag_tab3 = 0;
       $flag_tab4 = 0;
@@ -527,21 +529,36 @@ if(!isset($annee_scolaire)){
               $login_eleve = mysql_result($call_liste_data_app, $t, "login");
               $periode = mysql_result($call_liste_data_app, $t, "periode");
               $appreciation = mysql_result($call_liste_data_app, $t, "appreciation");
-              $statut = mysql_result($call_liste_data_app, $t, "statut");
-              $note = mysql_result($call_liste_data_app, $t, "note");
               $no_gep = sql_query1("select no_gep from eleves where login='".$login_eleve."'");
               if (($no_gep =='') or ($no_gep=='-1')) $no_gep = "LOGIN_".$login_eleve;
               $call_classe = sql_query("SELECT c.id, c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '".$login_eleve."' and j.id_classe = c.id and j.periode='".$periode."')");
               $id_classe = @mysql_result($call_classe, '0', "id");
+              $periode_max = sql_query("select count(num_periode) from periodes where id_classe='".$id_classe."'");
+              $last_periode_aid = min($periode_max,$display_end);
               $classe = @mysql_result($call_classe, '0', "classe");
-              $sql_moyenne = sql_query("SELECT MIN(note) note_min, MAX(note) note_max, round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '".$id_classe."' and a.statut='' and a.indice_aid='".$id_type[0]."' and a.periode='".$periode."')");
-              $flag="0";
-              $min = mysql_result($sql_moyenne,0,"note_min");
-              if ($min=='') $min = '-';
-              $max = mysql_result($sql_moyenne,0,"note_max");
-              if ($max=='') $max = '-';
-              $moyenne = mysql_result($sql_moyenne,0,"moyenne");
-              if ($moyenne=='') $moyenne = '-';
+	            if (($periode >= $display_begin) and ($periode <= $display_end) and
+		          (($type_note_type == 'every') or (($type_note_type == 'last') and ($periode == $last_periode_aid)))) {
+                $statut = mysql_result($call_liste_data_app, $t, "statut");
+                if ($statut == '')
+                  $note = mysql_result($call_liste_data_app, $t, "note");
+                else
+                  $note = $statut;
+                if ($note == '') $note = '-';
+                if ($note == 'other') $note = '-';
+                $sql_moyenne = sql_query("SELECT MIN(note) note_min, MAX(note) note_max, round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '".$id_classe."' and a.statut='' and a.indice_aid='".$id_type[0]."' and a.periode='".$periode."')");
+                $flag="0";
+                $min = mysql_result($sql_moyenne,0,"note_min");
+                if ($min=='') $min = '-';
+                $max = mysql_result($sql_moyenne,0,"note_max");
+                if ($max=='') $max = '-';
+                $moyenne = mysql_result($sql_moyenne,0,"moyenne");
+                if ($moyenne=='') $moyenne = '-';
+              } else {
+                $note = '-';
+                $min = '-';
+                $max = '-';
+                $moyenne = '-';
+              }
               $sql_archiv = "insert into archivage_appreciations_aid set
               id_eleve = '".$no_gep."',
               annee='".$annee_scolaire."',
@@ -549,7 +566,6 @@ if(!isset($annee_scolaire)){
               classe = '".addslashes($classe)."',
               periode = '".addslashes($periode)."',
               appreciation = '".addslashes($appreciation)."',
-              statut = '".addslashes($statut)."',
               note_moyenne_classe = '".addslashes($moyenne)."',
               note_min_classe = '".addslashes($min)."',
               note_max_classe = '".addslashes($max)."',
@@ -559,7 +575,7 @@ if(!isset($annee_scolaire)){
                   $tab4 .= "<tr><td colspan=\"11\"><font color=\"red\">Erreur d'enregistrement pour la requête : ".$sql_archiv."</font></td></tr>";
                   $flag_tab4 = 1;
 		  	      } else if ($log_error!='y') {
-                  $tab4 .= "<tr><td class='small'>".$no_gep."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$classe."</td><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$periode."</td><td class='small'>".$appreciation."</td><td class='small'>".$statut."</td><td class='small'>".$note."</td><td class='small'>".$moyenne."</td><td class='small'>".$min."</td><td class='small'>".$max."</td></tr>\n";
+                  $tab4 .= "<tr><td class='small'>".$no_gep."</td><td class='small'>".$annee_scolaire."</td><td class='small'>".$classe."</td><td class='small'>".$nouveau_id_aid."</td><td class='small'>".$periode."</td><td class='small'>".$appreciation."</td><td class='small'>".$note."</td><td class='small'>".$moyenne."</td><td class='small'>".$min."</td><td class='small'>".$max."</td></tr>\n";
                   $flag_tab4 = 1;
               }
 
