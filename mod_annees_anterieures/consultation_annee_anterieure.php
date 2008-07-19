@@ -476,7 +476,7 @@ if(!isset($id_classe)){
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
-	echo "<table width='100%'>\n";
+	echo "<table width='100%' summary='Choix de la classe'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
 	$i = 0;
@@ -536,7 +536,7 @@ else{
 			// Affichage sur 3 colonnes
 			$nb_par_colonne=round($nb_eleves/3);
 
-			echo "<table width='100%'>\n";
+			echo "<table width='100%' summary=\"Choix de l'élève\">\n";
 			echo "<tr valign='top' align='center'>\n";
 
 			$i = 0;

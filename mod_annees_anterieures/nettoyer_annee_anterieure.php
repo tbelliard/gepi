@@ -125,7 +125,7 @@ else{
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
-	echo "<table align='center' class='table_annee_anterieure'>\n";
+	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 	echo "<tr style='background-color:white;'>\n";
 	echo "<th>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";

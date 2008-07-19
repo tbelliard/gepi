@@ -178,7 +178,7 @@ elseif($mode=="ine_login"){
 		echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 		echo "<input type='hidden' name='mode' value=\"ine_login\" />\n";
 
-		echo "<table class='table_annee_anterieure'>\n";
+		echo "<table class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 		echo "<tr style='background-color: white;'>\n";
 		echo "<th>INE enregistré</th>\n";
 		echo "<th>Nom</th>\n";
@@ -250,7 +250,7 @@ elseif($mode=="ine_login"){
 		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='hidden' name='ine_recherche' id='ine_recherche' value='' />
-<table border='0'>
+<table border='0' summary='Recherche'>
 	<tr>
 		<th>Nom: </th>
 		<td><input type='text' name='nom_ele' id='nom_ele' value='' onBlur='get_eleves(this.form)' /></td>
@@ -285,7 +285,7 @@ elseif($mode=="recherche"){
 		echo "<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='hidden' name='mode' value='recherche' />
 <input type='hidden' name='recherche1' value='y' />
-<table border='0'>
+<table border='0' summary='Recherche'>
 	<tr>
 		<!--td rowspan='2' valign='top'>Elève dont le </td-->
 		<td>Elève dont </td>
@@ -322,7 +322,7 @@ elseif($mode=="recherche"){
 			echo "<input type='hidden' name='recherche1_nom' value=\"$recherche1_nom\" />\n";
 			echo "<input type='hidden' name='recherche1_prenom' value=\"$recherche1_prenom\" />\n";
 
-			echo "<table class='table_annee_anterieure'>\n";
+			echo "<table class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 			echo "<tr style='background-color: white;'>\n";
 			echo "<th>INE enregistré</th>\n";
 			echo "<th>Nom</th>\n";
@@ -394,7 +394,7 @@ elseif($mode=="recherche"){
 			echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='hidden' name='ine_recherche' id='ine_recherche' value='' />
-<table border='0'>
+<table border='0' summary='Recherche'>
 	<tr>
 		<th>Nom: </th>
 		<td><input type='text' name='nom_ele' id='nom_ele' value='' onBlur='get_eleves(this.form)' /></td>
@@ -459,7 +459,7 @@ else{
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
-	echo "<table align='center' class='table_annee_anterieure'>\n";
+	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 	echo "<tr style='background-color:white;'>\n";
 	echo "<th>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
