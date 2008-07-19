@@ -619,7 +619,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 // Pour afficher les variables transmises en GET/POST/SERVER/SESSION
-debug_var();
+//debug_var();
 
 ?>
 <script type="text/javascript">
