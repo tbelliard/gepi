@@ -53,7 +53,7 @@ Vous pouvez choisir ci-dessous différents moyens de visualisation :
 </p>
 
 <!--table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5 -->
-<table width="700" class="bordercolor">
+<table width="700" class="bordercolor" summary="Choix de l'outil">
 <tr>
     <td width=200><a href="eleve_classe.php">Elève par rapport à la classe</a></td>
     <td>Permet de comparer les résultats de l'élève vis à vis des résultats moyens de la classe, matière par matière, période par période.</td>
