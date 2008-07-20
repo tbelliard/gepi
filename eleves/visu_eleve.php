@@ -63,6 +63,7 @@ $style_specifique = "eleves/visu_eleve";
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
 $onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $_GET['onglet'] : NULL);
 $onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2']) ? $_GET['onglet2'] : NULL);
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
 // ===================== entete Gepi ======================================//
 require_once("../lib/header.inc");
@@ -79,14 +80,18 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "</p>\n";
 	echo "</div>\n";
 
+	//=============================================
 	// Formulaire pour navigateur SANS Javascript:
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+		<p>
 		Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		</p>
 	</form>
 </noscript>\n";
+	//=============================================
 
 	// Portion d'AJAX:
 	echo "<script type='text/javascript'>
@@ -117,15 +122,84 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<div id='recherche_avec_js' style='display:none;'>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
+	echo "<p>\n";
 	echo "Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
+	echo "</p>\n";
 	echo "</form>\n";
 
 	echo "<div id='liste_eleves'></div>\n";
 
 	echo "</div>\n";
 	echo "<script type='text/javascript'>document.getElementById('recherche_avec_js').style.display='';</script>\n";
+
+
+	if(isset($id_classe)) {
+		$sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom;";
+		//echo "$sql<br />";
+		$res_ele=mysql_query($sql);
+		if(mysql_num_rows($res_ele)>0) {
+			echo "<p>Elèves de la classe de ".get_class_from_id($id_classe).":</p>\n";
+
+			/*
+			echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
+			echo "<tr>\n";
+			echo "<th>Nom</th>\n";
+			echo "<th>Prénom</th>\n";
+			echo "</tr>\n";
+			while($lig_ele=mysql_query($res_ele)) {
+				echo "";
+			}
+			*/
+
+			$tab_txt=array();
+			$tab_lien=array();
+
+			while($lig_ele=mysql_fetch_object($res_ele)) {
+				$tab_txt[]=ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom);
+				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login;
+			}
+
+			echo "<blockquote>\n";
+			tab_liste($tab_txt,$tab_lien,3);
+			echo "</blockquote>\n";
+
+		}
+	}
+
+
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	//echo "$sql<br />";
+	$res_clas=mysql_query($sql);
+	if(mysql_num_rows($res_clas)>0) {
+		echo "<p>Ou choisir un élève dans une classe:</p>\n";
+
+		$tab_txt=array();
+		$tab_lien=array();
+
+		while($lig_clas=mysql_fetch_object($res_clas)) {
+			$tab_txt[]=$lig_clas->classe;
+			$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+		}
+
+		echo "<blockquote>\n";
+		tab_liste($tab_txt,$tab_lien,4);
+		echo "</blockquote>\n";
+	}
+
+	//=============================================
 
 }
 elseif(isset($_POST['Recherche_sans_js'])) {
@@ -142,6 +216,19 @@ else {
 	echo "</div>\n";
 
 	// Affichage des onglets pour l'élève choisi
+
+	echo "<div id='patience'>
+<noscript>
+Patientez pendant l'extraction des données... merci.
+</noscript>
+</div>\n";
+	// Avec ça, le message ne disparait pas quand on a désactivé JavaScript...
+
+	echo "<script type='text/javascript'>
+	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des données... merci.\";
+</script>\n";
+
+	flush();
 
 	// Couleurs pour les onglets:
 	$tab_couleur['eleve']="moccasin";
@@ -662,6 +749,10 @@ else {
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
+		echo "<script type='text/javascript'>
+	document.getElementById('patience').style.display='none';
+</script>\n";
+
 		// Initialisation
 		if(!isset($onglet)) {
 			$onglet="eleve";
@@ -1042,9 +1133,14 @@ else {
 					echo "<th>".htmlentities($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlentities($tab_ele['groupes'][$i]['description'])."</span></th>\n";
 					echo "<td>\n";
 					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
-						echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['prenom']));
-						echo " ";
-						echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
+						if(isset($tab_ele['classe'][0]['id_classe'])) {
+							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
+						}
+						else {
+							echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['prenom']));
+							echo " ";
+							echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
+						}
 						echo "<br />\n";
 					}
 					echo "</td>\n";

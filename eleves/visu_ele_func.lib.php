@@ -72,6 +72,14 @@ function info_eleve($ele_login) {
 	global $date_ct1, $date_ct2;
 	global $type_etablissement, $type_etablissement2;
 
+	global $acces_eleve,
+		$acces_responsables,
+		$acces_enseignements,
+		$acces_releves,
+		$acces_bulletins,
+		$acces_cdt,
+		$acces_anna;
+
 	unset($tab_ele);
 	$tab_ele=array();
 
@@ -191,138 +199,139 @@ function info_eleve($ele_login) {
 	$res_per=mysql_query($sql);
 	$cpt=0;
 	if(mysql_num_rows($res_per)>0) {
-		while($lig_per=mysql_fetch_object($res_per)) {
-			$tab_ele['periodes'][$cpt]=array();
-			$tab_ele['periodes'][$cpt]['num_periode']=$lig_per->num_periode;
-			$tab_ele['periodes'][$cpt]['nom_periode']=$lig_per->nom_periode;
-			$tab_ele['periodes'][$cpt]['id_classe']=$lig_per->id_classe;
-			$tab_ele['periodes'][$cpt]['classe']=$lig_per->classe;
-			$tab_ele['periodes'][$cpt]['nom_complet']=$lig_per->nom_complet;
+		if(($acces_releves=='y')||($acces_enseignements=='y')||($acces_bulletins=='y')) {
+			while($lig_per=mysql_fetch_object($res_per)) {
+				$tab_ele['periodes'][$cpt]=array();
+				$tab_ele['periodes'][$cpt]['num_periode']=$lig_per->num_periode;
+				$tab_ele['periodes'][$cpt]['nom_periode']=$lig_per->nom_periode;
+				$tab_ele['periodes'][$cpt]['id_classe']=$lig_per->id_classe;
+				$tab_ele['periodes'][$cpt]['classe']=$lig_per->classe;
+				$tab_ele['periodes'][$cpt]['nom_complet']=$lig_per->nom_complet;
 
-			//echo "\$tab_ele['periodes'][$cpt]['num_periode']=".$tab_ele['periodes'][$cpt]['num_periode']."<br />";
-			//echo "\$tab_ele['periodes'][$cpt]['id_classe']=".$tab_ele['periodes'][$cpt]['id_classe']."<br />";
+				//echo "\$tab_ele['periodes'][$cpt]['num_periode']=".$tab_ele['periodes'][$cpt]['num_periode']."<br />";
+				//echo "\$tab_ele['periodes'][$cpt]['id_classe']=".$tab_ele['periodes'][$cpt]['id_classe']."<br />";
 
-			// On regarde si on affiche les catégories de matières dans la classe courante de l'élève
-			$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$lig_per->id_classe."'");
-			if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
-			$tab_ele['periodes'][$cpt]['affiche_categories']=$affiche_categories;
+				// On regarde si on affiche les catégories de matières dans la classe courante de l'élève
+				$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$lig_per->id_classe."'");
+				if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
+				$tab_ele['periodes'][$cpt]['affiche_categories']=$affiche_categories;
 
-			if($affiche_categories) {
-				$sql="SELECT DISTINCT g.*,m.nom_complet ".
-				"FROM j_eleves_groupes jeg,
-						j_groupes_classes jgc,
-						j_groupes_matieres jgm,
-						j_matieres_categories_classes jmcc,
-						matieres m,
-						groupes g " .
-				"WHERE ( " .
-				"jeg.login = '" . $ele_login ."' AND " .
-				"jgc.id_groupe = jeg.id_groupe AND " .
-				"jgc.categorie_id = jmcc.categorie_id AND " .
-				"jgc.id_classe = '".$lig_per->id_classe."' AND " .
-				"jgm.id_groupe = jgc.id_groupe AND " .
-				"m.matiere = jgm.id_matiere AND " .
-				"g.id=jeg.id_groupe".
-				") " .
-				"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
-			} else {
-				$sql="SELECT DISTINCT g.*,m.nom_complet " .
-				"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg, matieres m, groupes g " .
-				"WHERE ( " .
-				"jeg.login = '" . $ele_login . "' AND " .
-				"jgc.id_groupe = jeg.id_groupe AND " .
-				"jgc.id_classe = '".$lig_per->id_classe."' AND " .
-				"jgm.id_groupe = jgc.id_groupe AND
-				m.matiere=jgm.id_matiere AND jgm.id_groupe=g.id " .
-				") " .
-				"ORDER BY jgc.priorite,jgm.id_matiere";
-			}
-			//$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.periode='".$lig_per->num_periode."' AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
-			//echo "$sql<br />";
-			$res_grp=mysql_query($sql);
-			if(mysql_num_rows($res_grp)>0) {
-				$cpt2=0;
-				while($lig_grp=mysql_fetch_object($res_grp)) {
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]=array();
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_groupe']=$lig_grp->id;
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']=$lig_grp->name;
-					//echo "\$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']=".$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']."<br />";
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['description']=$lig_grp->description;
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['matiere_nom_complet']=$lig_grp->nom_complet;
-
-					if($affiche_categories) {
-						//$sql="SELECT DISTINCT jgc.categorie_id FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."';";
-						$sql="SELECT DISTINCT jgc.categorie_id, mc.nom_court, mc.nom_complet FROM j_groupes_classes jgc, matieres_categories mc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."' AND mc.id=jgc.categorie_id;";
-						//echo "$sql<br />";
-						$res_cat=mysql_query($sql);
-						if(mysql_num_rows($res_cat)>0) {
-							$lig_cat=mysql_fetch_object($res_cat);
-							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']=$lig_cat->categorie_id;
-							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['cat_nom_court']=$lig_cat->nom_court;
-							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['cat_nom_complet']=$lig_cat->nom_complet;
-							//echo "\$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']=".$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']."<br />";
-						}
-					}
-
-					$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-					nd.login = '".$ele_login."' and
-					nd.id_devoir = d.id and
-					d.display_parents='1' and
-					d.id_racine = cn.id_cahier_notes and
-					cn.id_groupe = '".$lig_grp->id."' and
-					cn.periode = '".$lig_per->num_periode."'
-					)";
-					$res_differents_coef=mysql_query($sql);
-					if(mysql_num_rows($res_differents_coef)>1){
-						$differents_coef="y";
-					}
-					else{
-						$differents_coef="n";
-					}
-					$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['differents_coef']=$differents_coef;
-
-
-					$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
-					nd.login = '".$ele_login."' and
-					nd.id_devoir = d.id and
-					d.display_parents='1' and
-					d.id_racine = cn.id_cahier_notes and
-					cn.id_groupe = '".$lig_grp->id."' and
-					cn.periode = '".$lig_per->num_periode."'
-					)
-					ORDER BY d.date
-					";
-					$query_notes = mysql_query($sql1);
-
-					$count_notes = mysql_num_rows($query_notes);
-					$m = 0;
-					while ($m < $count_notes) {
-						$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
-						$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
-						$eleve_note = @mysql_result($query_notes,$m,'nd.note');
-						$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
-						$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
-						$date_note = @mysql_result($query_notes,$m,'d.date');
-						$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
-
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['display_app']=$eleve_display_app;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['app']=$eleve_app;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['note']=$eleve_note;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['statut']=$eleve_statut;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['nom_court']=$eleve_nom_court;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['date']=$date_note;
-						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['coef']=$coef_devoir;
-						// On ne récupère pas le nom long du devoir?
-
-						$m++;
-					}
-
-					$cpt2++;
+				if($affiche_categories) {
+					$sql="SELECT DISTINCT g.*,m.nom_complet ".
+					"FROM j_eleves_groupes jeg,
+							j_groupes_classes jgc,
+							j_groupes_matieres jgm,
+							j_matieres_categories_classes jmcc,
+							matieres m,
+							groupes g " .
+					"WHERE ( " .
+					"jeg.login = '" . $ele_login ."' AND " .
+					"jgc.id_groupe = jeg.id_groupe AND " .
+					"jgc.categorie_id = jmcc.categorie_id AND " .
+					"jgc.id_classe = '".$lig_per->id_classe."' AND " .
+					"jgm.id_groupe = jgc.id_groupe AND " .
+					"m.matiere = jgm.id_matiere AND " .
+					"g.id=jeg.id_groupe".
+					") " .
+					"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
+				} else {
+					$sql="SELECT DISTINCT g.*,m.nom_complet " .
+					"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg, matieres m, groupes g " .
+					"WHERE ( " .
+					"jeg.login = '" . $ele_login . "' AND " .
+					"jgc.id_groupe = jeg.id_groupe AND " .
+					"jgc.id_classe = '".$lig_per->id_classe."' AND " .
+					"jgm.id_groupe = jgc.id_groupe AND
+					m.matiere=jgm.id_matiere AND jgm.id_groupe=g.id " .
+					") " .
+					"ORDER BY jgc.priorite,jgm.id_matiere";
 				}
-			}
-			$cpt++;
-		}
+				//$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.periode='".$lig_per->num_periode."' AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
+				//echo "$sql<br />";
+				$res_grp=mysql_query($sql);
+				if(mysql_num_rows($res_grp)>0) {
+					$cpt2=0;
+					while($lig_grp=mysql_fetch_object($res_grp)) {
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]=array();
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_groupe']=$lig_grp->id;
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']=$lig_grp->name;
+						//echo "\$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']=".$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['name']."<br />";
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['description']=$lig_grp->description;
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['matiere_nom_complet']=$lig_grp->nom_complet;
 
+						if($affiche_categories) {
+							//$sql="SELECT DISTINCT jgc.categorie_id FROM j_groupes_classes jgc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."';";
+							$sql="SELECT DISTINCT jgc.categorie_id, mc.nom_court, mc.nom_complet FROM j_groupes_classes jgc, matieres_categories mc WHERE jgc.id_groupe='".$lig_grp->id."' AND id_classe='".$tab_ele['periodes'][$cpt]['id_classe']."' AND mc.id=jgc.categorie_id;";
+							//echo "$sql<br />";
+							$res_cat=mysql_query($sql);
+							if(mysql_num_rows($res_cat)>0) {
+								$lig_cat=mysql_fetch_object($res_cat);
+								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']=$lig_cat->categorie_id;
+								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['cat_nom_court']=$lig_cat->nom_court;
+								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['cat_nom_complet']=$lig_cat->nom_complet;
+								//echo "\$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']=".$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['id_cat']."<br />";
+							}
+						}
+
+						$sql="SELECT DISTINCT d.coef FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+						nd.login = '".$ele_login."' and
+						nd.id_devoir = d.id and
+						d.display_parents='1' and
+						d.id_racine = cn.id_cahier_notes and
+						cn.id_groupe = '".$lig_grp->id."' and
+						cn.periode = '".$lig_per->num_periode."'
+						)";
+						$res_differents_coef=mysql_query($sql);
+						if(mysql_num_rows($res_differents_coef)>1){
+							$differents_coef="y";
+						}
+						else{
+							$differents_coef="n";
+						}
+						$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['differents_coef']=$differents_coef;
+
+
+						$sql1 = "SELECT d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+						nd.login = '".$ele_login."' and
+						nd.id_devoir = d.id and
+						d.display_parents='1' and
+						d.id_racine = cn.id_cahier_notes and
+						cn.id_groupe = '".$lig_grp->id."' and
+						cn.periode = '".$lig_per->num_periode."'
+						)
+						ORDER BY d.date
+						";
+						$query_notes = mysql_query($sql1);
+
+						$count_notes = mysql_num_rows($query_notes);
+						$m = 0;
+						while ($m < $count_notes) {
+							$eleve_display_app = @mysql_result($query_notes,$m,'d.display_parents_app');
+							$eleve_app = @mysql_result($query_notes,$m,'nd.comment');
+							$eleve_note = @mysql_result($query_notes,$m,'nd.note');
+							$eleve_statut = @mysql_result($query_notes,$m,'nd.statut');
+							$eleve_nom_court = @mysql_result($query_notes,$m,'d.nom_court');
+							$date_note = @mysql_result($query_notes,$m,'d.date');
+							$coef_devoir = @mysql_result($query_notes,$m,'d.coef');
+
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['display_app']=$eleve_display_app;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['app']=$eleve_app;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['note']=$eleve_note;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['statut']=$eleve_statut;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['nom_court']=$eleve_nom_court;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['date']=$date_note;
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['coef']=$coef_devoir;
+							// On ne récupère pas le nom long du devoir?
+
+							$m++;
+						}
+
+						$cpt2++;
+					}
+				}
+				$cpt++;
+			}
+		}
 
 		$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
 		//echo "$sql<br />";
@@ -467,61 +476,63 @@ function info_eleve($ele_login) {
 	}
 	*/
 
-	// Récup infos responsables
-	$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
-									resp_adr ra,
-									responsables2 r
-				WHERE r.ele_id='".$tab_ele['ele_id']."' AND
-						r.resp_legal!='0' AND
-						r.pers_id=rp.pers_id AND
-						rp.adr_id=ra.adr_id
-				ORDER BY resp_legal;";
-	$res_resp=mysql_query($sql);
-	//echo "$sql<br />";
-	if(mysql_num_rows($res_resp)>0) {
-		$cpt=0;
-		while($lig_resp=mysql_fetch_object($res_resp)) {
-			$tab_ele['resp'][$cpt]=array();
+	if($acces_responsables=='y') {
+		// Récup infos responsables
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+										resp_adr ra,
+										responsables2 r
+					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+							r.resp_legal!='0' AND
+							r.pers_id=rp.pers_id AND
+							rp.adr_id=ra.adr_id
+					ORDER BY resp_legal;";
+		$res_resp=mysql_query($sql);
+		//echo "$sql<br />";
+		if(mysql_num_rows($res_resp)>0) {
+			$cpt=0;
+			while($lig_resp=mysql_fetch_object($res_resp)) {
+				$tab_ele['resp'][$cpt]=array();
 
-			$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+				$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
 
-			$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
-			$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
-			$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
-			$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
-			$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
-			$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
-			$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
-			$tab_ele['resp'][$cpt]['mel']=$lig_resp->mel;
+				$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+				$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+				$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+				$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+				$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+				$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+				$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+				$tab_ele['resp'][$cpt]['mel']=$lig_resp->mel;
 
-			$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
-			$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
-			$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
-			$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
-			$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
-			$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
-			$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+				$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+				$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+				$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+				$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+				$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+				$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+				$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
 
-			$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+				$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
-			$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 
-			//echo "\$lig_resp->login=".$lig_resp->login."<br />";
-			if($lig_resp->login!="") {
-				$sql="SELECT etat FROM utilisateurs WHERE login='".$lig_resp->login."';";
-				//echo "$sql<br />";
-				$res_u=mysql_query($sql);
-				if(mysql_num_rows($res_u)>0) {
-					$lig_u=mysql_fetch_object($res_u);
-					$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
+				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
+				if($lig_resp->login!="") {
+					$sql="SELECT etat FROM utilisateurs WHERE login='".$lig_resp->login."';";
+					//echo "$sql<br />";
+					$res_u=mysql_query($sql);
+					if(mysql_num_rows($res_u)>0) {
+						$lig_u=mysql_fetch_object($res_u);
+						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
+					}
 				}
-			}
 
-			$cpt++;
+				$cpt++;
+			}
 		}
 	}
 
-	if($active_cahiers_texte=="y") {
+	if(($active_cahiers_texte=="y")&&($acces_cdt=='y')) {
 		$cpt1=0; // pour initialiser la variable
 		$tab_date_ct=array();
 		// Un DISTINCT pour éviter les trois exemplaires dûs à j_eleves_groupes
