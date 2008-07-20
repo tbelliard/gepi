@@ -1809,8 +1809,9 @@ function tab_liste($tab_txt,$tab_lien,$nbcol){
 			echo "<td align='left'>\n";
 		}
 
-		echo "<br />\n";
+		//echo "<br />\n";
 		echo "<a href='".$tab_lien[$i]."'>".$tab_txt[$i]."</a>";
+		echo "<br />\n";
 		$i++;
 	}
 	echo "</td>\n";
