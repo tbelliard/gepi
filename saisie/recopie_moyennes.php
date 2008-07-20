@@ -56,7 +56,8 @@ if(isset($_POST['recopier'])){
 	$login=$_POST['login'];
 	$id_groupe=$_POST['id_groupe'];
 	$moy=$_POST['moy'];
-	$coche=$_POST['coche'];
+	//$coche=$_POST['coche'];
+	$coche=isset($_POST['coche']) ? $_POST['coche'] : NULL;
 	$cpt=$_POST['cpt'];
 
 	//echo "<p>Classe $id_classe sur période $num_periode<br />\n";
