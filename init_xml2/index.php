@@ -50,9 +50,14 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
+<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
+Avez-vous pensé à <a href='#' onmouseover="afficher_div('archivage','y',20,20);" onclick="return false;">archiver</a> l'année qui se termine ?</p>
+<?php
+	$texte="<p>L'archivage de l'année en cours vous permettra, une fois passé à l'année suivante, de consulter les bulletins antérieurs de chacun de vos élèves, pour peu qu'ils aient été scolarisés dans votre établissement.</p><p>Cela nécessite l'activation du <a href='../mod_annees_anterieures/admin.php'>module 'Années antérieures'</a>.</p>";
+	$tabdiv_infobulle[]=creer_div_infobulle('archivage',"Archivage d'une année","",$texte,"",30,0,'y','y','n','n');
+?>
 <ul>
 	<li>
 		<p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (<i>élèves, notes, appréciations, ...</i>).<br />
