@@ -128,6 +128,20 @@ class infos{
 
 		return $retour;
 	}
+	function defautCharset(){
+		$rep['defaut'] = $rep['toutes'] = NULL;
+		if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "ISO-8859-1") === 0) {
+			$rep['defaut'] = "ISO-8859-1";
+		}elseif (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "utf-8") === 0) {
+			$rep['defaut'] = "utf-8";
+		}else{
+			$rep['defaut'] = "inconnu";
+		}
+
+		$rep['toutes'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
+
+		return $rep;
+	}
 } // fin class infos
 
 ?>

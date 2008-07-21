@@ -63,6 +63,7 @@ if ($test->maxExecution() <= '30') {
 }else{
 	$warning_maxExec = '&nbsp;(Cette valeur devrait suffire dans la grande majorité des cas)';
 }
+$charset = $test->defautCharset();
 /*+++++++++++++++++++++ On insère l'entête de Gepi ++++++++++++++++++++*/
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
@@ -82,7 +83,8 @@ echo '
 
 echo '
 	<h4>Les données de base de votre serveur web :</h4>
-	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>';
+	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>
+	<p>Encodage '.$charset['toutes'].' -> encodage par défaut : '.$charset['defaut'].'.</p>';
 
 echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
 	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>';
