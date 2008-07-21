@@ -310,7 +310,7 @@ else{
 			echo "<p>Classes restant à traiter: ".$chaine."</p>\n";
 		}
 		else {
-			echo "<p>Traitement de la dernière classe sélectionnée: <span id='annonce_fin_traitement' style='font-weight:bold;'></span></p>\n";
+			echo "<p>Traitement de la dernière classe sélectionnée: <span id='annonce_fin_traitement' style='font-weight:bold; font-size:2em; color: green;'></span></p>\n";
 		}
 		//===================================
 
@@ -1267,7 +1267,7 @@ else{
 			echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 		}
 		else{
-			echo "<p>Traitement terminé.</p>\n";
+			echo "<p style='text-align:center; font-weight:bold; font-size:2em; color: green;'>Traitement terminé.</p>\n";
 			echo "<script type='text/javascript'>
 	document.getElementById('annonce_fin_traitement').innerHTML='Traitement terminé.';
 </script>\n";
