@@ -2108,9 +2108,14 @@ function get_class_from_ele_login($ele_login){
 	$a = 0;
 	$tab_classe=array();
 	if(mysql_num_rows($res_class)>0){
+		$tab_classe['liste'] = "";
 		while($lig_tmp=mysql_fetch_object($res_class)){
 
 			$tab_classe[$lig_tmp->id_classe]=$lig_tmp->classe;
+
+			if($a>0) {$tab_classe['liste'].=", ";}
+			$tab_classe['liste'].=$lig_tmp->classe;
+
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
 			$a = $a++;
 		}
