@@ -115,7 +115,7 @@ if(!$creation_table){
 echo "<p>Au menu:</p>\n";
 echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
-echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données d'une année (autre que les AIDs)</a>.</p></li>\n";
+echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données (*) de l'année qui se termine</a><br />(<i>(*) autres que les AIDs</i>).</p></li>\n";
 echo "<li><p><a href='archivage_aid.php'>Conservation des données des AIDs</a>.</p></li>\n";
 echo "<li><p><a href='nettoyer_annee_anterieure.php'>Nettoyage des données d'élèves ayant quitté l'établissement</a>.</p></li>\n";
 echo "<li><p><a href='corriger_ine.php'>Correction des INE non renseignés ou mal renseignés lors de la conservation</a>.</p></li>\n";
