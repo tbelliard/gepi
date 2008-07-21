@@ -606,14 +606,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		*/
 
 		echo "<div class='noprint'>\n";
+
+		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 		// La classe est choisie.
+
+		echo " | ";
+
 		// On ajoute l'accès/retour à une autre classe:
 		//echo "<a href=\"$_PHP_SELF\">Choisir une autre classe</a>|";
 		//echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Choisir une autre classe</a></p>";
+		/*
 		echo " | <a href=\"".$_SERVER['PHP_SELF'];
 		echo "?type_graphe=$type_graphe";
 		echo "\">Choisir une autre classe</a>";
+		*/
 
 		// =================================
 		// AJOUT: boireaus
@@ -635,6 +643,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				ORDER BY classe";
 		}
 
+		$chaine_options_classes="";
+
 		$res_class_tmp=mysql_query($sql);
 		if(mysql_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
@@ -642,13 +652,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$temoin_tmp=0;
 			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
 				if($lig_class_tmp->id==$id_classe){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 					$temoin_tmp=1;
 					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 						$id_class_suiv=$lig_class_tmp->id;
 					}
 					else{
 						$id_class_suiv=0;
 					}
+				}
+				else {
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				}
 				if($temoin_tmp==0){
 					$id_class_prec=$lig_class_tmp->id;
@@ -659,21 +674,34 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		if(isset($id_class_prec)){
 			if($id_class_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
-				echo "'>Classe précédente</a>";
+				echo "'>Classe précédente</a> | ";
 			}
 		}
+
+		echo "<input type='hidden' name='type_graphe' value='$type_graphe' />\n";
+		echo "<input type='hidden' name='mode_graphe' value='$mode_graphe' />\n";
+
+		if($chaine_options_classes!="") {
+			echo "<select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo $chaine_options_classes;
+			echo "</select> | \n";
+		}
+
 		if(isset($id_class_suiv)){
 			if($id_class_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
 				echo "'>Classe suivante</a>";
 				}
 		}
 		echo "</p>\n";
+
+		echo "</form>\n";
+
 		echo "</div>\n";
 	} else {
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
