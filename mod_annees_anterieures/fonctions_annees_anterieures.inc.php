@@ -243,10 +243,13 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
     aid.id_type_aid=type.id and
     type.display_bulletin='y'
     ORDER BY type.nom, aid.nom";
+		//echo "$sql<br />";
 		$res_aid=mysql_query($sql);
 		if(mysql_num_rows($res_aid)==0){
 			// On ne devrait pas arriver là.
-			echo "<tr><td colspan='6'>Aucun résultat enregistré???</td></tr>\n";
+			echo "<tr><td colspan='6'>Aucun résultat enregistré???";
+			//echo "<br />$sql";
+			echo "</td></tr>\n";
 		}
 		else{
 			while($lig_aid=mysql_fetch_object($res_aid)){
@@ -324,6 +327,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		echo "<td align='left'>\n";
 		echo "<p><i>Avis du Conseil de classe : </i><br />\n";
 
+		$prof_suivi="";
 		if(mysql_num_rows($res_avis)==0){
 			echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 		}
@@ -333,10 +337,11 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		else{
 			$lig_avis=mysql_fetch_object($res_avis);
 			echo "$lig_avis->appreciation</p>\n";
+			$prof_suivi=$lig_avis->prof;
 		}
 		echo "</td>\n";
 		echo "<td align='center'>\n";
-		echo "<p>Classe suivie par: <b>$lig_avis->prof</b></p>\n";
+		echo "<p>Classe suivie par: <b>$prof_suivi</b></p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
