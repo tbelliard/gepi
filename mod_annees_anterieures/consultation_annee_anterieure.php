@@ -63,6 +63,7 @@ $num_periode=isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL;
 
 $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
+$aff_classe=isset($_GET['aff_classe']) ? $_GET['aff_classe'] : NULL;
 
 
 
@@ -439,6 +440,8 @@ $titre_page = "Consultation des données antérieures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 echo "<div class='norme'><p class=bold><a href='";
 if($_SESSION['statut']=="administrateur"){
 	echo "index.php";
@@ -511,7 +514,8 @@ else{
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 	}
 
-	if(!isset($logineleve)){
+	//if(!isset($logineleve)){
+	if((!isset($logineleve))&&(!isset($aff_classe))) {
 		echo "</div>\n";
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
@@ -603,6 +607,115 @@ else{
 			// ===========================================================
 			*/
 		}
+
+
+		if(($_SESSION['statut']=='administrateur')||
+		($_SESSION['statut']=='scolarite')||
+		($_SESSION['statut']=='cpe')||
+		($_SESSION['statut']=='professeur')) {
+
+			require("fonctions_annees_anterieures.inc.php");
+
+			echo "<p>Ou afficher les informations pour toute la classe sur la période choisie:</p>\n";
+			echo "<blockquote>\n";
+
+			$sql="SELECT DISTINCT ad.annee FROM archivage_disciplines ad, eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND ad.INE=e.no_gep ORDER BY annee ASC;";
+			$res_ant=mysql_query($sql);
+
+			if(mysql_num_rows($res_ant)==0){
+				echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+			}
+			else{
+
+				unset($tab_annees);
+
+				$nb_annees=mysql_num_rows($res_ant);
+
+				echo "<table class='table_annee_anterieure' summary='Bulletins'>\n";
+				echo "<tr>\n";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
+				$cpt=0;
+				while($lig_ant=mysql_fetch_object($res_ant)){
+
+					$tab_annees[]=$lig_ant->annee;
+
+					if($cpt>0){
+						echo "<tr>\n";
+					}
+					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
+
+					//$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					$res_ant2=mysql_query($sql);
+
+					if(mysql_num_rows($res_ant2)==0){
+						echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+					}
+					else{
+						$cpt=0;
+						while($lig_ant2=mysql_fetch_object($res_ant2)){
+							echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
+							$cpt++;
+						}
+					}
+					echo "</tr>\n";
+					$cpt++;
+				}
+				echo "</table>\n";
+
+				echo "<br />\n";
+
+				echo "<table class='table_annee_anterieure' summary='Avis des conseils'>\n";
+				echo "<tr>\n";
+				echo "<th rowspan='".$nb_annees."' valign='top'>Avis des conseils de classes:</th>";
+				$cpt=0;
+				for($i=0;$i<count($tab_annees);$i++){
+					if($cpt>0){
+						echo "<tr>\n";
+					}
+					echo "<td>\n";
+
+					echo "Année-scolaire <a href='".$_SERVER['PHP_SELF']."?aff_classe=y&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
+					if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
+					echo "'>$tab_annees[$i]</a>";
+
+					echo "</td>\n";
+					echo "</tr>\n";
+					$cpt++;
+				}
+				echo "</table>\n";
+
+			}
+			echo "</blockquote>\n";
+		}
+
+
+	}
+	//elseif(isset($aff_classe)) {
+	elseif((isset($aff_classe))&&(isset($sql_ele))&&(
+		($_SESSION['statut']=='administrateur')||
+		($_SESSION['statut']=='scolarite')||
+		($_SESSION['statut']=='cpe')||
+		($_SESSION['statut']=='professeur')
+	)) {
+		//if($_SESSION['statut']!='eleve'){
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou élève</a>\n";
+		//}
+
+		$res_liste_ele=mysql_query($sql_ele);
+		if(mysql_num_rows($res_liste_ele)==0) {
+			echo "<p>Aucun élève n'a semble-t-il été trouvé.</p>\n";
+		}
+		else {
+			require("fonctions_annees_anterieures.inc.php");
+
+			while($lig_ele=mysql_fetch_object($res_liste_ele)) {
+				bull_simp_annee_anterieure($lig_ele->login,$id_classe,$annee_scolaire,$num_periode);
+			}
+
+		}
+
+
 	}
 	else{
 		if($_SESSION['statut']!='eleve'){
