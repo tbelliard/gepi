@@ -896,7 +896,7 @@ Patientez pendant l'extraction des données... merci.
 		echo "<td valign='top'>\n";
 
 			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
-			echo "<tr><th style='text-align: left;'>Nom:</th><td>";
+			echo "<tr><th style='text-align: left;'>Nom&nbsp;:</th><td>";
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
 			}
@@ -904,12 +904,14 @@ Patientez pendant l'extraction des données... merci.
 				echo $tab_ele['nom'];
 			}
 			echo "</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['prenom']."</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Sexe:</th><td>".$tab_ele['sexe']."</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Né le:</th><td>".$tab_ele['naissance']."</td></tr>\n";
-			if(isset($tab_ele['lieu_naissance'])) {echo "<tr><th style='text-align: left;'>à:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";}
+			echo "<tr><th style='text-align: left;'>Prénom&nbsp;:</th><td>".$tab_ele['prenom']."</td></tr>\n";
+			echo "<tr><th style='text-align: left;'>Sexe&nbsp;:</th><td>".$tab_ele['sexe']."</td></tr>\n";
+			echo "<tr><th style='text-align: left;'>Né";
+			if($tab_ele['sexe']=='F') {echo "e";}
+			echo " le&nbsp;:</th><td>".$tab_ele['naissance']."</td></tr>\n";
+			if(isset($tab_ele['lieu_naissance'])) {echo "<tr><th style='text-align: left;'>à&nbsp;:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";}
 
-			echo "<tr><th style='text-align: left;'>Régime:</th><td>";
+			echo "<tr><th style='text-align: left;'>Régime&nbsp;:</th><td>";
 			if ($tab_ele['regime'] == "d/p") {echo "Demi-pensionnaire";}
 			if ($tab_ele['regime'] == "ext.") {echo "Externe";}
 			if ($tab_ele['regime'] == "int.") {echo "Interne";}
@@ -919,7 +921,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "</td></tr>\n";
 
-			echo "<tr><th style='text-align: left;'>Redoublant:</th><td>";
+			echo "<tr><th style='text-align: left;'>Redoublant&nbsp;:</th><td>";
 			if ($tab_ele['doublant'] == 'R'){
 				echo "Oui";
 			}
@@ -929,9 +931,9 @@ Patientez pendant l'extraction des données... merci.
 			echo "</td></tr>\n";
 
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
-				echo "<tr><th style='text-align: left;'>Elenoet:</th><td>".$tab_ele['elenoet']."</td></tr>\n";
-				echo "<tr><th style='text-align: left;'>Ele_id:</th><td>".$tab_ele['ele_id']."</td></tr>\n";
-				echo "<tr><th style='text-align: left;'>N°INE:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
+				echo "<tr><th style='text-align: left;'>Elenoet&nbsp;:</th><td>".$tab_ele['elenoet']."</td></tr>\n";
+				echo "<tr><th style='text-align: left;'>Ele_id&nbsp;:</th><td>".$tab_ele['ele_id']."</td></tr>\n";
+				echo "<tr><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
 
 			//echo "<tr><th>:</th><td>".$tab_ele['']."</td></tr>\n";
