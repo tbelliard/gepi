@@ -1188,10 +1188,10 @@ else {
 	$texte.="</form>\n";
 */
 	$titre="Informations";
-	$texte="<p>Cette page affiche les moyennes des élèves de la classe de $classe</p>";
+	$texte="<p>Cette page affiche les moyennes des élèves de la classe de ".$classe.".</p>";
 	$texte.="<ul>";
-	$texte.="<li>Vous pouvez trier les colonnes par rang en cliquant sur l'intitulé de la colonne souhaitée.</li>";
-	$texte.="<li>Vous pouvez aussi exporter ces moyennes au format CSV.</li>";
+	$texte.="<li>Vous pouvez trier ce tableau à la demande&nbsp;: chaque intitulé de colonne est une clef de tri.</li>";
+	$texte.="<li>Vous pouvez aussi exporter ces moyennes au format CSV (<i>lisible par un tableur</i>).</li>";
 	$texte.="</ul>";
 	//$texte.="";
 	//$tabdiv_infobulle[]=creer_div_infobulle('div_informations',$titre,"",$texte,"",35,0,'y','y','n','n');
