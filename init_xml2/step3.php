@@ -445,28 +445,36 @@ else {
         if ($affiche != 'partiel') {
             echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>\n";
             echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
-            echo "<input type=hidden name='is_posted' value='no' />\n";
-            echo "<input type=hidden name='affiche' value='partiel' />\n";
+            echo "<input type='hidden' name='is_posted' value='no' />\n";
+            echo "<input type='hidden' name='affiche' value='partiel' />\n";
             echo "<center><input type='submit' value='Affichage partiel' /></center>\n";
             echo "</form>\n";
         } else {
             echo "<p>--> Pour afficher toutes les lignes, cliquez sur le bouton \"Afficher tout\" :</p>\n";
-            echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
-            echo "<input type=hidden name='is_posted' value='no' />\n";
-            echo "<input type=hidden name='affiche' value='tout' />\n";
+            echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
+            echo "<input type='hidden' name='is_posted' value='no' />\n";
+            echo "<input type='hidden' name='affiche' value='tout' />\n";
             echo "<center><input type='submit' value='Afficher tout' /></center>\n";
             echo "</form>\n";
         }
     }
-    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
-    echo "<form enctype='multipart/form-data' action='step3.php' method=post>\n";
+    if (getSettingValue("use_ent") == 'y') {
+    	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
+    	echo '
+			<p>--> Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
+			<p><a href="gestion_ent_eleves.php">Vérifier les logins</a></p>
+		';
+    }else{
+	    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
+    	echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
 
-    //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
-    //echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
+	    //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
+    	//echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<input type=hidden name='is_posted' value='yes' />\n";
-    echo "<center><input type='submit' value='Enregistrer' /></center>\n";
-    echo "</form>\n";
+	    echo "<input type='hidden' name='is_posted' value='yes' />\n";
+    	echo "<p style='text-align: center;'><input type='submit' value='Enregistrer' /></p>\n";
+    	echo "</form>\n";
+    }
     //echo "</div>";
     echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
