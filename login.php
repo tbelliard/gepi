@@ -38,6 +38,14 @@ if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->au
 }
 
 
+// Test de mise à jour : si on détecte que la base n'est à jour avec les nouveaux
+// paramèters utilisés pour l'authentification, on redirige vers maj.php pour
+// une mise à jour, normale ou forcée.
+if (!isset($gepiSettings['auth_sso'])) {
+	header("Location:utilitaires/maj.php");
+	exit();
+}
+
 // Authentification Classique et Ldap
 //-----------------------------------
 
