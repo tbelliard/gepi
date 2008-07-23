@@ -707,7 +707,7 @@ INSERT INTO `droits` VALUES ('/matieres/suppr_matiere.php', 'V', 'F', 'F', 'F', 
 INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_aid.php', 'V', 'F', 'F', 'F', 'F', 'F','F', 'F', 'Fiches projets', '1');
 INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin élève', '');
 INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin élève', '');
-INSERT INTO setting VALUES ('auth_gepi', 'yes');
+INSERT INTO setting VALUES ('auth_locale', 'yes');
 INSERT INTO setting VALUES ('auth_ldap', 'no');
 INSERT INTO setting VALUES ('auth_sso', 'none');
 INSERT INTO setting VALUES ('ldap_write_access', 'no');
