@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Last modification  : 14/03/2005
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -46,7 +46,7 @@ require_once("../lib/header.inc");
 
 ?>
 
-<H1 class='gepi'>GEPI - Informations générales</H1>
+<h1 class='gepi'>GEPI - Informations générales</h1>
 
 <?php
 
@@ -54,25 +54,25 @@ echo "Vous êtes actuellement connecté sur l'application <b>GEPI (".getSettingVal
 
 <br />Par sécurité, si vous n'envoyez aucune information au serveur (activation d'un lien ou soumission d'un formulaire) pendant plus de <b>".getSettingValue("sessionMaxLength")." minutes</b>, vous serez automatiquement déconnecté de l'application.";
 
-echo "<H2>Administration de l'application GEPI</H2>";
+echo "<h2>Administration de l'application GEPI</h2>\n";
 
-echo "<table cellpadding='5'>";
+echo "<table cellpadding='5' summary='Infos'>\n";
 
-echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>";
+echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
 
-echo "<tr><td>Fonction de l'administrateur : </td><td><b>".getSettingValue("gepiAdminFonction")."</b></td></tr>";
+echo "<tr><td>Fonction de l'administrateur : </td><td><b>".getSettingValue("gepiAdminFonction")."</b></td></tr>\n";
 
-echo "<tr><td>Email de l'administrateur : </td><td><b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b></td></tr>";
+echo "<tr><td>Email de l'administrateur : </td><td><b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b></td></tr>\n";
 
-echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>";
+echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
 
-echo "<tr><td Valign='top'>Adresse : </td><td><b>".getSettingValue("gepiSchoolAdress1")."<br />".getSettingValue("gepiSchoolAdress2")."<br />".getSettingValue("gepiSchoolZipCode").", ".getSettingValue("gepiSchoolCity")."</b></td></tr>";
+echo "<tr><td Valign='top'>Adresse : </td><td><b>".getSettingValue("gepiSchoolAdress1")."<br />".getSettingValue("gepiSchoolAdress2")."<br />".getSettingValue("gepiSchoolZipCode").", ".getSettingValue("gepiSchoolCity")."</b></td></tr>\n";
 
-echo "</table>";
+echo "</table>\n";
 
 
 
-echo "<H2>Objectifs de l'application GEPI</H2>";
+echo "<h2>Objectifs de l'application GEPI</h2>\n";
 
 echo "L'objectif de GEPI est la <b>gestion pédagogique des élèves et de leur scolarité</b>.
 
@@ -80,7 +80,7 @@ Dans ce but, des données sont collectées et stockées dans une base unique de typ
 
 
 
-echo "<H2>Obligations de l'utilisateur</H2>";
+echo "<h2>Obligations de l'utilisateur</h2>\n";
 
 echo "Les membres de l'équipe pédagogique sont tenus de remplir les rubriques qui leur ont été affectées par l'administrateur
 
@@ -90,7 +90,7 @@ echo "<br />Il est possible de modifier le contenu d'une rubrique tant que la pé
 
 
 
-echo "<H2>Destinataires des données relatives au bulletin scolaire</H2>";
+echo "<h2>Destinataires des données relatives au bulletin scolaire</h2>\n";
 
 echo "Concernant le bulletin scolaire, les données suivantes sont récoltées auprès des membres de l'équipe pédagogique :
 
@@ -118,7 +118,7 @@ et à ses responsables légaux : notes obtenues, absences, moyennes, appréciations
 
 <li>l'élaboration d'un document de travail reprenant les informations du bulletin officiel et disponible pour les membres de l'équipe pédagogique de la classe concernée</li>
 
-</ul>";
+</ul>\n";
 
 
 
@@ -128,7 +128,7 @@ et à ses responsables légaux : notes obtenues, absences, moyennes, appréciations
 
 if (getSettingValue("active_cahiers_texte")=='y') {
 
-    echo "<H2>Destinataires des données relatives au cahier de texte</H2>";
+    echo "<h2>Destinataires des données relatives au cahier de texte</h2>\n";
 
     echo "Conformément aux directives de l'Education Nationale, chaque professeur dispose dans GEPI d'un cahier de texte pour chacune de ses classes qu'il peut tenir à jour
 
@@ -164,7 +164,7 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
     } else {
 
-       echo " <b>L'accès à l'interface de consultation publique est entièrement libre et n'est soumise à aucune restriction.</b>";
+       echo " <b>L'accès à l'interface de consultation publique est entièrement libre et n'est soumise à aucune restriction.</b>\n";
 
     }
 
@@ -176,7 +176,7 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
 if (getSettingValue("active_carnets_notes")=='y') {
 
-    echo "<H2>Destinataires des données relatives au carnet de notes</H2>";
+    echo "<h2>Destinataires des données relatives au carnet de notes</h2>\n";
 
     echo "Chaque professeur dispose dans GEPI d'un carnet de notes pour chacune de ses classes, qu'il peut tenir à jour
 
@@ -198,7 +198,7 @@ if (getSettingValue("active_carnets_notes")=='y') {
 
 if (getSettingValue("active_observatoire")=='y') {
 
-    echo "<H2>Destinataires des données relatives à l'observatoire</H2>";
+    echo "<h2>Destinataires des données relatives à l'observatoire</h2>\n";
 
     echo "Chaque professeur dispose dans GEPI d'un observatoire pour chacune de ses classes, qu'il peut tenir à jour
 
