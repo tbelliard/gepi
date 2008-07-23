@@ -143,7 +143,8 @@ function get_bull($ele_login) {
 				$lig2=mysql_fetch_object($res2);
 				$app=$lig2->appreciation;
 			}
-			$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->id_groupe;$lig->note;$lig->statut;".str_replace($search, $replace, traitement_magic_quotes($app))."\n";
+			//$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->id_groupe;$lig->note;$lig->statut;".str_replace($search, $replace, traitement_magic_quotes($app))."\n";
+			$lignes.="$lig->matiere;$lig->nom_complet;$lig->periode;$lig->id_groupe;$lig->note;$lig->statut;".str_replace($search, $replace, traitement_magic_quotes(ereg_replace(";","_POINT_VIRGULE_",$app)))."\n";
 		}
 	}
 
@@ -152,7 +153,8 @@ function get_bull($ele_login) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
-			$lignes.="AVIS_CONSEIL_CLASSE;$lig->periode;".str_replace($search, $replace, traitement_magic_quotes($lig->avis))."\n";
+			//$lignes.="AVIS_CONSEIL_CLASSE;$lig->periode;".str_replace($search, $replace, traitement_magic_quotes($lig->avis))."\n";
+			$lignes.="AVIS_CONSEIL_CLASSE;$lig->periode;".str_replace($search, $replace, traitement_magic_quotes(ereg_replace(";","_POINT_VIRGULE_",$lig->avis)))."\n";
 		}
 	}
 
@@ -163,7 +165,8 @@ function get_bull($ele_login) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
-			$lignes.="ABSENCES;$lig->periode;$lig->nb_absences;$lig->non_justifie;$lig->nb_retards;".str_replace($search, $replace, traitement_magic_quotes($lig->appreciation))."\n";
+			//$lignes.="ABSENCES;$lig->periode;$lig->nb_absences;$lig->non_justifie;$lig->nb_retards;".str_replace($search, $replace, traitement_magic_quotes($lig->appreciation))."\n";
+			$lignes.="ABSENCES;$lig->periode;$lig->nb_absences;$lig->non_justifie;$lig->nb_retards;".str_replace($search, $replace, traitement_magic_quotes(ereg_replace(";","_POINT_VIRGULE_",$lig->appreciation)))."\n";
 		}
 	}
 
