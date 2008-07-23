@@ -92,10 +92,10 @@ require_once("../lib/header.inc");
 <i>La désactivation du module trombinoscope n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'y a pas d'accès au module.</i>
 <br />
 <form action="trombinoscopes_admin.php" name="form1" method="post">
-<input type="radio" name="activer" value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked"; ?>  />&nbsp;Activer le module trombinoscope<br />
-<input type="radio" name="activer" value="n" <?php
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked"; ?>  /><label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br />
+<input type="radio" name="activer" id='activer_n' value="n" <?php
 	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked";}
-?>  />&nbsp;Désactiver le module trombinoscope
+?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope</label>
 <input type="hidden" name="is_posted" value="1" />
 <br />
 <H2>Configuration d'affichage et de stockage</H2>
@@ -114,9 +114,9 @@ hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value
 <H2>Configuration du redimensionnement des photos</H2>
 <i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
 <br /><br />
-<input type="radio" name="activer_redimensionne" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> />&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?><br />
+<input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
-<input type="radio" name="activer_redimensionne" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked"; ?> />&nbsp;Désactiver le redimensionnement des photos
+<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;Désactiver le redimensionnement des photos</label>
 <ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked="checked"<?php } ?> /> 0°
 <input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked="checked"<?php } ?> /> 90°
 <input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked="checked"<?php } ?> /> 180°
