@@ -32,7 +32,7 @@ require_once("../lib/initialisations.inc.php");
 
 // Resume session
 
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
@@ -59,12 +59,59 @@ if (isset($_POST['duree'])) {
 }
 
 
-if (isset($_POST['use_sso'])) {
-    if (!saveSetting(("use_sso"), $_POST['use_sso'])) {
-        $msg = "Erreur lors de l'enregistrement du mode d'authentification !";
-    } else {
-        $msg = "Le mode d'authentification a été enregistré.";
-    }
+if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1") {
+	
+	if (isset($_POST['auth_sso'])) {
+	    if (!in_array($_POST['auth_sso'], array("none","lemon","cas","lcs"))) {
+	    	$_POST['auth_sso'] = "none";
+	    }
+		saveSetting("auth_sso", $_POST['auth_sso']);	    
+	}
+
+	
+	if (isset($_POST['auth_locale'])) {
+	    if ($_POST['auth_locale'] != "yes") {
+	    	$_POST['auth_locale'] = "no";
+	    }
+	} else {
+		$_POST['auth_locale'] = "no";
+	}
+	saveSetting("auth_locale", $_POST['auth_locale']);
+	
+	if (isset($_POST['auth_ldap'])) {
+	    if ($_POST['auth_ldap'] != "yes") {
+	    	$_POST['auth_ldap'] = "no";
+	    }
+	} else {
+		$_POST['auth_ldap'] = "no";
+	}
+	saveSetting("auth_ldap", $_POST['auth_ldap']);
+	
+	if (isset($_POST['ldap_write_access'])) {
+	    if ($_POST['ldap_write_access'] != "yes") {
+	    	$_POST['ldap_write_access'] = "no";
+	    }
+	} else {
+		$_POST['ldap_write_access'] = "no";
+	}
+	saveSetting("ldap_write_access", $_POST['ldap_write_access']);
+	
+	if (isset($_POST['may_import_user_profile'])) {
+	    if ($_POST['may_import_user_profile'] != "yes") {
+	    	$_POST['may_import_user_profile'] = "no";
+	    }
+	} else {
+		$_POST['may_import_user_profile'] = "no";
+	}
+	saveSetting("may_import_user_profile", $_POST['may_import_user_profile']);
+	
+	if (isset($_POST['statut_utilisateur_defaut'])) {
+	    if (!in_array($_POST['statut_utilisateur_defaut'], array("professeur","responsable","eleve"))) {
+	    	$_POST['statut_utilisateur_defaut'] = "professeur";
+	    }
+		saveSetting("statut_utilisateur_defaut", $_POST['statut_utilisateur_defaut']);	    
+	}
+	
 }
 
 
@@ -90,7 +137,12 @@ if (isset($_POST['valid_sup_logs']) ) {
 
 // Changement de mot de passe obligatoire
 if (isset($_POST['valid_chgt_mdp'])) {
-    $sql = "update utilisateurs set change_mdp='y' where login != '".$_SESSION['login']."'";
+	if ((!$session_gepi->auth_ldap && !$session_gepi->auth_sso) || getSettingValue("ldap_write_access")) {
+    	$sql = "UPDATE utilisateurs SET change_mdp='y' where login != '".$_SESSION['login']."'";
+	} else {
+		$sql = "UPDATE utilisateurs SET change_mdp='y' WHERE (login != '".$_SESSION['login']."' AND auth_mode != 'ldap' AND auth_mode != 'sso')";
+	}
+
     $res = sql_query($sql);
     if ($res) {
        $msg = "La demande de changement obligatoire de mot de passe a été enregistrée.";
@@ -143,51 +195,117 @@ echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 //
 // Changement du mot de passe obligatoire
 //
-if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+// Cette option n'est proposée que si les mots de passe sont éditables dans Gepi
+//
+if ($session_gepi->auth_locale ||
+		(($session_gepi->auth_ldap || $session_gepi->auth_sso)
+				&& getSettingValue("ldap_write_access") == "yes")) {
 echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>";
-echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>";
+echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>";
 echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">";
 echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 }
+
 //
 // Paramétrage du Single Sign-On
 //
 
 echo "<h3 class='gepi'>Mode d'authentification</h3>";
-echo "<p><b>ATTENTION :</b> Dans le cas d'une authentification en Single Sign-On avec CAS, LemonLDAP ou LCS, seuls les utilisateurs pour lesquels aucun mot de passe n'est présent dans la base de données pourront se connecter. Toutefois, il est recommandé de conserver un compte administrateur avec un mot de passe afin de pouvoir vous connecter en bloquant le SSO par le biais de la variable 'block_sso' du fichier /lib/global.inc.</p>";
-echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnées du serveur CAS dans le fichier /lib/CAS/cas.sso.php.</p>";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /lib/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur.</p>";
+echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommander de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>";
+echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentifcation LDAP, ou bien une authentification locale et une authentification unique (utilisant un serveur d'authentification distinct).</p>";
+echo "<p>Le mode d'authentification est explicitement spécifié pour chaque utilisateur dans la base de données de Gepi. Assurez-vous que le mode défini correspond effectivement au mode utilisé par l'utilisateur.</p>";
+echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>";
+echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (nom, prénom, email). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>";
+echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>";
+echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>";
 echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">";
 
-echo "<input type='radio' name='use_sso' value='no' id='label_1'";
-if (getSettingValue("use_sso")=='no' OR !getSettingValue("use_sso")) echo " checked ";
-echo " /> <label for='label_1' style='cursor: pointer;'>Authentification autonome (sur la base de données de Gepi) [défaut]</label>";
+echo "<p><strong>Modes d'authentification :</strong></p>";
+echo "<p><input type='checkbox' name='auth_locale' value='yes' id='label_auth_locale'";
+if (getSettingValue("auth_locale")=='yes') echo " checked ";
+echo " /> <label for='label_auth_locale' style='cursor: pointer;'>Authentification autonome (sur la base de données de Gepi)</label>";
 
-echo "<br/><input type='radio' name='use_sso' value='lcs' id='lcs'";
-if (getSettingValue("use_sso")=='lcs') echo " checked ";
-echo " /> <label for='lcs' style='cursor: pointer;'>Authentification sur serveur LCS</label>";
+$ldap_setup_valid = LDAPServer::is_setup();
+echo "<br/><input type='checkbox' name='auth_ldap' value='yes' id='label_auth_ldap'";
+if (getSettingValue("auth_ldap")=='yes' && $ldap_setup_valid) echo " checked ";
+if (!$ldap_setup_valid) echo " disabled";
+echo " /> <label for='label_auth_ldap' style='cursor: pointer;'>Authentification LDAP";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
+echo "</label>";
+echo "</p>";
 
-echo "<br/><input type='radio' name='use_sso' value='ldap_scribe' id='label_ldap_scribe'";
-if (getSettingValue("use_sso")=='ldap_scribe') echo " checked ";
-echo " /> <label for='label_ldap_scribe' style='cursor: pointer;'>Authentification sur serveur Eole SCRIBE (LDAP)</label>";
+echo "<p>Service d'authentification unique : ";
 
-echo "<br /><input type='radio' name='use_sso' value='cas' id='label_2'";
-if (getSettingValue("use_sso")=='cas') echo " checked ";
-echo " /> <label for='label_2' style='cursor: pointer;'>Authentification SSO par un serveur CAS</label>";
+echo "<br/><input type='radio' name='auth_sso' value='none' id='no_sso'";
+if (getSettingValue("auth_sso")=='none') echo " checked ";
+echo " /> <label for='no_sso' style='cursor: pointer;'>Non utilisé</label>";
 
-echo "<br /><input type='radio' name='use_sso' value='lemon' id='label_3'";
-if (getSettingValue("use_sso")=='lemon') echo " checked ";
-echo " /> <label for='label_3' style='cursor: pointer;'>Authentification SSO par LemonLDAP</label>";
+$lcs_setup_valid = file_exists("../secure/config_lcs.inc.php") ? true : false;
+echo "<br/><input type='radio' name='auth_sso' value='lcs' id='lcs'";
+if (getSettingValue("auth_sso")=='lcs' && $lcs_setup_valid) echo " checked ";
+if (!$lcs_setup_valid) echo " disabled";
+echo " /> <label for='lcs' style='cursor: pointer;'>LCS";
+if (!$lcs_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_lcs.inc.php n'est pas présent)</em>";
+echo "</label>";
 
+$cas_setup_valid = file_exists("../secure/config_cas.inc.php") ? true : false;
+echo "<br /><input type='radio' name='auth_sso' value='cas' id='label_2'";
+if (getSettingValue("auth_sso")=='cas' && $cas_setup_valid) echo " checked ";
+if (!$cas_setup_valid) echo " disabled";
+echo " /> <label for='label_2' style='cursor: pointer;'>CAS";
+if (!$cas_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_cas.inc.php n'est pas présent)</em>";
+echo "</label>";
+
+
+echo "<br /><input type='radio' name='auth_sso' value='lemon' id='label_3'";
+if (getSettingValue("auth_sso")=='lemon') echo " checked ";
+echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>";
+echo "</p>";
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
+echo "<p><strong>Options supplémentaires :</strong></p>";
+
+echo "<p><input type='checkbox' name='may_import_user_profile' value='yes' id='label_import_user_profile'";
+if (getSettingValue("may_import_user_profile")=='yes' && $ldap_setup_valid) echo " checked ";
+if (!$ldap_setup_valid) echo " disabled";
+echo " /> <label for='label_import_user_profile' style='cursor: pointer;'>Import à la volée des comptes utilisateurs authentifiés correctement (en LDAP ou SSO).";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
+echo "</label>";
+echo "</p>";
+
+echo "<p>Statut par défaut appliqué en cas d'impossibilité de déterminer le statut lors de l'import :";
+echo "<br/><select name=\"statut_utilisateur_defaut\" size=\"1\">";
+echo "<option ";
+$duree = getSettingValue("statut_utilisateur_defaut");
+if ($duree == "professeur") echo "selected";
+echo " value='professeur'>Professeur</option>";
+echo "<option ";
+if ($duree == "eleve") echo "selected";
+echo " value='eleve'>Élève</option>";
+echo "<option ";
+if ($duree == "responsable") echo "selected";
+echo " value='responsable'>Responsable légal</option>";
+echo "</select>";
+echo "</p>";
+
+echo "<p><input type='checkbox' name='ldap_write_access' value='yes' id='label_ldap_write_access'";
+if (getSettingValue("ldap_write_access")=='yes' && $ldap_setup_valid) echo " checked ";
+if (!$ldap_setup_valid) echo " disabled";
+echo " /> <label for='label_ldap_write_access' style='cursor: pointer;'>Accès LDAP en écriture.";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
+echo "</label>";
+echo "</p>";
+echo "<br/>";
 echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
 
+echo "<input type='hidden' name='auth_options_posted' value='1' />";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 
 echo "</form>
+
+
 
 <hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
 

@@ -2,7 +2,7 @@
 /*
  * @version $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,7 @@ require_once("../lib/initialisations.inc.php");
 $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
@@ -61,11 +61,22 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
         $msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
     } else {
         $reg_password_c = md5($NON_PROTECT['password']);
-        $reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
-		//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
+        $auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+        if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
+        	// On est en mode d'écriture LDAP
+        	$ldap_server = new LDAPServer;
+        	$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $NON_PROTECT['password'],'');
+        } else {
+        	// On est en mode base de données
+        	$reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
+
+        }
+        
+    	//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
 		if ($_SESSION['statut'] == 'administrateur') {
 		  $reg_data = mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='".$user_login."'");
 		}
+		
         if (!$reg_data) {
             $msg = "Erreur lors de l'enregistrement du mot de passe !";
         } else {
@@ -76,7 +87,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 // On appelle les informations de l'utilisateur
 if (isset($user_login) and ($user_login!='')) {
-    $call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='".$user_login."'");
+    $call_user_info = mysql_query("SELECT nom,prenom,statut,auth_mode FROM utilisateurs WHERE login='".$user_login."'");
+    $auth_mode = mysql_result($call_user_info, "0", "auth_mode");
     $user_statut = mysql_result($call_user_info, "0", "statut");
     $user_nom = mysql_result($call_user_info, "0", "nom");
     $user_prenom = mysql_result($call_user_info, "0", "prenom");
@@ -92,8 +104,8 @@ require_once("../lib/header.inc");
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
-if (getSettingValue('use_sso') == "cas" or getSettingValue("use_sso") == "lemon"  or ((getSettingValue("use_sso") == "lcs") and ($testpassword =='') and (!isset($_GET['attib_mdp']))) or getSettingValue("use_sso") == "ldap_scribe") {
-    echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure.";
+if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes") {
+    echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure et que vous n'avez pas accès à l'annuaire LDAP en écriture.";
     echo "</div>\n";
     echo "</body></html>\n";
     die();

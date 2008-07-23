@@ -1,6 +1,6 @@
 <?php
-/*
- * Last modification  : 04/01/2006
+/* 
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -26,10 +26,9 @@
 $niveau_arbo = 0;
 require_once("./lib/initialisations.inc.php");
 
-if (isset($use_cas) and ($use_cas)) {
-    require_once("./lib/cas.inc.php");
-    // A ce stade, l'utilisateur est authentifié par CAS
-    phpCAS::logout();
+
+if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "cas") {
+    $session_gepi->logout_cas();
     die();
 }
 
@@ -42,11 +41,11 @@ if (isset($use_cas) and ($use_cas)) {
     $message = "<h1 class='gepi'>Déconnexion</h1>";
 	$message .= "<img src='./images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
     if (!$_GET['auto']) {
-        closeSession($_GET['auto']);
+        $session_gepi->close($_GET['auto']);
         $message .= "Vous avez fermé votre session GEPI.<br />";
         $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==2) {
-        closeSession($_GET['auto']);
+        $session_gepi->close($_GET['auto']);
         $message .= "Vous avez été déconnecté. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans la fichier \"connect.inc.php\"<br />
         <a href='aide_gepipath.php'><b>Aide à la configuration de \$GepiPath</b></a><br /><br />";
         $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
@@ -56,7 +55,7 @@ if (isset($use_cas) and ($use_cas)) {
         $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['sessionid'] . "' and START = '" . $debut_session . "'";
         if (sql_query1($sql)) {
            // Le temps d'inactivité est dépassé
-           closeSession($_GET['auto']);
+           $session_gepi->close($_GET['auto']);
            $message .= "Votre session GEPI a expiré car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans échange avec le serveur a été atteint.<br /><br />Date et heure de la déconnexion : ".$date_fermeture."<br /><br />";
            $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";
         } else {
@@ -66,7 +65,7 @@ if (isset($use_cas) and ($use_cas)) {
            Heure et date de fermeture de la fenêtre : ".$date_fermeture;
         }
     } else {
-        closeSession($_GET['auto']);
+        $session_gepi->close($_GET['auto']);
         $message .= "Votre session GEPI a expiré, ou bien vous avez été déconnecté.<br />";
         if ((getSettingValue("disable_login"))=='yes') $message .=  "<br /><font color=\"red\" size=\"+1\">Le site est momentanément inaccessible. Veuillez nous excuser de ce dérangement !</font><br /><br />";
         $message .= "<a href=\"login.php\">Ouvrir une nouvelle session</a>.";

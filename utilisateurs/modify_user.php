@@ -30,7 +30,7 @@ $niveau_arbo = 1;
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
@@ -47,7 +47,7 @@ if (!checkAccess()) {
 
 // Initialisation des variables
 $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
-
+$msg = '';
 
 // pour module trombinoscope
 $photo_largeur_max=150;
@@ -103,27 +103,39 @@ else {
 	$valide_form = 'non';
 }
 $_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécuritée
+// fin de la fonction de sécurité
 
 // fin pour module trombinoscope
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
-	// Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
-	if (getSettingValue("use_sso") == "lcs"){
-		if ($_POST['is_lcs'] == "y") {
-			$is_pwd = 'n';
-		}
-		else {
-			$is_pwd = 'y';
-		}
-	}elseif(getSettingValue("use_sso") == 'cas'){
 
-		$is_pwd = 'n';
+//------------------------------------------------------
+//--- Partie retirée par Thomas Belliard
+// Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
+//	if (getSettingValue("use_sso") == "lcs"){
+//		if ($_POST['is_lcs'] == "y") {
+//			$is_pwd = 'n';
+//		}
+//		else {
+//			$is_pwd = 'y';
+//		}
+//	}elseif(getSettingValue("use_sso") == 'cas'){
+//
+//		$is_pwd = 'n';
+//
+//	}
+//	else {
+//		$is_pwd = "y";
+//	}
+//------------------------------------------------------
 
-	}
-	else {
+	// On teste si on doit enregistrer un mot de passe ou non :
+	if ($_POST['reg_auth_mode'] == "gepi" || $gepiSettings['ldap_write_access'] == "yes") {
 		$is_pwd = "y";
+	} else {
+		$is_pwd = "n";
 	}
+	
 
 	if ($_POST['reg_nom'] == '')  {
 		$msg = "Veuillez entrer un nom pour l'utilisateur !";
@@ -143,7 +155,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		$temoin_ajout_ou_modif_ok="n";
 
 		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
-			$_POST['new_login'] = strtoupper($_POST['new_login']);
+			// Modif Thomas : essayons d'accepter des logins sensibles à la casse, pour mieux s'adapter aux sources externes (LDAP).
+			//$_POST['new_login'] = strtoupper($_POST['new_login']);
 			$reg_password_c = md5($NON_PROTECT['password1']);
 			$resultat = "";
 			if (($_POST['no_anti_inject_password1'] != $_POST['reg_password2']) and ($is_pwd == "y")) {
@@ -152,46 +165,72 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
 
 			} else {
-				$test = mysql_query("SELECT * FROM utilisateurs WHERE login = '".$_POST['new_login']."'");
+				// Le teste suivant détecte si un utilisateur existe avec le même login (insensible à la casse)
+				$test = mysql_query("SELECT login FROM utilisateurs WHERE (login = '".$_POST['new_login']."' OR login = '".strtoupper($_POST['new_login'])."')");
 				$nombreligne = mysql_num_rows($test);
 				if ($nombreligne != 0) {
 					$resultat = "NON";
 					$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
 				}
 				if ($resultat != "NON") {
-					if ($is_pwd == "y") {
-						$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='actif', change_mdp='y'");
+					// On enregistre l'utilisateur
+					
+					// Si on a activé l'accès LDAP en écriture, on commence par ça.
+					// En cas d'échec, l'enregistrement ne sera pas poursuivi.
+					
+					// On ne continue que si le LDAP est configuré en écriture, qu'on a activé
+					// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
+					if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'ldap' || $_POST['reg_auth_mode'] == 'sso')) {
+						$write_ldap = true;
+						$write_ldap_success = false;
+						// On tente de créer l'utilisateur sur l'annuaire LDAP
+						$ldap_server = new LDAPServer();
+						if ($ldap_server->test_user($_POST['new_login'])) {
+							// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
+							$write_ldap_success = true;
+							$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
+						} else {
+							$write_ldap_success = $ldap_server->add_user($_POST['new_login'], $_POST['reg_nom'], $_POST['reg_prenom'], $_POST['reg_email'], $_POST['reg_civilite'], $NON_PROTECT['password1'], $_POST['reg_statut']);
+						}						
+					} else {
+						$write_ldap = false;
 					}
-					else {
-						$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='actif', change_mdp='n'");
-					}
-
-					if ($_POST['reg_statut'] == "professeur") {
-						$del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$_POST['new_login']."'");
-						$m = 0;
-						while ($m < $_POST['max_mat']) {
-							if ($reg_matiere[$m] != '') {
-								$test = mysql_query("SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$_POST['new_login']."' and id_matiere = '$reg_matiere[$m]')");
-								$resultat = mysql_num_rows($test);
-								if ($resultat == 0) {
-									$reg = mysql_query("INSERT INTO j_professeurs_matieres SET id_professeur = '".$_POST['new_login']."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '0'");
-								}
-							}
-							$reg_matiere[$m] = '';
-							$m++;
+					
+					# On poursuit si le LDAP s'est bien passé (ou bien si on n'avait rien à faire avec...)
+					if (!$write_ldap or ($write_ldap && $write_ldap_success)) {
+						// Ensuite, on enregistre dans la base, en distinguant selon le type d'authentification.
+						if ($_POST['reg_auth_mode'] == "gepi") {
+							// On enregistre le mot de passe
+							$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='y'");
+						} else {
+							// Auth LDAP ou SSO, pas de mot de passe.
+							$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'");
 						}
+	
+						if ($_POST['reg_statut'] == "professeur") {
+							$del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$_POST['new_login']."'");
+							$m = 0;
+							while ($m < $_POST['max_mat']) {
+								if ($reg_matiere[$m] != '') {
+									$test = mysql_query("SELECT * FROM j_professeurs_matieres WHERE (id_professeur = '".$_POST['new_login']."' and id_matiere = '$reg_matiere[$m]')");
+									$resultat = mysql_num_rows($test);
+									if ($resultat == 0) {
+										$reg = mysql_query("INSERT INTO j_professeurs_matieres SET id_professeur = '".$_POST['new_login']."', id_matiere = '$reg_matiere[$m]', ordre_matieres = '0'");
+									}
+								}
+								$reg_matiere[$m] = '';
+								$m++;
+							}
+						}
+
+						$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
+						//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+						$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+						$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
+						$user_login = $_POST['new_login'];
+	
+						$temoin_ajout_ou_modif_ok="y";
 					}
-
-
-
-
-					$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
-					//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-					$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-					$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
-					$user_login = $_POST['new_login'];
-
-					$temoin_ajout_ou_modif_ok="y";
 				}
 			}
 
@@ -216,14 +255,41 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		//action s'il s'agit d'une modification
 		//
 		else if ((isset($user_login)) and ($user_login!='')) {
+			
+			// On regarde quel est le format du login, majuscule ou minuscule...
+			$test = sql_count(sql_query("SELECT login FROM utilisateurs WHERE (login = '".$user_login."')"));
+			if ($test == "0") $user_login = strtoupper($user_login);
+			
 			if (isset($_POST['deverrouillage'])) {
-				$reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() - interval " . getSettingValue("temps_compte_verrouille") . " minute  WHERE login='".strtoupper($user_login)."'");
+				$reg_data = sql_query("UPDATE utilisateurs SET date_verrouillage=now() - interval " . getSettingValue("temps_compte_verrouille") . " minute  WHERE (login='".$user_login."')");
 			}
 
+			// Si on change le mode d'authentification, il faut quelques opérations particulières
+			$old_auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+			if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
+				// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
+				$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+				mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$user_login."'");
+				$msg = "Passage à un mode d'authentification externe : ";
+				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
+				if ($gepiSettings['ldap_write_access'] == "yes") {
+					$create_ldap_user = true;
+					$msg .= "le mot de passe de l'utilisateur est inchangé.<br/>";
+				} else {
+					$msg .= "le mot de passe de l'utilisateur a été effacé.<br/>";
+				}
+			} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
+				// On passe d'un mode externe à un mode Gepi. On prévient l'admin qu'il faut modifier le mot de passe.
+				$msg = "Passage d'un mode d'authentification externe à un mode local : le mot de passe de l'utilisateur *doit* être réinitialisé.<br/>";
+				// Et si accès en écriture au LDAP, on supprime le compte.
+				if ($gepiSettings['ldap_write_access'] == "yes") {
+					$delete_ldap_user = true;
+				}
+			}
 			$change = "yes";
 			$flag = '';
 			if ($_POST['reg_statut'] != "professeur") {
-				$test = mysql_query("SELECT * FROM j_groupes_professeurs WHERE login='".$user_login."'");
+				$test = mysql_query("SELECT * FROM j_groupes_professeurs WHERE (login='".$user_login."')");
 				$nb = mysql_num_rows($test);
 				if ($nb != 0) {
 					$msg = "Impossible de changer le statut. Cet utilisateur est actuellement professeur dans certaines classes !";
@@ -299,7 +365,32 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					}
 				}
 
-				$reg_data = mysql_query("UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."' WHERE login='".$user_login."'");
+				// On effectue les opérations LDAP
+				if (isset($create_ldap_user) && $create_ldap_user) {
+					$ldap_server = new LDAPServer;
+					if ($ldap_server->test_user($user_login)) {
+						// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
+						$write_ldap_success = true;
+						$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent.";
+					} else {
+						$write_ldap_success = $ldap_server->add_user($user_login, $_POST['reg_nom'], $_POST['reg_prenom'], $_POST['reg_email'], $_POST['reg_civilite'], md5(rand()), $_POST['reg_statut']);
+						// On transfert le mot de passe à la main
+						$ldap_server->set_manual_password($user_login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
+					}
+				}
+				
+				if (isset($delete_ldap_user) && $delete_ldap_user) {
+					$ldap_server = new LDAPServer;
+					if (!$ldap_server->test_user($user_login)) {
+						// L'utilisateur n'a pas été trouvé dans l'annuaire.
+						$write_ldap_success = true;
+					} else {
+						$write_ldap_success = $ldap_server->delete_user($user_login);
+					}
+				}
+				
+				
+				$reg_data = mysql_query("UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."' WHERE login='".$user_login."'");
 				$del = mysql_query("DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
 				$m = 0;
 				while ($m < $_POST['max_mat']) {
@@ -317,7 +408,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				if (!$reg_data) {
 					$msg = "Erreur lors de l'enregistrement des données";
 				} else {
-					$msg="Les modifications ont bien été enregistrées !";
+					$msg.="Les modifications ont bien été enregistrées !";
 				}
 			}
 		} // elseif...
@@ -389,6 +480,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($user_login) and ($user_login!='')) {
 	$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='".$user_login."'");
+	$user_auth_mode = mysql_result($call_user_info, "0", "auth_mode");
 	$user_nom = mysql_result($call_user_info, "0", "nom");
 	$user_prenom = mysql_result($call_user_info, "0", "prenom");
 	$user_civilite = mysql_result($call_user_info, "0", "civilite");
@@ -440,6 +532,7 @@ if (isset($user_login) and ($user_login!='')) {
 		$user_civilite = $_POST['reg_civilite'];
 	else
 		$user_civilite = 'M.';
+	$user_auth_mode = isset($_POST['reg_auth_mode']) ? $_POST['reg_auth_mode'] : "gepi";
 	if (isset($_POST['reg_nom'])) $user_nom = $_POST['reg_nom'];
 	if (isset($_POST['reg_prenom'])) $user_prenom = $_POST['reg_prenom'];
 	if (isset($_POST['reg_statut'])) $user_statut = $_POST['reg_statut'];
@@ -453,6 +546,21 @@ $themessage2 = "Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuelle
 $titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+?>
+<script type='text/javascript'>
+	function display_password_fields(id,rw){
+		if ($(id).value=='gepi' || rw == true) {
+			$('password_fields').style.display='block';
+			$('password_fields').style.visibility='visible';
+		} else {
+			$('password_fields').style.visibility='hidden';
+			$('password_fields').style.display='none';
+		}
+	}
+</script>
+	
+<?php
 
 //echo "\$login_user_prec=$login_user_prec<br />";
 //echo "\$login_user_suiv=$login_user_suiv<br />";
@@ -485,6 +593,16 @@ if(isset($liste_options_user)){
 }
 echo "</p>\n";
 echo "</form>\n";
+
+$ldap_write_access = getSettingValue("ldap_write_access") == "yes" ? true : false;
+if (!LDAPServer::is_setup()) $ldap_write_access = false;
+
+if ($ldap_write_access) {
+	echo "<p><strong><span style='color: red;'>Attention !</strong> Un accès LDAP en écriture a été défini.
+			En conséquence, toute modification effectuée sur un utilisateur ayant pour mode d'authentification LDAP ou SSO sera répercutée sur le LDAP (cela inclut la création du mot de passe, pour les nouveaux utilisateurs).
+			Si l'utilisateur existe déjà dans l'annuaire LDAP, ses informations ne seront pas mises à jour dans l'annuaire mais il sera tout de même créé dans la base Gepi.
+			En cas de modification d'un utilisateur existant à la fois dans l'annuaire et dans Gepi, les modifications seront répercutées sur l'annuaire LDAP.</strong></p>";
+}
 ?>
 
 <form enctype="multipart/form-data" action="modify_user.php" method="post">
@@ -502,10 +620,42 @@ if (isset($user_login) and ($user_login!='')) {
 	if (isset($user_login)) echo $user_login;
 	echo "\" onchange=\"changement()\" />\n";
 }
+
+if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
+	$remarque = "<p style='font-size: small;'><em>Note : ";
+	if (!$session_gepi->auth_ldap && !$session_gepi->auth_sso) {
+		$remarque .= "les modes d'authentification LDAP et SSO sont actuellement inactifs. Si vous choisissez l'un de ces modes, l'utilisateur ne disposera d'aucun moyen de s'authentifier dans Gepi.</em></p>";
+	} else {
+		$remarque .= "l'authentification ";
+		if (!$session_gepi->auth_ldap) {
+			$remarque .= "LDAP ";
+		} else {
+			$remarque .= "SSO ";
+		}
+		$remarque .= "est actuellement inactive. Si vous choisissez ce mode d'authentification, l'utilisateur ne disposera d'aucun moyen de s'authentifier dans Gepi.</em></p>";
+	}
+	echo $remarque;
+}
+
 ?>
 <table>
 	<tr><td>
 	<table>
+<tr><td>Authentification : </td>
+<?php
+if (!isset($user_login) or $user_login == '') {
+	$rw_access = $ldap_write_access ? "true":"false";
+	$onchange_value = "changement(); display_password_fields(this.id,".$rw_access.");";
+} else {
+	$onchange_value = "changement();";
+}
+?>
+	<td><select id="select_auth_mode" name="reg_auth_mode" size="1" onchange="<?php echo $onchange_value; ?>">
+<option value='gepi' <?php if ($user_auth_mode=='gepi') echo " selected ";  ?>>Locale (base Gepi)</option>
+<option value='ldap' <?php if ($user_auth_mode=='ldap') echo " selected ";  ?>>LDAP</option>
+<option value='sso' <?php if ($user_auth_mode=='sso') echo " selected ";  ?>>SSO (Cas, LCS, LemonLDAP)</option>
+</select>
+</td></tr>
 <tr><td>Nom : </td><td><input type=text name=reg_nom size=20 <?php if (isset($user_nom)) { echo "value=\"".$user_nom."\"";}?> /></td></tr>
 <tr><td>Prénom : </td><td><input type=text name=reg_prenom size=20 <?php if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}?> /></td></tr>
 <tr><td>Civilité : </td><td><select name="reg_civilite" size="1" onchange="changement()">
@@ -589,33 +739,16 @@ echo "</table>\n";
 // fin trombinoscope
 ?>
 
-
-
-
 <?php
 if (!(isset($user_login)) or ($user_login=='')) {
-	if (getSettingValue("use_sso") == "lcs") {
-		echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\"><tr><td>\n";
-		echo "<input type=\"radio\" name=\"is_lcs\" value=\"y\" onchange=\"changement()\" checked /> Utilisateur LCS";
-		echo "<br /><i>Un utilisateur LCS est un utilisateur authentifié par LCS : dans ce cas, ne pas remplir les champs \"mot de passe\" ci-dessous.</i>\n";
-		echo "</td></tr><tr><td>\n";
-		echo "<input type=\"radio\" name=\"is_lcs\" value=\"n\" onchange=\"changement()\" /> Utilisateur local";
-		echo "<br /><i>Un utilisateur local doit systématiquement s'identifier sur GEPI avec le mot de passe ci-dessous, même s'il est un utilisateur authentifié par LCS.</i>\n";
-		echo "<br /><i><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</i>\n";
-		echo "<br /><br />\n";
-	}
-	// Modification jjocal pour créer des utilisateurs dans le cas où on passe par CAS (pas de mdp dans la table utilisateurs).
-	if (getSettingValue("use_sso") == "cas") {
-		echo '<p class="red">Votre mode d\'authentification passe par un serveur CAS, il n\'y a donc pas de mot de passe enregistré.</p>';
-	}else{
-
+	# On créé un nouvel utilisateur. On définit son mot de passe.
+	echo "<div id='password_fields' style='visibility: visible;'>";
 	echo "<table><tr><td>Mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) : </td><td><input type=password name=no_anti_inject_password1 size=20 onchange=\"changement()\" /></td></tr>\n";
 	echo "<tr><td>Mot de passe (à confirmer) : </td><td><input type=password name=reg_password2 size=20 onchange=\"changement()\" /></td></tr></table>\n";
 	echo "<br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum et doit être composé à la fois de lettres et de chiffres.</b>\n";
 	echo "<br /><b>Remarque</b> : lors de la création d'un utilisateur, il est recommandé de choisir le NUMEN comme mot de passe.<br />\n";
-	}
-	if (getSettingValue("use_sso") == "lcs") echo "</td></tr></table>\n";
-
+	echo "</td></tr></table>\n";
+	echo "</div>";
 }
 ?>
 <br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name=reg_statut size=1 onchange="changement()">

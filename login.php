@@ -1,7 +1,7 @@
 <?php
 /* $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -31,179 +31,31 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
-// On se charge immédiatement de l'authentification par SSO, si besoin
-
-$use_sso = null;
-$use_sso = getSettingValue('use_sso');
-$local = isset($_POST["local"]) ? $_POST["local"] :(isset($_GET["local"]) ? $_GET["local"] :NULL);
-
-if (isset($use_sso) and ($use_sso == "cas") and !$block_sso) {
-	require_once("./lib/cas.inc.php");
-	// A ce stade, l'utilisateur est authentifié par CAS
-	if ($multisite == 'y' AND !isset($_GET["rne"])) {
-		require_once("lib/demande_ldap.inc.php");
-	}
-	$password = '';
-	$sso_login = 'cas';
-	$result = openSession($login,$password,$sso_login);
-	$_SESSION["rne"] = isset($_GET["rne"]) ? $_GET["rne"] : NULL;
-	session_write_close();
-	header("Location:accueil.php");
-	//===============
-	// Envoi d'un mail lors de la connexion si l'option a été activée
-	mail_connexion();
-	//===============
-	die();
-} elseif (isset($use_sso) and ($use_sso == "lemon") and !$block_sso) {
-	if (isset($_GET['login'])) $login = $_GET['login']; else $login = "";
-	if (isset($_COOKIE['user'])) $cookie_user=$_COOKIE['user']; else $cookie_user="";
-	if(empty($cookie_user) or $cookie_user != $login) {
-	header("Location: ./login.php");
-	// Echec de l'authentification lemonldap
-	die();
-	echo "</body></html>";
-	}
-// A ce stade, l'utilisateur est authentifié par Lemonldap
-	$sso_login = 'lemon';
-	$password = '';
-	$login = strtoupper($login);
-	$result = openSession($login,$password,$sso_login) ;
-	session_write_close();
-	header("Location:accueil.php");
-	//===============
-	// Envoi d'un mail lors de la connexion si l'option a été activée
-	mail_connexion();
-	//===============
-	die();
-} elseif (!(isset($local)) and isset($use_sso) and ($use_sso == "lcs") and !$block_sso and
-!(isset($_POST['login']) && isset($_POST['no_anti_inject_password']))) {
-	include LCS_PAGE_AUTH_INC_PHP;
-	include LCS_PAGE_LDAP_INC_PHP;
-	list ($idpers,$login) = isauth();
-	if ($idpers) {
-		list($user, $groups)=people_get_variables($login, false);
-		$lcs_tab_login["nom"] = $user["nom"];
-		$lcs_tab_login["email"] = $user["email"];
-		$long = strlen($user["fullname"]) - strlen($user["nom"]);
-		$lcs_tab_login["fullname"] = substr($user["fullname"], 0, $long) ;
-		// A ce stade, l'utilisateur est authentifié par CAS
-		// Etablir à nouveau la connexion à la base
-		if (empty($db_nopersist))
-			$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
-		else
-			$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
-		if (!$db_c || !mysql_select_db ($dbDb)) {
-			echo "\n<p>Erreur : Echec de la connexion à la base de données";
-			exit;
-		}
-		/*
-    if (is_eleve($login)) {
-			// On renvoie à la page d'accueil des cahiers de texte
-			session_write_close();
-			header("Location: ./public/index.php");
-			die();
-		}
-		*/
-		$password = '';
-		$result = openSession($login,$password,"lcs",$lcs_tab_login) ;
-		$message = '';
-		if ($result=="1") {
-			// on efface les logs conformément à la durée de conservation des logs
-			sql_query("delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()");
-			// On renvoie à la page d'accueil
-			session_write_close();
-			header("Location: ./accueil.php");
-			die();
-		} else if ($result=="dl") {
-			$message = "GEPI est momentanément inaccessible.";
-		} else if ($result=="verrouillage") {
-			$message = "Trop de tentatives de connexion infructueuses : votre compte est momentanément verrouillé.";
-		} else if ($result=="liste_noire") {
-			$message = "Connexion impossible : vous tentez de vous connecter à partir d'une adresse IP interdite.";
-		} else if ($result=="2") {
-			$message = "Vous avez bien été identifié mais la mise à jour de votre profil dans GEPI n'a pas pu s'effectuer correctement. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
-		} else if ($result=="3") {
-			$message = "Vous avez bien été identifié mais un utilisateur \"local\" dans la base de GEPI, ayant le même login, existe déjà. Si vous pensez qu'il s'agit d'une erreur, veuillez signaler ce problème à l'administrateur du site.";
-      $message .= "<br /><br />Si vous possédez un compte local d'accès à GEPI, vous pouvez néanmoins <b><a href='./login.php?local=yes'>accéder à la page de connexion de GEPI</a></b>.";
-		} else if ($result=="4") {
-			$message = "Vous avez bien été identifié mais vous ne figurez pas parmi les utilisateurs dans la base de GEPI. Impossible de continuer. Si vous pensez qu'il s'agit d'une erreur, veuillez signaler ce problème à l'administrateur du site.";
-      $message .= "<br /><br />Vous pouvez néanmoins <b><a href='./public/index.php'>accéder aux cahiers de texte de GEPI</a></b>.";
-      $message .= "<br /><br />Si vous possédez un compte local d'accès à GEPI, vous pouvez également <b><a href='./login.php?local=yes'>accéder à la page de connexion locale de GEPI</a></b>.";
-		} else if ($result=="6") {
-			$message = "Vous avez bien été identifié mais vous <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
-		} else {
-			$message = "Vous avez bien été identifié mais un problème est survenu. Impossible de continuer. Veuillez signaler ce problème à l'administrateur du site.";
-		}
-		if ($message != '') {
-			echo $message;
-			echo "</body></html>";
-			die();
-		}
-		if (resumeSession() ) {
-			// On renvoie à la page d'accueil
-			session_write_close();
-			header("Location: ./accueil.php");
-			//===============
-			// Envoi d'un mail lors de la connexion si l'option a été activée
-			mail_connexion();
-			//===============
-			die();
-		} else {
-		// L'utilisateur n'a pas été identifié'
-			header("Location:".LCS_PAGE_AUTHENTIF);
-		}
-	} else {
-		// L'utilisateur n'a pas été identifié'
-			header("Location:".LCS_PAGE_AUTHENTIF);
-	}
-
+# On redirige vers le login SSO si le login local ou ldap n'est pas activé.
+if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->auth_ldap) {
+	header("Location:login_sso.php");
+	exit();
 }
 
 
-// User wants to be authentified
-if (isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
-	$md5password = md5($NON_PROTECT['password']);
+// Authentification Classique et Ldap
+//-----------------------------------
 
-	if (isset($use_sso) and ($use_sso == "ldap_scribe") and !$block_sso) {
-		$temp = openSession($_POST['login'], $NON_PROTECT['password'], $use_sso);
-	} else {
-		$temp = openSession($_POST['login'], $md5password);
-	}
 
-	if ($temp=="1") {
-		// on efface les logs conformément à la durée de conservation des logs
-		sql_query("delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()");
+if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
+	
+	$auth = $session_gepi->authenticate($_POST['login'], $NON_PROTECT['password']);
+
+	if ($auth == "1") {
 		// On renvoie à la page d'accueil
 		session_write_close();
 		header("Location: ./accueil.php");
-		//===============
-		// Envoi d'un mail lors de la connexion si l'option a été activée
-		mail_connexion();
-		//===============
 		die();
-	} else if ($temp=="c") {
-		session_write_close();
-		header("Location: ./utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
-		//===============
-		// Envoi d'un mail lors de la connexion si l'option a été activée
-		mail_connexion();
-		//===============
-		die();
-	} else if ($temp=="dl") {
-		$message = "Site momentanément inaccessible.";
-	} else if ($temp=="verrouillage") {
-		tentative_intrusion(2, "Verrouillage du compte ".$_POST['login']." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.");
-		$message = "Trop de tentatives de connexion infructueuses : votre compte est momentanément verrouillé.";
-	} else if ($temp=="liste_noire") {
-		tentative_intrusion(1, "Tentative de connexion depuis une IP sur liste noire (login : ".$_POST['login'].")");
-		$message = "Connexion impossible : vous tentez de vous connecter à partir d'une adresse IP interdite.";
+
 	} else {
-		tentative_intrusion(1, "Tentative de connexion avec un login ou mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login : ".$_POST['login'].")");
-		$message = "Identifiant ou mot de passe incorrect";
+		header("Location: ./login_failure.php?error=".$auth);
+		die();
 	}
-} else {
-	// on ferme une éventuelle session ouverte précédemment
-	//closeSession($_GET['auto']);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -458,7 +310,7 @@ echo "<div id='new_div_login' class='center'>\n";
 
 	<?php
 		if(getSettingValue("gepi_pmv")!="n"){
-			if (file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");
+			if (@file_exists($gepiPath."/pmv.php")) require ($gepiPath."/pmv.php");
 		}
 	?>
 

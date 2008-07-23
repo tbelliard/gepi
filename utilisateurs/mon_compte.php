@@ -32,7 +32,7 @@ if (isset($_GET['change_mdp'])) $affiche_message = 'yes';
 $message_enregistrement = "Par sécurité, vous devez changer votre mot de passe.";
 
 // Resume session
-if (resumeSession() == '0') {
+if ($session_gepi->security_check() == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
@@ -58,36 +58,84 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	$reg_password2 = isset($_POST["reg_password2"]) ? $_POST["reg_password2"] : NULL;
 	$reg_email = isset($_POST["reg_email"]) ? $_POST["reg_email"] : NULL;
 	$reg_show_email = isset($_POST["reg_show_email"]) ? $_POST["reg_show_email"] : "no";
+
+	// On commence par récupérer quelques infos.
+	$req = mysql_query("SELECT password, auth_mode FROM utilisateurs WHERE (login = '".$session_gepi->login."')");
+	$old_password = mysql_result($req, 0, "password");
+	$user_auth_mode = mysql_result($req, 0, "auth_mode");
 	if ($no_anti_inject_password_a != '') {
-		$reg_password_a_c = md5($NON_PROTECT['password_a']);
-		if ($_SESSION['password'] == $reg_password_a_c) {
-			if ($no_anti_inject_password1 != $reg_password2) {
-				$msg = "Erreur lors de la saisie du mot de passe, les deux mots de passe ne sont pas identiques. Veuillez recommencer !";
-			} else if  ($no_anti_inject_password_a == $no_anti_inject_password1) {
-				$msg = "ERREUR : Vous devez choisir un nouveau mot de passe différent de l'ancien.";
-			} else if (!(verif_mot_de_passe($NON_PROTECT['password1'],$flag))) {
-				$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
-			} else {
-				$reg_password1 = md5($NON_PROTECT['password1']);
-				$reg = mysql_query("UPDATE utilisateurs SET password = '$reg_password1', change_mdp='n' WHERE login = '" . $_SESSION['login'] . "'");
-				if ($reg) {
-					$msg = "Le mot de passe a ete modifié !";
-					$no_modif = "no";
-					$_SESSION['password'] = $reg_password1;
-					if (isset($_POST['retour'])) {
-						header("Location:../accueil.php?msg=$msg");
-						die();
+		// Modification du mot de passe
+		
+		if ($no_anti_inject_password1 == $reg_password2) {
+			// On a bien un mot de passe et sa confirmation qui correspond 
+			
+			if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == "yes") {
+				// On est en mode d'écriture LDAP.
+				// On tente un bind pour tester le nouveau mot de passe, et s'assurer qu'il
+				// est différent de celui actuellement utilisé :
+				$ldap_server = new LDAPServer;
+				$test_bind_nouveau = $ldap_server->authenticate_user($session_gepi->login, $no_anti_inject_password1);
+				
+				// On teste aussi l'ancien mot de passe.
+				$test_bind_ancien = $ldap_server->authenticate_user($session_gepi->login, $no_anti_inject_password_a);
+				
+				if (!$test_bind_ancien) {
+					// L'ancien mot de passe n'est pas correct
+					$msg = "L'ancien mot de passe n'est pas correct !";
+				} elseif ($test_bind_nouveau) {
+					// Le nouveau mot de passe est le même que l'ancien
+					$msg = "ERREUR : Vous devez choisir un nouveau mot de passe différent de l'ancien.";
+				} else {
+					// C'est bon, on enregistre
+					$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', '', '', $no_anti_inject_password1,'');
+					if ($write_ldap_success) {
+						$msg = "Le mot de passe a ete modifié !";
+						$reg = mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '" . $session_gepi->login . "'");
+						$no_modif = "no";
+						if (isset($_POST['retour'])) {
+							header("Location:../accueil.php?msg=$msg");
+							die();
+						}
 					}
+				}
+			} else {
+				// On fait la mise à jour sur la base de données
+				$reg_password_a_c = md5($NON_PROTECT['password_a']);
+				$old_password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE (login = '".$session_gepi->login."')"), 0);
+				if ($old_password == $reg_password_a_c) {
+					if  ($no_anti_inject_password_a == $no_anti_inject_password1) {
+						$msg = "ERREUR : Vous devez choisir un nouveau mot de passe différent de l'ancien.";
+					} else if (!(verif_mot_de_passe($NON_PROTECT['password1'],$flag))) {
+						$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
+					} else {
+						$reg_password1 = md5($NON_PROTECT['password1']);
+						$reg = mysql_query("UPDATE utilisateurs SET password = '$reg_password1', change_mdp='n' WHERE login = '" . $_SESSION['login'] . "'");
+						if ($reg) {
+							$msg = "Le mot de passe a ete modifié !";
+							$no_modif = "no";
+							if (isset($_POST['retour'])) {
+								header("Location:../accueil.php?msg=$msg");
+								die();
+							}
+						}
+					}
+				} else {
+					$msg = "L'ancien mot de passe n'est pas correct !";
 				}
 			}
 		} else {
-			$msg = "L'ancien mot de passe n'est pas correct !";
+			$msg = "Erreur lors de la saisie du mot de passe, les deux mots de passe ne sont pas identiques. Veuillez recommencer !";
 		}
 	}
+	
 	$call_email = mysql_query("SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
 	$user_email = mysql_result($call_email, 0, "email");
 	$user_show_email = mysql_result($call_email, 0, "show_email");
 	if ($user_email != $reg_email) {
+		if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == "yes") {
+			if (!isset($ldap_server)) $ldap_server = new LDAPServer;
+			$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', $reg_email, '', '', '');
+		}
 		$reg = mysql_query("UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
 		if ($reg) {
 			$msg = $msg."<br />L'adresse e_mail a été modifiéé !";
@@ -119,7 +167,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
 
 		$repertoire = '../photos/personnels/';
-  	$ancien_code_photo = md5(strtolower($user_login));
+  		$ancien_code_photo = md5(strtolower($user_login));
 		$nouveau_code_photo = $ancien_code_photo;
 
 		/*
@@ -336,20 +384,24 @@ $titre_page = "Gérer son compte";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// dans le cas de LCS, existence d'utilisateurs locaux repérés grâce au champ password non vide.
-$testpassword = sql_query1("select password from utilisateurs where login = '".$_SESSION['login']."'");
-if ($testpassword == -1) $testpassword = '';
-// Test SSO
-$test_sso = ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and ((getSettingValue("use_sso") != "lcs") or ($testpassword !='')) and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso);
-if ($test_sso) {
-    $affiche_bouton_submit = 'yes';
+// On initialise un flag pour savoir si l'utilisateur est 'éditable' ou non.
+// Cela consiste à déterminer s'il s'agit d'un utilisateur local ou LDAP, et dans
+// ce dernier cas à savoir s'il s'agit d'un accès en écriture ou non.
+if ($session_gepi->current_auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes") {
+	$editable_user = true;
+	$affiche_bouton_submit = 'yes';
 } else {
-    $affiche_bouton_submit = 'no';
+	$editable_user = false;
+	$affiche_bouton_submit = 'no';
 }
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 echo "<h2>Informations personnelles *</h2>\n";
+
+if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == "yes") {
+	echo "<p><span style='color: red;'>Note :</span> les modifications de mot de passe et d'email que vous effectuerez sur cette page seront propagées à l'annuaire central, et donc aux autres services qui y font appel.</p>";
+}
 
 echo "<table>\n";
 echo "<tr><td>\n";
@@ -358,7 +410,7 @@ echo "<tr><td>\n";
 	echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>\n";
 	echo "<tr><td>Nom : </td><td>".$user_nom."</td></tr>\n";
 	echo "<tr><td>Prénom : </td><td>".$user_prenom."</td></tr>\n";
-	if ($test_sso) {
+	if ($editable_user) {
 		echo "<tr><td>Email : </td><td><input type=text name=reg_email size=30";
 		if ($user_email) { echo " value=\"".$user_email."\"";}
 		echo " /></td></tr>\n";
@@ -592,7 +644,7 @@ if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR
 	echo "Dans l'hypothèse où vous autorisez l'affichage de votre email, celle-ci ne sera accessible que par les élèves que vous avez en classe et/ou leurs responsables légaux disposant d'un identifiant pour se connecter à Gepi.</p>\n";
 }
 // Changement du mot de passe
-if ($test_sso) {
+if ($editable_user) {
 	echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>\n";
 	echo "<p><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
 	if ($flag == 1)

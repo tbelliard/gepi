@@ -28,8 +28,44 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once ("../lib/initialisations.inc.php");
 
+
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
+
+if (isset ($_POST['submit'])) {
+    if (isset ($_POST['login']) && isset ($_POST['no_anti_inject_password'])) {
+	$_POST['login'] = strtoupper($_POST['login']);
+        $md5password = md5($NON_PROTECT['password']);
+        $sql = "SELECT UPPER(login) login, password, prenom, nom, statut FROM utilisateurs WHERE (login = '" . $_POST['login'] . "' and password = '" . $md5password . "' and etat != 'inactif' and statut = 'administrateur')";
+
+        $res_user = sql_query($sql);
+        $num_row = sql_count($res_user);
+
+        if ($num_row == 1) {
+            $valid = 'yes';
+	    $resultat_session = "1";
+	    $_SESSION['login'] = $_POST['login'];
+	    $_SESSION['statut'] = 'administrateur';
+	    $_SESSION['etat'] = 'actif';
+	    $_SESSION['start'] = mysql_result(mysql_query("SELECT now();"),0);
+	    $sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
+	                '" . $_SESSION['login'] . "',
+	                '".$_SESSION['start']."',
+	                '" . session_id() . "',
+	                '" . $_SERVER['REMOTE_ADDR'] . "',
+	                '" . $_SERVER['HTTP_USER_AGENT'] . "',
+	                '" . $_SERVER['HTTP_REFERER'] . "',
+	                '1',
+	                '".$_SESSION['start']."' + interval " . getSettingValue('sessionMaxLength') . " minute
+	            )
+	        ;";
+	    $res = sql_query($sql);
+	    
+        } else {
+            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'êtes pas administrateur.";
+        }
+    }
+}
 
 function traite_requete($requete = "") {
     global $pb_maj;
@@ -94,19 +130,7 @@ $beta = '';
 if ($gepiBetaVersion != '')
     $beta = "-beta" . $gepiBetaVersion;
 
-if (isset ($_POST['submit'])) {
-    if (isset ($_POST['login']) && isset ($_POST['no_anti_inject_password'])) {
-        $md5password = md5($NON_PROTECT['password']);
-        $sql = "select upper(login) login, password, prenom, nom, statut from utilisateurs where login = '" . $_POST['login'] . "' and password = '" . $md5password . "' and etat != 'inactif' and statut='administrateur' ";
-        $res_user = sql_query($sql);
-        $num_row = sql_count($res_user);
-        if ($num_row == 1) {
-            $valid = 'yes';
-        } else {
-            $message = "Identifiant ou mot de passe incorrect, ou bien vous n'êtes pas administrateur.";
-        }
-    }
-}
+
 ?>
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
     <HTML>
@@ -6609,6 +6633,104 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 
 	//==========================================================
 
+    // Modification de la table utilisateurs (ajout de auth_mode)
+    $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'auth_mode'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE utilisateurs ADD auth_mode ENUM( 'gepi', 'ldap', 'sso' ) NOT NULL DEFAULT 'gepi';");
+      	if ($result_inter == '') {
+          $result .= "<font color=\"green\">Le champ auth_mode a bien été créé dans la table utilisateurs !</font><br />";
+	  if (getSettingValue("use_sso") == 'yes') {
+		$update = mysql_query("UPDATE utilisateurs SET auth_mode = 'sso'");
+	  }
+     	} else {
+          $result .= $result_inter."<br />";
+	}
+    } else {
+      $result .= "<font color=\"blue\">Le champ auth_mode dans la table utilisateurs existe déjà.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_locale'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('auth_locale', 'yes');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre auth_locale à 'yes': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre auth_locale à 'yes': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre auth_locale existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_ldap'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('auth_ldap', 'no');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre auth_ldap à 'no': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre auth_ldap à 'no': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre auth_ldap existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_sso'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('auth_sso', 'no');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre auth_sso à 'no': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre auth_sso à 'no': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre auth_sso existe déjà dans la table setting.</font><br />";
+    }
+
+    if (getSettingValue('use_sso') == 'yes') {
+	saveSetting('auth_sso','yes');
+	saveSetting('auth_locale','no');
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'use_sso'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==1){
+        $result_inter = traite_requete("DELETE FROM setting WHERE (name = 'use_sso');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Suppression du paramètre use_sso: Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Suppression du paramètre use_sso: Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre use_sso est déjà supprimé de la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'may_import_user_profile'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('may_import_user_profile', 'no');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre may_import_user_profile à 'no': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre may_import_user_profile à 'no': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre may_import_user_profile existe déjà dans la table setting.</font><br />";
+    }
+
+    $req_test=mysql_query("SELECT value FROM setting WHERE name = 'ldap_write_access'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('ldap_write_access', 'no');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre ldap_write_access à 'no': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre ldap_write_access à 'no': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre ldap_write_access existe déjà dans la table setting.</font><br />";
+    }
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
