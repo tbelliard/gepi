@@ -231,8 +231,24 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 }
 // fin de l'envoi des photos du trombinoscope
 
+unset($mode);
+$mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
+
 //**************** EN-TETE *****************************
-$titre_page = "Gestion des utilisateurs";
+if($mode=='personnels') {
+	$titre_page = "Gestion des personnels";
+}
+/*
+elseif($mode=='eleves') {
+	$titre_page = "Gestion des comptes élèves";
+}
+elseif($mode=='responsables') {
+	$titre_page = "Gestion des comptes responsables";
+}
+*/
+else {
+	$titre_page = "Gestion des utilisateurs";
+}
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************************
 
@@ -248,8 +264,8 @@ $order_by = isset($_POST["order_by"]) ? $_POST["order_by"] : (isset($_GET["order
 $chemin_retour = urlencode($_SERVER['REQUEST_URI']);
 $_SESSION['chemin_retour'] = "../utilisateurs/index.php";
 
-unset($mode);
-$mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
+//unset($mode);
+//$mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
 
 if ($mode != "personnels") {
 ?>
