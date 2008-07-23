@@ -345,7 +345,7 @@ mavar = mavar.split(',');
 <?php if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '') ) { ?>
 
 <div style="text-align: center;">
-<table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : thin dashed #242424; background-color: #FFFFB8;">
+<table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : thin dashed #242424; background-color: #FFFFB8;" summary='Choix'>
 <tr valign="top">
 	<td align="left"><font face="Arial, Helvetica, sans-serif">TROMBINOSCOPE <?php
 		$datej = date('Y-m-d');
@@ -373,10 +373,11 @@ mavar = mavar.split(',');
 	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
 			$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
 			$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
-	if ( $action_affiche === 'classe' ) { echo "Classe : ".$donnees_qui['nom_complet']; echo ' ('.ucwords($donnees_qui['classe']).')';}
-	if ( $action_affiche === 'groupe' ) { echo "Groupe : ".$donnees_qui['name']; }
-	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".$donnees_qui['nom_complet']; }
-	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
+	if ( $action_affiche === 'classe' ) { echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
+											echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';}
+	if ( $action_affiche === 'groupe' ) { echo "Groupe : ".htmlentities($donnees_qui['name']); }
+	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
+	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
 	if ( $action_affiche === 'statusgepi' ) { echo "Status : ".$statusgepi; }
 
 
@@ -417,6 +418,7 @@ mavar = mavar.split(',');
 										WHERE u.login = jpm.id_professeur
 									AND m.matiere = jpm.id_matiere
 										AND m.matiere = "'.$discipline.'"
+										AND u.etat="actif"
 										GROUP BY u.nom, u.prenom
 										ORDER BY nom ASC, prenom ASC'; }
 
@@ -440,7 +442,7 @@ function matiereprof($prof, $equipepeda) {
 				AND jgp.login = "'.$prof.'"';
 		$execution_matiere = mysql_query($requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysql_error());
 		while ($donnee_matiere = mysql_fetch_array($execution_matiere)) {
-			$prof_de = $prof_de.'<br />'.$donnee_matiere['nom_complet'].' ';
+			$prof_de = $prof_de.'<br />'.htmlentities($donnee_matiere['nom_complet']).' ';
 		}
 	}
 	return ($prof_de);
@@ -477,7 +479,7 @@ $total = $cpt_photo;
 
 <p align="center"><img src="images/barre.gif" width="550" height="2" alt="Barre" /></p>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<table width="100%" border="0" cellspacing="0" cellpadding="4" summary='Trombino'>
 <?php
 	$i = 1;
 	while( $i < $total) {
