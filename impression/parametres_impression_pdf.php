@@ -53,7 +53,7 @@ require_once ("./liste.inc.php");
 session_cache_limiter('private');
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 
 $ok=isset($_POST['ok']) ? $_POST["ok"] : 0;
 

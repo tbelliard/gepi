@@ -36,7 +36,7 @@ if (getSettingValue("active_module_absence")!='y') {
 
 // Resume session
 
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
     die();

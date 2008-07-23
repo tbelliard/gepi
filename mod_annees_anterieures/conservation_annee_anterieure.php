@@ -26,7 +26,7 @@ require_once("../lib/initialisations.inc.php");
 require_once("./fonctions_annees_anterieures.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();
@@ -95,11 +95,10 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 		} else {
 			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
 		}
-
+		
 }
 
 $themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
-
 
 //**************** EN-TETE *****************
 $titre_page = "Conservation des données antérieures (autres que AID)";

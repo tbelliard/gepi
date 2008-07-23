@@ -25,7 +25,7 @@
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
@@ -93,10 +93,9 @@ if (isset($_POST['is_posted'])) {
     // L'admin a validé la procédure, on procède donc...
     include "../lib/eole_sync_functions.inc.php";
     // On commence par récupérer toutes les matières depuis le LDAP
-    include "../secure/config_ldap.inc.php";
-    $ds = connect_ldap($ldap_adresse,$ldap_port,$ldap_login,$ldap_pwd);
-    $sr = ldap_search($ds,$ldap_base,"(description=Matiere*)");
-    $info = ldap_get_entries($ds,$sr);
+    $ldap_server = new LDAPServer;
+    $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(description=Matiere*)");
+    $info = ldap_get_entries($ldap_server->ds,$sr);
 
 
     if ($_POST['record'] == "yes") {

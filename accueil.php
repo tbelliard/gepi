@@ -1,5 +1,6 @@
 <?php
 $starttime = microtime();
+
 /*
  * $Id$
  *
@@ -35,7 +36,8 @@ if (test_maj()) {
 }
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
+
 if ($resultat_session == 'c') {
    header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
    die();
@@ -1449,7 +1451,7 @@ if ($_SESSION["statut"] == 'autre') {
 	while($a < $nbre_a){
 
 		// On récupère le droit sur le fichier
-		$sql_f = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["special_id"]."' AND nom_fichier = '".$autorise[$a][0]."' ORDER BY id";
+		$sql_f = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$_SESSION["statut_special_id"]."' AND nom_fichier = '".$autorise[$a][0]."' ORDER BY id";
 		$query_f = mysql_query($sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
 		$nbre = mysql_num_rows($query_f);
 		if ($nbre >= 1) {

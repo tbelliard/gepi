@@ -26,7 +26,7 @@ $nb_max_cases = 3;
 $non_defini = "<font color='red'>Non défini</font>";
 require_once("../lib/initialisations.inc.php");
 
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();

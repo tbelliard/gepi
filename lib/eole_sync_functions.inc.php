@@ -13,12 +13,20 @@
  			$_civilite = "Mme";
  		}
 
+ 	// Si l'authentification CAS est configurée, alors l'utilisateur sera mis en mode SSO
+ 	// Sinon il sera en mode Gepi classique...
+ 	if ($session_gepi->auth_sso == "cas") {
+ 		$auth_mode = "sso";
+ 	} else {
+ 		$auth_mode = "gepi";
+ 	}
+ 		
  	// Si l'utilisateur existe déjà, on met simplement à jour ses informations...
  	$test = mysql_query("SELECT login FROM utilisateurs WHERE login = '" . $_login . "'");
  	if (mysql_num_rows($test) > 0) {
- 		$record = mysql_query("UPDATE utilisateurs SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', etat = 'actif' WHERE login = '" . $_login . "'");
+ 		$record = mysql_query("UPDATE utilisateurs SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat = 'actif' WHERE login = '" . $_login . "'");
  	} else {
-		$query = "INSERT into utilisateurs SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', password = '', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', etat ='actif', change_mdp = 'n'";
+		$query = "INSERT into utilisateurs SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', password = '', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat ='actif', change_mdp = 'n'";
 		$record = mysql_query($query);
  	}
 

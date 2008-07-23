@@ -35,7 +35,7 @@ require_once("../lib/initialisations.inc.php");
 require_once("./fonctions_edt.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
    header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
    die();
@@ -59,7 +59,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 if ($_SESSION["statut"] == "administrateur") {
 	$autorise = "oui";
 }
-elseif ($_SESSION["statut"] == "scolarite" AND $grrSettings['scolarite_modif_cours'] == "y") {
+elseif ($_SESSION["statut"] == "scolarite" AND $gepiSettings['scolarite_modif_cours'] == "y") {
 	$autorise = "oui";
 }
 else {

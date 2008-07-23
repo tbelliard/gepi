@@ -29,7 +29,7 @@ $variables_non_protegees = 'yes';
 require_once("./lib/initialisations.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 
 $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 

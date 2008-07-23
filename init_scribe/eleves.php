@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -25,7 +25,7 @@
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
@@ -148,8 +148,7 @@ if (isset($_POST['step'])) {
     include "../lib/eole_sync_functions.inc.php";
 
     // On se connecte au LDAP
-    include "../secure/config_ldap.inc.php";
-    $ds = connect_ldap($ldap_adresse,$ldap_port,$ldap_login,$ldap_pwd);
+    $ldap_server = new LDAPServer;
 
 
     //----***** STEP 1 *****-----//
@@ -169,8 +168,8 @@ if (isset($_POST['step'])) {
             }
 
                 // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
-            $sr = ldap_search($ds,$ldap_base,"(description=Classe*)");
-            $data = ldap_get_entries($ds,$sr);
+            $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(description=Classe*)");
+            $data = ldap_get_entries($ldap_server->ds,$sr);
 
             for ($i=0;$i<$data["count"];$i++) {
 
@@ -275,8 +274,8 @@ if (isset($_POST['step'])) {
             // On commence par "marquer" les classes existantes dans la base
             $sql = mysql_query("UPDATE periodes SET verouiller='T'");
 
-            $sr = ldap_search($ds,$ldap_base,"(description=Classe*)");
-            $data = ldap_get_entries($ds,$sr);
+            $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(description=Classe*)");
+            $data = ldap_get_entries($ldap_server->ds,$sr);
 
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
             echo "<input type=hidden name='record' value='yes'>";
@@ -418,8 +417,8 @@ if (isset($_POST['step'])) {
         for ($i=0;$i<$nb_classes;$i++) {
             $current_classe = mysql_result($classes, $i, "classe");
             $current_classe_id = mysql_result($classes, $i, "id");
-            $sr = ldap_search($ds,$ldap_base,"(&(objectClass=administrateur)(divcod=" . $current_classe ."))");
-            $prof = ldap_get_entries($ds,$sr);
+            $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(&(objectClass=administrateur)(divcod=" . $current_classe ."))");
+            $prof = ldap_get_entries($ldap_server->ds,$sr);
             if (array_key_exists(0, $prof)) {
                 $pp[$current_classe_id] = $prof[0]["uid"][0];
             }
@@ -430,8 +429,8 @@ if (isset($_POST['step'])) {
         //print_r($pp);
         //echo "</pre>";
 
-        $sr = ldap_search($ds,$ldap_base,"(&(uid=*)(objectClass=Eleves))");
-        $info = ldap_get_entries($ds,$sr);
+        $sr = ldap_search($ldap_server->ds,$ldap_server->base_dn,"(&(uid=*)(objectClass=Eleves))");
+        $info = ldap_get_entries($ldap_server->ds,$sr);
 
         for($i=0;$i<$info["count"];$i++) {
 

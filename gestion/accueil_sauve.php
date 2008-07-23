@@ -34,7 +34,7 @@ unset($action);
 $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : NULL);
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 //Décommenter la ligne suivante pour le mode "manuel et bavard"
 //$debug="yes";
 

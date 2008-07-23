@@ -37,7 +37,7 @@ $reg_prof_login = isset($_POST["reg_prof_login"]) ? $_POST["reg_prof_login"] : N
 $reg_add_eleve_login = isset($_POST["reg_add_eleve_login"]) ? $_POST["reg_add_eleve_login"] : NULL;
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();

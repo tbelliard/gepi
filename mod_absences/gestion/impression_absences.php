@@ -30,7 +30,7 @@ include("../lib/functions.php");
 extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
 die();

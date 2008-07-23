@@ -33,7 +33,7 @@ if (!VerifAidIsAcive($indice_aid,"")) {
 $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
 
 
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();

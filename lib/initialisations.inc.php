@@ -22,7 +22,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
      die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("./lib/session.inc");
+   require_once("./lib/LDAPServer.class.php");
+   require_once("./lib/Session.class.php");
 
 // Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
@@ -47,7 +48,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../../lib/session.inc");
+   require_once("../../lib/LDAPServer.class.php");
+   require_once("../../lib/Session.class.php");
 
 // Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
 } else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
@@ -72,7 +74,8 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../../../lib/session.inc");
+   require_once("../../../lib/LDAPServer.class.php");
+   require_once("../../../lib/Session.class.php");
 
 // Pour les scripts situés dans le sous-répertoire "public"
 // Ces scripts font appel au fichier /public/secure/connect.inc et non pas /secure/connect.inc
@@ -95,6 +98,9 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
     if (!loadSettings()) {
         die("Erreur chargement settings");
     }
+   // Session related functions
+   require_once("../lib/LDAPServer.class.php");
+   require_once("../lib/Session.class.php");
 
 // Pour les scripts situés dans un sous-répertoire GEPI
 } else {
@@ -119,13 +125,17 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
        die("Erreur chargement settings");
    }
    // Session related functions
-   require_once("../lib/session.inc");
+   require_once("../lib/LDAPServer.class.php");
+   require_once("../lib/Session.class.php");
 }
 
 	// Modif pour la longueur des logins par $longmax_login du global.inc
 	// Si le champ de setting existe alors il faut l'utiliser car il est réglé par la page param_gen.php
-	if(isset($grrSettings['longmax_login'])){
-		$longmax_login = $grrSettings['longmax_login'];
+	if(isset($gepiSettings['longmax_login'])){
+		$longmax_login = $gepiSettings['longmax_login'];
 	}
 
+// Initialisaton de la session Gepi :
+$session_gepi = new Session();
+	
 ?>

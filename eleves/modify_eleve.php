@@ -97,7 +97,7 @@ $motif_rech=isset($_POST['motif_rech']) ? $_POST['motif_rech'] : (isset($_GET['m
 
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();

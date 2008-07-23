@@ -416,9 +416,9 @@ if (isset($titre_page)) {
 			}
 			echo "Responsable de $chaine_enfants";
 
-		}elseif($_SESSION["statut"] == "autre"){
+		} elseif($_SESSION["statut"] == "autre") {
 
-			echo $_SESSION["special"];
+			echo $_SESSION["statut_special"];
 		}
 
 		// A QUOI SERT CE $temp ?

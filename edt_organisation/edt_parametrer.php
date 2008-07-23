@@ -35,7 +35,7 @@ require_once("../lib/initialisations.inc.php");
 require_once("./fonctions_edt.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();

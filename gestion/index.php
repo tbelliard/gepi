@@ -26,7 +26,7 @@ require_once("../lib/initialisations.inc.php");
 
 // Resume session
 
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
     header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
     die();
@@ -148,24 +148,21 @@ require_once("../lib/header.inc");
 <th colspan='2'><img src='../images/icons/package.png' alt='Initialisation' class='link' /> - Outils d'initialisation</th>
 </tr>
 <?php
-$use_sso = getSettingValue('use_sso');
-if ($use_sso == "ldap_scribe") {
+
+if (LDAPServer::is_setup()) {
     ?>
 <tr>
     <td width='200'><a href="../init_scribe/index.php">Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe</a></td>
     <td>Permet d'importer les données élèves, classes, professeurs, matières directement depuis le serveur LDAP de Scribe.
     </td>
 </tr>
-<?php
-} else if ($use_sso == "lcs") {
-    ?>
 <tr>
     <td width='200'><a href="../init_lcs/index.php">Initialisation à partir de l'annuaire LDAP du serveur LCS</a></td>
     <td>Permet d'importer les données élèves, classes, professeurs, matières directement depuis le serveur LDAP de LCS.
     </td>
 </tr>
 <?php
-} else {
+}
 ?>
 <tr>
     <td width='200'><a href="../init_csv/index.php">Initialisation des données à partir de fichiers CSV</a></td>
@@ -190,10 +187,6 @@ if ($use_sso == "ldap_scribe") {
 	<span style='color:red; '>Cette solution ne sera plus maintenue dans la future version 1.5.2 de Gepi.</span>
     </td>
 </tr>
-<?php
-}
-?>
-
 <tr>
     <td width='200'><a href="../initialisation/index.php">Initialisation des données à partir des fichiers GEP</a> (OBSOLETE)</td>
     <td>Permet d'importer les données élèves, classes, professeurs, matières depuis les fichiers GEP. Cette procédure est désormais obsolète avec la généralisation de Sconet.<br />

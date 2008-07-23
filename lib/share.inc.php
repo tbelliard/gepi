@@ -946,7 +946,7 @@ function checkAccess() {
     	$sql = "SELECT autorisation
 	    from droits_speciaux
     	where nom_fichier = '" . substr($url['path'], strlen($gepiPath)) . "'
-		AND id_statut = '" . $_SESSION['special_id'] . "'";
+		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
 
     }else{
 

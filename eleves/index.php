@@ -38,7 +38,7 @@ extract($_GET, EXTR_OVERWRITE);
 extract($_POST, EXTR_OVERWRITE);
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
@@ -47,7 +47,7 @@ if ($resultat_session == 'c') {
 	die();
 };
 
-//log_debug('Après resumeSession()');
+//log_debug('Après $session_gepi->security_check()');
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");

@@ -27,7 +27,7 @@
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
-$resultat_session = resumeSession();
+$resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
 header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 die();
@@ -46,7 +46,7 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
         if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
     } else {
         $del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
-        $grrSettings['num_aid_trombinoscopes']="";
+        $gepiSettings['num_aid_trombinoscopes']="";
     }
 }
 if (isset($_POST['activer'])) {
