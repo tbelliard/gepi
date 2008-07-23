@@ -44,23 +44,7 @@ $block_sso = false ; // false|true
 
 $style_screen_ajout = "n";
 
-##############################################################
-# Paramètres propres à une authentification sur un serveur LCS
-##############################################################
-// Page d'authentification LCS
-define('LCS_PAGE_AUTHENTIF',"../../lcs/auth.php");
-// Page de la librairie ldap
-define('LCS_PAGE_LDAP_INC_PHP',"/var/www/Annu/includes/ldap.inc.php");
-// R?alise la connexion ? la base d'authentification du LCS et include des fonctions de lcs/includes/functions.inc.php
-define('LCS_PAGE_AUTH_INC_PHP',"/var/www/lcs/includes/headerauth.inc.php");
-// adresse du serveur LDAP du SE3 (necessaire pour l'importation initiale de la base)
-$lcs_ldap_host = 'lpi200.lpi.ac-poitiers.fr';
-// le port usuel du serveur
-$lcs_ldap_port = '389';
-// la base DN
-$lcs_ldap_base_dn = "dc=lpi,dc=ac-poitiers,dc=fr";
-
-# Apr?s installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: mysql_real_escape_string() ...",
+# Après installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: mysql_real_escape_string() ...",
 # votre version de PHP est inf?rieure ? 4.3.0.
 # En effet, la fonction mysql_real_escape_string() est disponible ? partir de la version 4.3.0 de php.
 # Vous devriez mettre ? jour votre version de php.
