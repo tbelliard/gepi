@@ -375,7 +375,10 @@ mavar = mavar.split(',');
 			$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
 	if ( $action_affiche === 'classe' ) { echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
 											echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';}
-	if ( $action_affiche === 'groupe' ) { echo "Groupe : ".htmlentities($donnees_qui['name']); }
+	if ( $action_affiche === 'groupe' ) {
+		$current_group=get_group($groupe);
+		echo "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+	}
 	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
 	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
 	if ( $action_affiche === 'statusgepi' ) { echo "Status : ".$statusgepi; }
@@ -514,6 +517,15 @@ $total = $cpt_photo;
 				if ( $matiere_prof[$i] != '' ) {
 					echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
 				}
+				if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
+					/*
+					$sql="SELECT c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='".$login_trombinoscope[$i]."' ORDER BY jec.periode;";
+					$res_class_ele=mysql_query($sql);
+					*/
+					$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
+					echo "<br />".$tab_ele_classes['liste'];
+				}
+
 				$i = $i + 1;
 				//echo "</span>\n";
 			}
