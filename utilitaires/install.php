@@ -73,29 +73,11 @@ if (file_exists($nom_fic)) {
 	require_once("../secure/connect.inc.php");
 	if (@mysql_connect("$dbHost", "$dbUser", "$dbPass")) {
 		if (@mysql_select_db("$dbDb")) {
-			// Premier test
-			$liste2 = array();
-			$tableNames = @mysql_list_tables($dbDb);
-			$j = '0';
-			while ($j < @mysql_num_rows($tableNames)) {
-				$liste2[$j] = @mysql_tablename($tableNames, $j);
-				$j++;
-			}
-			$j = '0';
-			$test1='yes';
-			while ($j < count($liste_tables)) {
-				$temp = $liste_tables[$j];
-				if (!(in_array($temp, $liste2))) {
-					$correct_install='no';
-					$test1 = 'no';
-				}
-				$j++;
-			}
 			$call_test = @mysql_query("SELECT * FROM setting WHERE NAME='sessionMaxLength'");
 			$test2 = @mysql_num_rows($call_test);
 			$call_test = @mysql_query("SELECT * FROM utilisateurs");
 			$test3 = @mysql_num_rows($call_test);
-			if (($test2 !=0) and ($test1 != 'no') and ($test3 !=0)) {
+			if (($test2 !=0) and ($test3 !=0)) {
 				begin_html();
 				if ($etape == 5) {
 					echo "<br /><h2 class='gepi'>Dernière étape : C'est terminé !</h2>\n";

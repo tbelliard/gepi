@@ -212,62 +212,6 @@ $type_etablissement2["prive"]["EREA"] = "privé";
 $type_etablissement2["prive"]["tous_niveaux"] = "privé";
 $type_etablissement2["prive"]["aucun"] = "";
 
-
-# Liste des tables
-$liste_tables = array(
-"absences",
-"absences_gep",
-"aid",
-"aid_appreciations",
-"aid_config",
-"avis_conseil_classe",
-"classes",
-"droits",
-"eleves",
-"responsables",
-"etablissements",
-"j_aid_eleves",
-"j_aid_eleves_resp",
-"j_aid_utilisateurs",
-//"j_aid_utilisateurs_gest", // active_version152
-"j_eleves_classes",
-"j_eleves_cpe",
-"j_eleves_etablissements",
-"j_eleves_professeurs",
-"j_eleves_regime",
-"j_professeurs_matieres",
-"log",
-"matieres",
-"matieres_appreciations",
-"matieres_notes",
-"periodes",
-"tempo2",
-"temp_gep_import",
-"tempo",
-"utilisateurs",
-"setting",
-"cn_cahier_notes",
-"cn_conteneurs",
-"cn_devoirs",
-"cn_notes_conteneurs",
-"cn_notes_devoirs",
-"ct_entry",
-"ct_devoirs_entry",
-"ct_types_documents",
-"ct_documents",
-"absences_eleves",
-"absences_creneaux",
-"absences_motifs",
-"suivi_eleve_cpe",
-"groupes",
-"j_eleves_groupes",
-"j_groupes_classes",
-"j_groupes_professeurs",
-"j_groupes_matieres",
-"inscription_items",
-"inscription_j_login_items"
-);
-
 # Make sure notice errors are not reported
 //error_reporting (E_ALL ^ E_NOTICE);
 
