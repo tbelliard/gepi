@@ -95,7 +95,7 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 		} else {
 			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
 		}
-		
+
 }
 
 $themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
@@ -115,7 +115,7 @@ if(!isset($annee_scolaire)){
 	$res_annee=mysql_query($sql);
 	//if(){
 	if(mysql_num_rows($res_annee)==0){
-		echo "<p>Aucune année n'est encore sauvegardée.</p>\n";
+		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
 	}
 	else{
 		echo "<p>Voici la liste des années sauvegardées:</p>\n";

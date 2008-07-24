@@ -215,6 +215,6 @@ CREATE TABLE IF NOT EXISTS `archivage_disciplines` (`id` int(11) NOT NULL auto_i
 DROP TABLE IF EXISTS archivage_eleves;
 CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`));
 DROP TABLE IF EXISTS archivage_eleves2;
-CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`ine`,`annee`));
+CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));
 DROP TABLE IF EXISTS archivage_types_aid;
-CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', PRIMARY KEY  (`id`));
+CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '',  `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`));

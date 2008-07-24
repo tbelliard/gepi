@@ -62,16 +62,12 @@ if(isset($confirmer)){
 
 		$sql="DELETE FROM archivage_eleves2 WHERE ine='$suppr[$i]';";
 		$res_suppr2=mysql_query($sql);
-
-		$sql="DELETE FROM archivage_projet_eleve WHERE id_eleve='$suppr[$i]';";
+		$sql="DELETE FROM archivage_aid_eleve WHERE id_eleve='$suppr[$i]';";
 		$res_suppr3=mysql_query($sql);
-
-		$sql="DELETE FROM archivage_appreciations_projets WHERE id_eleve='$suppr[$i]';";
+		$sql="DELETE FROM archivage_appreciations_aid WHERE id_eleve='$suppr[$i]';";
 		$res_suppr4=mysql_query($sql);
-
 		$sql="DELETE FROM archivage_disciplines WHERE INE='$suppr[$i]';";
 		$res_suppr5=mysql_query($sql);
-
 		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) ) {
 			$nb_suppr++;
 		}
@@ -84,6 +80,7 @@ if(isset($confirmer)){
 		$msg.="Les données antérieures de $nb_suppr ancien$s élève$s ont été supprimées.";
 	}
 	if($nb_err>0){
+		if($nb_err==1){$s="";}else{$s="s";}
 		if($msg!=""){$msg.="<br />";}
 		$msg.="Pour $nb_err ancien$s élève$s, des problèmes ont été rencontrés.";
 	}

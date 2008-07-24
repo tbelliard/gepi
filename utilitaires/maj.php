@@ -60,7 +60,7 @@ if (isset ($_POST['submit'])) {
 	            )
 	        ;";
 	    $res = sql_query($sql);
-	    
+
         } else {
             $message = "Identifiant ou mot de passe incorrect, ou bien vous n'êtes pas administrateur.";
         }
@@ -6141,7 +6141,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL,`display_bulletin` char(1) NOT NULL default 'y',PRIMARY KEY  (`ine`,`annee`));");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(255) NOT NULL default '',`ine` varchar(255) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table archivage_eleves2 a été créée !</font><br />";
       else
@@ -6191,7 +6191,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
     }
     $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_types_aid'"));
     if ($test == 0) {
-      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', PRIMARY KEY  (`id`));");
+      $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(255) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`));");
       if ($result_inter == '')
           $result .= "<font color=\"green\">La table archivage_types_aid a été créée !</font><br />";
       else

@@ -71,9 +71,9 @@ if(isset($confirmer)){
 				$update1=mysql_query($sql);
 				$sql="UPDATE archivage_eleves2 SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
 				$update2=mysql_query($sql);
-				$sql="UPDATE archivage_projet_eleve SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
+				$sql="UPDATE archivage_aid_eleve SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
 				$update3=mysql_query($sql);
-				$sql="UPDATE archivage_appreciations_projets SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
+				$sql="UPDATE archivage_appreciations_aid SET id_eleve='$ine_corrige[$i]' WHERE id_eleve='$ine[$i]'";
 				$update4=mysql_query($sql);
 				$sql="UPDATE archivage_disciplines SET INE='$ine_corrige[$i]' WHERE INE='$ine[$i]'";
 				$update5=mysql_query($sql);
