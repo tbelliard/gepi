@@ -142,6 +142,13 @@ class infos{
 
 		return $rep;
 	}
+	function version_serveur(){
+		if ($_SERVER['SERVER_SOFTWARE']) {
+			return $_SERVER['SERVER_SOFTWARE'];
+		}else{
+			return 'inconnu';
+		}
+	}
 } // fin class infos
 
 ?>
