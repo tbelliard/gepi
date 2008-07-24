@@ -264,7 +264,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note'>$lig_aid->note_aid";
         echo "</td>\n";
 				echo "<td>";
-  		  if ($lig_aid->note_sur_aid != 20)
+  		  if (($lig_aid->note_sur_aid != 20) and ($lig_aid->note_aid !='-'))
 		    echo "(note sur ".$lig_aid->note_sur_aid.") ";
 
         echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
