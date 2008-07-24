@@ -896,8 +896,16 @@ else {
 	fclose($fich);
 
 
-	//echo "<center><p><b><a href='prof_disc_classe.php'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
-	echo "<p align='center'><b><a href='prof_disc_classe_csv.php'>Procéder à la cinquième phase d'initialisation</a></b></p>\n";
+	if (getSettingValue("use_ent") == "y"){
+
+		echo '<p style="text-align: center; font-weight: bold;"><a href="gestion_ent_profs.php">Vérifier les logins avant de poursuivre</a></p>'."\n";
+
+	}else{
+
+		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
+
+	}
+
 	echo "<p><br /></p>\n";
 }
 
