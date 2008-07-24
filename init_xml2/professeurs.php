@@ -731,10 +731,10 @@ else {
 								$query_p = mysql_query($sql_p);
 								$nbre = mysql_num_rows($query_p);
 								if ($nbre >= 1 AND $nbre < 2) {
-									$login_prof = mysql_result($query_p, "login_u");
+									$temp1 = mysql_result($query_p, "login_u");
 								}else{
 									// Il faudrait alors proposer une alternative à ce cas
-									$login_prof = "erreur_".$k;
+									$temp1 = "erreur_".$k;
 								}
 							}
 						}else{
@@ -749,13 +749,17 @@ else {
 					$temp = $login_prof;
 					while ($test_unicite != 'yes') {
 						$test_unicite = test_unique_login($login_prof);
+
 						if ($test_unicite != 'yes') {
 							$login_prof = $temp.$m;
 							$m++;
 						}
 					}
 					$prof[$k]["nom_usage"] = traitement_magic_quotes(corriger_caracteres($prof[$k]["nom_usage"]));
-					// Mot de passe
+					// Mot de passe et change_mdp
+
+					$changemdp = 'y';
+
 					//echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
 					if (strlen($mdp)>2 and $prof[$k]["fonction"]=="ENS" and $_POST['sso'] == "no") {
 						//
@@ -776,6 +780,7 @@ else {
 					} elseif ($_POST['sso'] == "yes") {
 						$pwd = '';
 						$mess_mdp = "aucun (sso)";
+						$changemdp = 'n';
 						//echo "<tr><td colspan='4'>sso</td></tr>";
 					}
 
@@ -783,7 +788,7 @@ else {
 
 					//$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$prof[$k]["nom_usage"]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					//$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
-					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='P".$prof[$k]["id"]."'";
+					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
 					$res = mysql_query($sql);
 					// Pour debug:
 					//echo "<tr><td colspan='4'>$sql</td></tr>";
@@ -836,7 +841,9 @@ else {
 			<li>un mot de passe génèré aléatoirement par GEPI.<br />(il est alors conseillé d'imprimer cette page)</li>
 			</ul>
 		</ul>\n";
-		echo "<p><b>Dans tous les cas le nouvel utilisateur est amené à changer son mot de passe lors de sa première connexion.</b></p>\n";
+		if ($_POST['sso'] != "yes") {
+			echo "<p><b>Dans tous les cas le nouvel utilisateur est amené à changer son mot de passe lors de sa première connexion.</b></p>\n";
+		}
 		echo "<br />\n<p>Vous pouvez procéder à la cinquième phase d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe et de définition des options suivies par les élèves.</p>\n";
 	}
 
