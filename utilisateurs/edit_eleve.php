@@ -278,7 +278,7 @@ echo "<br />\n";
 <!--table border="1"-->
 <table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
-	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
+	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th><th>Classe</th>
 </tr>
 <?php
 //$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
@@ -345,6 +345,16 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
             echo " - <span class=\"small\"><a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve&amp;sso=yes\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuellement cet utilisateur se connecte à GEPI localement.\\n En cliquant sur OK, vous lancerez la procédure, qui supprimera le mot de passe local. Cet utilisateur ne pourra donc plus se connecter à GEPI localement mais uniquement en s\'authentifiant auprès d\'un SSO.\\n\\nUne fois l\'opération effectuée, vous devez recharger la page précédente afin que l\'affichage prenne en compte les changements.')\" target='_blank'>Supprimer le mot de passe</a></span>\n";
         }
 		  }
+		}
+		echo "</td>\n";
+
+		echo "<td>\n";
+		$tmp_class=get_class_from_ele_login($current_eleve->login);
+		if(isset($tmp_class['liste'])) {
+			echo $tmp_class['liste'];
+		}
+		else {
+			echo "<span style='color:red;'>Aucune</span>";
 		}
 		echo "</td>\n";
 	echo "</tr>\n";
