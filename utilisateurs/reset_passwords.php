@@ -517,7 +517,7 @@ while ($p < $nb_users) {
 		//echo "get_class_from_ele_login($user_login)=".get_class_from_ele_login($user_login)."<br />";
 		$tab_tmp_classe=get_class_from_ele_login($user_login);
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary=\"$user_login\">\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
@@ -690,7 +690,7 @@ while ($p < $nb_users) {
 		}
 		*/
 
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary=\"$user_login\">\n";
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";

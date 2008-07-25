@@ -270,7 +270,7 @@ require_once("../lib/header.inc");
 	//====================================
 
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<table style='border:1px solid black;'>\n";
+	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 	echo "<tr>\n";
 	echo "<td valign='top' rowspan='4'>\n";
 	echo "Filtrage:";
@@ -306,7 +306,7 @@ require_once("../lib/header.inc");
 
 ?>
 <!--table border="1"-->
-<table class='boireaus'>
+<table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
 	<th>Identifiant</th>
 	<th>Nom Prénom</th>

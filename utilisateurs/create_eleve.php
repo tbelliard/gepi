@@ -226,7 +226,7 @@ else{
 
 	//====================================
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<table style='border:1px solid black;'>\n";
+	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 	echo "<tr>\n";
 	echo "<td valign='top' rowspan='3'>\n";
 	echo "Filtrage:";
@@ -255,7 +255,7 @@ else{
 
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>\n";
-	echo "<table class='boireaus'>\n";
+	echo "<table class='boireaus' border='1' summary=\"Créer\">\n";
 	$alt=1;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		$alt=$alt*(-1);

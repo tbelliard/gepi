@@ -247,7 +247,7 @@ $critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", 
 
 //====================================
 echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-echo "<table style='border:1px solid black;'>\n";
+echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 echo "<tr>\n";
 echo "<td valign='top' rowspan='3'>\n";
 echo "Filtrage:";
@@ -276,7 +276,7 @@ echo "<br />\n";
 
 ?>
 <!--table border="1"-->
-<table class='boireaus'>
+<table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
 	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th>
 </tr>
