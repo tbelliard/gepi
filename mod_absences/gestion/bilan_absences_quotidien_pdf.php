@@ -240,7 +240,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	}
 
 	// nous recherchons tout les élèves absence le jour choisie
-	$requete = "SELECT ar.id, ar.eleve_id, ar.retard_absence, ar.creneau_id, ar.debut_ts, ar.fin_ts, jec.login, jec.id_classe, e.login, e.nom, e.prenom, c.id, c.nom_complet
+	$requete = "SELECT ar.id, ar.eleve_id, ar.retard_absence, ar.creneau_id, ar.debut_ts, ar.fin_ts, jec.login, jec.id_classe, e.login, e.nom, e.prenom, c.id, c.nom_complet, c.classe
 		    FROM " . $prefix_base . "absences_rb ar, " . $prefix_base . "j_eleves_classes jec, " . $prefix_base . "eleves e, " . $prefix_base . "classes c
 		    WHERE ( jec.login = ar.eleve_id
 		      AND jec.id_classe = c.id
@@ -262,16 +262,16 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
          	  )
 		    )
 		    GROUP BY ar.id
-		    ORDER BY c.nom_complet ASC, eleve_id ASC";
+		    ORDER BY c.classe ASC, eleve_id ASC";
 
 	// on insère toute les classes dans un tableau
 	// initialisation du tableau
 	$tab_classe = '';
 
 	// requete de liste des classes présente dans la base de donnée
-	$requete_classes = "SELECT nom_complet
+	$requete_classes = "SELECT nom_complet, classe
 		    			FROM " . $prefix_base . "classes
-		    			ORDER BY nom_complet ASC";
+		    			ORDER BY classe ASC";
 
 	// compteur de classe temporaire
 	$cpt_classe = 0;
@@ -280,7 +280,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	while ( $donnee_classes = mysql_fetch_array($execution_classes) )
 	{
 
-		$tab_classe[$cpt_classe] = $donnee_classes['nom_complet'];
+		$tab_classe[$cpt_classe] = $donnee_classes['classe'];
 
 		// incrémentation du compteur
 		$cpt_classe = $cpt_classe + 1;
@@ -304,7 +304,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 		$passe = 0;
 		// si l'enregistrement sélectionner correspond ne correspond pas à la $ic classe
-		while ( $tab_classe[$ic] != $donnee['nom_complet'] )
+		while ( $tab_classe[$ic] != $donnee['classe'] )
 		{
 
 			$tab_donnee[$i]['classe'] = $tab_classe[$ic];
@@ -329,14 +329,14 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 		if ( $eleve_precedent != $donnee['login'] )
 		{
 
-			if ( $classe_precedent != $donnee['nom_complet'] )
+			if ( $classe_precedent != $donnee['classe'] )
 			{
 
 				// on insère les informations sur la classe de l'élève
-				$tab_donnee[$i]['classe'] = $donnee['nom_complet'];
+				$tab_donnee[$i]['classe'] = $donnee['classe'];
 				$tab_donnee[$i]['ident_eleve'] = '';
 
-				$classe_precedent = $donnee['nom_complet'];
+				$classe_precedent = $donnee['classe'];
 
 				// on incrémente le tableau principal
 				$i = $i + 1;
@@ -347,7 +347,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			//$ic = $ic + 1;
 
 			// nom de l'élève et prénom
-			$tab_donnee[$i]['classe'] = $donnee['nom_complet'];
+			$tab_donnee[$i]['classe'] = $donnee['classe'];
 			$tab_donnee[$i]['ident_eleve'] = strtoupper($donnee['nom']) . ' ' . ucfirst($donnee['prenom']);
 
 			// type A ou R -- absence ou retard
@@ -390,7 +390,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			}
 
 			$eleve_precedent = $donnee['login'];
-			$classe_precedent = $donnee['nom_complet'];
+			$classe_precedent = $donnee['classe'];
 
 		}
 		else
