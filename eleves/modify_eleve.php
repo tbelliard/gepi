@@ -1134,7 +1134,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			// si la table des responsables est non vide :
 			if ($nombreligne != 0) {
 				echo "<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>\n";
-				echo "<table align='center' class='boireaus'>\n";
+				echo "<table align='center' class='boireaus' summary='Responsable'>\n";
 				echo "<tr>\n";
 				echo "<td><input type='radio' name='reg_resp".$definir_resp."' value='' onchange='changement();' /></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>Responsable légal $definir_resp</b></td>\n";
@@ -1255,7 +1255,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 			echo "<input type='hidden' name='definir_etab' value='$definir_etab' />\n";
-			echo "<table border='0'>\n";
+			echo "<table border='0' summary='Filtrage'>\n";
 			echo "<tr>\n";
 			echo "<td valign='top'>\n";
 			//echo "<p align='center'>";
@@ -1334,7 +1334,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			$nombreligne = mysql_num_rows($call_etab);
 			if ($nombreligne != 0) {
 				echo "<p align='center'><input type='submit' name='valider_choix_etab' value='Valider' /></p>\n";
-				echo "<table align='center' class='boireaus' border='1'>\n";
+				echo "<table align='center' class='boireaus' border='1' summary='Etablissement'>\n";
 				echo "<tr>\n";
 				echo "<td><input type='radio' name='reg_etab' value='' /></td>\n";
 				echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><b>RNE</b></td>\n";
@@ -1456,11 +1456,11 @@ echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.
 //echo "\$eleve_login=$eleve_login<br />";
 
 //echo "<table border='1'>\n";
-echo "<table>\n";
+echo "<table summary='Informations élève'>\n";
 echo "<tr>\n";
 echo "<td>\n";
 
-echo "<table cellpadding='5'>\n";
+echo "<table cellpadding='5' summary='Infos 1'>\n";
 echo "<tr>\n";
 
 $photo_largeur_max=150;
@@ -1651,7 +1651,7 @@ if(isset($eleve_login)){
 	//echo "\$reg_doublant=$reg_doublant<br />";
 
 	if($_SESSION['statut']=="professeur") {
-		echo "<table border='0'>\n";
+		echo "<table border='0' summary='Infos 2'>\n";
 
 		echo "<tr><th style='text-align:left;'>Né(e) le: </th><td>$eleve_naissance_jour/$eleve_naissance_mois/$eleve_naissance_annee</td></tr>\n";
 		if ($eleve_sexe == "M") {
@@ -1684,7 +1684,7 @@ if(isset($eleve_login)){
 	else{
 		//=========================
 		// AJOUT: boireaus 20071107
-		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'>\n";
+		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'  summary='Régime'>\n";
 		echo "<tr>\n";
 		echo "<th>Régime: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='reg_regime' value='i-e' ";
@@ -1704,7 +1704,7 @@ if(isset($eleve_login)){
 		echo "<br />\n";
 		//echo "<tr><td>&nbsp;</td></tr>\n";
 
-		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center'>\n";
+		echo "<table style='border-collaspe: collapse; border: 1px solid black;' align='center' summary='Redoublement'>\n";
 		echo "<tr>\n";
 		echo "<th>Redoublant: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>O<br /><input type='radio' name='reg_doublant' value='R' ";
@@ -1777,7 +1777,7 @@ if($_SESSION['statut']!="professeur") {
 ?>
 <center>
 <!--table border = '1' CELLPADDING = '5'-->
-<table class='boireaus' cellpadding='5'>
+<table class='boireaus' cellpadding='5' summary='Sexe'>
 <tr><td><div class='norme'><b>Sexe :</b> <br />
 <?php
 if (!(isset($eleve_sexe))) $eleve_sexe="M";
@@ -1877,7 +1877,7 @@ if(isset($eleve_login)){
 			else{
 				$temoin_tableau="oui";
 				$lig_resp=mysql_fetch_object($res_resp);
-				echo "<table border='0'>\n";
+				echo "<table border='0' summary='Responsable légal 1'>\n";
 				echo "<tr valign='top'>\n";
 				echo "<td rowspan='2'>Le responsable légal 1 est: </td>\n";
 				echo "<td>";
@@ -1993,7 +1993,7 @@ if(isset($eleve_login)){
 				$lig_resp=mysql_fetch_object($res_resp);
 
 				if($temoin_tableau!="oui"){
-					echo "<table border='0'>\n";
+					echo "<table border='0' summary='Responsable légal 2'>\n";
 					$temoin_tableau="oui";
 				}
 				echo "<tr valign='top'>\n";
