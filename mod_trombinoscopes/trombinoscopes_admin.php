@@ -21,8 +21,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// mise à jour : 05/09/2006 16:19
-
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -52,6 +50,11 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_module_trombinoscopes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
+
+if (isset($_POST['activer_personnels'])) {
+    if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
+}
+
 if (isset($_POST['activer_redimensionne'])) {
     if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne'])) $msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
 }
@@ -86,19 +89,32 @@ $titre_page = "Gestion du module trombinoscope";
 require_once("../lib/header.inc");
 ?>
 
-<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<H2>Configuration générale</H2>
+<h2>Configuration générale</h2>
 <i>La désactivation du module trombinoscope n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'y a pas d'accès au module.</i>
 <br />
 <form action="trombinoscopes_admin.php" name="form1" method="post">
+<p><strong>Elèves&nbsp;:</strong></p>
+<blockquote>
 <input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked"; ?>  /><label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br />
 <input type="radio" name="activer" id='activer_n' value="n" <?php
 	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked";}
 ?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope</label>
 <input type="hidden" name="is_posted" value="1" />
+</blockquote>
+
+<p><strong>Personnels&nbsp;:</strong></p>
+<blockquote>
+<input type="radio" name="activer_personnels" id='activer_personnels_y' value="y" <?php if (getSettingValue("active_module_trombino_pers")=='y') echo " checked"; ?>  /><label for='activer_personnels_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope des personnels</label><br />
+<input type="radio" name="activer_personnels" id='activer_personnels_n' value="n" <?php
+	if (getSettingValue("active_module_trombino_pers")!='y'){echo " checked";}
+?>  /><label for='activer_personnels_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope des personnels</label>
+</blockquote>
+
 <br />
-<H2>Configuration d'affichage et de stockage</H2>
+
+<h2>Configuration d'affichage et de stockage</h2>
 &nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.</i><br />
 <span style="font-weight: bold;">Pour l'écran</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_aff_trombinoscopes"); ?>" />&nbsp;
@@ -111,7 +127,7 @@ hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" 
 hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_resize_trombinoscopes"); ?>" />
 
 <br />
-<H2>Configuration du redimensionnement des photos</H2>
+<h2>Configuration du redimensionnement des photos</h2>
 <i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
 <br /><br />
 <input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br />
@@ -123,7 +139,7 @@ hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value
 <input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
 </ul>
 
-<H2>Gestion de l'accès des élèves</H2>
+<h2>Gestion de l'accès des élèves</h2>
 Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de donner à <b>tous les élèves</b> le droit d'envoyer/modifier lui-même sa photo dans l'interface "Gérer mon compte".
 <br />
 <b>Si cette option est activée</b>, vous pouvez, ci-dessous, gérer plus finement quels élèves ont le droit d'envoyer/modifier leur photo.
@@ -170,7 +186,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 <div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>
 </form>
 
-<H2>Gestion des fichiers</H2>
+<h2>Gestion des fichiers</h2>
 <ul>
 <li>Suppression
  <ul>

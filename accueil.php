@@ -796,7 +796,8 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
 //
 
 //On vérifie si le module est activé
-if (getSettingValue("active_module_trombinoscopes")=='y') {
+//if (getSettingValue("active_module_trombinoscopes")=='y') {
+if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("active_module_trombino_pers")=='y')) {
 //
 // Visualisation des trombinoscopes
 //

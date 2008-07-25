@@ -21,8 +21,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// mise à jour : 05/09/2006 16:19
-
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -177,7 +175,7 @@ mavar = mavar.split(',');
 
 </script>
 
-<p class=bold><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
+<p class='bold'><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
 <?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?> | <a href='trombinoscopes.php'>Retour à la sélection</a> | <?php } ?>
 <?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?><a href="trombi_impr.php?classe=<?php echo $classe; ?>&amp;groupe=<?php echo $groupe; ?>&amp;equipepeda=<?php echo $equipepeda; ?>&amp;discipline=<?php echo $discipline; ?>&amp;statusgepi=<?php echo $statusgepi; ?>&amp;affdiscipline=<?php echo $affdiscipline; ?>" target="_blank">Format imprimable</a> <?php } ?>
 </p>
@@ -186,6 +184,10 @@ mavar = mavar.split(',');
 
 <form method="post" action="trombinoscopes.php" name="form1" style="font-size: 0.71em;">
 <div style="margin: auto; padding: 0px 20px 0px 20px;">
+
+<?php
+	if(getSettingValue('active_module_trombinoscopes')=='y') {
+?>
 
 <div style="width: 45%; float: left; padding: 5px;">
 	<div style="font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;">Elèves</div>
@@ -233,7 +235,7 @@ mavar = mavar.split(',');
 		?>
 		<option value="" <?php if ( empty($classe) ) { ?>selected="selected"<?php } ?>  onclick="reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');">pas de s&eacute;lection</option>
 				<?php if ( $groupe != 'toutes' ) {
-				?><option value="toutes">voir toutes les groupes</option><?php }
+				?><option value="toutes">voir tous les groupes</option><?php }
 				if ( $groupe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
 				?><option value="">voir mes groupes</option><?php } ?>
 
@@ -243,7 +245,9 @@ mavar = mavar.split(',');
 							<?php
 									//modif ERIC
 									echo ucwords($donnee_groupe_prof['description']);
-									echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
+									//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
+									$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
+									echo ' ('.ucwords($tmp_grp['classlist_string']).')';
 							?>
 							</option>
 					<?php } ?>
@@ -252,7 +256,19 @@ mavar = mavar.split(',');
 			<input value="valider" name="Valider" id="valid1" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
 </div>
 
-<div style="width: 45%; float: right; padding: 5px;">
+<?php
+	}
+	if(getSettingValue('active_module_trombino_pers')=='y') {
+
+
+		if(getSettingValue('active_module_trombinoscopes')=='y') {
+			echo "<div style='width: 45%; float: right; padding: 5px;'>\n";
+		}
+		else {
+			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
+		}
+?>
+
 	<div style="font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;">Personnels</div>
 	<span style="margin-left: 15px;">Par équipe pédagogique</span><br />
 		<select name="equipepeda" id="equipepeda" style="margin-left: 15px;">
@@ -313,19 +329,25 @@ mavar = mavar.split(',');
 				</optgroup>
 		</select><br /><br />
 
-	<span style="margin-left: 15px;">Par status (CPE/Professeur)</span><br />
+	<span style="margin-left: 15px;">Par statut (CPE/Professeur/Scolarité)</span><br />
 		<select name="statusgepi" id="statusgepi" style="margin-left: 15px;">
 		<?php
 		if ( $statusgepi == '' ) {
+			/*
 			$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
 						WHERE u.statut = "professeur" OR u.statut = "cpe"
+						GROUP BY u.statut
+						ORDER BY u.statut ASC');
+			*/
+			$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
+						WHERE u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre"
 						GROUP BY u.statut
 						ORDER BY u.statut ASC');
 		}
 				$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
 
 				?><option value="" <?php if ( empty($statusgepi) ) { ?>selected="selected"<?php } ?> onclick="reactiver('classe,groupe,equipepeda,discipline,affdiscipline');">pas de s&eacute;lection</option>
-				<optgroup label="-- Les status --">
+				<optgroup label="-- Les statuts --">
 						<?php while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) { ?>
 							<option value="<?php echo $donnee_statusgepi['statut']; ?>" <?php if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,equipepeda,discipline,affdiscipline');"><?php echo ucwords($donnee_statusgepi['statut']); ?></option>
 						<?php } ?>
@@ -336,6 +358,10 @@ mavar = mavar.split(',');
 			<input value="valider" name="Valider" id="valid2" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
 	</div>
 </div>
+<?php
+	}
+?>
+
 </form>
 <?php } ?>
 
@@ -381,7 +407,7 @@ mavar = mavar.split(',');
 	}
 	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
 	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
-	if ( $action_affiche === 'statusgepi' ) { echo "Status : ".$statusgepi; }
+	if ( $action_affiche === 'statusgepi' ) { echo "Statut : ".$statusgepi; }
 
 
 	// choix du répertoire ou chercher les photos entre professeur ou élève
