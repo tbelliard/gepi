@@ -573,7 +573,7 @@ if($num_resp==0){
 	echo "<div style='text-align:center;'>\n";
 	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
 	echo "<div id='div_rech' style='display:none;' align='center'>\n";
-	echo "<table border='0'><tr><td>les personnnes dont le \n";
+	echo "<table border='0' summary='Recherche'><tr><td>les personnnes dont le \n";
 	echo "<input type='hidden' name='champ_rech' value='resp0' />\n";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -647,7 +647,7 @@ else{
 	echo "<div style='text-align:center;'>\n";
 	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
 	echo "<div id='div_rech' style='display:none;' align='center'>\n";
-	echo "<table border='0'><tr><td>parmi les </td>\n";
+	echo "<table border='0' summary='Recherche'><tr><td>parmi les </td>\n";
 	echo "<td>\n";
 	echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
 	echo "<input type='radio' name='champ_rech' id='champ_rech_resp1' value='resp1' checked /> responsables (<i>légal 1</i>)\n";
@@ -850,7 +850,7 @@ if("$num_resp"=="0"){
 
 		//echo "<p align='center'>Effectif: ".mysql_num_rows($res1)."</p>\n";
 
-		echo "<table class='boireaus' align='center'>\n";
+		echo "<table class='boireaus' align='center' summary='Responsables'>\n";
 
 		while($lig1=mysql_fetch_object($res1)){
 			//$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
@@ -955,7 +955,7 @@ else{
 	if(isset($champ_rech)){$champ_rech=ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));}
 	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le même selon que la chaine_recherche est vide ou non)
 
-	echo "<table class='boireaus' align='center'>\n";
+	echo "<table class='boireaus' align='center' summary='Responsables'>\n";
 
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
