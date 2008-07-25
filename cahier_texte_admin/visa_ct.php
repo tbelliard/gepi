@@ -189,8 +189,9 @@ echo "</div>\n";
       $id_prop = $row[1];
       $nom_groupe = sql_query1("select name from groupes where id = '".$id_groupe."'");
       $nom_matiere = sql_query1("select m.nom_complet from matieres m, j_groupes_matieres jm where (jm.id_groupe = '".$id_groupe."' AND m.matiere = jm.id_matiere)");
-      $get_classes = mysql_query("SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
+      $get_classes = mysql_query("SELECT c.id, c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
       $nb_classes = mysql_num_rows($get_classes);
+      $id_classe = mysql_result($get_classes, 0, "id"); // On ne garde qu'un id pour ne pas perturber le GET ensuite
       $classes = null;
       for ($c=0;$c<$nb_classes;$c++) {
       	$current_classe = mysql_result($get_classes, $c, "classe");
@@ -224,7 +225,12 @@ echo "</div>\n";
       echo "<td>".$nom_prof."</td>";
       echo "<td>".$nb_ct."</td>";
       echo "<td>".$nb_ct_devoirs."</td>";
-      echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
+	// Modif pour le statut 'autre'
+	if ($_SESSION["statut"] == 'autre') {
+		echo '<td><a href="../cahier_texte/see_all.php?id_groupe='.$id_groupe.'&amp;id_classe='.$id_classe.'">Voir</a></td>';
+	}else{
+		echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
+	}
       echo "<td><center><input type=\"checkbox\" name=\"visa".$id_groupe."_".$id_prop."\" /></center></td>";
 	  echo "<td>".$nb_ct_visa."</td>";
       echo "</tr>";
