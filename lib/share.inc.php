@@ -2162,7 +2162,14 @@ function liens_class_from_ele_login($ele_login){
 	if(isset($tab_classe)){
 		if(count($tab_classe)>0){
 			foreach ($tab_classe as $key => $value){
-				$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+				if(strlen(ereg_replace("[0-9]","",$key))==0) {
+					if($_SESSION['statut']=='administrateur') {
+						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
+					}
+					else {
+						$chaine.=", <a href='../eleves/index.php?id_classe=$key&amp;quelles_classes=certaines&amp;case_2=yes'>$value</a>";
+					}
+				}
 			}
 			$chaine="(".substr($chaine,2).")";
 		}
