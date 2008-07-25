@@ -166,14 +166,139 @@ if (isset($id_classe) and (!isset($periode_num))) {
 if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
     ?>
-    <p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a></p>
+
+	<form enctype="multipart/form-data" action="saisie_avis2.php" name="form1" method='post'>
+
+    <p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
+
+	<?php
+
+	echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
+
+// Ajout lien classe précédente / classe suivante
+if($_SESSION['statut']=='scolarite'){
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+}
+elseif($_SESSION['statut']=='professeur'){
+
+	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
+										j_eleves_classes jec,
+										j_eleves_professeurs jep
+								WHERE jec.id_classe=c.id AND
+										jep.login=jec.login AND
+										jep.professeur='".$_SESSION['login']."'
+								ORDER BY c.classe;";
+}
+elseif($_SESSION['statut']=='cpe'){
+	// On ne devrait pas arriver ici en CPE...
+	// Il n'y a pas de droit de saisie des avis du conseil.
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+		p.id_classe = c.id AND
+		jec.id_classe=c.id AND
+		jec.periode=p.num_periode AND
+		jecpe.e_login=jec.login AND
+		jecpe.cpe_login='".$_SESSION['login']."'
+		ORDER BY classe";
+}
+elseif($_SESSION['statut'] == 'autre'){
+	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+}
+elseif($_SESSION['statut'] == 'secours'){
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+}
+
+$chaine_options_classes="";
+
+$cpt_classe=0;
+$num_classe=-1;
+
+$res_class_tmp=mysql_query($sql);
+$nb_classes_suivies=mysql_num_rows($res_class_tmp);
+if($nb_classes_suivies>0){
+	$id_class_prec=0;
+	$id_class_suiv=0;
+	$temoin_tmp=0;
+	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+		if($lig_class_tmp->id==$id_classe){
+			// Index de la classe dans les <option>
+			$num_classe=$cpt_classe;
+
+			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+			$temoin_tmp=1;
+			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				$id_class_suiv=$lig_class_tmp->id;
+			}
+			else{
+				$id_class_suiv=0;
+			}
+		}
+		else {
+			$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+		}
+		if($temoin_tmp==0){
+			$id_class_prec=$lig_class_tmp->id;
+		}
+
+		$cpt_classe++;
+
+	}
+}
+
+// =================================
+if(isset($id_class_prec)){
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+}
+
+if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo $chaine_options_classes;
+	echo "</select>\n";
+}
+
+if(isset($id_class_suiv)){
+	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+}
+//fin ajout lien classe précédente / classe suivante
+echo "</p>\n";
+
+echo "</form>\n";
+
+	?>
+
     <p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
 
     <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
-    <table border="1" cellspacing="2" cellpadding="5" width="100%">
+    <table class='boireaus' border="1" cellspacing="2" cellpadding="5" width="100%" summary="Choix de l'élève">
     <tr>
-        <td width="20%"><b>Nom Prénom</b></td>
-        <td><b><?php echo ucfirst($nom_periode[$periode_num]) ; ?> : avis du conseil de classe</b></td>
+        <th width="20%"><b>Nom Prénom</b></th>
+        <th><b><?php echo ucfirst($nom_periode[$periode_num]) ; ?> : avis du conseil de classe</b></th>
     </tr>
     <?php
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
@@ -195,6 +320,7 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 	$appel_donnees_eleves = mysql_query($sql);
     $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
     $i = "0";
+	$alt=1;
     while($i < $nombre_lignes) {
         $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
         $ind_eleve_login_suiv = 0;
@@ -203,7 +329,9 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
         $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
         $current_eleve_avis_query = mysql_query("SELECT avis FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
         $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
-        echo "<tr>\n<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt'>\n";
+		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
         echo "<td><span class=\"medium\">$current_eleve_avis&nbsp;</span></td>\n";
         echo "</tr>\n";
         $i++;
@@ -240,10 +368,10 @@ if (isset($fiche)) {
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
-	echo "<table border='0'>\n";
+	echo "<table border='0' summary=\"Elève $current_eleve_login\">\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<a name=\"app\"></a><textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='80' wrap='virtual' onchange=\"changement()\">";
+	echo "<a name=\"app\"></a><textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='80' class='wrap' onchange=\"changement()\">";
 	echo "$current_eleve_avis";
 	echo "</textarea>\n";
 	echo "</td>\n";

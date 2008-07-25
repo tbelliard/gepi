@@ -139,10 +139,129 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
 	die("Droits insuffisants pour effectuer cette opération");
 }
 ?>
-<form enctype="multipart/form-data" action="saisie_avis1.php" method=post>
-<p class=bold><a href="saisie_avis.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a></p>
+<form enctype="multipart/form-data" action="saisie_avis1.php" name="form1" method='post'>
+<p class='bold'><a href="saisie_avis.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a>
 
 <?php
+
+// Ajout lien classe précédente / classe suivante
+if($_SESSION['statut']=='scolarite'){
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+}
+elseif($_SESSION['statut']=='professeur'){
+
+	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
+										j_eleves_classes jec,
+										j_eleves_professeurs jep
+								WHERE jec.id_classe=c.id AND
+										jep.login=jec.login AND
+										jep.professeur='".$_SESSION['login']."'
+								ORDER BY c.classe;";
+}
+elseif($_SESSION['statut']=='cpe'){
+	// On ne devrait pas arriver ici en CPE...
+	// Il n'y a pas de droit de saisie des avis du conseil.
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+		p.id_classe = c.id AND
+		jec.id_classe=c.id AND
+		jec.periode=p.num_periode AND
+		jecpe.e_login=jec.login AND
+		jecpe.cpe_login='".$_SESSION['login']."'
+		ORDER BY classe";
+}
+elseif($_SESSION['statut'] == 'autre'){
+	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+}
+elseif($_SESSION['statut'] == 'secours'){
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+}
+
+$chaine_options_classes="";
+
+$cpt_classe=0;
+$num_classe=-1;
+
+$res_class_tmp=mysql_query($sql);
+$nb_classes_suivies=mysql_num_rows($res_class_tmp);
+if($nb_classes_suivies>0){
+	$id_class_prec=0;
+	$id_class_suiv=0;
+	$temoin_tmp=0;
+	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+		if($lig_class_tmp->id==$id_classe){
+			// Index de la classe dans les <option>
+			$num_classe=$cpt_classe;
+
+			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+			$temoin_tmp=1;
+			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				$id_class_suiv=$lig_class_tmp->id;
+			}
+			else{
+				$id_class_suiv=0;
+			}
+		}
+		else {
+			$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+		}
+		if($temoin_tmp==0){
+			$id_class_prec=$lig_class_tmp->id;
+		}
+
+		$cpt_classe++;
+
+	}
+}
+
+// =================================
+if(isset($id_class_prec)){
+	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+}
+
+if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}
+</script>\n";
+
+	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo $chaine_options_classes;
+	echo "</select>\n";
+}
+
+if(isset($id_class_suiv)){
+	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+}
+//fin ajout lien classe précédente / classe suivante
+echo "</p>\n";
+
+echo "</form>\n";
+
+
+echo "<form enctype='multipart/form-data' action='saisie_avis1.php' method='post'>\n";
+
 if ($id_classe) {
 	$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 	?>
@@ -263,7 +382,7 @@ function focus_suivant(num){
 		echo "<td><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b></div></td>\n";
 		echo "</tr>\n";
 		*/
-		echo "<table width=\"750\" class='boireaus' cellspacing=2 cellpadding=5>\n";
+		echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Elève $current_eleve_nom $current_eleve_prenom\">\n";
 		echo "<tr>\n";
 		echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
 		echo "<th><div align=\"center\"><b>$current_eleve_nom $current_eleve_prenom</b>\n";
@@ -317,7 +436,7 @@ function focus_suivant(num){
 					//echo "<td>\n<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">";
 					echo "<td>\n";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
-					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
+					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\">";
 					//=========================
 
 					echo "$current_eleve_avis_t[$k]";
@@ -364,9 +483,9 @@ function focus_suivant(num){
 
 	if ($test_periode_ouverte == 'yes') {
 		?>
-		<input type=hidden name=is_posted value="yes" />
-		<input type=hidden name=id_classe value=<?php echo "$id_classe";?> />
-		<center><div id="fixe"><input type=submit value=Enregistrer />
+		<input type='hidden' name='is_posted' value="yes" />
+		<input type='hidden' name='id_classe' value=<?php echo "$id_classe";?> />
+		<center><div id="fixe"><input type='submit' value='Enregistrer' />
 
 		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
 		<div id='decompte'></div>
