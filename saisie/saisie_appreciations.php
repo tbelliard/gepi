@@ -244,9 +244,9 @@ change = 'no';
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
-echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
+echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
 
-echo "<p class=bold>";
+echo "<p class='bold'>\n";
 //if ($periode_cn != 0) {
 if (($periode_cn != 0)&&($_SESSION['statut']!='secours')) {
 	//echo "|<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a>";
@@ -275,30 +275,60 @@ if($_SESSION['statut']=='secours'){
 }
 else
 */
-if($_SESSION['statut']=='professeur'){
+//if($_SESSION['statut']=='professeur'){
+if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
+	if($_SESSION['statut']=='professeur') {
+		$login_prof_groupe_courant=$_SESSION["login"];
+	}
+	else {
+		$tmp_current_group=get_group($id_groupe);
 
-    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-    //$tab_groups = get_groups_for_prof($_SESSION["login"]);
+		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+	}
+
+	//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+	//$tab_groups = get_groups_for_prof($_SESSION["login"]);
 
 	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tab_groups);
+
+		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
 		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if($tab_groups[$loop]['id']==$id_groupe){
+				$num_groupe=$loop;
+
+				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
 				$temoin_tmp=1;
 				if(isset($tab_groups[$loop+1])){
 					$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+					$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
 				}
 				else{
 					$id_grp_suiv=0;
 				}
 			}
+			else {
+				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+			}
+
 			if($temoin_tmp==0){
 				$id_grp_prec=$tab_groups[$loop]['id'];
+
+				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 			}
 		}
 		// =================================
@@ -306,13 +336,44 @@ if($_SESSION['statut']=='professeur'){
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "'>Enseignement précédent</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
 			}
 		}
+
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo " | <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo $chaine_options_classes;
+			echo "</select>\n";
+		}
+
 		if(isset($id_grp_suiv)){
 			if($id_grp_suiv!=0){
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
-				echo "'>Enseignement suivant</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
 				}
 		}
 	}
@@ -320,7 +381,17 @@ if($_SESSION['statut']=='professeur'){
 }
 
 
-echo " | <input type='submit' value='Enregistrer' /></p>\n";
+echo "</p>\n";
+if(isset($periode_cn)) {
+	echo "<input type='hidden' name='periode_cn' value='$periode_cn' />\n";
+}
+echo "</form>\n";
+
+echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
+echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+
+
+
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
