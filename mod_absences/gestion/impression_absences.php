@@ -804,7 +804,7 @@ affichercacher('div_1');
                           {
                             echo "<option value=\"".$data_classe['id']."\"";
                             if ($classe == $data_classe['id']) {echo " selected";}
-                            echo " onClick=\"javascript:document.form3.submit()\">".$data_classe['nom_complet']."</option>";
+                            echo " onClick=\"javascript:document.form3.submit()\">".$data_classe['nom_complet']." (".$data_classe['classe'].")</option>";
                           }
                     ?>
                 </select><br />
@@ -972,7 +972,7 @@ if ( $type_impr == "bj" ) { ?>
 		  	 {
 				$requete_cpt_nb_eleve_1 =  mysql_query('SELECT count(*) FROM '.$prefix_base.'eleves, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_classes WHERE '.$prefix_base.'classes.id = "'.$donner_classe['id_classe'].'" AND '.$prefix_base.'j_eleves_classes.id_classe='.$prefix_base.'classes.id AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login');
 				$requete_cpt_nb_eleve = mysql_num_rows($requete_cpt_nb_eleve_1);
-			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe_multiple) and in_array($donner_classe['id_classe'], $classe_multiple)) { ?>selected="selected"<?php } ?> onClick="javascript:document.form3.submit()"><?php echo $donner_classe['nom_complet']; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
+			   ?><option value="<?php echo $donner_classe['id_classe']; ?>" <?php if(!empty($classe_multiple) and in_array($donner_classe['id_classe'], $classe_multiple)) { ?>selected="selected"<?php } ?> onClick="javascript:document.form3.submit()"><?php echo $donner_classe['nom_complet']." -".$donner_classe['classe']."- "; ?> (eff. <?php echo $requete_cpt_nb_eleve; ?>)</option><?php
 			 }
 			?>
 		  </optgroup>
@@ -1034,7 +1034,7 @@ if ( $type_impr == "bj" ) { ?>
 
                           while($data_classe = mysql_fetch_array($req_classe))
                           {
-                            ?><option value=" <?php echo $data_classe['id']; ?>"> <?php echo $data_classe['nom_complet']; ?></option><?php
+                            ?><option value=" <?php echo $data_classe['id']; ?>"> <?php echo $data_classe['nom_complet']." (".$data_classe['classe'].")"; ?></option><?php
                           }
                     ?>
                 </select><br />

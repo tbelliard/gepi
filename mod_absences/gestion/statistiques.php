@@ -578,7 +578,7 @@ if($echelle_y === 'E') {
 	                    	$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
 	                    	while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) 
 				{ ?>
-	                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php if(!empty($classe) and in_array($data_liste_classe['id'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $data_liste_classe['nom_complet']; ?></option>
+	                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php if(!empty($classe) and in_array($data_liste_classe['id'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
         	          <?php } ?>
 			     </optgroup>
 	                </select><br />

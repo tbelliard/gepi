@@ -102,7 +102,7 @@ if ($_SESSION["statut"] == 'autre') {
               $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
               while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                   if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                  <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']; ?></option>
+                  <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
              <?php } ?>
             </select>
             <noscript>

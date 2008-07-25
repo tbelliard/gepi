@@ -1,11 +1,13 @@
 <?php
 //fonction permettant de connaître la classe d'un élève par son login
+// Modif Eric : ajout du nom court accolé au nom long
+// Faut-il faire un test pour savoir s'ils sont différents ?
 function classe_de($id_classe_eleve) {
     global $prefix_base;
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
     $execution_classe_eleve = mysql_query($requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysql_error());
     $data_classe_eleve = mysql_fetch_array($execution_classe_eleve);
-    $id_classe_eleve = $data_classe_eleve['nom_complet'];
+	$id_classe_eleve = $data_classe_eleve['nom_complet']." (".$data_classe_eleve['classe'].")";
     return($id_classe_eleve);
 }
 

@@ -134,7 +134,7 @@ function age($date_de_naissance_fr)
          function pp($classe_choix)
           {
             global $prefix_base;
-               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
+               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
                $data_prof_classe = mysql_fetch_array($call_prof_classe);
                $suivi_par = $data_prof_classe['suivi_par'];
                return($suivi_par);
@@ -453,7 +453,7 @@ function DecocheCheckbox() {
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']; ?></option>
+                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select>
            <?php if (getSettingValue("active_module_trombinoscopes")=='y')  { ?>
@@ -646,7 +646,7 @@ function DecocheCheckbox() {
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']; ?></option>
+                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select><noscript><input value=">>" name="date" type="submit" /></noscript><br />
           <input value="<?php echo $year; ?>" name="year" id="year2" type="hidden" />
@@ -832,7 +832,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                   $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                   while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']; ?></option>
+                        <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select><br />
           <?php if (getSettingValue("active_module_trombinoscopes")=='y') { ?>
@@ -1056,7 +1056,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
                     $resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
                     While ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                            if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
-                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']; ?></option>
+                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onClick="javascript:document.form1.submit()"><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
                   <?php } ?>
             </select><noscript><input value=">>" name="date" type="submit" /></noscript><br />
             <input value="<?php echo $year; ?>" name="year5" id="year" type="hidden" />
@@ -1154,7 +1154,7 @@ if ($choix=="sma" and $fiche_eleve == "" and $select_fiche_eleve == "") {
 			Date de naissance : <?php echo $naissance_eleve; ?><br />
 			Age : <strong><?php echo age($date_de_naissance); ?> ans</strong><br />
 			<br />
-			Classe : <a href="#" class="info"><?php echo classe_de($login_eleve); ?><span style="width: 300px;">(Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)</span></a>
+			Classe : <a href="#" class="info"><?php echo classe_de($login_eleve); ?><span style="width: 300px;">(Suivi par : <?php echo pp(classe_court_de($login_eleve)); ?>)</span></a>
 		</div>
 		<div style="float: left; background-image: url(../images/responsable.png); background-repeat:no-repeat; height: 135px; width: 20px; margin-left: 10px;">&nbsp;</div>
 		<div style="float: left; margin: 12.5px; overflow: auto;  width: 40%;">
