@@ -122,8 +122,16 @@ require_once("../lib/header.inc");
 
 if (!(isset($_GET['action']))) {
   // Affichage du tableau complet
+  
+  if ($_SESSION['statut'] == "autre") {
+	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
+  } else {
+    echo "<p class=\"bold\"><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
+  }
+  
   ?>
-  <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+  
+  </p>
   <H2>Signature des cahiers de textes</h2>
   <p>Le tableau ci-dessous présentent l'ensemble des cahiers de texte actuellement en ligne.
   <br />&nbsp;&nbsp;Vous pouvez trier le tableau par le groupe ou le propriétaire d'un cahier de texte en cliquant sur le lien correspondant.

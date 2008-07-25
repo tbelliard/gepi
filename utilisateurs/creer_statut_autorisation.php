@@ -37,8 +37,9 @@ $autorise[4] = array('/mod_absences/gestion/select.php',
 						'/mod_absences/gestion/ajout_abs.php',
 						'/mod_absences/lib/liste_absences.php');
 $autorise[5] = array('/cahier_texte/see_all.php');
-$autorise[6] = array('/edt_organisation/index_edt.php');
-$autorise[7] = array('/tous_les_edt');
+$autorise[6] = array('/cahier_texte_admin/visa_ct.php');
+$autorise[7] = array('/edt_organisation/index_edt.php');
+$autorise[8] = array('/tous_les_edt');
 
 // Intitulés pour le menu
 $menu_accueil[0] = array('7');
@@ -47,7 +48,8 @@ $menu_accueil[2] = array('Bulletins simplifiés', 'Visionner tous les bulletins s
 $menu_accueil[3] = array('Voir les absences', 'Visionner toutes les absences de l\'établissement');
 $menu_accueil[4] = array('Saisir les absences', 'Saisir les absences de tous les élèves de l\'établissement');
 $menu_accueil[5] = array('Cahiers de textes', 'Visionner tous les cahiers de textes de l\'établissement');
-$menu_accueil[6] = array('Emploi du temps', 'Visionner les emplois du temps de tous les élèves');
-$menu_accueil[7] = array('Emploi du temps', 'Visionner tous les emplois du temps de l\'établissement');
+$menu_accueil[6] = array('Cahiers de textes', 'Signer les cahiers de textes');
+$menu_accueil[7] = array('Emploi du temps', 'Visionner les emplois du temps de tous les élèves');
+$menu_accueil[8] = array('Emploi du temps', 'Visionner tous les emplois du temps de l\'établissement');
 
 ?>

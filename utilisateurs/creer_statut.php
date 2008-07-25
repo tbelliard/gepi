@@ -160,8 +160,9 @@ if ($action == 'modifier') {
 		$test[$a][3] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
 		$test[$a][4] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
 		$test[$a][5] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
-		$test[$a][6] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
-		$test[$a][7] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
+		$test[$a][6] = isset($_POST["cdt_visa|".$b]) ? $_POST["cdt_visa|".$b] : NULL;
+		$test[$a][7] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
+		$test[$a][8] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {
@@ -230,11 +231,12 @@ if ($query) {
 		<td><input type="checkbox" name="va|'.$rep["id"].'"'.$checked[3].' /></td>
 		<td><input type="checkbox" name="sa|'.$rep["id"].'"'.$checked[4].' /></td>
 		<td><input type="checkbox" name="cdt|'.$rep["id"].'"'.$checked[5].' /></td>
-		<td><input type="checkbox" name="ee|'.$rep["id"].'"'.$checked[6].' /></td>
-		<td><input type="checkbox" name="te|'.$rep["id"].'"'.$checked[7].' /></td>
+		<td><input type="checkbox" name="cdt_visa|'.$rep["id"].'"'.$checked[6].' /></td>
+		<td><input type="checkbox" name="ee|'.$rep["id"].'"'.$checked[7].' /></td>
+		<td><input type="checkbox" name="te|'.$rep["id"].'"'.$checked[8].' /></td>
 		<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>
 	</tr>
-	<tr style="background-color: white;"><td colspan="9"></td></tr>';
+	<tr style="background-color: white;"><td colspan="10"></td></tr>';
 	}
 }
 
@@ -340,16 +342,17 @@ if ($query) {
 		<th style="border: 1px solid lightblue;">Voir les absences des élèves</th>
 		<th style="border: 1px solid lightblue;">Saisir les absences des élèves</th>
 		<th style="border: 1px solid lightblue;">Voir les cahiers de textes</th>
+		<th style="border: 1px solid lightblue;">Signer les cahiers de textes</th>
 		<th style="border: 1px solid lightblue;">Voir les emplois du temps des élèves</th>
 		<th style="border: 1px solid lightblue;">Voir tous les emplois du temps</th>
 		<th style="border: 1px solid lightblue;">Supprimer le statut</th>
 	</tr>
-	<tr style="background-color: white;"><td colspan="9"></td></tr>
+	<tr style="background-color: white;"><td colspan="10"></td></tr>
 	</thead>
 	<tbody>
 
 		<?php echo $aff_tableau; ?>
-		<tr style="background-color: white;"><td colspan="9"></td></tr>
+		<tr style="background-color: white;"><td colspan="10"></td></tr>
 	</tbody>
 	<tfoot>
 		<tr><td colspan="4"><?php echo $msg3; ?></td><td>-</td><td colspan="4"><input type="submit" name="modifier" value="Enregistrer et mettre &agrave; jour" /></td></tr>
