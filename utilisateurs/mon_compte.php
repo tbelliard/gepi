@@ -65,20 +65,20 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	$user_auth_mode = mysql_result($req, 0, "auth_mode");
 	if ($no_anti_inject_password_a != '') {
 		// Modification du mot de passe
-		
+
 		if ($no_anti_inject_password1 == $reg_password2) {
-			// On a bien un mot de passe et sa confirmation qui correspond 
-			
+			// On a bien un mot de passe et sa confirmation qui correspond
+
 			if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == "yes") {
 				// On est en mode d'écriture LDAP.
 				// On tente un bind pour tester le nouveau mot de passe, et s'assurer qu'il
 				// est différent de celui actuellement utilisé :
 				$ldap_server = new LDAPServer;
 				$test_bind_nouveau = $ldap_server->authenticate_user($session_gepi->login, $no_anti_inject_password1);
-				
+
 				// On teste aussi l'ancien mot de passe.
 				$test_bind_ancien = $ldap_server->authenticate_user($session_gepi->login, $no_anti_inject_password_a);
-				
+
 				if (!$test_bind_ancien) {
 					// L'ancien mot de passe n'est pas correct
 					$msg = "L'ancien mot de passe n'est pas correct !";
@@ -127,7 +127,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			$msg = "Erreur lors de la saisie du mot de passe, les deux mots de passe ne sont pas identiques. Veuillez recommencer !";
 		}
 	}
-	
+
 	$call_email = mysql_query("SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
 	$user_email = mysql_result($call_email, 0, "email");
 	$user_show_email = mysql_result($call_email, 0, "show_email");
@@ -403,9 +403,9 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 	echo "<p><span style='color: red;'>Note :</span> les modifications de mot de passe et d'email que vous effectuerez sur cette page seront propagées à l'annuaire central, et donc aux autres services qui y font appel.</p>";
 }
 
-echo "<table>\n";
+echo "<table summary='Mise en forme'>\n";
 echo "<tr><td>\n";
-	echo "<table>\n";
+	echo "<table summary='Infos'>\n";
 	echo "<tr><td>Identifiant GEPI : </td><td>" . $_SESSION['login']."</td></tr>\n";
 	echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>\n";
 	echo "<tr><td>Nom : </td><td>".$user_nom."</td></tr>\n";
@@ -512,9 +512,10 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "</div>\n";
 					echo "<div id='div_upload_photo' style='display:none;'>";
 					echo "<input type='file' name='filephoto' />\n";
+					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
       		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>";
+            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
           }
 
 					if("$photo"!=""){
@@ -531,7 +532,7 @@ if(($_SESSION['statut']=='administrateur')||
 
 		}
 		else{
-			echo "<table style='text-align: center;'>\n";
+			echo "<table style='text-align: center;' summary='Photo'>\n";
 			echo "<tr>\n";
 			echo "<td style='text-align: center;'>\n";
 
@@ -561,9 +562,12 @@ if(($_SESSION['statut']=='administrateur')||
 					echo "</span>\n";
 					echo "<div id='div_upload_photo' style='display: none;'>\n";
 					echo "<input type='file' name='filephoto' size='12' />\n";
+
+					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
+
       		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
-            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>";
+            <br />Afin que votre photographie ne soit pas déformée, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span class='small'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
           }
           echo "<br />\n";
 					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' />\n";
@@ -656,7 +660,7 @@ if ($editable_user) {
 	echo "<br />Il est fortement conseillé de ne pas choisir un mot de passe trop simple</b>.
 	<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser, il garantit la sécurité de votre travail.</b></p>\n";
 
-	echo "<table><tr>\n";
+	echo "<table summary='Mot de passe'><tr>\n";
 	echo "<td>Ancien mot de passe : </td><td><input type=password name=no_anti_inject_password_a size=20 /></td>\n";
 	echo "</tr><tr>\n";
 	echo "<td>Nouveau mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) :</td><td> <input type=password name=no_anti_inject_password1 size=20 /></td>\n";
@@ -723,7 +727,7 @@ $now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_
 <li>Les lignes en noir signalent une session close normalement.</li>
 <li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
 </ul>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0">
+<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Connexions'>
 	<tr>
 		<th class="col">Début session</th>
 		<th class="col">Fin session</th>
@@ -770,7 +774,7 @@ if ($res) {
 		echo "<tr>\n";
 		echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
 		if ($row[4] == 2) {
-			echo "<td class=\"col\">".$temp1."Tentative de connexion<br>avec mot de passe erroné.".$temp2."</td>\n";
+			echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
 		}
 		else{
 			echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
