@@ -69,7 +69,7 @@ class infos{
 	}
 	function listeExtension(){
 		$nbre = count(get_loaded_extensions());
-		$retour = '<table style="border: 1px solid black;">';
+		$retour = '<table style="border: 1px solid black;" summary="Liste des extensions">';
 		for($a = 0; $a < $nbre; $a++){
 			$extensions = get_loaded_extensions();
 
