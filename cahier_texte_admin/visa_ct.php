@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 
 // INSERT INTO `droits`  VALUES ('/cahier_texte_admin/visa_ct.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Page de signature des cahiers de texte', '');
 // ALTER TABLE `ct_devoirs_entry` ADD `vise` CHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;
@@ -67,7 +67,7 @@ if (isset($_POST['ok_enr_visa'])) {
 
 // visa d'un ou plusieurs cahiers de texte
 if (isset($_POST['visa_ct'])) {
-  // les entrées 
+  // les entrées
   // on vise les notices (le champs vise de la table ct_entry est mis à 'y')
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe");
   $msg = '';
@@ -80,11 +80,11 @@ if (isset($_POST['visa_ct'])) {
 		 $sql_visa_ct = "UPDATE `ct_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')";
 		 //echo $sql_visa_ct;
          $visa_ct = sql_query($sql_visa_ct);
-		 
+
 		// On ajoute une notice montrant la signature du cahier de texte
         $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
-		
-		
+
+
 		$sql_insertion_visa = "INSERT INTO `ct_entry` VALUES (NULL, '00:00:00', '".$id_groupe."', '".$aujourdhui."', '".$id_prop."', '".$texte_visa_cdt."', 'y', 'y')";
 		//echo $sql_insertion_visa;
 		$insertion_visa = sql_query($sql_insertion_visa);
@@ -93,7 +93,7 @@ if (isset($_POST['visa_ct'])) {
            } else {
               $msg = "Il y a eu un problème lors de la signature du cahier de textes.";
            }
-         } 
+         }
       }
 
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_devoirs_entry ORDER BY id_groupe");
@@ -108,9 +108,9 @@ if (isset($_POST['visa_ct'])) {
 		 $sql_visa_ct = "UPDATE `ct_devoirs_entry` SET `vise` = 'y' WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')";
 		 //echo $sql_visa_ct;
          $visa_ct = sql_query($sql_visa_ct);
-         
-      } 
-   } 
+
+      }
+   }
 }
 
 
@@ -122,31 +122,33 @@ require_once("../lib/header.inc");
 
 if (!(isset($_GET['action']))) {
   // Affichage du tableau complet
-  
+
   if ($_SESSION['statut'] == "autre") {
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
   } else {
     echo "<p class=\"bold\"><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
   }
-  
+
   ?>
-  
+
   </p>
-  <H2>Signature des cahiers de textes</h2>
-  <p>Le tableau ci-dessous présentent l'ensemble des cahiers de texte actuellement en ligne.
-  <br />&nbsp;&nbsp;Vous pouvez trier le tableau par le groupe ou le propriétaire d'un cahier de texte en cliquant sur le lien correspondant.
-  <br />&nbsp;&nbsp;Vous pouvez visualiser un cahier de texte .
-  <br />&nbsp;&nbsp;Vous pouvez également signer un ou plusieurs cahiers de texte avec le texte ci-dessous (cliquer sur enregistrer pour le sauvegarder).
-  <br /><br /></p>
- 
+  <h2>Signature des cahiers de textes</h2>
+  <p>Le tableau ci-dessous présente l'ensemble des cahiers de textes actuellement en ligne.</p>
+<ul>
+  <li>&nbsp;&nbsp;Vous pouvez trier le tableau par le groupe ou le propriétaire d'un cahier de textes en cliquant sur le lien correspondant.</li>
+  <li>&nbsp;&nbsp;Vous pouvez visualiser un cahier de textes .</li>
+  <li>&nbsp;&nbsp;Vous pouvez également signer un ou plusieurs cahiers de textes avec le texte ci-dessous (cliquer sur enregistrer pour le sauvegarder).</li>
+</ul>
+  <br /><br />
+
 <?PHP
 echo "<div style='width: 750px;'>\n";
-echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
+echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 
-echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" name=\"formulaire1\" method=\"post\">";
+echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" method=\"post\">\n";
 
-echo "<h2 class='gepi' align='center'>Texte du visa à apposer sur les cahiers de textes</h2>\n";
-echo "<i>Mise en forme du visa :</i>\n";
+echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
+echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 
 $oFCKeditor = new FCKeditor('texte_visa_FCK') ;
 $oFCKeditor->BasePath = '../fckeditor/' ;
@@ -155,18 +157,17 @@ $oFCKeditor->ToolbarSet = 'Basic' ;
 $oFCKeditor->Value      = $texte_visa_cdt ;
 $oFCKeditor->Create() ;
 
-echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' />\n";
-echo "<br />";
-echo "<br />";
-echo "</form>";
+echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
+echo "</form>\n";
+echo "<br /><br />";
 
 echo "</fieldset>";
 echo "<br /><br />\n";
 echo "</div>\n";
 ?>
 
-  <form action="visa_ct.php" name="formulaire1" method="post">
-  <table border="1"><tr valign='center' align='center'>
+  <form action="visa_ct.php" method="post">
+  <table border="1"><tr valign='middle' align='center'>
   <td><b><a href='visa_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></td>
   <td><b><a href='visa_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></td>
   <td><b><a href='visa_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></td>
@@ -208,12 +209,12 @@ echo "</div>\n";
          if (sql_count($test_groupe_prof) == 0) $nom_prof = "<font color='red'>".$nom_prof." : <br />Ce professeur n'enseigne pas dans ce groupe</font>";
       }
       // Nombre de notices de chaque utilisateurs
-      $nb_ct = sql_count(sql_query("select 1=1 FROM ct_entry WHERE (id_groupe='".$id_groupe."' and id_login='".$id_prop."') "));
+      $nb_ct = sql_count(sql_query("select 1=1 FROM ct_entry WHERE (id_groupe='".$id_groupe."' and id_login='".$id_prop."' AND visa != 'y') "));
 
       // Nombre de notices devoirs de haque utilisateurs
       $nb_ct_devoirs = sql_count(sql_query("select 1=1 FROM ct_devoirs_entry WHERE (id_groupe='".$id_groupe."' and id_login='".$id_prop."') "));
-	  
-	  //Nombre de visa sur un cahier de texte 
+
+	  //Nombre de visa sur un cahier de texte
 	  $nb_ct_visa = sql_count(sql_query("select 1=1 FROM ct_entry WHERE (id_groupe='".$id_groupe."' and id_login='".$id_prop."' and visa ='y') "));
 
 

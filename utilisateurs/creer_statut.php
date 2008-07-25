@@ -57,13 +57,14 @@ require_once('./creer_statut_autorisation.php');
 function verifChecked($id){
 
 	global $autorise;
+	global $iter;
 
-	for($i = 1 ; $i < 8 ; $i++){
+	for($i = 1 ; $i < $iter ; $i++){
 		// On récupère les droits de ce statut privé
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
 		$query_ds = mysql_query($sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$rep = mysql_result($query_ds, "autorisation");
-
+			// echo $sql_ds.' '.$rep.'<br />'; // debug
 		if ($rep == 'V') {
 			$retour[$i] = ' checked="checked"';
 		}else{
@@ -108,7 +109,7 @@ if ($action == 'ajouter') {
 			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
 			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise du fichier creer_statut_autorisation avec tous les fichiers utiles
 
-			for($a = 0 ; $a < 8 ; $a++){
+			for($a = 0 ; $a < $iter ; $a++){ // $iter est définie dans creer_statut_autorisation.php
 				$nbre = count($autorise[$a]);
 				// On met V pour les autorisations de base mais F pour les autres
 				if ($a != 0) {
@@ -126,13 +127,13 @@ if ($action == 'ajouter') {
 
 				}
 				// On ajoute une virgule entre chaque droit sauf à la fin
-				if ($a <= 6) {
+				if ($a < ($iter - 1)) {
 					$values_b .= ', ';
 				}
 			}
 
  			$autorise_b = mysql_query("INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
-			 										OR trigger_error('Impossible d\'enregistrer : '.$values.' : '.mysql_error(), E_USER_WARNING);
+			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.mysql_error(), E_USER_WARNING);
 
 			if ($autorise_b) {
 				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
@@ -182,7 +183,7 @@ if ($action == 'modifier') {
 			// ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
 			// cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
 
-			for($m = 1 ; $m < 8 ; $m++){
+			for($m = 1 ; $m < $iter ; $m++){
 
 				$nbre2 = count($autorise[$m]);
 				// On vérifie si le droit est coché ou non
