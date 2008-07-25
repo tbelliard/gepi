@@ -103,7 +103,7 @@ if ($test->versionGd()) {
 	<br />
 	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().' (<i>post_max_size</i>).
 	<br />
-	- Le temps maximum alloué à php pour traiter une requête est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
+	- Le temps maximum alloué à php pour traiter un script est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
 	<br />
 	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).';
 
