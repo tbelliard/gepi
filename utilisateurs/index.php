@@ -282,7 +282,7 @@ if ($mode != "personnels") {
 ?>
 <p class=bold>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
- | <a href="modify_user.php">Ajouter utilisateur</a>
+ | <a href="modify_user.php">Ajouter un personnel</a>
 <?php
 
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon" and getSettingValue('use_sso') != "lcs" and getSettingValue("use_sso") != "ldap_scribe") OR $block_sso) {
