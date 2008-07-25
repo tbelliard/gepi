@@ -135,7 +135,13 @@
 				$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
 				$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
 		if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")";}
-		if ( $action_affiche === 'groupe' ) { $entete = "Groupe : ".$donnees_qui['name']; }
+		if ( $action_affiche === 'groupe' ) {
+			//$entete = "Groupe : ".$donnees_qui['name'];
+
+			$current_group=get_group($groupe);
+			$entete = "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+
+		}
 		if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']; }
 		if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
 		if ( $action_affiche === 'statusgepi' ) { $entete = "Status : ".$statusgepi; }
