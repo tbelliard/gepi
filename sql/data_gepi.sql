@@ -713,3 +713,6 @@ INSERT INTO setting VALUES ('auth_sso', 'none');
 INSERT INTO setting VALUES ('ldap_write_access', 'no');
 INSERT INTO setting VALUES ('may_import_user_profile', 'no');
 INSERT INTO setting VALUES ('statut_utilisateur_defaut', 'professeur');
+INSERT INTO `droits`  VALUES ('/cahier_texte_admin/visa_ct.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Page de signature des cahiers de texte', '');
+INSERT INTO setting VALUES ('texte_visa_cdt', 'Cahier de textes visé ce jour <br />Le Principal <br /> M. XXXXX<br />');
+INSERT INTO setting VALUES ('visa_cdt_inter_modif_notices_visees', 'yes');

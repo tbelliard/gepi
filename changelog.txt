@@ -7,7 +7,7 @@
 
 Gepi-1.5.1-rc2 (XX/XX/2008)
 ===========================
-
+- Ajout d'un disposotif afin de permettre la signature des cahiers de textes par l'administration
 
 
 Gepi-1.5.1-rc1 (13/03/2008)

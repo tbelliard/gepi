@@ -642,9 +642,10 @@ if (isset ($_POST['maj'])) {
 
 	$tab_req[] = "INSERT INTO droits VALUES ( '/eleves/import_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Importation bulletin élève', '');";
 	$tab_req[] = "INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin élève', '');";
-
-	//$tab_req[] = "";
-
+ 
+	$tab_req[] = "INSERT INTO `droits`  VALUES ('/cahier_texte_admin/visa_ct.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Page de signature des cahiers de texte', '');";
+	
+    //$tab_req[] = "";
 
 	$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 	if ($test1 == 1) {
@@ -6632,6 +6633,74 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 	}
 
 	//==========================================================
+	// ALTER TABLE `ct_devoirs_entry` ADD `vise` CHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;
+// ALTER TABLE `ct_entry` ADD `vise` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;
+// ALTER TABLE `ct_entry` ADD `visa` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `vise` ;
+
+	// Modification de la base suite au dispositif de visa des cahiers de textes
+	$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_entry LIKE 'vise'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE `ct_devoirs_entry` ADD `vise` CHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;");
+      	if ($result_inter == '') {
+          $result .= "<font color=\"green\">Le champ vise a bien été créé dans la table ct_devoirs_entry !</font><br />";
+     	} else {
+          $result .= $result_inter."<br />";
+	}
+    } else {
+      $result .= "<font color=\"blue\">Le champ vise dans la table ct_devoirs_entry existe déjà.</font><br />";
+    }
+	
+	$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_entry LIKE 'vise'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE `ct_entry` ADD `vise` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;");
+      	if ($result_inter == '') {
+          $result .= "<font color=\"green\">Le champ vise a bien été créé dans la table ct_entry !</font><br />";
+     	} else {
+          $result .= $result_inter."<br />";
+	}
+    } else {
+      $result .= "<font color=\"blue\">Le champ vise dans la table ct_entry existe déjà.</font><br />";
+    }
+	
+	$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_entry LIKE 'visa'"));
+    if ($test == 0) {
+      $result_inter .= traite_requete("ALTER TABLE `ct_entry` ADD `visa` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `vise` ;");
+      	if ($result_inter == '') {
+          $result .= "<font color=\"green\">Le champ visa a bien été créé dans la table ct_entry !</font><br />";
+     	} else {
+          $result .= $result_inter."<br />";
+	}
+    } else {
+      $result .= "<font color=\"blue\">Le champ visa dans la table ct_entry existe déjà.</font><br />";
+    }
+	
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'visa_cdt_inter_modif_notices_visees'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('visa_cdt_inter_modif_notices_visees', 'yes');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre visa_cdt_inter_modif_notices_visees à 'yes': Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre visa_cdt_inter_modif_notices_visees à 'yes': Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre visa_cdt_inter_modif_notices_visees existe déjà dans la table setting.</font><br />";
+    }
+	
+	$req_test=mysql_query("SELECT value FROM setting WHERE name = 'texte_visa_cdt'");
+    $res_test=mysql_num_rows($req_test);
+    if ($res_test==0){
+        $result_inter = traite_requete("INSERT INTO setting VALUES ('texte_visa_cdt', 'Cahier de textes visé ce jour <br />Le Principal <br /> M. XXXXX<br />');");
+        if ($result_inter == '') {
+            $result.="<font color=\"green\">Définition du paramètre texte_visa_cdt : Ok !</font><br />";
+        } else {
+            $result.="<font color=\"red\">Définition du paramètre texte_visa_cdt : Erreur !</font><br />";
+        }
+    } else {
+      $result .= "<font color=\"blue\">Le paramètre texte_visa_cdt existe déjà dans la table setting.</font><br />";
+    }
+	
+
 
     // Modification de la table utilisateurs (ajout de auth_mode)
     $test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'auth_mode'"));

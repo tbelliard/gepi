@@ -80,6 +80,19 @@ if (isset($_POST['cahier_texte_acces_public'])) {
 	}
 }
 
+//ajout Eric visa CDT
+if (isset($_POST['visa_cdt_inter_modif_notices_visees'])) {
+	if ($_POST['visa_cdt_inter_modif_notices_visees'] == "yes") {
+	    $temp = "yes";
+	} else {
+	    $temp = "no";
+	    }
+	if (!saveSetting("visa_cdt_inter_modif_notices_visees", $temp)) {
+	    $msg .= "Erreur lors de l'enregistrement de visa_cdt_inter_modif_notices_visees !";
+	}
+}
+//Fin ajout Eric
+
 if (isset($_POST['is_posted'])) $msg = "Les modifications ont été enregistrées !";
 // header
 $titre_page = "Gestion des cahiers de textes";
@@ -148,6 +161,13 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 <input type="text" name="delai_devoirs" value="<?php echo getSettingValue("delai_devoirs"); ?>" size="2" /> jours
 
 <br /><br />
+
+<h2>Visa des cahiers de texte</h2>
+<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_y' value='yes'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> /> Activer l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
+<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_n' value='no'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> /> Désactiver l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
+
+<br /><br />
+
 <center>
 	<input type="submit" value="Enregistrer" style="font-variant: small-caps;" />
 </center>
@@ -159,6 +179,7 @@ Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case 
 	<li><a href='modify_limites.php'>Espace disque maximal, taille maximale d'un fichier</a></li>
 	<li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
 	<li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
+	<li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
 </ul>
 <?php
 	require("../lib/footer.inc.php");

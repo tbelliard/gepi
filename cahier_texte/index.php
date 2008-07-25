@@ -55,6 +55,9 @@ if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
 
+//Ajout Eric traitement Visa
+$visa_cdt_inter_modif_notices_visees=getSettingValue("visa_cdt_inter_modif_notices_visees");
+
 include "../lib/mincals.inc";
 
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
@@ -191,7 +194,9 @@ if ((isset($_POST['action'])) and ($_POST['action'] == 'sup_serie') and $valide_
        }
        $del_doc = sql_query("delete from ct_documents where id_ct='".$id_ctexte."'");
        if (!($del_doc)) $error = 'yes';
-       $del_ct = sql_query("delete from ct_entry where id_ct='".$id_ctexte."'");
+	   //Modif Eric ==> ne pas supprimer les visas et les notices visées
+       //$del_ct = sql_query("delete from ct_entry where id_ct='".$id_ctexte."'");
+	   $del_ct = sql_query("delete from ct_entry where (id_ct='".$id_ctexte."' and vise != 'y')");
        if (!($del_ct)) $error = 'yes';
      }
      if ($error == 'no') {
@@ -214,7 +219,8 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_entry') and $valide_fo
     if (($res) and (sql_count($res)!=0)) {
         $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
     } else {
-        $res = sql_query("delete from ct_entry where id_ct = '".$_GET['id_ct_del']."'");
+	    //modif Eric interdire la suppression de notice visée
+        $res = sql_query("delete from ct_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
         if ($res) $msg = "Suppression réussie";
     }
 }
@@ -228,7 +234,8 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
     if (($res) and (sql_count($res)!=0)) {
         $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
     } else {
-    $res = mysql_query("delete from ct_devoirs_entry where id_ct = '".$_GET['id_ct_del']."'");
+	//modif Eric interdire la suppression de notice visée
+    $res = mysql_query("delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
         if ($res) $msg = "Suppression réussie";
     }
 
@@ -304,16 +311,16 @@ if($ajout=='oui')
     $test_cahier_texte = 0;
 else {
     if (isset($_GET['info']) or isset($_POST['info'])) {
-      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='')");
+      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='')");
       $infoyes = "&amp;info=yes";
     } elseif (isset($edit_devoir)) {
-      $appel_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
+      $appel_cahier_texte = mysql_query("SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today')");
       $infoyes = "";
     } elseif (isset($id_ct)) {
-      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct')");
+      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct')");
       $infoyes = "";
     } else {
-      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today') ORDER BY heure_entry ASC LIMIT 1");
+      $appel_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today') ORDER BY heure_entry ASC LIMIT 1");
       $infoyes = "";
     }
     $test_cahier_texte = mysql_num_rows($appel_cahier_texte);
@@ -325,6 +332,7 @@ if ($test_cahier_texte != 0) {
         $heure_entry = mysql_result($appel_cahier_texte, 0,'heure_entry');
     // on initialise heure_entry si nouveau = heure actuelle si modification on prend celui de la base de donéne
     $contenu = mysql_result($appel_cahier_texte, 0,'contenu');
+
     $id_ct = mysql_result($appel_cahier_texte, 0,'id_ct');
 } else {
     // Il s'agit d'une nouvelle notice
@@ -607,9 +615,10 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
     }
 }
 
+//Modif vise ==> ERIC ajout champs vise visa dans les requetes
 // recherche et affichage des prochains travaux futurs pour la matière en cours
 $req_devoirs_arendre =
-    "select 't' type, contenu, date_ct, id_ct
+    "select 't' type, contenu, date_ct, id_ct, vise
     from ct_devoirs_entry
     where contenu != ''
     and id_groupe = '" . $current_group["id"] ."'
@@ -622,7 +631,7 @@ $res_devoirs_arendre = mysql_query($req_devoirs_arendre);
 $dev_arendre = mysql_fetch_object($res_devoirs_arendre);
 
 $req_notices =
-    "select 'c' type, contenu, date_ct, id_ct
+    "select 'c' type, contenu, date_ct, id_ct, vise, visa
     from ct_entry
     where contenu != ''
     and id_groupe = '" . $current_group["id"] . "'";
@@ -636,7 +645,7 @@ $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
 
 $req_devoirs =
-    "select 't' type, contenu, date_ct, id_ct
+    "select 't' type, contenu, date_ct, id_ct, vise
     from ct_devoirs_entry
     where contenu != ''
     and id_groupe = '" . $current_group["id"] ."'";
@@ -678,7 +687,8 @@ while (true) {
     // dans le cas ou il y a plusieurs notices pour une journée, il faut les numéroter.
 
     // Passage en HTML
-    $content = &$not_dev->contenu;
+	$content = &$not_dev->contenu;
+	
     include ("../lib/transform.php");
     // Documents joints
     $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
@@ -702,23 +712,56 @@ while (true) {
         $num_notice = 1;
     }
     }
-    if ($not_dev->id_ct == $id_ct) echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";
-    echo("&nbsp;&nbsp;&nbsp;&nbsp;");
+	
+	//Eric
+	if ($not_dev->visa != 'y') {
+	   if ($not_dev->id_ct == $id_ct) echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";
+       echo("&nbsp;&nbsp;&nbsp;&nbsp;");
+	}
+
+	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices	
     $html_balise = '<div style="margin: 0px; float: right;">';
     if ($not_dev->type == "c") {
+	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')){
         $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
         $html_balise .=(" ");
         $html_balise .=(
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "\" onclick=\"return confirmlink(this,'suppression de la notice du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
         );
+		    // cas d'un visa, on n'affiche rien
+            if ($not_dev->visa == 'y') {
+    		    $html_balise = " ";
+			} else {
+			if ($not_dev->vise == 'y') {
+			   $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+			}
+			}
+		} else {
+		     // cas d'un visa, on n'affiche rien
+             if ($not_dev->visa == 'y') {
+    		    $html_balise .= " ";
+		     } else {
+		        $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+		     }
+		}
     } else {
+	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
         $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "&amp;edit_devoir=yes\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
         $html_balise .=(" ");
         $html_balise .=(
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
-        );
+			 );
+			if ($not_dev->vise == 'y') {
+			   $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+			}
+       
+		} else {
+		  $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+		}
     }
     $html_balise .= '</div>';
+	
+	
     echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$html_balise$html</td>\n</tr>\n</table>\n<br/>\n");
     if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
@@ -772,6 +815,7 @@ else
 
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
+
 $appel_cahier_texte_liste = mysql_query("SELECT * FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='$today') ORDER BY heure_entry ASC");
 // Si plusieurs notices pour ce jour, on numérote la notice en cours
 //if (mysql_num_rows($appel_cahier__liste) > 1) {
@@ -781,7 +825,19 @@ if (mysql_num_rows($appel_cahier_texte_liste) > 1) {
         if ($appel_cahier_texte_donne['id_ct'] == $id_ct) $num_notice = $cpt_compte_rendu_liste;
         $cpt_compte_rendu_liste++;
     }
+} else {
+  // ajout Eric ==> interdire la modification d'un visa par le prof
+  // si c'est un visa
+  $appel_cahier_texte_donne = mysql_fetch_array ($appel_cahier_texte_liste);
+  if ($appel_cahier_texte_donne['visa']=='y') {;
+	  unset ($edit_devoir);
+	  unset ($id_ct);
+	  $contenu ='';
+  }
 }
+
+
+
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
 if (isset($edit_devoir)) {
     echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux personnels";
@@ -799,7 +855,7 @@ if (isset($edit_devoir)) {
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Informations générales ";
     else
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu ";
-    if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
+	if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
 //    echo "de la séance du " . strftime("%A %d %B %Y", $today);
     if (isset($id_ct)) {
         echo " - <b><font color=\"red\">Modification de la notice</font></b>";
