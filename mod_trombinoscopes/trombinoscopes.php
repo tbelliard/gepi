@@ -176,6 +176,7 @@ mavar = mavar.split(',');
 </script>
 
 <p class='bold'><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
+ | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>
 <?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?> | <a href='trombinoscopes.php'>Retour à la sélection</a> | <?php } ?>
 <?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?><a href="trombi_impr.php?classe=<?php echo $classe; ?>&amp;groupe=<?php echo $groupe; ?>&amp;equipepeda=<?php echo $equipepeda; ?>&amp;discipline=<?php echo $discipline; ?>&amp;statusgepi=<?php echo $statusgepi; ?>&amp;affdiscipline=<?php echo $affdiscipline; ?>" target="_blank">Format imprimable</a> <?php } ?>
 </p>
@@ -293,7 +294,10 @@ mavar = mavar.split(',');
 				?><option value="">voir mes equipepedas</option><?php } ?>
 				<optgroup label="-- Les classes --">
 						<?php while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) { ?>
-							<option value="<?php echo $donnee_equipe_pedagogique['id']; ?>" <?php if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,discipline,statusgepi');"><?php echo ucwords($donnee_equipe_pedagogique['nom_complet']); ?></option>
+							<option value="<?php echo $donnee_equipe_pedagogique['id']; ?>" <?php if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,discipline,statusgepi');"><?php
+								echo ucwords($donnee_equipe_pedagogique['nom_complet']);
+								echo ' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
+							?></option>
 						<?php } ?>
 				</optgroup>
 		</select>
@@ -340,7 +344,7 @@ mavar = mavar.split(',');
 						ORDER BY u.statut ASC');
 			*/
 			$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
-						WHERE u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre"
+						WHERE (u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre") AND etat="actif"
 						GROUP BY u.statut
 						ORDER BY u.statut ASC');
 		}
@@ -349,7 +353,7 @@ mavar = mavar.split(',');
 				?><option value="" <?php if ( empty($statusgepi) ) { ?>selected="selected"<?php } ?> onclick="reactiver('classe,groupe,equipepeda,discipline,affdiscipline');">pas de s&eacute;lection</option>
 				<optgroup label="-- Les statuts --">
 						<?php while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) { ?>
-							<option value="<?php echo $donnee_statusgepi['statut']; ?>" <?php if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,equipepeda,discipline,affdiscipline');"><?php echo ucwords($donnee_statusgepi['statut']); ?></option>
+							<option value="<?php echo $donnee_statusgepi['statut']; ?>" <?php if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,equipepeda,discipline,affdiscipline');"><?php echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut'])); ?></option>
 						<?php } ?>
 				</optgroup>
 		</select><br /><br />
@@ -394,20 +398,30 @@ mavar = mavar.split(',');
 
 	if ( $action_affiche === 'classe' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"'; }
 	if ( $action_affiche === 'groupe' ) { $requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"'; }
-	if ( $action_affiche === 'equipepeda' ) { $requete_qui = 'SELECT c.id, c.nom_complet FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"'; }
+	if ( $action_affiche === 'equipepeda' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"'; }
 	if ( $action_affiche === 'discipline' ) { $requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"'; }
-	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
+	//if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
+	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";'; }
 			$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
 			$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
-	if ( $action_affiche === 'classe' ) { echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
-											echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';}
+	if ( $action_affiche === 'classe' ) {
+		//echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
+		//echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';
+		echo "Classe : ".$donnees_qui['nom_complet'];
+		echo ' ('.ucwords($donnees_qui['classe']).')';
+	}
 	if ( $action_affiche === 'groupe' ) {
 		$current_group=get_group($groupe);
 		echo "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
 	}
-	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
-	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
-	if ( $action_affiche === 'statusgepi' ) { echo "Statut : ".$statusgepi; }
+	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
+	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
+
+	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }
+	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
+
+
+	if ( $action_affiche === 'statusgepi' ) { echo "Statut : ".ereg_replace("scolarite","scolarité",$statusgepi); }
 
 
 	// choix du répertoire ou chercher les photos entre professeur ou élève
