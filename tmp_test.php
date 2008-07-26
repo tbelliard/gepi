@@ -21,16 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+$niveau_arbo=0;
+
 // Initialisations files
-require_once("../lib/initialisations.inc.php");
+require_once("./lib/initialisations.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+    header("Location: utilisateurs/mon_compte.php?change_mdp=yes");
     die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
+    header("Location: ./logout.php?auto=1");
     die();
 };
 
@@ -42,7 +44,7 @@ if (!checkAccess()) {
 */
 
 if($_SESSION['statut']!='administrateur') {
-    header("Location: ../logout.php?auto=1");
+    header("Location: ./logout.php?auto=1");
     die();
 }
 
@@ -50,12 +52,12 @@ $revision_svn='$Id$';
 
 //**************** EN-TETE *********************
 $titre_page = "Page de test";
-require_once("../lib/header.inc");
+require_once("./lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 echo "<p>Cette page est destinée à faire des tests de révision.</p>\n";
 
 echo "<p>La variable '\$revision_svn' déclarée dans cette page à la valeur suivante: <span style='color:green;'>$revision_svn</span></p>\n";
 
-require ("../lib/footer.inc.php");
+require ("./lib/footer.inc.php");
 ?>
