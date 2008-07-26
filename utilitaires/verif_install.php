@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 27/08/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,9 @@ if (file_exists("./secure/connect.inc.php")) {
                 $liste2[$j] = mysql_tablename($tableNames, $j);
                 $j++;
             }
+            
             $flag = 'no';
+            /*
             $j = '0';
             while ($j < count($liste_tables)) {
                 $temp = $liste_tables[$j];
@@ -46,6 +48,7 @@ if (file_exists("./secure/connect.inc.php")) {
                 }
                 $j++;
             }
+            */
             if ($flag == 'yes') {
                 $msg = "<p>La connexion au serveur Mysql est établie mais certaines tables sont absentes de la base $dbDb.</p>";
                 $correct_install = 'no';
