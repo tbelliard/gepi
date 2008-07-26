@@ -83,7 +83,7 @@ function age($date_de_naissance_fr)
 function pp($classe_choix)
 {
             global $prefix_base;
-               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.nom_complet = '".$classe_choix."'");
+               $call_prof_classe = mysql_query("SELECT * FROM ".$prefix_base."classes, ".$prefix_base."j_eleves_professeurs, ".$prefix_base."j_eleves_classes WHERE ".$prefix_base."j_eleves_professeurs.login = ".$prefix_base."j_eleves_classes.login AND ".$prefix_base."j_eleves_classes.id_classe = ".$prefix_base."classes.id AND ".$prefix_base."classes.classe = '".$classe_choix."'");
                $data_prof_classe = mysql_fetch_array($call_prof_classe);
                $suivi_par = $data_prof_classe['suivi_par'];
                return($suivi_par);
@@ -239,7 +239,7 @@ if ($action === 'modifier')
 		Prénom : <?php echo $prenom_eleve; ?><br />
 		Date de naissance : <?php echo $naissance_eleve; ?><br />
 		Age : <?php echo age($date_de_naissance); ?> ans <br /><br />
-		Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_de($login_eleve)); ?>)
+		Classe : <?php echo classe_de($login_eleve); ?> (Suivi par : <?php echo pp(classe_court_de($login_eleve)); ?>)
 	</div>
 </div>
 <div class="couleur_ligne_3" style="width: 450px; margin: auto; border-bottom: 2px solid #2F4F4F; border-left: 2px solid #2F4F4F; border-right: 2px solid #2F4F4F; text-align: left;">
