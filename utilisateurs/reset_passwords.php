@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -77,7 +77,7 @@ if ($user_login AND strtoupper($user_login) == strtoupper($_SESSION['login'])) {
 	die();
 }
 
-if ($user_status and $user_status != "scolarite" and $user_status != "professeur" and $user_status != "cpe" and $user_status != "secours" and $user_status != "responsable" and $user_status != "eleve") {
+if ($user_status and !in_array($user_status, array("scolarite", "professeur", "cpe", "secours", "responsable", "eleve", "autre") {
 	echo "<p>ERREUR ! L'identifiant de statut est erroné. L'opération ne peut pas continuer.</p>";
 	echo "</div></body></html>";
 	die();
@@ -157,7 +157,7 @@ if ($user_login) {
 						u.login = '$user_login')";
 		*/
 
-		$sql_user_info="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, re.resp_legal, r.civilite, ra.*
+		$sql_user_info="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode, re.pers_id, re.resp_legal, r.civilite, ra.*
 						FROM utilisateurs u,
 							resp_pers r,
 							responsables2 re,
@@ -222,7 +222,7 @@ else {
 						"e.login = jec.login AND " .
 						"jec.id_classe = '".$user_classe."')");
 				*/
-				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, re.pers_id, re.resp_legal, r.civilite, jec.id_classe, ra.*
+				$sql_user_resp="SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode, re.pers_id, re.resp_legal, r.civilite, jec.id_classe, ra.*
 								FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e, resp_adr ra
 								WHERE ( u.login = r.login AND
 								u.statut = 'responsable' AND
@@ -257,7 +257,7 @@ else {
 					"login != '" . $_SESSION['login'] . "' AND " .
 					"etat = 'actif' AND " .
 					"statut = '" . $user_status . "')");*/
-				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
+				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
 									FROM utilisateurs u, resp_pers rp, resp_adr ra, responsables2 r2, eleves e, j_eleves_classes jec
 									WHERE (
 									u.login != 'ADMIN'
@@ -277,7 +277,7 @@ else {
 
 			} elseif ($user_status == "eleve"){
 				$login_en_cours = $_SESSION['login'];
-				$sql_user_info = "SELECT DISTINCT (u.login), u.nom, u.prenom, u.statut, u.password, u.email, jec.id_classe
+				$sql_user_info = "SELECT DISTINCT (u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode, jec.id_classe
 								FROM utilisateurs u, j_eleves_classes jec
 								WHERE ( u.login != 'ADMIN'
 								AND jec.login = u.login
@@ -329,6 +329,7 @@ while ($p < $nb_users) {
 	$user_password = mysql_result($call_user_info, $p, "password");
 	$user_statut = mysql_result($call_user_info, $p, "statut");
 	$user_email = mysql_result($call_user_info, $p, "email");
+	$user_auth_mode = mysql_result($call_user_info, $p, "auth_mode");
 
 	//echo "$user_login<br />";
 
@@ -465,9 +466,20 @@ while ($p < $nb_users) {
 			$new_password = pass_gen();
 			$tab_password[$user_login]=$new_password;
 
-			if (isset($_GET['sso'])) {
-				// Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
+			if ($user_auth_mode != "gepi") {
+				// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
 					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+				
+				// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
+				// directement dans l'annuaire.
+				if ($gepiSettings['ldap_write_access'] == "yes") {
+					$ldap_server = new LDAPServer;
+					$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $new_password,'');
+				} else {
+					// On réinitialise la variable $new_password à zéro, pour être sûr
+					// qu'il n'y ait pas de confusion par la suite.
+					$new_password = '';
+				}
 			} else {
 					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
 			}
@@ -521,8 +533,13 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-		echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
-		//if($cas_traite!=0){
+		if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != 'yes') {
+			// En mode SSO ou LDAP sans accès en écriture, le mot de passe n'est pas modifiable par Gepi.
+			echo "<tr><td>Le mot de passe de cet utilisateur n'est pas géré par Gepi.</td></tr>\n";
+		}
+		else {
+			echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+		}//if($cas_traite!=0){
 		if ($user_statut == "responsable") {
 			echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
 			if($liste_elv_resp==""){
@@ -694,9 +711,9 @@ while ($p < $nb_users) {
 		echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 		//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 		echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
-		if (isset($_GET['sso'])) {
-			// Dans ce cas, l'administrateur a demandé à supprimer le mot de passe. L'utilsiateur deviendra alors un utilsiateur SSO et non plus un utilisateur local.
-			echo "<tr><td>Le mot de passe de cet utilisateur a été supprimé.</td></tr>\n";
+		if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != 'yes') {
+			// En mode SSO ou LDAP sans accès en écriture, le mot de passe n'est pas modifiable par Gepi.
+			echo "<tr><td>Le mot de passe de cet utilisateur n'est pas géré par Gepi.</td></tr>\n";
 		}
 		else {
 			echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";

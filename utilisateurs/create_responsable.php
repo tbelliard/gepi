@@ -43,6 +43,8 @@ if (!checkAccess()) {
 // Initialisation des variables
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
+$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso")) ? "auth_locale" : $_POST['reg_auth_mode']; 
+
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
 
@@ -51,6 +53,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	$error = false;
 	$msg = "";
 	if ($create_mode == "individual") {
+		echo "grouik : ".$_POST['pers_id'];
 		// $_POST['pers_id'] est filtré automatiquement contre les injections SQL, on l'utilise directement
 		$test = mysql_query("SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')");
 		if (mysql_result($test, 0) == "0") {
@@ -148,28 +151,52 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Création du compte utilisateur pour le responsable considéré
 				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 			}
-
-			$reg = true;
-			$sql="INSERT INTO utilisateurs SET " .
-					"login = '" . $reg_login . "', " .
-					"nom = '" . addslashes($current_parent->nom) . "', " .
-					"prenom = '". addslashes($current_parent->prenom) ."', " .
-					"password = '', " .
-					"civilite = '" . $current_parent->civilite."', " .
-					"email = '" . $current_parent->mel . "', " .
-					"statut = 'responsable', " .
-					"etat = 'actif', " .
-					"change_mdp = 'n'";
-			//echo "$sql<br />";
-			$reg = mysql_query($sql);
-
-			if (!$reg) {
-				$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
+			
+			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
+			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
+			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
+			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'ldap' || $_POST['reg_auth_mode'] == 'sso')) {
+				$write_ldap = true;
+				$write_ldap_success = false;
+				// On tente de créer l'utilisateur sur l'annuaire LDAP
+				$ldap_server = new LDAPServer();
+				if ($ldap_server->test_user($_POST['new_login'])) {
+					// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
+					$write_ldap_success = true;
+					$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
+				} else {
+					$write_ldap_success = $ldap_server->add_user($reg_login, $current_parent->nom, $current_parent->prenom, $current_parent->mel, $current_parent->civilite, '', 'responsable');
+				}						
 			} else {
-				$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
-				$reg2 = mysql_query($sql);
-				//$msg.="$sql<br />";
-				$nb_comptes++;
+				$write_ldap = false;
+			}
+
+			if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
+				$reg = true;
+				$sql="INSERT INTO utilisateurs SET " .
+						"login = '" . $reg_login . "', " .
+						"nom = '" . addslashes($current_parent->nom) . "', " .
+						"prenom = '". addslashes($current_parent->prenom) ."', " .
+						"password = '', " .
+						"civilite = '" . $current_parent->civilite."', " .
+						"email = '" . $current_parent->mel . "', " .
+						"statut = 'responsable', " .
+						"etat = 'actif', " .
+						"auth_mode = '".$_POST['reg_auth_mode']."', " .
+						"change_mdp = 'n'";
+				//echo "$sql<br />";
+				$reg = mysql_query($sql);
+	
+				if (!$reg) {
+					$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
+				} else {
+					$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
+					$reg2 = mysql_query($sql);
+					//$msg.="$sql<br />";
+					$nb_comptes++;
+				}
+			} else {
+				$msg .= "Erreur lors de la création du compte ".$reg_login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
 			}
 		}
 		if ($nb_comptes == 1) {
@@ -179,9 +206,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		}
 
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
-		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO.
-		// Cas particlulier de LCS : les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Dans ce cas, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI."
-		if ($nb_comptes > 0 AND getSettingValue('use_sso') != "cas" AND getSettingValue("use_sso") != "lemon" AND getSettingValue("use_sso") != "ldap_scribe") {
+		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO (sauf accès LDAP en écriture).
+		
+		if ($nb_comptes > 0 && ($_POST['auth_mode'] == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
@@ -212,6 +239,10 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			//$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
 			//$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 			// =====================
+		} else {
+			if ($nb_comptes > 0) {
+				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br/>";
+			}
 		}
 	}
 }
@@ -274,33 +305,44 @@ $quels_parents = mysql_query($sql);
 $nb2 = mysql_num_rows($quels_parents);
 
 if($nb==0){
-	echo "<p>Tous les responsables ont un login.</p>\n";
+	echo "<p>Tous les responsables ont un login, ou bien aucun responsable n'est présent dans la base de Gepi.</p>\n";
 }
 else{
 	//echo "<p>Les $nb responsables ci-dessous n'ont pas encore de compte utilisateur.</p>\n";
 	echo "<p>$nb responsables n'ont pas encore de compte utilisateur.</p>\n";
+	echo "<p><em>Note : vous ne pouvez créer de comptes d'accès que pour les responsables d'élèves associés à des classes.</em></p>\n";
 
 	if (getSettingValue("mode_generation_login") == null) {
 		echo "<p><b>ATTENTION !</b> Vous n'avez pas défini le mode de génération des logins. Allez sur la page de <a href='../gestion/param_gen.php'>gestion générale</a> pour définir le mode que vous souhaitez utiliser. Par défaut, les logins seront générés au format pnom tronqué à 8 caractères (ex: ADURANT).</p>\n";
 	}
-	// Cas particlulier de LCS : les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Dans ce cas, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI."
-  if ((getSettingValue('use_sso') == "cas" OR getSettingValue("use_sso") == "lemon"  OR getSettingValue("use_sso") == "ldap_scribe")) {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (SSO). Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêté à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
-	}
-	if (getSettingValue('use_sso') == "lcs") {
-		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (LCS). Les responsables ne disposent pas d'un compte leur permettant de s'identifier sur le SSO. Par conséquent, il accéderont à GEPI localement grâce à un identifiant et un mot de passe générés par GEPI.
-    <br /><b>Remarque</b> : l'adresse pour se connecter localement est du type : http://mon.site.fr/gepi/login.php?local=y (ne pas omettre \"<b>?local=y</b>\").</p>\n";
+	if (!$session_gepi->auth_locale && $gepiSettings['ldap_write_access'] != "yes") {
+		echo "<p><b>Note :</b> Vous utilisez une authentification externe à Gepi (LDAP ou SSO) sans avoir défini d'accès en écriture à l'annuaire LDAP. Aucun mot de passe ne sera donc assigné aux utilisateurs que vous vous apprêtez à créer. Soyez certain de générer les login selon le même format que pour votre source d'authentification SSO.</p>\n";
 	}
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
-	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 	echo "<form action='create_responsable.php' method='post'>\n";
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	//===========================
 	// AJOUT: boireaus 20071102
 	echo "<input type='hidden' name='creation_comptes_classe' value='y' />\n";
 	//===========================
+	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
+	
+	echo "<select name='reg_auth_mode' size='1'>";
+	if ($session_gepi->auth_locale) {
+		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
+	}
+	if ($session_gepi->auth_ldap) {
+		echo "<option value='auth_ldap'>Authentification LDAP</option>";
+	}
+	if ($session_gepi->auth_sso) {
+		echo "<option value='auth_sso'>Authentification unique (SSO)</option>";
+	}
+	echo "</select>";
+
+	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
+	
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
@@ -357,7 +399,28 @@ else{
 	echo "<br />\n";
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
+	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post'>\n";
+	echo "<input type='hidden' name='mode' value='individual' />\n";
+	echo "<input id='create_pers_id' type='hidden' name='pers_id' value='' />\n";
 
+	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
+	echo "<input type='hidden' name='afficher_tous_les_resp' value='$afficher_tous_les_resp' />\n";
+				
+	// Sélection du mode d'authentification
+	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1'>";
+	if ($session_gepi->auth_locale) {
+		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
+	}
+	if ($session_gepi->auth_ldap) {
+		echo "<option value='auth_ldap'>Authentification LDAP</option>";
+	}
+	if ($session_gepi->auth_sso) {
+		echo "<option value='auth_sso'>Authentification unique (SSO)</option>";
+	}
+	echo "</select>";
+	echo "</p>";
+
+	
 	echo "<table class='boireaus' border='1' summary=\"Créer\">\n";
 	$alt=1;
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
@@ -376,18 +439,8 @@ else{
 			echo "<tr class='lig$alt'>\n";
 				//echo "<td valign='top'>\n";
 				echo "<td>\n";
-				echo "<form action='create_responsable.php' method='post'>\n";
-				echo "<input type='hidden' name='mode' value='individual' />\n";
-				echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
-				echo "<input type='submit' value='Créer' />\n";
-
-				echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
-				echo "<input type='hidden' name='afficher_tous_les_resp' value='$afficher_tous_les_resp' />\n";
-
-				echo "</form>\n";
+				echo "<input type='submit' value='Créer' onclick=\"$('create_pers_id').value='".$current_parent->pers_id."'; $('form_create_one_resp').submit();\" />\n";
 				echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
-
-				//echo "<td>Responsable légal de:</td>\n";
 				echo "<td>\n";
 				while($lig_ele=mysql_fetch_object($test)){
 					echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
@@ -397,6 +450,7 @@ else{
 		}
 	}
 	echo "</table>\n";
+	echo "</form>";
 	echo "</blockquote>\n";
 }
 echo "<p><br /></p>\n";

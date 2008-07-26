@@ -192,7 +192,6 @@ require_once("../lib/header.inc");
 <a href="create_eleve.php"> Ajouter de nouveaux comptes</a>
 <?php
 
-//$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
 $quels_eleves = mysql_query("SELECT 1=1 FROM utilisateurs WHERE statut='eleve' ORDER BY nom,prenom");
 if(mysql_num_rows($quels_eleves)==0){
 	echo "<p>Aucun compte élève n'existe encore.<br />Vous pouvez ajouter des comptes élèves à l'aide du lien ci-dessus.</p>\n";
@@ -226,8 +225,9 @@ echo "<br />\n";
 echo "<input type='hidden' name='mode' value='classe' />\n";
 echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
 echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
-if ($test_sso)
+if ($session_gepi->auth_locale || $gepiSettings['ldap_write_access']) {
     echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
+}
 echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
 //echo "<br />\n";
 echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
@@ -329,22 +329,20 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 		echo "<td>\n";
 		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
 
-		if($current_eleve->etat == "actif"){
-			echo "<br />\n";
-			//echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>";
-			if ($test_sso)
-          echo "<a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a>\n";
-      else {
-        $testpassword = sql_query1("select password from utilisateurs where login = '".$current_eleve->login."'");
-        if ($testpassword == "-1") {
-            // il s'agit d'un utilisateur SSO
-            echo "<span class=\"small\"><a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuellement cet utilisateur se connecte à GEPI en s\'authentifiant auprès d\'un SSO.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un mot de passe local. Cet utilisateur ne pourra donc plus se connecter à GEPI via le SSO mais uniquement localement.\\n\\nUne fois l\'opération effectuée, vous devez recharger la page précédente afin que l\'affichage prenne en compte les changements.')\" target='_blank'>Attribuer un mot de passe</a></span>\n";
-        } else {
-            // il s'agit d'un utilisateur local
-              echo "<span class=\"small\"><a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.\\n\\nUne fois l\'opération effectuée, vous devez recharger la page précédente afin que l\'affichage prenne en compte les changements.')\" target='_blank'>Réinitialiser le mot de passe</a>\n";
-            echo " - <span class=\"small\"><a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_statut=eleve&amp;sso=yes\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuellement cet utilisateur se connecte à GEPI localement.\\n En cliquant sur OK, vous lancerez la procédure, qui supprimera le mot de passe local. Cet utilisateur ne pourra donc plus se connecter à GEPI localement mais uniquement en s\'authentifiant auprès d\'un SSO.\\n\\nUne fois l\'opération effectuée, vous devez recharger la page précédente afin que l\'affichage prenne en compte les changements.')\" target='_blank'>Supprimer le mot de passe</a></span>\n";
-        }
-		  }
+		if($current_eleve->etat == "actif" && ($current_eleve->auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
+			echo "<br />";
+			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_status=eleve&amp;mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
+			echo " - <a href=\"change_pwd.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>choisi </a>";
+		}
+		echo "</td>\n";
+
+		echo "<td>\n";
+		$tmp_class=get_class_from_ele_login($current_eleve->login);
+		if(isset($tmp_class['liste'])) {
+			echo $tmp_class['liste'];
+		}
+		else {
+			echo "<span style='color:red;'>Aucune</span>";
 		}
 		echo "</td>\n";
 
