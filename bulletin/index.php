@@ -796,6 +796,18 @@ for(i=0;i<$nb_per_close;i++){
 	}
 	echo "</table>\n";
 
+
+	echo "<br />\n";
+	echo "<p><b>Bloc adresse responsable et page de garde&nbsp;:</b></p>\n";
+	echo "<blockquote>\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_xx' value='xx' checked='checked' /><label for='b_adr_pg_xx' style='cursor:pointer'> D'après les paramètres du bulletin HTML</label><br />\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_nn' value='nn' /><label for='b_adr_pg_nn' style='cursor:pointer'> sans bloc adresse ni page de garde</label><br />\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_yn' value='yn' /><label for='b_adr_pg_yn' style='cursor:pointer'> avec bloc adresse sans page de garde</label><br />\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_ny' value='ny' /><label for='b_adr_pg_ny' style='cursor:pointer'> sans bloc adresse avec page de garde</label><br />\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_yy' value='yy' /><label for='b_adr_pg_yy' style='cursor:pointer'> avec bloc adresse et page de garde</label><br />\n";
+	echo "</blockquote>\n";
+
+
 	echo "<p style='text-align:center;'><input type='submit' name='Valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 

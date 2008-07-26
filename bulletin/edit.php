@@ -880,6 +880,23 @@ if(($selection!="_CLASSE_ENTIERE_")&&(isset($liste_login_ele))){
 	}
 }
 
+$b_adr_pg=isset($_POST['b_adr_pg']) ? $_POST['b_adr_pg'] : 'xx';
+if($b_adr_pg=='nn') {
+	$affiche_adresse="n";
+	$page_garde_imprime="n";
+}
+elseif($b_adr_pg=='yn') {
+	$affiche_adresse="y";
+	$page_garde_imprime="n";
+}
+elseif($b_adr_pg=='ny') {
+	$affiche_adresse="n";
+	$page_garde_imprime="yes";
+}
+elseif($b_adr_pg=='yy') {
+	$affiche_adresse="y";
+	$page_garde_imprime="yes";
+}
 
 
 
