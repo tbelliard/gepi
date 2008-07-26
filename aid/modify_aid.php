@@ -281,7 +281,7 @@ if ($flag == "prof") { ?>
         <?php
         if ($activer_outils_comp == "y")
               echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).";
-        echo "<hr /><table class=\"aid_tableau\" border=\"0\">\n";
+        echo "<hr /><table class=\"aid_tableau\" border=\"0\" summary=''>\n";
     }
     $i = "0";
     while ($i < $nombre) {
@@ -313,7 +313,7 @@ if ($flag == "prof") { ?>
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
 
-        echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+        echo "<option value=\"".$login_prof."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))."</option>\n";
     $i++;
     }
     ?>
@@ -351,7 +351,7 @@ if ($flag == "prof_gest") { ?>
         Les gestionnaires peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans cette AID.
         <p class='bold'>Liste des utilisateurs gestionnaires :</p>
         <?php
-        echo "<hr /><table class=\"aid_tableau\" border=\"0\">\n";
+        echo "<hr /><table class=\"aid_tableau\" border=\"0\" summary=''>\n";
     }
     $i = "0";
     while ($i < $nombre) {
@@ -381,7 +381,8 @@ if ($flag == "prof_gest") { ?>
         $login_prof = mysql_result($call_prof, $i, 'login');
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
-        echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+        //echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+        echo "<option value=\"".$login_prof."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))."</option>\n";
     $i++;
     }
     ?>
@@ -427,7 +428,7 @@ if ($flag == "eleve") {
     $vide = 1;
     // Ajout d'un tableau
 echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
-	echo "<table class=\"aid_tableau\" border=\"0\">";
+	echo "<table class=\"aid_tableau\" border=\"0\" summary=''>";
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysql_query("SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
 							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
@@ -535,7 +536,8 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
             if ($affiche_ligne == "yes") {
             $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
             $classe_eleve = @mysql_result($call_classe, '0', "classe");
-            echo "<option value=\"$eleve\">$nom_el  $prenom_el $classe_eleve</option>\n";
+            //echo "<option value=\"$eleve\">$nom_el  $prenom_el $classe_eleve</option>\n";
+	        echo "<option value=\"".$eleve."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))." $classe_eleve</option>\n";
             }
         $i++;
         }

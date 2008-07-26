@@ -86,13 +86,14 @@ if ($nb_aid == 0) {
    echo "<p class='grand'>Il n'y a actuellement aucune catégorie d'AID</p>";
 } else {
     echo "<form action=\"index.php\" name=\"formulaire\" method=\"post\">";
-    echo "<table border=1 cellpadding=3>";
-    echo "<tr><td><p>Nom - Modifications</p></td>";
-    echo "<td><p>Liste des aid de la catégorie</p></td>";
-    echo "<td><p>Nom complet de l'AID</p></td>";
-    echo "<td><p><input type=\"submit\" name=\"sup\" value=\"Supprimer\" /></p></td></tr>";
+    echo "<table class='boireaus' border='1' cellpadding='3' summary=\"Catégories d'AID\">\n";
+    echo "<tr><th><p>Nom - Modifications</p></th>\n";
+    echo "<th><p>Liste des aid de la catégorie</p></th>\n";
+    echo "<th><p>Nom complet de l'AID</p></th>\n";
+    echo "<th><p><input type=\"submit\" name=\"sup\" value=\"Supprimer\" /></p></th></tr>\n";
 
     $i=0;
+	$alt=1;
     while ($i < $nb_aid) {
         $nom_aid = @mysql_result($call_data, $i, "nom");
         $nom_complet_aid = @mysql_result($call_data, $i, "nom_complet");
@@ -107,7 +108,8 @@ if ($nb_aid == 0) {
         else
             $display_trombino="";
 
-        echo "<tr><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils $display_trombino</p></td>";
+		$alt=$alt*(-1);
+        echo "<tr class='lig$alt'><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils $display_trombino</p></td>";
         echo "<td><p><a href='index2.php?indice_aid=$indice_aid'>Liste des aid de la catégorie</a></p></td>";
         echo "<td><p>$nom_complet_aid</p></td>";
         echo "<td><center><p><input type=\"checkbox\" name=\"sup".$indice_aid."\" /></p></center></td></tr>";

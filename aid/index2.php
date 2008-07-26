@@ -153,7 +153,7 @@ $nombreligne = mysql_num_rows($calldata);
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
     echo"<form action=\"index2.php\" name=\"form1\" method=\"post\">\n";
-echo "<table border='1' cellpadding='5' class='boireaus'>";
+echo "<table border='1' cellpadding='5' class='boireaus' summary=''>";
 echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></th>\n";
 echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></th>";
 // En tete de la colonne "Ajouter, supprimer des professeurs"
