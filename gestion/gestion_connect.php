@@ -745,7 +745,15 @@ if ($res) {
 		}
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[4].$result_hostbyaddr.$temp2. "</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1. detect_browser($row[5]) .$temp2. "</span></td>\n";
-        echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>\n";
+        //echo "<td class=\"col\"><span class='small'>".$temp1. $row[6] .$temp2. "</span></td>\n";
+        echo "<td class=\"col\"><span class='small'>";
+		if($row[6]=="") {
+			echo "&nbsp;";
+		}
+		else {
+			echo $temp1. $row[6] .$temp2;
+		}
+		echo "</span></td>\n";
 
 		//$ligne_csv[$nb_ligne] .= "$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n";
 		$ligne_csv[$nb_ligne] .= ereg_replace("&nbsp;"," ","$date_fin_f;$result_hostbyaddr;".detect_browser($row[5]).";$row[6]\n");
