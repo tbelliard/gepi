@@ -200,13 +200,13 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
 					//if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
 					if ($filephoto_tmp!=''){
-  					$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+  						$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
 						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
 						$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
-            if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
-			        $msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
-			      } else {
-					  // Tester la taille max de la photo?
+						if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
+								$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
+							} else {
+								  // Tester la taille max de la photo?
 								  if(is_uploaded_file($filephoto_tmp)){
 									  $dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
 									  $source_file=stripslashes("$filephoto_tmp");
@@ -511,7 +511,7 @@ if(($_SESSION['statut']=='administrateur')||
 					//echo "</span>\n";
 					echo "</div>\n";
 					echo "<div id='div_upload_photo' style='display:none;'>";
-					echo "<input type='file' name='filephoto' />\n";
+					echo "<input type='file' name='filephoto' size='30' />\n";
 					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
       		if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					  echo "<br /><span class='small'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels).
@@ -561,7 +561,7 @@ if(($_SESSION['statut']=='administrateur')||
 					}
 					echo "</span>\n";
 					echo "<div id='div_upload_photo' style='display: none;'>\n";
-					echo "<input type='file' name='filephoto' size='12' />\n";
+					echo "<input type='file' name='filephoto' size='30' />\n";
 
 					echo "<input type='submit' name='Envoi_photo' value='Envoyer' />\n";
 
