@@ -149,7 +149,7 @@ $titre_page = "Créer des comptes d'accès élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>
+<p class='bold'>
 <a href="edit_eleve.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
@@ -265,8 +265,24 @@ else{
 			echo "<input type='hidden' name='mode' value='individual' />\n";
 			echo "<input type='hidden' name='eleve_login' value='".$current_eleve->login."' />\n";
 			echo "<input type='submit' value='Créer' />\n";
+			echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
+			echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
 			echo "</form>\n";
+			echo "</td>\n";
+
 			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>\n";
+
+
+			echo "<td>\n";
+			$tmp_class=get_class_from_ele_login($current_eleve->login);
+			if(isset($tmp_class['liste'])) {
+				echo $tmp_class['liste'];
+			}
+			else {
+				echo "<span style='color:red;'>Aucune</span>";
+			}
+			echo "</td>\n";
+
 		echo "</tr>\n";
 	}
 	echo "</table>\n";

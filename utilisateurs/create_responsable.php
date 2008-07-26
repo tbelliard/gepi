@@ -185,6 +185,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
+				$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+				$msg .= "</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
@@ -203,11 +205,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$msg.="<br/>";
 				}
 				// =====================
+				$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 			}
 			// =====================
 			// MODIF: boireaus 20071102
 			//$msg .= "<br/>Vous devez effectuer cette opération maintenant !";
-			$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+			//$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 			// =====================
 		}
 	}
@@ -377,6 +380,10 @@ else{
 				echo "<input type='hidden' name='mode' value='individual' />\n";
 				echo "<input type='hidden' name='pers_id' value='".$current_parent->pers_id."' />\n";
 				echo "<input type='submit' value='Créer' />\n";
+
+				echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
+				echo "<input type='hidden' name='afficher_tous_les_resp' value='$afficher_tous_les_resp' />\n";
+
 				echo "</form>\n";
 				echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
 
