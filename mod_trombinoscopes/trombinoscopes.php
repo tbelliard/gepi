@@ -522,8 +522,53 @@ $total = $cpt_photo;
 
 <p align="center"><img src="images/barre.gif" width="550" height="2" alt="Barre" /></p>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="4" summary='Trombino'>
+<!--table width="100%" border="0" cellspacing="0" cellpadding="4" summary='Trombino'-->
 <?php
+	unset($tmp_id_classe);
+	if (($action_affiche=='equipepeda')||
+		($action_affiche=='discipline')||
+		($action_affiche=='statusgepi')) {
+
+		if($_SESSION['statut']=='eleve') {
+			$tmp_id_classe=1;
+
+			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
+			foreach($tmp_clas as $key_tmp => $value_tmp) {
+				if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+					$tmp_id_classe=$key_tmp;
+					break;
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='responsable') {
+
+			$tmp_tab_enfants=get_enfants_from_resp_login($_SESSION['login']);
+			for($loop=0;$loop<count($tmp_tab_enfants);$loop+=2) {
+				$tmp_id_classe=-1;
+
+				if(isset($tmp_tab_enfants[$loop])) {
+					//echo "\$tmp_tab_enfants[$loop]=$tmp_tab_enfants[$loop]<br />";
+					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
+					foreach($tmp_clas as $key_tmp => $value_tmp) {
+						//echo "\$tmp_clas[$key_tmp]=$value_tmp<br />";
+						if(strlen(ereg_replace("[0-9]","",$key_tmp))==0) {
+							$tmp_id_classe=$key_tmp;
+							break;
+						}
+					}
+				}
+
+				//echo "\$tmp_id_classe=$tmp_id_classe<br />";
+
+				if($tmp_id_classe!=-1) {break;}
+			}
+
+			if($tmp_id_classe==-1) {$tmp_id_classe=1;}
+		}
+	}
+
+	echo "<table width='100%' border='0' cellspacing='0' cellpadding='4' summary='Trombino'>\n";
+
 	$i = 1;
 	while( $i < $total) {
 		echo "<tr align='center' valign='top'>\n";
@@ -532,13 +577,36 @@ $total = $cpt_photo;
 			if ($i < $total) {
 				$nom_es = strtoupper($nom_trombinoscope[$i]);
 				$prenom_es = ucfirst($prenom_trombinoscope[$i]);
-				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
-        $photo = "../photos/".$repertoire."/".$nom_photo;
 
-        if (($nom_photo != "") and (file_exists($photo))) {
+				if (($action_affiche=='equipepeda')||
+					($action_affiche=='discipline')||
+					($action_affiche=='statusgepi')) {
+
+					if(($_SESSION['statut']=='eleve')&&(isset($tmp_id_classe))) {
+						$alt_nom_prenom_aff=affiche_utilisateur($login_trombinoscope[$i],$tmp_id_classe);
+						$nom_prenom_aff=$alt_nom_prenom_aff."</span>";
+					}
+					elseif(($_SESSION['statut']=='responsable')&&(isset($tmp_id_classe))) {
+						$alt_nom_prenom_aff=affiche_utilisateur($login_trombinoscope[$i],$tmp_id_classe);
+						$nom_prenom_aff=$alt_nom_prenom_aff."</span>";
+					}
+					else {
+						$nom_prenom_aff="<b>".$nom_es."</b></span><br />".$prenom_es;
+						$alt_nom_prenom_aff=$nom_es." ".$prenom_es;
+					}
+				}
+				else {
+					$nom_prenom_aff="<b>".$nom_es."</b></span><br />".$prenom_es;
+					$alt_nom_prenom_aff=$nom_es." ".$prenom_es;
+				}
+
+				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
+				$photo = "../photos/".$repertoire."/".$nom_photo;
+
+				if (($nom_photo != "") and (file_exists($photo))) {
 					$valeur=redimensionne_image($photo);
 				} else {
-          $valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+					$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
 					$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 				}
 
@@ -550,10 +618,14 @@ $total = $cpt_photo;
 					echo "images/trombivide.jpg";
 				}
 
-				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
+				//echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
+				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
 				echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
-				echo "<b>$nom_es</b></span><br />\n";
-				echo $prenom_es;
+
+				//echo "<b>$nom_es</b></span><br />\n";
+				//echo $prenom_es;
+				echo $nom_prenom_aff;
+
 				if ( $matiere_prof[$i] != '' ) {
 					echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
 				}
