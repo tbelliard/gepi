@@ -55,7 +55,9 @@ function acces($id,$statut) {
 
 function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
 
-    if (acces($chemin_,$statut_)==1)  {
+	$tmp_tab=explode("#",$chemin_);
+    //if (acces($chemin_,$statut_)==1)  {
+    if (acces($tmp_tab[0],$statut_)==1)  {
         $temp = substr($chemin_,1);
         echo "<tr>";
         //echo "<td width='30%'><a href=$temp>$titre_</a></span>";
@@ -92,7 +94,8 @@ $chemin = array(
 "/responsables/index.php",
 "/classes/index.php",
 //"/groupes/index.php",
-"/aid/index.php"
+"/aid/index.php",
+"/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers"
 );
 
 $titre = array(
@@ -103,7 +106,8 @@ $titre = array(
 "Gestion des responsables élèves",
 "Gestion des classes",
 //"Gestion des groupes",
-"Gestion des AID"
+"Gestion des AID",
+"Gestion du trombinoscope"
 );
 
 $expli = array(
@@ -121,16 +125,24 @@ $expli = array(
 <br />Modifier des paramètres du bulletin.",
 //"Définir, modifier, supprimer les groupes d'enseignement",
 "Définir, modifier, supprimer des AID (Activités Inter-Disciplinaires).
-<br />Affecter les professeurs et les élèves."
+<br />Affecter les professeurs et les élèves.",
+"Repérer les personnels/élèves n'ayant pas de photo.
+<br />Vider le dossier des photos,..."
 );
 
 $nb_ligne = count($chemin);
+//echo "\$nb_ligne=$nb_ligne<br />";
 //
 // Outils d'administration
 //
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    //if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	$tmp_tab=explode("#",$chemin[$i]);
+	//echo "<p>\$chemin[$i]=".$chemin[$i]."<br />";
+	//echo "\$tmp_tab[0]=".$tmp_tab[0]."<br />";
+	//echo "acces($tmp_tab[0],".$_SESSION['statut'].")=".acces($tmp_tab[0],$_SESSION['statut'])."<br />";
+    if (acces($tmp_tab[0],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
     //echo "<table width=750 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
