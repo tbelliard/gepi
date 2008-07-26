@@ -897,7 +897,7 @@ elseif($b_adr_pg=='yy') {
 	$affiche_adresse="y";
 	$page_garde_imprime="yes";
 }
-
+$_SESSION['b_adr_pg']=$b_adr_pg;
 
 
 // On lance la première boucle : boucle 'élève'
