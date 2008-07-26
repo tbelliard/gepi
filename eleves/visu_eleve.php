@@ -73,10 +73,11 @@ $page="visu_eleve.php";
 
 //debug_var();
 
-echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+//echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 //if(!isset($ele_login)) {
 if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
+	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -158,7 +159,8 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$tab_txt[]=ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom);
-				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login;
+				//$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login;
+				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login."&amp;id_classe=".$id_classe;
 			}
 
 			echo "<blockquote>\n";
@@ -204,6 +206,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 }
 elseif(isset($_POST['Recherche_sans_js'])) {
 	// On ne passe ici que si JavaScript est désactivé
+	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
@@ -211,9 +214,94 @@ elseif(isset($_POST['Recherche_sans_js'])) {
 	include("recherche_eleve.php");
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+
+	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève/classe</a>\n";
+
+	if(!isset($id_classe)) {
+		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$ele_login' ORDER BY periode DESC;";
+		$res_class_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_class_tmp)>0){
+			$lig_class_tmp=mysql_fetch_object($res_class_tmp);
+			$id_classe=$lig_class_tmp->id_classe;
+		}
+	}
+
+	if(isset($id_classe)) {
+		/*
+		if($_SESSION['statut']=='administrateur') {
+			$sql="SELECT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login ORDER BY e.nom, e.prenom;";
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
+			$test=mysql_query($sql);
+		}
+		elseif($_SESSION['statut']=='cpe') {
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+			$test=mysql_query($sql);
+		}
+		elseif($_SESSION['statut']=='professeur') {
+		}
+		*/
+
+		$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom, e.prenom;";
+
+		$chaine_options_eleves="";
+
+		$res_ele_tmp=mysql_query($sql);
+		if(mysql_num_rows($res_ele_tmp)>0){
+			$ele_login_prec="";
+			$ele_login_suiv="";
+			$temoin_tmp=0;
+			while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+				if($lig_ele_tmp->login==$ele_login) {
+					$chaine_options_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+					$temoin_tmp=1;
+					if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+						$chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+						$ele_login_suiv=$lig_ele_tmp->login;
+					}
+					else {
+						$ele_login_suiv="";
+					}
+				}
+				else {
+					$chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+				}
+				if($temoin_tmp==0) {
+					$ele_login_prec=$lig_ele_tmp->login;
+				}
+			}
+		}
+		// =================================
+
+		if($ele_login_prec!=""){
+			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
+			echo "'>Elève précédent</a>";
+		}
+		if($chaine_options_eleves!="") {
+			echo " | <select name='ele_login' onchange=\"document.forms['form1'].submit();\">\n";
+			echo $chaine_options_eleves;
+			echo "</select>\n";
+		}
+		if($ele_login_suiv!=""){
+			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_suiv&amp;id_classe=$id_classe";
+			echo "'>Elève suivant</a>";
+		}
+
+		//echo "</p>\n";
+
+		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+
+		unset($id_classe);
+	}
+
 	echo "</p>\n";
 	echo "</div>\n";
+	echo "</form>\n";
 
 	// Affichage des onglets pour l'élève choisi
 
