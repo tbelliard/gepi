@@ -33,11 +33,6 @@ if (getSettingValue("statuts_prives") != "y") {
 	trigger_error('Impossible d\'accéder à ce module de Gepi.', E_USER_ERROR);
 }
 
-//	include("utilisateurs.class.php");
-$titre_page = 'Gestion des statuts personnalis&eacute;s';
-$style_specifique = "utilisateurs/style_statut";
-include("../lib/header.inc");
-
 
 // ========================================= Variables ============================
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
@@ -94,7 +89,7 @@ if ($action == 'ajouter') {
 
 	if ($verif >= 1) {
 
-		$msg .= "<h3 class='red'>Ce statut priv&eacute;, existe d&eacute;j&agrave; !</h3>";
+		$msg .= "<h3 class='red'>Ce statut priv&eacute; existe d&eacute;j&agrave; !</h3>";
 
 	}else{
 
@@ -217,27 +212,62 @@ if ($action == 'modifier') {
 $aff_tableau = $aff_select = $aff_users = $selected = '';
 $sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 $query = mysql_query($sql);
+$nbre_statuts = mysql_num_rows($query);
 
 if ($query) {
+
+		$aff_tableau2_1 = $aff_tableau2_2 = $aff_tableau2_3 = $aff_tableau2_4 = $aff_tableau2_5 = $aff_tableau2_6 = $aff_tableau2_7 = $aff_tableau2_8 = NULL;//'<tr style="border: 1px solid lightblue; text-align: center;">';
+
+	for($b = 0 ; $b <= $iter ; $b++){
+
+		if ($b == 0) {
+
+			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td style="font-weight: bold;">Liste des droits</td>';
+
+		}elseif($b == $iter){
+
+			// On ajoute une ligne pour la suppression
+			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>Supprimer ce statut</td>';
+
+		}else{
+
+			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>'.$menu_accueil[$b][1].'</td>';
+
+		}
+	}
+
 	while($rep = mysql_fetch_array($query)){
 
 		// On vérifie s'il faut le cocher par défaut ou pas
 		$checked = verifChecked($rep["id"]);
 
-	$aff_tableau .= '
-	<tr style="border: 1px solid lightblue; text-align: center;">
-		<td style="font-weight: bold; color: red;">'.$rep["nom_statut"].'</td>
-		<td><input type="checkbox" name="ne|'.$rep["id"].'"'.$checked[1].' /></td>
-		<td><input type="checkbox" name="bs|'.$rep["id"].'"'.$checked[2].' /></td>
-		<td><input type="checkbox" name="va|'.$rep["id"].'"'.$checked[3].' /></td>
-		<td><input type="checkbox" name="sa|'.$rep["id"].'"'.$checked[4].' /></td>
-		<td><input type="checkbox" name="cdt|'.$rep["id"].'"'.$checked[5].' /></td>
-		<td><input type="checkbox" name="cdt_visa|'.$rep["id"].'"'.$checked[6].' /></td>
-		<td><input type="checkbox" name="ee|'.$rep["id"].'"'.$checked[7].' /></td>
-		<td><input type="checkbox" name="te|'.$rep["id"].'"'.$checked[8].' /></td>
-		<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>
-	</tr>
-	<tr style="background-color: white;"><td colspan="10"></td></tr>';
+	// On affiche les droits des statuts personnalisés verticalement
+
+	for($b = 0 ; $b <= $iter ; $b++){
+
+		if ($b == 0) {
+
+			$aff_tableau2[$b] .= '<td style="font-weight: bold; color: red;">'.$rep["nom_statut"].'</td>';
+
+		}elseif($b == $iter){
+
+			// On ajoute une ligne pour la suppression
+			$aff_tableau2[$b] .= '<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>';
+
+		}else{
+
+			$aff_tableau2[$b] .= '<td><input type="checkbox" name="'.$menu_accueil[$b][2].'|'.$rep["id"].'"'.$checked[$b].' /></td>';
+
+		}
+	}
+
+	}
+	for($b = 0 ; $b <= $iter ; $b++){
+
+		// $aff_tableau2[$b] .= '</tr>'."\n";
+		$aff_tableau .= $aff_tableau2[$b].'</tr>
+							<tr style="background-color: white;"><td colspan="'.($nbre_statuts + 1).'"></td></tr>'."\n";
+
 	}
 }
 
@@ -283,11 +313,11 @@ if ($query) {
 		<tr>
 			<td>'.$tab["nom"].' '.$tab["prenom"].'</td>
 			<td>
-		<form name="form'.$i.'" action="creer_statut.php" method="post">
-			<input type="hidden" name="action" value="defStatut" />
+		<form id="form'.$i.'" action="creer_statut.php" method="post">
+			<p><input type="hidden" name="action" value="defStatut" />
 			<input type="hidden" name="userid" value="'.$tab["login"].'" />
 
-			<select name="userstat" onchange=\'document.form'.$i.'.submit();\'>
+			<select name="userstat" onchange=\'document.getElementById("form'.$i.'").submit();\'>
 				<option value="rien">Choix du statut</option>';
 
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
@@ -303,7 +333,7 @@ if ($query) {
 		}
 
 		$aff_users .= '
-			</select>
+			</select></p>
 		</form>
 		</td></tr>';
 
@@ -311,7 +341,10 @@ if ($query) {
 
 	}
 
-
+//	include("utilisateurs.class.php");
+$titre_page = 'Gestion des statuts personnalis&eacute;s';
+$style_specifique = "utilisateurs/style_statut";
+include("../lib/header.inc");
 
 ?>
 <!-- Début de la page sur les statut privés -->
@@ -322,42 +355,46 @@ if ($query) {
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
-<?php echo $msg; ?>
 <p>Vous pouvez définir des statuts personnalisés, ayant une combinaison particulière de droits.
  Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre"
  (<a href="./index.php?mode=personnels">CREER/MODIFIER un personnel</a>).</p>
 
+<!-- Quel statut pour quelle personne ? -->
+<div style="width: 350px; -moz-border-radius: 20px; background-color: lightblue; padding: 5px; position: absolute; margin-left: 880px; margin-top: 10px;">
 
-<div style="background-color: lightblue;">
+<div id="userStatut" style="border: 5px solid silver; width: 22em; margin: 5px 5px 5px 5px;">
+
+	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
+
+	<table>
+
+		<?php echo $aff_users; ?>
+	</table>
+		<?php echo $msg2; ?>
+</div>
+
+</div>
+
+<div style="background-color: lightblue; width: 850px; -moz-border-radius: 20px; padding: 5px;">
 <p style="color: grey; text-align: right; font-style: italic;">Gestion des droits des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
 
 <form action="creer_statut.php" method="post">
-	<input type="hidden" name="action" value="modifier" />
+	<p><input type="hidden" name="action" value="modifier" /></p>
 
-<table style="border: 1px solid lightblue; background: #CCFFFF;">
+<table style="border: 1px solid white; background: #CCFFFF;">
 	<thead>
-	<tr>
-		<th style="border: 1px solid lightblue;">Statut</th>
-		<th style="border: 1px solid lightblue;">Voir les notes des élèves</th>
-		<th style="border: 1px solid lightblue;">Voir les bulletins simplifiés</th>
-		<th style="border: 1px solid lightblue;">Voir les absences des élèves</th>
-		<th style="border: 1px solid lightblue;">Saisir les absences des élèves</th>
-		<th style="border: 1px solid lightblue;">Voir les cahiers de textes</th>
-		<th style="border: 1px solid lightblue;">Signer les cahiers de textes</th>
-		<th style="border: 1px solid lightblue;">Voir les emplois du temps des élèves</th>
-		<th style="border: 1px solid lightblue;">Voir tous les emplois du temps</th>
-		<th style="border: 1px solid lightblue;">Supprimer le statut</th>
-	</tr>
-	<tr style="background-color: white;"><td colspan="10"></td></tr>
+		<tr><th>&nbsp;</th><th colspan="<?php echo $nbre_statuts; ?>">&nbsp;</th></tr>
 	</thead>
+	<tfoot>
+		<tr><td><?php echo $msg3; ?></td><td colspan="<?php echo $nbre_statuts; ?>"><input type="submit" name="modifier" value="Enregistrer et mettre &agrave; jour" /></td></tr>
+	</tfoot>
+
 	<tbody>
 
 		<?php echo $aff_tableau; ?>
-		<tr style="background-color: white;"><td colspan="10"></td></tr>
+		<tr style="background-color: white;"><td colspan="<?php echo ($nbre_statuts + 1); ?>"></td></tr>
 	</tbody>
-	<tfoot>
-		<tr><td colspan="4"><?php echo $msg3; ?></td><td>-</td><td colspan="4"><input type="submit" name="modifier" value="Enregistrer et mettre &agrave; jour" /></td></tr>
-	</tfoot>
+
 </table>
 
 </form>
@@ -366,10 +403,10 @@ if ($query) {
 
 <br />
 
-<p class="ajoutSt" onClick="changementDisplay('ajoutStatut', '');">Ajouter un statut personnalis&eacute;</p>
+<p class="ajoutSt" onclick="changementDisplay('ajoutStatut', '');">Ajouter un statut personnalis&eacute;</p>
 <div id="ajoutStatut" style="display: none;">
 
-	<form name="formNew" action="creer_statut.php" method="post">
+	<form action="creer_statut.php" method="post">
 		<p>
 		<label for="new">Nom du nouveau statut</label>
 		<input type="text" id="new" name="news" value="" />
@@ -387,21 +424,7 @@ if ($query) {
 <br />
 <hr />
 <br />
-<!-- Quel statut pour quelle personne ? -->
-<div style="width: 350px; -moz-border-radius: 20px; background-color: lightblue; padding: 5px;">
-<center>
-<div id="userStatut" style="border: 5px solid silver; width: 22em; margin: 5px 5px 5px 5px;">
 
-	<p style="text-align: right; font-style: italic; color: grey; background-color: lightblue;">Gestion des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
-
-	<table>
-
-		<?php echo $aff_users; ?>
-	</table>
-		<?php echo $msg2; ?>
-</div>
-</center>
-</div>
 
 <?php
 require("../lib/footer.inc.php");
