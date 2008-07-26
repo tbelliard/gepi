@@ -394,7 +394,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf()' checked /> ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' checked /> ";
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
@@ -431,7 +431,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf()' /> ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg()' /> ";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
@@ -507,6 +507,48 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 	//}
 	echo "</table>\n";
+
+	//===========================================
+	$b_adr_pg_defaut=isset($_SESSION['b_adr_pg']) ? $_SESSION['b_adr_pg'] : "xx";
+
+	echo "<div id='div_param_b_adr_pg'>\n";
+	echo "<br />\n";
+	echo "<p><b>Bloc adresse responsable et page de garde&nbsp;:</b></p>\n";
+	echo "<blockquote>\n";
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_xx' value='xx' ";
+	if($b_adr_pg_defaut=="xx") {
+		echo "checked='checked' ";
+	}
+	echo "/><label for='b_adr_pg_xx' style='cursor:pointer'> D'après les paramètres du bulletin HTML</label><br />\n";
+
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_nn' value='nn' ";
+	if($b_adr_pg_defaut=="nn") {
+		echo "checked='checked' ";
+	}
+	echo "/><label for='b_adr_pg_nn' style='cursor:pointer'> sans bloc adresse ni page de garde</label><br />\n";
+
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_yn' value='yn' ";
+	if($b_adr_pg_defaut=="yn") {
+		echo "checked='checked' ";
+	}
+	echo "/><label for='b_adr_pg_yn' style='cursor:pointer'> avec bloc adresse sans page de garde</label><br />\n";
+
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_ny' value='ny' ";
+	if($b_adr_pg_defaut=="ny") {
+		echo "checked='checked' ";
+	}
+	echo "/><label for='b_adr_pg_ny' style='cursor:pointer'> sans bloc adresse avec page de garde</label><br />\n";
+
+	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_yy' value='yy' ";
+	if($b_adr_pg_defaut=="yy") {
+		echo "checked='checked' ";
+	}
+	echo "/><label for='b_adr_pg_yy' style='cursor:pointer'> avec bloc adresse et page de garde</label><br />\n";
+	echo "</blockquote>\n";
+	echo "</div>\n";
+	//===========================================
+
+
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes.php' AND ".$_SESSION['statut']."='V';";
@@ -737,6 +779,22 @@ display_param_releve();
 // jusqu'à ce que la case d'insertion des relevés de notes entre les bulletins ait été cochée (au moins une fois)
 if(document.getElementById('pliage_param_releve')) {document.getElementById('pliage_param_releve').style.display='none';}
 
+
+
+function display_param_b_adr_pg() {
+	if(document.getElementById('div_param_b_adr_pg')) {
+		if(document.getElementById('mode_bulletin_html')) {
+			if(document.getElementById('mode_bulletin_html').checked==true) {
+				document.getElementById('div_param_b_adr_pg').style.display='';
+			}
+			else {
+				document.getElementById('div_param_b_adr_pg').style.display='none';
+			}
+		}
+	}
+}
+display_param_b_adr_pg();
+
 </script>\n";
 
 	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
@@ -753,6 +811,8 @@ else {
 	echo " | <a href='#' onClick='history.go(-2);'>Choisir d'autres élèves</a>\n";
 	echo "</p>\n";
 	*/
+
+	//debug_var();
 
 	$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
@@ -1188,6 +1248,28 @@ else {
 
 		$affiche_adresse = sql_query1("SELECT display_address FROM classes WHERE id='".$id_classe."'");
 		//echo "\$affiche_adresse=$affiche_adresse<br />";
+
+		//===========================================
+		$b_adr_pg=isset($_POST['b_adr_pg']) ? $_POST['b_adr_pg'] : 'xx';
+		if($b_adr_pg=='nn') {
+			$affiche_adresse="n";
+			$page_garde_imprime="n";
+		}
+		elseif($b_adr_pg=='yn') {
+			$affiche_adresse="y";
+			$page_garde_imprime="n";
+		}
+		elseif($b_adr_pg=='ny') {
+			$affiche_adresse="n";
+			$page_garde_imprime="yes";
+		}
+		elseif($b_adr_pg=='yy') {
+			$affiche_adresse="y";
+			$page_garde_imprime="yes";
+		}
+		$affiche_page_garde=$page_garde_imprime;
+		$_SESSION['b_adr_pg']=$b_adr_pg;
+		//===========================================
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
