@@ -43,7 +43,7 @@ if ($_GET['error'] == '2') {
 # Auth externe réussie, mais utilisateur 'inactif'
 } elseif ($_GET['error'] == '4') {
 	$message = 'Vous avez bien été identifié mais vous <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
-	
+
 # Auth externe réussie, mais inconsistence dans le mode d'authentification
 } elseif ($_GET['error'] == '5') {
 	$message = 'Vous avez bien été identifié mais votre compte utilisateur est paramétré pour utiliser un autre mode d\'authentification. Si vous pensez qu\'il s\'agit d\'une erreur, veuillez signaler ce problème à l\'administrateur du site.';
@@ -57,7 +57,7 @@ if ($_GET['error'] == '2') {
 # L'administrateur a désactivé les connexions à Gepi
 } elseif ($_GET['error'] == '7') {
 	$message = 'GEPI est momentanément inaccessible.';
-	
+
 # Multisite : impossible de déterminer le RNE
 } elseif ($_GET['error'] == '8') {
 	$message = 'Vous avez été correctement authentifié, mais votre compte n\'a pas pu être associé avec un établissement configuré sur ce Gepi. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
@@ -95,7 +95,7 @@ if ($_GET['error'] == '2') {
 <h1>Échec de la connexion à Gepi</h1>
 <p>
 <?php
-echo $message;
+echo "<div style='color:red;'>".$message."</div>\n";
 ?>
 </p>
 <p>
