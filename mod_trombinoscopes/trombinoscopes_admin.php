@@ -186,6 +186,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 <div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>
 </form>
 
+<a name="gestion_fichiers"></a>
 <h2>Gestion des fichiers</h2>
 <ul>
 <li>Suppression
@@ -230,7 +231,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 	}
 
 	?><a name="liste"></a><h2>Liste des élèves n'ayant pas de photos</h2>
-	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Elèves sans photo">
 	   <tr>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
@@ -279,7 +280,7 @@ if ( $sousrub === 'vp' ) {
 	}
 
 	?><a name="liste"></a><h2>Liste des personnels n'ayant pas de photos</h2>
-	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
+	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Personnels sans photo">
 	   <tr>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
 	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
@@ -304,18 +305,21 @@ if ( $sousrub === 'vp' ) {
 
 if ( $sousrub === 'de' ) {
 
-	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité élève que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
+	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité élève que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
 }
 
 if ( $sousrub === 'dp' ) {
 
-	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité personnel que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div><?php
+	?>
+	<a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité personnel que contient le dossier photo de GEPI, êtes vous d'accord ?<br /><br /><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div>
+<?php
 }
 
 
 if ( $sousrub === 'deok' ) {
 
 	// on liste les fichier du dossier photos/eleves
+	$fichier_sup=array();
 	$folder = "../photos/eleves/";
 	$cpt_fichier = '0';
 	$dossier = opendir($folder);
@@ -330,35 +334,49 @@ if ( $sousrub === 'deok' ) {
 
 	//on supprime tout les fichiers
 	$cpt_fichier = '0';
-	?><a name="supprime"></a><h2>Liste des fichier concerné et leur états</h2>
-	  <table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
-	   <tr>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
-	   </tr><?php $i = '1';
-	while ( !empty($fichier_sup[$cpt_fichier]) )
-	{
-	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-		if(file_exists($fichier_sup[$cpt_fichier]))
-		{
-			@unlink($fichier_sup[$cpt_fichier]);
+	?>
+	<a name="supprime"></a>
+	<!--h2>Liste des fichiers concernés et leurs états</h2-->
+	<h2>Liste des fichiers concernés</h2>
 
-			if(file_exists($fichier_sup[$cpt_fichier]))
-			{ $etat = 'erreur, vous n\'avez pas les droits pour supprimer ce fichier'; } else { $etat = 'supprimer'; }
-			?>
-		   <tr style="<?php echo $couleur_cellule; ?>">
-		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
-		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
-		   </tr><?php
+	<?php
+		if(count($fichier_sup)==0) {
+			echo "<p style='margin-left: 50px;'>Le dossier <strong>$folder</strong> ne contient pas de photo.</p>\n";
 		}
-	  $cpt_fichier = $cpt_fichier + 1;
-	}
+		else {
+	?>
 
+			<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Suppression">
+			<tr>
+				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
+				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
+			</tr><?php $i = '1';
+			while ( !empty($fichier_sup[$cpt_fichier]) )
+			{
+					if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+				if(file_exists($fichier_sup[$cpt_fichier]))
+				{
+					@unlink($fichier_sup[$cpt_fichier]);
+
+					if(file_exists($fichier_sup[$cpt_fichier]))
+					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
+					?>
+				<tr style="<?php echo $couleur_cellule; ?>">
+					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
+					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
+				</tr><?php
+				}
+			$cpt_fichier = $cpt_fichier + 1;
+			}
+
+			echo "</table>\n";
+		}
 }
 
 if ( $sousrub === 'dpok' ) {
 
-	// on liste les fichier du dossier photos/eleves
+	// on liste les fichier du dossier photos/personnels
+	$fichier_sup=array();
 	$folder = "../photos/personnels/";
 	$cpt_fichier = '0';
 	$dossier = opendir($folder);
@@ -373,31 +391,45 @@ if ( $sousrub === 'dpok' ) {
 
 	//on supprime tout les fichiers
 	$cpt_fichier = '0';
-	?><a name="supprime"></a><h2>Liste des fichier concerné et leur états</h2>
-	  <table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;">
-	   <tr>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
-	   </tr><?php $i = '1';
-	while ( !empty($fichier_sup[$cpt_fichier]) )
-	{
-	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-		if(file_exists($fichier_sup[$cpt_fichier]))
-		{
-			@unlink($fichier_sup[$cpt_fichier]);
+	?>
+	<a name="supprime"></a>
+	<!--h2>Liste des fichiers concernés et leurs états</h2-->
+	<h2>Liste des fichiers concernés</h2>
 
-			if(file_exists($fichier_sup[$cpt_fichier]))
-			{ $etat = 'erreur, vous n\'avez pas les droits pour supprimer ce fichier'; } else { $etat = 'supprimer'; }
-			?>
-		   <tr style="<?php echo $couleur_cellule; ?>">
-		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
-		      <td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
-		   </tr><?php
+	<?php
+		if(count($fichier_sup)==0) {
+			echo "<p style='margin-left: 50px;'>Le dossier <strong>$folder</strong> ne contient pas de photo.</p>\n";
 		}
-	  $cpt_fichier = $cpt_fichier + 1;
-	}
+		else {
+	?>
 
+			<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Suppression">
+			<tr>
+				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
+				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
+			</tr><?php $i = '1';
+			while ( !empty($fichier_sup[$cpt_fichier]) )
+			{
+					if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
+				if(file_exists($fichier_sup[$cpt_fichier]))
+				{
+					@unlink($fichier_sup[$cpt_fichier]);
+
+					if(file_exists($fichier_sup[$cpt_fichier]))
+					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
+					?>
+				<tr style="<?php echo $couleur_cellule; ?>">
+					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
+					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
+				</tr><?php
+				}
+			$cpt_fichier = $cpt_fichier + 1;
+			}
+
+			echo "</table>\n";
+		}
 }
 
 
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php"); ?>
