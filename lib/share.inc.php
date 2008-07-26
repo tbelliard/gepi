@@ -29,11 +29,11 @@ function verif_mot_de_passe($password,$flag) {
 
 function test_unique_login($s) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s')"));
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s')"));
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".strtoupper($s)."')"));
         if ($test2 != "0") {
             return 'no';
         } else {
@@ -53,7 +53,7 @@ function test_unique_e_login($s, $indice) {
     $test6 = mysql_num_rows(mysql_query("SELECT login FROM a6_eleves WHERE (login='$s')"));
 */
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s')"));
+    $test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
 //    if (($test1 != "0") or ($test2 != "0") or ($test3 != "0") or ($test4 != "0") or ($test5 != "0") or ($test6 != "0") or ($test7 != "0")) {
 
     if ($test7 != "0") {
@@ -64,7 +64,7 @@ function test_unique_e_login($s, $indice) {
     } else {
         // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
         // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s')"));
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".strtoupper($s)."')"));
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -90,28 +90,28 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
     $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
     if ($_mode == "name") {
             $temp1 = $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
             //$temp1 = substr($temp1,0,8);
         } elseif ($_mode == "name8") {
             $temp1 = $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname8") {
             $temp1 = $_prenom{0} . $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname19") {
             $temp1 = $_prenom{0} . $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
@@ -119,7 +119,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
         } elseif ($_mode == "firstdotname") {
 
             $temp1 = $_prenom . "." . $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
 
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
@@ -127,14 +127,14 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             //$temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname19") {
             $temp1 = $_prenom . "." . $_nom;
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             //$temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
             $temp1 =  substr($_nom,0,7) . $_prenom{0};
-            $temp1 = strtoupper($temp1);
+            //$temp1 = strtoupper($temp1);
             $temp1 = ereg_replace(" ","", $temp1);
             $temp1 = ereg_replace("-","_", $temp1);
             $temp1 = ereg_replace("'","", $temp1);
@@ -162,7 +162,7 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 
         // Nettoyage final
         $login_user = substr($login_user, 0, 50);
-        $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim(strtoupper($login_user)));
+        $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
 
         $test1 = $login_user{0};
 		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
