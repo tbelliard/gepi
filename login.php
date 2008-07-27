@@ -20,12 +20,17 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Pour le multisite
+if (isset($_GET["rne"])) {
+	setcookie('RNE', $_GET["rne"]);
+}
+
 // Vérification de la bonne installation de GEPI
 require_once("./utilitaires/verif_install.php");
 
 $niveau_arbo = 0;
 
-// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut créer des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -39,7 +44,7 @@ if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->au
 
 
 // Test de mise à jour : si on détecte que la base n'est à jour avec les nouveaux
-// paramèters utilisés pour l'authentification, on redirige vers maj.php pour
+// paramètres utilisés pour l'authentification, on redirige vers maj.php pour
 // une mise à jour, normale ou forcée.
 if (!isset($gepiSettings['auth_sso'])) {
 	header("Location:utilitaires/maj.php");
@@ -51,7 +56,7 @@ if (!isset($gepiSettings['auth_sso'])) {
 
 
 if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_anti_inject_password'])) {
-	
+
 	$auth = $session_gepi->authenticate($_POST['login'], $NON_PROTECT['password']);
 
 	if ($auth == "1") {

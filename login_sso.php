@@ -20,6 +20,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Pour le multisite
+if (isset($_GET["rne"])) {
+	setcookie('RNE', $_GET["rne"]);
+}
+
 $niveau_arbo = 0;
 
 // Initialisations files

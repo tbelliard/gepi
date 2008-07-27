@@ -42,24 +42,24 @@ class Session {
 	public $auth_sso = false; # false, cas, lemon, lcs
 	public $current_auth_mode = false;  # gepi, ldap, sso, ou false : le mode d'authentification
 										# utilisé par l'utilisateur actuellement connecté
-	
+
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
-	
+
 	public function __construct() {
-		
+
 		# On initialise la session
 		session_name("GEPI");
 		session_start();
 
 		# On charge les valeurs déjà présentes en session
 		$this->load_session_data();
-		
+
 		# On charge des éléments de configuration liés à l'authentification
 		$this->auth_locale = getSettingValue("auth_locale") == 'yes' ? true : false;
 		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
-		
+
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
 		  # On regarde s'il n'y a pas de timeout
@@ -73,15 +73,15 @@ class Session {
 		  	$this->update_log();
 		  }
 		}
-		
+
 	}
-	
+
 	# S'agit-il d'une session anonyme ?
 	public function is_anonymous() {
 		# Retourne 'true' si login == false
 		return !$this->login;
 	}
-	
+
 	# Authentification d'un utilisateur pour la session
 	# Cette méthode remplace l'ancienne fonction openSession(...)
 	# Valeurs retournées :
@@ -95,14 +95,14 @@ class Session {
 	# 8 : multisite ; impossibilité d'obtenir le RNE de l'utilisateur qui s'est authentifié correctement.
 	# 9 : échec de l'authentification (mauvais couple login/mot de passe, sans doute).
 	public function authenticate($_login = null, $_password = null) {
-		
+
 		// Quelques petits tests de sécurité
 
 	    // Vérification de la liste noire des adresses IP
 	    if (isset($GLOBALS['liste_noire_ip']) && in_array($_SERVER['REMOTE_ADDR'], $GLOBALS['liste_noire_ip'])) {
 		  tentative_intrusion(1, "Tentative de connexion depuis une IP sur liste noire (login utilisé : ".$_login.")");
 	      return "3";
-		  die();	        	
+		  die();
 	    }
 
 	    // On initialise la session de l'utilisateur.
@@ -138,7 +138,7 @@ class Session {
 			case false:
 			  # L'utilisateur n'existe pas dans la base de données ou bien
 			  # n'a pas été passé en paramètre.
-			  # On va donc tenter d'abord une authentification LDAP, 
+			  # On va donc tenter d'abord une authentification LDAP,
 			  # puis une authentification SSO, à condition que celles-ci
 			  # soient bien sûr configurées.
 			  if ($this->auth_ldap && $_login != null && $_password != null) {
@@ -166,12 +166,12 @@ class Session {
 			  $auth = false;
 			break;
 		}
-		
+
 		// A partir d'ici soit on a un avis d'échec de l'authentification, soit
 		// une session valide.
 		if ($auth) {
 			// L'authentification en elle-même est valide.
-			
+
 			// Dans le cas du multisite, il faut maintenant déterminer le RNE
 			// de l'utilisateur avant d'aller plus loin, sauf s'il a déjà été passé
 			// en paramètre.
@@ -182,15 +182,31 @@ class Session {
 						// pour obtenir la bonne base de données
 						$ldap = new LDAPServer;
 						$user = $ldap->get_user_profile($this->login);
-						if ($user["rne"] != null) {
-							# On a un RNE, on recharge !
-							if ($this->current_auth_mode == "sso") {
-								header("Location: login_sso.php?rne=".$user["rne"]);
-								exit();
-							} else {
-								header("Location: login.php?rne=".$user["rne"]);
-								exit();
+						// On teste pour savoir si on a plusieurs RNE
+						$test = count($user["rne"]);
+
+						if ($test >= 1) {
+							# On a au moins un RNE, on peut continuer
+							if ($test > 1) {
+								// On envoie l'utilisateur choisir lui même son RNE
+								$rnes = NULL;
+								for($a = 0 ; $a < $test ; $a++){
+									$rnes .= $user["rne"][$a].'|';
+								}
+
+								header("Location: choix_rne.php?nbre=".$test."&lesrne=".$rnes);
+
+							}else{
+								// Il n'y en a qu'un, on recharge !
+								if ($this->current_auth_mode == "sso") {
+									header("Location: login_sso.php?rne=".$user["rne"]);
+									exit();
+								} else {
+									header("Location: login.php?rne=".$user["rne"]);
+									exit();
+								}
 							}
+
 						} else {
 							return "8";
 							exit();
@@ -201,8 +217,8 @@ class Session {
 					}
 				}
 			}
-			
-			
+
+
 			// On va maintenant effectuer quelques tests pour vérifier
 			// que le compte n'est pas bloqué.
 			if ($this->account_is_locked()) {
@@ -210,7 +226,7 @@ class Session {
 				return "2";
 				exit();
 			}
-			
+
 			# On charge les données de l'utilisateur
 			if (!$this->load_user_data()) {
 				# Si on ne parvient pas à charger les données, c'est que
@@ -227,14 +243,14 @@ class Session {
 					}
 				}
 			}
-			
+
 			# On vérifie que l'utilisateur est bien actif
 			if ($this->etat != "actif") {
 				$this->reset(2);
 				return "4";
 				exit();
 			}
-			
+
 			# On vérifie que les connexions sont bien activées.
 		    $disable_login = getSettingValue("disable_login");
 		    if ($this->statut != "administrateur" && ($disable_login == "yes" || $disable_login == "soft")) {
@@ -242,7 +258,7 @@ class Session {
 		    	return "7";
 		    	exit();
 		    }
-			
+
 			# On teste la cohérence de mode de connexion
 		    $auth_mode = self::user_auth_mode($this->login);
 		    if ($auth_mode != $this->current_auth_mode) {
@@ -250,14 +266,14 @@ class Session {
 		    	return "5";
 		    	exit;
 		    }
-		    
+
 			# Tout est bon. On valide définitivement la session.
 			$this->start = mysql_result(mysql_query("SELECT now();"),0);
 			$_SESSION['start'] = $this->start;
 			$this->insert_log();
 			# On supprime l'historique des logs conformément à la durée définie.
 			sql_query("delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()");
-			
+
 			# On envoie un mail, si l'option a été activée
 			mail_connexion();
 			return "1";
@@ -266,7 +282,7 @@ class Session {
 			// L'authentification a échoué.
 			// On nettoie la session.
 			$this->reset(2);
-			
+
 			// On enregistre l'échec.
 			// En cas d'échec répété, on renvoie un code d'erreur de
 			// verrouillage de compte, pour brouiller les pistes en cas
@@ -275,13 +291,13 @@ class Session {
 				return "2";
 				exit();
 			}
-			
+
 			// On retourne le code d'erreur générique
 			return "9";
 		}
-		
+
 	}
-	
+
 	# La méthode ci-dessous est appelée lorsque l'on veut s'assurer que l'on a
 	# un utilisateur correctement authentifié, et qu'il est bien autorisé à
 	# l'être. Elle remplace la fonction resumeSession qui était préalablement utilisée.
@@ -297,39 +313,39 @@ class Session {
 			return "0";
 			exit;
 		}
-				
+
 		$sql = "SELECT statut, change_mdp, etat FROM utilisateurs where login = '" . $this->login . "'";
 		$res = sql_query($sql);
 		$row = mysql_fetch_object($res);
-		
+
 		$change_password = $row->change_mdp != "n" ? true : false;
 		$statut_ok = $this->statut == $row->statut ? true : false;
 		$etat_ok = $row->etat == "actif" ? true : false;
 		$login_allowed = getSettingValue("disable_login") == "yes" ? false : true;
-		
+
 		if (!$login_allowed && $this->statut != "administrateur") {
 			return "0";
 			exit;
 		}
-		
+
 		if (!$statut_ok) {
 			return "0";
 			exit;
 		}
-		
+
 		if (!$etat_ok) {
 			return "0";
 			exit;
 		}
-		
+
 		// Si on est là, ce que l'utilisateur a le droit de rester.
-		
+
 		if ($change_password &&
 				($this->current_auth_mode == "gepi" || getSettingValue("ldap_write_access") == "yes"))
 			{
 				return "c";
 			}
-		
+
 		# Mieux vaut deux fois qu'une...
 		if ($statut_ok && $etat_ok && ($login_allowed || $this->statut == "administrateur")) {
 			return "1";
@@ -350,17 +366,17 @@ class Session {
 			return false;
 		} else {
 			return mysql_result($req, 0, "auth_mode");
-		}	
+		}
 	}
-	
+
 	public function close ($_auto) {
 		// $_auto_ reprend les codes de reset()
 		$this->reset($_auto);
 	}
-	
-	
+
+
 	## METHODE PRIVEES ##
-	
+
 	// Création d'une entrée de log
 	private function insert_log() {
 		if (!isset($_SERVER['HTTP_REFERRER'])) $_SERVER['HTTP_REFERER'] = '';
@@ -377,7 +393,7 @@ class Session {
 	        ;";
 	    $res = sql_query($sql);
 	}
-	
+
 	// Mise à jour du log de l'utilisateur
 	private function update_log() {
 		if ($this->is_anonymous()) {
@@ -387,38 +403,38 @@ class Session {
         	$res = sql_query($sql);
 		}
 	}
-	
+
 	// Test pour voir si la session de l'utilisateur est en timeout
 	private function timeout() {
     	$sql = "SELECT now() > END TIMEOUT from log where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
     	return sql_query1($sql);
 	}
-	
+
 	// Remise à zéro de la session : on supprime toutes les informations présentes
 	private function reset($_auto = "0") {
 		# Codes utilisés pour $_auto :
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
-		
+
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 		if ($this->start) {
 	      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
           $res = sql_query($sql);
     	}
-    	
+
     	// Détruit toutes les variables de session
 	    session_unset();
 	    $_SESSION = array();
-	
+
 	    // Détruit le cookie sur le navigateur
 	    $CookieInfo = session_get_cookie_params();
 	    @setcookie(session_name(), '', time()-3600, $CookieInfo['path']);
-	    
+
 	    // détruit la session sur le serveur
 	    session_destroy();
 	}
-	
+
 	private function load_session_data() {
 		# On ne met à jour que si la variable de session est assignée.
 		# Si elle est assignée et null, on met 'false'.
@@ -456,7 +472,7 @@ class Session {
 			$this->current_auth_mode 	= $_SESSION['current_auth_mode'] != null ? $_SESSION["current_auth_mode"] : false;
 		}
 	}
-	
+
 	# Cette fonction permet de tester sous quelle forme le login est stocké dans la base
 	# de données. Elle renvoie true ou false.
 	private function use_uppercase_login($_login) {
@@ -470,8 +486,8 @@ class Session {
 			return false;
 		}
 	}
-	
-	private function authenticate_gepi($_login,$_password) {		
+
+	private function authenticate_gepi($_login,$_password) {
 		if ($this->use_uppercase_login($_login)) {
 			# On passe le login en majuscule pour toute la session.
 			$_login = strtoupper($_login);
@@ -493,7 +509,7 @@ class Session {
 			return false;
 		}
 	}
-	
+
 	private function authenticate_ldap($_login,$_password) {
 		if ($_login == null || $_password == null) {
 	        return false;
@@ -508,14 +524,14 @@ class Session {
 	    	return false;
 	    }
 	}
-	
+
 	private function authenticate_cas() {
 		include_once('CAS.php');
-		
+
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
-		
+
 		// Le premier argument est la version du protocole CAS
 		phpCAS::client(CAS_VERSION_2_0,$cas_host,$cas_port,$cas_root,'');
 		phpCAS::setLang('french');
@@ -524,26 +540,26 @@ class Session {
 		// été trouvé par le client CAS.
 		phpCAS::setNoCasServerValidation();
 		phpCAS::forceAuthentication();
-		
+
 		$this->login = phpCAS::getUser();
-		
+
 		// On réinitialise la session
 		session_name("GEPI");
 		session_start();
 		$_SESSION['login'] = $this->login;
-		
+
 		$this->current_auth_mode = "sso";
-		
+
 		return true;
 	}
-	
+
 	public function logout_cas() {
 		include_once('CAS.php');
-		
+
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
-		
+
 		// Le premier argument est la version du protocole CAS
 		phpCAS::client(CAS_VERSION_2_0,$cas_host,$cas_port,$cas_root,'');
 		phpCAS::setLang('french');
@@ -552,19 +568,19 @@ class Session {
 		// été trouvé par le client CAS.
 		//phpCAS::setNoCasServerValidation();
 		//phpCAS::forceAuthentication();
-		
+
 		//$this->login = phpCAS::getUser();
-		
+
 		// On réinitialise la session
 		//session_name("GEPI");
 		//session_start();
 		//$_SESSION['login'] = $this->login;
-		
+
 		//$this->current_auth_mode = "sso";
-		
+
 		return true;
 	}
-	
+
 	private function authenticate_lemon() {
 		#TODO: Vérifier que ça marche bien comme ça !!
 	  if (isset($_GET['login'])) $login = $_GET['login']; else $login = "";
@@ -577,7 +593,7 @@ class Session {
 	  	return true;
 	  }
 	}
-	
+
 	private function authenticate_lcs() {
 		include LCS_PAGE_AUTH_INC_PHP;
 		include LCS_PAGE_LDAP_INC_PHP;
@@ -590,14 +606,14 @@ class Session {
 			$lcs_tab_login["email"] = $user["email"];
 			$long = strlen($user["fullname"]) - strlen($user["nom"]);
 			$lcs_tab_login["fullname"] = substr($user["fullname"], 0, $long) ;
-			
+
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
 			if (empty($db_nopersist))
 				$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 			else
 				$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
-			
+
 			if (!$db_c || !mysql_select_db ($dbDb)) {
 				echo "\n<p>Erreur : Echec de la connexion à la base de données";
 				exit;
@@ -612,8 +628,8 @@ class Session {
 			exit;
 		}
 	}
-	
-	# Cette méthode charge en session les données de l'utilisateur, 
+
+	# Cette méthode charge en session les données de l'utilisateur,
 	# à la suite d'une authentification réussie.
 	private function load_user_data() {
 		# Petit test de départ pour être sûr :
@@ -621,34 +637,34 @@ class Session {
 			return false;
 			exit();
 		}
-		
+
 		# Gestion du multisite : on a besoin du RNE de l'utilisateur.
 		if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == 'y' && LDAPServer::is_setup()) {
 			$ldap = new LDAServer;
 			$user = $ldap->get_user_profile($this->login);
-			$this->rne = $user["rne"];		
+			$this->rne = $user["rne"];
 		}
-		
+
 		# On regarde si on doit utiliser un login en majuscule. Si c'est le cas, il faut impérativement
 		# le faire *après* un éventuel import externe.
 		if ($this->use_uppercase_login($this->login)) {
 			$this->login = strtoupper($this->login);
 		}
-		
+
 		# On interroge la base de données
 		$query = mysql_query("SELECT nom, prenom, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
-		
+
 		# Est-ce qu'on a bien une entrée ?
 		if (mysql_num_rows($query) != "1") {
 			return false;
 			exit();
 		}
-		
+
 		$sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
         $matiere_principale = sql_query1($sql);
-		
+
 		$row = mysql_fetch_object($query);
-		
+
 	    $_SESSION['login'] = $this->login;
 	    $_SESSION['prenom'] = $row->prenom;
 	    $_SESSION['nom'] = $row->nom;
@@ -657,35 +673,35 @@ class Session {
 	    $_SESSION['matiere'] = $matiere_principale;
 	    $_SESSION['rne'] = $this->rne;
 	    $_SESSION['current_auth_mode'] = $this->current_auth_mode;
-	    
+
 	    # L'état de l'utilisateur n'est pas stocké en session, mais seulement en interne
 	    # pour pouvoir effectuer quelques tests :
 	    $this->etat = $row->etat;
 
 		// Ajout pour les statuts privés
 	    if ($_SESSION['statut'] == 'autre') {
-	
+
 	    	// On charge aussi le statut spécial
 	    	$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$this->login."'
 											AND du.id_statut = ds.id";
 			$query = mysql_query($sql);
 			$result = mysql_fetch_array($query);
-	
+
 			$_SESSION['statut_special'] = $result['nom_statut'];
 			$_SESSION['statut_special_id'] = $result['id'];
-	
+
 	    }
-	    
+
 	    # On charge les données dans l'instance de Session.
 	    $this->load_session_data();
 	    return true;
 	}
-	
+
 	private function record_failed_login($_login) {
 		# Une tentative de login avec un mot de passe erronnée a été détectée.
 		$test_login = sql_count(sql_query("SELECT login FROM utilisateurs WHERE (login = '".$_login."')"));
-		
+
 		if ($test_login != "0") {
 			tentative_intrusion(1, "Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n'est significative qu'en cas de répétition. (login : ".$_login.")");
 			# On a un vrai login.
@@ -700,7 +716,7 @@ class Session {
 	            '4',
 	            now());";
 	        $res = sql_query($sql);
-	        
+
 	        // On compte de nombre de tentatives infructueuse issues de la même adresse IP
 	        $sql = "select LOGIN from log where
 	                LOGIN = '" . $_login . "' and
@@ -743,7 +759,7 @@ class Session {
             }
 		}
 	}
-	
+
 	# Verrouillage d'un compte en raison d'un trop grand nombre d'échec de connexion.
 	private function lock_account($_login) {
        if ((!isset($_GLOBALS['bloque_compte_admin'])) or ($_GLOBALS['bloque_compte_admin'] != "n")) {
@@ -757,13 +773,13 @@ class Session {
        tentative_intrusion(2, "Verrouillage du compte ".$_login." en raison d'un trop grand nombre de tentatives de connexion infructueuses. Ce peut être une tentative d'attaque brute-force.");
        return true;
 	}
-	
+
 	# Renvoie true ou false selon que le compte est bloqué ou non.
 	private function account_is_locked() {
 		$test_verrouillage = sql_query1("select login, statut from utilisateurs where
 			login = '" . $this->login . "' and
 			date_verrouillage > now() - interval " . getSettingValue("temps_compte_verrouille") . " minute ");
-        	
+
 		if ($test_verrouillage != "-1") {
 			// Le compte est verrouillé.
 			if ($this->statut == "administrateur" and $GLOBALS['bloque_compte_admin'] != "n") {
@@ -771,12 +787,12 @@ class Session {
 				return false;
 			} else {
 				return true;
-			}			
+			}
 		} else {
 			return false;
 		}
 	}
-	
+
 	private function import_user_profile() {
 		# On ne peut arriver ici quand dans le cas où on a une authentification réussie.
 		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP
@@ -792,20 +808,20 @@ class Session {
 				return false;
 				die();
 			}
-			
+
 			$ldap_server = new LDAPServer;
 			$user = $ldap_server->get_user_profile($this->login);
 			if ($user) {
 				# On ne refait pas de tests ou de formattage. La méthode get_user_profile
 				# s'occupe de tout.
-				$res = mysql_query("INSERT INTO utilisateurs SET 
-										login = '".$this->login."', 
-										prenom = '".$user["prenom"]."', 
-										nom = '".$user["nom"]."', 
-										email = '".$user["email"]."', 
-										civilite = '".$user["civilite"]."', 
-										statut = '".$user["statut"]."', 
-										password = '', 
+				$res = mysql_query("INSERT INTO utilisateurs SET
+										login = '".$this->login."',
+										prenom = '".$user["prenom"]."',
+										nom = '".$user["nom"]."',
+										email = '".$user["email"]."',
+										civilite = '".$user["civilite"]."',
+										statut = '".$user["statut"]."',
+										password = '',
 										etat = 'actif',
 										auth_mode = '".$this->current_auth_mode."',
 										change_mdp = 'n'");
