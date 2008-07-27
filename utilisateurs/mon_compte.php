@@ -180,6 +180,10 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 		*/
 
+        // DEBUG:
+        //echo "\$ancien_code_photo=$ancien_code_photo<br />\n";
+        //echo "\$nouveau_code_photo=$nouveau_code_photo<br />\n";
+
 		if(isset($ancien_code_photo)) {
 			if($ancien_code_photo != ""){
 				//if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
@@ -195,24 +199,35 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					}
 				}
 
+                // DEBUG:
+                //echo "\$HTTP_POST_FILES['filephoto']['tmp_name']=".$HTTP_POST_FILES['filephoto']['tmp_name']."<br />\n";
+                //echo "\$_FILES['filephoto']['tmp_name']=".$_FILES['filephoto']['tmp_name']."<br />\n";
+
 				// filephoto
-				if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
-					$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+				//if(isset($HTTP_POST_FILES['filephoto']['tmp_name'])){
+				if(isset($_FILES['filephoto']['tmp_name'])){
+					//$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+					$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 					//if ( $filephoto_tmp != '' and $valide_form === 'oui' ){
 					if ($filephoto_tmp!=''){
-  						$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-						$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
-						$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
+  						//$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+						//$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+						//$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
+  						$filephoto_name=$_FILES['filephoto']['name'];
+						$filephoto_size=$_FILES['filephoto']['size'];
+						$filephoto_type=$_FILES['filephoto']['type'];
 						if (!preg_match('/jpg$/',strtolower($filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 								$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 							} else {
 								  // Tester la taille max de la photo?
 								  if(is_uploaded_file($filephoto_tmp)){
 									  $dest_file = "../photos/personnels/$nouveau_code_photo.jpg";
-									  $source_file=stripslashes("$filephoto_tmp");
+									  //$source_file=stripslashes("$filephoto_tmp");
+									  $source_file=$filephoto_tmp;
   									$res_copy=copy("$source_file" , "$dest_file");
 	  								if($res_copy){
-		  								$msg.="Mise en place de la photo effectuée.";
+		  								//$msg.="Mise en place de la photo effectuée.";
+		  								$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
 			  							$no_modif="no";
 
 											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
@@ -287,11 +302,15 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 						$nb_elenoet=mysql_num_rows($test);
 						if($nb_elenoet==1){
 							// filephoto
-							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							//$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
+							$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
 							if($filephoto_tmp!=""){
-								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
-								$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
-								$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
+								//$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
+								//$filephoto_size=$HTTP_POST_FILES['filephoto']['size'];
+								//$filephoto_type=$HTTP_POST_FILES['filephoto']['type'];
+								$filephoto_name=$_FILES['filephoto']['name'];
+								$filephoto_size=$_FILES['filephoto']['size'];
+								$filephoto_type=$_FILES['filephoto']['type'];
                 if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ){
 					        //$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 					        $msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
@@ -300,10 +319,12 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 								  if(is_uploaded_file($filephoto_tmp)){
 									  $dest_file="../photos/eleves/$reg_no_gep.jpg";
-									  $source_file=stripslashes("$filephoto_tmp");
+									  //$source_file=stripslashes("$filephoto_tmp");
+									  $source_file=$filephoto_tmp;
   									$res_copy=copy("$source_file" , "$dest_file");
 	  								if($res_copy){
-		  								$msg.="Mise en place de la photo effectuée.";
+		  								//$msg.="Mise en place de la photo effectuée.";
+		  								$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
 			  							$no_modif="no";
 
 											if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
@@ -383,6 +404,8 @@ $user_show_email = mysql_result($call_user_info, "0", "show_email");
 $titre_page = "Gérer son compte";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 // On initialise un flag pour savoir si l'utilisateur est 'éditable' ou non.
 // Cela consiste à déterminer s'il s'agit d'un utilisateur local ou LDAP, et dans
