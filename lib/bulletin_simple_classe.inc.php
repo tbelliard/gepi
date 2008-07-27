@@ -95,7 +95,7 @@ $larg_col3 = 38;
 $larg_col4 = 20;
 $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-echo "<table width=$larg_tab class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary=''>\n";
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$total élèves";
 echo "</td>\n";
 
@@ -862,7 +862,7 @@ else {
 
 echo " :</span>\n";
 $larg_col1b = $larg_tab - $larg_col1 ;
-echo "<table width=\"$larg_tab\" class='boireaus' cellspacing=1 cellpadding=1>\n";
+echo "<table width=\"$larg_tab\" class='boireaus' cellspacing='1' cellpadding='1' summary=''>\n";
 $nb=$periode1;
 while ($nb < $periode2+1) {
     //$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");

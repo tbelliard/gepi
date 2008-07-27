@@ -1228,7 +1228,7 @@ if (!$current_group) {
 		$couleur_alterne="";
 		$col1_centre=0;
 		$col_centre=0;
-		echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+		echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=''>\n";
 		echo "<tr>\n";
 		$j = 1;
 		while($j < $nb_col+1) {
@@ -1275,7 +1275,7 @@ if (!$current_group) {
 	}
 
     if ($test == 1 and  $stat == "yes") {
-        echo "<br /><table border=\"$bord\" cellpadding=\"5\" cellspacing=\"1\" width=\"$larg_tab\"><tr><td>
+        echo "<br /><table border=\"$bord\" cellpadding=\"5\" cellspacing=\"1\" width=\"$larg_tab\" summary=''><tr><td>
         <b>Moyenne générale de la classe : ".$moy_gen."</b>
         <br /><br /><b>Pourcentage des élèves ayant une moyenne générale : </b><ul>\n";
         echo "<li>inférieure strictement à 8 : <b>".$pourcent_i8."</b></li>\n";
