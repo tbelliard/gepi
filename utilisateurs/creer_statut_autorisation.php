@@ -50,7 +50,7 @@ $menu_accueil[2] = array('Bulletins simplifiés', 'Visionner tous les bulletins s
 $menu_accueil[3] = array('Voir les absences', 'Visionner toutes les absences de l\'établissement', 'va');
 $menu_accueil[4] = array('Saisir les absences', 'Saisir les absences de tous les élèves de l\'établissement', 'sa');
 $menu_accueil[5] = array('Cahiers de textes', 'Visionner tous les cahiers de textes de l\'établissement', 'cdt');
-$menu_accueil[6] = array('Signer les cahiers de textes', 'Vous serez inviter à signer les cahiers de textes', 'cdt_visa');
+$menu_accueil[6] = array('Signer les cahiers de textes', 'Signer (viser) les cahiers de textes', 'cdt_visa');
 $menu_accueil[7] = array('Emploi du temps', 'Visionner les emplois du temps de tous les élèves', 'ee');
 $menu_accueil[8] = array('Emploi du temps', 'Visionner tous les emplois du temps de l\'établissement', 'te');
 
