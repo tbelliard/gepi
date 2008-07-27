@@ -494,13 +494,13 @@ while ($i < $nombreligne){
 	  echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
 	}
     echo "<td><p class='small'><span class='bold'>{$col[$i][3]}</span></p></td>\n";
-    // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut privé
+    // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut personnalisé
     if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
-    	// On récupère son statut privé
+    	// On récupère son statut personnalisé
 		$query_s = mysql_query("SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
 		if ($query_s) {
 
-			$special = mysql_fetch_array($query_s);//mysql_result($query_s, "nom_statut");
+			$special = mysql_fetch_array($query_s);
 
 		}else{
 
@@ -510,11 +510,11 @@ while ($i < $nombreligne){
 
 		if ($special["nom_statut"] == '') {
 
-			$special["nom_statut"] = '<span style="color: red; font-style: italic;">non d&eacute;fini.</span>';
+			$special["nom_statut"] = '<span style="color: red; font-style: italic;">non d&eacute;fini</span>';
 
 		}
 
-		echo "<td><p class='small'><span class='bold'>Statut privé : ".$special["nom_statut"]."</span></p></td>\n";
+		echo "<td><p class='small'><span class='bold'>Statut pers. : ".$special["nom_statut"]."</span></p></td>\n";
 
     }else{
 	    echo "<td><p class='small'><span class='bold'>{$col[$i][4]}</span></p></td>\n";
