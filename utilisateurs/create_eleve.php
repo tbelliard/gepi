@@ -43,7 +43,7 @@ if (!checkAccess()) {
 // Initialisation des variables
 
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
-$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode']; 
+$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode'];
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
@@ -92,7 +92,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			} elseif ($current_eleve->sexe == "F") {
 				$civilite = "Mlle";
 			}
-			
+
 			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
@@ -107,12 +107,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
 				} else {
 					$write_ldap_success = $ldap_server->add_user($current_eleve->login, $current_eleve->nom, $current_eleve->prenom, $current_eleve->email, $civilite, '', 'eleve');
-				}						
+				}
 			} else {
 				$write_ldap = false;
 			}
-			
-			
+
+
 			if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
 				$reg = mysql_query("INSERT INTO utilisateurs SET " .
 						"login = '" . $current_eleve->login . "', " .
@@ -124,7 +124,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						"statut = 'eleve', " .
 						"etat = 'actif', " .
 						"change_mdp = 'n'");
-	
+
 				if (!$reg) {
 					$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
 				} else {
@@ -132,7 +132,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				}
 			} else {
 				$msg .= "Erreur lors de la création du compte ".$current_eleve->login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
-				
+
 			}
 		}
 		if ($nb_comptes == 1) {
@@ -192,9 +192,9 @@ else{
 
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
-	
+
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
-	
+
 	echo "<select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
 		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
@@ -206,7 +206,7 @@ else{
 		echo "<option value='auth_sso'>Authentification unique (SSO)</option>";
 	}
 	echo "</select>";
-	
+
 	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 
 	echo "<form action='create_eleve.php' method='post'>\n";
@@ -222,6 +222,45 @@ else{
 	echo "</select>\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
+
+	include("randpass.php");
+
+	echo "<p>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants: ";
+	if (LOWER_AND_UPPER) {
+		if(EXCLURE_CARACT_CONFUS) {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		}
+		else {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		}
+	} else {
+		if(EXCLURE_CARACT_CONFUS) {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+		}
+		else {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+		}
+	}
+	$cpt=0;
+	foreach($alphabet as $key => $value) {
+		if($cpt>0) {echo ", ";}
+		echo $value;
+		$cpt++;
+	}
+
+	if(EXCLURE_CARACT_CONFUS) {
+		$cpt=2;
+	}
+	else {
+		$cpt=0;
+	}
+	for($i=$cpt;$i<=9;$i++) {
+		echo ", $i";
+	}
+	echo ".</p>\n";
+
 	echo "</blockquote>\n";
 
 	echo "<br />\n";
@@ -310,7 +349,7 @@ else{
 	}
 	echo "</select>";
 	echo "</p>";
-	
+
 	echo "<table class='boireaus' border='1' summary='Créer'>\n";
 	$alt=1;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {

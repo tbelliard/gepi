@@ -43,7 +43,7 @@ if (!checkAccess()) {
 // Initialisation des variables
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
-$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode']; 
+$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode'];
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
@@ -151,7 +151,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Création du compte utilisateur pour le responsable considéré
 				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 			}
-			
+
 			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
@@ -166,7 +166,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent. Il va néanmoins être créé dans la base Gepi.";
 				} else {
 					$write_ldap_success = $ldap_server->add_user($reg_login, $current_parent->nom, $current_parent->prenom, $current_parent->mel, $current_parent->civilite, '', 'responsable');
-				}						
+				}
 			} else {
 				$write_ldap = false;
 			}
@@ -186,7 +186,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						"change_mdp = 'n'";
 				//echo "$sql<br />";
 				$reg = mysql_query($sql);
-	
+
 				if (!$reg) {
 					$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
 				} else {
@@ -207,7 +207,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
 		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO (sauf accès LDAP en écriture).
-		
+
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
@@ -328,7 +328,7 @@ else{
 	echo "<input type='hidden' name='creation_comptes_classe' value='y' />\n";
 	//===========================
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
-	
+
 	echo "<select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
 		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
@@ -342,7 +342,7 @@ else{
 	echo "</select>";
 
 	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
-	
+
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";
 	echo "<option value='all'>Toutes les classes</option>\n";
@@ -354,6 +354,48 @@ else{
 	echo "</select>\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
+
+
+	include("randpass.php");
+
+	echo "<p>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants: ";
+	if (LOWER_AND_UPPER) {
+		if(EXCLURE_CARACT_CONFUS) {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		}
+		else {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		}
+	} else {
+		if(EXCLURE_CARACT_CONFUS) {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+		}
+		else {
+			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+		}
+	}
+	$cpt=0;
+	foreach($alphabet as $key => $value) {
+		if($cpt>0) {echo ", ";}
+		echo $value;
+		$cpt++;
+	}
+
+	if(EXCLURE_CARACT_CONFUS) {
+		$cpt=2;
+	}
+	else {
+		$cpt=0;
+	}
+	for($i=$cpt;$i<=9;$i++) {
+		echo ", $i";
+	}
+	echo ".</p>\n";
+
+	echo "<br />\n";
+
 	echo "</blockquote>\n";
 
 	//echo "<br />\n";
@@ -405,7 +447,7 @@ else{
 
 	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "<input type='hidden' name='afficher_tous_les_resp' value='$afficher_tous_les_resp' />\n";
-				
+
 	// Sélection du mode d'authentification
 	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
@@ -420,7 +462,7 @@ else{
 	echo "</select>";
 	echo "</p>";
 
-	
+
 	echo "<table class='boireaus' border='1' summary=\"Créer\">\n";
 	$alt=1;
 	while ($current_parent = mysql_fetch_object($quels_parents)) {
