@@ -51,6 +51,7 @@ require_once('./creer_statut_autorisation.php');
 // Fonction qui permet d'afficher  le selected de l'affichage
 function verifChecked($id){
 
+	// On utilise les variables définies dans /creer_statut_autorisation.php
 	global $autorise;
 	global $iter;
 
@@ -58,7 +59,13 @@ function verifChecked($id){
 		// On récupère les droits de ce statut privé
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
 		$query_ds = mysql_query($sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
-		$rep = mysql_result($query_ds, "autorisation");
+		$count = mysql_num_rows($query_ds);
+		if ($count >= 1) {
+			$rep = mysql_result($query_ds, "autorisation");
+		}else{
+			$rep = 'F';
+		}
+
 			// echo $sql_ds.' '.$rep.'<br />'; // debug
 		if ($rep == 'V') {
 			$retour[$i] = ' checked="checked"';
