@@ -356,13 +356,23 @@
 
 				//$photo = "../photos/".$repertoire."/".$nom_photo;
 				//if(file_exists($photo)) {
-				if (file_exists("../photos/$repertoire/$nom_photo")) {
-					$valeur=redimensionne_image("../photos/$repertoire/$nom_photo");
-				}
-				else {
-					$valeur[0]=76;
-					$valeur[1]=100;
-				}
+				//if ((file_exists("../photos/$repertoire/$nom_photo"))&&($nom_photo!="")) {
+				//if (file_exists("../photos/$repertoire/$nom_photo")) {
+            
+                if ($nom_photo!="") {
+                    if(file_exists("../photos/$repertoire/$nom_photo")) {
+                        $valeur=redimensionne_image("../photos/$repertoire/$nom_photo");
+                    }
+                    else {
+                        $valeur[0]=76;
+                        $valeur[1]=100;
+                    }
+               }
+                else {
+                    $nom_photo="../../images/trombivide.jpg";
+                    $valeur[0]=76;
+                    $valeur[1]=100;
+                }
 
 				echo "<img src='";
 				//if (file_exists($photo)) {
