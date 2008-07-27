@@ -216,8 +216,6 @@ $nbre_statuts = mysql_num_rows($query);
 
 if ($query) {
 
-		$aff_tableau2_1 = $aff_tableau2_2 = $aff_tableau2_3 = $aff_tableau2_4 = $aff_tableau2_5 = $aff_tableau2_6 = $aff_tableau2_7 = $aff_tableau2_8 = NULL;//'<tr style="border: 1px solid lightblue; text-align: center;">';
-
 	for($b = 0 ; $b <= $iter ; $b++){
 
 		if ($b == 0) {
@@ -227,7 +225,7 @@ if ($query) {
 		}elseif($b == $iter){
 
 			// On ajoute une ligne pour la suppression
-			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>Supprimer ce statut</td>';
+			$aff_tableau2[$b] = '<tr style="border: 1px solid white; background-color: silver; text-align: center;"><td>Supprimer ce statut</td>';
 
 		}else{
 
