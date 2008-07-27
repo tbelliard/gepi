@@ -77,7 +77,7 @@ if ($user_login AND strtoupper($user_login) == strtoupper($_SESSION['login'])) {
 	die();
 }
 
-if ($user_status and !in_array($user_status, array("scolarite", "professeur", "cpe", "secours", "responsable", "eleve", "autre") {
+if ($user_status and !in_array($user_status, array("scolarite", "professeur", "cpe", "secours", "responsable", "eleve", "autre"))) {
 	echo "<p>ERREUR ! L'identifiant de statut est erroné. L'opération ne peut pas continuer.</p>";
 	echo "</div></body></html>";
 	die();
