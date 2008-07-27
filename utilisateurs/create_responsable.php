@@ -358,7 +358,7 @@ else{
 
 	include("randpass.php");
 
-	echo "<p>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants: ";
+	echo "<p style='font-size:small;'>Lors de la création, les comptes reçoivent un mot de passe aléatoire choisi parmi les caractères suivants: ";
 	if (LOWER_AND_UPPER) {
 		if(EXCLURE_CARACT_CONFUS) {
 			$alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
