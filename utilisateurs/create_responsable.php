@@ -43,7 +43,7 @@ if (!checkAccess()) {
 // Initialisation des variables
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
-$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso")) ? "auth_locale" : $_POST['reg_auth_mode']; 
+$_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode']; 
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
@@ -155,7 +155,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
-			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'ldap' || $_POST['reg_auth_mode'] == 'sso')) {
+			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'auth_ldap' || $_POST['reg_auth_mode'] == 'auth_sso')) {
 				$write_ldap = true;
 				$write_ldap_success = false;
 				// On tente de créer l'utilisateur sur l'annuaire LDAP
@@ -208,7 +208,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
 		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO (sauf accès LDAP en écriture).
 		
-		if ($nb_comptes > 0 && ($_POST['auth_mode'] == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
+		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";

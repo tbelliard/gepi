@@ -140,7 +140,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		} elseif ($nb_comptes > 1) {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br />";
 		}
-		if ($nb_comptes > 0 && ($_POST['auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
+		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
