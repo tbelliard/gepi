@@ -42,7 +42,7 @@ if ($_GET['error'] == '2') {
 
 # Auth externe réussie, mais utilisateur 'inactif'
 } elseif ($_GET['error'] == '4') {
-	$message = 'Vous avez bien été identifié mais vous <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
+	$message = 'Vous avez bien été identifié mais <b>votre compte a été désactivé</b>. Impossible de continuer. Veuillez signaler ce problème à l\'administrateur du site.';
 
 # Auth externe réussie, mais inconsistence dans le mode d'authentification
 } elseif ($_GET['error'] == '5') {
@@ -65,6 +65,11 @@ if ($_GET['error'] == '2') {
 # Simple échec de l'authentification.
 } elseif ($_GET['error'] == '9') {
 	$message = 'Vous n\'avez pas été authentifié. Vérifiez votre login/mot de passe.';
+
+// Quand un statut 'autre' n'a pas de statut personnalisé
+} elseif ($_GET['error'] == '10') {
+	$message = 'Vous n\'avez pas de droits suffisants pour entrer, veuillez contacter l\'administrateur de Gepi.';
+
 } else {
 	$message = 'Une erreur indéterminée s\'est produite lors de votre authentification.';
 }
@@ -74,9 +79,9 @@ if ($_GET['error'] == '2') {
 <html lang="fr">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-<META HTTP-EQUIV="Expires" CONTENT="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Échec de la connexion à Gepi</title>
 <link rel="stylesheet" type="text/css" href="./<?php echo getSettingValue("gepi_stylesheet");?>.css" />
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
@@ -93,9 +98,9 @@ if ($_GET['error'] == '2') {
 <body>
 <div class="center">
 <h1>Échec de la connexion à Gepi</h1>
-<p>
+<p style="color: red;">
 <?php
-echo "<div style='color:red;'>".$message."</div>\n";
+echo $message;
 ?>
 </p>
 <p>
