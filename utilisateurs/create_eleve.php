@@ -96,7 +96,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 			// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 			// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
-			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'ldap' || $_POST['reg_auth_mode'] == 'sso')) {
+			if (LDAPServer::is_setup() && $gepiSettings["ldap_write_access"] == "yes" && ($session_gepi->auth_ldap || $session_gepi->auth_sso) && ($_POST['reg_auth_mode'] == 'auth_ldap' || $_POST['reg_auth_mode'] == 'auth_sso')) {
 				$write_ldap = true;
 				$write_ldap_success = false;
 				// On tente de créer l'utilisateur sur l'annuaire LDAP
@@ -140,7 +140,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		} elseif ($nb_comptes > 1) {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br />";
 		}
-		if ($nb_comptes > 0 && ($_POST['auth_mode'] == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
+		if ($nb_comptes > 0 && ($_POST['auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
