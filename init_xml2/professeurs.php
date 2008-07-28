@@ -898,7 +898,7 @@ else {
 
 	if (getSettingValue("use_ent") == "y"){
 
-		echo '<p style="text-align: center; font-weight: bold;"><a href="gestion_ent_profs.php">Vérifier les logins avant de poursuivre</a></p>'."\n";
+		echo '<p style="text-align: center; font-weight: bold;"><a href="../mod_ent/gestion_ent_profs.php">Vérifier les logins avant de poursuivre</a></p>'."\n";
 
 	}else{
 

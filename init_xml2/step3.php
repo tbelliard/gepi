@@ -462,7 +462,7 @@ else {
     	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
     	echo '
 			<p>--> Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
-			<p><a href="gestion_ent_eleves.php">Vérifier les logins</a></p>
+			<p><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
 		';
     }else{
 	    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";

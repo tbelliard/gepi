@@ -104,7 +104,7 @@ class LDAPServer {
 	# dans un tableau
 	public function get_user_profile($_login) {
 		$_login = ereg_replace("[^-@._[:space:][:alnum:]]", "", $_login); // securite
-	    $search_dn = $this->people_ou.",".$this->base_dn;
+	    $search_dn = $this->get_dn();
 	    $search_filter = "(".$this->champ_login."=".$_login.")";
 		$sr = ldap_search($this->ds,$search_dn,$search_filter);
 	    $user = array();
@@ -201,6 +201,32 @@ class LDAPServer {
         	return false;
         }
 	}
+
+	/* Permet de récupérer tou sles utilisateurs du LDAP en fonction d'un paramètre
+	* retourne la liste des utilisateurs
+	*/
+	public function get_all_users($type, $param){
+		// On laisse la possibilité d'ajouter des lignes dans le code
+		if ($type == 'rne') {
+			// On utilise le rne de l'établissement pour récupérer les utilisateurs
+			$filter = '('.$this->champ_rne.'='.$param.')';
+			$sr = ldap_search($this->ds, $this->get_dn(), $filter) ;
+			$infos = array();
+			$infos = ldap_get_entries($this->ds, $sr);
+
+			return $infos;
+		}else{
+			return false;
+		}
+	}
+
+	/*
+	* renvoie le dn de recherche dans le ldap
+	*/
+	private function get_dn(){
+		return $this->people_ou.",".$this->base_dn;
+	}
+
 
 	# Ajoute un utilisateur à l'annuaire.
 	# Retourne true/false.
