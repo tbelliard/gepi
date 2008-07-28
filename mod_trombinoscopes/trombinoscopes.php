@@ -129,46 +129,38 @@ require_once("../lib/header.inc");
 <script type="text/javascript">
 
 function inputenable(id,state) {
-var divObj = null;
-if (document.getElementById) {
-divObj = document.getElementById(id);
-} else if(document.all) {
-divObj = document.all(id);
-} else if (document.layers) {
-divObj = document.layers[id];
+	var divObj = null;
+	if (document.getElementById) {
+		divObj = document.getElementById(id);
+	} else if(document.all) {
+		divObj = document.all(id);
+	} else if (document.layers) {
+		divObj = document.layers[id];
+	}
+	if(state && divObj) {
+		divObj.removeAttribute("readonly");
+	} else if(divObj) {
+		divObj.setAttribute("readonly","readonly");
+	}
 }
-if(state && divObj) {
-divObj.removeAttribute("readonly");
-} else if(divObj) {
-divObj.setAttribute("readonly","readonly");
-}
-}
 
 
-function desactiver(mavar)
-{
-
-mavar = mavar.split(',');
-
+function desactiver(mavar) {
+	mavar = mavar.split(',');
 	for (i=0; i<mavar.length; i++)
 	{
 		document.getElementById(mavar[i]).disabled=true;
 	}
-
 	/*document.getElementById(mavar[i]).disabled=true;*/
 	/*document.form1.equipepeda.disabled = true;*/
 }
 
-function reactiver(mavar)
-{
-
-mavar = mavar.split(',');
-
+function reactiver(mavar) {
+	mavar = mavar.split(',');
 	for (var i in mavar)
 	{
 		document.getElementById(mavar[i]).disabled=false;
 	}
-
 	/*document.getElementById(mavar[i]).disabled=false;*/
 	/*document.form1.equipepeda.disabled = false;*/
 }
@@ -177,202 +169,267 @@ mavar = mavar.split(',');
 
 <p class='bold'><a href='../accueil.php'><img src="../images/icons/back.png" alt="Retour" title="Retour" class="back_link" />&nbsp;Retour</a>
  | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>
-<?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?> | <a href='trombinoscopes.php'>Retour à la sélection</a> | <?php } ?>
-<?php if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) { ?><a href="trombi_impr.php?classe=<?php echo $classe; ?>&amp;groupe=<?php echo $groupe; ?>&amp;equipepeda=<?php echo $equipepeda; ?>&amp;discipline=<?php echo $discipline; ?>&amp;statusgepi=<?php echo $statusgepi; ?>&amp;affdiscipline=<?php echo $affdiscipline; ?>" target="_blank">Format imprimable</a> <?php } ?>
-</p>
-
-<?php if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) { ?>
-
-<form method="post" action="trombinoscopes.php" name="form1" style="font-size: 0.71em;">
-<div style="margin: auto; padding: 0px 20px 0px 20px;">
 
 <?php
-	if(getSettingValue('active_module_trombinoscopes')=='y') {
-?>
+	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
+		echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
-<div style="width: 45%; float: left; padding: 5px;">
-	<div style="font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;">Elèves</div>
-	<span style="margin-left: 15px;">Par classe</span><br />
-		<select name="classe" id="classe" style="margin-left: 15px;">
-		<?php
-		if ( $_SESSION['statut'] != 'professeur' ) { $classe = 'toutes'; }
-		if ( $classe == '' ) {
-			$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-						WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
-						GROUP BY c.id
-						ORDER BY nom_complet ASC');
+		echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline' target='_blank'>Format imprimable</a>";
+	}
+	echo "</p>\n";
+
+	if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) {
+		echo "<form method='post' action='trombinoscopes.php' name='form1' style='font-size: 0.71em;'>\n";
+		echo "<div style='margin: auto; padding: 0px 20px 0px 20px;'>\n";
+
+		if(getSettingValue('active_module_trombinoscopes')=='y') {
+			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
+
+			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Elèves</div>\n";
+			echo "<span style='margin-left: 15px;'>Par classe</span><br />\n";
+			echo "<select name='classe' id='classe' style='margin-left: 15px;'>\n";
+
+			if ( $_SESSION['statut'] != 'professeur' ) { $classe = 'toutes'; }
+			if ( $classe == '' ) {
+				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+							WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
+							GROUP BY c.id
+							ORDER BY nom_complet ASC');
 		}
 				if ( $classe == 'toutes' ) {
-			$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'classes c
+					$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'classes c
 						ORDER BY c.nom_complet ASC');
-		}
+				}
 				$resultat_classe_prof = mysql_query($requete_classe_prof) or die('Erreur SQL !'.$requete_classe_prof.'<br />'.mysql_error());
 
-				?><option value="" <?php if ( empty($classe) ) { ?>selected="selected"<?php } ?>  onclick="reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');">pas de s&eacute;lection</option><?php
-				if ( $classe != 'toutes' ) {
-				?><option value="toutes">voir toutes les classes</option><?php }
-				if ( $classe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-				?><option value="">voir mes classes</option><?php } ?>
-				<optgroup label="-- Les classes --">
-						<?php while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) { ?>
-							<option value="<?php echo $data_classe_prof['id']; ?>" <?php if(!empty($classe) and $classe == $data_classe_prof['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');"><?php echo ucwords($data_classe_prof['nom_complet']); echo ' ('.ucwords($data_classe_prof['classe']).')'; ?></option>
-						<?php } ?>
-				</optgroup>
-				</select><br /><br />
+				echo "<option value='' ";
+				if ( empty($classe) ) { echo "selected='selected'"; }
+				echo " onclick=\"reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
 
-	<span style="margin-left: 15px;">Par groupe</span><br />
-		<select name="groupe" id="groupe" style="margin-left: 15px;">
-		<?php
-		if ( $_SESSION['statut'] != 'professeur' ) { $groupe = 'toutes'; }
-		if($groupe == '') { $requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+				if ( $classe != 'toutes' ) {
+					echo "<option value='toutes'>voir toutes les classes</option>\n";
+				}
+				if ( $classe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
+					echo "<option value=''>voir mes classes</option>\n";
+				}
+				echo "<optgroup label='-- Les classes --'>\n";
+
+				while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) {
+					echo "<option value='".$data_classe_prof['id']."'";
+					if(!empty($classe) and $classe == $data_classe_prof['id']) {
+						echo " selected='selected'";
+					}
+					echo " onclick=\"desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">";
+					echo ucwords($data_classe_prof['nom_complet']).' ('.ucwords($data_classe_prof['classe']).')';
+					echo "</option>\n";
+				}
+
+				echo "</optgroup>\n";
+				echo "</select><br /><br />\n";
+
+				echo "<span style='margin-left: 15px;'>Par groupe</span><br />\n";
+				echo "<select name='groupe' id='groupe' style='margin-left: 15px;'>\n";
+
+
+				if ( $_SESSION['statut'] != 'professeur' ) { $groupe = 'toutes'; }
+				if($groupe == '') {
+					$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 								WHERE jgp.id_groupe = g.id
 								AND jgp.login = "'.$_SESSION['login'].'"
 								AND g.id = jgc.id_groupe
 								AND jgc.id_classe = c.id
 								GROUP BY g.id
-								ORDER BY name ASC'); }
-				if($groupe == "toutes") { $requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c WHERE g.id = jgc.id_groupe AND jgc.id_classe = c.id ORDER BY name ASC, nom_complet ASC'); }
+								ORDER BY name ASC');
+				}
+				if($groupe == "toutes") {
+					$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c WHERE g.id = jgc.id_groupe AND jgc.id_classe = c.id ORDER BY name ASC, nom_complet ASC');
+				}
 				$resultat_groupe_prof = mysql_query($requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.mysql_error());
-		?>
-		<option value="" <?php if ( empty($classe) ) { ?>selected="selected"<?php } ?>  onclick="reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');">pas de s&eacute;lection</option>
-				<?php if ( $groupe != 'toutes' ) {
-				?><option value="toutes">voir tous les groupes</option><?php }
+
+				echo "<option value=''";
+				if ( empty($classe) ) {
+					echo " selected='selected'";
+				}
+				echo "onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+
+				if ( $groupe != 'toutes' ) {
+					echo "<option value='toutes'>voir tous les groupes</option>\n";
+				}
 				if ( $groupe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-				?><option value="">voir mes groupes</option><?php } ?>
+					echo "<option value=''>voir mes groupes</option>\n";
+				}
 
-			<optgroup label="-- Les groupes --">
-						<?php while ( $donnee_groupe_prof = mysql_fetch_array ($resultat_groupe_prof)) { ?>
-							<option value="<?php echo $donnee_groupe_prof['id_groupe']; ?>"  onclick="desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');">
-							<?php
-									//modif ERIC
-									echo ucwords($donnee_groupe_prof['description']);
-									//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
-									$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
-									echo ' ('.ucwords($tmp_grp['classlist_string']).')';
-							?>
-							</option>
-					<?php } ?>
-					</optgroup>
-		</select><br /><br />
-			<input value="valider" name="Valider" id="valid1" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-</div>
+				echo "<optgroup label='-- Les groupes --'>\n";
+				while ( $donnee_groupe_prof = mysql_fetch_array ($resultat_groupe_prof)) {
+					echo "<option value='".$donnee_groupe_prof['id_groupe']."'  onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">";
 
-<?php
-	}
-	if(getSettingValue('active_module_trombino_pers')=='y') {
+					//modif ERIC
+					echo ucwords($donnee_groupe_prof['description']);
+					//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
+					$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
+					echo ' ('.ucwords($tmp_grp['classlist_string']).')';
+
+					echo "</option>\n";
+				}
+
+				echo "</optgroup>\n";
+				echo "</select><br /><br />";
+				echo "<input value='valider' name='Valider' id='valid1' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
+				echo "</div>";
+			}
 
 
-		if(getSettingValue('active_module_trombinoscopes')=='y') {
-			echo "<div style='width: 45%; float: right; padding: 5px;'>\n";
-		}
-		else {
-			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
-		}
-?>
+			if(getSettingValue('active_module_trombino_pers')=='y') {
 
-	<div style="font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;">Personnels</div>
-	<span style="margin-left: 15px;">Par équipe pédagogique</span><br />
-		<select name="equipepeda" id="equipepeda" style="margin-left: 15px;">
-		<?php
-		if ( $_SESSION['statut'] != 'professeur' ) { $equipepeda = 'toutes'; }
-		if ( $equipepeda == '' ) {
-			$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-						WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
-						GROUP BY c.id
-						ORDER BY nom_complet ASC');
-		}
+				if(getSettingValue('active_module_trombinoscopes')=='y') {
+					echo "<div style='width: 45%; float: right; padding: 5px;'>\n";
+				}
+				else {
+					echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
+				}
+
+				echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Personnels</div>\n";
+				echo "<span style='margin-left: 15px;'>Par équipe pédagogique</span><br />\n";
+				echo "<select name='equipepeda' id='equipepeda' style='margin-left: 15px;'>\n";
+
+
+				if ( $_SESSION['statut'] != 'professeur' ) { $equipepeda = 'toutes'; }
+				if ( $equipepeda == '' ) {
+					$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+								WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
+								GROUP BY c.id
+								ORDER BY nom_complet ASC');
+				}
 				if ( $equipepeda == 'toutes' ) {
-			$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'classes c
+					$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'classes c
 						ORDER BY c.nom_complet ASC');
-		}
+				}
 				$resultat_equipe_pedagogique = mysql_query($requete_equipe_pedagogique) or die('Erreur SQL !'.$requete_equipe_pedagogique.'<br />'.mysql_error());
 
-				?><option value="" <?php if ( empty($equipepeda) ) { ?>selected="selected"<?php } ?>  onclick="reactiver('classe,groupe,discipline,statusgepi');">pas de s&eacute;lection</option><?php
+				echo "<option value=''";
+				if ( empty($equipepeda) ) {
+					echo " selected='selected'";
+				}
+				echo " onclick=\"reactiver('classe,groupe,discipline,statusgepi');\">pas de s&eacute;lection</option>\n";
 				if ( $equipepeda != 'toutes' ) {
-				?><option value="toutes">voir toutes les équipes pedagogique</option><?php }
+					echo "<option value='toutes'>voir toutes les équipes pedagogique</option>\n";
+				}
 				if ( $equipepeda == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-				?><option value="">voir mes equipepedas</option><?php } ?>
-				<optgroup label="-- Les classes --">
-						<?php while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) { ?>
-							<option value="<?php echo $donnee_equipe_pedagogique['id']; ?>" <?php if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,discipline,statusgepi');"><?php
-								echo ucwords($donnee_equipe_pedagogique['nom_complet']);
-								echo ' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
-							?></option>
-						<?php } ?>
-				</optgroup>
-		</select>
-			<br />&nbsp;&nbsp;&nbsp;<input type="checkbox" name="affdiscipline" id="affdiscipline" value="oui" />&nbsp;<label for="affdiscipline" style="cursor: pointer; cursor: hand;">Afficher les disciplines</label>
-		<br /><br />
+					echo "<option value=''>voir mes equipepedas</option>\n";
+				}
 
-	<span style="margin-left: 15px;">Par discipline</span><br />
-		<select name="discipline" id="discipline" style="margin-left: 15px;">
-		<?php
-		if ( $_SESSION['statut'] != 'professeur' ) { $discipline = 'toutes'; }
-		if ( $discipline == '' ) {
-			$requete_discipline = ('SELECT * FROM '.$prefix_base.'j_professeurs_matieres jpm, '.$prefix_base.'matieres m
-						WHERE jpm.id_professeur = "'.$_SESSION['login'].'"
-						AND jpm.id_matiere = m.matiere
-						GROUP BY m.matiere
-						ORDER BY m.nom_complet ASC');
-		}
+				echo "<optgroup label='-- Les classes --'>\n";
+				while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) {
+
+					echo "<option value='".$donnee_equipe_pedagogique['id']."'";
+					if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) {
+						echo " selected='selected'";
+					}
+					echo " onclick=\"desactiver('classe,groupe,discipline,statusgepi');\">";
+					echo ucwords($donnee_equipe_pedagogique['nom_complet']).' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
+					echo "</option>\n";
+				}
+				echo "</optgroup>\n";
+				echo "</select>\n";
+				echo "<br />&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affdiscipline' id='affdiscipline' value='oui' />&nbsp;<label for='affdiscipline' style='cursor: pointer; cursor: hand;'>Afficher les disciplines</label>\n";
+				echo "<br /><br />\n";
+
+				echo "<span style='margin-left: 15px;'>Par discipline</span><br />\n";
+				echo "<select name='discipline' id='discipline' style='margin-left: 15px;'>\n";
+
+				if ( $_SESSION['statut'] != 'professeur' ) { $discipline = 'toutes'; }
+				if ( $discipline == '' ) {
+					$requete_discipline = ('SELECT * FROM '.$prefix_base.'j_professeurs_matieres jpm, '.$prefix_base.'matieres m
+								WHERE jpm.id_professeur = "'.$_SESSION['login'].'"
+								AND jpm.id_matiere = m.matiere
+								GROUP BY m.matiere
+								ORDER BY m.nom_complet ASC');
+				}
 				if ( $discipline == 'toutes' ) {
-			$requete_discipline = ('SELECT * FROM '.$prefix_base.'matieres m
-						ORDER BY m.nom_complet ASC');
-		}
+					$requete_discipline = ('SELECT * FROM '.$prefix_base.'matieres m
+								ORDER BY m.nom_complet ASC');
+				}
 				$resultat_discipline = mysql_query($requete_discipline) or die('Erreur SQL !'.$requete_discipline.'<br />'.mysql_error());
 
-				?><option value="" <?php if ( empty($discipline) ) { ?>selected="selected"<?php } ?> onclick="reactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');">pas de s&eacute;lection</option><?php
+
+
+				echo "<option value=''";
+				if ( empty($discipline) ) {
+					echo " selected='selected'";
+				}
+				echo " onclick=\"reactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+
 				if ( $discipline != 'toutes' ) {
-				?><option value="toutes">voir toutes les disciplines</option><?php }
+					echo "<option value='toutes'>voir toutes les disciplines</option>\n";
+				}
 				if ( $discipline == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-				?><option value="">voir mes disciplines</option><?php } ?>
-				<optgroup label="-- Les disciplines --">
-						<?php while ( $donnee_discipline = mysql_fetch_array ($resultat_discipline)) { ?>
-							<option value="<?php echo $donnee_discipline['matiere']; ?>" <?php if(!empty($discipline) and $discipline == $donnee_discipline['matiere']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');"><?php echo ucwords($donnee_discipline['nom_complet']); ?></option>
-						<?php } ?>
-				</optgroup>
-		</select><br /><br />
+					echo "<option value=''>voir mes disciplines</option>\n";
+				}
 
-	<span style="margin-left: 15px;">Par statut (CPE/Professeur/Scolarité)</span><br />
-		<select name="statusgepi" id="statusgepi" style="margin-left: 15px;">
-		<?php
-		if ( $statusgepi == '' ) {
-			/*
-			$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
-						WHERE u.statut = "professeur" OR u.statut = "cpe"
-						GROUP BY u.statut
-						ORDER BY u.statut ASC');
-			*/
-			$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
-						WHERE (u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre") AND etat="actif"
-						GROUP BY u.statut
-						ORDER BY u.statut ASC');
+				echo "<optgroup label='-- Les disciplines --'>\n";
+				while ( $donnee_discipline = mysql_fetch_array ($resultat_discipline)) {
+					echo "<option value='".$donnee_discipline['matiere']."'";
+
+					if(!empty($discipline) and $discipline == $donnee_discipline['matiere']) {
+						echo " selected='selected'";
+					}
+					echo " onclick=\"desactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');\">\n";
+					echo ucwords($donnee_discipline['nom_complet']);
+					echo "</option>\n";
+				}
+				echo "</optgroup>\n";
+				echo "</select><br /><br />\n";
+
+				echo "<span style='margin-left: 15px;'>Par statut (CPE/Professeur/Scolarité)</span><br />\n";
+				echo "<select name='statusgepi' id='statusgepi' style='margin-left: 15px;'>\n";
+
+				if ( $statusgepi == '' ) {
+					/*
+					$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
+								WHERE u.statut = "professeur" OR u.statut = "cpe"
+								GROUP BY u.statut
+								ORDER BY u.statut ASC');
+					*/
+					$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
+								WHERE (u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre") AND etat="actif"
+								GROUP BY u.statut
+								ORDER BY u.statut ASC');
 		}
-				$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
-
-				?><option value="" <?php if ( empty($statusgepi) ) { ?>selected="selected"<?php } ?> onclick="reactiver('classe,groupe,equipepeda,discipline,affdiscipline');">pas de s&eacute;lection</option>
-				<optgroup label="-- Les statuts --">
-						<?php while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) { ?>
-							<option value="<?php echo $donnee_statusgepi['statut']; ?>" <?php if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) { ?>selected="selected"<?php } ?> onclick="desactiver('classe,groupe,equipepeda,discipline,affdiscipline');"><?php echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut'])); ?></option>
-						<?php } ?>
-				</optgroup>
-		</select><br /><br />
-
-			<input value="2" name="etape" type="hidden" />
-			<input value="valider" name="Valider" id="valid2" type="submit" onClick="this.form.submit();this.disabled=true;this.value='En cours'" />
-	</div>
-</div>
-<?php
-	}
-?>
-
-</form>
-<?php } ?>
+					$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
 
 
+				echo "<option value=''";
+				if ( empty($statusgepi) ) {
+					echo " selected='selected'";
+				}
+				echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">pas de s&eacute;lection</option>\n";
+				echo "<optgroup label='-- Les statuts --'>\n";
+				while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) {
+					echo "<option value='".$donnee_statusgepi['statut']."'";
+					if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) {
+						echo " selected='selected'";
+					}
+					echo " onclick=\"desactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">";
+					echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
+					echo "</option>\n";
+				}
 
-<?php /* affichage vignette */?>
-<?php if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '') ) { ?>
+				echo "</optgroup>\n";
+				echo "</select><br /><br />\n";
+
+				echo "<input value='2' name='etape' type='hidden' />\n";
+				echo "<input value='valider' name='Valider' id='valid2' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
+				echo "</div>\n";
+				echo "</div>\n";
+
+			}
+
+			echo "</form>\n";
+		}
+
+//==================================================================================
+/* affichage vignette */
+if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '') ) { ?>
 
 <div style="text-align: center;">
 <table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : thin dashed #242424; background-color: #FFFFB8;" summary='Choix'>
