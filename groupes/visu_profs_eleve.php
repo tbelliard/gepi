@@ -149,10 +149,22 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
 	$nom_eleve = mysql_result($eleve, 0, "nom");
 	$prenom_eleve = mysql_result($eleve, 0, "prenom");
-	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
+	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
+	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve;
 
-   	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve;
+	$sql="SELECT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
+	$res_class=mysql_query($sql);
+	if(mysql_num_rows($res_class)==0) {
+		echo "</h3>\n";
+		echo "<p>L'élève n'est dans aucune classe???</p>\n";
+		require "../lib/footer.inc.php";
+		die();
+	}
+	$lig_clas=mysql_fetch_object($res_class);
+	$id_classe=$lig_clas->id_classe;
+	echo " de ".$lig_clas->nom_complet." (<i>".$lig_clas->classe."</i>)";
+	/*
 	$tmp_classes=get_noms_classes_from_ele_login($login_eleve);
 	echo " (<i>";
 	for($i=0;$i<count($tmp_classes);$i++) {
@@ -160,6 +172,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		echo $tmp_classes[$i];
 	}
 	echo "</i>)";
+	*/
 	echo "</h3>\n";
 
     echo "<table border='0' summary='Equipe'>\n";
