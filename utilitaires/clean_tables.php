@@ -45,7 +45,7 @@ $titre_page = "Vérification/nettoyage des tables de la base de données GEPI";
 require_once("../lib/header.inc");
 
 //$total_etapes = 8;
-$total_etapes = 9;
+$total_etapes = 10;
 $duree = 8;
 if (!isset($_GET['cpt'])) {
     $cpt = 0;
@@ -54,6 +54,11 @@ if (!isset($_GET['cpt'])) {
 }
 
 $maj=isset($_POST['maj']) ? $_POST['maj'] : (isset($_GET['maj']) ? $_GET['maj'] : NULL);
+
+
+$stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
+
+
 //if (($_POST['maj'])=="9") {
 if ($maj=="9") {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -268,7 +273,7 @@ function etape8() {
     return true;
 }
 if (isset($_POST['maj']) and (($_POST['maj'])=="1")) {
-    echo "<H2 align=\"center\">Etape 1/$total_etapes</H2>\n";
+    echo "<h2 align=\"center\">Etape 1/$total_etapes</h2>\n";
     $tab["j_aid_eleves"][0] = "aid"; //1ère table
     $tab["j_aid_eleves"][1] = "eleves"; // 2ème table
     $tab["j_aid_eleves"][2] = "id_aid"; // nom du champ de la table de liaison lié à la première table
@@ -329,7 +334,7 @@ if (getSettingValue("active_version152")=="y") {
 
     foreach ($tab as $key => $val) {
        $cpt=0;
-       echo "<H2>Vérification de la table ".$key."</H2>\n";
+       echo "<h2>Vérification de la table ".$key."</h2>\n";
        // $key : le nom de la table de liaison
        // $val[0] : le nom de la première table
        // $val[1] : le nom de la deuxième table
@@ -397,9 +402,9 @@ if (getSettingValue("active_version152")=="y") {
     echo "</form>\n";
 
 } else if (isset($_POST['maj']) and (($_POST['maj'])=="2")) {
-    echo "<H2 align=\"center\">Etape 2/$total_etapes</H2>\n";
+    echo "<h2 align=\"center\">Etape 2/$total_etapes</h2>\n";
     // cas j_eleves_professeurs
-    echo "<H2>Vérification de la table j_eleves_professeurs</H2>\n";
+    echo "<h2>Vérification de la table j_eleves_professeurs</h2>\n";
     $req = mysql_query("SELECT * FROM j_eleves_professeurs order by login,professeur,id_classe");
     $nb_lignes = mysql_num_rows($req);
     $i = 0;
@@ -477,9 +482,9 @@ if (getSettingValue("active_version152")=="y") {
     echo "</form>\n";
 
 } else if (isset($_POST['maj']) and (($_POST['maj'])=="3")) {
-    echo "<H2 align=\"center\">Etape 3/$total_etapes</H2>\n";
+    echo "<h2 align=\"center\">Etape 3/$total_etapes</h2>\n";
     // Cas de la table j_classes_matieres_professeurs
-    echo "<H2>Vérification de la table j_classes_matieres_professeurs</H2>\n";
+    echo "<h2>Vérification de la table j_classes_matieres_professeurs</h2>\n";
     echo "<p>La table j_classes_matieres_professeurs n'existe plus et ne peut donc pas être nettoyée. Cette étape sera remplacée par un nettoyage des tables de gestion des groupes.</p>\n";
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
     echo "<input type=\"hidden\" name=\"maj\" value=\"4\" />\n";
@@ -487,11 +492,11 @@ if (getSettingValue("active_version152")=="y") {
     echo "</form>\n";
 
 } else if (isset($_POST['maj']) and (($_POST['maj'])=="4")) {
-    echo "<H2 align=\"center\">Etape 4/$total_etapes</H2>\n";
+    echo "<h2 align=\"center\">Etape 4/$total_etapes</h2>\n";
 
     // Vérification de la table j_eleves_classes
 
-    echo "<H2>Vérification de la table j_eleves_classes</H2>\n";
+    echo "<h2>Vérification de la table j_eleves_classes</h2>\n";
     $req = mysql_query("SELECT * FROM j_eleves_classes");
     $nb_lignes = mysql_num_rows($req);
     $i = 0;
@@ -559,8 +564,8 @@ if (getSettingValue("active_version152")=="y") {
     echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
     echo "</form>\n";
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="5")) or (isset($_GET['maj']) and (($_GET['maj'])=="5"))) {
-    echo "<H2 align=\"center\">Etape 5/$total_etapes</H2>\n";
-    echo "<H2>Nettoyage de la table j_eleves_matieres</H2>\n";
+    echo "<h2 align=\"center\">Etape 5/$total_etapes</h2>\n";
+    echo "<h2>Nettoyage de la table j_eleves_matieres</h2>\n";
         echo "<p>Cette table n'est plus utilisée. Cette étape devrait donc être, un jour, remplacée par une étape de nettoyage des attributions d'élèves aux groupes...</p>\n";
         echo "<form action=\"clean_tables.php\" method=\"post\">\n";
         echo "<input type=\"hidden\" name=\"maj\" value=\"6\" />\n";
@@ -568,10 +573,10 @@ if (getSettingValue("active_version152")=="y") {
        echo "</form>\n";
     //}
 } else if (isset($_POST['maj']) and (($_POST['maj'])=="6")) {
-   echo "<H2 align=\"center\">Etape 6/$total_etapes</H2>\n";
+   echo "<h2 align=\"center\">Etape 6/$total_etapes</h2>\n";
 
    // Cas de la table aid_appreciations
-    echo "<H2>Nettoyage de la table aid_appreciations (tables des appréciations AID)</H2>\n";
+    echo "<h2>Nettoyage de la table aid_appreciations (tables des appréciations AID)</h2>\n";
     $req = mysql_query("SELECT * FROM aid_appreciations order by login,id_aid,periode");
     $nb_lignes = mysql_num_rows($req);
     $i = 0;
@@ -629,7 +634,7 @@ if (getSettingValue("active_version152")=="y") {
 
 
    // Cas de la table avis_conseil_classe
-    echo "<H2>Nettoyage de la table avis_conseil_classe (tables des avis du conseil de classe)</H2>\n";
+    echo "<h2>Nettoyage de la table avis_conseil_classe (tables des avis du conseil de classe)</h2>\n";
     $req = mysql_query("SELECT * FROM avis_conseil_classe order by login,periode");
     $nb_lignes = mysql_num_rows($req);
     $i = 0;
@@ -674,9 +679,9 @@ if (getSettingValue("active_version152")=="y") {
     echo "<center><b>Attention : l'étape suivante peut être très longue.</b></center>\n";
     echo "</form>\n";
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="7")) or (isset($_GET['maj']) and (($_GET['maj'])=="7"))) {
-    echo "<H2 align=\"center\">Etape 7/$total_etapes</H2>\n";
+    echo "<h2 align=\"center\">Etape 7/$total_etapes</h2>\n";
 
-   echo "<H2>Nettoyage de la table matieres_appreciations (tables des appréciations par discipline)</H2>\n";
+   echo "<h2>Nettoyage de la table matieres_appreciations (tables des appréciations par discipline)</h2>\n";
     init_time(); //initialise le temps
     //début de fichier
     if (!isset($_GET["offset"])) $offset=0;
@@ -725,8 +730,8 @@ if (getSettingValue("active_version152")=="y") {
         echo "</form>\n";
     }
 } else if ((isset($_POST['maj']) and (($_POST['maj'])=="8")) or (isset($_GET['maj']) and (($_GET['maj'])=="8"))) {
-    echo "<H2 align=\"center\">Etape 8/$total_etapes</H2>\n";
-    echo "<H2>Nettoyage de la table matieres_notes (tables des notes par discipline)</H2>\n";
+    echo "<h2 align=\"center\">Etape 8/$total_etapes</h2>\n";
+    echo "<h2>Nettoyage de la table matieres_notes (tables des notes par discipline)</h2>\n";
     init_time(); //initialise le temps
     //début de fichier
     if (!isset($_GET["offset"])) $offset=0;
@@ -765,7 +770,7 @@ if (getSettingValue("active_version152")=="y") {
             echo "<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
             echo "<b>La table matieres_notes est OK.</b><br />\n";
         }
-        //echo "<hr /><H2 align=\"center\">Fin de la vérification des tables</H2>\n";
+        //echo "<hr /><h2 align=\"center\">Fin de la vérification des tables</h2>\n";
         echo "<form action=\"clean_tables.php\" method=\"post\">\n";
         echo "<input type=\"hidden\" name=\"maj\" value=\"9\" />\n";
         echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
@@ -775,11 +780,11 @@ if (getSettingValue("active_version152")=="y") {
 
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']) and (($_GET['maj'])=="9"))) {
-	echo "<H2 align=\"center\">Etape 9/$total_etapes</H2>\n";
+	echo "<h2 align=\"center\">Etape 9/$total_etapes</h2>\n";
 
 	//echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
 
-	echo "<H2>Nettoyage des aberrations sur les groupes</H2>\n";
+	echo "<h2>Nettoyage des aberrations sur les groupes</h2>\n";
 
 	$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
 
@@ -808,7 +813,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		}
 	}
 
-	echo "<H2>Nettoyage des erreurs d'appartenance à des groupes</H2>\n";
+	echo "<h2>Nettoyage des erreurs d'appartenance à des groupes</h2>\n";
 
 	// Elèves dans des groupes pour lesquels ils ne sont pas dans la classe sur la période
 	// Mais association classe/groupe OK dans j_groupes_classes
@@ -821,10 +826,6 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	// A FAIRE
 	//===========
 
-
-
-
-
 	$err_no=0;
 	// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
 	// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
@@ -834,7 +835,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	while($lig_ele=mysql_fetch_object($res_ele)){
 		if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
 			$ini=strtoupper(substr($lig_ele->login,0,1));
-			echo "<p>\n<i>Parcours des login commençant par la lettre $ini</i></p>\n";
+			echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
 		}
 
 		// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
@@ -963,10 +964,146 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	}
 
 
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<input type=\"hidden\" name=\"maj\" value=\"10\" />\n";
+    echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
+    echo "</form>\n";
 
+}
+elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj']) and (($_GET['maj'])=="10"))) {
+	echo "<h2 align=\"center\">Etape 10/$total_etapes</h2>\n";
 
-	echo "<hr />\n";
-	echo "<H2 align=\"center\">Fin de la vérification des tables</H2>\n";
+	echo "<h2>Nettoyage des comptes élèves/responsables</h2>\n";
+
+    echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+
+	if(!isset($_POST['nettoyage_comptes_ele_resp'])) {
+		$sql="CREATE TABLE tempo2 (
+col1 varchar(100) NOT NULL default '',
+col2 varchar(100) NOT NULL default ''
+);";
+		$create_table=mysql_query($sql);
+
+		$sql="TRUNCATE tempo2;";
+		$suppr=mysql_query($sql);
+
+		$sql="INSERT INTO tempo2 SELECT login,statut FROM utilisateurs WHERE statut='eleve' OR statut='responsable';";
+		$insert=mysql_query($sql);
+
+		echo "<p>Vous allez supprimer les comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement.</p>\n";
+
+		echo "<input type='submit' name='nettoyage_ele_resp' value='Supprimer' />\n";
+
+	}
+	else {
+		$cpt_suppr=isset($_POST['cpt_suppr']) ? $_POST['cpt_suppr'] : 0;
+
+		$sql="SELECT 1=1 FROM tempo2;";
+		$res0=mysql_query($sql);
+		$nb_comptes=mysql_num_rows($res0);
+		echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";
+
+		$tranche=20;
+		$sql="SELECT * FROM tempo2 LIMIT $tranche;";
+		echo "$sql<br />";
+		$res1=mysql_query($sql);
+		if(mysql_num_rows($res1)>0) {
+			while($lig1=mysql_fetch_object($res1)) {
+				if($lig1->col2=='eleve') {
+					$sql="SELECT 1=1 FROM eleves WHERE login='$lig1->col1';";
+					echo "$sql<br />";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)==0) {
+						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+						echo "$sql<br />";
+						$suppr=mysql_query($sql);
+
+						$cpt_suppr++;
+					}
+				}
+				else {
+					$sql="SELECT rp.pers_id FROM resp_pers rp WHERE rp.login='$lig1->col1';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)==0) {
+						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+						echo "$sql<br />";
+						$suppr=mysql_query($sql);
+
+						$cpt_suppr++;
+					}
+					else {
+						$sql="SELECT 1=1 FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
+						echo "$sql<br />";
+						$res2=mysql_query($sql);
+						if(mysql_num_rows($res2)==0) {
+							$sql="SELECT pers_id FROM resp_pers WHERE login='$lig1->col1';";
+							echo "$sql<br />";
+							$res3=mysql_query($sql);
+							if(mysql_num_rows($res3)>0) {
+								$lig3=mysql_fetch_object($res3);
+								$sql="DELETE FROM responsables2 WHERE pers_id='$lig3->pers_id';";
+								echo "$sql<br />";
+								$suppr=mysql_query($sql);
+							}
+
+							$sql="DELETE FROM resp_pers WHERE login='$lig1->col1';";
+							echo "$sql<br />";
+							$suppr=mysql_query($sql);
+
+							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+							echo "$sql<br />";
+							$suppr=mysql_query($sql);
+
+							$cpt_suppr++;
+						}
+					}
+				}
+
+				$sql="DELETE FROM tempo2 WHERE col1='$lig1->col1';";
+				echo "$sql<br />";
+				$suppr=mysql_query($sql);
+			}
+
+			if($cpt_suppr==0) {
+				echo "<p>Aucun compte n'a été supprimé à cette étape.</p>\n";
+			}
+			elseif($cpt_suppr==1) {
+				echo "<p>Un compte a été supprimé à cette étape.</p>\n";
+			}
+			else {
+				echo "<p>$cpt_suppr comptes ont été supprimés à cette étape.</p>\n";
+			}
+
+			echo "<input type='hidden' name='cpt_suppr' value='$cpt_suppr' />\n";
+			echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+
+			echo "<script type='text/javascript'>
+	//setTimeout(\"document.forms['formulaire'].submit();\",3000);
+</script>\n";
+		}
+		else {
+			echo "<p>Nettoyage des comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement terminé.</p>\n";
+
+			if($cpt_suppr==0) {
+				echo "<p>Aucun compte n'a été supprimé.</p>\n";
+			}
+			elseif($cpt_suppr==1) {
+				echo "<p>Un compte a été supprimé.</p>\n";
+			}
+			else {
+				echo "<p>$cpt_suppr comptes ont été supprimés.</p>\n";
+			}
+
+			echo "<hr />\n";
+			echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+		}
+	}
+
+	echo "<input type='hidden' name='maj' value='10' />\n";
+	echo "<input type='hidden' name='nettoyage_comptes_ele_resp' value='y' />\n";
+
+	echo "</form>\n";
+
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') {
 	// Le code de Stéphane concernant la vérification des auto_increment après le bug détecté
@@ -1304,7 +1441,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	}
 
 } else {
-    echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+    echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
     //echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 	echo "</p>\n";
 
