@@ -190,6 +190,10 @@ if (isset($is_posted)) {
         $j++;
     }
 
+	// Suppression des comptes d'élèves:
+	$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
+	$del=mysql_query($sql);
+
     // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
     //$call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import WHERE DIVCOD!='' ORDER BY DIVCOD");
     $call_data = mysql_query("SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");

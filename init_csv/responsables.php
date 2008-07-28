@@ -93,7 +93,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des responsables d'élèves</h3></center>";
@@ -143,6 +143,10 @@ if (!isset($_POST["action"])) {
 			}
 			$j++;
 		}
+
+		// Suppression des comptes de responsables:
+		$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+		$del=mysql_query($sql);
 
 		$go = true;
 		$i = 0;

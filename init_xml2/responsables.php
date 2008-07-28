@@ -219,10 +219,14 @@
 			$j=0;
 			while ($j < count($liste_tables_del)) {
 				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+					$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
 				}
 				$j++;
 			}
+
+			// Suppression des comptes de responsables:
+			$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+			$del=mysql_query($sql);
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
 

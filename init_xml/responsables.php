@@ -97,7 +97,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des responsables 
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 
 <?php
 
@@ -175,6 +175,10 @@ if (!isset($is_posted)) {
 		}
 		$j++;
 	}
+
+	// Suppression des comptes de responsables:
+	$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+	$del=mysql_query($sql);
 
 	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
 	//echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.\n";

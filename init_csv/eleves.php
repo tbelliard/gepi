@@ -106,7 +106,7 @@ $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves</h3></center>\n";
@@ -156,6 +156,10 @@ if (!isset($_POST["action"])) {
             }
             $j++;
         }
+
+		// Suppression des comptes d'élèves:
+		$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
+		$del=mysql_query($sql);
 
         $i = 0;
         // Compteur d'erreurs
