@@ -45,6 +45,8 @@ if (!checkAccess()) {
 $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 $_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode'];
 
+$mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : (isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL);
+
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
 
@@ -141,20 +143,29 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br />";
 		}
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
+
+			if(isset($mdp_INE)) {
+				$chaine_mdp_INE="&amp;mdp_INE=$mdp_INE";
+			}
+			else {
+				$chaine_mdp_INE="";
+			}
+
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
+	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."$chaine_mdp_INE' target='_blank'>Imprimer la fiche 'identifiants'</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
+
             	if ($_POST['classe'] == "all") {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				}
 			}
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
@@ -170,6 +181,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 $titre_page = "Créer des comptes d'accès élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+//debug_var();
 ?>
 <p class='bold'>
 <a href="edit_eleve.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
@@ -220,7 +232,11 @@ else{
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
 	echo "</select>\n";
+
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
+
+	echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<i>INE</i>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
+
 	echo "</form>\n";
 
 	include("randpass.php");
@@ -332,6 +348,7 @@ else{
 	echo "<p>Cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>\n";
 	echo "<form id='form_create_one_eleve' action='create_eleve.php' method='post'>\n";
 	echo "<input type='hidden' name='mode' value='individual' />\n";
+	echo "<input type='hidden' name='mdp_INE' id='indiv_mdp_INE' value='' />\n";
 	echo "<input id='eleve_login' type='hidden' name='eleve_login' value='' />\n";
 	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
@@ -356,7 +373,14 @@ else{
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
-			echo "<input type='submit' value='Créer' onclick=\"$('eleve_login').value='".$current_eleve->login."'; $('form_create_one_eleve').submit();\" />\n";
+			echo "<input type='submit' value='Créer' onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='n'; $('form_create_one_eleve').submit();\" />\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<input type='submit' value=\"Créer d'après INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y'; $('form_create_one_eleve').submit();\" />\n";
+			//echo "<input type='submit' value=\"Créer d'après INE\" onclick=\"$('eleve_login').value='".$current_eleve->login."';$('indiv_mdp_INE').value='y';\" />\n";
+			echo "</td>\n";
+
 			echo "<td>".$current_eleve->nom." ".$current_eleve->prenom."</td>\n";
 
 

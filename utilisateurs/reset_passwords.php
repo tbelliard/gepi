@@ -47,6 +47,8 @@ if (!checkAccess()) {
 // Ajout ERIC
 $mode_impression = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : false);
 
+$mdp_INE=isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL;
+
 //comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
 //**************** EN-TETE *****************************
@@ -242,7 +244,7 @@ else {
 
 			} elseif ($user_status == "eleve") {
 				// Sélection de tous les utilisateurs élèves de la classe donnée
-				$call_user_info = mysql_query("SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email " .
+				$call_user_info = mysql_query("SELECT distinct(u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode " .
 						"FROM utilisateurs u, classes c, j_eleves_classes jec WHERE (" .
 						"u.login = jec.login AND " .
 						"jec.id_classe = '".$user_classe."')");
@@ -305,8 +307,8 @@ else {
 
 
 $nb_users = mysql_num_rows($call_user_info);
-
 /*
+echo "\$call_user_info=$call_user_info<br />";
 echo "\$nb_users=$nb_users<br />";
 echo "\$user_status=$user_status<br />";
 echo "\$cas_traite=$cas_traite<br />";
@@ -314,9 +316,27 @@ echo "\$cas_traite=$cas_traite<br />";
 //$cas_traite=1;
 
 // =====================
-// AJOUT: boireaus 20071102
 unset($tab_password);
 $tab_password=array();
+
+unset($tab_non_INE_password);
+$tab_non_INE_password=array();
+
+echo "<style type='text/css'>
+#div_mdp_non_ine {
+	border: 1px solid black;
+	text-align:center;
+	visibility:hidden;
+}
+
+@media print {
+	#div_mdp_non_ine {
+		display:none;
+	}
+}
+</style>
+
+<div id='div_mdp_non_ine'></div>\n";
 // =====================
 
 $p = 0;
@@ -331,7 +351,8 @@ while ($p < $nb_users) {
 	$user_email = mysql_result($call_user_info, $p, "email");
 	$user_auth_mode = mysql_result($call_user_info, $p, "auth_mode");
 
-	//echo "$user_login<br />";
+	//echo "\$user_login=$user_login<br />";
+	//echo "\$user_auth_mode=$user_auth_mode<br />";
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
@@ -450,7 +471,28 @@ while ($p < $nb_users) {
 				$temoin_user_deja_traite="y";
 			}
 			else{
-				$new_password = pass_gen();
+				if(($user_status=='eleve')&&($mdp_INE=='y')) {
+					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
+					$res_ine=mysql_query($sql);
+					if(mysql_num_rows($res_ine)>0){
+						$lig_ine=mysql_fetch_object($res_ine);
+						if($lig_ine->no_gep!='') {
+							$new_password=$lig_ine->no_gep;
+						}
+						else {
+							$new_password = pass_gen();
+							$tab_non_INE_password[]="$user_nom $user_prenom";
+						}
+					}
+					else {
+						$new_password = pass_gen();
+						$tab_non_INE_password[]="$user_nom $user_prenom";
+					}
+				}
+				else {
+					$new_password = pass_gen();
+				}
+
 				$tab_password[$user_login]=$new_password;
 
 				$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
@@ -463,13 +505,34 @@ while ($p < $nb_users) {
 			$temoin_user_deja_traite="y";
 		}
 		else{
-			$new_password = pass_gen();
+			//$new_password = pass_gen();
+			if(($user_status=='eleve')&&($mdp_INE=='y')) {
+				$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
+				$res_ine=mysql_query($sql);
+				if(mysql_num_rows($res_ine)>0){
+					$lig_ine=mysql_fetch_object($res_ine);
+					if($lig_ine->no_gep!='') {
+						$new_password=$lig_ine->no_gep;
+					}
+					else {
+						$new_password = pass_gen();
+						$tab_non_INE_password[]="$user_nom $user_prenom";
+					}
+				}
+				else {
+					$new_password = pass_gen();
+					$tab_non_INE_password[]="$user_nom $user_prenom";
+				}
+			}
+			else {
+				$new_password = pass_gen();
+			}
 			$tab_password[$user_login]=$new_password;
 
 			if ($user_auth_mode != "gepi") {
 				// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
 					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
-				
+
 				// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 				// directement dans l'annuaire.
 				if ($gepiSettings['ldap_write_access'] == "yes") {
@@ -811,5 +874,28 @@ switch ($mode_impression) {
 		}
 		break;
 }
+
+
+
+// On n'arrive là que si on n'a pas imprimé en CSV ou PDF
+if(count($tab_non_INE_password)>0) {
+	if(count($tab_non_INE_password)==1) {
+		$chaine="L'élève suivant n'a pas le numéro INE renseigné.<br />Il a donc obtenu un mot de passe aléatoire:<br />";
+	}
+	else {
+		$chaine="Les élèves suivants n'ont pas le numéro INE renseigné.<br />Ils ont donc obtenu un mot de passe aléatoire:<br />";
+	}
+
+	for($i=0;$i<count($tab_non_INE_password);$i++) {
+		if($i>0) {$chaine.=", ";}
+		$chaine.=$tab_non_INE_password[$i];
+	}
+
+	echo "<script type='text/javascript'>
+	document.getElementById('div_mdp_non_ine').innerHTML=\"$chaine\";
+	document.getElementById('div_mdp_non_ine').style.visibility='visible';
+</script>\n";
+}
+
 require("../lib/footer.inc.php");
 ?>
