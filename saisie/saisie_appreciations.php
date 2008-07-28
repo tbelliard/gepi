@@ -294,6 +294,9 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 	if(!empty($tab_groups)) {
 
+		// Pour s'assurer de ne pas avoir deux fois le même groupe...
+		$tmp_group=array();
+
 		$chaine_options_classes="";
 
 		$num_groupe=-1;
@@ -306,29 +309,41 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		//foreach($tab_groups as $tmp_group) {
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if($tab_groups[$loop]['id']==$id_groupe){
-				$num_groupe=$loop;
+			/*
+			echo "\$tab_groups[$loop]['id']=".$tab_groups[$loop]['id']."<br />";
+			echo "\$tab_groups[$loop]['name']=".$tab_groups[$loop]['name']."<br />";
+			echo "\$tab_groups[$loop]['classlist_string']=".$tab_groups[$loop]['classlist_string']."<br />";
+			*/
+			// Pour s'assurer de ne pas avoir deux fois le même groupe...
+			if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
+				$tmp_group[]=$tab_groups[$loop]['id'];
 
-				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				if($tab_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
 
-				$temoin_tmp=1;
-				if(isset($tab_groups[$loop+1])){
-					$id_grp_suiv=$tab_groups[$loop+1]['id'];
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
-					$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					$temoin_tmp=1;
+					if(isset($tab_groups[$loop+1])){
+						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					}
+					else{
+						$id_grp_suiv=0;
+					}
 				}
-				else{
-					$id_grp_suiv=0;
+				else {
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 				}
-			}
-			else {
-				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-			}
 
-			if($temoin_tmp==0){
-				$id_grp_prec=$tab_groups[$loop]['id'];
+				if($temoin_tmp==0){
+					$id_grp_prec=$tab_groups[$loop]['id'];
 
-				$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
 			}
 		}
 		// =================================
@@ -398,9 +413,9 @@ echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$curr
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&order_by=classe'>Regrouper les élèves par classe</a>";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&order_by=nom'>Afficher la liste par ordre alphabétique</a>";
-	echo "</p>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe'>Regrouper les élèves par classe</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Afficher la liste par ordre alphabétique</a>";
+	echo "</p>\n";
 }
 
 // On commence par mettre la liste dans l'ordre souhaité
@@ -511,6 +526,9 @@ while ($k < $nb_periode) {
 		//$mess[$k].="<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' style='white-space: nowrap;' onchange=\"changement()\"";
 		$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' onchange=\"changement()\"";
 		// onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"
+
+		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';\"";
+
 		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
 	}
 
@@ -843,7 +861,7 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 	//============================================
 	// AJOUT: boireaus 20080520
 	// Dispositif spécifique: décommenter la ligne pour l'activer
-	if(getSettingValue('ctp')=='y') {include('ctp.php');}
+	if(getSettingValue('appreciations_types_profs')=='y') {include('ctp.php');}
 	//============================================
 ?>
 

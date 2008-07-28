@@ -55,6 +55,17 @@ if(isset($_POST['is_posted'])){
 			$msg .= "Erreur lors de l'enregistrement de l'interdiction de l'export au format ODS !";
 		}
 	}
+
+	if (isset($_POST['appreciations_types_profs'])) {
+		if (!saveSetting("appreciations_types_profs", 'y')) {
+			$msg .= "Erreur lors de l'enregistrement de l'autorisation d'utilisation d'appréciations-types pour les professeurs !";
+		}
+	}
+	else{
+		if (!saveSetting("appreciations_types_profs", 'n')) {
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction d'utilisation d'appréciations-types pour les professeurs !";
+		}
+	}
 }
 
 
@@ -91,6 +102,18 @@ require_once("../lib/header.inc");
 		$svg_param=saveSetting("export_cn_ods", 'n');
 	}
 	echo "</p>\n";
+
+
+	echo "<p>\n";
+	echo "<input type='checkbox' name='appreciations_types_profs' id='appreciations_types_profs' value='y'";
+	if(getSettingValue('appreciations_types_profs')=='y'){
+		echo ' checked';
+	}
+	echo " /> \n";
+	echo "<label for='appreciations_types_profs' style='cursor: pointer;'>Permettre aux professeurs d'utiliser des appréciations-types sur les bulletins.\n";
+	echo "</p>\n";
+
+
 ?>
 
 
