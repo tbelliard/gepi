@@ -176,7 +176,7 @@ class Session {
 			// de l'utilisateur avant d'aller plus loin, sauf s'il a déjà été passé
 			// en paramètre.
 			if (isset($_GLOBALS['multisite']) && $_GLOBALS['multisite'] == "y") {
-				if (!isset($_GET['rne'])) {
+				if (!isset($_GET['rne']) AND !isset($_COOKIE["RNE"])) {
 					if (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
 						// pour obtenir la bonne base de données
