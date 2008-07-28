@@ -120,15 +120,28 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 				"e.ele_id = re.ele_id AND " .
 				"re.pers_id = r.pers_id AND " .
 				"r.login = '" . $_SESSION['login'] . "')");
-	echo "<br/><br/>";
     echo "<form enctype=\"multipart/form-data\" action=\"visu_profs_eleve.php\" method=\"post\">\n";
-	echo "<p clas='bold'>Elève : ";
-	echo "<select size=\"1\" name=\"login_eleve\">";
+	echo "<table summary='Choix'>\n";
+	echo "<tr>\n";
+	echo "<td valign='top'>\n";
+	echo "<span class='bold'>Choisissez l'élève : </span>";
+	echo "</td>\n";
+	echo "<td valign='top'>\n";
+	echo "<select size=\"".mysql_num_rows($quels_eleves)."\" name=\"login_eleve\">";
+	$cpt=0;
 	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-                echo "<option value=" . $current_eleve->login . ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>";
+		echo "<option value=".$current_eleve->login;
+		if($cpt==0) {echo " selected='selected'";}
+		echo ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>\n";
+		$cpt++;
 	}
-	echo "</select>";
-	echo "<br /><br /><center><input type='submit' value='Valider' /></center>\n";
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "<td valign='top'>\n";
+	echo "<input type='submit' value='Valider' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
     echo "</form>\n";
 
 } else {
@@ -139,9 +152,17 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
 
-   	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve . "</h3>\n";
+   	echo "<h3>Equipe pédagogique de l'élève : ".$prenom_eleve ." " . $nom_eleve;
+	$tmp_classes=get_noms_classes_from_ele_login($login_eleve);
+	echo " (<i>";
+	for($i=0;$i<count($tmp_classes);$i++) {
+		if($i>0) {echo ", ";}
+		echo $tmp_classes[$i];
+	}
+	echo "</i>)";
+	echo "</h3>\n";
 
-    echo "<table border='0'>\n";
+    echo "<table border='0' summary='Equipe'>\n";
 
     // On commence par le CPE
     $req = mysql_query("SELECT DISTINCT u.nom,u.prenom,u.email,u.show_email,jec.cpe_login " .
