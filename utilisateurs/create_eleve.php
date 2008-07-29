@@ -116,6 +116,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 
 			if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
+				if ($_POST['reg_auth_mode'] == "auth_locale") {
+					$reg_auth = "gepi";
+				} elseif ($_POST['reg_auth_mode'] == "auth_ldap") {
+					$reg_auth = "ldap";
+				} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
+					$reg_auth = "sso";
+				}
+				
 				$reg = mysql_query("INSERT INTO utilisateurs SET " .
 						"login = '" . $current_eleve->login . "', " .
 						"nom = '" . addslashes($current_eleve->nom) . "', " .
@@ -125,6 +133,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						"email = '" . $current_eleve->email . "', " .
 						"statut = 'eleve', " .
 						"etat = 'actif', " .
+						"auth_mode = '".$reg_auth."', ".
 						"change_mdp = 'n'");
 
 				if (!$reg) {
@@ -206,7 +215,7 @@ else{
 	echo "<blockquote>\n";
 
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
-
+	echo "<form action='create_eleve.php' method='post'>\n";
 	echo "<select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
 		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
@@ -221,7 +230,7 @@ else{
 
 	echo "<p>Sélectionnez une classe ou bien l'ensemble des classes puis cliquez sur 'valider'.</p>\n";
 
-	echo "<form action='create_eleve.php' method='post'>\n";
+
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	echo "<select name='classe' size='1'>\n";
 	echo "<option value='none'>Sélectionnez une classe</option>\n";

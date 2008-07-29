@@ -53,14 +53,14 @@ $error = false;
 if ($mode == "classe") {
 	$nb_comptes = 0;
 	if ($_POST['classe'] == "all") {
-		$quels_eleves = mysql_query("SELECT distinct(jec.login) " .
-				"FROM classes c, j_eleves_classes jec WHERE (" .
-				"jec.id_classe = c.id)");
+		$quels_eleves = mysql_query("SELECT distinct(jec.login) login, u.auth_mode " .
+				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
+				"jec.id_classe = c.id and u.login = jec.login)");
 		if (!$quels_eleves) $msg .= mysql_error();
 	} elseif (is_numeric($_POST['classe'])) {
-		$quels_eleves = mysql_query("SELECT distinct(jec.login) " .
-				"FROM classes c, j_eleves_classes jec WHERE (" .
-				"jec.id_classe = '" . $_POST['classe']."')");
+		$quels_eleves = mysql_query("SELECT distinct(jec.login), u.auth_mode " .
+				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
+				"jec.id_classe = '" . $_POST['classe']."' and u.login = jec.login)");
 		if (!$quels_eleves) $msg .= mysql_error();
 	} else {
 		$error = true;
@@ -71,6 +71,7 @@ if ($mode == "classe") {
 // Trois actions sont possibles depuis cette page : activation, désactivation et suppression.
 // L'édition se fait directement sur la page de gestion des responsables
 
+if (!$error) {
 if ($action == "rendre_inactif") {
 	// Désactivation d'utilisateurs actifs
 	if ($mode == "individual") {
@@ -135,6 +136,11 @@ if ($action == "rendre_inactif") {
 	}
 
 } elseif ($action == "supprimer") {
+	if ($gepiSettings['ldap_write_access']) {
+		$ldap_write_access = true;
+		$ldap_server = new LDAPServer;
+	}
+	
 	// Suppression d'un ou plusieurs utilisateurs
 	if ($mode == "individual") {
 		// Suppression pour un utilisateur unique
@@ -145,6 +151,14 @@ if ($action == "rendre_inactif") {
 			$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['eleve_login']."')");
 			if ($res) {
 				$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été supprimé.";
+				if ($ldap_write_access) {
+					if ($ldap_server->test_user($_GET['eleve_login'])) {
+						$write_ldap_success = $ldap_server->delete_user($_GET['eleve_login']);
+						if ($write_ldap_success) {
+							$msg .= "<br/>L'utilisateur a été supprimé de l'annuaire LDAP.";
+						}
+					}
+				}
 			} else {
 				$msg .= "Erreur lors de la suppression de l'utilisateur.";
 			}
@@ -157,9 +171,17 @@ if ($action == "rendre_inactif") {
 				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
 				$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_eleve->login . "'");
 				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_eleve->login."<br/>";
+					$msg .= "Erreur lors de la suppression du compte ".$current_eleve->login."<br/>";
 				} else {
 					$nb_comptes++;
+					if ($ldap_write_access && $current_eleve->auth_mode != 'gepi') {
+						if (!$ldap_server->test_user($current_eleve->login)) {
+							// L'utilisateur n'a pas été trouvé dans l'annuaire.
+							$write_ldap_success = true;
+						} else {
+							$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
+						}
+					}
 				}
 			}
 		}
@@ -181,6 +203,76 @@ if ($action == "rendre_inactif") {
 			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 		}
 	}
+} elseif ($action == "change_auth_mode") {
+	if ($gepiSettings['ldap_write_access'] == "yes") {
+		$ldap_write_access = true;
+		$ldap_server = new LDAPServer;
+	}
+	$nb_comptes = 0;
+	$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
+	if ($mode != "classe") {
+		$msg .= "Erreur : Vous devez sélectionner une classe.";
+	} elseif ($mode == "classe") {
+		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
+			if ($test > 0) {
+				// L'utilisateur existe bien dans la tables utilisateurs, on modifie
+				// Si on change le mode d'authentification, il faut quelques opérations particulières
+				$old_auth_mode = $current_eleve->auth_mode;
+				if ($_POST['reg_auth_mode'] != $old_auth_mode) {
+					// On modifie !
+					$nb_comptes++;
+					$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_eleve->login."'");
+					
+					// On regarde si des opérations spécifiques sont nécessaires
+					if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
+						// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
+						$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_eleve->login."'"), 0);
+						mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$current_eleve->login."'");
+						// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
+						if ($ldap_write_access) {
+							$create_ldap_user = true;
+						}
+					} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
+						// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
+						// qu'il va falloir réinitialiser les mots de passe
+						$pass_init_required = true;
+						// Et si accès en écriture au LDAP, on supprime le compte.
+						if ($ldap_write_access) {
+							$delete_ldap_user = true;
+						}
+					}
+					
+					// On effectue les opérations LDAP
+					if (isset($create_ldap_user) && $create_ldap_user) {
+						if (!$ldap_server->test_user($current_eleve->login)) {
+							$eleve = mysql_fetch_object(mysql_query("SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
+													"FROM eleves e WHERE (" .
+													"e.login = '" . $current_eleve->login."')"));
+							$reg_civilite = $eleve->sexe == "M" ? "M." : "Mlle";
+							$write_ldap_success = $ldap_server->add_user($eleve->login, $eleve->nom, $eleve->prenom, $eleve->email, $reg_civilite, md5(rand()), "eleve");
+							// On transfert le mot de passe à la main
+							$ldap_server->set_manual_password($current_eleve->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
+						}
+					}
+					if (isset($delete_ldap_user) && $delete_ldap_user) {
+						if (!$ldap_server->test_user($current_eleve->login)) {
+							// L'utilisateur n'a pas été trouvé dans l'annuaire.
+							$write_ldap_success = true;
+						} else {
+							$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
+						}
+					}
+					
+				}
+			}
+		}
+		$msg .= "$nb_comptes comptes ont été modifiés.";
+		if (isset($pass_init_required) && $pass_init_required) {
+			$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe !";
+		}
+	}
+}
 }
 
 //**************** EN-TETE *****************
@@ -220,15 +312,23 @@ while ($current_classe = mysql_fetch_object($quelles_classes)) {
 	echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 }
 echo "</select>\n";
-echo "<br />\n";
-
 echo "<input type='hidden' name='mode' value='classe' />\n";
+echo "<br />\n";
 echo "<input type='radio' name='action' value='rendre_inactif' /> Rendre inactif\n";
 echo "<input type='radio' name='action' value='rendre_actif' style='margin-left: 20px;'/> Rendre actif \n";
 if ($session_gepi->auth_locale || $gepiSettings['ldap_write_access']) {
     echo "<input type='radio' name='action' value='reinit_password' style='margin-left: 20px;'/> Réinitialiser mots de passe\n";
 }
 echo "<input type='radio' name='action' value='supprimer' style='margin-left: 20px;' /> Supprimer<br />\n";
+echo "<input type='radio' name='action' value='change_auth_mode' /> Modifier authentification : ";
+?>
+<select id="select_auth_mode" name="reg_auth_mode" size="1">
+<option value='gepi'>Locale (base Gepi)</option>
+<option value='ldap'>LDAP</option>
+<option value='sso'>SSO (Cas, LCS, LemonLDAP)</option>
+</select>
+<?php
+echo "<br />\n";
 //echo "<br />\n";
 echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
 echo "</p>\n";

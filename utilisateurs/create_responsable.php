@@ -173,6 +173,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 			if (!$write_ldap || ($write_ldap && $write_ldap_success)) {
 				$reg = true;
+				if ($_POST['reg_auth_mode'] == "auth_locale") {
+					$reg_auth = "gepi";
+				} elseif ($_POST['reg_auth_mode'] == "auth_ldap") {
+					$reg_auth = "ldap";
+				} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
+					$reg_auth = "sso";
+				}
 				$sql="INSERT INTO utilisateurs SET " .
 						"login = '" . $reg_login . "', " .
 						"nom = '" . addslashes($current_parent->nom) . "', " .
@@ -182,7 +189,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						"email = '" . $current_parent->mel . "', " .
 						"statut = 'responsable', " .
 						"etat = 'actif', " .
-						"auth_mode = '".$_POST['reg_auth_mode']."', " .
+						"auth_mode = '".$reg_auth."', " .
 						"change_mdp = 'n'";
 				//echo "$sql<br />";
 				$reg = mysql_query($sql);
