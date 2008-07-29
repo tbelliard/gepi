@@ -52,7 +52,7 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
     } else if ($_GET['auto']==3) {
         $date_fermeture = date("d\/m\/Y\ \à\ H\ \h\ i");
         $debut_session = urldecode($_GET['debut_session']);
-        $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['sessionid'] . "' and START = '" . $debut_session . "'";
+        $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['session_id'] . "' and START = '" . $debut_session . "'";
         if (sql_query1($sql)) {
            // Le temps d'inactivité est dépassé
            $session_gepi->close($_GET['auto']);

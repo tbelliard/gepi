@@ -65,8 +65,9 @@ class Session {
 		  # On regarde s'il n'y a pas de timeout
 		  if ($this->timeout()) {
 		  	# timeout : on remet à zéro.
+		  	$debut_session = $_SESSION['start'];
 		  	$this->reset(3);
-		  	header("Location: logout.php?auto=3");
+		  	header("Location: logout.php?auto=3&debut_session=".$debut_session."&session_id=".session_id());
 		  	exit();
 		  } else {
 		  	# Pas de timeout : on met à jour le log
