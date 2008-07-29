@@ -199,9 +199,6 @@ echo "<div id='new_div_login' class='center'>\n";
 
 		echo "</div>\n";
 	echo "</div>\n";
-  if (isset($local)) {
-      echo "<input type=\"hidden\" name=\"local\" value=\"yes\" />";
-  }
 	echo "</form>\n";
 
 	?>
@@ -255,6 +252,11 @@ echo "<div id='new_div_login' class='center'>\n";
 	</script>
 
 	<div class="center" style="margin-bottom: 32px;">
+	<?php
+	if ($session_gepi->auth_sso) {
+		echo "<p><a href='login_sso.php'><img src='images/icons/forward_.png' /> Se connecter en utilisant le service d'authentification unique</a></p><br/>";
+	}
+	?>
 	<p><a href="javascript:centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes')"><img src='./images/icons/vie_privee.png' alt='' class='link' /> Informations vie privée</a></p>
 
 	<?php
