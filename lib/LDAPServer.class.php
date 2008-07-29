@@ -151,19 +151,19 @@ class LDAPServer {
         		break;
         	}
 
-            if (!array_key_exists($this->champ_rne, $user[0])) {
+            if ($this->champ_rne == '' || !array_key_exists($this->champ_rne, $user[0])) {
         		$user[0][$this->champ_rne][0] = "";
-        		$user[0][$this->champ_rne][count] = 0;
+        		$user[0][$this->champ_rne]['count'] = 0;
         	}
-        	$nbre_rne = $user[0][$this->champ_rne][count];
+        	$nbre_rne = $user[0][$this->champ_rne]['count'];
 
-        		// S'il y a plusieurs RNE dans le ldap, on les renvoie tous
-        		$infos["rne"] = array();
-        		for($a = 0 ; $a < $nbre_rne ; $a++){
+        	// S'il y a plusieurs RNE dans le ldap, on les renvoie tous
+        	$infos["rne"] = array();
+        	for($a = 0 ; $a < $nbre_rne ; $a++){
 
-					$infos["rne"][$a] = $user[0][$this->champ_rne][$a];
+				$infos["rne"][$a] = $user[0][$this->champ_rne][$a];
 
-				}
+			}
 
 
         	# La détermination du statut est la manipulation la plus délicate.
