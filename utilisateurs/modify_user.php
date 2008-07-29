@@ -282,7 +282,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				// On passe d'un mode externe à un mode Gepi. On prévient l'admin qu'il faut modifier le mot de passe.
 				$msg = "Passage d'un mode d'authentification externe à un mode local : le mot de passe de l'utilisateur *doit* être réinitialisé.<br/>";
 				// Et si accès en écriture au LDAP, on supprime le compte.
-				if ($gepiSettings['ldap_write_access'] == "yes") {
+				if ($gepiSettings['ldap_write_access'] == "yes" && (!isset($_POST['prevent_ldap_removal']) or $_POST['prevent_ldap_removal'] != "yes")) {
 					$delete_ldap_user = true;
 				}
 			}
@@ -371,7 +371,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					if ($ldap_server->test_user($user_login)) {
 						// L'utilisateur a été trouvé dans l'annuaire. On ne l'enregistre pas.
 						$write_ldap_success = true;
-						$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent.";
+						$msg.= "L'utilisateur n'a pas pu être ajouté à l'annuaire LDAP, car il y est déjà présent.<br/>";
 					} else {
 						$write_ldap_success = $ldap_server->add_user($user_login, $_POST['reg_nom'], $_POST['reg_prenom'], $_POST['reg_email'], $_POST['reg_civilite'], md5(rand()), $_POST['reg_statut']);
 						// On transfert le mot de passe à la main
@@ -645,7 +645,7 @@ if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
 <table summary="Infos">
 	<tr><td>
 	<table summary="Authentification">
-<tr><td>Authentification : </td>
+<tr><td>Authentification&nbsp;:</td>
 <?php
 if (!isset($user_login) or $user_login == '') {
 	$rw_access = $ldap_write_access ? "true":"false";
@@ -660,16 +660,23 @@ if (!isset($user_login) or $user_login == '') {
 <option value='sso' <?php if ($user_auth_mode=='sso') echo " selected ";  ?>>SSO (Cas, LCS, LemonLDAP)</option>
 </select>
 </td></tr>
-<tr><td>Nom : </td><td><input type=text name=reg_nom size=20 <?php if (isset($user_nom)) { echo "value=\"".$user_nom."\"";}?> /></td></tr>
-<tr><td>Prénom : </td><td><input type=text name=reg_prenom size=20 <?php if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}?> /></td></tr>
-<tr><td>Civilité : </td><td><select name="reg_civilite" size="1" onchange="changement()">
+<?php
+if ($ldap_write_access) {
+	echo "<tr><td></td>&nbsp;<td>";
+	echo "<p style='font-size: small;'><input type='checkbox' name='prevent_ldap_removal' value='yes' checked /> Ne pas supprimer du LDAP<br/>(si cette case est décochée et que vous passez d'un mode d'authentification LDAP ou SSO à un mode d'authentification locale, l'utilisateur sera supprimé de l'annuaire LDAP).</p>";
+	echo "</td></tr>";
+}
+ ?>
+<tr><td>Nom&nbsp;:</td><td><input type=text name=reg_nom size=20 <?php if (isset($user_nom)) { echo "value=\"".$user_nom."\"";}?> /></td></tr>
+<tr><td>Prénom&nbsp;:</td><td><input type=text name=reg_prenom size=20 <?php if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}?> /></td></tr>
+<tr><td>Civilité&nbsp;:</td><td><select name="reg_civilite" size="1" onchange="changement()">
 <option value=''>(néant)</option>
 <option value='M.' <?php if ($user_civilite=='M.') echo " selected ";  ?>>M.</option>
 <option value='Mme' <?php if ($user_civilite=='Mme') echo " selected ";  ?>>Mme</option>
 <option value='Mlle' <?php if ($user_civilite=='Mlle') echo " selected ";  ?>>Mlle</option>
 </select>
 </td></tr>
-<tr><td>Email : </td><td><input type=text name=reg_email size=30 <?php if (isset($user_email)) { echo "value=\"".$user_email."\"";}?> onchange="changement()" /></td></tr>
+<tr><td>Email&nbsp;:</td><td><input type=text name=reg_email size=30 <?php if (isset($user_email)) { echo "value=\"".$user_email."\"";}?> onchange="changement()" /></td></tr>
 </table>
 </td>
 
