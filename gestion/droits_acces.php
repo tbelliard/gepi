@@ -616,6 +616,25 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesBulletinSimplePP !";
 	}
 
+	$tab_droits_ele_trombi=array('GepiAccesEleTrombiTousEleves',
+'GepiAccesEleTrombiElevesClasse',
+'GepiAccesEleTrombiPersonnels',
+'GepiAccesEleTrombiProfsClasse');
+	for($i=0;$i<count($tab_droits_ele_trombi);$i++) {
+		if (isset($_POST[$tab_droits_ele_trombi[$i]])) {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+		}
+		if (!saveSetting("$tab_droits_ele_trombi[$i]", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de $tab_droits_ele_trombi[$i] !";
+		}
+		/*
+		else {
+			$msg .= "Enregistrement de $tab_droits_ele_trombi[$i]=$temp !<br />";
+		}
+		*/
+	}
 }
 
 // Load settings
@@ -957,6 +976,35 @@ require_once("../lib/header.inc");
 				<br /><i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
 				</label></td>
 			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiTousEleves" id="GepiAccesEleTrombiTousEleves" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiTousEleves")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiTousEleves' style='cursor: pointer;'> a accès au trombinoscope de tous les élèves de l'établissement.<br />
+				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiElevesClasse" id="GepiAccesEleTrombiElevesClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiElevesClasse")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiElevesClasse' style='cursor: pointer;'> a accès au trombinoscope des élèves de sa classe.<br />
+				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiPersonnels" id="GepiAccesEleTrombiPersonnels" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiPersonnels")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiPersonnels' style='cursor: pointer;'> a accès au trombinoscope de tous les personnels de l'établissement.<br />
+				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEleTrombiProfsClasse" id="GepiAccesEleTrombiProfsClasse" value="yes" <?php if (getSettingValue("GepiAccesEleTrombiProfsClasse")=='yes') echo "checked"; ?> /></td>
+				<td style='border: 0px;'><label for='GepiAccesEleTrombiProfsClasse' style='cursor: pointer;'> a accès au trombinoscope des professeurs de sa classe.<br />
+				<i>(voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'acc&egrave;s)</i>
+				</label></td>
+			</tr>
+
 			</table>
 		</td>
 	</tr>

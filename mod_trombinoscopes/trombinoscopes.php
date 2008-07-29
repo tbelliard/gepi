@@ -124,7 +124,7 @@ $style_specifique = "mod_trombinoscopes/styles/styles";
 $titre_page = "Visualisation des trombinoscopes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
+//debug_var();
 ?>
 <script type="text/javascript">
 
@@ -149,7 +149,8 @@ function desactiver(mavar) {
 	mavar = mavar.split(',');
 	for (i=0; i<mavar.length; i++)
 	{
-		document.getElementById(mavar[i]).disabled=true;
+		//document.getElementById(mavar[i]).disabled=true;
+		if(document.getElementById(mavar[i])) {document.getElementById(mavar[i]).disabled=true;}
 	}
 	/*document.getElementById(mavar[i]).disabled=true;*/
 	/*document.form1.equipepeda.disabled = true;*/
@@ -159,7 +160,8 @@ function reactiver(mavar) {
 	mavar = mavar.split(',');
 	for (var i in mavar)
 	{
-		document.getElementById(mavar[i]).disabled=false;
+		//document.getElementById(mavar[i]).disabled=false;
+		if(document.getElementById(mavar[i])) {document.getElementById(mavar[i]).disabled=false;}
 	}
 	/*document.getElementById(mavar[i]).disabled=false;*/
 	/*document.form1.equipepeda.disabled = false;*/
@@ -171,166 +173,296 @@ function reactiver(mavar) {
  | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>
 
 <?php
+	function acces($id,$statut) {
+		$tab_id = explode("?",$id);
+		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
+		$droit = @mysql_result($query_droits, 0, $statut);
+		if ($droit == "V") {
+			return "1";
+		} else {
+			return "0";
+		}
+	}
+
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 		echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
-		echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline' target='_blank'>Format imprimable</a>";
+		if(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut'])) {
+			echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline' target='_blank'>Format imprimable</a>";
+		}
 	}
 	echo "</p>\n";
 
+
+	$GepiAccesEleTrombiTousEleves=getSettingValue("GepiAccesEleTrombiTousEleves");
+	$GepiAccesEleTrombiElevesClasse=getSettingValue("GepiAccesEleTrombiElevesClasse");
+	$GepiAccesEleTrombiPersonnels=getSettingValue("GepiAccesEleTrombiPersonnels");
+	$GepiAccesEleTrombiProfsClasse=getSettingValue("GepiAccesEleTrombiProfsClasse");
+
+	$affichage_div_gauche="n";
+
 	if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) {
+
 		echo "<form method='post' action='trombinoscopes.php' name='form1' style='font-size: 0.71em;'>\n";
 		echo "<div style='margin: auto; padding: 0px 20px 0px 20px;'>\n";
 
-		if(getSettingValue('active_module_trombinoscopes')=='y') {
+		$acces="y";
+		if(($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiTousEleves!="yes")&&($GepiAccesEleTrombiElevesClasse!="yes")) {
+			$acces="n";
+		}
+
+		if((getSettingValue('active_module_trombinoscopes')=='y')&&($acces=="y")) {
+			$affichage_div_gauche="y";
 			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
 
 			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Elèves</div>\n";
+
+			//=================================================================
+			// CLASSES
 			echo "<span style='margin-left: 15px;'>Par classe</span><br />\n";
 			echo "<select name='classe' id='classe' style='margin-left: 15px;'>\n";
 
-			if ( $_SESSION['statut'] != 'professeur' ) { $classe = 'toutes'; }
-			if ( $classe == '' ) {
+			//if ( $_SESSION['statut'] != 'professeur' ) { $classe = 'toutes'; }
+			if(($_SESSION['statut']=='scolarite')||
+				($_SESSION['statut']=='cpe')||
+				($_SESSION['statut']=='administrateur')
+			) {
+				$classe = 'toutes';
+			}
+
+			//if ( $classe == '' ) {
+			if (($classe=='')&&($_SESSION['statut']=='professeur')) {
+				// Le prof ne voit par défaut que ses classes... mais en sélectionnant 'Toutes', il peut provoquer l'affichage des autres classes dans le champ select.
 				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 							WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
 							GROUP BY c.id
 							ORDER BY nom_complet ASC');
-		}
-				if ( $classe == 'toutes' ) {
-					$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'classes c
-						ORDER BY c.nom_complet ASC');
+			}
+
+			if (($classe=='')&&($_SESSION['statut']=='eleve')) {
+				/*
+				if($GepiAccesEleTrombiTousEleves=="yes") {
+					$classe = 'toutes';
 				}
-				$resultat_classe_prof = mysql_query($requete_classe_prof) or die('Erreur SQL !'.$requete_classe_prof.'<br />'.mysql_error());
+				else {
+				*/
+					$requete_classe_prof = ("SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='".$_SESSION['login']."'
+					ORDER BY c.nom_complet ASC");
+				//}
+			}
 
-				echo "<option value='' ";
-				if ( empty($classe) ) { echo "selected='selected'"; }
-				echo " onclick=\"reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			if ( $classe == 'toutes' ) {
+				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'classes c
+					ORDER BY c.nom_complet ASC');
+			}
+			$resultat_classe_prof = mysql_query($requete_classe_prof) or die('Erreur SQL !'.$requete_classe_prof.'<br />'.mysql_error());
 
-				if ( $classe != 'toutes' ) {
-					echo "<option value='toutes'>voir toutes les classes</option>\n";
-				}
-				if ( $classe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-					echo "<option value=''>voir mes classes</option>\n";
-				}
-				echo "<optgroup label='-- Les classes --'>\n";
+			echo "<option value='' ";
+			if ( empty($classe) ) { echo "selected='selected'"; }
+			echo " onclick=\"reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
 
-				while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) {
-					echo "<option value='".$data_classe_prof['id']."'";
-					if(!empty($classe) and $classe == $data_classe_prof['id']) {
-						echo " selected='selected'";
-					}
-					echo " onclick=\"desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">";
-					echo ucwords($data_classe_prof['nom_complet']).' ('.ucwords($data_classe_prof['classe']).')';
-					echo "</option>\n";
-				}
+			if (( $classe != 'toutes' )&&($_SESSION['statut']!='eleve')) {
+				echo "<option value='toutes'>voir toutes les classes</option>\n";
+			}
 
-				echo "</optgroup>\n";
-				echo "</select><br /><br />\n";
+			if (( $classe != 'toutes' )&&($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiTousEleves=="yes")) {
+				echo "<option value='toutes'>voir toutes les classes</option>\n";
+			}
 
-				echo "<span style='margin-left: 15px;'>Par groupe</span><br />\n";
-				echo "<select name='groupe' id='groupe' style='margin-left: 15px;'>\n";
+			//if ( $classe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
+			if ( $classe == 'toutes' and ($_SESSION['statut'] == 'professeur')||($_SESSION['statut'] == 'eleve')) {
+				echo "<option value=''>voir mes classes</option>\n";
+			}
 
+			echo "<optgroup label='-- Les classes --'>\n";
 
-				if ( $_SESSION['statut'] != 'professeur' ) { $groupe = 'toutes'; }
-				if($groupe == '') {
-					$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-								WHERE jgp.id_groupe = g.id
-								AND jgp.login = "'.$_SESSION['login'].'"
-								AND g.id = jgc.id_groupe
-								AND jgc.id_classe = c.id
-								GROUP BY g.id
-								ORDER BY name ASC');
-				}
-				if($groupe == "toutes") {
-					$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c WHERE g.id = jgc.id_groupe AND jgc.id_classe = c.id ORDER BY name ASC, nom_complet ASC');
-				}
-				$resultat_groupe_prof = mysql_query($requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.mysql_error());
-
-				echo "<option value=''";
-				if ( empty($classe) ) {
+			while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) {
+				echo "<option value='".$data_classe_prof['id']."'";
+				if(!empty($classe) and $classe == $data_classe_prof['id']) {
 					echo " selected='selected'";
 				}
-				echo "onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+				echo " onclick=\"desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">";
+				echo ucwords($data_classe_prof['nom_complet']).' ('.ucwords($data_classe_prof['classe']).')';
+				echo "</option>\n";
+			}
 
-				if ( $groupe != 'toutes' ) {
-					echo "<option value='toutes'>voir tous les groupes</option>\n";
-				}
-				if ( $groupe == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-					echo "<option value=''>voir mes groupes</option>\n";
-				}
+			echo "</optgroup>\n";
+			echo "</select><br /><br />\n";
 
-				echo "<optgroup label='-- Les groupes --'>\n";
-				while ( $donnee_groupe_prof = mysql_fetch_array ($resultat_groupe_prof)) {
-					echo "<option value='".$donnee_groupe_prof['id_groupe']."'  onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">";
+			//=================================================================
+			// GROUPES
+			echo "<span style='margin-left: 15px;'>Par groupe</span><br />\n";
+			echo "<select name='groupe' id='groupe' style='margin-left: 15px;'>\n";
 
-					//modif ERIC
-					echo ucwords($donnee_groupe_prof['description']);
-					//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
-					$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
-					echo ' ('.ucwords($tmp_grp['classlist_string']).')';
-
-					echo "</option>\n";
-				}
-
-				echo "</optgroup>\n";
-				echo "</select><br /><br />";
-				echo "<input value='valider' name='Valider' id='valid1' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
-				echo "</div>";
+			//if ( $_SESSION['statut'] != 'professeur' ) { $groupe = 'toutes'; }
+			if(($_SESSION['statut']=='scolarite')||
+				($_SESSION['statut']=='cpe')||
+				($_SESSION['statut']=='administrateur')
+			) {
+				$groupe = 'toutes';
 			}
 
 
-			if(getSettingValue('active_module_trombino_pers')=='y') {
+			//if($groupe == '') {
+			if (($groupe=='')&&($_SESSION['statut']=='professeur')) {
+				$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+							WHERE jgp.id_groupe = g.id
+							AND jgp.login = "'.$_SESSION['login'].'"
+							AND g.id = jgc.id_groupe
+							AND jgc.id_classe = c.id
+							GROUP BY g.id
+							ORDER BY name ASC');
+			}
 
-				if(getSettingValue('active_module_trombinoscopes')=='y') {
-					echo "<div style='width: 45%; float: right; padding: 5px;'>\n";
-				}
-				else {
-					echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
-				}
-
-				echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Personnels</div>\n";
-				echo "<span style='margin-left: 15px;'>Par équipe pédagogique</span><br />\n";
-				echo "<select name='equipepeda' id='equipepeda' style='margin-left: 15px;'>\n";
+			if (($groupe=='')&&($_SESSION['statut']=='eleve')) {
+				$requete_groupe_prof = ("SELECT DISTINCT g.*, jeg.id_groupe FROM groupes g, j_eleves_groupes jeg WHERE jeg.id_groupe=g.id AND jeg.login='".$_SESSION['login']."'
+					ORDER BY g.name ASC");
+			}
 
 
-				if ( $_SESSION['statut'] != 'professeur' ) { $equipepeda = 'toutes'; }
-				if ( $equipepeda == '' ) {
-					$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-								WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
-								GROUP BY c.id
-								ORDER BY nom_complet ASC');
-				}
-				if ( $equipepeda == 'toutes' ) {
-					$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'classes c
-						ORDER BY c.nom_complet ASC');
-				}
-				$resultat_equipe_pedagogique = mysql_query($requete_equipe_pedagogique) or die('Erreur SQL !'.$requete_equipe_pedagogique.'<br />'.mysql_error());
+			if($groupe == "toutes") {
+				$requete_groupe_prof = ("SELECT * FROM groupes g,
+											j_groupes_classes jgc,
+											classes c
+										WHERE g.id = jgc.id_groupe AND
+											jgc.id_classe = c.id
+										ORDER BY name ASC, nom_complet ASC");
+			}
+			$resultat_groupe_prof = mysql_query($requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.mysql_error());
 
-				echo "<option value=''";
-				if ( empty($equipepeda) ) {
+			echo "<option value=''";
+			if ( empty($classe) ) {
+				echo " selected='selected'";
+			}
+			echo "onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			/*
+			if ( $groupe != 'toutes' ) {
+				echo "<option value='toutes'>voir tous les groupes</option>\n";
+			}
+			*/
+			if (( $groupe != 'toutes' )&&($_SESSION['statut']!='eleve')) {
+				echo "<option value='toutes'>voir tous les groupes</option>\n";
+			}
+
+			if (( $groupe != 'toutes' )&&($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiTousEleves=="yes")) {
+				echo "<option value='toutes'>voir tous les groupes</option>\n";
+			}
+
+			if ( $groupe == 'toutes' and ($_SESSION['statut'] == 'professeur')||($_SESSION['statut'] == 'eleve')) {
+				echo "<option value=''>voir mes groupes</option>\n";
+			}
+
+			echo "<optgroup label='-- Les groupes --'>\n";
+			while ( $donnee_groupe_prof = mysql_fetch_array ($resultat_groupe_prof)) {
+				echo "<option value='".$donnee_groupe_prof['id_groupe']."'  onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">";
+
+				//modif ERIC
+				echo ucwords($donnee_groupe_prof['description']);
+				//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
+				$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
+				echo ' ('.ucwords($tmp_grp['classlist_string']).')';
+
+				echo "</option>\n";
+			}
+
+			echo "</optgroup>\n";
+			echo "</select><br /><br />";
+			echo "<input value='valider' name='Valider' id='valid1' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
+			echo "</div>";
+		}
+
+
+		//======================================================================================
+		// TROMBINOSCOPES DES PERSONNELS
+
+		$acces="y";
+		if(($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiPersonnels!="yes")&&($GepiAccesEleTrombiProfsClasse!="yes")) {
+			$acces="n";
+		}
+
+		if((getSettingValue('active_module_trombino_pers')=='y')&&($acces=="y")) {
+
+			//if(getSettingValue('active_module_trombinoscopes')=='y') {
+			if($affichage_div_gauche=="y") {
+				echo "<div style='width: 45%; float: right; padding: 5px;'>\n";
+			}
+			else {
+				echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
+			}
+
+			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Personnels</div>\n";
+
+			//==========================================================
+			// EQUIPES PEDAGOGIQUES
+			echo "<span style='margin-left: 15px;'>Par équipe pédagogique</span><br />\n";
+			echo "<select name='equipepeda' id='equipepeda' style='margin-left: 15px;'>\n";
+
+			//if ( $_SESSION['statut'] != 'professeur' ) { $equipepeda = 'toutes'; }
+			if(($_SESSION['statut']=='scolarite')||
+				($_SESSION['statut']=='cpe')||
+				($_SESSION['statut']=='administrateur')
+			) {
+				$equipepeda = 'toutes';
+			}
+
+			//if ( $equipepeda == '' ) {
+			if (($equipepeda=='')&&($_SESSION['statut']=='professeur')) {
+				$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+							WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
+							GROUP BY c.id
+							ORDER BY nom_complet ASC');
+			}
+
+			if (($equipepeda=='')&&($_SESSION['statut']=='eleve')) {
+				$requete_equipe_pedagogique = ("SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='".$_SESSION['login']."'
+					ORDER BY c.classe ASC");
+			}
+
+			if ( $equipepeda == 'toutes' ) {
+				$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'classes c
+					ORDER BY c.nom_complet ASC');
+			}
+			$resultat_equipe_pedagogique = mysql_query($requete_equipe_pedagogique) or die('Erreur SQL !'.$requete_equipe_pedagogique.'<br />'.mysql_error());
+
+			echo "<option value=''";
+			if ( empty($equipepeda) ) {
+				echo " selected='selected'";
+			}
+			echo " onclick=\"reactiver('classe,groupe,discipline,statusgepi');\">pas de s&eacute;lection</option>\n";
+
+
+			//if ( $equipepeda != 'toutes' ) {
+			if (( $equipepeda != 'toutes' )&&($_SESSION['statut']!='eleve')) {
+				echo "<option value='toutes'>voir toutes les équipes pedagogique</option>\n";
+			}
+
+			if (( $equipepeda != 'toutes' )&&($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiPersonnels=="yes")) {
+				echo "<option value='toutes'>voir toutes les équipes pedagogique</option>\n";
+			}
+
+			if ( $equipepeda == 'toutes' and ($_SESSION['statut'] == 'professeur')||($_SESSION['statut'] == 'eleve')) {
+				echo "<option value=''>voir mes equipepedas</option>\n";
+			}
+
+			echo "<optgroup label='-- Les classes --'>\n";
+			while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) {
+
+				echo "<option value='".$donnee_equipe_pedagogique['id']."'";
+				if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"reactiver('classe,groupe,discipline,statusgepi');\">pas de s&eacute;lection</option>\n";
-				if ( $equipepeda != 'toutes' ) {
-					echo "<option value='toutes'>voir toutes les équipes pedagogique</option>\n";
-				}
-				if ( $equipepeda == 'toutes' and $_SESSION['statut'] == 'professeur' ) {
-					echo "<option value=''>voir mes equipepedas</option>\n";
-				}
+				echo " onclick=\"desactiver('classe,groupe,discipline,statusgepi');\">";
+				echo ucwords($donnee_equipe_pedagogique['nom_complet']).' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
+				echo "</option>\n";
+			}
+			echo "</optgroup>\n";
+			echo "</select>\n";
 
-				echo "<optgroup label='-- Les classes --'>\n";
-				while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) {
 
-					echo "<option value='".$donnee_equipe_pedagogique['id']."'";
-					if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) {
-						echo " selected='selected'";
-					}
-					echo " onclick=\"desactiver('classe,groupe,discipline,statusgepi');\">";
-					echo ucwords($donnee_equipe_pedagogique['nom_complet']).' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
-					echo "</option>\n";
-				}
-				echo "</optgroup>\n";
-				echo "</select>\n";
+			//==========================================================
+			// PAR DISCIPLINES
+			if((($_SESSION['statut']!='eleve')||(($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiPersonnels=='yes')))&&
+				($_SESSION['statut']!='responsable')) {
 				echo "<br />&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affdiscipline' id='affdiscipline' value='oui' />&nbsp;<label for='affdiscipline' style='cursor: pointer; cursor: hand;'>Afficher les disciplines</label>\n";
 				echo "<br /><br />\n";
 
@@ -338,13 +470,24 @@ function reactiver(mavar) {
 				echo "<select name='discipline' id='discipline' style='margin-left: 15px;'>\n";
 
 				if ( $_SESSION['statut'] != 'professeur' ) { $discipline = 'toutes'; }
-				if ( $discipline == '' ) {
+				/*
+				if(($_SESSION['statut']=='scolarite')||
+					($_SESSION['statut']=='cpe')||
+					($_SESSION['statut']=='administrateur')
+				) {
+					$discipline = 'toutes';
+				}
+				*/
+
+				//if ( $discipline == '' ) {
+				if (($discipline=='')&&($_SESSION['statut']=='professeur')) {
 					$requete_discipline = ('SELECT * FROM '.$prefix_base.'j_professeurs_matieres jpm, '.$prefix_base.'matieres m
 								WHERE jpm.id_professeur = "'.$_SESSION['login'].'"
 								AND jpm.id_matiere = m.matiere
 								GROUP BY m.matiere
 								ORDER BY m.nom_complet ASC');
 				}
+
 				if ( $discipline == 'toutes' ) {
 					$requete_discipline = ('SELECT * FROM '.$prefix_base.'matieres m
 								ORDER BY m.nom_complet ASC');
@@ -378,209 +521,344 @@ function reactiver(mavar) {
 					echo "</option>\n";
 				}
 				echo "</optgroup>\n";
-				echo "</select><br /><br />\n";
+				echo "</select>\n";
+			}
+			echo "<br /><br />\n";
+			//==========================================================
+			// PAR STATUT
+			echo "<span style='margin-left: 15px;'>Par statut (CPE/Professeur/Scolarité)</span><br />\n";
+			echo "<select name='statusgepi' id='statusgepi' style='margin-left: 15px;'>\n";
 
-				echo "<span style='margin-left: 15px;'>Par statut (CPE/Professeur/Scolarité)</span><br />\n";
-				echo "<select name='statusgepi' id='statusgepi' style='margin-left: 15px;'>\n";
-
-				if ( $statusgepi == '' ) {
-					/*
+			if ( $statusgepi == '' ) {
+				if(($_SESSION['statut']=='eleve')&&($GepiAccesEleTrombiPersonnels!='yes')) {
+					$requete_statusgepi = ("SELECT * FROM utilisateurs u
+							WHERE u.statut='professeur' AND u.etat='actif'
+							GROUP BY u.statut
+							ORDER BY u.statut ASC");
+				}
+				else {
 					$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
-								WHERE u.statut = "professeur" OR u.statut = "cpe"
-								GROUP BY u.statut
-								ORDER BY u.statut ASC');
-					*/
-					$requete_statusgepi = ('SELECT * FROM '.$prefix_base.'utilisateurs u
-								WHERE (u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre") AND etat="actif"
-								GROUP BY u.statut
-								ORDER BY u.statut ASC');
-		}
-					$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
+							WHERE (u.statut = "professeur" OR u.statut = "cpe" OR u.statut="scolarite" OR u.statut="autre") AND etat="actif"
+							GROUP BY u.statut
+							ORDER BY u.statut ASC');
+				}
+			}
+			$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
 
 
-				echo "<option value=''";
-				if ( empty($statusgepi) ) {
+			echo "<option value=''";
+			if ( empty($statusgepi) ) {
+				echo " selected='selected'";
+			}
+			echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			echo "<optgroup label='-- Les statuts --'>\n";
+			while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) {
+				echo "<option value='".$donnee_statusgepi['statut']."'";
+				if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">pas de s&eacute;lection</option>\n";
-				echo "<optgroup label='-- Les statuts --'>\n";
-				while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) {
-					echo "<option value='".$donnee_statusgepi['statut']."'";
-					if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) {
-						echo " selected='selected'";
-					}
-					echo " onclick=\"desactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">";
-					echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
-					echo "</option>\n";
-				}
-
-				echo "</optgroup>\n";
-				echo "</select><br /><br />\n";
-
-				echo "<input value='2' name='etape' type='hidden' />\n";
-				echo "<input value='valider' name='Valider' id='valid2' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
-				echo "</div>\n";
-				echo "</div>\n";
-
+				echo " onclick=\"desactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">";
+				echo ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
+				echo "</option>\n";
 			}
 
-			echo "</form>\n";
+			echo "</optgroup>\n";
+			echo "</select><br /><br />\n";
+
+			echo "<input value='2' name='etape' type='hidden' />\n";
+			echo "<input value='valider' name='Valider' id='valid2' type='submit' onClick=\"this.form.submit();this.disabled=true;this.value='En cours'\" />\n";
+			echo "</div>\n";
+			echo "</div>\n";
+
 		}
 
+		echo "</form>\n";
+	}
+
 //==================================================================================
-/* affichage vignette */
-if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '') ) { ?>
+/* affichage vignettes */
+if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '') ) {
 
-<div style="text-align: center;">
-<table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : thin dashed #242424; background-color: #FFFFB8;" summary='Choix'>
-<tr valign="top">
-	<td align="left"><font face="Arial, Helvetica, sans-serif">TROMBINOSCOPE <?php
-		$datej = date('Y-m-d');
-		$annee_en_cours_t=annee_en_cours_t($datej);
-		echo $annee_en_cours_t; ?>
-		<br />
-		<b>
-		<?php
-	// on regarde ce qui à était choisie
-	// c'est une classe
-	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'classe'; }
-	// c'est un groupe
-	if ( $classe === '' and $groupe != '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'groupe'; }
-	// c'est une équipe pédagogique
-	if ( $classe === '' and $groupe === '' and $equipepeda != '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'equipepeda'; }
-	// c'est une discipline
-	if ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline != '' and $statusgepi === '' ) { $action_affiche = 'discipline'; }
-	// c'est un status de gepi
-	if ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi != '' ) { $action_affiche = 'statusgepi'; }
+	echo "<div style='text-align: center;'>\n";
+	echo "<table width='100%' border='0' cellspacing='0' cellpadding='2' style='border : thin dashed #242424; background-color: #FFFFB8;' summary='Choix'>\n";
+	echo "<tr valign='top'>\n";
+	echo "<td align='left'><font face='Arial, Helvetica, sans-serif'>TROMBINOSCOPE ";
 
-	if ( $action_affiche === 'classe' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"'; }
-	if ( $action_affiche === 'groupe' ) { $requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"'; }
-	if ( $action_affiche === 'equipepeda' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"'; }
-	if ( $action_affiche === 'discipline' ) { $requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"'; }
+	$datej = date('Y-m-d');
+	$annee_en_cours_t=annee_en_cours_t($datej);
+	echo $annee_en_cours_t;
+
+	echo "<br />\n";
+	echo "<b>\n";
+
+	// on regarde ce qui a été choisi
+	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) {
+		// c'est une classe
+		$action_affiche = 'classe';
+	}
+	elseif ( $classe === '' and $groupe != '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) {
+		// c'est un groupe
+		$action_affiche = 'groupe';
+	}
+	elseif ( $classe === '' and $groupe === '' and $equipepeda != '' and $discipline === '' and $statusgepi === '' ) {
+		// c'est une équipe pédagogique
+		$action_affiche = 'equipepeda';
+	}
+	elseif ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline != '' and $statusgepi === '' ) {
+		// c'est une discipline
+		$action_affiche = 'discipline';
+	}
+	elseif ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi != '' ) {
+		// c'est un status de gepi
+		$action_affiche = 'statusgepi';
+	}
+
+	if ( $action_affiche === 'classe' ) {
+		if($_SESSION['statut']=='eleve') {
+			if($GepiAccesEleTrombiTousEleves=='yes') {
+				$requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"';
+			}
+			elseif($GepiAccesEleTrombiElevesClasse=='yes') {
+				$requete_qui="SELECT DISTINCT c.id, c.nom_complet, c.classe FROM classes c, j_eleves_classes jec WHERE c.id='$classe' AND c.id=jec.id_classe AND jec.login='".$_SESSION['login']."';";
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes de classes.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"';
+		}
+	}
+
+	if ( $action_affiche === 'groupe' ) {
+		if($_SESSION['statut']=='eleve') {
+			if($GepiAccesEleTrombiTousEleves=='yes') {
+				$requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"';
+			}
+			elseif($GepiAccesEleTrombiElevesClasse=='yes') {
+				$requete_qui="SELECT DISTINCT g.id, g.name FROM groupes g, j_eleves_groupes jeg WHERE g.id='$groupe' AND g.id=jeg.id_groupe AND jeg.login='".$_SESSION['login']."';";
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes de groupes.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"';
+		}
+	}
+
+	if ( $action_affiche === 'equipepeda' ) {
+		if($_SESSION['statut']=='eleve') {
+			if($GepiAccesEleTrombiPersonnels=='yes') {
+				$requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"';
+			}
+			elseif($GepiAccesEleTrombiProfsClasse=='yes') {
+				$requete_qui="SELECT DISTINCT c.id, c.nom_complet, c.classe FROM classes c, j_eleves_classes jec WHERE c.id='$equipepeda' AND c.id=jec.id_classe AND jec.login='".$_SESSION['login']."';";
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes d'équipes pédagogiques.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"';
+		}
+	}
+
+	if ( $action_affiche === 'discipline' ) {
+		if($_SESSION['statut']=='eleve') {
+			if($GepiAccesEleTrombiPersonnels=='yes') {
+				$requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"';
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes par disciplines.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"';
+		}
+	}
+
 	//if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
-	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";'; }
-			$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
-			$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
+	if ( $action_affiche === 'statusgepi' ) {
+		if($_SESSION['statut']=='eleve') {
+			if(($GepiAccesEleTrombiPersonnels!='yes')&&($GepiAccesEleTrombiProfsClasse=='yes')) {
+				$statusgepi='professeur';
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes par statut.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+
+		$requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";';
+	}
+
+	$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
+	if(mysql_num_rows($execute_qui)==0) {
+		// On doit être dans le cas d'un élève qui a tenté d'accéder aux photos d'une classe, groupe, équipe,... à laquelle il n'est pas associé.
+		echo "<p>La requête n'a retourné aucun enregistrment.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
+
 	if ( $action_affiche === 'classe' ) {
 		//echo "Classe : ".htmlentities($donnees_qui['nom_complet']);
 		//echo ' ('.htmlentities(ucwords($donnees_qui['classe'])).')';
 		echo "Classe : ".$donnees_qui['nom_complet'];
 		echo ' ('.ucwords($donnees_qui['classe']).')';
+
+		$repertoire = 'eleves';
+
+		$requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet
+								FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
+								WHERE e.login = jec.login
+								AND jec.id_classe = c.id
+								AND id = '".$classe."'
+								GROUP BY nom, prenom";
 	}
+
 	if ( $action_affiche === 'groupe' ) {
 		$current_group=get_group($groupe);
 		echo "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+
+		$repertoire = 'eleves';
+
+		$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+								FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
+								WHERE jeg.login = e.login
+								AND jeg.id_groupe = g.id
+								AND g.id = '".$groupe."'
+								GROUP BY nom, prenom";
 	}
 	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
 	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
 
-	if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }
-	if ( $action_affiche === 'discipline' ) { echo "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
+	if ( $action_affiche === 'equipepeda' ) {
+		echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)";
 
+		$repertoire = 'personnels';
 
-	if ( $action_affiche === 'statusgepi' ) { echo "Statut : ".ereg_replace("scolarite","scolarité",$statusgepi); }
+		$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+								WHERE jgp.id_groupe = jgc.id_groupe
+								AND jgc.id_classe = c.id
+								AND u.login = jgp.login
+								AND c.id = "'.$equipepeda.'"
+								GROUP BY u.nom, u.prenom
+								ORDER BY nom ASC, prenom ASC';
+	}
+	if ( $action_affiche === 'discipline' ) {
+		echo "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")";
 
+		$repertoire = 'personnels';
 
-	// choix du répertoire ou chercher les photos entre professeur ou élève
-	if ( $action_affiche === 'classe' ) { $repertoire = 'eleves'; }
-	if ( $action_affiche === 'groupe' ) { $repertoire = 'eleves'; }
-	if ( $action_affiche === 'equipepeda' ) { $repertoire = 'personnels'; }
-	if ( $action_affiche === 'discipline' ) { $repertoire = 'personnels'; }
-	if ( $action_affiche === 'statusgepi' ) { $repertoire = 'personnels'; }
+		$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_professeurs_matieres jpm, '.$prefix_base.'matieres m
+								WHERE u.login = jpm.id_professeur
+								AND m.matiere = jpm.id_matiere
+								AND m.matiere = "'.$discipline.'"
+								AND u.etat="actif"
+								GROUP BY u.nom, u.prenom
+								ORDER BY nom ASC, prenom ASC';
+	}
 
-	//je recherche les personnes concerné pour la sélection effectué
-	// élève d'une classe
-		if ( $action_affiche === 'classe' ) { $requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, jec.login, jec.id_classe, jec.periode, c.classe, c.id, c.nom_complet
-									FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
-									WHERE e.login = jec.login
-									AND jec.id_classe = c.id
-									AND id = '".$classe."'
-									GROUP BY nom, prenom"; }
-	// élève d'un groupe
-		if ( $action_affiche === 'groupe' ) { $requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
-									FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
-									WHERE jeg.login = e.login
-									AND jeg.id_groupe = g.id
-									AND g.id = '".$groupe."'
-									GROUP BY nom, prenom"; }
+	if ( $action_affiche === 'statusgepi' ) {
+		echo "Statut : ".ereg_replace("scolarite","scolarité",$statusgepi);
 
-	// professeurs d'une équipe pédagogique
-		if ( $action_affiche === 'equipepeda' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
-										WHERE jgp.id_groupe = jgc.id_groupe
-									AND jgc.id_classe = c.id
-									AND u.login = jgp.login
-										AND c.id = "'.$equipepeda.'"
-										GROUP BY u.nom, u.prenom
-										ORDER BY nom ASC, prenom ASC'; }
+		$repertoire = 'personnels';
 
-	// professeurs par discipline
-		if ( $action_affiche === 'discipline' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_professeurs_matieres jpm, '.$prefix_base.'matieres m
-										WHERE u.login = jpm.id_professeur
-									AND m.matiere = jpm.id_matiere
-										AND m.matiere = "'.$discipline.'"
-										AND u.etat="actif"
-										GROUP BY u.nom, u.prenom
-										ORDER BY nom ASC, prenom ASC'; }
-
-	// par statut cpe ou professeur
-		if ( $action_affiche === 'statusgepi' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
-										WHERE u.statut = "'.$statusgepi.'"
-										GROUP BY u.nom, u.prenom
-										ORDER BY nom ASC, prenom ASC'; }
-
-function matiereprof($prof, $equipepeda) {
-
-	global $prefix_base;
-
-	$prof_de = '';
-	if ( $prof != '' ) {
-		$requete_matiere = 'SELECT * FROM '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'matieres m
-				WHERE jgc.id_classe = "'.$equipepeda.'"
-				AND jgc.id_groupe = jgp.id_groupe
-				AND jgm.id_matiere = m.matiere
-				AND jgp.id_groupe = jgm.id_groupe
-				AND jgp.login = "'.$prof.'"';
-		$execution_matiere = mysql_query($requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysql_error());
-		while ($donnee_matiere = mysql_fetch_array($execution_matiere)) {
-			$prof_de = $prof_de.'<br />'.htmlentities($donnee_matiere['nom_complet']).' ';
+		if($_SESSION['statut']=='eleve') {
+			if($GepiAccesEleTrombiPersonnels=='yes') {
+				$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
+									WHERE u.statut = "'.$statusgepi.'"
+									GROUP BY u.nom, u.prenom
+									ORDER BY nom ASC, prenom ASC';
+			}
+			elseif($GepiAccesEleTrombiProfsClasse=='yes') {
+				$requete_trombi = "SELECT DISTINCT u.* FROM utilisateurs u, j_groupes_professeurs jgp, j_eleves_groupes jeg
+									WHERE u.statut = 'professeur' AND
+										jgp.id_groupe=jeg.id_groupe AND
+										jgp.login=u.login AND
+										jeg.login='".$_SESSION['login']."'
+									GROUP BY u.nom, u.prenom
+									ORDER BY nom ASC, prenom ASC";
+			}
+			else {
+				echo "<p>Vous n'avez pas accès aux trombinoscopes par statut.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+		else {
+			$requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u
+								WHERE u.statut = "'.$statusgepi.'"
+								GROUP BY u.nom, u.prenom
+								ORDER BY nom ASC, prenom ASC';
 		}
 	}
-	return ($prof_de);
-}
 
-$execution_trombi = mysql_query($requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysql_error());
-$cpt_photo = 1;
-while ($donnee_trombi = mysql_fetch_array($execution_trombi))
-{
-	//insertion de l'élève dans la varibale $eleve_absent
-	$login_trombinoscope[$cpt_photo] = $donnee_trombi['login'];
-	$nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
-	$prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
+	//===========================================
+	function matiereprof($prof, $equipepeda) {
+		global $prefix_base;
 
-	if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-	if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-	if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
-	if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
-	if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
-
-	$matiere_prof[$cpt_photo] = '';
-	if ( $action_affiche === 'equipepeda' and $affdiscipline === 'oui' ) {
-		$matiere_prof[$cpt_photo] = matiereprof($login_trombinoscope[$cpt_photo], $equipepeda);
+		$prof_de = '';
+		if ( $prof != '' ) {
+			$requete_matiere = 'SELECT * FROM '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'j_groupes_matieres jgm, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'matieres m
+					WHERE jgc.id_classe = "'.$equipepeda.'"
+					AND jgc.id_groupe = jgp.id_groupe
+					AND jgm.id_matiere = m.matiere
+					AND jgp.id_groupe = jgm.id_groupe
+					AND jgp.login = "'.$prof.'"';
+			$execution_matiere = mysql_query($requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysql_error());
+			while ($donnee_matiere = mysql_fetch_array($execution_matiere)) {
+				$prof_de = $prof_de.'<br />'.htmlentities($donnee_matiere['nom_complet']).' ';
+			}
+		}
+		return ($prof_de);
 	}
+	//===========================================
 
-	$cpt_photo = $cpt_photo + 1;
-}
-$total = $cpt_photo;
-		?>
-		</b></font>
-	</td>
-</tr>
-</table>
 
-<p align="center"><img src="images/barre.gif" width="550" height="2" alt="Barre" /></p>
+	$execution_trombi = mysql_query($requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysql_error());
+	$cpt_photo = 1;
+	while ($donnee_trombi = mysql_fetch_array($execution_trombi))
+	{
+		//insertion de l'élève dans la varibale $eleve_absent
+		$login_trombinoscope[$cpt_photo] = $donnee_trombi['login'];
+		$nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
+		$prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
 
-<!--table width="100%" border="0" cellspacing="0" cellpadding="4" summary='Trombino'-->
-<?php
+		if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+		if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+		if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+
+		$matiere_prof[$cpt_photo] = '';
+		if ( $action_affiche === 'equipepeda' and $affdiscipline === 'oui' ) {
+			$matiere_prof[$cpt_photo] = matiereprof($login_trombinoscope[$cpt_photo], $equipepeda);
+		}
+
+		$cpt_photo = $cpt_photo + 1;
+	}
+	$total = $cpt_photo;
+
+	echo "</b></font>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<p align='center'><img src='images/barre.gif' width='550' height='2' alt='Barre' /></p>\n";
+
+	echo "<!--table width='100%' border='0' cellspacing='0' cellpadding='4' summary='Trombino'-->\n";
+
 	unset($tmp_id_classe);
 	if (($action_affiche=='equipepeda')||
 		($action_affiche=='discipline')||
