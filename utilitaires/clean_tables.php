@@ -784,32 +784,36 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 	//echo "<p><a href='index.php'>Retour à Outils de gestion</a> | <a href='index.php'>Retour à Vérification/nettoyage des tables</a></p>\n";
 
-	echo "<h2>Nettoyage des aberrations sur les groupes</h2>\n";
+	$temoin_aberrations_groupes=0;
 
 	$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
 
-	for($i=0;$i<count($table);$i++){
-		$err_no=0;
-		$sql="SELECT DISTINCT id_groupe FROM ".$table[$i]." ORDER BY id_groupe";
-		$res_grp1=mysql_query($sql);
+	if(!isset($_POST['nettoyage_grp'])) {
+		echo "<h2>Nettoyage des aberrations sur les groupes</h2>\n";
+		for($i=0;$i<count($table);$i++){
+			$err_no=0;
+			$sql="SELECT DISTINCT id_groupe FROM ".$table[$i]." ORDER BY id_groupe";
+			$res_grp1=mysql_query($sql);
 
-		if(mysql_num_rows($res_grp1)>0){
-			//echo "<p>On parcourt la table '".$table[$i]."'.</p>\n";
-			while($ligne=mysql_fetch_array($res_grp1)){
-				$sql="SELECT 1=1 FROM groupes WHERE id='".$ligne[0]."'";
-				$res_test=mysql_query($sql);
+			if(mysql_num_rows($res_grp1)>0){
+				//echo "<p>On parcourt la table '".$table[$i]."'.</p>\n";
+				while($ligne=mysql_fetch_array($res_grp1)){
+					$sql="SELECT 1=1 FROM groupes WHERE id='".$ligne[0]."'";
+					$res_test=mysql_query($sql);
 
-				if(mysql_num_rows($res_test)==0){
-					$sql="DELETE FROM $table[$i] WHERE id_groupe='$ligne[0]'";
-					echo "Suppression d'une référence à un groupe d'identifiant $ligne[0] dans la table $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
-					//echo "$sql<br />\n";
-					$res_suppr=mysql_query($sql);
-					$err_no++;
+					if(mysql_num_rows($res_test)==0){
+						$sql="DELETE FROM $table[$i] WHERE id_groupe='$ligne[0]'";
+						echo "Suppression d'une référence à un groupe d'identifiant $ligne[0] dans la table $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
+						//echo "$sql<br />\n";
+						$res_suppr=mysql_query($sql);
+						$err_no++;
+					}
 				}
 			}
-		}
-		if($err_no==0){
-			echo "<b>La table $table[$i] est OK.</b><br />\n";
+			if($err_no==0){
+				echo "<b>La table $table[$i] est OK.</b><br />\n";
+			}
+			else {$temoin_aberrations_groupes++;}
 		}
 	}
 
@@ -826,94 +830,98 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	// A FAIRE
 	//===========
 
-	$err_no=0;
-	// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
-	// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
-	$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode";
-	$res_ele=mysql_query($sql);
-	$ini="";
-	while($lig_ele=mysql_fetch_object($res_ele)){
-		if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
-			$ini=strtoupper(substr($lig_ele->login,0,1));
-			echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
-		}
 
-		// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
-		$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
+    echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+
+	if(!isset($_POST['nettoyage_grp'])) {
+		$sql="CREATE TABLE tempo2 (
+col1 varchar(100) NOT NULL default '',
+col2 varchar(100) NOT NULL default ''
+);";
+		$create_table=mysql_query($sql);
+
+		$sql="TRUNCATE tempo2;";
+		$suppr=mysql_query($sql);
+
+		$sql="INSERT INTO tempo2 SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
+		$insert=mysql_query($sql);
+
+		echo "<p>Vous allez rechercher les incohérences de groupes.</p>\n";
+
+		echo "<input type='hidden' name='maj' value='9' />\n";
+		echo "<input type='submit' name='nettoyage_grp' value='Supprimer' />\n";
+
+	}
+	else {
+		echo "<input type='hidden' name='nettoyage_grp' value='y' />\n";
+
+		$sql="SELECT 1=1 FROM tempo2;";
+		$res0=mysql_query($sql);
+		$nb_assoc_login_periode=mysql_num_rows($res0);
+		if($nb_assoc_login_periode>0) {echo "<p>$nb_assoc_login_periode association(s) login/période reste(nt) à contrôler.</p>\n";}
+
+		/*
+		$err_no=0;
+		// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
+		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+		$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
+		$res_ele=mysql_query($sql);
+		$ini="";
+		while($lig_ele=mysql_fetch_object($res_ele)){
+		*/
+
+		$tranche=20;
+		// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
+		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+		$sql="SELECT col1 AS login,col2 AS periode FROM tempo2 LIMIT $tranche;";
 		//echo "$sql<br />\n";
-		$res_jeg=mysql_query($sql);
+		$res_ele=mysql_query($sql);
+		if(mysql_num_rows($res_ele)>0) {
 
-		if(mysql_num_rows($res_jeg)>0){
-			// On vérifie si l'élève est dans une classe pour cette période:
-			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
-			$res_jec=mysql_query($sql);
+			//$cpt_affichage_info=0;
 
-			if(mysql_num_rows($res_jec)==0){
-				// L'élève n'est dans aucune classe sur la période choisie.
-				echo "<p>\n";
-				echo "<b>$lig_ele->login</b> n'est dans aucune classe en période <b>$lig_ele->periode</b> et se trouve pourtant dans des groupes.<br />\n";
-				echo "Suppression de l'élève du(es) groupe(s) ";
-				$cpt_tmp=1;
-				while($lig_grp=mysql_fetch_object($res_jeg)){
-					$id_groupe=$lig_grp->id_groupe;
-					//$tmp_groupe=get_group($id_groupe);
-					//$nom_groupe=$tmp_groupe['description'];
-					$sql="SELECT description FROM groupes WHERE id='$id_groupe'";
-					$res_grp_tmp=mysql_query($sql);
-					if(mysql_num_rows($res_grp_tmp)==0){
-						$nom_groupe="<font color='red'>GROUPE INEXISTANT</font>\n";
-					}
-					else{
-						$lig_grp_tmp=mysql_fetch_object($res_grp_tmp);
-						$nom_groupe=$lig_grp_tmp->description;
-					}
-
-					// On va le supprimer du groupe après un dernier test:
-					$test1=mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
-					$nb_test1 = mysql_num_rows($test1);
-
-					$test2=mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
-					$nb_test2 = mysql_num_rows($test2);
-
-					if (($nb_test1 != 0) or ($nb_test2 != 0)) {
-						echo "<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
-					} else {
-						if($req=mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
-							if($cpt_tmp>1){echo ", ";}
-							echo "$nom_groupe (<i>n°$id_groupe</i>)";
-							$cpt_tmp++;
-						}
-					}
+			$err_no=0;
+			// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
+			// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+			//$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode;";
+			//$res_ele=mysql_query($sql);
+			$ini="";
+			while($lig_ele=mysql_fetch_object($res_ele)) {
+				if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
+					$ini=strtoupper(substr($lig_ele->login,0,1));
+					echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
 				}
-			}
-			else{
-				if(mysql_num_rows($res_jec)==1){
-					$lig_clas=mysql_fetch_object($res_jec);
-					while($lig_grp=mysql_fetch_object($res_jeg)){
-						// On cherche si l'association groupe/classe existe:
-						$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$lig_grp->id_groupe' AND id_classe='$lig_clas->id_classe'";
-						$res_test_grp_clas=mysql_query($sql);
 
-						if(mysql_num_rows($res_test_grp_clas)==0){
+				// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
+				$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
+				//echo "$sql<br />\n";
+				$res_jeg=mysql_query($sql);
 
+				if(mysql_num_rows($res_jeg)>0){
+					// On vérifie si l'élève est dans une classe pour cette période:
+					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$lig_ele->periode'";
+					$res_jec=mysql_query($sql);
+
+					if(mysql_num_rows($res_jec)==0){
+						// L'élève n'est dans aucune classe sur la période choisie.
+						echo "<p>\n";
+						echo "<b>$lig_ele->login</b> n'est dans aucune classe en période <b>$lig_ele->periode</b> et se trouve pourtant dans des groupes.<br />\n";
+						echo "Suppression de l'élève du(es) groupe(s) ";
+						$cpt_tmp=1;
+						while($lig_grp=mysql_fetch_object($res_jeg)){
 							$id_groupe=$lig_grp->id_groupe;
-							$tmp_groupe=get_group($id_groupe);
-							$nom_groupe=$tmp_groupe['description'];
+							//$tmp_groupe=get_group($id_groupe);
+							//$nom_groupe=$tmp_groupe['description'];
+							$sql="SELECT description FROM groupes WHERE id='$id_groupe'";
+							$res_grp_tmp=mysql_query($sql);
+							if(mysql_num_rows($res_grp_tmp)==0){
+								$nom_groupe="<font color='red'>GROUPE INEXISTANT</font>\n";
+							}
+							else{
+								$lig_grp_tmp=mysql_fetch_object($res_grp_tmp);
+								$nom_groupe=$lig_grp_tmp->description;
+							}
 
-							$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-							$res_tmp=mysql_query($sql);
-							$lig_tmp=mysql_fetch_object($res_tmp);
-							$clas_tmp=$lig_tmp->classe;
-
-							$sql="SELECT description FROM groupes WHERE id='$lig_grp->id_groupe'";
-							$res_tmp=mysql_query($sql);
-							$lig_tmp=mysql_fetch_object($res_tmp);
-							$grp_tmp=$lig_tmp->description;
-
-							echo "<p>\n";
-							echo "<b>$lig_ele->login</b> est inscrit en période $lig_ele->periode dans le groupe <b>$grp_tmp</b> (<i>groupe n°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associé à la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
-
-							echo "Suppression de l'élève du groupe ";
 							// On va le supprimer du groupe après un dernier test:
 							$test1=mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
 							$nb_test1 = mysql_num_rows($test1);
@@ -925,49 +933,114 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 								echo "<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
 							} else {
 								if($req=mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
+									if($cpt_tmp>1){echo ", ";}
 									echo "$nom_groupe (<i>n°$id_groupe</i>)";
-									//$cpt_tmp++;
+									$cpt_tmp++;
 								}
 							}
+						}
+					}
+					else{
+						if(mysql_num_rows($res_jec)==1){
+							$lig_clas=mysql_fetch_object($res_jec);
+							while($lig_grp=mysql_fetch_object($res_jeg)){
+								// On cherche si l'association groupe/classe existe:
+								$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$lig_grp->id_groupe' AND id_classe='$lig_clas->id_classe'";
+								$res_test_grp_clas=mysql_query($sql);
 
+								if(mysql_num_rows($res_test_grp_clas)==0){
+
+									$id_groupe=$lig_grp->id_groupe;
+									$tmp_groupe=get_group($id_groupe);
+									$nom_groupe=$tmp_groupe['description'];
+
+									$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
+									$res_tmp=mysql_query($sql);
+									$lig_tmp=mysql_fetch_object($res_tmp);
+									$clas_tmp=$lig_tmp->classe;
+
+									$sql="SELECT description FROM groupes WHERE id='$lig_grp->id_groupe'";
+									$res_tmp=mysql_query($sql);
+									$lig_tmp=mysql_fetch_object($res_tmp);
+									$grp_tmp=$lig_tmp->description;
+
+									echo "<p>\n";
+									echo "<b>$lig_ele->login</b> est inscrit en période $lig_ele->periode dans le groupe <b>$grp_tmp</b> (<i>groupe n°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associé à la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
+
+									echo "Suppression de l'élève du groupe ";
+									// On va le supprimer du groupe après un dernier test:
+									$test1=mysql_query("SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+									$nb_test1 = mysql_num_rows($test1);
+
+									$test2=mysql_query("SELECT 1=1 FROM matieres_appreciations WHERE (id_groupe = '".$id_groupe."' and login = '".$lig_ele->login."' and periode = '$lig_ele->periode')");
+									$nb_test2 = mysql_num_rows($test2);
+
+									if (($nb_test1 != 0) or ($nb_test2 != 0)) {
+										echo "<br /><font color='red'>Impossible de supprimer cette option pour l'élève $lig_ele->login car des moyennes ou appréciations ont déjà été rentrées pour le groupe $nom_groupe pour la période $lig_ele->periode !<br />\nCommencez par supprimer ces données !</font><br />\n";
+									} else {
+										if($req=mysql_query("DELETE FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' and id_groupe='".$id_groupe."' and periode = '".$lig_ele->periode."')")){
+											echo "$nom_groupe (<i>n°$id_groupe</i>)";
+											//$cpt_tmp++;
+										}
+									}
+
+									echo "</p>\n";
+									$err_no++;
+								}
+							}
+						}
+						else{
+							echo "<p>\n";
+							echo "<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la période $lig_ele->periode:<br />\n";
+							while($lig_clas=mysql_fetch_object($res_jec)){
+								$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
+								$res_tmp=mysql_query($sql);
+								$lig_tmp=mysql_fetch_object($res_tmp);
+								$clas_tmp=$lig_tmp->classe;
+								echo "Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
+							}
+							echo "Cela ne devrait pas être possible.<br />\n";
+							echo "Faites le ménage dans les effectifs des classes ci-dessus.\n";
 							echo "</p>\n";
 							$err_no++;
 						}
 					}
+
+					// Cette association login/periode a été parcourue:
+					$sql="DELETE FROM tempo2 WHERE col1='$lig_ele->login' AND col2='$lig_ele->periode';";
+					//echo "$sql<br />\n";
+					$nettoyage=mysql_query($sql);
 				}
-				else{
-					echo "<p>\n";
-					echo "<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la période $lig_ele->periode:<br />\n";
-					while($lig_clas=mysql_fetch_object($res_jec)){
-						$sql="SELECT classe FROM classes WHERE id='$lig_clas->id_classe'";
-						$res_tmp=mysql_query($sql);
-						$lig_tmp=mysql_fetch_object($res_tmp);
-						$clas_tmp=$lig_tmp->classe;
-						echo "Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
-					}
-					echo "Cela ne devrait pas être possible.<br />\n";
-					echo "Faites le ménage dans les effectifs des classes ci-dessus.\n";
-					echo "</p>\n";
-					$err_no++;
-				}
+				// Pour envoyer ce qui a été écrit vers l'écran sans attendre la fin de la page...
+				flush();
 			}
+			if($err_no==0){
+				echo "<p>Aucune erreur d'affectation dans des groupes/classes n'a été détectée.</p>\n";
+			}
+			else{
+				echo "<p>Une ou des erreurs ont été relevées.";
+				echo "</p>\n";
+			}
+
+			echo "<input type='hidden' name='maj' value='9' />\n";
+			echo "<input type='submit' name='suite' value='Poursuivre le nettoyage des groupes' />\n";
+
+			if(($err_no==0)&&($temoin_aberrations_groupes==0)) {
+				echo "<script type='text/javascript'>
+	setTimeout(\"document.forms['formulaire'].submit();\",3000);
+</script>\n";
+			}
+
 		}
-		// Pour envoyer ce qui a été écrit vers l'écran sans attendre la fin de la page...
-		flush();
-	}
-	if($err_no==0){
-		echo "<p>Aucune erreur d'affectation dans des groupes/classes n'a été détectée.</p>\n";
-	}
-	else{
-		echo "<p>Une ou des erreurs ont été relevées.";
-		echo "</p>\n";
+		else {
+			echo "<p>Vérification des groupes terminés.</p>\n";
+
+			echo "<input type=\"hidden\" name=\"maj\" value=\"10\" />\n";
+			echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite du nettoyage\" /></center>\n";
+		}
 	}
 
-
-    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
-    echo "<input type=\"hidden\" name=\"maj\" value=\"10\" />\n";
-    echo "<center><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></center>\n";
-    echo "</form>\n";
+	echo "</form>\n";
 
 }
 elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj']) and (($_GET['maj'])=="10"))) {
@@ -998,88 +1071,116 @@ col2 varchar(100) NOT NULL default ''
 	else {
 		$cpt_suppr=isset($_POST['cpt_suppr']) ? $_POST['cpt_suppr'] : 0;
 
+		$cpt_suppr_etape=0;
+
 		$sql="SELECT 1=1 FROM tempo2;";
 		$res0=mysql_query($sql);
 		$nb_comptes=mysql_num_rows($res0);
-		echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";
+		if($nb_comptes>0) {echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";}
 
 		$tranche=20;
 		$sql="SELECT * FROM tempo2 LIMIT $tranche;";
-		echo "$sql<br />";
+		//echo "$sql<br />\n";
 		$res1=mysql_query($sql);
 		if(mysql_num_rows($res1)>0) {
+
+			$cpt_affichage_info=0;
+
 			while($lig1=mysql_fetch_object($res1)) {
 				if($lig1->col2=='eleve') {
 					$sql="SELECT 1=1 FROM eleves WHERE login='$lig1->col1';";
-					echo "$sql<br />";
+					//echo "$sql<br />\n";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)==0) {
+						if($cpt_affichage_info==0) {echo "<p>";}
+
+						echo "L'élève $lig1->col1 est absent de la table 'eleves', son compte utilisateur doit être supprimé.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
-						echo "$sql<br />";
+						//echo "$sql<br />\n";
 						$suppr=mysql_query($sql);
 
-						$cpt_suppr++;
+						$cpt_suppr_etape++;
+
+						$cpt_affichage_info++;
 					}
 				}
 				else {
 					$sql="SELECT rp.pers_id FROM resp_pers rp WHERE rp.login='$lig1->col1';";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)==0) {
+						if($cpt_affichage_info==0) {echo "<p>";}
+						echo "Le responsable $lig1->col1 est absent de la table 'resp_pers', son compte utilisateur doit être supprimé.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
-						echo "$sql<br />";
+						//echo "$sql<br />\n";
 						$suppr=mysql_query($sql);
 
-						$cpt_suppr++;
+						$cpt_suppr_etape++;
+						$cpt_affichage_info++;
 					}
 					else {
 						$sql="SELECT 1=1 FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0) {
+							if($cpt_affichage_info==0) {echo "<p>";}
+							echo "Le responsable $lig1->col1 n'est pas associé à un élève; \n";
 							$sql="SELECT pers_id FROM resp_pers WHERE login='$lig1->col1';";
-							echo "$sql<br />";
+							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)>0) {
 								$lig3=mysql_fetch_object($res3);
+								echo "suppression des éventuelles associations fantomes dans 'responsables2'.<br />\n";
 								$sql="DELETE FROM responsables2 WHERE pers_id='$lig3->pers_id';";
-								echo "$sql<br />";
+								//echo "$sql<br />\n";
 								$suppr=mysql_query($sql);
+								$cpt_affichage_info++;
 							}
 
+							if($cpt_affichage_info==0) {echo "<p>";}
+							echo "Suppression du responsable $lig1->col1 dans 'resp_pers'.<br />\n";
 							$sql="DELETE FROM resp_pers WHERE login='$lig1->col1';";
-							echo "$sql<br />";
+							//echo "$sql<br />\n";
 							$suppr=mysql_query($sql);
 
+							echo "Suppression du responsable $lig1->col1 dans 'utilisateurs'.<br />\n";
 							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
-							echo "$sql<br />";
+							//echo "$sql<br />\n";
 							$suppr=mysql_query($sql);
 
-							$cpt_suppr++;
+							$cpt_suppr_etape++;
+							$cpt_affichage_info++;
 						}
 					}
 				}
 
 				$sql="DELETE FROM tempo2 WHERE col1='$lig1->col1';";
-				echo "$sql<br />";
+				//echo "$sql<br />\n";
 				$suppr=mysql_query($sql);
+
+				//if($cpt_affichage_info==0) {echo "<p style='color:green; font-size:xx-small;'>Compte $lig1->col1 conservé.</p>";}
 			}
 
-			if($cpt_suppr==0) {
+
+			if($cpt_suppr_etape==0) {
 				echo "<p>Aucun compte n'a été supprimé à cette étape.</p>\n";
 			}
-			elseif($cpt_suppr==1) {
+			elseif($cpt_suppr_etape==1) {
 				echo "<p>Un compte a été supprimé à cette étape.</p>\n";
 			}
 			else {
-				echo "<p>$cpt_suppr comptes ont été supprimés à cette étape.</p>\n";
+				echo "<p>$cpt_suppr_etape comptes ont été supprimés à cette étape.</p>\n";
 			}
+
+			$cpt_suppr+=$cpt_suppr_etape;
 
 			echo "<input type='hidden' name='cpt_suppr' value='$cpt_suppr' />\n";
 			echo "<input type='submit' name='suite' value='Poursuivre' />\n";
 
-			echo "<script type='text/javascript'>
-	//setTimeout(\"document.forms['formulaire'].submit();\",3000);
+			if($cpt_suppr_etape==0) {
+				echo "<script type='text/javascript'>
+	setTimeout(\"document.forms['formulaire'].submit();\",3000);
 </script>\n";
+			}
 		}
 		else {
 			echo "<p>Nettoyage des comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement terminé.</p>\n";
