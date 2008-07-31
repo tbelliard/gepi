@@ -310,6 +310,11 @@ fieldset#login_box div#header {
 #essaiMenu {
 	background: #$degrade_bas;
 }
+
+/* W3C */
+.degrade1 {
+	background-color:#$degrade_bas;
+}
 ");
 
 /*

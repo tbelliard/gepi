@@ -1,0 +1,22 @@
+/*
+correction_ie.css
+Mise en page du bandeau pour affichage en grand dans internet exploreur
+
+@version $Id$
+
+*/
+
+/* ----- Bandeau ----- */
+body {
+	position: relative;
+	}
+#bandeau {
+	overflow: visible;
+	height: 1%;
+}
+
+/* ----- see_all.php ----- */
+.ct_sa_table1 {
+	height: 1%;
+}
+

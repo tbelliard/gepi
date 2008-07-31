@@ -36,7 +36,7 @@ function last_connection() {
       $secondes_b = substr($row[0],17,2);
       if ($row[0]  != '') {
           if ($row[1]  == "4") {
-              $r = "<span style=\"color: red\"><b>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</b></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
+              $r = "<span style=\"color: red\"><strong>Tentative de connexion le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " avec un mot de passe erroné</strong></span> (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
               // On compte le nombre de tentatives infructueuses successives
               $nb_tentative = 0;
               $flag = 0;
@@ -49,7 +49,7 @@ function last_connection() {
 					$flag = 1;
 				}
               }
-              if ($nb_tentative > 1) {$r .= "<br><b>Nombre de tentatives de connexion successives : ".$nb_tentative.".</b></font>";}
+              if ($nb_tentative > 1) {$r .= "<br /><strong>Nombre de tentatives de connexion successives : ".$nb_tentative.".</strong></font>";}
           } else {
               $r = "  Dernière session ouverte le ".$jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b. " (<a href='".$gepiPath."/utilisateurs/mon_compte.php#connexion'".insert_confirm_abandon().">journal des connexions</a>)";
 			}
@@ -209,6 +209,94 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 	</script>\n";
 
 } // if(isset($utilisation_jsdivdrag...
+
+/* ===== Modification Régis =====
+	Gestion de l'affichage des bandeaux avec prototype.js
+	taille des bandeaux : bascule d'une taille à l'autre
+	fond des bandeaux :$couleur="degrade1" --> dégradé choisi par l'administrateur (gepi_stylesheet="style" utiliser_degrade="y")
+	                     $couleur="darkfade" --> gris d'origine (gepi_stylesheet="style" utiliser_degrade n'est pas à "y")
+	                    $couleur="no_style" --> les styles sont désactivés (gepi_stylesheet n'est pas à "style")
+*/
+?>
+<script type='text/javascript'>
+<!--
+
+	function modifier_taille_bandeau(){	
+		// Modification de la taille du bandeau		
+		if(Element.hasClassName('bandeau','pt_bandeau')){
+			$taille_bandeau_actuelle = 'pt_bandeau';
+			$taille_bandeau_future = 'gd_bandeau';
+		}else {
+			$taille_bandeau_actuelle = 'gd_bandeau';
+			$taille_bandeau_future = 'pt_bandeau';
+		}
+		// On efface la classe de taille et on attribue la nouvelle	
+		Element.removeClassName('bandeau',$taille_bandeau_actuelle);
+		Element.addClassName('bandeau', $taille_bandeau_future);
+
+		// Modification de l'image de fond du bandeau	
+		if(Element.hasClassName('bandeau','no_style')){
+			if(Element.hasClassName('bandeau','pt_bandeau_no_style')){
+				$image_actuelle = 'pt_bandeau_no_style';
+			}else {
+				$image_actuelle = 'gd_bandeau_no_style';
+			}
+			$image_future=$taille_bandeau_future+'_no_style';
+		}else if(Element.hasClassName('bandeau','degrade1')){
+			if(Element.hasClassName('bandeau','pt_bandeau_degrade1')){
+				$image_actuelle = 'pt_bandeau_degrade1';
+			}else {
+				$image_actuelle = 'gd_bandeau_degrade1';
+			}
+			$image_future=$taille_bandeau_future+'_degrade1';
+		}else {
+			if(Element.hasClassName('bandeau','pt_bandeau_darkfade')){
+				$image_actuelle = 'pt_bandeau_darkfade';
+			}else {
+				$image_actuelle = 'gd_bandeau_darkfade';
+			}
+			$image_future=$taille_bandeau_future+'_darkfade';
+		}
+		// On efface la classe d'image et on attribue la nouvelle	
+		Element.removeClassName('bandeau',$image_actuelle);
+		Element.addClassName('bandeau', $image_future);
+	}
+
+	function modifier_couleur_bandeau($couleur){		
+		// On détermine la taille actuelle
+		if(Element.hasClassName('bandeau','pt_bandeau')){
+			$taille_bandeau_header='pt_bandeau_';
+		}else {
+			$taille_bandeau_header='gd_bandeau_';
+		}
+		// On détermine la couleur et l'image actuelle
+		if(Element.hasClassName('bandeau','no_style')){
+			$couleur_actuelle='no_style';
+			$image_actuelle=$taille_bandeau_header+'no_style';
+		}else if(Element.hasClassName('bandeau','degrade1')){
+			$couleur_actuelle='degrade1';
+			$image_actuelle=$taille_bandeau_header+'degrade1';
+		}else {
+			$couleur_actuelle='darkfade';
+			$image_actuelle=$taille_bandeau_header+'darkfade';
+		}
+		$couleur_future=$couleur;
+		$image_future=$taille_bandeau_header+$couleur;
+
+		// On efface les anciennes classes et on attribue les nouvelles	
+		Element.removeClassName('bandeau',$couleur_actuelle);
+		Element.addClassName('bandeau', $couleur_future);	
+		Element.removeClassName('bandeau',$image_actuelle);
+		Element.addClassName('bandeau', $image_future);
+	}
+
+//-->	
+</script>
+
+<?php
+/* Fin des modifications des bandeaux */
+
+
 echo "\n".'	<!-- fin des fichiers en javascript -->'."\n\n";
 // ======================= fin de l'affichage des javascripts ========================
 // ======================= Début de l'affichage des feuilles de style ================
@@ -237,7 +325,24 @@ if(isset($style_specifique)){
         ?><link rel='stylesheet' type='text/css' href='<?php echo $gepiPath; ?>/mod_absences/styles/mod_absences.css' /><?php
     }
 
+
+// Voir si on restreint l'usage aux pages du module cahier de textes
+echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/cahier_texte.css' media='screen' />\n";
+// Feuilles de styles Paramètres de configuration du cahier de texte
+echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/maj_global.css' media='screen' />\n";
+
+// Feuilles de styles du bandeau
+echo "\n<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/bandeau.css' media='screen' />\n";
+echo "<!--[if lte IE 7]>\n";
+	echo "	<link title='bandeau' rel='stylesheet' type='text/css' href='$gepiPath/correction_ie.css' media='screen' />\n";
+echo "<![endif]-->\n";
+
+// Feuilles de styles imprimante
+// echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/imprime_ct_eleve.css' media='print' />\n";
+// fin modification Régis
+
 if(isset($style_screen_ajout)){
+
 	// Styles paramétrables depuis l'interface:
 	if($style_screen_ajout=='y'){
 		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
@@ -245,9 +350,6 @@ if(isset($style_screen_ajout)){
 		echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 }
-
-// Voir si on restreint l'usage aux pages du module cahier de textes
-echo "\n<link rel='stylesheet' type='text/css' href='$gepiPath/cahier_texte.css' />\n";
 
 echo '	<!-- Fin des styles -->'."\n\n";
 // ============================== FIN des feuilles de style =======================
@@ -260,15 +362,13 @@ echo '	<!-- Fin des styles -->'."\n\n";
 
 <?php
 
-//$cacher_header=isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
-//if(($cacher_header!="y")&&($cacher_header!="n")){$cacher_header="n";}
-
+// Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
+	// petit bandeau toute valeur sauf "n" ;
+	// grand bandeau "n";
 if (isset($titre_page)) {
 	if(!isset($_SESSION['cacher_header'])){
 		$_SESSION['cacher_header']="n";
 	}
-
-	//echo "\$_SESSION['cacher_header']=".$_SESSION['cacher_header']."<br />";
 
 	if ($_SESSION['statut'] == "administrateur") {
 		$rc = null;
@@ -282,203 +382,187 @@ if (isset($titre_page)) {
 		echo ">v".$gepiVersion.$rc.$beta."</div>";
 	}
 
+// ----- modifications Régis Bandeau -----
+// début des modifications du bandeau
 
 	echo "<!-- Header start -->\n";
-	echo "<div id='header'>\n";
 
-	// Début du conteneur de Header
-	echo "<div id='c_header1'";
-	if($_SESSION['cacher_header']=="n"){echo " style='display:none;'";}
-	echo ">\n";
-	echo "<table border='0' width='100%' summary='haut de la page'>\n";
-	echo "<tr>\n";
-	echo "<td align='left'>\n";
-	echo "<a href=\"#\" onclick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('n', '".$gepiPath."');return false;\"><img src='$gepiPath/images/down.png' width='18' height='18' alt='Afficher le bandeau' title='Afficher le bandeau' /></a>";
-	echo "</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; color:white;'>\n";
-	echo "$titre_page";
-	echo "</td>\n";
-	echo "<td  style='text-align:right; color:white;'>\n";
+/* ===== affichage du bandeau ===== */
 
-	echo "<span class='grey'>";
-	echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' title='Accueil' style='bottom: -1px;' /></a>\n";
-	echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' title='Mon compte' /></a>\n";
-	echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' /></a>\n";
-	echo "</span>\n";
-
-	//echo "</td>\n";
-	//echo "<td>\n";
-	echo " \n";
-
-	echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "\n");
-
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</div>\n";
-
-
-	echo "<div id='c_header2'";
-	if($_SESSION['cacher_header']=="y"){echo " style='display:none;'";}
-	echo ">\n";
-
-	//echo "<table id='table_header' border='0' width='100%' height='100px;' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); margin: 0; padding: 0;'>\n";
 	if(getSettingValue('gepi_stylesheet')=='style'){
-		//echo "<table id='table_header' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/darkfade.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
-
+		// Détermine le fond du bandeau
 		if(getSettingValue('utiliser_degrade')=='y'){
 			$degrade_entete="degrade1";
 		}
 		else{
 			$degrade_entete="darkfade";
 		}
-
-		echo "<table id='table_header' summary='haut de la page' border='0' width='100%' style='color: white; background-image: url(\"$gepiPath/images/background/$degrade_entete.png\"); background-repeat: repeat-x; margin: 0; padding: 0;'>\n";
 	}
 	else{
-		echo "<table id='table_header' border='0' width='100%' summary='haut de la page'>\n";
+			$degrade_entete="no_style";
 	}
 
-	//echo "<tr height='20px'>\n";
-	//echo "<tr height='20%'>\n";
-	echo "<tr>\n";
-		//echo "<td rowspan='3' style='margin:0;padding:0;'><img src='$gepiPath/images/background/darkfade.png' alt='Bricolage pas chouette pour fixer la hauteur du tableau'  style='margin:0;padding:0;' /></td>\n";
-		//echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:100px; margin:0;padding:0;'></div></td>\n";
-		echo "<td rowspan='2' style='margin:0;padding:0;'><div style='width:0px; height:96px; margin:0;padding:0;'></div>";
-		echo "</td>\n";
+// Initialisation du bandeau à grand bandeau darkfade pour ceux qui n'ont pas de javascript
+	echo "<div id='bandeau' class='gd_bandeau darkfade gd_bandeau_darkfade'>\n";
+// Initialisation du bandeau à la bonne couleur
+	echo "<script type='text/javascript'>
+		<!--	
+			modifier_couleur_bandeau('$degrade_entete');
+		// -->
+	</script>";
+// Initialisation du bandeau à la bonne taille
+	$cacher_header = isset($_SESSION['cacher_header']) ? $_SESSION['cacher_header'] : "n";
+	if($cacher_header=="n") {
+		$taille_bandeau_header="g";
+	}
+	else {
+		$taille_bandeau_header="p";
+	}
+	// 	echo $_SESSION['login'];
+	if($taille_bandeau_header=="p"){
+		echo "<script type='text/javascript'>
+			<!--	
+				modifier_taille_bandeau();
+			// -->
+		</script>";
+	}
 
-		echo "<!-- Page title, access rights -->\n";
-		echo "<td id='td_headerLeft' rowspan='2'>\n";
+			echo "<!-- Page title, access rights -->\n";
+			echo "<!-- User name, status, main matter, home, logout, account management -->\n";
 
-		echo "<div style='float:left; margin-top: 1em;'><a href=\"#\" onclick=\"changementDisplay('c_header1', 'c_header2');change_mode_header('y', '".$gepiPath."');return false;\"><img src='$gepiPath/images/up.png' width='18' height='18' alt='Cacher le bandeau' title='Cacher le bandeau' /></a></div>\n";
+			// Bandeau de gauche
+			echo "<div id='bandeau_gauche'>\n";
+				echo "<div class='bt_change_taille'>";
+					// Bouton réduire le bandeau
+					echo "<a class='change_taille_gd' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('y', '".$gepiPath."');return false;\">";
+						echo "<img src='$gepiPath/images/up.png' alt='Cacher le bandeau' title='Cacher le bandeau' />";
+					echo "</a>";
+					// Bouton agrandir le bandeau
+					echo "<a class='change_taille_pt' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('n', '".$gepiPath."');return false;\">";
+						echo "<img src='$gepiPath/images/down.png' alt='Afficher le bandeau' title='Afficher le bandeau' />";
+					echo "</a>";
+				echo "</div>\n";
+				// Titre de la page
+				echo "<h1>".$titre_page."</h1>\n";
+				echo "<!-- Dernière connexion -->\n";
+				if (isset($affiche_connexion)){echo "<div class='a_gauche'><p>".last_connection()."</p></div>\n";}
+			echo "</div>\n";
 
-		// Pour empêcher de trop réduire la taille de la cellule de gauche
-		echo "<div style='width:380px;'></div>\n";
-
-		//echo "<div style='border: 1px solid lime; margin-top:20px; margin-bottom:20px;'><h3>".$titre_page."</h3></div>\n";
-		//echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
-		// Correction Régis : h3 doit être contenu dans h2 qui doit être contenu dans h1
-		//echo "<div style='margin-top:20px; margin-bottom:15px;'><h3>".$titre_page."</h3></div>\n";
-		echo "<div><h1>".$titre_page."</h1></div>\n";
-		//echo "<h3>".$titre_page."</h3>\n";
-
-
-		echo "<!-- Dernière connexion -->\n";
-		if (isset($affiche_connexion)){echo last_connection()."\n";}
-
-		echo "</td>\n";
-
-
-
-		echo "<!-- User name, status, main matter, home, logout, account management -->\n";
-		echo "<td id='td_headerTopRight'>\n";
-
-		// Pour empêcher de trop réduire la taille de la cellule de droite
-		echo "<div style='width:400px;'></div>\n";
-
-
-		echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "<br />\n");
-		if ($_SESSION['statut'] == "administrateur") {
-			echo "<span class='red'>Administrateur</span>\n";
-		} elseif ($_SESSION['statut'] == "professeur") {
-			$nom_complet_matiere = sql_query1("select nom_complet from matieres
-			where matiere = '".$_SESSION['matiere']."'");
-			if ($nom_complet_matiere != '-1') {
-				//echo("Professeur de : " . $nom_complet_matiere);
-				echo("Professeur de : " . htmlentities($nom_complet_matiere));
-			} else {
-				echo "Invité";
-			}
-		} elseif ($_SESSION['statut'] == "scolarite") {
-			echo "Scolarité";
-		} elseif ($_SESSION['statut'] == "cpe") {
-			echo "CPE";
-		} elseif ($_SESSION['statut'] == "eleve") {
-			$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
-			echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
-		} elseif ($_SESSION['statut'] == "responsable") {
-			$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
-			$chaine_enfants="";
-			if(count($tab_tmp_ele)>0){
-				$chaine_enfants=$tab_tmp_ele[1];
-				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
-				if(count($tab_tmp_info_classes)>0){
-					$chaine_enfants.=" (<i>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</i>)";
+			// Bandeau de droite
+			echo "<div id='bandeau_droit'>\n";
+				echo "<p>\n";
+					// Nom Prénom utilisateur
+					echo "<span id='bd_nom'>";					
+						echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "\n");
+					echo "</span>\n<br />";
+					// statut utilisateur
+					echo "<span id='bd_parent'>";
+						if ($_SESSION['statut'] == "administrateur") {
+							echo "<span class='red'>Administrateur</span>\n";
+						} elseif ($_SESSION['statut'] == "professeur") {
+							$nom_complet_matiere = sql_query1("select nom_complet from matieres
+							where matiere = '".$_SESSION['matiere']."'");
+							if ($nom_complet_matiere != '-1') {
+								//echo("Professeur de : " . $nom_complet_matiere);
+								echo("Professeur de : " . htmlentities($nom_complet_matiere));
+							} else {
+								echo "Invité";
+							}
+						} elseif ($_SESSION['statut'] == "scolarite") {
+							echo "Scolarité";
+						} elseif ($_SESSION['statut'] == "cpe") {
+							echo "CPE";
+						} elseif ($_SESSION['statut'] == "eleve") {
+							$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
+							echo "Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
+						} elseif ($_SESSION['statut'] == "responsable") {
+							$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+							$chaine_enfants="";
+							if(count($tab_tmp_ele)>0){
+								$chaine_enfants=$tab_tmp_ele[1];
+								$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
+								if(count($tab_tmp_info_classes)>0){
+									$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
+								}
+								for($i=3;$i<count($tab_tmp_ele);$i+=2){
+									$chaine_enfants.=", ".$tab_tmp_ele[$i];
+									unset($tab_tmp_info_classes);
+									$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+									if(count($tab_tmp_info_classes)>0){
+										$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
+									}
+								}
+							}
+							echo "Responsable de $chaine_enfants";
+						}elseif($_SESSION["statut"] == "autre"){
+							echo $_SESSION["special"];
+						}
+					echo "</span>";
+					// A QUOI SERT CE $temp ?
+					$temp = '';
+					// christian
+				echo "</p>\n";
+				//On vérifie si le module de mise à jour est activé
+				if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
+					echo "<a href='javascript:ouvre_popup()'>";
+						echo "<img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' />";
+					echo "</a>\n<br />\n";
 				}
-				for($i=3;$i<count($tab_tmp_ele);$i+=2){
-					$chaine_enfants.=", ".$tab_tmp_ele[$i];
-					unset($tab_tmp_info_classes);
-					$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
-					if(count($tab_tmp_info_classes)>0){
-						$chaine_enfants.=" (<i>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</i>)";
-					}
-				}
-			}
-			echo "Responsable de $chaine_enfants";
-
-		} elseif($_SESSION["statut"] == "autre") {
-
-			echo $_SESSION["statut_special"];
-		}
-
-		// A QUOI SERT CE $temp ?
-		$temp = '';
-		// christian
-		echo "<br />\n";
-		//On vérifie si le module de mise à jour est activé
-		if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
-			echo "<a href='javascript:ouvre_popup()'><img style='border: 0px; width: 15px; height: 15px;' src='$gepiPath/images/info.png' alt='info' title='info' align='top' /></a>\n";
-		}
-		//christian
-
-		echo "</td>\n";
-		echo "</tr>\n";
-
-
-
-		echo "<tr>\n";
-		// Les TD précédents sont dans des rowspan
-
-		echo "<td  id='td_headerBottomRight'>\n";
-		echo "<span class='grey'>";
-		echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/home.png' alt='Accueil' style='bottom: -1px;' />&nbsp;Accueil</a>\n";
-		echo " - <a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' />&nbsp;Gérer mon compte</a>\n";
-		echo " - <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon()."><img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' />&nbsp;Déconnexion</a>\n";
-		echo "</span>\n";
-
-		echo "<br />\n";
-
-		echo "<!-- Contact -->\n";
-		$prefix = '';
-		if (!isset($niveau_arbo)) {
-			$prefix = "../";
-		}elseif($niveau_arbo==1){
-			$prefix = "../";
-		}elseif ($niveau_arbo==2){
-			$prefix = "../../";
-		}
-
-		echo "<span style='border-top: 1px dotted orange;'>\n";
-		if ($_SESSION['statut'] == 'administrateur') {
-			echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
-		} else {
-			echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
-		//         echo("<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">Contacter l'administrateur</a>");
-		}
-		echo " - <a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a>
-		- <a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
-		//- <a href='javascript:centrerpopup(\"".$prefix."gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a></b>";
-		echo "</span>\n";
-
-		echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</table>\n";
-	echo "\n";
+				//christian
+				// menus de droite
+				echo "<div id='bd_accueil'>";
+					// menu accueil
+					echo "<p>";
+						echo "<a href='$gepiPath/accueil.php'".insert_confirm_abandon().">";
+							echo "<img src='$gepiPath/images/icons/home.png' alt='Accueil' title='Accueil' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Accueil";
+							echo "</span>";
+						echo "</a>\n";
+						echo "-";
+						echo "<a href='$gepiPath/utilisateurs/mon_compte.php'".insert_confirm_abandon().">";
+							echo "<img src='$gepiPath/images/icons/buddy.png' alt='Mon compte' title='Mon compte' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Gérer mon compte";
+							echo "</span>";
+						echo "</a>\n";
+						echo "-";
+						echo " <a href='$gepiPath/logout.php?auto=0'".insert_confirm_abandon().">";
+							echo "<img src='$gepiPath/images/icons/quit_16.png' alt='Se déconnecter' title='Se déconnecter' />";
+							echo "<span class='menu_bandeau'>";
+								echo "&nbsp;Déconnexion";
+							echo "</span>";
+						echo "</a>\n";
+					echo "</p>";
+				echo "</div>\n";
+				// menu contact
+				echo "<!-- Contact -->\n";
+				echo "<div class='menu_general'>";
+					echo "<p>";
+						$prefix = '';
+						if (!isset($niveau_arbo)) {
+							$prefix = "../";
+						}elseif($niveau_arbo==1){
+							$prefix = "../";
+						}elseif ($niveau_arbo==2){
+							$prefix = "../../";
+						}
+						if ($_SESSION['statut'] == 'administrateur') {
+							echo "<a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"http://gepi.mutualibre.org/\">Visiter le site de GEPI</a>";
+							// echo "<a href=\"http://gepi.mutualibre.org/\" target='_blank'>Visiter le site de GEPI</a>";
+						} else {
+							echo("<a href=\"javascript:centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contacter l'administrateur</a>");
+						}
+						echo " - <a href=\"javascript:centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Informations générales</a> - <a href='javascript:centrerpopup(\"$gepiPath/gestion/info_vie_privee.php\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Vie privée</a>";
+					echo "</p>\n";
+				echo "</div>\n";
+			echo "</div>\n";
+		echo "\n";
 
 	// Fin du conteneur de Header
-	echo "</div>";
 
+// ----- Régis : fin des modifications du bandeau -----
+	
 	echo "</div>\n";
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
@@ -492,14 +576,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 		}
 		include("header_barre_menu.php");
 	}
-
 }
-
-	echo "<!-- Header end -->\n";
-	echo "\n";
-}
-
-
 
 echo "<div id='container'>\n";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
@@ -510,7 +587,7 @@ if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))){
 		echo "</div>";
 	}
 }
-
+}
 // Décommenter la ligne ci -dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
