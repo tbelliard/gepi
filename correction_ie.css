@@ -14,6 +14,11 @@ body {
 	overflow: visible;
 	height: 1%;
 }
+.gd_bandeau #bandeau_gauche p{
+	width:100%;
+	left: 0.5em;
+	bottom: 0.3em;
+}
 
 /* ----- see_all.php ----- */
 .ct_sa_table1 {

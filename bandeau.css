@@ -28,14 +28,17 @@ Mise en page du bandeau
 }
 #bandeau_gauche h1{
 	margin-top: 0.1em;
-	margin-bottom: 0.1em;
 	margin-left: 20px;
 	text-align: center;
 	line-height: 1em;
 }
 #bandeau_gauche p{
 	text-align: left;
+	margin-top: 0.1em;
 	margin-bottom: 0em;
+	position: absolute;
+	bottom: 0.5em;
+	width:49%;
 }
 
 /* bandeau droit */
@@ -63,8 +66,22 @@ Mise en page du bandeau
 	width: 18px;
 	height: 18px;
 }
-#bd_nom{
+#bd_nom {
 	font-weight:bold;
+	margin-top: 0px;
+	padding-top: 0px;
+}
+#bd_nom p {
+	margin-top: 0px;
+	padding-top: 0px;
+}
+#bd_accueil {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+#bd_accueil p {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
 }
 
 /* taille des bandeaux */
@@ -81,6 +98,9 @@ Mise en page du bandeau
 }
 .gd_bandeau .menu_general{
 	border-top: 1px dotted;
+}
+.gd_bandeau #bandeau_gauche h1{
+	margin-bottom: 2em;
 }
 /* petit bandeau */
 .pt_bandeau {
@@ -110,12 +130,13 @@ Mise en page du bandeau
 	font-weight:bold;
 }
 .pt_bandeau #bd_accueil {
-	width:85px;
+	width:7em;
 	margin-top: -1.8em;
    margin-left:auto;
+	padding: 0;
 }
 .pt_bandeau #bd_nom{
-   margin-right:85px;
+   margin-right:6em;
 }
 .pt_bandeau #bandeau_nom {
 	text-align: right;
