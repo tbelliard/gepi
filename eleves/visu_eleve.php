@@ -1428,94 +1428,103 @@ Patientez pendant l'extraction des données... merci.
 
 			$id_releve_1="";
 
-			//$tab_onglets_rel=array();
-			for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
-				$periode1=$n_per;
-				$tab_onglets_rel[]="releve_$periode1";
+			//echo "\$periode_numero_1=$periode_numero_1<br />";
+			//echo "\$periode_numero_2=$periode_numero_2<br />";
 
-				echo "<div id='t_releve_$periode1' class='t_onglet' style='";
-				if(isset($onglet2)) {
-					if($onglet2=="releve_$periode1") {
-						echo "border-bottom-color: ".$tab_couleur['releve']."; ";
+			if(($periode_numero_1!="")&&($periode_numero_2!="")) {
+				//$tab_onglets_rel=array();
+				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
+					$periode1=$n_per;
+					$tab_onglets_rel[]="releve_$periode1";
+
+					echo "<div id='t_releve_$periode1' class='t_onglet' style='";
+					if(isset($onglet2)) {
+						if($onglet2=="releve_$periode1") {
+							echo "border-bottom-color: ".$tab_couleur['releve']."; ";
+						}
+					}
+					else {
+						if($n_per==$periode_numero_1) {
+							echo "border-bottom-color: ".$tab_couleur['releve']."; ";
+						}
+					}
+					echo "background-color: ".$tab_couleur['releve']."; ";
+					echo "'>";
+					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
+					echo "Période $periode1";
+					echo "</a>";
+					echo "</div>\n";
+				}
+
+				//====================================
+				echo "<div style='clear:both;'></div>\n";
+				//====================================
+
+				// Liste des infos à faire apparaitre sur le relevé de notes:
+				$tab_ele['rn_app']='n';
+				$tab_ele['rn_nomdev']='y';
+				$tab_ele['rn_toutcoefdev']='y';
+				$tab_ele['rn_coefdev_si_diff']='y';
+				$tab_ele['rn_datedev']='y';
+				$tab_ele['rn_sign_chefetab']='n';
+				$tab_ele['rn_sign_pp']='n';
+				$tab_ele['rn_sign_resp']='n';
+				$tab_ele['rn_formule']='';
+
+				for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
+					$periode1=$n_per;
+					$periode2=$n_per;
+
+					$index_per=-1;
+					for($loop=0;$loop<count($tab_ele['periodes']);$loop++) {
+						if($tab_ele['periodes'][$loop]['num_periode']==$n_per) {
+							$index_per=$loop;
+							break;
+						}
+					}
+
+					if($index_per!=-1) {
+						// On récupère la classe de l'élève sur la période considérée
+						$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
+						//echo "\$id_classe=$id_classe<br />";
+
+						// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
+						include "../lib/periodes.inc.php";
+
+						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+						//echo "\$test_coef=$test_coef<br />";
+						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
+						$nb_coef_superieurs_a_zero=$test_coef;
+
+						// On regarde si on affiche les catégories de matières
+						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
+						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
+
+						echo "<div id='releve_$periode1' class='onglet' style='";
+						echo " background-color: ".$tab_couleur['releve'].";";
+						if((isset($onglet2))&&(substr($onglet2,0,7)=='releve_')) {
+							if('releve_'.$n_per!=$onglet2) {
+								echo " display:none;";
+							}
+						}
+						else {
+							if($n_per!=$periode_numero_1) {
+								echo " display:none;";
+							}
+						}
+						echo "'>\n";
+						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						// IL MANQUE UN PAQUET D'INITIALISATIONS POUR LES APPELS global DANS releve_html()
+						releve_html($tab_ele,$id_classe,$periode1,$index_per);
+						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						echo "</div>\n";
 					}
 				}
-				else {
-					if($n_per==$periode_numero_1) {
-						echo "border-bottom-color: ".$tab_couleur['releve']."; ";
-					}
-				}
-				echo "background-color: ".$tab_couleur['releve']."; ";
-				echo "'>";
-				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
-				echo "Période $periode1";
-				echo "</a>";
-				echo "</div>\n";
 			}
-
-			//====================================
-			echo "<div style='clear:both;'></div>\n";
-			//====================================
-
-			// Liste des infos à faire apparaitre sur le relevé de notes:
-			$tab_ele['rn_app']='n';
-			$tab_ele['rn_nomdev']='y';
-			$tab_ele['rn_toutcoefdev']='y';
-			$tab_ele['rn_coefdev_si_diff']='y';
-			$tab_ele['rn_datedev']='y';
-			$tab_ele['rn_sign_chefetab']='n';
-			$tab_ele['rn_sign_pp']='n';
-			$tab_ele['rn_sign_resp']='n';
-			$tab_ele['rn_formule']='';
-
-			for($n_per=$periode_numero_1;$n_per<=$periode_numero_2;$n_per++) {
-				$periode1=$n_per;
-				$periode2=$n_per;
-
-				$index_per=-1;
-				for($loop=0;$loop<count($tab_ele['periodes']);$loop++) {
-					if($tab_ele['periodes'][$loop]['num_periode']==$n_per) {
-						$index_per=$loop;
-						break;
-					}
-				}
-
-				// On récupère la classe de l'élève sur la période considérée
-				$id_classe=$tab_ele['periodes'][$index_per]['id_classe'];
-				//echo "\$id_classe=$id_classe<br />";
-
-				// Boucle sur la liste des classes de l'élève pour que $id_classe soit fixé avant l'appel: periodes.inc.php
-				include "../lib/periodes.inc.php";
-
-				// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-				//echo "\$test_coef=$test_coef<br />";
-				// Apparemment, $test_coef est réaffecté plus loin dans un des include()
-				$nb_coef_superieurs_a_zero=$test_coef;
-
-				// On regarde si on affiche les catégories de matières
-				$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
-				if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
-
-				echo "<div id='releve_$periode1' class='onglet' style='";
-				echo " background-color: ".$tab_couleur['releve'].";";
-				if((isset($onglet2))&&(substr($onglet2,0,7)=='releve_')) {
-					if('releve_'.$n_per!=$onglet2) {
-						echo " display:none;";
-					}
-				}
-				else {
-					if($n_per!=$periode_numero_1) {
-						echo " display:none;";
-					}
-				}
-				echo "'>\n";
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-				// IL MANQUE UN PAQUET D'INITIALISATIONS POUR LES APPELS global DANS releve_html()
-				releve_html($tab_ele,$id_classe,$periode1,$index_per);
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-				echo "</div>\n";
+			else {
+				echo "<p>Aucune note à ce jour.</p>\n";
 			}
-
 			echo "</div>\n";
 		}
 
@@ -1701,6 +1710,11 @@ Patientez pendant l'extraction des données... merci.
 						echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
 					}
 					else{
+
+						if(!isset($id_classe)) {
+							$id_classe=$tab_ele['classe'][0]['id_classe'];
+						}
+
 						$cpt=0;
 						while($lig_ant2=mysql_fetch_object($res_ant2)){
 							//if($cpt>0){echo "<td> - </td>\n";}
