@@ -1,14 +1,45 @@
 /*
 Cahier_texte.css
-Mise en page du module cahier de texte
+Mise en page pou validation et accessibilité
 */
 
-/* consultation.php rev 2039*/
-/* Modifications dans consultation.php - share.inc.php - cahier_texte.css - header.inc*/
 
-/* --- Cahier de texte : consultation.php --- */
-/* --- Mise en page choix de l'enseignement + calendrier --- */
-/* 3 colonnes equilibrees*/
+/***********************
+       Général
+***********************/
+/* --- Décoration du texte --- */
+/*souligne le texte*/
+.souligne {
+	text-decoration: underline;
+	font-size: smaller;
+}
+/*aligne le texte*/
+.txt_centre {
+	text-align:center;
+}
+.centre_texte {
+	text-align: center;
+}
+.droite_texte {
+	text-align: right;
+}
+.txt_gauche {
+	text-align: left;
+}
+/* centre le texte et le met en petite capitale grasse*/
+.txt_centre_pt_cap {
+	text-align:center;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+/* colorie le texte */
+.bleu {
+	color:blue;
+	font-variant: small-caps;
+}
+
+/* --- Tableaux --- */
+/* Tableau avec 3 colonnes equilibrees*/
 table.centre_table {
 	width: 100%;
 }
@@ -30,6 +61,77 @@ td.ct_col_droit{
 	text-align:right;
 }
 
+/***********************
+       Accueil.php
+***********************/
+
+#messagerie {
+	width: 70%;
+	padding: 5px 5px 5px 10px;
+	border: 1px dashed #0000AA;
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+/* menu */
+.accueil {
+	width: 68%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-bottom:0px;
+	border: none;
+	text-align: left;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 11pt;
+	font-weight: bold;
+	color: black;
+	background-image: url("./images/background/left-top-corner.png");
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+table.menu {
+	width: 70%;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border: none;
+	border-bottom: 1px solid lightgrey;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	padding-left: 0px;
+	background-image:none;
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+}
+table.menu td {
+	border: 1px solid lightgrey;
+	border-bottom: none;
+	border-top: 1px solid lightgrey;
+	border-left: 1px solid lightgrey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.accueil img {
+	position: relative;
+	bottom: -3px;
+}
+
+/********************************************
+ --- Cahier de texte : consultation.php --- 
+********************************************/
+
+/* Modifications dans consultation.php - share.inc.php - cahier_texte.css - header.inc*/
+/* --- Mise en page choix de l'enseignement + calendrier --- */
+
 /* --- Mise en page affichage du contenu de cahier de texte --- */
 table.centre_cont_text {
 	width:98%;
@@ -43,30 +145,10 @@ td.cct_gauche {
 td.cct_droit {
 	vertical-align:top;
 }
-.bleu {
-	color:blue;
-	font-variant: small-caps;
-}
 
 /* --- Mise en page affichage des travaux personnel de cahier de texte --- */
-/*centre le texte*/
-.txt_centre {
-	text-align:center;
-}
-/* centre le texte et le met en petite capitale grasse*/
-.txt_centre_pt_cap {
-	text-align:center;
-	font-variant: small-caps;
-	font-weight: bold;
-}
-/* 	--- Travaux à faire "futurs" ---
-	--- Donnees recuperees dans global.inc ---
-$color_fond_notices["f"] = "#FFFF80";
-$couleur_cellule["f"] = "#FFFFDF";
-$color_police_travaux = "#FF4444";
-$color_police_matieres = "green";
-$couleur_bord_tableau_notice = "#6F6968";
-$couleur_cellule_gen = "#F6F7EF";		*/
+
+/* 	--- Travaux à faire "futurs" ---*/
 td.cel_trav_futur {
 	border-style:solid;
 	border-width:1px;
@@ -89,10 +171,6 @@ td.cel_trav_futur {
 	color: green;
 	font-variant: small-caps;
 	font-weight: bold;
-}
-.souligne {
-	text-decoration: underline;
-	font-size: smaller;
 }
 table.a_faire_gauche {
 	border-style:solid;
@@ -127,16 +205,7 @@ table.a_faire_gauche {
 	text-decoration: underline;
 	font-size: smaller;
 }
-.txt_gauche {
-	text-align: left;
-}
-/*// Notice informations generales
-	--- Donnees recuperees dans global.inc ---
-$color_fond_notices["i"] = "#ACACFF";
-$couleur_entete_fond["i"] = "#EFEFFF";
-$couleur_cellule["i"]="#EFEFFF";
-$couleur_cellule_alt["i"] = "#C8C8FF";
-$couleur_bord_tableau_notice = "#6F6968";*/
+/* Notice informations generales*/
 .ct_info_generale {
 	border-style:solid;
 	border-width:1px;
@@ -154,12 +223,6 @@ $couleur_bord_tableau_notice = "#6F6968";*/
 	padding: 2px;
 	margin: 2px;
 }
-.centre_texte {
-	text-align: center;
-}
-.droite_texte {
-	text-align: right;
-}
 .ct_jour {
 	border-style:solid;
 	border-width:0px;
@@ -167,13 +230,7 @@ $couleur_bord_tableau_notice = "#6F6968";*/
 	padding: 2px;
 	margin: 2px;
 }
-/*// Cahier de texte - vue generale
-	--- Donnees recuperees dans global.inc ---
-$color_fond_notices["i"] = "#ACACFF";
-$couleur_entete_fond["i"] = "#EFEFFF";
-$couleur_cellule["i"]="#EFEFFF";
-$couleur_cellule_alt["i"] = "#C8C8FF";
-$couleur_bord_tableau_notice = "#6F6968";*/
+/* Cahier de texte - vue generale */
 .ct_sa_table1 {
 	overflow: auto;
 }
@@ -201,8 +258,7 @@ $couleur_bord_tableau_notice = "#6F6968";*/
 	margin: 2px;
 	width:100%;
 }
-/*// Notices de type compte-rendu
-$color_fond_notices["c"] = "#C7FF99";*/
+/*// Notices de type compte-rendu */
 .ct_sa_noti_cr {
 	border-style:solid;
 	border-width:1px;
@@ -211,8 +267,7 @@ $color_fond_notices["c"] = "#C7FF99";*/
 	padding:1px;
 	background-color:#C7FF99;
 }
-/*// Notices de type  travail à faire)
-$color_fond_notices["t"] = "#FFCCCF";*/
+/*// Notices de type  travail à faire) */
 .ct_sa_noti_taf {
 	border-style:solid;
 	border-width:1px;
@@ -221,8 +276,7 @@ $color_fond_notices["t"] = "#FFCCCF";*/
 	padding:1px;
 	background-color:#FFCCCF;
 }
-/*// Notice informations generales
-$color_fond_notices["i"] = "#ACACFF";*/
+/*// Notice informations generales */
 .ct_sa_noti_ig {
 	border-style:solid;
 	border-width:1px;
@@ -231,8 +285,7 @@ $color_fond_notices["i"] = "#ACACFF";*/
 	padding:1px;
 	background-color:#ACACFF;
 }
-/*// Travaux à faire "futurs"
-$color_fond_notices["f"] = "#FFFF80";*/
+/* Travaux à faire "futurs" */
 .ct_sa_noti_fut {
 	border-style:solid;
 	border-width:1px;
@@ -242,10 +295,10 @@ $color_fond_notices["f"] = "#FFFF80";*/
 	background-color:#FFFF80;
 }
 
-/* Affichage page de garde
-Donnee recuperee de h3.gepi + texte centre*/
+/* Affichage page de garde */
 .gepi_garde{
 	text-align:center;
 	font: normal small-caps normal 14pt Verdana;
 	line-height: 125%;
 }
+

@@ -151,8 +151,8 @@ if ($_SESSION['statut'] == "administrateur") {
 
     // Vérification et/ou changement du répertoire de backup
     if (!check_backup_directory()) {
-        echo "<font color='red'>Il y a eu un problème avec la mise à jour du répertoire de sauvegarde. \n";
-        echo "Veuillez vérifier que le répertoire /backup de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
+        echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire de sauvegarde.<br/>\n";
+        echo "Veuillez vérifier que le répertoire /backup de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)</p>\n";
     }
 
     // Vérification et/ou changement du répertoire temp
@@ -164,9 +164,9 @@ if ($_SESSION['statut'] == "administrateur") {
 	*/
 
     if (!check_user_temp_directory()) {
-        echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.</p> \n";
+        echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.<br/>\n";
 		//if($_SESSION['statut']=='administrateur'){
-			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)<br/>\n";
+			echo "Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)</p> \n";
 		/*
 		}
 		else{
@@ -181,7 +181,7 @@ if ($_SESSION['statut'] == "administrateur") {
 
     if ((getSettingValue("disable_login"))!='no'){
 		//echo "<br /><br />\n<font color=\"red\" size=\"+1\">Le site est en cours de maintenance et temporairement inaccessible.<br />Veuillez nous excuser de ce dérangement et réessayer de vous connecter ultérieurement.</font><br />\n";
-		// correction Régis balise <center> invalide (à faire)
+		// correction Régis balise <center> invalide 
 		echo "<p style=\"text-align: center; color: red;\">Attention : le site est en cours de maintenance et temporairement inaccessible.</p>\n";
 	}
 
@@ -190,17 +190,17 @@ if ($_SESSION['statut'] == "administrateur") {
     $sql = "select LOGIN from log where END > now()";
     $res = sql_query($sql);
     $nb_connect = sql_count($res);
-    echo "Nombre de personnes actuellement connectées : $nb_connect ";
-    echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n";
+    echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
+    echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n</p>\n";
 
 	// Lien vers le panneau de contrôle de sécurité
 	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
 	if (empty($alert_sums)) $alert_sums = "0";
-	echo "<br />Alertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)";
+	echo "<p>\nAlertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)</p>\n";
 
 // christian : demande d'enregistrement
 if ($force_ref) {
-    ?><div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #CFD7FF;  padding: 2px; margin-left: 60px; margin-right: 60px; margin-top: 2px; margin-bottom: 2px;  text-align: center; color: #1C1A8F; font-weight: bold;">Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.<br /><a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=explication')" title="Pourquoi est-ce utile ?">Pourquoi est-ce utile ?</a> / <a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=1')" title="Référencer votre établissement">Référencer votre établissement</a>.</div><?php
+    ?><div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #CFD7FF;  padding: 2px; margin-left: 60px; margin-right: 60px; margin-top: 2px; margin-bottom: 2px;  text-align: center; color: #1C1A8F; font-weight: bold;"><p>Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.<br /><a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=explication')" title="Pourquoi est-ce utile ?">Pourquoi est-ce utile ?</a> / <a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=1')" title="Référencer votre établissement">Référencer votre établissement</a>.</p></div><?php
 }
 // fin christian demande d'enregistrement
 
@@ -234,7 +234,7 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||
 		}
 		else{
 		*/
-			echo "Veuillez contacter l'administrateur pour résoudre ce problème.<br />\n";
+			echo "<p>Veuillez contacter l'administrateur pour résoudre ce problème.</p>\n";
 			$_SESSION['user_temp_directory']='n';
 		//}
         echo "</div>\n";
@@ -290,13 +290,16 @@ while ($ind < $nb_messages) {
     }
     $ind++;
 }
+// modification Régis : utilisation de div plutôt que de table pour la mise en page
 if ($affiche_messages == 'yes') {
-    echo "<table id='messagerie' summary=\"Panneau d'affichage\">\n";
-    echo "<tr><td>".$texte_messages;
-    echo "</td></tr></table>\n";
+    echo "<div id='messagerie'>\n";
+    echo "$texte_messages";
+    echo "</div>\n";
 }
 
-
+/****************************
+	Outils d'administration
+****************************/
 
 $chemin = array(
 "/gestion/index.php",
@@ -317,144 +320,144 @@ $expli = array(
 );
 
 $nb_ligne = count($chemin);
-//
-// Outils d'administration
-//
+
+
+
 $affiche = 'no';
 for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+	if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Outils d'administration\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/configure.png' alt='Admin' class='link'/> - Administration</th>\n";
-    echo "</tr>\n";
-    // Affichage du bouton pour lancer une sauvegarde
-    echo "<tr>";
-    echo "<td colspan='2' style='text-align: center; padding: 10px;'>";
-    echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" name=\"formulaire\">\n";
-    if (getSettingValue("mode_sauvegarde") == "mysqldump") {
-    	echo "<input type='hidden' name='action' value='system_dump' />";
-    } else {
-    	echo "<input type='hidden' name='action' value='dump' />";
-    }
-    echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></form>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Administration</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils d'administration. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+	//echo "<tr>\n";
+	//echo "<th colspan='2'><img src='./images/icons/configure.png' alt='Admin' class='link'/> - Administration</th>\n";
+	//echo "</tr>\n";
+	// Affichage du bouton pour lancer une sauvegarde
+	echo "<tr>";
+	echo "<td colspan='2' style='text-align: center; padding: 10px;'>";
+	echo "<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" id=\"formulaire\" >\n";
+	if (getSettingValue("mode_sauvegarde") == "mysqldump") {
+		echo "<p>\n<input type='hidden' name='action' value='system_dump' />";
+	} else {
+		echo "<input type='hidden' name='action' value='dump' />";
+	}
+	echo "<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" /></p></form>\n";
 	echo "<span class='small'>(le répertoire \"documents\" contenant les documents joints aux cahiers de texte ne sera pas sauvegardé)</span>\n";
-    echo "</td></tr>";
-    for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-    }
-    echo "</table>\n";
+	echo "</td></tr>";
+	for ($i=0;$i<$nb_ligne;$i++) {
+		affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+	}
+	echo "</table>\n";
 }
-//
-// Outils de gestion
-//
 
+/********************************
+	Fin outils d'administration
+********************************/
+
+
+/****************************************************************
+	Outils de gestion des absences : module de Christian Chapel
+*****************************************************************/
+
+//On vérifie si le module est activé
+if (getSettingValue("active_module_absence")=='y') {
+//
+// Gestion Absences, dispenses, retards
+//
+    $chemin = array();
+    $chemin[] = "/mod_absences/gestion/gestion_absences.php";
+    $chemin[] = "/mod_absences/gestion/voir_absences_viescolaire.php";
+
+    $titre = array();
+    $titre[] = "Gestion Absences, dispenses, retards et infirmeries";
+    $titre[] = "Visualiser les absences";
+
+    $expli = array();
+    $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
+    $expli[] = "Vous pouvez visualiser créneau par créneau la saisie des absences.";
+
+    $nb_ligne = count($chemin);
+    $affiche = 'no';
+    for ($i=0;$i<$nb_ligne;$i++) {
+        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    }
+    if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/absences.png' alt=''/> - Gestion des retards et absences</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils de gestion des absences. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+		 // echo "<table class='menu' summary=\"Outils de gestion des absences\">\n";
+         // echo "<tr>\n";
+         // echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
+         // echo "</tr>\n";
+          for ($i=0;$i<$nb_ligne;$i++) {
+            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+        }
+        echo "</table>\n";
+    }
+}
+
+/********************************************************************
+	Fin outils de gestion des absences : module de Christian Chapel
+********************************************************************/
+
+
+/************************************************************************************
+	Outils de gestion des absences par les professeurs : module de Christian Chapel
+************************************************************************************/
+
+//On vérifie si le module est activé
+if (getSettingValue("active_module_absence_professeur")=='y') {
+//
+// Gestion des ajout d'Absences par les professeurs
+//
+    $chemin = array();
+    $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
+
+    $titre = array();
+    $titre[] = "Gestion des Absences par le professeur";
+
+    $expli = array();
+    $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
+
+    $nb_ligne = count($chemin);
+    $affiche = 'no';
+    for ($i=0;$i<$nb_ligne;$i++) {
+        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    }
+    if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/absences.png' alt=''/> - Gestion des retards et absences</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils de gestion des absences. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+          //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		  //echo "<table class='menu' summary=\"Outils de gestion des absences par les professeurs\">\n";
+          //echo "<tr>\n";
+          //echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
+          //echo "</tr>\n";
+          for ($i=0;$i<$nb_ligne;$i++) {
+            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+        }
+        echo "</table>\n";
+    }
+}
+
+/****************************************************************************************
+	Fin outils de gestion des absences par les professeurs : module de Christian Chapel
+****************************************************************************************/
+
+
+/***********
+	Saisie
+***********/
 // On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de texte et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
 $test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));
 
-
-$chemin = array();
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{$chemin[] = "/bulletin/verif_bulletins.php"; }
-if ($_SESSION['statut']!='professeur')
-{$chemin[] = "/bulletin/verrouillage.php"; }
-
-//==========================================================
-// AJOUT: boireaus 20080219
-//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-
-//        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
-{ $chemin[] = "/classes/acces_appreciations.php"; }
-//==========================================================
-
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
-{ $chemin[] = "/bulletin/param_bull.php"; }
-if ($_SESSION['statut']=='scolarite')
-{ $chemin[] = "/responsables/index.php"; }
-if ($_SESSION['statut']=='scolarite')
-{ $chemin[] = "/eleves/index.php"; }
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{ $chemin[] = "/bulletin/index.php";}
-
-$titre = array();
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{ $titre[] = "Outil de vérification";}
-if ($_SESSION['statut']!='professeur')
-{ $titre[] = "Verrouillage/Déverrouillage des périodes";}
-
-//==========================================================
-// AJOUT: boireaus 20080219
-//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-
-//        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
-{ $titre[] = "Accès des élèves et responsables aux appreciations"; }
-//==========================================================
-
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
-{ $titre[] = "Paramètres d'impression des bulletins";}
-if ($_SESSION['statut']=='scolarite')
-{ $titre[] = "Gestion des fiches responsables élèves";}
-if ($_SESSION['statut']=='scolarite')
-{ $titre[] = "Gestion des fiches élèves";}
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{ $titre[] = "Visualisation et impression des bulletins";}
-
-$expli = array();
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{$expli[] = "Permet de vérifier si toutes les rubriques des bulletins sont remplies.";}
-if ($_SESSION['statut']!='professeur')
-{ $expli[] = "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.";}
-
-//==========================================================
-// AJOUT: boireaus 20080219
-//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-
-//        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
-{ $expli[] = "Permet de définir quand les comptes élèves et responsables (s'ils existent) peuvent accéder aux appreciations des professeurs sur le bulletin et avis du conseil de classe."; }
-//==========================================================
-
-if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
-{ $expli[] = "Permet de modifier les paramètres de mise en page et d'impression des bulletins.";}
-if ($_SESSION['statut']=='scolarite')
-{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches responsable élèves.";}
-if ($_SESSION['statut']=='scolarite')
-{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches élèves.";}
-if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
-{ $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.";}
-
-$nb_ligne = count($chemin);
-$affiche = 'no';
-for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-    //else{echo "$chemin[$i] refusé<br />";}
-}
-if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Outils de gestion\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/document.png' alt='Bulletins' class='link'/> - Bulletins scolaires</th>\n";
-    echo "</tr>\n";
-    for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-    }
-    echo "</table>\n";
-}
-
-
-
-//
-// Saisie
-//
 $chemin = array();
 $chemin[] = "/absences/index.php";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $chemin[] = "/cahier_texte/index.php";
@@ -529,21 +532,203 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Saisie\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/saisie.png' alt='Saisie' class='link'/> - Saisie</th>\n";
-    echo "</tr>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Saisie</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils de Saisie. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    //echo "<table class='menu' summary=\"Saisie\">\n";
+    //echo "<tr>\n";
+    //echo "<th colspan='2'><img src='./images/icons/saisie.png' alt='Saisie' class='link'/> - Saisie</th>\n";
+    //echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
 }
 
+/******************
+	Fin de saisie
+******************/
+
+
+/**********************************************************************
+	Outils de gestion des trombinoscopes : module de Christian Chapel
+**********************************************************************/
+
+//On vérifie si le module est activé
+//if (getSettingValue("active_module_trombinoscopes")=='y') {
+if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("active_module_trombino_pers")=='y')) {
 //
-// Outils destinés essentiellement aux parents
-// et aux élèves
+// Visualisation des trombinoscopes
 //
+    $chemin = array();
+    $chemin[] = "/mod_trombinoscopes/trombinoscopes.php";
+
+    $titre = array();
+    $titre[] = "Trombinoscopes";
+
+    $expli = array();
+    $expli[] = "Cet outil vous permet de visualiser les trombinoscopes des classes.";
+
+    // On n'appelle les aid "trombinoscope"
+    $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
+    $nb_aid = mysql_num_rows($call_data);
+    $i=0;
+    while ($i < $nb_aid) {
+        $indice_aid = @mysql_result($call_data, $i, "indice_aid");
+        $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
+        $nb_result = mysql_num_rows($call_prof);
+        if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
+            $nom_aid = @mysql_result($call_data, $i, "nom");
+            $chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
+            $titre[] = $nom_aid;
+            $expli[] = "Cet outil vous permet de visualiser quels élèves ont le droit d'envoyer/modifier leur photo.";
+        }
+        $i++;
+    }
+
+
+    $nb_ligne = count($chemin);
+    $affiche = 'no';
+    for ($i=0;$i<$nb_ligne;$i++) {
+        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    }
+    if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Trombinoscope</h2>\n";
+		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		echo "<table class='menu' summary=\"Outils de gestion des trombinoscopes. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    	 // echo "<table class='menu' summary=\"Outils de gestion des trombinoscopes\">\n";
+          //echo "<tr>\n";
+          //echo "<th colspan='2'><img src='./images/icons/contact.png' alt='Trombi' class='link'/> - Trombinoscope</th>\n";
+          //echo "</tr>\n";
+          for ($i=0;$i<$nb_ligne;$i++) {
+            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+        }
+        echo "</table>\n";
+    }
+}
+
+/**********************************************************************
+	Fin de gestion des trombinoscopes : module de Christian Chapel
+**********************************************************************/
+
+
+/******************************
+	Outils de relevé de notes
+******************************/
+/* $test_prof_suivi doit être défini avant */
+
+$condition = (
+    (getSettingValue("active_carnets_notes")=='y')
+    AND
+        ((($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") == "yes"))
+        OR
+        (
+        ($_SESSION['statut'] == "professeur") AND
+            (
+            (getSettingValue("GepiAccesReleveProf") == "yes") OR
+            (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
+            (getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") OR
+            ((getSettingValue("GepiAccesReleveProfP") == "yes") AND ($test_prof_suivi != "0"))
+            )
+        )
+        OR
+        (($_SESSION['statut'] == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
+
+$condition2 = ($_SESSION['statut'] != "professeur" OR
+				(
+				$_SESSION['statut'] == "professeur" AND
+				(
+	            	(getSettingValue("GepiAccesMoyennesProf") == "yes") OR
+	            	(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
+	            	(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")
+				)
+				)
+			);
+
+$chemin = array();
+if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes.php";
+
+$titre = array();
+if ($condition) $titre[] = "Visualisation et impression des relevés de notes";
+
+$expli = array();
+if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, élève par élève, classe par classe.";
+
+
+if ($condition && $condition2) $chemin[] = "/cahier_notes/index2.php";
+if ($condition && $condition2) $titre[] = "Visualisation des moyennes des carnets de notes";
+if ($condition && $condition2) $expli[] = "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.";
+
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/releve.png' alt=''/> - Relevés de notes</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils de relevés de notes. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    //echo "<table class='menu' summary=\"Outils de relevés de notes\">\n";
+    //echo "<tr>\n";
+    //echo "<th colspan='2'><img src='./images/icons/releve.png' alt='Relevés' class='link'/> - Relevés de notes</th>\n";
+    //echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+/**********************************
+	Fin outils de relevé de note$
+**********************************/
+
+
+/********************
+	Emploi du temps
+********************/
+
+$chemin = array();
+$chemin[] = "/edt_organisation/index_edt.php";
+
+$titre = array();
+$titre[] = "Emploi du temps";
+
+$expli = array();
+$expli[] = "Cet outil permet la consultation/gestion de l'emploi du temps.";
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+}
+	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
+if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Emploi du temps</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Module Emploi du temps. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+   // echo "<table class='menu' summary=\"Module Emploi du temps\">\n";
+   // echo "<tr>\n";
+   // echo "<th colspan='2'><img src='./images/icons/document.png' alt='Emploi du temps' class='link'/> - Emploi du temps</th>\n";
+   // echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+/************************
+	fin emploi du temps
+************************/
+
+
+/**************************************************************
+	Outils destinés essentiellement aux parents et aux élèves
+**************************************************************/
 
 $chemin = array();
 $titre = array();
@@ -642,230 +827,28 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    echo "<table class='menu' summary=\"Absences\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/vie_privee.png' alt='Consultation' class='link'/> - Consultation</th>\n";
-    echo "</tr>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/vie_privee.png' alt=''/> - Consultation</h2>\n";
+	echo "<table class='menu' summary=\"Outils de consultation. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    // echo "<table class='menu' summary=\"Absences\">\n";
+    // echo "<tr>\n";
+   //  echo "<th colspan='2'><img src='./images/icons/vie_privee.png' alt='Consultation' class='link'/> - Consultation</th>\n";
+    // echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
 }
 
-
-//
-// Outils de relevé de note
-//
-$condition = (
-    (getSettingValue("active_carnets_notes")=='y')
-    AND
-        ((($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") == "yes"))
-        OR
-        (
-        ($_SESSION['statut'] == "professeur") AND
-            (
-            (getSettingValue("GepiAccesReleveProf") == "yes") OR
-            (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
-            (getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") OR
-            ((getSettingValue("GepiAccesReleveProfP") == "yes") AND ($test_prof_suivi != "0"))
-            )
-        )
-        OR
-        (($_SESSION['statut'] == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
-
-$condition2 = ($_SESSION['statut'] != "professeur" OR
-				(
-				$_SESSION['statut'] == "professeur" AND
-				(
-	            	(getSettingValue("GepiAccesMoyennesProf") == "yes") OR
-	            	(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
-	            	(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")
-				)
-				)
-			);
-
-$chemin = array();
-if ($condition) $chemin[] = "/cahier_notes/visu_releve_notes.php";
-
-$titre = array();
-if ($condition) $titre[] = "Visualisation et impression des relevés de notes";
-
-$expli = array();
-if ($condition) $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, élève par élève, classe par classe.";
+/******************************************************************
+	Fin outils destinés essentiellement aux parents et aux élèves
+******************************************************************/
 
 
-if ($condition && $condition2) $chemin[] = "/cahier_notes/index2.php";
-if ($condition && $condition2) $titre[] = "Visualisation des moyennes des carnets de notes";
-if ($condition && $condition2) $expli[] = "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.";
-
-
-$nb_ligne = count($chemin);
-$affiche = 'no';
-for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-}
-if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Outils de relevés de notes\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/releve.png' alt='Relevés' class='link'/> - Relevés de notes</th>\n";
-    echo "</tr>\n";
-    for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-    }
-    echo "</table>\n";
-}
-
-//
-// Outils de gestion des absences : module de Christian Chapel
-//
-
-//On vérifie si le module est activé
-if (getSettingValue("active_module_absence")=='y') {
-//
-// Gestion Absences, dispenses, retards
-//
-    $chemin = array();
-    $chemin[] = "/mod_absences/gestion/gestion_absences.php";
-    $chemin[] = "/mod_absences/gestion/voir_absences_viescolaire.php";
-
-    $titre = array();
-    $titre[] = "Gestion Absences, dispenses, retards et infirmeries";
-    $titre[] = "Visualiser les absences";
-
-    $expli = array();
-    $expli[] = "Cet outil vous permet de gérer les absences, dispenses, retards et autres  bobos à l'infirmerie des élèves.";
-    $expli[] = "Vous pouvez visualiser créneau par créneau la saisie des absences.";
-
-    $nb_ligne = count($chemin);
-    $affiche = 'no';
-    for ($i=0;$i<$nb_ligne;$i++) {
-        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-    }
-    if ($affiche=='yes') {
-          //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		  echo "<table class='menu' summary=\"Outils de gestion des absences\">\n";
-          echo "<tr>\n";
-          echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
-          echo "</tr>\n";
-          for ($i=0;$i<$nb_ligne;$i++) {
-            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-        }
-        echo "</table>\n";
-    }
-}
-
-//
-// Outils de gestion des absences par les professeurs : module de Christian Chapel
-//
-
-//On vérifie si le module est activé
-if (getSettingValue("active_module_absence_professeur")=='y') {
-//
-// Gestion des ajout d'Absences par les professeurs
-//
-    $chemin = array();
-    $chemin[] = "/mod_absences/professeurs/prof_ajout_abs.php";
-
-    $titre = array();
-    $titre[] = "Gestion des Absences par le professeur";
-
-    $expli = array();
-    $expli[] = "Cet outil vous permet de gérer les absences durant vos cours.";
-
-    $nb_ligne = count($chemin);
-    $affiche = 'no';
-    for ($i=0;$i<$nb_ligne;$i++) {
-        if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-    }
-    if ($affiche=='yes') {
-          //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		  echo "<table class='menu' summary=\"Outils de gestion des absences par les professeurs\">\n";
-          echo "<tr>\n";
-          echo "<th colspan='2'><img src='./images/icons/absences.png' alt='Absences' class='link'/> - Gestion des retards et absences</th>\n";
-          echo "</tr>\n";
-          for ($i=0;$i<$nb_ligne;$i++) {
-            affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-        }
-        echo "</table>\n";
-    }
-}
-
-//
-// Outils de gestion des trombinoscopes : module de Christian Chapel
-//
-
-//On vérifie si le module est activé
-//if (getSettingValue("active_module_trombinoscopes")=='y') {
-if ((getSettingValue("active_module_trombinoscopes")=='y')||(getSettingValue("active_module_trombino_pers")=='y')) {
-//
-// Visualisation des trombinoscopes
-//
-	$acces_trombino="y";
-
-	//echo "\$acces_trombino=$acces_trombino<br />";
-
-	if($_SESSION['statut']=='eleve') {
-		$acces_trombino="n";
-
-		if((getSettingValue("GepiAccesEleTrombiPersonnels")=="yes")||
-			(getSettingValue("GepiAccesEleTrombiElevesClasse")=="yes")||
-			(getSettingValue("GepiAccesEleTrombiTousEleves")=="yes")||
-			(getSettingValue("GepiAccesEleTrombiProfsClasse")=="yes")) {
-				$acces_trombino="y";
-		}
-	}
-
-	//echo "\$acces_trombino=$acces_trombino<br />";
-
-	if($acces_trombino=="y") {
-		$chemin = array();
-		$chemin[] = "/mod_trombinoscopes/trombinoscopes.php";
-
-		$titre = array();
-		$titre[] = "Trombinoscopes";
-
-		$expli = array();
-		$expli[] = "Cet outil vous permet de visualiser les trombinoscopes des classes.";
-
-		// On n'appelle les aid "trombinoscope"
-		$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."' ORDER BY nom");
-		$nb_aid = mysql_num_rows($call_data);
-		$i=0;
-		while ($i < $nb_aid) {
-			$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-			$call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_SESSION['login'] . "' and indice_aid = '$indice_aid')");
-			$nb_result = mysql_num_rows($call_prof);
-			if (($nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-				$nom_aid = @mysql_result($call_data, $i, "nom");
-				$chemin[] = "/aid/index2.php?indice_aid=".$indice_aid;
-				$titre[] = $nom_aid;
-				$expli[] = "Cet outil vous permet de visualiser quels élèves ont le droit d'envoyer/modifier leur photo.";
-			}
-			$i++;
-		}
-
-
-		$nb_ligne = count($chemin);
-		$affiche = 'no';
-		for ($i=0;$i<$nb_ligne;$i++) {
-			if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-		}
-		if ($affiche=='yes') {
-			//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-			echo "<table class='menu' summary=\"Outils de gestion des trombinoscopes\">\n";
-			echo "<tr>\n";
-			echo "<th colspan='2'><img src='./images/icons/contact.png' alt='Trombi' class='link'/> - Trombinoscope</th>\n";
-			echo "</tr>\n";
-			for ($i=0;$i<$nb_ligne;$i++) {
-				affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-			}
-			echo "</table>\n";
-		}
-	}
-}
-
+/**********************************************
 // Outils complémentaires de gestion des AID
+**********************************************/
+
 // Y-a-t-il des AIDs pour lesquelles les outils complémetaires sont activés ?
 
 // Dans le cas des élèves, on n'affiche que les AID dans lesquelles ils sont inscrits
@@ -902,10 +885,14 @@ if ($nb_aid != 0) {
       if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID\">\n";
-      echo "<tr>\n";
-      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
-      echo "</tr>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Outils de visualisation et d'édition des fiches projets</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+      //echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID\">\n";
+      //echo "<tr>\n";
+      //echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
+      //echo "</tr>\n";
       for ($i=0;$i<$nb_ligne;$i++) {
           if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))
               affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
@@ -914,15 +901,136 @@ if ($nb_aid != 0) {
   }
 }
 
+/**************************************************
+	Fin outils complémentaires de gestion des AID
+**************************************************/
 
 
+/**********************************************
+	Outils de gestion des Bulletins scolaires
+**********************************************/
 
+// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de texte et au carnet de notes
+$test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
+// On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
+$test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));
+
+
+$chemin = array();
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{$chemin[] = "/bulletin/verif_bulletins.php"; }
+if ($_SESSION['statut']!='professeur')
+{$chemin[] = "/bulletin/verrouillage.php"; }
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $chemin[] = "/classes/acces_appreciations.php"; }
+//==========================================================
+
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
+{ $chemin[] = "/bulletin/param_bull.php"; }
+if ($_SESSION['statut']=='scolarite')
+{ $chemin[] = "/responsables/index.php"; }
+if ($_SESSION['statut']=='scolarite')
+{ $chemin[] = "/eleves/index.php"; }
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{ $chemin[] = "/bulletin/index.php";}
+
+$titre = array();
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{ $titre[] = "Outil de vérification";}
+if ($_SESSION['statut']!='professeur')
+{ $titre[] = "Verrouillage/Déverrouillage des périodes";}
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $titre[] = "Accès des élèves et responsables aux appreciations"; }
+//==========================================================
+
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
+{ $titre[] = "Paramètres d'impression des bulletins";}
+if ($_SESSION['statut']=='scolarite')
+{ $titre[] = "Gestion des fiches responsables élèves";}
+if ($_SESSION['statut']=='scolarite')
+{ $titre[] = "Gestion des fiches élèves";}
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{ $titre[] = "Visualisation et impression des bulletins";}
+
+$expli = array();
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{$expli[] = "Permet de vérifier si toutes les rubriques des bulletins sont remplies.";}
+if ($_SESSION['statut']!='professeur')
+{ $expli[] = "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.";}
+
+//==========================================================
+// AJOUT: boireaus 20080219
+//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+
+//        Sur quel droit s'appuyer pour donner l'accès?
+//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) OR ($_SESSION['statut']=='scolarite') OR ($_SESSION['statut']=='administrateur'))
+{ $expli[] = "Permet de définir quand les comptes élèves et responsables (s'ils existent) peuvent accéder aux appreciations des professeurs sur le bulletin et avis du conseil de classe."; }
+//==========================================================
+
+if ((($test_prof_suivi != "0") and ($_SESSION['statut']=='professeur') AND (getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")=='yes')) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")=='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")=='yes')))
+{ $expli[] = "Permet de modifier les paramètres de mise en page et d'impression des bulletins.";}
+if ($_SESSION['statut']=='scolarite')
+{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches responsable élèves.";}
+if ($_SESSION['statut']=='scolarite')
+{ $expli[] = "Cet outil vous permet de modifier/supprimer/ajouter des fiches élèves.";}
+if ((($test_prof_suivi != "0") and (getSettingValue("GepiProfImprBul")=='yes')) or ($_SESSION['statut']!='professeur'))
+{ $expli[] = "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.";}
+
+$nb_ligne = count($chemin);
+$affiche = 'no';
+for ($i=0;$i<$nb_ligne;$i++) {
+    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
+    //else{echo "$chemin[$i] refusé<br />";}
+}
+if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Bulletins scolaires</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Bulletins scolaires. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    //echo "<table class='menu' summary=\"Outils de gestion\">\n";
+    //echo "<tr>\n";
+    //echo "<th colspan='2'><img src='./images/icons/document.png' alt='Bulletins' class='link'/> - Bulletins scolaires</th>\n";
+    //echo "</tr>\n";
+    for ($i=0;$i<$nb_ligne;$i++) {
+        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
+    }
+    echo "</table>\n";
+}
+
+/*******************************************
+	Fin de gestion des Bulletins scolaires
+*******************************************/
+
+
+/*************************************
 // Accès aux modules propres au LPI
+*************************************/
 if (file_exists("./lpi/accueil.php")) require("./lpi/accueil.php");
 
-//
-// Visualisation / Impression
-//
+/*************************************
+	Fin accès aux modules propres au LPI
+*************************************/
+
+
+/*******************************
+	Visualisation / Impression
+*******************************/
+/*$test_prof_suivi et $test_prof_matiere  doivent être définis avant*/
 
 $conditions_moyennes = (
         ($_SESSION['statut'] != "professeur")
@@ -1013,7 +1121,7 @@ $expli = array();
 //===========================
 // AJOUT:boireaus
 $expli[] = "Ceci vous permet de connaître tous les enseignants des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.";
-$expli[] = "Ce menu vous permet de consulter dans une même page les informations concernant un élève (<i>enseignements suivis, bulletins, relevés de notes, responsables,...</i>). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.";
+$expli[] = "Ce menu vous permet de consulter dans une même page les informations concernant un élève (<em>enseignements suivis, bulletins, relevés de notes, responsables,...</em>). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.";
 $expli[] = "Ceci vous permet d'imprimer en PDF des listes d'élèves à l'unité ou en série. L'apparence des listes est paramétrable.";
 if(($_SESSION['statut']=='scolarite')||(($_SESSION['statut']=='professeur') and ($test_prof_suivi != "0"))){
 	$expli[] = "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.";
@@ -1077,20 +1185,27 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Visualisation/Impression\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/print.png' alt='Imprimer' class='link'/> - Visualisation - Impression</th>\n";
-    echo "</tr>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/print.png' alt=''/> - Visualisation - Impression</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Visualisation - Impression. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    //echo "<table class='menu' summary=\"Visualisation/Impression\">\n";
+    //echo "<tr>\n";
+    //echo "<th colspan='2'><img src='./images/icons/print.png' alt='Imprimer' class='link'/> - Visualisation - Impression</th>\n";
+    //echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
 }
+/***********************************
+	Fin visualisation / Impression
+***********************************/
 
 
-// **********************************
-// Gestion Notanet
+/********************
+	Gestion Notanet
+********************/
 if (getSettingValue("active_notanet")=='y') {
 	$chemin = array();
 	//$chemin[] = "/mod_notanet/notanet.php";
@@ -1141,24 +1256,30 @@ if (getSettingValue("active_notanet")=='y') {
 	}
 
 	if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Notanet/Fiches Brevet</h2>\n";
 		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		echo "<table class='menu' summary=\"Gestion Notanet\">\n";
-		echo "<tr>\n";
-		echo "<th colspan='2'><img src='./images/icons/document.png' alt='Notanet/Fiches Brevet' class='link'/> - Notanet/Fiches Brevet</th>\n";
-		echo "</tr>\n";
+		echo "<table class='menu' summary=\"Gestion Notanet. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+		//echo "<table class='menu' summary=\"Gestion Notanet\">\n";
+		//echo "<tr>\n";
+		//echo "<th colspan='2'><img src='./images/icons/document.png' alt='Notanet/Fiches Brevet' class='link'/> - Notanet/Fiches Brevet</th>\n";
+		//echo "</tr>\n";
 		for ($i=0;$i<$nb_ligne;$i++) {
 			affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
 		}
 		echo "</table>\n";
 	}
 }
-// **********************************
+
+/************************
+	Fin gestion Notanet
+************************/
 
 
+/*******************************
+// Gestion années antérieures
+*******************************/
 
-
-// **********************************
-// Gestion Années antérieures
 if (getSettingValue("active_annees_anterieures")=='y') {
 	$chemin = array();
 	$titre = array();
@@ -1167,7 +1288,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 	if($_SESSION['statut']=='administrateur'){
 		$chemin[] = "/mod_annees_anterieures/index.php";
 		$titre[] = "Années antérieures";
-		$expli[] = "Cet outil permet de gérer et de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+		$expli[] = "Cet outil permet de gérer et de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 	}
 	else{
 		if($_SESSION['statut']=='professeur') {
@@ -1179,7 +1300,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 			if(($AAProfTout=="yes")||($AAProfClasses=="yes")||($AAProfGroupes=="yes")){
 				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 				$titre[] = "Années antérieures";
-				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 			}
 			elseif($AAProfPrinc=="yes"){
 				$sql="SELECT 1=1 FROM classes c,
@@ -1191,7 +1312,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 				if(mysql_num_rows($test)>0){
 					$chemin[] = "/mod_annees_anterieures/index.php";
 					$titre[] = "Années antérieures";
-					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 				}
 			}
 		}
@@ -1202,7 +1323,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 			if($AAScolTout=="yes"){
 				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 				$titre[] = "Années antérieures";
-				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 			}
 			elseif($AAScolResp=="yes"){
 				$sql="SELECT 1=1 FROM j_scol_classes jsc
@@ -1211,7 +1332,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 				if(mysql_num_rows($test)>0){
 					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 					$titre[] = "Années antérieures";
-					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 				}
 			}
 		}
@@ -1222,7 +1343,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 			if($AACpeTout=="yes"){
 				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 				$titre[] = "Années antérieures";
-				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 			}
 			elseif($AACpeResp=="yes"){
 				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."'";
@@ -1230,7 +1351,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 				if(mysql_num_rows($test)>0){
 					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 					$titre[] = "Années antérieures";
-					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 				}
 			}
 		}
@@ -1246,7 +1367,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 				if(mysql_num_rows($test)>0){
 					$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 					$titre[] = "Années antérieures";
-					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+					$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 				}
 			}
 		}
@@ -1256,12 +1377,10 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 			if($AAEleve=="yes"){
 				$chemin[] = "/mod_annees_anterieures/consultation_annee_anterieure.php";
 				$titre[] = "Années antérieures";
-				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<i>bulletins simplifiés,...</i>).";
+				$expli[] = "Cet outil permet de consulter les données d'années antérieures (<em>bulletins simplifiés,...</em>).";
 			}
 		}
 	}
-
-
 
 	$nb_ligne = count($chemin);
 	$affiche = 'no';
@@ -1269,22 +1388,29 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+	// modification Régis : créer des <h2> pour faciliter la navigation
+		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Années antérieures</h2>\n";
 		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-		echo "<table class='menu' summary=\"Gestion des Années antérieures\">\n";
-		echo "<tr>\n";
-		echo "<th colspan='2'><img src='./images/icons/document.png' alt='Années antérieures' class='link'/> - Années antérieures</th>\n";
-		echo "</tr>\n";
+		echo "<table class='menu' summary=\"Gestion des Années antérieures. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+		//echo "<table class='menu' summary=\"Gestion des Années antérieures\">\n";
+		//echo "<tr>\n";
+		//echo "<th colspan='2'><img src='./images/icons/document.png' alt='Années antérieures' class='link'/> - Années antérieures</th>\n";
+		//echo "</tr>\n";
 		for ($i=0;$i<$nb_ligne;$i++) {
 			affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
 		}
 		echo "</table>\n";
 	}
 }
-// **********************************
+
+/***********************************
+	Fin gestion Années antérieures
+***********************************/
 
 
-
+/*************************
 // Gestion des messages
+*************************/
 
 $chemin = array();
 $chemin[] = "/messagerie/index.php";
@@ -1302,53 +1428,29 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Gestion du panneau d'affichage\">\n";
-    echo "<tr>\n";
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/mail.png' alt=''/> - Panneau d'affichage</h2>\n";
+	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+	echo "<table class='menu' summary=\"Gestion du panneau d'affichage. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+    //echo "<table class='menu' summary=\"Gestion du panneau d'affichage\">\n";
+    //echo "<tr>\n";
     //echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Messagerie</th>\n";
-    echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Panneau d'affichage</th>\n";
-    echo "</tr>\n";
-    for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-    }
-    echo "</table>\n";
-}
-// **********************************
-
-
-
-// EDT
-
-$chemin = array();
-$chemin[] = "/edt_organisation/index_edt.php";
-
-$titre = array();
-$titre[] = "Emploi du temps";
-
-$expli = array();
-$expli[] = "Cet outil permet la consultation/gestion de l'emploi du temps.";
-
-$nb_ligne = count($chemin);
-$affiche = 'no';
-for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-}
-	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
-if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary=\"Module Emploi du temps\">\n";
-    echo "<tr>\n";
-    echo "<th colspan='2'><img src='./images/icons/document.png' alt='Emploi du temps' class='link'/> - Emploi du temps</th>\n";
-    echo "</tr>\n";
+   // echo "<th colspan='2'><img src='./images/icons/mail.png' alt='Messagerie' class='link'/> - Panneau d'affichage</th>\n";
+    //echo "</tr>\n";
     for ($i=0;$i<$nb_ligne;$i++) {
         affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
     }
     echo "</table>\n";
 }
 
-//
-// Module Ateliers
-//
+/*************************
+	Fin gestion des messages
+*************************/
+
+
+/********************
+	Module Ateliers
+********************/
 
 if (EstAutoriseAteliers($_SESSION["login"])) {
   $chemin = array();
@@ -1365,10 +1467,14 @@ if (EstAutoriseAteliers($_SESSION["login"])) {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu' summary=\"Module Ateliers\">\n";
-      echo "<tr>\n";
-      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - Module Ateliers </th>\n";
-      echo "</tr>\n";
+		// modification Régis : créer des <h2> pour faciliter la navigation
+		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Module Ateliers</h2>\n";
+		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		echo "<table class='menu' summary=\"Module Ateliers. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+      //echo "<table class='menu' summary=\"Module Ateliers\">\n";
+      //echo "<tr>\n";
+      //echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - Module Ateliers </th>\n";
+     // echo "</tr>\n";
       for ($i=0;$i<$nb_ligne;$i++) {
           affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
       }
@@ -1376,9 +1482,15 @@ if (EstAutoriseAteliers($_SESSION["login"])) {
   }
 }
 
-//
-// Module d'inscription
-//
+/************************
+	Fin module Ateliers
+************************/
+
+
+/*************************
+	Module inscription
+*************************/
+
 if (getSettingValue("active_inscription")=='y') {
   $chemin = array();
   if (getSettingValue("active_inscription_utilisateurs")=='y') $chemin[]="/mod_inscription/inscription_index.php";
@@ -1398,10 +1510,14 @@ if (getSettingValue("active_inscription")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
-      echo "<table class='menu' summary=\"Module d'inscriptions\">\n";
-      echo "<tr>\n";
-      echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - ".getSettingValue("mod_inscription_titre")." - Inscription </th>\n";
-      echo "</tr>\n";
+		// modification Régis : créer des <h2> pour faciliter la navigation
+		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Inscription</h2>\n";
+		//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
+		echo "<table class='menu' summary=\"Module d'inscriptions. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+     // echo "<table class='menu' summary=\"Module d'inscriptions\">\n";
+     // echo "<tr>\n";
+     // echo "<th colspan='2'><img src='./images/icons/document.png' alt='Inscription' class='link'/> - ".getSettingValue("mod_inscription_titre")." - Inscription </th>\n";
+     // echo "</tr>\n";
       for ($i=0;$i<$nb_ligne;$i++) {
           affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
       }
@@ -1409,42 +1525,60 @@ if (getSettingValue("active_inscription")=='y') {
   }
 }
 
-// Lien vers les flux rss pour les élèves s'ils sont activés
+/*****************************
+	Fin module inscription
+*****************************/
+
+
+/**************************************************************
+	Lien vers les flux rss pour les élèves s'ils sont activés
+**************************************************************/
+
 if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") {
 	// Les flux rss sont ouverts pour les élèves
-	echo "
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/rss.png' alt=''/> - Votre flux rss</h2>\n";
+	echo "<table class='menu' summary=\"Tableau des flux RSS. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
+	/* echo "
 		<table class='menu' summary=\"Tableau des flux RSS\">
 			<tr>
 				<th colspan='2'>
 					<img src='./images/icons/rss.png' alt='flux rss' class='link'/>
 					 - Votre flux rss (syndication)
 				</th>
-			</tr>\n";
+			</tr>\n";*/
 	// A vérifier pour les cdt
 	if (getSettingValue("rss_acces_ele") == 'direct') {
 
 		$uri_el = retourneUri($_SESSION["login"], $test_https, 'cdt');
 		echo '
 			<tr>
-				<td title="A utiliser avec un lecteur de flux rss" style="cursor: pointer; color: blue;" onclick="changementDisplay(\'divuri\', \'divexpli\');">Votre uri pour les cahiers de textes</td>
-				<td>
+				<td class="menu_gauche" title="A utiliser avec un lecteur de flux rss" style="cursor: pointer; color: blue;" onclick="changementDisplay(\'divuri\', \'divexpli\');">
+					Votre uri pour les cahiers de textes
+				</td>
+				<td class="menu_droit">
 					<div id="divuri" style="display: none;">
-						<a href="'.$uri_el.'" target="_blank">'.$uri_el.'</a></div>
-					<div id="divexpli" style="display: block;">En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI.</div>
+						<a onclick="window.open(this.href, \'_blank\'); return false;" href="'.$uri_el.'">'.$uri_el.'</a>
+					</div>
+					<div id="divexpli" style="display: block;">En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI <em>(si vous avez activé le javascript sur votre navigateur)</em>.</div>
 				</td>
 			</tr>
 		';
 	}elseif(getSettingValue("rss_acces_ele") == 'csv'){
 		echo '
 			<tr>
-				<td>Votre uri pour les cahiers de textes</td>
-				<td>Veuillez la demander à l\'administration de votre établissement.</td>
+				<td class="menu_gauche">Votre uri pour les cahiers de textes</td>
+				<td class="menu_droit">Veuillez la demander à l\'administration de votre établissement.</td>
 			</tr>
 		';
 	}
 
 	echo '</table>';
 }
+
+/******************************************************************
+	Fin lien vers les flux rss pour les élèves s'ils sont activés
+******************************************************************/
 
 
 
@@ -1460,11 +1594,14 @@ if ($_SESSION["statut"] == 'autre') {
 	// On récupère la liste des fichiers à autoriser
 	require_once("utilisateurs/creer_statut_autorisation.php");
 	$nbre_a = count($autorise);
+	// modification Régis : créer des <h2> pour faciliter la navigation
+	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/>&nbsp;-&nbsp;Navigation</h2>\n";
+	echo "<table class='menu' summary=\"Tableau du statut Autre. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
 
-	echo '<br />
+	/*echo '<br />
 		<table class="menu" summary="Tableau du statut Autre">
 			<tr>
-			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th></tr>';
+			<th colspan="2"><img src="./images/icons/document.png" alt="Inscription" class="link" />&nbsp;-&nbsp;Navigation</th></tr>';*/
 
 	//for($a = 1 ; $a < $nbre ; $a++){
 	$a = 1;
