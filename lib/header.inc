@@ -221,8 +221,8 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 <script type='text/javascript'>
 <!--
 
-	function modifier_taille_bandeau(){	
-		// Modification de la taille du bandeau		
+	function modifier_taille_bandeau(){
+		// Modification de la taille du bandeau
 		if(Element.hasClassName('bandeau','pt_bandeau')){
 			$taille_bandeau_actuelle = 'pt_bandeau';
 			$taille_bandeau_future = 'gd_bandeau';
@@ -230,11 +230,11 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 			$taille_bandeau_actuelle = 'gd_bandeau';
 			$taille_bandeau_future = 'pt_bandeau';
 		}
-		// On efface la classe de taille et on attribue la nouvelle	
+		// On efface la classe de taille et on attribue la nouvelle
 		Element.removeClassName('bandeau',$taille_bandeau_actuelle);
 		Element.addClassName('bandeau', $taille_bandeau_future);
 
-		// Modification de l'image de fond du bandeau	
+		// Modification de l'image de fond du bandeau
 		if(Element.hasClassName('bandeau','no_style')){
 			if(Element.hasClassName('bandeau','pt_bandeau_no_style')){
 				$image_actuelle = 'pt_bandeau_no_style';
@@ -257,12 +257,12 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 			}
 			$image_future=$taille_bandeau_future+'_darkfade';
 		}
-		// On efface la classe d'image et on attribue la nouvelle	
+		// On efface la classe d'image et on attribue la nouvelle
 		Element.removeClassName('bandeau',$image_actuelle);
 		Element.addClassName('bandeau', $image_future);
 	}
 
-	function modifier_couleur_bandeau($couleur){		
+	function modifier_couleur_bandeau($couleur){
 		// On détermine la taille actuelle
 		if(Element.hasClassName('bandeau','pt_bandeau')){
 			$taille_bandeau_header='pt_bandeau_';
@@ -283,14 +283,14 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 		$couleur_future=$couleur;
 		$image_future=$taille_bandeau_header+$couleur;
 
-		// On efface les anciennes classes et on attribue les nouvelles	
+		// On efface les anciennes classes et on attribue les nouvelles
 		Element.removeClassName('bandeau',$couleur_actuelle);
-		Element.addClassName('bandeau', $couleur_future);	
+		Element.addClassName('bandeau', $couleur_future);
 		Element.removeClassName('bandeau',$image_actuelle);
 		Element.addClassName('bandeau', $image_future);
 	}
 
-//-->	
+//-->
 </script>
 
 <?php
@@ -406,7 +406,7 @@ if (isset($titre_page)) {
 	echo "<div id='bandeau' class='gd_bandeau darkfade gd_bandeau_darkfade'>\n";
 // Initialisation du bandeau à la bonne couleur
 	echo "<script type='text/javascript'>
-		<!--	
+		<!--
 			modifier_couleur_bandeau('$degrade_entete');
 		// -->
 	</script>";
@@ -421,7 +421,7 @@ if (isset($titre_page)) {
 	// 	echo $_SESSION['login'];
 	if($taille_bandeau_header=="p"){
 		echo "<script type='text/javascript'>
-			<!--	
+			<!--
 				modifier_taille_bandeau();
 			// -->
 		</script>";
@@ -452,8 +452,22 @@ if (isset($titre_page)) {
 			echo "<div id='bandeau_droit'>\n";
 				echo "<p>\n";
 					// Nom Prénom utilisateur
-					echo "<span id='bd_nom'>";					
+					echo "<span id='bd_nom'>";
+					if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
+						$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+						$res_np=mysql_query($sql);
+						if(mysql_num_rows($res_np)>0) {
+							$lig_np=mysql_fetch_object($res_np);
+							$_SESSION['prenom']=$lig_np->prenom;
+							$_SESSION['nom']=$lig_np->nom;
+						}
+					}
+					if((isset($_SESSION['prenom']))||(isset($_SESSION['nom']))) {
 						echo($_SESSION['prenom'] . " " . $_SESSION['nom'] . "\n");
+					}
+					else {
+						echo "NOM Prenom";
+					}
 					echo "</span>\n<br />";
 					// statut utilisateur
 					echo "<span id='bd_parent'>";
@@ -562,7 +576,7 @@ if (isset($titre_page)) {
 	// Fin du conteneur de Header
 
 // ----- Régis : fin des modifications du bandeau -----
-	
+
 	echo "</div>\n";
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
