@@ -631,7 +631,7 @@ $res_devoirs_arendre = mysql_query($req_devoirs_arendre);
 $dev_arendre = mysql_fetch_object($res_devoirs_arendre);
 
 $req_notices =
-    "select 'c' type, contenu, date_ct, id_ct, vise, visa
+    "select 'c' type, contenu, date_ct, id_ct, vise, visa, heure_entry
     from ct_entry
     where contenu != ''
     and id_groupe = '" . $current_group["id"] . "'";
@@ -713,12 +713,17 @@ while (true) {
     }
     }
 	
-	//Eric
-	if ($not_dev->visa != 'y') {
-	   if ($not_dev->id_ct == $id_ct) echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";
-       echo("&nbsp;&nbsp;&nbsp;&nbsp;");
+	//Eric 
+	if (isset($not_dev->visa)) { //notice
+	    if ($not_dev->visa != 'y') {
+	      if ($not_dev->id_ct == $id_ct) echo " - <strong><span  class=\"red\">en&nbsp;modification</span></strong>";
+          echo("&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
+	} else { //devoir
+	      if ($not_dev->id_ct == $id_ct) echo " - <strong><span  class=\"red\">en&nbsp;modification</span></strong>";
+          echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 	}
-
+	
 	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices	
     $html_balise = '<div style="margin: 0px; float: right;">';
     if ($not_dev->type == "c") {
@@ -733,7 +738,7 @@ while (true) {
     		    $html_balise = " ";
 			} else {
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
 			}
 		} else {
@@ -741,7 +746,7 @@ while (true) {
              if ($not_dev->visa == 'y') {
     		    $html_balise .= " ";
 		     } else {
-		        $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+		        $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		     }
 		}
     } else {
@@ -752,11 +757,11 @@ while (true) {
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 			 );
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
        
 		} else {
-		  $html_balise .= "<i><font color=\"red\">Notice signée</font></i>";
+		  $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		}
     }
     $html_balise .= '</div>';
