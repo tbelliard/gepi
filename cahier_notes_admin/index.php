@@ -86,6 +86,8 @@ require_once("../lib/header.inc");
 </p>
 
 <?php
+	echo "<br />\n";
+
 	echo "<p>\n";
 	if(file_exists("../lib/ss_zip.class.php")){
 		echo "<input type='checkbox' name='export_cn_ods' id='export_cn_ods' value='y'";
@@ -103,6 +105,7 @@ require_once("../lib/header.inc");
 	}
 	echo "</p>\n";
 
+	echo "<br />\n";
 
 	echo "<p>\n";
 	echo "<input type='checkbox' name='appreciations_types_profs' id='appreciations_types_profs' value='y'";
@@ -120,4 +123,7 @@ require_once("../lib/header.inc");
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
 </form>
-<?php require("../lib/footer.inc.php");?>
+<?php
+	echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
+?>
