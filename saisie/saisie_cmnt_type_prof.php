@@ -100,6 +100,7 @@ echo "<script type='text/javascript'>
 //echo "<p class='bold'><a href='../accueil.php' onClick='refresh_opener();self.close();return false;'>Refermer</a>";
 echo "<p class='bold'><a href='../accueil.php' onClick='self.close();return false;'>Refermer</a>";
 echo " | <a href='".$_SERVER['PHP_SELF']."?import_cmnt=y'>Importer un fichier d'appréciations</a>";
+echo " | <a href='export_cmnt_type_prof.php'>Exporter le fichier d'appréciations</a>";
 echo "</p>\n";
 
 $import_cmnt=isset($_GET['import_cmnt']) ? $_GET['import_cmnt'] : NULL;
