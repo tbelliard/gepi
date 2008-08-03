@@ -216,6 +216,40 @@
 			//echo "<p>Cette page permet de remplir des tables temporaires avec les informations responsables.<br />\n";
 			//echo "</p>\n";
 
+
+
+			// Sauvegarde temporaire:
+/*
+			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
+(id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+login VARCHAR( 50 ) NOT NULL ,
+password CHAR(32) NOT NULL,
+user_id VARCHAR( 10 ) NOT NULL ,
+statut VARCHAR( 20 ) NOT NULL ,
+temoin VARCHAR( 50 ) NOT NULL
+);"
+*/
+			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
+(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+password CHAR(32) NOT NULL,
+pers_id VARCHAR( 10 ) NOT NULL ,
+statut VARCHAR( 20 ) NOT NULL ,
+auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+temoin VARCHAR( 50 ) NOT NULL
+);";
+//auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
+//auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+//auth_mode VARCHAR( 4 ) NOT NULL ,
+			$creation_table=mysql_query($sql);
+
+			$sql="TRUNCATE TABLE tempo_utilisateurs_resp;";
+			$nettoyage=mysql_query($sql);
+
+			// Il faut faire cette étape avant de vider la table resp_pers via $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			$sql="INSERT INTO tempo_utilisateurs_resp SELECT u.login,u.password,rp.pers_id,u.statut,u.auth_mode,u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
+			$svg_insert=mysql_query($sql);
+
+
 			$j=0;
 			while ($j < count($liste_tables_del)) {
 				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
@@ -456,6 +490,30 @@
 									$nb_err++;
 								}
 								else{
+
+									$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+									$res_tmp_u=mysql_query($sql);
+									if(mysql_num_rows($res_tmp_u)>0) {
+										$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+
+										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$personnes[$i]["nom"]."', prenom='".$personnes[$i]["prenom"]."', ";
+										if(isset($personnes[$i]["lc_civilite"])){
+											$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+										}
+										$sql.="password='".$lig_tmp_u->password."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+										$insert_u=mysql_query($sql);
+										if(!$insert_u) {
+											echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
+										}
+										else {
+											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+											$update_rp=mysql_query($sql);
+
+											$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+											$update_tmp_u=mysql_query($sql);
+										}
+									}
+
 									$stat++;
 								}
 
