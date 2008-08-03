@@ -258,11 +258,13 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>
+	<li>Les appréciations-types apparaissent dans la page de saisie des appréciations pour un enseignement lors du survol de l'icone qui vous a mené à cette page.</li>
 	<li>Il est possible d'utiliser la chaine de caractères '_PRENOM_' dans un commentaire-type.<br />
 	Lors de l'insertion, la chaine sera remplacée par le prénom de l'élève.</li>
 	<li>Le genre n'est pas encore géré:<br />
 	Le genre de l'élève dans des phrases comme 'Il doit se mettre au travail' ou 'Elle doit se mettre au travail' doit encore être corrigé à la main.<br />
 	Il doit être possible de résoudre ce problème de la même façon que pour le prénom de l'élève en ajoutant des champs de formulaires cachés...</li>
+	<li>Après modification des appréciations-types, il faut mettre à jour la page de saisie des appréciations pour que les modifications effectuées ici soient prises en compte.<br />Prenez soin de sauvegarder les appréciations éventuellement saisies avant de recharger la page.</li>
 </ul>\n";
 echo "<p><br /></p>\n";
 
