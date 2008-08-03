@@ -191,7 +191,7 @@ if (isset($is_posted)) {
     }
 
 	// Suppression des comptes d'élèves:
-	$sql="DELETE FROM utilisateurs WHERE statut='eleves';";
+	$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
 	$del=mysql_query($sql);
 
     // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
