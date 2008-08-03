@@ -225,7 +225,7 @@
 			}
 
 			// Suppression des comptes de responsables:
-			$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+			$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 			$del=mysql_query($sql);
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
