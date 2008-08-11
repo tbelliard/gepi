@@ -351,6 +351,8 @@ if(isset($style_screen_ajout)){
 	}
 }
 
+//echo "<link href='".$gepiPath."/grid.css' rel='stylesheet' type='text/css'/>\n";
+
 echo '	<!-- Fin des styles -->'."\n\n";
 // ============================== FIN des feuilles de style =======================
 ?>
@@ -412,6 +414,14 @@ if (isset($titre_page)) {
 	</script>";
 // Initialisation du bandeau à la bonne taille
 	$cacher_header = isset($_SESSION['cacher_header']) ? $_SESSION['cacher_header'] : "n";
+
+	//=====================
+	// AJOUT boireaus 20080806
+	if(isset($mode_header_reduit)) {
+		$cacher_header="y";
+	}
+	//=====================
+
 	if($cacher_header=="n") {
 		$taille_bandeau_header="g";
 	}
@@ -432,20 +442,33 @@ if (isset($titre_page)) {
 
 			// Bandeau de gauche
 			echo "<div id='bandeau_gauche'>\n";
-				echo "<div class='bt_change_taille'>";
-					// Bouton réduire le bandeau
-					echo "<a class='change_taille_gd' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('y', '".$gepiPath."');return false;\">";
-						echo "<img src='$gepiPath/images/up.png' alt='Cacher le bandeau' title='Cacher le bandeau' />";
-					echo "</a>";
-					// Bouton agrandir le bandeau
-					echo "<a class='change_taille_pt' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('n', '".$gepiPath."');return false;\">";
-						echo "<img src='$gepiPath/images/down.png' alt='Afficher le bandeau' title='Afficher le bandeau' />";
-					echo "</a>";
-				echo "</div>\n";
+
+				//=====================
+				// AJOUT boireaus 20080806
+				if(!isset($mode_header_reduit)) {
+				//=====================
+					echo "<div class='bt_change_taille'>";
+						// Bouton réduire le bandeau
+						echo "<a class='change_taille_gd' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('y', '".$gepiPath."');return false;\">";
+							echo "<img src='$gepiPath/images/up.png' alt='Cacher le bandeau' title='Cacher le bandeau' />";
+						echo "</a>";
+						// Bouton agrandir le bandeau
+						echo "<a class='change_taille_pt' href=\"#\" onclick=\"modifier_taille_bandeau();change_mode_header('n', '".$gepiPath."');return false;\">";
+							echo "<img src='$gepiPath/images/down.png' alt='Afficher le bandeau' title='Afficher le bandeau' />";
+						echo "</a>";
+					echo "</div>\n";
+				//=====================
+				// AJOUT boireaus 20080806
+				}
+				//=====================
+
 				// Titre de la page
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";
-				if (isset($affiche_connexion)){echo "<div class='a_gauche'><p>".last_connection()."</p></div>\n";}
+				if (isset($affiche_connexion)){
+					echo "<div class='a_gauche'><p>".last_connection();
+					echo "&nbsp;"; // Pour éviter un <p></p> lors de la première connexion
+					echo "</p></div>\n";}
 			echo "</div>\n";
 
 			// Bandeau de droite
