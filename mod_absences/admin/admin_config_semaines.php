@@ -144,7 +144,7 @@ function trouverDates($numero_semaine){
 }
 
 ?>
-	<table cellpadding="0" cellspacing="1" class="tab_table">
+	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Semaines">
 	<tbody>
 		<tr>
 			<th class="tab_th" style="width: 100px;">Semaine n°<br /> (officiel)</th>

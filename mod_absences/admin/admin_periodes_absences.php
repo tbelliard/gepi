@@ -298,7 +298,7 @@ if ($compter >= 1) {
 		</a>
 	</p><br />
 
-	<table cellpadding="0" cellspacing="1" class="tab_table">
+	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Créneaux">
 		<tr>
 			<th class="tab_th" style="width: 80px;">code</th>
 			<th class="tab_th" style="width: 90px;">heure de début</th>
@@ -349,7 +349,7 @@ if ($compter >= 1) {
 	<h2>Ajout de créneaux horaires</h2>
 
     <form name="form1" method="post" action="admin_periodes_absences.php?action=ajouter<?php echo $aff_creneau_diff; ?>">
-      <table class="tab_table">
+      <table class="tab_table" summary="Créneaux">
         <tr>
           <th class="tab_th">Nombre de créneaux horaires à ajouter</th>
         </tr>
@@ -389,7 +389,7 @@ echo '			</select>
 	}
 	?>
     <form action="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
-      <table cellpadding="2" cellspacing="2" class="tab_table">
+      <table cellpadding="2" cellspacing="2" class="tab_table" summary="Créneaux">
         <tr>
           <th class="tab_th">Code</th>
           <th class="tab_th">Heure de début</th>
@@ -424,11 +424,13 @@ echo '			</select>
 			<option value="pause" <?php if ( $action === 'modifier' ) { if ( $data_modif_periode['type_creneaux'] === 'pause' ) { ?>selected="selected"<?php } } elseif (isset($type_creneaux_erreur[$nb])) { if ( $type_creneaux_erreur[$nb] === 'pause' ) { ?>selected="selected"<?php } } ?>>pause</option>
 			<option value="repas" <?php if ( $action === 'modifier' ) { if ( $data_modif_periode['type_creneaux'] === 'repas' ) { ?>selected="selected"<?php } } elseif (isset($type_creneaux_erreur[$nb])) { if ( $type_creneaux_erreur[$nb] === 'repas' ) { ?>selected="selected"<?php } } ?>>repas</option>
 		</select>
-	  <td><input name="suivi_definie_periode[<?php echo $nb; ?>]" value="1" type="checkbox" <?php if ( ( $action === 'modifier' and $data_modif_periode['suivi_definie_periode'] === '1' ) or ( isset($suivi_definie_periode_erreur[$nb]) and $suivi_definie_periode_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?> title="suite logique des horaires" /></td>
-        </tr>
+	  <td><input name="suivi_definie_periode[<?php echo $nb; ?>]" value="1" type="checkbox" <?php if ( ( $action === 'modifier' and $data_modif_periode['suivi_definie_periode'] === '1' ) or ( isset($suivi_definie_periode_erreur[$nb]) and $suivi_definie_periode_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?> title="suite logique des horaires" />
+
             <?php if($action=="modifier") { ?>
               <input type="hidden" name="id_periode[<?php echo $nb; ?>]" value="<?php if (isset($id_definie_periode_erreur[$nb])) { echo $id_definie_periode_erreur[$nb]; } else { echo $id_periode; } ?>" />
             <?php } ?>
+	</td>
+        </tr>
         <?php $nb = $nb + 1; } ?>
       </table>
 

@@ -176,7 +176,7 @@ echo "<p class=\"bold\">".$retour."<img src='../../images/icons/back.png' alt='R
 <?php /* gestion des horaire d'ouverture */ ?>
 <h2>Définition des horaires d'ouverture de l'établissement</h2>
   <form method="post" action="admin_horaire_ouverture.php?action=<?php echo $action; ?>" name="form1">
-	<table cellpadding="0" cellspacing="1" class="tab_table">
+	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Horaires d'ouverture">
 	  <tbody>
 	    <tr>
 	      <th style="width: 60px;"></th>
