@@ -2302,7 +2302,7 @@ function getPref($login,$item,$default){
 	}
 }
 
-function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow){
+function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
 	/*
 		$id:			Identifiant du DIV conteneur
 		$titre:			Texte du titre du DIV
@@ -2332,7 +2332,9 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $niveau_arbo;
 	global $pas_de_decalage_infobulle;
 
-	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
+	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
+	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
+
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
 	//$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;";
 	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
