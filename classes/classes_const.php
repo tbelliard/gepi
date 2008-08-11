@@ -458,7 +458,7 @@ if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 } else {
 	$k = '0';
-	echo "<table border='1' cellpadding='5' class='boireaus'>\n";
+	echo "<table border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom Prénom </th>\n";
 	echo "<th>Régime</th>\n";
@@ -521,7 +521,7 @@ if ($nombreligne == '0') {
 
 		echo "";
 
-		echo "<table style='border-collaspe: collapse;'>\n";
+		echo "<table style='border-collaspe: collapse;' summary='Régime'>\n";
 		echo "<tr>\n";
 		//=========================
 		// MODIF: boireaus 20071010
@@ -597,7 +597,8 @@ if ($nombreligne == '0') {
 			$prof_prenom = mysql_result($call_prof, $i, "prenom");
 			echo "<option value='$profsuivi'";
 			if ($profsuivi==$eleve_profsuivi) { echo " selected";}
-			echo ">$prof_prenom $prof_nom</option>\n";
+			//echo ">$prof_prenom $prof_nom</option>\n";
+			echo ">".ucwords(strtolower($prof_prenom))." ".strtoupper($prof_nom)."</option>\n";
 		$i++;
 		}
 		echo "</select></p>\n";

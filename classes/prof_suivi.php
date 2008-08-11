@@ -1,6 +1,6 @@
 <?php
 /*
-* Last modification  : 04/04/2005
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -168,7 +168,8 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 				}
 				$k++;
 			}
-			echo ">$prof_prenom $prof_nom</option>\n";
+			//echo ">$prof_prenom $prof_nom</option>\n";
+			echo ">".ucwords(strtolower($prof_prenom))." ".strtoupper($prof_nom)."</option>\n";
 			$j++;
 		}
 		echo "</select></p>\n";
@@ -211,7 +212,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			echo "<p>Cliquez sur le bouton \"Enregistrer\" pour valider.</p>\n";
 			echo "<center><input type='submit' value='Enregistrer' /></center><br />\n";
 			$k = '0';
-			echo "<table border='1' cellpadding='5' class='boireaus'>\n";
+			echo "<table border='1' cellpadding='5' class='boireaus' summary='Choix des élèves'>\n";
 			echo "<tr><th>Nom Prénom</th>\n";
 			for ($i=1; $i < $nb_prof_suivi+1; $i++) {
 				$call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
