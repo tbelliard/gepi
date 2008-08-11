@@ -269,10 +269,14 @@ $critere_recherche=ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", 
 
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
-$sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
+//$sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
 
 // Effectif total sans login:
+//$sql="SELECT 1=1 FROM resp_pers rp WHERE rp.login=''";
+$sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');";
 $nb = mysql_num_rows(mysql_query($sql));
+
+$sql="SELECT * FROM resp_pers rp WHERE rp.login=''";
 
 if($afficher_tous_les_resp!='y'){
 	if($critere_recherche!=""){
