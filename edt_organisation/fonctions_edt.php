@@ -941,13 +941,13 @@ function construction_tab_edt($heure, $heuredeb_dec){
 	if ($_SESSION['statut'] == "eleve") {
 		$req_type_login = $_SESSION['login'];
 	}else{
-		$req_type_login = isset($_GET["login_edt"]) ? $_GET["login_edt"] : (isset($_POST["login_edt"]) ? $_POST["login_edt"] : NULL);
+		$req_type_login = isset($_GET["login_edt"]) ? $_GET["login_edt"] : (isset($_POST["login_edt"]) ? $_POST["login_edt"] : (isset($_GET["ele_login"]) ? $_GET["ele_login"] : NULL));
 	}
 
 	if ($_SESSION['statut'] == "eleve") {
 		$type_edt = $_SESSION['statut'];
 	}else{
-		$type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
+		$type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : 'eleve');
 	}
 	// On détermine le nombre de jours à afficher
 	$compter_nbre_colonnes = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
