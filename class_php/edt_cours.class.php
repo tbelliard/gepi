@@ -121,6 +121,21 @@ class edt{
 		return $rep;
 	}
 
+	public function joursOuverts(){
+		// Liste des jours ouverts
+		$sql = "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1 LIMIT 7";
+		$query = mysql_query($sql);
+		$retour = array();
+		$i = 0;
+		while($rep = mysql_fetch_array($query)){
+			$retour[] = $rep["jour_horaire_etablissement"];
+			$i++;
+		}
+		$retour["nbre"] = $i;
+
+		return $retour;
+	}
+
 	public function debut(){
 		// On cherche si ce cours commence au début ou au milieu d'un cours $this->edt_debut
 		// n veut dire qu'il commence au milieu du cours et y veut dir qu'il commence au début du cours
@@ -315,7 +330,7 @@ class edtAfficher{
 		return $rep;
 	}
 
-	public function entete_creneaux($reglage){
+	public function entete_creneaux($reglage = NULL){
 
 		$rep = '';
 
@@ -331,6 +346,9 @@ class edtAfficher{
 				$cren = $liste_creneaux[$a]["horaire"];
 			}elseif($reglage == 'noms'){
 				$cren = $liste_creneaux[$a]["nom"];
+			}else{
+				// Par défaut, le réglage est 'heures'
+				$cren = $liste_creneaux[$a]["horaire"];
 			}
 
 			if ($a < ($liste_creneaux["nbre"] - 1)) {
@@ -388,7 +406,7 @@ class edtAfficher{
 		$retour .= '<div style="width: '.($largeur) * $liste_creneaux["nbre"].'px; height: '.$this->hauteur_creneau.'px; border-bottom: 2px dotted silver;">';
 
 		if ($aff_jour_gauche == 'oui') {
-			$retour .= '<div style="width: '.$this->largeur_jour.'px; height: '.($this->hauteur_creneau - 1).'px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
+			$retour .= '<div style="width: '.$this->largeur_jour.'px; height: '.($this->hauteur_creneau - 1).'px; font-size: 12px; text-align: center; border-right: 2px solid grey; position: absolute;"><br />
 			'.$jour.'</div>';
 		}
 
