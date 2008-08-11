@@ -425,6 +425,13 @@ onclick="javascript:MetVal('pour')" />
 }
 
 ?>
+<p><em>Remarque sur les périodes&nbsp;:</em></p>
+<blockquote>
+	<p>Le nombre de périodes doit correspondre au nombre de bulletins qui sera édité pour chaque élève sur l'année.<br />
+	En collège par exemple, on saisira trois périodes (<em>trimestres</em>).<br />
+	Cela n'empêchera pas d'éditer six relevés de notes par élève au cours de l'année si vous souhaitez des relevés de notes de demi-période.<br />
+	Il ne serait en revanche pas possible d'éditer un bulletin fusion de deux périodes.</p>
+</blockquote>
 <p><br /></p>
 </div>
 </body>
