@@ -46,6 +46,21 @@ $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ?
 
 $msg = '';
 
+$compteur_aff_time=0;
+function aff_time() {
+	global $compteur_aff_time;
+
+	// Pour tenter de repérer à quel niveau cela traine:
+	$debug=0;
+	if($debug==1) {
+		echo "$compteur_aff_time: ".strftime("%D %T")."<br />";
+	}
+
+	$compteur_aff_time++;
+}
+
+aff_time();
+
 // Si on est en traitement par lot, on sélectionne tout de suite la liste des utilisateurs impliqués
 $error = false;
 if ($mode == "classe") {
@@ -72,195 +87,203 @@ if ($mode == "classe") {
 	}
 }
 
+aff_time();
+
 // Trois actions sont possibles depuis cette page : activation, désactivation et suppression.
 // L'édition se fait directement sur la page de gestion des responsables
 if (!$error) {
-if ($action == "rendre_inactif") {
-	// Désactivation d'utilisateurs actifs
-	if ($mode == "individual") {
-		// Désactivation pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
-		} else {
-			$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['parent_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été désactivé.";
+	if ($action == "rendre_inactif") {
+		// Désactivation d'utilisateurs actifs
+		if ($mode == "individual") {
+			// Désactivation pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'actif')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
 			} else {
-				$msg .= "Erreur lors de la désactivation de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe" and !$error) {
-		// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_parent = mysql_fetch_object($quels_parents)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br />";
+				$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['parent_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été désactivé.";
 				} else {
-					$nb_comptes++;
+					$msg .= "Erreur lors de la désactivation de l'utilisateur.";
 				}
 			}
-		}
-		$msg .= "$nb_comptes comptes ont été désactivés.";
-	}
-} elseif ($action == "rendre_actif") {
-	// Activation d'utilisateurs préalablement désactivés
-	if ($mode == "individual") {
-		// Activation pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
-		} else {
-			$res = mysql_query("UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['parent_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été activé.";
-			} else {
-				$msg .= "Erreur lors de l'activation de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe") {
-		// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_parent = mysql_fetch_object($quels_parents)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
-				} else {
-					$nb_comptes++;
+		} elseif ($mode == "classe" and !$error) {
+			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_parent = mysql_fetch_object($quels_parents)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_parent->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de la désactivation du compte ".$current_parent->login."<br />";
+					} else {
+						$nb_comptes++;
+					}
 				}
 			}
+			$msg .= "$nb_comptes comptes ont été désactivés.";
 		}
-		$msg .= "$nb_comptes comptes ont été activés.";
-	}
+	} elseif ($action == "rendre_actif") {
+		// Activation d'utilisateurs préalablement désactivés
+		if ($mode == "individual") {
+			// Activation pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND etat = 'inactif')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
+			} else {
+				$res = mysql_query("UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['parent_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été activé.";
+				} else {
+					$msg .= "Erreur lors de l'activation de l'utilisateur.";
+				}
+			}
+		} elseif ($mode == "classe") {
+			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_parent = mysql_fetch_object($quels_parents)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_parent->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
+					} else {
+						$nb_comptes++;
+					}
+				}
+			}
+			$msg .= "$nb_comptes comptes ont été activés.";
+		}
 
-} elseif ($action == "supprimer") {
-	// Suppression d'un ou plusieurs utilisateurs
-	if ($mode == "individual") {
-		// Suppression pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
-		} else {
-			$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été supprimé.";
-				$res2 = mysql_query("UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
+	} elseif ($action == "supprimer") {
+		// Suppression d'un ou plusieurs utilisateurs
+		if ($mode == "individual") {
+			// Suppression pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
 			} else {
-				$msg .= "Erreur lors de la suppression de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe") {
-		// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_parent = mysql_fetch_object($quels_parents)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
+				$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['parent_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['parent_login'] . " a été supprimé.";
+					$res2 = mysql_query("UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
 				} else {
-					$res = mysql_query("UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
-					$nb_comptes++;
+					$msg .= "Erreur lors de la suppression de l'utilisateur.";
 				}
 			}
-		}
-		$msg .= "$nb_comptes comptes ont été supprimés.";
-	}
-} elseif ($action == "reinit_password") {
-	if ($mode != "classe") {
-		$msg .= "Erreur : Vous devez sélectionner une classe.";
-	} elseif ($mode == "classe") {
-		if ($_POST['classe'] == "all") {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-		} else if (is_numeric($_POST['classe'])) {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-			$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-		}
-	}
-}elseif ($action == "change_auth_mode") {
-	if ($gepiSettings['ldap_write_access'] == "yes") {
-		$ldap_write_access = true;
-		$ldap_server = new LDAPServer;
-	}
-	$nb_comptes = 0;
-	$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
-	if ($mode != "classe") {
-		$msg .= "Erreur : Vous devez sélectionner une classe.";
-	} elseif ($mode == "classe") {
-		while ($current_parent = mysql_fetch_object($quels_parents)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on modifie
-				// Si on change le mode d'authentification, il faut quelques opérations particulières
-				$old_auth_mode = $current_parent->auth_mode;
-				if ($_POST['reg_auth_mode'] != $old_auth_mode) {
-					// On modifie !
-					$nb_comptes++;
-					$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_parent->login."'");
-					
-					// On regarde si des opérations spécifiques sont nécessaires
-					if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
-						// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-						$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
-						mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$current_parent->login."'");
-						// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
-						if ($ldap_write_access) {
-							$create_ldap_user = true;
-						}
-					} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
-						// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
-						// qu'il va falloir réinitialiser les mots de passe
-						$pass_init_required = true;
-						// Et si accès en écriture au LDAP, on supprime le compte.
-						if ($ldap_write_access) {
-							$delete_ldap_user = true;
-						}
+		} elseif ($mode == "classe") {
+			// Pour tous les parents qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_parent = mysql_fetch_object($quels_parents)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_parent->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de l'activation du compte ".$current_parent->login."<br />";
+					} else {
+						$res = mysql_query("UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
+						$nb_comptes++;
 					}
-					
-					// On effectue les opérations LDAP
-					if (isset($create_ldap_user) && $create_ldap_user) {
-						if (!$ldap_server->test_user($current_parent->login)) {
-							$parent = mysql_fetch_object(mysql_query("SELECT distinct(r.login), r.nom, r.prenom, r.civilite, r.mel " .
-													"FROM resp_pers r WHERE (" .
-													"r.login = '" . $current_parent->login."')"));
-							$write_ldap_success = $ldap_server->add_user($parent->login, $parent->nom, $parent->prenom, $parent->mel, $parent->civilite, md5(rand()), "responsable");
-							// On transfert le mot de passe à la main
-							$ldap_server->set_manual_password($current_parent->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
-						}
-					}
-					if (isset($delete_ldap_user) && $delete_ldap_user) {
-						if (!$ldap_server->test_user($current_parent->login)) {
-							// L'utilisateur n'a pas été trouvé dans l'annuaire.
-							$write_ldap_success = true;
-						} else {
-							$write_ldap_success = $ldap_server->delete_user($current_parent->login);
-						}
-					}
-					
 				}
 			}
+			$msg .= "$nb_comptes comptes ont été supprimés.";
 		}
-		$msg .= "$nb_comptes comptes ont été modifiés.";
-		if (isset($pass_init_required) && $pass_init_required) {
-			$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe des utilisateurs !";
+	} elseif ($action == "reinit_password") {
+		if ($mode != "classe") {
+			$msg .= "Erreur : Vous devez sélectionner une classe.";
+		} elseif ($mode == "classe") {
+			if ($_POST['classe'] == "all") {
+				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable'.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			} else if (is_numeric($_POST['classe'])) {
+				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+			}
+		}
+	}elseif ($action == "change_auth_mode") {
+		if ($gepiSettings['ldap_write_access'] == "yes") {
+			$ldap_write_access = true;
+			$ldap_server = new LDAPServer;
+		}
+		$nb_comptes = 0;
+		$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
+		if ($mode != "classe") {
+			$msg .= "Erreur : Vous devez sélectionner une classe.";
+		} elseif ($mode == "classe") {
+			while ($current_parent = mysql_fetch_object($quels_parents)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_parent->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on modifie
+					// Si on change le mode d'authentification, il faut quelques opérations particulières
+					$old_auth_mode = $current_parent->auth_mode;
+					if ($_POST['reg_auth_mode'] != $old_auth_mode) {
+						// On modifie !
+						$nb_comptes++;
+						$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_parent->login."'");
+
+						// On regarde si des opérations spécifiques sont nécessaires
+						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
+							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
+							$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
+							mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$current_parent->login."'");
+							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
+							if ($ldap_write_access) {
+								$create_ldap_user = true;
+							}
+						} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
+							// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
+							// qu'il va falloir réinitialiser les mots de passe
+							$pass_init_required = true;
+							// Et si accès en écriture au LDAP, on supprime le compte.
+							if ($ldap_write_access) {
+								$delete_ldap_user = true;
+							}
+						}
+
+						// On effectue les opérations LDAP
+						if (isset($create_ldap_user) && $create_ldap_user) {
+							if (!$ldap_server->test_user($current_parent->login)) {
+								$parent = mysql_fetch_object(mysql_query("SELECT distinct(r.login), r.nom, r.prenom, r.civilite, r.mel " .
+														"FROM resp_pers r WHERE (" .
+														"r.login = '" . $current_parent->login."')"));
+								$write_ldap_success = $ldap_server->add_user($parent->login, $parent->nom, $parent->prenom, $parent->mel, $parent->civilite, md5(rand()), "responsable");
+								// On transfert le mot de passe à la main
+								$ldap_server->set_manual_password($current_parent->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
+							}
+						}
+						if (isset($delete_ldap_user) && $delete_ldap_user) {
+							if (!$ldap_server->test_user($current_parent->login)) {
+								// L'utilisateur n'a pas été trouvé dans l'annuaire.
+								$write_ldap_success = true;
+							} else {
+								$write_ldap_success = $ldap_server->delete_user($current_parent->login);
+							}
+						}
+
+					}
+				}
+			}
+			$msg .= "$nb_comptes comptes ont été modifiés.";
+			if (isset($pass_init_required) && $pass_init_required) {
+				$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe des utilisateurs !";
+			}
 		}
 	}
 }
-}
+
+aff_time();
+
 //**************** EN-TETE *****************
 $titre_page = "Modifier des comptes responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+aff_time();
+
 ?>
-<p class=bold>
+<p class='bold'>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |
 <a href="create_responsable.php"> Ajouter de nouveaux comptes</a>
 <?php
@@ -273,9 +296,12 @@ require_once("../lib/header.inc");
 	}
 	echo "</p>\n";
 
+	aff_time();
+
 	echo "<form action='edit_responsable.php' method='post'>\n";
 
 	echo "<p style='font-weight:bold;'>Actions par lot pour les comptes responsables existants : </p>\n";
+	flush();
 	echo "<blockquote>\n";
 	echo "<p>\n";
 	echo "<select name='classe' size='1'>\n";
@@ -301,8 +327,10 @@ require_once("../lib/header.inc");
 	}
 	//flush();
 	echo "</select>\n";
-
 	echo "<br />\n";
+	aff_time();
+	flush();
+
 
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	echo "<input type='radio' name='action' id='action_rendre_inactif' value='rendre_inactif' /> <label for='action_rendre_inactif' style='cursor:pointer;'>Rendre inactif</label>\n";
@@ -468,8 +496,10 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		}
 		echo "</td>\n";
 	echo "</tr>\n";
+	flush();
 }
 echo "</table>\n";
+aff_time();
 echo "</blockquote>\n";
 
 ?>
