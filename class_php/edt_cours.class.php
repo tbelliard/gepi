@@ -51,6 +51,8 @@ class edt{
 	public $edt_prof; // qui est le professeur qui anime le cours (login)
 	public $type; // permet de définir s'il s'agit d'un type {prof, eleve, classe, salle)
 
+	public $sem = 0; // permet de récupérer un numéro de semaine autre que l'actuel $sem incrémente ou décrémente par rapport à la semaine actuelle
+
 	public function __construct($id){
 
 		if (isset($id) AND is_numeric($id)) {
@@ -93,7 +95,7 @@ class edt{
 		//
 		$rep = array();
 
-		$sem = date("W");
+		$sem = date("W") + ($this->sem);
 
 		$query_s = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$sem."' LIMIT 1");
 		$rep["type"] = mysql_result($query_s, "type_edt_semaine");
@@ -106,6 +108,13 @@ class edt{
 		$rep["etab"] = '';
 
 		return $rep;
+	}
+
+	public function jours_de_la_semaine(){
+		/**
+		* Affiche les dates de la semaine demandée
+		* */
+		return 'Il faut que j\'ajoute cette méthode publique edt::jours_de_la_semaine() pour afficher les dates de la semaine vue ;)';
 	}
 
 	public function creneau($cren){
@@ -463,7 +472,7 @@ class edtAfficher{
 
 		}
 
-		$rep["width"] = 'width: '.($cours->edt_duree * ($this->largeur_creneau / 2)).'px;';
+		$rep["width"] = 'width: '.(($cours->edt_duree * ($this->largeur_creneau / 2)) - 1).'px;';
 
 		return $rep;
 	}
@@ -534,10 +543,10 @@ class edtAfficher{
 		$prof = $cours->prof();
 		$matiere = $cours->matiere();
 
-		$contenu .= '<center>'.
+		$contenu .= '<p style="text-align: center;">'.
 			$prof["civilite"].$prof["nom"].' '.substr($prof["prenom"], 0, 1).'.<br />'.
 			$matiere["name"].'<br /><i>salle&nbsp;'.$cours->edt_salle.'</i>
-			</center>';
+			</p>';
 
 		return $contenu;
 	}
