@@ -129,6 +129,7 @@ if ($action === "visualiser") {
 function trouverDates($numero_semaine){
 	// fonction qui permet de déterminer la date de début de la semaine (lundi)
 	$ts_depart = 1186358400;
+	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
 	if ($numero_semaine == 32) {
 		$ts = $ts_depart;
 	}elseif ($numero_semaine > 32 AND $numero_semaine <= 52) {

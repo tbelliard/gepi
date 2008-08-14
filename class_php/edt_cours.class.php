@@ -53,10 +53,12 @@ class edt{
 
 	public $sem = 0; // permet de récupérer un numéro de semaine autre que l'actuel $sem incrémente ou décrémente par rapport à la semaine actuelle
 
-	public function __construct($id){
+	public function __construct($id = NULL){
 
 		if (isset($id) AND is_numeric($id)) {
 			$this->id = $id;
+		}else{
+			$this->id = NULL;
 		}
 	}
 

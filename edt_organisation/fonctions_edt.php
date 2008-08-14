@@ -157,16 +157,45 @@ function enseignements_prof($login_prof, $rep){
 		return $result;
 	}
 }
+function semaine_actu(){
 
+		/**
+		* On cherche à déterminer à quel type de semaine se rattache la semaine actuelle
+		* Il y a deux possibilités : soit l'établissement utilise les semaines classiques ISO soit il a défini
+		* des numéros spéciaux.
+ 		*/
+	global $sem; // permet de modifier les requêtes si nécessaire pour avoir les cours sur une semaine donnée
+		//
+		$rep = array();
+
+		$semaine = date("W") + ($sem);
+
+		$query_s = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine = '".$semaine."' LIMIT 1");
+		$rep["type"] = mysql_result($query_s, "type_edt_semaine");
+
+		return $rep;
+	}
 // Fonction générale qui renvoie un tableau des enseignements à un horaire donné (heure et jour)
 
 function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt, $heuredeb_dec){
+
+	global $utilise_type_semaine;
+	$sem = semaine_actu();
+
+	if (isset($utilise_type_semaine) AND $utilise_type_semaine = 'y') {
+		$requete_sem = "(id_semaine = '0' OR id_semaine = '".$sem["type"]."') AND ";
+	}else{
+		$requete_sem = NULL;
+	}
+
+
+
 		$tab_ens = array();
 	if ($type_edt == "prof") {
 		$req_ens_horaire = mysql_query("SELECT id_groupe FROM edt_cours WHERE
 								jour_semaine = '".$jour_semaine."' AND
 								id_definie_periode = '".$id_creneaux."' AND
-								heuredeb_dec = '".$heuredeb_dec."'AND
+								heuredeb_dec = '".$heuredeb_dec."'AND ".$requete_sem."
 								login_prof = '".$login_general."'
 								ORDER BY id_semaine")
 									or die('Erreur : cree_tab_general(prof) !');
@@ -185,10 +214,10 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 								edt_cours.jour_semaine = '".$jour_semaine."' AND
 								edt_cours.id_definie_periode = '".$id_creneaux."' AND
 								edt_cours.id_groupe = j_eleves_groupes.id_groupe AND
-								login = '".$login_general."' AND
+								login = '".$login_general."' AND ".$requete_sem."
 								edt_cours.heuredeb_dec = '".$heuredeb_dec."'
 								ORDER BY edt_cours.id_semaine")
-									or die('Erreur : cree_tab_general(eleve) !'.msql_error());
+									or die('Erreur : cree_tab_general(eleve) !'.mysql_error());
 		// On y ajoute les éventuelles AID
 		$rep_aid_eleve = NULL; // pour être certain qu'elle est vide
 		$aid = renvoieAid("eleve", $login_general);
@@ -197,7 +226,7 @@ function cree_tab_general($login_general, $id_creneaux, $jour_semaine, $type_edt
 			// on va tester la table pour chaque aid de l'élève pour voir si ça donne quelque chose
 			$cherche_aid[$a] = mysql_query("SELECT * FROM edt_cours WHERE
 								jour_semaine = '".$jour_semaine."' AND
-								id_definie_periode = '".$id_creneaux."' AND
+								id_definie_periode = '".$id_creneaux."' AND ".$requete_sem."
 								id_groupe = 'AID|".$aid[$a]["id_aid"]."' AND
 								heuredeb_dec = '".$heuredeb_dec."'
 								ORDER BY id_semaine")
